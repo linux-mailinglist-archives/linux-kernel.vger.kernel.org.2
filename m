@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDB1408A5E
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB7A408A5D
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239774AbhIMLim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:38:42 -0400
+        id S239758AbhIMLih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:38:37 -0400
 Received: from pegase1.c-s.fr ([93.17.236.30]:61581 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239766AbhIMLii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:38:38 -0400
+        id S239751AbhIMLif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:38:35 -0400
 Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4H7PbK42bNz9s4Q;
-        Mon, 13 Sep 2021 13:37:17 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4H7PbH35fnz9s4N;
+        Mon, 13 Sep 2021 13:37:15 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AJk-qEg3t_iD; Mon, 13 Sep 2021 13:37:17 +0200 (CEST)
+        with ESMTP id QoAegEk5eCOQ; Mon, 13 Sep 2021 13:37:15 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.107])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by pegase1.c-s.fr (Postfix) with ESMTPS id 4H7PbJ489Rz9s4R;
-        Mon, 13 Sep 2021 13:37:16 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4H7PbH1fSrz9s42;
+        Mon, 13 Sep 2021 13:37:15 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18DBbGPP143500
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18DBbFbn143493
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 13 Sep 2021 13:37:16 +0200
+        Mon, 13 Sep 2021 13:37:15 +0200
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18DBbGfr143499;
-        Mon, 13 Sep 2021 13:37:16 +0200
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18DBbFf3143492;
+        Mon, 13 Sep 2021 13:37:15 +0200
 Date:   Mon, 17 Sep 2001 00:00:00 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@c-s.fr using -f
-Message-Id: <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631532888.git.christophe.leroy@csgroup.eu>
+Message-Id: <4a31723d50fe14f95ece6ee29538db82e21751bf.1631532888.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <1718f38859d5366f82d5bef531f255cedf537b5d.1631532888.git.christophe.leroy@csgroup.eu>
 References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631532888.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 4/6] signal: Add unsafe_copy_siginfo_to_user32()
+Subject: [PATCH v3 3/6] signal: Add unsafe_copy_siginfo_to_user()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, ebiederm@xmission.com,
@@ -49,334 +49,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 In the same spirit as commit fb05121fd6a2 ("signal: Add
 unsafe_get_compat_sigset()"), implement an 'unsafe' version of
-copy_siginfo_to_user32() in order to use it within user access blocks.
+copy_siginfo_to_user() in order to use it within user access blocks.
 
-To do so, we need inline version of copy_siginfo_to_external32() as we
-don't want any function call inside user access blocks.
+For that, also add an 'unsafe' version of clear_user().
+
+This commit adds the generic fallback for unsafe_clear_user().
+Architectures wanting to use unsafe_copy_siginfo_to_user() within a
+user_access_begin() section have to make sure they have their
+own unsafe_clear_user().
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/linux/compat.h |  83 +++++++++++++++++++++++++++++-
- include/linux/signal.h |  58 +++++++++++++++++++++
- kernel/signal.c        | 114 +----------------------------------------
- 3 files changed, 141 insertions(+), 114 deletions(-)
+v3: Added precision about unsafe_clear_user() in commit message.
+---
+ include/linux/signal.h  | 15 +++++++++++++++
+ include/linux/uaccess.h |  1 +
+ kernel/signal.c         |  5 -----
+ 3 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 8e0598c7d1d1..68823f4b86ee 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -412,6 +412,19 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
- #ifndef copy_siginfo_to_user32
- #define copy_siginfo_to_user32 __copy_siginfo_to_user32
- #endif
-+
-+#ifdef CONFIG_COMPAT
-+#define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
-+	struct compat_siginfo __user *__ucs_to = to;			\
-+	const struct kernel_siginfo *__ucs_from = from;			\
-+	struct compat_siginfo __ucs_new = {0};				\
-+									\
-+	__copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
-+	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
-+			    sizeof(struct compat_siginfo), label);	\
-+} while (0)
-+#endif
-+
- int get_compat_sigevent(struct sigevent *event,
- 		const struct compat_sigevent __user *u_event);
- 
-@@ -992,15 +1005,81 @@ static inline bool in_compat_syscall(void) { return false; }
-  * appropriately converted them already.
-  */
- #ifndef compat_ptr
--static inline void __user *compat_ptr(compat_uptr_t uptr)
-+static __always_inline void __user *compat_ptr(compat_uptr_t uptr)
- {
- 	return (void __user *)(unsigned long)uptr;
- }
- #endif
- 
--static inline compat_uptr_t ptr_to_compat(void __user *uptr)
-+static __always_inline compat_uptr_t ptr_to_compat(void __user *uptr)
- {
- 	return (u32)(unsigned long)uptr;
- }
- 
-+static __always_inline void
-+__copy_siginfo_to_external32(struct compat_siginfo *to,
-+			     const struct kernel_siginfo *from)
-+{
-+	to->si_signo = from->si_signo;
-+	to->si_errno = from->si_errno;
-+	to->si_code  = from->si_code;
-+	switch(__siginfo_layout(from->si_signo, from->si_code)) {
-+	case SIL_KILL:
-+		to->si_pid = from->si_pid;
-+		to->si_uid = from->si_uid;
-+		break;
-+	case SIL_TIMER:
-+		to->si_tid     = from->si_tid;
-+		to->si_overrun = from->si_overrun;
-+		to->si_int     = from->si_int;
-+		break;
-+	case SIL_POLL:
-+		to->si_band = from->si_band;
-+		to->si_fd   = from->si_fd;
-+		break;
-+	case SIL_FAULT:
-+		to->si_addr = ptr_to_compat(from->si_addr);
-+		break;
-+	case SIL_FAULT_TRAPNO:
-+		to->si_addr = ptr_to_compat(from->si_addr);
-+		to->si_trapno = from->si_trapno;
-+		break;
-+	case SIL_FAULT_MCEERR:
-+		to->si_addr = ptr_to_compat(from->si_addr);
-+		to->si_addr_lsb = from->si_addr_lsb;
-+		break;
-+	case SIL_FAULT_BNDERR:
-+		to->si_addr = ptr_to_compat(from->si_addr);
-+		to->si_lower = ptr_to_compat(from->si_lower);
-+		to->si_upper = ptr_to_compat(from->si_upper);
-+		break;
-+	case SIL_FAULT_PKUERR:
-+		to->si_addr = ptr_to_compat(from->si_addr);
-+		to->si_pkey = from->si_pkey;
-+		break;
-+	case SIL_FAULT_PERF_EVENT:
-+		to->si_addr = ptr_to_compat(from->si_addr);
-+		to->si_perf_data = from->si_perf_data;
-+		to->si_perf_type = from->si_perf_type;
-+		break;
-+	case SIL_CHLD:
-+		to->si_pid = from->si_pid;
-+		to->si_uid = from->si_uid;
-+		to->si_status = from->si_status;
-+		to->si_utime = from->si_utime;
-+		to->si_stime = from->si_stime;
-+		break;
-+	case SIL_RT:
-+		to->si_pid = from->si_pid;
-+		to->si_uid = from->si_uid;
-+		to->si_int = from->si_int;
-+		break;
-+	case SIL_SYS:
-+		to->si_call_addr = ptr_to_compat(from->si_call_addr);
-+		to->si_syscall   = from->si_syscall;
-+		to->si_arch      = from->si_arch;
-+		break;
-+	}
-+}
-+
- #endif /* _LINUX_COMPAT_H */
 diff --git a/include/linux/signal.h b/include/linux/signal.h
-index 70ea7e741427..637260bc193d 100644
+index 3f96a6374e4f..70ea7e741427 100644
 --- a/include/linux/signal.h
 +++ b/include/linux/signal.h
-@@ -65,6 +65,64 @@ enum siginfo_layout {
- 	SIL_SYS,
- };
+@@ -35,6 +35,21 @@ static inline void copy_siginfo_to_external(siginfo_t *to,
+ int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from);
+ int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from);
  
-+static const struct {
-+	unsigned char limit, layout;
-+} sig_sicodes[] = {
-+	[SIGILL]  = { NSIGILL,  SIL_FAULT },
-+	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
-+	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
-+	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
-+	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
-+#if defined(SIGEMT)
-+	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
-+#endif
-+	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
-+	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
-+	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
-+};
-+
-+static __always_inline enum
-+siginfo_layout __siginfo_layout(unsigned sig, int si_code)
++static __always_inline char __user *si_expansion(const siginfo_t __user *info)
 +{
-+	enum siginfo_layout layout = SIL_KILL;
-+
-+	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
-+		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
-+		    (si_code <= sig_sicodes[sig].limit)) {
-+			layout = sig_sicodes[sig].layout;
-+			/* Handle the exceptions */
-+			if ((sig == SIGBUS) &&
-+			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
-+				layout = SIL_FAULT_MCEERR;
-+			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
-+				layout = SIL_FAULT_BNDERR;
-+#ifdef SEGV_PKUERR
-+			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
-+				layout = SIL_FAULT_PKUERR;
-+#endif
-+			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
-+				layout = SIL_FAULT_PERF_EVENT;
-+			else if (IS_ENABLED(CONFIG_SPARC) &&
-+				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
-+				layout = SIL_FAULT_TRAPNO;
-+			else if (IS_ENABLED(CONFIG_ALPHA) &&
-+				 ((sig == SIGFPE) ||
-+				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
-+				layout = SIL_FAULT_TRAPNO;
-+		}
-+		else if (si_code <= NSIGPOLL)
-+			layout = SIL_POLL;
-+	} else {
-+		if (si_code == SI_TIMER)
-+			layout = SIL_TIMER;
-+		else if (si_code == SI_SIGIO)
-+			layout = SIL_POLL;
-+		else if (si_code < 0)
-+			layout = SIL_RT;
-+	}
-+	return layout;
++	return ((char __user *)info) + sizeof(struct kernel_siginfo);
 +}
 +
- enum siginfo_layout siginfo_layout(unsigned sig, int si_code);
- 
- /*
++#define unsafe_copy_siginfo_to_user(to, from, label) do {		\
++	siginfo_t __user *__ucs_to = to;				\
++	const kernel_siginfo_t *__ucs_from = from;			\
++	char __user *__ucs_expansion = si_expansion(__ucs_to);		\
++									\
++	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
++			    sizeof(struct kernel_siginfo), label);	\
++	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
++} while (0)
++
+ enum siginfo_layout {
+ 	SIL_KILL,
+ 	SIL_TIMER,
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index c05e903cef02..37073caac474 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
+ #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
+ #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
+ #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
++#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
+ static inline unsigned long user_access_save(void) { return 0UL; }
+ static inline void user_access_restore(unsigned long flags) { }
+ #endif
 diff --git a/kernel/signal.c b/kernel/signal.c
-index 23f168730b7e..0d402bdb174e 100644
+index 952741f6d0f9..23f168730b7e 100644
 --- a/kernel/signal.c
 +++ b/kernel/signal.c
-@@ -3249,22 +3249,6 @@ COMPAT_SYSCALL_DEFINE2(rt_sigpending, compat_sigset_t __user *, uset,
+@@ -3324,11 +3324,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+ 	return layout;
  }
- #endif
  
--static const struct {
--	unsigned char limit, layout;
--} sig_sicodes[] = {
--	[SIGILL]  = { NSIGILL,  SIL_FAULT },
--	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
--	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
--	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
--	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
--#if defined(SIGEMT)
--	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
--#endif
--	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
--	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
--	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
--};
+-static inline char __user *si_expansion(const siginfo_t __user *info)
+-{
+-	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+-}
 -
- static bool known_siginfo_layout(unsigned sig, int si_code)
- {
- 	if (si_code == SI_KERNEL)
-@@ -3286,42 +3270,7 @@ static bool known_siginfo_layout(unsigned sig, int si_code)
- 
- enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
- {
--	enum siginfo_layout layout = SIL_KILL;
--	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
--		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
--		    (si_code <= sig_sicodes[sig].limit)) {
--			layout = sig_sicodes[sig].layout;
--			/* Handle the exceptions */
--			if ((sig == SIGBUS) &&
--			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
--				layout = SIL_FAULT_MCEERR;
--			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
--				layout = SIL_FAULT_BNDERR;
--#ifdef SEGV_PKUERR
--			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
--				layout = SIL_FAULT_PKUERR;
--#endif
--			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
--				layout = SIL_FAULT_PERF_EVENT;
--			else if (IS_ENABLED(CONFIG_SPARC) &&
--				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
--				layout = SIL_FAULT_TRAPNO;
--			else if (IS_ENABLED(CONFIG_ALPHA) &&
--				 ((sig == SIGFPE) ||
--				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
--				layout = SIL_FAULT_TRAPNO;
--		}
--		else if (si_code <= NSIGPOLL)
--			layout = SIL_POLL;
--	} else {
--		if (si_code == SI_TIMER)
--			layout = SIL_TIMER;
--		else if (si_code == SI_SIGIO)
--			layout = SIL_POLL;
--		else if (si_code < 0)
--			layout = SIL_RT;
--	}
--	return layout;
-+	return __siginfo_layout(sig, si_code);
- }
- 
  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
-@@ -3389,66 +3338,7 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
  {
- 	memset(to, 0, sizeof(*to));
- 
--	to->si_signo = from->si_signo;
--	to->si_errno = from->si_errno;
--	to->si_code  = from->si_code;
--	switch(siginfo_layout(from->si_signo, from->si_code)) {
--	case SIL_KILL:
--		to->si_pid = from->si_pid;
--		to->si_uid = from->si_uid;
--		break;
--	case SIL_TIMER:
--		to->si_tid     = from->si_tid;
--		to->si_overrun = from->si_overrun;
--		to->si_int     = from->si_int;
--		break;
--	case SIL_POLL:
--		to->si_band = from->si_band;
--		to->si_fd   = from->si_fd;
--		break;
--	case SIL_FAULT:
--		to->si_addr = ptr_to_compat(from->si_addr);
--		break;
--	case SIL_FAULT_TRAPNO:
--		to->si_addr = ptr_to_compat(from->si_addr);
--		to->si_trapno = from->si_trapno;
--		break;
--	case SIL_FAULT_MCEERR:
--		to->si_addr = ptr_to_compat(from->si_addr);
--		to->si_addr_lsb = from->si_addr_lsb;
--		break;
--	case SIL_FAULT_BNDERR:
--		to->si_addr = ptr_to_compat(from->si_addr);
--		to->si_lower = ptr_to_compat(from->si_lower);
--		to->si_upper = ptr_to_compat(from->si_upper);
--		break;
--	case SIL_FAULT_PKUERR:
--		to->si_addr = ptr_to_compat(from->si_addr);
--		to->si_pkey = from->si_pkey;
--		break;
--	case SIL_FAULT_PERF_EVENT:
--		to->si_addr = ptr_to_compat(from->si_addr);
--		to->si_perf_data = from->si_perf_data;
--		to->si_perf_type = from->si_perf_type;
--		break;
--	case SIL_CHLD:
--		to->si_pid = from->si_pid;
--		to->si_uid = from->si_uid;
--		to->si_status = from->si_status;
--		to->si_utime = from->si_utime;
--		to->si_stime = from->si_stime;
--		break;
--	case SIL_RT:
--		to->si_pid = from->si_pid;
--		to->si_uid = from->si_uid;
--		to->si_int = from->si_int;
--		break;
--	case SIL_SYS:
--		to->si_call_addr = ptr_to_compat(from->si_call_addr);
--		to->si_syscall   = from->si_syscall;
--		to->si_arch      = from->si_arch;
--		break;
--	}
-+	__copy_siginfo_to_external32(to, from);
- }
- 
- int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+ 	char __user *expansion = si_expansion(to);
 -- 
 2.31.1
 
