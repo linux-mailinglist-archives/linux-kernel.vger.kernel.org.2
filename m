@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B5D408A5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDB1408A5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239752AbhIMLif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:38:35 -0400
+        id S239774AbhIMLim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:38:42 -0400
 Received: from pegase1.c-s.fr ([93.17.236.30]:61581 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239592AbhIMLid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:38:33 -0400
+        id S239766AbhIMLii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:38:38 -0400
 Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4H7PbG27sHz9s4F;
-        Mon, 13 Sep 2021 13:37:14 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4H7PbK42bNz9s4Q;
+        Mon, 13 Sep 2021 13:37:17 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1Lw7VEji5hys; Mon, 13 Sep 2021 13:37:14 +0200 (CEST)
+        with ESMTP id AJk-qEg3t_iD; Mon, 13 Sep 2021 13:37:17 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.107])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by pegase1.c-s.fr (Postfix) with ESMTPS id 4H7PbG0gx4z9s42;
-        Mon, 13 Sep 2021 13:37:14 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4H7PbJ489Rz9s4R;
+        Mon, 13 Sep 2021 13:37:16 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18DBbDm2143486
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18DBbGPP143500
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 13 Sep 2021 13:37:13 +0200
+        Mon, 13 Sep 2021 13:37:16 +0200
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18DBbDdi143485;
-        Mon, 13 Sep 2021 13:37:13 +0200
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18DBbGfr143499;
+        Mon, 13 Sep 2021 13:37:16 +0200
 Date:   Mon, 17 Sep 2001 00:00:00 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@c-s.fr using -f
-Message-Id: <b30478312af9b7f2ff09443635c04e18ad187ce6.1631532888.git.christophe.leroy@csgroup.eu>
+Message-Id: <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631532888.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <1718f38859d5366f82d5bef531f255cedf537b5d.1631532888.git.christophe.leroy@csgroup.eu>
 References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631532888.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 2/6] powerpc/signal: Include the new stack frame inside the
- user access block
+Subject: [PATCH v3 4/6] signal: Add unsafe_copy_siginfo_to_user32()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, ebiederm@xmission.com,
@@ -48,181 +47,336 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the new stack frame inside the user access block and set it up
-using unsafe_put_user().
+In the same spirit as commit fb05121fd6a2 ("signal: Add
+unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+copy_siginfo_to_user32() in order to use it within user access blocks.
 
-On an mpc 8321 (book3s/32) the improvment is about 4% on a process
-sending a signal to itself.
+To do so, we need inline version of copy_siginfo_to_external32() as we
+don't want any function call inside user access blocks.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/signal_32.c | 29 +++++++++++++----------------
- arch/powerpc/kernel/signal_64.c | 14 +++++++-------
- 2 files changed, 20 insertions(+), 23 deletions(-)
+ include/linux/compat.h |  83 +++++++++++++++++++++++++++++-
+ include/linux/signal.h |  58 +++++++++++++++++++++
+ kernel/signal.c        | 114 +----------------------------------------
+ 3 files changed, 141 insertions(+), 114 deletions(-)
 
-diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-index 0608581967f0..ff101e2b3bab 100644
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -726,7 +726,7 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	struct rt_sigframe __user *frame;
- 	struct mcontext __user *mctx;
- 	struct mcontext __user *tm_mctx = NULL;
--	unsigned long newsp = 0;
-+	unsigned long __user *newsp;
- 	unsigned long tramp;
- 	struct pt_regs *regs = tsk->thread.regs;
- 	/* Save the thread's msr before get_tm_stackpointer() changes it */
-@@ -734,6 +734,7 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 
- 	/* Set up Signal Frame */
- 	frame = get_sigframe(ksig, tsk, sizeof(*frame), 1);
-+	newsp = (unsigned long __user *)((unsigned long)frame - (__SIGNAL_FRAMESIZE + 16));
- 	mctx = &frame->uc.uc_mcontext;
- #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 	tm_mctx = &frame->uc_transact.uc_mcontext;
-@@ -743,7 +744,7 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	else
- 		prepare_save_user_regs(1);
- 
--	if (!user_access_begin(frame, sizeof(*frame)))
-+	if (!user_access_begin(newsp, __SIGNAL_FRAMESIZE + 16 + sizeof(*frame)))
- 		goto badframe;
- 
- 	/* Put the siginfo & fill in most of the ucontext */
-@@ -779,6 +780,9 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	}
- 	unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
- 
-+	/* create a stack frame for the caller of the handler */
-+	unsafe_put_user(regs->gpr[1], newsp, failed);
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 8e0598c7d1d1..68823f4b86ee 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -412,6 +412,19 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+ #ifndef copy_siginfo_to_user32
+ #define copy_siginfo_to_user32 __copy_siginfo_to_user32
+ #endif
 +
- 	user_access_end();
++#ifdef CONFIG_COMPAT
++#define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
++	struct compat_siginfo __user *__ucs_to = to;			\
++	const struct kernel_siginfo *__ucs_from = from;			\
++	struct compat_siginfo __ucs_new = {0};				\
++									\
++	__copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
++	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
++			    sizeof(struct compat_siginfo), label);	\
++} while (0)
++#endif
++
+ int get_compat_sigevent(struct sigevent *event,
+ 		const struct compat_sigevent __user *u_event);
  
- 	if (copy_siginfo_to_user(&frame->info, &ksig->info))
-@@ -790,13 +794,8 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	tsk->thread.fp_state.fpscr = 0;	/* turn off all fp exceptions */
- #endif
- 
--	/* create a stack frame for the caller of the handler */
--	newsp = ((unsigned long)frame) - (__SIGNAL_FRAMESIZE + 16);
--	if (put_user(regs->gpr[1], (u32 __user *)newsp))
--		goto badframe;
--
- 	/* Fill registers for signal handler */
--	regs->gpr[1] = newsp;
-+	regs->gpr[1] = (unsigned long)newsp;
- 	regs->gpr[3] = ksig->sig;
- 	regs->gpr[4] = (unsigned long)&frame->info;
- 	regs->gpr[5] = (unsigned long)&frame->uc;
-@@ -826,7 +825,7 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	struct sigframe __user *frame;
- 	struct mcontext __user *mctx;
- 	struct mcontext __user *tm_mctx = NULL;
--	unsigned long newsp = 0;
-+	unsigned long __user *newsp;
- 	unsigned long tramp;
- 	struct pt_regs *regs = tsk->thread.regs;
- 	/* Save the thread's msr before get_tm_stackpointer() changes it */
-@@ -834,6 +833,7 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 
- 	/* Set up Signal Frame */
- 	frame = get_sigframe(ksig, tsk, sizeof(*frame), 1);
-+	newsp = (unsigned long __user *)((unsigned long)frame - __SIGNAL_FRAMESIZE);
- 	mctx = &frame->mctx;
- #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 	tm_mctx = &frame->mctx_transact;
-@@ -843,7 +843,7 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	else
- 		prepare_save_user_regs(1);
- 
--	if (!user_access_begin(frame, sizeof(*frame)))
-+	if (!user_access_begin(newsp, __SIGNAL_FRAMESIZE + sizeof(*frame)))
- 		goto badframe;
- 	sc = (struct sigcontext __user *) &frame->sctx;
- 
-@@ -873,6 +873,8 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 		unsafe_put_user(PPC_RAW_SC(), &mctx->mc_pad[1], failed);
- 		asm("dcbst %y0; sync; icbi %y0; sync" :: "Z" (mctx->mc_pad[0]));
- 	}
-+	/* create a stack frame for the caller of the handler */
-+	unsafe_put_user(regs->gpr[1], newsp, failed);
- 	user_access_end();
- 
- 	regs->link = tramp;
-@@ -881,12 +883,7 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
- 	tsk->thread.fp_state.fpscr = 0;	/* turn off all fp exceptions */
- #endif
- 
--	/* create a stack frame for the caller of the handler */
--	newsp = ((unsigned long)frame) - __SIGNAL_FRAMESIZE;
--	if (put_user(regs->gpr[1], (u32 __user *)newsp))
--		goto badframe;
--
--	regs->gpr[1] = newsp;
-+	regs->gpr[1] = (unsigned long)newsp;
- 	regs->gpr[3] = ksig->sig;
- 	regs->gpr[4] = (unsigned long) sc;
- 	regs_set_return_ip(regs, (unsigned long) ksig->ka.sa.sa_handler);
-diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
-index 7b1cd50bc4fb..d80ff83cacb9 100644
---- a/arch/powerpc/kernel/signal_64.c
-+++ b/arch/powerpc/kernel/signal_64.c
-@@ -847,13 +847,14 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
- 		struct task_struct *tsk)
+@@ -992,15 +1005,81 @@ static inline bool in_compat_syscall(void) { return false; }
+  * appropriately converted them already.
+  */
+ #ifndef compat_ptr
+-static inline void __user *compat_ptr(compat_uptr_t uptr)
++static __always_inline void __user *compat_ptr(compat_uptr_t uptr)
  {
- 	struct rt_sigframe __user *frame;
--	unsigned long newsp = 0;
-+	unsigned long __user *newsp;
- 	long err = 0;
- 	struct pt_regs *regs = tsk->thread.regs;
- 	/* Save the thread's msr before get_tm_stackpointer() changes it */
- 	unsigned long msr = regs->msr;
+ 	return (void __user *)(unsigned long)uptr;
+ }
+ #endif
  
- 	frame = get_sigframe(ksig, tsk, sizeof(*frame), 0);
-+	newsp = (unsigned long __user *)((unsigned long)frame - __SIGNAL_FRAMESIZE);
+-static inline compat_uptr_t ptr_to_compat(void __user *uptr)
++static __always_inline compat_uptr_t ptr_to_compat(void __user *uptr)
+ {
+ 	return (u32)(unsigned long)uptr;
+ }
  
- 	/*
- 	 * This only applies when calling unsafe_setup_sigcontext() and must be
-@@ -862,7 +863,7 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
- 	if (!MSR_TM_ACTIVE(msr))
- 		prepare_setup_sigcontext(tsk);
- 
--	if (!user_write_access_begin(frame, sizeof(*frame)))
-+	if (!user_write_access_begin(newsp, __SIGNAL_FRAMESIZE + sizeof(*frame)))
- 		goto badframe;
- 
- 	unsafe_put_user(&frame->info, &frame->pinfo, badframe_block);
-@@ -900,6 +901,9 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
- 	}
- 
- 	unsafe_copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set), badframe_block);
-+	/* Allocate a dummy caller frame for the signal handler. */
-+	unsafe_put_user(regs->gpr[1], newsp, badframe_block);
++static __always_inline void
++__copy_siginfo_to_external32(struct compat_siginfo *to,
++			     const struct kernel_siginfo *from)
++{
++	to->si_signo = from->si_signo;
++	to->si_errno = from->si_errno;
++	to->si_code  = from->si_code;
++	switch(__siginfo_layout(from->si_signo, from->si_code)) {
++	case SIL_KILL:
++		to->si_pid = from->si_pid;
++		to->si_uid = from->si_uid;
++		break;
++	case SIL_TIMER:
++		to->si_tid     = from->si_tid;
++		to->si_overrun = from->si_overrun;
++		to->si_int     = from->si_int;
++		break;
++	case SIL_POLL:
++		to->si_band = from->si_band;
++		to->si_fd   = from->si_fd;
++		break;
++	case SIL_FAULT:
++		to->si_addr = ptr_to_compat(from->si_addr);
++		break;
++	case SIL_FAULT_TRAPNO:
++		to->si_addr = ptr_to_compat(from->si_addr);
++		to->si_trapno = from->si_trapno;
++		break;
++	case SIL_FAULT_MCEERR:
++		to->si_addr = ptr_to_compat(from->si_addr);
++		to->si_addr_lsb = from->si_addr_lsb;
++		break;
++	case SIL_FAULT_BNDERR:
++		to->si_addr = ptr_to_compat(from->si_addr);
++		to->si_lower = ptr_to_compat(from->si_lower);
++		to->si_upper = ptr_to_compat(from->si_upper);
++		break;
++	case SIL_FAULT_PKUERR:
++		to->si_addr = ptr_to_compat(from->si_addr);
++		to->si_pkey = from->si_pkey;
++		break;
++	case SIL_FAULT_PERF_EVENT:
++		to->si_addr = ptr_to_compat(from->si_addr);
++		to->si_perf_data = from->si_perf_data;
++		to->si_perf_type = from->si_perf_type;
++		break;
++	case SIL_CHLD:
++		to->si_pid = from->si_pid;
++		to->si_uid = from->si_uid;
++		to->si_status = from->si_status;
++		to->si_utime = from->si_utime;
++		to->si_stime = from->si_stime;
++		break;
++	case SIL_RT:
++		to->si_pid = from->si_pid;
++		to->si_uid = from->si_uid;
++		to->si_int = from->si_int;
++		break;
++	case SIL_SYS:
++		to->si_call_addr = ptr_to_compat(from->si_call_addr);
++		to->si_syscall   = from->si_syscall;
++		to->si_arch      = from->si_arch;
++		break;
++	}
++}
 +
- 	user_write_access_end();
+ #endif /* _LINUX_COMPAT_H */
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index 70ea7e741427..637260bc193d 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -65,6 +65,64 @@ enum siginfo_layout {
+ 	SIL_SYS,
+ };
  
- 	/* Save the siginfo outside of the unsafe block. */
-@@ -919,10 +923,6 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
- 		regs_set_return_ip(regs, (unsigned long) &frame->tramp[0]);
- 	}
++static const struct {
++	unsigned char limit, layout;
++} sig_sicodes[] = {
++	[SIGILL]  = { NSIGILL,  SIL_FAULT },
++	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
++	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
++	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
++	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
++#if defined(SIGEMT)
++	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
++#endif
++	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
++	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
++	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
++};
++
++static __always_inline enum
++siginfo_layout __siginfo_layout(unsigned sig, int si_code)
++{
++	enum siginfo_layout layout = SIL_KILL;
++
++	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
++		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
++		    (si_code <= sig_sicodes[sig].limit)) {
++			layout = sig_sicodes[sig].layout;
++			/* Handle the exceptions */
++			if ((sig == SIGBUS) &&
++			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
++				layout = SIL_FAULT_MCEERR;
++			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
++				layout = SIL_FAULT_BNDERR;
++#ifdef SEGV_PKUERR
++			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
++				layout = SIL_FAULT_PKUERR;
++#endif
++			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
++				layout = SIL_FAULT_PERF_EVENT;
++			else if (IS_ENABLED(CONFIG_SPARC) &&
++				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
++				layout = SIL_FAULT_TRAPNO;
++			else if (IS_ENABLED(CONFIG_ALPHA) &&
++				 ((sig == SIGFPE) ||
++				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
++				layout = SIL_FAULT_TRAPNO;
++		}
++		else if (si_code <= NSIGPOLL)
++			layout = SIL_POLL;
++	} else {
++		if (si_code == SI_TIMER)
++			layout = SIL_TIMER;
++		else if (si_code == SI_SIGIO)
++			layout = SIL_POLL;
++		else if (si_code < 0)
++			layout = SIL_RT;
++	}
++	return layout;
++}
++
+ enum siginfo_layout siginfo_layout(unsigned sig, int si_code);
  
--	/* Allocate a dummy caller frame for the signal handler. */
--	newsp = ((unsigned long)frame) - __SIGNAL_FRAMESIZE;
--	err |= put_user(regs->gpr[1], (unsigned long __user *)newsp);
+ /*
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 23f168730b7e..0d402bdb174e 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3249,22 +3249,6 @@ COMPAT_SYSCALL_DEFINE2(rt_sigpending, compat_sigset_t __user *, uset,
+ }
+ #endif
+ 
+-static const struct {
+-	unsigned char limit, layout;
+-} sig_sicodes[] = {
+-	[SIGILL]  = { NSIGILL,  SIL_FAULT },
+-	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
+-	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
+-	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
+-	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
+-#if defined(SIGEMT)
+-	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
+-#endif
+-	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
+-	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
+-	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
+-};
 -
- 	/* Set up "regs" so we "return" to the signal handler. */
- 	if (is_elf2_task()) {
- 		regs->ctr = (unsigned long) ksig->ka.sa.sa_handler;
-@@ -947,7 +947,7 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ static bool known_siginfo_layout(unsigned sig, int si_code)
+ {
+ 	if (si_code == SI_KERNEL)
+@@ -3286,42 +3270,7 @@ static bool known_siginfo_layout(unsigned sig, int si_code)
  
- 	/* enter the signal handler in native-endian mode */
- 	regs_set_return_msr(regs, (regs->msr & ~MSR_LE) | (MSR_KERNEL & MSR_LE));
--	regs->gpr[1] = newsp;
-+	regs->gpr[1] = (unsigned long)newsp;
- 	regs->gpr[3] = ksig->sig;
- 	regs->result = 0;
- 	if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
+ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+ {
+-	enum siginfo_layout layout = SIL_KILL;
+-	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
+-		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
+-		    (si_code <= sig_sicodes[sig].limit)) {
+-			layout = sig_sicodes[sig].layout;
+-			/* Handle the exceptions */
+-			if ((sig == SIGBUS) &&
+-			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
+-				layout = SIL_FAULT_MCEERR;
+-			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
+-				layout = SIL_FAULT_BNDERR;
+-#ifdef SEGV_PKUERR
+-			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
+-				layout = SIL_FAULT_PKUERR;
+-#endif
+-			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
+-				layout = SIL_FAULT_PERF_EVENT;
+-			else if (IS_ENABLED(CONFIG_SPARC) &&
+-				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
+-				layout = SIL_FAULT_TRAPNO;
+-			else if (IS_ENABLED(CONFIG_ALPHA) &&
+-				 ((sig == SIGFPE) ||
+-				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
+-				layout = SIL_FAULT_TRAPNO;
+-		}
+-		else if (si_code <= NSIGPOLL)
+-			layout = SIL_POLL;
+-	} else {
+-		if (si_code == SI_TIMER)
+-			layout = SIL_TIMER;
+-		else if (si_code == SI_SIGIO)
+-			layout = SIL_POLL;
+-		else if (si_code < 0)
+-			layout = SIL_RT;
+-	}
+-	return layout;
++	return __siginfo_layout(sig, si_code);
+ }
+ 
+ int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
+@@ -3389,66 +3338,7 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
+ {
+ 	memset(to, 0, sizeof(*to));
+ 
+-	to->si_signo = from->si_signo;
+-	to->si_errno = from->si_errno;
+-	to->si_code  = from->si_code;
+-	switch(siginfo_layout(from->si_signo, from->si_code)) {
+-	case SIL_KILL:
+-		to->si_pid = from->si_pid;
+-		to->si_uid = from->si_uid;
+-		break;
+-	case SIL_TIMER:
+-		to->si_tid     = from->si_tid;
+-		to->si_overrun = from->si_overrun;
+-		to->si_int     = from->si_int;
+-		break;
+-	case SIL_POLL:
+-		to->si_band = from->si_band;
+-		to->si_fd   = from->si_fd;
+-		break;
+-	case SIL_FAULT:
+-		to->si_addr = ptr_to_compat(from->si_addr);
+-		break;
+-	case SIL_FAULT_TRAPNO:
+-		to->si_addr = ptr_to_compat(from->si_addr);
+-		to->si_trapno = from->si_trapno;
+-		break;
+-	case SIL_FAULT_MCEERR:
+-		to->si_addr = ptr_to_compat(from->si_addr);
+-		to->si_addr_lsb = from->si_addr_lsb;
+-		break;
+-	case SIL_FAULT_BNDERR:
+-		to->si_addr = ptr_to_compat(from->si_addr);
+-		to->si_lower = ptr_to_compat(from->si_lower);
+-		to->si_upper = ptr_to_compat(from->si_upper);
+-		break;
+-	case SIL_FAULT_PKUERR:
+-		to->si_addr = ptr_to_compat(from->si_addr);
+-		to->si_pkey = from->si_pkey;
+-		break;
+-	case SIL_FAULT_PERF_EVENT:
+-		to->si_addr = ptr_to_compat(from->si_addr);
+-		to->si_perf_data = from->si_perf_data;
+-		to->si_perf_type = from->si_perf_type;
+-		break;
+-	case SIL_CHLD:
+-		to->si_pid = from->si_pid;
+-		to->si_uid = from->si_uid;
+-		to->si_status = from->si_status;
+-		to->si_utime = from->si_utime;
+-		to->si_stime = from->si_stime;
+-		break;
+-	case SIL_RT:
+-		to->si_pid = from->si_pid;
+-		to->si_uid = from->si_uid;
+-		to->si_int = from->si_int;
+-		break;
+-	case SIL_SYS:
+-		to->si_call_addr = ptr_to_compat(from->si_call_addr);
+-		to->si_syscall   = from->si_syscall;
+-		to->si_arch      = from->si_arch;
+-		break;
+-	}
++	__copy_siginfo_to_external32(to, from);
+ }
+ 
+ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
 -- 
 2.31.1
 
