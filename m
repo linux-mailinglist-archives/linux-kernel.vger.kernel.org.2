@@ -2,97 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3283E305D32
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BDB305D51
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhA0N3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:29:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbhA0N1e (ORCPT
+        id S233409AbhA0NfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:35:00 -0500
+Received: from mail.windriver.com ([147.11.1.11]:63659 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238306AbhA0Nch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:27:34 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253E3C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:26:54 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id f19so2074952ljn.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:26:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E+sDR/w7Eveczq8LB44W6tmFFVi8mdamvh+W/eB0wyk=;
-        b=YzMKb5u3Pd0f6J/JY15610qaqHWx0lOdWq2Y+LPU558lxjp0E+dhdIr7xJsCTfboDV
-         0o0GZDQV83L3rTzVPuNF2QmSwr3154vfvBC4LVbvymfcywpOCcXQp4j8Zt3MKh+1nPrt
-         mkLAvhVoCzvxyazyt4o6gL8BBqEIyRvTzL3JNnQaK63oQ8B2yqCn312nHIHM0t5Pa3b2
-         jpM1QlkyaxvY3K5hD4761tDt2iOtXx519N2e23KP85qIidkBSckQiRwWaaGlZ0Z5wdM7
-         m1cRjqaZ7tLzI31aP6wgbr9UF2LRrIzH+/TyE2G0iJch8nAJNJqIomwxoTD6iQyzPBKz
-         KE8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E+sDR/w7Eveczq8LB44W6tmFFVi8mdamvh+W/eB0wyk=;
-        b=b/g0T8jJzZcAqVINoF87a3RZVvAUcK3gNCWr/kolzYdPFVf0l8TqzacDMpG06LPKAT
-         P/vKZBcrElpmiNKB1vQzsQbKcBTpy2jOQ4pXdmnF6dldKxcrWbP0kz57JaW6h3aFqtDM
-         AbZSvXPKAW6SyKyAlm/106tcDVWLZt+NqdCvDjeIfOjNvXdEB7+gm/sL7CCKcCDh5vmd
-         aNIoc+9pQdrty7Jg4JNiNvFwvaylDzDNk7v5LXrwHEo/omOpHD+t4elGGxB6EFZI7LUH
-         4lDgIoddiuSu+DDPDSsDVvPZbThVIEw75rJhLbZS/72k7eK4LSvZggV4W4O4AsN2WHI6
-         nGaA==
-X-Gm-Message-State: AOAM532LxOK9B/CFLArObwNLzU0pP5w95OHY5zKDjmK2/WHOzy2pKCY2
-        OiXsk1yFYlv3Lbb4+k6V1Xqfq2fmrqSoiHx4vKCHBQIOH+0=
-X-Google-Smtp-Source: ABdhPJwx2AfZRejfUBPa2m+p7nl3nJztqNAkOI5JiBWNEDmoO7wFDH/An2XTLLifR2n89nWtcV2VUGbOJ/IQ38RNKw4=
-X-Received: by 2002:a2e:9548:: with SMTP id t8mr5031008ljh.284.1611754012645;
- Wed, 27 Jan 2021 05:26:52 -0800 (PST)
+        Wed, 27 Jan 2021 08:32:37 -0500
+Received: from pek-ygao-d1.windriver.com (pek-ygao-d1.corp.ad.wrs.com [128.224.155.99])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 10792Eew007852
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 7 Jan 2021 01:02:21 -0800 (PST)
+References: <20201209112100.47653-1-yahu.gao@windriver.com> <87zh2mprwl.fsf@x220.int.ebiederm.org>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Gao Yahu <yahu.gao@windriver.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Yahu Gao <yahu.gao@windriver.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Review request 0/1: fs/proc: Fix NULL pointer dereference in
+In-reply-to: <87zh2mprwl.fsf@x220.int.ebiederm.org>
+Date:   Thu, 07 Jan 2021 17:02:13 +0800
+Message-ID: <87ft3d86i2.fsf@pek-ygao-d1>
 MIME-Version: 1.0
-References: <20210125085909.4600-1-mgorman@techsingularity.net>
- <20210125085909.4600-5-mgorman@techsingularity.net> <CAKfTPtBhq25D8iZ67n+kkf9Mdyf+OradvVC5pG0MeZEMKZmU2g@mail.gmail.com>
- <20210127120245.GC3592@techsingularity.net> <CAKfTPtB=vh0FzszeOS5ND4Voq3ck2AQgruF-4zC-K1hSSsbT_A@mail.gmail.com>
- <20210127132121.GD3592@techsingularity.net>
-In-Reply-To: <20210127132121.GD3592@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 27 Jan 2021 14:26:41 +0100
-Message-ID: <CAKfTPtB3_t_FBB21drYbcT7aUp10tZ-rtZ91Rh08+H+a-h==RQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] sched/fair: Merge select_idle_core/cpu()
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 at 14:21, Mel Gorman <mgorman@techsingularity.net> wrote:
+
+Eric W. Biederman <ebiederm@xmission.com> writes:
+
+> [Please note this e-mail is from an EXTERNAL e-mail address]
 >
-> On Wed, Jan 27, 2021 at 02:07:50PM +0100, Vincent Guittot wrote:
-> > > @@ -6162,18 +6162,16 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
-> > >
-> > >         for_each_cpu_wrap(cpu, cpus, target) {
-> > >                 if (smt) {
-> > > -                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> > > -                       if ((unsigned int)i < nr_cpumask_bits)
-> > > -                               return i;
-> > > +                       idle_cpu = select_idle_core(p, cpu, cpus, &idle_cpu);
-> >
-> > but how do you differentiate idle core (return value) and an idle cpu
-> > in the core set in &idle_cpu
-> >
-> > You will return as soon as a cpu is idle and before testing all cores
-> >
+> Yahu Gao <yahu.gao@windriver.com> writes:
 >
-> Bah, I'm sorry, I was context switching between multiple tasks and failed
-> to engage brain. I'll apply your hunk and resend. I don't think this
+>> There is a kernel NULL pointer dereference was found in Linux system.
+>> The details of kernel NULL is shown at bellow.
+>>
+>> Currently, we do not have a way to provoke this fault on purpose, but
+>> the reproduction rate in out CI loops is high enough that we could go
+>> for a trace patch in black or white UP and get a reproduction in few
+>> weeks.
+>>
+>> Our kernel version is 4.1.21, but via analyzing the source code of the
+>> call trace. The upstream version should be affected. Really sorry for
+>> havn't reproduced this in upstream version. But it's easier to be safe
+>> than to prove it can't happen, right?
+>
+> Except I there are strong invariants that suggests that it takes
+> a memory stomp to get a NULL pointer deference here.
+>
 
-That's also happen to me
+Sorry for late reply. I took a long time to find root cause of memory stomp,
+but got nothing for now:(
 
-> merits retesting as the saving of avoiding the intermeriate is marginal.
+> For the life of a proc inode PROC_I(inode)->pid should be non-NULL.
+>
+> For a non-NULL pid pointer ->tasks[PIDTYPE_PID].first simply reads
+> an entry out of the struct pid.  Only pid needs to be non-NULL.
+>
+> So I don't see how you are getting a NULL pointer derference.
+>
+> Have you decoded the oops, looked at the assembly and seen which field
+> is NULL?  I expec that will help you track down what is wrong.
+>
+There are two messages I had found:
+1. 'Unable to handle kernel NULL pointer dereference at virtual address
+ 00000008'.
+2. In kernel 4.1.21, the members of 'struct pid' likes follow:
+(Apologize for missing this message at first)
+...
+struct pid
+{
+        atomic_t count;
+        unsigned int level;
+        /* lists of tasks that use this pid */
+        struct hlist_head tasks[PIDTYPE_MAX];
+        struct rcu_head rcu;
+        struct upid numbers[1];
+};
+...
+The offset of the member *tasks* from *struct pid* is 0x00000008.
 
-I agree. You can add my Reviewed-by
+Based on the above message, I thought we got a NULL pointer of struct
+pid.
+
+Regards,
+Yahu
 
 >
-> --
-> Mel Gorman
-> SUSE Labs
+>> Details of kernel crash:
+>> ----------------------------------------------------------------------
+>> [1446.285834] Unable to handle kernel NULL pointer dereference at
+>> virtual address 00000008
+>> [ 1446.293943] pgd = e4af0880
+>> [ 1446.296656] [00000008] *pgd=10cc3003, *pmd=04153003, *pte=00000000
+>> [ 1446.302898] Internal error: Oops: 207 1 PREEMPT SMP ARM
+>> [ 1446.302950] Modules linked in: adkNetD ncp
+>> lttng_ring_buffer_client_mmap_overwrite(C)
+>> lttng_ring_buffer_client_mmap_discard(C)
+>> lttng_ring_buffer_client_discard(C)
+>> lttng_ring_buffer_metadata_mmap_client(C) lttng_probe_printk(C)
+>> lttng_probe_irq(C) lttng_ring_buffer_metadata_client(C)
+>> lttng_ring_buffer_client_overwrite(C) lttng_probe_signal(C)
+>> lttng_probe_sched(C) lttng_tracer(C) lttng_statedump(C)
+>> lttng_lib_ring_buffer(C) lttng_clock_plugin_arm_cntpct(C) lttng_clock(C)
+>> [ 1446.302963] CPU: 0 PID: 12086 Comm: netstat Tainted: G C
+>> 4.1.21-rt13-* #1
+>> [ 1446.302967] Hardware name: Ericsson CPM1
+>> [ 1446.302972] task: cbd75480 ti: c4a68000 task.ti: c4a68000
+>> [ 1446.302984] PC is at pid_delete_dentry+0x8/0x18
+>> [ 1446.302992] LR is at dput+0x1a8/0x2b4
+>> [ 1446.303003] pc : [] lr : [] psr: 20070013
+>> [ 1446.303003] sp : c4a69e88 ip : 00000000 fp : 00000000
+>> [ 1446.303007] r10: 000218cc r9 : cd228000 r8 : e5f44320
+>> [ 1446.303011] r7 : 00000001 r6 : 00080040 r5 : c4aa97d0 r4 : c4aa9780
+>> [ 1446.303015] r3 : 00000000 r2 : cbd75480 r1 : 00000000 r0 : c4aa9780
+>> [ 1446.303020] Flags: nzCv IRQs on FIQs on Mode SVC_32 ISA ARM Segment
+>> user
+>> [ 1446.303026] Control: 30c5387d Table: 24af0880 DAC: 000000fd
+>> [ 1446.303033] Process netstat (pid: 12086, stack limit = 0xc4a68218)
+>> [ 1446.303039] Stack: (0xc4a69e88 to 0xc4a6a000)
+>> [ 1446.303052] 9e80: c4a69f70 0000a1c0 c4a69f13 00000002 e5f44320
+>> cd228000
+>> [ 1446.303059] 9ea0: 000218cc c0571604 c0a60bcc 00000000 00000000
+>> 00000000 c4a69f20 c4a69f15
+>> [ 1446.303065] 9ec0: 00003133 00000002 c4a69f13 00000000 0000001f
+>> c4a69f70 c35de800 0000007c
+>> [ 1446.303072] 9ee0: ce2b1c00 cd228000 00000001 c05747b8 c05745cc
+>> c35de800 0000001f 00000000
+>> [ 1446.303078] 9f00: 00000004 cd228008 00020000 c05745cc 33000004
+>> c0400031 c4a68000 00000400
+>> [ 1446.303086] 9f20: beb78c2c cd228000 c4a69f70 00000000 cd228008
+>> c0ffca90 c4a68000 00000400
+>> [ 1446.303103] 9f40: beb78c2c c052cd0c bf08a774 00000400 01480080
+>> 00008000 cd228000 cd228000
+>> [ 1446.303114] 9f60: c040f7c8 c4a68000 00000400 c052d22c c052cd8c
+>> 00000000 00000021 00000000
+>> [ 1446.303127] 9f80: 01480290 01480280 00007df0 ffffffea 01480060
+>> 01480060 01480064 b6e424c0
+>> [ 1446.303143] 9fa0: 0000008d c040f794 01480060 01480064 00000004
+>> 01480080 00008000 00000000
+>> [ 1446.303150] 9fc0: 01480060 01480064 b6e424c0 0000008d 01480080
+>> 01480060 00035440 beb78c2c
+>> [ 1446.303156] 9fe0: 01480080 beb78160 b6ede59c b6edea3c 60070010
+>> 00000004 00000000 00000000
+>> [ 1446.303167] [] (pid_delete_dentry) from [] (dput+0x1a8/0x2b4)
+>> [ 1446.303176] [] (dput) from [] (proc_fill_cache+0x54/0x10c)
+>> [ 1446.303189] [] (proc_fill_cache) from []
+>> (proc_readfd_common+0xd8/0x238)
+>> [ 1446.303203] [] (proc_readfd_common) from [] (iterate_dir+0x98/0x118)
+>> [ 1446.303217] [] (iterate_dir) from [] (SyS_getdents+0x7c/0xf0)
+>> [ 1446.303233] [] (SyS_getdents) from [] (__sys_trace_return+0x0/0x2c)
+>> [ 1446.303243] Code: e8bd0030 e12fff1e e5903028 e5133020 (e5930008)
+>
+> Eric
+
