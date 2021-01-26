@@ -2,135 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEFF305587
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCBF30557F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S316984AbhAZXNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S317019AbhAZXNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbhAZE42 (ORCPT
+        with ESMTP id S1730480AbhAZFAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 23:56:28 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42FDC06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 20:55:48 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id u4so1512188pjn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 20:55:48 -0800 (PST)
+        Tue, 26 Jan 2021 00:00:07 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C805FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 20:52:20 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id b8so9132101plh.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 20:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A+xo3PRCK79jj+xfn6kKZjOBkB350fZ6rhjD6DI0rxM=;
-        b=kaKvwXbFyAqpP+UiSlZHnfAvyZd0+zaC9/ULW7J9CZ8k5c5TNv3C/A5++Y44n26s2y
-         hjR+apqEBKBZXB81WFZKHS3B4MrT3rJf+NCxEwUQuTcgwX8I2Ic5fekdrEA+1Nmktf4D
-         ZjscnZ/ois3yHlG1tx/J3ou6WFyFi/ShtabzjPw7uaX0CfEImEwIq9bbuv+bOzc1v26B
-         MaxopG4mbe+Nf01wgTfNinsgom/t/Dl348pl+S6eJ456SV+hMs0hKsvPRGWX4MuLWkQJ
-         PQw6plwMCJcVk9/2fYBEzB8ZzgVReqky4YRsB6E4oBiU4dubvhCEsAzFGYmfZZGYGpT8
-         tFcQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eQKrbfMg9apB2fq4n7gF++OHi/XlTEUw11uN3HmUDu8=;
+        b=i3ZgjdZnEt7qlMz23j/qwccf1uzLMu602kHPxxO1DFzf8BJ8LTZR8IR2+7RLUHV0Vd
+         fr/jCHko3aegsGYa1guuouNrrmEmyfZjHu//qpQOolLiDpoEsX7aU5S0TiG5NtSPA4hy
+         bP8XC16KtJd/yxtGQfTuAt0TGjezFslhPOd2bfp1Wlk3swTTfDzWmonuT+AQP0p58iY3
+         eIXyRJqZAWSCcQ6jEJBFAC/aAf1R32lhJULMYDw/U8zM4RSE6m5nJ/9ZynaUyDib+LfL
+         KAl831jTgmmD33JSG5X/X5//Iv50iaxw3hn3MYZ9Ab5nODlSNHVcSl8lg6fyhA5ue8GY
+         ssWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A+xo3PRCK79jj+xfn6kKZjOBkB350fZ6rhjD6DI0rxM=;
-        b=b4gLtfJPqEucWgqwRk54PznGu1YyshOd/SpSAx9k2FTu4dU15czwb7IZ+b/38lFFuX
-         UJxHttkYhBGTvt2+RN8jdZcScBql2blR7BFT3hv1vYnhey5tLfHP7iez5BfUHO35Ygm/
-         IKcTYDMkRXzUhSdjXUNKp0/dhYiwislGrBc53+PWyRSfLx+lnSvNhNcZjyXoA2YIgQKN
-         Qj7kScoHdbRFYZlVMicWXowSJoxcBN8pKICsRjXZtcU0kSfSG8JHmQwe4ml2qdLy9kIS
-         7HhXVlLMMpQI8JH/YV1G2TJXpjQcAOlQSnHXaYWbjedumtorIRIW8AUVqrzL1kEu5gjo
-         9mog==
-X-Gm-Message-State: AOAM530O61H228ahDiI+937qDtwD3U1iR2nUsq9BYRoU7HLrGFmx577Y
-        +zg4VLcO+nD74uQiQzrr9kr5DA==
-X-Google-Smtp-Source: ABdhPJzGaQNqQSbwwVJst9Y81nAQYuzD6OpiAagKOy8cC6gsdFxH1ECju1m1y4NgqCYatHDW0DptLA==
-X-Received: by 2002:a17:90b:3682:: with SMTP id mj2mr4029939pjb.9.1611636948198;
-        Mon, 25 Jan 2021 20:55:48 -0800 (PST)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:dd5e:ff29:33fe:cad2])
-        by smtp.gmail.com with ESMTPSA id gw20sm858796pjb.55.2021.01.25.20.55.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eQKrbfMg9apB2fq4n7gF++OHi/XlTEUw11uN3HmUDu8=;
+        b=t95rWxVhxyvHKunAgFSRfMwyoBteJDAc3xVhyNYk5cqvxH367rc/1e8xxfMb9dPw29
+         YHIaF8A0B5GIDNJQJZFENl2acfwN7Uw6Hf5vmsloYxW7L2shbFK/tLc7HIo9hUyx2UqR
+         uCe7UYFT/d14C+OG0R1z1VF6Hpx8wKzSocOAbF8uQeUmwDqEoh9XS3X7jkws7aiuOAhd
+         wpKj3LgbaltmkpH+qjbsx+bpgwI2tB3jmo5R/6OdauYtp+MS0cfmDkAvZLHALvkpPER+
+         WGWuojP2XBNSpGsVGYKoGb+9X16mfN8sNwd6oOneMinU7QpkToFpFQp8Y2QyRknxDaCT
+         tCWA==
+X-Gm-Message-State: AOAM530ZZ9wxejPgoV6xZYZpPyTIm95TPH5PI8+3Chr2qb7TpVheditR
+        UBxE2qzK0drCXS2L23zZTkA=
+X-Google-Smtp-Source: ABdhPJzRzCuSXHZd4qJ69MxRV7nhe25GWTQW/Qr6vSihPEVVhxL4U434YdPKkvxQylJMNaWMd1kP5A==
+X-Received: by 2002:a17:90a:1fcb:: with SMTP id z11mr4072244pjz.22.1611636740326;
+        Mon, 25 Jan 2021 20:52:20 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id b17sm6419498pfo.151.2021.01.25.20.52.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 20:55:47 -0800 (PST)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] pinctrl: use to octal permissions for debugfs files
-Date:   Mon, 25 Jan 2021 20:47:43 -0800
-Message-Id: <20210126044742.87602-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Jan 2021 20:52:19 -0800 (PST)
+Date:   Tue, 26 Jan 2021 13:52:17 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@linux.intel.com
+Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
+Message-ID: <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
+References: <20210122081311.GA12834@xsang-OptiPlex-9020>
+ <YAr7d6A4CkMpgx+g@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAr7d6A4CkMpgx+g@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch over pinctrl debugfs files to use octal permissions as they are
-preferred over symbolic permissions. Refer to commit f90774e1fd27
-("checkpatch: look for symbolic permissions and suggest octal instead").
+On (21/01/22 17:21), Petr Mladek wrote:
+[..]
+> > [  952.271861] ? firmware_map_remove (kbuild/src/consumer/kernel/sched/core.c:4411) 
+> > [  952.272870] ? ksys_write (kbuild/src/consumer/fs/read_write.c:661) 
+> > [  952.273709] schedule (kbuild/src/consumer/include/linux/thread_info.h:84 (discriminator 1) kbuild/src/consumer/include/linux/sched.h:1897 (discriminator 1) kbuild/src/consumer/kernel/sched/core.c:4608 (discriminator 1)) 
+> > [  952.274495] exit_to_user_mode_prepare (kbuild/src/consumer/kernel/entry/common.c:160 kbuild/src/consumer/kernel/entry/common.c:191) 
+> > [  952.275516] syscall_exit_to_user_mode (kbuild/src/consumer/arch/x86/include/asm/jump_label.h:41 kbuild/src/consumer/arch/x86/include/asm/nospec-branch.h:288 kbuild/src/consumer/arch/x86/include/asm/entry-common.h:80 kbuild/src/consumer/kernel/entry/common.c:133 kbuild/src/consumer/kernel/entry/common.c:268) 
+> 
+> > [  952.276650] entry_INT80_compat (kbuild/src/consumer/arch/x86/entry/entry_64_compat.S:412) 
+> > [  952.277673] RIP: 0023:0xf7f93a02
+> > [  952.278497] RSP: 002b:00000000ff8db2f4 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> > [  952.280235] RAX: 0000000000000001 RBX: 0000000000000001 RCX: 000000005666f220
+> > [  952.281813] RDX: 0000000000000001 RSI: 00000000f7f59d60 RDI: 0000000000000001
+> > [  952.283347] RBP: 000000005666f220 R08: 0000000000000000 R09: 0000000000000000
+> > [  952.284919] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > [  952.286507] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > [  952.294673] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.328047] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.336658]
+> > [  352.572231]
+> > [   98.585525] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.336693]
+> > [  952.359450]
+> > [  352.594642] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.359483]
+> > [  952.377678] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.409955] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.412504]
+> > [  352.610470]
+> > [   98.605699] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.412531]
+> > [  952.444293]
+> > [  352.625170] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.444328]
+> > [  952.453669] tasks-torture:torture_onoff task: online 0 failed: errno -5
+> > [  952.480340]
+> > [  352.638172]
+> > 
+> > To reproduce:
+> > 
+> >         # build kernel
+> > 	cd linux
+> > 	cp config-5.10.0-rc5-gb031a684bfd0 .config
+> > 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage
+> > 
+> >         git clone https://github.com/intel/lkp-tests.git
+> >         cd lkp-tests
+> >         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+> 
+> I am still struggling with lkp-tests. I have never used them before
+> and have troubles to get it working. It asks for a newer qemu at
+> the moment. It means that I am still not able to reproduce it :-/
+> 
+> I wonder if there is a way to reproduce this without lpk-tests
+> framework.
 
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
-Patch note:
-- I learned about this preference of octal over symbolic when I created
-  an RFC to add a new debugfs file ("pinmux-select"). I am submitting
-  this patch to switch existing entries in pinctrl over to octal before
-  I submit a proper PATCH for the "pinmux-select" functionality in which
-  I will use octal permissions for the new file.
+AFAIU this is just 'modprobe rcutorture'
 
- drivers/pinctrl/core.c    | 6 +++---
- drivers/pinctrl/pinconf.c | 4 ++--
- drivers/pinctrl/pinmux.c  | 4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 9fc4433fece4..791736b2de77 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1916,11 +1916,11 @@ static void pinctrl_init_debugfs(void)
- 		return;
- 	}
- 
--	debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinctrl-devices", 0400,
- 			    debugfs_root, NULL, &pinctrl_devices_fops);
--	debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinctrl-maps", 0400,
- 			    debugfs_root, NULL, &pinctrl_maps_fops);
--	debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinctrl-handles", 0400,
- 			    debugfs_root, NULL, &pinctrl_fops);
- }
- 
-diff --git a/drivers/pinctrl/pinconf.c b/drivers/pinctrl/pinconf.c
-index 02c075cc010b..f005921bb49e 100644
---- a/drivers/pinctrl/pinconf.c
-+++ b/drivers/pinctrl/pinconf.c
-@@ -370,9 +370,9 @@ DEFINE_SHOW_ATTRIBUTE(pinconf_groups);
- void pinconf_init_device_debugfs(struct dentry *devroot,
- 			 struct pinctrl_dev *pctldev)
- {
--	debugfs_create_file("pinconf-pins", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinconf-pins", 0400,
- 			    devroot, pctldev, &pinconf_pins_fops);
--	debugfs_create_file("pinconf-groups", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinconf-groups", 0400,
- 			    devroot, pctldev, &pinconf_groups_fops);
- }
- 
-diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
-index bab888fe3f8e..7f6190eaedbb 100644
---- a/drivers/pinctrl/pinmux.c
-+++ b/drivers/pinctrl/pinmux.c
-@@ -676,9 +676,9 @@ DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
- void pinmux_init_device_debugfs(struct dentry *devroot,
- 			 struct pinctrl_dev *pctldev)
- {
--	debugfs_create_file("pinmux-functions", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinmux-functions", 0400,
- 			    devroot, pctldev, &pinmux_functions_fops);
--	debugfs_create_file("pinmux-pins", S_IFREG | S_IRUGO,
-+	debugfs_create_file("pinmux-pins", 0400,
- 			    devroot, pctldev, &pinmux_pins_fops);
- }
- 
--- 
-2.25.1
-
+	-ss
