@@ -2,127 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE23304FF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE271304FF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhA0Dg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:36:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        id S236587AbhA0Dhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727158AbhAZVsd (ORCPT
+        with ESMTP id S1726280AbhAZVtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:48:33 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C485DC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:47:48 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id e22so36817177iog.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:47:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sSSrXGvO8Z5hv7xtQeYdUiuVK+ZbsiIIMn3oXAULpI4=;
-        b=vwcxZkQYFgpHES10yvP73GnKhcwtFR+wZHdjDBADyCrRSu+XPzZ2hXQ5Bb/exEYlWR
-         MIOoJbX8ezhURWPB3j2ROFiyvufhanogg6Ypc+5udiiIdaJjNPCDX7/QfiQVELWSUXoQ
-         MiKeez34nkY+8w5kJzfNv0ndQZx4z97LqBPJKmw9jpR1CwNwlIncvmYCDrXb6c4rYP5h
-         m2Yxxeq/rozHeOAw8Mvg/KAWsCr81e7kCmhgLsoSfHAV2zEIvS4CRjuywWdJz61aVMY1
-         m+4JiZDzErOeCtUzlgWksuWSDz9Q13FB+T3ywpIrsXcbsKajgCRyda1FRXZ6c8ONHQ51
-         6V1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sSSrXGvO8Z5hv7xtQeYdUiuVK+ZbsiIIMn3oXAULpI4=;
-        b=H7cd06cDzpGDjWhdPCkc2OfDvz+xa8c7orHn5LrAUjzsJeRHTVfpfcvASH8g4geqiy
-         X7H+z64bqFMEr/XiJ0Ljc5g7dDdEQVTqoh3GIm/ky8o8wGU7cL4LRfsZRfZIXNO4+xJI
-         xsIJnQwSRm1f29mw0UDNx90/zg1APQswaca3z3glMkcpTfs7wdhtYLd8QnmTHiJDsdwU
-         zzOK8g7IhSgyzOcHDdwqR1MQCKDyigr03xJDiRZAHWabBOZYJfI4Vnc6LAaBwK1WNTyT
-         /BRZYYMz8bpDKoIF21/HQ4FNKq9Vcqn6c7flkF7R4mZ+/scdZxJFAi57niSNvmrgiDap
-         qFNQ==
-X-Gm-Message-State: AOAM533HKQSfYb8aMo0wMJ9UiuSGXqBiyPoxegeBsjtjU0Osnb0U9ebn
-        uC7h0wIkM40R8PSgtwLsZAlWx66Pj4/GN4cyryiU9w==
-X-Google-Smtp-Source: ABdhPJym1IbTbCJL80K6b5KLebAuPvM9zalpis45wQ2maBqJ/OyDGaiq1pi5bBF6WekfQBxjPg68vjrxAw5MMWK1cag=
-X-Received: by 2002:a92:60f:: with SMTP id x15mr3804039ilg.203.1611697667926;
- Tue, 26 Jan 2021 13:47:47 -0800 (PST)
+        Tue, 26 Jan 2021 16:49:49 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDC5C06174A;
+        Tue, 26 Jan 2021 13:49:08 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E62C42C1;
+        Tue, 26 Jan 2021 22:49:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611697745;
+        bh=LplyXulbPXrXuvaecCE9pwLK5CV2NpJXldimMYOoU6E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W5/JirBumHHDqY8/gvtF3HYkNqVMRlR2q/gwb6T+0GKqE+Hlwe0nKg+FmiSr08ciu
+         raxqEasMbRLTDaeUYnn8GtEQF9vC3jDgNdAsynIjWFZIGAmh7x+VZ4DC/Sr8JfvFL4
+         v+CvCAq4bMDsWtr8s49i7m/hTQQ2OWWkzqAqlrG4=
+Date:   Tue, 26 Jan 2021 23:48:45 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: renesas,rcar-dmac: Add r8a779a0
+ support
+Message-ID: <YBCOPXTh8n4Tk0+y@pendragon.ideasonboard.com>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-2-geert+renesas@glider.be>
 MIME-Version: 1.0
-References: <20210112181041.356734-1-bgardon@google.com> <20210112181041.356734-20-bgardon@google.com>
- <YAnUhCocizx97FWL@google.com> <YAnzB3Uwn3AVTXGN@google.com> <335d27f7-0849-de37-f380-a5018c5c5535@redhat.com>
-In-Reply-To: <335d27f7-0849-de37-f380-a5018c5c5535@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 26 Jan 2021 13:47:36 -0800
-Message-ID: <CANgfPd_Lh-aLJ5fXP_GfqD0bB=0dvqxjKrCLmB5=VVFMT70NZw@mail.gmail.com>
-Subject: Re: [PATCH 19/24] kvm: x86/mmu: Protect tdp_mmu_pages with a lock
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210125142431.1049668-2-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 6:28 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 21/01/21 22:32, Sean Christopherson wrote:
-> > Coming back to this series, I wonder if the RCU approach is truly necessary to
-> > get the desired scalability.  If both zap_collapsible_sptes() and NX huge page
-> > recovery zap_only_  leaf SPTEs, then the only path that can actually unlink a
-> > shadow page while holding the lock for read is the page fault path that installs
-> > a huge page over an existing shadow page.
-> >
-> > Assuming the above analysis is correct, I think it's worth exploring alternatives
-> > to using RCU to defer freeing the SP memory, e.g. promoting to a write lock in
-> > the specific case of overwriting a SP (though that may not exist for rwlocks),
-> > or maybe something entirely different?
->
-> You can do the deferred freeing with a short write-side critical section
-> to ensure all readers have terminated.
->
-> If the bool argument to handle_disconnected_tdp_mmu_page is true(*), the
-> pages would be added to an llist, instead of being freed immediately.
-> At the end of a shared critical section you would do
->
->         if (!llist_empty(&kvm->arch.tdp_mmu_disconnected_pages)) {
->                 struct llist_node *first;
->                 kvm_mmu_lock(kvm);
->                 first = __list_del_all(&kvm->arch.tdp_mmu_disconnected_pages);
->                 kvm_mmu_unlock(kvm);
->
->                 /*
->                  * All vCPUs have already stopped using the pages when
->                  * their TLBs were flushed.  The exclusive critical
->                  * section above means that there can be no readers
->                  * either.
->                  */
->                 tdp_mmu_free_disconnected_pages(first);
->         }
->
-> So this is still deferred reclamation, but it's done by one of the vCPUs
-> rather than a worker RCU thread.  This would replace patches 11/12/13
-> and probably would be implemented after patch 18.
+Hi Geert,
 
-While I agree that this would work, it could be a major performance
-bottleneck as it could result in the MMU lock being acquired in read
-mode by a VCPU thread handling a page fault. Even though the critical
-section is very short it still has to serialize with the potentially
-many overlapping page fault handlers which want the MMU read lock. In
-order to perform well with hundreds of vCPUs, the vCPU threads really
-cannot be acquiring the MMU lock in write mode. The MMU lock above
-could be replaced with the TDP MMU pages lock, but that still adds
-serialization where it's not really necessary.
-The use of RCU also provides a nice separation of concerns, freeing
-the various functions which need to remove pages from the paging
-structure from having to follow up on freeing them later.
+Thank you for the patch.
 
->
-> Paolo
->
-> (*) this idea is what prompted the comment about s/atomic/shared/
->
+On Mon, Jan 25, 2021 at 03:24:28PM +0100, Geert Uytterhoeven wrote:
+> Document the compatible value for the Direct Memory Access Controller
+> blocks in the Renesas R-Car V3U (R8A779A0) SoC.
+> 
+> The most visible difference with DMAC blocks on other R-Car SoCs is the
+> move of the per-channel registers to a separate register block.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+> v2:
+>   - Add Reviewed-by.
+> ---
+>  .../bindings/dma/renesas,rcar-dmac.yaml       | 76 ++++++++++++-------
+>  1 file changed, 48 insertions(+), 28 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
+> index c07eb6f2fc8d2f12..7f2a54bc732d3a19 100644
+> --- a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
+> +++ b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
+> @@ -14,34 +14,37 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    items:
+> -      - enum:
+> -          - renesas,dmac-r8a7742  # RZ/G1H
+> -          - renesas,dmac-r8a7743  # RZ/G1M
+> -          - renesas,dmac-r8a7744  # RZ/G1N
+> -          - renesas,dmac-r8a7745  # RZ/G1E
+> -          - renesas,dmac-r8a77470 # RZ/G1C
+> -          - renesas,dmac-r8a774a1 # RZ/G2M
+> -          - renesas,dmac-r8a774b1 # RZ/G2N
+> -          - renesas,dmac-r8a774c0 # RZ/G2E
+> -          - renesas,dmac-r8a774e1 # RZ/G2H
+> -          - renesas,dmac-r8a7790  # R-Car H2
+> -          - renesas,dmac-r8a7791  # R-Car M2-W
+> -          - renesas,dmac-r8a7792  # R-Car V2H
+> -          - renesas,dmac-r8a7793  # R-Car M2-N
+> -          - renesas,dmac-r8a7794  # R-Car E2
+> -          - renesas,dmac-r8a7795  # R-Car H3
+> -          - renesas,dmac-r8a7796  # R-Car M3-W
+> -          - renesas,dmac-r8a77961 # R-Car M3-W+
+> -          - renesas,dmac-r8a77965 # R-Car M3-N
+> -          - renesas,dmac-r8a77970 # R-Car V3M
+> -          - renesas,dmac-r8a77980 # R-Car V3H
+> -          - renesas,dmac-r8a77990 # R-Car E3
+> -          - renesas,dmac-r8a77995 # R-Car D3
+> -      - const: renesas,rcar-dmac
+> -
+> -  reg:
+> -    maxItems: 1
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - renesas,dmac-r8a7742  # RZ/G1H
+> +              - renesas,dmac-r8a7743  # RZ/G1M
+> +              - renesas,dmac-r8a7744  # RZ/G1N
+> +              - renesas,dmac-r8a7745  # RZ/G1E
+> +              - renesas,dmac-r8a77470 # RZ/G1C
+> +              - renesas,dmac-r8a774a1 # RZ/G2M
+> +              - renesas,dmac-r8a774b1 # RZ/G2N
+> +              - renesas,dmac-r8a774c0 # RZ/G2E
+> +              - renesas,dmac-r8a774e1 # RZ/G2H
+> +              - renesas,dmac-r8a7790  # R-Car H2
+> +              - renesas,dmac-r8a7791  # R-Car M2-W
+> +              - renesas,dmac-r8a7792  # R-Car V2H
+> +              - renesas,dmac-r8a7793  # R-Car M2-N
+> +              - renesas,dmac-r8a7794  # R-Car E2
+> +              - renesas,dmac-r8a7795  # R-Car H3
+> +              - renesas,dmac-r8a7796  # R-Car M3-W
+> +              - renesas,dmac-r8a77961 # R-Car M3-W+
+> +              - renesas,dmac-r8a77965 # R-Car M3-N
+> +              - renesas,dmac-r8a77970 # R-Car V3M
+> +              - renesas,dmac-r8a77980 # R-Car V3H
+> +              - renesas,dmac-r8a77990 # R-Car E3
+> +              - renesas,dmac-r8a77995 # R-Car D3
+> +          - const: renesas,rcar-dmac
+> +
+> +      - items:
+> +          - const: renesas,dmac-r8a779a0 # R-Car V3U
+> +
+> +  reg: true
+>  
+>    interrupts:
+>      minItems: 9
+> @@ -110,6 +113,23 @@ required:
+>    - power-domains
+>    - resets
+>  
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - renesas,dmac-r8a779a0
+> +then:
+> +  properties:
+> +    reg:
+> +      items:
+> +        - description: Base register block
+> +        - description: Channel register block
+> +else:
+> +  properties:
+> +    reg:
+> +      maxItems: 1
+> +
+>  additionalProperties: false
+>  
+>  examples:
+
+-- 
+Regards,
+
+Laurent Pinchart
