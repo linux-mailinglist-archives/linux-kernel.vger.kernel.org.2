@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DF23057C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D5A3057BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhA0KFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:05:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S316762AbhAZXJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 18:09:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60AC22065C;
-        Tue, 26 Jan 2021 23:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611702537;
-        bh=ZcWiVRtGNonnO8A1OWptzd75MMTLGyymFyrOh0mqTMI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=avEl48RvWCLjsUQuImILhaUc2gs33aJv/4LJvFRfZ/eGQ3S2AxHaIuGzjeF6m2fDI
-         3qgkWlctKqloIkEbGnm1fwCs43WgTFwGvC/YTLO/x7ujGXbnUOk2qQ/3twF3Gm8oJV
-         Brykj+eHX/4zYCL9h+dBxWIvUXAYfK0mvpbVaQSsdN8Ua8uLQ9daPtotB+ShbAYq9v
-         EztUsEsKwXdDq6fKBn+GdCDjpVfAWrpKaHXpCzLOZOc392pdLziu3JvL6mHMJN1pTZ
-         wq69S/9AxpN0/DRgGaySDgu3itV8ns3haNjhqbowuJYu5tCdrab9Ii/MJQisihG0WB
-         Mig8ek4jCYVOg==
-Date:   Tue, 26 Jan 2021 23:08:52 +0000
-From:   Will Deacon <will@kernel.org>
+        id S232375AbhA0KE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S316784AbhAZXJ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 18:09:56 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7704AC061574;
+        Tue, 26 Jan 2021 15:09:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=y5GH5/INyOBYDQ0PQ+MjQ5G7czP55YrI15equg5lKBM=; b=WB4I/Ivtfdn740+LicDwFXoakl
+        28apnJDDF394Bwd+0UGFs9+Pwk9OhyDcdhNiX4CGVATjZRXRwujLslBNQSfKRWcmMYA+HF+v1qSdt
+        GGgypm3HOSu8rPjZSDlxPzQK2vIcvvd+i0U1sshjQgbPuZryewgVv9wWVbbOBai4JQjiG7dBMEcsA
+        otzVRooXfExepGg3KA/9Jpz3YWnM9uO0eHjZm2IZ9vxtQhwZbMaUFauJ/1A39u3yqEiKIljYyjwsS
+        5qMWWp7Qoy+O8ty479ZXDa+73LwGsOX+JHWaLYcrwNB+Rh6H3NtNFLNg+yqFLsJO8fr9T6MKXrMsk
+        sJaUdvWQ==;
+Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4XSQ-0007iB-Fn; Tue, 26 Jan 2021 23:09:11 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 0/8] Create 'old' ptes for faultaround mappings on
- arm64 with hardware access flag
-Message-ID: <20210126230851.GE30941@willie-the-truck>
-References: <20210120173612.20913-1-will@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        linux-fsdevel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH RESEND] asm-generic: fcntl: drop a repeated word
+Date:   Tue, 26 Jan 2021 15:09:01 -0800
+Message-Id: <20210126230901.22265-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120173612.20913-1-will@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:36:04PM +0000, Will Deacon wrote:
-> Hi all,
-> 
-> This is version four of the patches I previously posted here:
-> 
->   v1: https://lore.kernel.org/r/20201209163950.8494-1-will@kernel.org
->   v2: https://lore.kernel.org/r/20210108171517.5290-1-will@kernel.org
->   v3: https://lore.kernel.org/r/20210114175934.13070-1-will@kernel.org
-> 
-> The patches allow architectures to opt-in at runtime for faultaround
-> mappings to be created as 'old' instead of 'young'. Although there have
-> been previous attempts at this, they failed either because the decision
-> was deferred to userspace [1] or because it was done unconditionally and
-> shown to regress benchmarks for particular architectures [2].
-> 
-> The big change since v3 is that the immutable fields of 'struct vm_fault'
-> now live in a 'const' anonymous struct. Although Clang will silently
-> accept modifications to these fields [3], GCC emits an error. The
-> resulting diffstat is _considerably_ more manageable with this approach.
+Drop the doubled word "the" in a comment.
 
-The only changes I have pending against this series are cosmetic (commit
-logs). Can I go ahead and queue this in the arm64 tree so that it can sit
-in linux-next for a bit? (positive or negative feedback appreciated!).
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: "J. Bruce Fields" <bfields@fieldses.org>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+Add Arnd to Cc: and resend.
 
-Thanks,
+ include/uapi/asm-generic/fcntl.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Will
+--- linux-next-20200714.orig/include/uapi/asm-generic/fcntl.h
++++ linux-next-20200714/include/uapi/asm-generic/fcntl.h
+@@ -143,7 +143,7 @@
+  * record  locks, but are "owned" by the open file description, not the
+  * process. This means that they are inherited across fork() like BSD (flock)
+  * locks, and they are only released automatically when the last reference to
+- * the the open file against which they were acquired is put.
++ * the open file against which they were acquired is put.
+  */
+ #define F_OFD_GETLK	36
+ #define F_OFD_SETLK	37
