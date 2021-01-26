@@ -2,171 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE271304FF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30135304FF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236587AbhA0Dhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbhAZVtt (ORCPT
+        id S236597AbhA0Dht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:37:49 -0500
+Received: from antares.kleine-koenig.org ([94.130.110.236]:35362 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbhAZVy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:49:49 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDC5C06174A;
-        Tue, 26 Jan 2021 13:49:08 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E62C42C1;
-        Tue, 26 Jan 2021 22:49:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611697745;
-        bh=LplyXulbPXrXuvaecCE9pwLK5CV2NpJXldimMYOoU6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W5/JirBumHHDqY8/gvtF3HYkNqVMRlR2q/gwb6T+0GKqE+Hlwe0nKg+FmiSr08ciu
-         raxqEasMbRLTDaeUYnn8GtEQF9vC3jDgNdAsynIjWFZIGAmh7x+VZ4DC/Sr8JfvFL4
-         v+CvCAq4bMDsWtr8s49i7m/hTQQ2OWWkzqAqlrG4=
-Date:   Tue, 26 Jan 2021 23:48:45 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: renesas,rcar-dmac: Add r8a779a0
- support
-Message-ID: <YBCOPXTh8n4Tk0+y@pendragon.ideasonboard.com>
-References: <20210125142431.1049668-1-geert+renesas@glider.be>
- <20210125142431.1049668-2-geert+renesas@glider.be>
+        Tue, 26 Jan 2021 16:54:29 -0500
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id F06B4ADF34E; Tue, 26 Jan 2021 22:53:43 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: google: make coreboot driver's remove callback return void
+Date:   Tue, 26 Jan 2021 22:53:39 +0100
+Message-Id: <20210126215339.706021-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210125142431.1049668-2-geert+renesas@glider.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+All coreboot drivers return 0 unconditionally in their remove callback.
+Also the device core ignores the return value of the struct
+bus_type::remove(), so make the coreboot remove callback return void
+instead of giving driver authors the illusion they could return an error
+code here.
 
-Thank you for the patch.
+All drivers are adapted accordingly.
 
-On Mon, Jan 25, 2021 at 03:24:28PM +0100, Geert Uytterhoeven wrote:
-> Document the compatible value for the Direct Memory Access Controller
-> blocks in the Renesas R-Car V3U (R8A779A0) SoC.
-> 
-> The most visible difference with DMAC blocks on other R-Car SoCs is the
-> move of the per-channel registers to a separate register block.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+---
+Hello,
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+there is no registerd maintainer of this code. I assume so Greg will
+pick this up?!
 
-> ---
-> v2:
->   - Add Reviewed-by.
-> ---
->  .../bindings/dma/renesas,rcar-dmac.yaml       | 76 ++++++++++++-------
->  1 file changed, 48 insertions(+), 28 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-> index c07eb6f2fc8d2f12..7f2a54bc732d3a19 100644
-> --- a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-> +++ b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-> @@ -14,34 +14,37 @@ allOf:
->  
->  properties:
->    compatible:
-> -    items:
-> -      - enum:
-> -          - renesas,dmac-r8a7742  # RZ/G1H
-> -          - renesas,dmac-r8a7743  # RZ/G1M
-> -          - renesas,dmac-r8a7744  # RZ/G1N
-> -          - renesas,dmac-r8a7745  # RZ/G1E
-> -          - renesas,dmac-r8a77470 # RZ/G1C
-> -          - renesas,dmac-r8a774a1 # RZ/G2M
-> -          - renesas,dmac-r8a774b1 # RZ/G2N
-> -          - renesas,dmac-r8a774c0 # RZ/G2E
-> -          - renesas,dmac-r8a774e1 # RZ/G2H
-> -          - renesas,dmac-r8a7790  # R-Car H2
-> -          - renesas,dmac-r8a7791  # R-Car M2-W
-> -          - renesas,dmac-r8a7792  # R-Car V2H
-> -          - renesas,dmac-r8a7793  # R-Car M2-N
-> -          - renesas,dmac-r8a7794  # R-Car E2
-> -          - renesas,dmac-r8a7795  # R-Car H3
-> -          - renesas,dmac-r8a7796  # R-Car M3-W
-> -          - renesas,dmac-r8a77961 # R-Car M3-W+
-> -          - renesas,dmac-r8a77965 # R-Car M3-N
-> -          - renesas,dmac-r8a77970 # R-Car V3M
-> -          - renesas,dmac-r8a77980 # R-Car V3H
-> -          - renesas,dmac-r8a77990 # R-Car E3
-> -          - renesas,dmac-r8a77995 # R-Car D3
-> -      - const: renesas,rcar-dmac
-> -
-> -  reg:
-> -    maxItems: 1
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - renesas,dmac-r8a7742  # RZ/G1H
-> +              - renesas,dmac-r8a7743  # RZ/G1M
-> +              - renesas,dmac-r8a7744  # RZ/G1N
-> +              - renesas,dmac-r8a7745  # RZ/G1E
-> +              - renesas,dmac-r8a77470 # RZ/G1C
-> +              - renesas,dmac-r8a774a1 # RZ/G2M
-> +              - renesas,dmac-r8a774b1 # RZ/G2N
-> +              - renesas,dmac-r8a774c0 # RZ/G2E
-> +              - renesas,dmac-r8a774e1 # RZ/G2H
-> +              - renesas,dmac-r8a7790  # R-Car H2
-> +              - renesas,dmac-r8a7791  # R-Car M2-W
-> +              - renesas,dmac-r8a7792  # R-Car V2H
-> +              - renesas,dmac-r8a7793  # R-Car M2-N
-> +              - renesas,dmac-r8a7794  # R-Car E2
-> +              - renesas,dmac-r8a7795  # R-Car H3
-> +              - renesas,dmac-r8a7796  # R-Car M3-W
-> +              - renesas,dmac-r8a77961 # R-Car M3-W+
-> +              - renesas,dmac-r8a77965 # R-Car M3-N
-> +              - renesas,dmac-r8a77970 # R-Car V3M
-> +              - renesas,dmac-r8a77980 # R-Car V3H
-> +              - renesas,dmac-r8a77990 # R-Car E3
-> +              - renesas,dmac-r8a77995 # R-Car D3
-> +          - const: renesas,rcar-dmac
-> +
-> +      - items:
-> +          - const: renesas,dmac-r8a779a0 # R-Car V3U
-> +
-> +  reg: true
->  
->    interrupts:
->      minItems: 9
-> @@ -110,6 +113,23 @@ required:
->    - power-domains
->    - resets
->  
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - renesas,dmac-r8a779a0
-> +then:
-> +  properties:
-> +    reg:
-> +      items:
-> +        - description: Base register block
-> +        - description: Channel register block
-> +else:
-> +  properties:
-> +    reg:
-> +      maxItems: 1
-> +
->  additionalProperties: false
->  
->  examples:
+Best regards
+Uwe
 
+ drivers/firmware/google/coreboot_table.c       | 5 ++---
+ drivers/firmware/google/coreboot_table.h       | 2 +-
+ drivers/firmware/google/framebuffer-coreboot.c | 4 +---
+ drivers/firmware/google/memconsole-coreboot.c  | 4 +---
+ drivers/firmware/google/vpd.c                  | 4 +---
+ 5 files changed, 6 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
+index 0205987a4fd4..dc83ea118c67 100644
+--- a/drivers/firmware/google/coreboot_table.c
++++ b/drivers/firmware/google/coreboot_table.c
+@@ -46,14 +46,13 @@ static int coreboot_bus_probe(struct device *dev)
+ 
+ static int coreboot_bus_remove(struct device *dev)
+ {
+-	int ret = 0;
+ 	struct coreboot_device *device = CB_DEV(dev);
+ 	struct coreboot_driver *driver = CB_DRV(dev->driver);
+ 
+ 	if (driver->remove)
+-		ret = driver->remove(device);
++		driver->remove(device);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static struct bus_type coreboot_bus_type = {
+diff --git a/drivers/firmware/google/coreboot_table.h b/drivers/firmware/google/coreboot_table.h
+index 7b7b4a6eedda..beb778674acd 100644
+--- a/drivers/firmware/google/coreboot_table.h
++++ b/drivers/firmware/google/coreboot_table.h
+@@ -72,7 +72,7 @@ struct coreboot_device {
+ /* A driver for handling devices described in coreboot tables. */
+ struct coreboot_driver {
+ 	int (*probe)(struct coreboot_device *);
+-	int (*remove)(struct coreboot_device *);
++	void (*remove)(struct coreboot_device *);
+ 	struct device_driver drv;
+ 	u32 tag;
+ };
+diff --git a/drivers/firmware/google/framebuffer-coreboot.c b/drivers/firmware/google/framebuffer-coreboot.c
+index 916f26adc595..c6dcc1ef93ac 100644
+--- a/drivers/firmware/google/framebuffer-coreboot.c
++++ b/drivers/firmware/google/framebuffer-coreboot.c
+@@ -72,13 +72,11 @@ static int framebuffer_probe(struct coreboot_device *dev)
+ 	return PTR_ERR_OR_ZERO(pdev);
+ }
+ 
+-static int framebuffer_remove(struct coreboot_device *dev)
++static void framebuffer_remove(struct coreboot_device *dev)
+ {
+ 	struct platform_device *pdev = dev_get_drvdata(&dev->dev);
+ 
+ 	platform_device_unregister(pdev);
+-
+-	return 0;
+ }
+ 
+ static struct coreboot_driver framebuffer_driver = {
+diff --git a/drivers/firmware/google/memconsole-coreboot.c b/drivers/firmware/google/memconsole-coreboot.c
+index d17e4d6ac9bc..74b5286518ee 100644
+--- a/drivers/firmware/google/memconsole-coreboot.c
++++ b/drivers/firmware/google/memconsole-coreboot.c
+@@ -91,11 +91,9 @@ static int memconsole_probe(struct coreboot_device *dev)
+ 	return memconsole_sysfs_init();
+ }
+ 
+-static int memconsole_remove(struct coreboot_device *dev)
++static void memconsole_remove(struct coreboot_device *dev)
+ {
+ 	memconsole_exit();
+-
+-	return 0;
+ }
+ 
+ static struct coreboot_driver memconsole_driver = {
+diff --git a/drivers/firmware/google/vpd.c b/drivers/firmware/google/vpd.c
+index d23c5c69ab52..ee6e08c0592b 100644
+--- a/drivers/firmware/google/vpd.c
++++ b/drivers/firmware/google/vpd.c
+@@ -298,14 +298,12 @@ static int vpd_probe(struct coreboot_device *dev)
+ 	return 0;
+ }
+ 
+-static int vpd_remove(struct coreboot_device *dev)
++static void vpd_remove(struct coreboot_device *dev)
+ {
+ 	vpd_section_destroy(&ro_vpd);
+ 	vpd_section_destroy(&rw_vpd);
+ 
+ 	kobject_put(vpd_kobj);
+-
+-	return 0;
+ }
+ 
+ static struct coreboot_driver vpd_driver = {
 -- 
-Regards,
+2.29.2
 
-Laurent Pinchart
