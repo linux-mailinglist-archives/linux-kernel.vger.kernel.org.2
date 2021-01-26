@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A80304FEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD326304FED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhA0Ded (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730156AbhAZVhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:37:15 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A535C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:36:35 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id u17so36849348iow.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:36:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ustJ0/aPlx4iAkk4IQ7oOTUDCbseUwYBGj9G/doyi0=;
-        b=aRQPVtVQWvj+0JgMoeSv1tbxkyyKJKp5rhr+iKTA+dqaYS5cAcTj0yb69/ROdSPTVs
-         awqkofJxKIYC+3lALvwuxeUYNWxIhxsVdfaZsfGU/9TVu88A53J2zFxhsA71d3WLUDIX
-         555139CXWDue9MMhcnwtw1r926W3gNac1W8rIe4qgxqO3UyvIcagtRfQlML1WO+lKruO
-         EBVBK1yuo615WTIXa9WGH5nbwMl4c6EP3xr+FedOSbKmp2xsFyTJQfLV0RnwujhbNls8
-         8YdckUwosOCRojjTNk9D23BaUu3ytsnn0gwOaMjyA2J4M8nVZFsPU/9TIDg76sLXMPJ1
-         BLUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ustJ0/aPlx4iAkk4IQ7oOTUDCbseUwYBGj9G/doyi0=;
-        b=cKBdKYOAVfOVuslvr7olBWuF380uLLLfkE47Gy3Tp5GK+KgQb07vfH9KOE5YkA4BjE
-         RGZnqUI12kaiesxn58chABR57j4zESMr94vjzZEDDxd9j60xXb6772H6N15Dhj6fRWW3
-         ixSDSXYtuXl0mcUIFOsCjjhropR5idncqcmGYen0RwjYoec/SEVNVp/viBvAZHK3wzZ0
-         IOrX/oMaOZQVnSZXFvahBkYgHlD6pP12RbE+7E76q183+ms3GnvWwazaDsIElLUjNSt6
-         mlJygkM4r4UJ3qwxlsQpGRVCsEbKMTED2qohyQejE1/iDxkjmwJR3sX1tcdWUvvXXELS
-         S6QA==
-X-Gm-Message-State: AOAM531ewGLYSWA9YduQWQTOf715xKcL6HVq1lRGfDNEBJx6qG8DHf+R
-        UsdzvhvjLzmFiwXi/Nz95k82JQjizVQXb1n1Gzw=
-X-Google-Smtp-Source: ABdhPJxZsKjbMvUBw7jG6/aVnfplIA3VZdiKLNfG8H8yOQPCusbf9QUiQztyi1mZ2Iae/ZStL2V4RsH7GwIlsy91f3M=
-X-Received: by 2002:a92:aac5:: with SMTP id p66mr6386791ill.238.1611696994232;
- Tue, 26 Jan 2021 13:36:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com> <20210126171141.122639-9-paul.gortmaker@windriver.com>
-In-Reply-To: <20210126171141.122639-9-paul.gortmaker@windriver.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Tue, 26 Jan 2021 13:36:23 -0800
-Message-ID: <CAAH8bW_kiReeYrXmFp=2o_YkOitsSrtN9evKaR6SWdZk8TNuoQ@mail.gmail.com>
-Subject: Re: [PATCH 8/8] rcu: deprecate "all" option to rcu_nocbs=
+        id S236467AbhA0Deg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:34:36 -0500
+Received: from mga03.intel.com ([134.134.136.65]:28234 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726824AbhAZViQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:38:16 -0500
+IronPort-SDR: NTX5gQhwG68c5KZynhv2mJqg6pKQm9GZTQH4AI3VXQr+oEJjYOMsJKtrR46W0goO2zrM3zB6d4
+ uQO9W501OLAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180055535"
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="180055535"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:36:31 -0800
+IronPort-SDR: 7I4VIefGvSRnZH7SU/O/OQ3K4BLrl366YzUSnxjV1R6vsD3Oft1fGAoptSOxJMro2b7pFuuYeF
+ 7q6Z8YkKTsbw==
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="472899901"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:36:28 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l4W1i-00Ewav-PS; Tue, 26 Jan 2021 23:37:30 +0200
+Date:   Tue, 26 Jan 2021 23:37:30 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-kernel@vger.kernel.org, lizefan@huawei.com, mingo@kernel.org,
+        tglx@linutronix.de, josh@joshtriplett.org, yury.norov@gmail.com,
+        peterz@infradead.org, paulmck@kernel.org, fweisbec@gmail.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH 6/8] lib: bitmap: support "N" as an alias for size of
+ bitmap
+Message-ID: <YBCLmrCSwBRkTAhT@smile.fi.intel.com>
+References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
+ <20210126171141.122639-7-paul.gortmaker@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126171141.122639-7-paul.gortmaker@windriver.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 9:12 AM Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> With the core bitmap support now accepting "N" as a placeholder for
-> the end of the bitmap, "all" can be represented as "0-N" and has the
-> advantage of not being specific to RCU (or any other subsystem).
->
-> So deprecate the use of "all" by removing documentation references
-> to it.  The support itself needs to remain for now, since we don't
-> know how many people out there are using it currently, but since it
-> is in an __init area anyway, it isn't worth losing sleep over.
->
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 4 +---
->  kernel/rcu/tree_plugin.h                        | 6 ++----
->  2 files changed, 3 insertions(+), 7 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a10b545c2070..a116c0ff0a91 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4037,9 +4037,7 @@
->                                 see CONFIG_RAS_CEC help text.
->
->         rcu_nocbs=      [KNL]
-> -                       The argument is a cpu list, as described above,
-> -                       except that the string "all" can be used to
-> -                       specify every CPU on the system.
-> +                       The argument is a cpu list, as described above.
->
->                         In kernels built with CONFIG_RCU_NOCB_CPU=y, set
->                         the specified list of CPUs to be no-callback CPUs.
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 7e291ce0a1d6..56788dfde922 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1463,14 +1463,12 @@ static void rcu_cleanup_after_idle(void)
->
->  /*
->   * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
-> - * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
-> - * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
-> - * given, a warning is emitted and all CPUs are offloaded.
-> + * If the list is invalid, a warning is emitted and all CPUs are offloaded.
->   */
->  static int __init rcu_nocb_setup(char *str)
+On Tue, Jan 26, 2021 at 12:11:39PM -0500, Paul Gortmaker wrote:
+> While this is done for all bitmaps, the original use case in mind was
+> for CPU masks and cpulist_parse() as described below.
+> 
+> It seems that a common configuration is to use the 1st couple cores for
+> housekeeping tasks.  This tends to leave the remaining ones to form a
+> pool of similarly configured cores to take on the real workload of
+> interest to the user.
+> 
+> So on machine A - with 32 cores, it could be 0-3 for "system" and then
+> 4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
+> setting up the worker pool of CPUs.
+> 
+> But then newer machine B is added, and it has 48 cores, and so while
+> the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
+> 
+> Multiple deployment becomes easier when we can just simply replace 31
+> and 47 with "N" and let the system substitute in the actual number at
+> boot; a number that it knows better than we do.
+
+I would accept lower 'n' as well.
+
+...
+
+> -static const char *bitmap_getnum(const char *str, unsigned int *num)
+> +static const char *__bitmap_getnum(const char *str, unsigned int nbits,
+> +				    unsigned int *num)
 >  {
->         alloc_bootmem_cpumask_var(&rcu_nocb_mask);
-> -       if (!strcasecmp(str, "all"))
-> +       if (!strcasecmp(str, "all"))            /* legacy: use "0-N" instead */
+>  	unsigned long long n;
+>  	unsigned int len;
+>  
+> +	if (str[0] == 'N') {
+> +		*num = nbits - 1;
+> +		return str + 1;
+> +	}
 
-I think 'all' and 'none' is a good idea. It's simple and convenient.
-But if you don't
-like it, can you please at least put this comment in system log using
-WARN_ON_ONCE(). It's quite possible that Linux users don't read source code
-comments.
+But locating it here makes possible to enter a priori invalid input, like N for
+start of the region.
 
->                 cpumask_setall(rcu_nocb_mask);
->         else
->                 if (cpulist_parse(str, rcu_nocb_mask)) {
-> --
-> 2.17.1
->
+I think this should be separate helper which is called in places where it makes
+sense.
+
+>  	len = _parse_integer(str, 10, &n);
+>  	if (!len)
+>  		return ERR_PTR(-EINVAL);
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
