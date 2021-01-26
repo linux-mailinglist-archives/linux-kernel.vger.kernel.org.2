@@ -2,141 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1299304FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE68304FF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236614AbhA0DiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        id S236645AbhA0Dip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727424AbhAZV4L (ORCPT
+        with ESMTP id S1727034AbhAZV4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:56:11 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FADC061573;
-        Tue, 26 Jan 2021 13:55:16 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id j18so3709594wmi.3;
-        Tue, 26 Jan 2021 13:55:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=thEebwIJh5TAbqy+mXWpJTbrAfE0ddYwkqXqlmzMeB0=;
-        b=oeFCWWoxarlMyRwYBVKoFlAcyfp3pINXvgRSnPu4NRUgDg9yhXwhSHUwOpsVSy0l11
-         e0aUUHBTKgRprSkWtlFez4O/ZUmIEnUURzza1xs1z9SWBfRlf7MkF/CcGMMnArO5ivMa
-         yM1w8l9UZTp4J1hZugi3uiqjfk5Yrb4w82/6Zf0dWS7fnnujc3YOdHxSm5dgLHGOIxn+
-         iImsl1nWgLSKm6lCuXmrpqbUQk1zKDIfkZsgskgb5Z9S7SAUmfmCiqRNXgzS2ss+pzcQ
-         5m6bxTaxwNp5X2GxSaj7CcflIA9jNV8h6eTwISxYVryMzgVeyVRFHgyfH444mclp/LAR
-         jNKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=thEebwIJh5TAbqy+mXWpJTbrAfE0ddYwkqXqlmzMeB0=;
-        b=imthvj+Gnw6VYl/HmZDRh3CjC+z/VzUqAH1S9qqlL7aNTIRyS0dL4u8I6Smds/sHFg
-         LQTi8Wc+FTK/rKUE9pJeZ6hyDcasrChDgJjL/icszcP9jkOkcAaN0vsA84pbhwf3LUuw
-         Ub8dKRclKQf5fXLmXzIfvBr/jCla8E7VquepmpkK+p79wurOv5KLhdS8Z+5j4S/qyq8h
-         91bfLU4hsxfaBuhLf83020PdZeokAz/0CsbC5J92oKCKpMCvD3pA0CQYVM3ZMmkExm6V
-         LsDj+rFVn7zvE/UNAE6GDN35tuaTvf1CPHj+j/09KXghqjYHstGzvCUMej9ZsDXuWGCh
-         t2EA==
-X-Gm-Message-State: AOAM531YjS+KW7KPDxvTJYYYWQUr9SoNigD/73LBD4q94is59jLHLI8J
-        ykZ14+T5+i7njTpYDh7MFjQ=
-X-Google-Smtp-Source: ABdhPJwvAZrSaNjV4BCF4LcfDpOLNuzuKTKg8DSnSqJQtKgq1kMzCwIqOeQrsfihjmJTPL1iGE2dYA==
-X-Received: by 2002:a1c:98c6:: with SMTP id a189mr1438596wme.88.1611698114870;
-        Tue, 26 Jan 2021 13:55:14 -0800 (PST)
-Received: from localhost.localdomain (2a01cb0008bd2700e5dd22906bf4cfc4.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:e5dd:2290:6bf4:cfc4])
-        by smtp.gmail.com with ESMTPSA id 36sm17678wrj.97.2021.01.26.13.55.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 13:55:14 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     gary.bisson@boundarydevices.com, troy.kisky@boundarydevices.com,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH] arm64: dts: imx8mq-nitrogen: add USB support
-Date:   Tue, 26 Jan 2021 22:55:11 +0100
-Message-Id: <20210126215511.1056600-1-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 26 Jan 2021 16:56:30 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617F9C061756;
+        Tue, 26 Jan 2021 13:55:50 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E61EC2E0;
+        Tue, 26 Jan 2021 22:55:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611698149;
+        bh=SMDoBPaHZPP3ApaQVHa76WRBiwdWB84rlo2LUhpd7TM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJYbmAfPeZAHaajRkyl/x4hwkTWg78Pl4ptDbG3UV7q+iLA2znt32qHJ8OLBBjZ+S
+         AcvFmlrmCTK019WdLWetY/fepre4sSnsMzqX62PjnB1CHkxlF05LFJOhgLyHe/Qzu+
+         +3zVNiy64UFdmYZdxg6JNkLFGkhrmwxdXneyoIVk=
+Date:   Tue, 26 Jan 2021 23:55:29 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] dmaengine: rcar-dmac: Add helpers for clearing
+ DMA channel status
+Message-ID: <YBCP0cXXu5Sd+nUL@pendragon.ideasonboard.com>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-4-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210125142431.1049668-4-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add USB support for imx8mq-nitrogen. It consists
-in 2 phys: OTG and host.
+Hi Geert,
 
-The OTG port uses a dedicated regulator for vbus.
+Thank you for the patch.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
----
- .../boot/dts/freescale/imx8mq-nitrogen.dts    | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+On Mon, Jan 25, 2021 at 03:24:30PM +0100, Geert Uytterhoeven wrote:
+> Extract the code to clear the status of one or all channels into their
+> own helpers, to prepare for the different handling of the R-Car V3U SoC.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-index 81d269296610..fb8acd83a280 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-@@ -34,6 +34,17 @@ power {
- 		};
- 	};
- 
-+	reg_usb_otg_vbus: regulator-usb-otg-vbus {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usbotg_vbus>;
-+		regulator-name = "usb_otg_vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
- 	reg_vref_0v9: regulator-vref-0v9 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vref-0v9";
-@@ -190,6 +201,25 @@ &uart2 {
- 	status = "okay";
- };
- 
-+&usb_dwc3_0 {
-+	dr_mode = "otg";
-+	status = "okay";
-+};
-+
-+&usb3_phy0 {
-+	vbus-supply = <&reg_usb_otg_vbus>;
-+	status = "okay";
-+};
-+
-+&usb_dwc3_1 {
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
-+&usb3_phy1 {
-+	status = "okay";
-+};
-+
- &usdhc1 {
- 	assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
- 	assigned-clock-rates = <400000000>;
-@@ -339,6 +369,12 @@ MX8MQ_IOMUXC_SD2_WP_GPIO2_IO20		0x16
- 		>;
- 	};
- 
-+	pinctrl_reg_usbotg_vbus: reg-usbotg-vbusgrp {
-+		fsl,pins = <
-+			MX8MQ_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x16
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX8MQ_IOMUXC_UART1_RXD_UART1_DCE_RX		0x45
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+> v2:
+>   - No changes.
+> ---
+>  drivers/dma/sh/rcar-dmac.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
+> index 537550b4121bbc22..7a0f802c61e5152d 100644
+> --- a/drivers/dma/sh/rcar-dmac.c
+> +++ b/drivers/dma/sh/rcar-dmac.c
+> @@ -336,6 +336,17 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
+>  		writel(data, chan->iomem + reg);
+>  }
+>  
+> +static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
+> +				 struct rcar_dmac_chan *chan)
+> +{
+> +	rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+> +}
+> +
+> +static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
+> +{
+> +	rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> +}
+> +
+>  /* -----------------------------------------------------------------------------
+>   * Initialization and configuration
+>   */
+> @@ -451,7 +462,7 @@ static int rcar_dmac_init(struct rcar_dmac *dmac)
+>  	u16 dmaor;
+>  
+>  	/* Clear all channels and enable the DMAC globally. */
+> -	rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> +	rcar_dmac_chan_clear_all(dmac);
+>  	rcar_dmac_write(dmac, RCAR_DMAOR,
+>  			RCAR_DMAOR_PRI_FIXED | RCAR_DMAOR_DME);
+>  
+> @@ -1566,7 +1577,7 @@ static irqreturn_t rcar_dmac_isr_channel(int irq, void *dev)
+>  		 * because channel is already stopped in error case.
+>  		 * We need to clear register and check DE bit as recovery.
+>  		 */
+> -		rcar_dmac_write(dmac, RCAR_DMACHCLR, 1 << chan->index);
+> +		rcar_dmac_chan_clear(dmac, chan);
+>  		rcar_dmac_chcr_de_barrier(chan);
+>  		reinit = true;
+>  		goto spin_lock_end;
+
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
