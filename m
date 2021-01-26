@@ -2,86 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A59430529E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56EC305290
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhA0DOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
+        id S234922AbhA0DO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388619AbhAZT1y (ORCPT
+        with ESMTP id S1728952AbhAZTjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:27:54 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78FEC06178C;
-        Tue, 26 Jan 2021 11:27:00 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id p5so19689012oif.7;
-        Tue, 26 Jan 2021 11:27:00 -0800 (PST)
+        Tue, 26 Jan 2021 14:39:05 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CECC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 11:38:24 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id r14so2330619ljc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 11:38:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8Skwbs4KMXDLD9sx7bGcpth+Ga5p0osnO58bXAdBRV8=;
-        b=lRbfo6nsvIXYs0DTQdWuUAvK7r16gdVq5fbYk1Aump8cF/ntDHa8m2nUWXEuN5UpBt
-         iaoWJKCYe+IR6wA9ajAMzGCnSkjemh8VfdcPsT/6hQD/zgFM8GCNQu/Hg1mHE/jKdgKC
-         L0opwSF8gkDo2F7fgvSSzoYiBT9+s/SoI7jMouOY9RvRbPp8G1nSXGgEtNYILLfLy6g4
-         c6ckZhffa1rA3iPYgXSCPt5C2ncUizTYjsDqpE7ps28BQbaXzdEwZPi3w60nxTxhwlrP
-         m9MkYnZb9J8s//LiJMbNJOVkd4GwncIy1RG6chnGZ5nJYIp2e62sxrTr9HfFzliNk9vC
-         qcJg==
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=QJYovKT99XXIoP/qY54FEd7zbaJUkpH5fmKd5QnuoOg=;
+        b=FgRy4EOuuaXksD0SJxgNsQol120CK1WUCFz7OEYGmFKwOO9fhjUzas98tKXQWy77hp
+         RyzNg7siskA3gRl7XMauAbQpVQScnkaYarGi2aB/iQUxP6SVEgSswe27qvKQgz4DmC0X
+         SdCGYgJT957kVGl1gRH5Rvh4jAVEU0yCzI3cil3GM1GaU/WBd99BPPobUBha6yqn9KPF
+         i94y2k8cjtSvJYm5SOR1w35R/A9j1QT00T9UC6227b3Q9f26dE0w8n3Ab6G0W/G3OgaJ
+         Jjb7weDDC1KYwlkBO3LGjLyMFUkWttJMPzQ08XXS3n1766Hl2fqGd1iAMGYltYF02F+A
+         fLvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8Skwbs4KMXDLD9sx7bGcpth+Ga5p0osnO58bXAdBRV8=;
-        b=OTopnUs/SlGMA/TrcDYmJoTjewvjKiIrPnvfYcEEWRQl4KXqnhKvHR5b0gvtbpkFpD
-         Bs3pkbG55Yj2D5Afu2c4nLK4fAnuzORhVsemIgzApMRW5fU+zQ2p//opcFPp3pMopE4f
-         Q7NiFZ0FFqFZSG3VNGBaD1LZ4RjHGOn5rvWM4zO0n2PXkae7zYG4VxVf21D7s/WEYuS7
-         eHnBUAir0aLdI3VASI4JXqYFWUKF9bWPa+uyxTsJaj5KsU3v8RDf0ok0zsKVe+2GHRPs
-         DHwzkckc4PeI2Wv8VKPzEgD4fjMw4a6CqxsaSKsnz/I29BcfBJWLOQpW9tHB8zDUtFbs
-         xmOA==
-X-Gm-Message-State: AOAM530fzG3ZEdz/h7q9z403CLXcNTC5UMGzYjggX0qL2ke12c1wic7s
-        I1oVUwagRkrF3F9GP/117Bg=
-X-Google-Smtp-Source: ABdhPJz1rHLW1pF55lwBQpdk1fK32T/JVyqjwHBWySbbu9UW4ysZ+BEo/vzA3bHrf5IOCzPL/eF1kA==
-X-Received: by 2002:aca:cc15:: with SMTP id c21mr782791oig.154.1611689220161;
-        Tue, 26 Jan 2021 11:27:00 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s8sm2861494ood.39.2021.01.26.11.26.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Jan 2021 11:26:59 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 26 Jan 2021 11:26:58 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/203] 5.10.11-rc2 review
-Message-ID: <20210126192658.GC31936@roeck-us.net>
-References: <20210126094313.589480033@linuxfoundation.org>
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=QJYovKT99XXIoP/qY54FEd7zbaJUkpH5fmKd5QnuoOg=;
+        b=AlV1gje/UJVncL0Vk0jY8X8Br8xMvV+H+hktTwlR6Yh8grpY+baWdGKLXCsnHK4VwX
+         CiW4q+yQuheS2rmieMb2hVX3bOq/BmcuLryWGw3NSBqYiIcZSKoNRHmx49fQkUAlbnf1
+         vliaY8S2e4N6CCBmASe5OpEU3D/9WoPWiaHb4WaULdsKN2OsoJVaxexE701/NT8U/08p
+         luv71K2laHqSM1ohiKKTaFKv8V1YLhUM2gzDz2kpY2Qvb84ZHn6M0bhBORa9AO818JFL
+         z90XeBhIilid20R2M7JHKhMXnzOWuIFtncWrsemc8SM0v4Pg0LE1bDYRdDRy9PatEaXt
+         oxJA==
+X-Gm-Message-State: AOAM530nkYDwZPiMZ8VE6F2p+nx0pm+M26s+wsSN+fcCRnksiD4aCd72
+        X7ZLhmAjyHI2qSuQvz78+/Y=
+X-Google-Smtp-Source: ABdhPJyRgIwA4Gv0YSGMtUyNidF9HCtWfQnILR+W+6IxjuVt5JYejYkcN4Ph62Nssv3hkTfORiHl+Q==
+X-Received: by 2002:a2e:a379:: with SMTP id i25mr3744134ljn.430.1611689903467;
+        Tue, 26 Jan 2021 11:38:23 -0800 (PST)
+Received: from localhost.localdomain (unnum-78-27-181-19.domashka.kiev.ua. [78.27.181.19])
+        by smtp.gmail.com with ESMTPSA id a81sm1438719lfd.211.2021.01.26.11.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 11:38:22 -0800 (PST)
+Message-ID: <d6c4a63fb6d51c23db50bf15335d059208aeb3a4.camel@gmail.com>
+Subject: Re: panel: panel-raydium68200 driver fails to write MIPI DSI init
+ commands
+From:   aleksandr.o.makarov@gmail.com
+To:     Philippe CORNU <philippe.cornu@st.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Antonio BORNEO <antonio.borneo@st.com>,
+        "<dri-devel@lists.freedesktop.org>" <linux-kernel@vger.kernel.org>
+Date:   Tue, 26 Jan 2021 21:38:21 +0200
+In-Reply-To: <a855ddc858394a2492dce1ce3267946e@SFHDAG2NODE3.st.com>
+References: <bf9ddf520b6f6f6d61123db02cd8fea10f495562.camel@gmail.com>
+         <a855ddc858394a2492dce1ce3267946e@SFHDAG2NODE3.st.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.module_f33+10736+4f8d5006) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126094313.589480033@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:03:12AM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.11 release.
-> There are 203 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+В Вт, 19/01/2021 в 16:24 +0000, Philippe CORNU пишет:
+> Dear Aleksandr,
 > 
-> Responses should be made by Thu, 28 Jan 2021 09:42:40 +0000.
-> Anything received after that time might be too late.
+> We use the raydium68200 ic driver in a dsi 720p 2dl panel module mounted on the MB1230 board [1], mounted on the STM32MP157 eval board [2].
 > 
+> According to your email, you are using the EDT ETML0500F3DHA panel module, probably composed of a raydium68200+a touchscreen+a glass+backlight+.... 
+> 
+> Could you please double check if your panel module has the same characteristics as the one described in panel-raydium68200.c (pixel clock, blanking values, resolutions, number of dsi data lanes, enable & reset gpios, backlight...).
+> 
+> Moreover, maybe your panel embeds a non-volatile ram which contains nice default values ("fused" during production) allowing to reduce a lot the panel init sequence... allowing then to use panel-simple.c instead of panel-raydium68200.c (that could explain why you can see "colors" without sending any init sequence).
+> 
+> The issues you encountered may come from (starting with the highest probability):
+> * bad lcd hw vs sw configuration (see description above).
+> * bad pixel clock frequency, bad blanking values...
+> * bad dsi internal Rockchip ip programming (pll and clock trees in dt...)
+> 
+> Hope it helps,
+> 
+> [1] https://wiki.st.com/stm32mpu/wiki/MB1230
+> [2] https://www.st.com/en/evaluation-tools/stm32mp157a-ev1.html
+> 
+> Philippe :-)
+> 
+I've fixed errors related to writing to DSI after applying this [1]
+patch.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
+With the panel timings and other parameters all left intact in device
+tree, I only had to apply that patch to start to see video.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+After doing some testing, I found an issue with patch. With it applied,
+you must keep your driver as module with DRM_PANEL_RAYDIUM_RM68200=m.
+Otherwise, if DRM_PANEL_RAYDIUM_RM68200=y is set, the issues with
+writing to DSI from prepare() shall persist. 
 
-Guenter
+[1] https://patchwork.kernel.org/project/dri-
+devel/patch/95f16906d654057c912f089d286bd51856ee3bdf.1607892237.git.tom
+myhebb@gmail.com/
+> -----Original Message-----
+> From: aleksandr.o.makarov@gmail.com <aleksandr.o.makarov@gmail.com> 
+> Sent: Saturday, January 16, 2021 12:40
+> To: Andrzej Hajda <a.hajda@samsung.com>; Neil Armstrong <narmstrong@baylibre.com>; Laurent Pinchart <Laurent.pinchart@ideasonboard.com>; Jonas Karlman <jonas@kwiboo.se>; Jernej Skrabec <jernej.skrabec@siol.net>; David Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>; Sam Ravnborg <sam@ravnborg.org>; Philippe CORNU <philippe.cornu@st.com>; Antonio BORNEO <antonio.borneo@st.com>; <dri-devel@lists.freedesktop.org> <linux-kernel@vger.kernel.org>
+> Subject: drm: panel: panel-raydium68200 driver fails to write MIPI DSI init commands
+> 
+> I need to bring up my MIPI DSI 1280x720 EDT ETML0500F3DHA panel on a
+> RockPro64 V2.1 board.
+> 
+> There is no completely suitable in-tree driver for that panel yet, but for the purpose of reproducing the issue that I face, the gpu/drm/panel/panel-raydium-rm68200.c can do just fine.
+> 
+> To reproduce:
+> 
+> - Get the same Linux 5.9.14 as on my RockPro64 board (with Armbian
+> 20.11.6 on it)
+> 
+> - Patch the rk3399-rockpro64.dts to add a panel node that is compatible with "raydium,rm68200" driver on MIPI interface (rockpro64- rm68200.patch attached)
+> 
+> - Compile and put the resulting rk3399-rockpro64.dtb on the target system. The panel driver shall then get probed at next boot.
+> 
+> The kernel log shall contain following errors:
+> 
+> [   10.139957] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.139988] [drm:rm68200_dcs_write_cmd.isra.4
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write failed: -110
+> [   10.160972] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.161000] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.181929] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.181953] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.202923] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.202947] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.223064] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.223094] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.226104] zram1: detected capacity change from 0 to 52428800
+> [   10.244027] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.244073] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.265024] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.265064] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.285711] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.285746] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.305926] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.305955] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.326996] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.327039] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> [   10.348030] dw-mipi-dsi-rockchip ff960000.mipi: failed to write
+> command FIFO
+> [   10.348074] [drm:rm68200_dcs_write_buf.isra.5
+> [panel_raydium_rm68200]] *ERROR* MIPI DSI DCS write buffer failed: -110
+> 
+> It's remarkable that if to pull the module panel-rm682000 out and then back in, there are no errors mentioned. I can for sure say that those commands become effective - I start seeing colourful stripes on the display after. That is, if I would send the correct command set to the panel, then it would bring up just fine. the panel, then it would bring up just fine.
+
+
