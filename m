@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7280330527E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4292C30527C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235248AbhA0DQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732397AbhAZUQb (ORCPT
+        id S235322AbhA0DQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:16:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732329AbhAZUWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:16:31 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A1CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:15:51 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id n25so12206487pgb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:15:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=06+ubIgKMIeLEqYAAy1hLMJ9omPIgHFObEcRyFWsADI=;
-        b=Utr+B5OAzdKhhz5EGabcKcobLEE6Jc49WHmq9EekPmZkliRbYSCmycJJ4k/3972jS/
-         mtzxx518O4DPgHlhiSq6Lod24kJISggu6C9sFHaxoAzU1kZGJ+6cVDCznE2V8h56MmwW
-         VxA58fMR8VR9AIsOkwvLgn5SLJPxJcFD1zwAB0toQTE0UCXyE+9ZtmyMkncYlwmiF8rM
-         w5fcwy01eV4TIcTMCgSUW65SlALAHm8iJWfSBOKxwAllByh4hgccYiCs3UOp4KbHAATH
-         lVPryd4G/JWFjMnWzQhsBS65H35+BcA2YEMH5rdFchoMTCrM+jFABYJu2UG3ESCRGiZh
-         6Krg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=06+ubIgKMIeLEqYAAy1hLMJ9omPIgHFObEcRyFWsADI=;
-        b=qNakp9t/UasSCvThFxitrSiCp8+Vc54UI/3L32Zfn3c8+NYw4d+c62E9OaCsisGWBs
-         1ZGBDLiXkVtglXZi7j27qkY/s59sn0pxMHmALUlbbhGOz7lB/oQZ+4RxHXjPqBfCGLm3
-         eVrdjCqJFpqH9oHg6JdbdiOeb5uyCviLbJWxZiYDevrvd8D8NpVCCZ7Cesnxadt8mTh7
-         rVMknrwc689GBfMLIuHeiBvS864o44Fs7bxMOguHhjLhiEamU6zmKnxWZo0JUhjjNuYu
-         elAgb09hUG2KuxfFyrLzzFDmV3AXCexs/skoyqEkQhiUD0M/32tHk4qpVfcfoJvkjq7M
-         YoNA==
-X-Gm-Message-State: AOAM531LsuwpsQoBMDESb/6OYjE5JkhRGv4NPVY8JyAVwFhbqSkYh2lf
-        6IAVKLLnm6DhKXaa1Nmx/KnGfi/YTeZlMg==
-X-Google-Smtp-Source: ABdhPJx/1yUxPh2gfLhOqBFgIvxnIWgvc5XMNUWEeCV8wEDO4gdFudTA2m4bCmTT0WPGjuYhDK1NiQ==
-X-Received: by 2002:a63:171d:: with SMTP id x29mr7237046pgl.168.1611692150816;
-        Tue, 26 Jan 2021 12:15:50 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id z6sm8474406pfr.133.2021.01.26.12.15.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 12:15:50 -0800 (PST)
-Subject: Re: [PATCH] rsxx: remove redundant NULL check
-To:     Yang Li <abaci-bugfix@linux.alibaba.com>, josh.h.morris@us.ibm.com
-Cc:     pjk1939@linux.ibm.com, linux-block@vger.kernel.org,
+        Tue, 26 Jan 2021 15:22:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611692465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2wtmwF4X10LmhwL3ATZVxyCDOsFENiA8D2edcsLCzNk=;
+        b=QfEzm3TONzaMZaZpZ5R+TnElhTV/QVOg6wXobwZ4GvKdxP29lKYMRWuYWbDAaY9O2ed0mT
+        X5GsGjsWh3eumeBzpw+h2EUTi7qHsFinLF4jHMyO6eWuFVuJfk/dyaUeMIm55zAHb2NPdO
+        WiRAt3HRuxE+Vs9182aXwx8BTjnF6wU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-p-Idqt-ZM2euvKbcImnDxQ-1; Tue, 26 Jan 2021 15:21:03 -0500
+X-MC-Unique: p-Idqt-ZM2euvKbcImnDxQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B3811005513;
+        Tue, 26 Jan 2021 20:21:02 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.136])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 22DC05F9A6;
+        Tue, 26 Jan 2021 20:20:59 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 26 Jan 2021 21:21:02 +0100 (CET)
+Date:   Tue, 26 Jan 2021 21:20:59 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jianlin Lv <Jianlin.Lv@arm.com>, mingo@redhat.com,
         linux-kernel@vger.kernel.org
-References: <1611222202-114248-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f70a87c9-8319-45cb-b105-296bbdbe3115@kernel.dk>
-Date:   Tue, 26 Jan 2021 13:15:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH v3] tracing: precise log info for kretprobe addr err
+Message-ID: <20210126202058.GC12469@redhat.com>
+References: <20210125160108.2147511-1-Jianlin.Lv@arm.com>
+ <20210125181926.GA10248@redhat.com>
+ <20210125133840.511b1496@gandalf.local.home>
+ <20210126131536.f6e3a737a7b948799084fa7a@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1611222202-114248-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126131536.f6e3a737a7b948799084fa7a@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/21/21 2:43 AM, Yang Li wrote:
-> Fix below warnings reported by coccicheck:
-> ./drivers/block/rsxx/dma.c:948:3-8: WARNING: NULL check
-> before some freeing functions is not needed.
+On 01/26, Masami Hiramatsu wrote:
+>
+> > >
+> > > IOW, the "offset != 0" check removed by this patch is obviously wrong, right?
+> > >
+>
+> No, not wrong. Even offset != 0, if the symbol exists in the kernel,
+> kprobe_on_func_entry() will check it.
 
-Applied, thanks.
+Yes, but unless I am totally confused... if kprobe_on_func_entry() returns false,
+then trace_kprobe_create() should fail with BAD_RETPROBE even if offset == 0 ?
 
--- 
-Jens Axboe
+Oleg.
 
