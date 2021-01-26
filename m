@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E12305027
+	by mail.lfdr.de (Postfix) with ESMTP id B34CF305028
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237115AbhA0Drk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:47:40 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44379 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388608AbhAZXYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 18:24:32 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQN8b40sjz9sS8;
-        Wed, 27 Jan 2021 10:23:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611703424;
-        bh=1F47ItOEb0qiNrst9O4+9KjL6Os/ZVAcyvvVvnqtNKg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YwG226NQUqWc9LksHMxp94qRIjdQw+2S9dhR2pwu+nw9J1RoA6P3J1CfS2XfW1/zT
-         Rrj34i/vXUpXYgTEALs9GfmkxRS8J+9B5LmCh/CwCkn27XKwb66XPaPSXB1RCbJAX/
-         qk0OLs7HmFr1HQ9FFpP7BjpWjR9H8/pHVyKdt9ViR60s6etHjalBphguL/em6+vMiX
-         0qiCG9pJp9IRH/vOhWMh6IJZYQ6X189P0/Idz/Hx12k2k3h9uEWhlZV68pb/0R2ByC
-         roXpnS956Ydo7BRyPeGCWHdrNwLT7Xkw/2DjHBCp6CHHJL+8sp092MvBnm+oRnf5CA
-         SnIUHOWRPJ1xA==
-Date:   Wed, 27 Jan 2021 10:23:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tyler Hicks <tyhicks@canonical.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Tyler Hicks <code@tyhicks.com>
-Subject: linux-next: manual merge of the ecryptfs tree with the pidfd tree
-Message-ID: <20210127102342.0d1852e2@canb.auug.org.au>
+        id S237126AbhA0Dr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388715AbhAZXZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 18:25:36 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FC5C06174A;
+        Tue, 26 Jan 2021 15:24:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=wDHy+8X30ygCpbgc3idpX3FV4wc82BEW0tUmbN+bNfs=; b=bLyb5OhEC7WPbuT+2w07OQUe9+
+        qtYW2jP4Q0m9H/SC9O0xdjysDEUXpeWrnucrpQpWWyaUDDKr39/H73G3W/2DDX5lDMTNjNsMJ4JMn
+        BLKVy2LyscLN4AIL5wPWKxVEA94VPtrQI+618DoS6vFt0aLGzhVYQq+NMC52sXSttleuiYEESWMJR
+        TeKnRAl3QZ6SwJBF9PnbiTdaGnlB8fstf0kC8aJxVesY+Ri94HESw7ZWclKKqvB2Hrh7zssQ1fYnB
+        GzN4rN9UrTRvGGea0g+IdIkLzwkKNEJ8iv7Xx9ot0WSTtUYZCN99RKHhzn1g53U0k4PgmxNs0j/YK
+        mXVzZb3w==;
+Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4Xhb-0000kY-6L; Tue, 26 Jan 2021 23:24:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, Kirti Wankhede <kwankhede@nvidia.com>,
+        kvm@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH RESEND v2] include/linux: remove repeated words
+Date:   Tue, 26 Jan 2021 15:24:44 -0800
+Message-Id: <20210126232444.22861-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/enlKnjlSczDmijv4BS7Bzbs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/enlKnjlSczDmijv4BS7Bzbs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Drop the doubled word "for" in a comment. {firewire-cdev.h}
+Drop the doubled word "in" in a comment. {input.h}
+Drop the doubled word "a" in a comment. {mdev.h}
+Drop the doubled word "the" in a comment. {ptrace.h}
 
-Hi all,
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc: linux1394-devel@lists.sourceforge.net
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org
+Cc: Kirti Wankhede <kwankhede@nvidia.com>
+Cc: kvm@vger.kernel.org
+Cc: Oleg Nesterov <oleg@redhat.com>
+---
+v2: combine 4 patches into one patch and resend.
+Andrew, please merge.
 
-Today's linux-next merge of the ecryptfs tree got a conflict in:
+ include/linux/mdev.h               |    2 +-
+ include/linux/ptrace.h             |    2 +-
+ include/uapi/linux/firewire-cdev.h |    2 +-
+ include/uapi/linux/input.h         |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-  fs/ecryptfs/inode.c
-
-between commit:
-
-  c7c7a1a18af4 ("xattr: handle idmapped mounts")
-
-from the pidfd tree and commit:
-
-  0b964446c63f ("ecryptfs: fix uid translation for setxattr on security.cap=
-ability")
-
-from the ecryptfs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/ecryptfs/inode.c
-index 55da9a91f51a,58d0f7187997..000000000000
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@@ -1043,10 -1024,11 +1045,11 @@@ ecryptfs_setxattr(struct dentry *dentry
-  		rc =3D -EOPNOTSUPP;
-  		goto out;
-  	}
-- 	rc =3D vfs_setxattr(&init_user_ns, lower_dentry, name, value, size,
-- 			  flags);
-+ 	inode_lock(lower_inode);
- -	rc =3D __vfs_setxattr_locked(lower_dentry, name, value, size, flags, NUL=
-L);
-++	rc =3D __vfs_setxattr_locked(&init_user_ns, lower_dentry, name, value, s=
-ize, flags, NULL);
-+ 	inode_unlock(lower_inode);
-  	if (!rc && inode)
-- 		fsstack_copy_attr_all(inode, d_inode(lower_dentry));
-+ 		fsstack_copy_attr_all(inode, lower_inode);
-  out:
-  	return rc;
-  }
-
---Sig_/enlKnjlSczDmijv4BS7Bzbs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAQpH4ACgkQAVBC80lX
-0GxBMAf7BTDylCaFc5kcpALvrtiuFnT6pwkJJ8T2dfMpTBB4lFBZTA25ZBt1Rd6S
-rT1pgGY2Ig09/GJ7uVtXmuO5qWLXV39Fy41Kl8RV+5Za057icNv7AQYW/7Q1CqSB
-VesR4Lks4lS5maGps7eKhKGKcw1Cz5zP3INSWg8azWcbvz23iuVfNO627q3KNGtG
-tn58MDaNIk71Ck5z/XjMjQwtzqI9Ivrv4YwzlfRLUpp4ifkXUAoOrUY+6PHzC/sc
-f08kYwo8ltFtYJJwfke9kqcrzv5I7xudWcle+OcqUSWGnL2zK86v/+mYv0dwKi9m
-uLLzcAEqFAaIZaLNT8Q6K2YVRppa8g==
-=kiF9
------END PGP SIGNATURE-----
-
---Sig_/enlKnjlSczDmijv4BS7Bzbs--
+--- linux-next-20210125.orig/include/uapi/linux/firewire-cdev.h
++++ linux-next-20210125/include/uapi/linux/firewire-cdev.h
+@@ -844,7 +844,7 @@ struct fw_cdev_queue_iso {
+  * struct fw_cdev_start_iso - Start an isochronous transmission or reception
+  * @cycle:	Cycle in which to start I/O.  If @cycle is greater than or
+  *		equal to 0, the I/O will start on that cycle.
+- * @sync:	Determines the value to wait for for receive packets that have
++ * @sync:	Determines the value to wait for receive packets that have
+  *		the %FW_CDEV_ISO_SYNC bit set
+  * @tags:	Tag filter bit mask.  Only valid for isochronous reception.
+  *		Determines the tag values for which packets will be accepted.
+--- linux-next-20210125.orig/include/uapi/linux/input.h
++++ linux-next-20210125/include/uapi/linux/input.h
+@@ -84,7 +84,7 @@ struct input_id {
+  * in units per radian.
+  * When INPUT_PROP_ACCELEROMETER is set the resolution changes.
+  * The main axes (ABS_X, ABS_Y, ABS_Z) are then reported in
+- * in units per g (units/g) and in units per degree per second
++ * units per g (units/g) and in units per degree per second
+  * (units/deg/s) for rotational axes (ABS_RX, ABS_RY, ABS_RZ).
+  */
+ struct input_absinfo {
+--- linux-next-20210125.orig/include/linux/mdev.h
++++ linux-next-20210125/include/linux/mdev.h
+@@ -42,7 +42,7 @@ struct device *mdev_get_iommu_device(str
+  *			@mdev: mdev_device structure on of mediated device
+  *			      that is being created
+  *			Returns integer: success (0) or error (< 0)
+- * @remove:		Called to free resources in parent device's driver for a
++ * @remove:		Called to free resources in parent device's driver for
+  *			a mediated device. It is mandatory to provide 'remove'
+  *			ops.
+  *			@mdev: mdev_device device structure which is being
+--- linux-next-20210125.orig/include/linux/ptrace.h
++++ linux-next-20210125/include/linux/ptrace.h
+@@ -171,7 +171,7 @@ static inline void ptrace_event(int even
+  *
+  * Check whether @event is enabled and, if so, report @event and @pid
+  * to the ptrace parent.  @pid is reported as the pid_t seen from the
+- * the ptrace parent's pid namespace.
++ * ptrace parent's pid namespace.
+  *
+  * Called without locks.
+  */
