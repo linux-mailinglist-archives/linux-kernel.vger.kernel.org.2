@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34CF305028
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C5E305038
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237126AbhA0Dr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:47:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388715AbhAZXZg (ORCPT
+        id S237335AbhA0Dvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:51:45 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:47424 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390113AbhA0APQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 18:25:36 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FC5C06174A;
-        Tue, 26 Jan 2021 15:24:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=wDHy+8X30ygCpbgc3idpX3FV4wc82BEW0tUmbN+bNfs=; b=bLyb5OhEC7WPbuT+2w07OQUe9+
-        qtYW2jP4Q0m9H/SC9O0xdjysDEUXpeWrnucrpQpWWyaUDDKr39/H73G3W/2DDX5lDMTNjNsMJ4JMn
-        BLKVy2LyscLN4AIL5wPWKxVEA94VPtrQI+618DoS6vFt0aLGzhVYQq+NMC52sXSttleuiYEESWMJR
-        TeKnRAl3QZ6SwJBF9PnbiTdaGnlB8fstf0kC8aJxVesY+Ri94HESw7ZWclKKqvB2Hrh7zssQ1fYnB
-        GzN4rN9UrTRvGGea0g+IdIkLzwkKNEJ8iv7Xx9ot0WSTtUYZCN99RKHhzn1g53U0k4PgmxNs0j/YK
-        mXVzZb3w==;
-Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4Xhb-0000kY-6L; Tue, 26 Jan 2021 23:24:51 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        kvm@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH RESEND v2] include/linux: remove repeated words
-Date:   Tue, 26 Jan 2021 15:24:44 -0800
-Message-Id: <20210126232444.22861-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 26 Jan 2021 19:15:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611706876; x=1643242876;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=xm14UQOLXx7wSE44N785si03gWHJG2mxP4GYuFEeDeU=;
+  b=gns0MNSwnADvq32qFFKSL9hlphb8zu186If6jQOfS/w1pSVbo+MzC+D2
+   TP3zdRUpn3AhwBiwe7QDBYilKIJVLTIEbXcBHVrFCMAOl9wvknsJVN8zs
+   juK6b9n0AXUXn3spyvh7l0rWsIIsJMFJ0YJglJEXU5JdsffedSb4mM+PF
+   DQtZr+MmTdQte5h7OUmlH1hq329U4pMAk4bGONYEgnQmysK1V85MOQu2h
+   DFZMdRq2MaLsJ56rZfdWpRTlKEeigBJAkHbtzrOEdcPtviTWyrLRmtyk6
+   AAmamxOMIl7uHi9qcBuuf4Ude5ASmZIG0OhIl+IWijzjEt+klfI/M5cn9
+   w==;
+IronPort-SDR: df9MM/IC4mtUZMG4uj4C6lHXXqHNXaOs4y0GJgibJLaAR3P6x6xuouozXy4nlIBjaybFPK4Nkt
+ /38ztiyfeEVzk6g5AWDZUfGAFj1qI7O+XB8TbCWkkvmHYTpaJoCsnPUsMqLzFvvtXR9ZNr1s/X
+ xyjXAtxHsrG6nq/2alf9WfGfwHJ5WqbHclnyS27A3tEgnN2HvfIsNekNeIOplgVy+Z1clpHKmN
+ QIOYrb96mkr7Fx6d3933eiTmV3GefAhO5mJ4SVKh5dGtbOHLO1jQSN7+g3/vhEbTQmjIcBoJnp
+ 1HM=
+X-IronPort-AV: E=Sophos;i="5.79,377,1602518400"; 
+   d="scan'208";a="262415578"
+Received: from mail-dm6nam10lp2102.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.102])
+  by ob1.hgst.iphmx.com with ESMTP; 27 Jan 2021 07:36:27 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j8jbkFooSHzi8VFB/DpuCO4Y97wG5wVbX4l0QCDafWyt1kk57kPi0MlU23WK+KZQ+p852aW9j1fOaGaxkr35D9yWoWG8urITBbBqynboMn/pDjAdJtlnKUV29f+4kaK9XpTkNgf/M5qyO2FPMGydHOZTTUD1Mvgxhr+CJRSjRm/suy3IW4Dz7XdNS0707QiaftWzFvIur/MKWzvs6s5fQ3dOaG1jicoDxYcppfz1CbZhv43G6cNT30w+wADK8iP1lUTnvYZsjVXvDjz//XtepalO+fSJNlb6BPgN4tN3rSlCQ+Z5oznUoTJX+5V/ZUxUXeKzE7AQkO0ELBfZID83AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k5EKe6OX4yrWUWjyFGBkuhgR/ZX9ew6g+MK4nGB3Ohg=;
+ b=mea/5WQiGr7Wtt3Z5ti6/3xlk3s/6QQBWjb5OhZIuKCM6WupqmdMm3Y2KmsoOarLh9TnKo5UQuH3kPnAHaoGjZkkZg3ihqMAWqTmcHsdi+0LvbmN6BXM4B/09wdxm7dt74XPOSdmuQSNALebJ7kX1MrxoxBrpBoAo4uo00QKo68AKygozTg9kY2L8WsGGL19+hTJc2n+3KcIYmOFCO4Qq93HSYIe7FYZb6Hyf28RobV2Eb/JTHRo+VIfiWUsFLV0emA06wdgzoztOi8fd5Dx+LTWdBNvBWZ88Ib451nI1APK6tADXajwEiE0rt+Ed4yaO78ew5Q4lYhQux7NPcQSVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k5EKe6OX4yrWUWjyFGBkuhgR/ZX9ew6g+MK4nGB3Ohg=;
+ b=BuG1Ao3aMfmLJ7/GCSOJLzINrGxVqdpnFvnKszizg+thA4LiRLPekZMUfvOMWxVOr9isaMEXmUX/pkfEVSyWlaipSz4kUX7Bnv7OheTpXMHLrwksbIgXCedqNU1RzPbIwo8jP+x5OcZCMl3/4Xt0chbfkheunLnw2X4oggm4dC4=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB4104.namprd04.prod.outlook.com (2603:10b6:a02:b0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Tue, 26 Jan
+ 2021 23:32:09 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::1d83:38d9:143:4c9c]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::1d83:38d9:143:4c9c%5]) with mapi id 15.20.3784.016; Tue, 26 Jan 2021
+ 23:32:09 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>, Jens Axboe <axboe@kernel.dk>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 1/2] mtip32xx: use PCI #defines instead of numbers
+Thread-Topic: [PATCH 1/2] mtip32xx: use PCI #defines instead of numbers
+Thread-Index: AQHW9DCX9RtNxF9J2Ui6R7ku9PxAZA==
+Date:   Tue, 26 Jan 2021 23:32:09 +0000
+Message-ID: <BYAPR04MB496569EC5AB6FB3A8A2D562786BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20210126200433.2911982-1-helgaas@kernel.org>
+ <20210126200433.2911982-2-helgaas@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 520a1a39-2e65-4fe4-e6aa-08d8c25299ac
+x-ms-traffictypediagnostic: BYAPR04MB4104:
+x-microsoft-antispam-prvs: <BYAPR04MB4104AFC0BF425F635183A92A86BC9@BYAPR04MB4104.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qNnrKS6rnOgbcMmm1MzLU3RuJm70K26bnPRUvQEYNwADKRCA9Ht2HuNKWwQNbqGzSfhQWj00ujS6y7F7c3wZMWd9ogRhtwAvoTY4shXUH9zMEvkRVMJWaxir25g6jIhRJxRefs055iL47nyHZe0VHPN0dczYz4l0OFcztIJ1jQOGdA50LjYpaLQT+L3yeGQ16JAT8Jvgi4AXXVAycG58AjvCfxrMTUEgHHOaKqwAQm4ARbCqDmk+eWAuhlZ8Q85N6RqouekBAW9HIDQniLlLpD5mC82twcp8fRyiek5vnO7Whnr2R/Lish0XXBg68T19kAH2icPCvhM+A5QtypfVt+Rv7iyuqQpLx4m4rPKVMAmp1v6+g0eq2xEXfOgVOk2jGm1Z7IMvQ/LfGwJU51JMBI2cIMFC9zDps+CQ9h3qbXJQHa2aZRop9q/mK/xv3+/cp6vd6YHa5W9d8kw3t4eVSDJnblN2JmRpVgDxOPAJ1cZ79ITjWkioyG6BZEyMKylJFA5r8KDjf2oU3j7bwyRuKA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(376002)(396003)(33656002)(76116006)(71200400001)(316002)(26005)(110136005)(66946007)(83380400001)(6506007)(8676002)(66446008)(64756008)(66556008)(8936002)(66476007)(4744005)(55016002)(54906003)(4326008)(478600001)(186003)(9686003)(53546011)(86362001)(52536014)(7696005)(2906002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0xNNFIeuN68F1ljer6XAK8SUGdkU01UL9L39sMXkURoOunYfxVU+Usm4c1ix?=
+ =?us-ascii?Q?fUZkxHJbCHLdnv8ZPWb0/4L0x6Baw6XiBjU0dASmLgLUFoLVq2m0xU2wNj26?=
+ =?us-ascii?Q?MoTflAowX/qHUgBgZsjTy7fuM0RFwUu3hKINFFvFJfYxQEs/ry6iPi5ejrjA?=
+ =?us-ascii?Q?ezIduFLXvP/5nz9dBkl3f29ia4YUJhRD8hGPZUJ8uv+oemAoT7zML02PyBof?=
+ =?us-ascii?Q?HRQNqYJcoCqyT22NfV4ANTtRqr65KoTidxxsWb3qv67TuxGBxAkP2pRDDPNu?=
+ =?us-ascii?Q?WH13wGtWoKwm6RBRWOzG/jDtF7M6q/g8LpRDDo0KPjEf2Q5DLO1ksn/sQFPu?=
+ =?us-ascii?Q?6fnflAjNDRCktM8WxSt2T8qZ3UI+L9EpPWatKPKwoY90cUCfGyMhrbs9ub66?=
+ =?us-ascii?Q?C+lz5x0C48L7d0xozGIxvtZNcrDU9UeX8nxK3lfCHoYXT+WrCFSUk0ArwxK3?=
+ =?us-ascii?Q?uWMBWAOfUggdqNI04T8dQp65Ap5YTmFX6cxh6QUs2jVRvsQlAdE9czcof49t?=
+ =?us-ascii?Q?7rGKbsCoJr6WLeoNjugCO09xFDOu2dj/Kj2IlkOK9UOGEFj37/zKn8wBDsIl?=
+ =?us-ascii?Q?t8GRVHqsiqhgNCfp8DVfmSK72HOOiIVx/Y9YtTEHQOOKqXGhps/dsRIL85Xs?=
+ =?us-ascii?Q?OvAqpTYSrQOMLlifwrDNsU5AfDMVgqw0Lez+Cb8IcmR0IcAijlcKqujV3ABJ?=
+ =?us-ascii?Q?EpBbT+amMMO+IQgNHzrFHG0M6hRlnqObf7Ph2CoB/r9HXfjOsI+dMitgMR1H?=
+ =?us-ascii?Q?PLvYJZvbUsxp4pWgU/yL6vwgiyzd/SL7Oc3BPDulmwujcJ0gA7VI8ERufBEf?=
+ =?us-ascii?Q?VIdKEZ6QvulkdA4pe6ClByp7R7NhSRSWI5pt4dYVN+XuS57ae2wps7IgOPOf?=
+ =?us-ascii?Q?lluGpCba9FUzT7BRFAAjthQ7Vr60g6JJK9vfyGBYVmY3Xam8CacmP6/DntF7?=
+ =?us-ascii?Q?FrxoAFA6n9LqThmIc+RlvR4L6wlScT1mVZC4Uv5ptxe8RyQWCbRz15bygFuh?=
+ =?us-ascii?Q?3Ww95QdSUB7Jybzfegldj/wGS3E5AzhJM9my9lxAjdZRXYyMz30Jy46XQjD1?=
+ =?us-ascii?Q?aAY5FK9SDRsP/zajnwzUfSbT2WBIYg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 520a1a39-2e65-4fe4-e6aa-08d8c25299ac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 23:32:09.3617
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vRJ6lP9rc5FMALL2PtvkolE5AD3KBcaBEkJog1tF2MQaGGM8W+YhBVIJxOolyPw7YcHjRr12iblAObF5FaIEzw7FRKWfeFIUciVTEmEhu40=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the doubled word "for" in a comment. {firewire-cdev.h}
-Drop the doubled word "in" in a comment. {input.h}
-Drop the doubled word "a" in a comment. {mdev.h}
-Drop the doubled word "the" in a comment. {ptrace.h}
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc: linux1394-devel@lists.sourceforge.net
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org
-Cc: Kirti Wankhede <kwankhede@nvidia.com>
-Cc: kvm@vger.kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>
----
-v2: combine 4 patches into one patch and resend.
-Andrew, please merge.
-
- include/linux/mdev.h               |    2 +-
- include/linux/ptrace.h             |    2 +-
- include/uapi/linux/firewire-cdev.h |    2 +-
- include/uapi/linux/input.h         |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
---- linux-next-20210125.orig/include/uapi/linux/firewire-cdev.h
-+++ linux-next-20210125/include/uapi/linux/firewire-cdev.h
-@@ -844,7 +844,7 @@ struct fw_cdev_queue_iso {
-  * struct fw_cdev_start_iso - Start an isochronous transmission or reception
-  * @cycle:	Cycle in which to start I/O.  If @cycle is greater than or
-  *		equal to 0, the I/O will start on that cycle.
-- * @sync:	Determines the value to wait for for receive packets that have
-+ * @sync:	Determines the value to wait for receive packets that have
-  *		the %FW_CDEV_ISO_SYNC bit set
-  * @tags:	Tag filter bit mask.  Only valid for isochronous reception.
-  *		Determines the tag values for which packets will be accepted.
---- linux-next-20210125.orig/include/uapi/linux/input.h
-+++ linux-next-20210125/include/uapi/linux/input.h
-@@ -84,7 +84,7 @@ struct input_id {
-  * in units per radian.
-  * When INPUT_PROP_ACCELEROMETER is set the resolution changes.
-  * The main axes (ABS_X, ABS_Y, ABS_Z) are then reported in
-- * in units per g (units/g) and in units per degree per second
-+ * units per g (units/g) and in units per degree per second
-  * (units/deg/s) for rotational axes (ABS_RX, ABS_RY, ABS_RZ).
-  */
- struct input_absinfo {
---- linux-next-20210125.orig/include/linux/mdev.h
-+++ linux-next-20210125/include/linux/mdev.h
-@@ -42,7 +42,7 @@ struct device *mdev_get_iommu_device(str
-  *			@mdev: mdev_device structure on of mediated device
-  *			      that is being created
-  *			Returns integer: success (0) or error (< 0)
-- * @remove:		Called to free resources in parent device's driver for a
-+ * @remove:		Called to free resources in parent device's driver for
-  *			a mediated device. It is mandatory to provide 'remove'
-  *			ops.
-  *			@mdev: mdev_device device structure which is being
---- linux-next-20210125.orig/include/linux/ptrace.h
-+++ linux-next-20210125/include/linux/ptrace.h
-@@ -171,7 +171,7 @@ static inline void ptrace_event(int even
-  *
-  * Check whether @event is enabled and, if so, report @event and @pid
-  * to the ptrace parent.  @pid is reported as the pid_t seen from the
-- * the ptrace parent's pid namespace.
-+ * ptrace parent's pid namespace.
-  *
-  * Called without locks.
-  */
+On 1/26/21 14:14, Bjorn Helgaas wrote:=0A=
+> From: Bjorn Helgaas <bhelgaas@google.com>=0A=
+>=0A=
+> Use PCI #defines for PCIe Device Control register values instead of=0A=
+> hard-coding bit positions.  No functional change intended.=0A=
+>=0A=
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>=0A=
+=0A=
+I've verified the values present in the include/uapi/linux/pci_regs.h=0A=
+matches open coded bit shift values. LGTM.=0A=
+=0A=
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
+=0A=
