@@ -2,127 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CA83057C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56283057B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S316705AbhAZXJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:09:10 -0500
-Received: from m97179.mail.qiye.163.com ([220.181.97.179]:32367 "EHLO
-        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAZEmh (ORCPT
+        id S316793AbhAZXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:10:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727048AbhAZEqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 23:42:37 -0500
-Received: from [192.168.0.213] (unknown [218.94.118.90])
-        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 7E465E029D2;
-        Tue, 26 Jan 2021 12:41:19 +0800 (CST)
-Subject: Re: [PATCH] bcache: dont reset bio opf in bch_data_insert_start
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchristi@redhat.com
-References: <20210125042942.1087170-1-dongsheng.yang@easystack.cn>
- <7569abf3-3e54-986e-8307-751fa5e00828@suse.de>
- <17578d50-4113-8f25-827e-840fafb09d6f@easystack.cn>
- <92c66f2d-22af-abd7-6fcb-ad896185c0c6@suse.de>
-From:   Dongsheng Yang <dongsheng.yang@easystack.cn>
-Message-ID: <fc616650-e2da-63fd-45a5-b309b4c5e76b@easystack.cn>
-Date:   Tue, 26 Jan 2021 12:41:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 25 Jan 2021 23:46:08 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0949C061574;
+        Mon, 25 Jan 2021 20:45:28 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id u4so1499865pjn.4;
+        Mon, 25 Jan 2021 20:45:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IAGZ24gl2Qq21L5texPauM9MwHRvT0M695yCq/x8JN4=;
+        b=r5m+8HgMhvEyXy0SKmCmYGPSRN95fyNYZusyA1YuYU3n05B3ZjDrMOplOqs877NgsC
+         rkqipLxEmcsedCua3mKQ6cK8CpSj2FR689YxzIYNLR66UlpOWlMKM++dUIf5TNmCS4Ip
+         BCJtZHpY2bpXFlzKIpsKFfE2W7CJexg5Jz7qj1EdYxPbyJEAGETkmbYyymLqEcWdYRdd
+         UaPcJ+tFeQfSEG49Bz863pl849JKbYr1e0zWJNURKoYbDPSXOmtymeslkmq7B6tDz+9k
+         cUKCT8ogrgT/Ys2dPVsn7yXsI5g5if93s2uFVdV2pmt38Q1fSUR3hh+5Rbdyl29lLb6C
+         vE2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IAGZ24gl2Qq21L5texPauM9MwHRvT0M695yCq/x8JN4=;
+        b=EGyEe+CqJAYhym95yi8nogLVbZLLjFlrLZQnDqqtHngNyeTYTIe9lSthrbyBsnYwsV
+         qHfq3rcER/qZbXEuGwN0PPb76BwNM6c9V9eYgvN6CdNh+sRp4u3AZ6vP3oMRbywtzcGx
+         BNkQgDzMOMvgxi+R5EwEl40sd8pFHPmxZA2bi5LLl/jgjUR5JyR5lB8rTU13vUx391gj
+         u62B+LFDcrLpJDLe4QQs7eniHhmeZ5OAjI6XBVN+73IChepEk/xiylvg/YQTAQG0yzUG
+         VHlfm3cfYwlK9NzTSdFiZ6YUgpgs0zHHktZwKPQEtr8EyhPFaunL7EfiP7f8kC3E6OpP
+         TGYg==
+X-Gm-Message-State: AOAM533Oi8+N/YwHPoaz+4mFPZmuYsW4pfA1ItViqjjPtdofATMHaZiG
+        pN8aVvhqv0hZGBKWBqCkt2w=
+X-Google-Smtp-Source: ABdhPJzHsAcq7MkeFSaq9mIhWqqMYoFS8IittEHd7d7ST2OchI77XYTxIzztBo1Xcc7rtQY9nLkkdw==
+X-Received: by 2002:a17:90a:928d:: with SMTP id n13mr4039991pjo.12.1611636328340;
+        Mon, 25 Jan 2021 20:45:28 -0800 (PST)
+Received: from bobo.ozlabs.ibm.com (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
+        by smtp.gmail.com with ESMTPSA id 68sm19272293pfg.90.2021.01.25.20.45.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 20:45:27 -0800 (PST)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v11 01/13] mm/vmalloc: fix HUGE_VMAP regression by enabling huge pages in vmalloc_to_page
+Date:   Tue, 26 Jan 2021 14:44:58 +1000
+Message-Id: <20210126044510.2491820-2-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210126044510.2491820-1-npiggin@gmail.com>
+References: <20210126044510.2491820-1-npiggin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <92c66f2d-22af-abd7-6fcb-ad896185c0c6@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZSE1LSB8fTkJIHUtOVkpNSkpNSE1LTEJMQ05VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PQg6Txw6MD0wIggPOgEDHSsY
-        FzIKFDpVSlVKTUpKTUhNS0xCQk5PVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-        V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBT0NNSTcG
-X-HM-Tid: 0a773cfefc6720bdkuqy7e465e029d2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+vmalloc_to_page returns NULL for addresses mapped by larger pages[*].
+Whether or not a vmap is huge depends on the architecture details,
+alignments, boot options, etc., which the caller can not be expected
+to know. Therefore HUGE_VMAP is a regression for vmalloc_to_page.
 
-在 2021/1/26 星期二 下午 12:34, Coly Li 写道:
-> On 1/26/21 12:32 PM, Dongsheng Yang wrote:
->> 在 2021/1/25 星期一 下午 12:53, Coly Li 写道:
->>> On 1/25/21 12:29 PM, Dongsheng Yang wrote:
->>>> commit ad0d9e76(bcache: use bio op accessors) makes the bi_opf
->>>> modified by bio_set_op_attrs(). But there is a logical
->>>> problem in this commit:
->>>>
->>>>                   trace_bcache_cache_insert(k);
->>>>                   bch_keylist_push(&op->insert_keys);
->>>>
->>>> -               n->bi_rw |= REQ_WRITE;
->>>> +               bio_set_op_attrs(n, REQ_OP_WRITE, 0);
->>>>                   bch_submit_bbio(n, op->c, k, 0);
->>>>           } while (n != bio);
->>>>
->>>> The old code add REQ_WRITE into bio n and keep other flags; the
->>>> new code set REQ_OP_WRITE to bi_opf, but reset all other flags.
->>>>
->>>> This problem is discoverd in our performance testing:
->>>> (1) start a fio with 1M x 128depth for read in /dev/nvme0n1p1
->>>> (2) start a fio with 1M x 128depth for write in /dev/escache0 (cache
->>>> device is /dev/nvme0n1p2)
->>>>
->>>> We found the BW of reading is 2000+M/s, but the BW of writing is
->>>> 0-100M/s. After some debugging, we found the problem is io submit in
->>>> writting is very slow.
->>>>
->>>> bch_data_insert_start() insert a bio to /dev/nvme0n1p1, but as
->>>> cached_dev submit stack bio will be added into current->bio_list, and
->>>> return.Then __submit_bio_noacct() will submit the new bio in bio_list
->>>> into /dev/nvme0n1p1. This operation would be slow in
->>>> blk_mq_submit_bio() -> rq_qos_throttle(q, bio);
->>>>
->>>> The rq_qos_throttle() will call wbt_should_throttle(),
->>>> static inline bool wbt_should_throttle(struct rq_wb *rwb, struct bio
->>>> *bio)
->>>> {
->>>>           switch (bio_op(bio)) {
->>>>           case REQ_OP_WRITE:
->>>>                   /*
->>>>                    * Don't throttle WRITE_ODIRECT
->>>>                    */
->>>>                   if ((bio->bi_opf & (REQ_SYNC | REQ_IDLE)) ==
->>>>                       (REQ_SYNC | REQ_IDLE))
->>>>                           return false;
->>>> ... ...
->>>> }
->>>>
->>>> As the bio_set_op_attrs() reset the (REQ_SYNC | REQ_IDLE), so this write
->>>> bio will be considered as non-direct write.
->>>>
->>>> After this fix, bio to nvme will flaged as (REQ_SYNC | REQ_IDLE),
->>>> then fio for writing will get about 1000M/s bandwidth.
->>>>
->>>> Fixes: ad0d9e76a4124708dddd00c04fc4b56fc86c02d6
->>> It should be,
->>> Fixes: ad0d9e76a412 ("bcache: use bio op accessors")
->>>
->>>> Signed-off-by: Dongsheng Yang<dongsheng.yang@easystack.cn>
->>> Please CC the fixed patch author  Mike Christie<mchristi@redhat.com>.
->>
->> Hi Coly,
->>
->>      Should I send a V2 for commit message update?
->>
->> Or you can help to fix it when you take it from maillist?
->>
-> Yes, please fix it in v2 version. And let's wait for response from Mike,
-> maybe he has better suggestion to fix.
+This change teaches vmalloc_to_page about larger pages, and returns
+the struct page that corresponds to the offset within the large page.
+This makes the API agnostic to mapping implementation details.
 
+[*] As explained by commit 029c54b095995 ("mm/vmalloc.c: huge-vmap:
+    fail gracefully on unexpected huge vmap mappings")
 
-okey，actually, Mike is in my cc list of first mail (but not note in 
-commit message), so he can receive my patch.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ mm/vmalloc.c | 41 ++++++++++++++++++++++++++---------------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
 
-But anyway, I will send a v2
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index e6f352bf0498..62372f9e0167 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -34,7 +34,7 @@
+ #include <linux/bitops.h>
+ #include <linux/rbtree_augmented.h>
+ #include <linux/overflow.h>
+-
++#include <linux/pgtable.h>
+ #include <linux/uaccess.h>
+ #include <asm/tlbflush.h>
+ #include <asm/shmparam.h>
+@@ -343,7 +343,9 @@ int is_vmalloc_or_module_addr(const void *x)
+ }
+ 
+ /*
+- * Walk a vmap address to the struct page it maps.
++ * Walk a vmap address to the struct page it maps. Huge vmap mappings will
++ * return the tail page that corresponds to the base page address, which
++ * matches small vmap mappings.
+  */
+ struct page *vmalloc_to_page(const void *vmalloc_addr)
+ {
+@@ -363,25 +365,33 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
+ 
+ 	if (pgd_none(*pgd))
+ 		return NULL;
++	if (WARN_ON_ONCE(pgd_leaf(*pgd)))
++		return NULL; /* XXX: no allowance for huge pgd */
++	if (WARN_ON_ONCE(pgd_bad(*pgd)))
++		return NULL;
++
+ 	p4d = p4d_offset(pgd, addr);
+ 	if (p4d_none(*p4d))
+ 		return NULL;
+-	pud = pud_offset(p4d, addr);
++	if (p4d_leaf(*p4d))
++		return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
++	if (WARN_ON_ONCE(p4d_bad(*p4d)))
++		return NULL;
+ 
+-	/*
+-	 * Don't dereference bad PUD or PMD (below) entries. This will also
+-	 * identify huge mappings, which we may encounter on architectures
+-	 * that define CONFIG_HAVE_ARCH_HUGE_VMAP=y. Such regions will be
+-	 * identified as vmalloc addresses by is_vmalloc_addr(), but are
+-	 * not [unambiguously] associated with a struct page, so there is
+-	 * no correct value to return for them.
+-	 */
+-	WARN_ON_ONCE(pud_bad(*pud));
+-	if (pud_none(*pud) || pud_bad(*pud))
++	pud = pud_offset(p4d, addr);
++	if (pud_none(*pud))
++		return NULL;
++	if (pud_leaf(*pud))
++		return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
++	if (WARN_ON_ONCE(pud_bad(*pud)))
+ 		return NULL;
++
+ 	pmd = pmd_offset(pud, addr);
+-	WARN_ON_ONCE(pmd_bad(*pmd));
+-	if (pmd_none(*pmd) || pmd_bad(*pmd))
++	if (pmd_none(*pmd))
++		return NULL;
++	if (pmd_leaf(*pmd))
++		return pmd_page(*pmd) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
++	if (WARN_ON_ONCE(pmd_bad(*pmd)))
+ 		return NULL;
+ 
+ 	ptep = pte_offset_map(pmd, addr);
+@@ -389,6 +399,7 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
+ 	if (pte_present(pte))
+ 		page = pte_page(pte);
+ 	pte_unmap(ptep);
++
+ 	return page;
+ }
+ EXPORT_SYMBOL(vmalloc_to_page);
+-- 
+2.23.0
 
->
-> Thanks.
->
-> Coly Li
->
