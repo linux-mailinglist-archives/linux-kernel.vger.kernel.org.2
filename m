@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBF3305597
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83923305531
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229494AbhA0IZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:25:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S316953AbhAZXMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 18:12:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 820182065C;
-        Tue, 26 Jan 2021 23:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611702724;
-        bh=rzeLAib+ucsQgm3JMS7ISQFoDi1VrBk0iP8v3x+v4bA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qedVMlQr7vt85JG4A2fw9jFiBIEmgMbckHyvDGYXTcNu6/bLHlvo1crV8muT4pJuy
-         X48Acf1v4NsR5AqoWDyJFYVKnEeoWJBGjfGsWaEcLa4NyaWbPGtYAzD31usF9LqaXZ
-         oZGgceH+GY65suYaGHKQxl2cpU/Fy08UIWX2dSl4Z+N7k1cZGwJfU3QurzLcwwpSN5
-         XI21smmUE+0x754VG9BjViEVakV0AmLJPCPoPFYR7kQAyYcb3WN4NIHS1ly/o23oiB
-         9XWolCB+SKcUvDHzkXBw0S99KzuGr1SO0GvaH4nD90oB/sSKj4Wanbke8hqTDx+qMN
-         qMLLuWwYNEAUA==
-Date:   Tue, 26 Jan 2021 23:11:58 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: Re: [PATCH v10 00/18] arm64: MMU enabled kexec relocation
-Message-ID: <20210126231157.GF30941@willie-the-truck>
-References: <20210125191923.1060122-1-pasha.tatashin@soleen.com>
- <20210126225847.GC30941@willie-the-truck>
- <CA+CK2bBT6OZwh_zSbhRDVAEptVMQGywV_E42iXS4YywGkqJQaQ@mail.gmail.com>
+        id S234536AbhA0ID4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:03:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56760 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S316722AbhAZXUW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 18:20:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611703104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4OdvhWfvpqKJBMkO76bzbcesHusgnA0tJfh2KQFq/HA=;
+        b=jQHIGDYZA8AekEZCNQLOzjDf8IlXoZea4lYlxp1zjtLt0pQbMrrd0Xe1zujDfBPs9s/XXB
+        bY+835q3bncXhwZU28VLG36emJ/rMbzuJneygGTdYH1V9AeLBi04ZqjvC64kg+QveNSHvB
+        PmoDF3WyJurpz3RKWPjvlE79Lsw+NMI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-117-FgtfIRLvNNC0y9WWvwFm2w-1; Tue, 26 Jan 2021 18:18:20 -0500
+X-MC-Unique: FgtfIRLvNNC0y9WWvwFm2w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB496107ACE3;
+        Tue, 26 Jan 2021 23:18:18 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1338A5D766;
+        Tue, 26 Jan 2021 23:18:18 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 16:18:17 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     cohuck@redhat.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] vfio-pci/zdev: Introduce the zPCI I/O vfio region
+Message-ID: <20210126161817.683485e0@omen.home.shazbot.org>
+In-Reply-To: <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
+References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
+        <1611086550-32765-5-git-send-email-mjrosato@linux.ibm.com>
+        <20210122164843.269f806c@omen.home.shazbot.org>
+        <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bBT6OZwh_zSbhRDVAEptVMQGywV_E42iXS4YywGkqJQaQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 06:05:10PM -0500, Pavel Tatashin wrote:
-> On Tue, Jan 26, 2021 at 5:58 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > Hi Pavel,
-> >
-> > On Mon, Jan 25, 2021 at 02:19:05PM -0500, Pavel Tatashin wrote:
-> > > Changelog:
-> > > v10:
-> > >       - Addressed a lot of comments form James Morse and from  Marc Zyngier
-> > >       - Added review-by's
-> > >       - Synchronized with mainline
-> >
-> > This series has been doing the rounds for a while, but still isn't fully
-> > reviewed. Would it help if I merged, e.g. the first 12 patches to reduce the
-> > amount you have to repost?
-> 
-> Hi Will,
-> 
-> Yes, it would. The first 10 patches of this series were already merged
-> sometime ago:
-> 
-> a2c2e67923ec arm64: hibernate: add trans_pgd public functions
-> 7ea4088938b7 arm64: hibernate: add PUD_SECT_RDONLY
-> 13373f0e6580 arm64: hibernate: rename dst to page in create_safe_exec_page
-> a89d7ff933b0 arm64: hibernate: remove gotos as they are not needed
-> 051a7a94aaa9 arm64: hibernate: use get_safe_page directly
-> d234332c2815 arm64: hibernate: pass the allocated pgdp to ttbr0
-> 621516789ee6 arm64: kexec: make dtb_mem always enabled
-> 3b54b743397e arm64: kexec: remove unnecessary debug prints
-> de68e4daea90 kexec: add machine_kexec_post_load()
-> d42cc530b18d kexec: quiet down kexec reboot
-> 
-> So, merging another ~12, would substantially help with getting
-> everything reviewed and merged.
+On Mon, 25 Jan 2021 09:40:38 -0500
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
 
-Ok, great; I'll have a crack at that tomorrow, and thanks for persevering.
+> On 1/22/21 6:48 PM, Alex Williamson wrote:
+> > On Tue, 19 Jan 2021 15:02:30 -0500
+> > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> >   
+> >> Some s390 PCI devices (e.g. ISM) perform I/O operations that have very
+> >> specific requirements in terms of alignment as well as the patterns in
+> >> which the data is read/written. Allowing these to proceed through the
+> >> typical vfio_pci_bar_rw path will cause them to be broken in up in such a
+> >> way that these requirements can't be guaranteed. In addition, ISM devices
+> >> do not support the MIO codepaths that might be triggered on vfio I/O coming
+> >> from userspace; we must be able to ensure that these devices use the
+> >> non-MIO instructions.  To facilitate this, provide a new vfio region by
+> >> which non-MIO instructions can be passed directly to the host kernel s390
+> >> PCI layer, to be reliably issued as non-MIO instructions.
+> >>
+> >> This patch introduces the new vfio VFIO_REGION_SUBTYPE_IBM_ZPCI_IO region
+> >> and implements the ability to pass PCISTB and PCILG instructions over it,
+> >> as these are what is required for ISM devices.  
+> > 
+> > There have been various discussions about splitting vfio-pci to allow
+> > more device specific drivers rather adding duct tape and bailing wire
+> > for various device specific features to extend vfio-pci.  The latest
+> > iteration is here[1].  Is it possible that such a solution could simply
+> > provide the standard BAR region indexes, but with an implementation that
+> > works on s390, rather than creating new device specific regions to
+> > perform the same task?  Thanks,
+> > 
+> > Alex
+> > 
+> > [1]https://lore.kernel.org/lkml/20210117181534.65724-1-mgurtovoy@nvidia.com/
+> >   
+> 
+> Thanks for the pointer, I'll have to keep an eye on this.  An approach 
+> like this could solve some issues, but I think a main issue that still 
+> remains with relying on the standard BAR region indexes (whether using 
+> the current vfio-pci driver or a device-specific driver) is that QEMU 
+> writes to said BAR memory region are happening in, at most, 8B chunks 
+> (which then, in the current general-purpose vfio-pci code get further 
+> split up into 4B iowrite operations).  The alternate approach I'm 
+> proposing here is allowing for the whole payload (4K) in a single 
+> operation, which is significantly faster.  So, I suspect even with a 
+> device specific driver we'd want this sort of a region anyhow..
 
-Will
+Why is this device specific behavior?  It would be a fair argument that
+acceptable device access widths for MMIO are always device specific, so
+we should never break them down.  Looking at the PCI spec, a TLP
+requires a dword (4-byte) aligned address with a 10-bit length field
+indicating the number of dwords, so up to 4K data as you suggest is the
+whole payload.  It's quite possible that the reason we don't have more
+access width problems is that MMIO is typically mmap'd on other
+platforms.  We get away with using the x-no-mmap=on flag for debugging,
+but it's not unheard of that the device also doesn't work quite
+correctly with that flag, which could be due to access width or timing
+difference.
+
+So really, I don't see why we wouldn't want to maintain the guest
+access width through QEMU and the kernel interface for all devices.  It
+seems like that should be our default vfio-pci implementation.  I think
+we chose the current width based on the QEMU implementation that was
+already splitting accesses, and it (mostly) worked.  Thanks,
+
+Alex
+
