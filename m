@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B24304FF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B726304FEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236505AbhA0De5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:34:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727688AbhAZVlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:41:21 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59B6620449;
-        Tue, 26 Jan 2021 21:40:40 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 16:40:38 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] tracing: precise log info for kretprobe addr err
-Message-ID: <20210126164038.566ef8c2@gandalf.local.home>
-In-Reply-To: <20210126211722.GA23645@redhat.com>
-References: <20210125160108.2147511-1-Jianlin.Lv@arm.com>
-        <20210125181926.GA10248@redhat.com>
-        <20210125133840.511b1496@gandalf.local.home>
-        <20210126131536.f6e3a737a7b948799084fa7a@kernel.org>
-        <20210126202058.GC12469@redhat.com>
-        <20210126154302.302a3bb0@gandalf.local.home>
-        <20210126211722.GA23645@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236522AbhA0DfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728412AbhAZVlc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:41:32 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39336C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:40:52 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id f1so14892799lfu.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:40:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W8vg8nrSBbokWCvOz2GKxHA+4NetSMNLDLIlMKnGWdE=;
+        b=AgyPUMtnaKDhD61MpdEBnwRiL9IUryf2zXzIPYO/0rVtT1/9xR+mR/KSM4sv0l06Hf
+         gOPl3KERBL397kiT1frpON2Y/gCSajh7GF+ZkAV3T+3cjW56mmZqzv8z8pqDRcd9dIsT
+         YkcJQeY1MIE7kxU9oFydfc55A1l69qzUxhP/PvK6J0YPj3NlQ9oe+Eqzjr4aG+/xosll
+         NrIt3hf9iiQxVw7QU/xlrK9YGn8vRCoyhXq4Vxu0YSAfD7iq3RJXoZOARVk/W/r1N6At
+         h0mdE5wuOqnjdkBxXYKWRILUIHcJ2XutIkoZAIYkyGCsgdsOzrzbmE1STCFnN5ULNI1H
+         qDkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W8vg8nrSBbokWCvOz2GKxHA+4NetSMNLDLIlMKnGWdE=;
+        b=VaAIQKL4KbqjOnn1QEKF49XDe6bGTUpZrD/LavYHoAFQXTLytZ88nc9gygtxSe/dgl
+         JDnbUVpFf6cKC3scvDWPlKmsAhEqWA5t+XaO1e4A9p/2Ew2wpx8JD63ZfgUWnY8VA13a
+         nYQoSlPfajVgxbn8Qeh8j7WOF6C05u5rEQkGd5euKhaKWbqkpYUxaSBMWU3EYwJo3wr6
+         6MyhHL/O/B+Qb8AbqX5Lx5S6ZBvWZ1aTcOcoI2gCwrlMPmpMEm73vSfXTKfCQnTDxI6U
+         B9faHGAVs0WI4TrPvofAeC7USiL6z6T52usRZNWuY+yFVCFeOFL9QfFEFgLxSUIW5XWe
+         0PSQ==
+X-Gm-Message-State: AOAM532L8AJYqMC0vYuqWvK5p5D/L5ap+5jbtVxR9XRzDG/YTmf3hOaR
+        jgj8B/r50M9xZzXWRu4WlvtXHR7YlzBpkGumZa2MoQ==
+X-Google-Smtp-Source: ABdhPJwcce3gQgPU5zJRC5HMuJbs9MinMXFfQiG08SzQDzs+LzF/WKC0wOfsLt4XOzEYE7kdtL7mbfEVW6/Q7SzhYFM=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr3434206lfj.465.1611697250578;
+ Tue, 26 Jan 2021 13:40:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210125045631.2345-1-lorenzo.carletti98@gmail.com>
+ <20210125045631.2345-2-lorenzo.carletti98@gmail.com> <20210126210837.7mfzkjqsc3aui3fn@skbuf>
+In-Reply-To: <20210126210837.7mfzkjqsc3aui3fn@skbuf>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Jan 2021 22:40:39 +0100
+Message-ID: <CACRpkdZnVAR2VTY7UM=qt5yLwA0C5z1LUJ2pW7NgmcY5KS2rzw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] net: dsa: rtl8366rb: standardize init jam tables
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 22:17:23 +0100
-Oleg Nesterov <oleg@redhat.com> wrote:
+On Tue, Jan 26, 2021 at 10:08 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+> On Mon, Jan 25, 2021 at 05:56:31AM +0100, Lorenzo Carletti wrote:
 
-> On 01/26, Steven Rostedt wrote:
+> > In the rtl8366rb driver there are some jam tables which contain
+> > undocumented values.
+> > While trying to understand what these tables actually do,
+> > I noticed a discrepancy in how one of those was treated.
+>
+> And did you manage to find out what these tables actually do?
+
+I think Lorenzo mentioned that he found some settings in there,
+I don't know if it was anything substantial though?
+
+I put Lorenzon on track to investigate the driver, we thought
+it could be an 8051 CPU so that some of the arrays could
+be decoded into 8051 instructions, but so far we didn't get
+anywhere with it.
+
+The background was some mumble on the internet on
+8051 in RTL8366 switches:
+https://news.ycombinator.com/item?id=21040488
+https://web.archive.org/web/20190922094616if_/https://twitter.com/whitequark/status/1175701730819895296
+
+> > Most of them were plain u16 arrays, while the ethernet one was
+> > an u16 matrix.
+> > By looking at the vendor's droplets of source code these tables came from,
+> > I found out that they were all originally u16 matrixes.
 > >
-> > On Tue, 26 Jan 2021 21:20:59 +0100
-> > Oleg Nesterov <oleg@redhat.com> wrote:
-> >  
-> > > > No, not wrong. Even offset != 0, if the symbol exists in the kernel,
-> > > > kprobe_on_func_entry() will check it.  
-> > >
-> > > Yes, but unless I am totally confused... if kprobe_on_func_entry() returns false,
-> > > then trace_kprobe_create() should fail with BAD_RETPROBE even if offset == 0 ?  
-> >
-> > From what I understand. kprobe_on_func_entry() can return false if you pass
-> > in: "MOD:not_yet_loaded_module_func", but this is OK, because when the
-> > module is loaded, and the "not_yet_loaded_module_func" exists, the
-> > kretprobe will then be added.
-> >
-> > The strchr(symbol,":") check is to see if "MOD:" (or some other ":" command)
-> > is in the name, and we don't want it to fail if it is. Which is why we
-> > should have that commented.  
-> 
-> Agreed, this matches my understanding.
-> 
-> But just in case... not sure I read this code correctly, but I think that
-> module_kallsyms_lookup_name("not_yet_loaded_module_func") should work even
-> without the "MOD:" prefix.
-> 
-> IOW, kprobe_on_func_entry("not_yet_loaded_module_func") can fail, and then
-> later succeed if you load the module which provides this symbol.
-> 
-> But even if I am right, I agree with the strchr(symbol,":") check.
+> > This commit standardizes the jam tables, turning them all into
+> > u16 matrixes.
+>
+> Why? What difference does it make?
 
-I see what you are saying. If "MOD" is not loaded yet, the
-kprobe_on_func_entry() should succeed.
+I think it's nice that the format is the same on all tables.
 
-kprobe_on_func_entry(name) {
-	_kprobe_addr(name) {
-		_kprobe_lookup_name(name) {
-			kallsyms_lookup_name(name) {
-				module_kallsyms_lookup_name(name) {
-
-Which is:
-
-unsigned long module_kallsyms_lookup_name(const char *name)
-{
-	struct module *mod;
-	char *colon;
-	unsigned long ret = 0;
-
-	/* Don't lock: we're in enough trouble already. */
-	preempt_disable();
-	if ((colon = strnchr(name, MODULE_NAME_LEN, ':')) != NULL) {
-		if ((mod = find_module_all(name, colon - name, false)) != NULL)
-			ret = find_kallsyms_symbol_value(mod, colon+1);
-	} else {
-		list_for_each_entry_rcu(mod, &modules, list) {
-			if (mod->state == MODULE_STATE_UNFORMED)
-				continue;
-			if ((ret = find_kallsyms_symbol_value(mod, name)) != 0)
-				break;
-		}
-	}
-	preempt_enable();
-	return ret;
-}
-
-
-And if find_module_all() fails, ret isn't updated, and "return ret" will
-return zero.
-
-That is, the ":" check may not be needed, but its at least good to have?
-
--- Steve
+Yours,
+Linus Walleij
