@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B726304FEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B134304FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236522AbhA0DfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        id S236551AbhA0DgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728412AbhAZVlc (ORCPT
+        with ESMTP id S1727522AbhAZVmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:41:32 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39336C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:40:52 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id f1so14892799lfu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:40:52 -0800 (PST)
+        Tue, 26 Jan 2021 16:42:38 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A76C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:41:52 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id p21so19658534lfu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:41:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=W8vg8nrSBbokWCvOz2GKxHA+4NetSMNLDLIlMKnGWdE=;
-        b=AgyPUMtnaKDhD61MpdEBnwRiL9IUryf2zXzIPYO/0rVtT1/9xR+mR/KSM4sv0l06Hf
-         gOPl3KERBL397kiT1frpON2Y/gCSajh7GF+ZkAV3T+3cjW56mmZqzv8z8pqDRcd9dIsT
-         YkcJQeY1MIE7kxU9oFydfc55A1l69qzUxhP/PvK6J0YPj3NlQ9oe+Eqzjr4aG+/xosll
-         NrIt3hf9iiQxVw7QU/xlrK9YGn8vRCoyhXq4Vxu0YSAfD7iq3RJXoZOARVk/W/r1N6At
-         h0mdE5wuOqnjdkBxXYKWRILUIHcJ2XutIkoZAIYkyGCsgdsOzrzbmE1STCFnN5ULNI1H
-         qDkg==
+        bh=G/Vi9m5vDMcQhvtdSeiGhhy16BWAAWglEKpVzpaRcYQ=;
+        b=AtJkZ20qGRwi9S0UDfhqoa7TJyTIqEhQqHKaFxXetsRDyJw7snT2DYWLAL8y3Jm1fK
+         8C27Ht+/w0HXxp/Qz2z4ZJguX+fskzgX4IrQE/GxkEnpTFmsuo/v+hGAU/DvUtGrAk7T
+         +Z/UypBIiEP++3KjJX+K81vHgQakOJ9t2lbFzANhGpC+2cYAhcjNPfasplpJ2WBpNybS
+         hC0LkzRKZO+dVkspFwwcE6dRkkpQzQADHnPvL+nJ0Rx2dMBIAIVC0jLEo1OvSWmuY3Hk
+         QjSFVrjEO93Iug0QIjh9Edh07GwToqjo6JTHuhsQegC6G2sE4UFZvMeHVME4g5yV+uON
+         NUAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=W8vg8nrSBbokWCvOz2GKxHA+4NetSMNLDLIlMKnGWdE=;
-        b=VaAIQKL4KbqjOnn1QEKF49XDe6bGTUpZrD/LavYHoAFQXTLytZ88nc9gygtxSe/dgl
-         JDnbUVpFf6cKC3scvDWPlKmsAhEqWA5t+XaO1e4A9p/2Ew2wpx8JD63ZfgUWnY8VA13a
-         nYQoSlPfajVgxbn8Qeh8j7WOF6C05u5rEQkGd5euKhaKWbqkpYUxaSBMWU3EYwJo3wr6
-         6MyhHL/O/B+Qb8AbqX5Lx5S6ZBvWZ1aTcOcoI2gCwrlMPmpMEm73vSfXTKfCQnTDxI6U
-         B9faHGAVs0WI4TrPvofAeC7USiL6z6T52usRZNWuY+yFVCFeOFL9QfFEFgLxSUIW5XWe
-         0PSQ==
-X-Gm-Message-State: AOAM532L8AJYqMC0vYuqWvK5p5D/L5ap+5jbtVxR9XRzDG/YTmf3hOaR
-        jgj8B/r50M9xZzXWRu4WlvtXHR7YlzBpkGumZa2MoQ==
-X-Google-Smtp-Source: ABdhPJwcce3gQgPU5zJRC5HMuJbs9MinMXFfQiG08SzQDzs+LzF/WKC0wOfsLt4XOzEYE7kdtL7mbfEVW6/Q7SzhYFM=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr3434206lfj.465.1611697250578;
- Tue, 26 Jan 2021 13:40:50 -0800 (PST)
+        bh=G/Vi9m5vDMcQhvtdSeiGhhy16BWAAWglEKpVzpaRcYQ=;
+        b=tOthoXmqS5yTCdy9ZNSZELtZR2EBif2inuvpqZKZPSXS6wPaTZDu1BbcnZiGnLec+Y
+         kv4+zd96U3a311Cb9n5PrhX1xWXSFSUmMrZqynTPJ9MKtaLGIJh9E2FT1cJhv2pPGCxS
+         4liViPXXBGdMmTsGwJyUpI6etjCcDadJ7chtaeaW6wWN/y5hEVSrv20G7yJ1OgtUwBTS
+         PseiTefyQ2t4cQWpGBU+Yh7NGIlU2xrBFiwm2bERu4Q6pH+OWe/2cvmDOiyk98kM9mKt
+         O7FADKW7daOMb00FvDZ/tcOd38k2lqorGIQHIXiNoJDvysgpMK/xonK+Pm7Kou/P3M8F
+         0qhw==
+X-Gm-Message-State: AOAM531vzZ9eUa6lWIIib4+JnDant8aKyq8Q7lOVTCyAP7yY1W+kPFjL
+        vcGwii8uWcZX7kYwkSEq6q0wZ23orZ8JMRyGrK9rrA==
+X-Google-Smtp-Source: ABdhPJy9O3Rh3trgW57Sya7HyNwF6MpmRA7IxNBkApJqiFErZigh7ASuWSthGIIX4/4DO434vbFXPW+mxmDDrI03n7Y=
+X-Received: by 2002:a19:3849:: with SMTP id d9mr1676584lfj.157.1611697310713;
+ Tue, 26 Jan 2021 13:41:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210125045631.2345-1-lorenzo.carletti98@gmail.com>
- <20210125045631.2345-2-lorenzo.carletti98@gmail.com> <20210126210837.7mfzkjqsc3aui3fn@skbuf>
-In-Reply-To: <20210126210837.7mfzkjqsc3aui3fn@skbuf>
+References: <20210125045631.2345-1-lorenzo.carletti98@gmail.com> <20210125045631.2345-2-lorenzo.carletti98@gmail.com>
+In-Reply-To: <20210125045631.2345-2-lorenzo.carletti98@gmail.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 26 Jan 2021 22:40:39 +0100
-Message-ID: <CACRpkdZnVAR2VTY7UM=qt5yLwA0C5z1LUJ2pW7NgmcY5KS2rzw@mail.gmail.com>
+Date:   Tue, 26 Jan 2021 22:41:39 +0100
+Message-ID: <CACRpkdZE4ktDosOU=xxt9XG7L8Bf=y0ahHcifjEO6K8B3AutTg@mail.gmail.com>
 Subject: Re: [PATCH 1/1] net: dsa: rtl8366rb: standardize init jam tables
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+To:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         netdev <netdev@vger.kernel.org>,
@@ -66,40 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:08 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> On Mon, Jan 25, 2021 at 05:56:31AM +0100, Lorenzo Carletti wrote:
+On Mon, Jan 25, 2021 at 5:56 AM Lorenzo Carletti
+<lorenzo.carletti98@gmail.com> wrote:
 
-> > In the rtl8366rb driver there are some jam tables which contain
-> > undocumented values.
-> > While trying to understand what these tables actually do,
-> > I noticed a discrepancy in how one of those was treated.
+> In the rtl8366rb driver there are some jam tables which contain
+> undocumented values.
+> While trying to understand what these tables actually do,
+> I noticed a discrepancy in how one of those was treated.
+> Most of them were plain u16 arrays, while the ethernet one was
+> an u16 matrix.
+> By looking at the vendor's droplets of source code these tables came from,
+> I found out that they were all originally u16 matrixes.
 >
-> And did you manage to find out what these tables actually do?
-
-I think Lorenzo mentioned that he found some settings in there,
-I don't know if it was anything substantial though?
-
-I put Lorenzon on track to investigate the driver, we thought
-it could be an 8051 CPU so that some of the arrays could
-be decoded into 8051 instructions, but so far we didn't get
-anywhere with it.
-
-The background was some mumble on the internet on
-8051 in RTL8366 switches:
-https://news.ycombinator.com/item?id=21040488
-https://web.archive.org/web/20190922094616if_/https://twitter.com/whitequark/status/1175701730819895296
-
-> > Most of them were plain u16 arrays, while the ethernet one was
-> > an u16 matrix.
-> > By looking at the vendor's droplets of source code these tables came from,
-> > I found out that they were all originally u16 matrixes.
-> >
-> > This commit standardizes the jam tables, turning them all into
-> > u16 matrixes.
+> This commit standardizes the jam tables, turning them all into
+> u16 matrixes.
+> This change makes it easier to understand how the jam tables are used
+> and also makes it possible for a single function to handle all of them,
+> removing some duplicated code.
 >
-> Why? What difference does it make?
+> Signed-off-by: Lorenzo Carletti <lorenzo.carletti98@gmail.com>
 
-I think it's nice that the format is the same on all tables.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
