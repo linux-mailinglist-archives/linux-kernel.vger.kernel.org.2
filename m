@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD00D305C90
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367A1305C88
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238267AbhA0NJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:09:55 -0500
-Received: from smtprelay0219.hostedemail.com ([216.40.44.219]:36404 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S313748AbhAZWpG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:45:06 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 50796100E7B43;
-        Tue, 26 Jan 2021 22:44:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:981:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2693:2731:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:6120:7652:7901:7903:9010:9025:10004:10400:10848:11232:11658:11783:11914:12043:12297:12740:12895:12903:13069:13138:13231:13311:13357:13439:13894:14181:14659:14721:21063:21080:21433:21451:21627:21795:21939:30034:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:87,LUA_SUMMARY:none
-X-HE-Tag: dolls97_4f0dac027592
-X-Filterd-Recvd-Size: 2959
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 26 Jan 2021 22:44:21 +0000 (UTC)
-Message-ID: <e5fcdc9ff8b165ed142340135e2124d013b79ac9.camel@perches.com>
-Subject: Re: [PATCH RFC 1/3] checkpatch: add verbose mode
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 26 Jan 2021 14:44:20 -0800
-In-Reply-To: <CABJPP5Ap2=-suEZv+6OVONBPZjLEJEszG=O5ikDxHPiCcBRbFA@mail.gmail.com>
-References: <20210126183521.26535-1-dwaipayanray1@gmail.com>
-         <20210126183521.26535-2-dwaipayanray1@gmail.com>
-         <9bfc9c21d93bb55419954114ed3a7e5cbdc84ddb.camel@perches.com>
-         <CABJPP5Ap2=-suEZv+6OVONBPZjLEJEszG=O5ikDxHPiCcBRbFA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S236357AbhA0NJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:09:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S313764AbhAZWpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 17:45:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 580642067C;
+        Tue, 26 Jan 2021 22:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611701083;
+        bh=ODWHnU+vUf2zfuDRfx2nVSDz1hdZBIUFISiJD8zI944=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cm0HODEsGvYSt66s7yWvSYeipeNHgw7iJSiylVvHSbmELaVFGwhS6FqhY1C2tdYZu
+         za78pd2l+y8I2MJbsrUkxDraY/lyO5dQubf3h2Ewicc9LFdUVwu6EEPcHmf9ORgQLd
+         IKnaEucx9p8sbMFUn3aASGITf2kZd3T9VSBH063OIEfjsgjX1nvyyiIbm3w+VQFqEj
+         FVi8nwwZVW6A0Jlnj+/qRRSGba+Gn7d/Pc7cgKIXqbCPwPOplHezYXOV9AxwOhSZqN
+         FDVoAxRMStCc4hOzDMO9YethvEhzmLcD0aRB1N+E2rz2MBvVLxznmeEYH2ACi3r7iO
+         xJxQiqBppqo9A==
+Received: by mail-ot1-f43.google.com with SMTP id s2so15741069otp.5;
+        Tue, 26 Jan 2021 14:44:43 -0800 (PST)
+X-Gm-Message-State: AOAM5323MuP2GX7vaSWctRwroh6pcBmvgeWwcOAaIQQ9sCiTfEOnFii2
+        XUQX6j0XSgcBogWvuu4+ru2tNENTNAi8G7joHZg=
+X-Google-Smtp-Source: ABdhPJzg0PioE3hyZfUsZDHfNvyWERk/FdAgJhW90LOsfXvhX3C8sd8uQKUfre227TyRQcaQEUc84+K8otcpSOdPX+Y=
+X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr5713513otc.251.1611701082742;
+ Tue, 26 Jan 2021 14:44:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201120085637.7299-1-m.szyprowski@samsung.com>
+ <CGME20201120085652eucas1p1da360ab03f5b5b02a197d0f1ee435737@eucas1p1.samsung.com>
+ <20201120085637.7299-3-m.szyprowski@samsung.com> <20201120110503.GB26836@kozik-lap>
+ <14102bab-33a1-45e0-0faf-883c7b1133a5@samsung.com>
+In-Reply-To: <14102bab-33a1-45e0-0faf-883c7b1133a5@samsung.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 26 Jan 2021 23:44:26 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3QvbfYe5d_X4YcaRZaO4rykqoM_hm7nF-jwJGn0AQaug@mail.gmail.com>
+Message-ID: <CAK8P3a3QvbfYe5d_X4YcaRZaO4rykqoM_hm7nF-jwJGn0AQaug@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
+        Marian Mihailescu <mihailescu2m@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-27 at 01:57 +0530, Dwaipayan Ray wrote:
-> On Wed, Jan 27, 2021 at 1:41 AM Joe Perches <joe@perches.com> wrote:
-> > On Wed, 2021-01-27 at 00:05 +0530, Dwaipayan Ray wrote:
-> > > Add a new verbose mode to checkpatch.pl to emit additional verbose
-> > > test descriptions.
-> > > 
-> > > The verbose mode is optional and can be enabled by the flag
-> > > --verbose.
-[]
-> > > Documentation/dev-tools/checkpatch.rst:
-> > > 
-> > > .. CHECKPATCH_START
-> > 
-> > Nak on the keyword uses.
-> > 
-> > This should really just parse the input file whenever TYPE is found
-> > via some fixed format and save the verbose description after that.
-> > 
-> > Use .rst Field Lists instead, and ideally, keep the list in alphabetic
-> > order or group by similar use.
-> > 
-> > https://docutils.sourceforge.io/docs/user/rst/quickref.html#field-lists
-> > 
-> > e.g.:
-> > 
-> > :LINE_SPACING:
-> >         Vertical space is wasted given the limited number of lines an
-> >         editor window can display when multiple blank lines are used.
-> > 
-> > :SPACING:
-> >         Whitespace style used in the kernel sources is described in
-> >         ref:`Documentation/process/Coding-Style.rst section 3.1.
-> > 
-> > :TRAILING_WHITESPACE:
-> >         Trailing whitespace should always be removed.
-> >         Some editors highlight the trailing whitespace and cause visual
-> >         distractions when editing files.
-> > 
-> > etc...
-[]
-> for the output part can we do something to make the text
-> look a bit more nice? I think some of the verbose descriptions
-> can go a bit long.
+On Fri, Nov 20, 2020 at 12:10 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+> On 20.11.2020 12:05, Krzysztof Kozlowski wrote:
+> > On Fri, Nov 20, 2020 at 09:56:37AM +0100, Marek Szyprowski wrote:
+> >> USB2.0 PHY in Exynos5420 differs from Exynos5250 variant a bit, so use the
+> >> recently introduced dedicated compatible for Exynos5420.
+> >>
+> >> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> >> ---
+> >>   arch/arm/boot/dts/exynos54xx.dtsi | 6 +++---
+> >>   1 file changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/arch/arm/boot/dts/exynos54xx.dtsi b/arch/arm/boot/dts/exynos54xx.dtsi
+> >> index fe9d34c23374..2ddb7a5f12b3 100644
+> >> --- a/arch/arm/boot/dts/exynos54xx.dtsi
+> >> +++ b/arch/arm/boot/dts/exynos54xx.dtsi
+> >> @@ -188,7 +188,7 @@
+> >>                      compatible = "samsung,exynos4210-ehci";
+> >>                      reg = <0x12110000 0x100>;
+> >>                      interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+> >> -                    phys = <&usb2_phy 1>;
+> >> +                    phys = <&usb2_phy 0>;
+> >>                      phy-names = "host";
+> >>              };
+> >>
+> >> @@ -196,12 +196,12 @@
+> >>                      compatible = "samsung,exynos4210-ohci";
+> >>                      reg = <0x12120000 0x100>;
+> >>                      interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+> >> -                    phys = <&usb2_phy 1>;
+> >> +                    phys = <&usb2_phy 0>;
+> >>                      phy-names = "host";
+> >>              };
+> >>
+> >>              usb2_phy: phy@12130000 {
+> >> -                    compatible = "samsung,exynos5250-usb2-phy";
+> >> +                    compatible = "samsung,exynos5420-usb2-phy";
+> > The DTS change will wait till PHY driver adjustements get merged... or
+> > if the difference is not critical, maybe using both compatibles (5420
+> > and 5250) would have sense?
+>
+> It won't work easily with both compatibles, because in the 5420 variant
+> I've also changed the PHY indices (5420 has no device and second hsic
+> phy). IMHO the dts change can wait for the next release.
 
-Which is why verbose should be optional.
+I see this made it into the pull request now, but I had not been aware
+of the change earlier, and I'm slightly annoyed to have received it this
+way:
 
-> Also will the verbose descriptions be limited to say single
-> paragraphs?
+- This is clearly an incompatible change to the dtb, and you all
+   noticed that because it would cause a bisection problem. As
+   a general rule, if a dts change does not work across bisection,
+   we should not merge it at all, because it causes problems for
+   anyone with external dts or dtb files.
 
-Ideally, no.
+- It would likely have been possible to define the new binding in
+  a backward-compatible way. I don't see a reason why the index
+  values in the binding had to change here, other than a slight
+  inconvenience for the driver.
 
-> If there are multiple paragraphs then the output
-> does appear a bit messy.
+- If the change was really unavoidable, I would have expected
+  a long explanation about why it had to be done in both the
+  commit message and in the tag description for the pull
+  request.
 
-I fail to see how that's a problem but play with it and see what
-you can do.
+I've dropped the pull request for now, maybe this can still
+be sorted out with another driver change that makes the
+new compatible string backward-compatible.
 
-
+        Arnd
