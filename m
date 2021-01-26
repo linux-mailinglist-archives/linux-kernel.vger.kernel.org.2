@@ -2,268 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA925304FFC
+	by mail.lfdr.de (Postfix) with ESMTP id 39E76304FFB
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhA0DjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:39:10 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:57594 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727759AbhAZWBx (ORCPT
+        id S236673AbhA0DjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727745AbhAZWBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:01:53 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 68B952C1;
-        Tue, 26 Jan 2021 23:01:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611698469;
-        bh=BHmdZYv8ApW4Hf+sURWB/QQiokPoXSvuXZA2UdxlKPM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mnE6mk3z0HeahmaHus4994p1XTBWRXS1xkTSLPO8TYlpYt8lcA85Lg2Mn3RZkiGaT
-         seKVNeO9oKMjfv+u+SB3Wub6Fgf/APLaeW5svtwREj5Do4Rbn4Crjzs7qcJVbzWwws
-         MDvzmALLU4q2UGrhlKOu7N8Hb5IvExQv9iIS43RQ=
-Date:   Wed, 27 Jan 2021 00:00:49 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
-Message-ID: <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
-References: <20210125142431.1049668-1-geert+renesas@glider.be>
- <20210125142431.1049668-5-geert+renesas@glider.be>
+        Tue, 26 Jan 2021 17:01:50 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E15C06174A;
+        Tue, 26 Jan 2021 14:01:06 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id x81so14730873qkb.0;
+        Tue, 26 Jan 2021 14:01:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MIH2UNLi2fhCMoMNiRx154+VpM0NIRieyzpHxs5Dshw=;
+        b=DEjU2Vlz+c8s8l7i4VvNrOHrZX1BFA/CoCHLraoX/TGR7m7IOU/Tk+tMXGz2Ie8kVj
+         NRrXxn6RiYvZpVsXxyW2ANxFvOjsPw4fYgILW+Q5wT0h4ekogKQAo1eKS1P77lgKI3nI
+         1mkQ+1lcbvQhLF8LTabfIIo+NAgLtSI25NYjLc4f8IcvqpFBJSRSI43sJ5oVpm02n96D
+         QVU/+8yE+q/cn9U/oK+XTtYMJXq+KdR1HO8fMUu0+7yHtjfPTvUZedtrUjvG7fCSneZs
+         e9r9Ve3hIZgRPOpS/7mGJOTQ3Etujv//AbXyOlHj1gMJpEg1TnivcCjUgu+u+sloivxz
+         wPuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=MIH2UNLi2fhCMoMNiRx154+VpM0NIRieyzpHxs5Dshw=;
+        b=d/+dpZBRwpV39dm8EzskT6p0ZDamIMjc17bYtgk+i8QCBZxWhDDIbZzrmBLfRpPRah
+         gTjm3cXaMkM2XO8wFzmWkQ0cZlpmTl9xDlUGL18UrCsvNROcc3NS0NRD82u4wcFSRLfd
+         Gp8tCSlVCARYlqSwjAIQWiRbiTgB/olGXUrfgq8BgHStjIJgytzZrgK+OK7TSbhltRfg
+         TiayRUtdw1XHxc9WoeQ/JmkNEuSSZdTa8CtpBhpUfnJxVo6uPlzlgjLO99uvMkBquOo3
+         CCiKC8woPe7ugKfjCqerzqksCT+SIoT9Q8GKPV27u5N1SE+qUhAMQTk5GYViOYEKSwwQ
+         JbhQ==
+X-Gm-Message-State: AOAM531m3KGh0bxj/2ebS+RKlojNjTpXXNHon96rAOtsS2bYERvVuWR2
+        9uV7mqRTanbr+kunlgoFWkc=
+X-Google-Smtp-Source: ABdhPJxCGoD28UZpYnoVrJkVxaNC0LAX7DFLMqKvCIyNhqeE9W8d95d/tnyrGdZGdIdjcWjqWJOcbA==
+X-Received: by 2002:a37:9f55:: with SMTP id i82mr6102308qke.205.1611698465257;
+        Tue, 26 Jan 2021 14:01:05 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id q92sm13832qtd.92.2021.01.26.14.01.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 14:01:04 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 26 Jan 2021 17:01:04 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>,
+        "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YBCRIPcJyB2J85XS@slm.duckdns.org>
+References: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
+ <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+ <YAfYL7V6E4/P83Mg@google.com>
+ <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+ <be699d89-1bd8-25ae-fc6f-1e356b768c75@amd.com>
+ <YAmj4Q2J9htW2Fe8@mtj.duckdns.org>
+ <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com>
+ <YAopkDN85GtWAj3a@google.com>
+ <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125142431.1049668-5-geert+renesas@glider.be>
+In-Reply-To: <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hello,
 
-Thank you for the patch.
-
-On Mon, Jan 25, 2021 at 03:24:31PM +0100, Geert Uytterhoeven wrote:
-> The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
-> the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
->   1. The per-channel registers are located in a second register block.
->      Add support for mapping the second block, using the appropriate
->      offsets and stride.
->   2. The common Channel Clear Register (DMACHCLR) was replaced by a
->      per-channel register.
->      Update rcar_dmac_chan_clear{,_all}() to handle this.
->      As rcar_dmac_init() needs to clear the status before the individual
->      channels are probed, channel index and base address initialization
->      are moved forward.
+On Tue, Jan 26, 2021 at 12:49:14PM -0800, David Rientjes wrote:
+> > SEV-SNP, another incremental enhancement (on SEV-ES), further strengthens the
+> > argument for SEV and SEV-* coexistenence.  SEV-SNP and SEV-ES will share the
+> > same ASID range, so the question is really, "do we expect to run SEV guests and
+> > any flavor of SEV-* guests on the same platform".  And due to SEV-* not being
+> > directly backward compatible with SEV, the answer will eventually be "yes", as
+> > we'll want to keep running existing SEV guest while also spinning up new SEV-*
+> > guests.
+> > 
 > 
-> Inspired by a patch in the BSP by Phong Hoang
-> <phong.hoang.wz@renesas.com>.
+> Agreed, cloud providers will most certainly want to run both SEV and SEV-* 
+> guests on the same platform.
+
+Am I correct in thinking that the reason why these IDs are limited is
+because they need to be embedded into the page table entries? If so, we
+aren't talking about that many IDs and having to divide the already small
+pool into disjoint purposes doesn't seem like a particularly smart use of
+those bits. It is what it is, I guess.
+
+> I'm slightly concerned about extensibility if there is to be an 
+> incremental enhancement atop SEV-* or TDX with yet another pool of 
+> encryption ids.  (For example, when we only had hugepages, this name was 
+> perfect; then we got 1GB pages which became "gigantic pages", so are 512GB 
+> pages "enormous"? :)  I could argue (encryption_ids.basic.*,
+> encryption_ids.enhanced.*) should map to 
+> (encryption_ids.legacy.*, encryption_ids.*) but that's likely 
+> bikeshedding.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->   - Use two separate named regions instead of an iomem[] array,
->   - Drop rcar_dmac_of_data.chan_reg_block, check for
->     !rcar_dmac_of_data.chan_offset_base instead,
->   - Precalculate chan_base in rcar_dmac_probe().
-> ---
->  drivers/dma/sh/rcar-dmac.c | 74 ++++++++++++++++++++++++++++----------
->  1 file changed, 55 insertions(+), 19 deletions(-)
+> Thomas: does encryption_ids.{basic,enhanced}.* make sense for ASID 
+> partitioning?
 > 
-> diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
-> index 7a0f802c61e5152d..d9589eea98083215 100644
-> --- a/drivers/dma/sh/rcar-dmac.c
-> +++ b/drivers/dma/sh/rcar-dmac.c
-> @@ -189,7 +189,8 @@ struct rcar_dmac_chan {
->   * struct rcar_dmac - R-Car Gen2 DMA Controller
->   * @engine: base DMA engine object
->   * @dev: the hardware device
-> - * @iomem: remapped I/O memory base
-> + * @dmac_base: remapped base register block
-> + * @chan_base: remapped channel register block (optional)
->   * @n_channels: number of available channels
->   * @channels: array of DMAC channels
->   * @channels_mask: bitfield of which DMA channels are managed by this driver
-> @@ -198,7 +199,8 @@ struct rcar_dmac_chan {
->  struct rcar_dmac {
->  	struct dma_device engine;
->  	struct device *dev;
-> -	void __iomem *iomem;
-> +	void __iomem *dmac_base;
-> +	void __iomem *chan_base;
->  
->  	unsigned int n_channels;
->  	struct rcar_dmac_chan *channels;
-> @@ -234,7 +236,7 @@ struct rcar_dmac_of_data {
->  #define RCAR_DMAOR_PRI_ROUND_ROBIN	(3 << 8)
->  #define RCAR_DMAOR_AE			(1 << 2)
->  #define RCAR_DMAOR_DME			(1 << 0)
-> -#define RCAR_DMACHCLR			0x0080
-> +#define RCAR_DMACHCLR			0x0080	/* Not on R-Car V3U */
->  #define RCAR_DMADPSEC			0x00a0
->  
->  #define RCAR_DMASAR			0x0000
-> @@ -297,6 +299,9 @@ struct rcar_dmac_of_data {
->  #define RCAR_DMAFIXDAR			0x0014
->  #define RCAR_DMAFIXDPBASE		0x0060
->  
-> +/* For R-Car V3U */
-> +#define RCAR_V3U_DMACHCLR		0x0100
-> +
->  /* Hardcode the MEMCPY transfer size to 4 bytes. */
->  #define RCAR_DMAC_MEMCPY_XFER_SIZE	4
->  
-> @@ -307,17 +312,17 @@ struct rcar_dmac_of_data {
->  static void rcar_dmac_write(struct rcar_dmac *dmac, u32 reg, u32 data)
->  {
->  	if (reg == RCAR_DMAOR)
-> -		writew(data, dmac->iomem + reg);
-> +		writew(data, dmac->dmac_base + reg);
->  	else
-> -		writel(data, dmac->iomem + reg);
-> +		writel(data, dmac->dmac_base + reg);
->  }
->  
->  static u32 rcar_dmac_read(struct rcar_dmac *dmac, u32 reg)
->  {
->  	if (reg == RCAR_DMAOR)
-> -		return readw(dmac->iomem + reg);
-> +		return readw(dmac->dmac_base + reg);
->  	else
-> -		return readl(dmac->iomem + reg);
-> +		return readl(dmac->dmac_base + reg);
->  }
->  
->  static u32 rcar_dmac_chan_read(struct rcar_dmac_chan *chan, u32 reg)
-> @@ -339,12 +344,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
->  static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
->  				 struct rcar_dmac_chan *chan)
->  {
-> -	rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
-> +	if (dmac->chan_base)
+> Tejun: if this makes sense for legacy SEV and SEV-* per Thomas, and this 
+> is now abstracted to be technology (vendor) neutral, does this make sense 
+> to you?
 
-Using dmac->chan_base to check if the device is a V3U seems a bit of a
-hack (especially given that the field is otherwise unused). I'd prefer
-adding a model field to struct rcar_dmac_of_data and struct rcar_dmac.
+The whole thing seems pretty immature to me and I agree with you that coming
+up with an abstraction at this stage feels risky.
 
-> +		rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-> +	else
-> +		rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
->  }
->  
->  static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
->  {
-> -	rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-> +	struct rcar_dmac_chan *chan;
-> +	unsigned int i;
-> +
-> +	if (dmac->chan_base) {
-> +		for_each_rcar_dmac_chan(i, chan, dmac)
-> +			rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-> +	} else {
-> +		rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-> +	}
->  }
->  
->  /* -----------------------------------------------------------------------------
-> @@ -1744,7 +1760,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
->  
->  static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
->  				struct rcar_dmac_chan *rchan,
-> -				const struct rcar_dmac_of_data *data,
->  				unsigned int index)
->  {
->  	struct platform_device *pdev = to_platform_device(dmac->dev);
-> @@ -1753,9 +1768,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
->  	char *irqname;
->  	int ret;
->  
-> -	rchan->index = index;
-> -	rchan->iomem = dmac->iomem + data->chan_offset_base +
-> -		       data->chan_offset_stride * index;
->  	rchan->mid_rid = -EINVAL;
->  
->  	spin_lock_init(&rchan->lock);
-> @@ -1842,6 +1854,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
->  	const struct rcar_dmac_of_data *data;
->  	struct rcar_dmac_chan *chan;
->  	struct dma_device *engine;
-> +	void __iomem *chan_base;
->  	struct rcar_dmac *dmac;
->  	unsigned int i;
->  	int ret;
-> @@ -1880,9 +1893,24 @@ static int rcar_dmac_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	/* Request resources. */
-> -	dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(dmac->iomem))
-> -		return PTR_ERR(dmac->iomem);
-> +	dmac->dmac_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(dmac->dmac_base))
-> +		return PTR_ERR(dmac->dmac_base);
-> +
-> +	if (!data->chan_offset_base) {
-> +		dmac->chan_base = devm_platform_ioremap_resource(pdev, 1);
-> +		if (IS_ERR(dmac->chan_base))
-> +			return PTR_ERR(dmac->chan_base);
-> +
-> +		chan_base = dmac->chan_base;
-> +	} else {
-> +		chan_base = dmac->dmac_base + data->chan_offset_base;
-> +	}
-> +
-> +	for_each_rcar_dmac_chan(i, chan, dmac) {
-> +		chan->index = i;
+I'm leaning towards creating a misc controller to shove these things into:
 
-Now that chan->indew is set before calling rcar_dmac_chan_probe(), you
-don't have to pass the index to rcar_dmac_chan_probe() anymore.
+* misc.max and misc.current: nested keyed files listing max and current
+  usage for the cgroup.
 
-> +		chan->iomem = chan_base + i * data->chan_offset_stride;
-> +	}
->  
->  	/* Enable runtime PM and initialize the device. */
->  	pm_runtime_enable(&pdev->dev);
-> @@ -1929,7 +1957,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
->  	INIT_LIST_HEAD(&engine->channels);
->  
->  	for_each_rcar_dmac_chan(i, chan, dmac) {
-> -		ret = rcar_dmac_chan_probe(dmac, chan, data, i);
-> +		ret = rcar_dmac_chan_probe(dmac, chan, i);
->  		if (ret < 0)
->  			goto error;
->  	}
-> @@ -1977,14 +2005,22 @@ static void rcar_dmac_shutdown(struct platform_device *pdev)
->  }
->  
->  static const struct rcar_dmac_of_data rcar_dmac_data = {
-> -	.chan_offset_base = 0x8000,
-> -	.chan_offset_stride = 0x80,
-> +	.chan_offset_base	= 0x8000,
-> +	.chan_offset_stride	= 0x80,
-> +};
-> +
-> +static const struct rcar_dmac_of_data rcar_v3u_dmac_data = {
-> +	.chan_offset_base	= 0x0,
-> +	.chan_offset_stride	= 0x1000,
->  };
->  
->  static const struct of_device_id rcar_dmac_of_ids[] = {
->  	{
->  		.compatible = "renesas,rcar-dmac",
->  		.data = &rcar_dmac_data,
-> +	}, {
-> +		.compatible = "renesas,dmac-r8a779a0",
-> +		.data = &rcar_v3u_dmac_data,
->  	},
->  	{ /* Sentinel */ }
->  };
+* Have an API to activate or update a given resource with total resource
+  count. I'd much prefer the resource list to be in the controller itself
+  rather than being through some dynamic API just so that there is some
+  review in what keys get added.
+
+* Top level cgroup lists which resource is active and how many are
+  available.
+
+So, behavior-wise, not that different from the proposed code. Just made
+generic into a misc controller. Would that work?
+
+Thanks.
 
 -- 
-Regards,
-
-Laurent Pinchart
+tejun
