@@ -2,73 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEF1305000
+	by mail.lfdr.de (Postfix) with ESMTP id 3A946304FFF
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhA0DkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        id S232509AbhA0Djw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbhAZWDu (ORCPT
+        with ESMTP id S1727921AbhAZWDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:03:50 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06A8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:03:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nt9yKUXomDG8uLOcOikYEqr2InI/DibgiRpwpXD2IgY=; b=SkEWbAkylDaIJYoorL3DBzwrFe
-        DnzLBZxI6n9mOZNh8sxsvc8iCIg/uMqXEVeyh0j+5uCsYWv9l56RFBJ4512MxVkk3h8xwhOaxmVSm
-        C3McFHe3ENKal3y/2GpbXOAUPhzqEtCJkw9QJ6HLWYjnlndMVSHwTZUkoCwQQwzgS5HZPyTkXbbAe
-        ZeMJKFAKCO36xCtJ1KSvdCGpWfnt8hk99EU+xTEhXqt5JPzVjBBAKyi9+yOQyU1RIS+B55Bxd3kph
-        Snqwcx3BokFqqa269TeLZOQH6Y4WaWgiKAuPLWjYsxUrnUGmqllJSUMSfgrVxEhqxhqdAQzjh1Ocw
-        Q20fedmw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4WOd-006JeE-V6; Tue, 26 Jan 2021 22:01:36 +0000
-Date:   Tue, 26 Jan 2021 22:01:11 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/10] mm: don't pass "enum lru_list" to lru list
- addition functions
-Message-ID: <20210126220111.GO308988@casper.infradead.org>
-References: <20210122220600.906146-1-yuzhao@google.com>
- <20210122220600.906146-4-yuzhao@google.com>
+        Tue, 26 Jan 2021 17:03:22 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7D2C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:02:33 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id 11so11283166pfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:02:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UzduVLBBElKbTcoUoRflYaEyC3jDeNAhreVZX/oQ2Lc=;
+        b=FhhXocR5KweOc95t++Zl5olzUN+G47IHVFEWzm4C7EkKGtW7o1i/ZHRPeQjmiasVDj
+         YbtUV3I+4+OGtM+JwHtpyraZEjWwQK/fNn4Kh+EC5/DA9xOhlmxV7eo6aogSgEOXt+hH
+         TAYvlmRvZ7GMQ06Mr7+wa56VTt+xMnPd0YrieZQr9nIOE0CHkN7VBsJW915OULutqQQH
+         jEp4l9VfjRv9kVENl0LGJxQF2Cq7ayvvlJeVKYOkAOo7dh7Wk/AFFXkmDfe3z8fzThNV
+         Lj5gpflICD/9EtEcODJg9bfoDoNBvU67oumA0GsSom0fHJf4dBVXLyLgbE7kJgG/6YQx
+         LyFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UzduVLBBElKbTcoUoRflYaEyC3jDeNAhreVZX/oQ2Lc=;
+        b=iTmfeSAXH3lr77w9lC4xlZUqX3RCRwTv2sZ6oJ0W8dxfWGDVZMS8Eh4Ds8z3niy5id
+         G4k0D24rttp3BUIlsBBIeHvK9YnXt6D/c+c7GHE6BnCp/4fv58SAUYsAWe+ak+Ukrkr6
+         7flZiPyczzM/8Cbrm1+DEhLkS4R5cQ07JFDF3r8oX1j8GYfNb9rne8aD3C948t1kdijK
+         TVO/HLVb7tj/xOAHWtu7xJdXnk9hl4jmfpDSglFnoOUksbB1jQHWUxiE7DaaNyQsJLAA
+         0Z9IlulH3RcBcHX6L54R7aeMpKVrFAL/YzRlXzGVxIdqlfO5D1f9UDsBeRuGbWokJbHk
+         Y9JA==
+X-Gm-Message-State: AOAM532ycJE4fTnLBvDUdBpbwljdDxVCqBBgDXJmgr2G/2MG/BbypRuG
+        RVDgXugtNPIUQRPcZvHSaFV8OQ==
+X-Google-Smtp-Source: ABdhPJwdor7mQYTUQpr+b82bSQBoX0yLTUtnCl+PojrmfhwgoQ69GY0/EpEmcl38HISZd1BP+H//DQ==
+X-Received: by 2002:a62:f202:0:b029:1bc:a634:8e9c with SMTP id m2-20020a62f2020000b02901bca6348e9cmr7170582pfh.49.1611698552886;
+        Tue, 26 Jan 2021 14:02:32 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id p22sm14594pgk.21.2021.01.26.14.02.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 14:02:32 -0800 (PST)
+Date:   Tue, 26 Jan 2021 14:02:25 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 19/24] kvm: x86/mmu: Protect tdp_mmu_pages with a lock
+Message-ID: <YBCRcalZJwAlkO9F@google.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-20-bgardon@google.com>
+ <YAnUhCocizx97FWL@google.com>
+ <YAnzB3Uwn3AVTXGN@google.com>
+ <335d27f7-0849-de37-f380-a5018c5c5535@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122220600.906146-4-yuzhao@google.com>
+In-Reply-To: <335d27f7-0849-de37-f380-a5018c5c5535@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:05:53PM -0700, Yu Zhao wrote:
-> +++ b/mm/swap.c
-> @@ -231,7 +231,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
->  	if (!PageUnevictable(page)) {
->  		del_page_from_lru_list(page, lruvec, page_lru(page));
->  		ClearPageActive(page);
-> -		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
-> +		add_page_to_lru_list_tail(page, lruvec);
->  		__count_vm_events(PGROTATED, thp_nr_pages(page));
->  	}
+On Tue, Jan 26, 2021, Paolo Bonzini wrote:
+> On 21/01/21 22:32, Sean Christopherson wrote:
+> > Coming back to this series, I wonder if the RCU approach is truly necessary to
+> > get the desired scalability.  If both zap_collapsible_sptes() and NX huge page
+> > recovery zap_only_  leaf SPTEs, then the only path that can actually unlink a
+> > shadow page while holding the lock for read is the page fault path that installs
+> > a huge page over an existing shadow page.
+> > 
+> > Assuming the above analysis is correct, I think it's worth exploring alternatives
+> > to using RCU to defer freeing the SP memory, e.g. promoting to a write lock in
+> > the specific case of overwriting a SP (though that may not exist for rwlocks),
+> > or maybe something entirely different?
+> 
+> You can do the deferred freeing with a short write-side critical section to
+> ensure all readers have terminated.
 
-Is it profitable to do ...
+Hmm, the most obvious downside I see is that the zap_collapsible_sptes() case
+will not scale as well as the RCU approach.  E.g. the lock may be heavily
+contested when refaulting all of guest memory to (re)install huge pages after a
+failed migration.
 
--		del_page_from_lru_list(page, lruvec, page_lru(page));
-+		enum lru_list lru = page_lru(page);
-+		del_page_from_lru_list(page, lruvec, lru);
-		ClearPageActive(page);
--		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
-+		lru &= ~LRU_ACTIVE;
-+		add_page_to_lru_list_tail(page, lruvec, lru);
+Though I wonder, could we do something even more clever for that particular
+case?  And I suppose it would apply to NX huge pages as well.  Instead of
+zapping the leaf PTEs and letting the fault handler install the huge page, do an
+in-place promotion when dirty logging is disabled.  That could all be done under
+the read lock, and with Paolo's method for deferred free on the back end.  That
+way only the thread doing the memslot update would take mmu_lock for write, and
+only once per memslot update.
 
+> If the bool argument to handle_disconnected_tdp_mmu_page is true(*), the
+> pages would be added to an llist, instead of being freed immediately. At the
+> end of a shared critical section you would do
+> 
+> 	if (!llist_empty(&kvm->arch.tdp_mmu_disconnected_pages)) {
+> 		struct llist_node *first;
+> 		kvm_mmu_lock(kvm);
+> 		first = __list_del_all(&kvm->arch.tdp_mmu_disconnected_pages);
+> 		kvm_mmu_unlock(kvm);
+> 
+> 		/*
+> 		 * All vCPUs have already stopped using the pages when
+> 		 * their TLBs were flushed.  The exclusive critical
+> 		 * section above means that there can be no readers
+> 		 * either.
+> 		 */
+> 		tdp_mmu_free_disconnected_pages(first);
+> 	}
+> 
+> So this is still deferred reclamation, but it's done by one of the vCPUs
+> rather than a worker RCU thread.  This would replace patches 11/12/13 and
+> probably would be implemented after patch 18.
+> 
+> Paolo
+> 
+> (*) this idea is what prompted the comment about s/atomic/shared/
+> 
