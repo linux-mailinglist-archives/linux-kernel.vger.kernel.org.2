@@ -2,224 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B456A305279
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52F930527A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhA0DQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:16:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731124AbhAZUZE (ORCPT
+        id S235337AbhA0DQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731688AbhAZUXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:25:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611692616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m/u93bfQxIYyXQ08UiKaRmMGUT9o1Hv+NSbQL83syII=;
-        b=CibOJRqsVbnH4uyH3jxLVnzTnp4ecYhwKHuReP0VUpPdSBKcvsXum52hXBJ9F+OZ++RMc8
-        q3wYws0VQsGOabBWVHcrGkJfR5lDAHYH87sNa3C5NttxbuwrGd0LNLlfeGx3IyxSQgkxMx
-        9fIFI9+IsyduOxVGziR5rlwcXeqlZkk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-NwaC3_pbMYK5Ly5YxcYgBQ-1; Tue, 26 Jan 2021 15:23:33 -0500
-X-MC-Unique: NwaC3_pbMYK5Ly5YxcYgBQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29C52100747E;
-        Tue, 26 Jan 2021 20:23:01 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A0C35D9C2;
-        Tue, 26 Jan 2021 20:22:47 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 15:22:45 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v24 21/25] audit: add support for non-syscall auxiliary
- records
-Message-ID: <20210126202245.GN1762914@madcap2.tricolour.ca>
-References: <20210126164108.1958-1-casey@schaufler-ca.com>
- <20210126164108.1958-22-casey@schaufler-ca.com>
- <20210126184246.GM1762914@madcap2.tricolour.ca>
- <e9140e2a-a6ca-9d51-9db4-a0ec0dfd56cc@schaufler-ca.com>
+        Tue, 26 Jan 2021 15:23:43 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5F9C061574;
+        Tue, 26 Jan 2021 12:23:02 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id n42so17525796ota.12;
+        Tue, 26 Jan 2021 12:23:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4sHBqGg7Zd3ZBa+/Y7qm8JDSQDKowoxEDhktZKpfDVQ=;
+        b=KXkx5d4sUxYTOvTF7gRRbxw6TEVZKzwoeFBBK196bvyMZF6pXhkZJdSpYACAEPyxmj
+         lOZN2dN7p0wDndRogQn7Pd/iANbqMzsLBvhJ4Kk0EJ6SETv7jqp086n+f9T3OMtpZdoA
+         0mBxUKf4Lgddj5VSxdTmKVBY0eCSsGPLCLQur4FxOss08zRpUHwlU+hTpYxjv7l34dF3
+         w5YGCd3xdUUMao6VeF/77/VIB2F6BBE16R93DZ89disPYcyzdae4N7NFL5+AAPCbW7gO
+         8sA0O7pRIcRgWhqRSW/FCddtvVTvaC6CvjkYh2SXDfSDHXL+5FmJ9K4fvtUmUHjYMfHI
+         VHiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4sHBqGg7Zd3ZBa+/Y7qm8JDSQDKowoxEDhktZKpfDVQ=;
+        b=oI9fPjh8MZE/YB8qD4MpR/W5FrkB0CN5yn2227dACqilHfsq0CuGyvnZAtezK4gXna
+         G4OnEOmHJbN7XSa3Rp3sBADicqfBocy681Z0cWX6gKj5PVGfBx68CKDnDMqe/PrUrEo0
+         kuuMhXaVdd43IRRL1Lt40MBCNnHJUpGm0/44t5b7DpF8jOXmMWa2EhyWC8mBUmGSX+1x
+         uHndX+3B2HlerVMSImgkBirbjhctwr0nQ0idPDjEAA1tY6yS6PWuo1udQT0Cr0Zrh+6k
+         tQD9hm6HupK1vGjcC7w8vhXsTed6954gniHBaDforUX3lfunPjdvTUvhvpSjQGET7cBO
+         MIdg==
+X-Gm-Message-State: AOAM5336mmzrS+Ip5Y7pEpsIWZHZwJrHpLoMLp8lsF4Q+hL8Hd0d13NR
+        IkLM/16r/U8GkC4SInvTkVX+VGWyZfDGbbZLpXNWcY8a6Eg=
+X-Google-Smtp-Source: ABdhPJydJKwYgmzSRDhy0oro307T8H3VsrUeyubaJ7SnbCg8rmXVAf+p/W3wSMTP/4Kl09XSM0cOPtcphypPBNDeVGY=
+X-Received: by 2002:a9d:1421:: with SMTP id h30mr5365576oth.45.1611692581570;
+ Tue, 26 Jan 2021 12:23:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9140e2a-a6ca-9d51-9db4-a0ec0dfd56cc@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <CAE1WUT7xJyx_gbxJu3r9DJGbqSkWZa-moieiDWC0bue2CxwAwg@mail.gmail.com>
+ <20210126191716.GN308988@casper.infradead.org>
+In-Reply-To: <20210126191716.GN308988@casper.infradead.org>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Tue, 26 Jan 2021 12:22:50 -0800
+Message-ID: <CAE1WUT61OwLSSRCvEe3FLjAASre42iOe=UfPX4uDbDrQ11PAYg@mail.gmail.com>
+Subject: Re: Getting a new fs in the kernel
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 10:58, Casey Schaufler wrote:
-> On 1/26/2021 10:42 AM, Richard Guy Briggs wrote:
-> > On 2021-01-26 08:41, Casey Schaufler wrote:
-> >> Standalone audit records have the timestamp and serial number generated
-> >> on the fly and as such are unique, making them standalone.  This new
-> >> function audit_alloc_local() generates a local audit context that will
-> >> be used only for a standalone record and its auxiliary record(s).  The
-> >> context is discarded immediately after the local associated records are
-> >> produced.
-> >>
-> >> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> >> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> >> Cc: linux-audit@redhat.com
-> >> To: Richard Guy Briggs <rgb@redhat.com>
-> > This has been minorly bothering me for several revisions...  Is there a
-> > way for the development/authorship to be accurately reflected
-> > if/when this patch is merged before the contid patch set?
-> 
-> I don't know the right way to do that because I had to pull
-> some of what was in the original patch out. Any way you would
-> like it done is fine with me.
+On Tue, Jan 26, 2021 at 11:18 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Jan 26, 2021 at 08:23:03AM -0800, Amy Parker wrote:
+> > Kernel development newcomer here. I've begun creating a concept for a
+> > new filesystem, and ideally once it's completed, rich, and stable I'd
+> > try to get it into the kernel.
+> >
+> > What would be the process for this? I'd assume a patch sequence, but
+> > they'd all be dependent on each other, and sending in tons of
+> > dependent patches doesn't sound like a great idea. I've seen requests
+> > for pulls, but since I'm new here I don't really know what to do.
+>
+> Hi Amy,
+>
+> Writing a new filesystem is fun!  Everyone should do it.
+>
+> Releasing a filesystem is gut-churning.  You're committing to a filesystem
+> format that has to be supported for ~ever.
 
-Other than diff context, it appears to be identical to the patch in the
-v9 contid patchset (with one tiny cut/paste below, I don't know how it
-compiles...).  There are minor updates to bring it up to v11.
+I'm bored and need something to dedicate myself to as a long-term commitment.
 
-> >> ---
-> >>  include/linux/audit.h |  8 ++++++++
-> >>  kernel/audit.h        |  1 +
-> >>  kernel/auditsc.c      | 33 ++++++++++++++++++++++++++++-----
-> >>  3 files changed, 37 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/include/linux/audit.h b/include/linux/audit.h
-> >> index 418a485af114..97cd7471e572 100644
-> >> --- a/include/linux/audit.h
-> >> +++ b/include/linux/audit.h
-> >> @@ -289,6 +289,8 @@ static inline int audit_signal_info(int sig, struct task_struct *t)
-> >>  				/* Public API */
-> >>  extern int  audit_alloc(struct task_struct *task);
-> >>  extern void __audit_free(struct task_struct *task);
-> >> +extern struct audit_context *audit_alloc_local(gfp_t gfpflags);
-> >> +extern void audit_free_context(struct audit_context *context);
-> >>  extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
-> >>  				  unsigned long a2, unsigned long a3);
-> >>  extern void __audit_syscall_exit(int ret_success, long ret_value);
-> >> @@ -552,6 +554,12 @@ static inline void audit_log_nfcfg(const char *name, u8 af,
-> >>  extern int audit_n_rules;
-> >>  extern int audit_signals;
-> >>  #else /* CONFIG_AUDITSYSCALL */
-> >> ++static inline struct audit_context *audit_alloc_local(gfp_t gfpflags)
+>
+> Supporting a new filesystem is a weighty responsibility.  People are
+> depending on you to store their data reliably.  And they demand boring
+> and annoying features like xattrs, acls, support for time after 2038.
 
-This extra "+" that ends up at the beginning of the line looks
-unintentional and I'd have expected the compiler to complain.
 
-> >> +{
-> >> +	return NULL;
-> >> +}
-> >> +static inline void audit_free_context(struct audit_context *context)
-> >> +{ }
-> >>  static inline int audit_alloc(struct task_struct *task)
-> >>  {
-> >>  	return 0;
-> >> diff --git a/kernel/audit.h b/kernel/audit.h
-> >> index ce41886807bb..3f2285e1c6e0 100644
-> >> --- a/kernel/audit.h
-> >> +++ b/kernel/audit.h
-> >> @@ -99,6 +99,7 @@ struct audit_proctitle {
-> >>  struct audit_context {
-> >>  	int		    dummy;	/* must be the first element */
-> >>  	int		    in_syscall;	/* 1 if task is in a syscall */
-> >> +	bool		    local;	/* local context needed */
-> >>  	enum audit_state    state, current_state;
-> >>  	unsigned int	    serial;     /* serial number for record */
-> >>  	int		    major;      /* syscall number */
-> >> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> >> index de2b2ecb3aea..479b3933d788 100644
-> >> --- a/kernel/auditsc.c
-> >> +++ b/kernel/auditsc.c
-> >> @@ -927,11 +927,13 @@ static inline void audit_free_aux(struct audit_context *context)
-> >>  	}
-> >>  }
-> >>  
-> >> -static inline struct audit_context *audit_alloc_context(enum audit_state state)
-> >> +static inline struct audit_context *audit_alloc_context(enum audit_state state,
-> >> +							gfp_t gfpflags)
-> >>  {
-> >>  	struct audit_context *context;
-> >>  
-> >> -	context = kzalloc(sizeof(*context), GFP_KERNEL);
-> >> +	/* We can be called in atomic context via audit_tg() */
-> >> +	context = kzalloc(sizeof(*context), gfpflags);
-> >>  	if (!context)
-> >>  		return NULL;
-> >>  	context->state = state;
-> >> @@ -967,7 +969,8 @@ int audit_alloc(struct task_struct *tsk)
-> >>  		return 0;
-> >>  	}
-> >>  
-> >> -	if (!(context = audit_alloc_context(state))) {
-> >> +	context = audit_alloc_context(state, GFP_KERNEL);
-> >> +	if (!context) {
-> >>  		kfree(key);
-> >>  		audit_log_lost("out of memory in audit_alloc");
-> >>  		return -ENOMEM;
-> >> @@ -979,8 +982,27 @@ int audit_alloc(struct task_struct *tsk)
-> >>  	return 0;
-> >>  }
-> >>  
-> >> -static inline void audit_free_context(struct audit_context *context)
-> >> +struct audit_context *audit_alloc_local(gfp_t gfpflags)
-> >>  {
-> >> +	struct audit_context *context = NULL;
-> >> +
-> >> +	context = audit_alloc_context(AUDIT_RECORD_CONTEXT, gfpflags);
-> >> +	if (!context) {
-> >> +		audit_log_lost("out of memory in audit_alloc_local");
-> >> +		goto out;
-> >> +	}
-> >> +	context->serial = audit_serial();
-> >> +	ktime_get_coarse_real_ts64(&context->ctime);
-> >> +	context->local = true;
-> >> +out:
-> >> +	return context;
-> >> +}
-> >> +EXPORT_SYMBOL(audit_alloc_local);
-> >> +
-> >> +void audit_free_context(struct audit_context *context)
-> >> +{
-> >> +	if (!context)
-> >> +		return;
-> >>  	audit_free_module(context);
-> >>  	audit_free_names(context);
-> >>  	unroll_tree_refs(context, NULL, 0);
-> >> @@ -991,6 +1013,7 @@ static inline void audit_free_context(struct audit_context *context)
-> >>  	audit_proctitle_free(context);
-> >>  	kfree(context);
-> >>  }
-> >> +EXPORT_SYMBOL(audit_free_context);
-> >>  
-> >>  static int audit_log_pid_context(struct audit_context *context, pid_t pid,
-> >>  				 kuid_t auid, kuid_t uid,
-> >> @@ -2214,7 +2237,7 @@ EXPORT_SYMBOL_GPL(__audit_inode_child);
-> >>  int auditsc_get_stamp(struct audit_context *ctx,
-> >>  		       struct timespec64 *t, unsigned int *serial)
-> >>  {
-> >> -	if (!ctx->in_syscall)
-> >> +	if (!ctx->in_syscall && !ctx->local)
-> >>  		return 0;
-> >>  	if (!ctx->serial)
-> >>  		ctx->serial = audit_serial();
-> >> -- 
-> >> 2.25.4
-> >>
-> > - RGB
 
-- RGB
+>
+> We have quite a lot of actively developed filesystems for users to choose
+> from already -- ext4, btrfs, xfs are the main three.  So you're going
+> to face a challenge persuading people to switch.
+>
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+Yeah, understandable.
 
+> Finally, each filesystem represents a (small) maintainance burden to
+> people who need to make changes that cross all filesystems.  So it'd
+> be nice to have a good justification for why we should include that
+> cost.
+
+Alright, I'll keep that in mind.
+
+>
+> Depending exactly what your concept is, it might make more sense to
+> make it part of an existing filesystem.  Or develop it separately
+> and have an existing filesystem integrate it.
+
+That's what other people have suggested as well, so I'll start
+considering trying to add any features I come up with into other
+filesystems as well.
+
+>
+> Anyway, I've been at this for twenty years, so maybe I'm just grouchy
+> about new filesystems.  By all means work on it and see if it makes
+> sense, but there's a fairly low probability that it gets merged.
+
+Alright. Thanks for the advice!
+
+Best regards,
+Amy Parker
+(she/her/hers)
