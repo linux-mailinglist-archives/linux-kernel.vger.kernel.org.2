@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADF4305240
+	by mail.lfdr.de (Postfix) with ESMTP id 39E0730523F
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbhA0D0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:26:54 -0500
-Received: from mga05.intel.com ([192.55.52.43]:46592 "EHLO mga05.intel.com"
+        id S236046AbhA0D05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:26:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728391AbhAZVM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:12:57 -0500
-IronPort-SDR: G6Q3yaqLPB41xE0cAf5S0ljSVIoSPVPwq5Yx+O6N0iif4pj01ZIzKrn8Ki7bG6kpqRruQ2ZPSp
- Z19RQYrwEHtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="264794159"
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="264794159"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:10:26 -0800
-IronPort-SDR: xTfDIcKXG41ek8K2XFdVEjJ1kBbsknSDpCl0yi6HYqNK5zxkHDOjTHsz2upEFb5FoPhwOs2GD7
- G3B/aZ51HQvQ==
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="406852355"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:10:22 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l4VcR-00Ev3u-K1; Tue, 26 Jan 2021 23:11:23 +0200
-Date:   Tue, 26 Jan 2021 23:11:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, lizefan@huawei.com, mingo@kernel.org,
-        tglx@linutronix.de, josh@joshtriplett.org, yury.norov@gmail.com,
-        peterz@infradead.org, paulmck@kernel.org, fweisbec@gmail.com,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH 2/8] lib: test_bitmap: add more start-end:offset/len tests
-Message-ID: <YBCFeyVGih5RMuBY@smile.fi.intel.com>
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
- <20210126171141.122639-3-paul.gortmaker@windriver.com>
+        id S1728886AbhAZVQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:16:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3979322B3B;
+        Tue, 26 Jan 2021 21:15:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611695745;
+        bh=ReYcTUHdjIZlSg1evEWL96VccN8+t7kQN0XQHxu8Sjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ep9OJDuqv8a4bgQFCDjlq2iI5RB4LPmJdk2+zbmvpftZZs5D695AbwewbaJCc3JMj
+         dL9ah6VjErZKjDWlPhiRROOXCjhWGwv8ee0E3jMcU9D+bsKo9dRbTCh7E1/I/ksJ+W
+         D5aMANUUHtAJMmOZzJoqkhUOETJyli7sbbolWUXjjn7SLWcwp35YDD5Sc4X6bQwB4t
+         KNQ28ubpeT02sMgKKZi1yOW3qIW1xs9s1G3rp0O9U1ZgnA8uDs3zzXCVe2CYAcWZRI
+         xSf48pCAjs7pYetBMI6YImpNnBC/EtiREGdnd+/KP+X+cGPrcbUeJIoiK7y8oHFA4s
+         39OCOtyKSKR/A==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 4CEF53C0C97; Tue, 26 Jan 2021 22:15:43 +0100 (CET)
+Date:   Tue, 26 Jan 2021 22:15:43 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     tomba@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH] drm/omap: dsi: fix unreachable code in
+ dsi_vc_send_short()
+Message-ID: <20210126211543.jb6lmcg6jedzruc3@earth.universe>
+References: <20210126135511.10989-1-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tditrmhsvf34pfox"
 Content-Disposition: inline
-In-Reply-To: <20210126171141.122639-3-paul.gortmaker@windriver.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210126135511.10989-1-dong.menglong@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:11:35PM -0500, Paul Gortmaker wrote:
-> There are inputs to bitmap_parselist() that would probably never
-> be entered manually by a person, but might result from some kind of
-> automated input generator.  Things like ranges of length 1, or group
-> lengths longer than nbits, overlaps, or offsets of zero.
-> 
-> Adding these tests serve two purposes:
-> 
-> 1) document what might seem odd but nonetheless valid input.
-> 
-> 2) don't regress from what we currently accept as valid.
 
-Makes sense.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+--tditrmhsvf34pfox
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Hi,
+
+On Tue, Jan 26, 2021 at 05:55:11AM -0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+>=20
+> The 'r' in dsi_vc_send_short() is of type 'unsigned int', so the
+> 'r < 0' can't be true.
+>=20
+> Fix this by introducing a 'err' insteaded.
+>=20
+> Fixes: 1ed6253856cb
+> ("drm/omap: dsi: switch dsi_vc_send_long/short to mipi_dsi_msg")
+
+Documentation/process/submitting-patches.rst:
+
+If your patch fixes a bug in a specific commit, e.g. you found an
+issue using ``git bisect``, please use the 'Fixes:' tag with the
+first 12 characters of the SHA-1 ID, and the one line summary. Do
+not split the tag across multiple lines, tags are exempt from the
+"wrap at 75 columns" rule in order to simplify parsing scripts.
+
+Otherwise:
+
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 > ---
->  lib/test_bitmap.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-> index 3d2cd3b1de84..807d1e8dd59c 100644
-> --- a/lib/test_bitmap.c
-> +++ b/lib/test_bitmap.c
-> @@ -35,6 +35,8 @@ static const unsigned long exp1[] __initconst = {
->  	BITMAP_FROM_U64(0x3333333311111111ULL),
->  	BITMAP_FROM_U64(0xffffffff77777777ULL),
->  	BITMAP_FROM_U64(0),
-> +	BITMAP_FROM_U64(0x00008000),
-> +	BITMAP_FROM_U64(0x80000000),
->  };
->  
->  static const unsigned long exp2[] __initconst = {
-> @@ -335,6 +337,26 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
->  	{0, " ,  ,,  , ,   ",		&exp1[12 * step], 8, 0},
->  	{0, " ,  ,,  , ,   \n",		&exp1[12 * step], 8, 0},
->  
-> +	{0, "0-0",			&exp1[0], 32, 0},
-> +	{0, "1-1",			&exp1[1 * step], 32, 0},
-> +	{0, "15-15",			&exp1[13 * step], 32, 0},
-> +	{0, "31-31",			&exp1[14 * step], 32, 0},
-> +
-> +	{0, "0-0:0/1",			&exp1[12 * step], 32, 0},
-> +	{0, "0-0:1/1",			&exp1[0], 32, 0},
-> +	{0, "0-0:1/31",			&exp1[0], 32, 0},
-> +	{0, "0-0:31/31",		&exp1[0], 32, 0},
-> +	{0, "1-1:1/1",			&exp1[1 * step], 32, 0},
-> +	{0, "0-15:16/31",		&exp1[2 * step], 32, 0},
-> +	{0, "15-15:1/2",		&exp1[13 * step], 32, 0},
-> +	{0, "15-15:31/31",		&exp1[13 * step], 32, 0},
-> +	{0, "15-31:1/31",		&exp1[13 * step], 32, 0},
-> +	{0, "16-31:16/31",		&exp1[3 * step], 32, 0},
-> +	{0, "31-31:31/31",		&exp1[14 * step], 32, 0},
-> +
-> +	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
-> +	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
-> +
->  	{-EINVAL, "-1",	NULL, 8, 0},
->  	{-EINVAL, "-0",	NULL, 8, 0},
->  	{-EINVAL, "10-1", NULL, 8, 0},	/* (start > end) ; also ERANGE */
-> -- 
-> 2.17.1
-> 
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/=
+dss/dsi.c
+> index 8e11612f5fe1..febcc87ddfe1 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi=
+, int vc,
+>  			     const struct mipi_dsi_msg *msg)
+>  {
+>  	struct mipi_dsi_packet pkt;
+> +	int err;
+>  	u32 r;
+> =20
+> -	r =3D mipi_dsi_create_packet(&pkt, msg);
+> -	if (r < 0)
+> -		return r;
+> +	err =3D mipi_dsi_create_packet(&pkt, msg);
+> +	if (err)
+> +		return err;
+> =20
+>  	WARN_ON(!dsi_bus_is_locked(dsi));
+> =20
+> --=20
+> 2.25.1
+>=20
 
--- 
-With Best Regards,
-Andy Shevchenko
+--tditrmhsvf34pfox
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAQhnkACgkQ2O7X88g7
++pqFEg//QN2GZc4dUy1QEuJCGbtpasVmQnWCnWQvqIhKChdfhmCxNBYdA1nstbCa
+7S7PghJwgvff0Qc3xEIA/L3ZxkV7GEEMxh5fk9KR5v1gDQlaEblMSQUOmHv5Kkp5
+QOEcP/i9n9uKv+6SiQguByZiVWwKA9TP1tDe0NYUnUkrMMPAH0alhoq9sQ9pmHNe
+qEezOHvi0mLGWO9I/S6B9+x0J5r9MT1oEPKYvPDpieqAbMYazIRvS8BlI76Q0FI6
+y57RudghYriuSIKy72dVTk71cs6uDHk+vsLbkJgEqsQmPO5fpFv4jwMTCfIobW8v
+507kiKbmO7Ew4ORfgir6gu4tC/0Vxn6ek+0KRjvXjqbM/udKSU1fscC1LBoMpkg3
+8ZogXhvESITOB6a3Bb7tYu3CLC0upx1C+5/fkHKDkVxusBwiDiPU5To7mFiSsz80
+u+13ATAkpwapp91VvIb7Qdej5XsXgcUF7i3zSLqa2MNoqsJAM/Im/5IVGp0iA054
+ObF7/oLbHDMY36wjjxsdUxHGs/dwL2v2ClE53FilqrdkXeTUgGLtpJXmO9nnK/MS
+x2GaogGqAxk/lfqTsIgciUCMvqrKQ1bBzv7tu9ZtEGIfPsWUSKK+BbgzbezIUEaK
++RjNOQUOvPbdH8lUDErMKsA0k3IT64lGlewLW1Qe336MiKooA+k=
+=z59Q
+-----END PGP SIGNATURE-----
+
+--tditrmhsvf34pfox--
