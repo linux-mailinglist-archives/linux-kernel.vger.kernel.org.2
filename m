@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FEA305026
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E12305027
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237107AbhA0DrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:47:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42259 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388493AbhAZXXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 18:23:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611703315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FFsgQkQMHGcNuO7prFnbNLIMkPeBzSiQZrxd3POXfNg=;
-        b=Kihxvzlqq1MbbO//yqVeXlI28T68f/yMLOkgQLQGqwxAr3EC59yoyeuZIJ9ki1NeL6VLbk
-        Jt72GxB8vjukeVG2vsZFYMp/hZYK+W1K1tKwmbwafkvMCQgb0tR2ZI4vaM8cYi9a2x9fZj
-        ZO4KoaXtLKXLUPD2GTa81ZV4ukjrg8Q=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-FULe_4PcNkW4omGXIUXR1Q-1; Tue, 26 Jan 2021 18:21:53 -0500
-X-MC-Unique: FULe_4PcNkW4omGXIUXR1Q-1
-Received: by mail-qt1-f197.google.com with SMTP id l15so4725091qtp.21
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 15:21:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=FFsgQkQMHGcNuO7prFnbNLIMkPeBzSiQZrxd3POXfNg=;
-        b=X+Xl6oDUcpd+jU53fmLSObuMm0YCm3QHxOMfydAufEy5/oto4sLZZNgN7kdOKkzZ6d
-         4PNf59lvOszjbVR1iT//XZxXXT1fut1RthY88k/nrWsYP325REMoa9jFr26HG2jbJj1m
-         W9x/GJXxLnZt+rWiDGiWMipnbea4C/JzgNsWSzmGLp3YjVEUeE+HiwLyUaXnAjQdGDFm
-         oDipbSExO4GmsQrMxUrS9o1X/Z/KSn5/0UMsWBS8qo4SdDWBaFAwpEnZyJxjlccMCmVS
-         0ZVTnAml/b9BAbQjn3hZuENQLlWfpUcZGejvQolQxxAHI9BfcukjRU2uRbvIbM5tFWcT
-         KltA==
-X-Gm-Message-State: AOAM532f0LtmQZ4VVIQ5L3bB70VbeWvibSYVmepQMmHEicT4sWXDCooG
-        GZcW65HzYx5EHKY6YbF9ziQnB+GQw4u4gJBxJOQ97yh3nQYwOlezy/BgjFfMXXwnkxsDRzwFfpL
-        52ObpiOLXyORAu2wlw4sT+sjX
-X-Received: by 2002:a0c:c384:: with SMTP id o4mr8011135qvi.21.1611703313445;
-        Tue, 26 Jan 2021 15:21:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyQwxGlyfMcY1NOcyyinpE4uDbuVGu0DgI2XyVdUzWX/kxECSPbaveR0jaQIYaDyMXFFNGuVg==
-X-Received: by 2002:a0c:c384:: with SMTP id o4mr8011119qvi.21.1611703313228;
-        Tue, 26 Jan 2021 15:21:53 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id c12sm154500qtq.76.2021.01.26.15.21.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 15:21:52 -0800 (PST)
-Subject: Re: [PATCH v2 0/3] clk: clk-axiclgen: add support for ZynqMP
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        lars@metafoo.de, linux-fpga@vger.kernel.org, mdf@kernel.org
-References: <20210126110826.24221-1-alexandru.ardelean@analog.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <eba46db2-b528-0f6f-7e23-f61fa3e265b2@redhat.com>
-Date:   Tue, 26 Jan 2021 15:21:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S237115AbhA0Drk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:47:40 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44379 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388608AbhAZXYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 18:24:32 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQN8b40sjz9sS8;
+        Wed, 27 Jan 2021 10:23:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611703424;
+        bh=1F47ItOEb0qiNrst9O4+9KjL6Os/ZVAcyvvVvnqtNKg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YwG226NQUqWc9LksHMxp94qRIjdQw+2S9dhR2pwu+nw9J1RoA6P3J1CfS2XfW1/zT
+         Rrj34i/vXUpXYgTEALs9GfmkxRS8J+9B5LmCh/CwCkn27XKwb66XPaPSXB1RCbJAX/
+         qk0OLs7HmFr1HQ9FFpP7BjpWjR9H8/pHVyKdt9ViR60s6etHjalBphguL/em6+vMiX
+         0qiCG9pJp9IRH/vOhWMh6IJZYQ6X189P0/Idz/Hx12k2k3h9uEWhlZV68pb/0R2ByC
+         roXpnS956Ydo7BRyPeGCWHdrNwLT7Xkw/2DjHBCp6CHHJL+8sp092MvBnm+oRnf5CA
+         SnIUHOWRPJ1xA==
+Date:   Wed, 27 Jan 2021 10:23:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tyler Hicks <tyhicks@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Tyler Hicks <code@tyhicks.com>
+Subject: linux-next: manual merge of the ecryptfs tree with the pidfd tree
+Message-ID: <20210127102342.0d1852e2@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210126110826.24221-1-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/enlKnjlSczDmijv4BS7Bzbs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/enlKnjlSczDmijv4BS7Bzbs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 1/26/21 3:08 AM, Alexandru Ardelean wrote:
-> Previous set:
->  https://lore.kernel.org/linux-clk/20201221144224.50814-1-alexandru.ardelean@analog.com/
->
-> Changelog v1 -> v2:
-> * split patch 'clk: axi-clkgen: add support for ZynqMP (UltraScale)'
->   into:
->    - clk: axi-clkgen: remove ARCH dependency in Kconfig
->    - clk: clk-axiclkgen: add ZynqMP PFD and VCO limits
-> * essentially removed the 'adi,zynq-axi-clkgen-2.00.a' compat string
-> * removed architecture dependency on build for driver; the driver should
->   be usable also on PCIe setups
->
-> Alexandru Ardelean (3):
->   clk: axi-clkgen: remove ARCH dependency in Kconfig
->   clk: clk-axiclkgen: add ZynqMP PFD and VCO limits
->   dt-bindings: clock: adi,axi-clkgen: add compatible string for ZynqMP
->     support
->
->  .../devicetree/bindings/clock/adi,axi-clkgen.yaml     |  1 +
->  drivers/clk/Kconfig                                   |  1 -
->  drivers/clk/clk-axi-clkgen.c                          | 11 +++++++++++
->  3 files changed, 12 insertions(+), 1 deletion(-)
+Hi all,
 
-This whole set looks fine.
+Today's linux-next merge of the ecryptfs tree got a conflict in:
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+  fs/ecryptfs/inode.c
 
+between commit:
+
+  c7c7a1a18af4 ("xattr: handle idmapped mounts")
+
+from the pidfd tree and commit:
+
+  0b964446c63f ("ecryptfs: fix uid translation for setxattr on security.cap=
+ability")
+
+from the ecryptfs tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/ecryptfs/inode.c
+index 55da9a91f51a,58d0f7187997..000000000000
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@@ -1043,10 -1024,11 +1045,11 @@@ ecryptfs_setxattr(struct dentry *dentry
+  		rc =3D -EOPNOTSUPP;
+  		goto out;
+  	}
+- 	rc =3D vfs_setxattr(&init_user_ns, lower_dentry, name, value, size,
+- 			  flags);
++ 	inode_lock(lower_inode);
+ -	rc =3D __vfs_setxattr_locked(lower_dentry, name, value, size, flags, NUL=
+L);
+++	rc =3D __vfs_setxattr_locked(&init_user_ns, lower_dentry, name, value, s=
+ize, flags, NULL);
++ 	inode_unlock(lower_inode);
+  	if (!rc && inode)
+- 		fsstack_copy_attr_all(inode, d_inode(lower_dentry));
++ 		fsstack_copy_attr_all(inode, lower_inode);
+  out:
+  	return rc;
+  }
+
+--Sig_/enlKnjlSczDmijv4BS7Bzbs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAQpH4ACgkQAVBC80lX
+0GxBMAf7BTDylCaFc5kcpALvrtiuFnT6pwkJJ8T2dfMpTBB4lFBZTA25ZBt1Rd6S
+rT1pgGY2Ig09/GJ7uVtXmuO5qWLXV39Fy41Kl8RV+5Za057icNv7AQYW/7Q1CqSB
+VesR4Lks4lS5maGps7eKhKGKcw1Cz5zP3INSWg8azWcbvz23iuVfNO627q3KNGtG
+tn58MDaNIk71Ck5z/XjMjQwtzqI9Ivrv4YwzlfRLUpp4ifkXUAoOrUY+6PHzC/sc
+f08kYwo8ltFtYJJwfke9kqcrzv5I7xudWcle+OcqUSWGnL2zK86v/+mYv0dwKi9m
+uLLzcAEqFAaIZaLNT8Q6K2YVRppa8g==
+=kiF9
+-----END PGP SIGNATURE-----
+
+--Sig_/enlKnjlSczDmijv4BS7Bzbs--
