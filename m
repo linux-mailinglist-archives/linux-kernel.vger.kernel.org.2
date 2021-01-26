@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A3F3065F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0253066A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234463AbhA0V0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:26:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:2646 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234173AbhA0VZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:25:39 -0500
-IronPort-SDR: nyjBegzotTwqzLaT852Zn4Seur9+5kKuhBkcF+kEtVWtSPDBKwFizAEnm8LvUWJuXAsubLjGeN
- k3/7j2kHkVAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241664873"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="241664873"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:23:45 -0800
-IronPort-SDR: u0JTCth+6rK87nQpzwaoQQzviV6A01pZrHEQQ8Tlj7wIeJfjT7Y+Tvi4cQnrTCXqoLtrNzuQ8Y
- AX956W5i+NMA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="388470772"
-Received: from marshy.an.intel.com ([10.122.105.143])
-  by orsmga008.jf.intel.com with ESMTP; 27 Jan 2021 13:23:44 -0800
-From:   richard.gong@linux.intel.com
-To:     gregkh@linuxfoundation.org
-Cc:     mdf@kernel.org, trix@redhat.com, linux-kernel@vger.kernel.org,
-        Richard Gong <richard.gong@intel.com>
-Subject: [PATCHv1] firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
-Date:   Wed, 27 Jan 2021 15:43:21 -0600
-Message-Id: <1611783801-30766-2-git-send-email-richard.gong@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611783801-30766-1-git-send-email-richard.gong@linux.intel.com>
-References: <1611783801-30766-1-git-send-email-richard.gong@linux.intel.com>
+        id S232459AbhA0VqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:46:19 -0500
+Received: from [41.224.62.206] ([41.224.62.206]:58541 "EHLO
+        trixbox1.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234754AbhA0VbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:31:08 -0500
+X-Greylist: delayed 79757 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 16:31:08 EST
+Received: from 127.0.0.1 (trixbox1.localdomain [127.0.0.1])
+        by trixbox1.localdomain (Postfix) with SMTP id 7901E2605668;
+        Tue, 26 Jan 2021 12:20:28 +0100 (CET)
+Received: from [39.95.232.175]
+        by 127.0.0.1 with ESMTP id 74737158;
+        Tue, 26 Jan 2021 17:12:18 +0300
+Message-ID: <3$$-r72p5-th$1-x$tk2yx2f6-o3@u9hyv>
+From:   "Career Center" <sangiorgio@aclipisa.it>
+Reply-To: "Career Center" <sangiorgio@aclipisa.it>
+To:     levandos@email.cz
+Subject: We have a Job opportunity for you in your country
+Date:   Tue, 26 Jan 21 17:12:18 GMT
+X-Mailer: The Bat! (v1.52f) Business
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+        boundary="DA_8.ADF6EA.____.F.BCEB"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
 
-Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
-aligns with the firmware settings.
+--DA_8.ADF6EA.____.F.BCEB
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Richard Gong <richard.gong@intel.com>
----
- include/linux/firmware/intel/stratix10-svc-client.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hello, we are writing this letter to you from LinkedIn Corporation. We hav=
+e a Job opportunity for you in your country 
 
-diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-index ebc2956..1ffb982 100644
---- a/include/linux/firmware/intel/stratix10-svc-client.h
-+++ b/include/linux/firmware/intel/stratix10-svc-client.h
-@@ -51,12 +51,12 @@
- #define SVC_STATUS_NO_SUPPORT		6
- 
- /*
-- * Flag bit for COMMAND_RECONFIG
-+ * Flag for COMMAND_RECONFIG, in bit number
-  *
-  * COMMAND_RECONFIG_FLAG_PARTIAL:
-- * Set to FPGA configuration type (full or partial).
-+ * Set for partial configuration.
-  */
--#define COMMAND_RECONFIG_FLAG_PARTIAL	1
-+#define COMMAND_RECONFIG_FLAG_PARTIAL	0
- 
- /*
-  * Timeout settings for service clients:
--- 
-2.7.4
+NOTE:  The Job cannot stop your business or the work you are doing already=
+  
+
+For more information about the Job, Send us your CV/ Resume to our office =
+Email:    sangiorgio@aclipisa.it   
+
+Regards
+Mr. Jeff.
+
+--DA_8.ADF6EA.____.F.BCEB--
 
