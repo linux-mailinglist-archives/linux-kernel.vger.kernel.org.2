@@ -2,241 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85F4304FEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A80304FEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236436AbhA0Dea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:34:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S236451AbhA0Ded (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:34:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727397AbhAZVfb (ORCPT
+        with ESMTP id S1730156AbhAZVhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:35:31 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C76C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:34:50 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id e22so36750392iog.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:34:50 -0800 (PST)
+        Tue, 26 Jan 2021 16:37:15 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A535C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:36:35 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id u17so36849348iow.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:36:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0BazbN3zFoYEieJvOdqBczlntMQ4FaDm3tAmPmmj7Yk=;
-        b=A0GJB4qhcOedblwFVisFFz7/cFTwwVG/sqocGdUcal2iJcT4/Yqd8j3o9YM2ChKbkM
-         aCUZcqs0POsdK0zV2NQdHPq0LLNGDP5NYn8V1xghoCivTtZuChrCAjA0/NxhMe5fnB5y
-         0ywB0HyxTQtROqQ2lUvl+LY0mbGU+80jpcuJD4Ekz0uiku6vnAhS07W+J8A1Qcbz7qe7
-         +742zkPgNAvD9ykuSZYRRk+4T8rTYUW9SsF8j5+gSYOl67394R6GDw330oL4nO6CJcig
-         YSiFk4R+ddk4AXuHI94Hi4Uy+HgDGQES48uYeYdjOf4ct7FcOsGDxJJ674rHhuv9QqQh
-         k8Ew==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ustJ0/aPlx4iAkk4IQ7oOTUDCbseUwYBGj9G/doyi0=;
+        b=aRQPVtVQWvj+0JgMoeSv1tbxkyyKJKp5rhr+iKTA+dqaYS5cAcTj0yb69/ROdSPTVs
+         awqkofJxKIYC+3lALvwuxeUYNWxIhxsVdfaZsfGU/9TVu88A53J2zFxhsA71d3WLUDIX
+         555139CXWDue9MMhcnwtw1r926W3gNac1W8rIe4qgxqO3UyvIcagtRfQlML1WO+lKruO
+         EBVBK1yuo615WTIXa9WGH5nbwMl4c6EP3xr+FedOSbKmp2xsFyTJQfLV0RnwujhbNls8
+         8YdckUwosOCRojjTNk9D23BaUu3ytsnn0gwOaMjyA2J4M8nVZFsPU/9TIDg76sLXMPJ1
+         BLUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0BazbN3zFoYEieJvOdqBczlntMQ4FaDm3tAmPmmj7Yk=;
-        b=cm9+kXUWca8KAHnAOMdYCoS7tdr3Gvr6I1i2api2RQ+43p+yFe6LFtkkvLZ0L3YACD
-         F8xYR3sb1/pIfGCkvPYz6LwvodWfVyErf6iqqDgouRK6D33loKysyeP4W9nGSHkfSjF7
-         ZRsgxxwiUTeiqHQizodTVKj/RPUxG7sq+N+SHwzyuQJKwD7spz/0Ra051nyBwKIoPBrj
-         qg+KmQ8aVpRchZgLIVoA/tIWe9dWG4MI2Xddf7FDK0EZq91ilFKvpqSw2+o+U7a4jpaK
-         cJpq+kr4+YB8zMYNstuxHLrydykbgVGRHBE3llCufE1sPyaCg0IzytJ5EdQSzoHeom23
-         MEaw==
-X-Gm-Message-State: AOAM531eXUwKJWLmyi2ZZ5G+5iDcJKNSrvZMQA6jyrsC6+LuJdnjThLu
-        wHp8LP/d9ua06g513gJQBwaX3g==
-X-Google-Smtp-Source: ABdhPJzO/w+Y46ojG4C9tSaQshc1ux6VZuxdppv2oPUJV5QERG8n2DiFhRJ3sH00TA3m1GHKStJ/Cw==
-X-Received: by 2002:a05:6e02:5d1:: with SMTP id l17mr6187542ils.154.1611696889970;
-        Tue, 26 Jan 2021 13:34:49 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:697e:4b38:5872:adfe])
-        by smtp.gmail.com with ESMTPSA id c20sm12668405ilj.22.2021.01.26.13.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 13:34:49 -0800 (PST)
-Date:   Tue, 26 Jan 2021 14:34:44 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/10] mm: don't pass "enum lru_list" to lru list
- addition functions
-Message-ID: <YBCK9OcUCbbgsFaj@google.com>
-References: <20210122220600.906146-1-yuzhao@google.com>
- <20210122220600.906146-4-yuzhao@google.com>
- <85b3e8f2-5982-3329-c20d-cf062b8da71e@suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ustJ0/aPlx4iAkk4IQ7oOTUDCbseUwYBGj9G/doyi0=;
+        b=cKBdKYOAVfOVuslvr7olBWuF380uLLLfkE47Gy3Tp5GK+KgQb07vfH9KOE5YkA4BjE
+         RGZnqUI12kaiesxn58chABR57j4zESMr94vjzZEDDxd9j60xXb6772H6N15Dhj6fRWW3
+         ixSDSXYtuXl0mcUIFOsCjjhropR5idncqcmGYen0RwjYoec/SEVNVp/viBvAZHK3wzZ0
+         IOrX/oMaOZQVnSZXFvahBkYgHlD6pP12RbE+7E76q183+ms3GnvWwazaDsIElLUjNSt6
+         mlJygkM4r4UJ3qwxlsQpGRVCsEbKMTED2qohyQejE1/iDxkjmwJR3sX1tcdWUvvXXELS
+         S6QA==
+X-Gm-Message-State: AOAM531ewGLYSWA9YduQWQTOf715xKcL6HVq1lRGfDNEBJx6qG8DHf+R
+        UsdzvhvjLzmFiwXi/Nz95k82JQjizVQXb1n1Gzw=
+X-Google-Smtp-Source: ABdhPJxZsKjbMvUBw7jG6/aVnfplIA3VZdiKLNfG8H8yOQPCusbf9QUiQztyi1mZ2Iae/ZStL2V4RsH7GwIlsy91f3M=
+X-Received: by 2002:a92:aac5:: with SMTP id p66mr6386791ill.238.1611696994232;
+ Tue, 26 Jan 2021 13:36:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85b3e8f2-5982-3329-c20d-cf062b8da71e@suse.cz>
+References: <20210126171141.122639-1-paul.gortmaker@windriver.com> <20210126171141.122639-9-paul.gortmaker@windriver.com>
+In-Reply-To: <20210126171141.122639-9-paul.gortmaker@windriver.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Tue, 26 Jan 2021 13:36:23 -0800
+Message-ID: <CAAH8bW_kiReeYrXmFp=2o_YkOitsSrtN9evKaR6SWdZk8TNuoQ@mail.gmail.com>
+Subject: Re: [PATCH 8/8] rcu: deprecate "all" option to rcu_nocbs=
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 08:13:11PM +0100, Vlastimil Babka wrote:
-> On 1/22/21 11:05 PM, Yu Zhao wrote:
-> > The "enum lru_list" parameter to add_page_to_lru_list() and
-> > add_page_to_lru_list_tail() is redundant in the sense that it can
-> > be extracted from the "struct page" parameter by page_lru().
-> 
-> Okay, however, it means repeated extraction of a value that we already knew. The
-> result of compilation is rather sad. This is bloat-o-meter on mm/built-in.a
-> (without CONFIG_DEBUG_VM, btw) between patch 2 and 5:
+On Tue, Jan 26, 2021 at 9:12 AM Paul Gortmaker
+<paul.gortmaker@windriver.com> wrote:
+>
+> With the core bitmap support now accepting "N" as a placeholder for
+> the end of the bitmap, "all" can be represented as "0-N" and has the
+> advantage of not being specific to RCU (or any other subsystem).
+>
+> So deprecate the use of "all" by removing documentation references
+> to it.  The support itself needs to remain for now, since we don't
+> know how many people out there are using it currently, but since it
+> is in an __init area anyway, it isn't worth losing sleep over.
+>
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 4 +---
+>  kernel/rcu/tree_plugin.h                        | 6 ++----
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a10b545c2070..a116c0ff0a91 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4037,9 +4037,7 @@
+>                                 see CONFIG_RAS_CEC help text.
+>
+>         rcu_nocbs=      [KNL]
+> -                       The argument is a cpu list, as described above,
+> -                       except that the string "all" can be used to
+> -                       specify every CPU on the system.
+> +                       The argument is a cpu list, as described above.
+>
+>                         In kernels built with CONFIG_RCU_NOCB_CPU=y, set
+>                         the specified list of CPUs to be no-callback CPUs.
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 7e291ce0a1d6..56788dfde922 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1463,14 +1463,12 @@ static void rcu_cleanup_after_idle(void)
+>
+>  /*
+>   * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
+> - * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
+> - * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
+> - * given, a warning is emitted and all CPUs are offloaded.
+> + * If the list is invalid, a warning is emitted and all CPUs are offloaded.
+>   */
+>  static int __init rcu_nocb_setup(char *str)
+>  {
+>         alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+> -       if (!strcasecmp(str, "all"))
+> +       if (!strcasecmp(str, "all"))            /* legacy: use "0-N" instead */
 
-Thanks for noticing this, Vlastimil. Should I drop the rest of the
-series except the first patch?
+I think 'all' and 'none' is a good idea. It's simple and convenient.
+But if you don't
+like it, can you please at least put this comment in system log using
+WARN_ON_ONCE(). It's quite possible that Linux users don't read source code
+comments.
 
-> add/remove: 0/0 grow/shrink: 10/5 up/down: 1837/-60 (1777)
-> Function                                     old     new   delta
-> lru_deactivate_file_fn                       932    1368    +436
-> lru_lazyfree_fn.part                         629     953    +324
-> check_move_unevictable_pages                1171    1424    +253
-> __activate_page.part                         735     984    +249
-> lru_deactivate_fn.part                       593     822    +229
-> perf_trace_mm_lru_insertion                  458     560    +102
-> trace_event_raw_event_mm_lru_insertion       412     500     +88
-> __page_cache_release                         479     558     +79
-> release_pages                               1430    1499     +69
-> pagevec_move_tail_fn.part                    761     769      +8
-> isolate_lru_page                             471     470      -1
-> __bpf_trace_mm_lru_insertion                   7       5      -2
-> __traceiter_mm_lru_insertion                  55      47      -8
-> isolate_migratepages_block                  3200    3185     -15
-> __pagevec_lru_add_fn                        1092    1058     -34
-> 
-> 
-> > A caveat is that we need to make sure PageActive() or
-> > PageUnevictable() is correctly set or cleared before calling
-> > these two functions. And they are indeed.
-> > 
-> > Link: https://lore.kernel.org/linux-mm/20201207220949.830352-4-yuzhao@google.com/
-> > Signed-off-by: Yu Zhao <yuzhao@google.com>
-> > ---
-> >  include/linux/mm_inline.h |  8 ++++++--
-> >  mm/swap.c                 | 15 +++++++--------
-> >  mm/vmscan.c               |  6 ++----
-> >  3 files changed, 15 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-> > index 2889741f450a..130ba3201d3f 100644
-> > --- a/include/linux/mm_inline.h
-> > +++ b/include/linux/mm_inline.h
-> > @@ -106,15 +106,19 @@ static __always_inline enum lru_list page_lru(struct page *page)
-> >  }
-> >  
-> >  static __always_inline void add_page_to_lru_list(struct page *page,
-> > -				struct lruvec *lruvec, enum lru_list lru)
-> > +				struct lruvec *lruvec)
-> >  {
-> > +	enum lru_list lru = page_lru(page);
-> > +
-> >  	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
-> >  	list_add(&page->lru, &lruvec->lists[lru]);
-> >  }
-> >  
-> >  static __always_inline void add_page_to_lru_list_tail(struct page *page,
-> > -				struct lruvec *lruvec, enum lru_list lru)
-> > +				struct lruvec *lruvec)
-> >  {
-> > +	enum lru_list lru = page_lru(page);
-> > +
-> >  	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
-> >  	list_add_tail(&page->lru, &lruvec->lists[lru]);
-> >  }
-> > diff --git a/mm/swap.c b/mm/swap.c
-> > index 490553f3f9ef..4b058ef37add 100644
-> > --- a/mm/swap.c
-> > +++ b/mm/swap.c
-> > @@ -231,7 +231,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
-> >  	if (!PageUnevictable(page)) {
-> >  		del_page_from_lru_list(page, lruvec, page_lru(page));
-> >  		ClearPageActive(page);
-> > -		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
-> > +		add_page_to_lru_list_tail(page, lruvec);
-> >  		__count_vm_events(PGROTATED, thp_nr_pages(page));
-> >  	}
-> >  }
-> > @@ -313,8 +313,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec)
-> >  
-> >  		del_page_from_lru_list(page, lruvec, lru);
-> >  		SetPageActive(page);
-> > -		lru += LRU_ACTIVE;
-> > -		add_page_to_lru_list(page, lruvec, lru);
-> > +		add_page_to_lru_list(page, lruvec);
-> >  		trace_mm_lru_activate(page);
-> >  
-> >  		__count_vm_events(PGACTIVATE, nr_pages);
-> > @@ -543,14 +542,14 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
-> >  		 * It can make readahead confusing.  But race window
-> >  		 * is _really_ small and  it's non-critical problem.
-> >  		 */
-> > -		add_page_to_lru_list(page, lruvec, lru);
-> > +		add_page_to_lru_list(page, lruvec);
-> >  		SetPageReclaim(page);
-> >  	} else {
-> >  		/*
-> >  		 * The page's writeback ends up during pagevec
-> >  		 * We moves tha page into tail of inactive.
-> >  		 */
-> > -		add_page_to_lru_list_tail(page, lruvec, lru);
-> > +		add_page_to_lru_list_tail(page, lruvec);
-> >  		__count_vm_events(PGROTATED, nr_pages);
-> >  	}
-> >  
-> > @@ -570,7 +569,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
-> >  		del_page_from_lru_list(page, lruvec, lru + LRU_ACTIVE);
-> >  		ClearPageActive(page);
-> >  		ClearPageReferenced(page);
-> > -		add_page_to_lru_list(page, lruvec, lru);
-> > +		add_page_to_lru_list(page, lruvec);
-> >  
-> >  		__count_vm_events(PGDEACTIVATE, nr_pages);
-> >  		__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE,
-> > @@ -595,7 +594,7 @@ static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec)
-> >  		 * anonymous pages
-> >  		 */
-> >  		ClearPageSwapBacked(page);
-> > -		add_page_to_lru_list(page, lruvec, LRU_INACTIVE_FILE);
-> > +		add_page_to_lru_list(page, lruvec);
-> >  
-> >  		__count_vm_events(PGLAZYFREE, nr_pages);
-> >  		__count_memcg_events(lruvec_memcg(lruvec), PGLAZYFREE,
-> > @@ -1005,7 +1004,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
-> >  			__count_vm_events(UNEVICTABLE_PGCULLED, nr_pages);
-> >  	}
-> >  
-> > -	add_page_to_lru_list(page, lruvec, lru);
-> > +	add_page_to_lru_list(page, lruvec);
-> >  	trace_mm_lru_insertion(page, lru);
-> >  }
-> >  
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 19875660e8f8..09e4f97488c9 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1867,7 +1867,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
-> >  		 * inhibits memcg migration).
-> >  		 */
-> >  		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-> > -		add_page_to_lru_list(page, lruvec, page_lru(page));
-> > +		add_page_to_lru_list(page, lruvec);
-> >  		nr_pages = thp_nr_pages(page);
-> >  		nr_moved += nr_pages;
-> >  		if (PageActive(page))
-> > @@ -4282,12 +4282,10 @@ void check_move_unevictable_pages(struct pagevec *pvec)
-> >  
-> >  		lruvec = relock_page_lruvec_irq(page, lruvec);
-> >  		if (page_evictable(page) && PageUnevictable(page)) {
-> > -			enum lru_list lru = page_lru_base_type(page);
-> > -
-> >  			VM_BUG_ON_PAGE(PageActive(page), page);
-> >  			ClearPageUnevictable(page);
-> >  			del_page_from_lru_list(page, lruvec, LRU_UNEVICTABLE);
-> > -			add_page_to_lru_list(page, lruvec, lru);
-> > +			add_page_to_lru_list(page, lruvec);
-> >  			pgrescued += nr_pages;
-> >  		}
-> >  		SetPageLRU(page);
-> > 
-> 
+>                 cpumask_setall(rcu_nocb_mask);
+>         else
+>                 if (cpulist_parse(str, rcu_nocb_mask)) {
+> --
+> 2.17.1
+>
