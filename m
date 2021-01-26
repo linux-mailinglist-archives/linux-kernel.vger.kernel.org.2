@@ -2,155 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67985304FFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA925304FFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236663AbhA0Diu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbhAZV6Z (ORCPT
+        id S233002AbhA0DjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:39:10 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57594 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727759AbhAZWBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:58:25 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD23C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:57:45 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id d13so36874575ioy.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:57:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UzIIbucA4bC6xAjzO2jcPxCgJ/XeeTQ4qXoBAmEcaOk=;
-        b=g6CgGnRpd+qLDrILoQ7nOEPH/CE1ETMeTy3S64nip4FzcZSb8oA+QPHUt5VDb05MVr
-         +sz8aE/6e8dA2dV/5GW2KmbA17jVx8Nmfvl5hZ3Or7r+cLusIeHoBI5tswBbxy0stxYx
-         KOcDwxjLeDlotaR0+/Q3Z5RQCtY5Iz6MqCw3+Gz3AkckgQImOcVIvi9g1w21ItQOdCiu
-         GXlnZ6ItkiHna/5rFXB4iLR04Qp8rEuxVVMuKTtvOONUjdPRuyuqHF0UDl2ZD1jOIDZI
-         1iEs6EgXhQaOI5THL/i1VRvouJQ/BNO9UtzQFybhTAwifLZedoiXwKTjqCNbQuKfMiXw
-         1XkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UzIIbucA4bC6xAjzO2jcPxCgJ/XeeTQ4qXoBAmEcaOk=;
-        b=POi184fOq6YJhxTT8sbUvTiRcvcN7C0dBfXq5FWjjegUqQznJ/pBBD6imzXuUM3s+O
-         ZfYSWsg/18Pq9BQZxPJv1HcmMqesVowOMzFEH5vUt7zwiPQCMfD7/1Wb/QfY+3Pe9Y8D
-         A4RmkNAf0+qf04i7oEsCuGfmIOadYjhyIuQwTJiBVSeLl5U9bRjm9DcNQKQBPB+7cQp+
-         Y8Mu9C3DreuABjls+USqLiEiOT7ZVChAwB7lYv2vJp9B1f9TceGyYwrTDY3JoFDUgG5N
-         j5MSUpQvkVdI4/Y5DuyeFVosb8A38SWqFXYQ3wMjErmDcceM3KP9V5gnI7Cgx6HqE2kD
-         gv4Q==
-X-Gm-Message-State: AOAM530roM4BD1p6UoU57eg/iZISMUOpAMo6h0GQEBgYofTW8gHUZaCw
-        gVUmFMruv2hKo/G2QTEQ0jB2pp7stboZpVxEp7cIXy/UR8Y=
-X-Google-Smtp-Source: ABdhPJxqw2qcccBRAqNzGfQXEgTuriBNf/YTsOm5i+pyKUht1H9HnSkCEGDyjzIvh73pIGntxSycMx/Bd7zwrTPgXFk=
-X-Received: by 2002:a92:60f:: with SMTP id x15mr3828071ilg.203.1611698264748;
- Tue, 26 Jan 2021 13:57:44 -0800 (PST)
+        Tue, 26 Jan 2021 17:01:53 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 68B952C1;
+        Tue, 26 Jan 2021 23:01:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611698469;
+        bh=BHmdZYv8ApW4Hf+sURWB/QQiokPoXSvuXZA2UdxlKPM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mnE6mk3z0HeahmaHus4994p1XTBWRXS1xkTSLPO8TYlpYt8lcA85Lg2Mn3RZkiGaT
+         seKVNeO9oKMjfv+u+SB3Wub6Fgf/APLaeW5svtwREj5Do4Rbn4Crjzs7qcJVbzWwws
+         MDvzmALLU4q2UGrhlKOu7N8Hb5IvExQv9iIS43RQ=
+Date:   Wed, 27 Jan 2021 00:00:49 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
+Message-ID: <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-5-geert+renesas@glider.be>
 MIME-Version: 1.0
-References: <20210112181041.356734-1-bgardon@google.com> <20210112181041.356734-25-bgardon@google.com>
- <YAjRGBu5tAEt9xpv@google.com>
-In-Reply-To: <YAjRGBu5tAEt9xpv@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 26 Jan 2021 13:57:33 -0800
-Message-ID: <CANgfPd_dCNQHWMtWDJiC5prVC9R4gtNO6v5L3=QioNZLDDXVMw@mail.gmail.com>
-Subject: Re: [PATCH 24/24] kvm: x86/mmu: Allow parallel page faults for the
- TDP MMU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210125142431.1049668-5-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 4:56 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Jan 12, 2021, Ben Gardon wrote:
-> > Make the last few changes necessary to enable the TDP MMU to handle page
-> > faults in parallel while holding the mmu_lock in read mode.
-> >
-> > Reviewed-by: Peter Feiner <pfeiner@google.com>
-> >
-> > Signed-off-by: Ben Gardon <bgardon@google.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 280d7cd6f94b..fa111ceb67d4 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -3724,7 +3724,12 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> >               return r;
-> >
-> >       r = RET_PF_RETRY;
-> > -     kvm_mmu_lock(vcpu->kvm);
-> > +
-> > +     if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
->
-> Off topic, what do you think about rewriting is_tdp_mmu_root() to be both more
-> performant and self-documenting as to when is_tdp_mmu_root() !=
-> kvm->arch.tdp_mmu_enabled?  E.g. key off is_guest_mode() and then do a thorough
-> audit/check when CONFIG_KVM_MMU_AUDIT=y?
->
-> #ifdef CONFIG_KVM_MMU_AUDIT
-> bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
-> {
->         struct kvm_mmu_page *sp;
->
->         if (!kvm->arch.tdp_mmu_enabled)
->                 return false;
->         if (WARN_ON(!VALID_PAGE(hpa)))
->                 return false;
->
->         sp = to_shadow_page(hpa);
->         if (WARN_ON(!sp))
->                 return false;
->
->         return sp->tdp_mmu_page && sp->root_count;
-> }
-> #endif
->
-> bool is_tdp_mmu(struct kvm_vcpu *vcpu)
-> {
->         bool is_tdp_mmu = kvm->arch.tdp_mmu_enabled && !is_guest_mode(vcpu);
->
-> #ifdef CONFIG_KVM_MMU_AUDIT
->         WARN_ON(is_tdp_mmu != is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa));
-> #endif
->         return is_tdp_mmu;
-> }
+Hi Geert,
 
-Great suggestions. In the interest of keeping this (already enormous)
-series small, I'm inclined to make those changes in a future series if
-that's alright with you.
+Thank you for the patch.
 
->
-> > +             kvm_mmu_lock_shared(vcpu->kvm);
-> > +     else
-> > +             kvm_mmu_lock(vcpu->kvm);
-> > +
-> >       if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
-> >               goto out_unlock;
-> >       r = make_mmu_pages_available(vcpu);
-> > @@ -3739,7 +3744,10 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> >                                prefault, is_tdp);
-> >
-> >  out_unlock:
-> > -     kvm_mmu_unlock(vcpu->kvm);
-> > +     if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
-> > +             kvm_mmu_unlock_shared(vcpu->kvm);
-> > +     else
-> > +             kvm_mmu_unlock(vcpu->kvm);
-> >       kvm_release_pfn_clean(pfn);
-> >       return r;
-> >  }
-> > --
-> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >
+On Mon, Jan 25, 2021 at 03:24:31PM +0100, Geert Uytterhoeven wrote:
+> The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
+> the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
+>   1. The per-channel registers are located in a second register block.
+>      Add support for mapping the second block, using the appropriate
+>      offsets and stride.
+>   2. The common Channel Clear Register (DMACHCLR) was replaced by a
+>      per-channel register.
+>      Update rcar_dmac_chan_clear{,_all}() to handle this.
+>      As rcar_dmac_init() needs to clear the status before the individual
+>      channels are probed, channel index and base address initialization
+>      are moved forward.
+> 
+> Inspired by a patch in the BSP by Phong Hoang
+> <phong.hoang.wz@renesas.com>.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v2:
+>   - Use two separate named regions instead of an iomem[] array,
+>   - Drop rcar_dmac_of_data.chan_reg_block, check for
+>     !rcar_dmac_of_data.chan_offset_base instead,
+>   - Precalculate chan_base in rcar_dmac_probe().
+> ---
+>  drivers/dma/sh/rcar-dmac.c | 74 ++++++++++++++++++++++++++++----------
+>  1 file changed, 55 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
+> index 7a0f802c61e5152d..d9589eea98083215 100644
+> --- a/drivers/dma/sh/rcar-dmac.c
+> +++ b/drivers/dma/sh/rcar-dmac.c
+> @@ -189,7 +189,8 @@ struct rcar_dmac_chan {
+>   * struct rcar_dmac - R-Car Gen2 DMA Controller
+>   * @engine: base DMA engine object
+>   * @dev: the hardware device
+> - * @iomem: remapped I/O memory base
+> + * @dmac_base: remapped base register block
+> + * @chan_base: remapped channel register block (optional)
+>   * @n_channels: number of available channels
+>   * @channels: array of DMAC channels
+>   * @channels_mask: bitfield of which DMA channels are managed by this driver
+> @@ -198,7 +199,8 @@ struct rcar_dmac_chan {
+>  struct rcar_dmac {
+>  	struct dma_device engine;
+>  	struct device *dev;
+> -	void __iomem *iomem;
+> +	void __iomem *dmac_base;
+> +	void __iomem *chan_base;
+>  
+>  	unsigned int n_channels;
+>  	struct rcar_dmac_chan *channels;
+> @@ -234,7 +236,7 @@ struct rcar_dmac_of_data {
+>  #define RCAR_DMAOR_PRI_ROUND_ROBIN	(3 << 8)
+>  #define RCAR_DMAOR_AE			(1 << 2)
+>  #define RCAR_DMAOR_DME			(1 << 0)
+> -#define RCAR_DMACHCLR			0x0080
+> +#define RCAR_DMACHCLR			0x0080	/* Not on R-Car V3U */
+>  #define RCAR_DMADPSEC			0x00a0
+>  
+>  #define RCAR_DMASAR			0x0000
+> @@ -297,6 +299,9 @@ struct rcar_dmac_of_data {
+>  #define RCAR_DMAFIXDAR			0x0014
+>  #define RCAR_DMAFIXDPBASE		0x0060
+>  
+> +/* For R-Car V3U */
+> +#define RCAR_V3U_DMACHCLR		0x0100
+> +
+>  /* Hardcode the MEMCPY transfer size to 4 bytes. */
+>  #define RCAR_DMAC_MEMCPY_XFER_SIZE	4
+>  
+> @@ -307,17 +312,17 @@ struct rcar_dmac_of_data {
+>  static void rcar_dmac_write(struct rcar_dmac *dmac, u32 reg, u32 data)
+>  {
+>  	if (reg == RCAR_DMAOR)
+> -		writew(data, dmac->iomem + reg);
+> +		writew(data, dmac->dmac_base + reg);
+>  	else
+> -		writel(data, dmac->iomem + reg);
+> +		writel(data, dmac->dmac_base + reg);
+>  }
+>  
+>  static u32 rcar_dmac_read(struct rcar_dmac *dmac, u32 reg)
+>  {
+>  	if (reg == RCAR_DMAOR)
+> -		return readw(dmac->iomem + reg);
+> +		return readw(dmac->dmac_base + reg);
+>  	else
+> -		return readl(dmac->iomem + reg);
+> +		return readl(dmac->dmac_base + reg);
+>  }
+>  
+>  static u32 rcar_dmac_chan_read(struct rcar_dmac_chan *chan, u32 reg)
+> @@ -339,12 +344,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
+>  static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
+>  				 struct rcar_dmac_chan *chan)
+>  {
+> -	rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+> +	if (dmac->chan_base)
+
+Using dmac->chan_base to check if the device is a V3U seems a bit of a
+hack (especially given that the field is otherwise unused). I'd prefer
+adding a model field to struct rcar_dmac_of_data and struct rcar_dmac.
+
+> +		rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
+> +	else
+> +		rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+>  }
+>  
+>  static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
+>  {
+> -	rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> +	struct rcar_dmac_chan *chan;
+> +	unsigned int i;
+> +
+> +	if (dmac->chan_base) {
+> +		for_each_rcar_dmac_chan(i, chan, dmac)
+> +			rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
+> +	} else {
+> +		rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> +	}
+>  }
+>  
+>  /* -----------------------------------------------------------------------------
+> @@ -1744,7 +1760,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
+>  
+>  static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
+>  				struct rcar_dmac_chan *rchan,
+> -				const struct rcar_dmac_of_data *data,
+>  				unsigned int index)
+>  {
+>  	struct platform_device *pdev = to_platform_device(dmac->dev);
+> @@ -1753,9 +1768,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
+>  	char *irqname;
+>  	int ret;
+>  
+> -	rchan->index = index;
+> -	rchan->iomem = dmac->iomem + data->chan_offset_base +
+> -		       data->chan_offset_stride * index;
+>  	rchan->mid_rid = -EINVAL;
+>  
+>  	spin_lock_init(&rchan->lock);
+> @@ -1842,6 +1854,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+>  	const struct rcar_dmac_of_data *data;
+>  	struct rcar_dmac_chan *chan;
+>  	struct dma_device *engine;
+> +	void __iomem *chan_base;
+>  	struct rcar_dmac *dmac;
+>  	unsigned int i;
+>  	int ret;
+> @@ -1880,9 +1893,24 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	/* Request resources. */
+> -	dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(dmac->iomem))
+> -		return PTR_ERR(dmac->iomem);
+> +	dmac->dmac_base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(dmac->dmac_base))
+> +		return PTR_ERR(dmac->dmac_base);
+> +
+> +	if (!data->chan_offset_base) {
+> +		dmac->chan_base = devm_platform_ioremap_resource(pdev, 1);
+> +		if (IS_ERR(dmac->chan_base))
+> +			return PTR_ERR(dmac->chan_base);
+> +
+> +		chan_base = dmac->chan_base;
+> +	} else {
+> +		chan_base = dmac->dmac_base + data->chan_offset_base;
+> +	}
+> +
+> +	for_each_rcar_dmac_chan(i, chan, dmac) {
+> +		chan->index = i;
+
+Now that chan->indew is set before calling rcar_dmac_chan_probe(), you
+don't have to pass the index to rcar_dmac_chan_probe() anymore.
+
+> +		chan->iomem = chan_base + i * data->chan_offset_stride;
+> +	}
+>  
+>  	/* Enable runtime PM and initialize the device. */
+>  	pm_runtime_enable(&pdev->dev);
+> @@ -1929,7 +1957,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+>  	INIT_LIST_HEAD(&engine->channels);
+>  
+>  	for_each_rcar_dmac_chan(i, chan, dmac) {
+> -		ret = rcar_dmac_chan_probe(dmac, chan, data, i);
+> +		ret = rcar_dmac_chan_probe(dmac, chan, i);
+>  		if (ret < 0)
+>  			goto error;
+>  	}
+> @@ -1977,14 +2005,22 @@ static void rcar_dmac_shutdown(struct platform_device *pdev)
+>  }
+>  
+>  static const struct rcar_dmac_of_data rcar_dmac_data = {
+> -	.chan_offset_base = 0x8000,
+> -	.chan_offset_stride = 0x80,
+> +	.chan_offset_base	= 0x8000,
+> +	.chan_offset_stride	= 0x80,
+> +};
+> +
+> +static const struct rcar_dmac_of_data rcar_v3u_dmac_data = {
+> +	.chan_offset_base	= 0x0,
+> +	.chan_offset_stride	= 0x1000,
+>  };
+>  
+>  static const struct of_device_id rcar_dmac_of_ids[] = {
+>  	{
+>  		.compatible = "renesas,rcar-dmac",
+>  		.data = &rcar_dmac_data,
+> +	}, {
+> +		.compatible = "renesas,dmac-r8a779a0",
+> +		.data = &rcar_v3u_dmac_data,
+>  	},
+>  	{ /* Sentinel */ }
+>  };
+
+-- 
+Regards,
+
+Laurent Pinchart
