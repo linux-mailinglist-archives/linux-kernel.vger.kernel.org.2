@@ -2,188 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CFA30532D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B3130532B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233534AbhA0DKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:10:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3674 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395231AbhAZTMS (ORCPT
+        id S234002AbhA0DNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:13:36 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:53948 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392754AbhAZTPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:12:18 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ2iqW189030;
-        Tue, 26 Jan 2021 14:11:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ikDn+ZRYaj3bFOq/SC2Ll0iFE2WX9JysIlM2RPX6Jik=;
- b=TAor40+2O3Onk13z1A2JUZsrq8pbYEr+zfyByXkH5nNJh27+llglcWgGj52bIbICG06L
- E7sdP/APiSOvzJ9WYeN5jdnm12dh1LOI7WZIOnRcNYzhaJ2O68DlaEY0zwKM+IhQFcB0
- Ir9GjD+G63yV7cziXaAQ6QlOkUsCZYUuZwnogeH7LDdHTjCFIk9yd3d5xkZRha8WBhTM
- 2IXvQSTOixZcU85UDkrJa0qDcZwvHETG2SjpFrihF07ZzWT2uT0+hX5zshR5qu4IT793
- +Q/uIrfc5AJYrZdwvaSFPlR5rpfpxlboaqtpiWNdsKcp7I/VFvvkWk1ROq45SdP4jbON pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36aqvm1xus-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 14:11:28 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10QJ3Opq194219;
-        Tue, 26 Jan 2021 14:11:28 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36aqvm1xtw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 14:11:27 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ96KT024294;
-        Tue, 26 Jan 2021 19:11:25 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma01dal.us.ibm.com with ESMTP id 36adttn1qj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 19:11:25 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QJBOGC21430656
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 19:11:24 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76271136051;
-        Tue, 26 Jan 2021 19:11:24 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA5D2136061;
-        Tue, 26 Jan 2021 19:11:23 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Jan 2021 19:11:23 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     dhowells@redhat.com, keyrings@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v2 3/3] x509: Add support for NIST p192 keys in certificates and akcipher
-Date:   Tue, 26 Jan 2021 14:11:15 -0500
-Message-Id: <20210126191115.434842-4-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210126191115.434842-1-stefanb@linux.vnet.ibm.com>
-References: <20210126191115.434842-1-stefanb@linux.vnet.ibm.com>
+        Tue, 26 Jan 2021 14:15:43 -0500
+Received: from rapha-Virtual-Machine.mshome.net (unknown [131.107.160.57])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A967C20B7192;
+        Tue, 26 Jan 2021 11:15:00 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A967C20B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611688500;
+        bh=3pedSW7ycGCkoC2khE7e44TNk6h2ZCycQXpy61AIp00=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n7gmKKFThyhfdlV6QNQtEt+hoM+LQl95cEathr6VdOCHD7MAMN735j2Dw8fsuyWxU
+         +9CDbV7zDrPbq+pjcEr4cNkNeZx4zcnn11lfYF2q2QltffFcxBkaA/MEm9ip2nyaQx
+         NRdAP6/VOtdlWdlVmuaoLkFzf2f/5eOl5xiYeCyw=
+From:   Raphael Gianotti <raphgi@linux.microsoft.com>
+To:     zohar@linux.ibm.com
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tusharsu@linux.microsoft.com, nramas@linux.microsoft.com,
+        tyhicks@linux.microsoft.com
+Subject: [PATCH v4] IMA: Measure kernel version in early boot
+Date:   Tue, 26 Jan 2021 11:14:53 -0800
+Message-Id: <20210126191453.3927-1-raphgi@linux.microsoft.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_09:2021-01-26,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 phishscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+The integrity of a kernel can be verified by the boot loader on cold
+boot, and during kexec, by the current running kernel, before it is
+loaded. However, it is still possible that the new kernel being
+loaded is older than the current kernel, and/or has known
+vulnerabilities. Therefore, it is imperative that an attestation
+service be able to verify the version of the kernel being loaded on
+the client, from cold boot and subsequent kexec system calls,
+ensuring that only kernels with versions known to be good are loaded.
 
-Add support for NIST p192 keys in x509 certificates and support it in
-'akcipher'.
+Measure the kernel version using ima_measure_critical_data() early on
+in the boot sequence, reducing the chances of known kernel
+vulnerabilities being exploited. With IMA being part of the kernel,
+this overall approach makes the measurement itself more trustworthy.
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+To enable measuring the kernel version "ima_policy=critical_data"
+needs to be added to the kernel command line arguments.
+For example,
+        BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset ima_policy=critical_data
+
+If runtime measurement of the kernel version is ever needed, the
+following should be added to /etc/ima/ima-policy:
+
+        measure func=CRITICAL_DATA label=kernel_info
+
+To extract the measured data after boot, the following command can be used:
+
+        grep -m 1 "kernel_version" \
+        /sys/kernel/security/integrity/ima/ascii_runtime_measurements
+
+Sample output from the command above:
+
+        10 a8297d408e9d5155728b619761d0dd4cedf5ef5f ima-buf
+        sha256:5660e19945be0119bc19cbbf8d9c33a09935ab5d30dad48aa11f879c67d70988
+        kernel_version 352e31312e302d7263332d31363138372d676564623634666537383234342d6469727479
+
+The above hex-ascii string corresponds to the kernel version
+(e.g. xxd -r -p):
+
+        5.11.0-rc3-16187-gedb64fe78244-dirty
+
+Signed-off-by: Raphael Gianotti <raphgi@linux.microsoft.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 ---
- crypto/asymmetric_keys/public_key.c       |  3 ++
- crypto/asymmetric_keys/x509_cert_parser.c |  1 +
- crypto/ecc.c                              | 36 ++++++++++++++++++++++-
- include/linux/oid_registry.h              |  1 +
- 4 files changed, 40 insertions(+), 1 deletion(-)
+Change Log v4:
+	- Updated patch description
 
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-index 0fcbaec0ded0..bb4a7cc0e3c8 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -98,6 +98,9 @@ int software_key_determine_akcipher(const char *encoding,
+Change Log v3:
+        - Updated critical data label as kernel_info in
+          Documentation/ABI/testing/ima_policy
+        - Moved the ima_measure_critical_data() call to ima_init()
+
+Change Log v2:
+        - Changed the measurement to align with the latest version of
+          ima_measure_critical_data(), without the need for queueing
+        - Scoped the measurement to only measure the kernel version,
+          found in UTS_RELEASE, instead of the entire linux_banner
+          string
+
+This patch is based on
+commit e58bb688f2e4 "Merge branch 'measure-critical-data' into next-integrity"
+in "next-integrity-testing" branch
+
+ Documentation/ABI/testing/ima_policy | 2 +-
+ security/integrity/ima/ima_init.c    | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+index 8365596cb42b..bc8e1cbe5e61 100644
+--- a/Documentation/ABI/testing/ima_policy
++++ b/Documentation/ABI/testing/ima_policy
+@@ -52,7 +52,7 @@ Description:
+ 			template:= name of a defined IMA template type
+ 			(eg, ima-ng). Only valid when action is "measure".
+ 			pcr:= decimal value
+-			label:= [selinux]|[data_label]
++			label:= [selinux]|[kernel_info]|[data_label]
+ 			data_label:= a unique string used for grouping and limiting critical data.
+ 			For example, "selinux" to measure critical data for SELinux.
  
- 		oid = look_up_OID(pkey->params + 2, pkey->paramlen - 2);
- 		switch (oid) {
-+		case OID_id_prime192v1:
-+			strcpy(alg_name, "nist_p192");
-+			return 0;
- 		case OID_id_prime256v1:
- 			strcpy(alg_name, "nist_p256");
- 			return 0;
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 50f6ecc70d8b..5ff891f8235d 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -505,6 +505,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_sm2:
- 			ctx->cert->pub->pkey_algo = "sm2";
- 			break;
-+		case OID_id_prime192v1:
- 		case OID_id_prime256v1:
- 			ctx->cert->pub->pkey_algo = "ecdsa";
- 			break;
-diff --git a/crypto/ecc.c b/crypto/ecc.c
-index 3b5494794bce..02dbc45eef18 100644
---- a/crypto/ecc.c
-+++ b/crypto/ecc.c
-@@ -1812,13 +1812,47 @@ static struct akcipher_alg ecc_nist_p256 = {
- 	},
- };
+diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
+index 4902fe7bd570..6e8742916d1d 100644
+--- a/security/integrity/ima/ima_init.c
++++ b/security/integrity/ima/ima_init.c
+@@ -15,6 +15,8 @@
+ #include <linux/scatterlist.h>
+ #include <linux/slab.h>
+ #include <linux/err.h>
++#include <linux/ima.h>
++#include <generated/utsrelease.h>
  
-+static unsigned int ecc_nist_p192_max_size(struct crypto_akcipher *tfm)
-+{
-+	return NIST_P192_KEY_SIZE;
-+}
+ #include "ima.h"
+ 
+@@ -147,5 +149,8 @@ int __init ima_init(void)
+ 
+ 	ima_init_key_queue();
+ 
++	ima_measure_critical_data("kernel_info", "kernel_version",
++				  UTS_RELEASE, strlen(UTS_RELEASE), false);
 +
-+static int ecc_nist_p192_init_tfm(struct crypto_akcipher *tfm)
-+{
-+	struct ecc_ctx *ctx = akcipher_tfm_ctx(tfm);
-+
-+	return ecc_ec_ctx_init(ctx, ECC_CURVE_NIST_P192);
-+}
-+
-+static struct akcipher_alg ecc_nist_p192 = {
-+	.verify = ecdsa_verify,
-+	.set_pub_key = ecc_set_pub_key,
-+	.max_size = ecc_nist_p192_max_size,
-+	.init = ecc_nist_p192_init_tfm,
-+	.exit = ecc_exit_tfm,
-+	.base = {
-+		.cra_name = "nist_p192",
-+		.cra_driver_name = "ecc-nist-p192",
-+		.cra_priority = 100,
-+		.cra_module = THIS_MODULE,
-+		.cra_ctxsize = sizeof(struct ecc_ctx),
-+	},
-+};
-+
- static int ecc_init(void)
- {
--	return crypto_register_akcipher(&ecc_nist_p256);
-+	int ret;
-+
-+	ret = crypto_register_akcipher(&ecc_nist_p256);
-+	if (ret)
-+		return ret;
-+
-+	return crypto_register_akcipher(&ecc_nist_p192);
+ 	return rc;
  }
- 
- static void ecc_exit(void)
- {
-+	crypto_unregister_akcipher(&ecc_nist_p192);
- 	crypto_unregister_akcipher(&ecc_nist_p256);
- }
- 
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 9060f19c80eb..e8071133d0e2 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -21,6 +21,7 @@ enum OID {
- 	OID_id_dsa,			/* 1.2.840.10040.4.1 */
- 	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
- 	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
-+	OID_id_prime192v1,		/* 1.2.840.10045.3.1.1 */
- 	OID_id_prime256v1,		/* 1.2.840.10045.3.1.7 */
- 	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
- 	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
 -- 
-2.25.4
+2.28.0
 
