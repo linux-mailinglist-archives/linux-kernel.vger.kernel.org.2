@@ -2,109 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3EC305C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5872D305BE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238069AbhA0Mwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:52:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S313965AbhAZWu7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:50:59 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C5BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:50:19 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id g15so114987pjd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:50:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HfLPRs4eN96PH3aPni92mJ/cIVZuitFdz+paWUIHXdc=;
-        b=p1q8YfNIA7u32gyMHl7TJSv3C8pAUdbdZcVVyJeHHxhqdhLHk+P8OTRfVFZCZFa1ml
-         HZV+DugrPhmS9M9nl9g2cvisAnWA3oB8IvVKgGYF4Iwi1z3ufUCrbwWMnro7yhvl+2hA
-         SZvJOIjJi/ECQTP0a/3mbjfiID9kT8scx4h2hoh6QVD+JoIuxuPd0a+MAlkuy1Nu7+dh
-         QiffobnwoY8PmHP4pHZ3DbGtIgr++So35J3xhZ3DEiwJYvmu9aVA5QWpGGEh5bXqZCVV
-         4Xb36ZW7NeRF2mlrv3IpdYSXGnKKfk39GM52BzF9/CKCaGBtVpXvLClh5bx2sOlzguOC
-         Fcow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HfLPRs4eN96PH3aPni92mJ/cIVZuitFdz+paWUIHXdc=;
-        b=TXu6UVv/LtGWEfyVeSRzxgWvZafoQeylJmhtxA7onDHt63LZG2YF6sAFu8dy8qrOXi
-         quEN7XNIA92BLnn852U5NJHay7Fir6tswr9Ilj+xlSIOPSt++nxkz0L06HsbEtXAdYC5
-         +E/dRuroxqb+V7Yk+28mL39R5PrSGyMAecv6IvvNxm2p+hl6j3M9MxcLMNdwVWfEbbfZ
-         vLhJklcLran9ODnqO/13Xy2dZWsDfboR3OZCZqqhoDV8LOhBdzyvPj7ZAF18yn/4V7vH
-         XAYjf38C8xYx4sn8cTpdT0/FfA2nMapceIwC32rtR/Nc3dq9PlA9nOSHp+F0aCYD4Lln
-         8QrQ==
-X-Gm-Message-State: AOAM532vkqayuSiOiiTFMJzDDOoDQgW45Y4WsN0P7LEWN4wtQ2tizcbw
-        6xRcm4Dm1ZRaurl5hNSTDz1NVQ==
-X-Google-Smtp-Source: ABdhPJwLAu6BefrWU0ja9aPhcbKLTuBvUaG0okxiFmvMeANCUpP0Y7GViBEz7N6HAnGeexcOqrKA4w==
-X-Received: by 2002:a17:90b:813:: with SMTP id bk19mr2101295pjb.193.1611701418801;
-        Tue, 26 Jan 2021 14:50:18 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gd9sm16044pjb.10.2021.01.26.14.50.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 14:50:17 -0800 (PST)
-Date:   Tue, 26 Jan 2021 15:50:15 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: ingenic: Add module parameter 'auto_boot'
-Message-ID: <20210126225015.GA1100385@xps15>
-References: <20210123142956.17865-1-paul@crapouillou.net>
+        id S237981AbhA0MqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S313045AbhAZWyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 17:54:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E80792065C;
+        Tue, 26 Jan 2021 22:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611701637;
+        bh=90forB2cGb6Q0K0xI6+WurI9tm2KAuX6GVmEgXtvfyE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Me+oMZH2WW/ar4X1gTYs4u+oK3haCRjuAP1NLtUeZ8ObrUwGpUl3n8wZzE1PHlQui
+         1Hne7FVBUSOTElLsaCdCoDDo1OK7St+oFpUI42pWfAK4qUsC/6maGovC/ckaBnMa1F
+         fJMXgl8WopCIouYXOWu8ffEYVdxXB10/8zQ+rv9WVA6gArdrpVbKfq+M4YULWDtpIC
+         wpIXvGjq2phHuMMipiJxv/BGjXKW/29lluTTlzl8jHqtSB27mTIGrtv6r/OlAYY6L2
+         tYJ8qyF+RtA8bVYcIKdVL/aYsEnUHZvIopj7Si6BO7d9qyHq8Wff547T5vRMdcD091
+         GctZKz0wU4uCw==
+Date:   Tue, 26 Jan 2021 22:53:51 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Vikram Sethi <vsethi@nvidia.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, vidyas@nvidia.com,
+        treding@nvidia.com, Jon Masters <jcm@jonmasters.org>,
+        Jeremy Linton <jeremy.linton@arm.com>, mark.rutland@arm.com,
+        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
+        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org,
+        ebrower@nvidia.com
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+Message-ID: <20210126225351.GA30941@willie-the-truck>
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <20210107181416.GA3536@willie-the-truck>
+ <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
+ <20210108103216.GA17931@e121166-lin.cambridge.arm.com>
+ <20210122194829.GE25471@willie-the-truck>
+ <b37bbff9-d4f8-ece6-3a89-fa21093e15e1@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210123142956.17865-1-paul@crapouillou.net>
+In-Reply-To: <b37bbff9-d4f8-ece6-3a89-fa21093e15e1@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 02:29:56PM +0000, Paul Cercueil wrote:
-> Add a 'auto_boot' module parameter that instructs the remoteproc driver
-> whether or not it should auto-boot the remote processor, which will
-> default to "false", since the VPU in Ingenic SoCs does not really have
-> any predetermined function.
+On Tue, Jan 26, 2021 at 11:08:31AM -0600, Vikram Sethi wrote:
+> On 1/22/2021 1:48 PM, Will Deacon wrote:
+> > On Fri, Jan 08, 2021 at 10:32:16AM +0000, Lorenzo Pieralisi wrote:
+> >> On Thu, Jan 07, 2021 at 04:05:48PM -0500, Jon Masters wrote:
+> >>> On 1/7/21 1:14 PM, Will Deacon wrote:
+> >>>> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
+> >>>>> Given that most arm64 platform's PCI implementations needs quirks
+> >>>>> to deal with problematic config accesses, this is a good place to
+> >>>>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+> >>>>> standard SMC conduit designed to provide a simple PCI config
+> >>>>> accessor. This specification enhances the existing ACPI/PCI
+> >>>>> abstraction and expects power, config, etc functionality is handled
+> >>>>> by the platform. It also is very explicit that the resulting config
+> >>>>> space registers must behave as is specified by the pci specification.
+> >>>>>
+> >>>>> Lets hook the normal ACPI/PCI config path, and when we detect
+> >>>>> missing MADT data, attempt to probe the SMC conduit. If the conduit
+> >>>>> exists and responds for the requested segment number (provided by the
+> >>>>> ACPI namespace) attach a custom pci_ecam_ops which redirects
+> >>>>> all config read/write requests to the firmware.
+> >>>>>
+> >>>>> This patch is based on the Arm PCI Config space access document @
+> >>>>> https://developer.arm.com/documentation/den0115/latest
+> >>>> Why does firmware need to be involved with this at all? Can't we just
+> >>>> quirk Linux when these broken designs show up in production? We'll need
+> >>>> to modify Linux _anyway_ when the firmware interface isn't implemented
+> >>>> correctly...
+> >>> I agree with Will on this. I think we want to find a way to address some
+> >>> of the non-compliance concerns through quirks in Linux. However...
+> >> I understand the concern and if you are asking me if this can be fixed
+> >> in Linux it obviously can. The point is, at what cost for SW and
+> >> maintenance - in Linux and other OSes, I think Jeremy summed it up
+> >> pretty well:
+> >>
+> >> https://lore.kernel.org/linux-pci/61558f73-9ac8-69fe-34c1-2074dec5f18a@arm.com
+> >>
+> >> The issue here is that what we are asked to support on ARM64 ACPI is a
+> >> moving target and the target carries PCI with it.
+> >>
+> >> This potentially means that all drivers in:
+> >>
+> >> drivers/pci/controller
+> >>
+> >> may require an MCFG quirk and to implement it we may have to:
+> >>
+> >> - Define new ACPI bindings (that may need AML and that's already a
+> >>   showstopper for some OSes)
+> >> - Require to manage clocks in the kernel (see link-up checks)
+> >> - Handle PCI config space faults in the kernel
+> >>
+> >> Do we really want to do that ? I don't think so. Therefore we need
+> >> to have a policy to define what constitutes a "reasonable" quirk and
+> >> that's not objective I am afraid, however we slice it (there is no
+> >> such a thing as eg 90% ECAM).
+> > Without a doubt, I would much prefer to see these quirks and workarounds
+> > in Linux than hidden behind a firmware interface. Every single time.
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/remoteproc/ingenic_rproc.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> In that case, can you please comment on/apply Tegra194 ECAM quirk that was rejected
 > 
-> diff --git a/drivers/remoteproc/ingenic_rproc.c b/drivers/remoteproc/ingenic_rproc.c
-> index 26e19e6143b7..e2618c36eaab 100644
-> --- a/drivers/remoteproc/ingenic_rproc.c
-> +++ b/drivers/remoteproc/ingenic_rproc.c
-> @@ -27,6 +27,11 @@
->  #define AUX_CTRL_NMI		BIT(1)
->  #define AUX_CTRL_SW_RESET	BIT(0)
->  
-> +static bool auto_boot;
-> +module_param(auto_boot, bool, 0400);
-> +MODULE_PARM_DESC(auto_boot,
-> +		 "Auto-boot the remote processor [default=false]");
-> +
->  struct vpu_mem_map {
->  	const char *name;
->  	unsigned int da;
-> @@ -172,6 +177,8 @@ static int ingenic_rproc_probe(struct platform_device *pdev)
->  	if (!rproc)
->  		return -ENOMEM;
->  
-> +	rproc->auto_boot = auto_boot;
-> +
+> a year ago, and was the reason we worked with Samer/ARM to define this common
+> 
+> mechanism?
+> 
+> https://lkml.org/lkml/2020/1/3/395
+> 
+> The T194 ECAM is from widely used Root Port IP from a IP vendor. That is one reason so many
+> 
+> *existing* SOCs have ECAM quirks. ARM is only now working with the Root port IP vendors
+> 
+> to test ECAM, MSI etc, but the reality is there were deficiencies in industry IP that is widely
+> 
+> used. If this common quirk is not the way to go, then please apply the T194 specific quirk which was
+> 
+> NAK'd a year ago, or suggest how to improve that quirk.
+> 
+> The ECAM issue has been fixed on future Tegra chips and is validated preSilicon with BSA
+> 
+> tests, so it is not going to be a recurrent issue for us.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+(aside: please fix your mail client not to add all these blank lines)
 
->  	vpu = rproc->priv;
->  	vpu->dev = &pdev->dev;
->  	platform_set_drvdata(pdev, vpu);
-> -- 
-> 2.29.2
-> 
+Personally, if a hundred lines of self-contained quirk code is all that is
+needed to get your legacy IP running, then I would say we should merge it.
+But I don't maintain the PCI subsystem, and I trust Bjorn and Lorenzo's
+judgement as to what is the right thing to do when it concerns that code.
+After all, they're the ones who end up having to look after this stuff long
+after the hardware companies have stopped caring.
+
+Will
