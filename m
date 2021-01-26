@@ -2,113 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E5F305278
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E44305277
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235365AbhA0DQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        id S235488AbhA0DTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405545AbhAZUZ3 (ORCPT
+        with ESMTP id S1731202AbhAZUl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:25:29 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26276C061786;
-        Tue, 26 Jan 2021 12:24:49 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d4so10416762plh.5;
-        Tue, 26 Jan 2021 12:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1cudNhAMfB/FNnO4Nfbnzqpu5VBUIwtW0BBCCWOr4ao=;
-        b=okEnGG//pva3FMm7+RQuqg3HjT6TuPB9G/HWJYN4D7a69egyS0VYX+j2NcX0rtqfMx
-         1wZ66PW1Lp/QBlFLsjTh6++IQ/YzkyKnsqgZK5oPJU4DLZbZJK8ICOq9t3lZDdpkB1pO
-         fajg2mPDaxDO8So+orz5lAgMXf6vEeSwW8KgrA+vmH4gNw33RVKwMG2y4uQzH/R7g2Ym
-         /0fOM4XSuQz9a8/FSx39lySghSLAwNhk90EgWrpfB+c5OmrKqEfKhqxs/XXnCC4azjTL
-         p8t61CcwzLqdmMv+Ke8sFeYU6PPsetdA1QzuB0X9TFIsLKUHFXEphvYwtjyPldGJ3oPu
-         JWlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1cudNhAMfB/FNnO4Nfbnzqpu5VBUIwtW0BBCCWOr4ao=;
-        b=ncJQtqGe/OMI2ZpeBBOxFePTmsBh+xZCJQ2C5xxAxzUmdAw7gxYgBzw7ZjHuOgtJNh
-         /j7qJh9NDAbuA797tRi5pe6pIuHPrMHYw0SJWe2eY7xgxYzuDfNMl/01mzp3Si5iIrab
-         B9/Yq/TYHv19ibaYtu4hz10x/Jzl5ixgYVPgMdhssO1R7fMU4Ip9xsb5KxVcBWfUF+93
-         EacgkNs6+DNNkZdBwye8lSRl103B4RugCuPC9Pw+CwQNVp7NIXR+xGZzYw9Hx82LXZbd
-         /Ux99yFlDImGh6t0kVcc5kYBIb9ZI8cDnDqOTtfRbpCIF5UysF8ldwhfJGuqyP6nxQkV
-         JDLQ==
-X-Gm-Message-State: AOAM5335IAExN276ILR55mKIVe3aHVIdbCjsHbMXdWMm2y98a/2CfMd1
-        mMuTC22b+gjA6xYz1j7Uen8=
-X-Google-Smtp-Source: ABdhPJzK7Kn4mm8q2nP95CoOy5hXdg0H+PpAN9AJ0CABoyuge53sptw7H1bXl1bPLLzeM8G/GYhKsw==
-X-Received: by 2002:a17:902:778e:b029:de:b475:c430 with SMTP id o14-20020a170902778eb02900deb475c430mr7872809pll.53.1611692688717;
-        Tue, 26 Jan 2021 12:24:48 -0800 (PST)
-Received: from localhost.localdomain (c-73-241-149-213.hsd1.ca.comcast.net. [73.241.149.213])
-        by smtp.googlemail.com with ESMTPSA id u12sm18697124pgi.91.2021.01.26.12.24.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 12:24:48 -0800 (PST)
-From:   noah <goldstein.w.n@gmail.com>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        goldstein.w.n@gmail.com
-Subject: [PATCH] io_uring: Add skip option for __io_sqe_files_update
-Date:   Tue, 26 Jan 2021 15:23:28 -0500
-Message-Id: <20210126202326.3143037-1-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 26 Jan 2021 15:41:57 -0500
+Received: from mail.dr-lotz.de (mail.dr-lotz.de [IPv6:2a01:4f8:161:6ffe::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF70C061573;
+        Tue, 26 Jan 2021 12:41:13 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dr-lotz.de (Postfix) with ESMTP id 9364F5B25F;
+        Tue, 26 Jan 2021 21:40:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.dr-lotz.de
+Received: from mail.dr-lotz.de ([127.0.0.1])
+        by localhost (mail.dr-lotz.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UfRIaAs2M_W1; Tue, 26 Jan 2021 21:40:23 +0100 (CET)
+Received: from [192.168.42.35] (ipb21b6623.dynamic.kabel-deutschland.de [178.27.102.35])
+        by mail.dr-lotz.de (Postfix) with ESMTPSA id 01A7B5B25E;
+        Tue, 26 Jan 2021 21:40:22 +0100 (CET)
+Subject: Re: [PATCH v2] wireguard: netlink: add multicast notification for
+ peer changes
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210109210056.160597-1-linus@lotz.li>
+ <20210115195353.11483-1-linus@lotz.li>
+ <CAHmME9rny0bc2JA1_9_A=_3OuPnEvqJyK7UMwsL+x=yTHRoBTQ@mail.gmail.com>
+From:   Linus Lotz <linus@lotz.li>
+Message-ID: <189f640c-e399-502a-86ec-3432a39a14ad@lotz.li>
+Date:   Tue, 26 Jan 2021 21:40:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CAHmME9rny0bc2JA1_9_A=_3OuPnEvqJyK7UMwsL+x=yTHRoBTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for skipping a file descriptor when using
-IORING_REGISTER_FILES_UPDATE.  __io_sqe_files_update will skip fds set
-to IORING_REGISTER_FILES_SKIP. IORING_REGISTER_FILES_SKIP is inturn
-added as a #define in io_uring.h
+Hi Jason,
+have you had a chance to look at it yet?
 
-Signed-off-by: noah <goldstein.w.n@gmail.com>
----
-Supporting documentation and tests in liburing can be added in PR284
-(https://github.com/axboe/liburing/pull/284) if this patch is applied.
-    
- fs/io_uring.c                 | 3 +++
- include/uapi/linux/io_uring.h | 7 +++++++
- 2 files changed, 10 insertions(+)
+Cheers
+Linus
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 2c307dea162b..03748faa5295 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8039,6 +8039,9 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
- 			err = -EFAULT;
- 			break;
- 		}
-+		if (fd == IORING_REGISTER_FILES_SKIP)
-+			continue;
-+
- 		i = array_index_nospec(up->offset + done, ctx->nr_user_files);
- 		table = &ctx->file_data->table[i >> IORING_FILE_TABLE_SHIFT];
- 		index = i & IORING_FILE_TABLE_MASK;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index f9f106c54d90..e8b481040fb3 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -298,6 +298,13 @@ struct io_uring_rsrc_update {
- 	__aligned_u64 data;
- };
- 
-+/*
-+ * fd value in *((__s32 *)io_uring_rsrc_update->data)
-+ */
-+
-+/* Skip updating fd indexes set to this value */
-+#define IORING_REGISTER_FILES_SKIP  (-2)
-+
- #define IO_URING_OP_SUPPORTED	(1U << 0)
- 
- struct io_uring_probe_op {
--- 
-2.29.2
-
+Am 16.01.21 um 00:40 schrieb Jason A. Donenfeld:
+> Hey Linus,
+> 
+> My email server has been firewalled from vger.kernel.org until today,
+> so I didn't see the original until this v2 was sent today. My
+> apologies. I'll review this first thing on Monday.
+> 
+> Jason
+> 
