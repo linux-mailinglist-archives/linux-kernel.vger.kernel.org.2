@@ -2,148 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBD9305A7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D11305B32
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237467AbhA0L6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:58:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34026 "EHLO mx2.suse.de"
+        id S231814AbhA0MYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:24:04 -0500
+Received: from mga14.intel.com ([192.55.52.115]:65042 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236685AbhA0L4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:56:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611748514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lwuc+jSkD82sotlNHJidx8xja/Bw1JYQcR061EVrMxA=;
-        b=VqvtxSgmJ5cfSryecsAWZnhhs5uilRcndo5u4Gvp2ENukoxoKJsr+mTPjc4n9b02HE5zd2
-        tNiYkZOsfUa2IE/eO+Ngsze83nqq8S0L9O25uNbLapCDnMcbQVY3lblEQhhKn8OhgSez7d
-        hI+RKBYuVTq7jTQ+3zuaVTVbMniYl0A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B807AD2B;
-        Wed, 27 Jan 2021 11:55:14 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 12:55:13 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 04/13] livepatch: move klp_find_object_module to module.c
-Message-ID: <YBFUoYxHjRTmKOEn@alley>
-References: <20210121074959.313333-1-hch@lst.de>
- <20210121074959.313333-5-hch@lst.de>
- <YBAmTAsT3S01kU1x@gunter>
+        id S314070AbhAZW4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 17:56:20 -0500
+IronPort-SDR: 4FABT/06W0fbaMXYp47jXyupq6mFdRMM4OTWk65CWonhqSuqris4LPrMjAwGTSP882tmdb26JL
+ QzOQkdpqbJGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="179202834"
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="179202834"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 14:48:14 -0800
+IronPort-SDR: tZfdh69tYWlg1KdFKdDdhap0Mrv80RmijKkEHTYxR1YeOgxup5BcjF7XYYZEBQm1MAeH2XgTYt
+ 5yhmQMZ4W6Jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="362161864"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Jan 2021 14:48:13 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l4X88-00017V-IQ; Tue, 26 Jan 2021 22:48:12 +0000
+Date:   Wed, 27 Jan 2021 06:47:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ d38edbe14262950938ee5c2ade4b8894ab1292de
+Message-ID: <60109c0f.2uWQkXyWRE7r67W9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBAmTAsT3S01kU1x@gunter>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-26 15:25:16, Jessica Yu wrote:
-> +++ Christoph Hellwig [21/01/21 08:49 +0100]:
-> > To uncouple the livepatch code from module loader internals move a
-> > slightly refactored version of klp_find_object_module to module.c
-> > This allows to mark find_module static and removes one of the last
-> > users of module_mutex outside of module.c.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> > include/linux/module.h  |  3 +--
-> > kernel/livepatch/core.c | 39 +++++++++++++--------------------------
-> > kernel/module.c         | 17 ++++++++++++++++-
-> > 3 files changed, 30 insertions(+), 29 deletions(-)
-> > 
-> > diff --git a/include/linux/module.h b/include/linux/module.h
-> > index b4654f8a408134..8588482bde4116 100644
-> > --- a/include/linux/module.h
-> > +++ b/include/linux/module.h
-> > @@ -586,8 +586,7 @@ static inline bool within_module(unsigned long addr, const struct module *mod)
-> > 	return within_module_init(addr, mod) || within_module_core(addr, mod);
-> > }
-> > 
-> > -/* Search for module by name: must hold module_mutex. */
-> > -struct module *find_module(const char *name);
-> > +struct module *find_klp_module(const char *name);
-> > 
-> > /* Check if a module is loaded. */
-> > bool module_loaded(const char *name);
-> > diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> > index a7f625dc24add3..878759baadd81c 100644
-> > --- a/kernel/livepatch/core.c
-> > +++ b/kernel/livepatch/core.c
-> > @@ -49,30 +49,6 @@ static bool klp_is_module(struct klp_object *obj)
-> > 	return obj->name;
-> > }
-> > 
-> > -/* sets obj->mod if object is not vmlinux and module is found */
-> > -static void klp_find_object_module(struct klp_object *obj)
-> > -{
-> > -	struct module *mod;
-> > -
-> > -	mutex_lock(&module_mutex);
-> > -	/*
-> > -	 * We do not want to block removal of patched modules and therefore
-> > -	 * we do not take a reference here. The patches are removed by
-> > -	 * klp_module_going() instead.
-> > -	 */
-> > -	mod = find_module(obj->name);
-> > -	/*
-> > -	 * Do not mess work of klp_module_coming() and klp_module_going().
-> > -	 * Note that the patch might still be needed before klp_module_going()
-> > -	 * is called. Module functions can be called even in the GOING state
-> > -	 * until mod->exit() finishes. This is especially important for
-> > -	 * patches that modify semantic of the functions.
-> > -	 */
-> > -	if (mod && mod->klp_alive)
-> > -		obj->mod = mod;
-> > -	mutex_unlock(&module_mutex);
-> > -}
-> 
-> Hmm, I am not a huge fan of moving more livepatch code into module.c, I
-> wonder if we can keep them separate.
-> 
-> Why not have module_is_loaded() kill two birds with one stone? That
-> is, just have it return a module pointer to signify that the module is
-> loaded, NULL if not. Then we don't need an extra find_klp_module()
-> function just to call find_module() and return a pointer, as
-> module_is_loaded() can just do that for us.
-> 
-> As for the mod->klp_alive check, I believe this function
-> (klp_find_object_module()) is called with klp_mutex held, and
-> mod->klp_alive is only modified under klp_mutex. Also, if klp_alive is
-> true, the module is at least COMING and cannot be GOING until it
-> acquires the klp_mutex again in klp_module_going(). So does that hunk
-> really need to be under module_mutex? It has been a long time since
-> I've looked at livepatch code so it would be great if someone could
-> double check.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: d38edbe14262950938ee5c2ade4b8894ab1292de  Merge branch 'locking/core'
 
-We need to make sure that the module is not freed before we manipulate
-mod->klp_alive.
+elapsed time: 727m
 
-One solution would be to take the reference and block it during this
-operation.
+configs tested: 138
+configs skipped: 3
 
-Alternatively it might be to rely on RCU. It seems that the struct
-is protected by RCU because of kallsyms. But I am not sure if it
-is safe in all module states. But it should be. We find the module
-via the same list like kallsyms.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Best Regards,
-Petr
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                  mpc885_ads_defconfig
+s390                          debug_defconfig
+mips                        omega2p_defconfig
+arm                           stm32_defconfig
+mips                  decstation_64_defconfig
+microblaze                      mmu_defconfig
+xtensa                         virt_defconfig
+arc                         haps_hs_defconfig
+arm                          prima2_defconfig
+mips                           rs90_defconfig
+arm                            xcep_defconfig
+sh                          rsk7203_defconfig
+m68k                            q40_defconfig
+sh                          sdk7780_defconfig
+sh                   secureedge5410_defconfig
+arm                        trizeps4_defconfig
+arm                          moxart_defconfig
+mips                           ip27_defconfig
+mips                           jazz_defconfig
+arm                           omap1_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                    adder875_defconfig
+m68k                        mvme16x_defconfig
+mips                           ci20_defconfig
+sh                                  defconfig
+arm                       cns3420vb_defconfig
+arm                             ezx_defconfig
+m68k                        mvme147_defconfig
+xtensa                    xip_kc705_defconfig
+arm                       imx_v6_v7_defconfig
+arm                        realview_defconfig
+arm                         vf610m4_defconfig
+alpha                               defconfig
+arm                  colibri_pxa300_defconfig
+c6x                                 defconfig
+powerpc                     taishan_defconfig
+arm                            hisi_defconfig
+um                            kunit_defconfig
+sh                        edosk7705_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                     redwood_defconfig
+powerpc                      ppc64e_defconfig
+arm                   milbeaut_m10v_defconfig
+xtensa                          iss_defconfig
+arm                      jornada720_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                        spear6xx_defconfig
+arm                            lart_defconfig
+arm                        spear3xx_defconfig
+mips                      fuloong2e_defconfig
+powerpc                    klondike_defconfig
+arm                              zx_defconfig
+sh                               allmodconfig
+arm                        mvebu_v7_defconfig
+arm                            qcom_defconfig
+arm                        shmobile_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                     pseries_defconfig
+arm                          lpd270_defconfig
+mips                           ip28_defconfig
+powerpc                   bluestone_defconfig
+sh                           se7751_defconfig
+mips                        qi_lb60_defconfig
+powerpc                        icon_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210126
+i386                 randconfig-a002-20210126
+i386                 randconfig-a004-20210126
+i386                 randconfig-a006-20210126
+i386                 randconfig-a003-20210126
+i386                 randconfig-a005-20210126
+x86_64               randconfig-a012-20210126
+x86_64               randconfig-a016-20210126
+x86_64               randconfig-a015-20210126
+x86_64               randconfig-a011-20210126
+x86_64               randconfig-a013-20210126
+x86_64               randconfig-a014-20210126
+i386                 randconfig-a013-20210126
+i386                 randconfig-a011-20210126
+i386                 randconfig-a012-20210126
+i386                 randconfig-a015-20210126
+i386                 randconfig-a014-20210126
+i386                 randconfig-a016-20210126
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210126
+x86_64               randconfig-a002-20210126
+x86_64               randconfig-a001-20210126
+x86_64               randconfig-a005-20210126
+x86_64               randconfig-a006-20210126
+x86_64               randconfig-a004-20210126
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
