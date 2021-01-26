@@ -2,222 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF530586D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E12F305881
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhA0KaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:30:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56064 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235928AbhA0K1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:27:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611743217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCSEw5IKbkt10LxDH6btSRzN19f+vZPTc+6q9fs5sDY=;
-        b=HD0DlG+ubmbiz6DcviGqYBxD/AwSgSiI/PhM+su5op3Y3XArbAUis4ytG344D6mO9qbCxT
-        zWSwPOC6QjJg2G6vdpC+HVCJhl5mnSyEgEfMx9ITlhNgncUvJPX/sQ0417rIeiB6t6Qw1z
-        iMhyLbt1d2ojIBxU+CufyI60NFt0FHg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C194FADA2;
-        Wed, 27 Jan 2021 10:26:57 +0000 (UTC)
-Subject: Re: [PATCH v2] x86/xen: avoid warning in Xen pv guest with
- CONFIG_AMD_MEM_ENCRYPT enabled
-To:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-References: <20210127093822.18570-1-jgross@suse.com>
- <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <2dc49fae-bf35-7c7d-2d86-338665db27ca@suse.com>
-Date:   Wed, 27 Jan 2021 11:26:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT"
+        id S231959AbhA0KcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S314165AbhAZXAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 18:00:07 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B56C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:51:58 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id y29so66378qky.22
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:51:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=uE2e2OS2E1G/7i2lOQq95uvgCrCFJov5e2Iib9uvchA=;
+        b=wTpv/75XLm7qTP8od0HgwhwDlVlUeQFw+OGtLVXGXEoZtSBbiUQ8Q2+LBZJ8jSU6WV
+         RSrm3uc0rhyrerM5G27Xy1Eh2ykoh4WuLTSkxpSkU9llMISP2KEWndhuFw2JzerTd03S
+         13sPsUktt1KR+4uaxX+BRnDRFjGGtCsClCtw3SDy2ty7uCU8C0utRnK3usg8V4C9+LCa
+         5326E9zv2nxvXy938ztZuODJL/byNuJaeVvabfVs9UVVvdsX3RX4EXKkv3lv6FF355MJ
+         M2CtsXtNDzJ7mWrF4dPaLSTHktz5xpNLj8YQfgAlBJVruiTJCz76lDzBRXpVxykw2T3o
+         ZSGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :cc:content-transfer-encoding;
+        bh=uE2e2OS2E1G/7i2lOQq95uvgCrCFJov5e2Iib9uvchA=;
+        b=aWTrh46tdlYLh+fPYJoDbisjrSUF+lUIikscdpf9fZ1hOZgWmAzKHEnYStZuRLjYVA
+         bUs5PjMX4ezSXkRLQ0MYQ41DGEC2bgXnWMba0ck2ynQcar0HuqttbYVPZdPWJsslNCCY
+         i4bNPyYDceJoWS/Mv6JB0yJ/UIfTWFn2HvAkQHUiFO0Z/7v0xpBjnIDExH28Pu4oOwU/
+         yNY0YQyjI3aZmaA7N7+SmeZdRUb2BnLs7ftC9CjBqCy7HLaxeYSpCk5Lb0ifR9ui45Bs
+         n0MNgzCpc38vtC9K//wuM+WELXJS+rPZLa5xQO6ZQRPqIsXumGdRaQg5lmYkT9gSf7Du
+         mwfw==
+X-Gm-Message-State: AOAM531EXdkKZMTjdVeK+d/bBU3a8n+0X8LvE4Jk8qyaO6SsY4dDHL5Y
+        A1WvmLFD2CAr/AKiJEkicCNspuqI/xbTRwxrSg==
+X-Google-Smtp-Source: ABdhPJydV7GgC2jGZASO+sFhG7s0/GHbSsb0nr1mv9wi7Ric72ACN8X8QQK0dbF4E45gSNGlGO4U3jG5zSXx2ILsGQ==
+Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a05:6214:54a:: with SMTP id
+ ci10mr7902818qvb.20.1611701517597; Tue, 26 Jan 2021 14:51:57 -0800 (PST)
+Date:   Tue, 26 Jan 2021 22:51:28 +0000
+Message-Id: <20210126225138.1823266-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, minchan@kernel.org, gregkh@linuxfoundation.org,
+        hridya@google.com, jannh@google.com, kernel-team@android.com,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>, Hui Su <sh_def@163.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT
-Content-Type: multipart/mixed; boundary="7jkOIed7ZUVZJSS2ImsckjQxSXeAfqxSB";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Andrew Cooper <andrew.cooper3@citrix.com>,
- xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
-Message-ID: <2dc49fae-bf35-7c7d-2d86-338665db27ca@suse.com>
-Subject: Re: [PATCH v2] x86/xen: avoid warning in Xen pv guest with
- CONFIG_AMD_MEM_ENCRYPT enabled
-References: <20210127093822.18570-1-jgross@suse.com>
- <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
-In-Reply-To: <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
+In order to measure how much memory a process actually consumes, it is
+necessary to include the DMA buffer sizes for that process in the memory
+accounting. Since the handle to DMA buffers are raw FDs, it is important
+to be able to identify which processes have FD references to a DMA buffer.
 
---7jkOIed7ZUVZJSS2ImsckjQxSXeAfqxSB
-Content-Type: multipart/mixed;
- boundary="------------6EDABF7462AFF4137F4C713B"
-Content-Language: en-US
+Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
+/proc/<pid>/fdinfo -- both of which are only root readable, as follows:
+  1. Do a readlink on each FD.
+  2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD.
+  3. stat the file to get the dmabuf inode number.
+  4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
 
-This is a multi-part message in MIME format.
---------------6EDABF7462AFF4137F4C713B
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Android captures per-process system memory state when certain low memory
+events (e.g a foreground app kill) occur, to identify potential memory
+hoggers. To include a process=E2=80=99s dmabuf usage as part of its memory =
+state,
+the data collection needs to be fast enough to reflect the memory state at
+the time of such events.
 
-On 27.01.21 10:43, Andrew Cooper wrote:
-> On 27/01/2021 09:38, Juergen Gross wrote:
->> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c=
+Since reading /proc/<pid>/fd/ and /proc/<pid>/fdinfo/ requires root
+privileges, this approach is not suitable for production builds. Granting
+root privileges even to a system process increases the attack surface and
+is highly undesirable. Additionally this is slow as it requires many
+context switches for searching and getting the dma-buf info.
 
->> index 4409306364dc..ca5ac10fcbf7 100644
->> --- a/arch/x86/xen/enlighten_pv.c
->> +++ b/arch/x86/xen/enlighten_pv.c
->> @@ -583,6 +583,12 @@ DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
->>   		exc_debug(regs);
->>   }
->>  =20
->> +DEFINE_IDTENTRY_RAW(exc_xen_unknown_trap)
->> +{
->> +	/* This should never happen and there is no way to handle it. */
->> +	panic("Unknown trap in Xen PV mode.");
->=20
-> Looks much better.=C2=A0 How about including regs->entry_vector here, j=
-ust to
-> short circuit the inevitable swearing which will accompany encountering=
+With the addition of per-buffer dmabuf stats in sysfs [1], the DMA buffer
+details can be queried using their unique inode numbers.
 
-> this panic() ?
+This patch proposes adding a /proc/<pid>/task/<tid>/dmabuf_fds interface.
 
-You are aware the regs parameter is struct pt_regs *, not the Xen
-struct cpu_user_regs *?
+/proc/<pid>/task/<tid>/dmabuf_fds contains a list of inode numbers for
+every DMA buffer FD that the task has. Entries with the same inode
+number can appear more than once, indicating the total FD references
+for the associated DMA buffer.
 
-So I have no idea how I should get this information without creating
-a per-vector handler.
+If a thread shares the same files as the group leader then its
+dmabuf_fds file will be empty, as these dmabufs are reported by the
+group leader.
 
+The interface requires PTRACE_MODE_READ_FSCRED (same as /proc/<pid>/maps)
+and allows the efficient accounting of per-process DMA buffer usage without
+requiring root privileges. (See data below)
 
-Juergen
+Performance Comparison:
+-----------------------
 
---------------6EDABF7462AFF4137F4C713B
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+The following data compares the time to capture the sizes of all DMA
+buffers referenced by FDs for all processes on an arm64 android device.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+-------------------------------------------------------
+                   |  Core 0 (Little)  |  Core 7 (Big) |
+-------------------------------------------------------
+From <pid>/fdinfo  |      318 ms       |     145 ms    |
+-------------------------------------------------------
+Inodes from        |      114 ms       |      27 ms    |
+dmabuf_fds;        |    (2.8x  ^)      |   (5.4x  ^)   |
+data from sysfs    |                   |               |
+-------------------------------------------------------
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+It can be inferred that in the worst case there is a 2.8x speedup for
+determining per-process DMA buffer FD sizes, when using the proposed
+interfaces.
 
---------------6EDABF7462AFF4137F4C713B--
+[1] https://lore.kernel.org/dri-devel/20210119225723.388883-1-hridya@google=
+.com/
 
---7jkOIed7ZUVZJSS2ImsckjQxSXeAfqxSB--
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+---
+ Documentation/filesystems/proc.rst |  30 ++++++
+ drivers/dma-buf/dma-buf.c          |   7 +-
+ fs/proc/Makefile                   |   1 +
+ fs/proc/base.c                     |   1 +
+ fs/proc/dma_bufs.c                 | 159 +++++++++++++++++++++++++++++
+ fs/proc/internal.h                 |   1 +
+ include/linux/dma-buf.h            |   5 +
+ 7 files changed, 198 insertions(+), 6 deletions(-)
+ create mode 100644 fs/proc/dma_bufs.c
 
---Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems=
+/proc.rst
+index 2fa69f710e2a..757dd47ab679 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -47,6 +47,7 @@ fixes/update part 1.1  Stefani Seibold <stefani@seibold.n=
+et>    June 9 2009
+   3.10  /proc/<pid>/timerslack_ns - Task timerslack value
+   3.11	/proc/<pid>/patch_state - Livepatch patch operation state
+   3.12	/proc/<pid>/arch_status - Task architecture specific information
++  3.13	/proc/<pid>/task/<tid>/dmabuf_fds - DMA buffers referenced by an FD
+=20
+   4	Configuring procfs
+   4.1	Mount options
+@@ -2131,6 +2132,35 @@ AVX512_elapsed_ms
+   the task is unlikely an AVX512 user, but depends on the workload and the
+   scheduling scenario, it also could be a false negative mentioned above.
+=20
++3.13 /proc/<pid>/task/<tid>/dmabuf_fds - DMA buffers referenced by an FD
++-------------------------------------------------------------------------
++This file  exposes a list of the inode numbers for every DMA buffer
++FD that the task has.
++
++The same inode number can appear more than once, indicating the total
++FD references for the associated DMA buffer.
++
++The inode number can be used to lookup the DMA buffer information in
++the sysfs interface /sys/kernel/dmabuf/buffers/<inode-no>/.
++
++Example Output
++~~~~~~~~~~~~~~
++$ cat /proc/612/task/612/dmabuf_fds
++30972 30973 45678 49326
++
++Permission to access this file is governed by a ptrace access mode
++PTRACE_MODE_READ_FSCREDS.
++
++Threads can have different files when created without specifying
++the CLONE_FILES flag. For this reason the interface is presented as
++/proc/<pid>/task/<tid>/dmabuf_fds and not /proc/<pid>/dmabuf_fds.
++This simplifies kernel code and aggregation can be handled in
++userspace.
++
++If a thread has the same files as its group leader, then its dmabuf_fds
++file will be empty as these dmabufs are already reported by the
++group leader.
++
+ Chapter 4: Configuring procfs
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+=20
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 9ad6397aaa97..0660c06be4c6 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -29,8 +29,6 @@
+ #include <uapi/linux/dma-buf.h>
+ #include <uapi/linux/magic.h>
+=20
+-static inline int is_dma_buf_file(struct file *);
+-
+ struct dma_buf_list {
+ 	struct list_head head;
+ 	struct mutex lock;
+@@ -434,10 +432,7 @@ static const struct file_operations dma_buf_fops =3D {
+ 	.show_fdinfo	=3D dma_buf_show_fdinfo,
+ };
+=20
+-/*
+- * is_dma_buf_file - Check if struct file* is associated with dma_buf
+- */
+-static inline int is_dma_buf_file(struct file *file)
++int is_dma_buf_file(struct file *file)
+ {
+ 	return file->f_op =3D=3D &dma_buf_fops;
+ }
+diff --git a/fs/proc/Makefile b/fs/proc/Makefile
+index bd08616ed8ba..91a67f43ddf4 100644
+--- a/fs/proc/Makefile
++++ b/fs/proc/Makefile
+@@ -16,6 +16,7 @@ proc-y	+=3D cmdline.o
+ proc-y	+=3D consoles.o
+ proc-y	+=3D cpuinfo.o
+ proc-y	+=3D devices.o
++proc-y	+=3D dma_bufs.o
+ proc-y	+=3D interrupts.o
+ proc-y	+=3D loadavg.o
+ proc-y	+=3D meminfo.o
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index b3422cda2a91..af15a60b9831 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3598,6 +3598,7 @@ static const struct pid_entry tid_base_stuff[] =3D {
+ #ifdef CONFIG_SECCOMP_CACHE_DEBUG
+ 	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
+ #endif
++	REG("dmabuf_fds", 0444, proc_tid_dmabuf_fds_operations),
+ };
+=20
+ static int proc_tid_base_readdir(struct file *file, struct dir_context *ct=
+x)
+diff --git a/fs/proc/dma_bufs.c b/fs/proc/dma_bufs.c
+new file mode 100644
+index 000000000000..46ea9cf968ed
+--- /dev/null
++++ b/fs/proc/dma_bufs.c
+@@ -0,0 +1,159 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Per-process DMA-BUF Stats
++ *
++ * Copyright (C) 2021 Google LLC.
++ */
++
++#include <linux/dma-buf.h>
++#include <linux/fdtable.h>
++#include <linux/ptrace.h>
++#include <linux/seq_file.h>
++
++#include "internal.h"
++
++struct dmabuf_fds_private {
++	struct inode *inode;
++	struct task_struct *task;
++	struct file *dmabuf_file;
++};
++
++static loff_t *next_dmabuf(struct dmabuf_fds_private *priv,
++		loff_t *pos)
++{
++	struct fdtable *fdt;
++	struct file *file;
++
++	rcu_read_lock();
++	fdt =3D files_fdtable(priv->task->files);
++	for (; *pos < fdt->max_fds; ++*pos) {
++		file =3D files_lookup_fd_rcu(priv->task->files, (unsigned int) *pos);
++		if (file && is_dma_buf_file(file) && get_file_rcu(file)) {
++			priv->dmabuf_file =3D file;
++			break;
++		}
++	}
++	if (*pos >=3D fdt->max_fds)
++		pos =3D NULL;
++	rcu_read_unlock();
++
++	return pos;
++}
++
++static void *dmabuf_fds_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct dmabuf_fds_private *priv =3D s->private;
++	struct files_struct *group_leader_files;
++
++	priv->task =3D get_proc_task(priv->inode);
++
++	if (!priv->task)
++		return ERR_PTR(-ESRCH);
++
++	/* Hold task lock for duration that files need to be stable */
++	task_lock(priv->task);
++
++	/*
++	 * If this task is not the group leader but shares the same files, leave =
+file empty.
++	 * These dmabufs are already reported in the group leader's dmabuf_fds.
++	 */
++	group_leader_files =3D priv->task->group_leader->files;
++	if (priv->task !=3D priv->task->group_leader && priv->task->files =3D=3D =
+group_leader_files) {
++		task_unlock(priv->task);
++		put_task_struct(priv->task);
++		priv->task =3D NULL;
++		return NULL;
++	}
++
++	return next_dmabuf(priv, pos);
++}
++
++static void *dmabuf_fds_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	++*pos;
++	return next_dmabuf(s->private, pos);
++}
++
++static void dmabuf_fds_seq_stop(struct seq_file *s, void *v)
++{
++	struct dmabuf_fds_private *priv =3D s->private;
++
++	if (priv->task) {
++		task_unlock(priv->task);
++		put_task_struct(priv->task);
++
++	}
++	if (priv->dmabuf_file)
++		fput(priv->dmabuf_file);
++}
++
++static int dmabuf_fds_seq_show(struct seq_file *s, void *v)
++{
++	struct dmabuf_fds_private *priv =3D s->private;
++	struct file *file =3D priv->dmabuf_file;
++	struct dma_buf *dmabuf =3D file->private_data;
++
++	if (!dmabuf)
++		return -ESRCH;
++
++	seq_printf(s, "%8lu ", file_inode(file)->i_ino);
++
++	fput(priv->dmabuf_file);
++	priv->dmabuf_file =3D NULL;
++
++	return 0;
++}
++
++static const struct seq_operations proc_tid_dmabuf_fds_seq_ops =3D {
++	.start =3D dmabuf_fds_seq_start,
++	.next  =3D dmabuf_fds_seq_next,
++	.stop  =3D dmabuf_fds_seq_stop,
++	.show  =3D dmabuf_fds_seq_show
++};
++
++static int proc_dmabuf_fds_open(struct inode *inode, struct file *file,
++		     const struct seq_operations *ops)
++{
++	struct dmabuf_fds_private *priv;
++	struct task_struct *task;
++	bool allowed =3D false;
++
++	task =3D get_proc_task(inode);
++	if (!task)
++		return -ESRCH;
++
++	allowed =3D ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS);
++	put_task_struct(task);
++
++	if (!allowed)
++		return -EACCES;
++
++	priv =3D __seq_open_private(file, ops, sizeof(*priv));
++	if (!priv)
++		return -ENOMEM;
++
++	priv->inode =3D inode;
++	priv->task =3D NULL;
++	priv->dmabuf_file =3D NULL;
++
++	return 0;
++}
++
++static int proc_dmabuf_fds_release(struct inode *inode, struct file *file)
++{
++	return seq_release_private(inode, file);
++}
++
++static int tid_dmabuf_fds_open(struct inode *inode, struct file *file)
++{
++	return proc_dmabuf_fds_open(inode, file,
++			&proc_tid_dmabuf_fds_seq_ops);
++}
++
++const struct file_operations proc_tid_dmabuf_fds_operations =3D {
++	.open		=3D tid_dmabuf_fds_open,
++	.read		=3D seq_read,
++	.llseek		=3D seq_lseek,
++	.release	=3D proc_dmabuf_fds_release,
++};
++
+diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+index f60b379dcdc7..4ca74220db9c 100644
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -303,6 +303,7 @@ extern const struct file_operations proc_pid_smaps_oper=
+ations;
+ extern const struct file_operations proc_pid_smaps_rollup_operations;
+ extern const struct file_operations proc_clear_refs_operations;
+ extern const struct file_operations proc_pagemap_operations;
++extern const struct file_operations proc_tid_dmabuf_fds_operations;
+=20
+ extern unsigned long task_vsize(struct mm_struct *);
+ extern unsigned long task_statm(struct mm_struct *,
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index cf72699cb2bc..087e11f7f193 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -27,6 +27,11 @@ struct device;
+ struct dma_buf;
+ struct dma_buf_attachment;
+=20
++/**
++ * Check if struct file* is associated with dma_buf.
++ */
++int is_dma_buf_file(struct file *file);
++
+ /**
+  * struct dma_buf_ops - operations possible on struct dma_buf
+  * @vmap: [optional] creates a virtual mapping for the buffer into kernel
+--=20
+2.30.0.280.ga3ce27912f-goog
 
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmARP/AFAwAAAAAACgkQsN6d1ii/Ey8H
-KQf/d1qSrElkCAvRhLViB1sKaD8JgIQ7K8qv9q/g4aa6727Q7UcRwqqXX/ktKjEnCQhBdnFdKUDQ
-RqPHHVLASanPanrfEPT2ciZxCIn7iSVSoK9ivrWQWSALyoROYanMGh/Hgm6MxHcaZGi2Ft5BXSgc
-tFfl3mlP8WUIkJSg/OT2zbiJAs0ZxruwoA6wpASzHxxjenl3UycAEx9Gg+jVJo5ENsv5pJNVwIa2
-1GD+MuuIMjnnS5O6+doKlxis7qUdQZYXuHrHtN59nw7rTGlwhESo45jesuOMf2gGKYV30rWE0LaH
-E1bNYskTbuHW0NwVidVkpOJ4UZ7CfvPRxPPEbrp4nw==
-=vR4K
------END PGP SIGNATURE-----
-
---Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT--
