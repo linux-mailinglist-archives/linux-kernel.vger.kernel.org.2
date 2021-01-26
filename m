@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCB7305037
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B133305030
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237321AbhA0Dva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:51:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390111AbhA0APK (ORCPT
+        id S237159AbhA0Dsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389577AbhA0AFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:15:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611706423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CUzFQG64yqGa/8ahfKwuvvtiCy8mmgeGisnMAQFkYkU=;
-        b=R4RtrRX5ZhDpEcIyD0Ns6laqgQXWoedZ0Ave7aYHC40hjtXos895uqatntDSKxur9vizCJ
-        +IzU6nMZHfesIWvuMwZVCBrgY2+7a8qjemZVbu0TvuM2oq8YP0/fPnxdrhDmfxaeUBXVVu
-        gRA0g6oGTNXl/Qkyi72ZSm+S2Wf4S6Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-DqrecdCmNo-vpsIFIAnlHQ-1; Tue, 26 Jan 2021 18:32:53 -0500
-X-MC-Unique: DqrecdCmNo-vpsIFIAnlHQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30752802B40;
-        Tue, 26 Jan 2021 23:32:52 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 10AB810013C1;
-        Tue, 26 Jan 2021 23:32:50 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 17:32:49 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210126233249.ewgdsiazdwbzykqj@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <202101251401.F18409FDD1@keescook>
- <20210125221953.wng3gk3qc32eahil@treble>
- <202101260955.F83D191B@keescook>
- <20210126184316.hpcy6gqp5vsq6ckq@treble>
- <202101261459.C90E9F97D@keescook>
+        Tue, 26 Jan 2021 19:05:54 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B3CC061A2E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 15:34:22 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id e7so41848ili.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 15:34:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/zib3hAneJNs9BQgwmcNOajlGeO7H9kxS77lhi3666Q=;
+        b=QSxx24xF7iJVPqjblzQzmKN5CEViZlJ5oCN6qklloVlq5mjZIYNvW1Vd7jZrxP9ZOi
+         LIpvT/mWtZ5q5/TdyeUFfMpxqvsZW+tE+V6E2c4C92fO5GDvNfb92mexUlXXYapYSlSB
+         iuSgUHWbBi/STQBlWIOXwZ9SRUa15FpjXYe08=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/zib3hAneJNs9BQgwmcNOajlGeO7H9kxS77lhi3666Q=;
+        b=NkdY5bXjh+29TZwf2GdMfv7ZA7/UeiB3Hz9v79wIyH2BpMctvlbEDFdmdkvwFFEhBQ
+         SHJcBOyaDlqiLMYFmusGTZFjDxd6GIOwGPR8C9vmolDoIJUS5Y/9bh9rIJy5PPppGRPz
+         eAP6H9Nob8/4m1H9+yzwqWDy52SGNMtgQUMtj4JvRHEWHMmW5x6cOi/GHcQPKAOKL4kZ
+         1vgQCCUGuxLQ38e+GcB7zin8aUfPSKePWMne+oiqyttrWnV92K9jPxqr9+qRHatGXjP8
+         9KdTrAQyJsKOczc9PDBVwOIDypwzZMdyYlRcLQXV8iAPeWBQS2eF71Ez5LyG5wQDM+uu
+         ZXhg==
+X-Gm-Message-State: AOAM531eekIS1wfPKvpq3L79QSBFp4ymh7JzKShW0M7yiZx24DYowlg+
+        0oaCU5Ha3/KLGbJrt9OFrLjrqQ==
+X-Google-Smtp-Source: ABdhPJwWG4SBiQ1h64sg/mo89B/hCHgUFmD4Q3SjgKqQeMlLq1V4mW5zc+nw6i7qVZvkHECMgXfYhA==
+X-Received: by 2002:a05:6e02:e94:: with SMTP id t20mr6688099ilj.10.1611704062266;
+        Tue, 26 Jan 2021 15:34:22 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id b2sm208219iot.4.2021.01.26.15.34.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 15:34:21 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/199] 5.10.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210125183216.245315437@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c5de2e29-dba1-a49e-33ef-08d71d572479@linuxfoundation.org>
+Date:   Tue, 26 Jan 2021 16:34:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202101261459.C90E9F97D@keescook>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 02:59:57PM -0800, Kees Cook wrote:
-> On Tue, Jan 26, 2021 at 12:43:16PM -0600, Josh Poimboeuf wrote:
-> > On Tue, Jan 26, 2021 at 09:56:10AM -0800, Kees Cook wrote:
-> > > On Mon, Jan 25, 2021 at 04:19:53PM -0600, Josh Poimboeuf wrote:
-> > > > On Mon, Jan 25, 2021 at 02:03:07PM -0800, Kees Cook wrote:
-> > > > > On Mon, Jan 25, 2021 at 02:42:10PM -0600, Josh Poimboeuf wrote:
-> > > > > > When a GCC version mismatch is detected, print a warning and disable the
-> > > > > > plugin.  The only exception is the RANDSTRUCT plugin which needs all
-> > > > > > code to see the same struct layouts.  In that case print an error.
-> > > > > 
-> > > > > I prefer this patch as-is: only randstruct needs a hard failure. The
-> > > > > others likely work (in fact, randstruct likely works too).
-> > > > 
-> > > > I'm curious about this last statement, why would randstruct likely work?
-> > > > 
-> > > > Even struct module has '__randomize_layout', wouldn't basic module init
-> > > > go splat?
-> > > 
-> > > No; the seed is part of the generate includes -- you'll get the same
-> > > layout with the same seed.
-> > 
-> > Right, but don't you need the plugin enabled to make use of that seed,
-> > so the structs get interpreted properly by the module?  Or am I
-> > completely misunderstanding how this plugin works?
+On 1/25/21 11:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.11 release.
+> There are 199 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Having the plugin enabled or not is part of the Kconfig ... you can't
-> build anything if you change Kconfig. I feel like I'm missing
-> something...
+> Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-I guess we crossed wires somehow.  Backing up :-)
+Compiled and booted on my test system. No dmesg regressions.
 
-The patch disables plugins when there's a GCC mismatch in the OOT module
-build, with the exception of RANDSTRUCT, for which it just errors out.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-When you said "randstruct likely works too" I thought you meant that
-RANDSTRUCT would likely work even if it were disabled in the OOT module
-build (i.e. if we removed the RANDSTRUCT special case from the patch).
-
-Or did you mean something else?  Like using RANDSTRUCT with a different
-version of GCC would likely work?
-
-(I'm definitely not proposing we allow GCC mismatches for plugins, as I
-was told that plugins can break from one build to the next).
-
--- 
-Josh
+thanks,
+-- Shuah
 
