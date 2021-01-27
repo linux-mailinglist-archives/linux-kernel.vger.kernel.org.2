@@ -2,133 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF11305D6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54202305D72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhA0NmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
+        id S231415AbhA0NoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:44:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231718AbhA0Nla (ORCPT
+        with ESMTP id S231162AbhA0Nn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:41:30 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08043C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:40:50 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id z6so1894877wrq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:40:49 -0800 (PST)
+        Wed, 27 Jan 2021 08:43:28 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8006C061573;
+        Wed, 27 Jan 2021 05:42:48 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id r4so1040331pls.11;
+        Wed, 27 Jan 2021 05:42:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ut1wpPTIfgnn/vBXNh4Zm9DnQde/13g8LB3xXa5ADwc=;
-        b=uP+ZFiQvIWr7dGlnG7w4JM9eXIsJAsTa/ghknwwy5ZFOvH9BXSqVHvtjSGbiHB88k4
-         glmOo3H+yB2GLb8No6KDul2LTRdEJxAw985UlMcoP9fWaiMVg3/cRmb9SjPwijJkE9Ig
-         ++zTu6n6zG3+SCyK5t8kJXYSUQNJ1hAvnRENRpJ4GMEkoHQ2ltsCNAhnFuOpAACWdkmU
-         Zqu1/vmW1NUnB0r1pjZ/8cochpfna/Wy88gLuVt0gnegDKPiDek7QlaximA3jlNxlbib
-         iWgaSehQCSMAlL90nPhXqldT9ADBtFCnHU89GsipprpTafd+tLeY3JsKJ6j9U6Kh4w9w
-         TRpA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/5CRpVhAYIt5nq1FFXNh2jsrHhTk1E3I4CheLPQJc30=;
+        b=LwebHWOlnFO1NFGDdPfvHWMqOGU/3xtwhbPNBpIrKkKM62kw/ZMUQd2hD4gTEYYfJo
+         /ZsIHvJAyjNaTdWPTV8/bPXXaspkyxZ91/Yy8iijwLoQU/S055b+YI5KTOhWxR0EgTdT
+         blzRYX8Mdmj1E+/EuSq8iK5lAJCb0JkDvJXpSaLqYj0Sd8Y7EE1XYIedBLjkOWtLYT3X
+         W2x47WcVcXICTz+KeWGB04b2xNPhX9pztcXn0vz4NP0XGftOu3CnJVzJMsphNvYNMxJ4
+         2NetMOw42PhPmHb4TnHJEE4NYa/HuemLxxbiXeyvdlE18TmLUEx5o1GJjZAVOj+cStQd
+         arxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ut1wpPTIfgnn/vBXNh4Zm9DnQde/13g8LB3xXa5ADwc=;
-        b=WsGV66il3xmh9fpN17p1cp42WQDeLzY9/7FuiMr/rMBrK901iMZZtr8ybmgMJkfyS/
-         eZ4WlLMyec6Xfm7mKb6e6r6CJ8nnGOfKqOMuIl0jHIo7zVhDV1fBzfyWlwmnUzO6nmhT
-         Duhw47PPLsL6IFRkUH9ZOCTZGCkceL5b6aHL5L3k11byCkcPcCFU+dz6iaq1jC6XcTl9
-         KLQmcX5KV6a+EbUX9yMYcMwjAIsCFP+eYsU7Qey36nxZFx15gUfClBkcbp+QpOHg9NlT
-         461A7EpxFTQnXnfYPaHB2+MDX0BrylRNhgQ65Ady2ZNw5Kyb5yJa4ICKonLFHCYa/t5D
-         bAPQ==
-X-Gm-Message-State: AOAM530QSBD5JoSAg1MyLNzc1Cr4MjbyHstpvaLK1zvEZOsXAyr5+PkJ
-        PW9yaYY13PMzYSYZ9tictbJHbQ==
-X-Google-Smtp-Source: ABdhPJzrwczNYHNOaS9EkacIC3ae0J6dCCn0Prj1GFoTmWaJOwiWlZyca/ZnRFBNApdjJdaB53YdUQ==
-X-Received: by 2002:a5d:4203:: with SMTP id n3mr11255881wrq.49.1611754848751;
-        Wed, 27 Jan 2021 05:40:48 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:811b:8e2:92b4:d783])
-        by smtp.gmail.com with ESMTPSA id s4sm3001940wrt.85.2021.01.27.05.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 05:40:48 -0800 (PST)
-Date:   Wed, 27 Jan 2021 13:40:46 +0000
-From:   Alessio Balsini <balsini@android.com>
-To:     qxy <qxy65535@gmail.com>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
- fuse device
-Message-ID: <YBFtXqgvcXW5fFCR@google.com>
-References: <20210125153057.3623715-1-balsini@android.com>
- <20210125153057.3623715-3-balsini@android.com>
- <CAMAHBGzkfEd9-1u0iKXp65ReJQgUi_=4sMpmfkwEOaMp6Ux7pg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMAHBGzkfEd9-1u0iKXp65ReJQgUi_=4sMpmfkwEOaMp6Ux7pg@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/5CRpVhAYIt5nq1FFXNh2jsrHhTk1E3I4CheLPQJc30=;
+        b=qkAdl4bVsz5uKnCfp9Nmth2IJejWizly+1sysz62wgBbd+zwZ5CVDBORaInHMRMMUe
+         hIkA8IO4flIEqLKOcxhvtkiSG4us7Rn5vkACGSytng1l72rlRbFHOrBiGeyQgaWrVA9N
+         5D2hIb8hu1Zu0b3E+k44db9iZZ6Y5QqXkjUzB9mHMrCpWdBbzFmi5Sn+xTg2ZI1UpWAw
+         9RidHnpw9wPyTzVnWV2oo3aZBfP32aFDIqtDAq8Jl/QApE7vo/fRR5CSLnVaRLKK7wyy
+         KOxb5J9f0QQPOlFADAvrdaKw5aVBnj7bTZojxSqAA+/pHFWzPGnNpPmSpYI1QdbHSm8C
+         wLZA==
+X-Gm-Message-State: AOAM533lURESTqgzTMjU8vyfRyydTan1LxC+ukCszvm/BZrJpNLjF0H6
+        vWGZZsEscID+X0Kuqk6s3yQ=
+X-Google-Smtp-Source: ABdhPJyQnI/dXjI04oyDhfxJ93RmAp/oWTY5SXoVJL+VMZW48hsLsbIIctnaF0Ds2lgIn5T1jYrQ0g==
+X-Received: by 2002:a17:902:6b02:b029:da:c6c0:d650 with SMTP id o2-20020a1709026b02b02900dac6c0d650mr11625296plk.74.1611754968360;
+        Wed, 27 Jan 2021 05:42:48 -0800 (PST)
+Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id f71sm2547437pfa.138.2021.01.27.05.42.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 05:42:47 -0800 (PST)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
+        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v10] staging: fbtft: add tearing signal detect
+Date:   Wed, 27 Jan 2021 21:42:52 +0800
+Message-Id: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 08:15:19PM +0800, qxy wrote:
-> Hi Allesio,
-> 
-> Thank you for your supply for 32-bit user space.
-> Actually we have already met this issue on our product and we resolved it
-> like this:
-> 
-> Project *platform/external/libfuse*
-> diff --git a/include/fuse_kernel.h b/include/fuse_kernel.h
-> index e9d4f1a..fe0cb6d 100644
-> --- a/include/fuse_kernel.h
-> +++ b/include/fuse_kernel.h
-> @@ -562,7 +562,11 @@
->          uint32_t fd;
->          /* For future implementation */
->          uint32_t len;
-> -        void *   vec;
-> +        union {
-> +                void *   vec;
-> +                /* compatible for 32-bit libfuse and 64-bit kernel */
-> +                uint64_t padding;
-> +        };
->  };
-> 
-> However, if we need to use *vec in the future,  we still need to do more in
-> 32-bit libfuse to work with 64-bit kernel :(
-> 
+From: zhangxuezhi <zhangxuezhi1@yulong.com>
 
-Good point.
-What I had in mind as a possible use was the possibility of enabling
-passthrough for only a few regions of the file, similar to fuse2.
-But it doesn't really make sense to define the data structure fields for
-uncertain future extensions, so what we could do is:
+For st7789v ic,when we need continuous full screen refresh, it is best to
+wait for the TE signal arrive to avoid screen tearing
 
-struct fuse_passthrough_out {
-+	uint32_t	size;	// Size of this data structure
-	uint32_t	fd;
--	/* For future implementation */
--	uint32_t	len;
--	void		*vec;
-};
+Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+---
+v10: additional notes
+v9: change pr_* to dev_*
+v8: delete a log line
+v7: return error value when request fail
+v6: add te gpio request fail deal logic
+v5: fix log print
+v4: modify some code style and change te irq set function name
+v3: modify author and signed-off-by name
+v2: add release te gpio after irq request fail
+---
+ drivers/staging/fbtft/fb_st7789v.c | 132 ++++++++++++++++++++++++++++++++++++-
+ drivers/staging/fbtft/fbtft.h      |   1 +
+ 2 files changed, 132 insertions(+), 1 deletion(-)
 
-Similar to what "struct sched_attr" does.
-This is probably the most flexible solution, that would allow to extend
-this data structure in the future with no headaches both in kernel and
-user space.
-What do you think?
-
-Thanks!
-Alessio
+diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
+index 3a280cc..cba08a8 100644
+--- a/drivers/staging/fbtft/fb_st7789v.c
++++ b/drivers/staging/fbtft/fb_st7789v.c
+@@ -9,9 +9,12 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
++#include <linux/mutex.h>
++#include <linux/interrupt.h>
++#include <linux/completion.h>
+ #include <linux/module.h>
+ #include <video/mipi_display.h>
+-
++#include <linux/gpio/consumer.h>
+ #include "fbtft.h"
+ 
+ #define DRVNAME "fb_st7789v"
+@@ -66,6 +69,32 @@ enum st7789v_command {
+ #define MADCTL_MX BIT(6) /* bitmask for column address order */
+ #define MADCTL_MY BIT(7) /* bitmask for page address order */
+ 
++#define SPI_PANEL_TE_TIMEOUT	400 /* msecs */
++static struct mutex te_mutex;/* mutex for set te gpio irq status */
++static struct completion spi_panel_te;
++
++static irqreturn_t spi_panel_te_handler(int irq, void *data)
++{
++	complete(&spi_panel_te);
++	return IRQ_HANDLED;
++}
++
++static void set_spi_panel_te_irq_status(struct fbtft_par *par, bool enable)
++{
++	static int te_irq_count;
++
++	mutex_lock(&te_mutex);
++
++	if (enable) {
++		if (++te_irq_count == 1)
++			enable_irq(gpiod_to_irq(par->gpio.te));
++	} else {
++		if (--te_irq_count == 0)
++			disable_irq(gpiod_to_irq(par->gpio.te));
++	}
++	mutex_unlock(&te_mutex);
++}
++
+ /**
+  * init_display() - initialize the display controller
+  *
+@@ -82,6 +111,33 @@ enum st7789v_command {
+  */
+ static int init_display(struct fbtft_par *par)
+ {
++	int rc;
++	struct device *dev = par->info->device;
++
++	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
++	if (IS_ERR(par->gpio.te)) {
++		rc = PTR_ERR(par->gpio.te);
++		dev_err(par->info->device, "Failed to request te gpio: %d\n", rc);
++		return rc;
++	}
++	if (par->gpio.te) {
++		init_completion(&spi_panel_te);
++		mutex_init(&te_mutex);
++		rc = devm_request_irq(dev,
++				      gpiod_to_irq(par->gpio.te),
++				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
++				     "TE_GPIO", par);
++		if (rc) {
++			dev_err(par->info->device, "TE request_irq failed.\n");
++			devm_gpiod_put(dev, par->gpio.te);
++			return rc;
++		}
++
++		disable_irq_nosync(gpiod_to_irq(par->gpio.te));
++	} else {
++		dev_info(par->info->device, "%s:%d, TE gpio not specified\n",
++			 __func__, __LINE__);
++	}
+ 	/* turn off sleep mode */
+ 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
+ 	mdelay(120);
+@@ -137,6 +193,9 @@ static int init_display(struct fbtft_par *par)
+ 	 */
+ 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
+ 
++    /*Tearing Effect Line On*/
++	if (par->gpio.te)
++		write_reg(par, 0x35, 0x00);
+ 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
+ 
+ 	if (HSD20_IPS)
+@@ -145,6 +204,76 @@ static int init_display(struct fbtft_par *par)
+ 	return 0;
+ }
+ 
++/*****************************************************************************
++ *
++ *   int (*write_vmem)(struct fbtft_par *par);
++ *
++ *****************************************************************************/
++
++/* 16 bit pixel over 8-bit databus */
++static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
++{
++	u16 *vmem16;
++	__be16 *txbuf16 = par->txbuf.buf;
++	size_t remain;
++	size_t to_copy;
++	size_t tx_array_size;
++	int i;
++	int ret = 0;
++	size_t startbyte_size = 0;
++
++	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
++		      __func__, offset, len);
++
++	remain = len / 2;
++	vmem16 = (u16 *)(par->info->screen_buffer + offset);
++
++	if (par->gpio.dc)
++		gpiod_set_value(par->gpio.dc, 1);
++
++	/* non buffered write */
++	if (!par->txbuf.buf)
++		return par->fbtftops.write(par, vmem16, len);
++
++	/* buffered write */
++	tx_array_size = par->txbuf.len / 2;
++
++	if (par->startbyte) {
++		txbuf16 = par->txbuf.buf + 1;
++		tx_array_size -= 2;
++		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
++		startbyte_size = 1;
++	}
++
++	while (remain) {
++		to_copy = min(tx_array_size, remain);
++		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
++			to_copy, remain - to_copy);
++
++		for (i = 0; i < to_copy; i++)
++			txbuf16[i] = cpu_to_be16(vmem16[i]);
++
++		vmem16 = vmem16 + to_copy;
++		if (par->gpio.te) {
++			set_spi_panel_te_irq_status(par, true);
++			reinit_completion(&spi_panel_te);
++			ret = wait_for_completion_timeout(&spi_panel_te,
++							  msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
++			if (ret == 0)
++				dev_err(par->info->device, "wait panel TE time out\n");
++		}
++		ret = par->fbtftops.write(par, par->txbuf.buf,
++					 startbyte_size + to_copy * 2);
++		if (par->gpio.te)
++			set_spi_panel_te_irq_status(par, false);
++		if (ret < 0)
++			return ret;
++		remain -= to_copy;
++	}
++
++	return ret;
++}
++
+ /**
+  * set_var() - apply LCD properties like rotation and BGR mode
+  *
+@@ -259,6 +388,7 @@ static int blank(struct fbtft_par *par, bool on)
+ 	.gamma = HSD20_IPS_GAMMA,
+ 	.fbtftops = {
+ 		.init_display = init_display,
++		.write_vmem = st7789v_write_vmem16_bus8,
+ 		.set_var = set_var,
+ 		.set_gamma = set_gamma,
+ 		.blank = blank,
+diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
+index 76f8c09..93bac05 100644
+--- a/drivers/staging/fbtft/fbtft.h
++++ b/drivers/staging/fbtft/fbtft.h
+@@ -212,6 +212,7 @@ struct fbtft_par {
+ 		struct gpio_desc *wr;
+ 		struct gpio_desc *latch;
+ 		struct gpio_desc *cs;
++		struct gpio_desc *te;
+ 		struct gpio_desc *db[16];
+ 		struct gpio_desc *led[16];
+ 		struct gpio_desc *aux[16];
+-- 
+1.9.1
 
