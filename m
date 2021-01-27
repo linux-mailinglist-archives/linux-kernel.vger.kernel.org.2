@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA8530576E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3083305791
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbhA0Jxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:53:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44650 "EHLO
+        id S235500AbhA0J5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:57:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24350 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233073AbhA0Juo (ORCPT
+        by vger.kernel.org with ESMTP id S235514AbhA0JvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:50:44 -0500
+        Wed, 27 Jan 2021 04:51:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611740937;
+        s=mimecast20190719; t=1611740988;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ydaRB29RJtt52FSXiTlXaP4Ln7O0VcYefbrxc6K6p2E=;
-        b=bGqKgf67KKIUzVBmXq3hC/mQqRaFij+zlZRuoDwEoSNK/va2Em4PDtXiw3shcrxVT2p2uk
-        KKZUgmSO1LXoBRthbkboA1eSeo4RUb3Vza+qen87GqqyVtvKUoXXgR5UHDFPfsfm3LaEuT
-        dJhxiaAVF0tbGanfCtSiBKKiTs7J6yU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-pBG9u6L1Nbe4LMNa8CxCWw-1; Wed, 27 Jan 2021 04:48:55 -0500
-X-MC-Unique: pBG9u6L1Nbe4LMNa8CxCWw-1
-Received: by mail-ej1-f71.google.com with SMTP id jg11so437799ejc.23
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:48:55 -0800 (PST)
+        bh=DaFVJvN6AJIm4eMhIGuGzzmhxpfr2bv/IyhgNnC+fcs=;
+        b=gRGHFVQY3lmcjbXocK2gZfhlCKx+iaHfhENUM3y1Ntt+sOOGNc9bmFSLhSW3uMZLgbt6KA
+        NOKCBB6BC2PfwCpms2tiLypW97Pnew1RLe933+WaEoNJJnhgCFrfr2UHKc+JfPiIt5TRzL
+        tSf889QCCo8DZrjb6Bvp1t6cbTvPTnI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-1S7lBYw7PzmH7tmERtatuQ-1; Wed, 27 Jan 2021 04:49:46 -0500
+X-MC-Unique: 1S7lBYw7PzmH7tmERtatuQ-1
+Received: by mail-ej1-f72.google.com with SMTP id jg11so438568ejc.23
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:49:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ydaRB29RJtt52FSXiTlXaP4Ln7O0VcYefbrxc6K6p2E=;
-        b=Mo/N3g6SZL7M98yQPP1jhqYl/3I+KEpi5PD3+vBTXSRnnITMu8f6W3/7HqHbxbKKMb
-         bkiIg3z/v2SaSLhimETNc/cHWDDC8iEZekWEmxJ867t8wksG4MV1zTdhgkKtt3mE2hOD
-         w/N6wUpO1USYcyIfCIBJhUMBmYN+d3oYlEJy6FIu1V6z6ySIBjTOizxpPFXv5iz9LuOe
-         0ntbrC34A4+nu2k+W9Q/NGzYD3MCj6+y9KGQK15dVyC8X3W+6aWZetHQnXNedFCBCMlc
-         rTIRJfoU5XqWfH8Q1o3GP6lPtUFQbNaoyiBi6UF1G1XqSxYfSfOpBPq99UOGT4/iaEAN
-         XHlA==
-X-Gm-Message-State: AOAM5312tAexL2z99N1BVPGbW1RxIdG/U9rdfMNt56GGCBbocNgz5sYy
-        XU1VKlrXKc7hUhvRiYX1/7iiWoy5Ev6xZ811gB7ogBIRGnPpGZBL8l+YRT4WM1W5F+mlnptYIpF
-        f4WdN/ly9tr2mRZSsLm7jS7MT
-X-Received: by 2002:a05:6402:2346:: with SMTP id r6mr8473469eda.8.1611740934251;
-        Wed, 27 Jan 2021 01:48:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyn9gmSbJo4Pspyx7dyn5uVWMly+9aJphrjnuOIsbl99TlsvDoBHK3bJxZqVVn5PPuW+wqiXQ==
-X-Received: by 2002:a05:6402:2346:: with SMTP id r6mr8473459eda.8.1611740934102;
-        Wed, 27 Jan 2021 01:48:54 -0800 (PST)
+        bh=DaFVJvN6AJIm4eMhIGuGzzmhxpfr2bv/IyhgNnC+fcs=;
+        b=aYq7FrqY9zMou6uz3257KlpH+WOnnjW6asmrpjIHWxG2HSZSyC90zZnRNWe0kjtMcq
+         49++oS0MfuXXT20Orhq0ET4E2vY9Am02KF4DaUXwqC/AzIkwpx5SSfVSGyaONnJaVHw7
+         LXG585R9zUGD6Fp9iQ/YogjKff/xfC7oC1m5vuJDwXj1JZFSsqyhO3bZ4paPFVilF7g8
+         qulNdVK5vQfn5KsT/yhV4bmjKbiojdkAbJsQ/JVXJAj3x26rIXTWCPnXFazY0eRIMQMj
+         LR4ROqah2ZaYkmtZezOvm/i9snqffATnqfOBZHvigrMrlh2M6fkOZBaXtSxOEaE4+1tw
+         C/1A==
+X-Gm-Message-State: AOAM532rAIUok6HsU1lVIlcYjBhOBAbpM1hrlX3rF4W3vIknfkNkr4Mw
+        3HXqpiun+PG00hQNIfA75jlC7rgzq3HZWkVWAlzsQgmG4Y5cVlHiKD1teeUp8jvuybYhj9YabcI
+        IZh8wYI2SsNjwxYUQ0OsKGFm8
+X-Received: by 2002:a17:906:5495:: with SMTP id r21mr6266576ejo.59.1611740985603;
+        Wed, 27 Jan 2021 01:49:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwKE4XIHtscuNYJGHLuvgErFlf3qG4xv2oPDBHbr4SeTGzVxmRmg0qNKm4bY8w1JleVbBlLug==
+X-Received: by 2002:a17:906:5495:: with SMTP id r21mr6266562ejo.59.1611740985394;
+        Wed, 27 Jan 2021 01:49:45 -0800 (PST)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q4sm570488ejx.8.2021.01.27.01.48.51
+        by smtp.gmail.com with ESMTPSA id v25sm574656ejw.21.2021.01.27.01.49.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 01:48:52 -0800 (PST)
-Subject: Re: [RESEND v13 03/10] KVM: x86/pmu: Use IA32_PERF_CAPABILITIES to
- adjust features visibility
-To:     Like Xu <like.xu@linux.intel.com>
+        Wed, 27 Jan 2021 01:49:44 -0800 (PST)
+Subject: Re: [RESEND v13 09/10] KVM: vmx/pmu: Expose LBR_FMT in the
+ MSR_IA32_PERF_CAPABILITIES
+To:     "Xu, Like" <like.xu@intel.com>
 Cc:     Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
@@ -63,20 +63,21 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Joerg Roedel <joro@8bytes.org>,
         Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu@linux.intel.com>,
         Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>
+        Vitaly Kuznetsov <vkuznets@redhat.com>
 References: <20210108013704.134985-1-like.xu@linux.intel.com>
- <20210108013704.134985-4-like.xu@linux.intel.com>
- <a1291d0b-297c-9146-9689-f4a4129de3c6@redhat.com>
- <fd7df596-9715-e6a8-0040-18aecedb0fae@linux.intel.com>
+ <20210108013704.134985-10-like.xu@linux.intel.com>
+ <2ff8ca5a-32ec-ca5d-50c3-d1690e933f6d@redhat.com>
+ <fb4c3124-997b-5897-e38f-1b9aa782e5e2@intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5da57047-db15-adb6-f3bc-6152753d0b49@redhat.com>
-Date:   Wed, 27 Jan 2021 10:48:50 +0100
+Message-ID: <dfbd5e93-fd15-4185-9315-407011f9aa35@redhat.com>
+Date:   Wed, 27 Jan 2021 10:49:42 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <fd7df596-9715-e6a8-0040-18aecedb0fae@linux.intel.com>
+In-Reply-To: <fb4c3124-997b-5897-e38f-1b9aa782e5e2@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,64 +85,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/01/21 07:04, Like Xu wrote:
-> On 2021/1/26 17:42, Paolo Bonzini wrote:
->> On 08/01/21 02:36, Like Xu wrote:
+On 27/01/21 06:45, Xu, Like wrote:
+> On 2021/1/26 17:30, Paolo Bonzini wrote:
+>> On 08/01/21 02:37, Like Xu wrote:
+>>> Userspace could enable guest LBR feature when the exactly supported
+>>> LBR format value is initialized to the MSR_IA32_PERF_CAPABILITIES
+>>> and the LBR is also compatible with vPMU version and host cpu model.
 >>>
->>> @@ -401,6 +398,9 @@ static void intel_pmu_init(struct kvm_vcpu *vcpu)
->>>          pmu->fixed_counters[i].idx = i + INTEL_PMC_IDX_FIXED;
->>>          pmu->fixed_counters[i].current_config = 0;
->>>      }
+>>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>>> ---
+>>>   arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
+>>>   arch/x86/kvm/vmx/vmx.c          | 7 +++++++
+>>>   2 files changed, 15 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/kvm/vmx/capabilities.h 
+>>> b/arch/x86/kvm/vmx/capabilities.h
+>>> index 57b940c613ab..a9a7c4d1b634 100644
+>>> --- a/arch/x86/kvm/vmx/capabilities.h
+>>> +++ b/arch/x86/kvm/vmx/capabilities.h
+>>> @@ -378,7 +378,14 @@ static inline u64 vmx_get_perf_capabilities(void)
+>>>        * Since counters are virtualized, KVM would support full
+>>>        * width counting unconditionally, even if the host lacks it.
+>>>        */
+>>> -    return PMU_CAP_FW_WRITES;
+>>> +    u64 perf_cap = PMU_CAP_FW_WRITES;
 >>> +
->>> +    vcpu->arch.perf_capabilities = guest_cpuid_has(vcpu, 
->>> X86_FEATURE_PDCM) ?
->>> +        vmx_get_perf_capabilities() : 0;
+>>> +    if (boot_cpu_has(X86_FEATURE_PDCM))
+>>> +        rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
+>>> +
+>>> +    perf_cap |= perf_cap & PMU_CAP_LBR_FMT;
+>>> +
+>>> +    return perf_cap;
+>>>   }
+>>>     static inline u64 vmx_supported_debugctl(void)
+>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>>> index ad3b079f6700..9cb5b1e4fc27 100644
+>>> --- a/arch/x86/kvm/vmx/vmx.c
+>>> +++ b/arch/x86/kvm/vmx/vmx.c
+>>> @@ -2229,6 +2229,13 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, 
+>>> struct msr_data *msr_info)
+>>>       case MSR_IA32_PERF_CAPABILITIES:
+>>>           if (data && !vcpu_to_pmu(vcpu)->version)
+>>>               return 1;
+>>> +        if (data & PMU_CAP_LBR_FMT) {
+>>> +            if ((data & PMU_CAP_LBR_FMT) !=
+>>> +                (vmx_get_perf_capabilities() & PMU_CAP_LBR_FMT))
+>>> +                return 1;
+>>> +            if (!intel_pmu_lbr_is_compatible(vcpu))
+>>> +                return 1;
+>>> +        }
+>>>           ret = kvm_set_msr_common(vcpu, msr_info);
+>>>           break;
+>>>
 >>
->> There is one thing I don't understand with this patch: intel_pmu_init 
->> is not called when CPUID is changed.  So I would have thought that 
->> anything that uses guest_cpuid_has must stay in intel_pmu_refresh.  As 
->> I understand it vcpu->arch.perf_capabilities is always set to 0 
->> (vmx_get_perf_capabilities is never called), and kvm_set_msr_common 
->> would fail to set any bit in the MSR.  What am I missing?
+>> Please move this hunk to patch 4.
 >>
->> In addition, the code of patch 4:
+>> Paolo
 >>
->> +    if (!intel_pmu_lbr_is_enabled(vcpu)) {
->> +        vcpu->arch.perf_capabilities &= ~PMU_CAP_LBR_FMT;
->> +        lbr_desc->records.nr = 0;
->> +    }
->>
->> is not okay after MSR changes.  The value written by the host must be 
->> either rejected (with "return 1") or applied unchanged.
->>
->> Fortunately I think this code is dead if you move the check in 
->> kvm_set_msr from patch 9 to patch 4.  However, in patch 9 
->> vmx_get_perf_capabilities() must only set the LBR format bits if 
->> intel_pmu_lbr_is_compatible(vcpu).
+> Thanks, I'll do this part early in the next version.
 > 
-> Thanks for the guidance. How about handling it in this way:
-> 
-> In the intel_pmu_init():
-> 
->      vcpu->arch.perf_capabilities = 0;
->      lbr_desc->records.nr = 0;
-> 
-> In the intel_pmu_refresh():
-> 
->      if (guest_cpuid_has(vcpu, X86_FEATURE_PDCM)) {
->          vcpu->arch.perf_capabilities = vmx_get_perf_capabilities();
->          if (!lbr_desc->records.nr)
->              vcpu->arch.perf_capabilities &= ~PMU_CAP_LBR_FMT;
->      }
-> 
-> In the vmx_set_msr():
-> 
->      case MSR_IA32_PERF_CAPABILITIES:
->          // set up lbr_desc->records.nr
->          if (!intel_pmu_lbr_is_compatible(vcpu))
+> I would have thought that we need to
+> make the interface exposing as the last enabling step.
 
-Maybe pass msr_info.data to intel_pmu_lbr_is_compatible?  Otherwise 
-seems okay, thanks Like.
+That's the right thing to do for vmx_get_perf_capabilities().  However, 
+checking the values of MSR_IA32_PERF_CAPABILITIES can be done early.
 
 Paolo
 
