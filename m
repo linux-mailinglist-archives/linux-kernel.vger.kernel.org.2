@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F109B305361
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E328D305362
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhA0GpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:45:01 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:38427 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbhA0GgR (ORCPT
+        id S232592AbhA0Gp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:45:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232221AbhA0GgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 01:36:17 -0500
-Received: from localhost (kumbhalgarh.blr.asicdesigners.com [10.193.185.255])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 10R6YRFJ001537;
-        Tue, 26 Jan 2021 22:34:28 -0800
-Date:   Wed, 27 Jan 2021 12:04:27 +0530
-From:   Raju Rangoju <rajur@chelsio.com>
-To:     Yang Li <abaci-bugfix@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] cxgb4: remove redundant NULL check
-Message-ID: <20210127063426.GC21071@chelsio.com>
-References: <1611629413-81373-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6AEC0613ED;
+        Tue, 26 Jan 2021 22:35:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=SawICNoa1kHyyeVtFqzgzTd8rQ75hzb8S4YXXAcpsPY=; b=QoOZvbdEU+hBFgpGiWadkcgzUE
+        RW6FtKNpqlL/UxLfWddmBDCJjKIRQFKxV10LKmHRcP4Jxz0YhEqGn7hk9SvLysmavnuft2qPKBVu/
+        xOuYYK+bq4hwZ98XxSFDlEGWHO/UkS/hVxjxyXejOm9Sg3ta5bycHlkso5gSbZKbQYqsRJ13foLyn
+        bQJ/i70iCPLz5XWxJ4JuTQj5UeKjWQvGPwuyyDHBXV4ov59l2Oi8HsGcErKnSAHwHN8pe53yFX7gn
+        yPaPH/B0yHZvhIBoGDboaa52vLSQ2+0TcmODS/HKctXeAvhfU0M7HI3x6CKcd0xsQEI/N8cNIztJj
+        VE3RhdUA==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4eQF-0003mB-Ck; Wed, 27 Jan 2021 06:35:23 +0000
+Subject: Re: [PATCH 1/2] fs/efs/inode.c: follow style guide
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
+ <5d005259-feec-686d-dc32-e1b10cf74459@infradead.org>
+ <df3e21ea-1626-ba3a-a009-6b3c5e33a260@infradead.org>
+ <CAE1WUT4qQ2=Qkz1xsTYCvxdr5NJp8wMKhV_AiXKdq_kwWw1mfg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7b8f67a6-0f06-6bf6-2ecd-5a57693a64f8@infradead.org>
+Date:   Tue, 26 Jan 2021 22:35:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611629413-81373-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAE1WUT4qQ2=Qkz1xsTYCvxdr5NJp8wMKhV_AiXKdq_kwWw1mfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, January 01/26/21, 2021 at 10:50:13 +0800, Yang Li wrote:
-> Fix below warnings reported by coccicheck:
-> ./drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c:323:3-9: WARNING:
-> NULL check before some freeing functions is not needed.
-> ./drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c:3554:2-8: WARNING:
-> NULL check before some freeing functions is not needed.
-> ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c:157:2-7: WARNING:
-> NULL check before some freeing functions is not needed.
-> ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c:525:3-9: WARNING:
-> NULL check before some freeing functions is not needed.
+On 1/26/21 9:13 PM, Amy Parker wrote:
+> On Tue, Jan 26, 2021 at 7:59 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 1/26/21 7:46 PM, Randy Dunlap wrote:
+>>> Hi Amy,
+>>>
+>>> What mail client did you use?
+>>> It is breaking (splitting) long lines into shorter lines and that
+>>> makes it not possible to apply the patch cleanly.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
-> ---
->  drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c     | 3 +--
->  drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c    | 3 +--
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c  | 3 +--
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c | 6 ++----
->  4 files changed, 5 insertions(+), 10 deletions(-)
+> Was worried about that, thought I had all my settings straightened out.
 > 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-> index ce28820..12fcf84 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c
-> @@ -323,8 +323,7 @@ void t4_cleanup_clip_tbl(struct adapter *adap)
->  	struct clip_tbl *ctbl = adap->clipt;
->  
->  	if (ctbl) {
-> -		if (ctbl->cl_list)
-> -			kvfree(ctbl->cl_list);
-> +		kvfree(ctbl->cl_list);
->  		kvfree(ctbl);
->  	}
->  }
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-> index 75474f8..94eb8a6 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-> @@ -3554,8 +3554,7 @@ int cudbg_collect_qdesc(struct cudbg_init *pdbg_init,
->  	}
->  
->  out_free:
-> -	if (data)
-> -		kvfree(data);
-> +	kvfree(data);
->  
->  #undef QDESC_GET_FLQ
->  #undef QDESC_GET_RXQ
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-> index 77648e4..dd66b24 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-> @@ -157,8 +157,7 @@ static int cudbg_alloc_compress_buff(struct cudbg_init *pdbg_init)
->  
->  static void cudbg_free_compress_buff(struct cudbg_init *pdbg_init)
->  {
-> -	if (pdbg_init->compress_buff)
-
-NAK. The above check is necessary.
-
-pdbg_init->compress_buff may be NULL when Zlib is unavailable or when
-pdbg_init->compress_buff allocation fails, in which case we ignore error
-and continue without compression. Check is necessary before calling
-vfree().
-
-> -		vfree(pdbg_init->compress_buff);
-> +	vfree(pdbg_init->compress_buff);
->  }
->  
->  int cxgb4_cudbg_collect(struct adapter *adap, void *buf, u32 *buf_size,
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-> index dede025..97a811f 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-> @@ -525,12 +525,10 @@ struct cxgb4_tc_u32_table *cxgb4_init_tc_u32(struct adapter *adap)
->  	for (i = 0; i < t->size; i++) {
->  		struct cxgb4_link *link = &t->table[i];
->  
-> -		if (link->tid_map)
-> -			kvfree(link->tid_map);
-> +		kvfree(link->tid_map);
-
-The above change is wrong. NAK.
-
-If the call to link->tid_map = kvcalloc() above fails, it still
-goes ahead and calls kvfree(link->tid_map) even for failed cases, which is
-wrong. Check is necessary before calling kvfree().
-
-
->  	}
->  
-> -	if (t)
-> -		kvfree(t);
-> +	kvfree(t);
->  
->  	return NULL;
->  }
-> -- 
-> 1.8.3.1
+>>>
+>>> You can see this problem below or on the web in an email archive.
+>>>
+>>> Possibly Documentation/process/email-clients.rst can help you.
 > 
+> Yeah, read that. Thought I had everything fixed up.
+> 
+>>
+>> Also tabs in the source file have been converted to spaces.
+> 
+> Was this inconsistent throughout the patch? I can't really seem to
+> tell. If it's consistent, bet it's probably my mail client - if it's
+> inconsistent it could be my editor, I had to switch out temporarily
+> for a different editor today.
+> 
+
+There are no tabs in the patch.
+
+>>
+>> It would be good if you could email a patch to yourself and then
+>> see if you can apply cleanly it to your source tree (after removing
+>> any conflicting patches, of course -- or use a different source
+>> tree).
+> 
+> Yeah, I'll make sure to double check with that in the future.
+> 
+>>
+>>
+>> --
+>> ~Randy
+>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>> netiquette: https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> Should I send in a v2 of this patchset, or just attach the patch here?
+> If I should just attach it here, then I'll do the same for patch 2/2.
+
+An attachment might be OK once but it would be better if you
+could get inline patches to work. You'll need to do that...
+
+
+-- 
+~Randy
+
