@@ -2,118 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61569305E52
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D401305E59
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhA0OaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:30:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
+        id S234151AbhA0Ocb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhA0O36 (ORCPT
+        with ESMTP id S231562AbhA0ObM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:29:58 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A99FC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:29:18 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id a77so2315606oii.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:29:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4id04Ce+fp/e8CTiMx3Sr5ui4DlY1xAuBgKbADQCYHs=;
-        b=FKfbCeJ016u5l9An/csG2m8Rg9KIwa1az5mkdyLz6vQD2H/ZLDX22a136QcU+sX+cC
-         macnEmVGvuGkhW6ADkL6d9AAr5+hnIauK2CY+P0c6syRwiE5ZQU5q7kNiUyey9krm/oQ
-         m9Njx2D0OJq+8Q1+0FO6uD+0o/wk2QgjxoI4+cXkelu/17hwikos1fPqbWoSmH8PfY16
-         iIeiuM2T/fmzueo3KiysSr0fDpjQFl6+tD9/H0kXS5MlSGWfQvS5M6G/eiOC7P4Q2vdN
-         7nTY49ZpUCrJ540N8TLfzFqbltgcamSnpNtghTT7hGXnqYOCJ79YIzWGkCzw/CVIqEnP
-         5qZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4id04Ce+fp/e8CTiMx3Sr5ui4DlY1xAuBgKbADQCYHs=;
-        b=UOOfD8k7jU3f1JT1Fx/+WmAhaOZAP3Z9copm7PNjGw9Y6hItvjahrL1627AISvW7Eg
-         HOES1fnsZSn2OeCk8URRM2OsPiHO6r9BpNMg7YXIqzv7ZXLqLSK+Sz+2bzOQcCIDrGH5
-         BSjyY09uhONP+UgADubNoa2xNaGY8ZjAANMNG/BL+e0UTMf8y1VZWQd/2ss8p3ByDboX
-         4Qfjf/uX9bx6HVd9183eh4K3B41H5VI3GLmDFx+/jpIQEcUfDZXMQTflZNfM+0qUQHuw
-         txrKvAyp0QKEBC3Wrq3j6bNhOSSybdH5+9TPrPDPz4ZXBQeXoVFOctpWkL5lGF3aCY3O
-         PHng==
-X-Gm-Message-State: AOAM532Hsq01JWGx8mY4BbGon9+96G2YRVYq7oKMZnMBM/MDup3LTt+3
-        9X7vameTiYATVZwUV6ygSJe4SA==
-X-Google-Smtp-Source: ABdhPJwb2/m3MU/zw67FfMAeQmwXNthxIFKhH0xwTluKN9VbYYGvTbrGNUpiIuOT6X0+/4woOhNIrA==
-X-Received: by 2002:aca:d643:: with SMTP id n64mr3351850oig.151.1611757757891;
-        Wed, 27 Jan 2021 06:29:17 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e14sm443934oou.19.2021.01.27.06.29.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:29:17 -0800 (PST)
-Date:   Wed, 27 Jan 2021 08:29:15 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "N?colas F. R. A. Prado" <nfraprado@protonmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Subject: Re: [PATCH v2 3/4] ARM: qcom_defconfig: Enable QCOM SPMI Flash LEDs
-Message-ID: <YBF4u3Q59GMARSlm@builder.lan>
-References: <20210126140240.1517044-1-nfraprado@protonmail.com>
- <20210126140240.1517044-4-nfraprado@protonmail.com>
+        Wed, 27 Jan 2021 09:31:12 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F4BC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:30:32 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0f5c00182d512fee937b6e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:5c00:182d:512f:ee93:7b6e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EED0F1EC0472;
+        Wed, 27 Jan 2021 15:30:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611757831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=5G8ReFENXtBrmXhSJg2W7hD4LjvA0msd1dZRn8y6tqg=;
+        b=atFyTl5fy88iKuI/2uTJ9be1SerQyh9GfgvW7ASafO9NtJM8Bz22zzCBCb7zssKiti3YDd
+        j1/Md230+W3+ANrXhOnpq2/toqD60lcCoNY5cEXVgULWnEPMg34ayF55wU2uoSvkT0PI38
+        QoSYH8PvOyurJ9ip8QuA9OL5UrUjabs=
+Date:   Wed, 27 Jan 2021 15:30:25 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, hpa@zytor.com,
+        tglx@linutronix.de, mingo@redhat.com
+Subject: Re: [PATCH] x86/msr: Filter msr write by X86_IOC_WRMSR_REGS ioctl
+Message-ID: <20210127143025.GD17424@zn.tnic>
+References: <20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210126140240.1517044-4-nfraprado@protonmail.com>
+In-Reply-To: <20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26 Jan 08:06 CST 2021, N?colas F. R. A. Prado wrote:
+On Wed, Jan 27, 2021 at 09:24:56PM +0900, Misono Tomohiro wrote:
+> commit a7e1f67ed29f ("x86/msr: Filter MSR writes") introduces a
+> module parameter to disable writing to msr device file (and add_taint()
+> upon writing). As msr register can be written by X86_IOC_WRMSR_REGS
+> ioctl too, they should be applied to the ioctl as well.
 
-> Enable module for the Qualcomm SPMI Flash LEDs present on the PM8941
-> PMIC.
-> 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+Blergh, I missed that. :-\
+
+> Fixes: a7e1f67ed29f ("x86/msr: Filter MSR writes")
+> Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
 > ---
-> Changes in v2:
-> - Enabled CONFIG_LEDS_CLASS_FLASH since the driver now depends on it.
+> Hello,
 > 
->  arch/arm/configs/qcom_defconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm/configs/qcom_defconfig b/arch/arm/configs/qcom_defconfig
-> index f6e9675f639c..05cacc59087e 100644
-> --- a/arch/arm/configs/qcom_defconfig
-> +++ b/arch/arm/configs/qcom_defconfig
-> @@ -202,6 +202,7 @@ CONFIG_MMC_SDHCI_PLTFM=y
->  CONFIG_MMC_SDHCI_MSM=y
->  CONFIG_NEW_LEDS=y
->  CONFIG_LEDS_CLASS=y
-> +CONFIG_LEDS_CLASS_FLASH=y
+> I just noticed this when I read the code.
+> I'm not sure if anyone uses ioctl interface now, but I tested this
+> by resetting IA32_MPERF by X86_IOC_WRMSR_REGS ioctl.
 
-This doesn't seem critical to boot the system, can we make it =m?
+Yeah, I'm sure once this hits people's kernels, someone will complain.
 
-Regards,
-Bjorn
+In any case, good catch, thanks!
 
->  CONFIG_LEDS_GPIO=y
->  CONFIG_LEDS_PM8058=y
->  CONFIG_LEDS_TRIGGERS=y
-> @@ -284,3 +285,4 @@ CONFIG_DYNAMIC_DEBUG=y
->  CONFIG_DEBUG_INFO=y
->  CONFIG_MAGIC_SYSRQ=y
->  # CONFIG_SCHED_DEBUG is not set
-> +CONFIG_LEDS_QCOM_SPMI_FLASH=m
-> -- 
-> 2.30.0
-> 
-> 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
