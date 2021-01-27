@@ -2,98 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2406130572D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A92305735
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbhA0Jm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:42:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:35176 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233844AbhA0Jk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:40:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8957131B;
-        Wed, 27 Jan 2021 01:39:40 -0800 (PST)
-Received: from [10.57.46.236] (unknown [10.57.46.236])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65DC03F66B;
-        Wed, 27 Jan 2021 01:39:39 -0800 (PST)
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
-To:     Keqian Zhu <zhukeqian1@huawei.com>, Will Deacon <will@kernel.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20201126034230.777-1-thunder.leizhen@huawei.com>
- <20210122125132.GB24102@willie-the-truck>
- <aac11411-f6cd-f990-fe53-db0d8c07f3a0@huawei.com>
- <1bfd1ca0-953e-e943-f87e-144d5537bd0c@arm.com>
- <20210126101230.GA29204@willie-the-truck>
- <8a9685ec-67aa-824f-5429-f408bf79c5ab@huawei.com>
- <32f4752f-6954-183a-a0c1-b5d719c85b67@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <319e3532-4555-7431-9d6f-3c3b7c11a5d9@arm.com>
-Date:   Wed, 27 Jan 2021 09:39:38 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S235391AbhA0Joq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:44:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58369 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235381AbhA0Jl6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:41:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611740428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bh5ngCAk4+IwsMtkkrTBoRFwgeLTplyt2bjbip6O240=;
+        b=OmmEEt+6U5iI/yP0B4kbzE2JVR8p7tX1bzVMDYZPnyoErONtCp0Oo9WISZLuOsByjT2beh
+        WUx+Pijkj2JUi5ugEs8l4Nhc9H9VMj0w0jdp6Zu1YIx9hcZMMc1l+07VeSEtG0u139U0Kt
+        R6kWD6wzUI1n5FPpDf7DFIX/Y757vYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-78-66zrOZuWOdy7ujW7KztTjQ-1; Wed, 27 Jan 2021 04:40:26 -0500
+X-MC-Unique: 66zrOZuWOdy7ujW7KztTjQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 476B3190A7A0;
+        Wed, 27 Jan 2021 09:40:25 +0000 (UTC)
+Received: from [10.36.114.237] (ovpn-114-237.ams2.redhat.com [10.36.114.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B9A65C5FD;
+        Wed, 27 Jan 2021 09:40:23 +0000 (UTC)
+Subject: Re: [PATCH] mm/memory_hotplug: use helper function zone_end_pfn() to
+ get end_pfn
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210127093211.37714-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <9e15556f-8535-d8ae-d5b1-db264d377c20@redhat.com>
+Date:   Wed, 27 Jan 2021 10:40:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <32f4752f-6954-183a-a0c1-b5d719c85b67@huawei.com>
+In-Reply-To: <20210127093211.37714-1-linmiaohe@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-27 07:36, Keqian Zhu wrote:
+On 27.01.21 10:32, Miaohe Lin wrote:
+> Commit 108bcc96ef70 ("mm: add & use zone_end_pfn() and zone_spans_pfn()")
+> introduced the helper zone_end_pfn() to calculate the zone end pfn.  But
+> update_pgdat_span() forgot to use it. Use this helper and re-name local
+> variable zone_end_pfn to end_pfn to fix below compilation error:
 > 
+> mm/memory_hotplug.c: In function ‘update_pgdat_span’:
+> mm/memory_hotplug.c:448:32: error: called object ‘zone_end_pfn’ is not a
+> function or function pointer
+>     unsigned long zone_end_pfn = zone_end_pfn(zone);
+>                                  ^~~~~~~~~~~~
+> mm/memory_hotplug.c:448:17: note: declared here
+>     unsigned long zone_end_pfn = zone_end_pfn(zone);
+>                   ^~~~~~~~~~~~
 > 
-> On 2021/1/27 10:01, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2021/1/26 18:12, Will Deacon wrote:
->>> On Mon, Jan 25, 2021 at 08:23:40PM +0000, Robin Murphy wrote:
->>>> Now we probably will need some degreee of BBML feature awareness for the
->>>> sake of SVA if and when we start using it for CPU pagetables, but I still
->>>> cannot see any need to consider it in io-pgtable.
->>>
->>> Agreed; I don't think this is something that io-pgtable should have to care
->>> about.
-> Hi,
-> 
-> I have a question here :-).
-> If the old table is not live, then the break procedure seems unnecessary. Do I miss something?
 
-The MMU is allowed to prefetch translations at any time, so not 
-following the proper update procedure could still potentially lead to a 
-TLB conflict, even if there's no device traffic to worry about disrupting.
+Please don't talk about compilation issues your changes introduce in 
+that detail, that's just confusing and looks like something would 
+already be broken. Please simplify to something like
 
-Robin.
+"Let's use zone_end_pfn(zone). We have to rename the local variable to 
+avoid an identifier clash (variable vs. function)."
 
-> Thanks,
-> Keqian
+With that
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/memory_hotplug.c | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
 > 
->>
->> Yes, the SVA works in stall mode, and the failed device access requests are not
->> discarded.
->>
->> Let me look for examples. The BBML usage scenario was told by a former colleague.
->>
->>>
->>> Will
->>>
->>> .
->>>
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->> .
->>
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 710e469fb3a1..0483db52b85f 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -493,20 +493,19 @@ static void update_pgdat_span(struct pglist_data *pgdat)
+>   
+>   	for (zone = pgdat->node_zones;
+>   	     zone < pgdat->node_zones + MAX_NR_ZONES; zone++) {
+> -		unsigned long zone_end_pfn = zone->zone_start_pfn +
+> -					     zone->spanned_pages;
+> +		unsigned long end_pfn = zone_end_pfn(zone);
+>   
+>   		/* No need to lock the zones, they can't change. */
+>   		if (!zone->spanned_pages)
+>   			continue;
+>   		if (!node_end_pfn) {
+>   			node_start_pfn = zone->zone_start_pfn;
+> -			node_end_pfn = zone_end_pfn;
+> +			node_end_pfn = end_pfn;
+>   			continue;
+>   		}
+>   
+> -		if (zone_end_pfn > node_end_pfn)
+> -			node_end_pfn = zone_end_pfn;
+> +		if (end_pfn > node_end_pfn)
+> +			node_end_pfn = end_pfn;
+>   		if (zone->zone_start_pfn < node_start_pfn)
+>   			node_start_pfn = zone->zone_start_pfn;
+>   	}
 > 
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
