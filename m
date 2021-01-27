@@ -2,480 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876893051E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 322DF3051D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhA0FU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238834AbhA0E6B (ORCPT
+        id S233226AbhA0FRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:17:53 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:36184 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238712AbhA0Ezb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:58:01 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B37C061793
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:47 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id z21so766765pgj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:47 -0800 (PST)
+        Tue, 26 Jan 2021 23:55:31 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R4j9S7092666;
+        Wed, 27 Jan 2021 04:54:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=OrJjxBhCmc/Lpml56MvMouDE/QICgRnPybkMQxpuzhc=;
+ b=C65t8cI+dhP0+EATcDM0CXPazoKv7XRjDpUyg52XKFbpe3DL7F2F8FPHKf5KnBcB8eZn
+ QHnmVTF8lsodfm8E6YN3rd34ah8ugP6vd/B9eH0AFTKrqsjVta3n2DqPuzLKAXfRlb/B
+ RSs2e4xXByOrM18smUpCSI9tXgu4UbycFFwCYxNyYnLk0HC4AZxffrEk+x1P0MGAyPg2
+ v5ku9EPobf4qFBWYglkw0zX3xouh0QKnI7Dj9au9W3mLlsPpjKfdBZWIJF94BfRszVHP
+ jIjYHuJ805jhLDY0dbAu7Gj79+OsN8eBr4ftOrqK30LaTY/3JktMlAcFQUuWTRD4+AtQ wA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 3689aanbau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 04:54:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R4p6Rq188980;
+        Wed, 27 Jan 2021 04:54:38 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
+        by aserp3030.oracle.com with ESMTP id 368wcnsk3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 04:54:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AwXS67onHIsj2JKpdRGUxGaHVK11lCBaNBjr+ghKlAI2ynz2S0OKFzV5GTg9cguqLzKx4AezGVDXJlfFKpJkfB0Eyob8TtekuQYj+bNEsQmA0hHNicE3grd9qCnbjX6kw9/bCAmrEEkzxDwxTmLWkFfSVkpX8pD7fpyy0RkZo/bYSfla790VArPCmaRQ1r0g0tW5PH5zdM1RuTh0GHbuXxUHm5k3vrgzHrn4IFkH2wj+4NuwhjwbFzCdYqOa16MrjZyFO2X/nJnukQKwxsunOyZuGSeF83cx2WM4JVtSAdsTfY/4ED5tRCiddool4RxiPf9Lq8IN4PGnjOJTWn7J7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OrJjxBhCmc/Lpml56MvMouDE/QICgRnPybkMQxpuzhc=;
+ b=F6Du9gUMMS40FnMI9jqsH7qEz/hNWVn5ZClS+bUArbvuCK2LSVHA9hzAFdZaQPfH2Exb8ltxZhGk1F7hXmKiXP8GXTw0UhnioAHRAwxTdXFhlym2zE6Ted+LmgD9AK4lUjOLXHzN86JXYteWxx4mCUILqn5g3AWEsH/z/bhC+6YnBsIxenCcNyBqnq6vIXM6cGU5itURSLRHDPH0pLmGWRuGTfT04XFpf+eNKroBaO4dyPHSkOwyKbnsjZ1QXB2Jvq6RQpZV5AnYbyNSwe/yFOKxlGU1E0cswoUwkLJiq/hetAVeEPMD7l5pMlUkx5Vo/kASgdJj2TI4wMxSjhCYZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GKlwrlyR6nQ+CUTnb3b8CMcJ8TXxqhwgmU2a53z5E9E=;
-        b=F1tMdqEvvWvrWJonEVo2MwwDvSRLpeD39bbdUUnaZDS6I3ppveHE3kZMjIe++afKaw
-         XrnJY4YjijLIxChTiEszU8AcyGtCvA1CAQBPaYBgYChgUbB9YzRCH4LSWIY6UZ+Y9aQK
-         krEgcPt+FCf79JFU0ihA3ol9cTxlbagJn/RPA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GKlwrlyR6nQ+CUTnb3b8CMcJ8TXxqhwgmU2a53z5E9E=;
-        b=c0Oxn0KzSggfnjWYtKBbwM5hWCFMIvp9nPteuhHQ+kDHqVlqOpFsCoJkD3d8JsVRAU
-         0BGYqK7zpN5lEvv1mGtKzBrRIORZ0SxpAwINH95QdYhKZo+V8PWN52vSzSlxis2Te4X4
-         B8i+MdGAiLE4tJtHjXSQH5eOQlkHSDgu0KFmyWIzMDTd0VdVEfO2X/b8lphrK5Y9lWen
-         GZ1+A3+Ud9VD4/D8SEiTNHYG6V8KtYwh8xkDUKtLAF0g6ZucbJqpWCyksgddhXHMzKE+
-         SnbTBCWEtoOPdHOvs+EA7inU/uyRuKF2LqAWwMKRz0QBfjew/TfomjNoVhs0JxWxhGQx
-         pInA==
-X-Gm-Message-State: AOAM5315H8UxmwRuTAhKyv5+UfLr3qHS+Fy6414HltUjS7SNvg2tIMtO
-        uGWabwR/xS7H+WnzkFc64f3R8g==
-X-Google-Smtp-Source: ABdhPJwP6bdrZFz2dTtUQfx0NgBDEfcgh1lPKSZgoZgID/vW+jJ0kDUIcmQwcF6+wdlDLvTlN2bEnQ==
-X-Received: by 2002:a62:1b15:0:b029:1b9:1c1:1673 with SMTP id b21-20020a621b150000b02901b901c11673mr8971906pfb.2.1611723286901;
-        Tue, 26 Jan 2021 20:54:46 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:e0a5:d2fc:aaad:1e4a])
-        by smtp.gmail.com with ESMTPSA id a141sm684484pfa.189.2021.01.26.20.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 20:54:46 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v10 5/9] drm/mediatek: separate gamma module
-Date:   Wed, 27 Jan 2021 12:54:18 +0800
-Message-Id: <20210127045422.2418917-6-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-In-Reply-To: <20210127045422.2418917-1-hsinyi@chromium.org>
-References: <20210127045422.2418917-1-hsinyi@chromium.org>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OrJjxBhCmc/Lpml56MvMouDE/QICgRnPybkMQxpuzhc=;
+ b=bQkCWC8K58l9JRx1Htg15VoyL7St/iy8PaAFzXfbmz4e6OL0cteIPUPrYU4TUcAedGW24AG8lTSt7UmRZsqVffUrWx2NxxPdhLrby9DjPB92JzQby/duQySrgAMvVBEyU0NS2H8DrEiZj8cgr9pin3ExMHjC+OwYDznMeFMQevk=
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none
+ header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4584.namprd10.prod.outlook.com (2603:10b6:510:37::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 27 Jan
+ 2021 04:54:36 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 04:54:36 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>, jejb@linux.ibm.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, sathya.prakash@broadcom.com,
+        MPT-FusionLinux.pdl@broadcom.com, sreekanth.reddy@broadcom.com,
+        linux-scsi@vger.kernel.org, suganath-prabu.subramani@broadcom.com
+Subject: Re: [PATCH] scsi: mpt3sas: style: Simplify bool comparison
+Date:   Tue, 26 Jan 2021 23:54:19 -0500
+Message-Id: <161172309261.28139.10623986186367068190.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1610355253-25960-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+References: <1610355253-25960-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [138.3.200.9]
+X-ClientProxiedBy: MWHPR10CA0018.namprd10.prod.outlook.com (2603:10b6:301::28)
+ To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.mkp.ca.oracle.com (138.3.200.9) by MWHPR10CA0018.namprd10.prod.outlook.com (2603:10b6:301::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 04:54:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fc65ac6b-ac9c-459a-376c-08d8c27fa547
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4584:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB45846AF4540A71C8AA6657C88EBB9@PH0PR10MB4584.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZedQVWZDGsi25UfPfYbwiGSOFv/JMH7uc2Oia+QzVCtQQo9Tr4Vhcx/ICqIsuLnewBLJu/OC+1SUhuHKiljv7uTHlI3+6RkLDn8q+l5dCIszoQUsXOu2ZSNmKKmXGE4Ldz3tD5kQskwlUZPd43LgAf+67/x5NzATBVkMO2AY0Dg8CUZmVeBR+FEeTBYfawnmlN5Fq5n18Xf6PLFepVpdQyCygS2DSdwxxtbH2OPh05HdK4fSJ8GiRx2hs1zXy/wCqnx1RaG148byBKaKMPa7wOVJaFWksoJaib2rMZWRqs1S+r1EPRiA4VWtw0fFNKwC0X9wmhOHID+eCz0yQEpwUFopyu0jcLhPeN4LERtSAQJWQNq9IAiwBlJ5jflRQ+kuPr4sWmfEutwpHn4kD7jfpaBH7+jBCSUPLBLWPK9NLmurH+Mnam8VrScsXguOWk4Lpme1osLRQVOusznRDo67607cAqXpNbHtKdBELmPJZqQn4/TnrSbZvo3fxi4dnf/J3Fi09cEtD4Do+/QPM8Di+A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(136003)(39860400002)(376002)(8676002)(66946007)(103116003)(6666004)(16526019)(4744005)(26005)(86362001)(186003)(36756003)(83380400001)(2906002)(2616005)(8936002)(5660300002)(4326008)(66556008)(66476007)(52116002)(7696005)(478600001)(956004)(966005)(6486002)(316002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eVdmdmprcUpHNERkcGpWZ1lNWGtQKzhzcHRpM05sTTB0K0p5UGFQL1k0YXJn?=
+ =?utf-8?B?TGZHbWtmY0FjVnRZajRyQ0t5dzhmOGFaMkZ1OXYzUjJHUEJCR1FNNDI5Z2hE?=
+ =?utf-8?B?TUhWODI1RTVUVzZ4MmpndHQzeW43RFVsWGhiVGZ0UVFJaXZOaEJSTDdyVWkr?=
+ =?utf-8?B?bVp2MGRYOWtSVFFrMVZMK2dXdG1NWnJxMDQ5bHF5YTBNN3FCbTFWY2t6WG5o?=
+ =?utf-8?B?QjVOb0trQ1NwU1pXemptWFFROGZKdTMzcktVWXFqVWRkOHFjaWY4Z0U2QkRO?=
+ =?utf-8?B?TW5tbXFPOGtkNUIrM2piMk8zKzdLU05peVErU1ZucVNUa2xtdjhJVEJ3VjFE?=
+ =?utf-8?B?WGxDQ3d4ZTlJUW04bjl4UjI2bEh2Zk42d09Na083U3RzODlmYzZ0ZTZBdG9i?=
+ =?utf-8?B?b0hqcm96NUg0cEpGa1Bwby9xUXVJNmRBOWlremIzSGdXVjFvT1REdkFzN0lW?=
+ =?utf-8?B?dTdLc2J5TXBDekQxYnRMTFpkRzZjWSt2UHVNazlPT0drNkJjajc5SnNQRVU3?=
+ =?utf-8?B?bmRwNmJYOVJIR0NQWHpUdXpsV3NVOHZkRHI5cHhMV1dPdW0wbXYyZE1ERlFX?=
+ =?utf-8?B?U3dneDJSdjVtTjhqaDVMdjljSjZITkZiM21iQkpUamdScDBmc3pQVStSMndR?=
+ =?utf-8?B?VVNKa0NNbHBaRGxZbUhZc2V5VzhPRWE4Y2Z5Q0hMZjV4a3BuQXZCMnAzUnZ1?=
+ =?utf-8?B?WUM2T2NtMG1wYzVKSmc4Wm5YQzNEb1BUM2RObE9MbGQrUFIxUHRTOHc4cEtC?=
+ =?utf-8?B?ZHRmN043cjZmNlRmRmFDSldENE9DbW03cklVOWFrakFmWEFFT3RqRTMrbnBq?=
+ =?utf-8?B?NlRqc21CTWZhT0lDRTJyU3VXVFZPMHhwaXFZYldISzNuVTJ4V04vc3hLZ0g2?=
+ =?utf-8?B?SkNzWXUrYVkyQkZhUVpaZ1NONWFmODk0clpQUThkelVZbWwzb1JpNC9GTkV4?=
+ =?utf-8?B?M0MvY0Zub2FmTnZDeG5YejR3WERFNTJtSTl6T0QycitNNFBnKy9vWGxvMmx4?=
+ =?utf-8?B?NjdNQVVlOW42U1hpS3kvTUNQSnJ1dEM1UUZCRG1KSjh0MUVhZFRqaXdiek10?=
+ =?utf-8?B?TytuVUk4bEdudXlTZ2Z6T25UbjJvOEdnaGQ5TEh2VXZFb203ZHZsRC9pQ3hT?=
+ =?utf-8?B?SkpoR3NoY2d1QnZ6TlFaNko1M2NDTlhVN2Q3MVdEUktCWWFZSkZ2NC80dmZG?=
+ =?utf-8?B?UEQ2NDczcG9WRVdQYmZvbHNWR21rWHpTZWxKb0hwRHptYk1ic2k1dTBXc3hQ?=
+ =?utf-8?B?d1h4ZHduZ0lsdDh6ZzBER2hIOVh2ZlJkbWg2ZFNmYjdTYzZleHJtSWV6T3Yz?=
+ =?utf-8?B?R0VyVzBRYkViUUxuUXlFTm5KQkJsbGd3RG5YSHVld0N1c280Q1l1Qmt0Njc3?=
+ =?utf-8?B?YXNOYnRjVEtwNFdjQnpxSlA3dzkxNVJySEV0NFBUQ3VSWldXcHlCSTlsSVcz?=
+ =?utf-8?Q?H5BBXTHU?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc65ac6b-ac9c-459a-376c-08d8c27fa547
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 04:54:36.5106
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VfVX0p6s8SGJBM5X32yyu+s8+vroNcXDwW2IgTAJfH7854k4GYYhhlIvXpBVGjRadyHQA22TRYTsCzj7xjiIJ2eN9SPpNn0pE76yjLHWIl0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4584
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270027
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 phishscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+On Mon, 11 Jan 2021 16:54:13 +0800, YANG LI wrote:
 
-mt8183 gamma module will different with mt8173
-separate gamma for add private data
+> Fix the following coccicheck warning:
+> ./drivers/scsi/mpt3sas/mpt3sas_base.c:2424:5-20: WARNING: Comparison of
+> 0/1 to bool variable
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/gpu/drm/mediatek/Makefile           |   1 +
- drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  10 ++
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 188 ++++++++++++++++++++
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |  71 ++------
- drivers/gpu/drm/mediatek/mtk_drm_drv.c      |   4 +-
- drivers/gpu/drm/mediatek/mtk_drm_drv.h      |   1 +
- 6 files changed, 214 insertions(+), 61 deletions(-)
- create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+Applied to 5.12/scsi-queue, thanks!
 
-diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
-index 01d06332f7679..b64674b944860 100644
---- a/drivers/gpu/drm/mediatek/Makefile
-+++ b/drivers/gpu/drm/mediatek/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- mediatek-drm-y := mtk_disp_color.o \
-+		  mtk_disp_gamma.o \
- 		  mtk_disp_ovl.o \
- 		  mtk_disp_rdma.o \
- 		  mtk_drm_crtc.o \
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-index c50d5fc9fd349..c1e658b490b6c 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-@@ -27,6 +27,16 @@ void mtk_dpi_stop(struct device *dev);
- void mtk_dsi_ddp_start(struct device *dev);
- void mtk_dsi_ddp_stop(struct device *dev);
- 
-+int mtk_gamma_clk_enable(struct device *dev);
-+void mtk_gamma_clk_disable(struct device *dev);
-+void mtk_gamma_config(struct device *dev, unsigned int w,
-+                      unsigned int h, unsigned int vrefresh,
-+                      unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
-+void mtk_gamma_set(struct device *dev, struct drm_crtc_state *state);
-+void mtk_gamma_set_common(void __iomem *regs, struct drm_crtc_state *state);
-+void mtk_gamma_start(struct device *dev);
-+void mtk_gamma_stop(struct device *dev);
-+
- void mtk_ovl_bgclr_in_on(struct device *dev);
- void mtk_ovl_bgclr_in_off(struct device *dev);
- void mtk_ovl_bypass_shadow(struct device *dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-new file mode 100644
-index 0000000000000..b5a499d7e472c
---- /dev/null
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-@@ -0,0 +1,188 @@
-+/*
-+ * SPDX-License-Identifier:
-+ *
-+ * Copyright (c) 2020 MediaTek Inc.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/component.h>
-+#include <linux/of_device.h>
-+#include <linux/of_irq.h>
-+#include <linux/platform_device.h>
-+#include <linux/soc/mediatek/mtk-cmdq.h>
-+
-+#include "mtk_disp_drv.h"
-+#include "mtk_drm_crtc.h"
-+#include "mtk_drm_ddp_comp.h"
-+
-+#define DISP_GAMMA_EN				0x0000
-+#define GAMMA_EN					BIT(0)
-+#define DISP_GAMMA_CFG				0x0020
-+#define GAMMA_LUT_EN					BIT(1)
-+#define DISP_GAMMA_SIZE				0x0030
-+#define DISP_GAMMA_LUT				0x0700
-+
-+#define LUT_10BIT_MASK				0x03ff
-+
-+struct mtk_disp_gamma_data {
-+	u32 reserved;
-+};
-+
-+/**
-+ * struct mtk_disp_gamma - DISP_GAMMA driver structure
-+ * @ddp_comp - structure containing type enum and hardware resources
-+ * @crtc - associated crtc to report irq events to
-+ */
-+struct mtk_disp_gamma {
-+	struct clk *clk;
-+	void __iomem *regs;
-+	struct cmdq_client_reg cmdq_reg;
-+	const struct mtk_disp_gamma_data *data;
-+};
-+
-+int mtk_gamma_clk_enable(struct device *dev)
-+{
-+	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
-+
-+	return clk_prepare_enable(gamma->clk);
-+}
-+
-+void mtk_gamma_clk_disable(struct device *dev)
-+{
-+	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(gamma->clk);
-+}
-+
-+void mtk_gamma_set_common(void __iomem *regs, struct drm_crtc_state *state)
-+{
-+	unsigned int i, reg;
-+	struct drm_color_lut *lut;
-+	void __iomem *lut_base;
-+	u32 word;
-+
-+	if (state->gamma_lut) {
-+		reg = readl(regs + DISP_GAMMA_CFG);
-+		reg = reg | GAMMA_LUT_EN;
-+		writel(reg, regs + DISP_GAMMA_CFG);
-+		lut_base = regs + DISP_GAMMA_LUT;
-+		lut = (struct drm_color_lut *)state->gamma_lut->data;
-+		for (i = 0; i < MTK_LUT_SIZE; i++) {
-+			word = (((lut[i].red >> 6) & LUT_10BIT_MASK) << 20) +
-+				(((lut[i].green >> 6) & LUT_10BIT_MASK) << 10) +
-+				((lut[i].blue >> 6) & LUT_10BIT_MASK);
-+			writel(word, (lut_base + i * 4));
-+		}
-+	}
-+}
-+
-+void mtk_gamma_set(struct device *dev, struct drm_crtc_state *state)
-+{
-+	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
-+
-+	mtk_gamma_set_common(gamma->regs, state);
-+}
-+
-+void mtk_gamma_config(struct device *dev, unsigned int w,
-+		      unsigned int h, unsigned int vrefresh,
-+		      unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
-+{
-+	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
-+
-+	mtk_ddp_write(cmdq_pkt, h << 16 | w, &gamma->cmdq_reg, gamma->regs,
-+		      DISP_GAMMA_SIZE);
-+	mtk_dither_set_common(gamma->regs, &gamma->cmdq_reg, bpc, DISP_GAMMA_CFG, cmdq_pkt);
-+}
-+
-+void mtk_gamma_start(struct device *dev)
-+{
-+	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
-+
-+	writel(GAMMA_EN, gamma->regs + DISP_GAMMA_EN);
-+}
-+
-+void mtk_gamma_stop(struct device *dev)
-+{
-+	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
-+
-+	writel_relaxed(0x0, gamma->regs + DISP_GAMMA_EN);
-+}
-+
-+static int mtk_disp_gamma_bind(struct device *dev, struct device *master,
-+			       void *data)
-+{
-+	return 0;
-+}
-+
-+static void mtk_disp_gamma_unbind(struct device *dev, struct device *master,
-+				  void *data)
-+{
-+}
-+
-+static const struct component_ops mtk_disp_gamma_component_ops = {
-+	.bind	= mtk_disp_gamma_bind,
-+	.unbind = mtk_disp_gamma_unbind,
-+};
-+
-+static int mtk_disp_gamma_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct mtk_disp_gamma *priv;
-+	struct resource *res;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(priv->clk)) {
-+		dev_err(dev, "failed to get gamma clk\n");
-+		return PTR_ERR(priv->clk);
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	priv->regs = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->regs)) {
-+		dev_err(dev, "failed to ioremap gamma\n");
-+		return PTR_ERR(priv->regs);
-+	}
-+
-+#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-+	ret = cmdq_dev_get_client_reg(dev, &priv->cmdq_reg, 0);
-+	if (ret)
-+		dev_dbg(dev, "get mediatek,gce-client-reg fail!\n");
-+#endif
-+
-+	priv->data = of_device_get_match_data(dev);
-+	platform_set_drvdata(pdev, priv);
-+
-+	ret = component_add(dev, &mtk_disp_gamma_component_ops);
-+	if (ret)
-+		dev_err(dev, "Failed to add component: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int mtk_disp_gamma_remove(struct platform_device *pdev)
-+{
-+	component_del(&pdev->dev, &mtk_disp_gamma_component_ops);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mtk_disp_gamma_driver_dt_match[] = {
-+	{ .compatible = "mediatek,mt8173-disp-gamma"},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mtk_disp_gamma_driver_dt_match);
-+
-+struct platform_driver mtk_disp_gamma_driver = {
-+	.probe		= mtk_disp_gamma_probe,
-+	.remove		= mtk_disp_gamma_remove,
-+	.driver		= {
-+		.name	= "mediatek-disp-gamma",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = mtk_disp_gamma_driver_dt_match,
-+	},
-+};
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 53d25823a37cc..8173f709272be 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -55,11 +55,6 @@
- #define DITHER_RELAY_MODE			BIT(0)
- #define DISP_DITHER_SIZE			0x0030
- 
--#define DISP_GAMMA_EN				0x0000
--#define DISP_GAMMA_CFG				0x0020
--#define DISP_GAMMA_SIZE				0x0030
--#define DISP_GAMMA_LUT				0x0700
--
- #define LUT_10BIT_MASK				0x03ff
- 
- #define OD_RELAYMODE				BIT(0)
-@@ -68,9 +63,6 @@
- 
- #define AAL_EN					BIT(0)
- 
--#define GAMMA_EN				BIT(0)
--#define GAMMA_LUT_EN				BIT(1)
--
- #define DISP_DITHERING				BIT(2)
- #define DITHER_LSB_ERR_SHIFT_R(x)		(((x) & 0x7) << 28)
- #define DITHER_OVFLW_BIT_R(x)			(((x) & 0x7) << 24)
-@@ -151,7 +143,6 @@ static void mtk_ddp_clk_disable(struct device *dev)
- 	clk_disable_unprepare(priv->clk);
- }
- 
--
- void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
- 			   unsigned int bpc, unsigned int CFG, struct cmdq_pkt *cmdq_pkt)
- {
-@@ -219,6 +210,13 @@ static void mtk_aal_config(struct device *dev, unsigned int w,
- 	mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
- }
- 
-+static void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state *state)
-+{
-+	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
-+
-+        mtk_gamma_set_common(priv->regs, state);
-+}
-+
- static void mtk_aal_start(struct device *dev)
- {
- 	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
-@@ -333,58 +331,10 @@ static void mtk_dither_stop(struct device *dev)
- 	writel_relaxed(0x0, priv->regs + DISP_DITHER_EN);
- }
- 
--static void mtk_gamma_config(struct device *dev, unsigned int w,
--			     unsigned int h, unsigned int vrefresh,
--			     unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
--{
--	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
--
--	mtk_ddp_write(cmdq_pkt, h << 16 | w, &priv->cmdq_reg, priv->regs, DISP_GAMMA_SIZE);
--	mtk_dither_set(dev, bpc, DISP_GAMMA_CFG, cmdq_pkt);
--}
--
--static void mtk_gamma_start(struct device *dev)
--{
--	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
--
--	writel(GAMMA_EN, priv->regs  + DISP_GAMMA_EN);
--}
--
--static void mtk_gamma_stop(struct device *dev)
--{
--	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
--
--	writel_relaxed(0x0, priv->regs  + DISP_GAMMA_EN);
--}
--
--static void mtk_gamma_set(struct device *dev,
--			  struct drm_crtc_state *state)
--{
--	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
--	unsigned int i, reg;
--	struct drm_color_lut *lut;
--	void __iomem *lut_base;
--	u32 word;
--
--	if (state->gamma_lut) {
--		reg = readl(priv->regs + DISP_GAMMA_CFG);
--		reg = reg | GAMMA_LUT_EN;
--		writel(reg, priv->regs + DISP_GAMMA_CFG);
--		lut_base = priv->regs + DISP_GAMMA_LUT;
--		lut = (struct drm_color_lut *)state->gamma_lut->data;
--		for (i = 0; i < MTK_LUT_SIZE; i++) {
--			word = (((lut[i].red >> 6) & LUT_10BIT_MASK) << 20) +
--				(((lut[i].green >> 6) & LUT_10BIT_MASK) << 10) +
--				((lut[i].blue >> 6) & LUT_10BIT_MASK);
--			writel(word, (lut_base + i * 4));
--		}
--	}
--}
--
- static const struct mtk_ddp_comp_funcs ddp_aal = {
- 	.clk_enable = mtk_ddp_clk_enable,
- 	.clk_disable = mtk_ddp_clk_disable,
--	.gamma_set = mtk_gamma_set,
-+	.gamma_set = mtk_aal_gamma_set,
- 	.config = mtk_aal_config,
- 	.start = mtk_aal_start,
- 	.stop = mtk_aal_stop,
-@@ -425,8 +375,8 @@ static const struct mtk_ddp_comp_funcs ddp_dsi = {
- };
- 
- static const struct mtk_ddp_comp_funcs ddp_gamma = {
--	.clk_enable = mtk_ddp_clk_enable,
--	.clk_disable = mtk_ddp_clk_disable,
-+	.clk_enable = mtk_gamma_clk_enable,
-+	.clk_disable = mtk_gamma_clk_disable,
- 	.gamma_set = mtk_gamma_set,
- 	.config = mtk_gamma_config,
- 	.start = mtk_gamma_start,
-@@ -642,6 +592,7 @@ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
- 
- 	if (type == MTK_DISP_BLS ||
- 	    type == MTK_DISP_COLOR ||
-+	    type == MTK_DISP_GAMMA ||
- 	    type == MTK_DPI ||
- 	    type == MTK_DSI ||
- 	    type == MTK_DISP_OVL ||
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 5d39dd54255d1..279d3e6f11563 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -486,11 +486,12 @@ static int mtk_drm_probe(struct platform_device *pdev)
- 		private->comp_node[comp_id] = of_node_get(node);
- 
- 		/*
--		 * Currently only the COLOR, OVL, RDMA, DSI, and DPI blocks have
-+		 * Currently only the COLOR, GAMMA, OVL, RDMA, DSI, and DPI blocks have
- 		 * separate component platform drivers and initialize their own
- 		 * DDP component structure. The others are initialized here.
- 		 */
- 		if (comp_type == MTK_DISP_COLOR ||
-+		    comp_type == MTK_DISP_GAMMA ||
- 		    comp_type == MTK_DISP_OVL ||
- 		    comp_type == MTK_DISP_OVL_2L ||
- 		    comp_type == MTK_DISP_RDMA ||
-@@ -589,6 +590,7 @@ static struct platform_driver mtk_drm_platform_driver = {
- 
- static struct platform_driver * const mtk_drm_drivers[] = {
- 	&mtk_disp_color_driver,
-+	&mtk_disp_gamma_driver,
- 	&mtk_disp_ovl_driver,
- 	&mtk_disp_rdma_driver,
- 	&mtk_dpi_driver,
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-index e8238fa4aa2ac..0e54e3d51014a 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-@@ -47,6 +47,7 @@ struct mtk_drm_private {
- };
- 
- extern struct platform_driver mtk_disp_color_driver;
-+extern struct platform_driver mtk_disp_gamma_driver;
- extern struct platform_driver mtk_disp_ovl_driver;
- extern struct platform_driver mtk_disp_rdma_driver;
- extern struct platform_driver mtk_dpi_driver;
+[1/1] scsi: mpt3sas: style: Simplify bool comparison
+      https://git.kernel.org/mkp/scsi/c/bfb3f00c0613
+
 -- 
-2.30.0.280.ga3ce27912f-goog
-
+Martin K. Petersen	Oracle Linux Engineering
