@@ -2,135 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F39305563
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607CD305560
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234675AbhA0IQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhA0IM7 (ORCPT
+        id S229576AbhA0IPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:15:46 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40521 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234460AbhA0IMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:12:59 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F4AC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:12:18 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id p5so1305405oif.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:12:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=25W2kJLNwjwbRDxf2IsFRfKvZZi9bUbt8wUssI4fr4Y=;
-        b=jw8d6qMiUfaPqQD4kaocGfMbezmyYGzNz2KHLPzEa8hMe756DtzSwz0wBMnSJx5PvH
-         PVp7gS1VNbeCN4/gosx6DoPqS5m+vlgZ9QyMoNlFJHYKfkrfxixzBd7jFPzcHRmsA81w
-         5noBZqA3DOKFGX6qOJfFTufgmgGu4i7Xz64tQeJiSPok95WaL32xensQpVg+odu6iW/j
-         VynVzpLa1gaLDx3eKMWbfNMZ0BDZpvsQ7SrHQNaA4PlM3gosmovE0wLoigowqA96tYIw
-         SL1GpR8bQaN1BDdM1QoLLP1ZrsircFxO+N7pQhA+FLOzfzrII1qxma5yk7mob+BCsdYb
-         xqDA==
+        Wed, 27 Jan 2021 03:12:44 -0500
+Received: by mail-ot1-f54.google.com with SMTP id i20so878532otl.7;
+        Wed, 27 Jan 2021 00:11:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=25W2kJLNwjwbRDxf2IsFRfKvZZi9bUbt8wUssI4fr4Y=;
-        b=EuPStsPc7jlVKx6I72GVNsa0wEJdeSE1oNGL5OTi9yjW/e2KG7d4ueDhY21uodZiTg
-         +K8pYrZASlkScZCP2nxpVc94LryKZQVRo3aoC4WWQkhHXwbgODGtZJRIDOMbw/5SrrEa
-         P67z+PNbvhrCbRtcvLllxGOmWDltSjd1FZpzJk5m8GQnrwQYUwFKfcA91Di5smff4EX/
-         JOwSDOgzyBbum45FLR3zqnvev2x67J+/a3c6v9kVxrIYhtmeooHb+vyEsDlmAJo++jYk
-         qmbGaPVBvapvH+iYRZTu/978RQ9svF8i3BFm1ATLifBm9PPklt2tmKIJpRn0d3wHhM7C
-         zAhQ==
-X-Gm-Message-State: AOAM532KRnQcRrlSEiuQDdyN5yG4FcEOhpCNpGmWJbrV+k6dcIu+Sueb
-        aQTCh+SLv7a/xCFsxwgPkeWhuhgJxnBgWFD+XYEWKMs3BBM/cg==
-X-Google-Smtp-Source: ABdhPJzMwCKXbA0OoGZ3+aicGxeuc19AbDEVx7LEelMZQmSqaYh5TE8wT+QW1C15EvnGb4MJj17SASAdeHzT/Q/8fac=
-X-Received: by 2002:aca:31c1:: with SMTP id x184mr2383932oix.74.1611735138053;
- Wed, 27 Jan 2021 00:12:18 -0800 (PST)
+        bh=f/iQz33kgh6xnvFreqr2JBmntO4WEFL9xyCLy3xIbC0=;
+        b=lQU3TTzCvmXOd5XXe8arsoH7nSZ2eJDyaFxuTqtkBamLgmWGEIClVHJXSzpyV/ejML
+         36+7aL5aNzt+5HufGEixm2cKgHGM17fVV4O4LpYBBODWfges9TiB9A4f/lyeXaoGszHL
+         R16kTUqBYLEGoOubmvtCLrrI7J2SmIYMHMuWMNzwlomB/vSkyVBXd2+yw+s27DsQb5wD
+         h783tc9wyDceAIyaZtJbQq1ST6i/Acdzd5rhBGdOGTUMdt9DKGgAXrUL2pIdQ9TCx5YN
+         nMxzq81DLZl3xENbEdW7qmCw/RfbmbaUDtRUVT/dB2lG9+CeIcXRcsRRbv9fhr71Dzid
+         LOTw==
+X-Gm-Message-State: AOAM530VdHb0sXUlSRZyNGHQe4ddUdnYajwaezpTj6h7O760blryJDfK
+        DH65fEZ7aw8dy+VCTXSc3a/hB5wpHyJF6fW6OXA=
+X-Google-Smtp-Source: ABdhPJwVJ5QU5cyczh35eHMkHRGaSDc7rqd/vvSHWfq2Q98yCiYxVmsxiAo478eNiF+zbFazNblMbwe+/6t4Iz2fDp0=
+X-Received: by 2002:a05:6830:1489:: with SMTP id s9mr6101130otq.250.1611735051520;
+ Wed, 27 Jan 2021 00:10:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119220637.494476-1-avagin@gmail.com>
-In-Reply-To: <20210119220637.494476-1-avagin@gmail.com>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Wed, 27 Jan 2021 00:10:30 -0800
-Message-ID: <CANaxB-zwjDu5PSFJebeJe5zH94HC7mThOwyPYSjE4tkQ0zwvBA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] arm64/ptrace: allow to get all registers on syscall traps
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        keno@juliacomputing.com, dave.martin@arm.com
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrei Vagin <avagin@google.com>,
-        Howard Zhang <howard.zhang@arm.com>,
-        Anthony Steinhauser <asteinhauser@google.com>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-5-geert+renesas@glider.be> <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
+In-Reply-To: <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 27 Jan 2021 09:10:40 +0100
+Message-ID: <CAMuHMdUqCTvCQUmL-m7C=W0id+Oh5OqPxySutOs9DEdWnzKYEg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 2:08 PM Andrei Vagin <avagin@gmail.com> wrote:
->
-> Right now, ip/r12 for AArch32 and x7 for AArch64 is used to indicate
-> whether or not the stop has been signalled from syscall entry or syscall
-> exit. This means that:
->
-> - Any writes by the tracer to this register during the stop are
->   ignored/discarded.
->
-> - The actual value of the register is not available during the stop,
->   so the tracer cannot save it and restore it later.
->
-> This series introduces NT_ARM_PRSTATUS to get all registers and makes it
-> possible to change ip/r12 and x7 registers when tracee is stopped in
-> syscall traps.
->
-> For applications like the user-mode Linux or gVisor, it is critical to
-> have access to the full set of registers at any moment. For example,
-> they need to change values of all registers to emulate rt_sigreturn and
-> they need to have the full set of registers to build a signal frame.
+Hi Laurent,
 
-I have found the thread [1] where Keno, Will, and Dave discussed the same
-problem. If I understand this right, the problem was not fixed, because there
-were no users who needed it.
+On Tue, Jan 26, 2021 at 11:01 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Mon, Jan 25, 2021 at 03:24:31PM +0100, Geert Uytterhoeven wrote:
+> > The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
+> > the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
+> >   1. The per-channel registers are located in a second register block.
+> >      Add support for mapping the second block, using the appropriate
+> >      offsets and stride.
+> >   2. The common Channel Clear Register (DMACHCLR) was replaced by a
+> >      per-channel register.
+> >      Update rcar_dmac_chan_clear{,_all}() to handle this.
+> >      As rcar_dmac_init() needs to clear the status before the individual
+> >      channels are probed, channel index and base address initialization
+> >      are moved forward.
+> >
+> > Inspired by a patch in the BSP by Phong Hoang
+> > <phong.hoang.wz@renesas.com>.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-gVisor is a general-purpose sandbox to run untrusted workloads. It has a
-platform interface that is responsible for syscall interception, context
-switching, and managing process address spaces. Right now, we have kvm and
-ptrace platforms. The ptrace platform runs a guest code in the context of stub
-processes and intercepts syscalls with help of PTRACE_SYSEMU. All system calls
-are handled by the gVisor kernel including rt_sigreturn and execve. Signal
-handling is happing inside the gVisor kernel too. Each stub process can have
-more than one thread, but we don't bind guest threads to stub threads and we
-can run more than one guest thread in the context of one stub thread. Taking
-into account all these facts, we need to have access to all registers at any
-moment when a stub thread has been stopped.
+> > --- a/drivers/dma/sh/rcar-dmac.c
+> > +++ b/drivers/dma/sh/rcar-dmac.c
+> > @@ -189,7 +189,8 @@ struct rcar_dmac_chan {
+> >   * struct rcar_dmac - R-Car Gen2 DMA Controller
+> >   * @engine: base DMA engine object
+> >   * @dev: the hardware device
+> > - * @iomem: remapped I/O memory base
+> > + * @dmac_base: remapped base register block
+> > + * @chan_base: remapped channel register block (optional)
+> >   * @n_channels: number of available channels
+> >   * @channels: array of DMAC channels
+> >   * @channels_mask: bitfield of which DMA channels are managed by this driver
+> > @@ -198,7 +199,8 @@ struct rcar_dmac_chan {
+> >  struct rcar_dmac {
+> >       struct dma_device engine;
+> >       struct device *dev;
+> > -     void __iomem *iomem;
+> > +     void __iomem *dmac_base;
+> > +     void __iomem *chan_base;
+> >
+> >       unsigned int n_channels;
+> >       struct rcar_dmac_chan *channels;
 
-We were able to introduce the workaround [3] for this issue. Each time when a
-stub process is stopped on a system call, we queue a fake signal and resume a
-process to stop it on the signal. It works, but we need to do extra interaction
-with a stub process what is expensive. My benchmarks show that this workaround
-slows down syscalls in gVisor for more than 50%. BTW: it is one of the major
-reasons why PTRACE_SYSEMU was introduced instead of emulating it via
-two calls of PTRACE_SYSCALL.
-
-
-[1] https://lore.kernel.org/lkml/CABV8kRz0mKSc=u1LeonQSLroKJLOKWOWktCoGji2nvEBc=e7=w@mail.gmail.com/#r
-[2] https://github.com/google/gvisor/issues/5238
-[3] https://github.com/google/gvisor/commit/a44efaab6d4b815880749a39647fb3ed9634a489
-
+> > @@ -339,12 +344,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
+> >  static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
+> >                                struct rcar_dmac_chan *chan)
+> >  {
+> > -     rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+> > +     if (dmac->chan_base)
 >
-> Andrei Vagin (3):
->   arm64/ptrace: don't clobber task registers on syscall entry/exit traps
->   arm64/ptrace: introduce NT_ARM_PRSTATUS to get a full set of registers
->   selftest/arm64/ptrace: add a test for NT_ARM_PRSTATUS
+> Using dmac->chan_base to check if the device is a V3U seems a bit of a
+> hack (especially given that the field is otherwise unused). I'd prefer
+> adding a model field to struct rcar_dmac_of_data and struct rcar_dmac.
+
+The check is not a check for R-Car V3U in particular, but a check for
+the presence of a separate register block for channel registers.
+I expect to see more SoCs having this, so IMHO checking for this feature,
+instead of checking a model field, makes sense.
+
+It's indeed unused otherwise, as beyond probe(), where per-channel bases
+are calculated, no access to this pointer is needed anymore, (you can
+blame devm_*() for not needing the pointer ;-)
+Note that a model field would be "otherwise unused", too ;-)
+
+> > +             rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
+> > +     else
+> > +             rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+> >  }
+> >
+> >  static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
+> >  {
+> > -     rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> > +     struct rcar_dmac_chan *chan;
+> > +     unsigned int i;
+> > +
+> > +     if (dmac->chan_base) {
+> > +             for_each_rcar_dmac_chan(i, chan, dmac)
+> > +                     rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
+> > +     } else {
+> > +             rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> > +     }
+> >  }
+> >
+> >  /* -----------------------------------------------------------------------------
+> > @@ -1744,7 +1760,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
+> >
+> >  static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
+> >                               struct rcar_dmac_chan *rchan,
+> > -                             const struct rcar_dmac_of_data *data,
+> >                               unsigned int index)
+> >  {
+> >       struct platform_device *pdev = to_platform_device(dmac->dev);
+> > @@ -1753,9 +1768,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
+> >       char *irqname;
+> >       int ret;
+> >
+> > -     rchan->index = index;
+> > -     rchan->iomem = dmac->iomem + data->chan_offset_base +
+> > -                    data->chan_offset_stride * index;
+> >       rchan->mid_rid = -EINVAL;
+> >
+> >       spin_lock_init(&rchan->lock);
+> > @@ -1842,6 +1854,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+> >       const struct rcar_dmac_of_data *data;
+> >       struct rcar_dmac_chan *chan;
+> >       struct dma_device *engine;
+> > +     void __iomem *chan_base;
+> >       struct rcar_dmac *dmac;
+> >       unsigned int i;
+> >       int ret;
+> > @@ -1880,9 +1893,24 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+> >               return -ENOMEM;
+> >
+> >       /* Request resources. */
+> > -     dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
+> > -     if (IS_ERR(dmac->iomem))
+> > -             return PTR_ERR(dmac->iomem);
+> > +     dmac->dmac_base = devm_platform_ioremap_resource(pdev, 0);
+> > +     if (IS_ERR(dmac->dmac_base))
+> > +             return PTR_ERR(dmac->dmac_base);
+> > +
+> > +     if (!data->chan_offset_base) {
+> > +             dmac->chan_base = devm_platform_ioremap_resource(pdev, 1);
+> > +             if (IS_ERR(dmac->chan_base))
+> > +                     return PTR_ERR(dmac->chan_base);
+> > +
+> > +             chan_base = dmac->chan_base;
+> > +     } else {
+> > +             chan_base = dmac->dmac_base + data->chan_offset_base;
+> > +     }
+> > +
+> > +     for_each_rcar_dmac_chan(i, chan, dmac) {
+> > +             chan->index = i;
 >
->  arch/arm64/include/asm/ptrace.h               |   5 +
->  arch/arm64/kernel/ptrace.c                    | 130 +++++++++++-----
->  include/uapi/linux/elf.h                      |   1 +
->  tools/testing/selftests/arm64/Makefile        |   2 +-
->  tools/testing/selftests/arm64/ptrace/Makefile |   6 +
->  .../arm64/ptrace/ptrace_syscall_regs_test.c   | 142 ++++++++++++++++++
->  6 files changed, 246 insertions(+), 40 deletions(-)
->  create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
->  create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
->
-> --
-> 2.29.2
->
+> Now that chan->indew is set before calling rcar_dmac_chan_probe(), you
+> don't have to pass the index to rcar_dmac_chan_probe() anymore.
+
+Right, will fix.
+
+> > +             chan->iomem = chan_base + i * data->chan_offset_stride;
+> > +     }
+> >
+> >       /* Enable runtime PM and initialize the device. */
+> >       pm_runtime_enable(&pdev->dev);
+> > @@ -1929,7 +1957,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+> >       INIT_LIST_HEAD(&engine->channels);
+> >
+> >       for_each_rcar_dmac_chan(i, chan, dmac) {
+> > -             ret = rcar_dmac_chan_probe(dmac, chan, data, i);
+> > +             ret = rcar_dmac_chan_probe(dmac, chan, i);
+> >               if (ret < 0)
+> >                       goto error;
+> >       }
+
+Thanks for your comments!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
