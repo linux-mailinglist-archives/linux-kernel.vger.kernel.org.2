@@ -2,161 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2991A305031
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0FF305034
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237255AbhA0DuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:50:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        id S237298AbhA0DvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:51:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389714AbhA0AIM (ORCPT
+        with ESMTP id S2390066AbhA0AOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:08:12 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A71C06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:07:32 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id n14so277156qvg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:07:32 -0800 (PST)
+        Tue, 26 Jan 2021 19:14:39 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F98C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:13:56 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id f63so17398pfa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:13:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=IBWE4/cCmXLrxz784nnplj3SLPB8dWgUq6dNaUorHT4=;
-        b=QF7Z3d3fC6UKcyB2/nWlOspF0mplMjaV+U2y7anDeGg+P2upfXQJ5v6YzR7MuClr/h
-         VbY2EqVLYBhUiLaRViHWEIvp85YpaGpQUYcHal+IoxZuDxXcIqQqHc6L1Uo4qKeBy4HN
-         hMDway+t5l3BBgh24nW4BeRN0WAG39i3OnA1KNeJ+8rPrdAQg+Z3Njl0YFyg5L015ZHK
-         6no/DAAnz7I0gkZn0n6CM4i3tm/eWZJyZGMBuZWPgFMGro/mjVcKEgRGBmzmCce5xbJn
-         v6/y++kNi8mHwbgfC/EwugtGP1znSC8CMJEqbebuFQE/QeD88YUzn9qshDZ3wA6j7rEy
-         r71Q==
+        bh=Eg1+IXQ+KG25hfpLfWECGEtHCa9ZmmkTs6X5ipIqXso=;
+        b=A3+wyR7Tw2RVfQ5N8CwLN9nmb2NGSUCXSUCy16AfW2YHvHVpbMca9k7+Uqg6BydcUP
+         CD8uyf6CKxoeIIpz9A3BcpPdPpJtVaosFsS7U0+SLb6+V9bH1jH/dBrH5Z0Ue41dGrUH
+         5kY6RcLOjt0LlXl2Yew8J1x4Tf6aUy+yfb+yGSJ+yw7OX5K2e0UkIzcp1vPwQsOwjMYG
+         qnzl4kORkTc51FIIR5EP0Pwz5it0Xgdi43WiS8Pc55RIw4FKim1ZMw8bl0bXbBmgf6b2
+         f/6SSEpJZbpEIMcA2LA6EBijbjGtXSGZBdkq1fN6oZbmQdhpMgS3sgzBCbBFIH/x1Ke5
+         G1Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IBWE4/cCmXLrxz784nnplj3SLPB8dWgUq6dNaUorHT4=;
-        b=bzFC+gOAPY7FTy8uzvqJ16sNc2WT9JUDSJg/m+QZPz+tthDrX1XWzDscw4+FQ0SELo
-         WII0Pmhil+fvLFm+PnNhUEq5ChnivV8M6tTurtF/7F5cJTrz34CGlnvoyoKG6imCMNGs
-         fybQIWvANcPDxmolBHtuq4mpZEvv3HiF6jual/3IfsgAhmScX7HafFf2b0akwG9m3NDQ
-         Ceg7u21bOIJLCfwkqwYnH3fhJEcoddoAANvBiWV6o/30I90wwL7nRXvgk75y5JpJw7IU
-         8MFXaOv3ckOI1BobuPwTHypIP0pGJ271bZp6cXF0UREIAZvnQHj/RMH64tKpNtCV7rLT
-         Jw1w==
-X-Gm-Message-State: AOAM533iR0rkFNq9Mto/acDDoD7HYQK4PtQaxeayUGSI5Bexa1LT4pty
-        DTYW5Rxug+YshIJg9R1EgPUByw==
-X-Google-Smtp-Source: ABdhPJxxAIqZ7rQx8opfiPosQgy3Ujmb6ScY0g0jp9rkapdTWJuzYCWaTBiQ+Ay3/In8ANgvaH3JYQ==
-X-Received: by 2002:ad4:5bc8:: with SMTP id t8mr8172516qvt.36.1611706051522;
-        Tue, 26 Jan 2021 16:07:31 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id i3sm101444qkd.119.2021.01.26.16.07.31
+        bh=Eg1+IXQ+KG25hfpLfWECGEtHCa9ZmmkTs6X5ipIqXso=;
+        b=glYLFBWCoTtHoytusS74iMikd5m4eOQ0ruVyYEZKRrbhxgbH2QRhWz5w+5NLZ+Ms8X
+         p1zXPsumqe6vm6TwhU6TH34zxwmaUJm5TlczUbDc/sNTj7Y5odndYt8c/nBT9gaupRR7
+         2vGi/0vrCRAJ6CjUr51i5mS4tepaerMBBSN5hmjAvc+2a+SC6R4rkGhhuMkRS4z0Jp8X
+         rPcJFI1XjcBxUg+FaV8afSB+y4bT4ywPiUfQMND18FxO9arCmeq9cFzjJHaMPsu2ZRM0
+         mSA7mCLZqD4p9Lt7Rowg0VcLOYkhJX2GWgqCdYR7tn5v/eGdLhaousTK16CK8uFiSM4V
+         6Y+A==
+X-Gm-Message-State: AOAM533MGPFhFnYQkvQRIDd6QtV9hnk0cW0onBJdilUfDWkhMDBsLRQ9
+        wwgjVdWPhGdyMQ85sWkmqniYgQ==
+X-Google-Smtp-Source: ABdhPJwi/cjpRNck5xySzt/sdXxpPflSZCwPr7heWqTtNlCahUQS3RnLmA1I2IW5y20J/WIYUexGKg==
+X-Received: by 2002:a62:1a50:0:b029:1c5:112a:f42f with SMTP id a77-20020a621a500000b02901c5112af42fmr4242651pfa.77.1611706435561;
+        Tue, 26 Jan 2021 16:13:55 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 21sm209985pfu.136.2021.01.26.16.13.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 16:07:31 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l4YMs-007HIh-Ic; Tue, 26 Jan 2021 20:07:30 -0400
-Date:   Tue, 26 Jan 2021 20:07:30 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Joao Martins <joao.m.martins@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 2/2] mm/hugetlb: refactor subpage recording
-Message-ID: <20210127000730.GB4605@ziepe.ca>
-References: <20210125205744.10203-1-joao.m.martins@oracle.com>
- <20210125205744.10203-3-joao.m.martins@oracle.com>
- <3d34111f-8365-ab95-af11-aaf4825204be@oracle.com>
- <1ae0313d-de9b-4553-1f68-04c4f5a3f7eb@oracle.com>
- <4d3914e9-f448-8a86-9fc6-e71cec581115@oracle.com>
+        Tue, 26 Jan 2021 16:13:54 -0800 (PST)
+Date:   Tue, 26 Jan 2021 16:13:48 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        wanpengli@tencent.com, kvm@vger.kernel.org,
+        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
+        x86@kernel.org, kyung.min.park@intel.com,
+        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
+        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
+        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
+Subject: Re: [PATCH v3 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+Message-ID: <YBCwPHOXgVqnnMQ6@google.com>
+References: <161073115461.13848.18035972823733547803.stgit@bmoger-ubuntu>
+ <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
+ <YAclaWCL20at/0n+@google.com>
+ <c3a81da0-4b6a-1854-1b67-31df5fbf30f6@amd.com>
+ <YAdvGkwtJf3CDxo6@google.com>
+ <ae97b4c2-6f19-f539-a7ab-f91385449e8f@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4d3914e9-f448-8a86-9fc6-e71cec581115@oracle.com>
+In-Reply-To: <ae97b4c2-6f19-f539-a7ab-f91385449e8f@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 01:21:46PM -0800, Mike Kravetz wrote:
-> On 1/26/21 11:21 AM, Joao Martins wrote:
-> > On 1/26/21 6:08 PM, Mike Kravetz wrote:
-> >> On 1/25/21 12:57 PM, Joao Martins wrote:
-> >>> 
-> >>> +static void record_subpages_vmas(struct page *page, struct vm_area_struct *vma,
-> >>> +				 int refs, struct page **pages,
-> >>> +				 struct vm_area_struct **vmas)
-> >>> +{
-> >>> +	int nr;
-> >>> +
-> >>> +	for (nr = 0; nr < refs; nr++) {
-> >>> +		if (likely(pages))
-> >>> +			pages[nr] = page++;
-> >>> +		if (vmas)
-> >>> +			vmas[nr] = vma;
-> >>> +	}
-> >>> +}
-> >>> +
-> >>>  long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
-> >>>  			 struct page **pages, struct vm_area_struct **vmas,
-> >>>  			 unsigned long *position, unsigned long *nr_pages,
-> >>> @@ -4918,28 +4932,16 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
-> >>>  			continue;
-> >>>  		}
-> >>>  
-> >>> -		refs = 0;
-> >>> +		refs = min3(pages_per_huge_page(h) - pfn_offset,
-> >>> +			    (vma->vm_end - vaddr) >> PAGE_SHIFT, remainder);
-> >>>  
-> >>> -same_page:
-> >>> -		if (pages)
-> >>> -			pages[i] = mem_map_offset(page, pfn_offset);
-> >>> +		if (pages || vmas)
-> >>> +			record_subpages_vmas(mem_map_offset(page, pfn_offset),
-> >>
-> >> The assumption made here is that mem_map is contiguous for the range of
-> >> pages in the hugetlb page.  I do not believe you can make this assumption
-> >> for (gigantic) hugetlb pages which are > MAX_ORDER_NR_PAGES.  For example,
-> >>
+On Wed, Jan 20, 2021, Babu Moger wrote:
 > 
-> Thinking about this a bit more ...
+> On 1/19/21 5:45 PM, Sean Christopherson wrote:
+
+> > Potentially harebrained alternative...
+> > 
+> > From an architectural SVM perspective, what are the rules for VMCB fields that
+> > don't exist (on the current hardware)?  E.g. are they reserved MBZ?  If not,
+> > does the SVM architecture guarantee that reserved fields will not be modified?
+> > I couldn't (quickly) find anything in the APM that explicitly states what
+> > happens with defined-but-not-existent fields.
 > 
-> mem_map can be accessed contiguously if we have a virtual memmap.  Correct?
-> I suspect virtual memmap may be the most common configuration today.  However,
-> it seems we do need to handle other configurations.
-> 
-> > That would mean get_user_pages_fast() and put_user_pages_fast() are broken for anything
-> > handling PUDs or above? See record_subpages() in gup_huge_pud() or even gup_huge_pgd().
-> > It's using the same page++.
-> 
-> Yes, I believe those would also have the issue.
-> Cc: John and Jason as they have spent a significant amount of time in gup
-> code recently.  There may be something that makes that code safe?
+> I checked with our hardware design team about this. They dont want
+> software to make any assumptions about these fields.
 
-I'm looking at Matt's folio patches and see:
-
-+static inline struct folio *next_folio(struct folio *folio)
-+{
-+       return folio + folio_nr_pages(folio);
-+}
-
-And checking page_trans_huge_mapcount():
-
-	for (i = 0; i < thp_nr_pages(page); i++) {
-		mapcount = atomic_read(&page[i]._mapcount) + 1;
-
-And we have the same logic in hmm_vma_walk_pud():
-
-	if (pud_huge(pud) && pud_devmap(pud)) {
-		pfn = pud_pfn(pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-		for (i = 0; i < npages; ++i, ++pfn)
-			hmm_pfns[i] = pfn | cpu_flags;
-
-So, if page[n] does not access the tail pages of a compound we have
-many more people who are surprised by this than just GUP.
-
-Where are these special rules for hugetlb compound tails documented?
-Why does it need to be like this? 
-
-Isn't it saner to forbid a compound and its tails from being
-non-linear in the page array? That limits when compounds can be
-created, but seems more likely to happen than a full mm audit to find
-all the places that assume linearity.
-
-Jason
+Drat, I should have begged for forgiveness instead of asking for permission :-D
