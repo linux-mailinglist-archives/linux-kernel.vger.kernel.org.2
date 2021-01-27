@@ -2,235 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBEE305E4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136B1305E56
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhA0O3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:29:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S233529AbhA0ObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233800AbhA0O3D (ORCPT
+        with ESMTP id S231363AbhA0ObH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:29:03 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF3CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:28:23 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id k25so2266877oik.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:28:23 -0800 (PST)
+        Wed, 27 Jan 2021 09:31:07 -0500
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA53C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:30:26 -0800 (PST)
+Received: by mail-vs1-xe32.google.com with SMTP id 186so1188477vsz.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=uZa34iNLZXzZFgCkFyw7+98Rs100rokiObLD8pmRuUY=;
-        b=yHqCtsgEWEiNMgr3d8KZv+/5sk6UJ89UeB9BAL3BFj9o4ADvdN6+u8tG5k/Gl6GYZc
-         CRTLYHmkqbDMJNBBwu7ATXI3LVZ3IK1o5GUuZQ9dXt+kr1DddbDURJoAlR+ccpYq7+4A
-         9ge0Bsdk//cV/+T4qkXpLSfOjbt3IAIrsi3GWAnheW2ESPhOLsekKEYyrL27yP4Ck5bD
-         QhvOwdZJwS+PDNLXLl4FG6NXmo50Luqyb8czBlyzMcmrqvaE0UGMbopQaONAfs6e6gqU
-         vsJnALNRxfYLw91zQ8zZ8Fw4qBkiuLDwVC84tuO3Xl6VVIjahKvxSMsMbFYtMBLqXe6x
-         qBGA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q0OciNgCIzSI2IY36uVRRwblVcbGfdple6Q4mhsom/w=;
+        b=a4pBXI0XVAC/4j3m8gIClrjBFsO0ql8zs6gR5wcURRqaYPhmAjCgPxYxF8r9xrFTbE
+         ffVnpnR+inv69JB6Rffd2Tgagex2byG9t5dsRb3gSzgiAHfQ/U7uIbq0mfElDBfQ8DLs
+         8lTiwuz3zjoerRUHLSQx0oQMuduoN3elBv9Nq5TjEl8H8/J+k40WQlHSAk2A8dQbA/Xc
+         VQbVASosByEdFZno39YUeod2MymSJ4w/JDbzwUAsD7q5MXS+Oce8f/B5zh7TaBucmGLA
+         556gDhHKdPE/j5KfwsfhtbpBhqyz1wjpCOpW+DtTekIOJAPaiHmASRAbkCjhp/mem4Uz
+         JgkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uZa34iNLZXzZFgCkFyw7+98Rs100rokiObLD8pmRuUY=;
-        b=jqs5uHDMTuuLHBLM58Q+PtLObTU33+BcYxAaKDmeEgsOnkSvFU4FGL8L/BdqjZtxM9
-         q3axyEZbcvR1hJOLzeEUykyQ/P3s5553qBrDMRaOrWSuy9WqX+ubukWFQkJwzwsGUFaa
-         KPKWtMqlruNKJsfVcvxzD1uzPtevCp5zrzhHfGrGmgFM0TutiIzvUt7NCMyWx0NO4W1f
-         XKM6VcX1y4wV4VCPGQkPp7K+mnHtwoGOLQTQy5qCIsNxRFZkJnaLWMlhyB/Tw9AdsisT
-         Paq0rUK1f020NfIa2MgM7dYMEn8GJ3IW0fUe2C54pn6tgX+W1GhOcAtfMM8dfebN6zoJ
-         2kVg==
-X-Gm-Message-State: AOAM530js+TcpHnDPSMZ0/HaFt+Q1nT3pOYQHLDciCRT3FcRTTve8EQR
-        3Uhww0PKUglnoHBWJbQXGf93jw==
-X-Google-Smtp-Source: ABdhPJyhQ4wAJpSym7gzJXvKfZnElEhvu5w+a0f37qggO3T/TY6IL6fTsq4O7xKUQ5kuB6KwcLlssA==
-X-Received: by 2002:aca:1a17:: with SMTP id a23mr3323036oia.120.1611757702385;
-        Wed, 27 Jan 2021 06:28:22 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 68sm380107otr.16.2021.01.27.06.28.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:28:21 -0800 (PST)
-Date:   Wed, 27 Jan 2021 08:28:19 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "N?colas F. R. A. Prado" <nfraprado@protonmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Subject: Re: [PATCH v2 1/4] dt-bindings: leds: Add binding for qcom-spmi-flash
-Message-ID: <YBF4g3Oh8x24jfzX@builder.lan>
-References: <20210126140240.1517044-1-nfraprado@protonmail.com>
- <20210126140240.1517044-2-nfraprado@protonmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q0OciNgCIzSI2IY36uVRRwblVcbGfdple6Q4mhsom/w=;
+        b=nDY2hH+S8yJQrV8QETrPansipX8moMeZLjMCaxz/p7V3WlfBa6TQkdVy3c68fP2hnZ
+         O7cX/rGqSOSQNBQTVkSt0FhDq6c4PYua2HECZ1/PH4c4nuCwiUgny6QLp/S9I+gfj6Vs
+         P6gNBNBOG25kFch5uU+DXRuWVKixnXa2NCYH0DTe/UAkGupED+yjfMT4ZLCozISAvcBj
+         RPb0AMXrqFs1eU+U9T19/NVLmzJqSZ0me3EbvJydp3XoRhJp1odg0I5XHcYXw8cvuLap
+         MbFHTu/hMgpu7ty9ImwSD7kpxMbmHxnQL9WeuHpgJwWvOJE6BFUtSqN9Yyc7CQWSMzyj
+         D6gw==
+X-Gm-Message-State: AOAM531W4LFnLLM+nWA/IMi0rt9qcMUtmanaBqh/b/lJlAvFyMEyL9oQ
+        la9XJdFGvFnMs8XMVQvPeV5k+e4OIEY=
+X-Google-Smtp-Source: ABdhPJz4FmDxcXjTVM6WH2pzAiMpZeQ1FdqpXIK9pRDFtv0OC5To3kM5zA36VXDo7zFCSlT9KjcnMA==
+X-Received: by 2002:a05:6102:96:: with SMTP id t22mr7910934vsp.22.1611757826139;
+        Wed, 27 Jan 2021 06:30:26 -0800 (PST)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id 30sm260966uab.18.2021.01.27.06.29.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 06:29:54 -0800 (PST)
+Received: by mail-vs1-f41.google.com with SMTP id v19so1198722vsf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:29:45 -0800 (PST)
+X-Received: by 2002:a67:c10f:: with SMTP id d15mr8063009vsj.14.1611757784589;
+ Wed, 27 Jan 2021 06:29:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210126140240.1517044-2-nfraprado@protonmail.com>
+References: <1611741189-45892-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1611741189-45892-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 27 Jan 2021 09:29:08 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfERdgtzb4QGrWgCw4Y_t8kCvA5rjokA2YfrSn9qwmn-w@mail.gmail.com>
+Message-ID: <CA+FuTSfERdgtzb4QGrWgCw4Y_t8kCvA5rjokA2YfrSn9qwmn-w@mail.gmail.com>
+Subject: Re: [PATCH] rtlwifi: halbtc8723b2ant: Remove redundant code
+To:     Abaci Team <abaci-bugfix@linux.alibaba.com>
+Cc:     pkshih@realtek.com, Kalle Valo <kvalo@codeaurora.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>, lee.jones@linaro.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26 Jan 08:04 CST 2021, N?colas F. R. A. Prado wrote:
+On Wed, Jan 27, 2021 at 6:05 AM Abaci Team
+<abaci-bugfix@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./drivers/net/wireless/realtek/rtlwifi/btcoexist/halbtc8723b2ant.c:
+> 1876:11-13: WARNING: possible condition with no effect (if == else).
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
+> Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
 
-> Add devicetree binding for QCOM SPMI Flash LEDs, which are part of
-> PM8941, and are used both as lantern and camera flash.
-> 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
-> ---
-> Changes in v2:
-> - Add this commit
-> 
->  .../bindings/leds/leds-qcom-spmi-flash.yaml   | 94 +++++++++++++++++++
->  .../dt-bindings/leds/leds-qcom-spmi-flash.h   | 15 +++
->  2 files changed, 109 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
->  create mode 100644 include/dt-bindings/leds/leds-qcom-spmi-flash.h
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
-> new file mode 100644
-> index 000000000000..169716e14f67
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
-> @@ -0,0 +1,94 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-qcom-spmi-flash.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SPMI Flash LEDs
-> +
-> +maintainers:
-> +  - Nícolas F. R. A. Prado <nfraprado@protonmail.com>
-> +
-> +description: |
-> +  The Qualcomm SPMI Flash LEDs are part of Qualcomm PMICs and are used primarily
-> +  as a camera or video flash. They can also be used as a lantern when on torch
-> +  mode.
-> +  The PMIC is connected to Host processor via SPMI bus.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,spmi-flash
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  flash-boost-supply:
-> +    description: SMBB regulator for LED flash mode
-> +
-> +  torch-boost-supply:
-> +    description: SMBB regulator for LED torch mode
-> +
-> +patternProperties:
-> +  "^led[0-1]$":
-> +    type: object
-> +    $ref: common.yaml#
-> +
-> +    properties:
-> +      qcom,clamp-curr:
-> +        description: current to clamp at, in uA
-> +        $ref: /schemas/types.yaml#definitions/uint32
-> +
-> +      qcom,headroom:
-> +        description: |
-> +          headroom to use. Use one of QCOM_SPMI_FLASH_HEADROOM_* defined in
-> +          include/dt-bindings/leds/leds-qcom-spmi-flash.h
+Signed-off-by lines need to have a real name. See
+Documentation/process/submitting-patches.rst
 
-Please make the unit of this property millivolts, instead of describing
-it indirectly using the defines in the header file.
+With that change
 
-> +        $ref: /schemas/types.yaml#definitions/uint32
-> +        minimum: 0
-> +        maximum: 3
-
-And you can then list out the valid values here.
-
-> +
-> +      qcom,startup-dly:
-> +        description: |
-> +          delay before flashing. Use one of QCOM_SPMI_FLASH_STARTUP_DLY_*
-> +          defined in include/dt-bindings/leds/leds-qcom-spmi-flash.h
-
-As above, please describe this in microseconds.
-
-> +        $ref: /schemas/types.yaml#definitions/uint32
-> +        minimum: 0
-> +        maximum: 3
-> +
-> +      qcom,safety-timer:
-> +        description: include for safety timer use, otherwise watchdog timer will be used
-> +        type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - flash-boost-supply
-> +  - torch-boost-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +    #include <dt-bindings/leds/leds-qcom-spmi-flash.h>
-> +
-> +    qcom,leds@d300 {
-
-Please no "qcom," in the node name.
-
-Regards,
-Bjorn
-
-> +        compatible = "qcom,spmi-flash";
-> +        reg = <0xd300 0x100>;
-> +        flash-boost-supply = <&pm8941_5vs1>;
-> +        torch-boost-supply = <&pm8941_5v>;
-> +
-> +        led0 {
-> +            led-sources = <0>;
-> +            function = LED_FUNCTION_FLASH;
-> +            color = <LED_COLOR_ID_WHITE>;
-> +            led-max-microamp = <200000>;
-> +            flash-max-microamp = <1000000>;
-> +            flash-max-timeout-us = <1280000>;
-> +            default-state = "off";
-> +            qcom,clamp-curr = <200000>;
-> +            qcom,headroom = <QCOM_SPMI_FLASH_HEADROOM_500MV>;
-> +            qcom,startup-dly = <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
-> +            qcom,safety-timer;
-> +        };
-> +    };
-> +...
-> diff --git a/include/dt-bindings/leds/leds-qcom-spmi-flash.h b/include/dt-bindings/leds/leds-qcom-spmi-flash.h
-> new file mode 100644
-> index 000000000000..8bd54a8e831d
-> --- /dev/null
-> +++ b/include/dt-bindings/leds/leds-qcom-spmi-flash.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _DT_BINDINGS_LEDS_QCOM_SPMI_FLASH_H
-> +#define _DT_BINDINGS_LEDS_QCOM_SPMI_FLASH_H
-> +
-> +#define QCOM_SPMI_FLASH_HEADROOM_250MV	0
-> +#define QCOM_SPMI_FLASH_HEADROOM_300MV	1
-> +#define QCOM_SPMI_FLASH_HEADROOM_400MV	2
-> +#define QCOM_SPMI_FLASH_HEADROOM_500MV	3
-> +
-> +#define QCOM_SPMI_FLASH_STARTUP_DLY_10US	0
-> +#define QCOM_SPMI_FLASH_STARTUP_DLY_32US	1
-> +#define QCOM_SPMI_FLASH_STARTUP_DLY_64US	2
-> +#define QCOM_SPMI_FLASH_STARTUP_DLY_128US	3
-> +
-> +#endif
-> -- 
-> 2.30.0
-> 
-> 
+Acked-by: Willem de Bruijn <willemb@google.com>
