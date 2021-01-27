@@ -2,153 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C903062F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A3B3062F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344273AbhA0SDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344148AbhA0SDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:03:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86490C061786;
-        Wed, 27 Jan 2021 10:02:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nmUx9B3ctDFuPF+9qyK11uP4F24HgbZFCLayZjdworI=; b=dGoevGX3QmkwspJI/OcjS4PdEB
-        otTuvRN8H2wmmLy428qul28x8SshGvG2iwX/XN+sQyreT+bV0IVptj4h0DXbxb9q6SK4TRzNL0pna
-        2a17Wzw/Qy0qI0jBMjNIW8/WMCHlCps/e8tlDuAZsoHnh1FFLVdV8t6ijdNuYj3Yboq6hpw4aUcsm
-        Lb+5HPxPzPGemJWzYSQy6lItWWrZ/o6kQyvRzVIUf2S3IomXyh43llg6KRmjNHUaQO/ly1KlUGtqP
-        qfJeYCRhp+7wu/qTlaq1peBp6dd5SNvnfVhgQnZ/oRxN7qVoELZG1/VcUUtq0agfeawqDCy9Pc0P2
-        mLgPh3Iw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4p8x-007KFR-3d; Wed, 27 Jan 2021 18:02:19 +0000
-Date:   Wed, 27 Jan 2021 18:02:15 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210127180215.GA1745339@infradead.org>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+        id S1344236AbhA0SDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:03:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344148AbhA0SDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 13:03:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D404664DAB;
+        Wed, 27 Jan 2021 18:02:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611770560;
+        bh=/DgxQRCaQ+bjOKRCBN5t16Filx/2Xbp2TwXvChsBqCQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qSG9vSF3mDlNwCCULEl6l24OPcV44Jmusij7YRPP1IC5bdAh7ceBgqKWM0xuAOewn
+         NVHyVRKDbbYRehmj2RGQ5BtIopm9rf+shq+6+R77lDYxwuKOvU7jYvtiQ8hjF4U4ro
+         eTJIQw8PxFZr1SRr+dFs6CglAsDv7dSS9CflXFYv8CLnw/k809/kWy5K5L4Eg7g/Bh
+         +PPnE3LazntbQjf9i14fz+0P48+8LWQ7Nv2FA/qvIDqt7Wd0pijK2k8F5M2R2f4GSi
+         KsncqGDHnG1EZwHY1IkZUASFGR6P03jG3HIiV1CC9i3Z/VOy5WaFGFlnG1hKn4Zzxf
+         w0WRGvIEhS7cQ==
+Date:   Wed, 27 Jan 2021 18:02:30 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v15 10/10] arm64: Add IMA log information in kimage used
+ for kexec
+Message-ID: <20210127180230.GA593@willie-the-truck>
+References: <20210115173017.30617-1-nramas@linux.microsoft.com>
+ <20210115173017.30617-11-nramas@linux.microsoft.com>
+ <20210127165424.GB358@willie-the-truck>
+ <dec23eb8-0b27-3227-d1ef-f759338a7f9f@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <dec23eb8-0b27-3227-d1ef-f759338a7f9f@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please don't add all this garbage.  We only add infrastructure to the
-kernel for what the kernel itself needs, not for weird out of tree
-infrastructure.
+On Wed, Jan 27, 2021 at 09:56:53AM -0800, Lakshmi Ramasubramanian wrote:
+> On 1/27/21 8:54 AM, Will Deacon wrote:
+> > On Fri, Jan 15, 2021 at 09:30:17AM -0800, Lakshmi Ramasubramanian wrote:
+> > > Address and size of the buffer containing the IMA measurement log need
+> > > to be passed from the current kernel to the next kernel on kexec.
+> > > 
+> > > Add address and size fields to "struct kimage_arch" for ARM64 platform
+> > > to hold the address and size of the IMA measurement log buffer.
+> > > 
+> > > Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC, if CONFIG_IMA
+> > > is enabled, to indicate that the IMA measurement log information is
+> > > present in the device tree for ARM64.
+> > > 
+> > > Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> > > Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > > Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> > > ---
+> > >   arch/arm64/Kconfig             | 1 +
+> > >   arch/arm64/include/asm/kexec.h | 5 +++++
+> > >   2 files changed, 6 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > index 1d466addb078..ea7f7fe3dccd 100644
+> > > --- a/arch/arm64/Kconfig
+> > > +++ b/arch/arm64/Kconfig
+> > > @@ -1094,6 +1094,7 @@ config KEXEC
+> > >   config KEXEC_FILE
+> > >   	bool "kexec file based system call"
+> > >   	select KEXEC_CORE
+> > > +	select HAVE_IMA_KEXEC if IMA
+> > >   	help
+> > >   	  This is new version of kexec system call. This system call is
+> > >   	  file based and takes file descriptors as system call argument
+> > > diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+> > > index d24b527e8c00..2bd19ccb6c43 100644
+> > > --- a/arch/arm64/include/asm/kexec.h
+> > > +++ b/arch/arm64/include/asm/kexec.h
+> > > @@ -100,6 +100,11 @@ struct kimage_arch {
+> > >   	void *elf_headers;
+> > >   	unsigned long elf_headers_mem;
+> > >   	unsigned long elf_headers_sz;
+> > > +
+> > > +#ifdef CONFIG_IMA_KEXEC
+> > > +	phys_addr_t ima_buffer_addr;
+> > > +	size_t ima_buffer_size;
+> > > +#endif
+> > 
+> > Why do these need to be in the arch structure instead of 'struct kimage'?
+> > 
+> 
+> Currently, only powerpc and, with this patch set, arm64 have support for
+> carrying forward IMA measurement list across kexec system call. The above
+> fields are used for tracking IMA measurement list.
+> 
+> Do you see a reason to move these fields to "struct kimage"?
 
-On Mon, Jan 25, 2021 at 02:42:10PM -0600, Josh Poimboeuf wrote:
-> When building out-of-tree kernel modules, the build system doesn't
-> require the GCC version to match the version used to build the original
-> kernel.  That's probably [1] fine.
-> 
-> In fact, for many distros, the version of GCC used to build the latest
-> kernel doesn't necessarily match the latest released GCC, so a GCC
-> mismatch turns out to be pretty common.  And with CONFIG_MODVERSIONS
-> it's probably more common.
-> 
-> So a lot of users have come to rely on being able to use a different
-> version of GCC when building OOT modules.
-> 
-> But with GCC plugins enabled, that's no longer allowed:
-> 
->   cc1: error: incompatible gcc/plugin versions
->   cc1: error: failed to initialize plugin ./scripts/gcc-plugins/structleak_plugin.so
-> 
-> That error comes from the plugin's call to
-> plugin_default_version_check(), which strictly enforces the GCC version.
-> The strict check makes sense, because there's nothing to prevent the GCC
-> plugin ABI from changing -- and it often does.
-> 
-> But failing the build isn't necessary.  For most plugins, OOT modules
-> will otherwise work just fine without the plugin instrumentation.
-> 
-> When a GCC version mismatch is detected, print a warning and disable the
-> plugin.  The only exception is the RANDSTRUCT plugin which needs all
-> code to see the same struct layouts.  In that case print an error.
-> 
-> [1] Ignoring, for the moment, that the kernel now has
->     toolchain-dependent kconfig options, which can silently disable
->     features and cause havoc when compiler versions differ, or even when
->     certain libraries are missing.  This is a separate problem which
->     also needs to be addressed.
-> 
-> Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  scripts/Makefile.gcc-plugins | 19 +++++++++++++++++++
->  scripts/Makefile.kcov        | 11 +++++++++++
->  2 files changed, 30 insertions(+)
-> 
-> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
-> index 952e46876329..7227692fba59 100644
-> --- a/scripts/Makefile.gcc-plugins
-> +++ b/scripts/Makefile.gcc-plugins
-> @@ -51,6 +51,25 @@ export DISABLE_ARM_SSP_PER_TASK_PLUGIN
->  GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
->  # The sancov_plugin.so is included via CFLAGS_KCOV, so it is removed here.
->  GCC_PLUGINS_CFLAGS := $(filter-out %/sancov_plugin.so, $(GCC_PLUGINS_CFLAGS))
-> +
-> +# Out-of-tree module check: If there's a GCC version mismatch, disable plugins
-> +# and print a warning.  Otherwise the OOT module build will fail due to
-> +# plugin_default_version_check().
-> +ifneq ($(GCC_PLUGINS_CFLAGS),)
-> +    ifneq ($(KBUILD_EXTMOD),)
-> +        ifneq ($(CONFIG_GCC_VERSION), $(shell $(srctree)/scripts/gcc-version.sh $(HOSTCXX)))
-> +
-> +            ifdef CONFIG_GCC_PLUGIN_RANDSTRUCT
-> +                $(error error: CONFIG_GCC_PLUGIN_RANDSTRUCT requires out-of-tree modules to be built using the same GCC version as the kernel.)
-> +            endif
-> +
-> +            $(warning warning: Disabling GCC plugins for out-of-tree modules due to GCC version mismatch.)
-> +            $(warning warning: The following plugins have been disabled: $(gcc-plugin-y))
-> +            GCC_PLUGINS_CFLAGS :=
-> +	endif
-> +    endif
-> +endif
-> +
->  export GCC_PLUGINS_CFLAGS
->  
->  # Add the flags to the build!
-> diff --git a/scripts/Makefile.kcov b/scripts/Makefile.kcov
-> index 67e8cfe3474b..63a2bc2aabb2 100644
-> --- a/scripts/Makefile.kcov
-> +++ b/scripts/Makefile.kcov
-> @@ -3,4 +3,15 @@ kcov-flags-$(CONFIG_CC_HAS_SANCOV_TRACE_PC)	+= -fsanitize-coverage=trace-pc
->  kcov-flags-$(CONFIG_KCOV_ENABLE_COMPARISONS)	+= -fsanitize-coverage=trace-cmp
->  kcov-flags-$(CONFIG_GCC_PLUGIN_SANCOV)		+= -fplugin=$(objtree)/scripts/gcc-plugins/sancov_plugin.so
->  
-> +# Out-of-tree module check for GCC version mismatch.
-> +# See the similar check in scripts/Makefile.gcc-plugins
-> +ifneq ($(CONFIG_GCC_PLUGIN_SANCOV),)
-> +    ifneq ($(KBUILD_EXTMOD),)
-> +        ifneq ($(CONFIG_GCC_VERSION), $(shell $(srctree)/scripts/gcc-version.sh $(HOSTCXX)))
-> +            $(warning warning: Disabling CONFIG_GCC_PLUGIN_SANCOV for out-of-tree modules due to GCC version mismatch.)
-> +            kcov-flags-y := $(filter-out %/sancov_plugin.so, $(kcov-flags-y))
-> +        endif
-> +    endif
-> +endif
-> +
->  export CFLAGS_KCOV := $(kcov-flags-y)
-> -- 
-> 2.29.2
-> 
----end quoted text---
+If they're gated on CONFIG_IMA_KEXEC, then it seems harmless for them to
+be added to the shared structure. Or are you saying that there are
+architectures which have CONFIG_IMA_KEXEC but do not want these fields?
+
+Will
