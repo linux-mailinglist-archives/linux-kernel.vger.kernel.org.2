@@ -2,163 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9548306070
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC1C30608C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343893AbhA0QBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235584AbhA0P71 (ORCPT
+        id S237199AbhA0QFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:05:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37863 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343876AbhA0QAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:59:27 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95EFC061788;
-        Wed, 27 Jan 2021 07:58:34 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id i187so3344274lfd.4;
-        Wed, 27 Jan 2021 07:58:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rkl23YYCAN7td3M2Yke0axkC0ziieHeFZsCxQDb5Nko=;
-        b=Dn89ET8ROAPBM0aXpz6DrKWB044nV6zsg9xvTxnFSiXhXbThstKRIgu1kzB/eJg6r1
-         5DoC9PG8HZGwCW+1CKM3urc7UcQ0UBKiij+DQ7CcabslbIoWdT3dUvcLMASLpZnVtPPw
-         qcdZqidFCDYhO1eb3UawlpVC2OAsIIRgDILTAP/oLucPcdjATOSz7lPpUgKsfkbblUjA
-         RPeKoM84g8HKD7DIvCn6zbpa1Hr/sXKhn3KMa5otRlY+qBU+O4nz9zIpCHFyRHMhPbix
-         O4To35jnsDnJzAhVdjgF120mB29D+jLegTUVsJq2E8WNFvPjZWeZBguCS8a2o4eJ/IjM
-         G5Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rkl23YYCAN7td3M2Yke0axkC0ziieHeFZsCxQDb5Nko=;
-        b=SCpkNuhXWrQtsAYNn4Zv3LRQcnylc+jMdOqI/9u2bIGE9kgQjYXgCjyf6Rty8vDLFx
-         EaO9oCRjatG2CEqmntFvtmszmZ87j1pkEhRqCaInfvfiW+pSplIvdvf1ZtFqVKVdn0oZ
-         mZmhqL3LrjVzj/rZdKG/IaZtZr9XmHvV9fA4y1O5nZM4y8oGXI9g5C+Yc30p8ZkLMftm
-         kZrXWG1z5hvgz0n9a75uBh1pcrsTOzA5SYxp6QccXXBUZ86/P+nzUkZeAXffyn6N66wH
-         /TqQXZhxpwbBdx6beFwXV8+cQ95UwE6L2LdmIrQOsJaKJvXXrXehdyihgfY+GCFINnmU
-         mMgQ==
-X-Gm-Message-State: AOAM530Y77hXnSudIJmvOkMq6sWQ6cFn0gJ5n9zEKlL38eS7VEMvIwGT
-        jVtT5wftnoX18RL9Ugl25XYmyWYjBUo=
-X-Google-Smtp-Source: ABdhPJz6ngq6hOfVFIs8rFg9oOmlF6bbI+gFeQqU00YqMM+2j/aEHNezEvyP8wmU2JpN4awGfS9+vA==
-X-Received: by 2002:a05:6512:2206:: with SMTP id h6mr5239788lfu.239.1611763113017;
-        Wed, 27 Jan 2021 07:58:33 -0800 (PST)
-Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6? ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id q190sm679199ljb.8.2021.01.27.07.58.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 07:58:32 -0800 (PST)
-Subject: Re: [PATCH V2 11/13] devfreq: tegra30: Migrate to
- dev_pm_opp_set_opp()
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
- <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
- <20210127100234.vl2wwe7rjrrz4btz@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b5f1065b-14ad-adae-af1c-e9962e6626ad@gmail.com>
-Date:   Wed, 27 Jan 2021 18:58:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Wed, 27 Jan 2021 11:00:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611763163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XNnyum5AJJisJKioi1qMcBfp7gdHj9WZI4hpsB+FDzU=;
+        b=Z9BcPzAAAsFcAN/CRCCSr8WkwQntrCByiXfkSdLxUXIZIEyBYzE/m2LJkyGL8QRqMoa82W
+        5lMekUEIWkpoittjop2ZeNHL86MpNrImkAzsf/QOJEkPl9rJN9mIABGVIsLxq9VJbKoHCV
+        N1Xr7/QsIz3eqzCWv2laB51AYbYBHEc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-T_zxS9qmOh6JNH3Vn5dR2A-1; Wed, 27 Jan 2021 10:59:19 -0500
+X-MC-Unique: T_zxS9qmOh6JNH3Vn5dR2A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BBC31005504;
+        Wed, 27 Jan 2021 15:59:17 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DBBCC5C1D5;
+        Wed, 27 Jan 2021 15:59:15 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 09:59:14 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        rostedt@goodmis.org, jbaron@akamai.com, ardb@kernel.org
+Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
+ preempt_schedule[_notrace]() static calls
+Message-ID: <20210127155914.jfmr4jay47yck5h5@treble>
+References: <20210118141223.123667-1-frederic@kernel.org>
+ <20210118141223.123667-7-frederic@kernel.org>
+ <20210122165226.GD16371@worktop.programming.kicks-ass.net>
+ <20210126235730.lgfa2uida5se5urn@treble>
+ <YBEuy6zlBcV8gLvY@hirez.programming.kicks-ass.net>
+ <YBFODfNZCjA9s0IP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210127100234.vl2wwe7rjrrz4btz@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <YBFODfNZCjA9s0IP@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.01.2021 13:02, Viresh Kumar пишет:
-> On 27-01-21, 14:40, Viresh Kumar wrote:
->> dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
->> be used instead. Migrate to the new API.
->>
->> We don't want the OPP core to manage the clk for this driver, migrate to
->> dev_pm_opp_of_add_table_noclk() to make sure dev_pm_opp_set_opp()
->> doesn't have any side effects.
->>
->> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->> ---
->> Dmitry,
->>
->> This is based over the patches sent here:
->>
->> https://lore.kernel.org/lkml/6c2160ff30a8f421563793020264cf9f533f293c.1611738228.git.viresh.kumar@linaro.org/
->>
->> This should fix the problem you mentioned earlier. Will push this for
->> linux-next unless you have any issues with it.
->>
->>  drivers/devfreq/tegra30-devfreq.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
->> index 117cad7968ab..31f7dec5990b 100644
->> --- a/drivers/devfreq/tegra30-devfreq.c
->> +++ b/drivers/devfreq/tegra30-devfreq.c
->> @@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
->>  		return PTR_ERR(opp);
->>  	}
->>  
->> -	ret = dev_pm_opp_set_bw(dev, opp);
->> +	ret = dev_pm_opp_set_opp(dev, opp);
->>  	dev_pm_opp_put(opp);
->>  
->>  	return ret;
->> @@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->>  		return err;
->>  	}
->>  
->> -	err = dev_pm_opp_of_add_table(&pdev->dev);
->> +	err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
+On Wed, Jan 27, 2021 at 12:27:09PM +0100, Peter Zijlstra wrote:
+> On Wed, Jan 27, 2021 at 10:13:47AM +0100, Peter Zijlstra wrote:
+> > On Tue, Jan 26, 2021 at 05:57:30PM -0600, Josh Poimboeuf wrote:
 > 
-> Plus this, somehow was left uncommited in my tree :(
+> > > Well, I hate it, but I'm not sure I have any better ideas.  It should be
+> > > possible to use kallsyms, instead of the rb-tree/register nonsense.  Not
+> > > sure about the performance impact though.  Might be a good reason to
+> > > speed up kallsyms!
+> > 
+> > Oh right, let me see if I can make that work.
 > 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 31f7dec5990b..ce83f883ca65 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->                 return err;
->         }
->  
-> -       err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
-> +       err = dev_pm_opp_of_add_table_noclk(&pdev->dev, 0);
->         if (err) {
->                 dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
->                 goto put_hw;
+> Something like so compiles.. but it does make the whole thing depend on
+> KALLSYMS_ALL, which is somewhat yuck.
 > 
+> Also, kallsyms_lookup_name() is horrible, but not trivial to fix because
+> of that compression scheme used.
 
-Sadly this doesn't work because we missed that clk is assigned to
-opp_table when OPP table is allocated and not when it's added to device.
+The KALLSYMS_ALL dependency doesn't bother me personally but I assume
+some of the tinyconfig folks might not appreciate it being on
+permanently.
 
-Hence we're now set back to the dev_pm_opp_clear_clk() variant.
+Can DEFINE_STATIC_CALL() make the tramp-key association?
 
-What about to add a new OPP API which will allow OPP users to configure
-behaviour that user wants from OPP core in a generic way, something like
-this:
+e.g. have DEFINE_STATIC_CALL() add an entry to .static_call_tramp_key
+which has an array of 
 
-struct opp_config {
-	bool no_clk;
-	...
-};
+struct static_call_tramp_key {
+	unsigned int tramp;  // PC-relative pointer to tramp
+	unsigned int key;    // PC-relative pointer to key
+}
 
-devm_pm_opp_set_config(dev, struct opp_config);
-dev_pm_opp_set_config(dev, struct opp_config);
-dev_pm_opp_unset_config(dev);
+and then just scan that instead of kallsyms.
 
-Or maybe even rename it dev_pm_opp_allocate_table(dev, struct
-opp_config), which will allow users to directly allocate OPP table
-instead of relying on the implicit allocations. Then there won't be a
-need for drivers to use a dummy devm_pm_opp_set_clkname(dev, NULL) just
-to allocate the table usable for dev_pm_opp_set_rate().
+-- 
+Josh
+
