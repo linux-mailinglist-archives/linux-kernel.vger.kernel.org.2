@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136B1305E56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61569305E52
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhA0ObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:31:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
+        id S233455AbhA0OaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhA0ObH (ORCPT
+        with ESMTP id S231940AbhA0O36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:31:07 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA53C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:30:26 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id 186so1188477vsz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:30:26 -0800 (PST)
+        Wed, 27 Jan 2021 09:29:58 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A99FC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:29:18 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id a77so2315606oii.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:29:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q0OciNgCIzSI2IY36uVRRwblVcbGfdple6Q4mhsom/w=;
-        b=a4pBXI0XVAC/4j3m8gIClrjBFsO0ql8zs6gR5wcURRqaYPhmAjCgPxYxF8r9xrFTbE
-         ffVnpnR+inv69JB6Rffd2Tgagex2byG9t5dsRb3gSzgiAHfQ/U7uIbq0mfElDBfQ8DLs
-         8lTiwuz3zjoerRUHLSQx0oQMuduoN3elBv9Nq5TjEl8H8/J+k40WQlHSAk2A8dQbA/Xc
-         VQbVASosByEdFZno39YUeod2MymSJ4w/JDbzwUAsD7q5MXS+Oce8f/B5zh7TaBucmGLA
-         556gDhHKdPE/j5KfwsfhtbpBhqyz1wjpCOpW+DtTekIOJAPaiHmASRAbkCjhp/mem4Uz
-         JgkQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4id04Ce+fp/e8CTiMx3Sr5ui4DlY1xAuBgKbADQCYHs=;
+        b=FKfbCeJ016u5l9An/csG2m8Rg9KIwa1az5mkdyLz6vQD2H/ZLDX22a136QcU+sX+cC
+         macnEmVGvuGkhW6ADkL6d9AAr5+hnIauK2CY+P0c6syRwiE5ZQU5q7kNiUyey9krm/oQ
+         m9Njx2D0OJq+8Q1+0FO6uD+0o/wk2QgjxoI4+cXkelu/17hwikos1fPqbWoSmH8PfY16
+         iIeiuM2T/fmzueo3KiysSr0fDpjQFl6+tD9/H0kXS5MlSGWfQvS5M6G/eiOC7P4Q2vdN
+         7nTY49ZpUCrJ540N8TLfzFqbltgcamSnpNtghTT7hGXnqYOCJ79YIzWGkCzw/CVIqEnP
+         5qZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q0OciNgCIzSI2IY36uVRRwblVcbGfdple6Q4mhsom/w=;
-        b=nDY2hH+S8yJQrV8QETrPansipX8moMeZLjMCaxz/p7V3WlfBa6TQkdVy3c68fP2hnZ
-         O7cX/rGqSOSQNBQTVkSt0FhDq6c4PYua2HECZ1/PH4c4nuCwiUgny6QLp/S9I+gfj6Vs
-         P6gNBNBOG25kFch5uU+DXRuWVKixnXa2NCYH0DTe/UAkGupED+yjfMT4ZLCozISAvcBj
-         RPb0AMXrqFs1eU+U9T19/NVLmzJqSZ0me3EbvJydp3XoRhJp1odg0I5XHcYXw8cvuLap
-         MbFHTu/hMgpu7ty9ImwSD7kpxMbmHxnQL9WeuHpgJwWvOJE6BFUtSqN9Yyc7CQWSMzyj
-         D6gw==
-X-Gm-Message-State: AOAM531W4LFnLLM+nWA/IMi0rt9qcMUtmanaBqh/b/lJlAvFyMEyL9oQ
-        la9XJdFGvFnMs8XMVQvPeV5k+e4OIEY=
-X-Google-Smtp-Source: ABdhPJz4FmDxcXjTVM6WH2pzAiMpZeQ1FdqpXIK9pRDFtv0OC5To3kM5zA36VXDo7zFCSlT9KjcnMA==
-X-Received: by 2002:a05:6102:96:: with SMTP id t22mr7910934vsp.22.1611757826139;
-        Wed, 27 Jan 2021 06:30:26 -0800 (PST)
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
-        by smtp.gmail.com with ESMTPSA id 30sm260966uab.18.2021.01.27.06.29.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 06:29:54 -0800 (PST)
-Received: by mail-vs1-f41.google.com with SMTP id v19so1198722vsf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:29:45 -0800 (PST)
-X-Received: by 2002:a67:c10f:: with SMTP id d15mr8063009vsj.14.1611757784589;
- Wed, 27 Jan 2021 06:29:44 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4id04Ce+fp/e8CTiMx3Sr5ui4DlY1xAuBgKbADQCYHs=;
+        b=UOOfD8k7jU3f1JT1Fx/+WmAhaOZAP3Z9copm7PNjGw9Y6hItvjahrL1627AISvW7Eg
+         HOES1fnsZSn2OeCk8URRM2OsPiHO6r9BpNMg7YXIqzv7ZXLqLSK+Sz+2bzOQcCIDrGH5
+         BSjyY09uhONP+UgADubNoa2xNaGY8ZjAANMNG/BL+e0UTMf8y1VZWQd/2ss8p3ByDboX
+         4Qfjf/uX9bx6HVd9183eh4K3B41H5VI3GLmDFx+/jpIQEcUfDZXMQTflZNfM+0qUQHuw
+         txrKvAyp0QKEBC3Wrq3j6bNhOSSybdH5+9TPrPDPz4ZXBQeXoVFOctpWkL5lGF3aCY3O
+         PHng==
+X-Gm-Message-State: AOAM532Hsq01JWGx8mY4BbGon9+96G2YRVYq7oKMZnMBM/MDup3LTt+3
+        9X7vameTiYATVZwUV6ygSJe4SA==
+X-Google-Smtp-Source: ABdhPJwb2/m3MU/zw67FfMAeQmwXNthxIFKhH0xwTluKN9VbYYGvTbrGNUpiIuOT6X0+/4woOhNIrA==
+X-Received: by 2002:aca:d643:: with SMTP id n64mr3351850oig.151.1611757757891;
+        Wed, 27 Jan 2021 06:29:17 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id e14sm443934oou.19.2021.01.27.06.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 06:29:17 -0800 (PST)
+Date:   Wed, 27 Jan 2021 08:29:15 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "N?colas F. R. A. Prado" <nfraprado@protonmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Russell King <linux@armlinux.org.uk>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH v2 3/4] ARM: qcom_defconfig: Enable QCOM SPMI Flash LEDs
+Message-ID: <YBF4u3Q59GMARSlm@builder.lan>
+References: <20210126140240.1517044-1-nfraprado@protonmail.com>
+ <20210126140240.1517044-4-nfraprado@protonmail.com>
 MIME-Version: 1.0
-References: <1611741189-45892-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1611741189-45892-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 27 Jan 2021 09:29:08 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSfERdgtzb4QGrWgCw4Y_t8kCvA5rjokA2YfrSn9qwmn-w@mail.gmail.com>
-Message-ID: <CA+FuTSfERdgtzb4QGrWgCw4Y_t8kCvA5rjokA2YfrSn9qwmn-w@mail.gmail.com>
-Subject: Re: [PATCH] rtlwifi: halbtc8723b2ant: Remove redundant code
-To:     Abaci Team <abaci-bugfix@linux.alibaba.com>
-Cc:     pkshih@realtek.com, Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>, lee.jones@linaro.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126140240.1517044-4-nfraprado@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:05 AM Abaci Team
-<abaci-bugfix@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warnings:
->
-> ./drivers/net/wireless/realtek/rtlwifi/btcoexist/halbtc8723b2ant.c:
-> 1876:11-13: WARNING: possible condition with no effect (if == else).
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
-> Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+On Tue 26 Jan 08:06 CST 2021, N?colas F. R. A. Prado wrote:
 
-Signed-off-by lines need to have a real name. See
-Documentation/process/submitting-patches.rst
+> Enable module for the Qualcomm SPMI Flash LEDs present on the PM8941
+> PMIC.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
+> Changes in v2:
+> - Enabled CONFIG_LEDS_CLASS_FLASH since the driver now depends on it.
+> 
+>  arch/arm/configs/qcom_defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm/configs/qcom_defconfig b/arch/arm/configs/qcom_defconfig
+> index f6e9675f639c..05cacc59087e 100644
+> --- a/arch/arm/configs/qcom_defconfig
+> +++ b/arch/arm/configs/qcom_defconfig
+> @@ -202,6 +202,7 @@ CONFIG_MMC_SDHCI_PLTFM=y
+>  CONFIG_MMC_SDHCI_MSM=y
+>  CONFIG_NEW_LEDS=y
+>  CONFIG_LEDS_CLASS=y
+> +CONFIG_LEDS_CLASS_FLASH=y
 
-With that change
+This doesn't seem critical to boot the system, can we make it =m?
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Regards,
+Bjorn
+
+>  CONFIG_LEDS_GPIO=y
+>  CONFIG_LEDS_PM8058=y
+>  CONFIG_LEDS_TRIGGERS=y
+> @@ -284,3 +285,4 @@ CONFIG_DYNAMIC_DEBUG=y
+>  CONFIG_DEBUG_INFO=y
+>  CONFIG_MAGIC_SYSRQ=y
+>  # CONFIG_SCHED_DEBUG is not set
+> +CONFIG_LEDS_QCOM_SPMI_FLASH=m
+> -- 
+> 2.30.0
+> 
+> 
