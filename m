@@ -2,101 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440853055CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5072305572
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhA0IaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:30:03 -0500
-Received: from mleia.com ([178.79.152.223]:33394 "EHLO mail.mleia.com"
+        id S234570AbhA0IRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:17:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38672 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232643AbhA0IZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:25:08 -0500
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id 9227042EB56;
-        Wed, 27 Jan 2021 08:12:58 +0000 (UTC)
-Subject: Re: [PATCH v3 4/5] amba: Make the remove callback return void
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
- <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <b9bfa80b-ed5f-50f9-de50-76090007556c@mleia.com>
-Date:   Wed, 27 Jan 2021 10:12:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S232896AbhA0IPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:15:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611735249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E5AhEGs1fZHdUiGxkSymBk7PBZi4G6XOuFjXSG9Eq4o=;
+        b=mej6njj16e/xkk21Dx/xEB1pgXTMf6sb6IneUutMWu6NULauH+X2idainwluKw5kdb5uVo
+        cnfJSayyz1mlydC/QVOOa742m4v2mXUvJNigoop4fq7aX9g80y5KQUb5lST8ZCZZleG7Fe
+        QwZ1ieA6PznUBPI95WrQItCnV8n757A=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 53A5FB73C;
+        Wed, 27 Jan 2021 08:14:09 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 09:14:08 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
+        david@redhat.com, surenb@google.com, pullip.cho@samsung.com,
+        joaodias@google.com, hridya@google.com, john.stultz@linaro.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, hch@infradead.org, robh+dt@kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v4 2/4] mm: failfast mode with __GFP_NORETRY in
+ alloc_contig_range
+Message-ID: <20210127081408.GA827@dhcp22.suse.cz>
+References: <20210121175502.274391-1-minchan@kernel.org>
+ <20210121175502.274391-3-minchan@kernel.org>
+ <20210125131200.GG827@dhcp22.suse.cz>
+ <YA8dEFSrHBb9muFr@google.com>
+ <20210126074449.GA827@dhcp22.suse.cz>
+ <YBBpGji3BJYHidHs@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20210127_081258_639999_D23EB9E2 
-X-CRM114-Status: GOOD (  14.44  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBBpGji3BJYHidHs@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 6:58 PM, Uwe Kleine-König wrote:
-> All amba drivers return 0 in their remove callback. Together with the
-> driver core ignoring the return value anyhow, it doesn't make sense to
-> return a value here.
+On Tue 26-01-21 11:10:18, Minchan Kim wrote:
+> On Tue, Jan 26, 2021 at 08:44:49AM +0100, Michal Hocko wrote:
+> > On Mon 25-01-21 11:33:36, Minchan Kim wrote:
+> > > On Mon, Jan 25, 2021 at 02:12:00PM +0100, Michal Hocko wrote:
+> > > > On Thu 21-01-21 09:55:00, Minchan Kim wrote:
+> > > > > Contiguous memory allocation can be stalled due to waiting
+> > > > > on page writeback and/or page lock which causes unpredictable
+> > > > > delay. It's a unavoidable cost for the requestor to get *big*
+> > > > > contiguous memory but it's expensive for *small* contiguous
+> > > > > memory(e.g., order-4) because caller could retry the request
+> > > > > in different range where would have easy migratable pages
+> > > > > without stalling.
+> > > > > 
+> > > > > This patch introduce __GFP_NORETRY as compaction gfp_mask in
+> > > > > alloc_contig_range so it will fail fast without blocking
+> > > > > when it encounters pages needed waiting.
+> > > > 
+> > > > I am not against controling how hard this allocator tries with gfp mask
+> > > > but this changelog is rather void on any data and any user.
+> > > > 
+> > > > It is also rather dubious to have retries when then caller says to not
+> > > > retry.
+> > > 
+> > > Since max_tries is 1 with ++tries, it shouldn't retry.
+> > 
+> > OK, I have missed that. This is a tricky code. ASYNC mode should be
+> > completely orthogonal to the retries count. Those are different things.
+> > Page allocator does an explicit bail out based on __GFP_NORETRY. You
+> > should be doing the same.
 > 
-> Change the remove prototype to return void, which makes it explicit that
-> returning an error value doesn't work as expected. This simplifies changing
-> the core remove callback to return void, too.
+> A concern with __GFP_NOWAIT is regardless of flags passed to cma_alloc,
+> internal implementation of alloc_contig_range inside will use blockable
+> operation. See __alloc_contig_migrate_range.
+
+Yes it is now. But nothing should prevent from making it non blockable.
+
+> If we go with __GFP_NOWAIT, we should propagate the gfp_mask inside of
+> __alloc_contig_migrate_range to make cma_alloc consistent with alloc_pages.
+
+Absolutely. You should be doing that anyway. As I've said above you
+shouldn't rely on side effects like ASYNC mode.
+
+> (IIUC, that's what you want - make gfp_mask consistent between cma_alloc
+> and alloc_pages) but I am worry about the direction will make complicate
+> situation since cma invovles migration context as well as target page
+> allocation context. Sometime, the single gfp flag could be trouble
+> to express both contexts all at once. 
+
+I am not sure I see your concern.
+
+> > > > Also why didn't you consider GFP_NOWAIT semantic for non blocking mode?
+> > > 
+> > > GFP_NOWAIT seems to be low(specific) flags rather than the one I want to
+> > > express. Even though I said only page writeback/lock in the description,
+> > > the goal is to avoid costly operations we might find later so such
+> > > "failfast", I thought GFP_NORETRY would be good fit.
+> > 
+> > I suspect you are too focused on implementation details here. Think
+> > about the indended semantic. Callers of this functionality will not
+> > think about those (I hope because if they rely on these details then the
+> > whole thing will become unmaintainable because any change would require
+> > an audit of all existing users). All you should be caring about is to
+> > control how expensive the call can be. GFP_NOWAIT is not really low
+> > level from that POV. It gives you a very lightweight non-sleeping
+> > attempt to allocate. GFP_NORETRY will give you potentially sleeping but
+> > an opportunistic-easy-to-fail attempt. And so on. See how that is
+> > absolutely free of any page writeback or any specific locking.
 > 
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org> # for drivers/memory
-> Acked-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> With above reason I mentioned, I wanted to express __GFP_NORETRY as 
+> "opportunistic-easy-to-fail attempt" to support cma_alloc as "failfast"
+> for migration context.
 
-For drivers/memory/pl172.c:
-
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-
---
-Best wishes,
-Vladimir
+Yes that is fine. And please note that I do not push for NOWAIT
+semantic. If there is no user for that now then fine.
+-- 
+Michal Hocko
+SUSE Labs
