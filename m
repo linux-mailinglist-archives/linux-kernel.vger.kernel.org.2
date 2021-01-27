@@ -2,116 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE663067BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692A43067D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhA0XUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:20:55 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31544 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235492AbhA0XQz (ORCPT
+        id S232390AbhA0XZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:25:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232401AbhA0W4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:16:55 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RMYjmt138517;
-        Wed, 27 Jan 2021 17:42:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=njFP7oqBoviyf5bi+AHjoz5cMlCGKKGRIQFxuHRNe/U=;
- b=eMSjqMpksqhgJ7oqJCxSJJS1JPBgBhemp89a+VNR8m/8W6zQVltgf9OvqgDZ3KykCBdh
- yyWqtrFsDPF1lojJ4ONFli5FpkLPezflfQeWv7W8GTXC2TyFgaulQlbXfI/UjdZnRG4U
- hScoB8KyzS2fmauPhVOEaXzJBKbRbTIdy/uYQ/vNL+hQMH6S2ggx1uGD2/WUCGSO75tN
- kvUlinhkJWMkH30o7k6ZOlaYCn7V320mwjCln57UKyVArM9F7A6UfAbg2+Z0zIHy+vub
- 3xVaRnRdqKAXnkoPbGm4AOaeHV1iBvxHIwbXuxVR+NINpjhNnFJ4FjrnwlEN6jFywGIy rA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5awjmn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 17:42:23 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RMYpge139217;
-        Wed, 27 Jan 2021 17:42:22 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5awjmn0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 17:42:22 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RMavb0030082;
-        Wed, 27 Jan 2021 22:42:21 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01dal.us.ibm.com with ESMTP id 36adtu00m2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 22:42:21 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RMgLI528180932
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 22:42:21 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1BC69AC067;
-        Wed, 27 Jan 2021 22:42:21 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0AE49AC069;
-        Wed, 27 Jan 2021 22:42:21 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Jan 2021 22:42:20 +0000 (GMT)
-Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192
- keys
-To:     Nym Seddon <unseddd@protonmail.com>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     "dhowells@redhat.com" <dhowells@redhat.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "patrick@puiterwijk.org" <patrick@puiterwijk.org>
-References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
- <yOgLSllWWtGlr6OYcQxe8CeFwK4H9cWzWbalszgSv4xN_DxK6AGG_vNRyuVX6aKHzesDaj0LK9pB0q8SIQWXQETX26J6KXe428OPMHJYvus=@protonmail.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <fa061535-4870-215f-aacb-710cc086e8a9@linux.ibm.com>
-Date:   Wed, 27 Jan 2021 17:42:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 27 Jan 2021 17:56:32 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5A6C061353
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:54:49 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id j12so2380957pfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:54:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0RpK9qYNeNCq2pBdqCqkQh3HL9e9C4g0oYh/5JBoHmU=;
+        b=FmWfoKd2vkDyNPB+kGcAXpUUXSxLadJT011qSU424/rGXfvREarCmJfZrPS0DBI46O
+         vKAhoBDa/Dk7sPvnKJHN2MmOs2WsOqnXEN0MAdk0a+qHt4bHDUTLk7DUct9ZSjyLx/DW
+         CZSJdByoqDCgbVisVKgSfJAjVtzZ0g9GcAZPAgm3l/UdYtn+NkCEDC6IWrEfRhWYFsv0
+         9bSlpl+L/g5QNKQ+YwSFhTwAVZ6T6l94u/bbEp7CfADhzV7rB0qFfzKto3qNcASIDzFd
+         WH3OGFGFWDmFMPHNbHBYNk/bjK1Ur1p9eJr3v44+Fchc3r6yDjv5IaVRvf+zPW3BZwMB
+         c7ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0RpK9qYNeNCq2pBdqCqkQh3HL9e9C4g0oYh/5JBoHmU=;
+        b=TlrgflqUXpWd75DN9KNnsifswsp2nm5CKTMogdBVMjHyPQ9o3s58QKzq5hBJKLEZOL
+         U5tlcAzLRba9HTueuIHCkt1Np47wzUP1+mpcEuzMZONuAIAUfSfOX/BymLDKWfTOT4/X
+         Q885xvCNENN5Lmf8frsOTbw+guwsUs86CFqP/JelPnc/w3Wc4RYEuT+IpHTuv5mRH6X/
+         Kbk3cgKWRM5JSOzvI8fbC29EFP6YZ9bHF0i6lHhcINIAUSirVBmC1LlRYoyjchJC6n61
+         CQgVdzykbeUk9NpOxELaBvxgcUWFw4JaMFWtI7rjtvtehZTXcmDwCfzZS1h7XDRcuM21
+         g8SA==
+X-Gm-Message-State: AOAM532Y7Jah39RcfNAHSDDnQI2hAz17NhtHbZk1i8U714u29zm0RoBA
+        q1KxuXprOinLwFfPvLsyRvxYkzSJECcDrTDTi36YFA==
+X-Google-Smtp-Source: ABdhPJxCSx7pbZtXe1W9hj8tTSMNXYf/E4Q8iHLIMhYKnYXOKSoI1UyOAhesjq4kQr1nCuDdHdqbKXIpWJPdx7FbhAE=
+X-Received: by 2002:a63:5701:: with SMTP id l1mr13438877pgb.381.1611788088801;
+ Wed, 27 Jan 2021 14:54:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <yOgLSllWWtGlr6OYcQxe8CeFwK4H9cWzWbalszgSv4xN_DxK6AGG_vNRyuVX6aKHzesDaj0LK9pB0q8SIQWXQETX26J6KXe428OPMHJYvus=@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_09:2021-01-27,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- bulkscore=0 adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101270110
+References: <20210113001242.1662786-1-natechancellor@gmail.com> <20210127224451.2587372-1-nathan@kernel.org>
+In-Reply-To: <20210127224451.2587372-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 27 Jan 2021 14:54:37 -0800
+Message-ID: <CAKwvOd=t3jT8cWREvKpZCn4pP=dszNgWK0uShnxBBk-xKW53CQ@mail.gmail.com>
+Subject: Re: [PATCH v3] ubsan: Implement __ubsan_handle_alignment_assumption
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 11:12 AM, Nym Seddon wrote:
-> Hi Stefan,
+On Wed, Jan 27, 2021 at 2:46 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> In the recommendations from SafeCurves (https://safecurves.cr.yp.to/twist.html) there are a number of attacks against ECC twists. Two of those attacks are relevant against NIST P192: invalid-curve attacks and invalid-curve attacks against ladders.
+> When building ARCH=mips 32r2el_defconfig with CONFIG_UBSAN_ALIGNMENT:
 >
-> Both attacks can be mitigated by checking the supplied public key is on the correct curve, before performing curve operations.
+> ld.lld: error: undefined symbol: __ubsan_handle_alignment_assumption
+> >>> referenced by slab.h:557 (include/linux/slab.h:557)
+> >>>               main.o:(do_initcalls) in archive init/built-in.a
+> >>> referenced by slab.h:448 (include/linux/slab.h:448)
+> >>>               do_mounts_rd.o:(rd_load_image) in archive init/built-in.a
+> >>> referenced by slab.h:448 (include/linux/slab.h:448)
+> >>>               do_mounts_rd.o:(identify_ramdisk_image) in archive init/built-in.a
+> >>> referenced 1579 more times
 >
-> Not sure if the right place for those checks are in the signature verification code provided in these patches, or when reading public keys from the certificates. Does the kernel provide functions for checking curve points satisfy their respective curve equations?
+> Implement this for the kernel based on LLVM's
+> handleAlignmentAssumptionImpl because the kernel is not linked against
+> the compiler runtime.
 >
-> There are also tables describing the cost of combined attacks on various curves, where NIST P224 already falls below the safe threshold. Because of that, I would recommend not implementing support for NIST P192 (since it would fair even worse).
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1245
+> Link: https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/compiler-rt/lib/ubsan/ubsan_handlers.cpp#L151-L190
+> Acked-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+Thanks for the patch!
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
 >
-> What are your thoughts?
+> v2 -> v3:
+>
+> * Add prototype right above definition to avoid introducing a warning
+>   with W=1.
+>
+> v1 -> v2:
+>
+> * Use __ffs instead of ffs because due to size of input (unsigned long
+>   vs int) and we want a zero based index (Nick Desaulniers).
+>
+> * Pick up Kees's ack.
+>
+>  lib/ubsan.c | 31 +++++++++++++++++++++++++++++++
+>  lib/ubsan.h |  6 ++++++
+>  2 files changed, 37 insertions(+)
+>
+> diff --git a/lib/ubsan.c b/lib/ubsan.c
+> index 3e3352f3d0da..bec38c64d6a6 100644
+> --- a/lib/ubsan.c
+> +++ b/lib/ubsan.c
+> @@ -427,3 +427,34 @@ void __ubsan_handle_load_invalid_value(void *_data, void *val)
+>         ubsan_epilogue();
+>  }
+>  EXPORT_SYMBOL(__ubsan_handle_load_invalid_value);
+> +
+> +void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
+> +                                        unsigned long align,
+> +                                        unsigned long offset);
+> +void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
+> +                                        unsigned long align,
+> +                                        unsigned long offset)
+> +{
+> +       struct alignment_assumption_data *data = _data;
+> +       unsigned long real_ptr;
+> +
+> +       if (suppress_report(&data->location))
+> +               return;
+> +
+> +       ubsan_prologue(&data->location, "alignment-assumption");
+> +
+> +       if (offset)
+> +               pr_err("assumption of %lu byte alignment (with offset of %lu byte) for pointer of type %s failed",
+> +                      align, offset, data->type->type_name);
+> +       else
+> +               pr_err("assumption of %lu byte alignment for pointer of type %s failed",
+> +                      align, data->type->type_name);
+> +
+> +       real_ptr = ptr - offset;
+> +       pr_err("%saddress is %lu aligned, misalignment offset is %lu bytes",
+> +              offset ? "offset " : "", BIT(real_ptr ? __ffs(real_ptr) : 0),
+> +              real_ptr & (align - 1));
+> +
+> +       ubsan_epilogue();
+> +}
+> +EXPORT_SYMBOL(__ubsan_handle_alignment_assumption);
+> diff --git a/lib/ubsan.h b/lib/ubsan.h
+> index 7b56c09473a9..9a0b71c5ff9f 100644
+> --- a/lib/ubsan.h
+> +++ b/lib/ubsan.h
+> @@ -78,6 +78,12 @@ struct invalid_value_data {
+>         struct type_descriptor *type;
+>  };
+>
+> +struct alignment_assumption_data {
+> +       struct source_location location;
+> +       struct source_location assumption_location;
+> +       struct type_descriptor *type;
+> +};
+> +
+>  #if defined(CONFIG_ARCH_SUPPORTS_INT128)
+>  typedef __int128 s_max;
+>  typedef unsigned __int128 u_max;
+>
+> base-commit: 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
+> --
+> 2.30.0
+>
 
 
-I am calling into a function performing such a test at the end of the 
-function parsing the public key:
-
-  return ecc_is_pubkey_valid_full(ctx->curve, ctx->pub_key)
-
-https://elixir.bootlin.com/linux/latest/source/crypto/ecc.c#L1458
-
-Is that good 'enough' ?
-
-    Stefan
-
+-- 
+Thanks,
+~Nick Desaulniers
