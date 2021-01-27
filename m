@@ -2,140 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A72306469
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBE930646E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhA0TrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
+        id S233008AbhA0Tr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbhA0To1 (ORCPT
+        with ESMTP id S232416AbhA0Tqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:44:27 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010FDC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:43:47 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id 19so2977399qkh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:43:46 -0800 (PST)
+        Wed, 27 Jan 2021 14:46:30 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4193DC061573;
+        Wed, 27 Jan 2021 11:45:50 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id o63so2279346pgo.6;
+        Wed, 27 Jan 2021 11:45:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pApu4eekaOY2+FBBDIiRbVGqDqZosOpz0ZePSKijd6g=;
-        b=h2F2pBLLIJBKCXFf1iLiR6+8YnOR/MjA6kuobJYRqSvoXYBwKrXII6DD8JFf1szkvk
-         oFaUO5hqG7OlIuWKjYDxWILzMKIz4XWlxIp5JJRu5uL+j7V+5S/7eRcOq+znfjJxmzPZ
-         7WbZoTI/SG5rg71WbN+Sy0RRyf4yTsON1Zp0PE55QUzq9zk3hWfj6/HbgsH73RlOSLiW
-         IwjTpHXXRQezNHDUK+P52qNPIE+5nwpAg24aVKk9DwkP9T+DyTEYwMnnuz73gYq6bzM8
-         +74udPbRQqFn//0xv0WtuzyXNOFYn7dLelV0nvh2yre8g8laeUq4MZIcG/8WK3EnHTJb
-         +fMg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JSkrFLTJr6pGJf1IDW3RWxp1Agf1ykJ+k1NVDD7G4js=;
+        b=d4Inqoi4OETMUYSfyXBhCdXGuRtYDtzq3Mm1sOoNfYC/bQ8/E3BKpK1AkP5QYx80AQ
+         Jtpt9j2z3fgJ7O1Iega2owyIm/3YrzGmTEcxDEMMJnGY7LCm0NExWaxsRvOjPXIFB981
+         CYe1KhGtImvHqiHb1NXea8IQ0XwZ/CWrNOjZQ838F6Ay0YhXu2l2k4aRVvhET/NrJp/D
+         M9YcC8p0CwEruHayktiLitILgW19oW9eyekKOBrMuzZf8Rwt7d9rKEYN67mUAef72GZi
+         +tv/Ol+Lxv1yout0YwokU8NGznAYvoKNzrkgzrpnOTsRE7v9YWswFTPEB5X36HzNs6HC
+         3INQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pApu4eekaOY2+FBBDIiRbVGqDqZosOpz0ZePSKijd6g=;
-        b=FcC+F9bfnqSrKmP/a+bBqF+6xUY8vdMPrIoZG1qaAJkYSxQgNNzGEIhZQe6+tKpFiW
-         2xo/96TJeF5MGvcpGvHJmI6nKC1rCpS8V6azeJI5GukuoPhLsdxh9xO4c3GnbglkyF/e
-         PgYnoM6QP1GuG257YZbj5IFy/oUHP9+9UGVsTxiQTjGagt3DafdWZyUChqSNBrZx5QdX
-         9wN10BApxQGXVnPcenZdKn+u/Rsj9Jw6EBrI/FrnoTK+A3jq62eimILTXUcdWKQ+duyJ
-         jNs38NguW6GPH3TzPDlw2rFQDTOyyAdepBmYPR62bbg2Iis2gEQzxDYRGidzHkdWcyeC
-         eRjg==
-X-Gm-Message-State: AOAM532q4o6qeCN3Vhn7zDZLIz8NzozDioOFGFEObFNmoZYa6aqCfl0N
-        x5EFKDcS39o1dRh9K5x+l8UUnHIbKSUyvJpX7LtKGg==
-X-Google-Smtp-Source: ABdhPJwrVeznbJ9BcE2YZgYAOMkoHGbX2IV9NkfCI287bykr2H6QyT292PWG2EPG5x5JD6TPV5YaG9hF59F4c6I8H2c=
-X-Received: by 2002:a37:2716:: with SMTP id n22mr12222087qkn.265.1611776625945;
- Wed, 27 Jan 2021 11:43:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JSkrFLTJr6pGJf1IDW3RWxp1Agf1ykJ+k1NVDD7G4js=;
+        b=aS58enf+/mkq2+MU4lw9eLDCkHKPmp7jFkm6LlMG+fnZ/wBW+Os+OWw5m58UUEzq4b
+         wOmo0pxRiTiC+jRKkf2AJG1fk7/Oh4mxo0d6sct+p0sP/x/AUjh5G4GICTpoqT49f0nW
+         0ZY9BTropGaF/FKw3Jjfr+Tb4YeGJVspnKP/MVwRnjsgaLzsZC5OAju7EzaXMH7myQHb
+         G8+1V2fXBTv4gW9JFXsd5prp8T3vnWp+Gpi0JQn7W/7H0cKe7LXO8tqSFOTp3HuDgSOL
+         IH9LmB12+JexmgyBcriBrgLSqqfXklOjEJS9Pqn0QVYrn9skEMXnSiD+/czVudT4ah+P
+         aBEQ==
+X-Gm-Message-State: AOAM533zsWsWDp8hJsi6K3dWbAVjkq/DhKOYKq1OYHigUjeu0SbLvu5Z
+        GOh68m7TbbqG2khfDyCFeHhhbpZW40M=
+X-Google-Smtp-Source: ABdhPJz0dniJCSTRS3V+eXeLH4AAWpwwBGf4XOuyt1J86aDlphShf4yxVvAvHTU27ch9ipyxKuxhCg==
+X-Received: by 2002:a62:1dd7:0:b029:1be:ef0d:9507 with SMTP id d206-20020a621dd70000b02901beef0d9507mr12188580pfd.62.1611776749630;
+        Wed, 27 Jan 2021 11:45:49 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id w13sm3337613pfc.7.2021.01.27.11.45.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 11:45:48 -0800 (PST)
+Date:   Wed, 27 Jan 2021 11:45:45 -0800
+From:   "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 00/12] add IRQF_NO_AUTOEN for request_irq
+Message-ID: <YBHC6SzXAOSNoQnI@google.com>
+References: <20210107223926.35284-1-song.bao.hua@hisilicon.com>
+ <848fb07c3073401bbbe15db71f5922c9@hisilicon.com>
+ <YBFvYStmGeChUJlO@kroah.com>
 MIME-Version: 1.0
-References: <0000000000009bbb7905b9e4a624@google.com> <CACT4Y+agFz7Y32pkV7nObxB3KjCcN1p335h1HE4dr94rsDvndw@mail.gmail.com>
- <20210127171453.GC358@willie-the-truck> <CACT4Y+ZtQS7wtKbYSxAL=TJTmWp9_Gq-fBi-JLtAk3mA6J7siA@mail.gmail.com>
- <CAAeHK+yWe_GRDi8j7aPZAauTrfdjgYpYoj9F_KrsG3vtHDwTsw@mail.gmail.com>
- <CACT4Y+bSUnXoB_GtaFG7Vhe3bDr5MY6ZWdvcvw=uy+4-ZD7B-A@mail.gmail.com> <CAAeHK+xx7sGZPbSmZ1k0F31=V=zCAqdsh7jd-rjWLO6wJWdV4w@mail.gmail.com>
-In-Reply-To: <CAAeHK+xx7sGZPbSmZ1k0F31=V=zCAqdsh7jd-rjWLO6wJWdV4w@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 27 Jan 2021 20:43:34 +0100
-Message-ID: <CACT4Y+Y=4yYf1qXxRkNdxHfZU89sRMxwT9JN8_irwGK8mTsZLw@mail.gmail.com>
-Subject: Re: WARNING in __do_kernel_fault
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        syzbot <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBFvYStmGeChUJlO@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 8:16 PM 'Andrey Konovalov' via syzkaller-bugs
-<syzkaller-bugs@googlegroups.com> wrote:
->
-> On Wed, Jan 27, 2021 at 7:57 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Wed, Jan 27, 2021 at 7:46 PM 'Andrey Konovalov' via syzkaller-bugs
-> > <syzkaller-bugs@googlegroups.com> wrote:
-> > >
-> > > On Wed, Jan 27, 2021 at 6:24 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > >
-> > > > On Wed, Jan 27, 2021 at 6:15 PM Will Deacon <will@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, Jan 27, 2021 at 06:00:30PM +0100, Dmitry Vyukov wrote:
-> > > > > > On Wed, Jan 27, 2021 at 5:56 PM syzbot
-> > > > > > <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com> wrote:
-> > > > > > >
-> > > > > > > Hello,
-> > > > > > >
-> > > > > > > syzbot found the following issue on:
-> > > > > > >
-> > > > > > > HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
-> > > > > > > git tree:       upstream
-> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15a25264d00000
-> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
-> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=45b6fce29ff97069e2c5
-> > > > > > > userspace arch: arm64
-> > > > > > >
-> > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > > > >
-> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > > Reported-by: syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com
-> > > > > >
-> > > > > > This happens on arm64 instance with mte enabled.
-> > > > > > There is a GPF in reiserfs_xattr_init on x86_64 reported:
-> > > > > > https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde
-> > > > > > so I would assume it's just a plain NULL deref. Is this WARNING not
-> > > > > > indicative of a kernel bug? Or there is something special about this
-> > > > > > particular NULL deref?
-> > > > >
-> > > > > Congratulations, you're the first person to trigger this warning!
-> > > > >
-> > > > > This fires if we take an unexpected data abort in the kernel but when we
-> > > > > get into the fault handler the page-table looks ok (according to the CPU via
-> > > > > an 'AT' instruction). Are you using QEMU system emulation? Perhaps its
-> > > > > handling of AT isn't quite right.
-> > > >
-> > > > Hi Will,
-> > > >
-> > > > Yes, it's qemu-system-aarch64 5.2 with -machine virt,mte=on -cpu max.
-> > > > Do you see any way forward for this issue? Can somehow prove/disprove
-> > > > it's qemu at fault?
-> > >
-> > > I've reproduced this crash (by taking [1] and changing
-> > > sys_memfd_create to 279), but it manifests as a normal null-ptr-deref
-> > > for me. I'm using the latest QEMU master. Which QEMU does syzbot use
-> > > exactly?
-> >
-> > qemu-system-aarch64 5.2 from this container:
-> > https://github.com/google/syzkaller/blob/master/tools/docker/syzbot/Dockerfile
-> > you can get a prebuilt version with:
-> > docker pull gcr.io/syzkaller/syzbot
->
-> Reproduced with this QEMU, still a normal null-ptr-deref. Where do I
-> find the full list of arguments that are passed to QEMU on syzbot?
+On Wed, Jan 27, 2021 at 02:49:21PM +0100, gregkh@linuxfoundation.org wrote:
+> On Thu, Jan 21, 2021 at 09:38:28PM +0000, Song Bao Hua (Barry Song) wrote:
+> > Hi Thomas, Greg, Dmitry, Marc,
+> > Any further comment on this new API? 
+> 
+> It's not my subsystem, I'll let the irq maintainers handle it :)
 
+Not my subsystem either, but I would like to have this feature
+available. I do not like calling irq_set_status_flags() before
+request_irq() as at that time we are not ensured of irq ownership, and
+using disable_irq() afterwards is indeed awkward.
 
-I am yet to document all details of these new instances, but the
-syzkaller config contains:
-"qemu_args": "-machine
-virt,virtualization=on,mte=on,graphics=on,usb=on -cpu max"
-the rest are in vm/qemu/qemu.go
+Thanks.
+
+-- 
+Dmitry
