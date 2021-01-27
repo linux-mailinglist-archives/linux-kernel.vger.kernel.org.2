@@ -2,212 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7626C306348
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8521630634A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbhA0S1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:27:32 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:49311 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236389AbhA0S1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:27:19 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611772015; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=k7pNE/3vLZHCiBBDw12FPkHMI8j0bhqUkbbxxev4hhs=;
- b=nYtYVvYc0Pncz83p8/e6FSfhB2bfAVVnufjGkMeo5LDgfwqHdhNP2kvdrgwe9YsTouOqbCUw
- mJ1qBU9ze8msa0yHnIIg1cvJ4JtxYmgx3yWRUG9d5haNIT6rezWBe9mYI6W8A5tcFPseAtan
- nsTzMLocqgfuGgKuD0MTXE8sUu0=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6011b050beacd1a2521fccfd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 18:26:24
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BB736C433CA; Wed, 27 Jan 2021 18:26:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84248C433C6;
-        Wed, 27 Jan 2021 18:26:22 +0000 (UTC)
+        id S236482AbhA0S2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:28:00 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10794 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236211AbhA0S14 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 13:27:56 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RIHDCI036792;
+        Wed, 27 Jan 2021 13:27:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=Cs7vVcVEinjdu3nzZ3wIpq6Kuaavfjxy7BT5QDRN1K4=;
+ b=J0MhQnoZR5MlkQZVKI8K7JsaVnUdbxSuzYIHqt0BXQPgZfMiC3iLal+me9qFC2gddfb4
+ fTwJjqBqhO9MWVy/fAR7h+8BfzhFlM/g5rClB1Yr/cizmXzNC2aeWU90DUd7Z5fLxTj7
+ QFcx0bGMmHQe+CE3Rq2PuQQ3fU1zCEcTtYBbZb8jWlK23wNn0pH67TEQGWnR5ws1qWYa
+ yUlFv/QXR7yqHGRaWj63/6/oiughR4w3ocRxvcjqMGOiWxkCMO3CAwBk6HFROZmwtLW5
+ k7NtIlhEkXjktJaG3h95WazALLoRWpwabLeTlN9rEyM/4vt6fw4Uuir9tWdAijtNuwO3 sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5awe549-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 13:27:02 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RIHJV3037717;
+        Wed, 27 Jan 2021 13:27:01 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5awe53s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 13:27:01 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RII4qs001584;
+        Wed, 27 Jan 2021 18:26:59 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 368be7v309-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 18:26:59 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RIQvmM39584002
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 18:26:57 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 707EDA4060;
+        Wed, 27 Jan 2021 18:26:57 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C16DEA405B;
+        Wed, 27 Jan 2021 18:26:54 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.191.214])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 27 Jan 2021 18:26:54 +0000 (GMT)
+Date:   Wed, 27 Jan 2021 20:26:51 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
+Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
+ holes in memory layout
+Message-ID: <20210127182651.GA281042@linux.ibm.com>
+References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
+ <20210127100454.GK196782@linux.ibm.com>
+ <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
+ <20210127111858.GA273567@linux.ibm.com>
+ <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
+ <CAFJ_xbrwLwgDfCyHA=PmJ8j_3dJXqVNxmv7e+ATQAAa9n3de2w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Jan 2021 23:56:22 +0530
-From:   mdalam@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
-        mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-In-Reply-To: <20210119164511.GE2771@vkoul-mobl>
-References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
- <20201221092355.GA3323@vkoul-mobl>
- <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
- <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
- <20210112101056.GI2771@vkoul-mobl>
- <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
- <20210115055806.GE2771@vkoul-mobl>
- <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
- <20210119164511.GE2771@vkoul-mobl>
-Message-ID: <534308caab7c18730ad0cc25248d116f@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFJ_xbrwLwgDfCyHA=PmJ8j_3dJXqVNxmv7e+ATQAAa9n3de2w@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_06:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-19 22:15, Vinod Koul wrote:
-> On 18-01-21, 09:21, mdalam@codeaurora.org wrote:
->> On 2021-01-15 11:28, Vinod Koul wrote:
->> > On 14-01-21, 01:20, mdalam@codeaurora.org wrote:
->> > > On 2021-01-12 15:40, Vinod Koul wrote:
->> > > > On 12-01-21, 15:01, mdalam@codeaurora.org wrote:
->> > > > > On 2020-12-21 23:03, mdalam@codeaurora.org wrote:
->> > > > > > On 2020-12-21 14:53, Vinod Koul wrote:
->> > > > > > > Hello,
->> > > > > > >
->> > > > > > > On 17-12-20, 20:07, Md Sadre Alam wrote:
->> > > > > > > > This change will add support for LOCK & UNLOCK flag bit support
->> > > > > > > > on CMD descriptor.
->> > > > > > > >
->> > > > > > > > If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
->> > > > > > > > transaction wanted to lock the DMA controller for this transaction so
->> > > > > > > > BAM driver should set LOCK bit for the HW descriptor.
->> > > > > > > >
->> > > > > > > > If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester
->> > > > > > > > of this
->> > > > > > > > transaction wanted to unlock the DMA controller.so BAM driver
->> > > > > > > > should set
->> > > > > > > > UNLOCK bit for the HW descriptor.
->> > > > > > >
->> > > > > > > Can you explain why would we need to first lock and then unlock..? How
->> > > > > > > would this be used in real world.
->> > > > > > >
->> > > > > > > I have read a bit of documentation but is unclear to me. Also should
->> > > > > > > this be exposed as an API to users, sounds like internal to driver..?
->> > > > > > >
->> > > > > >
->> > > > > > IPQ5018 SoC having only one Crypto Hardware Engine. This Crypto Hardware
->> > > > > > Engine
->> > > > > > will be shared between A53 core & ubi32 core. There is two separate
->> > > > > > driver dedicated
->> > > > > > to A53 core and ubi32 core. So to use Crypto Hardware Engine
->> > > > > > parallelly for encryption/description
->> > > > > > we need bam locking mechanism. if one driver will submit the request
->> > > > > > for encryption/description
->> > > > > > to Crypto then first it has to set LOCK flag bit on command descriptor
->> > > > > > so that other pipes will
->> > > > > > get locked.
->> > > > > >
->> > > > > > The Pipe Locking/Unlocking will be only on command-descriptor. Upon
->> > > > > > encountering a command descriptor
->> > > >
->> > > > Can you explain what is a cmd descriptor?
->> > >
->> > >   In BAM pipe descriptor structure there is a field called CMD
->> > > (Command
->> > > descriptor).
->> > >   CMD allows the SW to create descriptors of type Command which does
->> > > not
->> > > generate any data transmissions
->> > >   but configures registers in the Peripheral (write operations, and
->> > > read
->> > > registers operations ).
->> > >   Using command descriptor enables the SW to queue new configurations
->> > > between data transfers in advance.
->> >
->> > What and when is the CMD descriptor used for..?
->> 
->>   CMD descriptor is mainly used for configuring controller register.
->>   We can read/write controller register via BAM using CMD descriptor 
->> only.
->>   CMD descriptor use command pipe for the transaction.
-> 
-> In which use cases would you need to issue cmd descriptors..?
+Hi Lukasz,
 
-   In IPQ5018 there is only one Crypto engine and it will get shared 
-between
-   UBI32 core & A53 core. So here we need to use command descriptor 
-in-order to
-   perform LOCKING/UNLOCKING mechanism. Since LOCK/ULOCK flag we can set 
-only on
-   CMD descriptor.
+On Wed, Jan 27, 2021 at 02:15:53PM +0100, Łukasz Majczak wrote:
+> Hi Mike,
 > 
->> >
->> > > >
->> > > > > > with LOCK bit set, The BAM will lock all other pipes not related to
->> > > > > > the current pipe group, and keep
->> > > > > > handling the current pipe only until it sees the UNLOCK set then it
->> > > > > > will release all locked pipes.
->> > > > > > locked pipe will not fetch new descriptors even if it got event/events
->> > > > > > adding more descriptors for
->> > > > > > this pipe (locked pipe).
->> > > > > >
->> > > > > > No need to expose as an API to user because its internal to driver, so
->> > > > > > while preparing command descriptor
->> > > > > > just we have to update the LOCK/UNLOCK flag.
->> > > >
->> > > > So IIUC, no api right? it would be internal to driver..?
->> > >
->> > >   Yes its totally internal to deriver.
->> >
->> > So no need for this patch then, right?
->> 
->>   This patch is needed , because if some hardware will shared between
->>   multiple core like A53 and ubi32 for example. In IPQ5018 there is
->>   only one crypto engine and this will be shared between A53 core and
->>   ubi32 core and in A53 core & ubi32 core there are different drivers
->>   is getting used. So if encryption/decryption request come at same
->>   time from both the driver then things will get messed up. So here we
->>   need LOCKING mechanism.  If first request is from A53 core driver
->>   then this driver should lock all the pipes other than pipe dedicated
->>   to A53 core. So while preparing CMD descriptor driver should used
->>   this flag "DMA_PREP_LOCK", Since LOCK and UNLOCK flag bit we can set
->>   only on CMD descriptor. Once request processed then driver will set
->>   UNLOCK flag on CMD descriptor. Driver should use this flag
->>   "DMA_PREP_UNLOCK" while preparing CMD descriptor. Same logic will be
->>   apply for ubi32 core driver as well.
-> 
-> Why cant this be applied at driver level, based on txn being issued it
-> can lock issue the txn and then unlock when done. I am not convinced 
-> yet
-> that this needs to be exported to users and can be managed by dmaengine
-> driver.
+> I have started bisecting your patch and I have figured out that there
+> might be something wrong with clamping - with comments out these lines
+> it started to work.
+> The full log (with logs from below patch) can be found here:
+> https://gist.github.com/semihalf-majczak-lukasz/3cecbab0ddc59a6c3ce11ddc29645725
+> it's fresh - I haven't analyze it yet, just sharing with hope it will help.
 
-   The actual LOCK/UNLOCK flag should be set on hardware command 
-descriptor.
-   so this flag setting should be done in DMA engine driver. The user of 
-the DMA
-   driver like (in case of IPQ5018) Crypto can use flag "DMA_PREP_LOCK" & 
-"DMA_PREP_UNLOCK"
-   while preparing CMD descriptor before submitting to the DMA engine. In 
-DMA engine driver
-   we are checking these flasgs on CMD descriptor and setting actual 
-LOCK/UNLOCK flag on hardware
-   descriptor.
+Thanks, that helps!
 
-    if (flags & DMA_PREP_CMD) { <== check for descriptor type
-		if (flags & DMA_PREP_LOCK)
-			desc->flags |= cpu_to_le16(DESC_FLAG_LOCK); <== Actual LOCK flag 
-setting on HW descriptor.
-		if (flags & DMA_PREP_UNLOCK)
-			desc->flags |= cpu_to_le16(DESC_FLAG_UNLOCK); <== Actual UNLOCK flag 
-setting on HW descriptor.
-	}
+The first page is never considered by the kernel as memory and so
+arch_zone_lowest_possible_pfn[ZONE_DMA] is set to 0x1000. As the result,
+init_unavailable_mem() skips pfn 0 and then __SetPageReserved(page) in
+reserve_bootmem_region() panics because the struct page for pfn 0 remains
+poisoned.
+
+Can you please try the below patch on top of v5.11-rc5?
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 783913e41f65..3ce9ef238dfc 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7083,10 +7083,11 @@ void __init free_area_init_memoryless_node(int nid)
+ static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
+ 					 int zone, int nid)
+ {
+-	unsigned long pfn, zone_spfn, zone_epfn;
++	unsigned long pfn, zone_spfn = 0, zone_epfn;
+ 	u64 pgcnt = 0;
+ 
+-	zone_spfn = arch_zone_lowest_possible_pfn[zone];
++	if (zone > 0)
++		zone_spfn = arch_zone_highest_possible_pfn[zone - 1];
+ 	zone_epfn = arch_zone_highest_possible_pfn[zone];
+ 
+ 	spfn = clamp(spfn, zone_spfn, zone_epfn);
+
+ 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index eed54ce26ad1..9f4468c413a1 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7093,9 +7093,11 @@ static u64 __init
+> init_unavailable_range(unsigned long spfn, unsigned long epfn,
+>         zone_spfn = arch_zone_lowest_possible_pfn[zone];
+>         zone_epfn = arch_zone_highest_possible_pfn[zone];
 > 
-> Thanks
+> -       spfn = clamp(spfn, zone_spfn, zone_epfn);
+> -       epfn = clamp(epfn, zone_spfn, zone_epfn);
+> -
+> +       //spfn = clamp(spfn, zone_spfn, zone_epfn);
+> +       //epfn = clamp(epfn, zone_spfn, zone_epfn);
+> +       pr_info("LMA DBG: zone_spfn: %llx, zone_epfn %llx\n",
+> zone_spfn, zone_epfn);
+> +       pr_info("LMA DBG: spfn: %llx, epfn %llx\n", spfn, epfn);
+> +       pr_info("LMA DBG: clamp_spfn: %llx, clamp_epfn %llx\n",
+> clamp(spfn, zone_spfn, zone_epfn), clamp(epfn, zone_spfn, zone_epfn));
+>         for (pfn = spfn; pfn < epfn; pfn++) {
+>                 if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+>                         pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+> 
+> Best regards,
+> Lukasz
+> 
+> 
+> śr., 27 sty 2021 o 13:15 Łukasz Majczak <lma@semihalf.com> napisał(a):
+> >
+> > Unfortunately nothing :( my current kernel command line contains:
+> > console=ttyS0,115200n8 debug earlyprintk=serial loglevel=7
+> >
+> > I was thinking about using earlycon, but it seems to be blocked.
+> > (I think the lack of earlycon might be related to Chromebook HW
+> > security design. There is an EC controller which is a part of AP ->
+> > serial chain as kernel messages are considered sensitive from a
+> > security standpoint.)
+> >
+> > Best regards,
+> > Lukasz
+> >
+> > śr., 27 sty 2021 o 12:19 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
+> > >
+> > > On Wed, Jan 27, 2021 at 11:08:17AM +0100, Łukasz Majczak wrote:
+> > > > Hi Mike,
+> > > >
+> > > > Actually I have a serial console attached (via servo device), but
+> > > > there is no output :( and also the reboot/crash is very fast/immediate
+> > > > after power on.
+> > >
+> > > If you boot with earlyprintk=serial are there any messages?
+> > >
+> > > > Best regards
+> > > > Lukasz
+> > > >
+> > > > śr., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
+> > > > >
+> > > > > Hi Lukasz,
+> > > > >
+> > > > > On Wed, Jan 27, 2021 at 10:22:29AM +0100, Łukasz Majczak wrote:
+> > > > > > Crash after mm: fix initialization of struct page for holes in memory layout
+> > > > > >
+> > > > > > Hi,
+> > > > > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Caroline),
+> > > > > > but I've noticed it has crashed - unfortunately it seems to happen at
+> > > > > > a very early stage - No output to the console nor to the screen, so I
+> > > > > > have started a bisect (between 5.11-rc4 - which works just find - and
+> > > > > > 5.11-rc5),
+> > > > > > bisect results points to:
+> > > > > >
+> > > > > > d3921cb8be29 mm: fix initialization of struct page for holes in memory layout
+> > > > > >
+> > > > > > Reproduction is just to build and load the kernel.
+> > > > > >
+> > > > > > If it will help any how I am attaching:
+> > > > > > - /proc/cpuinfo (from healthy system):
+> > > > > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1a785b64a97066
+> > > > > > - my .config file (for a broken system):
+> > > > > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53efe8e18b5da33c
+> > > > > >
+> > > > > > If there is anything I could add/do/test to help fix this please let me know.
+> > > > >
+> > > > > Chris Wilson also reported boot failures on several Chromebooks:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@build.alporthouse.com
+> > > > >
+> > > > > I presume serial console is not an option, so if you could boot with
+> > > > > earlyprintk=vga and see if there is anything useful printed on the screen
+> > > > > it would be really helpful.
+> > > > >
+> > > > > > Best regards
+> > > > > > Lukasz
+> > > > >
+> > > > > --
+> > > > > Sincerely yours,
+> > > > > Mike.
+> > >
+> > > --
+> > > Sincerely yours,
+> > > Mike.
+
+-- 
+Sincerely yours,
+Mike.
