@@ -2,600 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33173305C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99686305C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343683AbhA0NKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:10:53 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:38998 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238080AbhA0NIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:08:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611752869; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7cWTLuH5ERj6GxbgJIPmvVwUQxWQw1SM2QluezgaKTI=;
- b=TeQWh0mJZ/0IccaVlCY+fEklgNnvfWYy+SxGz8B+3ip/7gU5lBq78s4os2i4kaCGf43hksNq
- hzPv6vx+oMNL2fMSRArjFCsHzxAKn4/+REhLFzQ1XoZfBcNaDwhbrNQP265tQf0xXC7vYHUV
- 29LBI2Umr6LTu7KxZLlQdouRwyA=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 601165892c36b2106dad35b9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 13:07:21
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AF929C43462; Wed, 27 Jan 2021 13:07:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9EC18C433ED;
-        Wed, 27 Jan 2021 13:07:19 +0000 (UTC)
+        id S1343741AbhA0NLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238217AbhA0NIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:08:46 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D275DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:08:03 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id o10so2516097lfl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MFFmRHIE/SnNYtk3YEbcRDXV5XFOgor/4ow6T7DYKkc=;
+        b=Lkyx5qf9sVTXUYvWagRik8I5qftRlu4qHv4uUd+aMmTO/7SLDuBcLPxa25pphUcU5Z
+         KvWTS3wEpczKHA1fAqhaZqbulT1x4nNS+m5D0PDysGdc5jCqnV55skN96V3y2mXyQBWA
+         yOCCOmpXXx0q582iPpiaZptXgMTUXYXTfyV2bhczohUHt/RmuCDhMXaPr6RzYZveugdp
+         GgmOUo9ihJ+LMd700cOIk/k6Kk9kVz0Yl5yZBygtX4JCRe/GEBkz5tnLMOrGCrxEHqpk
+         kapljOmqcC3h5o56BxbN1BnGbA9v+C5yIFaYqHslUi0JJgxYA2o5CnKbsB4Ev9ls57xb
+         s+Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MFFmRHIE/SnNYtk3YEbcRDXV5XFOgor/4ow6T7DYKkc=;
+        b=PiB2Ozj/GKUL5+B50ZmlFzLQaXIg0h9HViV1HDKCBSrV7PpXgzmB1NjHWf/I6qeGpx
+         rbNr5FJIoLuv2DQRmTcZdOeU9TXWrWfhut7uMKelIuu/giMAHeRSRKLCsD9o7/6FFmy2
+         i6dhJz7zBF/7XNDaDjeK/awTdUT0BkWak2AcyBrFJyQXTqQmQ69rLP3c1JzieZcIIWDT
+         g6/XAsFPpLu/VAvavqbI6KGUCI+OhyeD17RXSN91NGsRNWyWRGLcjW/EElnJ6+x+4vC0
+         kRKnLpPzIJXMF108/MRIcsEf9mWa/y6jMDswAUT1WyyZMVpAZM+CtSyQQuvX7s9iEa3i
+         nVeQ==
+X-Gm-Message-State: AOAM531gM/oR5vbDEZBo4dZAlYOY6BxWLxDPXTTuUf1S3326chhj74PM
+        bMBO5nLe4fq2ENVYIGFcamVXhJprBMHGrNB5gtncvw==
+X-Google-Smtp-Source: ABdhPJymHdgzV8FR0Nhw+qoHHvERhiAsR0Hnxs0SYSo1Q5WepYHZjKfm9moG7zaTQkSsJ7G4seGQw2R2tbrs2JVtI9s=
+X-Received: by 2002:a19:83d3:: with SMTP id f202mr5168107lfd.277.1611752881651;
+ Wed, 27 Jan 2021 05:08:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Jan 2021 18:37:19 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] arm64: dts: qcom: Add basic devicetree support for
- SM8350 SoC
-In-Reply-To: <20210127123054.263231-6-vkoul@kernel.org>
-References: <20210127123054.263231-1-vkoul@kernel.org>
- <20210127123054.263231-6-vkoul@kernel.org>
-Message-ID: <194d2ebe26a9420f842c97738adb0443@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210125085909.4600-1-mgorman@techsingularity.net>
+ <20210125085909.4600-5-mgorman@techsingularity.net> <CAKfTPtBhq25D8iZ67n+kkf9Mdyf+OradvVC5pG0MeZEMKZmU2g@mail.gmail.com>
+ <20210127120245.GC3592@techsingularity.net>
+In-Reply-To: <20210127120245.GC3592@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 27 Jan 2021 14:07:50 +0100
+Message-ID: <CAKfTPtB=vh0FzszeOS5ND4Voq3ck2AQgruF-4zC-K1hSSsbT_A@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sched/fair: Merge select_idle_core/cpu()
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Wed, 27 Jan 2021 at 13:02, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Wed, Jan 27, 2021 at 11:43:22AM +0100, Vincent Guittot wrote:
+> > > @@ -6149,18 +6161,31 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> > >         }
+> > >
+> > >         for_each_cpu_wrap(cpu, cpus, target) {
+> > > -               if (!--nr)
+> > > -                       return -1;
+> > > -               if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> > > -                       break;
+> > > +               if (smt) {
+> > > +                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > > +                       if ((unsigned int)i < nr_cpumask_bits)
+> > > +                               return i;
+> > > +
+> > > +               } else {
+> > > +                       if (!--nr)
+> > > +                               return -1;
+> > > +                       i = __select_idle_cpu(cpu);
+> >
+> > you should use idle_cpu directly instead of this intermediate i variable
+> >
+> > +                       idle_cpu = __select_idle_cpu(cpu);
+> > +                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
+> > +                               break;
+> >
+> > Apart ths small comment above, the patch looks good to me and I
+> > haven't any performance regression anymore
+> >
+>
+> It's matching the code sequence in the SMT block. If we are going to make
+> that change, then go the full way with this?
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 52a650aa2108..01e40e36c386 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6129,7 +6129,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+>  static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+> -       int i, cpu, idle_cpu = -1, nr = INT_MAX;
+> +       int cpu, idle_cpu = -1, nr = INT_MAX;
+>         bool smt = test_idle_cores(target, false);
+>         int this = smp_processor_id();
+>         struct sched_domain *this_sd;
+> @@ -6162,18 +6162,16 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>
+>         for_each_cpu_wrap(cpu, cpus, target) {
+>                 if (smt) {
+> -                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> -                       if ((unsigned int)i < nr_cpumask_bits)
+> -                               return i;
+> +                       idle_cpu = select_idle_core(p, cpu, cpus, &idle_cpu);
 
-On 2021-01-27 18:00, Vinod Koul wrote:
-> Add basic devicetree support for Qualcomm Technologies, Inc SM8350 SoC.
-> This adds gcc, pinctrl, reserved memory, uart, cpu nodes for this SoC.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8350.dtsi | 499 +++++++++++++++++++++++++++
->  1 file changed, 499 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8350.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> new file mode 100644
-> index 000000000000..29af0b931690
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> @@ -0,0 +1,499 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2020, Linaro Limaited
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/mailbox/qcom-ipcc.h>
-> +#include <dt-bindings/power/qcom-aoss-qmp.h>
-> +#include <dt-bindings/power/qcom-rpmpd.h>
-> +#include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> +
-> +/ {
-> +	interrupt-parent = <&intc>;
-> +
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
-> +
-> +	chosen { };
-> +
-> +	clocks {
-> +		xo_board: xo-board {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <38400000>;
-> +			clock-output-names = "xo_board";
-> +		};
-> +
-> +		sleep_clk: sleep-clk {
-> +			compatible = "fixed-clock";
-> +			clock-frequency = <32000>;
-> +			#clock-cells = <0>;
-> +		};
-> +	};
-> +
-> +	cpus {
-> +		#address-cells = <2>;
-> +		#size-cells = <0>;
-> +
-> +		CPU0: cpu@0 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x0>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_0>;
-> +			L2_0: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +				L3_0: l3-cache {
-> +				      compatible = "cache";
-> +				};
-> +			};
-> +		};
-> +
-> +		CPU1: cpu@100 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x100>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_100>;
-> +			L2_100: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +		};
-> +
-> +		CPU2: cpu@200 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x200>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_200>;
-> +			L2_200: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +		};
-> +
-> +		CPU3: cpu@300 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x300>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_300>;
-> +			L2_300: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +		};
-> +
-> +		CPU4: cpu@400 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x400>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_400>;
-> +			L2_400: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +		};
-> +
-> +		CPU5: cpu@500 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x500>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_500>;
-> +			L2_500: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +
-> +		};
-> +
-> +		CPU6: cpu@600 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x600>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_600>;
-> +			L2_600: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +		};
-> +
-> +		CPU7: cpu@700 {
-> +			device_type = "cpu";
-> +			compatible = "qcom,kryo685";
-> +			reg = <0x0 0x700>;
-> +			enable-method = "psci";
-> +			next-level-cache = <&L2_700>;
-> +			L2_700: l2-cache {
-> +			      compatible = "cache";
-> +			      next-level-cache = <&L3_0>;
-> +			};
-> +		};
-> +	};
-> +
-> +	firmware {
-> +		scm: scm {
-> +			compatible = "qcom,scm-sm8350", "qcom,scm";
-> +			#reset-cells = <1>;
-> +		};
-> +	};
-> +
-> +	memory@80000000 {
-> +		device_type = "memory";
-> +		/* We expect the bootloader to fill in the size */
-> +		reg = <0x0 0x80000000 0x0 0x0>;
-> +	};
-> +
-> +	pmu {
-> +		compatible = "arm,armv8-pmuv3";
-> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> +	};
-> +
-> +	psci {
-> +		compatible = "arm,psci-1.0";
-> +		method = "smc";
-> +	};
-> +
-> +	reserved_memory: reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		hyp_mem: memory@80000000 {
-> +			reg = <0x0 0x80000000 0x0 0x600000>;
-> +			no-map;
-> +		};
-> +
-> +		xbl_aop_mem: memory@80700000 {
-> +			no-map;
-> +			reg = <0x0 0x80700000 0x0 0x160000>;
-> +		};
-> +
-> +		cmd_db: memory@80860000 {
-> +			compatible = "qcom,cmd-db";
-> +			reg = <0x0 0x80860000 0x0 0x20000>;
-> +			no-map;
-> +		};
-> +
-> +		reserved_xbl_uefi_log: memory@80880000 {
-> +			reg = <0x0 0x80880000 0x0 0x14000>;
-> +			no-map;
-> +		};
-> +
-> +		smem_mem: memory@80900000 {
-> +			reg = <0x0 0x80900000 0x0 0x200000>;
-> +			no-map;
-> +		};
-> +
-> +		cpucp_fw_mem: memory@80b00000 {
-> +			reg = <0x0 0x80b00000 0x0 0x100000>;
-> +			no-map;
-> +		};
-> +
-> +		cdsp_secure_heap: memory@80c00000 {
-> +			reg = <0x0 0x80c00000 0x0 0x4600000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_camera_mem: mmeory@85200000 {
-> +			reg = <0x0 0x85200000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_video_mem: memory@85700000 {
-> +			reg = <0x0 0x85700000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_cvp_mem: memory@85c00000 {
-> +			reg = <0x0 0x85c00000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_adsp_mem: memory@86100000 {
-> +			reg = <0x0 0x86100000 0x0 0x2100000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_slpi_mem: memory@88200000 {
-> +			reg = <0x0 0x88200000 0x0 0x1500000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_cdsp_mem: memory@89700000 {
-> +			reg = <0x0 0x89700000 0x0 0x1e00000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_ipa_fw_mem: memory@8b500000 {
-> +			reg = <0x0 0x8b500000 0x0 0x10000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_ipa_gsi_mem: memory@8b510000 {
-> +			reg = <0x0 0x8b510000 0x0 0xa000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_gpu_mem: memory@8b51a000 {
-> +			reg = <0x0 0x8b51a000 0x0 0x2000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_spss_mem: memory@8b600000 {
-> +			reg = <0x0 0x8b600000 0x0 0x100000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_modem_mem: memory@8b800000 {
-> +			reg = <0x0 0x8b800000 0x0 0x10000000>;
-> +			no-map;
-> +		};
-> +
-> +		hyp_reserved_mem: memory@d0000000 {
-> +			reg = <0x0 0xd0000000 0x0 0x800000>;
-> +			no-map;
-> +		};
-> +
-> +		pil_trustedvm_mem: memory@d0800000 {
-> +			reg = <0x0 0xd0800000 0x0 0x76f7000>;
-> +			no-map;
-> +		};
-> +
-> +		qrtr_shbuf: memory@d7ef7000 {
-> +			reg = <0x0 0xd7ef7000 0x0 0x9000>;
-> +			no-map;
-> +		};
-> +
-> +		chan0_shbuf: memory@d7f00000 {
-> +			reg = <0x0 0xd7f00000 0x0 0x80000>;
-> +			no-map;
-> +		};
-> +
-> +		chan1_shbuf: memory@d7f80000 {
-> +			reg = <0x0 0xd7f80000 0x0 0x80000>;
-> +			no-map;
-> +		};
-> +
-> +		removed_mem: memory@d8800000 {
-> +			reg = <0x0 0xd8800000 0x0 0x6800000>;
-> +			no-map;
-> +		};
-> +	};
-> +
-> +	smem: qcom,smem {
-> +		compatible = "qcom,smem";
-> +		memory-region = <&smem_mem>;
-> +		hwlocks = <&tcsr_mutex 3>;
-> +	};
-> +
-> +	soc: soc@0 {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges = <0 0 0 0 0x10 0>;
-> +		dma-ranges = <0 0 0 0 0x10 0>;
-> +		compatible = "simple-bus";
-> +
-> +		gcc: clock-controller@100000 {
-> +			compatible = "qcom,gcc-sm8350";
-> +			reg = <0x0 0x00100000 0x0 0x1f0000>;
-> +			#clock-cells = <1>;
-> +			#reset-cells = <1>;
-> +			#power-domain-cells = <1>;
-> +			clock-names = "bi_tcxo", "sleep_clk";
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>, <&sleep_clk>;
-> +		};
-> +
-> +		ipcc: mailbox@408000 {
-> +			compatible = "qcom,sm8350-ipcc", "qcom,ipcc";
-> +			reg = <0 0x00408000 0 0x1000>;
-> +			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <3>;
-> +			#mbox-cells = <2>;
-> +		};
-> +
-> +		qupv3_id_1: geniqup@9c0000 {
-> +			compatible = "qcom,geni-se-qup";
-> +			reg = <0x0 0x009c0000 0x0 0x6000>;
-> +			clock-names = "m-ahb", "s-ahb";
-> +			clocks = <&gcc 121>,
-> +				 <&gcc 122>;
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			ranges;
-> +			status = "disabled";
-> +
-> +			uart2: serial@98c000 {
-> +				compatible = "qcom,geni-debug-uart";
-> +				reg = <0 0x0098c000 0 0x4000>;
-> +				clock-names = "se";
-> +				clocks = <&gcc 83>;
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&qup_uart3_default_state>;
-> +				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +				status = "disabled";
-> +			};
-> +		};
-> +
-> +		tcsr_mutex: hwlock@1f40000 {
-> +			compatible = "qcom,tcsr-mutex";
-> +			reg = <0x0 0x01f40000 0x0 0x40000>;
-> +			#hwlock-cells = <1>;
-> +		};
-> +
-> +		pdc: interrupt-controller@b220000 {
-> +			compatible = "qcom,sm8350-pdc", "qcom,pdc";
-> +			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
-> +			qcom,pdc-ranges = <0 480 40>, <40 140 14>, <54 263 1>,   <55 306 
-> 4>,
-> +					  <59 312 3>, <62 374 2>,  <64 434 2>,   <66 438 3>,
-> +					  <69 86 1>,  <70 520 54>, <124 609 31>, <155 63 1>,
-> +					  <156 716 12>;
-> +			#interrupt-cells = <2>;
-> +			interrupt-parent = <&intc>;
-> +			interrupt-controller;
-> +		};
-> +
-> +		aoss_qmp: qmp@c300000 {
-> +			compatible = "qcom,sm8350-aoss-qmp";
-> +			reg = <0 0x0c300000 0 0x100000>;
-> +			interrupts-extended = <&ipcc IPCC_CLIENT_AOP 
-> IPCC_MPROC_SIGNAL_GLINK_QMP
-> +						     IRQ_TYPE_EDGE_RISING>;
-> +			mboxes = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP>;
-> +
-> +			#clock-cells = <0>;
-> +			#power-domain-cells = <1>;
-> +		};
-> +
-> +		tlmm: pinctrl@f100000 {
-> +			compatible = "qcom,sm8350-tlmm";
-> +			reg = <0 0x0f100000 0 0x300000>;
-> +			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <2>;
-> +			gpio-ranges = <&tlmm 0 0 203>;
-> +
-> +			qup_uart3_default_state: qup-uart3-default-state {
-> +				rx {
-> +					pins = "gpio18";
-> +					function = "qup3";
-> +				};
-> +				tx {
-> +					pins = "gpio19";
-> +					function = "qup3";
-> +				};
-> +			};
-> +		};
-> +
-> +		intc: interrupt-controller@17a00000 {
-> +			compatible = "arm,gic-v3";
-> +			#interrupt-cells = <3>;
-> +			interrupt-controller;
-> +			reg = <0x0 0x17a00000 0x0 0x10000>,     /* GICD */
-> +			      <0x0 0x17a60000 0x0 0x100000>;    /* GICR * 8 */
-> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +
-> +		timer@17c20000 {
-> +			compatible = "arm,armv7-timer-mem";
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			ranges;
-> +			reg = <0x0 0x17c20000 0x0 0x1000>;
-> +			clock-frequency = <19200000>;
-> +
-> +			frame@17c21000 {
-> +				frame-number = <0>;
-> +				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c21000 0x0 0x1000>,
-> +				      <0x0 0x17c22000 0x0 0x1000>;
-> +			};
-> +
-> +			frame@17c23000 {
-> +				frame-number = <1>;
-> +				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c23000 0x0 0x1000>;
-> +				status = "disabled";
-> +			};
-> +
-> +			frame@17c25000 {
-> +				frame-number = <2>;
-> +				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c25000 0x0 0x1000>;
-> +				status = "disabled";
-> +			};
-> +
-> +			frame@17c27000 {
-> +				frame-number = <3>;
-> +				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c27000 0x0 0x1000>;
-> +				status = "disabled";
-> +			};
-> +
-> +			frame@17c29000 {
-> +				frame-number = <4>;
-> +				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c29000 0x0 0x1000>;
-> +				status = "disabled";
-> +			};
-> +
-> +			frame@17c2b000 {
-> +				frame-number = <5>;
-> +				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c2b000 0x0 0x1000>;
-> +				status = "disabled";
-> +			};
-> +
-> +			frame@17c2d000 {
-> +				frame-number = <6>;
-> +				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> +				reg = <0x0 0x17c2d000 0x0 0x1000>;
-> +				status = "disabled";
-> +			};
-> +		};
-> +
-> +		apps_rsc: rsc@18200000 {
-> +			label = "apps_rsc";
-> +			compatible = "qcom,rpmh-rsc";
-> +			reg = <0x0 0x18200000 0x0 0x10000>,
-> +				<0x0 0x18210000 0x0 0x10000>,
-> +				<0x0 0x18220000 0x0 0x10000>;
-> +			reg-names = "drv-0", "drv-1", "drv-2";
-> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
-> +			qcom,tcs-offset = <0xd00>;
-> +			qcom,drv-id = <2>;
-> +			qcom,tcs-config = <ACTIVE_TCS  2>, <SLEEP_TCS   3>,
-> +					  <WAKE_TCS    3>, <CONTROL_TCS 1>;
-> +
-> +			rpmhcc: clock-controller {
-> +				compatible = "qcom,sm8350-rpmh-clk";
-> +				#clock-cells = <1>;
-> +				clock-names = "xo";
-> +				clocks = <&xo_board>;
-> +			};
-> +
-> +		};
-> +	};
-> +
-> +	timer {
-> +		compatible = "arm,armv8-timer";
-> +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) | 
-> IRQ_TYPE_LEVEL_LOW)>,
-> +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> +			     <GIC_PPI 12 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
+but how do you differentiate idle core (return value) and an idle cpu
+in the core set in &idle_cpu
 
-The last interrupt should be hypervisor physical interrupt(10) not 
-12(hyp virtual).
-It works currently with android bootloaders because the host linux 
-kernel will run
-at EL1 and will use EL1 physical timer interrupt(14), but if we ever 
-have the host
-kernel run in EL2(for example, chrome) then we will not receive any 
-timer interrupts.
+You will return as soon as a cpu is idle and before testing all cores
 
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+> +                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
+> +                               return idle_cpu;
+>
+>                 } else {
+>                         if (!--nr)
+>                                 return -1;
+> -                       i = __select_idle_cpu(cpu);
+> -                       if ((unsigned int)i < nr_cpumask_bits) {
+> -                               idle_cpu = i;
+> +                       idle_cpu = __select_idle_cpu(cpu);
+> +                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>                                 break;
+> -                       }
+>                 }
+>         }
+>
+>
+> --
+> Mel Gorman
+> SUSE Labs
