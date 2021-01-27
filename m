@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAA0305B71
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3537305B72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237946AbhA0Mc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:32:57 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56866 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237961AbhA0M2x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:28:53 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RC2o2o086614;
-        Wed, 27 Jan 2021 07:27:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=yAL17kfc48Z4BiRbtL4ut6pvuFXm4N9KOyQ3CdCN/7M=;
- b=ozPAJihs0Pdnhajajx0Cx7EhJhDAHUudmsvS75PAuRTM+2LzoFr/lhMavxG9dbcBapEn
- vReMZ8rPB8JrqB70W1FKmFjEyHp/eJ/sq2w31fenKZej3q5QhvZeUgsQ+Syi90ASk7ZO
- x5R4poy+XGkZHw5L9X6NSZYnkqar61SJsOcxYNBHbawIdKQm2H/DWfgrcuZ3kJdA3Luj
- ra9tvfaKtWf7iPHkOycCLKWYaZP1d9N1lBYgYIeub9muzuHm4nsu3IINYWL+PbMGYhfU
- MN0PwGJUiCLdOpLHbyUhGP6qXcfK6tDJ8GprrAJ3wVp3m4eCyLMWXDDp2TZ7yAA7Lovj pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36b3kfr9uk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 07:27:39 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RC3Ugb092531;
-        Wed, 27 Jan 2021 07:27:39 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36b3kfr9tb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 07:27:39 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RCDt7T027459;
-        Wed, 27 Jan 2021 12:27:37 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 368be89ybk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 12:27:36 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RCRXq829688178
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 12:27:34 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5C434204C;
-        Wed, 27 Jan 2021 12:27:33 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2097F42045;
-        Wed, 27 Jan 2021 12:27:33 +0000 (GMT)
-Received: from localhost (unknown [9.171.68.8])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 27 Jan 2021 12:27:33 +0000 (GMT)
-Date:   Wed, 27 Jan 2021 13:27:31 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH] stacktrace: Move documentation for
- arch_stack_walk_reliable() to header
-Message-ID: <your-ad-here.call-01611750451-ext-7215@work.hours>
-References: <20210118211021.42308-1-broonie@kernel.org>
+        id S237997AbhA0Mdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:33:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237968AbhA0M25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:28:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA53220739;
+        Wed, 27 Jan 2021 12:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611750496;
+        bh=bTDQADTlQR0Lg50LOKeztokhxttN3WR4/PCnuUuWkcI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rZ419NUnIc43rQ00dvslDeW85NhY+6E09Vwpj05XQVOufdcZYq3wpUG15XiBFpQO9
+         8qmU9gK1ArRUP3EyWPhUMxg3rlz/4v6CjRx/ehxeAZmfFwEftBgjbvD2Ydkp0HLDMU
+         G9bEjWAT8HT7Jqvlp+z+8FRfjRXMFAvyLNG5uvn25R79od7qsJwHJsen/7FQ8zXahO
+         rxyUNBCGdgYhOM6HaUdOaVt0KPf9i8NSbIjpdOnI1Io9XCdRvJp/0+II9HRaKEKVrJ
+         rSIqd50O0Jgflqudi3zt4Wnbs2os/5Rr7agfiulh1omb+1RrgY75gB7fekmDao7C6e
+         XobwLn9zwDVhQ==
+Date:   Wed, 27 Jan 2021 12:27:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "angelogioacchino.delregno@somainline.org" 
+        <angelogioacchino.delregno@somainline.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: short-circuit and over-current IRQs
+Message-ID: <20210127122733.GC4387@sirena.org.uk>
+References: <6046836e22b8252983f08d5621c35ececb97820d.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pAwQNkOnpTn9IO2O"
 Content-Disposition: inline
-In-Reply-To: <20210118211021.42308-1-broonie@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- spamscore=0 adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101270067
+In-Reply-To: <6046836e22b8252983f08d5621c35ececb97820d.camel@fi.rohmeurope.com>
+X-Cookie: La-dee-dee, la-dee-dah.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:10:21PM +0000, Mark Brown wrote:
-> Currently arch_stack_wallk_reliable() is documented with an identical
-> comment in both x86 and S/390 implementations which is a bit redundant.
-> Move this to the header and convert to kerneldoc while we're at it.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Miroslav Benes <mbenes@suse.cz>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> Cc: x86@kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: live-patching@vger.kernel.org
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  arch/s390/kernel/stacktrace.c |  6 ------
->  arch/x86/kernel/stacktrace.c  |  6 ------
->  include/linux/stacktrace.h    | 19 +++++++++++++++++++
->  3 files changed, 19 insertions(+), 12 deletions(-)
 
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+--pAwQNkOnpTn9IO2O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jan 27, 2021 at 12:01:55PM +0000, Vaittinen, Matti wrote:
+
+> Anyways - I was wondering if this is common thing amongst many PMICs?
+> If yes - then, perhaps some generally useful regulator helper could be
+> added to help implementing the IRQ disabling + scheduling worker to
+> check status and re-enable IRQs? I think it *might* save some time in
+> the future - and help making same mistakes many times :]
+
+If we've got two that's enough for a helper.  TBH I'm a bit surprised
+that people are implementing hardware that leaves the outputs enabled
+when it detects this sort of error, it's something that's usually an
+emergency that needs shutting off quickly to prevent hardware damage.
+
+--pAwQNkOnpTn9IO2O
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmARXDQACgkQJNaLcl1U
+h9AFEwf4xLwACd6nS44w7jG5H10iqcrks+9j8HV08yzdET7oaIGpxL2z83Z/7BBJ
+WMVZLg2pLZ/eAnwFX1dm/S9t4Lp7TL+acTflL998RxwjeMUa8xqkSGPzy6oe4I+m
+1oXXhFbZO9wKTUg7YuZgVGF2rW1XYLxCEkzXP/zq8Cq0amWz1zMQ/NoXV50gam7/
+rVB3N0k6mUrPNbvbX2rfNbmZMEy4rxH4qGtULC6gu54Ob4yF0IibKOlbF9fiT2IF
+wW20fXH4UJun1d7LpZ30c2BGgg2yAEncVRqwPY9Qx8tVPcujUJVbMI4n3aQOYsob
+HCQCMbMdfei7Xllc0cpDU+v+o2qH
+=9Mti
+-----END PGP SIGNATURE-----
+
+--pAwQNkOnpTn9IO2O--
