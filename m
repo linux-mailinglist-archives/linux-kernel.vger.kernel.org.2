@@ -2,225 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014F33054DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7173054ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbhA0Hmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:42:42 -0500
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:32864 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234419AbhA0Hiv (ORCPT
+        id S234010AbhA0Hp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:45:56 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:35477 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231488AbhA0Hoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:38:51 -0500
-Received: by mail-lf1-f44.google.com with SMTP id b2so1336129lfq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 23:38:28 -0800 (PST)
+        Wed, 27 Jan 2021 02:44:38 -0500
+Received: by mail-ot1-f46.google.com with SMTP id 36so847210otp.2;
+        Tue, 26 Jan 2021 23:44:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ezWwTV1FnM+L0u7wKXSfslLFz/62TL+jV5C7HliRjgE=;
-        b=L+6ygur2VdGrB77/UJhX/PSEFKFLF67EFDLLPGzZt+z4Ld7EvIovn/d7pFIeqzCx6S
-         XbiKxMJX8gPbqF76rFW04blTKrH4taXqwpl6t+dgJ8dLKyNgy7HB4HQh4EUbDFJC7zL7
-         I0651lpfOpWvpRgSN0D10S1ow0ZC0/DZhRxPwYbNYjT/n+9hyfyWnLkk56IfSt6BWl1v
-         qcPFr3prfy+MoSu4R1yPiJWYXJEpk1E/JNzq3/QUAYoN7Kii+l7nl9kHmsqG8ToN4QQs
-         hvG5En6rQHHsDwO+Vx8vmG4kDvXYVT/15ASgVeNsfRPr+cfjPF6p0jL0DF+ArXYlQY7J
-         nNpg==
-X-Gm-Message-State: AOAM533Rgk2FUEywGUHOaK0ITJEDELINFE/9OzhrWnFmXktlWVKoCTzj
-        SUh8QYlS0Kj8anh7/6jZhj4iXwz3dXAqBi6/D3w=
-X-Google-Smtp-Source: ABdhPJyIflbtmzjnJI1eAiWARoCJMq/wR69iPUNLzcv+u4lsZWyvISTS9qXp94cZkHxEUS3WNyMYEUUy5etfod3Xrzo=
-X-Received: by 2002:a05:6512:a8b:: with SMTP id m11mr4429110lfu.112.1611733082856;
- Tue, 26 Jan 2021 23:38:02 -0800 (PST)
+        bh=x0dGkBBCOjjdRO5NeNomyXurGTss4C1Z8jAZPD1nTr0=;
+        b=D/t6/XpngIhr+dElHpkKgt7I9raIdEFD/aIUvplW60JNP0cGyfm8vB5RupvZjShzK8
+         o9tAFA7R1prXP1p4TWSIDLkFG3Ok12Pr731mwn36mh6OTJ6NZINfAlsYeJiYCMn4aPE8
+         SoJJP9OWxg7MTI1M8h2hTZq7jAqlg7xGRNqPg+nXVJu12OokR1Tpl3dBANluMPjYMzJd
+         ililMEOfD6U8Wqr+uSU3mqavqrZ1scytN5GGfOAR5AYlkG3bSHsoUnzvbhkv3qH3Tz2A
+         v3cVkmUc3XEWwej1GhByKCSx44Cwci6TR6WIFhOYA/47d0kdY0MbOWh5Hy40AvsjGOAS
+         QW/g==
+X-Gm-Message-State: AOAM532/RncdhhlpjY2XqfIjMmv+jhWUhCflVCbduVIUpwgMM/NL5QHn
+        KAKKdqvgiH1tZvbdGNoeo4s8OzikM3SJEHe6N+A=
+X-Google-Smtp-Source: ABdhPJytEiLX+kMjV4Ea2i2rFfKnTCKJB2DxU0jLTV+BpUesrQ9gHru0x+sIRyJPwSKOmvFMZ1Gze3L0qvmdO0bLsr0=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr6698124otr.107.1611733436883;
+ Tue, 26 Jan 2021 23:43:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116011920.34487-1-cuibixuan@huawei.com> <20210116011920.34487-2-cuibixuan@huawei.com>
-In-Reply-To: <20210116011920.34487-2-cuibixuan@huawei.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 27 Jan 2021 16:37:51 +0900
-Message-ID: <CAM9d7cgPpeCyjd2Z3Ld6yya7BCE3KxVg0P4xeF2gDZ0Y5mw2HQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] perf tools: add 'perf irq' to measure the hardware interrupts
-To:     Bixuan Cui <cuibixuan@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        john.wanghui@huawei.com, Alexei Budankov <abudankov@huawei.com>,
-        yz.yuzhou@huawei.com
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+ <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
+ <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com> <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
+In-Reply-To: <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 27 Jan 2021 08:43:45 +0100
+Message-ID: <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Michael Walle <michael@walle.cc>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Saravana,
 
-On Sat, Jan 16, 2021 at 10:20 AM Bixuan Cui <cuibixuan@huawei.com> wrote:
+On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
+> > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
+> > > > > wrote:
+> > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
+> > > > >> wrote:
+> > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> > > > >> > > wrote:
+> > > > >> > >>
+> > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> > > > >> > >> all CCs to BCCs :(]
+> > > > >> > >>
+> > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > > > >> > >> >>
+> > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > > > >> > >> >> wrote:
+> > > > >> > >> >> >
+> > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
+> > > > >> > >> >>
+> > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > > > >> > >> >> shouldn't it be fixed or removed?
+> > > > >> > >> >
+> > > > >> > >> > I was actually thinking about this too. The problem with fixing
+> > > > >> > >> > builtin_platform_driver_probe() to behave like
+> > > > >> > >> > builtin_platform_driver() is that these probe functions could be
+> > > > >> > >> > marked with __init. But there are also only 20 instances of
+> > > > >> > >> > builtin_platform_driver_probe() in the kernel:
+> > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> > > > >> > >> > 20
+> > > > >> > >> >
+> > > > >> > >> > So it might be easier to just fix them to not use
+> > > > >> > >> > builtin_platform_driver_probe().
+> > > > >> > >> >
+> > > > >> > >> > Michael,
+> > > > >> > >> >
+> > > > >> > >> > Any chance you'd be willing to help me by converting all these to
+> > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> > > > >> > >>
+> > > > >> > >> If it just moving the probe function to the _driver struct and
+> > > > >> > >> remove the __init annotations. I could look into that.
+> > > > >> > >
+> > > > >> > > Yup. That's pretty much it AFAICT.
+> > > > >> > >
+> > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
+> > > > >> > > flags and still using builtin_platform_driver_probe().
+> > > > >> >
+> > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
+> > > > >> > are ~80 drivers which uses that.
+> > > > >>
+> > > > >> Yeah. The biggest problem with all of these is the __init markers.
+> > > > >> Maybe some familiar with coccinelle can help?
+> > > > >
+> > > > > And dropping them will increase memory usage.
+> > > >
+> > > > Although I do have the changes for the builtin_platform_driver_probe()
+> > > > ready, I don't think it makes much sense to send these unless we agree
+> > > > on the increased memory footprint. While there are just a few
+> > > > builtin_platform_driver_probe() and memory increase _might_ be
+> > > > negligible, there are many more module_platform_driver_probe().
+> > >
+> > > While it's good to drop code that'll not be used past kernel init, the
+> > > module_platform_driver_probe() is going even more extreme. It doesn't
+> > > even allow deferred probe (well before kernel init is done). I don't
+> > > think that behavior is right and that's why we should delete it. Also,
+> >
+> > This construct is typically used for builtin hardware for which the
+> > dependencies are registered very early, and thus known to probe at
+> > first try (if present).
+> >
+> > > I doubt if any of these probe functions even take up 4KB of memory.
+> >
+> > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
+> > How many can you afford to waste?
 >
-> Add 'perf irq' to trace/measure the hardware interrupts.
->
-> Now three functions are provided:
->   1. 'perf irq record <command>' to record the irq handler events.
->   2. 'perf irq script' to see a detailed trace of the workload that
->    was recorded.
->   3. 'perf irq report' to calculate the time consumed by each
->    hardware interrupt processing function.
->
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  tools/perf/Build         |   1 +
->  tools/perf/builtin-irq.c | 283 +++++++++++++++++++++++++++++++++++++++
->  tools/perf/builtin.h     |   1 +
->  tools/perf/perf.c        |   1 +
->  4 files changed, 286 insertions(+)
->  create mode 100644 tools/perf/builtin-irq.c
->
-> diff --git a/tools/perf/Build b/tools/perf/Build
-> index 5f392dbb88fc..d52a1e1d6d8a 100644
-> --- a/tools/perf/Build
-> +++ b/tools/perf/Build
-> @@ -24,6 +24,7 @@ perf-y += builtin-mem.o
->  perf-y += builtin-data.o
->  perf-y += builtin-version.o
->  perf-y += builtin-c2c.o
-> +perf-y += builtin-irq.o
->
->  perf-$(CONFIG_TRACE) += builtin-trace.o
->  perf-$(CONFIG_LIBELF) += builtin-probe.o
-> diff --git a/tools/perf/builtin-irq.c b/tools/perf/builtin-irq.c
-> new file mode 100644
-> index 000000000000..25ba0669a875
-> --- /dev/null
-> +++ b/tools/perf/builtin-irq.c
-[SNIP]
-> +
-> +#define IRQ_NAME_LEN           20
-> +#define MAX_CPUS               4096
-> +
-> +static const char *cpu_list;
-> +static DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
-> +
-> +struct perf_irq;
+> There are only a few instances of this macro in the kernel. How many
 
-Seems unnecessary.
+$ git grep -lw builtin_platform_driver_probe | wc -l
+21
+$ git grep -lw module_platform_driver_probe | wc -l
+86
 
-> +
-> +struct perf_irq {
-> +       struct perf_tool tool;
-> +       bool force;
-> +
-> +       u32 irq_entry_irq;
-> +       char irq_name[IRQ_NAME_LEN];
-> +       u32 cpu;
-> +       u64 irq_entry_time;
-> +       u32 irq_entry_pid;
-> +       u32 irq_exit_irq;
-> +       u64 irq_exit_time;
-> +       u32 irq_exit_pid;
-> +};
-> +
-> +typedef int (*irq_handler)(struct perf_tool *tool,
-> +                         union perf_event *event,
-> +                         struct evsel *evsel,
-> +                         struct perf_sample *sample,
-> +                         struct machine *machine);
++ the ones that haven't been converted to the above yet:
 
-You don't need to pass all the arguments if unused.
+$ git grep -lw platform_driver_probe | wc -l
+58
 
-> +
-> +static int perf_report_process_sample(struct perf_tool *tool,
-> +                                        union perf_event *event,
-> +                                        struct perf_sample *sample,
-> +                                        struct evsel *evsel,
-> +                                        struct machine *machine)
-> +{
-> +       int err = 0;
-> +
-> +       if (evsel->handler != NULL) {
-> +               irq_handler f = evsel->handler;
-> +               err = f(tool, event, evsel, sample, machine);
-> +       }
-> +
-> +       return err;
-> +}
-> +
-> +static void output_report(struct perf_irq *irq)
-> +{
-> +       int ret, i;
-> +       char irq_entry_time[30], irq_exit_time[30], irq_diff[30];
-> +
-> +       /* The entry and exit of the hardware irq function
-> +        * exist at the same time. Check it by irq and pid.
-> +        */
-> +       if (irq->irq_entry_pid != irq->irq_exit_pid ||
-> +           irq->irq_entry_irq != irq->irq_exit_irq)
-> +               return;
+> of those actually fit the description above? We can probably just
+> check the DT?
 
-Is there only a single instance of the perf_irq here?
-Then I don't think this is correct and you should keep
-pairs of irq entry/exit per cpu.  Otherwise overlapped
-irqs from different cpus will be discarded (wrongly).
+What do you mean by checking the DT?
 
-> +
-> +       timestamp__scnprintf_usec(irq->irq_entry_time,
-> +                                 irq_entry_time, sizeof(irq_entry_time));
-> +       timestamp__scnprintf_usec(irq->irq_exit_time,
-> +                                 irq_exit_time, sizeof(irq_exit_time));
-> +       timestamp__scnprintf_usec(irq->irq_exit_time - irq->irq_entry_time,
-> +                                 irq_diff, sizeof(irq_diff));
-> +
-> +       ret = printf("   %s ", irq->irq_name);
-> +       for (i = 0; i < IRQ_NAME_LEN - ret; i++)
-> +               printf(" ");
-> +
-> +       printf("| [%04d] | %13s s | %16s s | %16s s\n",
-> +               irq->cpu, irq_diff, irq_entry_time, irq_exit_time);
-> +}
-> +
-> +static int report_irq_handler_entry_event(struct perf_tool *tool,
-> +                                     union perf_event *event __maybe_unused,
-> +                                     struct evsel *evsel,
-> +                                     struct perf_sample *sample,
-> +                                     struct machine *machine __maybe_unused)
-> +{
-> +       int err = 0;
-> +       struct perf_irq *irq = container_of(tool, struct perf_irq, tool);
-> +
-> +       const char *name = evsel__strval(evsel, sample, "name");
-> +
-> +       irq->irq_entry_pid = evsel__intval(evsel, sample, "pid");
-> +       irq->irq_entry_irq = evsel__intval(evsel, sample, "irq");
-> +       irq->irq_entry_time = sample->time;
-> +       strncpy(irq->irq_name, name, IRQ_NAME_LEN);
+Gr{oetje,eeting}s,
 
-Note that strncpy doesn't guarantee the NUL-termination.
-You'd better do it by yourself just in case.
+                        Geert
 
-Thanks,
-Namhyung
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> +
-> +       return err;
-> +}
-> +
-> +static int report_irq_handler_exit_event(struct perf_tool *tool,
-> +                                     union perf_event *event __maybe_unused,
-> +                                     struct evsel *evsel,
-> +                                     struct perf_sample *sample,
-> +                                     struct machine *machine __maybe_unused)
-> +{
-> +       int err = 0;
-> +       struct perf_irq *irq = container_of(tool, struct perf_irq, tool);
-> +
-> +       irq->irq_exit_pid = evsel__intval(evsel, sample, "pid");
-> +       irq->irq_exit_irq = evsel__intval(evsel, sample, "irq");
-> +       irq->irq_exit_time = sample->time;
-> +       irq->cpu = sample->cpu;
-> +
-> +       if (cpu_list && !test_bit(sample->cpu, cpu_bitmap))
-> +               return err;
-> +
-> +       output_report(irq);
-> +
-> +       return err;
-> +}
-> +
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
