@@ -2,62 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E568305A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10225305A60
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbhA0LzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:55:00 -0500
-Received: from comms.puri.sm ([159.203.221.185]:54354 "EHLO comms.puri.sm"
+        id S237404AbhA0Lwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:52:38 -0500
+Received: from 8bytes.org ([81.169.241.247]:53114 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237390AbhA0Lua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:50:30 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 3729DE01AC;
-        Wed, 27 Jan 2021 03:49:17 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id XSckDmWLb-WQ; Wed, 27 Jan 2021 03:49:16 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     laurent.pinchart@ideasonboard.com, robh@kernel.org,
-        daniel@ffwll.ch, airlied@linux.ie, stefan@agner.ch
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] dt-bindings: mxsfb: Add interconnect bindings for LCDIF path
-Date:   Wed, 27 Jan 2021 12:49:01 +0100
-Message-Id: <20210127114901.26259-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S234383AbhA0Ltu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:49:50 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 0E5ED303; Wed, 27 Jan 2021 12:49:08 +0100 (CET)
+Date:   Wed, 27 Jan 2021 12:49:06 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     trix@redhat.com
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/amd: remove h from printk format specifier
+Message-ID: <20210127114906.GE32671@8bytes.org>
+References: <20201215213021.2090698-1-trix@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215213021.2090698-1-trix@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add optional interconnect properties for the dram path requests.
+On Tue, Dec 15, 2020 at 01:30:21PM -0800, trix@redhat.com wrote:
+>  drivers/iommu/amd/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- Documentation/devicetree/bindings/display/fsl,lcdif.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
-index a4c3064c778c..44d744800a7c 100644
---- a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
-+++ b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
-@@ -50,6 +50,14 @@ properties:
-   interrupts:
-     maxItems: 1
- 
-+  interconnects:
-+    items:
-+      - description: Interconnect path between LCDIF and main memory
-+
-+  interconnect-names:
-+    items:
-+      - const: dram
-+
-   port:
-     $ref: /schemas/graph.yaml#/properties/port
-     description: The LCDIF output port
--- 
-2.20.1
-
+Applied, thanks.
