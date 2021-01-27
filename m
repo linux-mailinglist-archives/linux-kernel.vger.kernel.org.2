@@ -2,82 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C659306119
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87B0306130
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhA0QgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        id S232456AbhA0Qn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:43:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhA0QfT (ORCPT
+        with ESMTP id S231403AbhA0QnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:35:19 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADBDC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:34:30 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id g15so1693425pjd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:34:30 -0800 (PST)
+        Wed, 27 Jan 2021 11:43:14 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4B0C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:42:28 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id r32so2618666ybd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:42:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LwOa5mhLaXrDlVZ7y1N0pASQsm7d4/OBObUTzGqDPgA=;
-        b=s5UbS0im4j206cD2flPBaSsYXt7Pz5F1ruUNDn/hfmsDCYCK58dt5Wwbntnq5Q/0NW
-         v99KEm9W3nga7/Gtx9aiPG0j947kF67B/xKEjVV9DGS+8IgtK21ExMGx88ceEpSUvFJd
-         mnwM6RRfIGhAcrphnK1mTzVuDdrW30ydU+HNpjRj/5Zgivdh59BoUCUwBxIPFyGnERKk
-         aB+4tFVzro/Oag8va0rMT4Dv8mVE4/9yAEaWDha9GmdxWsywxTSwoevJetL9b4/hCHD7
-         ulB598fyJ+B4JOg0zwPaAboka8jpI5UiPyoWMOKyVxMnJ8zs1TDXaKp0A9bcrqm3g4mB
-         Y/XA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DhlJDOHouhyzoZng9fJ2frIQEnLbOzAgsBucZ1xKE+Q=;
+        b=qhZFI+sMK2QvOM0tX+sbe7tSSfEUacHXU7Wc/fiZiGImf44dQ3z3Uund/QxKZ/1h9Q
+         s/GDEhs3T8IvEXbPJ6jxrzs+IEeoSm8SbL88rB75v9+7PODSL5SGoUGJT29bIRR3qL+O
+         UFojdWN6LdFC74lUmRR7GHaahe7McQNBwzFUKs3KTsBg8QM3+Yryqa3n6oOmkYNqq0Wn
+         SEwaPMwAE4YCyne6qX0eMoZ4ng3Xf66DEfIDE4UarGF1ToJkA5Vtdw69wEtbLSzyVZNr
+         JF3QgHYa5DcdVJipQQ9JGZxtkoQU9Y9Y+fja30YayyMKL7/ZOUUmZM9jCZa+nktN0coR
+         y9yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LwOa5mhLaXrDlVZ7y1N0pASQsm7d4/OBObUTzGqDPgA=;
-        b=Bfgcus9BkDcyQFqd9T+t9pWF/NBxDieFwREw6y7GRsTxAmWqf+cThYWglrJqnLdeDA
-         WVrq6gO2sK3InSW68CazRRpAbgXt+yIqdxFYJlfMunwI223ji++uoAiOFSABUuQaoSKW
-         yMM0EO6bc1E01QzaAr84TgXd1BD54RG8KYwPC1wKyTDmDgBZYkW9xcSas/7BV5t1S8/R
-         /E3HmZ8stLFys4Zs3G9HyfrMFGuGrcKNdSTCJKj6jbAtwqSTBe1VtX4zSkm6YoCaV0+F
-         zkHyN1y0m7eIzaXrjkvt4yS8H2nD9MuQIOe9spzQzE/GO3gEV3VH7tTi7KeF+QLsmmz8
-         tDzA==
-X-Gm-Message-State: AOAM531pqauB7psTAPL9e7uIjFpcUXLov4F460KQwzTDwfcXxGPI3CLt
-        iPq3JrhbWSuiPnvWPqqp/01jnw==
-X-Google-Smtp-Source: ABdhPJwu72vZw4Rvp6EbsllyTsc6G2fh9UxtX6o2Rj4y9aKcFm5WL6r+29C+hJadzIGoTT4ctEY9Ig==
-X-Received: by 2002:a17:902:ba93:b029:e0:b6f:8a88 with SMTP id k19-20020a170902ba93b02900e00b6f8a88mr12198403pls.16.1611765269614;
-        Wed, 27 Jan 2021 08:34:29 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id fy20sm2771517pjb.54.2021.01.27.08.34.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 08:34:28 -0800 (PST)
-Subject: Re: [PATCH] zram: remove redundant NULL check
-To:     Abaci Team <abaci-bugfix@linux.alibaba.com>
-Cc:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-References: <1611739922-3365-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d3536853-5b3e-2cfe-f7c3-1eac89326209@kernel.dk>
-Date:   Wed, 27 Jan 2021 09:34:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DhlJDOHouhyzoZng9fJ2frIQEnLbOzAgsBucZ1xKE+Q=;
+        b=hrsKaVZov+Jzk5dQxUxtqM3yHF+NvxWdazApspqQoMLR4YU+jLFy3ilQC4tdzVmFGJ
+         hP2e+VRaGz4+GCgX3ZmDLKe8lvY7DqNrcmxueHrI//GonFKDDT1XnEL7V7HJfyjnYu6u
+         /3XgGTDUlf1cO2JmffQWxNleQq3eLurZnxCDBHuxaz4xUEIKZ+pKoKXXzeNneA1fvPvS
+         uDDDlAbYqYk71DhfDXhSOytU2E3a/CEBfPewEGGUQZscoXqemCcZUhcfv2Ffb/WGNzsE
+         Yg0oHBUU2TxfJGOYmNk8E+Kn6QMckIwnp61URi45KveRP9VR/HoUuHjf3tO4YNMzhEVC
+         XnmQ==
+X-Gm-Message-State: AOAM530xAC2o1o9P5bMNmgErpcPE0kAhv8Yimnrjpi3IQIUR8NUWN+26
+        8uksDItVNUQ28n6/vnZCn/dZ0ux06+q8EWbL8oOfFQ==
+X-Google-Smtp-Source: ABdhPJyTvhJWCJ0GgEFEPNNK+Aj1wHbHsyL+lMhynRRzjgtQPwprNz5H2mOCSJ9e3/s4ARAtNSkp6kxlHCFtD6MzH3I=
+X-Received: by 2002:a25:77d4:: with SMTP id s203mr19594855ybc.32.1611765747235;
+ Wed, 27 Jan 2021 08:42:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1611739922-3365-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+ <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
+ <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
+ <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com> <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
+In-Reply-To: <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 27 Jan 2021 08:41:50 -0800
+Message-ID: <CAGETcx8=woX_SVckG+gs68KMif-JGoy3a1PQGfonMNBH18Ak6A@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 2:32 AM, Abaci Team wrote:
-> Fix below warnings reported by coccicheck:
-> ./drivers/block/zram/zram_drv.c:534:2-8: WARNING: NULL check before some
-> freeing functions is not needed.
+On Tue, Jan 26, 2021 at 11:43 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
+> > On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> > > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
+> > > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> > > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
+> > > > > > wrote:
+> > > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
+> > > > > >> wrote:
+> > > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> > > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> > > > > >> > > wrote:
+> > > > > >> > >>
+> > > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> > > > > >> > >> all CCs to BCCs :(]
+> > > > > >> > >>
+> > > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > > > > >> > >> >>
+> > > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > > > > >> > >> >> wrote:
+> > > > > >> > >> >> >
+> > > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
+> > > > > >> > >> >>
+> > > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > > > > >> > >> >> shouldn't it be fixed or removed?
+> > > > > >> > >> >
+> > > > > >> > >> > I was actually thinking about this too. The problem with fixing
+> > > > > >> > >> > builtin_platform_driver_probe() to behave like
+> > > > > >> > >> > builtin_platform_driver() is that these probe functions could be
+> > > > > >> > >> > marked with __init. But there are also only 20 instances of
+> > > > > >> > >> > builtin_platform_driver_probe() in the kernel:
+> > > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> > > > > >> > >> > 20
+> > > > > >> > >> >
+> > > > > >> > >> > So it might be easier to just fix them to not use
+> > > > > >> > >> > builtin_platform_driver_probe().
+> > > > > >> > >> >
+> > > > > >> > >> > Michael,
+> > > > > >> > >> >
+> > > > > >> > >> > Any chance you'd be willing to help me by converting all these to
+> > > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> > > > > >> > >>
+> > > > > >> > >> If it just moving the probe function to the _driver struct and
+> > > > > >> > >> remove the __init annotations. I could look into that.
+> > > > > >> > >
+> > > > > >> > > Yup. That's pretty much it AFAICT.
+> > > > > >> > >
+> > > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> > > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
+> > > > > >> > > flags and still using builtin_platform_driver_probe().
+> > > > > >> >
+> > > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
+> > > > > >> > are ~80 drivers which uses that.
+> > > > > >>
+> > > > > >> Yeah. The biggest problem with all of these is the __init markers.
+> > > > > >> Maybe some familiar with coccinelle can help?
+> > > > > >
+> > > > > > And dropping them will increase memory usage.
+> > > > >
+> > > > > Although I do have the changes for the builtin_platform_driver_probe()
+> > > > > ready, I don't think it makes much sense to send these unless we agree
+> > > > > on the increased memory footprint. While there are just a few
+> > > > > builtin_platform_driver_probe() and memory increase _might_ be
+> > > > > negligible, there are many more module_platform_driver_probe().
+> > > >
+> > > > While it's good to drop code that'll not be used past kernel init, the
+> > > > module_platform_driver_probe() is going even more extreme. It doesn't
+> > > > even allow deferred probe (well before kernel init is done). I don't
+> > > > think that behavior is right and that's why we should delete it. Also,
+> > >
+> > > This construct is typically used for builtin hardware for which the
+> > > dependencies are registered very early, and thus known to probe at
+> > > first try (if present).
+> > >
+> > > > I doubt if any of these probe functions even take up 4KB of memory.
+> > >
+> > > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
+> > > How many can you afford to waste?
+> >
+> > There are only a few instances of this macro in the kernel. How many
+>
+> $ git grep -lw builtin_platform_driver_probe | wc -l
+> 21
+> $ git grep -lw module_platform_driver_probe | wc -l
+> 86
+>
+> + the ones that haven't been converted to the above yet:
+>
+> $ git grep -lw platform_driver_probe | wc -l
+> 58
+>
 
-Already fixed/queued for 5.12:
+Yeah, this adds up in terms of the number of places we'd need to fix.
+But thinking more about it, a couple of points:
+1. Not all builtin_platform_driver_probe() are problems for
+fw_devlink. So we can just fix them as we go if we need to.
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.12/drivers&id=294ed6b9f00665acc22253044890257c5d9d18c1
+2. The problem with builtin_platform_driver_probe() isn't really with
+the use of __init. It's the fact that it doesn't allow deferred
+probes. builtin_platform_driver_probe()/platform_driver_probe() could
+still be fixed up to allow deferred probe until we get to the point
+where we free the __init section (so at least till late_initcall).
 
--- 
-Jens Axboe
+> > of those actually fit the description above? We can probably just
+> > check the DT?
+>
+> What do you mean by checking the DT?
 
+I was talking about checking the DT to see if the board has very
+little memory, but that's not always obvious from DT nor does it scale
+with the number of instances we have. So, ignore this comment.
+
+Anyway, time to get back to actually writing the code to deal with
+this and other corner cases.
+
+-Saravana
