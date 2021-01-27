@@ -2,157 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5153060CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204C83060C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236924AbhA0QRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:17:13 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:52554 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234551AbhA0QNy (ORCPT
+        id S1343952AbhA0QOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:14:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343945AbhA0QNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:13:54 -0500
-Date:   Wed, 27 Jan 2021 16:12:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1611763933;
-        bh=CXG+0jciHe2vDbT437FM3Qo95DNVBYkdhL5WZaYUPoY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=soC1P8y5fbrH54We/uaS8kb/dds+4mQBpXZy35ILyJjxvA7AiwxabAYh4pvwxNXoo
-         sJd2t2PH7IVYBhWLFvnCrNo+hPtPM1ZejKxhc3NLHZ9YAHPXrOXkLzXeFUIYdAwfM9
-         0DlB1Lw9h8W/zKKX63lNfW2kdfm8askULqa6Nv10=
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-From:   Nym Seddon <unseddd@protonmail.com>
-Cc:     "dhowells@redhat.com" <dhowells@redhat.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "patrick@puiterwijk.org" <patrick@puiterwijk.org>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Reply-To: Nym Seddon <unseddd@protonmail.com>
-Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192 keys
-Message-ID: <yOgLSllWWtGlr6OYcQxe8CeFwK4H9cWzWbalszgSv4xN_DxK6AGG_vNRyuVX6aKHzesDaj0LK9pB0q8SIQWXQETX26J6KXe428OPMHJYvus=@protonmail.com>
-In-Reply-To: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
-References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+        Wed, 27 Jan 2021 11:13:33 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE786C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:12:52 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id c2so3079856edr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:12:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TXTBY0cojnp19bCWf5qo/pfAGASLjMSh/1ClF23gmIY=;
+        b=Nxk8GUyYBiMwT/7mHIGBVdt1fEX6AzZnc8RUWXshgkIvSIdnyubatKAYwyftlY5Rl9
+         hrC//hwsCOFOugFFK5gOyrCpIEjFbV87fUYhT3UX0tsOyU7x6G40OJ+bhT2JZmeVDXcJ
+         DUcbMLxYQ3Aqg7aXoNSRO0z6aqxP8ZS3q9V7MfrCxgAKe6lorl7BIzVqYgF1T6fBXxQ1
+         u9Tz8PlkDvN5cntguytX8ChghtfoY6ovgZtl7Iws4N00iKjHGA6hlnT/44Eb46GpxnKr
+         ozFGobyzGqICkr7zUpZxy0B0kygVAuEwO0kZqfTUp3q7ToOPxmzPJWG33G6UHgEXZbdI
+         TROw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TXTBY0cojnp19bCWf5qo/pfAGASLjMSh/1ClF23gmIY=;
+        b=snbYdo5T5QDFoxiJCIeVny3S+xCtrcOLDa9KaMgmiLXQ7buZQK7Ag/8fd3xRXT1g9D
+         LOD+RoNnvq/lewb0ls0aWEgwm3YeuY8MycYg4wPV1n+MJhodK7jXAdNUfGUoSLSkizt1
+         ixKNznIw7yrj4XMbquJRFofRhFQO/NoDHILymfCRov7xR55xJnBKeIVY27dkt7OkXNF/
+         jnOYQhRNGw98+Mkha1Nr1DSFsTgJmI7URCkTm9agv4AWvrhhlLJIiV5IBAIZsIfYu2yE
+         CBOtrFxSHpZS5uGxj7tlknRa4aFqhJpc8D+AIyIeE4wltCwaHK5H4PeDo0QNUt+AM7gv
+         QagQ==
+X-Gm-Message-State: AOAM5313GSQT3ieu5O04nqTXcbGQSMV/mEzYn1gTTp5+eraTAnfU2fP1
+        LqYaJ9lByBbzhPRuiYnF5AjmnK8uuYD8OjH0sG/Yxw==
+X-Google-Smtp-Source: ABdhPJzK6H9SxMCvG5Bo9eGL752ED1LdoP3JK2iq99ZwkI1HQyPjs+P5Ohx2412YOOcQFKwcUkmIbtUPxA4r44IMBLQ=
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr9828766edv.116.1611763971646;
+ Wed, 27 Jan 2021 08:12:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210125191923.1060122-1-pasha.tatashin@soleen.com> <161176207403.2744652.12806246618808213171.b4-ty@kernel.org>
+In-Reply-To: <161176207403.2744652.12806246618808213171.b4-ty@kernel.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 27 Jan 2021 11:12:15 -0500
+Message-ID: <CA+CK2bBd-rKQAuxBSrBibdACvJHrrvLtKohjxEuXGciGUknB1g@mail.gmail.com>
+Subject: Re: (subset) [PATCH v10 00/18] arm64: MMU enabled kexec relocation
+To:     Will Deacon <will@kernel.org>
+Cc:     James Morris <jmorris@namei.org>, Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Selin Dag <selindag@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>, rfontana@redhat.com,
+        Sasha Levin <sashal@kernel.org>, steve.capper@arm.com,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-mm <linux-mm@kvack.org>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+On Wed, Jan 27, 2021 at 10:59 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, 25 Jan 2021 14:19:05 -0500, Pavel Tatashin wrote:
+> > Changelog:
+> > v10:
+> >       - Addressed a lot of comments form James Morse and from  Marc Zyngier
+> >       - Added review-by's
+> >       - Synchronized with mainline
+> >
+> > [...]
+>
+> Applied the first 12 patches to arm64 (for-next/kexec), thanks!
 
-In the recommendations from SafeCurves (https://safecurves.cr.yp.to/twist.h=
-tml) there are a number of attacks against ECC twists. Two of those attacks=
- are relevant against NIST P192: invalid-curve attacks and invalid-curve at=
-tacks against ladders.
+Great, thank you. I will resend the rest of the series based on your gate.
 
-Both attacks can be mitigated by checking the supplied public key is on the=
- correct curve, before performing curve operations.
-
-Not sure if the right place for those checks are in the signature verificat=
-ion code provided in these patches, or when reading public keys from the ce=
-rtificates. Does the kernel provide functions for checking curve points sat=
-isfy their respective curve equations?
-
-There are also tables describing the cost of combined attacks on various cu=
-rves, where NIST P224 already falls below the safe threshold. Because of th=
-at, I would recommend not implementing support for NIST P192 (since it woul=
-d fair even worse).
-
-What are your thoughts?
-
-Best,
-Nym
-
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Wednesday, January 27, 2021 12:33 PM, Stefan Berger <stefanb@linux.vnet.=
-ibm.com> wrote:
-
-> From: Stefan Berger stefanb@linux.ibm.com
->
-> This series of patches adds support for x509 certificates signed by a CA
-> that uses NIST p256 or p192 keys for signing. It also adds support for
-> certificates where the public key is a NIST p256 or p192 key. The math
-> for ECDSA signature verification is also added.
->
-> Since self-signed certificates are verified upon loading, the following
-> script can be used for testing:
->
-> k=3D$(keyctrl newring test @u)
->
-> while :; do
-> for hash in sha1 sha224 sha256 sha384 sha512; do
-> openssl req \
-> -x509 \
-> -${hash} \
-> -newkey ec \
-> -pkeyopt ec_paramgen_curve:prime256v1 \
-> -keyout key.pem \
-> -days 365 \
-> -subj '/CN=3Dtest' \
-> -nodes \
-> -outform der \
-> -out cert.der
-> keyctl padd asymmetric testkey $k < cert.der
-> if [ $? -ne 0 ]; then
-> echo "ERROR"
-> exit 1
-> fi
-> done
-> done
->
-> It also works with restricted keyrings where an RSA key is used to sign
-> a NIST P256/P192 key. Scripts for testing are here:
->
-> https://github.com/stefanberger/eckey-testing
->
-> The ECDSA signature verification will be used by IMA Appraisal where ECDS=
-A
-> file signatures stored in RPM packages will use substantially less space
-> than if RSA signatures were to be used.
->
-> Stefan
->
-> v2->v3:
->
-> -   patch 2 now includes linux/scatterlist.h
->
->     v1->v2:
->
-> -   using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
->     result
->
-> -   rearranged switch statements to follow after RSA
->
-> -   3rd patch from 1st posting is now 1st patch
->
->     Stefan Berger (3):
->     x509: Detect sm2 keys by their parameters OID
->     x509: Add support for parsing x509 certs with NIST p256 keys
->     x509: Add support for NIST p192 keys in certificates and akcipher
->
->     crypto/Makefile | 9 +-
->     crypto/asymmetric_keys/public_key.c | 19 ++
->     crypto/asymmetric_keys/x509_cert_parser.c | 45 ++-
->     crypto/ecc.c | 318 ++++++++++++++++++++++
->     crypto/ecc.h | 2 +
->     crypto/ecc_curve_defs.h | 4 +
->     crypto/eccsignature.asn1 | 4 +
->     include/linux/oid_registry.h | 6 +
->     8 files changed, 404 insertions(+), 3 deletions(-)
->     create mode 100644 crypto/eccsignature.asn1
->
->     --
->     2.25.4
->
-
-
+Pasha
