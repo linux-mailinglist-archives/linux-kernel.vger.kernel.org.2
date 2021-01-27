@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26DB305F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 046EE305F54
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343585AbhA0PRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:17:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:50722 "EHLO foss.arm.com"
+        id S1343770AbhA0PSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:18:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343634AbhA0PQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:16:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BF0A11FB;
-        Wed, 27 Jan 2021 07:15:17 -0800 (PST)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5678C3F66B;
-        Wed, 27 Jan 2021 07:15:15 -0800 (PST)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, mhiramat@kernel.org,
-        oleg@redhat.com
-Cc:     Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] tracing: precise log info for kretprobe addr err
-Date:   Wed, 27 Jan 2021 23:15:07 +0800
-Message-Id: <20210127151507.4185234-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S1343750AbhA0PQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:16:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2FAF20771;
+        Wed, 27 Jan 2021 15:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611760545;
+        bh=uHg46WoYh6K03pifl+ksxfM7lt63yUa+yHkpBA+UJA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZeQkhrIZARW12nA93+bmT+6Dja/zBlV3oPuFpXp04y1QSVHRVwYWlY0cZNy6JNANL
+         lRN2QQO9zr19PYmDwk5OCF/1pjstTWqyLF2QbdWhV3uzWGYSbpC++uxby4cW64ZD4T
+         TeaxVb6HB4fLWLsx5OlHzG36ML3XMwveUOdEeHuo=
+Date:   Wed, 27 Jan 2021 16:15:42 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+Message-ID: <YBGDng3VhE1Yw6zt@kroah.com>
+References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
+ <20210113152625.GB30246@work>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113152625.GB30246@work>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When trying to create kretprobe with the wrong function symbol in tracefs;
-The error is triggered in the register_trace_kprobe() and recorded as
-FAIL_REG_PROBE issue,
+On Wed, Jan 13, 2021 at 08:56:25PM +0530, Manivannan Sadhasivam wrote:
+> Hi Greg,
+> 
+> On Wed, Jan 06, 2021 at 10:44:13AM -0800, Hemant Kumar wrote:
+> > This patch series adds support for UCI driver. UCI driver enables userspace
+> > clients to communicate to external MHI devices like modem. UCI driver probe
+> > creates standard character device file nodes for userspace clients to
+> > perform open, read, write, poll and release file operations. These file
+> > operations call MHI core layer APIs to perform data transfer using MHI bus
+> > to communicate with MHI device. 
+> > 
+> > This interface allows exposing modem control channel(s) such as QMI, MBIM,
+> > or AT commands to userspace which can be used to configure the modem using
+> > tools such as libqmi, ModemManager, minicom (for AT), etc over MHI. This is
+> > required as there are no kernel APIs to access modem control path for device
+> > configuration. Data path transporting the network payload (IP), however, is
+> > routed to the Linux network via the mhi-net driver. Currently driver supports
+> > QMI channel. libqmi is userspace MHI client which communicates to a QMI
+> > service using QMI channel. Please refer to
+> > https://www.freedesktop.org/wiki/Software/libqmi/ for additional information
+> > on libqmi.
+> > 
+> > Patch is tested using arm64 and x86 based platform.
+> > 
+> 
+> This series looks good to me and I'd like to merge it into mhi-next. You
+> shared your reviews on the previous revisions, so I'd like to get your
+> opinion first.
 
-Example:
-  $ cd /sys/kernel/debug/tracing
-  $ echo 'r:myprobe ERROR_SYMBOL_XXX ret=%x0' >> kprobe_events
-    bash: echo: write error: Invalid argument
-  $ cat error_log
-    [142797.347877] trace_kprobe: error: Failed to register probe event
-    Command: r:myprobe ERROR_SYMBOL_XXX ret=%x0
-                       ^
+If you get the networking people to give you an ack on this, it's fine
+with me.
 
-This error can be detected in the parameter parsing stage, the effect of
-applying this patch is as follows:
+thanks,
 
-  $ echo 'r:myprobe ERROR_SYMBOL_XXX ret=%x0' >> kprobe_events
-    bash: echo: write error: Invalid argument
-  $ cat error_log
-    [415.89]trace_kprobe: error: Retprobe address must be an function entry
-    Command: r:myprobe ERROR_SYMBOL_XXX ret=%x0
-                       ^
-v2 changes:
-- Added !strchr(symbol, ':') to check whether symbol is really bad
-  or from a module.
-
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
-v2: added !strchr(symbol, ':') to check really bad symbol or from module.
-v4: added changelog and code comments.
----
- kernel/trace/trace_kprobe.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index e6fba1798771..384208a38f82 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -830,7 +830,8 @@ static int trace_kprobe_create(int argc, const char *argv[])
- 			flags |= TPARG_FL_RETURN;
- 		if (kprobe_on_func_entry(NULL, symbol, offset))
- 			flags |= TPARG_FL_FENTRY;
--		if (offset && is_return && !(flags & TPARG_FL_FENTRY)) {
-+		/* Check whether symbol is really bad or from a module */
-+		if (!strchr(symbol, ':') && is_return && !(flags & TPARG_FL_FENTRY)) {
- 			trace_probe_log_err(0, BAD_RETPROBE);
- 			goto parse_error;
- 		}
--- 
-2.25.1
-
+greg k-h
