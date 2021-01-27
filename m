@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4200230591C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A64305918
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbhA0LDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:03:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
+        id S236217AbhA0LCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:02:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46450 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236335AbhA0K70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:59:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9603B20770;
-        Wed, 27 Jan 2021 10:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611745014;
-        bh=QDzl1ovuUSa6aCqAcBWeRjk76zT/aNmdk61ejaarg8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M9iSICozDsKJp9HIgOkzKy860uwMzbEhJkWiJqKslDjqrQq/Y63JOnSv+d/gWyyGu
-         Xp5E8ngIIhG2JrErtHAjBfnOfFYdAF0y52wzvSRXFMdQpwLvMiDj8EL2+CJMgXamX4
-         EqQ4RMKlTcqLUT+Wg4KXXlgHwrEAFTwWsWMAb3gk=
-Date:   Wed, 27 Jan 2021 11:56:51 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/203] 5.10.11-rc2 review
-Message-ID: <YBFG8yKLQ6AXF0Ja@kroah.com>
-References: <20210126094313.589480033@linuxfoundation.org>
- <20210126113817.GA23197@amd>
+        id S236284AbhA0K5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:57:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611745017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X22pjoc3R05cEyBcSdDS4M+jzZBi8OqIcNLr6tG6NLo=;
+        b=nWOlT5MKFwcGje+YqBzXMPqVKCRFjabR9mcyxK5VaWeAAj2AB61FSPqmvMIC96JshZSh15
+        E/ttqk3HsfnyQzDb3FuyzUWFrqGv9F4pRupOeYjEtUX5mzbiu9+YhMg+RkxaVWKQYiyG/v
+        y4OM9V4DsGMBEY4bt99qv7mCEL/8r3I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0F674AD2B;
+        Wed, 27 Jan 2021 10:56:57 +0000 (UTC)
+Subject: Re: [PATCH] xen-blkback: fix compatibility bug with single page rings
+To:     Paul Durrant <paul@xen.org>
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Dongli Zhang <dongli.zhang@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+References: <20210127103034.2559-1-paul@xen.org>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <cd70ae5e-a389-7521-8caf-15650a276152@suse.com>
+Date:   Wed, 27 Jan 2021 11:56:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126113817.GA23197@amd>
+In-Reply-To: <20210127103034.2559-1-paul@xen.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:38:17PM +0100, Pavel Machek wrote:
-> Hi!
+On 27.01.2021 11:30, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
 > 
-> > This is the start of the stable review cycle for the 5.10.11 release.
-> > There are 203 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 28 Jan 2021 09:42:40 +0000.
-> > Anything received after that time might be too late.
+> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
+> inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
+> behaviour of xen-blkback when connecting to a frontend was:
 > 
-> CIP testing did not find any problems here. (Due to minimal changs
-> between -rc1 and rc2, that's expectd I guess)
+> - read 'ring-page-order'
+> - if not present then expect a single page ring specified by 'ring-ref'
+> - else expect a ring specified by 'ring-refX' where X is between 0 and
+>   1 << ring-page-order
 > 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
+> This was correct behaviour, but was broken by the afforementioned commit to
+> become:
 > 
-> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+> - read 'ring-page-order'
+> - if not present then expect a single page ring
+> - expect a ring specified by 'ring-refX' where X is between 0 and
+>   1 << ring-page-order
+> - if that didn't work then see if there's a single page ring specified by
+>   'ring-ref'
+> 
+> This incorrect behaviour works most of the time but fails when a frontend
+> that sets 'ring-page-order' is unloaded and replaced by one that does not
+> because, instead of reading 'ring-ref', xen-blkback will read the stale
+> 'ring-ref0' left around by the previous frontend will try to map the wrong
+> grant reference.
+> 
+> This patch restores the original behaviour.
 
-Thanks for testing 2 of these and letting me know.
+Isn't this only the 2nd of a pair of fixes that's needed, the
+first being the drivers, upon being unloaded, to fully clean up
+after itself? Any stale key left may lead to confusion upon
+re-use of the containing directory.
 
-greg k-h
+Jan
