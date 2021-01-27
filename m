@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E908D306478
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26155306490
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhA0Tvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhA0TvC (ORCPT
+        id S232329AbhA0T6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:58:48 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34038 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231946AbhA0T5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:51:02 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D33C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:50:22 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id q131so1890642pfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c9U/E4NAOZN1zGDJN6ajr3v7PnsrIwJRfTojEiXgDFE=;
-        b=SQcnEZz3e5KTzenB+u2Yw7jys4kDRMmrkJkmIajdVCFcMDZKtQ994n+cLvV77fnkXa
-         7f7j4qD2ZLp/L5GB7HbBg6SSfbT6botBfxUjzikDsHTxc9fS8G35rTfFbIRFBoohtlhn
-         NXA2WpS7tLdCP/wtitm+LzVd1McGKUwDvYtwhd8GQ3tKA6ZvtAymK710GYAMJcsRHlJh
-         2rRfRMyuT0ia5m1N3I4gFXC1qHPR1jdVgMnE6sgCocWMUmVU0lZaGB/ud9XPOzlIKRp+
-         Qiu4qNxMvL8E0aZCbQ3yv5EEHow1s7RIuVb6oBxcMMfJ47pWMz5Y5xVh2yQ4YOcnk4AY
-         gLmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c9U/E4NAOZN1zGDJN6ajr3v7PnsrIwJRfTojEiXgDFE=;
-        b=qCxGS/eBU0cBFrWzZgbIv4Z/+kxfAbSEIImEh0QTfZoWXjR0vRxrT4kaRKy5RmF+hr
-         kRqohWFDn4w1/zNZn+SPbo/hxs5deewOtnPETGiEKKNdK41DNaWqsGl6NWTQd0TYmQi2
-         szouHouqr877bIgWyIHWhGx4WEwzZXzlaOaipAtzB87XNFP157vtU6iugPvIHz+jKeoo
-         hcoq8e+yREPqeLsETiDwMCZXg8AnG1BplxAiSN39dLCLMHckZr/t6z4eqCEm8P9k/FLY
-         HOEdR3lb8RQY9ea1S1GbU6QtR82qmQSbgSVSJkN2C7b+hJ6BLpbUekmtI9nptOpC96vc
-         jhaw==
-X-Gm-Message-State: AOAM532K2zMOqd3O7NxL/ydxOekPAdUhDiAcfV4tYR+MmtZA5iPzGny/
-        tIFhsMV9c/Q5Ag5cEnpqDL3AnixB1OX8hHMpuoKvhw==
-X-Google-Smtp-Source: ABdhPJxoE+wlvrWbJYlFeq+4g3omfEZVNtzrO3gbHcVhRi7GB60xkbsLiTAU6alGBMHRu5EOpVEpHdaSE8VSYx81i7s=
-X-Received: by 2002:a65:430b:: with SMTP id j11mr12450545pgq.130.1611777021720;
- Wed, 27 Jan 2021 11:50:21 -0800 (PST)
+        Wed, 27 Jan 2021 14:57:55 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RJu31J028751;
+        Wed, 27 Jan 2021 13:56:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611777363;
+        bh=qv0+AotchmTZEDjYtGsMUhbEB1NMxoKxiwzceryYbmg=;
+        h=From:To:CC:Subject:Date;
+        b=qvTw9z7Dw+4LuvH6li80VJMdqlhLL+SUfC8m57lMjIXwMIWIUcvvB6xz9cEAqTGvR
+         gaVWZ/afiPUFskKjelG4RDqQHxE9zMguvftKnZx/oN4zwpBtoIMLMyYnXZ7TzAvf+6
+         8zDQfvLDHq/ZUbNBNYfd6LqpB7tdtwgJWQyiwYis=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RJu31D052025
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Jan 2021 13:56:03 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
+ Jan 2021 13:56:02 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 27 Jan 2021 13:56:02 -0600
+Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RJu2oS107568;
+        Wed, 27 Jan 2021 13:56:02 -0600
+Received: from localhost ([10.250.69.64])
+        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 10RJu2vq082095;
+        Wed, 27 Jan 2021 13:56:02 -0600
+From:   Suman Anna <s-anna@ti.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH 0/2] Add Mailbox support for TI K3 AM64x SoCs
+Date:   Wed, 27 Jan 2021 13:55:58 -0600
+Message-ID: <20210127195600.23501-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <0000000000008d396205b9e4adee@google.com> <CACT4Y+ZisDCO0w9O57tOp+7FL6VqJiFdxaRJ739rjW5z52PeXg@mail.gmail.com>
- <20210127174322.GH4387@sirena.org.uk>
-In-Reply-To: <20210127174322.GH4387@sirena.org.uk>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 27 Jan 2021 20:50:10 +0100
-Message-ID: <CAAeHK+yW_GCbKAdLEdQpFsjfBKy8_nkFKpBydg3icpb5rbA69g@mail.gmail.com>
-Subject: Re: KASAN: invalid-access Read in kmem_cache_destroy
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com>,
-        Amit Kachhap <amit.kachhap@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:44 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Jan 27, 2021 at 06:14:13PM +0100, Dmitry Vyukov wrote:
-> > On Wed, Jan 27, 2021 at 5:58 PM syzbot
-> > <syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=12eb4ad8d00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=2a52b6c31dbefb1e9d9f
-> > > userspace arch: arm64
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com
-> >
-> > This happens on arm64 instance with MTE enabled.
-> > I don't see any corresponding reports on x86_64. So I would assume
-> > it's a generic latent bug, or probably more likely a bug in MTE
-> > support.
->
-> Copying in Vincenso who's done a bunch of MTE stuff recently.
+Hi Jassi,
 
-Could be the same issue as:
+The following series extends the OMAP Mailbox driver to enable the
+Mailbox IP present on the most recent TI K3 AM64x SoCs [1]. AM64x is
+a 64-bit system, and the Mailbox IP is a cut-down version of the one
+present on previous TI K3 SoCs like AM65x and J721E.
 
-https://lkml.org/lkml/2021/1/27/1109
+DT nodes will be posted separately once the binding is acked/merged.
+
+regards
+Suman
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210120202532.9011-1-d-gerlach@ti.com/
+
+Suman Anna (2):
+  dt-bindings: mailbox: omap: Update binding for AM64x SoCs
+  mailbox: omap: Add support for K3 AM64x SoCs
+
+ .../bindings/mailbox/omap-mailbox.txt         | 22 +++++++++++++++++++
+ drivers/mailbox/omap-mailbox.c                |  6 ++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
+
+-- 
+2.29.2
+
