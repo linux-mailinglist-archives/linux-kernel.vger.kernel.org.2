@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006B830534D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3299530534B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhA0GgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:36:01 -0500
-Received: from m97179.mail.qiye.163.com ([220.181.97.179]:41140 "EHLO
-        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbhA0DMj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:12:39 -0500
-Received: from localhost.localdomain (unknown [218.94.118.90])
-        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 926D7E02834;
-        Wed, 27 Jan 2021 11:11:14 +0800 (CST)
-From:   Dongsheng Yang <dongsheng.yang@easystack.cn>
-To:     colyli@suse.de, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mchristi@redhat.com
-Cc:     Dongsheng Yang <dongsheng.yang@easystack.cn>
-Subject: [PATCH V2] bcache: dont reset bio opf in bch_data_insert_start
-Date:   Wed, 27 Jan 2021 11:11:11 +0800
-Message-Id: <20210127031111.3493-1-dongsheng.yang@easystack.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231391AbhA0Ge5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:34:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233787AbhA0DMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:12:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24CB220639;
+        Wed, 27 Jan 2021 03:11:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611717076;
+        bh=04pxKoswdp9eDCNzSWVd+jkXEOIvxj4syJjvxYEICZE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ganhP9MpbbTL3psKQAMtwInaoysHgwc/+Ir47W+y+LgJLjEGbiOpUAU7dQoQnLqqV
+         PCuG0bZOABdz1suOtV2xvnP0Bu78f/yaf8NACa18au+jNXHPcerrSDrQfP3LZ1dc7C
+         9yP2RN67QouPQa4b/L2tJ1ajh3nDWfN7TiBeies3qeXVxIKdeop9BE3mi+3vqByb5Z
+         JKxYSNJlRWjYslQ5PLHJzXdQYWkXYG5IWTIH8/XC+BfDKBdQOb6U0tCSYUrBjfXZAU
+         nQB8zRC2bh0g1yFVpiJozsU9oGVdYUp/vxw5mOGRCPdgc4fYUUKGv2jSn4oEKDMeb3
+         e6laIdrmOD6VQ==
+Date:   Tue, 26 Jan 2021 19:11:15 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Brauner <christian@brauner.io>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the pidfd tree with the xfs tree
+Message-ID: <20210127031115.GA7695@magnolia>
+References: <20210125171414.41ed957a@canb.auug.org.au>
+ <20210127112441.1d07c1d4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZGkgZGExDSR1KHkkaVkpNSkpMSkxLTE9DT05VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MAg6Sjo6HD0zNghMGgIxHigq
-        Pi4aCh5VSlVKTUpKTEpMS0xOS0hNVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-        V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBSE5KTDcG
-X-HM-Tid: 0a7741d2df4320bdkuqy926d7e02834
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127112441.1d07c1d4@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit ad0d9e76(bcache: use bio op accessors) makes the bi_opf
-modified by bio_set_op_attrs(). But there is a logical
-problem in this commit:
+On Wed, Jan 27, 2021 at 11:24:41AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Mon, 25 Jan 2021 17:14:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Today's linux-next merge of the pidfd tree got a conflict in:
+> > 
+> >   fs/xfs/xfs_inode.c
+> > 
+> > between commit:
+> > 
+> >   01ea173e103e ("xfs: fix up non-directory creation in SGID directories")
+> > 
+> > from the xfs tree and commit:
+> > 
+> >   f736d93d76d3 ("xfs: support idmapped mounts")
+> > 
+> > from the pidfd tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> > diff --cc fs/xfs/xfs_inode.c
+> > index e2a1db4cee43,95b7f2ba4e06..000000000000
+> > --- a/fs/xfs/xfs_inode.c
+> > +++ b/fs/xfs/xfs_inode.c
+> > @@@ -809,13 -810,13 +810,13 @@@ xfs_init_new_inode
+> >   	inode->i_rdev = rdev;
+> >   	ip->i_d.di_projid = prid;
+> >   
+> >  -	if (pip && XFS_INHERIT_GID(pip)) {
+> >  -		inode->i_gid = VFS_I(pip)->i_gid;
+> >  -		if ((VFS_I(pip)->i_mode & S_ISGID) && S_ISDIR(mode))
+> >  -			inode->i_mode |= S_ISGID;
+> >  +	if (dir && !(dir->i_mode & S_ISGID) &&
+> >  +	    (mp->m_flags & XFS_MOUNT_GRPID)) {
+> >  +		inode->i_uid = current_fsuid();
+> 
+> Looking a bit harder, I replaced the above line with
+> 		inode->i_uid = fsuid_into_mnt(mnt_userns);
 
-                trace_bcache_cache_insert(k);
-                bch_keylist_push(&op->insert_keys);
+I think that looks good, though Mr. Brauner is probably better equipped
+to tell if that change is correct.
 
--               n->bi_rw |= REQ_WRITE;
-+               bio_set_op_attrs(n, REQ_OP_WRITE, 0);
-                bch_submit_bbio(n, op->c, k, 0);
-        } while (n != bio);
+(He says watching kernel.org mail take nearly a day to come through...)
 
-The old code add REQ_WRITE into bio n and keep other flags; the
-new code set REQ_OP_WRITE to bi_opf, but reset all other flags.
+--D
 
-This problem is discoverd in our performance testing:
-(1) start a fio with 1M x 128depth for read in /dev/nvme0n1p1
-(2) start a fio with 1M x 128depth for write in /dev/escache0 (cache
-device is /dev/nvme0n1p2)
+> 
+> >  +		inode->i_gid = dir->i_gid;
+> >  +		inode->i_mode = mode;
+> >   	} else {
+> > - 		inode_init_owner(inode, dir, mode);
+> >  -		inode->i_gid = fsgid_into_mnt(mnt_userns);
+> > ++		inode_init_owner(mnt_userns, inode, dir, mode);
+> >   	}
+> >   
+> >   	/*
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-We found the BW of reading is 2000+M/s, but the BW of writing is
-0-100M/s. After some debugging, we found the problem is io submit in
-writting is very slow.
-
-bch_data_insert_start() insert a bio to /dev/nvme0n1p1, but as
-cached_dev submit stack bio will be added into current->bio_list, and
-return.Then __submit_bio_noacct() will submit the new bio in bio_list
-into /dev/nvme0n1p1. This operation would be slow in
-blk_mq_submit_bio() -> rq_qos_throttle(q, bio);
-
-The rq_qos_throttle() will call wbt_should_throttle(),
-static inline bool wbt_should_throttle(struct rq_wb *rwb, struct bio *bio)
-{
-        switch (bio_op(bio)) {
-        case REQ_OP_WRITE:
-                /*
-                 * Don't throttle WRITE_ODIRECT
-                 */
-                if ((bio->bi_opf & (REQ_SYNC | REQ_IDLE)) ==
-                    (REQ_SYNC | REQ_IDLE))
-                        return false;
-... ...
-}
-
-As the bio_set_op_attrs() reset the (REQ_SYNC | REQ_IDLE), so this write
-bio will be considered as non-direct write.
-
-After this fix, bio to nvme will flaged as (REQ_SYNC | REQ_IDLE),
-then fio for writing will get about 1000M/s bandwidth.
-
-Fixes: ad0d9e76a412 ("bcache: use bio op accessors")
-Close: EAS-60259
-CC: Mike Christie <mchristi@redhat.com>
-Signed-off-by: Dongsheng Yang <dongsheng.yang@easystack.cn>
----
- drivers/md/bcache/request.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-index c7cadaafa947..eb734f7ddaac 100644
---- a/drivers/md/bcache/request.c
-+++ b/drivers/md/bcache/request.c
-@@ -244,7 +244,7 @@ static void bch_data_insert_start(struct closure *cl)
- 		trace_bcache_cache_insert(k);
- 		bch_keylist_push(&op->insert_keys);
- 
--		bio_set_op_attrs(n, REQ_OP_WRITE, 0);
-+		n->bi_opf |= REQ_OP_WRITE;
- 		bch_submit_bbio(n, op->c, k, 0);
- 	} while (n != bio);
- 
--- 
-2.25.1
 
