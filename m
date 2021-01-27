@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692E9305088
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A237130508C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbhA0EMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237876AbhA0EAF (ORCPT
+        id S238364AbhA0ENp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:13:45 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:46886 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238224AbhA0EJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:00:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84113C061573;
-        Tue, 26 Jan 2021 19:59:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=VU7YJf7mWfMYEHV3k5oxL8edagAxKHbwFXX/X3Di06I=; b=mTvPerrFiTIRiKpNEHzd53A/uc
-        muKcKRlLyiW+EMFXPrXS+aCGgSdTz5VZspPRyBntyzCm4im54lHTOQARlQOp4i0O95Bicm/q6OPy1
-        LCgiapGNGmaNVrwzoElogghXS8/AOI0SkxZ+WxO8yeX0DAsrDtKrfKbI4Lg1aKTDcB18rss0hhXAa
-        P9UdDGdQPjn31Tl4bzv/ee9scnHt+uEyvrHql70mFf778MyyN17SO7jVWXsdHKIy65anwFPDFTxPg
-        gAYrUtEczZMj4v5WFLom0CGUaaSeLfrpmsZyAto/EUCbPhNyHXE2I/NBab00H+w6hemTm4hOlw7p1
-        wwaIp2YA==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4bzH-0008LS-2A; Wed, 27 Jan 2021 03:59:23 +0000
-Subject: Re: [PATCH 1/2] fs/efs/inode.c: follow style guide
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Amy Parker <enbyamy@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
- <5d005259-feec-686d-dc32-e1b10cf74459@infradead.org>
-Message-ID: <df3e21ea-1626-ba3a-a009-6b3c5e33a260@infradead.org>
-Date:   Tue, 26 Jan 2021 19:59:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <5d005259-feec-686d-dc32-e1b10cf74459@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 26 Jan 2021 23:09:18 -0500
+X-Greylist: delayed 477 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Jan 2021 23:09:10 EST
+IronPort-SDR: zMp0UeaATN8dAmwGUwJ/f7vfSKVLz9SPYEYrELP5OMt/VgAxzU5cksfjlratlBdfK0pJQ3z2rC
+ x2a3ye/2oVbx5tzxjyyJZkznOGOcthLpltY27o/jPNQ6FF+zI8jL/bahGwA8PyJKtqfyXJ3Xj9
+ 9R2xKP3PwznzerwKspmpMZ2O+N5CHBLIIdOny9+2atBXocI4fumPPj1NddbDvfw6vMw8uwIapO
+ z0ZiW9vpyisAPT+sN2TJG3kuIFowA56cKA50d3K4EESWGnsgLVTMoErSwp5WQShPhJJs5oMAK6
+ C+o=
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="47711299"
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by labrats.qualcomm.com with ESMTP; 26 Jan 2021 20:00:27 -0800
+X-QCInternal: smtphost
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 26 Jan 2021 20:00:26 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
+        id 6068421903; Tue, 26 Jan 2021 20:00:26 -0800 (PST)
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     cang@codeaurora.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org
+Cc:     Asutosh Das <asutoshd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, stern@rowland.harvard.edu,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC PATCH v1 1/2] block: bsg: resume scsi device before accessing
+Date:   Tue, 26 Jan 2021 20:00:22 -0800
+Message-Id: <c04a11a590628c2497cef113b0dfea781de90416.1611719814.git.asutoshd@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1611719814.git.asutoshd@codeaurora.org>
+References: <cover.1611719814.git.asutoshd@codeaurora.org>
+In-Reply-To: <cover.1611719814.git.asutoshd@codeaurora.org>
+References: <cover.1611719814.git.asutoshd@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 7:46 PM, Randy Dunlap wrote:
-> Hi Amy,
-> 
-> What mail client did you use?
-> It is breaking (splitting) long lines into shorter lines and that
-> makes it not possible to apply the patch cleanly.
-> 
-> You can see this problem below or on the web in an email archive.
-> 
-> Possibly Documentation/process/email-clients.rst can help you.
+Resumes the scsi device before accessing it.
 
-Also tabs in the source file have been converted to spaces.
+Change-Id: I2929af60f2a92c89704a582fcdb285d35b429fde
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+---
+ block/bsg.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-It would be good if you could email a patch to yourself and then
-see if you can apply cleanly it to your source tree (after removing
-any conflicting patches, of course -- or use a different source
-tree).
-
-
+diff --git a/block/bsg.c b/block/bsg.c
+index d7bae94..f4c197f 100644
+--- a/block/bsg.c
++++ b/block/bsg.c
+@@ -306,12 +306,16 @@ static struct bsg_device *bsg_get_device(struct inode *inode, struct file *file)
+ static int bsg_open(struct inode *inode, struct file *file)
+ {
+ 	struct bsg_device *bd;
++	struct scsi_device *sd;
+ 
+ 	bd = bsg_get_device(inode, file);
+ 
+ 	if (IS_ERR(bd))
+ 		return PTR_ERR(bd);
+ 
++	sd = (struct scsi_device *) bd->queue->queuedata;
++	if (scsi_autopm_get_device(sd))
++		return -EIO;
+ 	file->private_data = bd;
+ 	return 0;
+ }
+@@ -319,8 +323,12 @@ static int bsg_open(struct inode *inode, struct file *file)
+ static int bsg_release(struct inode *inode, struct file *file)
+ {
+ 	struct bsg_device *bd = file->private_data;
++	struct scsi_device *sd;
+ 
+ 	file->private_data = NULL;
++	sd = (struct scsi_device *) bd->queue->queuedata;
++	scsi_autopm_put_device(sd);
++
+ 	return bsg_put_device(bd);
+ }
+ 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-netiquette: https://people.kernel.org/tglx/notes-about-netiquette
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
