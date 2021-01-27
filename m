@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C9130672A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A2E306755
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237174AbhA0WUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:20:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237124AbhA0WUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:20:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCB5D64D9F;
-        Wed, 27 Jan 2021 22:19:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611785986;
-        bh=8Vumxy5sgtpiFy5Xedhu2PELo2yTfRiVO0cxvR9NpfM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u+exvneJjPwNmemiRRMMCCDV/jP1oLJ+aQrEuREFMgspANJbkg/FXhudzP0yP5ZgM
-         1M8NHZBFIDOjbAFW3MA8I6puVO2XtP1rBLsFBsQxsanYPgsnkfK/0r+29S43cbxuNb
-         UoPD74xkSFx69/x/gKvJvsx2263rEFhrBxYOOVuw2bVe7+I5H8ZvVDJ/z7k0btPMIi
-         TqgIDTKznePyr7bNU6IqXYU9ZTXyShdxFiu1FMZDCwOyB0/yTXGI5IGM+F0tWtL7Um
-         zKdO6hEwFFBGn0uJvP+E9EIcI1f9o1FQS9FFQxa/3t+HGtQx6/HruxigoOs2HM+f4a
-         rYRFwy8YdNtPQ==
-Date:   Wed, 27 Jan 2021 22:19:39 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Subject: Re: [PATCH v9 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
-Message-ID: <20210127221939.GA848@willie-the-truck>
-References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
- <CAAeHK+xTWrdJ2as6kBLX+z64iu3e6JEGppOkN-i_jsH74c6xoA@mail.gmail.com>
+        id S232305AbhA0W4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:56:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231825AbhA0W4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:56:08 -0500
+X-Greylist: delayed 474 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 27 Jan 2021 14:32:47 PST
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA43C06174A;
+        Wed, 27 Jan 2021 14:32:47 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 708311C0B8E; Wed, 27 Jan 2021 23:24:08 +0100 (CET)
+Date:   Wed, 27 Jan 2021 23:24:07 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Add initial support for BQ Aquaris X5
+Message-ID: <20210127222407.GD24799@amd>
+References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
+ <20210124210119.GA27676@amd>
+ <YA3rTAx2vfOXPCMq@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="BI5RvnYi6R4T2M87"
 Content-Disposition: inline
-In-Reply-To: <CAAeHK+xTWrdJ2as6kBLX+z64iu3e6JEGppOkN-i_jsH74c6xoA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YA3rTAx2vfOXPCMq@gerhold.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:00:17PM +0100, Andrey Konovalov wrote:
-> On Tue, Jan 26, 2021 at 2:46 PM Vincenzo Frascino
-> <vincenzo.frascino@arm.com> wrote:
-> >
-> > This patchset implements the asynchronous mode support for ARMv8.5-A
-> > Memory Tagging Extension (MTE), which is a debugging feature that allows
-> > to detect with the help of the architecture the C and C++ programmatic
-> > memory errors like buffer overflow, use-after-free, use-after-return, etc.
-> >
-> > MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> > (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> > subset of its address space that is multiple of a 16 bytes granule. MTE
-> > is based on a lock-key mechanism where the lock is the tag associated to
-> > the physical memory and the key is the tag associated to the virtual
-> > address.
-> > When MTE is enabled and tags are set for ranges of address space of a task,
-> > the PE will compare the tag related to the physical memory with the tag
-> > related to the virtual address (tag check operation). Access to the memory
-> > is granted only if the two tags match. In case of mismatch the PE will raise
-> > an exception.
-> >
-> > The exception can be handled synchronously or asynchronously. When the
-> > asynchronous mode is enabled:
-> >   - Upon fault the PE updates the TFSR_EL1 register.
-> >   - The kernel detects the change during one of the following:
-> >     - Context switching
-> >     - Return to user/EL0
-> >     - Kernel entry from EL1
-> >     - Kernel exit to EL1
-> >   - If the register has been updated by the PE the kernel clears it and
-> >     reports the error.
-> >
-> > The series is based on linux-next/akpm.
-> >
-> > To simplify the testing a tree with the new patches on top has been made
-> > available at [1].
-> >
-> > [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
-> >
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Dmitry Vyukov <dvyukov@google.com>
-> > Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> > Cc: Alexander Potapenko <glider@google.com>
-> > Cc: Marco Elver <elver@google.com>
-> > Cc: Evgenii Stepanov <eugenis@google.com>
-> > Cc: Branislav Rankov <Branislav.Rankov@arm.com>
-> > Cc: Andrey Konovalov <andreyknvl@google.com>
-> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> 
-> Tested-by: Andrey Konovalov <andreyknvl@google.com>
-> 
-> > Vincenzo Frascino (4):
-> >   arm64: mte: Add asynchronous mode support
-> >   kasan: Add KASAN mode kernel parameter
-> >   kasan: Add report for async mode
-> >   arm64: mte: Enable async tag check fault
-> 
-> Andrew, could you pick this up into mm? The whole series will need to
-> go through mm due to dependencies on the patches that are already
-> there.
 
-Please can you check that it doesn't conflict with the arm64 for-next/core
-branch first?
+--BI5RvnYi6R4T2M87
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Will
+Hi!
+
+> > > Aquaris X5 (Longcheer L8910) is a smartphone released by BQ in 2015.
+> > >=20
+> > > As part of msm8916-mainline project, this series aims to bring initial
+> > > mainline support for it.
+> >=20
+> > Good to see another phone being supported. Can I ask you to cc:
+> > phone-devel@vger.kernel.org with phone stuff?
+> >=20
+> > > Features added:
+> > >  - SDHCI (internal and external storage)
+> > >  - USB Device Mode
+> > >  - UART
+> > >  - Regulators
+> > >  - WiFi/BT
+> > >  - Volume buttons
+> > >  - Vibrator
+> > >  - Touchkeys backlight
+> > >  - Accelerometer and gyroscope sensor
+> > >  - Magnetometer sensor
+> >=20
+> > How close are you to having useful phone calls?
+>=20
+> You can do phone calls (with audio) and you can use mobile data, if you
+> have the patches for that. :) I'm trying to find time to finish up the
+> drivers needed for that, but I've been a bit short on time lately.
+
+:-).=20
+
+> Actually we have come pretty far with MSM8916-based smartphones.
+> Most functionality is (somewhat) working at this point, the primary
+> open task is optimizing suspend/power consumption. Battery/charging
+> and camera is also tricky but works somewhat on some of the devices.
+
+Yes, power consumption is a lot of fun :-(.
+
+> Most of the functionality is packaged in postmarketOS [1] and you can
+> find a list of the devices in the postmarketOS wiki [2]. Especially
+> the ones in the "community" category are quite similar in terms of
+> working functionality.
+
+I know about postmarketOS (I even contributed a bit some time ago),
+and watch it from time to time. Currently I'm using old Nokia 6151 for
+phone calls, but would not mind switching. Work is ongoing in Droid 4
+land -- phone calls are also "almost there". But the almost seems to
+be a lot of work :-(.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--BI5RvnYi6R4T2M87
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAR6AcACgkQMOfwapXb+vJIwwCcDASqiP104rhpm8QJgQ160Qda
+GUgAn3bYBt4Yh25JM6rh0GIsEKcoCrH9
+=trfK
+-----END PGP SIGNATURE-----
+
+--BI5RvnYi6R4T2M87--
