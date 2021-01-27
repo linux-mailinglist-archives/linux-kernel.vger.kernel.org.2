@@ -2,272 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D75306682
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31519306643
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhA0VkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:40:12 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48884 "EHLO mga04.intel.com"
+        id S235894AbhA0Vds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:33:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234074AbhA0VgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:36:11 -0500
-IronPort-SDR: BGkQJvWMADWeiImmFAABhgQrJNnhzOwyw6T86kd91eH9LqjPhuSTXUaksnl2MkftLnrkDAtlwi
- UEuO1ZHphT1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="177573200"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="177573200"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:26:04 -0800
-IronPort-SDR: ozvZpWrFD5NCSVfphA9PtKud0nl2BIsSpjgnW9f/zfKVywRn2JWsyzJfsaDNSnrY+yiXQ+DqvM
- R0KoMgSZfA9Q==
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="353948280"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:26:03 -0800
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v18 25/25] mm: Introduce PROT_SHSTK for shadow stack
-Date:   Wed, 27 Jan 2021 13:25:24 -0800
-Message-Id: <20210127212524.10188-26-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210127212524.10188-1-yu-cheng.yu@intel.com>
-References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+        id S232435AbhA0VbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:31:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D8A9E64DCC;
+        Wed, 27 Jan 2021 21:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611783009;
+        bh=0q5sDg8bmZxPtZGnEYMQ4V1nzFuO4kZO0OjqrA+hhO4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W2N6yaBZO08eMYsdzYpMBLNLviq3hASShAYAkRWyjBhsBSviQdUuWezRfjf2sSXjs
+         kk2EehFUR0qkgM3rxpQrbdozg0VaU7DWUhNXiZcVngWmOAl+WXs7Wy6rVZ+AW8R/Lo
+         3yIQ8hBedtXS8sebypWJw1jI0zgD5C5k83uaGw9dhf7O1d/x/XyYLmdy8fkY2Bp0v5
+         5lFJv+291pT+Ew6Qbo+NWuPiKuABrzcZLa7f1VO0isVPXLYbWCLIhm/joTy+6Belgh
+         ltuA6lsh1zj58lu0ZslZvjRGwNB87uwywKQr2zIxN5awyoojSSVLDdTGAJG9LBYWpJ
+         K1Q6QQHJGmCYQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C727C613A8;
+        Wed, 27 Jan 2021 21:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: change 'BPF_ADD' to 'BPF_AND' in
+ print_bpf_insn()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161178300980.5444.2843489458453917484.git-patchwork-notify@kernel.org>
+Date:   Wed, 27 Jan 2021 21:30:09 +0000
+References: <20210127022507.23674-1-dong.menglong@zte.com.cn>
+In-Reply-To: <20210127022507.23674-1-dong.menglong@zte.com.cn>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jackmanb@google.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dong.menglong@zte.com.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are three possible options to create a shadow stack allocation API:
-an arch_prctl, a new syscall, or adding PROT_SHSTK to mmap()/mprotect().
-Each has its advantages and compromises.
+Hello:
 
-An arch_prctl() is the least intrusive.  However, the existing x86
-arch_prctl() takes only two parameters.  Multiple parameters must be
-passed in a memory buffer.  There is a proposal to pass more parameters in
-registers [1], but no active discussion on that.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-A new syscall minimizes compatibility issues and offers an extensible frame
-work to other architectures, but this will likely result in some overlap of
-mmap()/mprotect().
+On Tue, 26 Jan 2021 18:25:07 -0800 you wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> This 'BPF_ADD' is duplicated, and I belive it should be 'BPF_AND'.
+> 
+> Fixes: 981f94c3e921 ("bpf: Add bitwise atomic instructions")
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> [...]
 
-The introduction of PROT_SHSTK to mmap()/mprotect() takes advantage of
-existing APIs.  The x86-specific PROT_SHSTK is translated to VM_SHSTK and
-a shadow stack mapping is created without reinventing the wheel.  There are
-potential pitfalls though.  The most obvious one would be using this as a
-bypass to shadow stack protection.  However, the attacker would have to get
-to the syscall first.
+Here is the summary with links:
+  - [bpf-next] bpf: change 'BPF_ADD' to 'BPF_AND' in print_bpf_insn()
+    https://git.kernel.org/bpf/bpf-next/c/60e578e82b7d
 
-Since arch_calc_vm_prot_bits() is modified, I have moved arch_vm_get_page
-_prot() and arch_calc_vm_prot_bits() to x86/include/asm/mman.h.
-This will be more consistent with other architectures.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-[1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
-
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
----
- arch/x86/include/asm/mman.h      | 85 ++++++++++++++++++++++++++++++++
- arch/x86/include/uapi/asm/mman.h | 28 ++---------
- include/linux/mm.h               |  1 +
- mm/mmap.c                        |  8 ++-
- 4 files changed, 97 insertions(+), 25 deletions(-)
- create mode 100644 arch/x86/include/asm/mman.h
-
-diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
-new file mode 100644
-index 000000000000..db897d14fc37
---- /dev/null
-+++ b/arch/x86/include/asm/mman.h
-@@ -0,0 +1,85 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_MMAN_H
-+#define _ASM_X86_MMAN_H
-+
-+#include <linux/mm.h>
-+#include <uapi/asm/mman.h>
-+
-+#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-+/*
-+ * Take the 4 protection key bits out of the vma->vm_flags
-+ * value and turn them in to the bits that we can put in
-+ * to a pte.
-+ *
-+ * Only override these if Protection Keys are available
-+ * (which is only on 64-bit).
-+ */
-+#define arch_vm_get_page_prot(vm_flags)	__pgprot(	\
-+		((vm_flags) & VM_PKEY_BIT0 ? _PAGE_PKEY_BIT0 : 0) |	\
-+		((vm_flags) & VM_PKEY_BIT1 ? _PAGE_PKEY_BIT1 : 0) |	\
-+		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
-+		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
-+
-+#define pkey_vm_prot_bits(prot, key) (			\
-+		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
-+		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
-+		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
-+		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-+#else
-+#define pkey_vm_prot_bits(prot, key) (0)
-+#endif
-+
-+static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
-+	unsigned long pkey)
-+{
-+	unsigned long vm_prot_bits = pkey_vm_prot_bits(prot, pkey);
-+
-+	if (!(prot & PROT_WRITE) && (prot & PROT_SHSTK))
-+		vm_prot_bits |= VM_SHSTK;
-+
-+	return vm_prot_bits;
-+}
-+
-+#define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
-+
-+#ifdef CONFIG_X86_CET
-+static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
-+{
-+	unsigned long valid = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM;
-+
-+	if (prot & ~(valid | PROT_SHSTK))
-+		return false;
-+
-+	if (prot & PROT_SHSTK) {
-+		struct vm_area_struct *vma;
-+
-+		if (!current->thread.cet.shstk_size)
-+			return false;
-+
-+		/*
-+		 * A shadow stack mapping is indirectly writable by only
-+		 * the CALL and WRUSS instructions, but not other write
-+		 * instructions).  PROT_SHSTK and PROT_WRITE are mutually
-+		 * exclusive.
-+		 */
-+		if (prot & PROT_WRITE)
-+			return false;
-+
-+		vma = find_vma(current->mm, addr);
-+		if (!vma)
-+			return false;
-+
-+		/*
-+		 * Shadow stack cannot be backed by a file or shared.
-+		 */
-+		if (vma->vm_file || (vma->vm_flags & VM_SHARED))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+#define arch_validate_prot arch_validate_prot
-+#endif
-+
-+#endif /* _ASM_X86_MMAN_H */
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index d4a8d0424bfb..39bb7db344a6 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -1,31 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--#ifndef _ASM_X86_MMAN_H
--#define _ASM_X86_MMAN_H
-+#ifndef _UAPI_ASM_X86_MMAN_H
-+#define _UAPI_ASM_X86_MMAN_H
- 
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- 
--#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
--/*
-- * Take the 4 protection key bits out of the vma->vm_flags
-- * value and turn them in to the bits that we can put in
-- * to a pte.
-- *
-- * Only override these if Protection Keys are available
-- * (which is only on 64-bit).
-- */
--#define arch_vm_get_page_prot(vm_flags)	__pgprot(	\
--		((vm_flags) & VM_PKEY_BIT0 ? _PAGE_PKEY_BIT0 : 0) |	\
--		((vm_flags) & VM_PKEY_BIT1 ? _PAGE_PKEY_BIT1 : 0) |	\
--		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
--		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
--
--#define arch_calc_vm_prot_bits(prot, key) (		\
--		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
--		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
--		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
--		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
--#endif
-+#define PROT_SHSTK	0x10		/* shadow stack pages */
- 
- #include <asm-generic/mman.h>
- 
--#endif /* _ASM_X86_MMAN_H */
-+#endif /* _UAPI_ASM_X86_MMAN_H */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 06e9899e13b8..f3a3b6be97e2 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -342,6 +342,7 @@ extern unsigned int kobjsize(const void *objp);
- 
- #if defined(CONFIG_X86)
- # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
-+# define VM_ARCH_CLEAR	VM_SHSTK
- #elif defined(CONFIG_PPC)
- # define VM_SAO		VM_ARCH_1	/* Strong Access Ordering (powerpc) */
- #elif defined(CONFIG_PARISC)
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 95ce7cd68654..9434469db2ce 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1483,6 +1483,12 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 		struct inode *inode = file_inode(file);
- 		unsigned long flags_mask;
- 
-+		/*
-+		 * Call stack cannot be backed by a file.
-+		 */
-+		if (vm_flags & VM_SHSTK)
-+			return -EINVAL;
-+
- 		if (!file_mmap_ok(file, inode, pgoff, len))
- 			return -EOVERFLOW;
- 
-@@ -1547,7 +1553,7 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 	} else {
- 		switch (flags & MAP_TYPE) {
- 		case MAP_SHARED:
--			if (vm_flags & (VM_GROWSDOWN|VM_GROWSUP))
-+			if (vm_flags & (VM_GROWSDOWN|VM_GROWSUP|VM_SHSTK))
- 				return -EINVAL;
- 			/*
- 			 * Ignore pgoff.
--- 
-2.21.0
 
