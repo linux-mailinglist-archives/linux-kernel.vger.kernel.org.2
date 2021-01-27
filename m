@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC333056AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9C03056A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhA0JRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:17:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S235079AbhA0JQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:16:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235039AbhA0JIf (ORCPT
+        with ESMTP id S235029AbhA0JKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:08:35 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856ECC06174A;
-        Wed, 27 Jan 2021 01:08:19 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d13so699352plg.0;
-        Wed, 27 Jan 2021 01:08:19 -0800 (PST)
+        Wed, 27 Jan 2021 04:10:47 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0808FC061788
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:10:05 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id o16so1149348pgg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:10:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W38Kq8YAmsgr/+CxAuWwYcuGViKuCoITh18icT+elsI=;
-        b=RvDCPoT+bX1ytkELJsOF6lPH6bM+TVKJi40jhc3smzXdUbks6Hds9xtFNRqSm9+kk6
-         eZW55fHL4lzumTYIpn9MNvPnTtaQMCdHMJAOlpGPRUcxnOf/pcGmWYtscxoHwGv9vd5q
-         uwg3MmQqVpbjBOZWx97Z8xPVJSO8Zeq88x2MSxAjb1jbCey6xPrUQQ0JVpOegiCsKRb4
-         0yAj/l++AaA05FQC3c9xU+z/3gD6tOw6Oq3uDz/xyLtEnVyXCAiknq38gLnosH5F/KVP
-         zx8wiQNdq7WKR4wabLKxUuEUNwGzLBOGcAAEmpkweBE5B+tIpqEMAXW0+cLVSNE4ltWs
-         Z0GA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rRKTArZOg1KrGjFi8d6fGv/HZF1EOkxq/275M+KtPoM=;
+        b=Uwi3vAvNi1s+fF28WE+kMRQKlLALPib/vLCh98PitSRYo0RLK7BJNXcZJY8kJfdfCh
+         QjPJy/jOQUcOTSfmLC6YooQySA/r8sREjF1KpI3tE578WpmdEf8+mpMrlWzPcWZEMQlw
+         ptgUiPaZ1OQ3Pv9jjp/E5Gl3S1o7exI3S8p/HVlwxOPrCgS9qCuCrAWZ3TLLjKL3oScy
+         h1Sb8WbTzWSzfIv0X6HOXnjoB6I6Btf1Pw24B7aUgx60k/1+jxsPK9luftsez9AZyVhm
+         JM3bhBiTpL1BWmN1LpNlu8Ribeqp5zezKYgK26eKERrW5NIWZ1OwT6vtgwmOWZxlmERM
+         HtcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W38Kq8YAmsgr/+CxAuWwYcuGViKuCoITh18icT+elsI=;
-        b=NHXNPVEJr8CVo+F+xv1in3Mbx8tKbrir1X7G50TLU65slxocYSPu9JFP9P5tDRPTwQ
-         dHPq1K3/UXeONGW2PP0ctrRpOEPfP1zUMFcy3dmc2YAsG3U2j0EmqDozpvyfT8/7PawO
-         EKdNc79qJ0tXbovsQns/3WcFCTnUGZcVshTyVi0Ngh+A472p1iIqEOhDunkz3BooJxE5
-         b1YpvdgvAuXF6Qck3dsf+h2kdWmdgLG8croFdgrv0Q/2YHHYQ0GhDt8HHhHKUZYk5vbI
-         eJFWS3KHs1wc+438KLtFRTUOCQUamgteYZAFewjx3QZIISZ9GBq65sBi735FXFOUAEBX
-         bOXQ==
-X-Gm-Message-State: AOAM531pvAx4VrhS0tEcNZhiRn96N1xIoSaFhWziiYFhu01BNMdyH9Fg
-        2VmgoCQ53KFnS8JQUaHwvxH/AQnLjYE=
-X-Google-Smtp-Source: ABdhPJxftZ/JnULwaYtJpDp1NqZy3yheVHLPI+A86LCYfNzO5cMkRIm5wZHUlRohr2n6dacXh491tw==
-X-Received: by 2002:a17:902:6a83:b029:dc:2a2c:6b91 with SMTP id n3-20020a1709026a83b02900dc2a2c6b91mr10433757plk.8.1611738499062;
-        Wed, 27 Jan 2021 01:08:19 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:35c3:fa11:6872:27ed])
-        by smtp.gmail.com with ESMTPSA id 6sm1614795pfd.212.2021.01.27.01.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 01:08:18 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
-Date:   Wed, 27 Jan 2021 01:07:47 -0800
-Message-Id: <20210127090747.364951-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rRKTArZOg1KrGjFi8d6fGv/HZF1EOkxq/275M+KtPoM=;
+        b=raF1Ao/QigJCL0OvYO3U7uGn67tbfGBws5djh9m6CZAGsWqZ1O6nb5o3r2eMKtCOMs
+         5BIJMr7IdpJt6ZJN0P96qoGeh6FI9sftHjvfLdg86B6R0aayaO83N7Y6pPklMgjd8fY+
+         R4/OdEbLVeDfFD3hEdJH8C+lno9+a2KP/trsURyhywJ95V2FJuN9LTtTaLsYh6+MeL1E
+         mqHatcw7uGijQZU8juLSxMRtGgZ6Y4Z2+Mg5+j2pYBAC4jhEfeY0BGDayNFcAkn88Yqi
+         RwUTrg2F5yr626n87R+F1AsXcOM6Wo4AawK9f+NFraHxWnesKvXA3ldBxVXQM5EhI66w
+         zTxg==
+X-Gm-Message-State: AOAM533giHmZDIH3fIWF3iltQRa+QTmGuRjmBSKhi5GHQrZyLXEUZhY4
+        XRfG4ZhsNcubR8y9uziZHa1Ujg==
+X-Google-Smtp-Source: ABdhPJx4mOZlZshf0Ls4berDrkhQojnQ+aWFvIpMsiPBN5+BkSj7Yadrh1anDfjDbpXvp3ejj1Caog==
+X-Received: by 2002:a62:144c:0:b029:1c0:d62d:e16e with SMTP id 73-20020a62144c0000b02901c0d62de16emr9544172pfu.25.1611738605363;
+        Wed, 27 Jan 2021 01:10:05 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id p64sm1574652pfb.201.2021.01.27.01.10.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 01:10:04 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 11/13] devfreq: tegra30: Migrate to dev_pm_opp_set_opp()
+Date:   Wed, 27 Jan 2021 14:40:00 +0530
+Message-Id: <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
+References: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An HDLC hardware driver may call netif_stop_queue to temporarily stop
-the TX queue when the hardware is busy sending a frame, and after the
-hardware has finished sending the frame, call netif_wake_queue to
-resume the TX queue.
+dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
+be used instead. Migrate to the new API.
 
-However, the LAPB module doesn't know about this. Whether or not the
-hardware driver has stopped the TX queue, the LAPB module still feeds
-outgoing frames to the hardware driver for transmission. This can cause
-frames to be dropped by the hardware driver.
+We don't want the OPP core to manage the clk for this driver, migrate to
+dev_pm_opp_of_add_table_noclk() to make sure dev_pm_opp_set_opp()
+doesn't have any side effects.
 
-It's not easy to fix this issue in the LAPB module. We can indeed let the
-LAPB module check whether the TX queue has been stopped before feeding
-each frame to the hardware driver, but when the hardware driver resumes
-the TX queue, it's not easy to immediately notify the LAPB module and ask
-it to resume transmission.
-
-Instead, we can fix this issue at the hdlc_x25 layer, by using qdisc TX
-queues to queue outgoing LAPB frames. The qdisc TX queue will then
-automatically be controlled by netif_stop_queue and netif_wake_queue.
-
-This way, when sending, we will use the qdisc queue to queue and send
-the data twice: once as the L3 packet and then (after processed by the
-LAPB module) as an LAPB (L2) frame. This does not make the logic of the
-code messy, because when receiving, data are already "received" on the
-device twice: once as an LAPB (L2) frame and then (after processed by
-the LAPB module) as the L3 packet.
-
-Some more details about the code change:
-
-1. dev_queue_xmit_nit is removed because we already have it when we send
-the skb through the qdisc TX queue (in xmit_one).
-
-2. hdlc_type_trans is replaced by assigning skb->dev and skb->protocol
-directly. skb_reset_mac_header in hdlc_type_trans is no longer necessary
-because it will be called in __dev_queue_xmit.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: Martin Schiller <ms@dev.tdt.de>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/net/wan/hdlc_x25.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+Dmitry,
 
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index bb164805804e..b7f2823bf100 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -89,15 +89,10 @@ static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
+This is based over the patches sent here:
+
+https://lore.kernel.org/lkml/6c2160ff30a8f421563793020264cf9f533f293c.1611738228.git.viresh.kumar@linaro.org/
+
+This should fix the problem you mentioned earlier. Will push this for
+linux-next unless you have any issues with it.
+
+ drivers/devfreq/tegra30-devfreq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+index 117cad7968ab..31f7dec5990b 100644
+--- a/drivers/devfreq/tegra30-devfreq.c
++++ b/drivers/devfreq/tegra30-devfreq.c
+@@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+ 		return PTR_ERR(opp);
+ 	}
  
- static void x25_data_transmit(struct net_device *dev, struct sk_buff *skb)
- {
--	hdlc_device *hdlc = dev_to_hdlc(dev);
--
-+	skb->dev = dev;
-+	skb->protocol = htons(ETH_P_HDLC);
- 	skb_reset_network_header(skb);
--	skb->protocol = hdlc_type_trans(skb, dev);
--
--	if (dev_nit_active(dev))
--		dev_queue_xmit_nit(skb, dev);
--
--	hdlc->xmit(skb, dev); /* Ignore return value :-( */
-+	dev_queue_xmit(skb);
- }
+-	ret = dev_pm_opp_set_bw(dev, opp);
++	ret = dev_pm_opp_set_opp(dev, opp);
+ 	dev_pm_opp_put(opp);
  
+ 	return ret;
+@@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
  
-@@ -106,6 +101,12 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	int result;
- 
-+	if (skb->protocol == htons(ETH_P_HDLC)) {
-+		hdlc_device *hdlc = dev_to_hdlc(dev);
-+
-+		return hdlc->xmit(skb, dev);
-+	}
-+
- 	/* There should be a pseudo header of 1 byte added by upper layers.
- 	 * Check to make sure it is there before reading it.
- 	 */
+-	err = dev_pm_opp_of_add_table(&pdev->dev);
++	err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
+ 		goto put_hw;
 -- 
-2.27.0
+2.25.0.rc1.19.g042ed3e048af
 
