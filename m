@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18248305FC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B90C305FC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhA0Pgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:36:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235526AbhA0PDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:03:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EFE6207D0;
-        Wed, 27 Jan 2021 15:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611759758;
-        bh=a6xIqEAeZUgI/gWd9D7ZmCNMvsD1qRiSI3ez+rb5KZc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=choT2OBuWlOG8kg05sEL8BUB29DZt19Nnaa4X8KY+sYFpz0tJ9bLHBh75H5vRMj4t
-         PTX45RhDBDU/tS+F5IKP8GYt4lpyu0zo5/akga73hKAy8VgP9KyyFDm4dhSmsvZAdR
-         i2woKDQKkpc9YbekJzh8aNTdmXz9JNTnpeFU2AUg=
-Date:   Wed, 27 Jan 2021 16:02:35 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
-        mh12gx2825@gmail.com, sbrivio@redhat.com,
-        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Joe Perches <joe@perches.com>,
-        carlis <zhangxuezhi3@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>, colin.king@canonical.com,
-        zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
-Message-ID: <YBGAi+14PlXIdvxF@kroah.com>
-References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
- <YBFv+12xfsoxacDb@kroah.com>
- <20210127220809.000026fb@gmail.com>
- <YBF08Xf7qaZx3YZ1@kroah.com>
- <20210127221708.00002568@gmail.com>
- <YBF30EEUkhEMY5ti@kroah.com>
- <20210127144946.GF2696@kadam>
+        id S236161AbhA0PgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:36:12 -0500
+Received: from bin-mail-out-05.binero.net ([195.74.38.228]:60670 "EHLO
+        bin-mail-out-05.binero.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235601AbhA0PD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:03:58 -0500
+X-Halon-ID: bf46de24-60b0-11eb-a542-005056917a89
+Authorized-sender: andreas@gaisler.com
+Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
+        by bin-vsp-out-01.atm.binero.net (Halon) with ESMTPA
+        id bf46de24-60b0-11eb-a542-005056917a89;
+        Wed, 27 Jan 2021 16:03:09 +0100 (CET)
+From:   Andreas Larsson <andreas@gaisler.com>
+Subject: sparc32: boot fails with > 256 MB memory after switch to NO_BOOTMEM
+To:     Sparc kernel list <sparclinux@vger.kernel.org>, linux-mm@kvack.org,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Michal Hocko <mhocko@kernel.org>
+Message-ID: <5adb7c41-ad71-b904-6b73-35aef4dfcafe@gaisler.com>
+Date:   Wed, 27 Jan 2021 16:03:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127144946.GF2696@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 05:49:46PM +0300, Dan Carpenter wrote:
-> On Wed, Jan 27, 2021 at 03:25:20PM +0100, Greg KH wrote:
-> > On Wed, Jan 27, 2021 at 10:17:08PM +0800, carlis wrote:
-> > > On Wed, 27 Jan 2021 15:13:05 +0100
-> > > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > 
-> > > > On Wed, Jan 27, 2021 at 10:08:09PM +0800, carlis wrote:
-> > > > > On Wed, 27 Jan 2021 14:51:55 +0100
-> > > > > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >   
-> > > > > > On Wed, Jan 27, 2021 at 09:42:52PM +0800, Carlis wrote:  
-> > > > > > > From: zhangxuezhi <zhangxuezhi1@yulong.com>
-> > > > > > > 
-> > > > > > > For st7789v ic,when we need continuous full screen refresh, it
-> > > > > > > is best to wait for the TE signal arrive to avoid screen tearing
-> > > > > > > 
-> > > > > > > Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>    
-> > > > > > 
-> > > > > > Please slow down and wait at least a day between patch
-> > > > > > submissions, there is no rush here.
-> > > > > > 
-> > > > > > And also, ALWAYS run scripts/checkpatch.pl on your submissions, so
-> > > > > > that you don't have a maintainer asking you about basic problems,
-> > > > > > like are in this current patch :(
-> > > > > > 
-> > > > > > thanks,
-> > > > > > 
-> > > > > > greg k-h  
-> > > > > 
-> > > > > hi,
-> > > > >   This is my first patch contribution to Linux, so some of the rules
-> > > > > are not very clear .In addition, I can confirm that before sending
-> > > > > patch, I check it with checkPatch.py every time.Thank you very much
-> > > > > for your help  
-> > > > 
-> > > > Please read Documentation/SubmittingPatches which has a link to the
-> > > > checklist and other documentation you should read.
-> > > > 
-> > > > And I doubt you are running checkpatch on your submission, as there is
-> > > > obvious coding style issues in it.  If so, please provide the output
-> > > > as it must be broken :(
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > hi, the patch v11 checkpatch.pl output is below:
-> > > 
-> > > carlis@bf-rmsz-10:~/work/linux-kernel/linux$ ./scripts/checkpatch.pl
-> > > 0001-staging-fbtft-add-tearing-signal-detect.patch total: 0 errors, 0
-> > > warnings, 0 checks, 176 lines checked
-> > > 
-> > > 0001-staging-fbtft-add-tearing-signal-detect.patch has no obvious style
-> > > problems and is ready for submission.
-> > 
-> > Wow, my apologies!
-> > 
-> > Andy and Joe, there's something wrong here that is missing the fact that
-> > a line is being indented with spaces and not tabs in the patch
-> > at https://lore.kernel.org/r/1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com
-> > 
-> > Any ideas what broke?
-> > 
-> 
->     /*Tearing Effect Line On*/
-> 
-> Comments are the exception to the "no spaces at the start of a line"
-> rule.  I was expecting that the kbuild-bot would send a Smatch warning
-> for inconsistent indenting, but comments are not counted there either.
-> 
-> I'm sort of surprised that we don't have checkpatch rule about the
-> missing space characters.  It should be: "/* Tearing Effect Line On */".
 
-That was going to be my next question, lots of comments added in this
-patch don't have spaces...
 
-thanks,
+Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 makes sparc32 use
+memblocks instead of the previous bootmem solution. Unfortunately, due
+to this:
 
-greg k-h
+#define PAGE_OFFSET  0xf0000000
+#define __va(x)	     ((void *)((unsigned long) (x) - phys_base + 
+PAGE_OFFSET))
+#define phys_to_virt __va
+
+it makes physical addresses >= 0x10000000 past phys_base wrap around the
+32-bit memory space when converted to virtual addresses, e.g. in
+memblock_alloc_try_nid. Physical memory exactly 0x10000000 past
+phys_base is returned as an unintended NULL pointer, leading to a panic
+in my boot when percpu memory allocation fails due to it.
+
+Unfortunately I have had 256 MB memory or less in a lot of my testing,
+so this old one has slipped by me.
+
+Does anyone has any ideas or pointers on how to resolve this?
+
+Example follows where I have 512 MB memory at 0x40000000:
+
+----->%>%>%>%-----
+memblock_add: [0x40000000-0x5fffafff] bootmem_init+0x1f8/0x210
+319MB HIGHMEM available.
+memblock_reserve: [0x40000000-0x40e71fff] bootmem_init+0x178/0x210
+memblock_add: [0x40000000-0x40e71fff] bootmem_init+0x188/0x210
+memblock_alloc_try_nid: 5242880 bytes align=0x40000 nid=-1 
+from=0x00000000 max_addr=0x00000000 srmmu_nocache_init+0x20/0x25c
+memblock_reserve: [0x40e80000-0x4137ffff] 
+memblock_alloc_range_nid+0xcc/0x178
+memblock_alloc_try_nid: 2560 bytes align=0x20 nid=-1 from=0x00000000 
+max_addr=0x00000000 srmmu_nocache_init+0x94/0x25c
+memblock_reserve: [0x40e72000-0x40e729ff] 
+memblock_alloc_range_nid+0xcc/0x178
+memblock_alloc_try_nid: 4096 bytes align=0x20 nid=-1 from=0x00000000 
+max_addr=0x00000000 sparc_context_init+0x1c/0xe4
+memblock_reserve: [0x40e72a00-0x40e739ff] 
+memblock_alloc_range_nid+0xcc/0x178
+Zone ranges:
+   DMA      [mem 0x0000000040000000-0x000000004bffffff]
+   Normal   empty
+   HighMem  [mem 0x000000004c000000-0x000000005fffafff]
+Movable zone start for each node
+Early memory node ranges
+   node   0: [mem 0x0000000040000000-0x000000005fffafff]
+Initmem setup node 0 [mem 0x0000000040000000-0x000000005fffafff]
+----->%>%>%>%-----
+
+then much much later memblock_alloc_internal gets 0x50000000 from
+memblock_alloc_range_nid and returns a NULL pointer as result of
+phys_to_virt.
+
+----->%>%>%>%-----
+memblock_alloc_try_nid: 40960 bytes align=0x1000 nid=-1 from=0x4fffffff 
+max_addr=0x00000000 pcpu_dfl_fc_alloc+0x28/0x40
+memblock_reserve: [0x50000000-0x50009fff] 
+memblock_alloc_range_nid+0xcc/0x178
+memblock_free: [0x40e7e000-0x40e7efff] pcpu_free_alloc_info+0x1c/0x30
+memblock_free: [0x40e7f000-0x40e7ffff] pcpu_embed_first_chunk+0x194/0x3b8
+Kernel panic - not syncing: Failed to initialize percpu areas.
+CPU: 0 PID: 0 Comm: swapper Not tainted 
+5.11.0-rc3-00040-gbc4547251e1-dirty #28
+----->%>%>%>%-----
+
+Adding mem=256M to the command line solves the panic problem but makes
+the extra memory not be available for normal allocation later on either.
+
+The two first memblock_add calls (seen in the first first set of
+outputs) with overlapping address ranges that is done in bootmem_init
+also looks a bit worrying, but removing the second one does not affect
+this problem.
+
+-- 
+Best regards,
+
+Andreas Larsson
+Cobham Gaisler
