@@ -2,142 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA7C3054F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281853054FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbhA0HsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:48:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbhA0Hp5 (ORCPT
+        id S234420AbhA0HtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:49:15 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:39058 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231259AbhA0Hqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:45:57 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7221C0613D6;
-        Tue, 26 Jan 2021 23:45:16 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id n25so1034018pgb.0;
-        Tue, 26 Jan 2021 23:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uTfYbJAap7yGynm8d/+sMaK1UOCcnfG0vCnXAvPBlz0=;
-        b=sxAhR0Mk9LXCRMlMt8zcK3dONFgs2i0d+G/LaVHVWx3PrurCM+WtEY8d+6/51tiy7r
-         NBh5Htci+KqjP1Zo+aIesW1nUnoUOjgUaDr7Tax/Aag3C+acfrmxPsb07tHcHdSMgZe7
-         sam8tbDKGQbGN2Nvv0k6wju9GMPstmRAjpTwWI65iG+7W26ZkajObhoNscblHdnLPR5d
-         0YUolJtkSG91GYIoGR/pj7UeajirGmn5t1MZCMPhO/db8QdiZp5uDoQPqcV3JnIH1vi6
-         s2AS5mwX0ggCI7U8BQvOe8RQTVKNJ68rLJ7TeE5s+YM/93UoYbSZqSUNEa8jKj9Lgsmf
-         Ok9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uTfYbJAap7yGynm8d/+sMaK1UOCcnfG0vCnXAvPBlz0=;
-        b=ZAQ3N3qwYmYD1y2w+lzD5k1XdindTRTmo0e3Q25sUzEFCU8HDgNsdjmytTYH7hBHXq
-         dhIyQnsYiRpgAUOeIzhEiSAaxON9m9612cxcK1QlZrqhoZ+BwyQ8i6QjxJVLMiuVuhId
-         U/EJQstrdXUijKU4PDBh19AWMXzif48tPVO88fVveNfl4D1S9jM8QLMi+95jefofKsdF
-         +l19O0hbT57R10bbYWetHo/8uwDwSHhm1r1gmEJkaiZ4X/09dbJD8+c2a/zQaTq+3CPJ
-         5quj+ZVn2hlI3etKTqXuTJe0Xo0l44SaFI8QAlcAwG4WaB5YpdRVc4muTVjs347GAjfV
-         8yDg==
-X-Gm-Message-State: AOAM530FbKDCivyMW+biTprQlE2jtp7mTVD5KS2xhoLubskCm6/P2Nrh
-        8a5aKrDZjuSa2OLs+VHV2xOIOIE4SpHvLor4vY4=
-X-Google-Smtp-Source: ABdhPJzOz9cyhS3OPBYhiCs+26hRU+EmgHfFR87lQhmweB0bdIjQgBfMkjgL5cmIfvI8MFGV15W+00ap3eIC0FYCniI=
-X-Received: by 2002:a63:656:: with SMTP id 83mr9969603pgg.222.1611733516481;
- Tue, 26 Jan 2021 23:45:16 -0800 (PST)
+        Wed, 27 Jan 2021 02:46:51 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R7eAh9007630;
+        Tue, 26 Jan 2021 23:46:01 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=WTQnzh0LgcVf2rQ7+Ri9eZmLuRuXJoRJ90feaJxnOdI=;
+ b=Khutz+PSbJdTiTKo/kUiHw2JH83WYZFhjeJldu1eQQI29oX+lEzOHaEZwoukOpyn8oGD
+ V+KXUhrGGz/tCbtn70OGN1AuXvh6JgPCWk6aQjXKJpYbXxkAu3+ESP1UeP6Z2RU1oAak
+ u/b1OXRMC/VfsR5HjsCCvvVsntQxOwPK5CiKt28EXtraO0F9RnNg+NVsZMZQfVzA1EoU
+ qzRCNDLEjnfGa61p8jeMNuWgMQmymfyWTowk7wRuMoi5zKzmW+rstJH5YG/m5xyvv1Oo
+ E4dgBSL6e/qUdDLXslYkDVntkaNXUEY9bxAPv/t+EfrkfV68UZ/mBFgymEwMiUfCBzvx Mw== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36b1xpg9nh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 23:46:00 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 26 Jan
+ 2021 23:45:58 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 23:45:58 -0800
+Received: from hyd1soter2.marvell.com (unknown [10.29.37.45])
+        by maili.marvell.com (Postfix) with ESMTP id DE6353F703F;
+        Tue, 26 Jan 2021 23:45:55 -0800 (PST)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>, Hariprasad Kelam <hkelam@marvell.com>
+Subject: [Patch v2 net-next 0/7]  ethtool support for fec and link configuration
+Date:   Wed, 27 Jan 2021 13:15:45 +0530
+Message-ID: <1611733552-150419-1-git-send-email-hkelam@marvell.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210126195907.2273494-1-maxtram95@gmail.com> <d3effbdc-12c2-c6aa-98ba-7bde006fc4e1@acm.org>
-In-Reply-To: <d3effbdc-12c2-c6aa-98ba-7bde006fc4e1@acm.org>
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-Date:   Wed, 27 Jan 2021 09:44:50 +0200
-Message-ID: <CAKErNvpCdTvg-Bx-U+k3jYiazoz-Pr0LwruaSh+LszH9yP5c8A@mail.gmail.com>
-Subject: Re: [PATCH] Revert "block: simplify set_init_blocksize" to regain
- lost performance
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_03:2021-01-26,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:23 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 1/26/21 11:59 AM, Maxim Mikityanskiy wrote:
-> > The cited commit introduced a serious regression with SATA write speed,
-> > as found by bisecting. This patch reverts this commit, which restores
-> > write speed back to the values observed before this commit.
-> >
-> > The performance tests were done on a Helios4 NAS (2nd batch) with 4 HDDs
-> > (WD8003FFBX) using dd (bs=1M count=2000). "Direct" is a test with a
-> > single HDD, the rest are different RAID levels built over the first
-> > partitions of 4 HDDs. Test results are in MB/s, R is read, W is write.
-> >
-> >                 | Direct | RAID0 | RAID10 f2 | RAID10 n2 | RAID6
-> > ----------------+--------+-------+-----------+-----------+--------
-> > 9011495c9466    | R:256  | R:313 | R:276     | R:313     | R:323
-> > (before faulty) | W:254  | W:253 | W:195     | W:204     | W:117
-> > ----------------+--------+-------+-----------+-----------+--------
-> > 5ff9f19231a0    | R:257  | R:398 | R:312     | R:344     | R:391
-> > (faulty commit) | W:154  | W:122 | W:67.7    | W:66.6    | W:67.2
-> > ----------------+--------+-------+-----------+-----------+--------
-> > 5.10.10         | R:256  | R:401 | R:312     | R:356     | R:375
-> > unpatched       | W:149  | W:123 | W:64      | W:64.1    | W:61.5
-> > ----------------+--------+-------+-----------+-----------+--------
-> > 5.10.10         | R:255  | R:396 | R:312     | R:340     | R:393
-> > patched         | W:247  | W:274 | W:220     | W:225     | W:121
-> >
-> > Applying this patch doesn't hurt read performance, while improves the
-> > write speed by 1.5x - 3.5x (more impact on RAID tests). The write speed
-> > is restored back to the state before the faulty commit, and even a bit
-> > higher in RAID tests (which aren't HDD-bound on this device) - that is
-> > likely related to other optimizations done between the faulty commit and
-> > 5.10.10 which also improved the read speed.
-> >
-> > Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-> > Fixes: 5ff9f19231a0 ("block: simplify set_init_blocksize")
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > ---
-> >  fs/block_dev.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/block_dev.c b/fs/block_dev.c
-> > index 3b8963e228a1..235b5042672e 100644
-> > --- a/fs/block_dev.c
-> > +++ b/fs/block_dev.c
-> > @@ -130,7 +130,15 @@ EXPORT_SYMBOL(truncate_bdev_range);
-> >
-> >  static void set_init_blocksize(struct block_device *bdev)
-> >  {
-> > -     bdev->bd_inode->i_blkbits = blksize_bits(bdev_logical_block_size(bdev));
-> > +     unsigned int bsize = bdev_logical_block_size(bdev);
-> > +     loff_t size = i_size_read(bdev->bd_inode);
-> > +
-> > +     while (bsize < PAGE_SIZE) {
-> > +             if (size & bsize)
-> > +                     break;
-> > +             bsize <<= 1;
-> > +     }
-> > +     bdev->bd_inode->i_blkbits = blksize_bits(bsize);
-> >  }
-> >
-> >  int set_blocksize(struct block_device *bdev, int size)
->
-> How can this patch affect write speed? I haven't found any calls of
-> set_init_blocksize() in the I/O path. Did I perhaps overlook something?
+This series of patches add support for forward error correction(fec) and
+physical link configuration. Patches 1&2 adds necessary mbox handlers for fec
+mode configuration request and to fetch stats. Patch 3 registers driver
+callbacks for fec mode configuration and display. Patch 4&5 adds support of mbox
+handlers for configuring link parameters like speed/duplex and autoneg etc.
+Patche 6&7 registers driver callbacks for physical link configuration.
 
-I don't know the exact mechanism how this change affects the speed,
-I'm not an expert in the block device subsystem (I'm a networking
-guy). This commit was found by git bisect, and my performance test
-confirmed that reverting it fixes the bug.
+Change-log:
+v2:
+-Fixed review comments
+	- Corrected indentation issues
+        - Return -ENOMEM incase of mbox allocation failure
+	- added validation for input fecparams bitmask values
+        - added more comments
 
-It looks to me as this function sets the block size as part of control
-flow, and this size is used later in the fast path, and the commit
-that removed the loop decreased this block size.
 
-> Bart.
->
->
+Christina Jacob (6):
+  octeontx2-af: forward error correction configuration
+  octeontx2-pf: ethtool fec mode support
+  octeontx2-af: Physical link configuration support
+  octeontx2-af: advertised link modes support on cgx
+  octeontx2-pf: ethtool physical link status
+  octeontx2-pf: ethtool physical link configuration
+
+Felix Manlunas (1):
+  octeontx2-af: Add new CGX_CMD to get PHY FEC statistics
+
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 257 +++++++++++++-
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |  10 +
+ .../net/ethernet/marvell/octeontx2/af/cgx_fw_if.h  |  70 +++-
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  87 ++++-
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |   4 +
+ .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    |  82 +++++
+ .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  23 ++
+ .../ethernet/marvell/octeontx2/nic/otx2_common.h   |   6 +
+ .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  | 393 ++++++++++++++++++++-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   3 +
+ 10 files changed, 928 insertions(+), 7 deletions(-)
+
+--
+2.7.4
