@@ -2,65 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18CD30571C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B07305722
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhA0Jjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:39:32 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11517 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234692AbhA0Jgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:36:46 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQdjl4GX9zjDTQ;
-        Wed, 27 Jan 2021 17:34:51 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 27 Jan 2021
- 17:36:01 +0800
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: Use DEFINE_RES_MEM() to simplify
- code
-To:     Will Deacon <will@kernel.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20210122131448.1167-1-thunder.leizhen@huawei.com>
- <7f0b488d-f9b2-92b8-5914-2cef76b4d398@huawei.com>
- <20210127092352.GA31790@willie-the-truck>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <266dcbb7-56fb-6b29-6e50-d49fbee5a966@huawei.com>
-Date:   Wed, 27 Jan 2021 17:35:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S235298AbhA0Jks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:40:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46536 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234249AbhA0Ji5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:38:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4D04AAD78;
+        Wed, 27 Jan 2021 09:38:16 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 10:38:10 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v3 06/21] x86/fpu/xstate: Calculate and remember dynamic
+ xstate buffer sizes
+Message-ID: <20210127093810.GA8115@zn.tnic>
+References: <20201223155717.19556-1-chang.seok.bae@intel.com>
+ <20201223155717.19556-7-chang.seok.bae@intel.com>
+ <20210122114430.GB5123@zn.tnic>
+ <6811FA0A-21A6-4519-82B8-C128C30127E0@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127092352.GA31790@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6811FA0A-21A6-4519-82B8-C128C30127E0@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 27, 2021 at 01:23:35AM +0000, Bae, Chang Seok wrote:
+> How about ‘embedded’?,
+>     “The xstate buffer is currently embedded into struct fpu with static size."
 
+Better.
 
-On 2021/1/27 17:23, Will Deacon wrote:
-> On Wed, Jan 27, 2021 at 10:05:50AM +0800, Leizhen (ThunderTown) wrote:
->> I've sent another set of patches. https://lkml.org/lkml/2021/1/26/1065
->> If those patches are acceptable, then this one should be ignored.
+> Okay. I will prepare a separate cleanup patch that can be applied at the end
+> of the series. Will post the change in this thread at first.
+
+No, this is not how this works. Imagine you pile up a patch at the end
+for each review feedback you've gotten. No, this will be an insane churn
+and an unreviewable mess.
+
+What you do is you rework your patches like everyone else.
+
+Also, thinking about this more, I'm wondering if all those
+xstate-related attributes shouldn't be part of struct fpu instead of
+being scattered around like that.
+
+That thing - struct fpu * - gets passed in everywhere anyway so all that
+min_size, max_size, ->xstate_ptr and whatever, looks like it wants to be
+part of struct fpu. Then maybe you won't need the accessors...
+
+> One of my drafts had some internal helper to be called in there. No reason
+> prior to applying the get_xstate_buffer_attr() helper. But with it, better to
+> move this out of this header file I think.
+
+See above.
+
 > 
-> I've already queued this one, so if you want me to drop it then you need to
-> send me a revert.
-
-Thanks. Since it's queued, keep it. I'll update the new patch set.
-
+> >> @@ -627,13 +627,18 @@ static void check_xstate_against_struct(int nr)
+> >>  */
+> > 
+> > <-- There's a comment over this function that might need adjustment.
 > 
-> Will
-> 
-> .
-> 
+> Do you mean an empty line? (Just want to clarify.)
 
+No, I mean this comment:
+
+ * Dynamic XSAVE features allocate their own buffers and are not
+ * covered by these checks. Only the size of the buffer for task->fpu
+ * is checked here.
+
+That probably needs adjusting as you do set min and max size here now
+for the dynamic buffer.
+
+> Agreed. I will prepare a patch. At least will post the diff here.
+
+You can send it separately from this patchset, ontop of current
+tip/master, so that I can take it now.
+
+> How about:
+>     “Ensure the size fits in the statically-allocated buffer:"
+
+Yep.
+
+> No excuse, just pointing out the upstream code has “we” there [1].
+
+Yeah, I know. :-\
+
+But considering how many parties develop the kernel now, "we" becomes
+really ambiguous.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
