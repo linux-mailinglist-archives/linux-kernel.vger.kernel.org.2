@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD67C30653F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B861430654F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhA0Ue7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbhA0Uex (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:34:53 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441F3C061573;
-        Wed, 27 Jan 2021 12:34:13 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id hs11so4554485ejc.1;
-        Wed, 27 Jan 2021 12:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j11Iu9yfS9cnbK3IBbJ4mPKwbUlMKjGaBsCh68ev+BQ=;
-        b=HGItaCqdG1CAAVTkD8MHs/EESz39yPpGXVxY41CGKJFTFjw7KKOQ9NCMw4PjbVnM99
-         29UqB5bboFAKHhG6nhxEEh4HCF6g5zgUb4T0g3nyXZ4d1DWrpZ37HYub4Zuc91ZGdh4H
-         IJvy97AQMnqujE53OmbJ/JGgCZW/luZZJbAjQAUKqCgu0P4/dAOZHUURNlXcxKV/T9Eg
-         ukSb6IaikgyHCcKQ1HCZ8VTrsDHYHMy08Uz1WX4FSd14jhCTHG16LCX+x9AZkFqWFWSi
-         cKLSk/D+Iys0ceN10xnyXEGOA6HYPm9aE9MN5U2bjziIu/OQUFsicpCyDLKFE7L1V/mG
-         TInw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j11Iu9yfS9cnbK3IBbJ4mPKwbUlMKjGaBsCh68ev+BQ=;
-        b=WtKCmdyp1CApKuzxu5e+Us8tVCoi4Ou7HAqM37Eo8BrhcYjfhQRlnKI4scMz16WZtA
-         5e3iCVJzEHKYMRahZEoV8/cvQkSbuGwwk8ijQL+eCDi9gkdXfhuc2YZqmo78lvCOeaix
-         G94Je46kQD6nTwZzC/qIRYUBEIn1ukDx6ZOllHyyWo0qIYSYPEHUZN1WL0YaDRic1ErH
-         pnp9Hn3vqeGkPBhrnCWaZkDMSBO9LBbJptx31muOsgUj9YXCP8ndn6eIeyvF42++Mgwr
-         XlkBrnNbLXWalbA9BYVTK/piC2pDZiOUfKMHbnZxfUr3AL9CP3SeQfFF4nX6YccHSMbt
-         iOOw==
-X-Gm-Message-State: AOAM530Wzf6CbSITQYygbaKCsXGTVZCfFpkx9HxA/EszZq71YSqVWaI5
-        OHIsHohmoRrPfTooU27sC8U+zZUDagc+jCZVNKdCcn5PV+I=
-X-Google-Smtp-Source: ABdhPJwVR8lQMcpcj72Za8KAxh7vzEPm7KD8KyWKAQmHJDdNhE3oOsZLfxG2bWMGBV6kvh/8NxBppo5Yl9VMERcoeNY=
-X-Received: by 2002:a17:906:3f8d:: with SMTP id b13mr7935906ejj.464.1611779651709;
- Wed, 27 Jan 2021 12:34:11 -0800 (PST)
+        id S233077AbhA0Uid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:38:33 -0500
+Received: from mail-eopbgr80100.outbound.protection.outlook.com ([40.107.8.100]:56424
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232992AbhA0UhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 15:37:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aBoCbqB9QkPC+pdC+xVfRHsKazZTg0qxBXNBFDU3LKNHt/uzGFfWslD7maGOjE5oSZS4yDUOHPObRP6RJ2oepEKq297aGrummRD3xvWm4I2KvS91kHts243yhufgS0NJzvQcNjZqHJRH44jMvB8S5g6gLVJzoGzp2pDL5aOS1Ajd5BwK4EErNVMSOnr5taqp550cS6RVpsj7wM8xQw1GRofbkKkATSOwsqkGY+QudttRCvS+IlmAVGUpc4+Dx6pzW3uXujUr5mKHEouP9SN8ejDj29b6VPJ1obo/j3Kg0cM3KK7JP2LlGZb1n3z5oZJh+5ieaVouhNfgQVqG2Kzg8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5D1W29JTAFMesqByebVBoGJ8/uFpWAMR2iZtmsgr0s8=;
+ b=UO+U2LKisbTfS8vNMAX7YYtnAzjV0xVN6ZVlD7L18NQBaCzTNds3t+mi8gRI3M1OoElC/CYmcc21IP3oIeG3MdJclt4CA9CNJy3LiVp78nrqcBYcfEPE9ml+yHibWy3CsueSgtj59Lg/xP6nCtjyqQlUmmZJoYbsb5HygDB56uxc7KcCgvRXyfTFdoGBj3MQNdOfilJu6I5Ufg2A3BAjvZoXWD/18Y7BnFz0ZYTOnS2MAwxSDsOu70yeWnECMAOYvwCwGK2G6IR2km0ZarXMz2G+a5vPdGYFIjMZX+cwzS1SqGP6K1ItjSgKNXD1MJeYHnB9Ocb87jziX9wZCrEyIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5D1W29JTAFMesqByebVBoGJ8/uFpWAMR2iZtmsgr0s8=;
+ b=AyMGVm7tjP8rRDtuYZ9DjSwgWm0UJLtSSY+AojzGwg0/uDVGT0Vs4vDJTx34mef2Xi2gge5rESUOvYwTG2mN6wYoSXq1GixP/aF2J3iWYpSt0NjKvsWuZWgwf9/iB0ISkGB0oU4evhwTSR/UPliB1LAUKKxjXgf4ii9e1J1PTpw=
+Received: from DB6PR07CA0168.eurprd07.prod.outlook.com (2603:10a6:6:43::22) by
+ VI1PR07MB5039.eurprd07.prod.outlook.com (2603:10a6:803:9a::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.10; Wed, 27 Jan 2021 20:36:32 +0000
+Received: from DB5EUR03FT024.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:6:43:cafe::18) by DB6PR07CA0168.outlook.office365.com
+ (2603:10a6:6:43::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.5 via Frontend
+ Transport; Wed, 27 Jan 2021 20:36:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ DB5EUR03FT024.mail.protection.outlook.com (10.152.20.67) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11 via Frontend Transport; Wed, 27 Jan 2021 20:36:32 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 10RKaU55012891;
+        Wed, 27 Jan 2021 20:36:30 GMT
+From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] MIPS: qspinlock: Try to reduce reduce the spinlock regression
+Date:   Wed, 27 Jan 2021 21:36:21 +0100
+Message-Id: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-References: <1611733552-150419-1-git-send-email-hkelam@marvell.com> <1611733552-150419-5-git-send-email-hkelam@marvell.com>
-In-Reply-To: <1611733552-150419-5-git-send-email-hkelam@marvell.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 27 Jan 2021 15:33:35 -0500
-Message-ID: <CAF=yD-+cHaOjHDXfQx2b+N14V-DfQdiC7EPcRKwXzGVdWbm89A@mail.gmail.com>
-Subject: Re: [Patch v2 net-next 4/7] octeontx2-af: Physical link configuration support
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>, sbhatta@marvell.com,
-        Christina Jacob <cjacob@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 798d0dd8-d0af-43cd-0014-08d8c3033b6b
+X-MS-TrafficTypeDiagnostic: VI1PR07MB5039:
+X-Microsoft-Antispam-PRVS: <VI1PR07MB5039FC3F6013348D7D39C8D888BB0@VI1PR07MB5039.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YW5K02wIbYLPcuIDFF1f1kfBkZMKIO71X4J1NLv7XfUKsgUIEecwEt3krxxmvy8Ip2lGbYD2zt/pmHWJ7+cP5W+RasAjkk64cv1zIvM9fCywDkQPNJKkneByf8sTunQdLXi0sgeld7sm2uuiUWi+9S011IoXqkZ6Xg1jU7pv4xDV6EAT0zW2lfShrrOVnh5jVMHAy41hRReMW+vWUOq/yswjyfgX+e1YALz0KPvUL432BbXMUp63VHk1M7HPOf5m5BFBXIhxkt72Y/vwLBWRRaZiDpIBTE4m3cWY9bn47eCee0fFSNUkITvE5E7A2ULzTnhSI2lsdv9HqrgvhHRUdTkjn23Bf4sa7HyIKKJLyURX+0+e9wlsy4XeQ5Ed+FJsc39Y+R/fxQ4KP+JuJhecXFBGPvYi6T2MKqSfwq5QAOAe2StKbVWe5t+EWevnllQHjg1PnqVyKatmXGfO5iCwOTehSbfzC9BFgc3P7ZTKYmPCd+ZUTmBDtQ2lwWzWgcHdPH5Ahy3gznt0Z/fRf/nRxtn/TBzOhCryKmaP9PDQfLIO5iKBrCbGsgpcSByTqJMXd1Adwk6xzYz452ByPs+LD3tMdXbowz2YMwIbL3U1jV5nNcNJdlWFVH5VhTxTmJV1rmGGZuPIRYt1FV+3kgxx6q4/PiUoqo1LNVjShhHJWFHi67xJDlN1Otlmob807LfowP7tLXq5beGXf3cFrJs1Ng==
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(396003)(39850400004)(376002)(346002)(46966006)(82310400003)(86362001)(2906002)(478600001)(6666004)(8936002)(966005)(4326008)(8676002)(316002)(70206006)(70586007)(2616005)(81166007)(356005)(47076005)(1076003)(82740400003)(26005)(186003)(36756003)(83380400001)(5660300002)(54906003)(336012)(36610700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 20:36:32.1151
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 798d0dd8-d0af-43cd-0014-08d8c3033b6b
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT024.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB5039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 4:02 AM Hariprasad Kelam <hkelam@marvell.com> wrote:
->
-> From: Christina Jacob <cjacob@marvell.com>
->
-> CGX LMAC, the physical interface support link configuration parameters
-> like speed, auto negotiation, duplex  etc. Firmware saves these into
-> memory region shared between firmware and this driver.
->
-> This patch adds mailbox handler set_link_mode, fw_data_get to
-> configure and read these parameters.
->
-> Signed-off-by: Christina Jacob <cjacob@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-> +int rvu_mbox_handler_cgx_set_link_mode(struct rvu *rvu,
-> +                                      struct cgx_set_link_mode_req *req,
-> +                                      struct cgx_set_link_mode_rsp *rsp)
-> +{
-> +       int pf = rvu_get_pf(req->hdr.pcifunc);
-> +       u8 cgx_idx, lmac;
-> +       void *cgxd;
-> +
-> +       if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-> +               return -EPERM;
-> +
-> +       rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_idx, &lmac);
-> +       cgxd = rvu_cgx_pdata(cgx_idx, rvu);
-> +       rsp->status =  cgx_set_link_mode(cgxd, req->args, cgx_idx, lmac);
+The switch to qspinlock brought a massive regression in spinlocks on
+Octeon. Even after applying this series (and a patch in the
+ARCH-independent code [1]) tight contended (6 cores, 1 thread per core)
+spinlock loop is still 50% slower as previous ticket-based implementation.
 
-nit: two spaces after assignment operator.
+This series implements some optimizations and has been tested on a 6-core
+Octeon machine.
 
-on the point of no new inline: do also check the status in patchwork.
-that also flags such issues.
+[1] Link: https://lkml.org/lkml/2021/1/27/1137
+
+Alexander Sverdlin (6):
+  MIPS: Octeon: Implement __smp_store_release()
+  MIPS: Implement atomic_cmpxchg_relaxed()
+  MIPS: Octeon: qspinlock: Flush write buffer
+  MIPS: Octeon: qspinlock: Exclude mmiowb()
+  MIPS: Provide {atomic_}xchg_relaxed()
+  MIPS: cmpxchg: Use cmpxchg_local() for {cmp_}xchg_small()
+
+ arch/mips/include/asm/atomic.h   | 5 +++++
+ arch/mips/include/asm/barrier.h  | 9 +++++++++
+ arch/mips/include/asm/cmpxchg.h  | 6 ++++++
+ arch/mips/include/asm/spinlock.h | 5 +++++
+ arch/mips/kernel/cmpxchg.c       | 4 ++--
+ 5 files changed, 27 insertions(+), 2 deletions(-)
+
+-- 
+2.10.2
+
