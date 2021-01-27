@@ -2,133 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9034306334
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5138330633F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343791AbhA0SZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:25:08 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55690 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235184AbhA0SZF (ORCPT
+        id S235799AbhA0S0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343828AbhA0SZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:25:05 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3152F20B7192;
-        Wed, 27 Jan 2021 10:24:23 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3152F20B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1611771863;
-        bh=yMsCPY9XGQhd0IkZadoqcZI8Fan9kErVPg16P1Bza9c=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=DLR0wWGtBDT3ah9ZQoQ7NylT0X7gOM7UFlzzCZuLcuhEGg2dZBS9OErvr4SUQP8Zy
-         /vNAhU0Nn/Ivm4V7NSPMF8xIVHOUWLplqvbfFVzKaEX18VP/abE6QeL9tVwo5VcJNb
-         Jsl+yLZkqshu27jamrru/rzalisWZnxQ6eoWzTrI=
-Subject: Re: [PATCH v15 10/10] arm64: Add IMA log information in kimage used
- for kexec
-To:     Will Deacon <will@kernel.org>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210115173017.30617-1-nramas@linux.microsoft.com>
- <20210115173017.30617-11-nramas@linux.microsoft.com>
- <20210127165424.GB358@willie-the-truck>
- <dec23eb8-0b27-3227-d1ef-f759338a7f9f@linux.microsoft.com>
- <20210127180230.GA593@willie-the-truck>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <8a573f84-732a-3591-8751-f7b08edaa01d@linux.microsoft.com>
-Date:   Wed, 27 Jan 2021 10:24:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 27 Jan 2021 13:25:53 -0500
+X-Greylist: delayed 662 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 27 Jan 2021 10:25:12 PST
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9490BC061573;
+        Wed, 27 Jan 2021 10:25:12 -0800 (PST)
+Received: from localhost.localdomain (abaf219.neoplus.adsl.tpnet.pl [83.6.169.219])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 6EB0F200A4;
+        Wed, 27 Jan 2021 19:25:10 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] thermal: qcom: tsens-v0_1: Add support for MDM9607
+Date:   Wed, 27 Jan 2021 19:25:05 +0100
+Message-Id: <20210127182506.52311-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210127180230.GA593@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 10:02 AM, Will Deacon wrote:
-> On Wed, Jan 27, 2021 at 09:56:53AM -0800, Lakshmi Ramasubramanian wrote:
->> On 1/27/21 8:54 AM, Will Deacon wrote:
->>> On Fri, Jan 15, 2021 at 09:30:17AM -0800, Lakshmi Ramasubramanian wrote:
->>>> Address and size of the buffer containing the IMA measurement log need
->>>> to be passed from the current kernel to the next kernel on kexec.
->>>>
->>>> Add address and size fields to "struct kimage_arch" for ARM64 platform
->>>> to hold the address and size of the IMA measurement log buffer.
->>>>
->>>> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC, if CONFIG_IMA
->>>> is enabled, to indicate that the IMA measurement log information is
->>>> present in the device tree for ARM64.
->>>>
->>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
->>>> ---
->>>>    arch/arm64/Kconfig             | 1 +
->>>>    arch/arm64/include/asm/kexec.h | 5 +++++
->>>>    2 files changed, 6 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->>>> index 1d466addb078..ea7f7fe3dccd 100644
->>>> --- a/arch/arm64/Kconfig
->>>> +++ b/arch/arm64/Kconfig
->>>> @@ -1094,6 +1094,7 @@ config KEXEC
->>>>    config KEXEC_FILE
->>>>    	bool "kexec file based system call"
->>>>    	select KEXEC_CORE
->>>> +	select HAVE_IMA_KEXEC if IMA
->>>>    	help
->>>>    	  This is new version of kexec system call. This system call is
->>>>    	  file based and takes file descriptors as system call argument
->>>> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
->>>> index d24b527e8c00..2bd19ccb6c43 100644
->>>> --- a/arch/arm64/include/asm/kexec.h
->>>> +++ b/arch/arm64/include/asm/kexec.h
->>>> @@ -100,6 +100,11 @@ struct kimage_arch {
->>>>    	void *elf_headers;
->>>>    	unsigned long elf_headers_mem;
->>>>    	unsigned long elf_headers_sz;
->>>> +
->>>> +#ifdef CONFIG_IMA_KEXEC
->>>> +	phys_addr_t ima_buffer_addr;
->>>> +	size_t ima_buffer_size;
->>>> +#endif
->>>
->>> Why do these need to be in the arch structure instead of 'struct kimage'?
->>>
->>
->> Currently, only powerpc and, with this patch set, arm64 have support for
->> carrying forward IMA measurement list across kexec system call. The above
->> fields are used for tracking IMA measurement list.
->>
->> Do you see a reason to move these fields to "struct kimage"?
-> 
-> If they're gated on CONFIG_IMA_KEXEC, then it seems harmless for them to
-> be added to the shared structure. Or are you saying that there are
-> architectures which have CONFIG_IMA_KEXEC but do not want these fields?
-> 
+MDM9607 TSENS IP is very similar to the one of MSM8916, with
+minor adjustments to various tuning values.
 
-As far as I know, there are no other architectures that define 
-CONFIG_IMA_KEXEC, but do not use these fields.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+Changes since v1:
+- Move the defines so as not to cut into the middle of 8974 regs
 
-Mimi - please correct me if I am wrong.
+ .../bindings/thermal/qcom-tsens.yaml          |   2 +
+ drivers/thermal/qcom/tsens-v0_1.c             | 100 +++++++++++++++++-
+ drivers/thermal/qcom/tsens.c                  |   3 +
+ drivers/thermal/qcom/tsens.h                  |   2 +-
+ 4 files changed, 105 insertions(+), 2 deletions(-)
 
-thanks,
-  -lakshmi
-
-
-
+diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+index 95462e071ab4..8ad9dc139c23 100644
+--- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
++++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+@@ -22,6 +22,7 @@ properties:
+       - description: v0.1 of TSENS
+         items:
+           - enum:
++              - qcom,mdm9607-tsens
+               - qcom,msm8916-tsens
+               - qcom,msm8939-tsens
+               - qcom,msm8974-tsens
+@@ -94,6 +95,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - qcom,mdm9607-tsens
+               - qcom,msm8916-tsens
+               - qcom,msm8974-tsens
+               - qcom,msm8976-tsens
+diff --git a/drivers/thermal/qcom/tsens-v0_1.c b/drivers/thermal/qcom/tsens-v0_1.c
+index 4ffa2e2c0145..7b13c01a1693 100644
+--- a/drivers/thermal/qcom/tsens-v0_1.c
++++ b/drivers/thermal/qcom/tsens-v0_1.c
+@@ -190,6 +190,39 @@
+ 
+ #define BIT_APPEND		0x3
+ 
++/* eeprom layout data for mdm9607 */
++#define MDM9607_BASE0_MASK	0x000000ff
++#define MDM9607_BASE1_MASK	0x000ff000
++#define MDM9607_BASE0_SHIFT	0
++#define MDM9607_BASE1_SHIFT	12
++
++#define MDM9607_S0_P1_MASK	0x00003f00
++#define MDM9607_S1_P1_MASK	0x03f00000
++#define MDM9607_S2_P1_MASK	0x0000003f
++#define MDM9607_S3_P1_MASK	0x0003f000
++#define MDM9607_S4_P1_MASK	0x0000003f
++
++#define MDM9607_S0_P2_MASK	0x000fc000
++#define MDM9607_S1_P2_MASK	0xfc000000
++#define MDM9607_S2_P2_MASK	0x00000fc0
++#define MDM9607_S3_P2_MASK	0x00fc0000
++#define MDM9607_S4_P2_MASK	0x00000fc0
++
++#define MDM9607_S0_P1_SHIFT	8
++#define MDM9607_S1_P1_SHIFT	20
++#define MDM9607_S2_P1_SHIFT	0
++#define MDM9607_S3_P1_SHIFT	12
++#define MDM9607_S4_P1_SHIFT	0
++
++#define MDM9607_S0_P2_SHIFT	14
++#define MDM9607_S1_P2_SHIFT	26
++#define MDM9607_S2_P2_SHIFT	6
++#define MDM9607_S3_P2_SHIFT	18
++#define MDM9607_S4_P2_SHIFT	6
++
++#define MDM9607_CAL_SEL_MASK	0x00700000
++#define MDM9607_CAL_SEL_SHIFT	20
++
+ static int calibrate_8916(struct tsens_priv *priv)
+ {
+ 	int base0 = 0, base1 = 0, i;
+@@ -452,7 +485,57 @@ static int calibrate_8974(struct tsens_priv *priv)
+ 	return 0;
+ }
+ 
+-/* v0.1: 8916, 8939, 8974 */
++static int calibrate_9607(struct tsens_priv *priv)
++{
++	int base0 = 0, base1 = 0, i;
++	u32 p1[5], p2[5];
++	int mode = 0;
++	u32 *qfprom_cdata, *qfprom_csel;
++
++	qfprom_cdata = (u32 *)qfprom_read(priv->dev, "calib");
++	if (IS_ERR(qfprom_cdata))
++		return PTR_ERR(qfprom_cdata);
++
++	mode = (qfprom_cdata[2] & MDM9607_CAL_SEL_MASK) >> MDM9607_CAL_SEL_SHIFT;
++	dev_dbg(priv->dev, "calibration mode is %d\n", mode);
++
++	switch (mode) {
++	case TWO_PT_CALIB:
++		base1 = (qfprom_cdata[2] & MDM9607_BASE1_MASK) >> MDM9607_BASE1_SHIFT;
++		p2[0] = (qfprom_cdata[0] & MDM9607_S0_P2_MASK) >> MDM9607_S0_P2_SHIFT;
++		p2[1] = (qfprom_cdata[0] & MDM9607_S1_P2_MASK) >> MDM9607_S1_P2_SHIFT;
++		p2[2] = (qfprom_cdata[1] & MDM9607_S2_P2_MASK) >> MDM9607_S2_P2_SHIFT;
++		p2[3] = (qfprom_cdata[1] & MDM9607_S3_P2_MASK) >> MDM9607_S3_P2_SHIFT;
++		p2[4] = (qfprom_cdata[2] & MDM9607_S4_P2_MASK) >> MDM9607_S4_P2_SHIFT;
++		for (i = 0; i < priv->num_sensors; i++)
++			p2[i] = ((base1 + p2[i]) << 2);
++		fallthrough;
++	case ONE_PT_CALIB2:
++		base0 = (qfprom_cdata[0] & MDM9607_BASE0_MASK);
++		p1[0] = (qfprom_cdata[0] & MDM9607_S0_P1_MASK) >> MDM9607_S0_P1_SHIFT;
++		p1[1] = (qfprom_cdata[0] & MDM9607_S1_P1_MASK) >> MDM9607_S1_P1_SHIFT;
++		p1[2] = (qfprom_cdata[1] & MDM9607_S2_P1_MASK) >> MDM9607_S2_P1_SHIFT;
++		p1[3] = (qfprom_cdata[1] & MDM9607_S3_P1_MASK) >> MDM9607_S3_P1_SHIFT;
++		p1[4] = (qfprom_cdata[2] & MDM9607_S4_P1_MASK) >> MDM9607_S4_P1_SHIFT;
++		for (i = 0; i < priv->num_sensors; i++)
++			p1[i] = (((base0) + p1[i]) << 2);
++		break;
++	default:
++		for (i = 0; i < priv->num_sensors; i++) {
++			p1[i] = 500;
++			p2[i] = 780;
++		}
++		break;
++	}
++
++	compute_intercept_slope(priv, p1, p2, mode);
++	kfree(qfprom_cdata);
++	kfree(qfprom_csel);
++
++	return 0;
++}
++
++/* v0.1: 8916, 8939, 8974, 9607 */
+ 
+ static struct tsens_features tsens_v0_1_feat = {
+ 	.ver_major	= VER_0_1,
+@@ -540,3 +623,18 @@ struct tsens_plat_data data_8974 = {
+ 	.feat		= &tsens_v0_1_feat,
+ 	.fields	= tsens_v0_1_regfields,
+ };
++
++static const struct tsens_ops ops_9607 = {
++	.init		= init_common,
++	.calibrate	= calibrate_9607,
++	.get_temp	= get_temp_common,
++};
++
++struct tsens_plat_data data_9607 = {
++	.num_sensors	= 5,
++	.ops		= &ops_9607,
++	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4 },
++
++	.feat		= &tsens_v0_1_feat,
++	.fields	= tsens_v0_1_regfields,
++};
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index d8ce3a687b80..51c36b9e8e69 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -895,6 +895,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
+ 
+ static const struct of_device_id tsens_table[] = {
+ 	{
++		.compatible = "qcom,mdm9607-tsens",
++		.data = &data_9607,
++	}, {
+ 		.compatible = "qcom,msm8916-tsens",
+ 		.data = &data_8916,
+ 	}, {
+diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+index f40b625f897e..cba64c33b4f9 100644
+--- a/drivers/thermal/qcom/tsens.h
++++ b/drivers/thermal/qcom/tsens.h
+@@ -585,7 +585,7 @@ int get_temp_common(const struct tsens_sensor *s, int *temp);
+ extern struct tsens_plat_data data_8960;
+ 
+ /* TSENS v0.1 targets */
+-extern struct tsens_plat_data data_8916, data_8939, data_8974;
++extern struct tsens_plat_data data_8916, data_8939, data_8974, data_9607;
+ 
+ /* TSENS v1 targets */
+ extern struct tsens_plat_data data_tsens_v1, data_8976;
+-- 
+2.30.0
 
