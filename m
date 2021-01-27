@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9943064B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F96E3064BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhA0UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbhA0UBT (ORCPT
+        id S232559AbhA0UDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:03:18 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:35854 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhA0UBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:01:19 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE06BC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:00:29 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id c132so2322027pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yBdA7Nf3DvwxZdzX00Eonq9lYvdJAq2LlEJMLWdaFgQ=;
-        b=V8QOj+Q+1fHQ1H36xr+mUp/WLDS2EcuSMZmc3AhtOrMAlBC08U5jBNgEgdLpDfKk22
-         jDomIQbrzVEPkpuY4r0FDcuKPa71M2VwQ5mVu56lFvAabiAabf3SFJ30yV20/zie+UtP
-         ThS07AmNNrFpW9WPjRKVsZ+zXRV+dnQZ876CLYA8CzLOTrj/Sh12NQLdOoKN6Da1Moj1
-         tJlY2axMIQUOOG25y0uKnFzIp9Gz5jBdPvLN4+EzuTihFe220dYgPBKobx+VI0C3eduj
-         FiwkkFxMpNbjAEYGZZFmWoUUbk8p2pE1uzpa5N0nBIzAfjxu8mJJlQwZhk5G196DdQ+g
-         f/Sg==
+        Wed, 27 Jan 2021 15:01:30 -0500
+Received: by mail-oi1-f170.google.com with SMTP id d18so3523380oic.3;
+        Wed, 27 Jan 2021 12:01:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yBdA7Nf3DvwxZdzX00Eonq9lYvdJAq2LlEJMLWdaFgQ=;
-        b=sciZ1VcyWGPnwHPWw785nueDQ49cRU20TXXdnJnxt3qaUzZZIjCfBFH3c+3WkBTo7M
-         jPZbHR3+IAsjKCh0H0j6W3RrwkYEb6bpSIr3RfCWaGvzkfmyEeSsqVNftfysIr4RyZE+
-         gNkn2HBm9DmMgL1pIUhKwI5tSDkmvVQQz85G+cvEl9oxqCEyD9OIGxC3n++qf+v6Czdg
-         fLoeVZRraw7V6eH/aKm5dPMw43yWzE0dbiplmeh6EqXu6kLrKroPMSEcQBO/+cqH5MLt
-         c4hwMYM6k7c47rIXwRZIQA62hZH8boNZHgQdhm9vt9ShNKJsxFq26GHqpN7L0hXG8xjF
-         QEEg==
-X-Gm-Message-State: AOAM533yWAz4BiguVWs2oDw/RIfTb5PrYetVV+WjWV6jfalaGMDoRwu0
-        emV7mmEEWOk2/zmGxEaBNS7PsczLaPFd/rIVyHeAiw==
-X-Google-Smtp-Source: ABdhPJwWsCylpOTXaqGgHO65KypzzRkHx0ONCfMqo85qSNqnMB6z0xpBZYv3zD7Rba2abGuLqVWa1DFPdbHH4ELjGsY=
-X-Received: by 2002:a05:6a00:1:b029:1c1:2d5f:dc16 with SMTP id
- h1-20020a056a000001b02901c12d5fdc16mr12176024pfk.55.1611777628828; Wed, 27
- Jan 2021 12:00:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rvRcBguN/96Hnzr6bI5Ag8OoiWzcrVtrxH3mL5ZfZ1o=;
+        b=tVmyxrE93w8bvPxNtz9EUy+98rnwQ79FsIxgTNw4pmXe9LTMTlGMZG2C/gf86tlZiv
+         d/m+kB9gtrtU4zcc2t6pJacvRSyQnuaOiSDrGoTL5MWA06ftPFhtEerZgSb7wJGn5+vx
+         pLokbIu9nrCb6bf/oDelS/lA0ehfAbpuRMLXaXxQ9McuGD/30xGydMK9hKTmdsIIYoOc
+         Xsbv6tBEtHH/Gsnml9MZbBf7NL1N9BiRjf5eDFLN8LJ++VI9n+rjMhgI7+zS/GMaI0fj
+         Ke0MNWSGkaO2I3aaPSaZTvjmBBYhUml83HpbXTxDxtbNA62+opwhqGykGCsFcpAl8XRc
+         b1LA==
+X-Gm-Message-State: AOAM533/pQoMZzt+sB3YzBREQvHrd0duvP1kNmRRnumswyXYShv/AVfz
+        7yNIlOxrSVTGFMWE72jAlp3iMl6GQA==
+X-Google-Smtp-Source: ABdhPJwMBL6J6h0Mdgp/mb0/qiCzzg22X3N+4Non2UUG6xKNUgZwnVj+ExesrC+lIcTiArkT8riPBA==
+X-Received: by 2002:aca:fcc5:: with SMTP id a188mr4342745oii.169.1611777649178;
+        Wed, 27 Jan 2021 12:00:49 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z4sm625941ooz.5.2021.01.27.12.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 12:00:47 -0800 (PST)
+Received: (nullmailer pid 2143114 invoked by uid 1000);
+        Wed, 27 Jan 2021 20:00:46 -0000
+Date:   Wed, 27 Jan 2021 14:00:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Will Deacon <will@kernel.org>, srv_heupstream@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
+ valid dma-ranges
+Message-ID: <20210127200046.GA2142347@robh.at.kernel.org>
+References: <20210119105203.15530-1-yong.wu@mediatek.com>
 MIME-Version: 1.0
-References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
-In-Reply-To: <20210126134603.49759-1-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 27 Jan 2021 21:00:17 +0100
-Message-ID: <CAAeHK+xTWrdJ2as6kBLX+z64iu3e6JEGppOkN-i_jsH74c6xoA@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119105203.15530-1-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:46 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> This patchset implements the asynchronous mode support for ARMv8.5-A
-> Memory Tagging Extension (MTE), which is a debugging feature that allows
-> to detect with the help of the architecture the C and C++ programmatic
-> memory errors like buffer overflow, use-after-free, use-after-return, etc.
->
-> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> subset of its address space that is multiple of a 16 bytes granule. MTE
-> is based on a lock-key mechanism where the lock is the tag associated to
-> the physical memory and the key is the tag associated to the virtual
-> address.
-> When MTE is enabled and tags are set for ranges of address space of a task,
-> the PE will compare the tag related to the physical memory with the tag
-> related to the virtual address (tag check operation). Access to the memory
-> is granted only if the two tags match. In case of mismatch the PE will raise
-> an exception.
->
-> The exception can be handled synchronously or asynchronously. When the
-> asynchronous mode is enabled:
->   - Upon fault the PE updates the TFSR_EL1 register.
->   - The kernel detects the change during one of the following:
->     - Context switching
->     - Return to user/EL0
->     - Kernel entry from EL1
->     - Kernel exit to EL1
->   - If the register has been updated by the PE the kernel clears it and
->     reports the error.
->
-> The series is based on linux-next/akpm.
->
-> To simplify the testing a tree with the new patches on top has been made
-> available at [1].
->
-> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Evgenii Stepanov <eugenis@google.com>
-> Cc: Branislav Rankov <Branislav.Rankov@arm.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+On Tue, 19 Jan 2021 18:52:03 +0800, Yong Wu wrote:
+> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
+> supplanting dma_pfn_offset") always update dma_range_map even though it was
+> already set, like in the sunxi_mbus driver. the issue is reported at [1].
+> This patch avoid this(Updating it only when dev has valid dma-ranges).
+> 
+> Meanwhile, dma_range_map contains the devices' dma_ranges information,
+> This patch moves dma_range_map before of_iommu_configure. The iommu
+> driver may need to know the dma_address requirements of its iommu
+> consumer devices.
+> 
+> [1] https://lore.kernel.org/linux-arm-kernel/5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com/
+> 
+> CC: Rob Herring <robh+dt@kernel.org>
+> CC: Frank Rowand <frowand.list@gmail.com>
+> Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset"),
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/of/device.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
 
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-
-> Vincenzo Frascino (4):
->   arm64: mte: Add asynchronous mode support
->   kasan: Add KASAN mode kernel parameter
->   kasan: Add report for async mode
->   arm64: mte: Enable async tag check fault
-
-Andrew, could you pick this up into mm? The whole series will need to
-go through mm due to dependencies on the patches that are already
-there.
+Applied, thanks!
