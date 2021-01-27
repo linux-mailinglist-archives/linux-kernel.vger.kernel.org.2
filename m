@@ -2,107 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6901305E9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F00F305EA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbhA0OtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhA0OsZ (ORCPT
+        id S234558AbhA0Ou4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:50:56 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2440 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234637AbhA0Oto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:48:25 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE97C061573;
-        Wed, 27 Jan 2021 06:47:45 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id ke15so2977910ejc.12;
-        Wed, 27 Jan 2021 06:47:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aNp3Htm/mthgfBxdo7SAS+BKT5IjCTT35idqtR5P8KU=;
-        b=j4i6ufaQC0o+2TEixYwLXlhC1Rn1Nl1H5Hz+M8z0TstK6sU62SiTsFt72Ie4SsfZAg
-         BqbUuooYRez7vUadLxSn1WDX6SqILkb3UUmz+pgEDDAAYGATDnfl7AH9xLoX8OwzoZtC
-         YlpRItDPgy900MxFpfFhUPwyscFI50PpOT/TCtIc2FRW9a2dLYLKL26hxIB9UHIjt27W
-         8ZhwaXpnRjxMRiQQZjvKR7q67Bx6+wSevHet7aMU1bNUR/oLPScl/raFz0mxb7KyYMJn
-         dM321TiRm/x2vGmyvzwuL4jBuKHOiZIRL+ytZsuLNupir01XkVzFmu4XmtEJZ+EUcc1m
-         AU5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aNp3Htm/mthgfBxdo7SAS+BKT5IjCTT35idqtR5P8KU=;
-        b=an24CHwJjW0c/acuv8Ve1zk8Yz6Mnm9GocDuL4ItcGrj5RydD3nWEPkcPlOrSCgnuK
-         hMd6UFAiZbZ4BJdf7lBDRb3hxgQQ+Sfbk+pxLo5ppFip1e/ByhTyS0lDGH50Li0WggfX
-         tfckHcWWaxj1z2iTB4bhYaNyoSidVTTZJW516hGVfKPBXY5WWRUzeUtrnu6l6Tcu8cQM
-         fr4MZ6p3ptRzfhqGt7OSxNcPj2tfLzW2Tp2bAffWu7OqXRv2Pc3A2hq2TZL0dvdL0SKh
-         s+eiOVITjqZMvOM9po6FBYMNT4Tpa9w4GUF+sMExvta73AHYISgc4xJF1Yi/IU6oP91q
-         3VVg==
-X-Gm-Message-State: AOAM531Fr03hsEgLeYzqGr1nE63WfHILNCSDZtHkQXm92yZqmuRc2ly0
-        vsdlcSR7iFP1M9jhyP3D4p5rkBwr4qlPHDkJ0KFBbQcc
-X-Google-Smtp-Source: ABdhPJzhIQSZtqdhi01xZM/zJm1LH9dY0dYZ3Puz5+1d8Tz5sDuaaegtGh3qb5xrOoRPwplcvOqltdnWkYOJfJZQOoY=
-X-Received: by 2002:a17:906:fc5:: with SMTP id c5mr6855124ejk.538.1611758864039;
- Wed, 27 Jan 2021 06:47:44 -0800 (PST)
+        Wed, 27 Jan 2021 09:49:44 -0500
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DQmcQ1pS3z67bqV;
+        Wed, 27 Jan 2021 22:45:42 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 27 Jan 2021 15:49:02 +0100
+Received: from localhost (10.47.72.68) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 27 Jan
+ 2021 14:49:01 +0000
+Date:   Wed, 27 Jan 2021 14:48:18 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        <nuno.sa@analog.com>, "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 03/12][RESEND] iio: buffer: rework buffer &
+ scan_elements dir creation
+Message-ID: <20210127144818.00002d85@Huawei.com>
+In-Reply-To: <CA+U=DsoogP2Bj5zsE-1BwOhZy20jjvEhgh780FSiQU4M9AwoxA@mail.gmail.com>
+References: <20210122162529.84978-1-alexandru.ardelean@analog.com>
+        <20210122162529.84978-4-alexandru.ardelean@analog.com>
+        <20210124181126.07c100a5@archlinux>
+        <YA8b0az9c0Hha405@kroah.com>
+        <CA+U=DsoogP2Bj5zsE-1BwOhZy20jjvEhgh780FSiQU4M9AwoxA@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210126171550.3066-1-kernel@esmil.dk>
-In-Reply-To: <20210126171550.3066-1-kernel@esmil.dk>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 27 Jan 2021 09:47:08 -0500
-Message-ID: <CAF=yD-LGoVkf5ARHPsGAMbsruDq7iQ=X8c3cZRp5XaZC936EMw@mail.gmail.com>
-Subject: Re: [PATCH] rtlwifi: use tasklet_setup to initialize rx_work_tasklet
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.72.68]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 5:23 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> In commit d3ccc14dfe95 most of the tasklets in this driver was
-> updated to the new API. However for the rx_work_tasklet only the
-> type of the callback was changed from
->   void _rtl_rx_work(unsigned long data)
-> to
->   void _rtl_rx_work(struct tasklet_struct *t).
->
-> The initialization of rx_work_tasklet was still open-coded and the
-> function pointer just cast into the old type, and hence nothing sets
-> rx_work_tasklet.use_callback = true and the callback was still called as
->
->   t->func(t->data);
->
-> with uninitialized/zero t->data.
->
-> Commit 6b8c7574a5f8 changed the casting of _rtl_rx_work a bit and
-> initialized t->data to a pointer to the tasklet cast to an unsigned
-> long.
->
-> This way calling t->func(t->data) might actually work through all the
-> casting, but it still doesn't update the code to use the new tasklet
-> API.
->
-> Let's use the new tasklet_setup to initialize rx_work_tasklet properly
-> and set rx_work_tasklet.use_callback = true so that the callback is
-> called as
->
->   t->callback(t);
->
-> without all the casting.
->
-> Fixes: 6b8c7574a5f8 ("rtlwifi: fix build warning")
-> Fixes: d3ccc14dfe95 ("rtlwifi/rtw88: convert tasklets to use new tasklet_setup() API")
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+On Tue, 26 Jan 2021 11:45:04 +0200
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-Since the current code works, this could target net-next without Fixes tags.
+> On Mon, Jan 25, 2021 at 9:32 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, Jan 24, 2021 at 06:11:26PM +0000, Jonathan Cameron wrote:  
+> > > On Fri, 22 Jan 2021 18:25:20 +0200
+> > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> > >  
+> > > > When adding more than one IIO buffer per IIO device, we will need to create
+> > > > a buffer & scan_elements directory for each buffer.
+> > > > We also want to move the 'scan_elements' to be a sub-directory of the
+> > > > 'buffer' folder.
+> > > >
+> > > > The format we want to reach is, for a iio:device0 folder, for 2 buffers
+> > > > [for example], we have a 'buffer0' and a 'buffer1' subfolder, and each with
+> > > > it's own 'scan_elements' subfolder.
+> > > >
+> > > > So, for example:
+> > > >    iio:device0/buffer0
+> > > >       scan_elements/
+> > > >
+> > > >    iio:device0/buffer1
+> > > >       scan_elements/
+> > > >
+> > > > The other attributes under 'bufferX' would remain unchanged.
+> > > >
+> > > > However, we would also need to symlink back to the old 'buffer' &
+> > > > 'scan_elements' folders, to keep backwards compatibility.
+> > > >
+> > > > Doing all these, require that we maintain the kobjects for each 'bufferX'
+> > > > and 'scan_elements' so that we can symlink them back. We also need to
+> > > > implement the sysfs_ops for these folders.
+> > > >
+> > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
+> > >
+> > > +CC GregKH and Rafael W for feedback on various things inline.
+> > >
+> > > It might be that this is the neatest solution that we can come up with but
+> > > more eyes would be good!  
+> >
+> > In short, please do NOT do this.
+> >
+> > At all.
+> >
+> > no.
+> >
+> > {sigh}
+> >  
+> > >
+> > > Whilst I think this looks fine, I'm less confident than I'd like to be.
+> > >
+> > > Jonathan
+> > >  
+> > > > ---
+> > > >  drivers/iio/industrialio-buffer.c | 195 +++++++++++++++++++++++++++---
+> > > >  drivers/iio/industrialio-core.c   |  24 ++--
+> > > >  include/linux/iio/buffer_impl.h   |  14 ++-
+> > > >  include/linux/iio/iio.h           |   2 +-
+> > > >  4 files changed, 200 insertions(+), 35 deletions(-)
+> > > >
+> > > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > > > index 0412c4fda4c1..0f470d902790 100644
+> > > > --- a/drivers/iio/industrialio-buffer.c
+> > > > +++ b/drivers/iio/industrialio-buffer.c
+> > > > @@ -1175,8 +1175,6 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+> > > >     return (ret < 0) ? ret : len;
+> > > >  }
+> > > >
+> > > > -static const char * const iio_scan_elements_group_name = "scan_elements";
+> > > > -
+> > > >  static ssize_t iio_buffer_show_watermark(struct device *dev,
+> > > >                                      struct device_attribute *attr,
+> > > >                                      char *buf)
+> > > > @@ -1252,6 +1250,124 @@ static struct attribute *iio_buffer_attrs[] = {
+> > > >     &dev_attr_data_available.attr,
+> > > >  };
+> > > >
+> > > > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+> > > > +
+> > > > +static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
+> > > > +                                   struct attribute *attr,
+> > > > +                                   char *buf)
+> > > > +{
+> > > > +   struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
+> > > > +   struct device_attribute *dattr;
+> > > > +
+> > > > +   dattr = to_dev_attr(attr);
+> > > > +
+> > > > +   return dattr->show(&buffer->indio_dev->dev, dattr, buf);
+> > > > +}  
+> >
+> >
+> > First off, you are dealing with "raw" kobjects here, below a 'struct
+> > device' in the device tree, which means that suddenly userspace does not
+> > know what in the world is going on, and you lost events and lots of
+> > other stuff.
+> >
+> > Never do this.  It should not be needed, and you are just trying to
+> > paper over one odd decision of an api with another one you will be stuck
+> > with for forever.
+> >
+> > Remember the driver core can create subdirectories for your attributes
+> > automatically if you want them to be in a subdir, but that's it, no
+> > further than that.  Just name the attribute group.
+> >
+> > But yes, you can not create a symlink to there, because (surprise), you
+> > don't want to!
+> >
+> > So please, just rethink your naming, create a totally new naming scheme
+> > for multiple entities, and just drop the old one (or keep a single
+> > value if you really want to.)  Don't make it harder than it has to be
+> > please, you can never remove the "compatible symlinks", just make a new
+> > api and move on.  
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Thanks Greg. I had a feeling we were pushing things too far in an
+ugly direction :(
+
+> 
+> 
+> So, coming back to Jonathan.
+> Any thoughts on how to proceed?
+> 
+> We could merge the files 'buffer & scan_elements' [from in the
+> /sys/bus/iio/devices/iio:deviceX/{buffer,scan_elements}
+> 
+> So, essentially:
+> # ls /sys/bus/iio/devices/iio:deviceX/bufferY
+> data_available       length              watermark
+> enable                   length_align_bytes
+> in_voltage0_en      in_voltage0_type   in_voltage1_index
+> in_voltage0_index  in_voltage1_en     in_voltage1_type
+> 
+> Where:
+> # ls  /sys/bus/iio/devices/iio:deviceX/scan_elements
+> in_voltage0_en     in_voltage0_type   in_voltage1_index
+> in_voltage0_index  in_voltage1_en     in_voltage1_typ
+> 
+> # ls  /sys/bus/iio/devices/iio:deviceX/buffer
+> data_available      length              watermark
+> enable              length_align_bytes
+> 
+> I don't think we need to add any prefixes for the scan_elements/buffer
+> files, or?
+
+Hmm. I guess this works. The only alternative I can think of would
+be bufferY and bufferY_scan_elements directories, but that is probably
+worse than what you suggest.
+
+I'm not keen on the lost of grouping between of scan elements but it
+may just be a price we have to pay.  Probably not too bad as only
+in_ elements (_out shortly I guess) exist in scan_elements.
+
+To maintain backwards compatibility we'll need to also register the
+old attributes, but that shouldn't be too painful beyond a bunch
+of near duplicated code.
+
+> 
+> Do we still do this new ioctl() for buffer0, 1, 2, N being accessed
+> via anon inodes?
+> Or do we go [back] via the route of each buffer with it's own chardev?
+> i.e.  introduce a "/dev/iio/deviceX/bufferY" structure
+> 
+
+Reality is most of our devices are going to remain single buffered, so
+whilst I'm not overly keen on proliferation of chardevs the cost should
+be fairly small.
+
+For separate chardevs what would the naming in /dev/ look like?
+Gut feeling is stay with the anon approach, at least partly for
+consistency with the event interface.
+
+Jonathan
+
+
+> I'm fine either way.
+> 
+> Thanks
+> Alex
+> 
+> >
+> > thanks,
+> >
+> > greg k-h  
+
