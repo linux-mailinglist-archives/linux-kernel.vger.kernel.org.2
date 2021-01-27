@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D11B30582C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B065305840
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbhA0KUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:20:53 -0500
-Received: from www.zeus03.de ([194.117.254.33]:60242 "EHLO mail.zeus03.de"
+        id S235798AbhA0KXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:23:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235684AbhA0KS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:18:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=PPiP/ibzC5qvpAjqZLJI3QP1DFP9
-        9sVIpItAR82zC04=; b=x9Sm89cskKvp0s3bJMCTBvIsFwiP0cv+D2lBJLcym/n9
-        Q8/EJYH+pozrJM8bsrdVesN89p+KeIPu9xhLEYcOJ+cBoUNOvNqAKYpQUxWH0b5P
-        R9uzzox1E+AndLeXIOmAquP8preQqMRgjB76rfF71YFZ/93Wv1HvpK65a6nNyk4=
-Received: (qmail 4019814 invoked from network); 27 Jan 2021 11:18:14 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Jan 2021 11:18:14 +0100
-X-UD-Smtp-Session: l3s3148p1@d7PBFt+5bL0gAwDPXyX1AEdA8SGgn5QT
-Date:   Wed, 27 Jan 2021 11:18:14 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] media: i2c: adv7511: remove open coded version of
- SMBus block read
-Message-ID: <20210127101814.GB928@ninjato>
-References: <20210119093912.1838-1-wsa+renesas@sang-engineering.com>
- <20210119093912.1838-3-wsa+renesas@sang-engineering.com>
- <1b3f4451-20e5-4f73-acab-d0deaa7ba63d@xs4all.nl>
+        id S235793AbhA0KUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:20:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7AF320723;
+        Wed, 27 Jan 2021 10:19:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611742779;
+        bh=d2h1EgBQMOjE5+8onjr7Xk6n8e+j+afxZeaitVsthDs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d3XzXb/8FnxZ1Z+z/5HUsE1VWiFD1iFv7la249QYlq0mttvihgZY54uYl71wX/v3J
+         rZnaGR6hUIp5u8D7f9DT9gQ1py/w3RRjWVJ96amv9pSOuUeGKhWT2FHh4iLA7tSVxv
+         VYBz7WHULvVOjJ0hVgvY+RJayodaHXT6vS0A7tgE=
+Date:   Wed, 27 Jan 2021 11:19:36 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Mayulong <mayulong1@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-arm-msm@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 00/21] Move Hisilicon 6421v600 SPMI driver set out of
+ staging
+Message-ID: <YBE+OFwLj31qo/ss@kroah.com>
+References: <cover.1611212783.git.mchehab+huawei@kernel.org>
+ <YBBXcdLbj92yMJhw@kroah.com>
+ <20210126175752.GF4839@sirena.org.uk>
+ <YBBZP9LjXPi/rzfP@kroah.com>
+ <20210126181124.GG4839@sirena.org.uk>
+ <YBErBByYD8lNIWAX@kroah.com>
+ <20210127100816.GH4903@dell>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LyciRD1jyfeSSjG0"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b3f4451-20e5-4f73-acab-d0deaa7ba63d@xs4all.nl>
+In-Reply-To: <20210127100816.GH4903@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 27, 2021 at 10:08:16AM +0000, Lee Jones wrote:
+> On Wed, 27 Jan 2021, Greg Kroah-Hartman wrote:
+> 
+> > On Tue, Jan 26, 2021 at 06:11:24PM +0000, Mark Brown wrote:
+> > > On Tue, Jan 26, 2021 at 07:02:39PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Tue, Jan 26, 2021 at 05:57:52PM +0000, Mark Brown wrote:
+> > > 
+> > > > > Is there a branch we can pull from?
+> > > 
+> > > > Once 0-day passes, you can pull from my staging-testing branch from
+> > > > staging.git on git.kernel.org if you want.  Give it 24 hours to pass
+> > > > before it hits that location.
+> > > 
+> > > Thanks.
+> > 
+> > Should be out there now if you want to pull.
+> > 
+> > > > Do you need a tag to pull from?
+> > > 
+> > > It'd be nice but not essential.
+> > 
+> > Why do you want/need this?  Having these changes in your tree is good,
+> > but what about other coding style cleanups that I will end up applying
+> > over time before the 5.12-rc1 merge window opens?  Are you wanting to
+> > take the moved driver in your tree, or something else?
+> > 
+> > Traditionally moving drivers out of staging can be done 2 ways:
+> > 	- all happens in the staging tree, I take an ack from the
+> > 	  subsystem maintainer that this is ok to do.
+> > 	- A new driver enters the "real" subsystem tree, and then I
+> > 	  delete the driver in the staging tree.  This doesn't preserve
+> > 	  history as well (not at all), but can be easier for trees that
+> > 	  move quickly (like networking.)
+> > 
+> > Which ever works for you is fine with me, but relying on the code to
+> > stay "not touched" in my tree after you pull it almost never happens due
+> > to the number of drive-by coding style cleanups that end up in the
+> > staging tree every week.
+> 
+> I would have expected the whole set to be merged as a set into a
+> single tree, placed on an immutable branch and a pull-request to be
+> sent out for the other maintainers to pull from (if they so wished).
+> 
+> This would ensure development could continue on any/all of the
+> affected drivers/files.
+> 
+> If it's not too late, I'd be more than happy to facilitate.
 
---LyciRD1jyfeSSjG0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Given these patches are already in my public tree, that might be a bit
+harder, why the huge work for this?  Worst case, I just keep all of the
+patches that do not actually move the code in my tree, and then things
+can move after 5.12-rc1.
 
-Hi Hans,
+thanks,
 
-> > -		adv7511_edid_rd(sd, 256, &state->edid.data[segment * 256]);
-> > +		err =3D adv7511_edid_rd(sd, 256, &state->edid.data[segment * 256]);
-> >  		adv7511_dbg_dump_edid(2, debug, sd, segment, &state->edid.data[segme=
-nt * 256]);
->=20
-> Only call adv7511_dbg_dump_edid if err >=3D 0.
-
-Yes.
-
->=20
-> >  		if (segment =3D=3D 0) {
->=20
-> Change condition to: err >=3D 0 && segment =3D=3D 0
-
-Yes.
-
->=20
-> >  			state->edid.blocks =3D state->edid.data[0x7e] + 1;
-> >  			v4l2_dbg(1, debug, sd, "%s: %d blocks in total\n", __func__, state-=
->edid.blocks);
-> >  		}
-
-So I guarded the above block with an 'if (!err)' clause.
-adv7511_edid_rd() returns either 0 or errno, so we can take the above
-simpler condition.
-
-
-
-> > -		if (!edid_verify_crc(sd, segment) ||
-> > -		    !edid_verify_header(sd, segment)) {
-> > +		if (err < 0 || !edid_verify_crc(sd, segment) || !edid_verify_header(=
-sd, segment)) {
-> >  			/* edid crc error, force reread of edid segment */
->=20
-> Hmm, this comment is a bit out of date. Change to:
->=20
-> 			/*
-> 			 * Couldn't read EDID or EDID has invalid content.
-> 			 * Force reread of EDID segment.
-> 			 */
-
-I updated the comment but kept it a oneliner.
-
->=20
-> >  			v4l2_err(sd, "%s: edid crc or header error\n", __func__);
->=20
-> Only show this message if err >=3D 0. For err < 0 the adv7511_edid_rd() a=
-lready
-> logs an error.
-
-Yes. I used 'if (!err)' again here.
-
-Will resend in a minute, thanks for the review!
-
-All the best,
-
-   Wolfram
-
-
---LyciRD1jyfeSSjG0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmARPeUACgkQFA3kzBSg
-KbaU5RAAoHPCy8g/Hy0fafsjns1bhNX+atshAy42bkGoW8bcd55VZisvgAdk1fg3
-WKpPWVRDKxVJ9vTSEjB0TpYPQGm01kvi0l8britPcsRNkJ8VQ9uQGHqM6Jd9JY8P
-hMtJccF7RJDqKVXPRlGPH9k0BBr1jRhfa74pvCI9I3W4+TAqyPat/WbuLuhxHLGn
-xbFZjUSaJBwP/oyznL04HQ9aDV5YIOABzLmQHjLFraofn0HEtL3MpFZtuvs3nHuF
-D/rVjgs/6y//b4KUmaJweD3tbuVyUCruOwYLjljdJK1Se79FHukCHOcowNpbOnb+
-ow2Er7S+U05gjWiJOcMYjUJulryLGg23QLn7HfdvM6BJuuYi0qxQiU0O/cEtH1IB
-liKeGaWcDWWrmWcBinUx3Ldiyxh7wHSCL+22FyjNM8xxqTw5fslc+5CJR5lPMFHB
-WNOppwqO6cKnyql+lkaUijoWept+jDcOLjyKzVWxBaRpIH2z03P8EKt+a/DF2ysa
-cVOjaSfq5I/23pyeByh8yKud3N9tqS/go6j/79eQrhul3CNy7Urk3GraaAOcJUwL
-rodqyQ+upIVh1fNwzzwj/TwMZUPrxzD2Z+BodnSZ8DiNt0YImZtWuGys0XghWcIQ
-AzdL8U/W+0EIvpifOVNokVq3UpisBkVo2VA6ZpTeXl2f+XgIju0=
-=1s9r
------END PGP SIGNATURE-----
-
---LyciRD1jyfeSSjG0--
+greg k-h
