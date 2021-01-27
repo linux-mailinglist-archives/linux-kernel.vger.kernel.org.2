@@ -2,100 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBF3305F15
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8DA305F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbhA0PGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
+        id S235437AbhA0PCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235332AbhA0PAu (ORCPT
+        with ESMTP id S235215AbhA0PA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:00:50 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA99FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:51:48 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id bx12so2763295edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:51:48 -0800 (PST)
+        Wed, 27 Jan 2021 10:00:28 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C650C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:54:45 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id d6so2011254ilo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:54:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cTb1qG9GkgwXMpUhNx1t/diaUHaqrqbu1GRsagpeLwM=;
-        b=ILnM+OVztpAnYmVrO1FVr4Vx9kHcIQGC83QQvcgFKlG6GqybeWuPWtzo+hjn1g1+eY
-         otRFOGVi5Xw/X21KkCGw7iVOnhZoDIlEvHU42/SsY+VJE20CEZNz9hM3uDT2VeOYTbfl
-         f1nFs8LzId+9cfBGFgcSMNyN7j9p8L/e0JGeOpuJMFGO2GsJ/XcWkMQoP+oi5b8eSZSP
-         exgSYYivVrn3jKxSmec7IINWa/r4+iQgGlDzkUq6Qo5kBsJarkVgsDIelg84AYqvGCof
-         XTuIe4trKwoe0EfFdpZ9OaBNuagie1GmEaQrVQc/zE1FOctgq9cmVSg8cgds556LlKrE
-         rs9Q==
+        bh=sTdyNYkze+hI+OFRZCPwqiZbewY8o758U81yg52mX4M=;
+        b=q8pB9egRttgWsLnscO5G4bYRpXSZAEr3Czk7HDYKghXyYGkiR66u90ioZFw7tahaDB
+         CRGEkXinK6SxoxNHkCZVsQBD9lx8K9iIfwCaFFI2JewouxfQOryXga8qneDuVLCvyMeh
+         arIMCS6QW8H6wS49vnLZvbTB7u3t3Mhk5LAJtuxVabZRSEafRpP5DAE2ABVKbfqAhSIw
+         Xh3Ro1U23HmvBdQsN9sAkGVktk4YcULQJndthgOAd5l6CIazx6bo6unngx1qigZFlvft
+         OABmeGgEvmJAJFBTkgBVz4lUcIweqDeHE4Hclkon06Fyfy36GeiimnRdN+9yrwYyhaSd
+         Yv0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cTb1qG9GkgwXMpUhNx1t/diaUHaqrqbu1GRsagpeLwM=;
-        b=afr2ejdPOlYV+ViyOIG4GjlJVyNhDpSfjACikumpKbTAKjrLjkGs9DUzc7C8fPHc0z
-         0MyVr/w6bkrM5NGjgNA760LiccDc9Kgo/G60eJInk0coYoXpEZReHHtr1bw6YkY9MQj3
-         jsfX1poyZAFwv5QA3XQIp8kEZ2bvtoUKmVfV3ujJFpRnCGX0GgkcaF7zx5dtZNlrQG56
-         W9riET0Ey/hJMOLsDjajbi+vBrVzy58pEqTtSEX6TxuweG88U+RJjEitStqE37hOYtiA
-         R4UolTuZ/i/sk1mAv7csWyOL/4/YhuZROoAgYignOgtZvCRrjo2cFlJGofLJaT2Iyn6L
-         S+fw==
-X-Gm-Message-State: AOAM532cLJFC8o4YheoHYKSrC1ZjOwGV1YxXnj9aGY3QULRAC2OG+P3O
-        EdM62v7pDGtOhOuAleYT12DCTGEWFN4XMXbb6obt4A==
-X-Google-Smtp-Source: ABdhPJxNdLjX1tXkgq0Mtqs/dnVrdJ1tF/Xdw5s4EqNQ/5sSx69L5xot49eIsuqwVjc83JQdSHoXkR2HRcAfXVMyzug=
-X-Received: by 2002:aa7:d60f:: with SMTP id c15mr9179966edr.232.1611759107579;
- Wed, 27 Jan 2021 06:51:47 -0800 (PST)
+        bh=sTdyNYkze+hI+OFRZCPwqiZbewY8o758U81yg52mX4M=;
+        b=g3kIMPDv4RftVxZRSVqjYNdkcLzV918qsMx0X7wVMTA58ZXrwE6Ngxi3R48eu9yM22
+         DZI3TGmT4HYZfqG4MxpkQ/okOKxbkSYG7QYM3wrAsCVn6JhzOFFUosDqgtCE5gNzq++Z
+         kxUtSgl4Lz4CIjGi0hrxfB5cZcq932wzUGy5XlUsrR6kKTHkv1xnTV36AGqLJ1rvsJMU
+         Ocmrh92V2aFTMDtEyjeUBs+/iNNU59vkRwjnSBmLjKENyo0XqiTl/YJSe1jFuROUAO22
+         Bgi8ioFkxIFRwzEDepyWaYx45t6lwIJeMGXwJwlFXlq1kw7PZejsZN2IjswV6kuvD7Sj
+         OzJg==
+X-Gm-Message-State: AOAM533HAmSrDGidpi0JVLQIXn1Gv/pwbWOaLu7oQyosMJCS++OEfBG4
+        SYViAFOFrDk2L6vzXvUr/CIWxheKEo6CyX4UoJXI4g==
+X-Google-Smtp-Source: ABdhPJym5YHdk7S2GBOskLrJaJULn2+Xd5bDT5AbmWnQMa5r6J68lPTVZvdEBa+glr+j4eSggYZNORX6z7pePV/Rzf4=
+X-Received: by 2002:a92:d8c2:: with SMTP id l2mr9200045ilo.216.1611759284256;
+ Wed, 27 Jan 2021 06:54:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121141038.437564-1-warthog618@gmail.com>
-In-Reply-To: <20210121141038.437564-1-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 27 Jan 2021 15:51:36 +0100
-Message-ID: <CAMpxmJWHzU7NM950gLx3dJB5ap07J8VRw1GCO-LfNnOOO1vevg@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: cdev: clear debounce period if line set to output
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
+References: <20210127125018.7059-1-kuniyu@amazon.co.jp>
+In-Reply-To: <20210127125018.7059-1-kuniyu@amazon.co.jp>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 27 Jan 2021 15:54:32 +0100
+Message-ID: <CANn89iJF_LOMDj9RZAe0QDkkJwCs7CgFA4KMijs5siz904DSzg@mail.gmail.com>
+Subject: Re: [PATCH net] net: Remove redundant calls of sk_tx_queue_clear().
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Amit Shah <aams@amazon.de>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 3:11 PM Kent Gibson <warthog618@gmail.com> wrote:
+On Wed, Jan 27, 2021 at 1:50 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
 >
-> When set_config changes a line from input to output debounce is
-> implicitly disabled, as debounce makes no sense for outputs, but the
-> debounce period is not being cleared and is still reported in the
-> line info.
+> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
+> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
+> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
+> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). However,
+> the original commit had already put sk_tx_queue_clear() in sk_prot_alloc():
+> the callee of sk_alloc() and sk_clone_lock(). Thus sk_tx_queue_clear() is
+> called twice in each path currently.
+
+Are you sure ?
+
+I do not clearly see the sk_tx_queue_clear() call from the cloning part.
+
+Please elaborate.
+
+In any case, this seems to be a candidate for net-next, this is not
+fixing a bug,
+this would be an optimization at most, and potentially adding a bug.
+
+So if you resend this patch, you can mention the old commit in the changelog,
+but do not add a dubious Fixes: tag
+
+
 >
-> So clear the debounce period when the debouncer is stopped in
-> edge_detector_stop().
+> This patch removes the redundant calls of sk_tx_queue_clear() in sk_alloc()
+> and sk_clone_lock().
 >
-> Fixed: 65cff7047640 ("gpiolib: cdev: support setting debounce")
-
-The actual hash for this commit is 65cff7046406 - I fixed that locally.
-
-Patch applied for fixes, thanks!
-
-Bartosz
-
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> Fixes: 41b14fb8724d ("net: Do not clear the sock TX queue in sk_set_socket()")
+> CC: Tariq Toukan <tariqt@mellanox.com>
+> CC: Boris Pismenny <borisp@mellanox.com>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> Reviewed-by: Amit Shah <aams@amazon.de>
 > ---
->  drivers/gpio/gpiolib-cdev.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  net/core/sock.c | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 12b679ca552c..3551aaf5a361 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -776,6 +776,8 @@ static void edge_detector_stop(struct line *line)
->         cancel_delayed_work_sync(&line->work);
->         WRITE_ONCE(line->sw_debounced, 0);
->         WRITE_ONCE(line->eflags, 0);
-> +       if (line->desc)
-> +               WRITE_ONCE(line->desc->debounce_period_us, 0);
->         /* do not change line->level - see comment in debounced_value() */
->  }
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index bbcd4b97eddd..5c665ee14159 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1759,7 +1759,6 @@ struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
+>                 cgroup_sk_alloc(&sk->sk_cgrp_data);
+>                 sock_update_classid(&sk->sk_cgrp_data);
+>                 sock_update_netprioidx(&sk->sk_cgrp_data);
+> -               sk_tx_queue_clear(sk);
+>         }
 >
+>         return sk;
+> @@ -1983,7 +1982,6 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
+>                  */
+>                 sk_refcnt_debug_inc(newsk);
+>                 sk_set_socket(newsk, NULL);
+> -               sk_tx_queue_clear(newsk);
+>                 RCU_INIT_POINTER(newsk->sk_wq, NULL);
+>
+>                 if (newsk->sk_prot->sockets_allocated)
 > --
-> 2.30.0
+> 2.17.2 (Apple Git-113)
 >
