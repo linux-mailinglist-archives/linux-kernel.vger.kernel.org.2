@@ -2,145 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583553056B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E210C305659
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbhA0JVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:21:03 -0500
-Received: from mail-vi1eur05on2067.outbound.protection.outlook.com ([40.107.21.67]:57255
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233083AbhA0JHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:07:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LDJdLL5Sst0DEf6qdrA5NGbiQZNkLXC/YmOBlsbdFkSAo+XGrQCG9YCN/zwTZb5tTxAVhTl3c2IjEbtbknJuPKRdefMDf9icwkJA5ndVcjH+Uasd+1d+eZ5Cqkr68+UNkZtsnKQTVCg4YwetAwhAO+CUov6xOYocOm1yC9p9znFRT3WDKwfFMSoP852ggTKTrQ+2f0rro5OQKZ9U4JnpQThRXCZ/hdDIeu2WpI1Z4hc7lQ7BBJKOBFlLJqZWzQKnFSOqXbeoaTYYc3GjmdXrWUj4FwBar/wA/KOD1XcPOR555Y1gaCqtWxKqvnzk20W48e35TIYQt2OHnXl85aodgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJ9D6wUCOmhV5ZTraNjnEVJgT2jCXhX0NtGyGMUMmu8=;
- b=LKjbGzudaSpMXp48LcwFGvD+p8itr/5eE8suQIlBx5kjnXQS6jxlZ/8OOay6fx++WNDRCKbyHWRklbN+93lrv1y9pQB61E8ULc9Xi7Ct7qP/K9IKvBEiN4cKrnpLEdzTckYAPRzJyPRPr8q/Rkap9XOirWR9wNG//gP+NbncZtUqKwBOdV5EX0Bl5iVy6wc23x70BfAPU4CzNZyRA696a47M4IOQ6nt68XlgZCRSEJafK266kEXQFmc2gPvrDmQHr1pYVAkz1xVz2HGpas8SpJmMqfIxzV+0i3wztstmM2qIyLVlXn/curzgz9B78yL/gZJIMek80kR12GmUcnf2nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJ9D6wUCOmhV5ZTraNjnEVJgT2jCXhX0NtGyGMUMmu8=;
- b=bJ3eNLZDY1wKES7pLfkG7bRLzONiHdrR0iRWu7jUvlOhvbqtLJMm4iQ0vz9li67kTBlTF4UckK79NsD4h+1xeINEL+biUjgO2igx5WwhYR0U3Bym8PfBT+EjiLCyBbLoWUTdiF5EPzn4icKz+Nas3uZc2GYnGzd6uNT3fCmfqLA=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB2975.eurprd04.prod.outlook.com (2603:10a6:802:9::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
- 2021 09:03:49 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3805.016; Wed, 27 Jan 2021
- 09:03:49 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: [PATCH v3 14/14] MAINTAINERS: add maintainer for DRM bridge drivers for i.MX SoCs
-Date:   Wed, 27 Jan 2021 16:51:28 +0800
-Message-Id: <1611737488-2791-15-git-send-email-victor.liu@nxp.com>
+        id S234273AbhA0JAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:00:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:60890 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhA0I4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:56:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68B9031B;
+        Wed, 27 Jan 2021 00:55:23 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BF4213F66B;
+        Wed, 27 Jan 2021 00:55:20 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 00/14] arm64: coresight: Enable ETE and TRBE
+Date:   Wed, 27 Jan 2021 14:25:24 +0530
+Message-Id: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
-References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR02CA0049.apcprd02.prod.outlook.com
- (2603:1096:4:54::13) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0049.apcprd02.prod.outlook.com (2603:1096:4:54::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 09:03:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 915de6bb-e053-4f93-d379-08d8c2a275d6
-X-MS-TrafficTypeDiagnostic: VI1PR04MB2975:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB2975477D205CD0329DDEB2A698BB0@VI1PR04MB2975.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Nux30k/YVL2pZRgJ0arwDTlf1fyhl5psiAvs2TXmgc/qO9Xo2Hh42dGxyaPHf3hsmXT6+PrEBLHVyLpie6xgaRj+naT4GEurJxRPH2x9GyAT1Ud2VBTe10A5RH4qmgL8NmSKWf+Kvw9K6kNWAfMRvXlZ1WjZADNm4Eb68J1yqguFLNsVl+NvkgylT3+oTEAtZjFBITQy7IVimpS5UGUniCUQl+ooUQhan9Lebx/xyLBn8RH1zSLLqGQ3lVRORIyDMN/y1g70yrEw81BguNMjpZu0s9iHKNGGPp4r8QCvCEC8q84lL0Cs2JDm7kOSceVbBxfTvzP4Jw9Tzf4HVmcN6Q2lwDwUt0EwRwnUR7ETlRsW+M1HFcirzUFyWRRr/6hyDnOK3ghz8d+hNyx8fH395W3yNFCWJ/Kj14GMTtAr+ei88LxsLrdt72Y6AyCenLoKrznB/dG72pU//esIP9dUsq1saBDwtDJrqeGz85ZPHy3YIn2NtKCwF24Qk4W0M+7Jh2Q16Z8cF/TkzC7SeBzWasznaAjOhv3UjzwPYCfgdx7Ome6NUenkGPrZTOk2dQwPg6Jqetnv4o+aAWPDJb1YQQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(376002)(366004)(346002)(39860400002)(136003)(396003)(8936002)(2616005)(6486002)(66946007)(186003)(6666004)(956004)(7416002)(4326008)(36756003)(69590400011)(6506007)(8676002)(316002)(5660300002)(16526019)(86362001)(478600001)(6512007)(2906002)(52116002)(66556008)(26005)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?dtUyFQHFLrf84zD4zm2fi+DGiDQNG50E5/KpP/dDfhr1WkUY7cm2L871LLZZ?=
- =?us-ascii?Q?wXncraZ/NJxN7bChijt4Bowdg2R9d8kfcnPofHjY+glq3dh9FJVAb7f4yCkh?=
- =?us-ascii?Q?+lt0AoM7lfJ6FVm55j9tBJ/+Qxy1t86fa1rzEAAtMBsEOy0QsKINQJ1hbXTy?=
- =?us-ascii?Q?Sz9BMyuKqdt32xBRVfLCUdlSTHum95pv8QSc/doy6D6IvkwdAbZIUNdk+yl9?=
- =?us-ascii?Q?d+pfJ3PC6EcEbAEB07y+NHi565+fp3a0pdFxFXthDifhJEwQQ3YWT2UtzI2k?=
- =?us-ascii?Q?3Nv/DPcNxndxYMDjURciqqW1DHAlgIbyiS09mgqQEizXWmSobFOCRNyuRR7g?=
- =?us-ascii?Q?7jjxwBVWRSkcxUym+7wh0UsuQXgQPteLszM3NTLpvEEro0YSXwiSZ/JGGdi0?=
- =?us-ascii?Q?uzsEZAKyVCoTFmLdBTBTVkDCxG2TSXVyKOI6lEvJSaBpqpnk2MCt47l0HCjv?=
- =?us-ascii?Q?t4GxNttlltjjQOV9Uc1VyjMN1f1BhM7TNh/uFff4qCsFlK0ErmZ+PZDMk0oT?=
- =?us-ascii?Q?ZeCwpCkcGfZZ+TMUSE/BNisp3y2lkB6/OmWFxFJBlPI6oXZJmISi25UMv33q?=
- =?us-ascii?Q?hTqil3AyDIwoDMkOABUEONZOtEr/FpYKp+PqURQk0ehuuIsPvr0mpD2C45Bi?=
- =?us-ascii?Q?/sq/Y4giSsw8dHP4gFpIewpKixLnyhpp6+ineFJ84YPfLKdPhkzIs9PR1kLf?=
- =?us-ascii?Q?84q2w7sSbxHvCF0tIfcrwyOPX3f5mbbBTM0/Gz2KqpZYwbnsBPk44oeWzIL8?=
- =?us-ascii?Q?r5Y9gdIoqSTI+55fFFTG7azcL6z20lSX1wwrSN5ODH2EkU0mJjuOC8ckwk0J?=
- =?us-ascii?Q?jeTaSMQuJ3waRlBcWIutpCZg8gtsWqPTXKWvoKMgH7RDKUW50HZGpHk4KZJC?=
- =?us-ascii?Q?dmg1nEe4coJqCBWHQLTG9VSJgw/+94iGy8qelDHIamTXLJwqRhL2xW3JJ3VI?=
- =?us-ascii?Q?7yqBzdL4OrfJNAU9JxKlEd3CleMImP/ZA2LK1z2x+z3r5DmnKZt2z16qXsgm?=
- =?us-ascii?Q?rcR5lPG1gc05ojjceXTCFD18h4w9VPr0d99ErmdKXPrK6cbaCWlpDvGjcQBB?=
- =?us-ascii?Q?WF7MIPmP?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 915de6bb-e053-4f93-d379-08d8c2a275d6
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 09:03:49.8054
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KouCFYj3axLEIZ3DsWV67MbPBUL3Xzptnk1qtkV2+eBm/647PDxSADeYgp0FpSS5tW3o+7UkpGvO1M21Zswu+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB2975
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of DRM bridge drivers for i.MX SoCs.
+This series enables future IP trace features Embedded Trace Extension (ETE)
+and Trace Buffer Extension (TRBE). This series depends on the ETM system
+register instruction support series [0] which is available here [1]. This
+series which applies on [1] is avaialble here [2] for quick access.
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
-v2->v3:
-* No change.
+ETE is the PE (CPU) trace unit for CPUs, implementing future architecture
+extensions. ETE overlaps with the ETMv4 architecture, with additions to
+support the newer architecture features and some restrictions on the
+supported features w.r.t ETMv4. The ETE support is added by extending the
+ETMv4 driver to recognise the ETE and handle the features as exposed by the
+TRCIDRx registers. ETE only supports system instructions access from the
+host CPU. The ETE could be integrated with a TRBE (see below), or with the
+legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same firmware
+description as the ETMs and requires a node per instance. 
 
-v1->v2:
-* No change.
+Trace Buffer Extensions (TRBE) implements a per CPU trace buffer, which is
+accessible via the system registers and can be combined with the ETE to
+provide a 1x1 configuration of source & sink. TRBE is being represented
+here as a CoreSight sink. Primary reason is that the ETE source could work
+with other traditional CoreSight sink devices. As TRBE captures the trace
+data which is produced by ETE, it cannot work alone.
 
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+TRBE representation here have some distinct deviations from a traditional
+CoreSight sink device. Coresight path between ETE and TRBE are not built
+during boot looking at respective DT or ACPI entries.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9d241b8..d96c917 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5892,6 +5892,16 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
+Unlike traditional sinks, TRBE can generate interrupts to signal including
+many other things, buffer got filled. The interrupt is a PPI and should be
+communicated from the platform. DT or ACPI entry representing TRBE should
+have the PPI number for a given platform. During perf session, the TRBE IRQ
+handler should capture trace for perf auxiliary buffer before restarting it
+back. System registers being used here to configure ETE and TRBE could be
+referred in the link below.
+
+https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers.
+
+Question:
+
+- Should we implement sysfs based trace sessions for TRBE ?
+
+[0] https://lore.kernel.org/linux-arm-kernel/20210110224850.1880240-1-suzuki.poulose@arm.com/
+[1] https://gitlab.arm.com/linux-arm/linux-skp/-/tree/coresight/etm/sysreg-v7
+[2] https://gitlab.arm.com/linux-arm/linux-anshuman/-/tree/coresight/ete_trbe_v3
+
+Changes in V3:
+
+- Rebased on coresight/next
+- Changed DT bindings for ETE
+- Included additional patches for arm64 nvhe, perf aux buffer flags etc
+- TRBE changes have been captured in the respective patches
+
+Changes in V2:
+
+https://lore.kernel.org/linux-arm-kernel/1610511498-4058-1-git-send-email-anshuman.khandual@arm.com/
+
+- Converted both ETE and TRBE DT bindings into Yaml
+- TRBE changes have been captured in the respective patches
  
-+DRM DRIVERS FOR FREESCALE IMX BRIDGE
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-+F:	drivers/gpu/drm/bridge/imx/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
+Changes in V1:
+
+https://lore.kernel.org/linux-arm-kernel/1608717823-18387-1-git-send-email-anshuman.khandual@arm.com/
+
+- There are not much ETE changes from Suzuki apart from splitting of the ETE DTS patch
+- TRBE changes have been captured in the respective patches
+
+Changes in RFC:
+
+https://lore.kernel.org/linux-arm-kernel/1605012309-24812-1-git-send-email-anshuman.khandual@arm.com/
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Linu Cherian <lcherian@marvell.com>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (3):
+  coresight: core: Add support for dedicated percpu sinks
+  arm64: Add TRBE definitions
+  coresight: sink: Add TRBE driver
+
+Suzuki K Poulose (11):
+  coresight: etm-perf: Allow an event to use different sinks
+  coresight: Do not scan for graph if none is present
+  coresight: etm4x: Add support for PE OS lock
+  coresight: ete: Add support for ETE sysreg access
+  coresight: ete: Add support for ETE tracing
+  dts: bindings: Document device tree bindings for ETE
+  coresight: etm-perf: Handle stale output handles
+  arm64: nvhe: Allow TRBE access at EL1
+  dts: bindings: Document device tree bindings for Arm TRBE
+  perf: aux: Add flags for the buffer format
+  coresight: etm-perf: Add support for trace buffer format
+
+ Documentation/devicetree/bindings/arm/ete.yaml     |   74 ++
+ Documentation/devicetree/bindings/arm/trbe.yaml    |   49 +
+ Documentation/trace/coresight/coresight-trbe.rst   |   39 +
+ arch/arm64/include/asm/el2_setup.h                 |   19 +
+ arch/arm64/include/asm/kvm_arm.h                   |    2 +
+ arch/arm64/include/asm/sysreg.h                    |   51 +
+ drivers/hwtracing/coresight/Kconfig                |   21 +-
+ drivers/hwtracing/coresight/Makefile               |    1 +
+ drivers/hwtracing/coresight/coresight-core.c       |   16 +-
+ drivers/hwtracing/coresight/coresight-etm-perf.c   |   93 +-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c |  138 ++-
+ .../hwtracing/coresight/coresight-etm4x-sysfs.c    |   19 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h      |   81 +-
+ drivers/hwtracing/coresight/coresight-platform.c   |    6 +
+ drivers/hwtracing/coresight/coresight-trbe.c       | 1025 ++++++++++++++++++++
+ drivers/hwtracing/coresight/coresight-trbe.h       |  160 +++
+ include/linux/coresight.h                          |   12 +
+ include/uapi/linux/perf_event.h                    |   13 +-
+ 18 files changed, 1759 insertions(+), 60 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/trbe.yaml
+ create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+ create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
+
 -- 
 2.7.4
 
