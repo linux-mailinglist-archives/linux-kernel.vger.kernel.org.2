@@ -2,87 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5369F306852
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69335306855
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhA0Xzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:55:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231649AbhA0Xz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:55:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC12A64DD8;
-        Wed, 27 Jan 2021 23:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611791662;
-        bh=IyZMRWubT8lewmjSA1zCALq266sCXPZZNFPDHqaC0PM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WWUS5LgFUC38pCI71/9L1l4fG+UqwNtejoeFafHg6Opxuj5zux3Zgvil3KNvoR+Qu
-         FB12Xm/6QISjiHzzIR4nKYnZ68pvnOmA1Sq8/MqXgHBYPXETKcT/W3JuPhxwXu/LVT
-         IxJ99r3cqYRABvaq4e6Iw4dkFi9/g12w05brbvmKeJPLZXj+23q5g0YvZcS1NuR2Z1
-         GEM1cMlQaPT08Bw5Cxd284FOJvNuTEuFDWiuknSjYygZ7elJde7dDBNsrXV/zi169+
-         sODYHg9f8HyO7y8LXdpy53eMPY3mt16Z92yPrIcQM5qPFBVkMwMUxNOItBEUuyj4dA
-         zIOyfGDsTEjIA==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, linux-mm@kvack.org,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mohamed Alzayat <alzayat@mpi-sws.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: [PATCH v3 6/6] x86/ldt: Use tlb_gather_mmu_fullmm() when freeing LDT page-tables
-Date:   Wed, 27 Jan 2021 23:53:47 +0000
-Message-Id: <20210127235347.1402-7-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210127235347.1402-1-will@kernel.org>
-References: <20210127235347.1402-1-will@kernel.org>
+        id S233628AbhA0X4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:56:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231649AbhA0X4N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 18:56:13 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAFCC061573;
+        Wed, 27 Jan 2021 15:55:28 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id E6EB31F44BF5
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Yuxuan Shui <yshuiv7@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH] ptrace: restore the previous single step reporting
+ behavior
+In-Reply-To: <877do3gaq9.fsf@m5Zedd9JOGzJrf0> (Yuxuan Shui's message of "Sat,
+        23 Jan 2021 03:21:32 -0800 (PST)")
+Organization: Collabora
+References: <877do3gaq9.fsf@m5Zedd9JOGzJrf0>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Wed, 27 Jan 2021 20:55:20 -0300
+Message-ID: <87zh0u540n.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-free_ldt_pgtables() uses the MMU gather API for batching TLB flushes
-over the call to free_pgd_range(). However, tlb_gather_mmu() expects
-to operate on user addresses and so passing LDT_{BASE,END}_ADDR will
-confuse the range setting logic in __tlb_adjust_range(), causing the
-gather to identify a range starting at TASK_SIZE. Such a large range
-will be converted into a 'fullmm' flush by the low-level invalidation
-code, so change the caller to invoke tlb_gather_mmu_fullmm() directly.
+Yuxuan Shui <yshuiv7@gmail.com> writes:
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Yu Zhao <yuzhao@google.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/x86/kernel/ldt.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> Commit 64eb35f701f04b30706e21d1b02636b5d31a37d2 changed when single step
+> is reported.
+>
+> Specifically, the report_single_step is changed so that single steps are
+> only reported when both SYSCALL_EMU and _TIF_SINGLESTEP are set, while
+> previously they are reported when _TIF_SINGLESTEP is set without
+> _TIF_SYSCALL_EMU being set.
+>
+> This behavior change breaks rr [1]
+>
+> This commit restores the old behavior.
+>
+> [1]: https://github.com/rr-debugger/rr/issues/2793
+>
+> Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
 
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index 7ad9834e0d95..aa15132228da 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -398,7 +398,13 @@ static void free_ldt_pgtables(struct mm_struct *mm)
- 	if (!boot_cpu_has(X86_FEATURE_PTI))
- 		return;
- 
--	tlb_gather_mmu(&tlb, mm);
-+	/*
-+	 * Although free_pgd_range() is intended for freeing user
-+	 * page-tables, it also works out for kernel mappings on x86.
-+	 * We use tlb_gather_mmu_fullmm() to avoid confusing the
-+	 * range-tracking logic in __tlb_adjust_range().
-+	 */
-+	tlb_gather_mmu_fullmm(&tlb, mm);
- 	free_pgd_range(&tlb, start, end, start, end);
- 	tlb_finish_mmu(&tlb);
- #endif
+Looks correct to me.
+
+To gather the right attention, you should directly CC the correct maintainers.
+
+Fixes: 64eb35f701f0 ("ptrace: Migrate TIF_SYSCALL_EMU to use SYSCALL_WORK flag")
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+
 -- 
-2.30.0.365.g02bc693789-goog
-
+Gabriel Krisman Bertazi
