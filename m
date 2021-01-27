@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F68305A77
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611A3305A3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhA0L5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:57:13 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:42930 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234195AbhA0Lrl (ORCPT
+        id S237199AbhA0LrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:47:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234189AbhA0Loj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:47:41 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RBeLHC000957;
-        Wed, 27 Jan 2021 03:44:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=cjrr+SByo3bYWD+sRL1+ZQn0Ad6l9pAbfCb0OzS63is=;
- b=Mu6Y92oFRjgLYLbXw5rA1jVGAt7Gxvdh1W82N+c3kiXzbo7KCBOe3U9hYkf5x2OzWbEe
- vfiLdvDK/3/TgW1Wqw3O4XlCs2DsSAK/cZjSrszj7eS8xRRBG9XqLELqnpdldp+I4V4W
- GfG0qaY05VlppPvQ+DKXMbMMDPOu1abAeDlvLVTmCQCIHZsUzmgCdDp3EwHEAo1W5y7b
- zLwlllrUyJW/4aCfMcfNGz2slkru02Rg8SqZbDpz58jcoXsjYkV/0KI29kqbG5GMV0qp
- MqcrUUu7V0P9WcMaRbppIsgxr8LPLmoscJJHLfg30XgyP5r6plp/ZdudY1N/2dkAauXi 2Q== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 368j1ube93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 03:44:52 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
- 2021 03:44:51 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
- 2021 03:44:50 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 27 Jan 2021 03:44:51 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 294893F703F;
-        Wed, 27 Jan 2021 03:44:47 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v4 net-next 19/19] net: mvpp2: add TX FC firmware check
-Date:   Wed, 27 Jan 2021 13:43:35 +0200
-Message-ID: <1611747815-1934-20-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
-References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+        Wed, 27 Jan 2021 06:44:39 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A59FC061574;
+        Wed, 27 Jan 2021 03:43:57 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQhZc4rjCz9sVn;
+        Wed, 27 Jan 2021 22:43:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611747833;
+        bh=tcnGzuwBPDoxl75YFW6S22VO0qdePNURHS1pblHw7mA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=r6Emgf0OtOukzXrfsI0HC4BvltbGV0d5NdpIvdqX3mwPx2N7wRqP2SeTqAHyDTbti
+         bOdJZfdQJ68twwP+wbyUVOfdAGeLsH7xtJR97xwcrR1Dl5YNA10SdS3hQrHvoKLP/Y
+         5EfZ8oDcDkai1zPi17o1boG5rt13uiLjuhZU0vY1XGk/QoD5wniSj+wd+dXSqwy7iz
+         PJyJz9VWt1JG9mvCSpDQ/XcX0I+5rv8vzHZF6jmGDQEuZGjBbrldtZJUgEJSwQcSDX
+         kwO852/v4zYe/svnvqZngHfdsKRovqAeJXPXHcAvBHIjuXopUrcaGjMzmt4v2UMpTT
+         nEC20BrtbM7Bg==
+Date:   Wed, 27 Jan 2021 22:43:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: linux-next: manual merge of the akpm-current tree with the pidfd
+ tree
+Message-ID: <20210127224351.486fd977@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
+Content-Type: multipart/signed; boundary="Sig_/0Qle1JKigF6Fw.QS9r+Wv_8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+--Sig_/0Qle1JKigF6Fw.QS9r+Wv_8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+Hi all,
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 41 ++++++++++++++++----
- 2 files changed, 35 insertions(+), 7 deletions(-)
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 0765d6f..47a4b38 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -829,6 +829,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index bb7dfed..3aa877b 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -932,6 +932,34 @@ static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7283,7 +7311,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7511,13 +7539,12 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err) {
-+			dev_warn(&pdev->dev, "CM3 firmware not running, version should be higher than 18.09\n");
-+			dev_warn(&pdev->dev, "Flow control not supported\n");
-+		}
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
--- 
-1.9.1
+  fs/hugetlbfs/inode.c
 
+between commit:
+
+  2f221d6f7b88 ("attr: handle idmapped mounts")
+
+from the pidfd tree and commit:
+
+  57d3629b7a9a ("hugetlbfs: remove useless BUG_ON(!inode) in hugetlbfs_seta=
+ttr()")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/hugetlbfs/inode.c
+index c5c32eb59498,ca9e25427f2d..000000000000
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@@ -760,9 -766,7 +767,7 @@@ static int hugetlbfs_setattr(struct use
+  	unsigned int ia_valid =3D attr->ia_valid;
+  	struct hugetlbfs_inode_info *info =3D HUGETLBFS_I(inode);
+ =20
+- 	BUG_ON(!inode);
+-=20
+ -	error =3D setattr_prepare(dentry, attr);
+ +	error =3D setattr_prepare(&init_user_ns, dentry, attr);
+  	if (error)
+  		return error;
+ =20
+
+--Sig_/0Qle1JKigF6Fw.QS9r+Wv_8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmARUfcACgkQAVBC80lX
+0GwYGQf+OWsT4aPV7MArkXB5/KnLQoYnpt+UU2P8zbytn9A8u6qT5iIbbL8vXL1S
+aLSgGVTk4ptWDk4tbYaO+Pg0hup+cxKo8rDBBKObcO19JryagaNavFsGd44OqVd4
+n4EnNsYAyJq70BzJnrpPGQI4XChFWVbOy3I/0p3nU9LJ0VxOTq4Jb/tnUVi/CdTI
+n9TzWyUxH8PZ2GavFCuv0kdNjteMrjz87FOAaeYoptE2/EL0xTrgATCPenhAdw+d
+IxSpSrNp+fNiMusf+bbKIIQ+6+614eyOUrSuJvc0TQsvI/6EWKhirAOajthNqUiG
+84IBvp/oVjWY8RpQJ0BXf21KUQ3erw==
+=a4AN
+-----END PGP SIGNATURE-----
+
+--Sig_/0Qle1JKigF6Fw.QS9r+Wv_8--
