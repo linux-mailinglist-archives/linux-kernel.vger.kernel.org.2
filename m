@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E89430563E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AEE30564E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhA0I5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:57:11 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:12626 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbhA0Iyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:54:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611737663; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=EUssQP2vZo9f1NeJLiuievSQB3Q8g6yl/yOnTsJJnrY=;
- b=oQTnx3Cwl82f5vFXL+b+FUrZJ31PtSrwZiTpivoWxsgr6URr/XaT/qgA4e8WkUWwCz30+Nee
- 4ao/cAm6hozmLvjvV2ABx5rrouWUXM8uFTRYw7ovJ0zTIPA1Pl/V6Nh6wBxugJI13Q3J8Iwv
- k0eymC628r3DergbnbERivLlGlw=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60112a21a8db642432e346ac (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 08:53:53
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 31DF8C43462; Wed, 27 Jan 2021 08:53:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9273BC433CA;
-        Wed, 27 Jan 2021 08:53:52 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Jan 2021 16:53:52 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     Asutosh Das <asutoshd@codeaurora.org>, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        stern@rowland.harvard.edu,
-        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
-        FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
-        Jens Axboe <axboe@kernel.dk>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 1/2] block: bsg: resume scsi device before
- accessing
-In-Reply-To: <75c66862d61c63fcfa61cd6dce254169@codeaurora.org>
-References: <cover.1611719814.git.asutoshd@codeaurora.org>
- <c04a11a590628c2497cef113b0dfea781de90416.1611719814.git.asutoshd@codeaurora.org>
- <DM6PR04MB6575D64869B24B4275D63503FCBB9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <75c66862d61c63fcfa61cd6dce254169@codeaurora.org>
-Message-ID: <19e1d785e5fb3d8ee79bf55758ef2dcf@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S233532AbhA0I7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:59:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:60906 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232194AbhA0I4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:56:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EB3A1042;
+        Wed, 27 Jan 2021 00:55:26 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E77F93F66B;
+        Wed, 27 Jan 2021 00:55:23 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 01/14] coresight: etm-perf: Allow an event to use different sinks
+Date:   Wed, 27 Jan 2021 14:25:25 +0530
+Message-Id: <1611737738-1493-2-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-27 15:59, Can Guo wrote:
-> On 2021-01-27 15:09, Avri Altman wrote:
->>> 
->>> Resumes the scsi device before accessing it.
->>> 
->>> Change-Id: I2929af60f2a92c89704a582fcdb285d35b429fde
->>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
->> Following this patch, is it possible to revert commit 74e5e468b664d?
->> 
-> 
-> No, but this is a good finding... This change assumes
-> that the queue->queue_data is a scsi_device, which is
-> why we call scsi_auto_pm_get(). But for ufs_bsg's case,
-> queue->queue_data is a device...
-> 
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-If we call pm_runtime_get/put_sync(bcd->class_dev->parent) in
-bsg_get/put_device(), commit 74e5e468b664d can be reverted.
-This is just a rough idea.
+When there are multiple sinks on the system, in the absence
+of a specified sink, it is quite possible that a default sink
+for an ETM could be different from that of another ETM. However
+we do not support having multiple sinks for an event yet. This
+patch allows the event to use the default sinks on the ETMs
+where they are scheduled as long as the sinks are of the same
+type.
 
-> Thanks,
-> Can Guo.
-> 
->> Thanks,
->> Avri
+e.g, if we have 1x1 topology with per-CPU ETRs, the event can
+use the per-CPU ETR for the session. However, if the sinks
+are of different type, e.g TMC-ETR on one and a custom sink
+on another, the event will only trace on the first detected
+sink.
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
+Tested-by: Linu Cherian <lcherian@marvell.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ drivers/hwtracing/coresight/coresight-etm-perf.c | 48 +++++++++++++++++++-----
+ 1 file changed, 38 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index bdc34ca..eb9e7e9 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -204,6 +204,13 @@ static void etm_free_aux(void *data)
+ 	schedule_work(&event_data->work);
+ }
+ 
++static bool sinks_match(struct coresight_device *a, struct coresight_device *b)
++{
++	if (!a || !b)
++		return false;
++	return (sink_ops(a) == sink_ops(b));
++}
++
+ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 			   int nr_pages, bool overwrite)
+ {
+@@ -212,6 +219,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 	cpumask_t *mask;
+ 	struct coresight_device *sink = NULL;
+ 	struct etm_event_data *event_data = NULL;
++	bool sink_forced = false;
+ 
+ 	event_data = alloc_event_data(cpu);
+ 	if (!event_data)
+@@ -222,6 +230,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 	if (event->attr.config2) {
+ 		id = (u32)event->attr.config2;
+ 		sink = coresight_get_sink_by_id(id);
++		sink_forced = true;
+ 	}
+ 
+ 	mask = &event_data->mask;
+@@ -235,7 +244,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 	 */
+ 	for_each_cpu(cpu, mask) {
+ 		struct list_head *path;
+-		struct coresight_device *csdev;
++		struct coresight_device *csdev, *new_sink;
+ 
+ 		csdev = per_cpu(csdev_src, cpu);
+ 		/*
+@@ -249,21 +258,35 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 		}
+ 
+ 		/*
+-		 * No sink provided - look for a default sink for one of the
+-		 * devices. At present we only support topology where all CPUs
+-		 * use the same sink [N:1], so only need to find one sink. The
+-		 * coresight_build_path later will remove any CPU that does not
+-		 * attach to the sink, or if we have not found a sink.
++		 * No sink provided - look for a default sink for all the devices.
++		 * We only support multiple sinks, only if all the default sinks
++		 * are of the same type, so that the sink buffer can be shared
++		 * as the event moves around. We don't trace on a CPU if it can't
++		 *
+ 		 */
+-		if (!sink)
+-			sink = coresight_find_default_sink(csdev);
++		if (!sink_forced) {
++			new_sink = coresight_find_default_sink(csdev);
++			if (!new_sink) {
++				cpumask_clear_cpu(cpu, mask);
++				continue;
++			}
++			/* Skip checks for the first sink */
++			if (!sink) {
++			       sink = new_sink;
++			} else if (!sinks_match(new_sink, sink)) {
++				cpumask_clear_cpu(cpu, mask);
++				continue;
++			}
++		} else {
++			new_sink = sink;
++		}
+ 
+ 		/*
+ 		 * Building a path doesn't enable it, it simply builds a
+ 		 * list of devices from source to sink that can be
+ 		 * referenced later when the path is actually needed.
+ 		 */
+-		path = coresight_build_path(csdev, sink);
++		path = coresight_build_path(csdev, new_sink);
+ 		if (IS_ERR(path)) {
+ 			cpumask_clear_cpu(cpu, mask);
+ 			continue;
+@@ -284,7 +307,12 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+ 	if (!sink_ops(sink)->alloc_buffer || !sink_ops(sink)->free_buffer)
+ 		goto err;
+ 
+-	/* Allocate the sink buffer for this session */
++	/*
++	 * Allocate the sink buffer for this session. All the sinks
++	 * where this event can be scheduled are ensured to be of the
++	 * same type. Thus the same sink configuration is used by the
++	 * sinks.
++	 */
+ 	event_data->snk_config =
+ 			sink_ops(sink)->alloc_buffer(sink, event, pages,
+ 						     nr_pages, overwrite);
+-- 
+2.7.4
+
