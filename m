@@ -2,84 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DB8305615
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF8F305619
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhA0Iro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:47:44 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:46408 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbhA0Io7 (ORCPT
+        id S232659AbhA0IsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:48:20 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49519 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232016AbhA0Ip2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:44:59 -0500
-Received: by mail-oi1-f171.google.com with SMTP id k25so1346232oik.13;
-        Wed, 27 Jan 2021 00:44:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mutFHLc1gkkZrR4Fer8oAQQ0VCNtXv8me5nxm8JFG6o=;
-        b=DnOA1IGmjQYbY4KLzonEeZkIja7LjirV7YHOmwmHDUGLetyAeWN0fFNbm78SfD7wNx
-         PJ4dvjIU0x2UgJ2DtDpXzUJ+8x9lwIZR7619AjdskX+ywN20rMm+OoDx6ITAB+canVcN
-         W5DpEI//d0luRFxn5WX967QDKNQhrmEOoX7+yDAy3wNsI3qQMzLeiagbKdTEDerXe2a7
-         vjnNegZjmzAwlJGaZta5Rm7ci5sOWMm6dYNjwIKOHZKQ7q5mNsj+Br1cWTVtfnI2+YTo
-         U6Ityr3DdKz86xPqWDnA/tAZoJxY14f2aBlr7EQFwbjVwTIg3U1c2B4XmKrenxtSjX9d
-         bi8g==
-X-Gm-Message-State: AOAM533tMZ1OoROfyCDdheIyKMK1mhzBjQhYinA12IggeZa6uv8Z1WhE
-        C4j2eUEa3++cDXNfvei+ovxF+G5rtI8MA9DeDVI=
-X-Google-Smtp-Source: ABdhPJyRilKemvCJEv7600MUD7rrw3Vm6t3WWaVeIyKZk2WvWyk7vpQeeMYS1vDHeon2cuMn7KqlF1medC/JKjRyBlE=
-X-Received: by 2002:a54:4e88:: with SMTP id c8mr2448439oiy.148.1611737056266;
- Wed, 27 Jan 2021 00:44:16 -0800 (PST)
+        Wed, 27 Jan 2021 03:45:28 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R8hH9e004369;
+        Wed, 27 Jan 2021 09:44:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=4IEIopuOEfQJiYhnjKN0EjyncVxzU70XFQFpS6nSA7U=;
+ b=fmHCYGSazGXpW3x3YUc2OTQVj+i183eHNiBZ6QEzIdz0l8inbX+ntRgQh8FzrpF3HFaj
+ /FAysAhU5UkfQaczcYfniC5SaywPfQr4EIKG09XswSJjb89eHhYeEB/BE1sMHZmLJ+aC
+ rmZ/f+yZck5GDwVja9yoeHEJ4iZ+OUZUlEzqWw/tW/+DtXfpDK8w+i11rWuVDOs5WrWx
+ QHnE8848bUftUO9zUv83AYm5SLHw2pa0dx6T6seJEXRXl0PHfrV1UBzMAiquo8YUA6BM
+ trt3LEsypwBUFtapF76lQ+brYbGL0Dcx0kB7BgcvMVh/mTSg1jDRgqqBsCTA+sGvTj+v 2g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 368a56pnv0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 09:44:30 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A830810002A;
+        Wed, 27 Jan 2021 09:44:29 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92710226269;
+        Wed, 27 Jan 2021 09:44:29 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
+ 2021 09:44:29 +0100
+Subject: Re: [PATCH v4 05/17] remoteproc: Add new get_loaded_rsc_table()
+ remoteproc operation
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+ <20201218173228.2277032-6-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <47edac31-2f5f-efa9-2699-9fbec7f0d263@st.com>
+Date:   Wed, 27 Jan 2021 09:44:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210126182113.19892-1-david@redhat.com> <20210126182113.19892-2-david@redhat.com>
-In-Reply-To: <20210126182113.19892-2-david@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Jan 2021 09:44:05 +0100
-Message-ID: <CAMuHMdVp=K6UpR_BfrJjiFEJgQt4nC7n35M8O+Wr2kSqfeERxQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] video: fbdev: acornfb: remove free_unused_pages()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201218173228.2277032-6-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_03:2021-01-26,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:54 PM David Hildenbrand <david@redhat.com> wrote:
-> This function is never used and it is one of the last remaining user of
-> __free_reserved_page(). Let's just drop it.
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Hi Mathieu,
 
-Fixes: ffd29195ed720188 ("drivers/video/acornfb.c: remove dead code")
+Come back on you series...
 
-Gr{oetje,eeting}s,
+On 12/18/20 6:32 PM, Mathieu Poirier wrote:
+> Add an new get_loaded_rsc_table() operation in order to support
+> scenarios where the remoteproc core has booted a remote processor
+> and detaches from it.  When re-attaching to the remote processor,
+> the core needs to know where the resource table has been placed
+> in memory.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c     | 6 ++++++
+>  drivers/remoteproc/remoteproc_internal.h | 8 ++++++++
+>  include/linux/remoteproc.h               | 5 ++++-
+>  3 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index d0f6b39b56f9..3d87c910aca7 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1556,6 +1556,12 @@ static int rproc_attach(struct rproc *rproc)
+>  		return ret;
+>  	}
+>  
+> +	ret = rproc_get_loaded_rsc_table(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "can't load resource table: %d\n", ret);
+> +		goto disable_iommu;
+> +	}
+> +
 
-                        Geert
+This function is rather ambiguous. Without the example of stm32, it is not
+obvious what the platform driver has to do in this ops. And the update of rproc
+in the in the core instead of in platform driver seems to me more reliable.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Here is a suggestion considering that ->cached_table is always NULL:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+struct resource_table *rproc_get_loaded_rsc_table(struct rproc *rproc,
+                                                  size_t* size)
+{
+
+	if (rproc->ops->get_loaded_rsc_table) {
+		return rproc->ops->get_loaded_rsc_table(rproc, size);
+
+	*size = 0;
+	return NULL;
+}
+
+then in rproc_attach:
+
+	table_ptr = rproc_get_loaded_rsc_table(rproc, &tab_size);
+	if (PTR_ERR(table_ptr) {
+		dev_err(dev, "can't load resource table: %d\n", ret);
+		goto disable_iommu;
+	}
+ 	rproc->cached_table = NULL;
+ 	rproc->table_ptr = table_ptr;
+ 	rproc->table_sz = table_sz;
+
+
+Thanks,
+Arnaud
+
+>  	/* reset max_notifyid */
+>  	rproc->max_notifyid = -1;
+>  
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index c34002888d2c..c48b301d6ad1 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -177,6 +177,14 @@ struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
+>  	return NULL;
+>  }
+>  
+> +static inline int rproc_get_loaded_rsc_table(struct rproc *rproc)
+> +{
+> +	if (rproc->ops->get_loaded_rsc_table)
+> +		return rproc->ops->get_loaded_rsc_table(rproc);
+> +
+> +	return 0;
+> +}
+> +
+>  static inline
+>  bool rproc_u64_fit_in_size_t(u64 val)
+>  {
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 3fa3ba6498e8..571615e77e6f 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -368,7 +368,9 @@ enum rsc_handling_status {
+>   * RSC_HANDLED if resource was handled, RSC_IGNORED if not handled and a
+>   * negative value on error
+>   * @load_rsc_table:	load resource table from firmware image
+> - * @find_loaded_rsc_table: find the loaded resouce table
+> + * @find_loaded_rsc_table: find the loaded resource table from firmware image
+> + * @get_loaded_rsc_table: get resource table installed in memory
+> + *			  by external entity
+>   * @load:		load firmware to memory, where the remote processor
+>   *			expects to find it
+>   * @sanity_check:	sanity check the fw image
+> @@ -389,6 +391,7 @@ struct rproc_ops {
+>  			  int offset, int avail);
+>  	struct resource_table *(*find_loaded_rsc_table)(
+>  				struct rproc *rproc, const struct firmware *fw);
+> +	int (*get_loaded_rsc_table)(struct rproc *rproc);
+>  	int (*load)(struct rproc *rproc, const struct firmware *fw);
+>  	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+>  	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware *fw);
+> 
