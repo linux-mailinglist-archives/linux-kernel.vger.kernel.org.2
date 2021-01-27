@@ -2,35 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C7A3061B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942F73061B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhA0RQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:16:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39418 "EHLO mail.kernel.org"
+        id S235625AbhA0RRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234430AbhA0RPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:15:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 074EA64DA4;
-        Wed, 27 Jan 2021 17:14:35 +0000 (UTC)
+        id S234603AbhA0RP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:15:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8018864DA0;
+        Wed, 27 Jan 2021 17:14:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611767676;
-        bh=1m++LiMxr6/GeKxBb1e6vmPpJo9MAanwj2boIbNLQAQ=;
+        s=k20201202; t=1611767687;
+        bh=lQkobph4usbUMMigcmlpp7KsK1FvowDUodLLlOaWFrs=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=AtlSoqmt+c8VQOzssp+UyYTJJve8656Jk5lDqWkZTUh20iVnJ3OFsnOFFucmzXAxO
-         iDo9GOI5c5C/HOEZvbn19lUarHWRUjfiYG8TGLNJA7cWaHaHdPxsjcmQSrevoPt2Je
-         Wi13p+hPWFroldv7IJ5QoAbEh19UrgvwuEZeXw7+8R7yelYPRbyzYNJidd5nj5dOHw
-         Y2orMCptR7Gx+pfGkqifzzr9OCJmuDFP20ojB+d/zYK8oVbmTcTmW/agzK8qstR9cq
-         dn9MZr0KZYVKvJemG+1c3KIR0tCLccsNWPq6cfnrDBGYLCSwZOa589tI+VRh5hM7ux
-         QaPGtc9w7pWXw==
+        b=k41fwHk99+lNz176E44xBeipUPX0pvdK/StQvWNv4QLo9BOHPmqkpaoNMRBgLflX4
+         CNmRslfAy3/YJrfpLfipC4iKaDnK0kdCmnDLOh9bXyhcmx0aVksylbGkJW6G7jL/Eu
+         XDT13wWf541eduEAiE9AgD/3q2uGdf9eSGCSbpZ7VpBDsbNm6QSHvq4EOisVAWLV+a
+         m+tovQ+IUd6HFzA9c/sRbf9TqGpSUgNGA7xJ+/MSalpK3bDWNE1w1NxiPhEE8uDHZC
+         O2EPyUHKO6H21VnGA0gzcrLh6BAZIkN1jy26DH29msUsMwGkMWV9swQJZ/x3ADYpMm
+         jl8AUZ6r9Dn9w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
-References: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 1/2] ASoC: soc-component: add snd_soc_component_read/write_field()
-Message-Id: <161176762855.34530.6617138298808888904.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org, Judy Hsiao <judyhsiao@chromium.org>
+Cc:     dianders@chromium.org, Rob Herring <robh+dt@kernel.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Taniya Das <tdas@codeaurora.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        tzungbi@chromium.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Judy Hsiao <judyhsiao@google.com>, dgreid@chromium.org,
+        linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, cychiang@google.com,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20210127135620.1143942-1-judyhsiao@chromium.org>
+References: <20210127135620.1143942-1-judyhsiao@chromium.org>
+Subject: Re: [PATCH v2] ASoC: max98373: Fixes a typo in max98373_feedback_get
+Message-Id: <161176762855.34530.16920302960520466046.b4-ty@kernel.org>
 Date:   Wed, 27 Jan 2021 17:13:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -39,16 +51,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 17:17:48 +0000, Srinivas Kandagatla wrote:
-> It's often the case that we would write or read a particular field
-> in register. With the current soc_component apis, reading a particular
-> field in register would involve first read the register and then
-> perform shift operations.
-> 
-> Ex:
-> to read from a field mask of 0xf0
-> 
-> [...]
+On Wed, 27 Jan 2021 21:56:20 +0800, Judy Hsiao wrote:
+> The snd_soc_put_volsw in max98373_feedback_get is a typo, change it
+> to snd_soc_get_volsw.
 
 Applied to
 
@@ -56,10 +61,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: soc-component: add snd_soc_component_read/write_field()
-      commit: 1da0b9899abdbc7103d3ec6b1a888efda41dbb59
-[2/2] ASoC: codecs: lpass-wsa-macro: make use of snd_soc_component_read_field()
-      commit: 7db4c4cd767e5c2418e7892c6b2f06982d34369a
+[1/1] ASoC: max98373: Fixes a typo in max98373_feedback_get
+      commit: ded055eea679139f11bd808795d9697b430d1c7d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
