@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBEC305EEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBD3305EAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbhA0PAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:00:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235210AbhA0O64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:58:56 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554DDC0698C8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:50:50 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id by1so3076322ejc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:50:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fUGwtlmgXSNtLs4jeYoyMy0OUjwWufxEelxvIP0w1pA=;
-        b=alEkX+Sx59Smnl7Z4vBHr+Z+mZQ5I8JZ4f8omrA6hSEADQTY8DfdJd5Y4mTSsNMVtH
-         PxMCMfJ4Hy3KUJrg65l5N4ox2YtBCANRQ+iyXnWrnyXz3vvDv6Fk4qsVWJR6DcjQkeZm
-         n5+5hR5V94cbHQLAw6qzGS4nYnfauqFiV+rfscoJUAOvM58NIZztvlDjfwy2Fxn7WLmu
-         xq4ZTYp3dV7CjhmTXiGUaXwquJGRFwpAMVtMXB5Wr8E12eVcZSOpd63amAQ0pywxvYEc
-         Wk8szUf7PXUH6Qq9XAJKVrQwYozVyjvty+lITAl/NmaDLe88ly6MBYNCkYGBFz8LbOvq
-         g9Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fUGwtlmgXSNtLs4jeYoyMy0OUjwWufxEelxvIP0w1pA=;
-        b=VbsV9xj/OSrVCWQyAM48HczQLui+fhBnbM5dQr5nziGJkDFSp3My/WKA+wCAza0Ie7
-         c3AIl5w2qmbQKb85UhpFdB2y8W99dGeh7Zs76T5jUOx/QsH7Ax4Cl8jZvHqcDV6mbJQS
-         NBjpMwke/MeawpxjKK3iTJ3YAWcBD5NT1HWg999JHXv3k1ehsFXtNh4wJMAPO3C+FdjY
-         8ocKGabzpkCWj7KLLoeHLy3HnoQRkrdu+thvoxMeqdLhPC6wz2QoGXok2SGCuaTa4+t0
-         +EQZZvxVvJ91Swu9zDT2qac0blzgG+JlXpqJZVbAAZdTI0eHEap1RSuvrt2pjFFStH1f
-         3/cA==
-X-Gm-Message-State: AOAM533wm4C6B01oZCPe6O/0fSP3bzE4PU2t2/1IlFC25q4w5k54mgK9
-        Moj+E1k9nxSLneLpiAqUHqmKzg==
-X-Google-Smtp-Source: ABdhPJx2Fy/kcL4edsIwHR57CBimydaxfXDGjLlgfM0U6w+x5xx4Ir9RVagFSvoQbpboPiLDouSZVg==
-X-Received: by 2002:a17:906:2a06:: with SMTP id j6mr6787171eje.164.1611759049120;
-        Wed, 27 Jan 2021 06:50:49 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:62e7:589a:1625:7acc])
-        by smtp.gmail.com with ESMTPSA id ah12sm947799ejc.70.2021.01.27.06.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:50:48 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
-        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
-        arnd@arndb.de, Anson.Huang@nxp.com, michael@walle.cc,
-        agx@sigxcpu.org, max.oss.09@gmail.com,
-        angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: [PATCH v3 17/22] MAINTAINERS: Change CAMSS documentation to use dtschema bindings
-Date:   Wed, 27 Jan 2021 15:49:25 +0100
-Message-Id: <20210127144930.2158242-18-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210127144930.2158242-1-robert.foss@linaro.org>
-References: <20210127144930.2158242-1-robert.foss@linaro.org>
+        id S234625AbhA0OvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:51:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232701AbhA0OuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 09:50:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D6B207E2;
+        Wed, 27 Jan 2021 14:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611758960;
+        bh=Hz9DGXvQCdiByk6/l51un6j62XKj8MeDDozTnsmWZWA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GCyJgI7hdzAQ66Rnug7lQlMI046KnUimo4hxkpPd5f2/zDcD9N1qQM5pqfcgOaD42
+         vP+Yk4EMybY5uJni3Iea6fGXin4cE+AIIer6SNmCx1y6lUjjGd4mova6oPZs/KO1El
+         2y7YPJkOkoPJCJ9MKeolllijj32qb9enOjHiP3L1buZR01ptRuhNIzhT0x7ou80Pm6
+         NYP8EaMoIcMOZv1TF6eCSvImVynoXjKecBWEWAq7t/GBST2C38jrlnnbiyxxsNL3IP
+         x0q8vcRvM6S6vb3Q8r/+niOh8fivvC6LlsSZ4y08/GmcLDntNow2HM1drKTxIOZia3
+         a1dmHTeaIyOeQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4m8R-0001v7-NV; Wed, 27 Jan 2021 15:49:32 +0100
+Date:   Wed, 27 Jan 2021 15:49:31 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/12] usb: misc: ehset: update to use the
+ usb_control_msg_{send|recv}() API
+Message-ID: <YBF9exziI12OCSuA@hovoldconsulting.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126183403.911653-5-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126183403.911653-5-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the complexity of describing multiple hardware generations
-in one document, switch to using separate dt-bindings.
+On Wed, Jan 27, 2021 at 12:03:55AM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, instances of usb_control_msg() have been replaced with
+> usb_control_msg_{recv|send}() appropriately.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> Reviewed-by: Peter Chen <peter.chen@nxp.com>
+> ---
+>  drivers/usb/misc/ehset.c | 76 +++++++++++++++++-----------------------
+>  1 file changed, 32 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/ehset.c b/drivers/usb/misc/ehset.c
+> index 2752e1f4f4d0..f87890f9cd26 100644
+> --- a/drivers/usb/misc/ehset.c
+> +++ b/drivers/usb/misc/ehset.c
+> @@ -24,68 +24,57 @@ static int ehset_probe(struct usb_interface *intf,
+>  	int ret = -EINVAL;
+>  	struct usb_device *dev = interface_to_usbdev(intf);
+>  	struct usb_device *hub_udev = dev->parent;
+> -	struct usb_device_descriptor *buf;
+> +	struct usb_device_descriptor buf;
+>  	u8 portnum = dev->portnum;
+>  	u16 test_pid = le16_to_cpu(dev->descriptor.idProduct);
+>  
+>  	switch (test_pid) {
+>  	case TEST_SE0_NAK_PID:
+> -		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
+> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
+> -					USB_PORT_FEAT_TEST,
+> -					(USB_TEST_SE0_NAK << 8) | portnum,
+> -					NULL, 0, 1000);
+> +		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
+> +					   USB_RT_PORT, USB_PORT_FEAT_TEST,
+> +					   (USB_TEST_SE0_NAK << 8) | portnum,
+> +					   NULL, 0, 1000, GFP_KERNEL);
+>  		break;
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  	case TEST_SINGLE_STEP_GET_DEV_DESC:
+>  		/* Test: wait for 15secs -> GetDescriptor request */
+>  		msleep(15 * 1000);
+> -		buf = kmalloc(USB_DT_DEVICE_SIZE, GFP_KERNEL);
+> -		if (!buf)
+> -			return -ENOMEM;
+>  
+> -		ret = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+> -					USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
+> -					USB_DT_DEVICE << 8, 0,
+> -					buf, USB_DT_DEVICE_SIZE,
+> -					USB_CTRL_GET_TIMEOUT);
+> -		kfree(buf);
+> +		ret = usb_control_msg_recv(dev, 0, USB_REQ_GET_DESCRIPTOR,
+> +					   USB_DIR_IN, USB_DT_DEVICE << 8, 0,
+> +					   &buf, USB_DT_DEVICE_SIZE,
+> +					   USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cdf1556c6007..7c5a494d9113 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14686,7 +14686,7 @@ M:	Todor Tomov <todor.too@gmail.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
- F:	Documentation/admin-guide/media/qcom_camss.rst
--F:	Documentation/devicetree/bindings/media/qcom,camss.txt
-+F:	Documentation/devicetree/bindings/media/*camss*
- F:	drivers/media/platform/qcom/camss/
- 
- QUALCOMM CORE POWER REDUCTION (CPR) AVS DRIVER
--- 
-2.27.0
+Ok, here you now test for a short device descriptor (which USB core
+should already have fetched if you get to probe this driver), but which
+wasn't verified again here before. You may want to mention that in the
+commit message.
 
+And the buffer is small enough that moving it to the stack also for the
+other test cases isn't an issue (and the redundant memcpy() introduced
+by the helper is in the noise).
+
+So, this looks ok (with an amended commit message dropping the short
+write bit):
+
+Reviewed-by: Johan Hovold <johan@kernel.org>
+
+Johan
