@@ -2,305 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B4D305D28
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E61E8305D1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238390AbhA0N2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:28:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43930 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238266AbhA0NZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:25:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3A502ABDA;
-        Wed, 27 Jan 2021 13:24:38 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH] MIPS: of: Introduce helper function to get DTB
-Date:   Wed, 27 Jan 2021 14:24:30 +0100
-Message-Id: <20210127132431.143374-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        id S238246AbhA0N1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238347AbhA0NZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:25:30 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A73FC06178C;
+        Wed, 27 Jan 2021 05:24:34 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id m2so1538937wmm.1;
+        Wed, 27 Jan 2021 05:24:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=HC4Gq2abgCDBqIfE+fwfbNScOwZfNUwNwfHhheHL28A=;
+        b=WwGDA8YZbWA/RUq2dLi8ivy7p9Ge6Im3TeuI8aNgoHKFerZtzLaKd0K60ItYl9YNpr
+         OUZyntbThZzatAcpCEEvWIEbxWDITmYItFnJ6gRCrThzBcMXEF3CPxSHtw1ZECcR/ULo
+         eH+TCjxz9ylUJD0SCobXtRC+DLhsZdPpwqurhwOdQ2mvU8zl4KSkcgerKhhNgUDWOSzy
+         FTN858ejq2cM/HIxs4wLd5r5CLbZ/rDm7tqve2eAFlgJxO/NhDYRwMki80CUMA7Zghev
+         kTJb2oumGzSXLytxvXjEu1RsCF3cBGwquDX2IV2wx1bgD/dujm/2fIJX3zAXTCjIiOuU
+         RORQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=HC4Gq2abgCDBqIfE+fwfbNScOwZfNUwNwfHhheHL28A=;
+        b=sPJl62XwLlIpqxswIS83B4tN3V8STRG6Ui4nQAgrHjJagszR2byGQzGUrm/9SLsTmL
+         M16NMCx43Q83H0ucO2uCsiVFUJ+mg4VmrYlVhObXppQB6es6hGD+ZcOxL/7qe5SNH69H
+         nCWv8sCd7VMSZ4YPiLHzqf1+fTMgpkpDG8TtlydT5EjjXyUQ9BAoTqYwyNAtTXCHRfR/
+         /urqRdI+Q2qCD100E6H4tO9dDYGuRkHy1FgZKbpT1UI0rKB40Yvf7zgf7CAzNFe1m4Bj
+         0pMqMxt0JRXsvx14f90DyHlyarhcl0P7SzcO1dRx5xeMq33sqmNQXHxp6mT7lPTqvvCb
+         dkSg==
+X-Gm-Message-State: AOAM533EA91XJptSHsQGiJ/nnYlSyGRwZCU/b/KVpsE2U4VELox6irpx
+        bVxciaxIUHHnlEBPuPtW7Po=
+X-Google-Smtp-Source: ABdhPJxtH6OvL+joklK9i3rxjW+EdUD8o9vfnKEDirG0iadNdTjbCtYRL3220eYfYWnMSRNiRtFLdA==
+X-Received: by 2002:a7b:c3d6:: with SMTP id t22mr4243981wmj.1.1611753873407;
+        Wed, 27 Jan 2021 05:24:33 -0800 (PST)
+Received: from [192.168.1.21] ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id f17sm3129760wrv.0.2021.01.27.05.24.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 05:24:32 -0800 (PST)
+Message-ID: <9db3f6a50fdfca87998fb38b4a9a01e23f40c209.camel@gmail.com>
+Subject: Re: [PATCH v2 6/9] gpio: ep93xx: refactor ep93xx_gpio_add_bank
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 27 Jan 2021 14:24:31 +0100
+In-Reply-To: <20210127104617.1173-7-nikita.shubin@maquefel.me>
+References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+         <20210127104617.1173-1-nikita.shubin@maquefel.me>
+         <20210127104617.1173-7-nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Selection of the DTB to be used was burried in more or less readable
-code in head.S. Move this code into a inline helper function and
-use it.
+Hello Nikita,
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/ath79/setup.c               | 13 +++++------
- arch/mips/bmips/setup.c               |  7 +++---
- arch/mips/generic/init.c              |  5 ++---
- arch/mips/include/asm/bootinfo.h      | 22 ++++++++++++++++++-
- arch/mips/include/asm/octeon/octeon.h |  1 -
- arch/mips/kernel/head.S               | 31 ---------------------------
- arch/mips/kernel/setup.c              |  4 ----
- arch/mips/lantiq/prom.c               |  7 ++----
- arch/mips/pic32/pic32mzda/init.c      | 15 +------------
- arch/mips/ralink/of.c                 | 11 +++-------
- 10 files changed, 39 insertions(+), 77 deletions(-)
+On Wed, 2021-01-27 at 13:46 +0300, Nikita Shubin wrote:
+> - replace plain numbers with girq->num_parents in devm_kcalloc
+> - replace plain numbers with ARRAY_SIZE(girq->parents) for port F
+> - refactor i - 1 to i + 1 to make loop more readable
+> - combine getting IRQ's loop and setting handler's into single loop
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> ---
+>  drivers/gpio/gpio-ep93xx.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+> index 8f66e3ca0cfb..e4270b4e5f26 100644
+> --- a/drivers/gpio/gpio-ep93xx.c
+> +++ b/drivers/gpio/gpio-ep93xx.c
+> @@ -384,7 +384,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
+> *gc,
+>  
+>                 girq->parent_handler = ep93xx_gpio_ab_irq_handler;
+>                 girq->num_parents = 1;
+> -               girq->parents = devm_kcalloc(dev, 1,
+> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
+>                                              sizeof(*girq->parents),
+>                                              GFP_KERNEL);
+>                 if (!girq->parents)
+> @@ -406,15 +406,14 @@ static int ep93xx_gpio_add_bank(struct
+> gpio_chip *gc,
+>                  */
+>                 girq->parent_handler = ep93xx_gpio_f_irq_handler;
+>                 girq->num_parents = 8;
+> -               girq->parents = devm_kcalloc(dev, 8,
+> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
+>                                              sizeof(*girq->parents),
+>                                              GFP_KERNEL);
+>                 if (!girq->parents)
+>                         return -ENOMEM;
+>                 /* Pick resources 1..8 for these IRQs */
+> -               for (i = 1; i <= 8; i++)
+> -                       girq->parents[i - 1] = platform_get_irq(pdev,
+> i);
+> -               for (i = 0; i < 8; i++) {
+> +               for (i = 0; i < ARRAY_SIZE(girq->parents); i++) {
 
-diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
-index 7e7bf9c2ad26..891f495c4c3c 100644
---- a/arch/mips/ath79/setup.c
-+++ b/arch/mips/ath79/setup.c
-@@ -213,16 +213,17 @@ unsigned int get_c0_compare_int(void)
- 
- void __init plat_mem_setup(void)
- {
--	unsigned long fdt_start;
-+	void *dtb;
- 
- 	set_io_port_base(KSEG1);
- 
- 	/* Get the position of the FDT passed by the bootloader */
--	fdt_start = fw_getenvl("fdt_start");
--	if (fdt_start)
--		__dt_setup_arch((void *)KSEG0ADDR(fdt_start));
--	else if (fw_passed_dtb)
--		__dt_setup_arch((void *)KSEG0ADDR(fw_passed_dtb));
-+	dtb = (void *)fw_getenvl("fdt_start");
-+	if (dtb == NULL)
-+		dtb = get_fdt();
-+
-+	if (dtb)
-+		__dt_setup_arch((void *)KSEG0ADDR(dtb));
- 
- 	ath79_reset_base = ioremap(AR71XX_RESET_BASE,
- 					   AR71XX_RESET_SIZE);
-diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
-index 10e31d91ca8f..95f8f10d8697 100644
---- a/arch/mips/bmips/setup.c
-+++ b/arch/mips/bmips/setup.c
-@@ -161,11 +161,10 @@ void __init plat_mem_setup(void)
- 	/* intended to somewhat resemble ARM; see Documentation/arm/booting.rst */
- 	if (fw_arg0 == 0 && fw_arg1 == 0xffffffff)
- 		dtb = phys_to_virt(fw_arg2);
--	else if (fw_passed_dtb) /* UHI interface or appended dtb */
--		dtb = (void *)fw_passed_dtb;
--	else if (&__dtb_start != &__dtb_end)
--		dtb = (void *)__dtb_start;
- 	else
-+		dtb = get_fdt();
-+
-+	if (!dtb)
- 		panic("no dtb found");
- 
- 	__dt_setup_arch(dtb);
-diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
-index 68763fcde1d0..1842cddd8356 100644
---- a/arch/mips/generic/init.c
-+++ b/arch/mips/generic/init.c
-@@ -39,14 +39,13 @@ void __init *plat_get_fdt(void)
- 		/* Already set up */
- 		return (void *)fdt;
- 
--	if (fw_passed_dtb && !fdt_check_header((void *)fw_passed_dtb)) {
-+	fdt = (void *)get_fdt();
-+	if (fdt && !fdt_check_header(fdt)) {
- 		/*
- 		 * We have been provided with the appropriate device tree for
- 		 * the board. Make use of it & search for any machine struct
- 		 * based upon the root compatible string.
- 		 */
--		fdt = (void *)fw_passed_dtb;
--
- 		for_each_mips_machine(check_mach) {
- 			match = mips_machine_is_compatible(check_mach, fdt);
- 			if (match) {
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index aa03b1237155..5be10ece3ef0 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -112,7 +112,27 @@ extern char arcs_cmdline[COMMAND_LINE_SIZE];
- extern unsigned long fw_arg0, fw_arg1, fw_arg2, fw_arg3;
- 
- #ifdef CONFIG_USE_OF
--extern unsigned long fw_passed_dtb;
-+#include <linux/libfdt.h>
-+#include <linux/of_fdt.h>
-+
-+extern char __appended_dtb[];
-+
-+static inline void *get_fdt(void)
-+{
-+	if (IS_ENABLED(CONFIG_MIPS_RAW_APPENDED_DTB) ||
-+	    IS_ENABLED(CONFIG_MIPS_ELF_APPENDED_DTB))
-+		if (fdt_magic(&__appended_dtb) == FDT_MAGIC)
-+			return &__appended_dtb;
-+
-+	if (fw_arg0 == -2) /* UHI interface */
-+		return (void *)fw_arg1;
-+
-+	if (IS_ENABLED(CONFIG_BUILTIN_DTB))
-+		if (&__dtb_start != &__dtb_end)
-+			return &__dtb_start;
-+
-+	return NULL;
-+}
- #endif
- 
- /*
-diff --git a/arch/mips/include/asm/octeon/octeon.h b/arch/mips/include/asm/octeon/octeon.h
-index 08d48f37c046..7e714aefc76d 100644
---- a/arch/mips/include/asm/octeon/octeon.h
-+++ b/arch/mips/include/asm/octeon/octeon.h
-@@ -282,7 +282,6 @@ union octeon_cvmemctl {
- extern void octeon_check_cpu_bist(void);
- 
- int octeon_prune_device_tree(void);
--extern const char __appended_dtb;
- extern const char __dtb_octeon_3xxx_begin;
- extern const char __dtb_octeon_68xx_begin;
- 
-diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-index 61b73580b877..b825ed4476c7 100644
---- a/arch/mips/kernel/head.S
-+++ b/arch/mips/kernel/head.S
-@@ -93,33 +93,6 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
- 	jr	t0
- 0:
- 
--#ifdef CONFIG_USE_OF
--#if defined(CONFIG_MIPS_RAW_APPENDED_DTB) || \
--	defined(CONFIG_MIPS_ELF_APPENDED_DTB)
--
--	PTR_LA		t2, __appended_dtb
--
--#ifdef CONFIG_CPU_BIG_ENDIAN
--	li		t1, 0xd00dfeed
--#else  /* !CONFIG_CPU_BIG_ENDIAN */
--	li		t1, 0xedfe0dd0
--#endif /* !CONFIG_CPU_BIG_ENDIAN */
--	lw		t0, (t2)
--	beq		t0, t1, dtb_found
--#endif /* CONFIG_MIPS_RAW_APPENDED_DTB || CONFIG_MIPS_ELF_APPENDED_DTB */
--	li		t1, -2
--	move		t2, a1
--	beq		a0, t1, dtb_found
--
--#ifdef CONFIG_BUILTIN_DTB
--	PTR_LA	t2, __dtb_start
--	PTR_LA	t1, __dtb_end
--	bne		t1, t2, dtb_found
--#endif /* CONFIG_BUILTIN_DTB */
--
--	li		t2, 0
--dtb_found:
--#endif /* CONFIG_USE_OF */
- 	PTR_LA		t0, __bss_start		# clear .bss
- 	LONG_S		zero, (t0)
- 	PTR_LA		t1, __bss_stop - LONGSIZE
-@@ -133,10 +106,6 @@ dtb_found:
- 	LONG_S		a2, fw_arg2
- 	LONG_S		a3, fw_arg3
- 
--#ifdef CONFIG_USE_OF
--	LONG_S		t2, fw_passed_dtb
--#endif
--
- 	MTC0		zero, CP0_CONTEXT	# clear context register
- #ifdef CONFIG_64BIT
- 	MTC0		zero, CP0_XCONTEXT
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 7e1f8e277437..3785c72bc3bc 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -792,10 +792,6 @@ void __init setup_arch(char **cmdline_p)
- unsigned long kernelsp[NR_CPUS];
- unsigned long fw_arg0, fw_arg1, fw_arg2, fw_arg3;
- 
--#ifdef CONFIG_USE_OF
--unsigned long fw_passed_dtb;
--#endif
--
- #ifdef CONFIG_DEBUG_FS
- struct dentry *mips_debugfs_dir;
- static int __init debugfs_mips(void)
-diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index 363937121617..bc9f58fcbdf9 100644
---- a/arch/mips/lantiq/prom.c
-+++ b/arch/mips/lantiq/prom.c
-@@ -73,11 +73,8 @@ void __init plat_mem_setup(void)
- 
- 	set_io_port_base((unsigned long) KSEG1);
- 
--	if (fw_passed_dtb) /* UHI interface */
--		dtb = (void *)fw_passed_dtb;
--	else if (&__dtb_start != &__dtb_end)
--		dtb = (void *)__dtb_start;
--	else
-+	dtb = get_fdt();
-+	if (dtb == NULL)
- 		panic("no dtb found");
- 
- 	/*
-diff --git a/arch/mips/pic32/pic32mzda/init.c b/arch/mips/pic32/pic32mzda/init.c
-index 1897aa863573..764f2d022fae 100644
---- a/arch/mips/pic32/pic32mzda/init.c
-+++ b/arch/mips/pic32/pic32mzda/init.c
-@@ -21,24 +21,11 @@ const char *get_system_type(void)
- 	return "PIC32MZDA";
- }
- 
--static ulong get_fdtaddr(void)
--{
--	ulong ftaddr = 0;
--
--	if (fw_passed_dtb && !fw_arg2 && !fw_arg3)
--		return (ulong)fw_passed_dtb;
--
--	if (&__dtb_start < &__dtb_end)
--		ftaddr = (ulong)__dtb_start;
--
--	return ftaddr;
--}
--
- void __init plat_mem_setup(void)
- {
- 	void *dtb;
- 
--	dtb = (void *)get_fdtaddr();
-+	dtb = get_fdt();
- 	if (!dtb) {
- 		pr_err("pic32: no DTB found.\n");
- 		return;
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 2c9af61efc20..8286c3521476 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -64,20 +64,15 @@ static int __init early_init_dt_find_memory(unsigned long node,
- 
- void __init plat_mem_setup(void)
- {
--	void *dtb = NULL;
-+	void *dtb;
- 
- 	set_io_port_base(KSEG1);
- 
- 	/*
- 	 * Load the builtin devicetree. This causes the chosen node to be
--	 * parsed resulting in our memory appearing. fw_passed_dtb is used
--	 * by CONFIG_MIPS_APPENDED_RAW_DTB as well.
-+	 * parsed resulting in our memory appearing.
- 	 */
--	if (fw_passed_dtb)
--		dtb = (void *)fw_passed_dtb;
--	else if (&__dtb_start != &__dtb_end)
--		dtb = (void *)__dtb_start;
--
-+	dtb = get_fdt();
- 	__dt_setup_arch(dtb);
- 
- 	of_scan_flat_dt(early_init_dt_find_memory, NULL);
+Why do you use ARRAY_SIZE() here instead of ->num_parents like above?
+
+> +                       girq->parents[i] = platform_get_irq(pdev, i +
+> 1);
+>                         gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
+>                         irq_set_chip_data(gpio_irq, &epg->gc[5]);
+>                         irq_set_chip_and_handler(gpio_irq,
+
 -- 
-2.29.2
+Alexander Sverdlin.
+
 
