@@ -2,117 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FDD306279
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A42306298
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236371AbhA0RrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344156AbhA0Rqe (ORCPT
+        id S1344143AbhA0RuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:50:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40993 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344174AbhA0Rrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:46:34 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F99C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:45:53 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id c2so3446664edr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:45:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc
-         :content-transfer-encoding;
-        bh=x2CXSxSq2enuM8qJRJ4/hN373ovcf2FkfR8Rw2oWvKQ=;
-        b=VqkUilBvr2UIs7DDfnpftOdumw9SlRIbCSdTGs0bfrUZaf5Ew59l/Bg7b7873LKIjC
-         xN8nSxSTm6sCzhnfjMsqMHr9eK1gheb2c6qCVO8urfJTzRzMOcETOHTL494h5yuT3yWk
-         tWiFJ4WM13AmfE8BVw8w3CfcsQECKDvo8s5896HJfWVXGfMapzr5xU7K7G92lZIVo3W6
-         oI+jSGSXlKHOYIpDsKBGTZSB6mI0eam9yNCoNZt2CSrzdAoG/njy+e++YUAv6OHwKGWF
-         Kl0cEMqdkhbM7g0g4Wt7D4eBWmPXF7FnOVFDCpRWFBw13iLx8o9H7cXNbk7k4mQLij92
-         G6Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc:content-transfer-encoding;
-        bh=x2CXSxSq2enuM8qJRJ4/hN373ovcf2FkfR8Rw2oWvKQ=;
-        b=etTiOyyzNH4hwbxawfFle6knUyCUgfNLy4tHsGxg55nSCcocACYZdb83rYvgWw9med
-         sHXFXMsNvwtstqHuyCuC1JpFrFGEhKa12+sRlEbhprRbGTpkslQQrIOdiS2fcEza8ImB
-         2HM+nqJ6t5+/LdWx/hobhMgfnN4QDkCia3i/LUXj0VY684J6pQxnMCJzzAI9QvBQs/VI
-         1ceTqo6UMFgg0mtgH17j25UheOpoJgUX6x6iEIJnGALh1FLWLmrCi+m3bEdJy0NC4B8j
-         ZmunM2eqslI40TQzWEsbEp4e/vPwsqpkeHDfQ1syc4Vj+nhZU7bVEa1nvp5dvE8/ggin
-         z0lA==
-X-Gm-Message-State: AOAM5304AetKO7C7HyWl6ca6eWDvQaeIoN+Mh9+/XAuWr0PgFQUwvZiq
-        Ivg6ikGkNP/TxR49AeOr0JRxcdgLR8ykjc7HUzQ=
-X-Received: by 2002:a05:6402:306a:: with SMTP id bs10mt9459884edb.209.1611769552624;
- Wed, 27 Jan 2021 09:45:52 -0800 (PST)
+        Wed, 27 Jan 2021 12:47:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611769564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPln2heOg/mgLEveK1ZElt3+62JEdhTgH1Y6Lbqcv9w=;
+        b=Z8kABSAuanE+1F+P5EtjRdGJ1/RdzaBEtROy6m+mArAEqGu/Eh+wkQI92YE35RjEmrq/s/
+        Q8PSBNSNfvpy74a+JW3qg2JTJRIIvfL53IC2NtQCYk4OhSoxpajToiDn+UgvbP17ueQkCY
+        ZhcllUN/Q73NeYK0r28XFSIsAh5ohSE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-Ww9agJtvPtWU9PFKsXxHCg-1; Wed, 27 Jan 2021 12:46:00 -0500
+X-MC-Unique: Ww9agJtvPtWU9PFKsXxHCg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 876BF107AD4C;
+        Wed, 27 Jan 2021 17:45:58 +0000 (UTC)
+Received: from gondolin (ovpn-112-95.ams2.redhat.com [10.36.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A5B972163;
+        Wed, 27 Jan 2021 17:45:52 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 18:45:50 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>, schnelle@linux.ibm.com,
+        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] vfio-pci/zdev: Introduce the zPCI I/O vfio region
+Message-ID: <20210127184550.01c3fcdd.cohuck@redhat.com>
+In-Reply-To: <20210127085305.153e01e4@omen.home.shazbot.org>
+References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
+        <1611086550-32765-5-git-send-email-mjrosato@linux.ibm.com>
+        <20210122164843.269f806c@omen.home.shazbot.org>
+        <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
+        <20210126161817.683485e0@omen.home.shazbot.org>
+        <b2d4e3bf-1c73-79fa-9f31-76286d394116@linux.ibm.com>
+        <20210127085305.153e01e4@omen.home.shazbot.org>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-References: <20210118111531.903154-1-adrien.grassein@gmail.com>
-In-Reply-To: <20210118111531.903154-1-adrien.grassein@gmail.com>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Wed, 27 Jan 2021 18:45:41 +0100
-Message-ID: <CABkfQAG70BWULqrDqyhL84v1XuPZRQ3NQT88V+2eFrbVaEzWig@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Add support for Boundary Nitrogen8M Mini SBC
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Shawn,
+On Wed, 27 Jan 2021 08:53:05 -0700
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-Could you please have a look at the new patch set made after your commentar=
-ies?
-Thank a lot for your time,
+> On Wed, 27 Jan 2021 09:23:04 -0500
+> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> 
+> > On 1/26/21 6:18 PM, Alex Williamson wrote:  
+> > > On Mon, 25 Jan 2021 09:40:38 -0500
+> > > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> > >     
+> > >> On 1/22/21 6:48 PM, Alex Williamson wrote:    
+> > >>> On Tue, 19 Jan 2021 15:02:30 -0500
+> > >>> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> > >>>        
+> > >>>> Some s390 PCI devices (e.g. ISM) perform I/O operations that have very
+> > >>>> specific requirements in terms of alignment as well as the patterns in
+> > >>>> which the data is read/written. Allowing these to proceed through the
+> > >>>> typical vfio_pci_bar_rw path will cause them to be broken in up in such a
+> > >>>> way that these requirements can't be guaranteed. In addition, ISM devices
+> > >>>> do not support the MIO codepaths that might be triggered on vfio I/O coming
+> > >>>> from userspace; we must be able to ensure that these devices use the
+> > >>>> non-MIO instructions.  To facilitate this, provide a new vfio region by
+> > >>>> which non-MIO instructions can be passed directly to the host kernel s390
+> > >>>> PCI layer, to be reliably issued as non-MIO instructions.
+> > >>>>
+> > >>>> This patch introduces the new vfio VFIO_REGION_SUBTYPE_IBM_ZPCI_IO region
+> > >>>> and implements the ability to pass PCISTB and PCILG instructions over it,
+> > >>>> as these are what is required for ISM devices.    
+> > >>>
+> > >>> There have been various discussions about splitting vfio-pci to allow
+> > >>> more device specific drivers rather adding duct tape and bailing wire
+> > >>> for various device specific features to extend vfio-pci.  The latest
+> > >>> iteration is here[1].  Is it possible that such a solution could simply
+> > >>> provide the standard BAR region indexes, but with an implementation that
+> > >>> works on s390, rather than creating new device specific regions to
+> > >>> perform the same task?  Thanks,
+> > >>>
+> > >>> Alex
+> > >>>
+> > >>> [1]https://lore.kernel.org/lkml/20210117181534.65724-1-mgurtovoy@nvidia.com/
+> > >>>        
+> > >>
+> > >> Thanks for the pointer, I'll have to keep an eye on this.  An approach
+> > >> like this could solve some issues, but I think a main issue that still
+> > >> remains with relying on the standard BAR region indexes (whether using
+> > >> the current vfio-pci driver or a device-specific driver) is that QEMU
+> > >> writes to said BAR memory region are happening in, at most, 8B chunks
+> > >> (which then, in the current general-purpose vfio-pci code get further
+> > >> split up into 4B iowrite operations).  The alternate approach I'm
+> > >> proposing here is allowing for the whole payload (4K) in a single
+> > >> operation, which is significantly faster.  So, I suspect even with a
+> > >> device specific driver we'd want this sort of a region anyhow..    
+> > > 
+> > > Why is this device specific behavior?  It would be a fair argument that
+> > > acceptable device access widths for MMIO are always device specific, so
+> > > we should never break them down.  Looking at the PCI spec, a TLP
+> > > requires a dword (4-byte) aligned address with a 10-bit length field > indicating the number of dwords, so up to 4K data as you suggest is the    
+> > 
+> > Well, as I mentioned in a different thread, it's not really device   
+> 
+> Sorry, I tried to follow the thread, not sure it's possible w/o lots of
+> preexisting s390 knowledge.
+> 
+> > specific behavior but rather architecture/s390x specific behavior; 
+> > PCISTB is an interface available to all PCI devices on s390x, it just so 
+> > happens that ISM is the first device type that is running into the 
+> > nuance.  The architecture is designed in such a way that other devices 
+> > can use the same interface in the same manner.  
+> 
+> As a platform access mechanism, this leans towards a platform specific
+> implementation of the PCI BAR regions.
+>  
+> > To drill down a bit, the PCISTB payload can either be 'strict' or 
+> > 'relaxed', which via the s390x architecture 'relaxed' means it's not 
+> > dword-aligned but rather byte-aligned up to 4K.  We find out at init 
+> > time which interface a device supports --  So, for a device that 
+> > supports 'relaxed' PCISTB like ISM, an example would be a PCISTB of 11 
+> > bytes coming from a non-dword-aligned address is permissible, which 
+> > doesn't match the TLP from the spec as you described...  I believe this 
+> > 'relaxed' operation that steps outside of the spec is unique to s390x. 
+> > (Conversely, devices that use 'strict' PCISTB conform to the typical TLP 
+> > definition)
+> > 
+> > This deviation from spec is to my mind is another argument to treat 
+> > these particular PCISTB separately.  
+> 
+> I think that's just an accessor abstraction, we're not asking users to
+> generate TLPs.  If we expose a byte granularity interface, some
+> platforms might pass that directly to the PCISTB command, otherwise
+> might align the address, perform a dword access, and return the
+> requested byte.  AFAICT, both conventional and express PCI use dword
+> alignement on the bus, so this should be valid and at best questions
+> whether ISM is really PCI or not.
 
-Thanks,
+The vibes I'm getting from ISM is that it is mostly a construct using
+(one set of) the s390 pci instructions, which ends up being something
+not entirely unlike a pci device... the question is how much things
+like the 'relaxed' payload may also be supported by 'real' pci devices
+plugged into an s390.
 
-Le lun. 18 janv. 2021 =C3=A0 12:15, Adrien Grassein
-<adrien.grassein@gmail.com> a =C3=A9crit :
->
-> Hello,
->
-> This patch set aims is to add the support of the Nitrogen8M Mini SBC
-> from Boundary Devices.
->
-> Thanks,
->
-> Update in v2:
->   - Rewrite the dts (Remove the unused wlan and audio);
->   - Remove useless definition;
->   - Take in account review.
->
-> Update in v3:
->   - Take in account review.
->
-> Update in v4:
->   - Reorder definition in pmic
->
-> Update in v5:
->   - Take in account review.
->   - Remove useless i2c groups
->
-> Adrien Grassein (3):
->   dt-bindings: arm: imx: add imx8mm nitrogen support
->   arm64: dts: imx: Add i.mx8mm nitrogen8mm basic dts support
->   arm64: defconfig: Enable PF8x00 as builtin
->
->  .../devicetree/bindings/arm/fsl.yaml          |   1 +
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../dts/freescale/imx8mm-nitrogen8mm_rev2.dts | 395 ++++++++++++++++++
->  arch/arm64/configs/defconfig                  |   1 +
->  4 files changed, 398 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2=
-.dts
->
-> --
-> 2.25.1
->
+> 
+> > > whole payload.  It's quite possible that the reason we don't have more
+> > > access width problems is that MMIO is typically mmap'd on other
+> > > platforms.  We get away with using the x-no-mmap=on flag for debugging,
+> > > but it's not unheard of that the device also doesn't work quite
+> > > correctly with that flag, which could be due to access width or timing
+> > > difference.
+> > > 
+> > > So really, I don't see why we wouldn't want to maintain the guest
+> > > access width through QEMU and the kernel interface for all devices.  It
+> > > seems like that should be our default vfio-pci implementation.  I think
+> > > we chose the current width based on the QEMU implementation that was
+> > > already splitting accesses, and it (mostly) worked.  Thanks,
+> > >     
+> > 
+> > But unless you think that allowing more flexibility than the PCI spec 
+> > dictates (byte-aligned up to 4K rather than dword-aligned up to 4K, see 
+> > above) this still wouldn't allow me to solve the issue I'm trying to 
+> > with this patch set.  
+> 
+> As above, it still seems like an improvement to honor user access width
+> to the ability of the platform or bus/device interface.  If ISM is
+> really that different from PCI in this respect, it only strengthens the
+> argument to make a separate bus driver derived from vfio-pci(-core) imo.
+> 
+> > If you DO think allowing byte-aligned access up to 4K is OK, then I'm 
+> > still left with a further issue (@Niklas):  I'm also using this 
+> > region-based approach to ensure that the host uses a matching interface 
+> > when talking to the host device (basically, s390x has two different 
+> > versions of access to PCI devices, and for ISM at least we need to 
+> > ensure that the same operation intercepted from the guest is being used 
+> > on the host vs attempting to 'upgrade', which always happens via the 
+> > standard s390s kernel PCI interfaces).  
+> 
+> In the proposed vfio-pci-core library model, devices would be attached
+> to the most appropriate vfio bus driver, an ISM device might be bound
+> to a vfio-zpci-ism (heh, "-ism") driver on the host, standard device
+
+That would be a nice name, at least :)
+
+> might simply be attached to vfio-pci.
+
+I'm wondering what a good split would be there. ISTM that the devices
+the vfio-pci-core split is written in mind with are still normal pci
+devices, just with some extra needs that can be fulfilled via an aux
+driver. ISM seems to need special treatment for normal accesses, but
+does not hook into a separate framework. (If other zpci devices need
+special accesses, would that then be a zpci framework?)
+
