@@ -2,211 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7156E30565C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9058730565E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhA0JAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:00:54 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51862 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233570AbhA0I46 (ORCPT
+        id S234691AbhA0JBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:01:31 -0500
+Received: from mail.strohwolke.at ([116.203.115.155]:57658 "EHLO
+        mail.strohwolke.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233622AbhA0I55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:56:58 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R8pxF6026909;
-        Wed, 27 Jan 2021 09:56:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=6+HB90kOCK0S2K93nap8waW8N0J4nhwfAdTfa4drhiQ=;
- b=IXRlp9gGOFa4kP63YUkh98fPp3+TmOHEFUe7YYdTM7O/9Zdhco5TYwcKgeHCGdZLI+Lp
- smtJdK6Aj/o1jR0ZzbdH+8cDEmLJe2P2bTl0fsXOeytDv4YUOWBreK7uEYOgHiSWExYF
- ixKmKiefqJXqXC0nTwiYzYt7c1A9zIaJBz82js4PStHAb6Yo1mw60v4HWNCP6y50jt1C
- eRVkMvuhq+rJJ0Lm+ylOteXwg4hC1WExS69IbZ14k0fgvjT5NQ8mDg1AGHotmDAao0g/
- wc7aJRc26//g/fBwI2G/Cniv7iAxet2+LHv9/oI23kwzFqZIgEOM/ZyYHKdh6GpSqPU5 tw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 368c15xc64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 09:56:12 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0307010002A;
-        Wed, 27 Jan 2021 09:56:12 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E34BE21FE81;
-        Wed, 27 Jan 2021 09:56:11 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.45) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
- 2021 09:56:11 +0100
-Subject: Re: [PATCH v4 17/17] remoteproc: Refactor rproc delete and cdev
- release path
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
- <20201218173228.2277032-18-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <1c8a1395-8621-31ab-3ded-768bc83e6f9f@st.com>
-Date:   Wed, 27 Jan 2021 09:56:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 27 Jan 2021 03:57:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=strohwolke.at;
+        s=mail; t=1611737828; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wdEsu7hTQGuu0Mrz/8QIkT1CtZl6ybGHwKUHQbqT7XU=;
+        b=AvdFS6JXpcqRDcuxS/7y81Z+00YV/Fzeug1qg43MRy3DtxnTbdVzQoR92Pkr0hgNJxvcLE
+        Lb39poyW7xyd9YX8F5UJfU4gRKMPxqey5u2OgZi2d6o5iLoimFTaQsIAZJmI+8c+TaoHjQ
+        jeu4w3pFFE4Zsg9tdGdnzO+h/6brj14=
+Subject: Re: [PATCH] dts: ARM: add kobo glo hd ebook reader
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210126173130.45427-1-apreiml@strohwolke.at>
+ <20210126193419.1e067639@aktux>
+From:   Armin Preiml <apreiml@strohwolke.at>
+Message-ID: <97c3fa7f-f2eb-a59c-9bc0-670deeb90804@strohwolke.at>
+Date:   Wed, 27 Jan 2021 09:57:06 +0100
 MIME-Version: 1.0
-In-Reply-To: <20201218173228.2277032-18-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210126193419.1e067639@aktux>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_03:2021-01-26,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for the feedback. I will do the changes.
 
-look good to me
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+On 1/26/21 7:34 PM, Andreas Kemnade wrote:
+> hmm, pictures (we are talking about FCC ID NOIKBN437, right?) show two
+> uarts, next to each other. Which one is this?
+It's the right one (above the Board Identifier String).
+> That is for emmc? And it is not populated, so probably better not
+> enable that here.
+ok.
+>> +&usdhc1 {
+>> +	pinctrl-names = "default";
+>> +	pinctrl-0 = <&pinctrl_usdhc1>;
+>> +	status = "okay";
+>> +};
+>> +
+> and also not add this.
 
-On 12/18/20 6:32 PM, Mathieu Poirier wrote:
-> Refactor function rproc_del() and rproc_cdev_release() to take
-> into account the policy specified in the device tree.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/remoteproc/remoteproc_cdev.c | 18 +++++++++++---
->  drivers/remoteproc/remoteproc_core.c | 36 ++++++++++++++++++++++++----
->  include/linux/remoteproc.h           |  4 ++++
->  3 files changed, 51 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-> index f7645f289563..9b2fb6fbf8e7 100644
-> --- a/drivers/remoteproc/remoteproc_cdev.c
-> +++ b/drivers/remoteproc/remoteproc_cdev.c
-> @@ -87,11 +87,23 @@ static long rproc_device_ioctl(struct file *filp, unsigned int ioctl, unsigned l
->  static int rproc_cdev_release(struct inode *inode, struct file *filp)
->  {
->  	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
-> +	int ret;
->  
-> -	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
-> -		rproc_shutdown(rproc);
-> +	if (!rproc->cdev_put_on_release)
-> +		return 0;
->  
-> -	return 0;
-> +	/*
-> +	 * The application has crashed or is releasing its file handle.  Detach
-> +	 * or shutdown the remote processor based on the policy specified in the
-> +	 * DT.  No need to check rproc->state right away, it will be done
-> +	 * in either rproc_detach() or rproc_shutdown().
-> +	 */
-> +	if (rproc->autonomous_on_core_shutdown)
-> +		ret = rproc_detach(rproc);
-> +	else
-> +		ret = rproc_shutdown(rproc);
-> +
-> +	return ret;
->  }
->  
->  static const struct file_operations rproc_fops = {
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 2fe42ac7ca89..9f47a4ec0ec6 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -2254,6 +2254,22 @@ static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
->  	return 0;
->  }
->  
-> +static void rproc_set_automation_flags(struct rproc *rproc)
-> +{
-> +	struct device *dev = rproc->dev.parent;
-> +	struct device_node *np = dev->of_node;
-> +	bool core_shutdown;
-> +
-> +	/*
-> +	 * When function rproc_cdev_release() or rproc_del() are called and
-> +	 * the remote processor has been attached to, it will be detached from
-> +	 * (rather than turned off) if "autonomous-on-core-shutdown is specified
-> +	 * in the DT.
-> +	 */
-> +	core_shutdown = of_property_read_bool(np, "autonomous-on-core-shutdown");
-> +	rproc->autonomous_on_core_shutdown = core_shutdown;
-> +}
-> +
->  /**
->   * rproc_alloc() - allocate a remote processor handle
->   * @dev: the underlying device
-> @@ -2312,6 +2328,8 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
->  	if (rproc_alloc_ops(rproc, ops))
->  		goto put_device;
->  
-> +	rproc_set_automation_flags(rproc);
-> +
->  	/* Assign a unique device index and name */
->  	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
->  	if (rproc->index < 0) {
-> @@ -2388,15 +2406,25 @@ EXPORT_SYMBOL(rproc_put);
->   * of the outstanding reference created by rproc_alloc. To decrement that
->   * one last refcount, one still needs to call rproc_free().
->   *
-> - * Returns 0 on success and -EINVAL if @rproc isn't valid.
-> + * Returns 0 on success and a negative error code on failure.
->   */
->  int rproc_del(struct rproc *rproc)
->  {
-> +	int ret;
-> +
->  	if (!rproc)
->  		return -EINVAL;
->  
-> -	/* TODO: make sure this works with rproc->power > 1 */
-> -	rproc_shutdown(rproc);
-> +	/*
-> +	 * TODO: make sure this works with rproc->power > 1
-> +	 *
-> +	 * No need to check rproc->state right away, it will be done in either
-> +	 * rproc_detach() or rproc_shutdown().
-> +	 */
-> +	if (rproc->autonomous_on_core_shutdown)
-> +		ret = rproc_detach(rproc);
-> +	else
-> +		ret = rproc_shutdown(rproc);
->  
->  	mutex_lock(&rproc->lock);
->  	rproc->state = RPROC_DELETED;
-> @@ -2415,7 +2443,7 @@ int rproc_del(struct rproc *rproc)
->  
->  	device_del(&rproc->dev);
->  
-> -	return 0;
-> +	return ret;
->  }
->  EXPORT_SYMBOL(rproc_del);
->  
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index aa5bceb72015..012bebbd324b 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -519,6 +519,9 @@ struct rproc_dump_segment {
->   * @nb_vdev: number of vdev currently handled by rproc
->   * @char_dev: character device of the rproc
->   * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
-> + * @autonomous_on_core_shutdown: true if the remote processor should be detached
-> + *				 from (rather than turned off) when the remoteproc
-> + *				 core goes away.
->   */
->  struct rproc {
->  	struct list_head node;
-> @@ -557,6 +560,7 @@ struct rproc {
->  	u16 elf_machine;
->  	struct cdev cdev;
->  	bool cdev_put_on_release;
-> +	bool autonomous_on_core_shutdown;
->  };
->  
->  /**
-> 
+ok.
+> If you are really brave, you could add a complete devicetree on top
+> of my branch
+> kobo/drm-merged-5.10 of github.com/akemnade/linux. Besides of backlight,
+> it should give full hardware support (including a drm driver for the
+> display), so we can see what is different and whether we can use
+> a .dtsi file to define common things.
+This sounds great. I'll definitely check out your branch. Yes I've also
+seen in the uboot and kernel sources, that they've stored the board
+details as a group with flags and versions to the sd. There may be some
+similarity between multiple boards.
+
+Kind Regards
+Armin
