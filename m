@@ -2,135 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8E8305CC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A37B305CCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238186AbhA0NQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:16:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:46032 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238049AbhA0NOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:14:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D135D1FB;
-        Wed, 27 Jan 2021 05:13:25 -0800 (PST)
-Received: from [10.57.47.135] (unknown [10.57.47.135])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42E953F68F;
-        Wed, 27 Jan 2021 05:13:23 -0800 (PST)
-Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
- valid dma-ranges
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-References: <20210119105203.15530-1-yong.wu@mediatek.com>
- <YBFj9whLvqlV2erm@aptenodytes>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
-Date:   Wed, 27 Jan 2021 13:13:22 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S238188AbhA0NRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238117AbhA0NQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:16:45 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1E6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:16:05 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id j12so1156002pfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=391pCHS4EGbiAr5AejYZ6osmDLj6EdhSwcDvRToN/qs=;
+        b=GGCcaELTAwMNoE0IgGE2gzo1Gg4zeEZyZoJ4GN9kXHA81gH38mHWtk9s5yWz74Z3HH
+         XukSycg2R7I6EBXChp197zD7vmN5rNGz7R221R3kM/cFvoyIimHj2VqlG2Z0+sHupdqY
+         yW1Qz0uUMV/DG7VVy25Ks4N4n+l6wsqge/wHp1as+HvWpKSxHwO6qwDDK7wATtYLST9r
+         G00Y8sXaAKxrynA7xYLLRnH9OIFKF3NrdFFY7H64/cVRM6gm3YnuC9+jHqtZ1ZJzVe+Y
+         pgJmkQ3fbgCiWZP2weYvF/Ml5z+/iAZ3+qeUUzxc0PaEh4mkSSI74QcpGOw5h2mdKo30
+         aU2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=391pCHS4EGbiAr5AejYZ6osmDLj6EdhSwcDvRToN/qs=;
+        b=kQM0fTq2//Xi6r3J0XBV84GJ06XKiFI1x/DKngTSkXIIfcFj0dstiu9Bk5wyXYQxtM
+         8VPZhfaHRCkRBJTV6gEaYu/Olzyfs4CaK0Mex0ixIMmT59SIuQpJizUi+0076iiSPSyt
+         u+v7k3MU1v21DvQtvUuNco6SBkBA8QrOTAyjkeMF1a3qABYRzTGTjXpcHzGuoiYZmH9y
+         OpyJ2dxKYH5KQv0nTmgWOjzkEjhtJ+A7u+63afqbBP7l+B64Fpw/HXAcmXcEgXT7r2Jt
+         TDFTq8Bi/bMzTRintcdwBlc9yXEv7ocwUrUN59vJwEoEZVx4gmRnCTaBND4E+cCChtsy
+         VmMw==
+X-Gm-Message-State: AOAM530QqSTrkOjTakQGQy9DbDbtx96Vj5OmIjLKFqbgZKcExNPHJXKk
+        QoB8QuZvKfD+rK1GdjHRXgO4mSBafZudRvtxb+lrww==
+X-Google-Smtp-Source: ABdhPJzLgqy2yMNKTlIe79dYdP9ecnMteA4MDflLyeovzM4jbZpkmJFwt1g4uezdFbuSpxNAMHAIKXSsLxKu0DvXJ3I=
+X-Received: by 2002:a65:418b:: with SMTP id a11mr11118378pgq.231.1611753364610;
+ Wed, 27 Jan 2021 05:16:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBFj9whLvqlV2erm@aptenodytes>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
+ <20210127100454.GK196782@linux.ibm.com> <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
+ <20210127111858.GA273567@linux.ibm.com> <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
+In-Reply-To: <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@semihalf.com>
+Date:   Wed, 27 Jan 2021 14:15:53 +0100
+Message-ID: <CAFJ_xbrwLwgDfCyHA=PmJ8j_3dJXqVNxmv7e+ATQAAa9n3de2w@mail.gmail.com>
+Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
+ holes in memory layout
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ + Christoph, Marek ]
+Hi Mike,
 
-On 2021-01-27 13:00, Paul Kocialkowski wrote:
-> Hi,
-> 
-> On Tue 19 Jan 21, 18:52, Yong Wu wrote:
->> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
->> supplanting dma_pfn_offset") always update dma_range_map even though it was
->> already set, like in the sunxi_mbus driver. the issue is reported at [1].
->> This patch avoid this(Updating it only when dev has valid dma-ranges).
->>
->> Meanwhile, dma_range_map contains the devices' dma_ranges information,
->> This patch moves dma_range_map before of_iommu_configure. The iommu
->> driver may need to know the dma_address requirements of its iommu
->> consumer devices.
-> 
-> Just a gentle ping on this issue, it would be nice to have this fix merged
-> ASAP, in the next RC :)
+I have started bisecting your patch and I have figured out that there
+might be something wrong with clamping - with comments out these lines
+it started to work.
+The full log (with logs from below patch) can be found here:
+https://gist.github.com/semihalf-majczak-lukasz/3cecbab0ddc59a6c3ce11ddc296=
+45725
+it's fresh - I haven't analyze it yet, just sharing with hope it will help.
 
-Ack to that - Rob, Frank, do you want to take this through the OF tree, 
-or shall we take it through the DMA-mapping tree like the original culprit?
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index eed54ce26ad1..9f4468c413a1 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7093,9 +7093,11 @@ static u64 __init
+init_unavailable_range(unsigned long spfn, unsigned long epfn,
+        zone_spfn =3D arch_zone_lowest_possible_pfn[zone];
+        zone_epfn =3D arch_zone_highest_possible_pfn[zone];
 
-Thanks,
-Robin.
+-       spfn =3D clamp(spfn, zone_spfn, zone_epfn);
+-       epfn =3D clamp(epfn, zone_spfn, zone_epfn);
+-
++       //spfn =3D clamp(spfn, zone_spfn, zone_epfn);
++       //epfn =3D clamp(epfn, zone_spfn, zone_epfn);
++       pr_info("LMA DBG: zone_spfn: %llx, zone_epfn %llx\n",
+zone_spfn, zone_epfn);
++       pr_info("LMA DBG: spfn: %llx, epfn %llx\n", spfn, epfn);
++       pr_info("LMA DBG: clamp_spfn: %llx, clamp_epfn %llx\n",
+clamp(spfn, zone_spfn, zone_epfn), clamp(epfn, zone_spfn, zone_epfn));
+        for (pfn =3D spfn; pfn < epfn; pfn++) {
+                if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+                        pfn =3D ALIGN_DOWN(pfn, pageblock_nr_pages)
 
-> 
-> Cheers,
-> 
-> Paul
-> 
->> [1] https://lore.kernel.org/linux-arm-kernel/5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com/
->>
->> CC: Rob Herring <robh+dt@kernel.org>
->> CC: Frank Rowand <frowand.list@gmail.com>
->> Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset"),
->> Suggested-by: Robin Murphy <robin.murphy@arm.com>
->> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> ---
->>   drivers/of/device.c | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/of/device.c b/drivers/of/device.c
->> index aedfaaafd3e7..1122daa8e273 100644
->> --- a/drivers/of/device.c
->> +++ b/drivers/of/device.c
->> @@ -162,9 +162,11 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->>   	mask = DMA_BIT_MASK(ilog2(end) + 1);
->>   	dev->coherent_dma_mask &= mask;
->>   	*dev->dma_mask &= mask;
->> -	/* ...but only set bus limit if we found valid dma-ranges earlier */
->> -	if (!ret)
->> +	/* ...but only set bus limit and range map if we found valid dma-ranges earlier */
->> +	if (!ret) {
->>   		dev->bus_dma_limit = end;
->> +		dev->dma_range_map = map;
->> +	}
->>   
->>   	coherent = of_dma_is_coherent(np);
->>   	dev_dbg(dev, "device is%sdma coherent\n",
->> @@ -172,6 +174,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->>   
->>   	iommu = of_iommu_configure(dev, np, id);
->>   	if (PTR_ERR(iommu) == -EPROBE_DEFER) {
->> +		/* Don't touch range map if it wasn't set from a valid dma-ranges */
->> +		if (!ret)
->> +			dev->dma_range_map = NULL;
->>   		kfree(map);
->>   		return -EPROBE_DEFER;
->>   	}
->> @@ -181,7 +186,6 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->>   
->>   	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
->>   
->> -	dev->dma_range_map = map;
->>   	return 0;
->>   }
->>   EXPORT_SYMBOL_GPL(of_dma_configure_id);
->> -- 
->> 2.18.0
->>
-> 
+Best regards,
+Lukasz
+
+
+=C5=9Br., 27 sty 2021 o 13:15 =C5=81ukasz Majczak <lma@semihalf.com> napisa=
+=C5=82(a):
+>
+> Unfortunately nothing :( my current kernel command line contains:
+> console=3DttyS0,115200n8 debug earlyprintk=3Dserial loglevel=3D7
+>
+> I was thinking about using earlycon, but it seems to be blocked.
+> (I think the lack of earlycon might be related to Chromebook HW
+> security design. There is an EC controller which is a part of AP ->
+> serial chain as kernel messages are considered sensitive from a
+> security standpoint.)
+>
+> Best regards,
+> Lukasz
+>
+> =C5=9Br., 27 sty 2021 o 12:19 Mike Rapoport <rppt@linux.ibm.com> napisa=
+=C5=82(a):
+> >
+> > On Wed, Jan 27, 2021 at 11:08:17AM +0100, =C5=81ukasz Majczak wrote:
+> > > Hi Mike,
+> > >
+> > > Actually I have a serial console attached (via servo device), but
+> > > there is no output :( and also the reboot/crash is very fast/immediat=
+e
+> > > after power on.
+> >
+> > If you boot with earlyprintk=3Dserial are there any messages?
+> >
+> > > Best regards
+> > > Lukasz
+> > >
+> > > =C5=9Br., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napi=
+sa=C5=82(a):
+> > > >
+> > > > Hi Lukasz,
+> > > >
+> > > > On Wed, Jan 27, 2021 at 10:22:29AM +0100, =C5=81ukasz Majczak wrote=
+:
+> > > > > Crash after mm: fix initialization of struct page for holes in me=
+mory layout
+> > > > >
+> > > > > Hi,
+> > > > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Carol=
+ine),
+> > > > > but I've noticed it has crashed - unfortunately it seems to happe=
+n at
+> > > > > a very early stage - No output to the console nor to the screen, =
+so I
+> > > > > have started a bisect (between 5.11-rc4 - which works just find -=
+ and
+> > > > > 5.11-rc5),
+> > > > > bisect results points to:
+> > > > >
+> > > > > d3921cb8be29 mm: fix initialization of struct page for holes in m=
+emory layout
+> > > > >
+> > > > > Reproduction is just to build and load the kernel.
+> > > > >
+> > > > > If it will help any how I am attaching:
+> > > > > - /proc/cpuinfo (from healthy system):
+> > > > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377=
+c1a785b64a97066
+> > > > > - my .config file (for a broken system):
+> > > > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b5=
+3efe8e18b5da33c
+> > > > >
+> > > > > If there is anything I could add/do/test to help fix this please =
+let me know.
+> > > >
+> > > > Chris Wilson also reported boot failures on several Chromebooks:
+> > > >
+> > > > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@=
+build.alporthouse.com
+> > > >
+> > > > I presume serial console is not an option, so if you could boot wit=
+h
+> > > > earlyprintk=3Dvga and see if there is anything useful printed on th=
+e screen
+> > > > it would be really helpful.
+> > > >
+> > > > > Best regards
+> > > > > Lukasz
+> > > >
+> > > > --
+> > > > Sincerely yours,
+> > > > Mike.
+> >
+> > --
+> > Sincerely yours,
+> > Mike.
