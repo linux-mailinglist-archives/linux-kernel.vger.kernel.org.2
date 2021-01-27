@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582DC3065DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C283065E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhA0VSm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Jan 2021 16:18:42 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:42390 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344101AbhA0VSd (ORCPT
+        id S234073AbhA0VVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233903AbhA0VVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:18:33 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 86D24625DE1E;
-        Wed, 27 Jan 2021 22:17:51 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 79ZlmV87B62C; Wed, 27 Jan 2021 22:17:51 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 244DB625DE1C;
-        Wed, 27 Jan 2021 22:17:51 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pgoXEc18aL20; Wed, 27 Jan 2021 22:17:51 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id F3E4E625DE1E;
-        Wed, 27 Jan 2021 22:17:50 +0100 (CET)
-Date:   Wed, 27 Jan 2021 22:17:50 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Tomas Winkler <tomas.winkler@intel.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at>
-In-Reply-To: <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com>
-References: <20210127200319.662842-1-tomas.winkler@intel.com> <9732911.325628.1611780400338.JavaMail.zimbra@nod.at> <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com>
-Subject: Re: [PATCH] mtd: use refcount to prevent corruption
+        Wed, 27 Jan 2021 16:21:32 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3289C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:20:51 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id p72so3363026iod.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:20:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wQExotaT8kbEKgow6n+XjSX7Qtx44wh+aWeRBfCx438=;
+        b=etyD3xNqgzOyLU1iYt1n6lFGISMJGZ3g7VnbQ8ldeg0n5LqaCSCcMjrwep9C8QBYRX
+         CPz/CDuT+zQYPo+dNQIjTkAT6gt1b0tDGAudMnn1W3FUdaa0vnIwX0Z7wJiHdx3DHNcH
+         hZ7ffnU+2sojKfwwHJAXjO9dKSqS/qdcCh0YXYjBTLmppyrypO7mR5cM0ZC+ZmwftbKJ
+         LvslqputCu5aWQWOtOdXtMdApyhflTR+y9tBryCBdABucJPZ8qqhG2z1Pinhh6+79/jW
+         ecdybUGfeR/5FX2ZTLxg01HCQxyyJH5XtY9/3tIWDRX29HOS4qKJFEd/NehNykcRR2jD
+         CRnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wQExotaT8kbEKgow6n+XjSX7Qtx44wh+aWeRBfCx438=;
+        b=EmYJS9XnI/PAWbCggvdstrEtYjvAvDH2zthvZqple67XuvK9kPpYmjfm+X4K7rWyaD
+         3pb+BWcON2kLjBFUR/7hCEb3CJBJYNdHuv4QFrsq1t3ALQnI01XofXeMjeQh8Q+t5shR
+         vixW9wnHx1B5YcTWWI2aLZYXhMm20o+Bv0Kdm1VZPgwk6Kv2imuB8BuCRL9XcS/I2yZm
+         gIuTgKGzb4G3dWHPDZM5qNLXvKn2Xb+OvhJxEsUtOAXfKDILh+xccQiDOGHvijBCBhsk
+         85DgPXhLmxqrVp666u3ZXMaF+xgP2Y7vW7cIpg6YdNwRjYq4SnF9gJ/CBaEFg6DSgOT8
+         nOjg==
+X-Gm-Message-State: AOAM533nUv4l5fZWNgG8MiUIyP9PzKLrw7EpyvspsNW026UrB6rybvGV
+        MFY/62Phkx48yiycKOI5ZnJXUkgItWm1wiZd+IinyA==
+X-Google-Smtp-Source: ABdhPJx8ShodjHeKW72tIIjARjJmmEZaqdHZL90OYpJ3Hwk5EVpiMJ7jycEksnhje3fnDAtBkBwRAMD5jW2uathQeW0=
+X-Received: by 2002:a02:ca17:: with SMTP id i23mr10394051jak.25.1611782451087;
+ Wed, 27 Jan 2021 13:20:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: use refcount to prevent corruption
-Thread-Index: AQHW9OeD00Da249Jw0qJn6+VIZAeUao7z7AAgAAh5BBxoBSOfA==
+References: <20210112181041.356734-1-bgardon@google.com> <20210112181041.356734-16-bgardon@google.com>
+ <YAjIddUuw/SZ+7ut@google.com> <460d38b9-d920-9339-1293-5900d242db37@redhat.com>
+ <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
+ <fae0e326-cfd4-bf5d-97b5-ae632fb2de34@redhat.com> <CANgfPd_TOpc_cinPwAyH-0WajRM1nZvn9q6s70jno5LFf2vsdQ@mail.gmail.com>
+ <f1ef3118-2a8e-4bf2-b3b0-60ac4947e106@redhat.com> <CANgfPd9FaPhQiEkJ=VHKiVWZ_5S3k2uWHU+ViCi4nEF=GU4qsw@mail.gmail.com>
+ <4c0d4c30-a95b-7954-d344-fb991270f79a@redhat.com>
+In-Reply-To: <4c0d4c30-a95b-7954-d344-fb991270f79a@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 27 Jan 2021 13:20:39 -0800
+Message-ID: <CANgfPd9torZ_ta7eoB6OwZa3M-LCqU+8802wfWiWDFLio2-Ysg@mail.gmail.com>
+Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
->> > When underlying device is removed mtd core will crash in case user
->> > space is still holding an open handle to a mtd device node.
->> > A proper refcounting is needed so device is release only when a
->> > partition has no active users. The current simple counter is not
->> > sufficient.
->> 
->> Can you please explain a little more what devices are involved?
->> Does it implement _get_device() and _put_device()?
-> No this is not connected to those handlers of the underlying device and those
-> won't help.
-> I have a spi device provided by MFD framework so it can go away anytime.
+On Wed, Jan 27, 2021 at 12:55 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 27/01/21 21:08, Ben Gardon wrote:
+> > I'm not entirely sure I understand this suggestion. Are you suggesting
+> > we'd have the spinlock and rwlock in a union in struct kvm but then
+> > use a static define to choose which one is used by other functions? It
+> > seems like if we're using static defines the union doesn't add value.
+>
+> Of course you're right.  You'd just place the #ifdef in the struct kvm
+> definition.
 
-Can it go away physically or just in software?
+Ah okay, thanks for clarifying.
 
-Usually the pattern is that you make sure in the device driver that nobody
-can orphan the MTD while it is in use.
-e.g. drivers/mtd/ubi/gluebi.c does so. In _get_device() it grabs a reference on the
-underlying UBI volume to make sure it cannot go away while the MTD (on top of UBI)
-is in use.
+>
+> You can place static inline functions for lock/unlock in
+> virt/kvm/mmu_lock.h, in order to avoid a proliferation of #ifdefs.
 
-Thanks,
-//richard
+Would you prefer to make that change in this series or at a later
+date? I'm assuming this would replace all the wrapper functions and
+mean that x86 is rwlock only.
+
+>
+> Paolo
+>
