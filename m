@@ -2,167 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E24305DB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB62305DBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbhA0OBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:01:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233230AbhA0N7I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:59:08 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348BDC061574;
-        Wed, 27 Jan 2021 05:58:28 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id rv9so2736805ejb.13;
-        Wed, 27 Jan 2021 05:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HWOLqctN03iPgf1OHxnbyaiPwcazrOMON+VZMndD6U4=;
-        b=eifbrOa7j6ER30jIUYtDpdiqHn9CZr7e+gR807aYg3fAn2g1AhDKNzvyP3M5qYhtfh
-         Bg2JtfxFNfRKwHGDKkttqp5TvgosRvJkNrwKVYX4xhsJzZ9+EEpkOahCG9cpk0ZwBHjZ
-         TpVWfvSDDbGitue4m3p5qXk+j0F6AcGadhLq8AEsVNbE8qJYTlXk2rnt8rMYXO0wxTVL
-         xnB3LuxDDxcNIY9Ls8TC6zeHFDIhHIc+dV11NdpTlwEpHu6UKP1r+QRn3DyrIbnffgBS
-         UZ0cLHT0L6pTikDgIMRPpYajN7FINL/Km9zXNqYD0fK2jl+43LZdsIJvm/oLJnrQ17NO
-         XAoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HWOLqctN03iPgf1OHxnbyaiPwcazrOMON+VZMndD6U4=;
-        b=Q3jEC1F7M4L+At0KCv7GcNUtenUBTVsNckiPkC4bDeDZS7gdyXa6vk0B2ot93uWVH8
-         Rq7MLycEJbS32feXgF+IPK/EbgyYKHuItfAZDkPKzl344v5DSZ5fJc4HRRgsA23kcoJU
-         q3XFNaCUdVh03yr8hr+0mNHtOXc8Gy8Bgles+8Jzvg+ovulnHjy7pLw4WsB4TiYAfNJs
-         uVK4hDZ8QASB1pyI8ZR7MZvnntvGR+WrX7VC8AzZa2VArXTqHos3UIFe8K3WoA+metsf
-         UHda1fkzz/xLS4S4LAjDObSD/rWjmhqDKy8UTP01raF4uFN63PreX2bBT/6qo20sKHBs
-         /ecg==
-X-Gm-Message-State: AOAM532iWKG7INsHWG8eAcZ9Fdm7kwNEAr/csgJ6R624kbngzyJe2KAm
-        80g1bisB1H2oLTRxIynUmftXhJDARQJR8g==
-X-Google-Smtp-Source: ABdhPJysSXhgaQ8FxkGoW4fuZXGpMNUkS45F4rmzs7fFCGXEfuO8n/ayd6F3eZ4H2dCrWBrB3IbiMA==
-X-Received: by 2002:a17:906:c793:: with SMTP id cw19mr6721127ejb.246.1611755906888;
-        Wed, 27 Jan 2021 05:58:26 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id gt12sm866450ejb.38.2021.01.27.05.58.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 05:58:25 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Subject: Re: [GIT PULL] KVM fixes for Linux 5.11-rc6
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210127102246.1599444-1-pbonzini@redhat.com>
-Message-ID: <ab1f5612-dd23-3a5a-0bf0-13ab6bdcbfe4@redhat.com>
-Date:   Wed, 27 Jan 2021 14:58:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S231848AbhA0OBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:01:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233288AbhA0N7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:59:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F3F20799;
+        Wed, 27 Jan 2021 13:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611755910;
+        bh=AYnsY4A9NU7cUGzzC6sIeWsxQPYEaH9aYV5S2LGSJIE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ncBw+ChDvsI14iG8/6NIL7fZCtoMrWYKP/lcn4OMkmVM9wdWZF9HniQ8zGVe/EDJ6
+         cdFp6DtV3FopiZlLpTa8B2de4luwq6EMQs18bpXm8CvfnxTrSpSgynna6Mg3wgNYAi
+         I3tw+InaXONAQkqrBL8tG5zgFxR1jJHcWHvx59c1xRT2IUSd/nXIpK7x/rE29f63hk
+         dwRAP+popk6muGfaEWKk0u8bbBKZWmn0W+fKtBYmecpTt/lujk83ULOYZzPpRIjYna
+         cyVKyrryM0jN2z0ncZrUeBMm8NrlcyQiJWbLqbWttL2bwnEgp23Sn87zxkMFLmaA5K
+         TiBbBSoFp+2wQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4lLF-0001lj-RZ; Wed, 27 Jan 2021 14:58:42 +0100
+Date:   Wed, 27 Jan 2021 14:58:41 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Xu Wang <vulab@iscas.ac.cn>,
+        Liu Shixin <liushixin2@huawei.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] usb: misc: appledisplay: update to use the
+ usb_control_msg_{send|recv}() API
+Message-ID: <YBFxkSlWPQRMuaGo@hovoldconsulting.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126183403.911653-2-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127102246.1599444-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126183403.911653-2-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/01/21 11:22, Paolo Bonzini wrote:
-> Linus,
-> 
-> I sent this yesterday but I cannot find it in the archives (weird),
-> so I am resending it.
+On Wed, Jan 27, 2021 at 12:03:52AM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
 
-Nevermind, I now see that you've pulled it already, though I've gotten 
-no pr-tracker-bot reply either.  Sorry about the noise.
+As I mentioned in my comments on v2, a short write has always been
+treated as an error so you shouldn't imply that it wasn't here (and in
+the other commit messages).
 
-Paolo
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, instances of usb_control_msg() have been replaced with
+> usb_control_msg_{recv|send}(), and all return value checking
+> conditions have also been modified appropriately.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> ---
+>  drivers/usb/misc/appledisplay.c | 46 ++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/appledisplay.c b/drivers/usb/misc/appledisplay.c
+> index c8098e9b432e..117deb2fdc29 100644
+> --- a/drivers/usb/misc/appledisplay.c
+> +++ b/drivers/usb/misc/appledisplay.c
+> @@ -132,21 +132,17 @@ static int appledisplay_bl_update_status(struct backlight_device *bd)
+>  	pdata->msgdata[0] = 0x10;
+>  	pdata->msgdata[1] = bd->props.brightness;
+>  
+> -	retval = usb_control_msg(
+> -		pdata->udev,
+> -		usb_sndctrlpipe(pdata->udev, 0),
+> -		USB_REQ_SET_REPORT,
+> -		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> -		ACD_USB_BRIGHTNESS,
+> -		0,
+> -		pdata->msgdata, 2,
 
-> The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
-> 
->    Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
-> 
-> are available in the Git repository at:
-> 
->    https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-> 
-> for you to fetch changes up to 9a78e15802a87de2b08dfd1bd88e855201d2c8fa:
-> 
->    KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX (2021-01-25 18:54:09 -0500)
-> 
-> ----------------------------------------------------------------
-> * x86 bugfixes
-> * Documentation fixes
-> * Avoid performance regression due to SEV-ES patches
-> 
-> ARM:
-> - Don't allow tagged pointers to point to memslots
-> - Filter out ARMv8.1+ PMU events on v8.0 hardware
-> - Hide PMU registers from userspace when no PMU is configured
-> - More PMU cleanups
-> - Don't try to handle broken PSCI firmware
-> - More sys_reg() to reg_to_encoding() conversions
-> 
-> ----------------------------------------------------------------
-> Alexandru Elisei (1):
->        KVM: arm64: Use the reg_to_encoding() macro instead of sys_reg()
-> 
-> David Brazdil (1):
->        KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-> 
-> Jay Zhou (1):
->        KVM: x86: get smi pending status correctly
-> 
-> Like Xu (2):
->        KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
->        KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
-> 
-> Lorenzo Brescia (1):
->        kvm: tracing: Fix unmatched kvm_entry and kvm_exit events
-> 
-> Marc Zyngier (4):
->        KVM: arm64: Hide PMU registers from userspace when not available
->        KVM: arm64: Simplify handling of absent PMU system registers
->        KVM: arm64: Filter out v8.1+ events on v8.0 HW
->        KVM: Forbid the use of tagged userspace addresses for memslots
-> 
-> Maxim Levitsky (1):
->        KVM: nVMX: Sync unsync'd vmcs02 state to vmcs12 on migration
-> 
-> Paolo Bonzini (2):
->        Merge tag 'kvmarm-fixes-5.11-2' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
->        KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX
-> 
-> Quentin Perret (1):
->        KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
-> 
-> Sean Christopherson (3):
->        KVM: x86: Add more protection against undefined behavior in rsvd_bits()
->        KVM: SVM: Unconditionally sync GPRs to GHCB on VMRUN of SEV-ES guest
->        KVM: x86: Revert "KVM: x86: Mark GPRs dirty when written"
-> 
-> Steven Price (1):
->        KVM: arm64: Compute TPIDR_EL2 ignoring MTE tag
-> 
-> Zenghui Yu (1):
->        KVM: Documentation: Update description of KVM_{GET,CLEAR}_DIRTY_LOG
-> 
->   Documentation/virt/kvm/api.rst       | 21 ++++----
->   arch/arm64/kvm/arm.c                 |  3 +-
->   arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 ++---
->   arch/arm64/kvm/pmu-emul.c            | 10 ++--
->   arch/arm64/kvm/sys_regs.c            | 93 ++++++++++++++++++++++--------------
->   arch/x86/kvm/kvm_cache_regs.h        | 51 ++++++++++----------
->   arch/x86/kvm/mmu.h                   |  9 +++-
->   arch/x86/kvm/svm/nested.c            |  3 ++
->   arch/x86/kvm/svm/sev.c               | 15 +++---
->   arch/x86/kvm/svm/svm.c               |  2 +
->   arch/x86/kvm/vmx/nested.c            | 44 ++++++++++++-----
->   arch/x86/kvm/vmx/pmu_intel.c         |  6 ++-
->   arch/x86/kvm/vmx/vmx.c               |  2 +
->   arch/x86/kvm/x86.c                   | 11 +++--
->   virt/kvm/kvm_main.c                  |  1 +
->   15 files changed, 172 insertions(+), 112 deletions(-)
-> 
+In this case, the buffer is already DMA-able (and is in fact only used
+for this purpose) so this patch introduces an extra allocation and
+memcpy for no really good reason.
 
+> -		ACD_USB_TIMEOUT);
+> +	retval = usb_control_msg_send(pdata->udev,
+> +				      0,
+> +				      USB_REQ_SET_REPORT,
+> +				      USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> +				      ACD_USB_BRIGHTNESS,
+> +				      0,
+> +				      pdata->msgdata, 2,
+> +				      ACD_USB_TIMEOUT, GFP_KERNEL);
+>  	mutex_unlock(&pdata->sysfslock);
+>  
+> -	if (retval < 0)
+> -		return retval;
+> -	else
+> -		return 0;
+> +	return retval;
+>  }
+>  
+>  static int appledisplay_bl_get_brightness(struct backlight_device *bd)
+> @@ -155,21 +151,17 @@ static int appledisplay_bl_get_brightness(struct backlight_device *bd)
+>  	int retval, brightness;
+>  
+>  	mutex_lock(&pdata->sysfslock);
+> -	retval = usb_control_msg(
+> -		pdata->udev,
+> -		usb_rcvctrlpipe(pdata->udev, 0),
+> -		USB_REQ_GET_REPORT,
+> -		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> -		ACD_USB_BRIGHTNESS,
+> -		0,
+> -		pdata->msgdata, 2,
+> -		ACD_USB_TIMEOUT);
+> -	if (retval < 2) {
+> -		if (retval >= 0)
+> -			retval = -EMSGSIZE;
+> -	} else {
+> +	retval = usb_control_msg_recv(pdata->udev,
+> +				      0,
+> +				      USB_REQ_GET_REPORT,
+> +				      USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> +				      ACD_USB_BRIGHTNESS,
+> +				      0,
+> +				      pdata->msgdata, 2,
+> +				      ACD_USB_TIMEOUT, GFP_KERNEL);
+> +	if (retval == 0)
+>  		brightness = pdata->msgdata[1];
+> -	}
+> +
+
+Same here, this introduces an extra allocation and memcpy and the only
+thing you gain is essentially the removal of the two lines for handling
+a short read.
+
+>  	mutex_unlock(&pdata->sysfslock);
+>  
+>  	if (retval < 0)
+
+I'd consider dropping this one as well.
+
+Johan
