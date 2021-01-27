@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAE830535B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595DA30535D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhA0GmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:42:14 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:33112 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbhA0Gj4 (ORCPT
+        id S231228AbhA0Gn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:43:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232509AbhA0Gh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 01:39:56 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R6YwoD116778;
-        Wed, 27 Jan 2021 06:39:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=ayNe9qI+3qxKgRIy1WmQRHg0RpxzGbdkqoACKC2fcOE=;
- b=VbDNMYDDBKSc6ZYG+LDVcfaqJzKlWRixLMXSHhRbGYh5ys5K9b5nL6gKMjyT5o9aouan
- 13tk00dawit0YM4nf7s3K6YbLgsLJ6zkRLEE5CRblHq4d9VoWVxugGrrdElaggxCGCR6
- Kd4SWLmKtGcHfMZLMKyIjwOKPKj8T14L2Vnnn9xpMNgi6nKKYARJguGQcl1f4F2g9Fg9
- AAPc4CVbLSJ1ZAy0o4maNZeD8gSnLZRJ8SpUg8g6Ez2fQiPELJSYBby5i21XmC3pRADR
- enoBrr3ELmZn158PAnzpEvvXOKukmF13zGQNStcSG7aV/Sjskvlpxnyx0gWUpdfiRgpF Vw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 368b7qwfpd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 06:39:01 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R6a87g011540;
-        Wed, 27 Jan 2021 06:36:59 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 368wqxe7rs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 06:36:59 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10R6ate2026356;
-        Wed, 27 Jan 2021 06:36:55 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 26 Jan 2021 22:36:54 -0800
-Date:   Wed, 27 Jan 2021 09:36:45 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
-        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
-        colin.king@canonical.com, zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v5] fbtft: add tearing signal detect
-Message-ID: <20210127063645.GC2696@kadam>
-References: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270037
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270037
+        Wed, 27 Jan 2021 01:37:56 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB2BC061574;
+        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id o16so917578pgg.5;
+        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=W0uuLo/4/wCey2dN/nEYFd5YvwQZJzT08touWgY4O8w=;
+        b=TUE4PN3EDWJkxwfN/6yW4sXh09Op1ZfGs87T0vPXMo2V2CUoevdBs0ZON/iG+qZZqz
+         Nm+7tnV72tMSF8+lEMdVx9wuVGqcn6rbhUFJPh31xc6R/0sfQV6zjchM0y1DNW8J/s8Q
+         neAWRok4qYmLx9jmUG4OJma0f84V4xDYy4W+F5xN0H7kyLR0OZxgB6/D9BWNxpAbhGMK
+         Gpd+9oYmUvzguvnc2FbUsLpuJ5sio+bZwy+heoV5GnOIjqkxzajuyao/W+oxm0eNAI9Y
+         vzqguRCGWWKF4XJtfqvSTXteaBP3M8p+TxQRSlIENIb1pTvDyj0mghBgYzOZtYT/NTiF
+         QQ6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=W0uuLo/4/wCey2dN/nEYFd5YvwQZJzT08touWgY4O8w=;
+        b=X9wxGjp/U8RgLolmO0llJFrQNaZav+PkHcJ8LV98VvfofM/ptNnMc60QtsXEsJlGhw
+         uWGdl14lur++1TVBSyIMcizHFPYj1V+1uV8sjkGU1KbHvlx3mY/Jwd9wFOpwjNI7F7KG
+         etLpDMNOvT6teGkPbTfeNTgKra6cbP/035cv4gZ9/wRCpuKUsHYh8YF5mdAMAq1MGORS
+         XDNz0UnX/gOuCFTLjedXn0u7/JaVqlNrgANmqRtgDyNfXIvUh4JcLKSxve68Sv+0tvAJ
+         ZUdaAhKdj+FMpZVrFIYUmDuglkHfxFkuktaPufrv/ycJeDZrqMk9q4T1ZZQubfsF3M4a
+         0/3Q==
+X-Gm-Message-State: AOAM5310abMjhFqpmAnWZJXn2v1lbqNXbm1LCrk5P6AG9sAm9ab7EWoW
+        5qVS1HwVyNqgRfuNjXKGY9u4suzdqlBYoh0n
+X-Google-Smtp-Source: ABdhPJzh1C84Hi+SAxJwm9/lhQAEyp9wdc9QrUhAJj915LWhtVjGpOpzm2MMrtRjVGk88F/LHp2GNg==
+X-Received: by 2002:aa7:8f1c:0:b029:1c0:60c7:f7c5 with SMTP id x28-20020aa78f1c0000b02901c060c7f7c5mr9220246pfr.59.1611729435387;
+        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
+Received: from android.asia-east2-a.c.savvy-summit-295307.internal (204.60.92.34.bc.googleusercontent.com. [34.92.60.204])
+        by smtp.googlemail.com with ESMTPSA id v3sm1038824pff.217.2021.01.26.22.37.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 22:37:14 -0800 (PST)
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, minhquangbui99@gmail.com
+Subject: [PATCH] bpf: Check for integer overflow when using roundup_pow_of_two()
+Date:   Wed, 27 Jan 2021 06:36:53 +0000
+Message-Id: <20210127063653.3576-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:32:20AM +0800, Carlis wrote:
-> @@ -82,6 +111,29 @@ enum st7789v_command {
->   */
->  static int init_display(struct fbtft_par *par)
->  {
-> +	int rc;
-> +	struct device *dev = par->info->device;
-> +
-> +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-> +	if (par->gpio.te) {
-> +		init_completion(&spi_panel_te);
-> +		mutex_init(&te_mutex);
-> +		rc = devm_request_irq(dev,
-> +				      gpiod_to_irq(par->gpio.te),
-> +				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
-> +				     "TE_GPIO", par);
-> +		if (rc) {
-> +			pr_err("TE request_irq failed.\n");
-> +			devm_gpiod_put(dev, par->gpio.te);
-> +			par->gpio.te = NULL;
-> +		} else {
-> +			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> +			pr_info("TE request_irq completion.\n");
+On 32-bit architecture, roundup_pow_of_two() can return 0 when the argument
+has upper most bit set due to resulting 1UL << 32. Add a check for this
+case.
 
+Fixes: d5a3b1f ("bpf: introduce BPF_MAP_TYPE_STACK_TRACE")
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+---
+ kernel/bpf/stackmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-This printk adds no value.
-
-Don't print anything on the success path.  You should add that to your
-code while your debugging the feature, but don't push it to the upstream
-kernel.
-
-> +		}
-> +	} else {
-> +		pr_info("%s:%d, TE gpio not specified\n",
-> +			__func__, __LINE__);
-> +	}
-
-regards,
-dan carpenter
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index aea96b638473..bfafbf115bf3 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -115,6 +115,8 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
+ 
+ 	/* hash table size must be power of 2 */
+ 	n_buckets = roundup_pow_of_two(attr->max_entries);
++	if (!n_buckets)
++		return ERR_PTR(-E2BIG);
+ 
+ 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
+ 	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
+-- 
+2.17.1
 
