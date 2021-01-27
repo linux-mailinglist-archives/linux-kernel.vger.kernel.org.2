@@ -2,130 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1294D305D77
+	by mail.lfdr.de (Postfix) with ESMTP id 83C32305D78
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhA0NpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:45:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58240 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231462AbhA0NoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:44:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611755010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-        bh=2MI+NHy/r23ezsNgQtnaK6df8sAoa/lnTedXGUTkDLY=;
-        b=JNvFcjRh7RRFG3WnLD8cIvU+mkjDAizE937+EJxIpO0T1I/QDlrfErrfB6nYLKSKk8ZpY+
-        tzX2dVhtOPqdiWauAlc5DikhDRTLgZSgv1joClhKuUTiTQlkYkvp1+Dkm9MGyuci+SOBIN
-        tuyseO79gFO5yGKXgLkhOjYAfwWqI+k=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 069C8ABDA;
-        Wed, 27 Jan 2021 13:43:30 +0000 (UTC)
-To:     Peter Zijlstra <peterz@infradead.org>, mhiramat@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Subject: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with
- nmi_enter()")
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
-Date:   Wed, 27 Jan 2021 15:43:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231575AbhA0Npm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:45:42 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:37326 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhA0NpD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:45:03 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 069C1240;
+        Wed, 27 Jan 2021 14:44:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611755052;
+        bh=4oiDLYDjV/1iW5vbdVFhfngF1nGARyrh6yFVi/JDSDw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pm4bcXmupTRF7F9J+jXq9lG/3OsjjCslY5cXy7Dr2D/GYJKmvhGQoQxZR0mq+FpnP
+         UONLHPueyFraKMWezd2lPdP0+IfceFXpRGNpdEuR0+o7fUJ/7dnggE7TtgkQvhTREN
+         JhV8oABIIHlp1qNVHbwP0AXU+9HUMCHySVj0YZ/8=
+Date:   Wed, 27 Jan 2021 15:43:52 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
+Message-ID: <YBFuGEdTYbcRFg4f@pendragon.ideasonboard.com>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-5-geert+renesas@glider.be>
+ <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
+ <CAMuHMdUqCTvCQUmL-m7C=W0id+Oh5OqPxySutOs9DEdWnzKYEg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUqCTvCQUmL-m7C=W0id+Oh5OqPxySutOs9DEdWnzKYEg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Geert,
 
-I'm currently seeing latest Linus' master being somewhat broken w.r.t
-krpobes. In particular I have the following test-case:
+On Wed, Jan 27, 2021 at 09:10:40AM +0100, Geert Uytterhoeven wrote:
+> On Tue, Jan 26, 2021 at 11:01 PM Laurent Pinchart wrote:
+> > On Mon, Jan 25, 2021 at 03:24:31PM +0100, Geert Uytterhoeven wrote:
+> > > The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
+> > > the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
+> > >   1. The per-channel registers are located in a second register block.
+> > >      Add support for mapping the second block, using the appropriate
+> > >      offsets and stride.
+> > >   2. The common Channel Clear Register (DMACHCLR) was replaced by a
+> > >      per-channel register.
+> > >      Update rcar_dmac_chan_clear{,_all}() to handle this.
+> > >      As rcar_dmac_init() needs to clear the status before the individual
+> > >      channels are probed, channel index and base address initialization
+> > >      are moved forward.
+> > >
+> > > Inspired by a patch in the BSP by Phong Hoang
+> > > <phong.hoang.wz@renesas.com>.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> 
+> > > --- a/drivers/dma/sh/rcar-dmac.c
+> > > +++ b/drivers/dma/sh/rcar-dmac.c
+> > > @@ -189,7 +189,8 @@ struct rcar_dmac_chan {
+> > >   * struct rcar_dmac - R-Car Gen2 DMA Controller
+> > >   * @engine: base DMA engine object
+> > >   * @dev: the hardware device
+> > > - * @iomem: remapped I/O memory base
+> > > + * @dmac_base: remapped base register block
+> > > + * @chan_base: remapped channel register block (optional)
+> > >   * @n_channels: number of available channels
+> > >   * @channels: array of DMAC channels
+> > >   * @channels_mask: bitfield of which DMA channels are managed by this driver
+> > > @@ -198,7 +199,8 @@ struct rcar_dmac_chan {
+> > >  struct rcar_dmac {
+> > >       struct dma_device engine;
+> > >       struct device *dev;
+> > > -     void __iomem *iomem;
+> > > +     void __iomem *dmac_base;
+> > > +     void __iomem *chan_base;
+> > >
+> > >       unsigned int n_channels;
+> > >       struct rcar_dmac_chan *channels;
+> 
+> > > @@ -339,12 +344,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
+> > >  static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
+> > >                                struct rcar_dmac_chan *chan)
+> > >  {
+> > > -     rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+> > > +     if (dmac->chan_base)
+> >
+> > Using dmac->chan_base to check if the device is a V3U seems a bit of a
+> > hack (especially given that the field is otherwise unused). I'd prefer
+> > adding a model field to struct rcar_dmac_of_data and struct rcar_dmac.
+> 
+> The check is not a check for R-Car V3U in particular, but a check for
+> the presence of a separate register block for channel registers.
+> I expect to see more SoCs having this, so IMHO checking for this feature,
+> instead of checking a model field, makes sense.
+> 
+> It's indeed unused otherwise, as beyond probe(), where per-channel bases
+> are calculated, no access to this pointer is needed anymore, (you can
+> blame devm_*() for not needing the pointer ;-)
+> Note that a model field would be "otherwise unused", too ;-)
 
-#!/bin/bash
+I agree that this isn't a V3U check, but a DMAC
+"model/generation/version" check. With V3U as the only SoC we know of
+that uses this new DMAC model, it's a bit difficult to come up with a
+proper name, but conceptually I think a model check would be better than
+checking chan_base.
 
-mkfs.btrfs -f /dev/vdc &> /dev/null
-mount /dev/vdc /media/scratch/
+> > > +             rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
+> > > +     else
+> > > +             rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
+> > >  }
+> > >
+> > >  static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
+> > >  {
+> > > -     rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> > > +     struct rcar_dmac_chan *chan;
+> > > +     unsigned int i;
+> > > +
+> > > +     if (dmac->chan_base) {
+> > > +             for_each_rcar_dmac_chan(i, chan, dmac)
+> > > +                     rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
+> > > +     } else {
+> > > +             rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
+> > > +     }
+> > >  }
+> > >
+> > >  /* -----------------------------------------------------------------------------
+> > > @@ -1744,7 +1760,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
+> > >
+> > >  static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
+> > >                               struct rcar_dmac_chan *rchan,
+> > > -                             const struct rcar_dmac_of_data *data,
+> > >                               unsigned int index)
+> > >  {
+> > >       struct platform_device *pdev = to_platform_device(dmac->dev);
+> > > @@ -1753,9 +1768,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
+> > >       char *irqname;
+> > >       int ret;
+> > >
+> > > -     rchan->index = index;
+> > > -     rchan->iomem = dmac->iomem + data->chan_offset_base +
+> > > -                    data->chan_offset_stride * index;
+> > >       rchan->mid_rid = -EINVAL;
+> > >
+> > >       spin_lock_init(&rchan->lock);
+> > > @@ -1842,6 +1854,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+> > >       const struct rcar_dmac_of_data *data;
+> > >       struct rcar_dmac_chan *chan;
+> > >       struct dma_device *engine;
+> > > +     void __iomem *chan_base;
+> > >       struct rcar_dmac *dmac;
+> > >       unsigned int i;
+> > >       int ret;
+> > > @@ -1880,9 +1893,24 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+> > >               return -ENOMEM;
+> > >
+> > >       /* Request resources. */
+> > > -     dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
+> > > -     if (IS_ERR(dmac->iomem))
+> > > -             return PTR_ERR(dmac->iomem);
+> > > +     dmac->dmac_base = devm_platform_ioremap_resource(pdev, 0);
+> > > +     if (IS_ERR(dmac->dmac_base))
+> > > +             return PTR_ERR(dmac->dmac_base);
+> > > +
+> > > +     if (!data->chan_offset_base) {
+> > > +             dmac->chan_base = devm_platform_ioremap_resource(pdev, 1);
+> > > +             if (IS_ERR(dmac->chan_base))
+> > > +                     return PTR_ERR(dmac->chan_base);
+> > > +
+> > > +             chan_base = dmac->chan_base;
+> > > +     } else {
+> > > +             chan_base = dmac->dmac_base + data->chan_offset_base;
+> > > +     }
+> > > +
+> > > +     for_each_rcar_dmac_chan(i, chan, dmac) {
+> > > +             chan->index = i;
+> >
+> > Now that chan->indew is set before calling rcar_dmac_chan_probe(), you
+> > don't have to pass the index to rcar_dmac_chan_probe() anymore.
+> 
+> Right, will fix.
+> 
+> > > +             chan->iomem = chan_base + i * data->chan_offset_stride;
+> > > +     }
+> > >
+> > >       /* Enable runtime PM and initialize the device. */
+> > >       pm_runtime_enable(&pdev->dev);
+> > > @@ -1929,7 +1957,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
+> > >       INIT_LIST_HEAD(&engine->channels);
+> > >
+> > >       for_each_rcar_dmac_chan(i, chan, dmac) {
+> > > -             ret = rcar_dmac_chan_probe(dmac, chan, data, i);
+> > > +             ret = rcar_dmac_chan_probe(dmac, chan, i);
+> > >               if (ret < 0)
+> > >                       goto error;
+> > >       }
+> 
+> Thanks for your comments!
 
-bpftrace -e 'kprobe:btrfs_sync_file {printf("kprobe: %s\n", kstack());}'
-&>bpf-output &
-bpf_trace_pid=$!
+-- 
+Regards,
 
-# force btrfs_sync_file to be called
-sleep 2
-xfs_io -f -c "pwrite 0 4m" -c "fsync" /media/scratch/file5
-
-kill $bpf_trace_pid
-sleep 1
-
-grep -q kprobe bpf-output
-retval=$?
-rm -f bpf-output
-umount /media/scratch
-
-exit $retval
-
-It traces btrfs_sync_file which is called when fsync is executed on a
-btrfs file, however I don't see the stacktrace being printed i.e the
-kprobe doesn't fire at all. The following alternative program:
-
-bpftrace -e 'tracepoint:btrfs:btrfs_sync_file {printf("tracepoint:
-%s\n", kstack());} kprobe:btrfs_sync_file {printf("kprobe: %s\n",
-kstack());}'
-
-only prints the stack from the tracepoint and not from the kprobe, given
-that the tracepoint is called from the btrfs_sync_file function.
-
-I started bisecting this and arrived at the following commit:
-
-0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()")
-
-FWIW the following series is applied on the kernel I was testing:
-https://lore.kernel.org/lkml/159870598914.1229682.15230803449082078353.stgit@devnote2/
-
-but it's still broken.
+Laurent Pinchart
