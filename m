@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001AC306759
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6DA30675E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbhA0W5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
+        id S233065AbhA0W6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbhA0W4N (ORCPT
+        with ESMTP id S232158AbhA0W4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:56:13 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4D9C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:26:58 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id i63so2333660pfg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:26:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MMFtAtZNI0COZaqF8mB8/06frm5QBEITJpap0cTagq8=;
-        b=CRXdKGJOGXXsOQpHtELIKR8umZ5rhCnWLRE36xgaT6dDVwCPEZjCeBR2Qsk7DeBK8t
-         GWwKHGqh6cb6Fo5dOCjrFchI4QQ89+oaW5HAjc5xx3YuDcqPEcf6kdF6T98nxDSLUnkx
-         fBgBERt0O3M9585mXFDborfe6U0cHo57JYy6hVW81eqgZGPWKR1An2L2yv9+paOg3CXH
-         tCVrdAtbgv444EeewcZ6ba0aJYVoQ9S09DHAXWwLR1VEJ7UndfBlBjQT+Dcb1uaNW+wF
-         TJmXQlSft7xyE1BlHvgn+w3v/p5eFlE74xEJHfRfIwJfNEGxjRThenG+fIFn+j0kj6qs
-         dW+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MMFtAtZNI0COZaqF8mB8/06frm5QBEITJpap0cTagq8=;
-        b=TMGuvIjgl1HnneeF0N2U5Ozw2bZCENZBAzZ8ZMGijd/FJD2ySZ3ospwacluETqpuUo
-         OnuSB+xiEgqGKkAiNUj3d6s97hh8F2z3BuMn6f1/Q9ad3E8R+loGH36euniq9Vop35qH
-         EPZBFSWk0F7/aqXnuPuWexE9JlhlnhwG80Vuuc+c7eLB3eXXAv8ghJxOJYfU1UnxLUkF
-         yGSCpoPUzXZ4J3xIi6+EFcr6FzMAM+9XwUnVvHFDwB89rwMHdEsqQ8QiR943jTYK1NEP
-         ng1QBdb+9H+haoWgI0nfpgzg+fjKR9bwSRL6V25rDZk0wOP2YgyhsUjlKKDWEt0rGJP1
-         GJ3A==
-X-Gm-Message-State: AOAM533t+l6iJ6keh/4RBJsYtuDo+ZSYdytCm475LfHEmOXmARRamqfR
-        ibskFMekmHPM+GS/04xD0yCrJ1JpnzR43a784/M8Uw==
-X-Google-Smtp-Source: ABdhPJzOWe2d9GCIKgOrAtd2j0dugg5j43ntl0uPF21manG+gGVrrjiRx873lNw4xwTd8k/hi0vONdzecQhgyBv8vSs=
-X-Received: by 2002:a63:7e10:: with SMTP id z16mr13557544pgc.263.1611786417749;
- Wed, 27 Jan 2021 14:26:57 -0800 (PST)
+        Wed, 27 Jan 2021 17:56:15 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D920AC061756;
+        Wed, 27 Jan 2021 14:32:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ULuGLjzwxtFSy9nTUc2QJKX0McDeCrJVlLHjHSrLJUQ=; b=ekL90Tyh0NH+HZ7P38Jv+7tXVu
+        V0h1SMEmsSa5dYOLQ7mbtrO48frvtn1sBgDUeYc4f4XNC9aKBAmk7KtEedc0z/FUPFs+JDguU9QxY
+        k3mmlLvm60KJEVI6UAG6AQRnHCwu0/Dr7UQYqw4148K4ZlkIsaUXK+YxpGo6tK4yloYl+e/rrCI6B
+        ctAf1mdI8c50oPovdIkjNEHuj3H8v81dfRKlTqXv9PgYI4NTO4WhkobKHigj7092hDLmIwt73cVeJ
+        +E9ZvC6vEdLhnYqb8ZUjb+hUALXQwfc/4kM5/foTO1mrQXOVaAgHztGeXn/DtQiaY66Us2amlQ3wa
+        whBvdWEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4tM6-0006bm-Aw; Wed, 27 Jan 2021 22:32:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 270C83003D8;
+        Wed, 27 Jan 2021 23:32:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0E4712BDDF79F; Wed, 27 Jan 2021 23:32:04 +0100 (CET)
+Date:   Wed, 27 Jan 2021 23:32:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] MIPS: Octeon: Implement __smp_store_release()
+Message-ID: <YBHp4139X+p+4IZ+@hirez.programming.kicks-ass.net>
+References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+ <20210127203627.47510-2-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
-References: <20210112205542.1375847-1-natechancellor@gmail.com>
- <202101130859.JSORPQUn-lkp@intel.com> <20210113013130.GA3446359@ubuntu-m3-large-x86>
- <CAKwvOdnx99YTGhP-mH-9E6YTLLUfauuteFtqZSeXLv5Vy+XowA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnx99YTGhP-mH-9E6YTLLUfauuteFtqZSeXLv5Vy+XowA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 27 Jan 2021 14:26:45 -0800
-Message-ID: <CAKwvOd=WpK52Y4HpqoeaukmfOAWqTg-+NV1wdBjokwRuumdtSw@mail.gmail.com>
-Subject: Re: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127203627.47510-2-alexander.sverdlin@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 5:39 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Tue, Jan 12, 2021 at 5:31 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > On Wed, Jan 13, 2021 at 08:39:52AM +0800, kernel test robot wrote:
-> > > Hi Nathan,
-> > >
-> > > I love your patch! Perhaps something to improve:
-> > >
-> > > [auto build test WARNING on 7c53f6b671f4aba70ff15e1b05148b10d58c2837]
-> > >
-> > > url:    https://github.com/0day-ci/linux/commits/Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
-> > > base:    7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> > > config: arm64-randconfig-r031-20210112 (attached as .config)
-> > > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 32bcfcda4e28375e5a85268d2acfabcfcc011abf)
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # install arm64 cross compiling tool for clang build
-> > >         # apt-get install binutils-aarch64-linux-gnu
-> > >         # https://github.com/0day-ci/linux/commit/775adad26a60878926c0ee6cd460a1375bbe51e6
-> > >         git remote add linux-review https://github.com/0day-ci/linux
-> > >         git fetch --no-tags linux-review Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
-> > >         git checkout 775adad26a60878926c0ee6cd460a1375bbe51e6
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > All warnings (new ones prefixed by >>):
-> > >
-> > >    lib/ubsan.c:192:6: warning: no previous prototype for function '__ubsan_handle_add_overflow' [-Wmissing-prototypes]
-> > >    void __ubsan_handle_add_overflow(void *data,
-> > >         ^
-> > >    lib/ubsan.c:192:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> > >    void __ubsan_handle_add_overflow(void *data,
-> > >    ^
-> > >    static
-> > >    lib/ubsan.c:200:6: warning: no previous prototype for function '__ubsan_handle_sub_overflow' [-Wmissing-prototypes]
-> > >    void __ubsan_handle_sub_overflow(void *data,
-> > >         ^
-> > >    lib/ubsan.c:200:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> > >    void __ubsan_handle_sub_overflow(void *data,
-> > >    ^
-> >
-> > Given that these are compiler inserted functions, there is not much of a
-> > point to having prototypes to them. If people feel shutting these
-> > warnings up is worthwhile, we can just add the prototypes right above
-> > the function definition in a follow up patch.
->
-> Same as stpcpy; it would be nice though. ;)
+On Wed, Jan 27, 2021 at 09:36:22PM +0100, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> 
+> On Octeon smp_mb() translates to SYNC while wmb+rmb translates to SYNCW
+> only. This brings around 10% performance on tight uncontended spinlock
+> loops.
+> 
+> Refer to commit 500c2e1fdbcc ("MIPS: Optimize spinlocks.") and the link
+> below.
+> 
+> On 6-core Octeon machine:
+> sysbench --test=mutex --num-threads=64 --memory-scope=local run
+> 
+> w/o patch:	1.60s
+> with patch:	1.51s
+> 
+> Link: https://lore.kernel.org/lkml/5644D08D.4080206@caviumnetworks.com/
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  arch/mips/include/asm/barrier.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/mips/include/asm/barrier.h b/arch/mips/include/asm/barrier.h
+> index 49ff172..24c3f2c 100644
+> --- a/arch/mips/include/asm/barrier.h
+> +++ b/arch/mips/include/asm/barrier.h
+> @@ -113,6 +113,15 @@ static inline void wmb(void)
+>  					    ".set arch=octeon\n\t"	\
+>  					    "syncw\n\t"			\
+>  					    ".set pop" : : : "memory")
+> +
+> +#define __smp_store_release(p, v)					\
+> +do {									\
+> +	compiletime_assert_atomic_type(*p);				\
+> +	__smp_wmb();							\
+> +	__smp_rmb();							\
+> +	WRITE_ONCE(*p, v);						\
+> +} while (0)
 
-If you would be so kind, I'd be happy to sign off on such a v3.
+This is wrong in general since smp_rmb() will only provide order between
+two loads and smp_store_release() is a store.
 
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+If this is correct for all MIPS, this needs a giant comment on exactly
+how that smp_rmb() makes sense here.
