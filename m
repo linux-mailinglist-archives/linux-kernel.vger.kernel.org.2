@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393A5305A3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FC1305A23
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhA0Lqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S237126AbhA0Lnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:43:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236644AbhA0L2z (ORCPT
+        with ESMTP id S236796AbhA0L3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:28:55 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EACC0617A9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:26:06 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id a9so1517255wrt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:26:06 -0800 (PST)
+        Wed, 27 Jan 2021 06:29:21 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A609C061353
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:26:07 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id a1so1512380wrq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:26:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9+pPf3toKEse/9kjih6DD2KI63boeMHUYd5sQ1L4808=;
-        b=EGJZw7wfgtfz2CzYV3daPIlaKtUeDRxMJKKiGrIQERCjYN8FFDybJWgKh+/vMdQQrJ
-         b6SCg1l3YXhZXlopKmQdPBzFnGCbNaPosS9Uesaf5BLBaAOA1HU8U9lBp2L2ISjZsgCa
-         5o0HN+fm8nRkPPPugdclK7jLUYV+oZgQcAs8eP3P2gjMQ8yGkW/lXwDk3MJpegB9HoLx
-         lQ2H8GMIpvmHiinVSyYKKcvwPwSJbIk5A9/bUXYNE8b2dfor0bUnG+Dblsofa2KoN5x4
-         Wch8x4suZCfNuj5TF3lwLXJuCRcAIOsN7i6+Zvm3HLP1HrJ9jvAfky34e2pNwJsS0gfF
-         dUzQ==
+        bh=svVOUGKG5Fv6t7oAvNImQmC5zwwJ4U0ey/3mhzQtIP4=;
+        b=RQw8287NITYeNqTInH8hwgY4UTwjmsUno9caSnmGOl1zLHuayiE5rJ2fiiEuXSbeP6
+         H5HESNZOpwqyEvLrXVHbZR5HX1tOFS7EsZPHpDvyfzWy8N5wiauKQiVXQmEtu48AvsjU
+         CgyJPy9FrN7NV6nm+d/grtY8TW5/MB4qpL9oid2Y6X9dLinRP43m5MaSOeUJHQMghP65
+         nXOSL1+0338DF+3oxLldc7jf2R3Kv7Sxcsk166jHtfs2e4zBiDuUMhlDIqgzIonbzg8h
+         +qw6+ULYXP6ZLS3liXBN1aJkbO6cM8q4OYjMd8C3sjsfEg/36EHfxpHqG+7YBpZYtJPP
+         CnIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9+pPf3toKEse/9kjih6DD2KI63boeMHUYd5sQ1L4808=;
-        b=UwLzyy82XatqmOH0lBdyEziHLspws06PDU+Ddg5uzp4ziouwideqY2bvbo56sAvqhr
-         ldNQBkHw+qO8EyRer1UJuQpClFJ6dynjGYOyAnU9W+KV9fSxFHq41KsbBJT82IbwIG5+
-         7UlJjNLA3GUpeIscLbKU+qk4LgMZVQ/zk6A0pD0NimwajVVVrrAAjZUJNla19c5zQpMU
-         gRsdpKIg5Bg3Zri8r7R9J8A/Dw1EHHO0lrroZbS9z2M5751mdQCKXbjAjuQmNP0fzAlX
-         7arc05BKzh0dBPAdPizFgJkYvJRk0m0zG91D9SvHR1FLK6kATg3hb/QpFCj5wg5BVhlE
-         +/KQ==
-X-Gm-Message-State: AOAM532xJSccFz6YLJymePgrd2L6JvDkaBc4JPSvfpCEP1WcAZUrfj/m
-        fOogrGBXpuyyo7F7R8ynVVSjdA==
-X-Google-Smtp-Source: ABdhPJwLt9fF+Qd6gWqSi22t+tjPmJ1gbZnyZUHjpQhmago9hDtiktK4oYSqHo90oUJdK/kuU2kzmQ==
-X-Received: by 2002:a5d:524f:: with SMTP id k15mr10815856wrc.16.1611746764884;
-        Wed, 27 Jan 2021 03:26:04 -0800 (PST)
+        bh=svVOUGKG5Fv6t7oAvNImQmC5zwwJ4U0ey/3mhzQtIP4=;
+        b=TgtY3HNO6gDWtMO5dk3Qqa7plROH8E0wyQfIXg3FAc/R0PoX9iCKnzInZRjdSZvX+R
+         vCSlPAUbtopz2qStJT4qy72vUDdAFbI8Z23dSvmJKTugvlHOchY9fLQ+KitgqxVHekdg
+         fKk2CS38uypZLS9925g9XqRys0HI/c1pg0b9addi65YDjf4g3/tecnZUH0CX9wHYZ730
+         EesCS7dtDYGsrQqRnGHhdoKpyD1hxRyVPkkCZza2EsMuWj1sCFQpCbDENGy4VHMcRPKX
+         3yqi0us/GnxEDqYNLjrsOrpTTcJKH2T+BKxQi/ljm7BtHABfpz2h7CyI1ced8h8fGHY/
+         TM8g==
+X-Gm-Message-State: AOAM530vOX5+Z/RlujARNo8pMfj4vlMZC4OrbC3BmqFVB080HXrPDSKG
+        wl652Pn4Ft03FSCjw/s9Vem4OA==
+X-Google-Smtp-Source: ABdhPJwHTzrcFOoZyi1HeP3EtLePMxJE62a7mjl8dfor15nZfkZLeVwADi013e38+v4lDmcaCLfdxw==
+X-Received: by 2002:a5d:4292:: with SMTP id k18mr10798614wrq.218.1611746766164;
+        Wed, 27 Jan 2021 03:26:06 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id m2sm2040065wml.34.2021.01.27.03.26.03
+        by smtp.gmail.com with ESMTPSA id m2sm2040065wml.34.2021.01.27.03.26.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 03:26:04 -0800 (PST)
+        Wed, 27 Jan 2021 03:26:05 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,10 +55,17 @@ Cc:     linux-kernel@vger.kernel.org,
         Michael Jamet <michael.jamet@intel.com>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
         Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 05/12] thunderbolt: pa: Demote non-conformant kernel-doc headers
-Date:   Wed, 27 Jan 2021 11:25:47 +0000
-Message-Id: <20210127112554.3770172-6-lee.jones@linaro.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 06/12] thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv' param
+Date:   Wed, 27 Jan 2021 11:25:48 +0000
+Message-Id: <20210127112554.3770172-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210127112554.3770172-1-lee.jones@linaro.org>
 References: <20210127112554.3770172-1-lee.jones@linaro.org>
@@ -70,41 +77,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/thunderbolt/path.c:476: warning: Function parameter or member 'path' not described in 'tb_path_activate'
- drivers/thunderbolt/path.c:568: warning: Function parameter or member 'path' not described in 'tb_path_is_invalid'
+ drivers/thunderbolt/xdomain.c:678: warning: Function parameter or member 'drv' not described in 'tb_unregister_service_driver'
+ drivers/thunderbolt/xdomain.c:678: warning: Excess function parameter 'xdrv' description in 'tb_unregister_service_driver'
 
 Cc: Andreas Noever <andreas.noever@gmail.com>
 Cc: Michael Jamet <michael.jamet@intel.com>
 Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
 Cc: Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
 Cc: linux-usb@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/thunderbolt/path.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/thunderbolt/xdomain.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/thunderbolt/path.c b/drivers/thunderbolt/path.c
-index ca7d738d66dea..758b5fa0060c6 100644
---- a/drivers/thunderbolt/path.c
-+++ b/drivers/thunderbolt/path.c
-@@ -464,7 +464,7 @@ void tb_path_deactivate(struct tb_path *path)
- 	path->activated = false;
- }
+diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
+index f2d4db1cd84d0..6e8bea6a7d392 100644
+--- a/drivers/thunderbolt/xdomain.c
++++ b/drivers/thunderbolt/xdomain.c
+@@ -670,7 +670,7 @@ EXPORT_SYMBOL_GPL(tb_register_service_driver);
  
--/**
-+/*
-  * tb_path_activate() - activate a path
+ /**
+  * tb_unregister_service_driver() - Unregister XDomain service driver
+- * @xdrv: Driver to unregister
++ * @drv: Driver to unregister
   *
-  * Activate a path starting with the last hop and iterating backwards. The
-@@ -559,7 +559,7 @@ int tb_path_activate(struct tb_path *path)
- 	return res;
- }
- 
--/**
-+/*
-  * tb_path_is_invalid() - check whether any ports on the path are invalid
-  *
-  * Return: Returns true if the path is invalid, false otherwise.
+  * Unregisters XDomain service driver from the bus.
+  */
 -- 
 2.25.1
 
