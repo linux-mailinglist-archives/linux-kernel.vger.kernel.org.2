@@ -2,198 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD2B305B27
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28875305B20
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236313AbhA0MWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237336AbhA0MOk (ORCPT
+        id S237760AbhA0MVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:21:32 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11902 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237709AbhA0MOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:14:40 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E32C061573;
-        Wed, 27 Jan 2021 04:13:59 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id md11so1154087pjb.0;
-        Wed, 27 Jan 2021 04:13:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YLLhgi+NiVGDqhBaYQHDfMrKV4DMWFVLqCYi85ZNzho=;
-        b=K/LKbJ18NNtDlWPKhhN9q8pyPtPZcXJNc0IclJOz2d4MmqjquK68m1DYuIAIObBQjx
-         S8bV5zkpxajM1TXSWIILfAA+BMOBLmnQT7MMuTTU0vIk4tckHYSivJ3jGocs/rWjw5CC
-         L01TVUA+PGr2MMvekkAHBI+HuGlmsBaGXnSKkT3l6AXIkTLw8U+7U9Ijqr3OpqGfneno
-         AVpfI4EwEg1Dzq2l8YrvEmwzJco05mk89YZKwABIpHVexBioetJBQGuqkBJOyzMFkWo9
-         26a8VcKrkx0aaD2H21dK75yGbfbf+0cYq3oMNWNuBlneq71AeR4pimCYtCJqYDRQWIVb
-         394w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YLLhgi+NiVGDqhBaYQHDfMrKV4DMWFVLqCYi85ZNzho=;
-        b=Gvl9dC3MsblE4tvKst+tZG+gw/L14t1+caAMgHj2Zqp2zH18cu2yV78ZYaZN01H03s
-         AF1IXN3afurCrMuphoBuF2Pfn9inictVZH8UR3/ZNvhSwjZjS9HZDIv6XdP9rF5AxjbP
-         cMsZ1wpcwOyxkkI/H9TChbMYe2xK4d/denwaU1VZs2GWUjjkbadCI+QAKR6nV7uzw9B/
-         O8XG8IP0UwGeQ9Yl0q/XuAhd+W/0zLGfcKyw9T9sm+UOuJZz8k3vxXJhAGqkZpjd4Vn/
-         1nxuO5QUIgWdUFwNpRcTKQ3OJLzkblRB6MmkWXE+YTlAjfwnP6J+bUrt9RrXPtUbNwhn
-         Guxw==
-X-Gm-Message-State: AOAM53084di7D2n8x+pMglWcOqIBGohwR1X/scUe6SWQ4XKQN/p64eMs
-        MYOWu6YZZGCYNef51V4XbYo=
-X-Google-Smtp-Source: ABdhPJwGlxqoH0mpc3HshizQEQaAmfuPRd9Ap8ytEXfRDlWeUY6tHV3ZCb0e9VW5oWGOTadzRqU9sA==
-X-Received: by 2002:a17:903:1c2:b029:de:ad0a:2dbf with SMTP id e2-20020a17090301c2b02900dead0a2dbfmr11190998plh.44.1611749639192;
-        Wed, 27 Jan 2021 04:13:59 -0800 (PST)
-Received: from localhost.localdomain ([49.207.195.86])
-        by smtp.gmail.com with ESMTPSA id 67sm2365488pfv.20.2021.01.27.04.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 04:13:58 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Zqiang <qiang.zhang@windriver.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v3 12/12] usb: misc: usbtest: update to use the usb_control_msg_{send|recv}() API
-Date:   Wed, 27 Jan 2021 17:42:47 +0530
-Message-Id: <20210127121247.9938-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
-References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+        Wed, 27 Jan 2021 07:14:47 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DQjD34KLGz7bFy;
+        Wed, 27 Jan 2021 20:12:51 +0800 (CST)
+Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.186.182) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 27 Jan 2021 20:13:57 +0800
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
+        "Will Deacon" <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <lushenming@huawei.com>
+Subject: [PATCH v3 0/4] KVM: arm64: Add VLPI migration support on GICv4.1
+Date:   Wed, 27 Jan 2021 20:13:33 +0800
+Message-ID: <20210127121337.1092-1-lushenming@huawei.com>
+X-Mailer: git-send-email 2.27.0.windows.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.186.182]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The newer usb_control_msg_{send|recv}() API are an improvement on the
-existing usb_control_msg() as it ensures that a short read/write is treated
-as an error, data can be used off the stack, and raw usb pipes need not be
-created in the calling functions.
-For this reason, instances of usb_control_msg() have been replaced with
-usb_control_msg_{recv|send}() and the return value checking conditions have
-also been modified appropriately.
+Hi Marc, sorry for the late commit.
 
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-Resending this patch since the subject line for the initial submission 
-(sent as a part of the patch series) wasn't set correctly.
+In GICv4.1, migration has been supported except for (directly-injected)
+VLPI. And GICv4.1 Spec explicitly gives a way to get the VLPI's pending
+state (which was crucially missing in GICv4.0). So we make VLPI migration
+capable on GICv4.1 in this patch set.
 
- drivers/usb/misc/usbtest.c | 69 ++++++++++++++++----------------------
- 1 file changed, 29 insertions(+), 40 deletions(-)
+In order to support VLPI migration, we need to save and restore all
+required configuration information and pending states of VLPIs. But
+in fact, the configuration information of VLPIs has already been saved
+(or will be reallocated on the dst host...) in vgic(kvm) migration.
+So we only have to migrate the pending states of VLPIs specially.
 
-diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
-index 150090ee4ec1..4337eff2a749 100644
---- a/drivers/usb/misc/usbtest.c
-+++ b/drivers/usb/misc/usbtest.c
-@@ -672,19 +672,15 @@ static int get_altsetting(struct usbtest_dev *dev)
- 	struct usb_device	*udev = interface_to_usbdev(iface);
- 	int			retval;
- 
--	retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--			USB_REQ_GET_INTERFACE, USB_DIR_IN|USB_RECIP_INTERFACE,
--			0, iface->altsetting[0].desc.bInterfaceNumber,
--			dev->buf, 1, USB_CTRL_GET_TIMEOUT);
--	switch (retval) {
--	case 1:
--		return dev->buf[0];
--	case 0:
--		retval = -ERANGE;
--		fallthrough;
--	default:
-+	retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_INTERFACE,
-+				      USB_DIR_IN|USB_RECIP_INTERFACE,
-+				      0, iface->altsetting[0].desc.bInterfaceNumber,
-+				      dev->buf, 1, USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
-+
-+	if (retval < 0)
- 		return retval;
--	}
-+
-+	return dev->buf[0];
- }
- 
- static int set_altsetting(struct usbtest_dev *dev, int alternate)
-@@ -872,14 +868,15 @@ static int ch9_postconfig(struct usbtest_dev *dev)
- 		 * ... although some cheap devices (like one TI Hub I've got)
- 		 * won't return config descriptors except before set_config.
- 		 */
--		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--				USB_REQ_GET_CONFIGURATION,
--				USB_DIR_IN | USB_RECIP_DEVICE,
--				0, 0, dev->buf, 1, USB_CTRL_GET_TIMEOUT);
--		if (retval != 1 || dev->buf[0] != expected) {
-+		retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_CONFIGURATION,
-+					      USB_DIR_IN | USB_RECIP_DEVICE,  0,
-+					      0, dev->buf, 1, USB_CTRL_GET_TIMEOUT,
-+					      GFP_KERNEL);
-+
-+		if (retval != 0 || dev->buf[0] != expected) {
- 			dev_err(&iface->dev, "get config --> %d %d (1 %d)\n",
- 				retval, dev->buf[0], expected);
--			return (retval < 0) ? retval : -EDOM;
-+			return retval;
- 		}
- 	}
- 
-@@ -1683,10 +1680,10 @@ static int test_halt(struct usbtest_dev *tdev, int ep, struct urb *urb)
- 		return retval;
- 
- 	/* set halt (protocol test only), verify it worked */
--	retval = usb_control_msg(urb->dev, usb_sndctrlpipe(urb->dev, 0),
--			USB_REQ_SET_FEATURE, USB_RECIP_ENDPOINT,
--			USB_ENDPOINT_HALT, ep,
--			NULL, 0, USB_CTRL_SET_TIMEOUT);
-+	retval = usb_control_msg_send(urb->dev, 0, USB_REQ_SET_FEATURE,
-+				      USB_RECIP_ENDPOINT, USB_ENDPOINT_HALT,
-+				      ep, NULL, 0, USB_CTRL_SET_TIMEOUT,
-+				      GFP_KERNEL);
- 	if (retval < 0) {
- 		ERROR(tdev, "ep %02x couldn't set halt, %d\n", ep, retval);
- 		return retval;
-@@ -1845,30 +1842,22 @@ static int ctrl_out(struct usbtest_dev *dev,
- 		/* write patterned data */
- 		for (j = 0; j < len; j++)
- 			buf[j] = (u8)(i + j);
--		retval = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--				0x5b, USB_DIR_OUT|USB_TYPE_VENDOR,
--				0, 0, buf, len, USB_CTRL_SET_TIMEOUT);
--		if (retval != len) {
-+		retval = usb_control_msg_send(udev, 0, 0x5b,
-+					      USB_DIR_OUT | USB_TYPE_VENDOR, 0,
-+					      0, buf, len, USB_CTRL_SET_TIMEOUT,
-+					      GFP_KERNEL);
-+		if (retval < 0) {
- 			what = "write";
--			if (retval >= 0) {
--				ERROR(dev, "ctrl_out, wlen %d (expected %d)\n",
--						retval, len);
--				retval = -EBADMSG;
--			}
- 			break;
- 		}
- 
- 		/* read it back -- assuming nothing intervened!!  */
--		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
--				0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
--				0, 0, buf, len, USB_CTRL_GET_TIMEOUT);
--		if (retval != len) {
-+		retval = usb_control_msg_recv(udev, 0,
-+					      0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
-+					      0, 0, buf, len, USB_CTRL_GET_TIMEOUT,
-+					      GFP_KERNEL);
-+		if (retval < 0) {
- 			what = "read";
--			if (retval >= 0) {
--				ERROR(dev, "ctrl_out, rlen %d (expected %d)\n",
--						retval, len);
--				retval = -EBADMSG;
--			}
- 			break;
- 		}
- 
+Below is the related workflow in migration.
+
+On the save path:
+	In migration completion:
+		pause all vCPUs
+				|
+		call each VM state change handler:
+			pause other devices (just keep from sending interrupts, and
+			such as VFIO migration protocol has already realized it [1])
+					|
+			flush ITS tables into guest RAM
+					|
+			flush RDIST pending tables (also flush VLPI state here)
+				|
+		...
+On the resume path:
+	load each device's state:
+		restore ITS tables (include pending tables) from guest RAM
+				|
+		for other (PCI) devices (paused), if configured to have VLPIs,
+		establish the forwarding paths of their VLPIs (and transfer
+		the pending states from kvm's vgic to VPT here)
+
+We have tested this series in VFIO migration, and found some related
+issues in QEMU [2].
+
+Links:
+[1] vfio: UAPI for migration interface for device state:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a8a24f3f6e38103b77cf399c38eb54e1219d00d6
+[2] vfio: Some fixes and optimizations for VFIO migration:
+    https://patchwork.ozlabs.org/cover/1413263/
+
+History:
+
+v2 -> v3
+ - Add the vgic initialized check to ensure that the allocation and enabling
+   of the doorbells have already been done before unmapping the vPEs.
+ - Check all get_vlpi_state related conditions in save_pending_tables in one place.
+ - Nit fixes.
+
+v1 -> v2:
+ - Get the VLPI state from the KVM side.
+ - Nit fixes.
+
+Thanks,
+Shenming
+
+
+Shenming Lu (3):
+  KVM: arm64: GICv4.1: Add function to get VLPI state
+  KVM: arm64: GICv4.1: Try to save hw pending state in
+    save_pending_tables
+  KVM: arm64: GICv4.1: Give a chance to save VLPI's pending state
+
+Zenghui Yu (1):
+  KVM: arm64: GICv4.1: Restore VLPI's pending state to physical side
+
+ .../virt/kvm/devices/arm-vgic-its.rst         |  2 +-
+ arch/arm64/kvm/vgic/vgic-its.c                |  6 +-
+ arch/arm64/kvm/vgic/vgic-v3.c                 | 61 +++++++++++++++++--
+ arch/arm64/kvm/vgic/vgic-v4.c                 | 33 ++++++++++
+ arch/arm64/kvm/vgic/vgic.h                    |  1 +
+ 5 files changed, 93 insertions(+), 10 deletions(-)
+
 -- 
-2.25.1
+2.19.1
 
