@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD33305D84
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B4A305D88
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhA0Ns3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:48:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231403AbhA0NsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:48:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F70207A3;
-        Wed, 27 Jan 2021 13:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611755256;
-        bh=vwROcIKQyMXdOuOaTz9RYp8+jyk0RITyZVQqlu+0wqI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=brzhogQ1JKPfPh3OstDTX8lGtt3YgmCR5mYIkaw+ArvvtOCYRyiR4FQlGg9IrYCoE
-         5mcRry9pkgydcfKy13G2alkU+cOR8cbX6F7USVvg+LHJQYlMcY6MYcb8NLMvwjLF8y
-         usLiJpC7PZzB08JO6BTDI17FCdPMdUPFGAQ5YxBE=
-Date:   Wed, 27 Jan 2021 14:47:33 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] configfs: make directories inherit uid/gid from creator
-Message-ID: <YBFu9WkVMdsfy51I@kroah.com>
-References: <20210123205516.2738060-1-zenczykowski@gmail.com>
+        id S229913AbhA0Nt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231542AbhA0Nth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:49:37 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B153BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:48:57 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id o16so1625616pgg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:48:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GOVWTXj4nljNWAGndXCSQhwNAHq21QwCCU0BbxAkemM=;
+        b=S61LkbapPO5wtP/iFjrfZjum1CifQ43xjsAvvSgR3NC3FPrGogaH406qrml2pjzoVh
+         UftzrJIcnVtQk82gWKk0Z14JBuNXV7Rit5kPBDuN1h3wHHVuNrVFfhCjMAWwvb9zTbAj
+         5e5elp2cAPtvAzQwy04ZpK80tqOai2dG1WoGc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GOVWTXj4nljNWAGndXCSQhwNAHq21QwCCU0BbxAkemM=;
+        b=tTzs1mIE3AcnXKpbC3OHXbpvV91Ew+UInLJ61UEv1oxOpiUFdPaAUJRUEY09bZZlJg
+         /il+mqUDk0LYErdB1UAl/szL1GznWyqSqPyn6aU89sYg2hEFriePcYhPxMauG7cC7TiP
+         LxMR5rqw8QI8BmBqBWu+OuHsGn7XWGpVu08KXr+ZjEWVlMo+nQEidPNhwAaIWiBg944l
+         SnNg78H1l0JyPrElt3H4s0s4u0UBtlx7bEXhlloYNLgjuVCG9W606pG43HfyAzkmWabH
+         YyFuPCUHKogVQgS70FA2wFs8jgS5Cyj38TwwQCillPcW+/QSTt54nSYVGGkX8NhSGBRL
+         CFpQ==
+X-Gm-Message-State: AOAM533iZfFdQML6v2sczGXKiZowoV18jAPA7Oh1dfDYnp0JIrcSlBnd
+        qk4fLWDkyBfligMEPC4cprsGf8sTePXrvw==
+X-Google-Smtp-Source: ABdhPJxj3AfmDtcS78/eiVZjOQCAdD1+dtFL9Ey808WBkRMOqWpHN+sUItYHU3PvPVP3A1f1np5O1g==
+X-Received: by 2002:a63:f953:: with SMTP id q19mr11222117pgk.120.1611755337075;
+        Wed, 27 Jan 2021 05:48:57 -0800 (PST)
+Received: from judyhsiao-p920.tpe.corp.google.com ([2401:fa00:1:10:a53b:f71a:ed56:92d8])
+        by smtp.gmail.com with ESMTPSA id e12sm2653271pga.13.2021.01.27.05.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 05:48:56 -0800 (PST)
+From:   Judy Hsiao <judyhsiao@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
+        dgreid@chromium.org, cychiang@google.com, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, Judy Hsiao <judyhsiao@google.com>
+Subject: [PATCH] ASoC: max98373: Fixes a typo max98373_feedback_get
+Date:   Wed, 27 Jan 2021 21:48:47 +0800
+Message-Id: <20210127134847.1143535-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210123205516.2738060-1-zenczykowski@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 12:55:16PM -0800, Maciej Żenczykowski wrote:
-> From: Maciej Żenczykowski <maze@google.com>
-> 
-> Currently a non-root process can create directories, but cannot
-> create stuff in the directories it creates.
+From: Judy Hsiao <judyhsiao@google.com>
 
-Isn't that on purpose?
+The snd_soc_put_volsw in max98373_feedback_get is a typo, change it
+to snd_soc_gut_volsw.
 
-> 
-> Example (before this patch):
->   phone:/ $ id
->   uid=1000(system) gid=1000(system) groups=1000(system),... context=u:r:su:s0
-> 
->   phone:/ $ cd /config/usb_gadget/g1/configs/
-> 
->   phone:/config/usb_gadget/g1/configs $ ls -lZ
->   drwxr-xr-x 3 system system u:object_r:configfs:s0  0 2020-12-28 06:03 b.1
-> 
->   phone:/config/usb_gadget/g1/configs $ mkdir b.2
-> 
->   phone:/config/usb_gadget/g1/configs $ ls -lZ
->   drwxr-xr-x 3 system system u:object_r:configfs:s0  0 2020-12-28 06:03 b.1
->   drwxr-xr-x 3 root   root   u:object_r:configfs:s0  0 2020-12-28 06:51 b.2
-> 
->   phone:/config/usb_gadget/g1/configs $ chown system:system b.2
->   chown: 'b.2' to 'system:system': Operation not permitted
-> 
->   phone:/config/usb_gadget/g1/configs $ ls -lZ b.1
->   -rw-r--r-- 1 system system u:object_r:configfs:s0  4096 2020-12-28 05:23 MaxPower
->   -rw-r--r-- 1 system system u:object_r:configfs:s0  4096 2020-12-28 05:23 bmAttributes
->   lrwxrwxrwx 1 root   root   u:object_r:configfs:s0     0 2020-12-28 05:23 function0 -> ../../../../usb_gadget/g1/functions/ffs.adb
->   drwxr-xr-x 2 system system u:object_r:configfs:s0     0 2020-12-28 05:23 strings
-> 
->   phone:/config/usb_gadget/g1/configs $ ln -s ../../../../usb_gadget/g1/functions/ffs.adb b.2/function0
->   ln: cannot create symbolic link from '../../../../usb_gadget/g1/functions/ffs.adb' to 'b.2/function0': Permission denied
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Joel Becker <jlbec@evilplan.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Maciej Żenczykowski <maze@google.com>
-> Change-Id: Ia907b2def940197b44aa87b337d37c5dde9c5b91
+Signed-off-by: Judy Hsiao <judyhsiao@google.com>
+---
+ sound/soc/codecs/max98373.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No need for "Change-Id:" :)
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 31d571d4fac1c..746c829312b87 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -190,7 +190,7 @@ static int max98373_feedback_get(struct snd_kcontrol *kcontrol,
+ 		}
+ 	}
+ 
+-	return snd_soc_put_volsw(kcontrol, ucontrol);
++	return snd_soc_get_volsw(kcontrol, ucontrol);
+ }
+ 
+ static const struct snd_kcontrol_new max98373_snd_controls[] = {
+-- 
+2.29.2
 
-> ---
->  fs/configfs/dir.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-> index b839dd1b459f..04f18402ef7c 100644
-> --- a/fs/configfs/dir.c
-> +++ b/fs/configfs/dir.c
-> @@ -1410,6 +1410,21 @@ static int configfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
->  	else
->  		ret = configfs_attach_item(parent_item, item, dentry, frag);
->  
-> +	/* inherit uid/gid from process creating the directory */
-> +	if (!uid_eq(current_fsuid(), GLOBAL_ROOT_UID) ||
-> +	    !gid_eq(current_fsgid(), GLOBAL_ROOT_GID)) {
-> +		struct inode * inode = d_inode(dentry);
-> +		struct iattr ia = {
-> +			.ia_uid = current_fsuid(),
-> +			.ia_gid = current_fsgid(),
-> +			.ia_valid = ATTR_UID | ATTR_GID,
-> +		};
-> +		inode->i_uid = ia.ia_uid;
-> +		inode->i_gid = ia.ia_gid;
-> +		/* (note: the above manual assignments skip the permission checks) */
-> +		(void)configfs_setattr(dentry, &ia);
-
-No need for (void), here, right?
-
-And this feels like a big user-visible change, what is going to break
-with this?
-
-thanks,
-
-greg k-h
