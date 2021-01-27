@@ -2,277 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54202305D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1294D305D77
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhA0NoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhA0Nn2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:43:28 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8006C061573;
-        Wed, 27 Jan 2021 05:42:48 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id r4so1040331pls.11;
-        Wed, 27 Jan 2021 05:42:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=/5CRpVhAYIt5nq1FFXNh2jsrHhTk1E3I4CheLPQJc30=;
-        b=LwebHWOlnFO1NFGDdPfvHWMqOGU/3xtwhbPNBpIrKkKM62kw/ZMUQd2hD4gTEYYfJo
-         /ZsIHvJAyjNaTdWPTV8/bPXXaspkyxZ91/Yy8iijwLoQU/S055b+YI5KTOhWxR0EgTdT
-         blzRYX8Mdmj1E+/EuSq8iK5lAJCb0JkDvJXpSaLqYj0Sd8Y7EE1XYIedBLjkOWtLYT3X
-         W2x47WcVcXICTz+KeWGB04b2xNPhX9pztcXn0vz4NP0XGftOu3CnJVzJMsphNvYNMxJ4
-         2NetMOw42PhPmHb4TnHJEE4NYa/HuemLxxbiXeyvdlE18TmLUEx5o1GJjZAVOj+cStQd
-         arxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/5CRpVhAYIt5nq1FFXNh2jsrHhTk1E3I4CheLPQJc30=;
-        b=qkAdl4bVsz5uKnCfp9Nmth2IJejWizly+1sysz62wgBbd+zwZ5CVDBORaInHMRMMUe
-         hIkA8IO4flIEqLKOcxhvtkiSG4us7Rn5vkACGSytng1l72rlRbFHOrBiGeyQgaWrVA9N
-         5D2hIb8hu1Zu0b3E+k44db9iZZ6Y5QqXkjUzB9mHMrCpWdBbzFmi5Sn+xTg2ZI1UpWAw
-         9RidHnpw9wPyTzVnWV2oo3aZBfP32aFDIqtDAq8Jl/QApE7vo/fRR5CSLnVaRLKK7wyy
-         KOxb5J9f0QQPOlFADAvrdaKw5aVBnj7bTZojxSqAA+/pHFWzPGnNpPmSpYI1QdbHSm8C
-         wLZA==
-X-Gm-Message-State: AOAM533lURESTqgzTMjU8vyfRyydTan1LxC+ukCszvm/BZrJpNLjF0H6
-        vWGZZsEscID+X0Kuqk6s3yQ=
-X-Google-Smtp-Source: ABdhPJyQnI/dXjI04oyDhfxJ93RmAp/oWTY5SXoVJL+VMZW48hsLsbIIctnaF0Ds2lgIn5T1jYrQ0g==
-X-Received: by 2002:a17:902:6b02:b029:da:c6c0:d650 with SMTP id o2-20020a1709026b02b02900dac6c0d650mr11625296plk.74.1611754968360;
-        Wed, 27 Jan 2021 05:42:48 -0800 (PST)
-Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id f71sm2547437pfa.138.2021.01.27.05.42.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 05:42:47 -0800 (PST)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
-        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v10] staging: fbtft: add tearing signal detect
-Date:   Wed, 27 Jan 2021 21:42:52 +0800
-Message-Id: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S231217AbhA0NpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:45:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58240 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231462AbhA0NoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:44:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611755010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
+        bh=2MI+NHy/r23ezsNgQtnaK6df8sAoa/lnTedXGUTkDLY=;
+        b=JNvFcjRh7RRFG3WnLD8cIvU+mkjDAizE937+EJxIpO0T1I/QDlrfErrfB6nYLKSKk8ZpY+
+        tzX2dVhtOPqdiWauAlc5DikhDRTLgZSgv1joClhKuUTiTQlkYkvp1+Dkm9MGyuci+SOBIN
+        tuyseO79gFO5yGKXgLkhOjYAfwWqI+k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 069C8ABDA;
+        Wed, 27 Jan 2021 13:43:30 +0000 (UTC)
+To:     Peter Zijlstra <peterz@infradead.org>, mhiramat@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+Subject: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with
+ nmi_enter()")
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+Date:   Wed, 27 Jan 2021 15:43:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangxuezhi <zhangxuezhi1@yulong.com>
+Hello,
 
-For st7789v ic,when we need continuous full screen refresh, it is best to
-wait for the TE signal arrive to avoid screen tearing
+I'm currently seeing latest Linus' master being somewhat broken w.r.t
+krpobes. In particular I have the following test-case:
 
-Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
----
-v10: additional notes
-v9: change pr_* to dev_*
-v8: delete a log line
-v7: return error value when request fail
-v6: add te gpio request fail deal logic
-v5: fix log print
-v4: modify some code style and change te irq set function name
-v3: modify author and signed-off-by name
-v2: add release te gpio after irq request fail
----
- drivers/staging/fbtft/fb_st7789v.c | 132 ++++++++++++++++++++++++++++++++++++-
- drivers/staging/fbtft/fbtft.h      |   1 +
- 2 files changed, 132 insertions(+), 1 deletion(-)
+#!/bin/bash
 
-diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-index 3a280cc..cba08a8 100644
---- a/drivers/staging/fbtft/fb_st7789v.c
-+++ b/drivers/staging/fbtft/fb_st7789v.c
-@@ -9,9 +9,12 @@
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/mutex.h>
-+#include <linux/interrupt.h>
-+#include <linux/completion.h>
- #include <linux/module.h>
- #include <video/mipi_display.h>
--
-+#include <linux/gpio/consumer.h>
- #include "fbtft.h"
- 
- #define DRVNAME "fb_st7789v"
-@@ -66,6 +69,32 @@ enum st7789v_command {
- #define MADCTL_MX BIT(6) /* bitmask for column address order */
- #define MADCTL_MY BIT(7) /* bitmask for page address order */
- 
-+#define SPI_PANEL_TE_TIMEOUT	400 /* msecs */
-+static struct mutex te_mutex;/* mutex for set te gpio irq status */
-+static struct completion spi_panel_te;
-+
-+static irqreturn_t spi_panel_te_handler(int irq, void *data)
-+{
-+	complete(&spi_panel_te);
-+	return IRQ_HANDLED;
-+}
-+
-+static void set_spi_panel_te_irq_status(struct fbtft_par *par, bool enable)
-+{
-+	static int te_irq_count;
-+
-+	mutex_lock(&te_mutex);
-+
-+	if (enable) {
-+		if (++te_irq_count == 1)
-+			enable_irq(gpiod_to_irq(par->gpio.te));
-+	} else {
-+		if (--te_irq_count == 0)
-+			disable_irq(gpiod_to_irq(par->gpio.te));
-+	}
-+	mutex_unlock(&te_mutex);
-+}
-+
- /**
-  * init_display() - initialize the display controller
-  *
-@@ -82,6 +111,33 @@ enum st7789v_command {
-  */
- static int init_display(struct fbtft_par *par)
- {
-+	int rc;
-+	struct device *dev = par->info->device;
-+
-+	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-+	if (IS_ERR(par->gpio.te)) {
-+		rc = PTR_ERR(par->gpio.te);
-+		dev_err(par->info->device, "Failed to request te gpio: %d\n", rc);
-+		return rc;
-+	}
-+	if (par->gpio.te) {
-+		init_completion(&spi_panel_te);
-+		mutex_init(&te_mutex);
-+		rc = devm_request_irq(dev,
-+				      gpiod_to_irq(par->gpio.te),
-+				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
-+				     "TE_GPIO", par);
-+		if (rc) {
-+			dev_err(par->info->device, "TE request_irq failed.\n");
-+			devm_gpiod_put(dev, par->gpio.te);
-+			return rc;
-+		}
-+
-+		disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-+	} else {
-+		dev_info(par->info->device, "%s:%d, TE gpio not specified\n",
-+			 __func__, __LINE__);
-+	}
- 	/* turn off sleep mode */
- 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
- 	mdelay(120);
-@@ -137,6 +193,9 @@ static int init_display(struct fbtft_par *par)
- 	 */
- 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
- 
-+    /*Tearing Effect Line On*/
-+	if (par->gpio.te)
-+		write_reg(par, 0x35, 0x00);
- 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
- 
- 	if (HSD20_IPS)
-@@ -145,6 +204,76 @@ static int init_display(struct fbtft_par *par)
- 	return 0;
- }
- 
-+/*****************************************************************************
-+ *
-+ *   int (*write_vmem)(struct fbtft_par *par);
-+ *
-+ *****************************************************************************/
-+
-+/* 16 bit pixel over 8-bit databus */
-+static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
-+{
-+	u16 *vmem16;
-+	__be16 *txbuf16 = par->txbuf.buf;
-+	size_t remain;
-+	size_t to_copy;
-+	size_t tx_array_size;
-+	int i;
-+	int ret = 0;
-+	size_t startbyte_size = 0;
-+
-+	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
-+		      __func__, offset, len);
-+
-+	remain = len / 2;
-+	vmem16 = (u16 *)(par->info->screen_buffer + offset);
-+
-+	if (par->gpio.dc)
-+		gpiod_set_value(par->gpio.dc, 1);
-+
-+	/* non buffered write */
-+	if (!par->txbuf.buf)
-+		return par->fbtftops.write(par, vmem16, len);
-+
-+	/* buffered write */
-+	tx_array_size = par->txbuf.len / 2;
-+
-+	if (par->startbyte) {
-+		txbuf16 = par->txbuf.buf + 1;
-+		tx_array_size -= 2;
-+		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
-+		startbyte_size = 1;
-+	}
-+
-+	while (remain) {
-+		to_copy = min(tx_array_size, remain);
-+		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
-+			to_copy, remain - to_copy);
-+
-+		for (i = 0; i < to_copy; i++)
-+			txbuf16[i] = cpu_to_be16(vmem16[i]);
-+
-+		vmem16 = vmem16 + to_copy;
-+		if (par->gpio.te) {
-+			set_spi_panel_te_irq_status(par, true);
-+			reinit_completion(&spi_panel_te);
-+			ret = wait_for_completion_timeout(&spi_panel_te,
-+							  msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
-+			if (ret == 0)
-+				dev_err(par->info->device, "wait panel TE time out\n");
-+		}
-+		ret = par->fbtftops.write(par, par->txbuf.buf,
-+					 startbyte_size + to_copy * 2);
-+		if (par->gpio.te)
-+			set_spi_panel_te_irq_status(par, false);
-+		if (ret < 0)
-+			return ret;
-+		remain -= to_copy;
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * set_var() - apply LCD properties like rotation and BGR mode
-  *
-@@ -259,6 +388,7 @@ static int blank(struct fbtft_par *par, bool on)
- 	.gamma = HSD20_IPS_GAMMA,
- 	.fbtftops = {
- 		.init_display = init_display,
-+		.write_vmem = st7789v_write_vmem16_bus8,
- 		.set_var = set_var,
- 		.set_gamma = set_gamma,
- 		.blank = blank,
-diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
-index 76f8c09..93bac05 100644
---- a/drivers/staging/fbtft/fbtft.h
-+++ b/drivers/staging/fbtft/fbtft.h
-@@ -212,6 +212,7 @@ struct fbtft_par {
- 		struct gpio_desc *wr;
- 		struct gpio_desc *latch;
- 		struct gpio_desc *cs;
-+		struct gpio_desc *te;
- 		struct gpio_desc *db[16];
- 		struct gpio_desc *led[16];
- 		struct gpio_desc *aux[16];
--- 
-1.9.1
+mkfs.btrfs -f /dev/vdc &> /dev/null
+mount /dev/vdc /media/scratch/
 
+bpftrace -e 'kprobe:btrfs_sync_file {printf("kprobe: %s\n", kstack());}'
+&>bpf-output &
+bpf_trace_pid=$!
+
+# force btrfs_sync_file to be called
+sleep 2
+xfs_io -f -c "pwrite 0 4m" -c "fsync" /media/scratch/file5
+
+kill $bpf_trace_pid
+sleep 1
+
+grep -q kprobe bpf-output
+retval=$?
+rm -f bpf-output
+umount /media/scratch
+
+exit $retval
+
+It traces btrfs_sync_file which is called when fsync is executed on a
+btrfs file, however I don't see the stacktrace being printed i.e the
+kprobe doesn't fire at all. The following alternative program:
+
+bpftrace -e 'tracepoint:btrfs:btrfs_sync_file {printf("tracepoint:
+%s\n", kstack());} kprobe:btrfs_sync_file {printf("kprobe: %s\n",
+kstack());}'
+
+only prints the stack from the tracepoint and not from the kprobe, given
+that the tracepoint is called from the btrfs_sync_file function.
+
+I started bisecting this and arrived at the following commit:
+
+0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()")
+
+FWIW the following series is applied on the kernel I was testing:
+https://lore.kernel.org/lkml/159870598914.1229682.15230803449082078353.stgit@devnote2/
+
+but it's still broken.
