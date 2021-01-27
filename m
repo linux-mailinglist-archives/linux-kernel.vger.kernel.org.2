@@ -2,122 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF953051B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E978C3051B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhA0FHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:07:45 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:41940 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238353AbhA0ENh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:13:37 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxS+Qp6BBg750NAA--.21121S2;
-        Wed, 27 Jan 2021 12:12:25 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: relocatable: Provide kaslr_offset() to get the kernel offset
-Date:   Wed, 27 Jan 2021 12:12:25 +0800
-Message-Id: <1611720745-8256-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxS+Qp6BBg750NAA--.21121S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF43tw48XFWDKF43Jw43Jrb_yoW5GFyfpa
-        nrA3Z5Kr4jgry5X3yrZ34kury3Wwn5WrWaganFk3yrZ3W2qF1UJFn5WrnrZrW8trW0gF40
-        qFyYqr12yw4vya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8XwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IUYj9aPUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S231485AbhA0FIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:08:09 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:28186 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238406AbhA0EQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 23:16:07 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210127041524epoutp031bea663a44cf7a6a8fba8e6f7ce7c586~d_6Qjr8EW3159331593epoutp030
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:15:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210127041524epoutp031bea663a44cf7a6a8fba8e6f7ce7c586~d_6Qjr8EW3159331593epoutp030
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611720924;
+        bh=Y8aJiRSGEeDMH8i++If4hXnSlgw4orlR0qNeQcGyICQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=fADqJqwlg393v/7ZARLKKdQEelaReOjTtcWNETV+edsNHJfL6n0jvbSN37ZmjhjUi
+         AlGRM+19BvtxRpEAcY3te+PAUgd4XMLpZSZLp2bN2kDQbH1HBVz5nhCQZblufoNN4D
+         3ymv49ZJBGPlCYF0PWpHrHXMeDhM9OupmkJVc71s=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210127041523epcas1p278a99e2c8459babca51ff030c8161af1~d_6P-GXFN2594925949epcas1p2y;
+        Wed, 27 Jan 2021 04:15:23 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DQVd36btLz4x9Q2; Wed, 27 Jan
+        2021 04:15:19 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CE.4B.10463.1D8E0106; Wed, 27 Jan 2021 13:15:13 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210127041512epcas1p1306df0339fd2ffffec43cca6b0475a88~d_6GQFpXH1093210932epcas1p15;
+        Wed, 27 Jan 2021 04:15:12 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210127041512epsmtrp1c121d3106369e40dc269d52f63859e0f~d_6GPQ9BX2187921879epsmtrp1U;
+        Wed, 27 Jan 2021 04:15:12 +0000 (GMT)
+X-AuditID: b6c32a38-efbff700000028df-50-6010e8d17275
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E6.30.08745.0D8E0106; Wed, 27 Jan 2021 13:15:12 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.223]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210127041512epsmtip25dcfa6d973d293dff38fe1bed9c0afb9~d_6GABNT-0653506535epsmtip2U;
+        Wed, 27 Jan 2021 04:15:12 +0000 (GMT)
+From:   Seung-Woo Kim <sw0312.kim@samsung.com>
+To:     linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, rppt@kernel.org,
+        akpm@linux-foundation.org, ardb@kernel.org, jcmvbkbc@gmail.com,
+        olof@lixom.net, sw0312.kim@samsung.com, jh80.chung@samsung.com
+Subject: [RESEND][PATCH] ARM: mm: Free memblock from free_initrd_mem()
+Date:   Wed, 27 Jan 2021 13:17:26 +0900
+Message-Id: <20210127041727.11001-1-sw0312.kim@samsung.com>
+X-Mailer: git-send-email 2.19.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmge7FFwIJBrtPKFjMWb+GzeLnl/eM
+        Ft8eLmS0uPGrjdVi0+NrrBaXd81hszg0dS+jxanrn9ksjqzfzmQxY/JLNgcuj8vXLjJ77Jx1
+        l91j06pONo8TM36zeGxeUu9x5UQTq0ffllWMHp83yQVwRGXbZKQmpqQWKaTmJeenZOal2yp5
+        B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gDdqKRQlphTChQKSCwuVtK3synKLy1JVcjI
+        Ly6xVUotSMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzIzjjblVJwjL3i5/YelgbGDWxdjJwc
+        EgImEo1NM5hAbCGBHYwSVz/wdjFyAdmfGCWmTn7EDuF8ZpR4cfkPO0xH/4ZTTBCJXYwSB47P
+        YINo/8Io8aaRH8RmE9CR2L/kNyuILSJgL3Ht8SxmkAZmga2MEi3t/8ESwgJuErePrwFrZhFQ
+        lTi86jPQVA4OXgFriaOXtCCWyUtc2HALrJxXQFDi5MwnLCA2M1C8eetssJkSAn/ZJb42nmaG
+        aHCR2P5oCxOELSzx6vgWqKulJF72t0HZ1RLbJ/xkh2juYJToaW9kgUgYS+xfOhnsCGYBTYn1
+        u/QhwooSO3/PZYRYzCfx7msPK0iJhACvREebEESJisTOo5PYIMJSErM2BEOEPST+PloCDd1Y
+        iaUdi1kmMMrPQvLNLCTfzELYu4CReRWjWGpBcW56arFhgQlylG5iBCdSLYsdjHPfftA7xMjE
+        wXiIUYKDWUmE972yQIIQb0piZVVqUX58UWlOavEhRlNg8E5klhJNzgem8rySeENTI2NjYwsT
+        QzNTQ0Mlcd4kgwfxQgLpiSWp2ampBalFMH1MHJxSDUwGKmUB33x0edtundmS9+NQSIOp6GWJ
+        l9dmMTxmEPP6veKnqtqhre7hwmz+3fk75ofdd7l9f7uszWbF5KZWRdE92154xqYl5xZWqvCa
+        sLqKSptfuekb1TPP86f8vO1ZztFPfI/lyLLI/nsiVMPLEm/E4tXVtH9yx80gW1OVcs1vKSWC
+        616WNFhsrf9yLn+V9LkDv/6tn+ed+WlS49qjL3eE1SiaZH+bF2v/Y92Le48UXIW3vPWq+zkv
+        yvdq8MGKk1US3h/tU5ec+NG5JfJS7LsL5/pOSH30OFnsnPHm7jKFwwf+yH893KuvLysWe2dC
+        TkfMrSxZHQtZ/Uef/2hnGG14XKq+0Vd9oY2XIGObthJLcUaioRZzUXEiAFtYNootBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsWy7bCSvO6FFwIJBlOvmFnMWb+GzeLnl/eM
+        Ft8eLmS0uPGrjdVi0+NrrBaXd81hszg0dS+jxanrn9ksjqzfzmQxY/JLNgcuj8vXLjJ77Jx1
+        l91j06pONo8TM36zeGxeUu9x5UQTq0ffllWMHp83yQVwRHHZpKTmZJalFunbJXBlnO1KKTjG
+        XvFzew9LA+MGti5GTg4JAROJ/g2nmLoYuTiEBHYwSjR+P8IIkZCSmPttO5DNAWQLSxw+XAxR
+        84lR4tqsKawgNWwCOhL7l/wGs0UEHCWO7OtkASliFtjPKHG+8SY7SEJYwE3i9vE1YNtYBFQl
+        Dq/6zAQylFfAWuLoJS2IXfISFzbcApvDKyAocXLmExYQmxko3rx1NvMERr5ZSFKzkKQWMDKt
+        YpRMLSjOTc8tNiwwykst1ytOzC0uzUvXS87P3cQIDm4trR2Me1Z90DvEyMTBeIhRgoNZSYT3
+        vbJAghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2CyTBycUg1MmfUd
+        TFfW3FE31jQXXO+2+63aEinXvQtL97H58fNP6XzY1L2kefIe6fTjOq+ebSxQOtncFfbmudH7
+        fbl7LK9ybej6tDGhXcXWZ/3b8oaDm66Er9vRv2Xpt7abZmISqbMr1Q7vazn8a1PYh7uvrCem
+        sQhO/7JC11P/TmyqX4m7t6tI2ZqyVcs/TbfoffpnA89Dj0dTbir9z+N582/G6YPCx5LXuYSE
+        i0e+yN4elM93UnGK4+frCSteLVH9ljTNJf9VUp3GHrdZGcvyHugKb7U+L7ujlVHcn3PCq/Wd
+        s9YpWbGHxegHNWVevRizi+H16i1ynfpvV0wKs71naaB8woBD9+TrXS+djJVu/a8NuafZqcRS
+        nJFoqMVcVJwIAGsLr4vdAgAA
+X-CMS-MailID: 20210127041512epcas1p1306df0339fd2ffffec43cca6b0475a88
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210127041512epcas1p1306df0339fd2ffffec43cca6b0475a88
+References: <CGME20210127041512epcas1p1306df0339fd2ffffec43cca6b0475a88@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kimage_vaddr to indicate kernel start address. Provide kaslr_offset()
-to get the kernel offset when KASLR is enabled. Error may occur before
-update_kimage_vaddr(), so put it at the end of the offset branch.
+Even after free_initrd_mem(), memblock for initrd remains. Free
+memblock for initrd from free_initrd_mem() line generic function.
 
-Fixes: a307a4ce9ecd ("MIPS: Loongson64: Add KASLR support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+Reported-by: Jaehoon Chung <jh80.chung@samsung.com>
+Signed-off-by: Seung-Woo Kim <sw0312.kim@samsung.com>
 ---
- arch/mips/include/asm/page.h |  6 ++++++
- arch/mips/kernel/relocate.c  | 12 ++++++++++++
- arch/mips/kernel/setup.c     |  3 +++
- 3 files changed, 21 insertions(+)
+ arch/arm/mm/init.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index 6a77bc4..9429520 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -255,6 +255,12 @@ extern bool __virt_addr_valid(const volatile void *kaddr);
- 
- #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
- 
-+extern unsigned long kimage_vaddr;
-+static inline unsigned long kaslr_offset(void)
-+{
-+	return kimage_vaddr - VMLINUX_LOAD_ADDRESS;
-+}
-+
- #include <asm-generic/memory_model.h>
- #include <asm-generic/getorder.h>
- 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index c643c81..2cbc3b1 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -300,6 +300,15 @@ static inline int __init relocation_addr_valid(void *loc_new)
- 	return 1;
- }
- 
-+static inline void __init update_kimage_vaddr(unsigned long value,
-+					      unsigned long *addr, long offset)
-+{
-+	unsigned long new_value = value + offset;
-+	unsigned long *new_addr = (void *)addr + offset;
-+
-+	*new_addr = new_value;
-+}
-+
- #if defined(CONFIG_USE_OF)
- void __weak *plat_get_fdt(void)
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 828a256..f7db023 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -530,6 +530,13 @@ void free_initmem(void)
+ #ifdef CONFIG_BLK_DEV_INITRD
+ void free_initrd_mem(unsigned long start, unsigned long end)
  {
-@@ -410,6 +419,9 @@ void *__init relocate_kernel(void)
- 
- 		/* Return the new kernel's entry point */
- 		kernel_entry = RELOCATED(start_kernel);
++#ifdef CONFIG_ARCH_KEEP_MEMBLOCK
++	unsigned long aligned_start = ALIGN_DOWN(start, PAGE_SIZE);
++	unsigned long aligned_end = ALIGN(end, PAGE_SIZE);
 +
-+		/* Error may occur before, so keep it at last */
-+		update_kimage_vaddr(kimage_vaddr, &kimage_vaddr, offset);
- 	}
- out:
- 	return kernel_entry;
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 7e1f8e2..ad37b24 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -84,6 +84,9 @@ static struct resource code_resource = { .name = "Kernel code", };
- static struct resource data_resource = { .name = "Kernel data", };
- static struct resource bss_resource = { .name = "Kernel bss", };
- 
-+unsigned long kimage_vaddr __initdata = VMLINUX_LOAD_ADDRESS;
-+EXPORT_SYMBOL(kimage_vaddr);
++	memblock_free(__pa(aligned_start), aligned_end - aligned_start);
++#endif
 +
- static void *detect_magic __initdata = detect_memory_region;
- 
- #ifdef CONFIG_MIPS_AUTO_PFN_OFFSET
+ 	if (start == initrd_start)
+ 		start = round_down(start, PAGE_SIZE);
+ 	if (end == initrd_end)
 -- 
-2.1.0
+1.7.4.1
 
