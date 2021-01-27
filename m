@@ -2,268 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000AF30586A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FF530586D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235847AbhA0K3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235916AbhA0K1Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:27:25 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BDEC061573;
-        Wed, 27 Jan 2021 02:26:42 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id j21so787591pls.7;
-        Wed, 27 Jan 2021 02:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=w9LuJNkG7zPJO9mZjCx84PLG1KhVhIg79RQ/3qsvzls=;
-        b=SgatvX03bpqjeH7enSluDxUFDfag6mEZ/mWUGr6TTFFq+J9N/61FggMzOoAsbIBXaZ
-         SATsw9TgZDXY+o/sZzz5UVtBiKpGcYGebDJ6LLxXmwzYBgCcXnoaujjFX6CinHBnnEc2
-         1oMwcsSuv/FvcEsPet5hUuwSluN7sELy9sYjwsaFi3hJg6WxYHyyB5MghngIR7EP5xin
-         zVXdf6zotG8+W2wogWHqCQiMOsTwUHxDGi1DcJ5c2jY3TTKTwp4QILg2cO4V+2U3ptLc
-         8m1W4IQMo8KsU0EeFJFmFHHGvZBpRxiv2wdbtCTAIklWmn+/Av+z7gVVYapsXHRHXgnE
-         uRww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=w9LuJNkG7zPJO9mZjCx84PLG1KhVhIg79RQ/3qsvzls=;
-        b=YRiUTZRaaGrC6dsi25oonDbAyi9L249sHyH8nVCoFZcyAh7Iye8LP0D0Gkn3CfJKk/
-         kdy9cJONIR4Boz25Lg6nARSNcPsX5F1Agunj88BtopXTgxG+0ZKXCUrEKuf9XqhNEU1k
-         uPXcv+fxNQ8x9fFtqVVSQFU8FiA3bM72i3Js4qnkZA8CavzXfwRF1BsMbiIAp2b4PqU2
-         9ODZfZttDMesbYT2q2E5+hBOBXDKDw2vjBIP20N5h/gxauRrp7dEYtDGtuusC/kFQMp4
-         hkuuBlKI+nYIkeg5y3mWr53ietEHKKpEjD7DDRARvBs6NU+6FMm7P51/wMtah5jqyAZB
-         wFGA==
-X-Gm-Message-State: AOAM531GDcijkiHDeNUBJGavnWzUdZTDPExp09MEx8J5nD6lPatUoZk3
-        ZXISYvyZV5xu++mtg+XFXvE=
-X-Google-Smtp-Source: ABdhPJzD7wd+0V/xOmD/6UG24+xvbxpEx5XyFuutoF0z3/ZLbujhFaEUb+adlZQx2/8VhZkDTq6qsw==
-X-Received: by 2002:a17:90b:358d:: with SMTP id mm13mr5039590pjb.146.1611743201948;
-        Wed, 27 Jan 2021 02:26:41 -0800 (PST)
-Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id t129sm2039860pfc.16.2021.01.27.02.26.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 02:26:41 -0800 (PST)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
-        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8] fbtft: add tearing signal detect
-Date:   Wed, 27 Jan 2021 18:26:46 +0800
-Message-Id: <1611743206-136112-1-git-send-email-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S235916AbhA0KaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:30:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56064 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235928AbhA0K1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:27:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611743217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lCSEw5IKbkt10LxDH6btSRzN19f+vZPTc+6q9fs5sDY=;
+        b=HD0DlG+ubmbiz6DcviGqYBxD/AwSgSiI/PhM+su5op3Y3XArbAUis4ytG344D6mO9qbCxT
+        zWSwPOC6QjJg2G6vdpC+HVCJhl5mnSyEgEfMx9ITlhNgncUvJPX/sQ0417rIeiB6t6Qw1z
+        iMhyLbt1d2ojIBxU+CufyI60NFt0FHg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C194FADA2;
+        Wed, 27 Jan 2021 10:26:57 +0000 (UTC)
+Subject: Re: [PATCH v2] x86/xen: avoid warning in Xen pv guest with
+ CONFIG_AMD_MEM_ENCRYPT enabled
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org
+References: <20210127093822.18570-1-jgross@suse.com>
+ <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <2dc49fae-bf35-7c7d-2d86-338665db27ca@suse.com>
+Date:   Wed, 27 Jan 2021 11:26:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangxuezhi <zhangxuezhi1@yulong.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT
+Content-Type: multipart/mixed; boundary="7jkOIed7ZUVZJSS2ImsckjQxSXeAfqxSB";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Andrew Cooper <andrew.cooper3@citrix.com>,
+ xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
+Message-ID: <2dc49fae-bf35-7c7d-2d86-338665db27ca@suse.com>
+Subject: Re: [PATCH v2] x86/xen: avoid warning in Xen pv guest with
+ CONFIG_AMD_MEM_ENCRYPT enabled
+References: <20210127093822.18570-1-jgross@suse.com>
+ <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
+In-Reply-To: <fb2305a4-4741-c641-9639-5b17b63f2baf@citrix.com>
 
-For st7789v ic,add tearing signal detect to avoid screen tearing
+--7jkOIed7ZUVZJSS2ImsckjQxSXeAfqxSB
+Content-Type: multipart/mixed;
+ boundary="------------6EDABF7462AFF4137F4C713B"
+Content-Language: en-US
 
-Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
----
-v8: delete a log line
----
- drivers/staging/fbtft/fb_st7789v.c | 132 ++++++++++++++++++++++++++++++++++++-
- drivers/staging/fbtft/fbtft.h      |   1 +
- 2 files changed, 132 insertions(+), 1 deletion(-)
+This is a multi-part message in MIME format.
+--------------6EDABF7462AFF4137F4C713B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-index 3a280cc..de7460c 100644
---- a/drivers/staging/fbtft/fb_st7789v.c
-+++ b/drivers/staging/fbtft/fb_st7789v.c
-@@ -9,9 +9,12 @@
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/mutex.h>
-+#include <linux/interrupt.h>
-+#include <linux/completion.h>
- #include <linux/module.h>
- #include <video/mipi_display.h>
--
-+#include <linux/gpio/consumer.h>
- #include "fbtft.h"
- 
- #define DRVNAME "fb_st7789v"
-@@ -66,6 +69,32 @@ enum st7789v_command {
- #define MADCTL_MX BIT(6) /* bitmask for column address order */
- #define MADCTL_MY BIT(7) /* bitmask for page address order */
- 
-+#define SPI_PANEL_TE_TIMEOUT	400
-+static struct mutex te_mutex;/*mutex for tearing line*/
-+static struct completion spi_panel_te;
-+
-+static irqreturn_t spi_panel_te_handler(int irq, void *data)
-+{
-+	complete(&spi_panel_te);
-+	return IRQ_HANDLED;
-+}
-+
-+static void set_spi_panel_te_irq_status(struct fbtft_par *par, bool enable)
-+{
-+	static int te_irq_count;
-+
-+	mutex_lock(&te_mutex);
-+
-+	if (enable) {
-+		if (++te_irq_count == 1)
-+			enable_irq(gpiod_to_irq(par->gpio.te));
-+	} else {
-+		if (--te_irq_count == 0)
-+			disable_irq(gpiod_to_irq(par->gpio.te));
-+	}
-+	mutex_unlock(&te_mutex);
-+}
-+
- /**
-  * init_display() - initialize the display controller
-  *
-@@ -82,6 +111,33 @@ enum st7789v_command {
-  */
- static int init_display(struct fbtft_par *par)
- {
-+	int rc;
-+	struct device *dev = par->info->device;
-+
-+	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-+	if (IS_ERR(par->gpio.te)) {
-+		rc = PTR_ERR(par->gpio.te);
-+		pr_err("Failed to request te gpio: %d\n", rc);
-+		return rc;
-+	}
-+	if (par->gpio.te) {
-+		init_completion(&spi_panel_te);
-+		mutex_init(&te_mutex);
-+		rc = devm_request_irq(dev,
-+				      gpiod_to_irq(par->gpio.te),
-+				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
-+				     "TE_GPIO", par);
-+		if (rc) {
-+			pr_err("TE request_irq failed.\n");
-+			devm_gpiod_put(dev, par->gpio.te);
-+			return rc;
-+		}
-+
-+		disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-+	} else {
-+		pr_info("%s:%d, TE gpio not specified\n",
-+			__func__, __LINE__);
-+	}
- 	/* turn off sleep mode */
- 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
- 	mdelay(120);
-@@ -137,6 +193,9 @@ static int init_display(struct fbtft_par *par)
- 	 */
- 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
- 
-+    /*Tearing Effect Line On*/
-+	if (par->gpio.te)
-+		write_reg(par, 0x35, 0x00);
- 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
- 
- 	if (HSD20_IPS)
-@@ -145,6 +204,76 @@ static int init_display(struct fbtft_par *par)
- 	return 0;
- }
- 
-+/*****************************************************************************
-+ *
-+ *   int (*write_vmem)(struct fbtft_par *par);
-+ *
-+ *****************************************************************************/
-+
-+/* 16 bit pixel over 8-bit databus */
-+static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
-+{
-+	u16 *vmem16;
-+	__be16 *txbuf16 = par->txbuf.buf;
-+	size_t remain;
-+	size_t to_copy;
-+	size_t tx_array_size;
-+	int i;
-+	int ret = 0;
-+	size_t startbyte_size = 0;
-+
-+	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
-+		      __func__, offset, len);
-+
-+	remain = len / 2;
-+	vmem16 = (u16 *)(par->info->screen_buffer + offset);
-+
-+	if (par->gpio.dc)
-+		gpiod_set_value(par->gpio.dc, 1);
-+
-+	/* non buffered write */
-+	if (!par->txbuf.buf)
-+		return par->fbtftops.write(par, vmem16, len);
-+
-+	/* buffered write */
-+	tx_array_size = par->txbuf.len / 2;
-+
-+	if (par->startbyte) {
-+		txbuf16 = par->txbuf.buf + 1;
-+		tx_array_size -= 2;
-+		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
-+		startbyte_size = 1;
-+	}
-+
-+	while (remain) {
-+		to_copy = min(tx_array_size, remain);
-+		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
-+			to_copy, remain - to_copy);
-+
-+		for (i = 0; i < to_copy; i++)
-+			txbuf16[i] = cpu_to_be16(vmem16[i]);
-+
-+		vmem16 = vmem16 + to_copy;
-+		if (par->gpio.te) {
-+			set_spi_panel_te_irq_status(par, true);
-+			reinit_completion(&spi_panel_te);
-+			ret = wait_for_completion_timeout(&spi_panel_te,
-+							  msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
-+			if (ret == 0)
-+				pr_err("wait panel TE time out\n");
-+		}
-+		ret = par->fbtftops.write(par, par->txbuf.buf,
-+					 startbyte_size + to_copy * 2);
-+		if (par->gpio.te)
-+			set_spi_panel_te_irq_status(par, false);
-+		if (ret < 0)
-+			return ret;
-+		remain -= to_copy;
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * set_var() - apply LCD properties like rotation and BGR mode
-  *
-@@ -259,6 +388,7 @@ static int blank(struct fbtft_par *par, bool on)
- 	.gamma = HSD20_IPS_GAMMA,
- 	.fbtftops = {
- 		.init_display = init_display,
-+		.write_vmem = st7789v_write_vmem16_bus8,
- 		.set_var = set_var,
- 		.set_gamma = set_gamma,
- 		.blank = blank,
-diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
-index 76f8c09..93bac05 100644
---- a/drivers/staging/fbtft/fbtft.h
-+++ b/drivers/staging/fbtft/fbtft.h
-@@ -212,6 +212,7 @@ struct fbtft_par {
- 		struct gpio_desc *wr;
- 		struct gpio_desc *latch;
- 		struct gpio_desc *cs;
-+		struct gpio_desc *te;
- 		struct gpio_desc *db[16];
- 		struct gpio_desc *led[16];
- 		struct gpio_desc *aux[16];
--- 
-1.9.1
+On 27.01.21 10:43, Andrew Cooper wrote:
+> On 27/01/2021 09:38, Juergen Gross wrote:
+>> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c=
 
+>> index 4409306364dc..ca5ac10fcbf7 100644
+>> --- a/arch/x86/xen/enlighten_pv.c
+>> +++ b/arch/x86/xen/enlighten_pv.c
+>> @@ -583,6 +583,12 @@ DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
+>>   		exc_debug(regs);
+>>   }
+>>  =20
+>> +DEFINE_IDTENTRY_RAW(exc_xen_unknown_trap)
+>> +{
+>> +	/* This should never happen and there is no way to handle it. */
+>> +	panic("Unknown trap in Xen PV mode.");
+>=20
+> Looks much better.=C2=A0 How about including regs->entry_vector here, j=
+ust to
+> short circuit the inevitable swearing which will accompany encountering=
+
+> this panic() ?
+
+You are aware the regs parameter is struct pt_regs *, not the Xen
+struct cpu_user_regs *?
+
+So I have no idea how I should get this information without creating
+a per-vector handler.
+
+
+Juergen
+
+--------------6EDABF7462AFF4137F4C713B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------6EDABF7462AFF4137F4C713B--
+
+--7jkOIed7ZUVZJSS2ImsckjQxSXeAfqxSB--
+
+--Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmARP/AFAwAAAAAACgkQsN6d1ii/Ey8H
+KQf/d1qSrElkCAvRhLViB1sKaD8JgIQ7K8qv9q/g4aa6727Q7UcRwqqXX/ktKjEnCQhBdnFdKUDQ
+RqPHHVLASanPanrfEPT2ciZxCIn7iSVSoK9ivrWQWSALyoROYanMGh/Hgm6MxHcaZGi2Ft5BXSgc
+tFfl3mlP8WUIkJSg/OT2zbiJAs0ZxruwoA6wpASzHxxjenl3UycAEx9Gg+jVJo5ENsv5pJNVwIa2
+1GD+MuuIMjnnS5O6+doKlxis7qUdQZYXuHrHtN59nw7rTGlwhESo45jesuOMf2gGKYV30rWE0LaH
+E1bNYskTbuHW0NwVidVkpOJ4UZ7CfvPRxPPEbrp4nw==
+=vR4K
+-----END PGP SIGNATURE-----
+
+--Ae0qWicHCmbfPiNOK9GAVSDefNkktA1hT--
