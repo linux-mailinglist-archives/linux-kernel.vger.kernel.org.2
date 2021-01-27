@@ -2,459 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD49305A7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBD9305A7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237231AbhA0L6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237390AbhA0LzY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:55:24 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036C7C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:54:44 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id jx18so1208716pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:54:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tyztanc1Lrx3VvCr64qwKzuktGG8MUMMjTpyKB+6ItA=;
-        b=tuUXZETT3dxsiScCEE1o+cqmDsOZZFvSKvAqKqnCFT37gxLHB/vH2HPj/7lNpcLA3X
-         1CWEMzJwTD46MiWLH7tzgvLvGujab6x4pTK+81WD6IR50SLSkf8G9sizuwU8ZqETL1Kp
-         IWmnCbPUDxTK+HWKOt4ddNjkUVExbXxLGDOvFoCj5vwyd0NkkxTl/vpFKEFDJ1w1AoIt
-         DtB82bKMlBCf0o8XHpUBkCXk+/loRTGsk/+XelgG++vaK5E8WXD0tEu0be+w3+vh6Gtb
-         p+nahwlTerXr+yb3zSpV7U4pXGaz94mUlcuVD6i2iwMFHJNuCsVaddmG9dr0EX6b0CDw
-         4FXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tyztanc1Lrx3VvCr64qwKzuktGG8MUMMjTpyKB+6ItA=;
-        b=Wb2SP+Yc4atLyRH7aUbzFtjoEOEhZZ0Izyb95skezKi9t2Fvk20meTmColFRRcAOWX
-         mN9vSY9h0R7Lv/imju/7FKlt/3yTWHXdwKU9IU2i8A2FuZGA0j6aS/cKlOaAWNcoHM5K
-         e/xJCftV6wWprculMbB2Yx+c5tvuLsPG/eLxrNOfZImOX68EnHhB5x4d/nqINlz52m3I
-         OhF4AvKslns1ri6JJGzR4YyNdnn0fFxGL6dTaOk6O7Hbiso/OcGEIOIlXSjeBgQzk8yQ
-         37Zk6Eb03c3upswprLBvOVARGKax/z7HKlJaMIW3TV4zfJyhswL4onexsli+WQfMdBxg
-         8+xQ==
-X-Gm-Message-State: AOAM5339YbsCoq1dWAHYPTa9vKQVSegaAjtC+NNjyfgK84eNrj1+hRA9
-        cU9gw1E6f7oBedQ9iaibBiMngQ==
-X-Google-Smtp-Source: ABdhPJznhSqSvC5nSA+uzzbejlwt3l5F2tu3NZey4pBl+WrD4vhtAimaxfArFR1qMTll14yFRbTzrw==
-X-Received: by 2002:a17:90b:4005:: with SMTP id ie5mr5436372pjb.104.1611748483395;
-        Wed, 27 Jan 2021 03:54:43 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id c5sm2396029pgt.73.2021.01.27.03.54.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 03:54:41 -0800 (PST)
-Date:   Wed, 27 Jan 2021 17:24:15 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>
-Subject: Re: [PATCH v3 3/5] OPP: Improve require-opps linking
-Message-ID: <20210127115415.7zjpf6uaybwswno3@vireshk-i7>
-References: <20190717222340.137578-1-saravanak@google.com>
- <20190717222340.137578-4-saravanak@google.com>
- <20191125112812.26jk5hsdwqfnofc2@vireshk-i7>
- <20200127061118.5bxei6nghowlmf53@vireshk-i7>
- <b0be1275-c5cb-8171-58fa-64d65f60eaf8@codeaurora.org>
- <20200130042126.ahkik6ffb5vnzdim@vireshk-i7>
- <CAJMQK-gmO-tLZkRRxRdgU9eyfo95omw_RnffFVdhv2A6_9T-nQ@mail.gmail.com>
- <20210118073430.a6lr3ynkd2duv34l@vireshk-i7>
- <CAJMQK-j6EYjU1z_SUY4MFEJO6qTtOH7mQ_QWj2iUMewBKAghng@mail.gmail.com>
+        id S237467AbhA0L6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:58:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34026 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236685AbhA0L4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:56:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611748514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lwuc+jSkD82sotlNHJidx8xja/Bw1JYQcR061EVrMxA=;
+        b=VqvtxSgmJ5cfSryecsAWZnhhs5uilRcndo5u4Gvp2ENukoxoKJsr+mTPjc4n9b02HE5zd2
+        tNiYkZOsfUa2IE/eO+Ngsze83nqq8S0L9O25uNbLapCDnMcbQVY3lblEQhhKn8OhgSez7d
+        hI+RKBYuVTq7jTQ+3zuaVTVbMniYl0A=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B807AD2B;
+        Wed, 27 Jan 2021 11:55:14 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 12:55:13 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 04/13] livepatch: move klp_find_object_module to module.c
+Message-ID: <YBFUoYxHjRTmKOEn@alley>
+References: <20210121074959.313333-1-hch@lst.de>
+ <20210121074959.313333-5-hch@lst.de>
+ <YBAmTAsT3S01kU1x@gunter>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJMQK-j6EYjU1z_SUY4MFEJO6qTtOH7mQ_QWj2iUMewBKAghng@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YBAmTAsT3S01kU1x@gunter>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-01-21, 15:39, Hsin-Yi Wang wrote:
-> Thanks. I can test this with the mt8183-cci series.
+On Tue 2021-01-26 15:25:16, Jessica Yu wrote:
+> +++ Christoph Hellwig [21/01/21 08:49 +0100]:
+> > To uncouple the livepatch code from module loader internals move a
+> > slightly refactored version of klp_find_object_module to module.c
+> > This allows to mark find_module static and removes one of the last
+> > users of module_mutex outside of module.c.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> > include/linux/module.h  |  3 +--
+> > kernel/livepatch/core.c | 39 +++++++++++++--------------------------
+> > kernel/module.c         | 17 ++++++++++++++++-
+> > 3 files changed, 30 insertions(+), 29 deletions(-)
+> > 
+> > diff --git a/include/linux/module.h b/include/linux/module.h
+> > index b4654f8a408134..8588482bde4116 100644
+> > --- a/include/linux/module.h
+> > +++ b/include/linux/module.h
+> > @@ -586,8 +586,7 @@ static inline bool within_module(unsigned long addr, const struct module *mod)
+> > 	return within_module_init(addr, mod) || within_module_core(addr, mod);
+> > }
+> > 
+> > -/* Search for module by name: must hold module_mutex. */
+> > -struct module *find_module(const char *name);
+> > +struct module *find_klp_module(const char *name);
+> > 
+> > /* Check if a module is loaded. */
+> > bool module_loaded(const char *name);
+> > diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+> > index a7f625dc24add3..878759baadd81c 100644
+> > --- a/kernel/livepatch/core.c
+> > +++ b/kernel/livepatch/core.c
+> > @@ -49,30 +49,6 @@ static bool klp_is_module(struct klp_object *obj)
+> > 	return obj->name;
+> > }
+> > 
+> > -/* sets obj->mod if object is not vmlinux and module is found */
+> > -static void klp_find_object_module(struct klp_object *obj)
+> > -{
+> > -	struct module *mod;
+> > -
+> > -	mutex_lock(&module_mutex);
+> > -	/*
+> > -	 * We do not want to block removal of patched modules and therefore
+> > -	 * we do not take a reference here. The patches are removed by
+> > -	 * klp_module_going() instead.
+> > -	 */
+> > -	mod = find_module(obj->name);
+> > -	/*
+> > -	 * Do not mess work of klp_module_coming() and klp_module_going().
+> > -	 * Note that the patch might still be needed before klp_module_going()
+> > -	 * is called. Module functions can be called even in the GOING state
+> > -	 * until mod->exit() finishes. This is especially important for
+> > -	 * patches that modify semantic of the functions.
+> > -	 */
+> > -	if (mod && mod->klp_alive)
+> > -		obj->mod = mod;
+> > -	mutex_unlock(&module_mutex);
+> > -}
+> 
+> Hmm, I am not a huge fan of moving more livepatch code into module.c, I
+> wonder if we can keep them separate.
+> 
+> Why not have module_is_loaded() kill two birds with one stone? That
+> is, just have it return a module pointer to signify that the module is
+> loaded, NULL if not. Then we don't need an extra find_klp_module()
+> function just to call find_module() and return a pointer, as
+> module_is_loaded() can just do that for us.
+> 
+> As for the mod->klp_alive check, I believe this function
+> (klp_find_object_module()) is called with klp_mutex held, and
+> mod->klp_alive is only modified under klp_mutex. Also, if klp_alive is
+> true, the module is at least COMING and cannot be GOING until it
+> acquires the klp_mutex again in klp_module_going(). So does that hunk
+> really need to be under module_mutex? It has been a long time since
+> I've looked at livepatch code so it would be great if someone could
+> double check.
 
-Can you please give this a try ?
+We need to make sure that the module is not freed before we manipulate
+mod->klp_alive.
 
-Apply over: 
+One solution would be to take the reference and block it during this
+operation.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/linux-next
+Alternatively it might be to rely on RCU. It seems that the struct
+is protected by RCU because of kallsyms. But I am not sure if it
+is safe in all module states. But it should be. We find the module
+via the same list like kallsyms.
 
--------------------------8<-------------------------
-Subject: [PATCH] opp: Allow lazy-linking of required-opps
-
-The OPP core currently requires the required opp tables to be available
-before the dependent OPP table is added, as it needs to create links
-from the dependent OPP table to the required ones. This may not be
-convenient for all the platforms though, as this requires strict
-ordering for probing the drivers.
-
-This patch allows lazy-linking of the required-opps. The OPP tables for
-which the required-opp-tables aren't available at the time of their
-initialization, are added to a special list of OPP tables:
-lazy_opp_tables. Later on, whenever a new OPP table is registered with
-the OPP core, we check if it is required by an OPP table in the pending
-list; if yes, then we complete the linking then and there.
-
-An OPP table is marked unusable until the time all its required-opp
-tables are available. And if lazy-linking fails for an OPP table, the
-OPP core disables all of its OPPs to make sure no one can use them.
-
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c |  45 +++++++++++++----
- drivers/opp/of.c   | 122 +++++++++++++++++++++++++++++++++++++++++++--
- drivers/opp/opp.h  |  10 +++-
- 3 files changed, 161 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 7e4a51be5bb0..d886840628a0 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -27,6 +27,10 @@
-  * various states of availability.
-  */
- LIST_HEAD(opp_tables);
-+
-+/* OPP tables with uninitialized required OPPs */
-+LIST_HEAD(lazy_opp_tables);
-+
- /* Lock to allow exclusive modification to the device and opp lists */
- DEFINE_MUTEX(opp_table_lock);
- /* Flag indicating that opp_tables list is being updated at the moment */
-@@ -163,6 +167,10 @@ unsigned int dev_pm_opp_get_required_pstate(struct dev_pm_opp *opp,
- 		return 0;
- 	}
- 
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(opp->opp_table))
-+		return 0;
-+
- 	return opp->required_opps[index]->pstate;
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_get_required_pstate);
-@@ -885,6 +893,10 @@ static int _set_required_opps(struct device *dev,
- 	if (!required_opp_tables)
- 		return 0;
- 
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(opp_table))
-+		return -EBUSY;
-+
- 	/* Single genpd case */
- 	if (!genpd_virt_devs)
- 		return _set_required_opp(dev, dev, opp, 0);
-@@ -1182,6 +1194,7 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index,
- 	mutex_init(&opp_table->lock);
- 	mutex_init(&opp_table->genpd_virt_dev_lock);
- 	INIT_LIST_HEAD(&opp_table->dev_list);
-+	INIT_LIST_HEAD(&opp_table->lazy);
- 
- 	/* Mark regulator count uninitialized */
- 	opp_table->regulator_count = -1;
-@@ -1623,6 +1636,21 @@ static int _opp_is_duplicate(struct device *dev, struct dev_pm_opp *new_opp,
- 	return 0;
- }
- 
-+void _opp_required_opps_available(struct dev_pm_opp *opp, int count)
-+{
-+	int i;
-+
-+	for (i = 0; i < count; i++) {
-+		if (opp->required_opps[i]->available)
-+			continue;
-+
-+		opp->available = false;
-+		pr_warn("%s: OPP not supported by required OPP %pOF (%lu)\n",
-+			 __func__, opp->required_opps[i]->np, opp->rate);
-+		return;
-+	}
-+}
-+
- /*
-  * Returns:
-  * 0: On success. And appropriate error message for duplicate OPPs.
-@@ -1637,7 +1665,6 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
- 	     struct opp_table *opp_table, bool rate_not_available)
- {
- 	struct list_head *head;
--	unsigned int i;
- 	int ret;
- 
- 	mutex_lock(&opp_table->lock);
-@@ -1663,15 +1690,11 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
- 			 __func__, new_opp->rate);
- 	}
- 
--	for (i = 0; i < opp_table->required_opp_count; i++) {
--		if (new_opp->required_opps[i]->available)
--			continue;
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(opp_table))
-+		return 0;
- 
--		new_opp->available = false;
--		dev_warn(dev, "%s: OPP not supported by required OPP %pOF (%lu)\n",
--			 __func__, new_opp->required_opps[i]->np, new_opp->rate);
--		break;
--	}
-+	_opp_required_opps_available(new_opp, opp_table->required_opp_count);
- 
- 	return 0;
- }
-@@ -2377,6 +2400,10 @@ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table,
- 	if (!src_table || !src_table->required_opp_count)
- 		return pstate;
- 
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(src_table))
-+		return -EBUSY;
-+
- 	for (i = 0; i < src_table->required_opp_count; i++) {
- 		if (src_table->required_opp_tables[i]->np == dst_table->np)
- 			break;
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 20ccdaab9384..31ac55714b57 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -144,7 +144,7 @@ static void _opp_table_free_required_tables(struct opp_table *opp_table)
- 
- 	for (i = 0; i < opp_table->required_opp_count; i++) {
- 		if (IS_ERR_OR_NULL(required_opp_tables[i]))
--			break;
-+			continue;
- 
- 		dev_pm_opp_put_opp_table(required_opp_tables[i]);
- 	}
-@@ -153,6 +153,7 @@ static void _opp_table_free_required_tables(struct opp_table *opp_table)
- 
- 	opp_table->required_opp_count = 0;
- 	opp_table->required_opp_tables = NULL;
-+	list_del(&opp_table->lazy);
- }
- 
- /*
-@@ -165,6 +166,7 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
- {
- 	struct opp_table **required_opp_tables;
- 	struct device_node *required_np, *np;
-+	bool lazy = false;
- 	int count, i;
- 
- 	/* Traversing the first OPP node is all we need */
-@@ -195,8 +197,10 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
- 		required_opp_tables[i] = _find_table_of_opp_np(required_np);
- 		of_node_put(required_np);
- 
--		if (IS_ERR(required_opp_tables[i]))
--			goto free_required_tables;
-+		if (IS_ERR(required_opp_tables[i])) {
-+			lazy = true;
-+			continue;
-+		}
- 
- 		/*
- 		 * We only support genpd's OPPs in the "required-opps" for now,
-@@ -210,6 +214,10 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
- 		}
- 	}
- 
-+	/* Let's do the linking later on */
-+	if (lazy)
-+		list_add(&opp_table->lazy, &lazy_opp_tables);
-+
- 	goto put_np;
- 
- free_required_tables:
-@@ -278,14 +286,14 @@ void _of_opp_free_required_opps(struct opp_table *opp_table,
- 
- 	for (i = 0; i < opp_table->required_opp_count; i++) {
- 		if (!required_opps[i])
--			break;
-+			continue;
- 
- 		/* Put the reference back */
- 		dev_pm_opp_put(required_opps[i]);
- 	}
- 
--	kfree(required_opps);
- 	opp->required_opps = NULL;
-+	kfree(required_opps);
- }
- 
- /* Populate all required OPPs which are part of "required-opps" list */
-@@ -309,6 +317,10 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
- 	for (i = 0; i < count; i++) {
- 		required_table = opp_table->required_opp_tables[i];
- 
-+		/* Required table not added yet, we will link later */
-+		if (IS_ERR_OR_NULL(required_table))
-+			continue;
-+
- 		np = of_parse_required_opp(opp->np, i);
- 		if (unlikely(!np)) {
- 			ret = -ENODEV;
-@@ -334,6 +346,104 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
- 	return ret;
- }
- 
-+/* Link required OPPs for an individual OPP */
-+static int lazy_link_required_opps(struct opp_table *opp_table,
-+				   struct opp_table *new_table, int index)
-+{
-+	struct device_node *required_np;
-+	struct dev_pm_opp *opp;
-+
-+	list_for_each_entry(opp, &opp_table->opp_list, node) {
-+		required_np = of_parse_required_opp(opp->np, index);
-+		if (unlikely(!required_np))
-+			return -ENODEV;
-+
-+		opp->required_opps[index] = _find_opp_of_np(new_table, required_np);
-+		of_node_put(required_np);
-+
-+		if (!opp->required_opps[index]) {
-+			pr_err("%s: Unable to find required OPP node: %pOF (%d)\n",
-+			       __func__, opp->np, index);
-+			return -ENODEV;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Link required OPPs for all OPPs of the newly added OPP table */
-+static void lazy_link_required_opp_table(struct opp_table *new_table)
-+{
-+	struct opp_table *opp_table, *temp, **required_opp_tables;
-+	struct device_node *required_np, *opp_np, *required_table_np;
-+	struct dev_pm_opp *opp;
-+	int i, ret;
-+
-+	/*
-+	 * We only support genpd's OPPs in the "required-opps" for now,
-+	 * as we don't know much about other cases.
-+	 */
-+	if (!new_table->is_genpd)
-+		return;
-+
-+	mutex_lock(&opp_table_lock);
-+
-+	list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
-+		bool lazy = false;
-+
-+		/* opp_np can't be invalid here */
-+		opp_np = of_get_next_available_child(opp_table->np, NULL);
-+
-+		for (i = 0; i < opp_table->required_opp_count; i++) {
-+			required_opp_tables = opp_table->required_opp_tables;
-+
-+			/* Required opp-table is already parsed */
-+			if (!IS_ERR(required_opp_tables[i]))
-+				continue;
-+
-+			/* required_np can't be invalid here */
-+			required_np = of_parse_required_opp(opp_np, i);
-+			required_table_np = of_get_parent(required_np);
-+
-+			of_node_put(required_table_np);
-+			of_node_put(required_np);
-+
-+			/*
-+			 * Newly added table isn't the required opp-table for
-+			 * opp_table.
-+			 */
-+			if (required_table_np != new_table->np) {
-+				lazy = true;
-+				continue;
-+			}
-+
-+			required_opp_tables[i] = new_table;
-+			_get_opp_table_kref(new_table);
-+
-+			/* Link OPPs now */
-+			ret = lazy_link_required_opps(opp_table, new_table, i);
-+			if (ret) {
-+				/* The OPPs will be marked unusable */
-+				lazy = false;
-+				break;
-+			}
-+		}
-+
-+		of_node_put(opp_np);
-+
-+		/* All required opp-tables found, remove from lazy list */
-+		if (!lazy) {
-+			list_del(&opp_table->lazy);
-+			INIT_LIST_HEAD(&opp_table->lazy);
-+
-+			list_for_each_entry(opp, &opp_table->opp_list, node)
-+				_opp_required_opps_available(opp, opp_table->required_opp_count);
-+		}
-+	}
-+
-+	mutex_unlock(&opp_table_lock);
-+}
-+
- static int _bandwidth_supported(struct device *dev, struct opp_table *opp_table)
- {
- 	struct device_node *np, *opp_np;
-@@ -889,6 +999,8 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
- 		}
- 	}
- 
-+	lazy_link_required_opp_table(opp_table);
-+
- 	return 0;
- 
- remove_static_opp:
-diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-index 734df1f764ec..a5a10b685bf7 100644
---- a/drivers/opp/opp.h
-+++ b/drivers/opp/opp.h
-@@ -26,7 +26,7 @@ struct regulator;
- /* Lock to allow exclusive modification to the device and opp lists */
- extern struct mutex opp_table_lock;
- 
--extern struct list_head opp_tables;
-+extern struct list_head opp_tables, lazy_opp_tables;
- 
- /*
-  * Internal data structure organization with the OPP layer library is as
-@@ -168,7 +168,7 @@ enum opp_table_access {
-  * meant for book keeping and private to OPP library.
-  */
- struct opp_table {
--	struct list_head node;
-+	struct list_head node, lazy;
- 
- 	struct blocking_notifier_head head;
- 	struct list_head dev_list;
-@@ -230,6 +230,12 @@ void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cp
- struct opp_table *_add_opp_table(struct device *dev);
- struct opp_table *_add_opp_table_indexed(struct device *dev, int index, bool getclk);
- void _put_opp_list_kref(struct opp_table *opp_table);
-+void _opp_required_opps_available(struct dev_pm_opp *opp, int count);
-+
-+static inline bool lazy_linking_pending(struct opp_table *opp_table)
-+{
-+	return unlikely(!list_empty(&opp_table->lazy));
-+}
- 
- #ifdef CONFIG_OF
- void _of_init_opp_table(struct opp_table *opp_table, struct device *dev, int index);
-
--- 
-viresh
+Best Regards,
+Petr
