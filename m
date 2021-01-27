@@ -2,280 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6FE30502E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7675530502C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237234AbhA0Dtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
+        id S232615AbhA0Ds4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389676AbhA0AGv (ORCPT
+        with ESMTP id S2389646AbhA0AGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:06:51 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9088C061351
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:05:18 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id o7so351370pgl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:05:18 -0800 (PST)
+        Tue, 26 Jan 2021 19:06:45 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40ABC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:04:41 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id r4so25237pls.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:04:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u2CFxYIjg6arrEjc41dhVQJWSHe8H+mJoN8546JORc4=;
-        b=bg4Hqcy5ToVXiqQaq8Cjw4rg6lUpvXbcGmxu7yC1mKiD7XSVQIIROwQdOBColzpyd6
-         F3fw7EEQj9tNbs4teaEqiCsfX8DmtXhziwtgvE7eyMIlw3lJYV9cIc0wWXuWV1GtyuV0
-         TdnrpmtWGX5pVcYuMu2NPeYyoxjEEADXvtBpuOz0y7Sow/mKMlk4kJ8LjierVee2lde6
-         7J6m6G7fZH0J84iktd2K9tsA1+D4c76t7L6w3iycEljE0qa/Hjz9IjDFi9ZxIyhEx6u0
-         ktXui8lEM7ph9fEhMnpSygWdd9t57r2YRWPNN89kqcFLbGFHqCtGk17Vf4hek9tEIiFh
-         N4ZQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ehN8g8luuF2BKLiZYDz35HTGbUgrzlwEK0VyDMRc1bE=;
+        b=u+tGmLtats3b8HsEfxKVQgMK0GXcYfxMRPArDpxJoYSxVOHzNMkczWTT9UKc+iuL5c
+         1i80Ybhtd+JjjT+hrlRpf+r1Oti1xkqj1SSUkApAb7iuqNc0hAkpN+PYw76+kF30zXuT
+         xKNeJ0v6+/QBYk7eVYWEZTsCW8IasRNlBF9OpHVGxlio9+VdQohz9RpJPqPxKapSecTH
+         XpaQaL94Nfi9thSv44/gpO6nt2eB1Ocr0Vtnc3sPmSduLvYB3U07MvoJrdF3T7Y1+n08
+         NfLW9PKtYmJe5bubHPO75UGFwYTmQBwPme6NriQsLx5/PJNyd+X6U36wepGK/wdj+iNS
+         wuJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u2CFxYIjg6arrEjc41dhVQJWSHe8H+mJoN8546JORc4=;
-        b=eZmjSbocLRYAbhSPzoGXLG1lM+vi2z4vS/9x9B79JEQ2KviEWCtpDRuHKuidxa+WIu
-         dvlc1Iil1YmDp1dfKax5Md0GN2L+G9z42NkgDLuKWMlIc6wx7zlOO6qumosxFI8DqB5V
-         Ozw8ny0sYvc2GM3+YhLc7KQ3gg1GF6gpF/N6jO42S+cmYBHBlS+1eITLroPvVEeyyYbl
-         XF2fhWZnhUSdgOtQsMAVcMTZ+SGRyjIecO6gu1x8UROOik/74FXdYQAdM4I/5RxYuxTw
-         he4o607FxLRYs0ubQw6o4Es8n0exRCb7x0tZ2k/+MvV622RRUisx+IZbdS0ECtZgwOMp
-         tpbw==
-X-Gm-Message-State: AOAM530WANbafBUFa4Yk8/YONKbKGhoFgQUhNIHZcAZ25y2sW3JsLe5t
-        iHXJpVs1t76O04wtwgRcRqDX0w==
-X-Google-Smtp-Source: ABdhPJyFyWfruZj14k/OS13slAPKs09/xHkOOik47DZmHJRpM/L4mujtjqINHBHc55L6al+3nzeqow==
-X-Received: by 2002:a63:1c09:: with SMTP id c9mr8058931pgc.185.1611705918421;
-        Tue, 26 Jan 2021 16:05:18 -0800 (PST)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:515f:b0ad:6302:bbc2])
-        by smtp.gmail.com with ESMTPSA id y5sm213536pfq.96.2021.01.26.16.05.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ehN8g8luuF2BKLiZYDz35HTGbUgrzlwEK0VyDMRc1bE=;
+        b=ZLzjIKSxb6dGodReNCl+TOOXTOGFtLsDl7FRK2bRoykp2U2Bhw3cWJywPkK0yOIa57
+         jBP3hleRagFwLz55O+vnjWDXLdYrp8TwCjwQER31HsW6BkwaxFVRo08XzSwKWsEAUQnP
+         an3BxNqdUvVczdPms802uAY9EpjEFcGOIPZix7FjJjvtjxoBIhg6Muge8b+N84IT7509
+         WH3pSK0vCs1Ocke11Lcq+ynGYQHz6sKCkAuBE2gufS9fzqowWlGLrnHoc728hfJLf7zw
+         CX8tPUR06d/7DEk8H1LnrGTViURgvsoOKP53xKda27wTQGsvWKcBuioQrZqYLjXy/Zx0
+         YhJw==
+X-Gm-Message-State: AOAM532/ozjVXugy/yZQBGNm9oNj+HNsZ+BUowy6mv3PchFTjKXKmTzv
+        /1a0abtcjpCAFHw87qqRPBDBxQ==
+X-Google-Smtp-Source: ABdhPJzzbvfi/5tp5Y0OvbgmuXAJ+a6Aqpa1MNl1ySc5Qa2syXhxmjS34UST5dEuL1LWwufhbGgubw==
+X-Received: by 2002:a17:90b:4a09:: with SMTP id kk9mr2478013pjb.15.1611705881203;
+        Tue, 26 Jan 2021 16:04:41 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id y4sm75088pji.34.2021.01.26.16.04.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 16:05:17 -0800 (PST)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     bcousson@baylibre.com, Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH 2/2] ARM: dts: am335x-boneblack.dts: unique gpio-line-names
-Date:   Tue, 26 Jan 2021 16:03:05 -0800
-Message-Id: <20210127000303.436595-2-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210127000303.436595-1-drew@beagleboard.org>
-References: <20210127000303.436595-1-drew@beagleboard.org>
+        Tue, 26 Jan 2021 16:04:40 -0800 (PST)
+Date:   Tue, 26 Jan 2021 16:04:33 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [PATCH] KVM: x86/mmu: consider the hva in mmu_notifer retry
+Message-ID: <YBCuEaxZu0MuD3MW@google.com>
+References: <20210125064234.2078146-1-stevensd@google.com>
+ <YA8PXCEVukW0UzC5@google.com>
+ <CAD=HUj5YMtSJY6ZO9TRXHDEfWRM1o3Lrm7nkz=G2VJ_oZ-c5mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=HUj5YMtSJY6ZO9TRXHDEfWRM1o3Lrm7nkz=G2VJ_oZ-c5mw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on linux-gpio discussion [1], it is best practice to make the
-gpio-line-names unique. Generic names like "[ethernet]" are replaced
-with the name of the unique signal on the AM3358 SoC ball corresponding
-to the gpio line. "[NC]" is also renamed to the standard "NC" name to
-represent "not connected".
+On Tue, Jan 26, 2021, David Stevens wrote:
+> > This needs a comment to explicitly state that 'count > 1' cannot be done at
+> > this time.  My initial thought is that it would be more intuitive to check for
+> > 'count > 1' here, but that would potentially check the wrong wrange when count
+> > goes from 2->1.  The comment about persistence in invalidate_range_start() is a
+> > good hint, but I think it's worth being explicit to avoid bad "cleanup" in the
+> > future.
+> >
+> > > +     if (unlikely(kvm->mmu_notifier_count)) {
+> > > +             if (kvm->mmu_notifier_range_start <= hva &&
+> > > +                 hva < kvm->mmu_notifier_range_end)
+> 
+> I'm not sure I understand what you're suggesting here. How exactly
+> would 'count > 1' be used incorrectly here? I'm fine with adding a
+> comment, but I'm not sure what the comment needs to clarify.
 
-[1] https://lore.kernel.org/linux-gpio/20201216195357.GA2583366@x1/
+There's no guarantee that the remaining in-progress invalidation when the count
+goes from 2->1 is the same invalidation call that set range_start/range_end.
 
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- arch/arm/boot/dts/am335x-boneblack.dts | 130 ++++++++++++-------------
- 1 file changed, 65 insertions(+), 65 deletions(-)
+E.g. given two invalidations, A and B, the order of calls could be:
 
-diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
-index b4feb85e171a..ad9d32c7ec44 100644
---- a/arch/arm/boot/dts/am335x-boneblack.dts
-+++ b/arch/arm/boot/dts/am335x-boneblack.dts
-@@ -26,54 +26,54 @@ oppnitro-1000000000 {
- 
- &gpio0 {
- 	gpio-line-names =
--		"[ethernet]",
--		"[ethernet]",
-+		"[mdio_data]",
-+		"[mdio_clk]",
- 		"P9_22 [spi0_sclk]",
- 		"P9_21 [spi0_d0]",
- 		"P9_18 [spi0_d1]",
- 		"P9_17 [spi0_cs0]",
--		"[sd card]",
-+		"[mmc0_cd]",
- 		"P8_42A [ecappwm0]",
--		"P8_35 [hdmi]",
--		"P8_33 [hdmi]",
--		"P8_31 [hdmi]",
--		"P8_32 [hdmi]",
-+		"P8_35 [lcd d12]",
-+		"P8_33 [lcd d13]",
-+		"P8_31 [lcd d14]",
-+		"P8_32 [lcd d15]",
- 		"P9_20 [i2c2_sda]",
- 		"P9_19 [i2c2_scl]",
- 		"P9_26 [uart1_rxd]",
- 		"P9_24 [uart1_txd]",
--		"[ethernet]",
--		"[ethernet]",
--		"[usb]",
--		"[hdmi]",
-+		"[rmii1_txd3]",
-+		"[rmii1_txd2]",
-+		"[usb0_drvvbus]",
-+		"[hdmi cec]",
- 		"P9_41B",
--		"[ethernet]",
-+		"[rmii1_txd1]",
- 		"P8_19 [ehrpwm2a]",
- 		"P8_13 [ehrpwm2b]",
--		"[NC]",
--		"[NC]",
-+		"NC",
-+		"NC",
- 		"P8_14",
- 		"P8_17",
--		"[ethernet]",
--		"[ethernet]",
-+		"[rmii1_txd0]",
-+		"[rmii1_refclk]",
- 		"P9_11 [uart4_rxd]",
- 		"P9_13 [uart4_txd]";
- };
- 
- &gpio1 {
- 	gpio-line-names =
--		"P8_25 [emmc]",
--		"[emmc]",
--		"P8_5 [emmc]",
--		"P8_6 [emmc]",
--		"P8_23 [emmc]",
--		"P8_22 [emmc]",
--		"P8_3 [emmc]",
--		"P8_4 [emmc]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
-+		"P8_25 [mmc1_dat0]",
-+		"[mmc1_dat1]",
-+		"P8_5 [mmc1_dat2]",
-+		"P8_6 [mmc1_dat3]",
-+		"P8_23 [mmc1_dat4]",
-+		"P8_22 [mmc1_dat5]",
-+		"P8_3 [mmc1_dat6]",
-+		"P8_4 [mmc1_dat7]",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
- 		"P8_12",
- 		"P8_11",
- 		"P8_16",
-@@ -82,13 +82,13 @@ &gpio1 {
- 		"P9_23",
- 		"P9_14 [ehrpwm1a]",
- 		"P9_16 [ehrpwm1b]",
--		"[emmc]",
-+		"[emmc rst]",
- 		"[usr0 led]",
- 		"[usr1 led]",
- 		"[usr2 led]",
- 		"[usr3 led]",
--		"[hdmi]",
--		"[usb]",
-+		"[hdmi irq]",
-+		"[usb vbus oc]",
- 		"[hdmi audio]",
- 		"P9_12",
- 		"P8_26",
-@@ -116,38 +116,38 @@ &gpio2 {
- 		"P8_38 [hdmi]",
- 		"P8_36 [hdmi]",
- 		"P8_34 [hdmi]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
-+		"[rmii1_rxd3]",
-+		"[rmii1_rxd2]",
-+		"[rmii1_rxd1]",
-+		"[rmii1_rxd0]",
- 		"P8_27 [hdmi]",
- 		"P8_29 [hdmi]",
- 		"P8_28 [hdmi]",
- 		"P8_30 [hdmi]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]";
-+		"[mmc0_dat3]",
-+		"[mmc0_dat2]",
-+		"[mmc0_dat1]",
-+		"[mmc0_dat0]",
-+		"[mmc0_clk]",
-+		"[mmc0_cmd]";
- };
- 
- &gpio3 {
- 	gpio-line-names =
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[i2c0]",
--		"[i2c0]",
--		"[emu]",
--		"[emu]",
--		"[ethernet]",
--		"[ethernet]",
--		"[NC]",
--		"[NC]",
--		"[usb]",
-+		"[mii col]",
-+		"[mii crs]",
-+		"[mii rx err]",
-+		"[mii tx en]",
-+		"[mii rx dv]",
-+		"[i2c0 sda]",
-+		"[i2c0 scl]",
-+		"[jtag emu0]",
-+		"[jtag emu1]",
-+		"[mii tx clk]",
-+		"[mii rx clk]",
-+		"NC",
-+		"NC",
-+		"[usb vbus en]",
- 		"P9_31 [spi1_sclk]",
- 		"P9_29 [spi1_d0]",
- 		"P9_30 [spi1_d1]",
-@@ -156,14 +156,14 @@ &gpio3 {
- 		"P9_27",
- 		"P9_41A",
- 		"P9_25",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]";
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC";
- };
--- 
-2.25.1
+  kvm_mmu_notifier_invalidate_range_start(A)
+  kvm_mmu_notifier_invalidate_range_start(B)
+  kvm_mmu_notifier_invalidate_range_end(A)
+  kvm_mmu_notifier_invalidate_range_end(B) <-- ???
 
+or
+
+  kvm_mmu_notifier_invalidate_range_start(A)
+  kvm_mmu_notifier_invalidate_range_start(B)
+  kvm_mmu_notifier_invalidate_range_end(B)
+  kvm_mmu_notifier_invalidate_range_end(A) <-- ???
+
+In the first case, "A" is in-progress when the count goes 2->1, in the second
+case "B" is still in-progress.  Checking for "count > 1" in the consumer instead
+of handling it in the producer (as you did) would lead to the consumer checking
+against the wrong range.  I don't see a way to solve that without adding some
+amount of history, which I agree is unnecessary.
