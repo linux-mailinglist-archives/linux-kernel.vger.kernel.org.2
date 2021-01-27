@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC3F30562A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E34730562D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhA0Iwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:52:39 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:39104 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhA0ItA (ORCPT
+        id S233145AbhA0Ixs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:53:48 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:46769 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232797AbhA0Iuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:49:00 -0500
-Received: by mail-ot1-f43.google.com with SMTP id i30so962577ota.6;
-        Wed, 27 Jan 2021 00:48:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gAKk6Yt/rmV2RLudc2xk6PS0Y1a3qymlWcwiHDkjBr8=;
-        b=m0f2FdGzYRFd9t1J4fdfTXTSeSpkoQmTJbZEaTWfATGjzqmGYGiD77CN5NxQaLvwHX
-         iXXeD1I3TXUeXWUp3Ilkc+bFbryLbqXfwl22yPA8LVwUnwcizLJ/EQ8JHNxqJQJKd3VX
-         QAAi73n47tA/oGr5cs4cv2wej7b+u1oE5aMlFgPIQt7bslDSfE4c6PDt8RUBOLzLy/u0
-         n8X3epoaA+qv9pqCV7En0VE31OHulTnjUVT0oHCYD4F2OmWXnGicMyOAVSrn1wuu7wK8
-         DW/hDrSvoVJG55QEJmZOdOeZw1hY7gbWQLpbegmRJ4kalwxaeceiXH9SUIKjnKUdxJYM
-         QD9A==
-X-Gm-Message-State: AOAM532SuEdMYWS7fapyyK8gVUO2GHAyZs8YJRTcrVDXtgHkGAchBReu
-        D/yW2kV0sh/8mLJEpo+sqrWFpyuBeH4HIlqPK+Q=
-X-Google-Smtp-Source: ABdhPJySkivwQpGFAZ+Grur9SYXrqqzDLD2UjmL030BacL3j7AyYhWe0zsuxjg9LQwAaq9rS0JKApCeVs56Z0mGYjzQ=
-X-Received: by 2002:a05:6830:15cc:: with SMTP id j12mr6928590otr.145.1611737299392;
- Wed, 27 Jan 2021 00:48:19 -0800 (PST)
-MIME-Version: 1.0
-References: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
- <20210127054523.GA2696@kadam> <20210127141927.00004472@gmail.com> <20210127064916.GD2696@kadam>
-In-Reply-To: <20210127064916.GD2696@kadam>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Jan 2021 09:48:08 +0100
-Message-ID: <CAMuHMdVHZWz-9eA9yocTrNfZ5T_j+x5Ymqt262tCjTwQUzMDVw@mail.gmail.com>
-Subject: Re: [PATCH v5] fbtft: add tearing signal detect
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        carlis <zhangxuezhi3@gmail.com>
-Cc:     driverdevel <devel@driverdev.osuosl.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        mh12gx2825@gmail.com, Greg KH <gregkh@linuxfoundation.org>,
-        oliver.graute@kococonnector.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Colin King <colin.king@canonical.com>, zhangxuezhi1@yulong.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 27 Jan 2021 03:50:50 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UN1NS1g_1611737386;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN1NS1g_1611737386)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Jan 2021 16:50:03 +0800
+From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Abaci Team <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] scsi: ufs: fix: NULL pointer dereference
+Date:   Wed, 27 Jan 2021 16:49:44 +0800
+Message-Id: <1611737384-49321-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan, Carlis,
+Fix below warnings reported by coccicheck:
+./drivers/scsi/ufs/ufshcd.c:8990:11-17: ERROR: hba is NULL but
+dereferenced.
 
-On Wed, Jan 27, 2021 at 9:32 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> On Wed, Jan 27, 2021 at 02:19:27PM +0800, carlis wrote:
-> > hi,i will fix it like below:
-> >       par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
-> > GPIOD_IN); if (IS_ERR(par->gpio.te)) {
-> >               rc = PTR_ERR(par->gpio.te);
-> >               pr_err("Failed to request  te gpio: %d\n", rc);
-> >               par->gpio.te = NULL;
-> >       }
->
-> I wish you would just copy and paste the code that I sent you instead,
-> but this also fixes the crash...
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Suggested-by: Yang Li <oswb@linux.alibaba.com>
+Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-While this fixes the crash, it does not propagate the error condition
-(which may be -EPROBE_DEFER) upstream.
-Same for devm_request_irq().
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index fb32d12..9319251 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8990,7 +8990,6 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+ 	ktime_t start = ktime_get();
+ 
+ 	if (!hba) {
+-		up(&hba->eh_sem);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.8.3.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
