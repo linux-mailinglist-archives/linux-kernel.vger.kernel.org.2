@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0587305B8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674CB305B7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237325AbhA0MfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:35:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47962 "EHLO mail.kernel.org"
+        id S1343550AbhA0Mfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:35:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236186AbhA0M3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:29:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D852072C;
-        Wed, 27 Jan 2021 12:29:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611750547;
-        bh=hxuzGbmnwkNBdgbojepoPNLiqgLDJ/AeSXRpsta57Oc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bX6Ug26TAC318pky1F0mN8U1HV6omoKn3NLVZUi2XriVfborCCXUNji7rD7w6qhYs
-         TbHa42z+Btz02hTQHUALlkzgwe/ZZyW8/LJ1ROSaeikubpnb6Hnm52Tf7qkbcpY00W
-         RJa1nsIOwYPlnOMK79VDQ3/jash7hXfRMzicyA1k=
-Date:   Wed, 27 Jan 2021 13:29:04 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mike Ximing Chen <mike.ximing.chen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        dan.j.williams@intel.com, pierre-louis.bossart@linux.intel.com,
-        Gage Eads <gage.eads@intel.com>
-Subject: Re: [PATCH v9 04/20] dlb: add device ioctl layer and first three
- ioctls
-Message-ID: <YBFckMGGRKZBYXRd@kroah.com>
-References: <20210122190138.7414-1-mike.ximing.chen@intel.com>
- <20210122190138.7414-5-mike.ximing.chen@intel.com>
+        id S237971AbhA0Mbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:31:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D1920739;
+        Wed, 27 Jan 2021 12:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611750662;
+        bh=kfPWuMiJgpAL7RluS7ayXnMgIu7E8eRHIeDT+ADuoFE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jzeoAYfuKS7XXmCKfwYw+jb0uFJReYDxA5lHU5PnW2BVvm/Y5e7a3KUBmZ4+bwHPZ
+         wyhaw1+6VuxhfoITL53j1L40IZAq2ElRHk5ziOEqbuAzpbVBFoj3FJJuqm05j5zpk8
+         6OTfK9d1ydEIyxB26PWXFETiifozMHnxs9P6/hj5n9SjcHjgg4bdP6kWReOsAmHrCV
+         PSNzkbnyhGtBP6rxewXhUNLdXbbTgHmjKMW7NMy6R+quuKUEiqpqiKpaC//A9PApo+
+         WpWlfwELW9GaXd6/7oy0i4NBXcNlYOVIlCW6iHgC6XfdaEnSs+4LjxLtg/Xv/Akuca
+         BD9u+FiV6KM5g==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] Add binding and dts for Qualcomm SM8350 SoC
+Date:   Wed, 27 Jan 2021 18:00:48 +0530
+Message-Id: <20210127123054.263231-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122190138.7414-5-mike.ximing.chen@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 01:01:22PM -0600, Mike Ximing Chen wrote:
-> --- /dev/null
-> +++ b/include/uapi/linux/dlb.h
-> @@ -0,0 +1,167 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
+Hi,
 
-As the bot points out, this is an "odd" license for a uapi .h file, are
-you SURE about this?
+This series adds the compatible for SM8350 SoC, boardi, cpu, scm and aoss
+compatible.  Then the base DTS for SM8350 SoC which contains clock (gcc,
+rpmh), pinctrl, uart, reserved memory and cpu nodes. The board file for MTP
+enables uart and adds the rpmh regulators
 
-If so, I need an Intel lawyer's signed-off-by on it as well, so we know
-to talk to in the future about it.
+Changes in v2:
+ - Add ack by Rob recieved for v1
+ - Document cpu and scm compatible and use soc specific scm compatible
+ - Fix errors pointed by Rob and make dtbs_check as well as W=1 compilation
 
-thanks,
+Vinod Koul (6):
+  dt-bindings: arm: qcom: Document SM8350 SoC and boards
+  soc: qcom: aoss: Add SM8350 compatible
+  dt-bindings: arm: cpus: Add kryo685 compatible
+  dt-bindings: firmware: scm: Add SM8250 and SM8350 compatible
+  arm64: dts: qcom: Add basic devicetree support for SM8350 SoC
+  arm64: dts: qcom: Add basic devicetree support for SM8350-MTP board
 
-greg k-h
+ .../devicetree/bindings/arm/cpus.yaml         |   1 +
+ .../devicetree/bindings/arm/qcom.yaml         |   6 +
+ .../devicetree/bindings/firmware/qcom,scm.txt |   2 +
+ .../bindings/soc/qcom/qcom,aoss-qmp.txt       |   1 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ arch/arm64/boot/dts/qcom/sm8350-mtp.dts       | 250 +++++++++
+ arch/arm64/boot/dts/qcom/sm8350.dtsi          | 499 ++++++++++++++++++
+ drivers/soc/qcom/qcom_aoss.c                  |   1 +
+ 8 files changed, 761 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sm8350.dtsi
+
+-- 
+2.26.2
+
