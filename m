@@ -2,134 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE3F305F09
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBF3305F15
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbhA0PDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
+        id S235453AbhA0PGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235327AbhA0PAo (ORCPT
+        with ESMTP id S235332AbhA0PAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:00:44 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E24C0698D9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:51:03 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id r12so3014018ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:51:03 -0800 (PST)
+        Wed, 27 Jan 2021 10:00:50 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA99FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:51:48 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id bx12so2763295edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:51:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UlBA+jrFoLLefklW/JXu8ZcQb+a+i4EuznUW8mxqVQQ=;
-        b=CGMbTvS2lf8nsCaX9+bOJcf6KhPhbUKzlDQEG61YVY7AcLoWfIUfq9Cojl+IKn1C0F
-         Cjnlg2EExpubmuFUTExuGUv3wbQUb97g/TWTGov3zwjwl0aM49TgymuB+f8MUX6EvOHU
-         zRMSOV31PKgM7RzTtLVTz5iWThOjNfBzWlumITfcY60EKnSW3XquKpvyhN2hjRRdA/1H
-         Y+QvUZfsva3jBHUFiPdsEShRkcTuDxQyXbBfT1g02oVAeLHyNJPwNy/qdRsxbia6dtzq
-         9skOLk8kd9JTsGiesZY3PZXRRGwITJnuFPxkq9gRG42eAGJtwC3pzqgdeeg596meSv3s
-         WUhw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cTb1qG9GkgwXMpUhNx1t/diaUHaqrqbu1GRsagpeLwM=;
+        b=ILnM+OVztpAnYmVrO1FVr4Vx9kHcIQGC83QQvcgFKlG6GqybeWuPWtzo+hjn1g1+eY
+         otRFOGVi5Xw/X21KkCGw7iVOnhZoDIlEvHU42/SsY+VJE20CEZNz9hM3uDT2VeOYTbfl
+         f1nFs8LzId+9cfBGFgcSMNyN7j9p8L/e0JGeOpuJMFGO2GsJ/XcWkMQoP+oi5b8eSZSP
+         exgSYYivVrn3jKxSmec7IINWa/r4+iQgGlDzkUq6Qo5kBsJarkVgsDIelg84AYqvGCof
+         XTuIe4trKwoe0EfFdpZ9OaBNuagie1GmEaQrVQc/zE1FOctgq9cmVSg8cgds556LlKrE
+         rs9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UlBA+jrFoLLefklW/JXu8ZcQb+a+i4EuznUW8mxqVQQ=;
-        b=rgvrq3Rj5Fku3E8wMxwjrMFeTOJv/jYrRxoJXHEU0VIfBzRTYDvXU7uUiXqHtPxvo0
-         78M/OqHc5+blphkVC7ukpCGaVHXHLxRqBeA2GCQTkulkyyiV3IWQYa4a4Xw/zFoboXpT
-         SxEmP/av92nKSxBBRt9wB09qrlz1ayRDLUy3dCBwWSZojxFn1DqbaSrNr/ZSXTEMbg3E
-         Tv7Fvnt3P402UQ/eBh2zH/GhU3WEnwgKmTbMT4D60zAsSm3+TmBQkLjmcs1uk1XP2T/K
-         nJabIixu+amGfxSLu0Ny2unErP5m6bVQnbDEIOr2sT3KrLvD8gZNV7/UKY/UV0fo3N1E
-         IFcQ==
-X-Gm-Message-State: AOAM531cttEh6ocyPRMJW2DgaZNoQaCdFpsYvlis04xlOYfttHwPn5Rm
-        FNbi+4HRS3UV02h9yODxPdWfLw==
-X-Google-Smtp-Source: ABdhPJw1E4YDaad25yfHAwhuZQcLCWcY0d5ypClcjxJQpYr/VHJPUtT5w/pyIaDY5osGm++76eyj4g==
-X-Received: by 2002:a17:906:3792:: with SMTP id n18mr7002048ejc.47.1611759062601;
-        Wed, 27 Jan 2021 06:51:02 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:62e7:589a:1625:7acc])
-        by smtp.gmail.com with ESMTPSA id ah12sm947799ejc.70.2021.01.27.06.51.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:51:01 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
-        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
-        arnd@arndb.de, Anson.Huang@nxp.com, michael@walle.cc,
-        agx@sigxcpu.org, max.oss.09@gmail.com,
-        angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: [PATCH v3 22/22] arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
-Date:   Wed, 27 Jan 2021 15:49:30 +0100
-Message-Id: <20210127144930.2158242-23-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210127144930.2158242-1-robert.foss@linaro.org>
-References: <20210127144930.2158242-1-robert.foss@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cTb1qG9GkgwXMpUhNx1t/diaUHaqrqbu1GRsagpeLwM=;
+        b=afr2ejdPOlYV+ViyOIG4GjlJVyNhDpSfjACikumpKbTAKjrLjkGs9DUzc7C8fPHc0z
+         0MyVr/w6bkrM5NGjgNA760LiccDc9Kgo/G60eJInk0coYoXpEZReHHtr1bw6YkY9MQj3
+         jsfX1poyZAFwv5QA3XQIp8kEZ2bvtoUKmVfV3ujJFpRnCGX0GgkcaF7zx5dtZNlrQG56
+         W9riET0Ey/hJMOLsDjajbi+vBrVzy58pEqTtSEX6TxuweG88U+RJjEitStqE37hOYtiA
+         R4UolTuZ/i/sk1mAv7csWyOL/4/YhuZROoAgYignOgtZvCRrjo2cFlJGofLJaT2Iyn6L
+         S+fw==
+X-Gm-Message-State: AOAM532cLJFC8o4YheoHYKSrC1ZjOwGV1YxXnj9aGY3QULRAC2OG+P3O
+        EdM62v7pDGtOhOuAleYT12DCTGEWFN4XMXbb6obt4A==
+X-Google-Smtp-Source: ABdhPJxNdLjX1tXkgq0Mtqs/dnVrdJ1tF/Xdw5s4EqNQ/5sSx69L5xot49eIsuqwVjc83JQdSHoXkR2HRcAfXVMyzug=
+X-Received: by 2002:aa7:d60f:: with SMTP id c15mr9179966edr.232.1611759107579;
+ Wed, 27 Jan 2021 06:51:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210121141038.437564-1-warthog618@gmail.com>
+In-Reply-To: <20210121141038.437564-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 27 Jan 2021 15:51:36 +0100
+Message-ID: <CAMpxmJWHzU7NM950gLx3dJB5ap07J8VRw1GCO-LfNnOOO1vevg@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: cdev: clear debounce period if line set to output
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable camss & ov8856 DT nodes.
+On Thu, Jan 21, 2021 at 3:11 PM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> When set_config changes a line from input to output debounce is
+> implicitly disabled, as debounce makes no sense for outputs, but the
+> debounce period is not being cleared and is still reported in the
+> line info.
+>
+> So clear the debounce period when the debouncer is stopped in
+> edge_detector_stop().
+>
+> Fixed: 65cff7047640 ("gpiolib: cdev: support setting debounce")
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+The actual hash for this commit is 65cff7046406 - I fixed that locally.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 5842ab65789c..d89286f6aacb 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -1108,6 +1108,21 @@ &cci {
- 
- &camss {
- 	vdda-supply = <&vreg_l1a_0p875>;
-+
-+	status = "ok";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			csiphy0_ep: endpoint {
-+				clock-lanes = <1>;
-+				data-lanes = <1 2 3 4>;
-+				remote-endpoint = <&ov8856_ep>;
-+			};
-+		};
-+	};
- };
- 
- &cci_i2c0 {
-@@ -1139,7 +1154,7 @@ camera@10 {
- 		avdd-supply = <&cam0_avdd_2v8>;
- 		dvdd-supply = <&cam0_dvdd_1v2>;
- 
--		status = "disable";
-+		status = "ok";
- 
- 		port {
- 			ov8856_ep: endpoint {
-@@ -1147,7 +1162,7 @@ ov8856_ep: endpoint {
- 				link-frequencies = /bits/ 64
- 					<360000000 180000000>;
- 				data-lanes = <1 2 3 4>;
--//				remote-endpoint = <&csiphy0_ep>;
-+				remote-endpoint = <&csiphy0_ep>;
- 			};
- 		};
- 	};
--- 
-2.27.0
+Patch applied for fixes, thanks!
 
+Bartosz
+
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> ---
+>  drivers/gpio/gpiolib-cdev.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> index 12b679ca552c..3551aaf5a361 100644
+> --- a/drivers/gpio/gpiolib-cdev.c
+> +++ b/drivers/gpio/gpiolib-cdev.c
+> @@ -776,6 +776,8 @@ static void edge_detector_stop(struct line *line)
+>         cancel_delayed_work_sync(&line->work);
+>         WRITE_ONCE(line->sw_debounced, 0);
+>         WRITE_ONCE(line->eflags, 0);
+> +       if (line->desc)
+> +               WRITE_ONCE(line->desc->debounce_period_us, 0);
+>         /* do not change line->level - see comment in debounced_value() */
+>  }
+>
+> --
+> 2.30.0
+>
