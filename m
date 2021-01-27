@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD170306188
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126AE30618A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbhA0RFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:05:04 -0500
-Received: from mga09.intel.com ([134.134.136.24]:24111 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235172AbhA0RCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233942AbhA0RFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:05:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235223AbhA0RCq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 12:02:46 -0500
-IronPort-SDR: N9aTcGgv5V0lwl6ToUGK3eO6mnIK/Oq7Xk3dkYKNLWAWy4o1JXSbuF1CSbQ9t+qHyYXTrcyHm/
- GeJGt4rHtIdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180243415"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="180243415"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 09:00:40 -0800
-IronPort-SDR: NgjDxMrAnE/dO2jAvetj5T3vVY9RGjj/MdKwwx2Xc1tTEdoPLadHlGTUNoSmhNhBZmiu9cIdH9
- qA0nPTL7bHPw==
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="362494884"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 09:00:37 -0800
-Received: by lahna (sSMTP sendmail emulation); Wed, 27 Jan 2021 19:00:35 +0200
-Date:   Wed, 27 Jan 2021 19:00:35 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH 05/12] thunderbolt: pa: Demote non-conformant kernel-doc
- headers
-Message-ID: <20210127170035.GG2542@lahna.fi.intel.com>
-References: <20210127112554.3770172-1-lee.jones@linaro.org>
- <20210127112554.3770172-6-lee.jones@linaro.org>
- <CAHp75VcFSQqDqjKCiCxdWyRpDDeMo4H6ELMHX15JSPfpt7nGHQ@mail.gmail.com>
- <20210127161320.GK4903@dell>
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F40AC061574;
+        Wed, 27 Jan 2021 09:01:57 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id a20so1609817pjs.1;
+        Wed, 27 Jan 2021 09:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vtepp4TZmVRvIbUVDYOarm58wBYnXPgnDjuNfeHxdtc=;
+        b=ZgCmQUbVt9Ht+2dI0uE93whJgeLCVOUmzWeIxNqpjxtqOaXNdmeEG9qipZ+10Zc/zb
+         2ybd+rCe/aNVN1vdCzKEWqFPK2rZqH5xbiiVqcPZBP1LJ64fthGKYk/aY28E8LMyNGa7
+         O/CdUhpXmnqjZRkAyuyI4GCyYTLffo5wZ/w+kAnBY6xn2Rl6Dfqks4BORPwcft5+30Df
+         ZPTtAqnDJk/jTl4v4qhc0YoKAtnw668EeAmVKTge0o+wlLxy4YKKJNwXgX5TsHCDIAC/
+         J0hj3JMCo5O7zkYwV2RRbZLdDWtMLcJdF/CmfkkvaWN4VgItvp9rSUFi5nLIwzemZFmM
+         WylA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vtepp4TZmVRvIbUVDYOarm58wBYnXPgnDjuNfeHxdtc=;
+        b=XIyAeVwjVU4ZIazuY8otr5PZx3exIjnsP4QS7IBKaUfdAyr04bkNJ9XtWVjMplIAjx
+         MFV2s2lXyEAwasWktyoQGiWTbSA4OyUftlDCySFbZ528NtFphAmVV+vLNg6+jiB0TO6a
+         j3/XsHOROt1dLk/9bSftDT86tdX3y4vwiX+T3+HHVp0JyAAKRQ4uNZ10IEONce/WQjI8
+         qb3BQ8r8QH6PGhhiOj1X4grFqMsi35PtqqKyBq3Y9e0hg/yr7fNl80HoBYQfAumUGlcN
+         SN0n5TOaG7JCf8nZeEGh+26FQv6hOc1Xx5GdcZ6VfmF4MEQK/MemKK8jxShje6cinnRb
+         l6IA==
+X-Gm-Message-State: AOAM530VAkh2R5fQqKUjjT4Spt08hRX+OP/hUk0yoQG2NwSr/KqvnSNI
+        C/qxDIRqfVFzyDDwHZ95CLo=
+X-Google-Smtp-Source: ABdhPJzmHhfUFA/75Zv/UDnqfz6FCOjqg2rT0LuDRrn5TaPMOXPDx/ORUyPSivMQuwCqJtUASFgh8g==
+X-Received: by 2002:a17:902:b206:b029:dc:1f41:962d with SMTP id t6-20020a170902b206b02900dc1f41962dmr12522286plr.28.1611766916993;
+        Wed, 27 Jan 2021 09:01:56 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:9dd5:b47b:bb84:dede])
+        by smtp.gmail.com with ESMTPSA id q197sm2937750pfc.155.2021.01.27.09.01.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 09:01:55 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 27 Jan 2021 09:01:52 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        viro@zeniv.linux.org.uk, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laura Abbott <lauraa@codeaurora.org>
+Subject: Re: [PATCH v4] fs/buffer.c: Revoke LRU when trying to drop buffers
+Message-ID: <YBGcgGLcXhvLl9+/@google.com>
+References: <cover.1611642038.git.cgoldswo@codeaurora.org>
+ <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
+ <YBCexclveGV2KH1G@google.com>
+ <20210127025922.GS308988@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127161320.GK4903@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210127025922.GS308988@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 04:13:20PM +0000, Lee Jones wrote:
-> On Wed, 27 Jan 2021, Andy Shevchenko wrote:
-> 
-> > On Wednesday, January 27, 2021, Lee Jones <lee.jones@linaro.org> wrote:
+On Wed, Jan 27, 2021 at 02:59:22AM +0000, Matthew Wilcox wrote:
+> On Tue, Jan 26, 2021 at 02:59:17PM -0800, Minchan Kim wrote:
+> > The release buffer_head in LRU is great improvement for migration
+> > point of view.
 > > 
-> > > Fixes the following W=1 kernel build warning(s):
-> > >
-> > >  drivers/thunderbolt/path.c:476: warning: Function parameter or member
-> > > 'path' not described in 'tb_path_activate'
-> > >  drivers/thunderbolt/path.c:568: warning: Function parameter or member
-> > > 'path' not described in 'tb_path_is_invalid'
-> > >
-> > >
-> > I think the intention was to describe them in kernel doc format, perhaps
-> > you need to add descriptions of the fields?
+> > A question: 
+> > 
+> > Can't we invalidate(e.g., invalidate_bh_lrus) bh_lru in migrate_prep or
+> > elsewhere when migration found the failure and is about to retry?
+> > 
+> > Migration has done such a way for other per-cpu stuffs for a long time,
+> > which would be more consistent with others and might be faster sometimes
+> > with reducing IPI calls for page.
 > 
-> For changes like this, I've been working to the following rule:
+> Should lru_add_drain_all() also handle draining the buffer lru for all
+> callers?  A quick survey ...
 > 
->  - I'll provide fix-ups; if and only if the author has had a
->  reasonable attempt at providing a conformant kernel-doc header.
+> invalidate_bdev() already calls invalidate_bh_lrus()
+> compact_nodes() would probably benefit from the BH LRU being invalidated
+> POSIX_FADV_DONTNEED would benefit if the underlying filesystem uses BHs
+> check_and_migrate_cma_pages() would benefit
+> khugepaged_do_scan() doesn't need it today
+> scan_get_next_rmap_item() looks like it only works on anon pages (?) so
+> 	doesn't need it
+> mem_cgroup_force_empty() probably needs it
+> mem_cgroup_move_charge() ditto
+> memfd_wait_for_pins() doesn't need it
+> shake_page() might benefit
+> offline_pages() would benefit
+> alloc_contig_range() would benefit
 > 
-> So if the headers are just suffering from a little doc-rot i.e. the
-> API has changed, but the doc update was omitted, or most of the
-> parameters/members are documented, but some were forgotten about etc,
-> or if there are formatting issues, I'll happily take up the slack and
-> polish those up a bit.
-> 
-> However, if no attempt was made, then they get demoted.
-> 
-> I don't want to get into a situation where authors delicately provide
-> weak documentation with the expectation that someone else will come
-> along and turn them into conformant docs.
-> 
-> If authors wish to come back, provide proper descriptions &
-> formatting and subsequently re-promote them again, then all power to
-> them.
+> Seems like most would benefit and a few won't care.  I think I'd lean
+> towards having lru_add_drain_all() call invalidate_bh_lrus(), just to
+> simplify things.
 
-Thanks for pointing these out. I prefer we fix the kernel-docs (add what
-is missing) instead. I'll take care of that.
+Fair enough.
