@@ -2,199 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94113305F71
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196B1305F6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343847AbhA0PVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:21:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:50700 "EHLO foss.arm.com"
+        id S234623AbhA0PVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:21:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234641AbhA0PPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:15:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 009AF1042;
-        Wed, 27 Jan 2021 07:14:58 -0800 (PST)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 197E03F66B;
-        Wed, 27 Jan 2021 07:14:56 -0800 (PST)
-Date:   Wed, 27 Jan 2021 15:14:39 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm64/ptrace: don't clobber task registers on
- syscall entry/exit traps
-Message-ID: <20210127151438.GD13952@arm.com>
-References: <20210119220637.494476-1-avagin@gmail.com>
- <20210119220637.494476-2-avagin@gmail.com>
+        id S235534AbhA0PPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:15:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9588C2076E;
+        Wed, 27 Jan 2021 15:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611760491;
+        bh=dhQVerM0dJxW7QcpoyXF81wXi+UcsALJRxGRjatx37c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YufKGc/5FJwdePpvyUGT/njPl4oMe7RZLGSEtJzJCIIp3FytvvuV6aPURqURV5KWB
+         2y1AOWyH5l4aQQcmNlQ8dqxRfjAdi6s8NF69klfJnEIAhZX35CzfOYd/zh8wsj+dJJ
+         mXT2Z7cLWFONgy1f6Qmyds9uVbzMZ/o/zgmscIqgJb5Mm6g9DPZ2iYDAJH9QiuLeoI
+         Fk0hx/vFmsRofPvfp/fHNb6KH2HuVEjQAF9VPxYmkwpRJ4bJtISdpLhJj4xWJonOz0
+         +7OySH5lH+9PCUSzYSfvcUIaoGsXmkWP296nUfaizDsWGtP0xCvqdkv5l9quhHBcpW
+         iWbuI86m5Ax5w==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4mX9-000212-2Q; Wed, 27 Jan 2021 16:15:03 +0100
+Date:   Wed, 27 Jan 2021 16:15:03 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Evgeny Novikov <novikov@ispras.ru>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/12] usb: misc: lvstest: update to use the
+ usb_control_msg_{send|recv}() API
+Message-ID: <YBGDdyfVNKOvZPJr@hovoldconsulting.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126183943.914631-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119220637.494476-2-avagin@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210126183943.914631-1-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 02:06:35PM -0800, Andrei Vagin wrote:
-> ip/r12 for AArch32 and x7 for AArch64 is used to indicate whether or not
-> the stop has been signalled from syscall entry or syscall exit. This
-> means that:
+On Wed, Jan 27, 2021 at 12:09:43AM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, instances of usb_control_msg() have been replaced with
+> usb_control_msg_{recv|send}() and the return value checking conditions have
+> also been modified appropriately.
 > 
-> - Any writes by the tracer to this register during the stop are
->   ignored/discarded.
-> 
-> - The actual value of the register is not available during the stop,
->   so the tracer cannot save it and restore it later.
-> 
-> Right now, these registers are clobbered in tracehook_report_syscall.
-> This change moves this logic to gpr_get and compat_gpr_get where
-> registers are copied into a user-space buffer.
-> 
-> This will allow to change these registers and to introduce a new
-> NT_ARM_PRSTATUS command to get the full set of registers.
-> 
-> Signed-off-by: Andrei Vagin <avagin@gmail.com>
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 > ---
->  arch/arm64/include/asm/ptrace.h |   5 ++
->  arch/arm64/kernel/ptrace.c      | 104 +++++++++++++++++++-------------
->  2 files changed, 67 insertions(+), 42 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-> index e58bca832dff..0a9552b4f61e 100644
-> --- a/arch/arm64/include/asm/ptrace.h
-> +++ b/arch/arm64/include/asm/ptrace.h
-> @@ -170,6 +170,11 @@ static inline unsigned long pstate_to_compat_psr(const unsigned long pstate)
->  	return psr;
->  }
+>  drivers/usb/misc/lvstest.c | 38 ++++++++++++++++----------------------
+>  1 file changed, 16 insertions(+), 22 deletions(-)
+
+> @@ -336,10 +330,10 @@ static void lvs_rh_work(struct work_struct *work)
 >  
-> +enum ptrace_syscall_dir {
-> +	PTRACE_SYSCALL_ENTER = 0,
-> +	PTRACE_SYSCALL_EXIT,
-> +};
-> +
->  /*
->   * This struct defines the way the registers are stored on the stack during an
->   * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
-> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> index 8ac487c84e37..1863f080cb07 100644
-> --- a/arch/arm64/kernel/ptrace.c
-> +++ b/arch/arm64/kernel/ptrace.c
-> @@ -40,6 +40,7 @@
->  #include <asm/syscall.h>
->  #include <asm/traps.h>
->  #include <asm/system_misc.h>
-> +#include <asm/ptrace.h>
+>  	/* Examine each root port */
+>  	for (i = 1; i <= descriptor->bNbrPorts; i++) {
+> -		ret = usb_control_msg(hdev, usb_rcvctrlpipe(hdev, 0),
+> +		ret = usb_control_msg_recv(hdev, 0,
+>  			USB_REQ_GET_STATUS, USB_DIR_IN | USB_RT_PORT, 0, i,
+> -			port_status, sizeof(*port_status), 1000);
+> -		if (ret < 4)
+> +			port_status, sizeof(*port_status), 1000, GFP_KERNEL);
+> +		if (ret < 0)
+>  			continue;
+
+I'm afraid this may introduce a regression as well since the
+sizeof(*port_status) is 8 for some devices and the driver only cares
+about the first 4 that all devices use (i.e. it is written to handle
+short reads).
+
+>  		portchange = le16_to_cpu(port_status->wPortChange);
+> @@ -420,13 +414,13 @@ static int lvs_rh_probe(struct usb_interface *intf,
+>  	usb_set_intfdata(intf, lvs);
 >  
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/syscalls.h>
-> @@ -561,7 +562,33 @@ static int gpr_get(struct task_struct *target,
->  		   struct membuf to)
->  {
->  	struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
-> -	return membuf_write(&to, uregs, sizeof(*uregs));
-> +	unsigned long saved_reg;
-> +	int ret;
-> +
-> +	/*
-> +	 * We have some ABI weirdness here in the way that we handle syscall
-> +	 * exit stops because we indicate whether or not the stop has been
-> +	 * signalled from syscall entry or syscall exit by clobbering the general
-> +	 * purpose register x7.
-> +	 */
-> +	switch (target->ptrace_message) {
-> +	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
-> +		saved_reg = uregs->regs[7];
-> +		uregs->regs[7] = PTRACE_SYSCALL_ENTER;
-> +		break;
-> +	case PTRACE_EVENTMSG_SYSCALL_EXIT:
-> +		saved_reg = uregs->regs[7];
-> +		uregs->regs[7] = PTRACE_SYSCALL_EXIT;
-> +		break;
-> +	}
-> +
-> +	ret =  membuf_write(&to, uregs, sizeof(*uregs));
-> +
-> +	if (target->ptrace_message == PTRACE_EVENTMSG_SYSCALL_ENTRY ||
-> +	    target->ptrace_message == PTRACE_EVENTMSG_SYSCALL_EXIT)
-> +		uregs->regs[7] = saved_reg;
+>  	/* how many number of ports this root hub has */
+> -	ret = usb_control_msg(hdev, usb_rcvctrlpipe(hdev, 0),
+> +	ret = usb_control_msg_recv(hdev, 0,
+>  			USB_REQ_GET_DESCRIPTOR, USB_DIR_IN | USB_RT_HUB,
+>  			USB_DT_SS_HUB << 8, 0, &lvs->descriptor,
+> -			USB_DT_SS_HUB_SIZE, USB_CTRL_GET_TIMEOUT);
+> -	if (ret < (USB_DT_HUB_NONVAR_SIZE + 2)) {
+> +			USB_DT_SS_HUB_SIZE, USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
+> +	if (ret < 0) {
+>  		dev_err(&hdev->dev, "wrong root hub descriptor read %d\n", ret);
+> -		return ret < 0 ? ret : -EINVAL;
+> +		return ret;
+>  	}
 
-This might be a reasonable cleanup even if the extra regset isn't
-introduced: it makes it clear that we're not changing the user registers
-here, just the tracer's view of them.
+This looks like it may break for similar reasons.
 
-I'm assuming it doesn't break tracing anywhere else.  I can't think of
-anything it would break just now, but I haven't spent much time looking
-into it.
-
-
-Can you not just unconditionally back up and restore regs[7] here?  e.g.
-
-	saved_reg = uregs->regs[7];
-
-	switch (target->ptrace_message) {
-	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
-	case PTRACE_EVENTMSG_SYSCALL_EXIT:
-		uregs->regs[7] = target->ptrace_message;
-	}
-
-	ret = membuf_write(...);
-
-	uregs->regs[7] = saved_reg;
-
-
-> +
-> +	return ret;
->  }
->  
->  static int gpr_set(struct task_struct *target, const struct user_regset *regset,
-> @@ -1221,10 +1248,40 @@ static int compat_gpr_get(struct task_struct *target,
->  			  const struct user_regset *regset,
->  			  struct membuf to)
->  {
-> +	compat_ulong_t r12;
-> +	bool overwrite_r12;
->  	int i = 0;
->  
-> -	while (to.left)
-> -		membuf_store(&to, compat_get_user_reg(target, i++));
-> +	/*
-> +	 * We have some ABI weirdness here in the way that we handle syscall
-> +	 * exit stops because we indicate whether or not the stop has been
-> +	 * signalled from syscall entry or syscall exit by clobbering the
-> +	 * general purpose register r12.
-> +	 */
-> +	switch (target->ptrace_message) {
-> +	case PTRACE_EVENTMSG_SYSCALL_ENTRY:
-> +		r12 = PTRACE_SYSCALL_ENTER;
-> +		overwrite_r12 = true;
-> +		break;
-> +	case PTRACE_EVENTMSG_SYSCALL_EXIT:
-> +		r12 = PTRACE_SYSCALL_EXIT;
-> +		overwrite_r12 = true;
-> +		break;
-> +	default:
-> +		overwrite_r12 = false;
-> +		break;
-> +	}
-> +
-> +	while (to.left) {
-> +		compat_ulong_t val;
-> +
-> +		if (!overwrite_r12 || i != 12)
-> +			val = compat_get_user_reg(target, i++);
-> +		else
-> +			val = r12;
-> +		membuf_store(&to, val);
-> +	}
-> +
-
-Can this be condensed too, say by introducing a wrapper for
-compat_get_user_reg() that does the fudging on r12?
-
-[...]
-
-Cheers
----Dave
+Johan
