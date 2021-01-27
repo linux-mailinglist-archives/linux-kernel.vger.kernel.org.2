@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB07E3051C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 582CB3051C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhA0FNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:13:41 -0500
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:39426 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbhA0Emj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:42:39 -0500
-Received: by mail-qk1-f182.google.com with SMTP id k193so658412qke.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:42:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5j9D+/U9aAgrXd3LWzWk4nGfTmqsxamWFm+S2CE5wNw=;
-        b=S4VEJvImd2DF1vCsYDFNmGs078dFFM+UXHz/wX4KS8EGbJXY82WVe4cxEQyQ3WhWHg
-         c8YhxwGq2SXuqiuzRnZBUyYPBL09HxrG3JjZs35E3hYFiKxhjkcutxFLV6MwSEJ+rq33
-         uqTcwHCrZQxVsQUU+jgc30Gooi5Evrde7TOrnBGPIt5SD6ut0lGqeCmp/Qdne07OuA2o
-         UCIfYAHncz8RmNXIMNxGFgic2oPs/jPA/jsw9FbScgGc+zrcuDo5KqNQuM6bDxe0weUO
-         v2kirwCnbmOrqlpSzR+5DKmITq2I3qwJa5ALfio7IDEiO+EGXBTeWIStKzQ+LA33d1nR
-         Y9TA==
-X-Gm-Message-State: AOAM531/XU8eEXH1RpyAUj6ccLZYouYqeBdFmuAvx1MihHelsfETaGK7
-        KQZYu8HeOjf3KxCc/p5NZXgRo9lYaKVIx0ewZmQ=
-X-Google-Smtp-Source: ABdhPJwQ5mO0DuujWVQtwb32GXf7sZ1yeghiy+eSoGkdzlWbMjPKIk8kakXjd2yUZsNPBQ4WuZE7h9uJrYbWcbAPAfY=
-X-Received: by 2002:a37:aec5:: with SMTP id x188mr9191438qke.144.1611722516279;
- Tue, 26 Jan 2021 20:41:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20201130193842.10569-1-kan.liang@linux.intel.com>
- <20201130193842.10569-3-kan.liang@linux.intel.com> <20201201172903.GT3040@hirez.programming.kicks-ass.net>
- <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
- <CAM9d7ciBO=cmgnBVJWpyJ75VHjoxuEA=ck=V1+k8KRBkh23+nw@mail.gmail.com>
- <c868c6f7-c89f-ecc5-b771-2701b6029788@linux.intel.com> <20201210142515.GR2414@hirez.programming.kicks-ass.net>
- <CAM9d7chme3WFQzsqHeQx+1vaLpCG7qL=D6QO4+_Vnt=byzC5sQ@mail.gmail.com>
-In-Reply-To: <CAM9d7chme3WFQzsqHeQx+1vaLpCG7qL=D6QO4+_Vnt=byzC5sQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 27 Jan 2021 13:41:44 +0900
-Message-ID: <CAM9d7chAvc5cfNsJZnJ2bwuNMp4L929it++riuNHw6VsGpHDuA@mail.gmail.com>
-Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Gabriel Marin <gmx@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S232528AbhA0FN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:13:59 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47050 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232111AbhA0Emp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 23:42:45 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGL4N7xBgzKANAA--.20532S2;
+        Wed, 27 Jan 2021 12:41:49 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Alexander Potapenko <glider@google.com>
+Subject: [PATCH] MIPS: Fix inline asm input/output type mismatch in checksum.h used with Clang
+Date:   Wed, 27 Jan 2021 12:41:47 +0800
+Message-Id: <1611722507-12017-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxGL4N7xBgzKANAA--.20532S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4kXF4xJry7XFyDJrykAFb_yoW8ZF4kpa
+        1DC3sFqrWqgry8Gas8Aw42gryYgw4kG3savr9Igw1jva4aqFy5Wr9xKr1UCF18Jr4vya4S
+        9FZ3GF1DGrnrtaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gryl
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUeyx_UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix the following build error when make M=samples/bpf used with Clang:
 
-On Mon, Jan 18, 2021 at 4:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Peter and Kan,
->
-> On Thu, Dec 10, 2020 at 11:25 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Dec 10, 2020 at 08:52:55AM -0500, Liang, Kan wrote:
-> > >
-> > >
-> > > On 12/10/2020 2:13 AM, Namhyung Kim wrote:
-> > > > Hi Peter and Kan,
-> > > >
-> > > > How can we move this forward?
-> > >
-> > > Hi Namhyung,
-> > >
-> > > Thanks for the test. The changes look good to me.
-> > >
-> > > Hi Peter,
-> > >
-> > > Should we resend the patch set for further review?
-> >
-> > I've not yet seen a coherent replacement of #3, what I send was just a
-> > PoC.
+  CLANG-bpf  samples/bpf/sockex2_kern.o
+In file included from samples/bpf/sockex2_kern.c:7:
+In file included from ./include/uapi/linux/if_tunnel.h:7:
+In file included from ./include/linux/ip.h:16:
+In file included from ./include/linux/skbuff.h:28:
+In file included from ./include/net/checksum.h:22:
+./arch/mips/include/asm/checksum.h:161:9: error: unsupported inline asm: input with type 'unsigned long' matching output with type '__wsum' (aka 'unsigned int')
+        : "0" ((__force unsigned long)daddr),
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
 
-If it's the only problem of #3 which is an optimization,
-can we merge the actual fixes in #1 and #2 first?
+This is a known issue on MIPS [1], the changed code can be compiled
+successfully by both GCC and Clang.
 
-I know some people waiting for the fix..
+[1] https://lore.kernel.org/linux-mips/CAG_fn=W0JHf8QyUX==+rQMp8PoULHrsQCa9Htffws31ga8k-iw@mail.gmail.com/
 
-Thanks,
-Namhyung
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/checksum.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+index 5f80c28..1e6c135 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -130,6 +130,8 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ 					__u32 len, __u8 proto,
+ 					__wsum sum)
+ {
++	unsigned long tmp = (__force unsigned long)sum;
++
+ 	__asm__(
+ 	"	.set	push		# csum_tcpudp_nofold\n"
+ 	"	.set	noat		\n"
+@@ -157,7 +159,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ 	"	addu	%0, $1		\n"
+ #endif
+ 	"	.set	pop"
+-	: "=r" (sum)
++	: "=r" (tmp)
+ 	: "0" ((__force unsigned long)daddr),
+ 	  "r" ((__force unsigned long)saddr),
+ #ifdef __MIPSEL__
+@@ -167,7 +169,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ #endif
+ 	  "r" ((__force unsigned long)sum));
+ 
+-	return sum;
++	return (__force __wsum)tmp;
+ }
+ #define csum_tcpudp_nofold csum_tcpudp_nofold
+ 
+-- 
+2.1.0
+
