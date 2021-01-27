@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61E8305D1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8D9305D31
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238246AbhA0N1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238347AbhA0NZa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:25:30 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A73FC06178C;
-        Wed, 27 Jan 2021 05:24:34 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id m2so1538937wmm.1;
-        Wed, 27 Jan 2021 05:24:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=HC4Gq2abgCDBqIfE+fwfbNScOwZfNUwNwfHhheHL28A=;
-        b=WwGDA8YZbWA/RUq2dLi8ivy7p9Ge6Im3TeuI8aNgoHKFerZtzLaKd0K60ItYl9YNpr
-         OUZyntbThZzatAcpCEEvWIEbxWDITmYItFnJ6gRCrThzBcMXEF3CPxSHtw1ZECcR/ULo
-         eH+TCjxz9ylUJD0SCobXtRC+DLhsZdPpwqurhwOdQ2mvU8zl4KSkcgerKhhNgUDWOSzy
-         FTN858ejq2cM/HIxs4wLd5r5CLbZ/rDm7tqve2eAFlgJxO/NhDYRwMki80CUMA7Zghev
-         kTJb2oumGzSXLytxvXjEu1RsCF3cBGwquDX2IV2wx1bgD/dujm/2fIJX3zAXTCjIiOuU
-         RORQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=HC4Gq2abgCDBqIfE+fwfbNScOwZfNUwNwfHhheHL28A=;
-        b=sPJl62XwLlIpqxswIS83B4tN3V8STRG6Ui4nQAgrHjJagszR2byGQzGUrm/9SLsTmL
-         M16NMCx43Q83H0ucO2uCsiVFUJ+mg4VmrYlVhObXppQB6es6hGD+ZcOxL/7qe5SNH69H
-         nCWv8sCd7VMSZ4YPiLHzqf1+fTMgpkpDG8TtlydT5EjjXyUQ9BAoTqYwyNAtTXCHRfR/
-         /urqRdI+Q2qCD100E6H4tO9dDYGuRkHy1FgZKbpT1UI0rKB40Yvf7zgf7CAzNFe1m4Bj
-         0pMqMxt0JRXsvx14f90DyHlyarhcl0P7SzcO1dRx5xeMq33sqmNQXHxp6mT7lPTqvvCb
-         dkSg==
-X-Gm-Message-State: AOAM533EA91XJptSHsQGiJ/nnYlSyGRwZCU/b/KVpsE2U4VELox6irpx
-        bVxciaxIUHHnlEBPuPtW7Po=
-X-Google-Smtp-Source: ABdhPJxtH6OvL+joklK9i3rxjW+EdUD8o9vfnKEDirG0iadNdTjbCtYRL3220eYfYWnMSRNiRtFLdA==
-X-Received: by 2002:a7b:c3d6:: with SMTP id t22mr4243981wmj.1.1611753873407;
-        Wed, 27 Jan 2021 05:24:33 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id f17sm3129760wrv.0.2021.01.27.05.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 05:24:32 -0800 (PST)
-Message-ID: <9db3f6a50fdfca87998fb38b4a9a01e23f40c209.camel@gmail.com>
-Subject: Re: [PATCH v2 6/9] gpio: ep93xx: refactor ep93xx_gpio_add_bank
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 27 Jan 2021 14:24:31 +0100
-In-Reply-To: <20210127104617.1173-7-nikita.shubin@maquefel.me>
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
-         <20210127104617.1173-1-nikita.shubin@maquefel.me>
-         <20210127104617.1173-7-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S238443AbhA0N3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:29:34 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:34120 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238049AbhA0N1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:27:12 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l4kq2-002s8G-Hy; Wed, 27 Jan 2021 14:26:26 +0100
+Date:   Wed, 27 Jan 2021 14:26:26 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        sbhatta@marvell.com, Christina Jacob <cjacob@marvell.com>
+Subject: Re: [Patch v2 net-next 4/7] octeontx2-af: Physical link
+ configuration support
+Message-ID: <YBFqAkQRig3oTdyd@lunn.ch>
+References: <1611733552-150419-1-git-send-email-hkelam@marvell.com>
+ <1611733552-150419-5-git-send-email-hkelam@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611733552-150419-5-git-send-email-hkelam@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita,
-
-On Wed, 2021-01-27 at 13:46 +0300, Nikita Shubin wrote:
-> - replace plain numbers with girq->num_parents in devm_kcalloc
-> - replace plain numbers with ARRAY_SIZE(girq->parents) for port F
-> - refactor i - 1 to i + 1 to make loop more readable
-> - combine getting IRQ's loop and setting handler's into single loop
+On Wed, Jan 27, 2021 at 01:15:49PM +0530, Hariprasad Kelam wrote:
+> From: Christina Jacob <cjacob@marvell.com>
 > 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> CGX LMAC, the physical interface support link configuration parameters
+> like speed, auto negotiation, duplex  etc. Firmware saves these into
+> memory region shared between firmware and this driver.
+> 
+> This patch adds mailbox handler set_link_mode, fw_data_get to
+> configure and read these parameters.
+> 
+> Signed-off-by: Christina Jacob <cjacob@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
 > ---
->  drivers/gpio/gpio-ep93xx.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>  drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 60 +++++++++++++++++++++-
+>  drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |  2 +
+>  .../net/ethernet/marvell/octeontx2/af/cgx_fw_if.h  | 18 ++++++-
+>  drivers/net/ethernet/marvell/octeontx2/af/mbox.h   | 21 ++++++++
+>  .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    | 17 ++++++
+>  5 files changed, 115 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-> index 8f66e3ca0cfb..e4270b4e5f26 100644
-> --- a/drivers/gpio/gpio-ep93xx.c
-> +++ b/drivers/gpio/gpio-ep93xx.c
-> @@ -384,7 +384,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
-> *gc,
->  
->                 girq->parent_handler = ep93xx_gpio_ab_irq_handler;
->                 girq->num_parents = 1;
-> -               girq->parents = devm_kcalloc(dev, 1,
-> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
->                                              sizeof(*girq->parents),
->                                              GFP_KERNEL);
->                 if (!girq->parents)
-> @@ -406,15 +406,14 @@ static int ep93xx_gpio_add_bank(struct
-> gpio_chip *gc,
->                  */
->                 girq->parent_handler = ep93xx_gpio_f_irq_handler;
->                 girq->num_parents = 8;
-> -               girq->parents = devm_kcalloc(dev, 8,
-> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
->                                              sizeof(*girq->parents),
->                                              GFP_KERNEL);
->                 if (!girq->parents)
->                         return -ENOMEM;
->                 /* Pick resources 1..8 for these IRQs */
-> -               for (i = 1; i <= 8; i++)
-> -                       girq->parents[i - 1] = platform_get_irq(pdev,
-> i);
-> -               for (i = 0; i < 8; i++) {
-> +               for (i = 0; i < ARRAY_SIZE(girq->parents); i++) {
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+> index b3ae84c..42ee67e 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+> @@ -658,6 +658,39 @@ static inline void cgx_link_usertable_init(void)
+>  	cgx_lmactype_string[LMAC_MODE_USXGMII] = "USXGMII";
+>  }
+>  
+> +static inline int cgx_link_usertable_index_map(int speed)
+> +{
 
-Why do you use ARRAY_SIZE() here instead of ->num_parents like above?
+Hi Christina, Hariprasad
 
-> +                       girq->parents[i] = platform_get_irq(pdev, i +
-> 1);
->                         gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
->                         irq_set_chip_data(gpio_irq, &epg->gc[5]);
->                         irq_set_chip_and_handler(gpio_irq,
-
--- 
-Alexander Sverdlin.
+No inline functions in .c files please. Let the compiler decide.
 
 
+> +	switch (speed) {
+> +	case SPEED_10:
+> +		return CGX_LINK_10M;
+> +	case SPEED_100:
+> +		return CGX_LINK_100M;
+> +	case SPEED_1000:
+> +		return CGX_LINK_1G;
+> +	case SPEED_2500:
+> +		return CGX_LINK_2HG;
+> +	case SPEED_5000:
+> +		return CGX_LINK_5G;
+> +	case SPEED_10000:
+> +		return CGX_LINK_10G;
+> +	case SPEED_20000:
+> +		return CGX_LINK_20G;
+> +	case SPEED_25000:
+> +		return CGX_LINK_25G;
+> +	case SPEED_40000:
+> +		return CGX_LINK_40G;
+> +	case SPEED_50000:
+> +		return CGX_LINK_50G;
+> +	case 80000:
+> +		return CGX_LINK_80G;
+> +	case SPEED_100000:
+> +		return CGX_LINK_100G;
+> +	case SPEED_UNKNOWN:
+> +		return CGX_LINK_NONE;
+> +	}
+> +	return CGX_LINK_NONE;
+> +}
+> +
+>  static inline void link_status_user_format(u64 lstat,
+>  					   struct cgx_link_user_info *linfo,
+>  					   struct cgx *cgx, u8 lmac_id)
+
+So it looks like previous reviews did not catch inline functions. So
+lets say, no new inline functions.
+
+     Andrew
