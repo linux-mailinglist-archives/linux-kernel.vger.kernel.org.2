@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C75306445
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCDC306454
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344498AbhA0Tjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:39:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:34058 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344566AbhA0ThV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:37:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95AF5106F;
-        Wed, 27 Jan 2021 11:36:34 -0800 (PST)
-Received: from [10.57.47.135] (unknown [10.57.47.135])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C789B3F68F;
-        Wed, 27 Jan 2021 11:36:31 -0800 (PST)
-Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
- valid dma-ranges
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-References: <20210119105203.15530-1-yong.wu@mediatek.com>
- <YBFj9whLvqlV2erm@aptenodytes> <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
- <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8f742f94-4087-7fb6-4b7c-9058593b67cf@arm.com>
-Date:   Wed, 27 Jan 2021 19:36:30 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1344617AbhA0TmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:42:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344607AbhA0Tho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:37:44 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69593C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:36:59 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id r38so2257636pgk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:36:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Lrgo7ExcxZOc6wDuEAWDaLWJ735zWTiQ6RpyvZWHowE=;
+        b=ZAte76qDU3nNVp9j191EvXLtls45dYfuBYA30x1Is8f3Ws5n9bF5mCOTvAwpMxkjcY
+         C6XcIYWQQck07cfCsfdWYgPPhp9Ja0hLOncYd0iryR7JT1luEvfgRE4FDv2NfZJPbUzz
+         YqnEIlxbDrEv9b+WUl5I2+st0lN+LWHo7Pw6sHdiHp1ygmp41t7ydCtZ1m+Z9Yp1pt9t
+         ywu6ymO9xKppkTEsMpVe9VBPAXo5zYxkCnG0sgKn1tuc5I9TEZIINqz4dw7smaBGkxTW
+         EqXi0hZCBziaaoFKFEWplwKfcT5h+Qh+2wRZBjf7TdUMCkbNkhoUJ2LpVt/D7VLa0ViB
+         N/fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Lrgo7ExcxZOc6wDuEAWDaLWJ735zWTiQ6RpyvZWHowE=;
+        b=sjKT7IVCFjdG2wo5orX4FRtVsCnZhcdc97nAYyPPUP7wlcBMEx68b8x+NS/NDkYJf5
+         VnDZVzhfYH6nyr4swmuGx9oaOIcQGm7eAwJ23DV1mi0Tz826IM1/HWvsHE2swrlTUfDq
+         8TharnjGPA2Kmy5Q2d13hiCjbNFvqnN1czXStj39eRVIvTAsarATZHZQLb/xiWp7eHpP
+         w7u2u/Yk4c7bRLl9Jjenq199PKxKSBIrNFflx3pGERSZ6CyYUG4s9LM6voLK+1HE/iH/
+         a0tbzvYPcW02YF/TapskQ8kvFgwUs3/QPQ/4OUy7qqbU6i7arDTENckzi82XzQWvHXgP
+         0rnQ==
+X-Gm-Message-State: AOAM532ARICKDUSekJ4yI0YbBkvr84hbs01i0VcuJjO5doE+jQVtNcCs
+        OuTRqmmyQdSw4F/HJVfZ5nI=
+X-Google-Smtp-Source: ABdhPJxUwRLChY+8LiSGb7sRv98f5AL/zks0hzlPO6MsZlqFz+QJb/0HO3lNWw4YYxmed+DRXYG6tg==
+X-Received: by 2002:a65:6881:: with SMTP id e1mr13045178pgt.290.1611776218876;
+        Wed, 27 Jan 2021 11:36:58 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gg22sm2853963pjb.24.2021.01.27.11.36.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 11:36:58 -0800 (PST)
+Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
+ <20210127110944.41813-3-alexander.sverdlin@nokia.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <2855919e-2bc4-ff26-8f1b-c2a96aec9018@gmail.com>
+Date:   Wed, 27 Jan 2021 11:36:56 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210127110944.41813-3-alexander.sverdlin@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-27 19:09, Rob Herring wrote:
-> On Wed, Jan 27, 2021 at 7:13 AM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> [ + Christoph, Marek ]
->>
->> On 2021-01-27 13:00, Paul Kocialkowski wrote:
->>> Hi,
->>>
->>> On Tue 19 Jan 21, 18:52, Yong Wu wrote:
->>>> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
->>>> supplanting dma_pfn_offset") always update dma_range_map even though it was
->>>> already set, like in the sunxi_mbus driver. the issue is reported at [1].
->>>> This patch avoid this(Updating it only when dev has valid dma-ranges).
->>>>
->>>> Meanwhile, dma_range_map contains the devices' dma_ranges information,
->>>> This patch moves dma_range_map before of_iommu_configure. The iommu
->>>> driver may need to know the dma_address requirements of its iommu
->>>> consumer devices.
->>>
->>> Just a gentle ping on this issue, it would be nice to have this fix merged
->>> ASAP, in the next RC :)
->>
->> Ack to that - Rob, Frank, do you want to take this through the OF tree,
->> or shall we take it through the DMA-mapping tree like the original culprit?
+
+
+On 1/27/2021 3:09 AM, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> I've already got some fixes queued up and can take it.
+> Teach ftrace_make_call() and ftrace_make_nop() about PLTs.
+> Teach PLT code about FTRACE and all its callbacks.
+> Otherwise the following might happen:
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 14 PID: 2265 at .../arch/arm/kernel/insn.c:14 __arm_gen_branch+0x83/0x8c()
+> ...
+> Hardware name: LSI Axxia AXM55XX
+> [<c0314a49>] (unwind_backtrace) from [<c03115e9>] (show_stack+0x11/0x14)
+> [<c03115e9>] (show_stack) from [<c0519f51>] (dump_stack+0x81/0xa8)
+> [<c0519f51>] (dump_stack) from [<c032185d>] (warn_slowpath_common+0x69/0x90)
+> [<c032185d>] (warn_slowpath_common) from [<c03218f3>] (warn_slowpath_null+0x17/0x1c)
+> [<c03218f3>] (warn_slowpath_null) from [<c03143cf>] (__arm_gen_branch+0x83/0x8c)
+> [<c03143cf>] (__arm_gen_branch) from [<c0314337>] (ftrace_make_nop+0xf/0x24)
+> [<c0314337>] (ftrace_make_nop) from [<c038ebcb>] (ftrace_process_locs+0x27b/0x3e8)
+> [<c038ebcb>] (ftrace_process_locs) from [<c0378d79>] (load_module+0x11e9/0x1a44)
+> [<c0378d79>] (load_module) from [<c037974d>] (SyS_finit_module+0x59/0x84)
+> [<c037974d>] (SyS_finit_module) from [<c030e981>] (ret_fast_syscall+0x1/0x18)
+> ---[ end trace e1b64ced7a89adcc ]---
+> ------------[ cut here ]------------
+> WARNING: CPU: 14 PID: 2265 at .../kernel/trace/ftrace.c:1979 ftrace_bug+0x1b1/0x234()
+> ...
+> Hardware name: LSI Axxia AXM55XX
+> [<c0314a49>] (unwind_backtrace) from [<c03115e9>] (show_stack+0x11/0x14)
+> [<c03115e9>] (show_stack) from [<c0519f51>] (dump_stack+0x81/0xa8)
+> [<c0519f51>] (dump_stack) from [<c032185d>] (warn_slowpath_common+0x69/0x90)
+> [<c032185d>] (warn_slowpath_common) from [<c03218f3>] (warn_slowpath_null+0x17/0x1c)
+> [<c03218f3>] (warn_slowpath_null) from [<c038e87d>] (ftrace_bug+0x1b1/0x234)
+> [<c038e87d>] (ftrace_bug) from [<c038ebd5>] (ftrace_process_locs+0x285/0x3e8)
+> [<c038ebd5>] (ftrace_process_locs) from [<c0378d79>] (load_module+0x11e9/0x1a44)
+> [<c0378d79>] (load_module) from [<c037974d>] (SyS_finit_module+0x59/0x84)
+> [<c037974d>] (SyS_finit_module) from [<c030e981>] (ret_fast_syscall+0x1/0x18)
+> ---[ end trace e1b64ced7a89adcd ]---
+> ftrace failed to modify [<e9ef7006>] 0xe9ef7006
+> actual: 02:f0:3b:fa
+> ftrace record flags: 0
+> (0) expected tramp: c0314265
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-Brilliant, thanks!
-
-> Suggested-by doesn't mean you are happy with the implementation. So
-> Acked-by or Reviewed-by?
-
-It still feels slightly awkward to give a tag to say "yes, this is 
-exactly what I suggested", but for the avoidance of doubt,
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-Cheers,
-Robin.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
