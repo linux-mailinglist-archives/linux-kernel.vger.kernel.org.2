@@ -2,149 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5CB306410
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC82306419
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhA0Tbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:31:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:33780 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231341AbhA0Tbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:31:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34B0B31B;
-        Wed, 27 Jan 2021 11:30:57 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0ED613F68F;
-        Wed, 27 Jan 2021 11:30:54 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
-        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
-Subject: [RFC PATCH] sched/core: Fix premature p->migration_pending completion
-Date:   Wed, 27 Jan 2021 19:30:35 +0000
-Message-Id: <20210127193035.13789-1-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
+        id S1344415AbhA0TcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:32:24 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58376 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhA0Tbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:31:53 -0500
+Date:   Wed, 27 Jan 2021 19:31:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611775870;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bQUJUBMTo2oqqJf/tmLygDW54mgSKpoT7Ov00dk667A=;
+        b=IOD+tCsJYm7fojlw0ZBsr6G5x/FUX2DhiotQmk/U7p1LIqu0bsUPQgDg5O3K9FUB4TUHtA
+        h83LD91XPDxCi64r70BE1idaj4bowk3pVBhlV6Sli9VbXop+g05w0uGUbO3Z3kbTM8f08v
+        cFhRA5gOlDY9plBYQOqlGIqzZ/QSATWKq1GiF25RNAuCxiWCpKD+rGm6AEUC+X9P+YbRDv
+        APTaMla1lSV1yFujgqRL/82QeaiDPM4fhtuRp8HKLBn4rHymJeUudzHJ9LFzxh+wp3Re5V
+        7y3yzkvVO/wmE9upxNTh7d+SM4xHatFHIaOFWzshxTveJLOwsBuAI7eu23bzlw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611775870;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bQUJUBMTo2oqqJf/tmLygDW54mgSKpoT7Ov00dk667A=;
+        b=g5zG1qZqhN1SE0vtDF9eFeMd1oXtEFeteyvwYv7WxCKqkWEjZ/zmuk4KjJI93Ul5NWsKw/
+        2B3FiHTEKXw3N3Dw==
+From:   "tip-bot2 for Mark Brown" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] efi/arm64: Update debug prints to reflect other
+ entropy sources
+Cc:     Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210120163810.14973-1-broonie@kernel.org>
+References: <20210120163810.14973-1-broonie@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161177586990.23325.5752801051222862535.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fiddling some more with a TLA+ model of set_cpus_allowed_ptr() & friends
-unearthed one more outstanding issue. This doesn't even involve
-migrate_disable(), but rather affinity changes and execution of the stopper
-racing with each other.
+The following commit has been merged into the efi/core branch of tip:
 
-My own interpretation of the (lengthy) TLA+ splat (note the potential for
-errors at each level) is:
+Commit-ID:     1c761ee9da1ac6ba7e40d14457fac94c87eaff35
+Gitweb:        https://git.kernel.org/tip/1c761ee9da1ac6ba7e40d14457fac94c87eaff35
+Author:        Mark Brown <broonie@kernel.org>
+AuthorDate:    Wed, 20 Jan 2021 16:38:10 
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Thu, 21 Jan 2021 10:54:08 +01:00
 
-  Initial conditions:
-    victim.cpus_mask = {CPU0, CPU1}
+efi/arm64: Update debug prints to reflect other entropy sources
 
-  CPU0                             CPU1                             CPU<don't care>
+Currently the EFI stub prints a diagnostic on boot saying that KASLR will
+be disabled if it is unable to use the EFI RNG protocol to obtain a seed
+for KASLR.  With the addition of support for v8.5-RNG and the SMCCC RNG
+protocol it is now possible for KASLR to obtain entropy even if the EFI
+RNG protocol is unsupported in the system, and the main kernel now
+explicitly says if KASLR is active itself.  This can result in a boot
+log where the stub says KASLR has been disabled and the main kernel says
+that it is enabled which is confusing for users.
 
-  switch_to(victim)
-								    set_cpus_allowed(victim, {CPU1})
-								      kick CPU0 migration_cpu_stop({.dest_cpu = CPU1})
-  switch_to(stopper/0)
-								    // e.g. CFS load balance
-								    move_queued_task(CPU0, victim, CPU1);
-				   switch_to(victim)
-								    set_cpus_allowed(victim, {CPU0});
-								      task_rq_unlock();
-  migration_cpu_stop(dest_cpu=CPU1)
-    task_rq(p) != rq && pending
-      kick CPU1 migration_cpu_stop({.dest_cpu = CPU1})
+Remove the explicit reference to KASLR from the diagnostics, the warnings
+are still useful as EFI is the only source of entropy the stub uses when
+randomizing the physical address of the kernel and the other sources may
+not be available.
 
-				   switch_to(stopper/1)
-				   migration_cpu_stop(dest_cpu=CPU1)
-				     task_rq(p) == rq && pending
-				       __migrate_task(dest_cpu) // no-op
-				     complete_all() <-- !!! affinity is {CPU0} !!!
-
-I believe there are two issues there:
-- retriggering of migration_cpu_stop() from within migration_cpu_stop()
-  itself doesn't change arg.dest_cpu
-- we'll issue a complete_all() in the task_rq(p) == rq path of
-  migration_cpu_stop() even if the dest_cpu has been superseded by a
-  further affinity change.
-
-Something similar could happen with NUMA's migrate_task_to(), and arguably
-any other user of migration_cpu_stop() with a .dest_cpu >= 0.
-Consider:
-
-  CPU0					CPUX
-
-  switch_to(victim)
-					migrate_task_to(victim, CPU1)
-					  kick CPU0 migration_cpu_stop({.dest_cpu = CPU1})
-
-					set_cpus_allowed(victim, {CPU42})
-					  task_rq_unlock();
-  switch_to(stopper/0)
-  migration_cpu_stop(dest_cpu=CPU1)
-    task_rq(p) == rq && pending
-      __migrate_task(dest_cpu)
-    complete_all() <-- !!! affinity is {CPU42} !!!
-
-Prevent such premature completions by ensuring the dest_cpu in
-migration_cpu_stop() is in the task's allowed cpumask.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210120163810.14973-1-broonie@kernel.org
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- kernel/sched/core.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+ drivers/firmware/efi/libstub/arm64-stub.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 06b449942adf..b57326b0a742 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1923,20 +1923,28 @@ static int migration_cpu_stop(void *data)
- 			complete = true;
- 		}
- 
--		/* migrate_enable() --  we must not race against SCA */
--		if (dest_cpu < 0) {
--			/*
--			 * When this was migrate_enable() but we no longer
--			 * have a @pending, a concurrent SCA 'fixed' things
--			 * and we should be valid again. Nothing to do.
--			 */
--			if (!pending) {
--				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
--				goto out;
--			}
-+	       /*
-+		* When this was migrate_enable() but we no longer
-+		* have a @pending, a concurrent SCA 'fixed' things
-+		* and we should be valid again.
-+		*
-+		* This can also be a stopper invocation that was 'fixed' by an
-+		* earlier one.
-+		*
-+		* Nothing to do.
-+		*/
-+		if ((dest_cpu < 0 || dest_cpu == cpu_of(rq)) && !pending) {
-+			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
-+			goto out;
-+		}
- 
-+		/*
-+		 * Catch any affinity change between the stop_cpu() call and us
-+		 * getting here.
-+		 * For migrate_enable(), we just want to pick an allowed one.
-+		 */
-+		if (dest_cpu < 0 || !cpumask_test_cpu(dest_cpu, &p->cpus_mask))
- 			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
--		}
- 
- 		if (task_on_rq_queued(p))
- 			rq = __migrate_task(rq, &rf, p, dest_cpu);
--- 
-2.27.0
-
+diff --git a/drivers/firmware/efi/libstub/arm64-stub.c b/drivers/firmware/efi/libstub/arm64-stub.c
+index 22ece1a..b69d631 100644
+--- a/drivers/firmware/efi/libstub/arm64-stub.c
++++ b/drivers/firmware/efi/libstub/arm64-stub.c
+@@ -61,10 +61,10 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
+ 			status = efi_get_random_bytes(sizeof(phys_seed),
+ 						      (u8 *)&phys_seed);
+ 			if (status == EFI_NOT_FOUND) {
+-				efi_info("EFI_RNG_PROTOCOL unavailable, KASLR will be disabled\n");
++				efi_info("EFI_RNG_PROTOCOL unavailable\n");
+ 				efi_nokaslr = true;
+ 			} else if (status != EFI_SUCCESS) {
+-				efi_err("efi_get_random_bytes() failed (0x%lx), KASLR will be disabled\n",
++				efi_err("efi_get_random_bytes() failed (0x%lx)\n",
+ 					status);
+ 				efi_nokaslr = true;
+ 			}
