@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C215306111
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1EB306115
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343903AbhA0Qar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:30:47 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:49389 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343743AbhA0QaW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:30:22 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-4-OneHWQocNNiSYulcGjezNQ-1;
- Wed, 27 Jan 2021 16:28:40 +0000
-X-MC-Unique: OneHWQocNNiSYulcGjezNQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 27 Jan 2021 16:28:38 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 27 Jan 2021 16:28:38 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Pavel Begunkov' <asml.silence@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] iov_iter: optimise iter type checking
-Thread-Topic: [PATCH] iov_iter: optimise iter type checking
-Thread-Index: AQHW5qm9/hT6YRd33Eq5lMaMuw9mB6of0+hQgBvncPiAAAmTEA==
-Date:   Wed, 27 Jan 2021 16:28:38 +0000
-Message-ID: <6f7ba1dbbc4749f09ae44aafc6ada284@AcuMS.aculab.com>
-References: <a8cdb781384791c30e30036aced4c027c5dfea86.1605969341.git.asml.silence@gmail.com>
- <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
- <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
- <20210109170359.GT3579531@ZenIV.linux.org.uk>
- <b04df39d77114547811d7bfc2c0d4c8c@AcuMS.aculab.com>
- <1783c58f-1016-0c6b-be7f-a93bc2f8f2a4@gmail.com>
- <20210116051818.GF3579531@ZenIV.linux.org.uk>
- <ed385c4d-99ca-d7aa-8874-96e3c6b743bb@gmail.com>
-In-Reply-To: <ed385c4d-99ca-d7aa-8874-96e3c6b743bb@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1343993AbhA0Qcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:32:54 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:54505 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343556AbhA0Qci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 11:32:38 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611765128; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=z5sITnYH+hKH5ob5jP7ZjC3SvuyrrXJFxVS7t/eQ6UM=; b=f7b+sn0wHzrsSZGSGuRgujWh/IX8oNH0ANXJ6G4W6VfJffEpsPTfuFHMYWiVArSX6nm2Jhsl
+ +2irZcHeIxSZDQic8ngOL/Vo/pVmecz5cZbNKu6zU5MyfIRLfbfaduTlMwl1wnf2jZ8QjaKs
+ 0ex3Jg6hO3hNvFzrk5s37Zc6LCI=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6011954fbeacd1a252b67cba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 16:31:11
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A443CC43468; Wed, 27 Jan 2021 16:31:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.105] (unknown [61.1.225.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3407C433ED;
+        Wed, 27 Jan 2021 16:31:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3407C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
+ <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
+ <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <d9808e5f-bb8e-0d5c-8432-d695f8049f85@codeaurora.org>
+Date:   Wed, 27 Jan 2021 22:01:03 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGF2ZWwgQmVndW5rb3YNCj4gU2VudDogMjcgSmFudWFyeSAyMDIxIDE1OjQ4DQo+IA0K
-PiBPbiAxNi8wMS8yMDIxIDA1OjE4LCBBbCBWaXJvIHdyb3RlOg0KPiA+IE9uIFNhdCwgSmFuIDA5
-LCAyMDIxIGF0IDEwOjExOjA5UE0gKzAwMDAsIFBhdmVsIEJlZ3Vua292IHdyb3RlOg0KPiA+DQo+
-ID4+PiBEb2VzIGFueSBjb2RlIGFjdHVhbGx5IGxvb2sgYXQgdGhlIGZpZWxkcyBhcyBhIHBhaXI/
-DQo+ID4+PiBXb3VsZCBpdCBldmVuIGJlIGJldHRlciB0byB1c2Ugc2VwYXJhdGUgYnl0ZXM/DQo+
-ID4+PiBFdmVuIGdyb3dpbmcgdGhlIG9uLXN0YWNrIHN0cnVjdHVyZSBieSBhIHdvcmQgd29uJ3Qg
-cmVhbGx5IG1hdHRlci4NCj4gPj4NCj4gPj4gdTggdHlwZSwgcnc7DQo+ID4+DQo+ID4+IFRoYXQg
-d29uJ3QgYmxvYXQgdGhlIHN0cnVjdC4gSSBsaWtlIHRoZSBpZGVhLiBJZiB1c2VkIHRvZ2V0aGVy
-IGNvbXBpbGVycw0KPiA+PiBjYW4gdHJlYXQgaXQgYXMgdTE2Lg0KPiA+DQo+ID4gUmVhc29uYWJs
-ZSwgYW5kIGZyb20gd2hhdCBJIHJlbWVtYmVyIGZyb20gbG9va2luZyB0aHJvdWdoIHRoZSB1c2Vy
-cywNCj4gPiBubyByZWFkZXJzIHdpbGwgYm90aGVyIHdpdGggbG9va2luZyBhdCBib3RoIGF0IHRo
-ZSBzYW1lIHRpbWUuDQo+IA0KPiBBbCwgYXJlIHlvdSBnb2luZyB0dXJuIGl0IGludG8gYSBwYXRj
-aCwgb3IgcHJlZmVyIG1lIHRvIHRha2Ugb3Zlcj8NCg0KSSdkIGRlZmluaXRlbHkgbGVhdmUgdGhl
-IHR5cGUgYXMgYSBiaXRtYXAuDQoNCkl0IG1heSBiZSB1c2VmdWwgdG8gYWRkIElURVJfSU9WRUNf
-U0lOR0xFIHRvIG9wdGltaXNlIHNvbWUNCnZlcnkgY29tbW9uIHBhdGhzIGZvciB1c2VyIGlvdmVj
-IHdpdGggb25seSBhIHNpbmdsZSBidWZmZXIuDQpCdXQgeW91J2QgcHJvYmFibHkgd2FudCB0byBr
-ZWVwIHRoZSBmdWxsIHZlcnNpb24gZm9yDQptb3JlIHVudXN1YWwgKG9yIGFscmVhZHkgZXhwZW5z
-aXZlKSBjYXNlcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
-QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
-aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On 1/22/2021 10:15 AM, Viresh Kumar wrote:
+> On 22-01-21, 00:41, Dmitry Osipenko wrote:
+>> 21.01.2021 14:17, Viresh Kumar пишет:
+>>> @@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
+>>>   
+>>>   	if (!ret) {
+>>>   		ret = _set_opp_bw(opp_table, opp, dev, false);
+>>> -		if (!ret)
+>>> +		if (!ret) {
+>>>   			opp_table->enabled = true;
+>>> +			dev_pm_opp_put(old_opp);
+>>> +
+>>> +			/* Make sure current_opp doesn't get freed */
+>>> +			dev_pm_opp_get(opp);
+>>> +			opp_table->current_opp = opp;
+>>> +		}
+>>>   	}
+>>
+>> I'm a bit surprised that _set_opp_bw() isn't used similarly to
+>> _set_opp_voltage() in _generic_set_opp_regulator().
+>>
+>> I'd expect the BW requirement to be raised before the clock rate goes UP.
+> 
+> I remember discussing that earlier when this stuff came in, and this I
+> believe is the reason for that.
+> 
+> We need to scale regulators before/after frequency because when we
+> increase the frequency a regulator may _not_ be providing enough power
+> to sustain that (even for a short while) and this may have undesired
+> effects on the hardware and so it is important to prevent that
+> malfunction.
+> 
+> In case of bandwidth such issues will not happen (AFAIK) and doing it
+> just once is normally enough. It is just about allowing more data to
+> be transmitted, and won't make the hardware behave badly.
+> 
+I agree with Dmitry. BW is a shared resource in a lot of architectures. 
+Raising clk before increasing the bw can lead to a scenario where this 
+client saturate the entire BW for whatever small duration it may be. 
+This will impact the latency requirements of other clients.
 
+-Akhil.
