@@ -2,417 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3206E3056D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00FC3056FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbhA0JZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:25:12 -0500
-Received: from smtp.outgoing.loopia.se ([93.188.3.37]:58417 "EHLO
-        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhA0JFj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:05:39 -0500
-Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id 788A624694E2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:42:43 +0100 (CET)
-Received: from s500.loopia.se (unknown [172.22.191.5])
-        by s807.loopia.se (Postfix) with ESMTP id 57CC32E29A02;
-        Wed, 27 Jan 2021 09:42:43 +0100 (CET)
-Received: from s474.loopia.se (unknown [172.22.191.6])
-        by s500.loopia.se (Postfix) with ESMTP id 42C9E1E32E90;
-        Wed, 27 Jan 2021 09:42:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Flag: NO
-X-Spam-Score: -1
-X-Spam-Level: 
-X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
-        tests=[ALL_TRUSTED=-1] autolearn=disabled
-Received: from s500.loopia.se ([172.22.191.6])
-        by s474.loopia.se (s474.loopia.se [172.22.190.14]) (amavisd-new, port 10024)
-        with LMTP id QkIGDK_0Ygsc; Wed, 27 Jan 2021 09:42:42 +0100 (CET)
-X-Loopia-Auth: user
-X-Loopia-User: carl@hgsystem.se
-X-Loopia-Originating-IP: 94.234.44.220
-Received: from localhost.localdomain (unknown [94.234.44.220])
-        (Authenticated sender: carl@hgsystem.se)
-        by s500.loopia.se (Postfix) with ESMTPSA id D13251E32EB5;
-        Wed, 27 Jan 2021 09:42:41 +0100 (CET)
-From:   Erik Rosen <erik.rosen@metormote.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Erik Rosen <erik.rosen@metormote.com>
-Subject: [PATCH 1/1] Add ST STPDDC60 pmbus driver
-Date:   Wed, 27 Jan 2021 09:41:40 +0100
-Message-Id: <20210127084140.35626-2-erik.rosen@metormote.com>
-X-Mailer: git-send-email 2.11.0 (Apple Git-81)
-In-Reply-To: <20210127084140.35626-1-erik.rosen@metormote.com>
-References: <20210127084140.35626-1-erik.rosen@metormote.com>
+        id S235410AbhA0J3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:29:55 -0500
+Received: from mail-vi1eur05on2058.outbound.protection.outlook.com ([40.107.21.58]:20960
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234859AbhA0JEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:04:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nv/jf/2VDtUaFkRPlsdJzvBcChslqTyp8O5sOUfZ1KV8Y2N1+vcKCsrhL5Nv2kyg03FS0jKt9YOIv+rwpUcMJjms4oPwqu132Qy16H/vJR0XXmQAGfYgKdPrz+govfPjWcTaUZh4ePzLL/ROyTvL4TTqqD5ItifrXP+SnoIxxSj/Sr/IcITWPrko50YiL5QA+VqFiZaBxPl7bxQYSB6VL7Xz0mtfAB3nygqMQZLgg5IgviAuhdDHTDnevoAp5M1etEIumYO/e+eBlQ+/hWY5rSSz3cIRLR/cO0NkDBPS3hQD39m9iuMpY+k0lrtLvm4RrJA9Ku30pb7jEjfqOZN78g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K15mBtnRnlVhzeXRe6+V42y/axZrQX4RArbQmgb3gWA=;
+ b=PBytOkvykbA73wATXx6M5exK9TXlIVSNbinPGBFviePutfFJ2vPf18oYSQihe9U7yy9z5IHghLfPzb8TtGUFYmpK5nFVJ3RzP/r/aPVo+4/WLw1sQ/KRmoCnEg6/AMFWw9hwFx7jq2SULso7A9WTBjg1D9pUFFWDhsHHSZ0HEQ+CrHRQ2tZRi541YUtydLaHY803l/gspZANauATT9ydBGsc5ubhh56gVxM2LckXVdAgmNubVq/c5lGAPbMVy9qzEz+PXBVylvm+6CMY6yakv3fLzUrzCVIvEG0oDk3xcOiD0inVICv8VVt4tOQX5Jgdlb3+tnObFupoioTbnYh2iA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K15mBtnRnlVhzeXRe6+V42y/axZrQX4RArbQmgb3gWA=;
+ b=kQ4O/Aewpuhi4flVlJBjLCY19YCEY83xnt9QUeHs3bQa+wL2/L/zQQELFWPNraPkcWgwpXdFp4l9FXoisNOUs+eWoNHw5czVKQ/lr2BRBNxbkO8YmAQ6cst2Om6r1TBU2AF5qRuISpEr8vTz32aNRgVuoiJJxux/qk1lq1geBdo=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR04MB2975.eurprd04.prod.outlook.com (2603:10a6:802:9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
+ 2021 09:02:36 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3805.016; Wed, 27 Jan 2021
+ 09:02:36 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
+Subject: [PATCH v3 03/14] media: docs: Add some RGB bus formats for i.MX8qm/qxp pixel combiner
+Date:   Wed, 27 Jan 2021 16:51:17 +0800
+Message-Id: <1611737488-2791-4-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
+References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR02CA0049.apcprd02.prod.outlook.com
+ (2603:1096:4:54::13) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0049.apcprd02.prod.outlook.com (2603:1096:4:54::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 09:02:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3d10bfa1-7a3f-485c-9cb3-08d8c2a24a38
+X-MS-TrafficTypeDiagnostic: VI1PR04MB2975:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB297548D4E3CBADEE12517F7A98BB0@VI1PR04MB2975.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M7GyieVA3pi0/LeoZRNOHAtZWJAhTkF5uQPXKgENcHWdStTouftDWYt3AcTBuzEVbAHoIO1RkKrL8t7TXN0wgnKJ0S7uvp7p+NPdF+zTxnq8gvhojAQPr7LSvK2nhzh9KolAg6AlNqDo+yOzXhWXM7DxFhgB1MVu0jw1KUGjH1v6YOrWSpBipBSJBKz6LKxJUItWzgbenWGoRs6z3BAP3V7MUz1LHD7h5lTsjLZZSv58rTgmWBF0XpDQmm5d5FTqPEMEIbMQHXYcVDpb2MHWfcsvYrIMohYosmckj7Nvk3ZqivZDmFcZ28t7f4Zd5aEkOremnVORsjpw0drPg4smMaekJQCKbdDcuPGYHU+3Dr9PGAXzV8bnB8JxjZKkjg/UaA+iVDZfWeFUg6CHkS/WiRY0A2WVOT57YGCMd1q6HFdqKSUhD8umQjl69iy2adz7/d3Pns7orUlfo58VCsHgNldOdNbI+ocTUL5AdLbmF93Y+sDjEiKv374kfnugooq4/5z/+cZLdliUXu6mNo8/VIyuZwCNsI+8grGLybG+TIt3HnfFrYmLGvehyG5KcsUAuiE533iX8WBBKYbZtMD9DA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(39860400002)(136003)(396003)(8936002)(2616005)(6486002)(66946007)(186003)(6666004)(956004)(7416002)(4326008)(36756003)(69590400011)(6506007)(8676002)(316002)(5660300002)(16526019)(86362001)(478600001)(6512007)(2906002)(52116002)(66556008)(26005)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zcgWR3rY67V0yLOKqtI5OblI12emwy6JMBumLMup/Jq9Tfb0+nPMbY+RpPzP?=
+ =?us-ascii?Q?sNZXm4cx9hdY23Gk6upxOuYI8W9q6ln802sCbWAp46BZXyUA8sGUDu6hX/TC?=
+ =?us-ascii?Q?FVtqZ+72qpPDovWDCW3Vi55bcss/KWhdHQz2tBq/dLhsyPw3sESZv5jmGWBV?=
+ =?us-ascii?Q?ltGIst7qQGdpN+jcw7IjpSbbehPLje3lCqqFbFbCe2lfzWPpCAnatdZ5/0zU?=
+ =?us-ascii?Q?3VjuOho+sbrdQAGS33plOXcMheqGQMdc71sdyeGVM/ckPAaTH8DyOZZogrFa?=
+ =?us-ascii?Q?05ERbbMjzJHhsPchk4LQ+hjw0NIdRu8B5Zv49ktQ8Sstj3i4qOiI5h6qJuAc?=
+ =?us-ascii?Q?IIUdkgugfi8WIbrU7QZh63/9er8uIEaGtrTxZ2y8MRBactkUfttyOUk+BDKe?=
+ =?us-ascii?Q?LxfRObFd/Oc0FhJIw10Sh5J9mYiCBektbl4+W1G8Su1zN+nCsVwZ7B841XOk?=
+ =?us-ascii?Q?HT/W7yUo1D/uW8NNz0uX6EL+AUj1gYQVdEpmJSkaOAkIq/T+Cmb4E9O3VcQV?=
+ =?us-ascii?Q?xhyh5brSQsT+nZI4Zm8MeoZB21xxLb3D80ovg/agBSSIcHRG3PfNTKeKTcgw?=
+ =?us-ascii?Q?TdxX0gp0NJZsTmg/T1J6wZAKy4nS1VZBjx2u8TA8f3YOsCjf4ak/CgXaevO6?=
+ =?us-ascii?Q?azjlO8zSezGg5a2fIZCZudfqtb/UeYdEfIr8898i5rA/B3aCRB9cv2i/9Im6?=
+ =?us-ascii?Q?wRQEWoo0huLYsHCjjzp3BwY3kWYFFy/L8vwwBGJNp2noxo6ldRcchb81QdQJ?=
+ =?us-ascii?Q?NZ/3Lt3nFPPYHZIL+Q9oYKl2pgppnSaXrBFVWpLVQImtqtW3hH93PStLTtcO?=
+ =?us-ascii?Q?A/DRAUIwQcpHEbSjA9Kw84QfQdY/G4DDIyOomA6BOyywVKnNmCt5ULu6ZgQw?=
+ =?us-ascii?Q?gLhM/49mSCSrGY6YdFYa1/FCLujhXT2kDQ0NvgsKgLgt8xkg5uYFnPKItusv?=
+ =?us-ascii?Q?U/Alo31IlBRQtivJFOX1L2JvZywf2b9s0s2mS3H49ojGvbNMIsVdl93E6KgR?=
+ =?us-ascii?Q?a/a3EumKowaSfs0FnBk2CWRe3Nl19tlTIKSyb66YSKhG7Yx+KdCmG5QL9vde?=
+ =?us-ascii?Q?mwhwovrO?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d10bfa1-7a3f-485c-9cb3-08d8c2a24a38
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 09:02:36.2417
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ul+OgVyAsysttYPy4az5ERZGYq5wDo2qKvHqpwPc/4qnw1tCS378bjElVIz2td7J0Z4WebigD4fspaFvI7fWPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB2975
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ST STPDDC60 pmbus client driver.
+This patch adds documentations for RGB666_1X30_CPADLO, RGB888_1X30_CPADLO,
+RGB666_1X36_CPADLO and RGB888_1X36_CPADLO bus formats used by i.MX8qm/qxp
+pixel combiner.  The RGB pixels with padding low per component are
+transmitted on a 30-bit input bus(10-bit per component) from a display
+controller or a 36-bit output bus(12-bit per component) to a pixel link.
 
-Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
 ---
- Documentation/hwmon/index.rst    |   1 +
- Documentation/hwmon/stpddc60.rst |  79 +++++++++++++
- MAINTAINERS                      |   7 ++
- drivers/hwmon/pmbus/Kconfig      |  10 ++
- drivers/hwmon/pmbus/Makefile     |   2 +
- drivers/hwmon/pmbus/stpddc60.c   | 188 +++++++++++++++++++++++++++++++
- 6 files changed, 287 insertions(+)
- create mode 100644 Documentation/hwmon/stpddc60.rst
- create mode 100644 drivers/hwmon/pmbus/stpddc60.c
+v2->v3:
+* No change.
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index fcb870ce6286..94b4fcf182cd 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -169,6 +169,7 @@ Hardware Monitoring Kernel Drivers
-    smsc47m192
-    smsc47m1
-    sparx5-temp
-+   stpddc60
-    tc654
-    tc74
-    thmc50
-diff --git a/Documentation/hwmon/stpddc60.rst b/Documentation/hwmon/stpddc60.rst
-new file mode 100644
-index 000000000000..11d5a9977e80
---- /dev/null
-+++ b/Documentation/hwmon/stpddc60.rst
-@@ -0,0 +1,79 @@
-+.. SPDX-License-Identifier: GPL-2.0
+v1->v2:
+* No change.
+
+ .../userspace-api/media/v4l/subdev-formats.rst     | 156 +++++++++++++++++++++
+ 1 file changed, 156 insertions(+)
+
+diff --git a/Documentation/userspace-api/media/v4l/subdev-formats.rst b/Documentation/userspace-api/media/v4l/subdev-formats.rst
+index 7f16cbe..201c16d 100644
+--- a/Documentation/userspace-api/media/v4l/subdev-formats.rst
++++ b/Documentation/userspace-api/media/v4l/subdev-formats.rst
+@@ -1488,6 +1488,80 @@ The following tables list existing packed RGB formats.
+       - b\ :sub:`2`
+       - b\ :sub:`1`
+       - b\ :sub:`0`
++    * .. _MEDIA-BUS-FMT-RGB666-1X30-CPADLO:
 +
-+Kernel driver stpddc60
-+======================
++      - MEDIA_BUS_FMT_RGB666_1X30-CPADLO
++      - 0x101e
++      -
++      - 0
++      - 0
++      - r\ :sub:`5`
++      - r\ :sub:`4`
++      - r\ :sub:`3`
++      - r\ :sub:`2`
++      - r\ :sub:`1`
++      - r\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - g\ :sub:`5`
++      - g\ :sub:`4`
++      - g\ :sub:`3`
++      - g\ :sub:`2`
++      - g\ :sub:`1`
++      - g\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - b\ :sub:`5`
++      - b\ :sub:`4`
++      - b\ :sub:`3`
++      - b\ :sub:`2`
++      - b\ :sub:`1`
++      - b\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++    * .. _MEDIA-BUS-FMT-RGB888-1X30-CPADLO:
 +
-+Supported chips:
-+
-+  * ST STPDDC60
-+
-+    Prefix: 'stpddc60', 'bmr481'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/documents/fpm-techspec-bmr481
-+
-+Author: Erik Rosen <erik.rosen@metormote.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supports hardware monitoring for ST STPDDC60 controller chip and
-+compatible modules.
-+
-+The driver is a client driver to the core PMBus driver. Please see
-+Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
-+on PMBus client drivers.
-+
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate the
-+devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-+details.
-+
-+The vout under- and over-voltage limits are read-only for this chip.
-+
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data.
-+
-+
-+Sysfs entries
-+-------------
-+
-+The following attributes are supported. Vin, iout and temp limits
-+are read-write; all other attributes are read-only.
-+
-+======================= ========================================================
-+in1_label		"vin"
-+in1_input		Measured input voltage.
-+in1_lcrit		Critical minimum input voltage.
-+in1_crit		Critical maximum input voltage.
-+in1_lcrit_alarm		Input voltage critical low alarm.
-+in1_crit_alarm		Input voltage critical high alarm.
-+
-+in2_label		"vout1"
-+in2_input		Measured output voltage.
-+in2_lcrit		Critical minimum output Voltage.
-+in2_crit		Critical maximum output voltage.
-+in2_lcrit_alarm		Critical output voltage critical low alarm.
-+in2_crit_alarm		Critical output voltage critical high alarm.
-+
-+curr1_label		"iout1"
-+curr1_input		Measured output current.
-+curr1_max		Maximum output current.
-+curr1_max_alarm		Output current high alarm.
-+curr1_crit		Critical maximum output current.
-+curr1_crit_alarm	Output current critical high alarm.
-+
-+temp1_input		Measured maximum temperature of all phases.
-+temp1_max		Maximum temperature limit.
-+temp1_max_alarm		High temperature alarm.
-+temp1_crit		Critical maximum temperature limit.
-+temp1_crit_alarm	Critical maximum temperature alarm.
-+======================= ========================================================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 992fe3b0900a..e4c696f8eabe 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16819,6 +16819,13 @@ L:	linux-i2c@vger.kernel.org
- S:	Maintained
- F:	drivers/i2c/busses/i2c-stm32*
++      - MEDIA_BUS_FMT_RGB888_1X30-CPADLO
++      - 0x101f
++      -
++      - 0
++      - 0
++      - r\ :sub:`7`
++      - r\ :sub:`6`
++      - r\ :sub:`5`
++      - r\ :sub:`4`
++      - r\ :sub:`3`
++      - r\ :sub:`2`
++      - r\ :sub:`1`
++      - r\ :sub:`0`
++      - 0
++      - 0
++      - g\ :sub:`7`
++      - g\ :sub:`6`
++      - g\ :sub:`5`
++      - g\ :sub:`4`
++      - g\ :sub:`3`
++      - g\ :sub:`2`
++      - g\ :sub:`1`
++      - g\ :sub:`0`
++      - 0
++      - 0
++      - b\ :sub:`7`
++      - b\ :sub:`6`
++      - b\ :sub:`5`
++      - b\ :sub:`4`
++      - b\ :sub:`3`
++      - b\ :sub:`2`
++      - b\ :sub:`1`
++      - b\ :sub:`0`
++      - 0
++      - 0
+     * .. _MEDIA-BUS-FMT-ARGB888-1X32:
  
-+ST STPDDC60 DRIVER
-+M:	Daniel Nilsson <daniel.nilsson@flex.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/hwmon/stpddc60.rst
-+F:	drivers/hwmon/pmbus/stpddc60.c
+       - MEDIA_BUS_FMT_ARGB888_1X32
+@@ -1665,6 +1739,88 @@ The following table list existing packed 36bit wide RGB formats.
+       - 2
+       - 1
+       - 0
++    * .. _MEDIA-BUS-FMT-RGB666-1X36-CPADLO:
 +
- ST VL53L0X ToF RANGER(I2C) IIO DRIVER
- M:	Song Qiang <songqiang1304521@gmail.com>
- L:	linux-iio@vger.kernel.org
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 03606d4298a4..b2becdd84b11 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -247,6 +247,16 @@ config SENSORS_Q54SJ108A2
- 	  This driver can also be built as a module. If so, the module will
- 	  be called q54sj108a2.
++      - MEDIA_BUS_FMT_RGB666_1X36_CPADLO
++      - 0x1020
++      -
++      - r\ :sub:`5`
++      - r\ :sub:`4`
++      - r\ :sub:`3`
++      - r\ :sub:`2`
++      - r\ :sub:`1`
++      - r\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - 0
++      - 0
++      - g\ :sub:`5`
++      - g\ :sub:`4`
++      - g\ :sub:`3`
++      - g\ :sub:`2`
++      - g\ :sub:`1`
++      - g\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - 0
++      - 0
++      - b\ :sub:`5`
++      - b\ :sub:`4`
++      - b\ :sub:`3`
++      - b\ :sub:`2`
++      - b\ :sub:`1`
++      - b\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - 0
++      - 0
++    * .. _MEDIA-BUS-FMT-RGB888-1X36-CPADLO:
++
++      - MEDIA_BUS_FMT_RGB888_1X36_CPADLO
++      - 0x1021
++      -
++      - r\ :sub:`7`
++      - r\ :sub:`6`
++      - r\ :sub:`5`
++      - r\ :sub:`4`
++      - r\ :sub:`3`
++      - r\ :sub:`2`
++      - r\ :sub:`1`
++      - r\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - g\ :sub:`7`
++      - g\ :sub:`6`
++      - g\ :sub:`5`
++      - g\ :sub:`4`
++      - g\ :sub:`3`
++      - g\ :sub:`2`
++      - g\ :sub:`1`
++      - g\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
++      - b\ :sub:`7`
++      - b\ :sub:`6`
++      - b\ :sub:`5`
++      - b\ :sub:`4`
++      - b\ :sub:`3`
++      - b\ :sub:`2`
++      - b\ :sub:`1`
++      - b\ :sub:`0`
++      - 0
++      - 0
++      - 0
++      - 0
+     * .. _MEDIA-BUS-FMT-RGB121212-1X36:
  
-+config SENSORS_STPDDC60
-+	tristate "ST STPDDC60"
-+	help
-+	  If you say yes here you get hardware monitoring support for ST
-+	  STPDDC60 Universal Digital Multicell Controller, as well as for
-+	  Flex BMR481.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called stpddc60.
-+
- config SENSORS_TPS40422
- 	tristate "TI TPS40422"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 6a4ba0fdc1db..ef468806238c 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -28,9 +28,11 @@ obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
- obj-$(CONFIG_SENSORS_PM6764TR)	+= pm6764tr.o
- obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
- obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
-+obj-$(CONFIG_SENSORS_STPDDC60)	+= stpddc60.o
- obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
- obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
- obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
- obj-$(CONFIG_SENSORS_UCD9200)	+= ucd9200.o
- obj-$(CONFIG_SENSORS_XDPE122)	+= xdpe12284.o
- obj-$(CONFIG_SENSORS_ZL6100)	+= zl6100.o
-+
-diff --git a/drivers/hwmon/pmbus/stpddc60.c b/drivers/hwmon/pmbus/stpddc60.c
-new file mode 100644
-index 000000000000..4e3ab260a3c2
---- /dev/null
-+++ b/drivers/hwmon/pmbus/stpddc60.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Hardware monitoring driver for the STPDDC60 controller
-+ *
-+ * Copyright (c) 2021 Flextronics International Sweden AB.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/pmbus.h>
-+#include "pmbus.h"
-+
-+enum chips { stpddc60 };
-+
-+static const struct i2c_device_id stpddc60_id[] = {
-+	{"stpddc60", stpddc60},
-+	{"bmr481", stpddc60},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, stpddc60_id);
-+
-+static struct pmbus_driver_info stpddc60_info = {
-+	.pages = 1,
-+	.func[0] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
-+		| PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
-+		| PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP
-+		| PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT
-+		| PMBUS_HAVE_POUT,
-+};
-+
-+/*
-+ * Convert VID value to milli-volt
-+ */
-+static long stpddc60_vid2mv(int val)
-+{
-+	long rv = 0;
-+
-+	if (val >= 0x01)
-+		rv = 250 + (val - 1) * 5;
-+
-+	return rv;
-+}
-+
-+/*
-+ * Convert milli-volt to linear
-+ */
-+static int stpddc60_mv2l(long mv)
-+{
-+	int rv;
-+
-+	rv = (mv << 8) / 1000;
-+
-+	return rv;
-+}
-+
-+/*
-+ * The VOUT_COMMAND register uses the VID format but the vout alarm limit
-+ * registers use the linear format so we override VOUT_MODE here to force
-+ * linear format for all registers.
-+ */
-+static int stpddc60_read_byte_data(struct i2c_client *client, int page, int reg)
-+{
-+	int ret;
-+
-+	if (page > 0)
-+		return -ENXIO;
-+
-+	switch (reg) {
-+	case PMBUS_VOUT_MODE:
-+		ret = 0x18;
-+		break;
-+	default:
-+		ret = -ENODATA;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * Do the necessary conversions between VID and linear data format.
-+ */
-+static int stpddc60_read_word_data(struct i2c_client *client, int page,
-+				   int phase, int reg)
-+{
-+	int ret;
-+
-+	if (page > 0)
-+		return -ENXIO;
-+
-+	switch (reg) {
-+	case PMBUS_READ_VOUT:
-+		ret = pmbus_read_word_data(client, page, phase, reg);
-+		if (ret < 0)
-+			return ret;
-+		ret = stpddc60_mv2l(stpddc60_vid2mv(ret));
-+		break;
-+	case PMBUS_VOUT_OV_FAULT_LIMIT:
-+	case PMBUS_VOUT_UV_FAULT_LIMIT:
-+		ret = pmbus_read_word_data(client, page, phase, reg);
-+		if (ret < 0)
-+			return ret;
-+		ret &= 0x07ff;
-+		break;
-+	default:
-+		ret = -ENODATA;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * The vout under- and over-voltage limits are readonly for this chip.
-+ */
-+static int stpddc60_write_word_data(struct i2c_client *client, int page,
-+				    int reg, u16 word)
-+{
-+	int ret;
-+
-+	if (page > 0)
-+		return -ENXIO;
-+
-+	switch (reg) {
-+	case PMBUS_VOUT_OV_FAULT_LIMIT:
-+		ret = -EACCES;
-+		break;
-+	case PMBUS_VOUT_UV_FAULT_LIMIT:
-+		ret = -EACCES;
-+		break;
-+	default:
-+		ret = -ENODATA;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int stpddc60_probe(struct i2c_client *client,
-+			  const struct i2c_device_id *id)
-+{
-+	int status;
-+	u8 device_id[I2C_SMBUS_BLOCK_MAX + 1];
-+	const struct i2c_device_id *mid;
-+	struct pmbus_driver_info *info = &stpddc60_info;
-+
-+	if (!i2c_check_functionality(client->adapter,
-+				     I2C_FUNC_SMBUS_READ_BYTE_DATA
-+				     | I2C_FUNC_SMBUS_BLOCK_DATA))
-+		return -ENODEV;
-+
-+	status = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, device_id);
-+	if (status < 0) {
-+		dev_err(&client->dev, "Failed to read Manufacturer Model\n");
-+		return status;
-+	}
-+	for (mid = stpddc60_id; mid->name[0]; mid++) {
-+		if (!strncasecmp(mid->name, device_id, strlen(mid->name)))
-+			break;
-+	}
-+	if (!mid->name[0]) {
-+		dev_err(&client->dev, "Unsupported device\n");
-+		return -ENODEV;
-+	}
-+
-+	info->read_byte_data = stpddc60_read_byte_data;
-+	info->read_word_data = stpddc60_read_word_data;
-+	info->write_word_data = stpddc60_write_word_data;
-+
-+	return pmbus_do_probe(client, info);
-+}
-+
-+static struct i2c_driver stpddc60_driver = {
-+	.driver = {
-+		   .name = "stpddc60",
-+		   },
-+	.probe = stpddc60_probe,
-+	.id_table = stpddc60_id,
-+};
-+
-+module_i2c_driver(stpddc60_driver);
-+
-+MODULE_AUTHOR("Erik Rosen <erik.rosen@metormote.com>");
-+MODULE_DESCRIPTION("PMBus driver for ST STPDDC60");
-+MODULE_LICENSE("GPL");
+       - MEDIA_BUS_FMT_RGB121212_1X36
 -- 
-2.20.1
+2.7.4
 
