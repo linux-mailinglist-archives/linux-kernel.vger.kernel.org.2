@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC774305915
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78D430590D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhA0LB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:01:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
+        id S232692AbhA0LBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:01:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236276AbhA0K5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:57:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C4D22076D;
-        Wed, 27 Jan 2021 10:56:24 +0000 (UTC)
+        id S231959AbhA0K5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:57:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 903A52074B;
+        Wed, 27 Jan 2021 10:56:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611744984;
-        bh=ZKTW8gU3jiRPRbEEF3iQJp3X2qckwuCZGY84MYAe2e8=;
+        s=korg; t=1611744993;
+        bh=SBYnYjuYiKWziA1UaYv1e3bdv/LS8hXZt4gpUT6pA0k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PJvKdRRyWvkw781a8Deb5aArB4vz4p51gqHlewKw9orH7Q3VlZo7lgo33sQdNmo6B
-         JH8LT6ltyoeX2vPOsN85FufNxFHAzzyw7sViYAlenvTR9h4UPkp7xOkSqSNWacceG6
-         fXM+/zlOMXV9wmBnrExxSGUsAuXxIa1GRNPCDG6w=
-Date:   Wed, 27 Jan 2021 11:56:22 +0100
+        b=kfyh1mtXUTtdlxJu8WQLh/9ZZM/tZpcmWgTHneXYnB9+D3WYELwzAG5NRA6+QuEH5
+         u+xCK5Z0D7QjID022a2mqw86cC1UK1sJjjHCT46iSns8dLC6ZvS0UINEDIQbUXuQOx
+         pPsjel9XQtJdMdeY20/yi7wK0CTR0WAMOCRdbVdc=
+Date:   Wed, 27 Jan 2021 11:56:30 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
 Subject: Re: [PATCH 5.10 000/203] 5.10.11-rc2 review
-Message-ID: <YBFG1u0WId5k1J0l@kroah.com>
+Message-ID: <YBFG3vzd8KliEs3/@kroah.com>
 References: <20210126094313.589480033@linuxfoundation.org>
- <CA+G9fYvWxoK=hOdvVUcB1n7Nk5vmWdh-4GzyaaFFyRijHLrnyA@mail.gmail.com>
+ <20210126192658.GC31936@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYvWxoK=hOdvVUcB1n7Nk5vmWdh-4GzyaaFFyRijHLrnyA@mail.gmail.com>
+In-Reply-To: <20210126192658.GC31936@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:16:43PM +0530, Naresh Kamboju wrote:
-> On Tue, 26 Jan 2021 at 15:33, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
+On Tue, Jan 26, 2021 at 11:26:58AM -0800, Guenter Roeck wrote:
+> On Tue, Jan 26, 2021 at 11:03:12AM +0100, Greg Kroah-Hartman wrote:
 > > This is the start of the stable review cycle for the 5.10.11 release.
 > > There are 203 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
 > > let me know.
-> >
+> > 
 > > Responses should be made by Thu, 28 Jan 2021 09:42:40 +0000.
 > > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+> > 
 > 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 427 pass: 427 fail: 0
 > 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Great, thanks for testing and letting me know.
+Thanks for testing.
 
 greg k-h
