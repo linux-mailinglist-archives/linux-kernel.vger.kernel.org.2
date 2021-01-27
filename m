@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932753058B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7DE3058B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbhA0Kmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:42:53 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:42078 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235841AbhA0KkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:40:25 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l4iEU-0000kX-2Y; Wed, 27 Jan 2021 11:39:30 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     hminas@synopsys.com, gregkh@linuxfoundation.org
-Cc:     christoph.muellner@theobroma-systems.com, paulz@synopsys.com,
-        yousaf.kaukab@intel.com, balbi@ti.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, heiko@sntech.de,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Gerhard Klostermeier <gerhard.klostermeier@syss.de>,
-        stable@vger.kernel.org
-Subject: [PATCH v3] usb: dwc2: Fix endpoint direction check in ep_from_windex
-Date:   Wed, 27 Jan 2021 11:39:19 +0100
-Message-Id: <20210127103919.58215-1-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
+        id S236082AbhA0Kpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:45:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235436AbhA0KkQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:40:16 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AACC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:39:36 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id p21so1943232lfu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:39:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X4lOVt6ZKP6X65zmcQnK/fTCLUDcVKs75zqu4Rk/goo=;
+        b=EuR5hlL1WDbKVmfFqJ2XhAFRLSg4OxybvOarE3EXYcqPCMXlKYSu65UdJyrWRw4TNK
+         DkTKXLz1vImwdxiZ5KWdqhBJhZHi82Quxr3nsroNkub0QcOS/AVcm2OTxxTstFUUId4O
+         eiaGl6sny1clqiU6xhqXdWu8FUReXoNpTx4MxQpsCU+dETKGM9M9k3D9fCuYnb5vMpb4
+         tuB6uXv94s6RJD7JGY7SwTlsc1Y4qgev+v6JlUa8c0DMewkvH9fGosNrXb2kRu+vuQhv
+         vTvcGY8JNcte6xk7uYOr6xCoiOkuJmb3zZuzQcjRMlRkQMZDENsAYQYpPl0VGllzO4UX
+         Eweg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X4lOVt6ZKP6X65zmcQnK/fTCLUDcVKs75zqu4Rk/goo=;
+        b=q2hoS5R37Aqpd58EpmIGH9tPG4YfVI68h6pClW57ssiNbSqmnb85FTdPgcnrHVR///
+         0qgjMLu2Myz+CgRU+750ZKEqtgKTH0qOur00ZQzULNtP0e1X+3KBRJNdBrQVfS12acdG
+         OXH2nXohQrusJtNlR9sOJ2xk7B/qjrsQa9DlT8eUF/prQacW52wLKJrsM1pE7wwwYyC2
+         L4awkymQiIr2NBB/Iu3Rf7gaQwzKeI+kDhYGLivhYeESMoBKIKYHGHBVV8dmCSiPPd9r
+         lj/pBkfW3De0zFlh2N1vPig8maiLJ3VZPIlplUKpV8WyGD9WJcJQh8/kh1wGGRFEckqP
+         taOA==
+X-Gm-Message-State: AOAM533TVP0wDnypP++hnDv8kYoNng/+FPQIKrDS97NvZzPXsoDWjhrz
+        4nS5yey6DV+jZMUzldhhH1+a1EfTOpNZZw9a8Gdmbw==
+X-Google-Smtp-Source: ABdhPJwGMekstctKpOsuXjs8DjGFT2ro5YAYYi+FiaLL95LqLgf1Pt7ScBb4SY6NPcj7lNQgNhIKIXnjV47Hq3C6jKM=
+X-Received: by 2002:a19:ac45:: with SMTP id r5mr5192707lfc.305.1611743974915;
+ Wed, 27 Jan 2021 02:39:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210125085909.4600-1-mgorman@techsingularity.net> <20210125085909.4600-3-mgorman@techsingularity.net>
+In-Reply-To: <20210125085909.4600-3-mgorman@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 27 Jan 2021 11:39:23 +0100
+Message-ID: <CAKfTPtCuUdr+Q++MbbVafEx9wEoJYQGm9maoJ4RCX7ny+=qA5w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under SIS_PROP
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+On Mon, 25 Jan 2021 at 09:59, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> As noted by Vincent Guittot, avg_scan_costs are calculated for SIS_PROP
+> even if SIS_PROP is disabled. Move the time calculations under a SIS_PROP
+> check and while we are at it, exclude the cost of initialising the CPU
+> mask from the average scan cost.
+>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
-the endpoint for the index provided in the wIndex request param.
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-In a test-case with a rndis gadget running and sending a malformed
-packet to it like:
-    dev.ctrl_transfer(
-        0x82,      # bmRequestType
-        0x00,       # bRequest
-        0x0000,     # wValue
-        0x0001,     # wIndex
-        0x00       # wLength
-    )
-it is possible to cause a crash:
-
-[  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
-[  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
-...
-[  218.313189] Call trace:
-[  218.330217]  ep_from_windex+0x3c/0x54
-[  218.348565]  usb_gadget_giveback_request+0x10/0x20
-[  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
-
-This happens because ep_from_windex wants to compare the endpoint
-direction even if index_to_ep() didn't return an endpoint due to
-the direction not matching.
-
-The fix is easy insofar that the actual direction check is already
-happening when calling index_to_ep() which will return NULL if there
-is no endpoint for the targeted direction, so the offending check
-can go away completely.
-
-Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
-Reported-by: Gerhard Klostermeier <gerhard.klostermeier@syss.de>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Cc: stable@vger.kernel.org
----
-changes in v3:
-- added Reported-by tag
-changes in v2:
-- remove unused struct dwc2_hsotg_ep *ep;
-
- drivers/usb/dwc2/gadget.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-index 0a0d11151cfb..ad4c94366dad 100644
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -1543,7 +1543,6 @@ static void dwc2_hsotg_complete_oursetup(struct usb_ep *ep,
- static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
- 					    u32 windex)
- {
--	struct dwc2_hsotg_ep *ep;
- 	int dir = (windex & USB_DIR_IN) ? 1 : 0;
- 	int idx = windex & 0x7F;
- 
-@@ -1553,12 +1552,7 @@ static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
- 	if (idx > hsotg->num_of_eps)
- 		return NULL;
- 
--	ep = index_to_ep(hsotg, idx, dir);
--
--	if (idx && ep->dir_in != dir)
--		return NULL;
--
--	return ep;
-+	return index_to_ep(hsotg, idx, dir);
- }
- 
- /**
--- 
-2.29.2
-
+> ---
+>  kernel/sched/fair.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 9f5682aeda2e..c8d8e185cf3b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6153,6 +6153,8 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>         if (!this_sd)
+>                 return -1;
+>
+> +       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +
+>         if (sched_feat(SIS_PROP)) {
+>                 u64 avg_cost, avg_idle, span_avg;
+>
+> @@ -6168,11 +6170,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>                         nr = div_u64(span_avg, avg_cost);
+>                 else
+>                         nr = 4;
+> -       }
+> -
+> -       time = cpu_clock(this);
+>
+> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +               time = cpu_clock(this);
+> +       }
+>
+>         for_each_cpu_wrap(cpu, cpus, target) {
+>                 if (!--nr)
+> @@ -6181,8 +6181,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>                         break;
+>         }
+>
+> -       time = cpu_clock(this) - time;
+> -       update_avg(&this_sd->avg_scan_cost, time);
+> +       if (sched_feat(SIS_PROP)) {
+> +               time = cpu_clock(this) - time;
+> +               update_avg(&this_sd->avg_scan_cost, time);
+> +       }
+>
+>         return cpu;
+>  }
+> --
+> 2.26.2
+>
