@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705453066ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82A130670B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhA0V77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:59:59 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36062 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhA0V74 (ORCPT
+        id S233661AbhA0WNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:13:16 -0500
+Received: from m15112.mail.126.com ([220.181.15.112]:34877 "EHLO
+        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232940AbhA0WNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:59:56 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E514B1C0B8E; Wed, 27 Jan 2021 22:58:57 +0100 (CET)
-Date:   Wed, 27 Jan 2021 22:58:57 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     rjw@rjwysocki.net, len.brown@intel.com, gregkh@linuxfoundation.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] drivers: base: power: Fix resposible -> responsible in
- runtime.c
-Message-ID: <20210127215857.GB23419@amd>
-References: <20210120143312.3229181-1-unixbhaskar@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5/uDoXvLw7AC5HRs"
-Content-Disposition: inline
-In-Reply-To: <20210120143312.3229181-1-unixbhaskar@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Wed, 27 Jan 2021 17:13:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=VzzfyvKJgizs2qT6Ty
+        lyZTIrBZLhf//f2J7zrq55aCc=; b=j4+ZX0V42mG9H55Yrv6XHa3TDRa/GHe5Gy
+        MVUSO7cLzhXDLOguEN1DVAzKvBENEcQH7xWL+vNv9PE3kpaUiDHVI0H1tdpbf6Qt
+        49HlBZEuwSrhMivlXK2XghaWz718ZI7xE0/6qdRLcRGpPVvIHkZzXPNWC+8oo3zq
+        vpyUyQyMA=
+Received: from localhost.localdomain.localdomain (unknown [182.150.46.145])
+        by smtp2 (Coremail) with SMTP id DMmowAB3fPiXXRFg7qs1Lg--.22168S2;
+        Wed, 27 Jan 2021 20:33:29 +0800 (CST)
+From:   Qu Huang <jinsdb@126.com>
+To:     Felix.Kuehling@amd.com
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Qu Huang <jinsdb@126.com>
+Subject: [PATCH] drm/amdkfd: dqm fence memory corruption
+Date:   Wed, 27 Jan 2021 20:33:26 +0800
+Message-Id: <1611750806-10730-1-git-send-email-jinsdb@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DMmowAB3fPiXXRFg7qs1Lg--.22168S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7XFyfKFyfAFWDGFy3Ar4fKrg_yoW8Jr13pF
+        WkJryUKry8Ja12v3s7Xa18ZFy5Ca1fWFWfGFy2k39xua13XFy5ArW5Jay8K3y8Wr92ya17
+        trWDArWDuF1DAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U8xhJUUUUU=
+X-Originating-IP: [182.150.46.145]
+X-CM-SenderInfo: pmlq2vbe6rjloofrz/1tbimRknDl9E18PRmwAAss
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Amdgpu driver uses 4-byte data type as DQM fence memory,
+and transmits GPU address of fence memory to microcode
+through query status PM4 message. However, query status
+PM4 message definition and microcode processing are all
+processed according to 8 bytes. Fence memory only allocates
+4 bytes of memory, but microcode does write 8 bytes of memory,
+so there is a memory corruption.
 
---5/uDoXvLw7AC5HRs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Qu Huang <jinsdb@126.com>
+---
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed 2021-01-20 20:03:12, Bhaskar Chowdhury wrote:
-> s/resposible/responsible/
->=20
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+index e686ce2..8b38d0c 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+@@ -1161,7 +1161,7 @@ static int start_cpsch(struct device_queue_manager *dqm)
+ 	pr_debug("Allocating fence memory\n");
+ 
+ 	/* allocate fence memory on the gart */
+-	retval = kfd_gtt_sa_allocate(dqm->dev, sizeof(*dqm->fence_addr),
++	retval = kfd_gtt_sa_allocate(dqm->dev, sizeof(uint64_t),
+ 					&dqm->fence_mem);
+ 
+ 	if (retval)
+-- 
+1.8.3.1
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---5/uDoXvLw7AC5HRs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAR4iEACgkQMOfwapXb+vIrbgCfdAXVQ5esM8uUona2ZK1AXRy6
-S4sAoMKrqp+AlgXyJ88BNZr8d8ra972J
-=jVZx
------END PGP SIGNATURE-----
-
---5/uDoXvLw7AC5HRs--
