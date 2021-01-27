@@ -2,144 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE54305E6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6BA305E67
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhA0OfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:35:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        id S234277AbhA0Oec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbhA0OcK (ORCPT
+        with ESMTP id S234236AbhA0OdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:32:10 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07494C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:31:30 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id w1so2905915ejf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:31:29 -0800 (PST)
+        Wed, 27 Jan 2021 09:33:11 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E921C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:32:31 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id i20so1826676otl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:32:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qqg87q6fRYh0uVLXRvnL8lduoFCRvpTSBgNlnG7E0/w=;
-        b=FN14CvD8/wuqht4OsjLpznRaUft1L7xtWwY+35E69AWs3AqXyeuQa1bd76s/jx+04Z
-         4d7YeITqS/cz8/THnFZs0YRHwV533A4kJ/izXLQcCR5/rg3ms1O9g7oNAhad1K6iNoQA
-         ZiLT/mW6hidZV7S2bQdXCuZZP16QvHmuYhH6yybQi77O7rRSeCA9McWecfOtazz7UjNM
-         cx40sgXyUweKIR5fic5Mt1ORqvs9zxeFtuMkYQVUBwS+FvyW/RO6NW4xYtPWl/FBBOXN
-         wlWTF5+qGCqU44BzMvFHGk1eGaZO0cH56FMTqiLKMp5b2IDm5fWigUaUIJ4pIR16bUWC
-         e2qA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=AkjKYkZu/O3ZhL9C1ly1S1R+Lu1EqcZrKzNmqSx7LJM=;
+        b=ds5cTovti/PtWeJ9L9rKyAOoOCJlHao6cqyS9WX5rNXOcqjvrACFYWilYmHuy7YEyU
+         Zr2gd5FdUeJLOW4mz/aprPbp4jYKkyWlUXgrn9h3WYr3u6hB8NAXTQzpnelYnHsugmKZ
+         8PMgx78aR3uz8ZN6yPR1Fkrs+Kt5ya4IVDz5OvzISuhkLEicnFWhBEqdIXCZprV357r3
+         980hdxNsheXU0huewLbFRO07m8egm/Zkuhqmd8q/0jApuDMAriwEoDScJaO8OaW6pD60
+         J9WcOsudPLTYDO1sGadIy6cBl0PLr/9byY+lSqueuNJHlLE2zEF6GcacqQhYJS9jvbWy
+         qo+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qqg87q6fRYh0uVLXRvnL8lduoFCRvpTSBgNlnG7E0/w=;
-        b=B+Fehn/8HW0Cj4woxvJ4bVXNIJXibbbznkrsxeSbBU7gftAJWY4TpKIqWU4hNCmUfu
-         DgiGl9GvORZ+4QdUT93t3NodwgT3DZCERhJ8BqCLDfjQPTReXYYhybmRoYhadFP2HA3q
-         Bcz6V9H3xTDb6ugJ23UIPNcV6ABs8Zu7jf7lXgLy38qu0vFYZk2E7MECiyuzJbL+UkM2
-         k56q1mhM48p7f3UgPTUDohfYFFRXN/b2YIQdtAO3teG1os1eQt0GeBYs1N1VxSkwz7CQ
-         nRuklLxvn4KoHNzNTE7tdcc2Ghb0fF8x+chmngojOJgftT0bwNdMSnDxDc0UGUggoHpg
-         8z4Q==
-X-Gm-Message-State: AOAM530a/1MNwy2MTdHki2KUWfgYtu6vF1yu5guRtwDL14izmeuni23r
-        IhkHXWk9HMKOv2Aetlh97PskiRQ132gFQF0oqr2ePw==
-X-Google-Smtp-Source: ABdhPJxKLdEEI/uv+tQfgvYQWhP4BvplaqPHmQ9dd2I6FUg7wzOR9fESuUuzSv9cc1JOH//w5EdkZ+T8wXvBcyUfpfI=
-X-Received: by 2002:a17:906:9401:: with SMTP id q1mr7256319ejx.516.1611757888748;
- Wed, 27 Jan 2021 06:31:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=AkjKYkZu/O3ZhL9C1ly1S1R+Lu1EqcZrKzNmqSx7LJM=;
+        b=Yj3G6c1DZBbtv5NlOZenHd7MTDteJ7ArZmxRtmeY2y59jW5Uko6YiTYpZhWFHvi2zR
+         AjLGPr9uhp+3XidnxoP7/4EYq8CR4XLFFAWO4KqMKpegBGPwApm6JVjMQzTKcDymVbit
+         TEo+VocgRNzMVHAXxWSkm/+m3/WQsgXGdrrLkh62o67ySMTNB5OG4r6FRRjWfQe0Qlrr
+         aICL+WaSF3+txSWlx3W0Vixt6x4OePSvl/Uz5yFfAHZI241ua+QySE9kMivzsnBFP0Cb
+         RNI7dcFWP+XtWd7IYcBYk7rbftF/Gz6q2c8UPVIgAAmz9n/y11Fy6SIA/ugd14PDs0tM
+         MZNQ==
+X-Gm-Message-State: AOAM533uIOzBwprdRwF0N+DPrcm+x/9Y/QuKMA8MKVzLJ8wT2c271Bft
+        Y6irBIJujjT8r+RD5BNBqbpMdQ==
+X-Google-Smtp-Source: ABdhPJwmTqQPsWpvtbjcC2msBX3cGjNcoI9u2JDtZqhZPL4fnGyhqt4gHpM29qTSW+yW9tkibHcSxA==
+X-Received: by 2002:a9d:5cc3:: with SMTP id r3mr8437957oti.286.1611757950813;
+        Wed, 27 Jan 2021 06:32:30 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o98sm404617ota.0.2021.01.27.06.32.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 06:32:30 -0800 (PST)
+Date:   Wed, 27 Jan 2021 08:32:28 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "N?colas F. R. A. Prado" <nfraprado@protonmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Russell King <linux@armlinux.org.uk>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH v2 4/4] ARM: dts: qcom: pm8941: Add nodes for QCOM SPMI
+ Flash LEDs
+Message-ID: <YBF5fPD8Mq0K8XDn@builder.lan>
+References: <20210126140240.1517044-1-nfraprado@protonmail.com>
+ <20210126140240.1517044-5-nfraprado@protonmail.com>
 MIME-Version: 1.0
-References: <20210122193600.1415639-1-saravanak@google.com> <YBF3MVttE1aTfx7o@kroah.com>
-In-Reply-To: <YBF3MVttE1aTfx7o@kroah.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 27 Jan 2021 15:31:17 +0100
-Message-ID: <CAMpxmJXDo6oXKzkun9PCT3bWN8adUcyWvf3Sr7SkrKD6r4P8Pg@mail.gmail.com>
-Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        kernel-team@android.com, linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126140240.1517044-5-nfraprado@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 3:22 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Jan 22, 2021 at 11:35:59AM -0800, Saravana Kannan wrote:
-> > There are multiple instances of GPIO device tree nodes of the form:
-> >
-> > foo {
-> >       compatible = "acme,foo";
-> >       ...
-> >
-> >       gpio0: gpio0@xxxxxxxx {
-> >               compatible = "acme,bar";
-> >               ...
-> >               gpio-controller;
-> >       };
-> >
-> >       gpio1: gpio1@xxxxxxxx {
-> >               compatible = "acme,bar";
-> >               ...
-> >               gpio-controller;
-> >       };
-> >
-> >       ...
-> > }
-> >
-> > bazz {
-> >       my-gpios = <&gpio0 ...>;
-> > }
-> >
-> > Case 1: The driver for "foo" populates struct device for these gpio*
-> > nodes and then probes them using a driver that binds with "acme,bar".
-> > This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
-> > This lines up with how DT nodes with the "compatible" property are
-> > typically converted to struct devices and then registered with driver
-> > core to probe them. This also allows the gpio* devices to hook into all
-> > the driver core capabilities like runtime PM, probe deferral,
-> > suspend/resume ordering, device links, etc.
-> >
-> > Case 2: The driver for "foo" doesn't populate struct devices for these
-> > gpio* nodes before registering them with gpiolib. Instead it just loops
-> > through its child nodes and directly registers the gpio* nodes with
-> > gpiolib.
-> >
-> > Drivers that follow case 2 cause problems with fw_devlink=on. This is
-> > because fw_devlink will prevent bazz from probing until there's a struct
-> > device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
-> > supplier). Once the struct device is available, fw_devlink will create a
-> > device link with gpio0 device as the supplier and bazz device as the
-> > consumer. After this point, since the gpio0 device will never bind to a
-> > driver, the device link will prevent bazz device from ever probing.
-> >
-> > Finding and refactoring all the instances of drivers that follow case 2
-> > will cause a lot of code churn and it is not something that can be done
-> > in one shot. In some instances it might not even be possible to refactor
-> > them cleanly. Examples of such instances are [1] [2].
-> >
-> > This patch works around this problem and avoids all the code churn by
-> > simply setting the fwnode of the gpio_device and creating a stub driver
-> > to bind to the gpio_device. This allows all the consumers to continue
-> > probing when the driver follows case 2.
-> >
-> > [1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
-> > [2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> > Cc: Kever Yang <kever.yang@rock-chips.com>
-> > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
->
-> As this commit is in my driver-core git tree, can I just take this in
-> the same tree?  Can I get an ack from the maintainer for this?
->
-> thanks,
->
-> greg k-h
+On Tue 26 Jan 08:06 CST 2021, N?colas F. R. A. Prado wrote:
 
-Go ahead.
+> Add the necessary devicetree nodes for the Qualcomm SPMI Flash LEDs
+> present in PM8941.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
+> Changes in v2:
+> - Moved from hammerhead dts to pm8941 dtsi, as it was this way downstream
+> - Now using values from leds-qcom-spmi-flash.h
+> 
+>  arch/arm/boot/dts/qcom-pm8941.dtsi | 38 ++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/qcom-pm8941.dtsi b/arch/arm/boot/dts/qcom-pm8941.dtsi
+> index c1f2012d1c8b..89309d3c777c 100644
+> --- a/arch/arm/boot/dts/qcom-pm8941.dtsi
+> +++ b/arch/arm/boot/dts/qcom-pm8941.dtsi
+> @@ -2,6 +2,8 @@
+>  #include <dt-bindings/iio/qcom,spmi-vadc.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/spmi/spmi.h>
+> +#include <dt-bindings/leds/common.h>
+> +#include <dt-bindings/leds/leds-qcom-spmi-flash.h>
+>  
+>  &spmi_bus {
+>  
+> @@ -189,5 +191,41 @@ pm8941_5vs2: 5vs2 {
+>  				regulator-initial-mode = <1>;
+>  			};
+>  		};
+> +
+> +		qcom,spmi-flash@d300 {
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Please avoid "qcom," in the node names.
+
+> +			status = "okay";
+
+The "default" status is "okay", so no need to specify that if you're not
+disabling it. That said, there are 8974 devices without flash LED...
+
+> +
+> +			compatible = "qcom,spmi-flash";
+> +			reg = <0xd300 0x100>;
+> +			flash-boost-supply = <&pm8941_5vs1>;
+> +			torch-boost-supply = <&pm8941_5v>;
+> +			pm8941_flash0: led0 {
+> +				led-sources = <0>;
+> +				function = LED_FUNCTION_FLASH;
+> +				color = <LED_COLOR_ID_WHITE>;
+> +				led-max-microamp = <200000>;
+> +				flash-max-microamp = <1000000>;
+> +				flash-max-timeout-us = <1280000>;
+> +				default-state = "off";
+> +				qcom,clamp-curr = <200000>;
+> +				qcom,headroom = <QCOM_SPMI_FLASH_HEADROOM_500MV>;
+> +				qcom,startup-dly = <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
+> +				qcom,safety-timer;
+
+...and I would expect that at least some of these properties should be
+tweaked/tuned/reviewed for each device.
+
+So it would probably be a good idea to make the spmi-flash status
+"disabled" and move some of these properties to the product .dts.
+
+Regards,
+Bjorn
+
+> +			};
+> +
+> +			pm8941_flash1: led1 {
+> +				led-sources = <1>;
+> +				function = LED_FUNCTION_FLASH;
+> +				color = <LED_COLOR_ID_WHITE>;
+> +				led-max-microamp = <200000>;
+> +				flash-max-microamp = <1000000>;
+> +				flash-max-timeout-us = <1280000>;
+> +				default-state = "off";
+> +				qcom,clamp-curr = <200000>;
+> +				qcom,headroom = <QCOM_SPMI_FLASH_HEADROOM_500MV>;
+> +				qcom,startup-dly = <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
+> +				qcom,safety-timer;
+> +			};
+> +		};
+>  	};
+>  };
+> -- 
+> 2.30.0
+> 
+> 
