@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E6530505B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CB330505F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238008AbhA0EDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:03:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhA0DCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:02:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED296C061788;
-        Tue, 26 Jan 2021 19:01:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KInmekppXEkYTPkrUjL8o9RUj8TT2e5M46gGzwoDGjQ=; b=hSF/WDFxslXz5B1CInRT4vI+g0
-        c047ULVTL+DpBc9p8nMfkZcwdcZjsLy4nAZrdmmyjsyycw2ycuvWRqu4Il/Vyjgz5Qb/APv7H5WBI
-        amjhcuwn3hZUi6aVlMViCUIarFns3Z7vm0tJvJCsEI5ld4Of/y9Sk/EaBmZMUzM8LjnerN5ulLbcI
-        4vX8h8f2/AfEqj/FlKySh5QJQXyAPrv/4JVnJRvjwJs0DEfgPGXA32JGm44+DZ6w7ByllS2v5EfzI
-        aVc4VpIiZW2scWlTRQcaJ6Fdsvc1UpZb/Y2uHpSm1mzLOYn9Xs6QIrQ0kCjxpS4uesY0jmItitDiY
-        iKSDB6EQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4b3C-006YDA-SR; Wed, 27 Jan 2021 02:59:31 +0000
-Date:   Wed, 27 Jan 2021 02:59:22 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        viro@zeniv.linux.org.uk, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laura Abbott <lauraa@codeaurora.org>
-Subject: Re: [PATCH v4] fs/buffer.c: Revoke LRU when trying to drop buffers
-Message-ID: <20210127025922.GS308988@casper.infradead.org>
-References: <cover.1611642038.git.cgoldswo@codeaurora.org>
- <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
- <YBCexclveGV2KH1G@google.com>
+        id S237976AbhA0EDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:03:24 -0500
+Received: from mga06.intel.com ([134.134.136.31]:32835 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231770AbhA0DBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:01:09 -0500
+IronPort-SDR: HLqF/EHNpJxUu54CHhMbpCN4nRBW3RF0rjOvOhQ2Cx+Fl08B+LnKjkxO0u6ivZJzUhjDR+87op
+ tMtokHaamNtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="241537305"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="241537305"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:00:13 -0800
+IronPort-SDR: OITLmqZjyxGW3O0pqbKS97pjZeqixSZg3Fvao4C507ABS0Vuho2kUInNmOWHzVSsX9VRlcKtEE
+ EUDPRXFOAvDQ==
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="388122985"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:00:09 -0800
+Subject: Re: [RFC 5/7] KVM: MMU: Add support for PKS emulation
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-6-chenyi.qiang@intel.com>
+ <0689bda9-e91a-2b06-3dd6-f78572879296@redhat.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+Message-ID: <3e38051e-b341-66b9-5e2e-2c3f26d3ff70@intel.com>
+Date:   Wed, 27 Jan 2021 11:00:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBCexclveGV2KH1G@google.com>
+In-Reply-To: <0689bda9-e91a-2b06-3dd6-f78572879296@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 02:59:17PM -0800, Minchan Kim wrote:
-> The release buffer_head in LRU is great improvement for migration
-> point of view.
-> 
-> A question: 
-> 
-> Can't we invalidate(e.g., invalidate_bh_lrus) bh_lru in migrate_prep or
-> elsewhere when migration found the failure and is about to retry?
-> 
-> Migration has done such a way for other per-cpu stuffs for a long time,
-> which would be more consistent with others and might be faster sometimes
-> with reducing IPI calls for page.
 
-Should lru_add_drain_all() also handle draining the buffer lru for all
-callers?  A quick survey ...
 
-invalidate_bdev() already calls invalidate_bh_lrus()
-compact_nodes() would probably benefit from the BH LRU being invalidated
-POSIX_FADV_DONTNEED would benefit if the underlying filesystem uses BHs
-check_and_migrate_cma_pages() would benefit
-khugepaged_do_scan() doesn't need it today
-scan_get_next_rmap_item() looks like it only works on anon pages (?) so
-	doesn't need it
-mem_cgroup_force_empty() probably needs it
-mem_cgroup_move_charge() ditto
-memfd_wait_for_pins() doesn't need it
-shake_page() might benefit
-offline_pages() would benefit
-alloc_contig_range() would benefit
+On 1/27/2021 2:23 AM, Paolo Bonzini wrote:
+> On 07/08/20 10:48, Chenyi Qiang wrote:
+>>
+>>          if (pte_access & PT_USER_MASK)
+>>              pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
+>> +        else if (!kvm_get_msr(vcpu, MSR_IA32_PKRS, &pkrs))
+>> +            pkr_bits = (pkrs >> (pte_pkey * 2)) & 3;
+> 
+> You should be able to always use vcpu->arch.pkrs here.  So
+> 
+> pkr = pte_access & PT_USER_MASK ? vcpu->arch.pkru : vcpu->arch.pkrs;
+> pkr_bits = (pkr >> pte_pkey * 2) & 3;
+> 
+> Paolo
 
-Seems like most would benefit and a few won't care.  I think I'd lean
-towards having lru_add_drain_all() call invalidate_bh_lrus(), just to
-simplify things.
+Concerning vcpu->arch.pkrs would be the only use case in current 
+submitted patches, is it still necessary to shadow it?
+
+> 
