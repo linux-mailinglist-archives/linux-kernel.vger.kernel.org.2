@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C3A30632E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4395F306337
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343657AbhA0SYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:24:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhA0SYO (ORCPT
+        id S1343898AbhA0SZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:25:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28937 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343748AbhA0SZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:24:14 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960EAC0613D6;
-        Wed, 27 Jan 2021 10:23:33 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id i187so4019895lfd.4;
-        Wed, 27 Jan 2021 10:23:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7/VIyGCkm6WYqKuSW58avCCQFZDvTdRr+WLSSIBWpSM=;
-        b=TBvLEZd6eR8Jg1s6FBNMAsAVrQzkqhI0GamcHJFR7LYDoC9+HWYDPnG4cBG/0AXMmd
-         PTY5bwWHS5+6Ld56/bbGo6ZSKna9l/BctnyrZELbIt3ksQ/xQvEclVg7bwgi1nIkv7na
-         vAvqqVwsh5/Xte+BQIc3jG+MlayezjwET+giP4pp77SBZ7ioZLLwNxiriXNllDHaDvyJ
-         oUMfs7YegcAM4U4RkKOQhNvoGQ32Hzf29gFjCr8Svt+uWT8067EJibxtDGxs04Qxo36O
-         3F+jWvWxsdmKYe5dSmf1+ZuOu2a9beGROlFbyuUm7U9i4hQKtPni4rL8jzCUNVaBThIz
-         UQAQ==
+        Wed, 27 Jan 2021 13:25:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611771823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RiOYiqnm66rxvuH7gT4DQE1UWBcIpV4UHHMY1eJjn7o=;
+        b=h3Snm7mtUJSWUESJFqFcReI7BU9CqjQ9R+55+w24H9Uk/1oUT1mzR432EazhDWBBj6aOVA
+        cSQzCkQZfVUsM4W8OhxIFOwq+MdAjOTtcxEvWylhBJ0PQmS3VVR3ZMhaLQ0AR99WDTajTU
+        REDvJjx60q5tB6ycF1Pvc8Mzk7+c4S8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-5ezCK4RQM6WneT6Lfw5-kg-1; Wed, 27 Jan 2021 13:23:41 -0500
+X-MC-Unique: 5ezCK4RQM6WneT6Lfw5-kg-1
+Received: by mail-ej1-f70.google.com with SMTP id n18so1042137ejc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 10:23:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7/VIyGCkm6WYqKuSW58avCCQFZDvTdRr+WLSSIBWpSM=;
-        b=QQhzE39l4YLvIpvd1P87pF6dyFbEGeHMcDb73fUE7s2+SUenfXZumiv3eyITS5vdWC
-         oLGjCv4b55qZ8uJtLofyDSaOVrW4BLve+wtp13AW0Zf6mab4oc29m7yd5320URGdz0kZ
-         5A7DrUK3Eqe65L0I1f5BY/C6kMrW0SRDq2c56Qx3Z7AAPo/PeCrX8ONEhZOM1rBT1svh
-         jGBaeGX+Wy7H1CpXDZz09Gn+y6YVWcY/eAiJ9xoGIqu6pBNcSb3him5gh3uo0mvdgzI6
-         TCUJMK55rpu3sAc21/IKGkJporRsI52anZ7KpJ7nlRdypizS0cx5yWXCRcgJXHU+AL6y
-         KqsQ==
-X-Gm-Message-State: AOAM530Jezsgay17gQFRz1sKFa5c+RQD/zkJNwha6verFXjcjsMxG6/A
-        JSkO4vqm7lh78lPzGVfw6wo=
-X-Google-Smtp-Source: ABdhPJxuj9qRi3BNtT+pBYV+AmDZUin5XCQxcaFgTFWsE+uJi/i7tX09ihVfB5PlDCiOkSD+r8CdDg==
-X-Received: by 2002:a19:838c:: with SMTP id f134mr5518819lfd.424.1611771811861;
-        Wed, 27 Jan 2021 10:23:31 -0800 (PST)
-Received: from DESKTOP-GSFPEC9.localdomain (broadband-46-242-11-119.ip.moscow.rt.ru. [46.242.11.119])
-        by smtp.gmail.com with ESMTPSA id q26sm667065lfd.17.2021.01.27.10.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 10:23:31 -0800 (PST)
-From:   Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     supreeth.venkatesh@amd.com, aladyshev22@gmail.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: aspeed: amd-ethanolx: Enable secondary LPC snooping address
-Date:   Wed, 27 Jan 2021 21:23:26 +0300
-Message-Id: <20210127182326.424-1-aladyshev22@gmail.com>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RiOYiqnm66rxvuH7gT4DQE1UWBcIpV4UHHMY1eJjn7o=;
+        b=X0U0d92RUTdRDApOEdSedDzwhSye0y9mjVIz04rLKdJV2uMzzuotGYBM6YW3zdNrJ2
+         X/iYnd8G60iGI5aLEhZi25Jt7rBCB7flKC0LEc52VTL2oNg6PzyeiKiwO9wv+3PVnMSp
+         cL3cItQANw26XBj2gySlfm9LgNh6hrzJ7uNBvFtZWDBofqsA7vxcW7NWzJBh1HAlhZGd
+         DCPBhDyS+tn9ZTfVM8Exy1VsxOrWno3Id1I9cf5FlNd+JwgpGmnxvcDz6Fw8w5mIlhd6
+         Z5ayL6OQqIPNs6ZeYSUjiiCfU0cA+QLX+oW/IcxrfuwHLl8Tb2ESiv9kI/WW4Be8csWL
+         gHnQ==
+X-Gm-Message-State: AOAM530r2NVTHBRcxFwK0NZ89ddQjLibg+07LPkSZQJm1q0XlHTrSiOe
+        Rt05oCQJouancLCk4uq04QQ+iZeVItXf5zz+7JYI0/TexnelNXQBU5EEeJV7oejVGgQ1a2M0JYm
+        yNC/C/wE68maidC1oB5MTJqKGHa+YhjG5wppaHBCqxmgtkt5WYN8yr+IMmvmJP6n9ngeCUKZBvp
+        +h
+X-Received: by 2002:a17:906:ce49:: with SMTP id se9mr7847101ejb.341.1611771819815;
+        Wed, 27 Jan 2021 10:23:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxxHHQQ9M2mIXNtde4ytJp1YqTF7t58/9b4aKrinJcTaUS3U0zyZubIxgah2+gFixoIoek/Mw==
+X-Received: by 2002:a17:906:ce49:: with SMTP id se9mr7847083ejb.341.1611771819523;
+        Wed, 27 Jan 2021 10:23:39 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p12sm1795967edr.82.2021.01.27.10.23.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 10:23:38 -0800 (PST)
+Subject: Re: [PATCH] KVM: x86/mmu: Add '__func__' in rmap_printk()
+To:     Joe Perches <joe@perches.com>,
+        Stephen Zhang <stephenzhangzsd@gmail.com>, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1611713325-3591-1-git-send-email-stephenzhangzsd@gmail.com>
+ <244f1c7f-d6ca-bd7c-da5e-8da3bf8b5aee@redhat.com>
+ <cfb3699fc03cff1e4c4ffe3c552dba7b7727fa09.camel@perches.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <854ee6dc-2299-3897-c4af-3f7058f195af@redhat.com>
+Date:   Wed, 27 Jan 2021 19:23:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <cfb3699fc03cff1e4c4ffe3c552dba7b7727fa09.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AMD EthanolX CRB uses 2-byte POST codes which are sent to ports 0x80/0x81.
-Currently ASPEED controller snoops only 0x80 port and therefore captures
-only the lower byte of each POST code.
-Enable secondary LPC snooping address to capture the higher byte of POST
-codes.
+On 27/01/21 18:25, Joe Perches wrote:
+> 
+> -#ifdef MMU_DEBUG
+> -bool dbg = 0;
+> -module_param(dbg, bool, 0644);
+> -#endif
+> -
+>  #define PTE_PREFETCH_NUM		8
+>  
+>  #define PT32_LEVEL_BITS 10
+> @@ -844,17 +839,17 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
+>  	int i, count = 0;
+>  
+>  	if (!rmap_head->val) {
+> -		rmap_printk("pte_list_add: %p %llx 0->1\n", spte, *spte);
+> +		pr_debug("%p %llx 0->1\n", spte, *spte);
+>  		rmap_head->val = (unsigned long)spte;
+>  	} else if (!(rmap_head->val & 1)) {
+> -		rmap_printk("pte_list_add: %p %llx 1->many\n", spte, *spte);
+> +		pr_debug("%p %llx 1->many\n", spte, *spte);
+>  		desc = mmu_alloc_pte_list_desc(vcpu);
 
-Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
----
- arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This would be extremely slow.  These messages are even too verbose for 
+tracepoints.
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-index 96ff0aea64e5..ac2d04cfaf2f 100644
---- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-@@ -218,7 +218,7 @@
- 
- &lpc_snoop {
- 	status = "okay";
--	snoop-ports = <0x80>;
-+	snoop-ports = <0x80>, <0x81>;
- };
- 
- &lpc_ctrl {
--- 
-2.17.1
+Paolo
 
