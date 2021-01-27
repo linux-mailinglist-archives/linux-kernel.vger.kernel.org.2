@@ -2,150 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04FE3056CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F423056DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhA0JXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:23:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234905AbhA0JUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:20:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DAB32075B;
-        Wed, 27 Jan 2021 09:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611739176;
-        bh=tM1ozBWi0uNXg+q6YwCl7gQK0QJHNvuk0ARRzfvOIGg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E0QsD4JmQWrPsrwfkMc2X4WAYeHGU337JKTcNXDH2J5yb3+Bf82hY8aQsmrNisX0A
-         nfmwljPRi6atQpAOuFiFLkDyhBbzEF1uDP2AiKNciMOavpRHDNoZXnJn38B1ug6mPz
-         ka7rb0jZWIfFVi6ENpnk3USHaKX1w61DkOnMXQ7VlcGNqppncGaDSkhJ0xPASj7JYv
-         c7aLoCHPyd96wZtKR1hbvnrhd9AB2OLCujGFVl7iq0XShpeHA/MSmh0Tanqxbb09LU
-         g45fDzhU/PE+BPGCTO29a1ccig97GEzCtvfFWERv64ap6030ytWVHdSz+T3/Wi2wRa
-         fWa3q6J3Zq5cg==
-Received: by pali.im (Postfix)
-        id D03AC5CD; Wed, 27 Jan 2021 10:19:33 +0100 (CET)
-Date:   Wed, 27 Jan 2021 10:19:33 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Tom Hebb <tommyhebb@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Bob Hepple <bob.hepple@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control
- blacklist
-Message-ID: <20210127091933.haq6nmbmx3cskh5t@pali>
-References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
- <20210125100540.55wbgdsem3htplx3@pali>
- <CAMcCCgTo87HmwexZS696ok16e9s_8gRgFd38uoLP34r7TbAzBg@mail.gmail.com>
- <CAHzpm2hk4+0FyFrcGYN-JJfx5Ka8yoM8mTsYZA_4WHfWYGa4yQ@mail.gmail.com>
- <CAHzpm2h2X8ZKEtRxnD-mwyEv=B8J+tH_spFGD2VzfwGdRAaHMw@mail.gmail.com>
- <CAMcCCgQRDRi1LpxJBTvKcB+dALJJsn=n5Q=Wyvfcw9LGqqjq7Q@mail.gmail.com>
+        id S235252AbhA0JZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:25:31 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:22578 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231338AbhA0JWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:22:11 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R9DEtg008341;
+        Wed, 27 Jan 2021 10:21:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=kcZRKLt0/T1SGV05doeMSST8p3+eAg9tjvXn0Coubak=;
+ b=Py/9+O8rdNXbySkZf49e4BEO59Ooqc88cVQAbpr9OUaHm4hgHOnuujKDvOQD+3T5/KXz
+ qEpenW2VswS4JUANnXi/yzQ+LJV17GMvp9X0dYrYccJGaolsVyXfLmZjD4VQCorn21GW
+ sLtpI6zYaoai+xScbBNPVMRF4H5i6PVruVehS0iSBzzlB/KU4+IOzMdf24+LBdcrkBzX
+ JHUwF3bZfbuE9EJSzcC8/vAI1JDnxWa+nFAJtUWGMkh5RRji7GsFE9p5mCc5ucgsnQ+0
+ EOA5XShx6gBbGLisRACPjpeIpD4ML16pY+wgWWVfH1u+KdRz5Mw4igrN/+eym2TOoVQn XA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 368a56px60-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 10:21:25 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2124110002A;
+        Wed, 27 Jan 2021 10:21:25 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0BFB02296FA;
+        Wed, 27 Jan 2021 10:21:25 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
+ 2021 10:21:24 +0100
+Subject: Re: [PATCH v4 00/17] remoteproc: Add support for detaching a rproc
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <64b559dc-9e89-c351-ddee-f9cebd155ed7@st.com>
+Date:   Wed, 27 Jan 2021 10:21:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMcCCgQRDRi1LpxJBTvKcB+dALJJsn=n5Q=Wyvfcw9LGqqjq7Q@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_04:2021-01-26,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 26 January 2021 00:15:13 Tom Hebb wrote:
-> Bob reports that blacklisting the fan type label is not sufficient.
-> See his message to me below.
+Hi Mathieu
 
-Ok! Thank you for confirmation.
+On 12/18/20 6:32 PM, Mathieu Poirier wrote:
+> Following the work done here [1], this set provides support for the
+> remoteproc core to release resources associated with a remote processor
+> without having to switch it off. That way a platform driver can be removed
+> or the application processor power cycled while the remote processor is
+> still operating.
+> 
+> Of special interest in this series are patches 5 and 6 where getting the
+> address of the resource table installed by an eternal entity if moved to
+> the core.  This is to support scenarios where a remote process has been
+> booted by the core but is being detached.  To re-attach the remote
+> processor, the address of the resource table needs to be known at a later
+> time than the platform driver's probe() function.
+> 
+> Applies cleanly on v5.10
+> 
+> Thanks,
+> Mathieu
+> 
+> [1]. https://lkml.org/lkml/2020/7/14/1600
+> 
+> ----
+> New for v4:
+> - Made binding description OS agnostic (Rob)
+> - Added functionality to set the external resource table in the core
+> - Fixed a crash when detaching (Arnaud)
+> - Fixed error code propagation in rproc_cdev_relase() and rproc_del() (Arnaud)
+> - Added RB tags
 
-And my second question which I have asked:
-And have you reported this issue to Dell support?
 
-> On Mon, Jan 25, 2021 at 3:38 PM Bob Hepple <bob.hepple@gmail.com> wrote:
-> >
-> > Hi Tom,
-> >
-> > Big nope this end with L502x in i8k_blacklist_fan_type_dmi_table:
-> >
-> > Jan 26 09:35:47 achar kernel: psmouse serio1: TouchPad at
-> > isa0060/serio1/input0 lost synchronization, throwing 1 bytes>
-> >
-> > ... and lots of trackpad stall/stutters.
-> >
-> > Cheers
-> >
-> >
-> > Bob
-> >
-> >
-> >
-> > On Tue, 26 Jan 2021 at 08:09, Bob Hepple <bob.hepple@gmail.com> wrote:
-> > >
-> > > ... compiling now ... results in a coupla hours
-> > >
-> > > Cheers
-> > >
-> > >
-> > > Bob
-> > >
-> > > On Tue, 26 Jan 2021 at 04:05, Tom Hebb <tommyhebb@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jan 25, 2021 at 2:05 AM Pali Rohár <pali@kernel.org> wrote:
-> > > > >
-> > > > > On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
-> > > > > > It has been reported[0] that the Dell XPS 15 L502X exhibits similar
-> > > > > > freezing behavior to the other systems[1] on this blacklist. The issue
-> > > > > > was exposed by a prior change of mine to automatically load
-> > > > > > dell_smm_hwmon on a wider set of XPS models. To fix the regression, add
-> > > > > > this model to the blacklist.
-> > > > > >
-> > > > > > [0] https://bugzilla.kernel.org/show_bug.cgi?id=211081
-> > > > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=195751
-> > > > > >
-> > > > > > Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all XPS models")
-> > > > > > Cc: stable@vger.kernel.org
-> > > > > > Reported-by: Bob Hepple <bob.hepple@gmail.com>
-> > > > > > Tested-by: Bob Hepple <bob.hepple@gmail.com>
-> > > > > > Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-> > > > > > ---
-> > > > > >
-> > > > > >  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
-> > > > > >  1 file changed, 7 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> > > > > > index ec448f5f2dc3..73b9db9e3aab 100644
-> > > > > > --- a/drivers/hwmon/dell-smm-hwmon.c
-> > > > > > +++ b/drivers/hwmon/dell-smm-hwmon.c
-> > > > > > @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_fan_support_dmi_table[] __initdata = {
-> > > > > >                       DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 9333"),
-> > > > > >               },
-> > > > > >       },
-> > > > > > +     {
-> > > > > > +             .ident = "Dell XPS 15 L502X",
-> > > > > > +             .matches = {
-> > > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> > > > > > +                     DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell System XPS L502X"),
-> > > > >
-> > > > > Hello! Are you sure that it is required to completely disable fan
-> > > > > support? And not only access to fan type label for which is different
-> > > > > blaclist i8k_blacklist_fan_type_dmi_table?
-> > > >
-> > > > This is a good question. We didn't try the other list. Bob is the one with the
-> > > > affected system. Could you try moving the added block of code from
-> > > > i8k_blacklist_fan_support_dmi_table a few lines up to
-> > > > i8k_blacklist_fan_type_dmi_table, Bob, to see if the issue reappears or if it
-> > > > remains fixed?
-> > > >
-> > > > >
-> > > > > And have you reported this issue to Dell support?
-> > > > >
-> > > > > > +             },
-> > > > > > +     },
-> > > > > >       { }
-> > > > > >  };
-> > > > > >
-> > > > > > --
-> > > > > > 2.30.0
-> > > > > >
-> > > >
-> > > > (Apologies for the previous HTML copy of this reply, to those directly CCed.)
-> > > >
-> > > > -Tom
+I tested you series, attach and  detach is working well.
+
+Then I faced issue when tried to re-attach after a detach.
+
+But I don't know if this feature has to be supported in this step.
+
+The 2 issues I found are:
+
+1) memory carveouts are released on detach so need to be reinitialized.
+The use of prepare/unprepare for the attach and detach would solve the issue but
+probably need to add parameter to differentiate a start/stop from a attach/detach.
+
+2) The vrings in the loaded resource table (so no cached) has to be properly
+reinitialized. In rproc_free_vring  the vring da is set to 0 that is then
+considered as a fixed address.
+
+Here is a fix which works on the stm32 platform
+
+@@ -425,7 +425,7 @@ void rproc_free_vring(struct rproc_vring *rvring)
+ 	 */
+ 	if (rproc->table_ptr) {
+ 		rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
+-		rsc->vring[idx].da = 0;
++		rsc->vring[idx].da = FW_RSC_ADDR_ANY;
+ 		rsc->vring[idx].notifyid = -1;
+ 	}
+ }
+
+Here, perhaps a better alternative would be to make a cached copy on attach
+before updating it. On the next attach, the cached copy would be copied as it is
+done in rproc_start.
+
+Thanks,
+Arnaud
+
+
+> 
+> Mathieu Poirier (17):
+>   dt-bindings: remoteproc: Add bindind to support autonomous processors
+>   remoteproc: Re-check state in rproc_shutdown()
+>   remoteproc: Remove useless check in rproc_del()
+>   remoteproc: Rename function rproc_actuate()
+>   remoteproc: Add new get_loaded_rsc_table() remoteproc operation
+>   remoteproc: stm32: Move resource table setup to rproc_ops
+>   remoteproc: Add new RPROC_ATTACHED state
+>   remoteproc: Properly represent the attached state
+>   remoteproc: Properly deal with a kernel panic when attached
+>   remoteproc: Add new detach() remoteproc operation
+>   remoteproc: Introduce function __rproc_detach()
+>   remoteproc: Introduce function rproc_detach()
+>   remoteproc: Add return value to function rproc_shutdown()
+>   remoteproc: Properly deal with a stop request when attached
+>   remoteproc: Properly deal with a start request when attached
+>   remoteproc: Properly deal with detach request
+>   remoteproc: Refactor rproc delete and cdev release path
+> 
+>  .../bindings/remoteproc/remoteproc-core.yaml  |  27 +++
+>  drivers/remoteproc/remoteproc_cdev.c          |  32 ++-
+>  drivers/remoteproc/remoteproc_core.c          | 211 +++++++++++++++---
+>  drivers/remoteproc/remoteproc_internal.h      |   8 +
+>  drivers/remoteproc/remoteproc_sysfs.c         |  20 +-
+>  drivers/remoteproc/stm32_rproc.c              | 147 ++++++------
+>  include/linux/remoteproc.h                    |  24 +-
+>  7 files changed, 344 insertions(+), 125 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> 
