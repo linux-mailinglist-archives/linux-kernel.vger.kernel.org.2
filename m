@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF2330658A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3754D30658C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbhA0U6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:58:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        id S233873AbhA0U7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233810AbhA0U6D (ORCPT
+        with ESMTP id S233824AbhA0U60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:58:03 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB318C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:57:22 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id m13so3669096oig.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:57:22 -0800 (PST)
+        Wed, 27 Jan 2021 15:58:26 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F7CC0613D6;
+        Wed, 27 Jan 2021 12:57:46 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id b11so3351216ybj.9;
+        Wed, 27 Jan 2021 12:57:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h/5giWFO3wXBwHEfC55BSYMxpJoJpAHOtOFoV5lHHRA=;
-        b=JPqZdhXyX1eoR5kq9AJVmmHtPIf8+TmY20tZ1iOVqrJYJ8CuKijXF/eZokWKR/JE3f
-         pHt3FTS0eCKoOE/7mlq0BvkQcwRekHJnRDaWObJkDEXu66CB4Fjk8laq9J8Pr8kHpapi
-         2mI5B64ZVH7Le+0FqQ2JifJ1RFea6Iinj32vjRKuel2gBlWEyfa2HzLtgQCcMIdYyY2D
-         AAyCUagm8BquLXLh9+mRd0+cuCcLlCIf6VO6LjJQpG7MF7yVh2HuCMDHP4YqnmvrkhLT
-         nQlayhBo0NS6DgzZ4knY55DrQLM0MRC6fIDyPWyjzQ3hJnZF+0/LirccUXYO/ypeNRVV
-         ZJvg==
+        bh=v3w2Eu9MVgLYVsxKcxrJ/h5B87c209eM+nktsBZXfTw=;
+        b=WmlsbvC3mMBzCTCG5PzFw2cK7mUeeSD9g+oDlsB0n2XvwXqjbj8PKSie/GiI4sQ8ZM
+         pf3VNP2apCU9eswaRMiAd+gIWjTF5LEl0yxrjMLiss3Dk2AguH7GGJxuaebId7OPUMuw
+         Kl9uEuhIY7jvDn8/3P2qYvTDdCgZF1Or1Rp0i78wHLLEzY2z+D9BwES49nV5ewtia1lQ
+         GKijvFZR/V4vlTkEpExxpvz4ZXNpMJlP6iknZkmMMDyZ0+Te9tEpkyBzqMjIcxuas+fl
+         AY3m5nWXmKa99usabAnRHYUaB1G1hyMx25912w/nx9B6LM8o0EYuqT0vt1ydN2wCuDqp
+         nscg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h/5giWFO3wXBwHEfC55BSYMxpJoJpAHOtOFoV5lHHRA=;
-        b=frxsy5xWPjlKiK1YGl3Qe1d+jc2ZwmPTj8qLE6sE3kSzp53XlpnxFDKwXzftSrdOqi
-         Xw8R4qOPYd6Ov/aFOHGSHJb9Xj4i3PGOdCbnQ3a0A85KIMqeQfJ47qJSnt8/QPG4RFBG
-         GTwwAz0r3TG17ZBv1RvQh9ff4jOUBr4IhZsn0R7zTXSEzWvns04KKSD6N0a1iM0F01EZ
-         T0YDnZUmBfkbdryGBIjftUtKNsxRFUm+ONWtIrCd7k447Mgamern1e/z8FSaEHW25DXf
-         z8YAlIMnG7hs1HuM9d56VqD40JbzwnqUfsuZsVIAZ6k4CdarXat7K9h9P8Y+EmpKEbSe
-         6g1w==
-X-Gm-Message-State: AOAM533on4bcdUKhoHS8kE3UAE0Rka9LB48z5z1ZGLBmhHG5ZoW2MeKx
-        mSj33anCB3uu4TvTKWtHrrrNfzfE2L8B/3GbwrADAg==
-X-Google-Smtp-Source: ABdhPJzI9VMOhe2Vm3gxoArLG691jzZ+q1LVeqHx82wJThfCmBid7tvx1tL8lNW4pOrJLIQqXv1m5Swfob8ImGMF1mM=
-X-Received: by 2002:a05:6808:8fa:: with SMTP id d26mr4522331oic.6.1611781041985;
- Wed, 27 Jan 2021 12:57:21 -0800 (PST)
+        bh=v3w2Eu9MVgLYVsxKcxrJ/h5B87c209eM+nktsBZXfTw=;
+        b=r6A6dq64Z+7dwiMVTN+q8GLiTCNu7Vhp3LFCZJEQqo0YQjBhd+AceCFAzVJMmFozHw
+         zDmZlyXt3ANhzqrmkjm0IETHg2eJv+LHe6ZYlXlyfwercM5Z4Tn+mImLzb/hQNx9Uwxr
+         Ja0keI4Q/iwFzvajxP8GON6ADVF4EZ2Vvl8ND5B5hqVGgp6q/yb7AwkSJQb4MDOuzfJU
+         Csgf6AxUfvU1UqwkOOJK15xMGxwV3Xn/OWCFLW2UuFdA2zv12vKLdObvK9+lxURqmWXD
+         q4yAJ5JhD+zCYWdeI5cwVkKZ4FBB1Po2cXIQbx+9CxRrPq5iuMwao70oLXxOFPGkDcPQ
+         XiKQ==
+X-Gm-Message-State: AOAM531BedTJLhI97Jse8OJh3KFj27m4BGf8PLfiDYYdCPATSf0ydUdT
+        uhfe3pC1BymJ+n0TZ4/3kcyaVsplblybkNa1+CWOjaihxVjMzA==
+X-Google-Smtp-Source: ABdhPJy7sbV0M810Jy+R0iP5dmIiYb7E6TS4zAYyUIPV+ckUN7m8fhWQ9wRjo7ozwGsUIdTdlQ7tDvsg74tGFUfg4Xo=
+X-Received: by 2002:a25:1287:: with SMTP id 129mr18215737ybs.27.1611781065815;
+ Wed, 27 Jan 2021 12:57:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
- <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
- <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
- <20201023031433.GF23681@linux.intel.com> <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
- <CALMp9eQ8C0pp5yP4tLsckVWq=j3Xb=e4M7UVZz67+pngaXJJUw@mail.gmail.com>
- <f40e5d23-88b6-01c0-60f9-5419dac703a2@redhat.com> <CALMp9eRGBiQDPr1wpAY34V=T6Jjij_iuHOX+_-QQPP=5SEw3GQ@mail.gmail.com>
- <4463f391-0a25-017e-f913-69c297e13c5e@redhat.com> <CALMp9eRnjdJtmU9bBosGNAxa2pvMzB8mHjtbYa-yb2uNoAkgdA@mail.gmail.com>
- <CALMp9eR2ONSpz__H2+ZpM4qqT7FNowNwOfe4x9o-ocfhwRnEhw@mail.gmail.com>
-In-Reply-To: <CALMp9eR2ONSpz__H2+ZpM4qqT7FNowNwOfe4x9o-ocfhwRnEhw@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 27 Jan 2021 12:57:10 -0800
-Message-ID: <CALMp9eTyoVwvkc6YH9oBPP74dABJmUsA0Gz98+O+5kANHobWbQ@mail.gmail.com>
-Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
- violation and misconfig
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Sean Christopherson <seanjc@google.com>
+References: <20210126183559.1302406-1-revest@chromium.org> <20210126183559.1302406-4-revest@chromium.org>
+In-Reply-To: <20210126183559.1302406-4-revest@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Jan 2021 12:57:34 -0800
+Message-ID: <CAEf4BzbnQ6XfUAuBDeuO9qSNojHGKgXJZG3NtBp4MaAXjscr2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 4/5] selftests/bpf: Use vmlinux.h in socket_cookie_prog.c
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 1:16 PM Jim Mattson <jmattson@google.com> wrote:
+On Tue, Jan 26, 2021 at 10:36 AM Florent Revest <revest@chromium.org> wrote:
 >
-> On Fri, Jan 15, 2021 at 11:35 AM Jim Mattson <jmattson@google.com> wrote:
-> >
-> > On Fri, Oct 23, 2020 at 10:43 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> > >
-> > > On 23/10/20 19:23, Jim Mattson wrote:
-> > > >> The information that we need is _not_ that provided by the advanced
-> > > >> VM-exit information (or by a page walk).  If a page is neither writable
-> > > >> nor executable, the advanced information doesn't say if the injected #PF
-> > > >> should be a W=1 or a F=1 fault.  We need the information in bits 0..2 of
-> > > >> the exit qualification for the final access, which however is not
-> > > >> available for the paging-structure access.
-> > > >>
-> > > > Are you planning to extend the emulator, then, to support all
-> > > > instructions? I'm not sure where you are going with this.
-> > >
-> > > I'm going to fix the bit 8=1 case, but for bit 8=0 there's not much that
-> > > you can do.  In all likelihood the guest is buggy anyway.
-> >
-> > Did this drop off your radar? Are you still planning to fix the bit8=1
-> > case to use advanced EPT exit qualification information? Or did I just
-> > miss it?
+> When migrating from the bpf.h's to the vmlinux.h's definition of struct
+> bps_sock, an interesting LLVM behavior happened. LLVM started producing
+> two fetches of ctx->sk in the sockops program this means that the
+> verifier could not keep track of the NULL-check on ctx->sk. Therefore,
+> we need to extract ctx->sk in a variable before checking and
+> dereferencing it.
 >
-> Paolo,
-> If you're not working on this, do you mind if I ask Aaron to take a look at it?
+> Acked-by: KP Singh <kpsingh@kernel.org>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
 
-Ugh. The advanced EPT exit qualification contains nothing useful here,
-AFAICT. It only contains x86 page protection information--nothing
-about the access itself.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+>  .../testing/selftests/bpf/progs/socket_cookie_prog.c  | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
+> index 81e84be6f86d..fbd5eaf39720 100644
+> --- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
+> @@ -1,12 +1,13 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (c) 2018 Facebook
+>
+> -#include <linux/bpf.h>
+> -#include <sys/socket.h>
+> +#include "vmlinux.h"
+>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_endian.h>
+>
+> +#define AF_INET6 10
+> +
+>  struct socket_cookie {
+>         __u64 cookie_key;
+>         __u32 cookie_value;
+> @@ -41,7 +42,7 @@ int set_cookie(struct bpf_sock_addr *ctx)
+>  SEC("sockops")
+>  int update_cookie(struct bpf_sock_ops *ctx)
+>  {
+> -       struct bpf_sock *sk;
+> +       struct bpf_sock *sk = ctx->sk;
+>         struct socket_cookie *p;
+>
+>         if (ctx->family != AF_INET6)
+> @@ -50,10 +51,10 @@ int update_cookie(struct bpf_sock_ops *ctx)
+>         if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
+>                 return 1;
+>
+> -       if (!ctx->sk)
+> +       if (!sk)
+>                 return 1;
+>
+> -       p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+> +       p = bpf_sk_storage_get(&socket_cookies, sk, 0, 0);
+>         if (!p)
+>                 return 1;
+>
+> --
+> 2.30.0.280.ga3ce27912f-goog
+>
