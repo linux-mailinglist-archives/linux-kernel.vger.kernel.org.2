@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0300305B59
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4B1305B62
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237905AbhA0M2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:28:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236296AbhA0MZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:25:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 336752070E;
-        Wed, 27 Jan 2021 12:25:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611750310;
-        bh=imd80gPIHbJE8uuSvdkKYNt06yTy9wGgnng4tuLO1bE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSrfJ2+mqCpTL9w5GZtWEYar7eDEJWbgyU+G6jO/ZATY7Bj4zQm+RDJ6hyn1gdwz2
-         EavnWQI6fK3FMdK1im06stlhsW35tDv3fwGIkQIytV7NsowOc1L1cvot9jKmfa71F8
-         OU8jF+mvh41FerQOm7gCQaG/22YnGRMRuQyKPPoI=
-Date:   Wed, 27 Jan 2021 13:25:07 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
-        mh12gx2825@gmail.com, oliver.graute@kococonnector.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        sbrivio@redhat.com, colin.king@canonical.com,
-        zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v8] fbtft: add tearing signal detect
-Message-ID: <YBFbo3QEHF9eQBxy@kroah.com>
-References: <1611743206-136112-1-git-send-email-zhangxuezhi3@gmail.com>
+        id S237702AbhA0M3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:29:51 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:46339 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237728AbhA0M0v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:26:51 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id 4jtUlXs0TI2394jtYlhI1h; Wed, 27 Jan 2021 13:26:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1611750360; bh=qSlszqB0O1piuaM6c1hXzd8CpL/mh8jhsF6rOIoDLcU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=GStSguRQStfiDZCSk15DvRNqhtywlqJykOK6gWvB87ms/FzgYTj8VdtsZKWo3PPuc
+         y40bIfALvYeAEyNxoPtDQoFblpS4LDLhv5ptO+i6SgpA2gWFNWVIz+Bm2bAAX4ppn0
+         7Up5qv4ykmcoJ7q152T6d1msxjUwwSdOe3tYDfNOMwmADk3SQa1zG94M9OMoejrOam
+         ThigzFMRUwC6qaV5ueK0keQnk9qo0tHQpOVc5aB4/nIh1RIYnXT8S+DJzUwLCjSmGn
+         hmYjRDYL4GMAk1PMJuvv4mj7/UWBvXm+e2SBRowlEuyLGSZ4dCjVpJh/1p+MkkheGr
+         sDhzv/Q1HJPiQ==
+Subject: Re: [PATCH v2 4/4] docs: Deprecate mfc display delay controls
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210115092607.29849-1-stanimir.varbanov@linaro.org>
+ <20210115092607.29849-5-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <acd7cd1f-607c-5901-07b7-c661a12d0c60@xs4all.nl>
+Date:   Wed, 27 Jan 2021 13:25:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611743206-136112-1-git-send-email-zhangxuezhi3@gmail.com>
+In-Reply-To: <20210115092607.29849-5-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKMCZr7OSd0aI+BYzO+vdtUjnnb/oFQndYbsiLiLwf00BwQMB0SjO5o1Z9pTnVfKKNNBeV+2gvGPz0/TS+bLG98V33owhH7Vc+uFgDNyQhI4Or1FtCfX
+ KxhfkuKafXrvOmOlVs7DCUAJilfDOXfxM5qzTZYdfZt4BLVSVmxPOQgkKivmIdCPpUSNfVDJ7kytReDKtgBYVtULHQrSlKhG1LKpvLcD9A2PR3t+kSo9noTN
+ OrgK+5/BWHdq8gg7FCQi2whKX8f+K9Dnc1I4hLCRFIV2IqcqPYxosGu/ih/ach/tFKMNevFGk6YYUXrEz37ZxfUQZ3asPcmPP+axPckP9T3bVwR5JBsTe2Zy
+ o1DxlyfxCez9+kIEVRRgsf8r8jQjkg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 06:26:46PM +0800, Carlis wrote:
-> From: zhangxuezhi <zhangxuezhi1@yulong.com>
+On 15/01/2021 10:26, Stanimir Varbanov wrote:
+> Deprecate mfc private display delay and display enable controls for
+> new clients and use the standard controls instead.
 > 
-> For st7789v ic,add tearing signal detect to avoid screen tearing
-> 
-> Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Thanks!
+
+	Hans
+
 > ---
-> v8: delete a log line
-> ---
->  drivers/staging/fbtft/fb_st7789v.c | 132 ++++++++++++++++++++++++++++++++++++-
->  drivers/staging/fbtft/fbtft.h      |   1 +
->  2 files changed, 132 insertions(+), 1 deletion(-)
+>  .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-> index 3a280cc..de7460c 100644
-> --- a/drivers/staging/fbtft/fb_st7789v.c
-> +++ b/drivers/staging/fbtft/fb_st7789v.c
-> @@ -9,9 +9,12 @@
->  #include <linux/delay.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
-> +#include <linux/mutex.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/completion.h>
->  #include <linux/module.h>
->  #include <video/mipi_display.h>
-> -
-> +#include <linux/gpio/consumer.h>
->  #include "fbtft.h"
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 5d7c47837035..815c6eb4a0d0 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -2111,6 +2111,11 @@ MFC 5.1 Control IDs
+>      feature can be used for example for generating thumbnails of videos.
+>      Applicable to the H264 decoder.
 >  
->  #define DRVNAME "fb_st7789v"
-> @@ -66,6 +69,32 @@ enum st7789v_command {
->  #define MADCTL_MX BIT(6) /* bitmask for column address order */
->  #define MADCTL_MY BIT(7) /* bitmask for page address order */
+> +    .. note::
+> +
+> +       This control is deprecated. Use the standard
+> +       ``V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE`` control instead.
+> +
+>  ``V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY (integer)``
+>      Display delay value for H264 decoder. The decoder is forced to
+>      return a decoded frame after the set 'display delay' number of
+> @@ -2118,6 +2123,11 @@ MFC 5.1 Control IDs
+>      of display order, in addition the hardware may still be using the
+>      returned buffer as a reference picture for subsequent frames.
 >  
-> +#define SPI_PANEL_TE_TIMEOUT	400
-> +static struct mutex te_mutex;/*mutex for tearing line*/
-> +static struct completion spi_panel_te;
+> +    .. note::
 > +
-> +static irqreturn_t spi_panel_te_handler(int irq, void *data)
-> +{
-> +	complete(&spi_panel_te);
-> +	return IRQ_HANDLED;
-> +}
+> +       This control is deprecated. Use the standard
+> +       ``V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY`` control instead.
 > +
-> +static void set_spi_panel_te_irq_status(struct fbtft_par *par, bool enable)
-> +{
-> +	static int te_irq_count;
-> +
-> +	mutex_lock(&te_mutex);
-> +
-> +	if (enable) {
-> +		if (++te_irq_count == 1)
-> +			enable_irq(gpiod_to_irq(par->gpio.te));
-> +	} else {
-> +		if (--te_irq_count == 0)
-> +			disable_irq(gpiod_to_irq(par->gpio.te));
-> +	}
-> +	mutex_unlock(&te_mutex);
-> +}
-> +
->  /**
->   * init_display() - initialize the display controller
->   *
-> @@ -82,6 +111,33 @@ enum st7789v_command {
->   */
->  static int init_display(struct fbtft_par *par)
->  {
-> +	int rc;
-> +	struct device *dev = par->info->device;
-> +
-> +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-> +	if (IS_ERR(par->gpio.te)) {
-> +		rc = PTR_ERR(par->gpio.te);
-> +		pr_err("Failed to request te gpio: %d\n", rc);
+>  ``V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P (integer)``
+>      The number of reference pictures used for encoding a P picture.
+>      Applicable to the H264 encoder.
+> 
 
-You are a driver, always use dev_* calls, not pr_*.
-
-This should be dev_err().
-
-same for other pr_ functions you add in this patch.
-
-Also, look at other commits for this file and make your subject: line
-match them (i.e. you forgot "staging: ")
-
-thanks,
-
-greg k-h
