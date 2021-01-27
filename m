@@ -2,225 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2542C306560
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1DE30656D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhA0UtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:49:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232777AbhA0UtO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:49:14 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FB1C061573;
-        Wed, 27 Jan 2021 12:48:33 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id q7so3280665wre.13;
-        Wed, 27 Jan 2021 12:48:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=9d5wFRKkqq1ZiHaiLZIbAzg3nfbY8FLusDPEk+g66Qs=;
-        b=RunL/5yiuFWJac9iZcdLZbNpj2ux9USv4swmNHGnF+J3GldnKyqI/IS5LBDwa9F8Ex
-         M+toLmyLt4/6RYB1Nm+8A57N2z7qKQa+VE9sHi2LFOSjhp8AgaEsirdbIglokzATe+K/
-         I7qWow7f19UA/geCtFMGGFFZgQDRzRMLQHfaIwzOpJwBNJopEcTSEtug8sUoQVwRpcDc
-         yV5k3+AZNYICtHgMKYmWdct2xkX3882eiRm6JnNHbtBn51fmQy/JIXA+HpCfMBoazizg
-         sw13xK+OxcAZ+5+zgdtJlWuopGRSKurcSYvaQASbBCruC2+1IpeK0ywsFxIELhpwuKGx
-         2PYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=9d5wFRKkqq1ZiHaiLZIbAzg3nfbY8FLusDPEk+g66Qs=;
-        b=rtNkkAfjATDLdw6I4JXjkATqmpdRRPv+Pq2lseIvj9pQvJj1SnvvOn0pYfKivMY/KM
-         +iLYgI2L9gKT4VEq00TN7sj0iJKbgaUoWMwzjVLe+m12HWmOtckl99Tb/CplzyWadVoq
-         pTuTpAJWrGF+pUYaYEeAMTqorYAXua7avQxs1i1A3AHZKsgXqa2UQhuHDoQ9OHVc0NrZ
-         qC/5mGF0TkG1ZV4pv5tmjQdIuP5Dsyp3IxrGZoPQzniTJPUpntNn0RzLaKb1LUTgIYHa
-         TK9mL8ckHdrPm5QNg38r+cojb09aRvR2LNb9igaGiUpriynOUlNFpHpXAuOn5/L4Vmho
-         kEAw==
-X-Gm-Message-State: AOAM532BM8HZ7av2+Vl3rbv5SlzQpNESdYdbZOZkRj6u5TQ6CEL6XKWE
-        /Favs8nAouaSp57fbA9cGHbr8W1TjlU=
-X-Google-Smtp-Source: ABdhPJyfp5rrnvGkTRFwgf4lSLEDDo7u42mU4o12L1q5P8zfrcKVLMyO9RgzEAsERWljZtmSFP2EGw==
-X-Received: by 2002:a5d:640c:: with SMTP id z12mr13013106wru.342.1611780512600;
-        Wed, 27 Jan 2021 12:48:32 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id i131sm3632930wmi.25.2021.01.27.12.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 12:48:31 -0800 (PST)
-Message-ID: <ab96a1a58e1f7037e6d43491f1e0f698d0390296.camel@gmail.com>
-Subject: Re: [PATCH v2 7/9] gpio: ep93xx: separate IRQ's setup
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 27 Jan 2021 21:48:31 +0100
-In-Reply-To: <20210127104617.1173-8-nikita.shubin@maquefel.me>
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
-         <20210127104617.1173-1-nikita.shubin@maquefel.me>
-         <20210127104617.1173-8-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S233518AbhA0Uwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:52:34 -0500
+Received: from mga07.intel.com ([134.134.136.100]:33435 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233256AbhA0Uwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 15:52:32 -0500
+IronPort-SDR: oLUGfG9SZiwj8xFmpibHEVlxlYwuVrxzyP589/HuX1T+F/lOTktgg35kxpzGpNdmvwyXMiHY58
+ UIN8b+sfxJPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="244209621"
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="244209621"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 12:50:42 -0800
+IronPort-SDR: VwPVX0QlXB2IkieBL8wAnPRe68QsA+JXgUeL/7Huw3K/aZN6g3cW+ZCpW8v/0uMx/otP5UjtSl
+ YqOEoKNfrRow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="353940111"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 27 Jan 2021 12:50:41 -0800
+Received: from [10.251.8.120] (kliang2-MOBL.ccr.corp.intel.com [10.251.8.120])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 8571858079D;
+        Wed, 27 Jan 2021 12:50:39 -0800 (PST)
+Subject: Re: [PATCH V2 3/5] perf/x86/intel: Filter unsupported Topdown metrics
+ event
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
+        maddy@linux.vnet.ibm.com
+References: <1611761925-159055-1-git-send-email-kan.liang@linux.intel.com>
+ <1611761925-159055-4-git-send-email-kan.liang@linux.intel.com>
+ <YBG7ZJUBQsUmoXlY@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <16cc31ac-eb41-e7cc-5582-e21400bfd15f@linux.intel.com>
+Date:   Wed, 27 Jan 2021 15:50:37 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YBG7ZJUBQsUmoXlY@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita,
 
-On Wed, 2021-01-27 at 13:46 +0300, Nikita Shubin wrote:
-> Separate IRQ's setup for port A,B,F.
 
-Somehow I don't feel that moving "FIXME" code around makes much
-sense. Maybe the anticipated conversion to hierarhical IRQ chip
-will result in a cleanup automatically?
-
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  drivers/gpio/gpio-ep93xx.c | 104 +++++++++++++++++++++++------------
-> --
->  1 file changed, 64 insertions(+), 40 deletions(-)
+On 1/27/2021 2:13 PM, Peter Zijlstra wrote:
+> On Wed, Jan 27, 2021 at 07:38:43AM -0800, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Current perf doesn't check the index of a Topdown metrics event before
+>> updating the event. A perf tool user may get a value from an unsupported
+>> Topdown metrics event.
+>>
+>> For example, the L2 topdown event, cpu/event=0x00,umask=0x84/, is not
+>> supported on Ice Lake. A perf tool user may mistakenly use the
+>> unsupported events via RAW format. In this case, the scheduler follows
+>> the unknown event handling and assigns a GP counter to the event. The
+>> icl_get_topdown_value() returns the value of the slots to the event.
+>> The perf tool user will get the value for the unsupported
+>> Topdown metrics event.
+>>
+>> Add a check in the __icl_update_topdown_event() and avoid updating
+>> unsupported events.
 > 
-> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-> index e4270b4e5f26..b212c007240e 100644
-> --- a/drivers/gpio/gpio-ep93xx.c
-> +++ b/drivers/gpio/gpio-ep93xx.c
-> @@ -353,6 +353,64 @@ static void ep93xx_init_irq_chips(struct
-> ep93xx_gpio *epg)
->         }
->  }
->  
-> +static int ep93xx_gpio_add_ab_irq_chip(struct platform_device *pdev,
-> +                                       struct gpio_irq_chip *girq,
-> +                                       unsigned int irq_base)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       int ab_parent_irq = platform_get_irq(pdev, 0);
-> +
-> +       girq->parent_handler = ep93xx_gpio_ab_irq_handler;
-> +       girq->num_parents = 1;
-> +       girq->parents = devm_kcalloc(dev, girq->num_parents,
-> +                                    sizeof(*girq->parents),
-> +                                    GFP_KERNEL);
-> +       if (!girq->parents)
-> +               return -ENOMEM;
-> +       girq->default_type = IRQ_TYPE_NONE;
-> +       girq->handler = handle_level_irq;
-> +       girq->parents[0] = ab_parent_irq;
-> +       girq->first = irq_base;
-> +
-> +       return 0;
-> +}
-> +
-> +static int ep93xx_gpio_add_f_irq_chip(struct platform_device *pdev,
-> +                                       struct gpio_irq_chip *girq,
-> +                                       unsigned int irq_base)
-> +{
-> +       int gpio_irq;
-> +       int i;
-> +       struct device *dev = &pdev->dev;
-> +
-> +       /*
-> +        * FIXME: convert this to use hierarchical IRQ support!
-> +        * this requires fixing the root irqchip to be hierarchical.
-> +        */
-> +       girq->parent_handler = ep93xx_gpio_f_irq_handler;
-> +       girq->num_parents = 8;
-> +       girq->parents = devm_kcalloc(dev, girq->num_parents,
-> +                                    sizeof(*girq->parents),
-> +                                    GFP_KERNEL);
-> +       if (!girq->parents)
-> +               return -ENOMEM;
-> +       /* Pick resources 1..8 for these IRQs */
-> +       for (i = 0; i < ARRAY_SIZE(girq->parents); i++) {
-> +               girq->parents[i] = platform_get_irq(pdev, i + 1);
-> +               gpio_irq = irq_base + i;
-> +               irq_set_chip_data(gpio_irq, &epg->gc[5]);
-> +               irq_set_chip_and_handler(gpio_irq,
-> +                                        &ep93xx_gpio_irq_chip,
-> +                                        handle_level_irq);
-> +               irq_clear_status_flags(gpio_irq, IRQ_NOREQUEST);
-> +       }
-> +       girq->default_type = IRQ_TYPE_NONE;
-> +       girq->handler = handle_level_irq;
-> +       girq->first = irq_base;
-> +
-> +       return 0;
-> +}
-> +
->  static int ep93xx_gpio_add_bank(struct gpio_chip *gc,
->                                 struct platform_device *pdev,
->                                 struct ep93xx_gpio *epg,
-> @@ -380,50 +438,16 @@ static int ep93xx_gpio_add_bank(struct
-> gpio_chip *gc,
->         }
->  
->         if (bank->has_irq) {
-> -               int ab_parent_irq = platform_get_irq(pdev, 0);
-> -
-> -               girq->parent_handler = ep93xx_gpio_ab_irq_handler;
-> -               girq->num_parents = 1;
-> -               girq->parents = devm_kcalloc(dev, girq->num_parents,
-> -                                            sizeof(*girq->parents),
-> -                                            GFP_KERNEL);
-> -               if (!girq->parents)
-> -                       return -ENOMEM;
-> -               girq->default_type = IRQ_TYPE_NONE;
-> -               girq->handler = handle_level_irq;
-> -               girq->parents[0] = ab_parent_irq;
-> -               girq->first = bank->irq_base;
-> +               err = ep93xx_gpio_add_ab_irq_chip(pdev, girq, bank-
-> >irq_base);
-> +               if (err)
-> +                       return err;
->         }
->  
->         /* Only bank F has especially funky IRQ handling */
->         if (bank->has_hierarchical_irq) {
-> -               int gpio_irq;
-> -               int i;
-> -
-> -               /*
-> -                * FIXME: convert this to use hierarchical IRQ
-> support!
-> -                * this requires fixing the root irqchip to be
-> hierarchical.
-> -                */
-> -               girq->parent_handler = ep93xx_gpio_f_irq_handler;
-> -               girq->num_parents = 8;
-> -               girq->parents = devm_kcalloc(dev, girq->num_parents,
-> -                                            sizeof(*girq->parents),
-> -                                            GFP_KERNEL);
-> -               if (!girq->parents)
-> -                       return -ENOMEM;
-> -               /* Pick resources 1..8 for these IRQs */
-> -               for (i = 0; i < ARRAY_SIZE(girq->parents); i++) {
-> -                       girq->parents[i] = platform_get_irq(pdev, i +
-> 1);
-> -                       gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
-> -                       irq_set_chip_data(gpio_irq, &epg->gc[5]);
-> -                       irq_set_chip_and_handler(gpio_irq,
-> -                                               
-> &ep93xx_gpio_irq_chip,
-> -                                                handle_level_irq);
-> -                       irq_clear_status_flags(gpio_irq,
-> IRQ_NOREQUEST);
-> -               }
-> -               girq->default_type = IRQ_TYPE_NONE;
-> -               girq->handler = handle_level_irq;
-> -               girq->first = EP93XX_GPIO_F_IRQ_BASE;
-> +               err = ep93xx_gpio_add_f_irq_chip(pdev, girq,
-> EP93XX_GPIO_F_IRQ_BASE);
-> +               if (err)
-> +                       return err;
->         }
->  
->         return devm_gpiochip_add_data(dev, gc, epg);
+> I was struggling trying to understand how we end up here. Because
+> userspace can add whatever crap it wants, and why is only this thing a
+> problem..
+> 
+> But the actual problem is the next patch changing INTEL_TD_METRIC_NUM,
+> which then means is_metric_idx() will change, and that means that for
+> ICL we'll accept these raw events as metric events on creation and then
+> at runtime we get into trouble.
+> 
+> This isn't spelled out.
+> 
+> I do think this is entirely the wrong fix for that though. You're now
+> adding cycles to the relative hot path, instead of fixing the problem at
+> event creation, which is the slow path.
+> 
+> Why can't we either refuse the event on ICL or otherwise wreck it on
+> construction to avoid getting into trouble here?
+> 
 
--- 
-Alexander Sverdlin.
+To reject the unsupported topdown events, I think perf needs to know the 
+number of the supported topdown events. Maybe we can add a variable 
+num_topdown_events in x86_pmu as below. Is it OK?
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 3d6fdcf..c7f2602 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1061,6 +1061,18 @@ int x86_schedule_events(struct cpu_hw_events 
+*cpuc, int n, int *assign)
+  	return unsched ? -EINVAL : 0;
+  }
+
++#define INTEL_TD_METRIC_AVAILABLE_MAX	(INTEL_TD_METRIC_RETIRING + \
++					 ((x86_pmu.num_topdown_events - 1) << 8))
++
++inline bool is_metric_event(struct perf_event *event)
++{
++	u64 config = event->attr.config;
++
++	return ((config & ARCH_PERFMON_EVENTSEL_EVENT) == 0) &&
++		((config & INTEL_ARCH_EVENT_MASK) >= INTEL_TD_METRIC_RETIRING)  &&
++		((config & INTEL_ARCH_EVENT_MASK) <= INTEL_TD_METRIC_AVAILABLE_MAX);
++}
++
+  static int add_nr_metric_event(struct cpu_hw_events *cpuc,
+  			       struct perf_event *event)
+  {
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index cd4d542..eab1eba 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -5769,6 +5769,7 @@ __init int intel_pmu_init(void)
+  		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xc9, .umask=0x04);
+  		x86_pmu.lbr_pt_coexist = true;
+  		intel_pmu_pebs_data_source_skl(pmem);
++		x86_pmu.num_topdown_events = 4;
+  		x86_pmu.update_topdown_event = icl_update_topdown_event;
+  		x86_pmu.set_topdown_event_period = icl_set_topdown_event_period;
+  		pr_cont("Icelake events, ");
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 15977d0..8b05893 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -87,14 +87,7 @@ static inline bool is_topdown_count(struct perf_event 
+*event)
+  	return event->hw.flags & PERF_X86_EVENT_TOPDOWN;
+  }
+
+-static inline bool is_metric_event(struct perf_event *event)
+-{
+-	u64 config = event->attr.config;
+-
+-	return ((config & ARCH_PERFMON_EVENTSEL_EVENT) == 0) &&
+-		((config & INTEL_ARCH_EVENT_MASK) >= INTEL_TD_METRIC_RETIRING)  &&
+-		((config & INTEL_ARCH_EVENT_MASK) <= INTEL_TD_METRIC_MAX);
+-}
++inline bool is_metric_event(struct perf_event *event);
+
+  static inline bool is_slots_event(struct perf_event *event)
+  {
+@@ -782,6 +775,7 @@ struct x86_pmu {
+  	/*
+  	 * Intel perf metrics
+  	 */
++	int		num_topdown_events;
+  	u64		(*update_topdown_event)(struct perf_event *event);
+  	int		(*set_topdown_event_period)(struct perf_event *event);
 
 
+Thanks,
+Kan
