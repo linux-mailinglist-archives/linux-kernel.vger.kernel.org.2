@@ -2,257 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A583060FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 097493060FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343588AbhA0Q1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:27:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:53814 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237070AbhA0Q1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:27:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D64E31B;
-        Wed, 27 Jan 2021 08:26:14 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B96AA3F66E;
-        Wed, 27 Jan 2021 08:26:12 -0800 (PST)
-Date:   Wed, 27 Jan 2021 16:26:05 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, james.quinlan@broadcom.com,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Souvik Chakravarty <souvik.chakravarty@arm.com>
-Subject: Re: [PATCH v5 0/36] SCMI vendor protocols and modularization
-Message-ID: <20210127162605.GB9873@e120937-lin>
-References: <20210112192018.34994-1-cristian.marussi@arm.com>
- <CAKfTPtD5EwmDQJvx2yhG3cd6hKh-qJYW15DpW5cdPkgUc2tFfA@mail.gmail.com>
+        id S1343944AbhA0Q1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:27:39 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:55737 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1343556AbhA0Q1S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 11:27:18 -0500
+Received: (qmail 227324 invoked by uid 1000); 27 Jan 2021 11:26:34 -0500
+Date:   Wed, 27 Jan 2021 11:26:34 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zqiang <qiang.zhang@windriver.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v3 12/12] usb: misc: usbtest: update to use the
+ usb_control_msg_{send|recv}() API
+Message-ID: <20210127162634.GA225622@rowland.harvard.edu>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210127121247.9938-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtD5EwmDQJvx2yhG3cd6hKh-qJYW15DpW5cdPkgUc2tFfA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210127121247.9938-1-anant.thazhemadam@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+On Wed, Jan 27, 2021 at 05:42:47PM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, instances of usb_control_msg() have been replaced with
+> usb_control_msg_{recv|send}() and the return value checking conditions have
+> also been modified appropriately.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> ---
+> Resending this patch since the subject line for the initial submission 
+> (sent as a part of the patch series) wasn't set correctly.
 
-On Wed, Jan 27, 2021 at 05:21:15PM +0100, Vincent Guittot wrote:
-> Hi Cristian,
-> 
-> 
-> On Tue, 12 Jan 2021 at 20:20, Cristian Marussi <cristian.marussi@arm.com> wrote:
-> >
-> > Hi all,
-> >
-> > The current SCMI implementation does not provide an interface to easily
-> > develop and include a custom vendor protocol implementation as prescribed
-> > by the SCMI standard, also because, there is not currently any custom
-> > protocol in the upstream to justify the development of a custom interface
-> > and its maintenance.
-> >
-> > Moreover the current interface exposes protocol operations to the SCMI
-> > driver users attaching per-protocol operations directly to the handle
-> > structure, which, in this way, tends to grow indefinitely for each new
-> > protocol addition.
-> >
-> > Beside this, protocols private data are also exposed via handle *_priv
-> > pointers, making such private data accessible also to the SCMI drivers
-> > even if neither really needed nor advisable.
-> >
-> > This series wants to address this by simplifying the SCMI protocols
-> > interface and reducing it, roughly, to these common generic operations:
-> >
-> >         - handle->devm_get_protocol()
-> >         -  handle->devm_put_protocol()
-> >         - handle->notify_ops()
-> >
-> > All protocols' private data pointers are removed from handle too and made
-> > accessible only to the protocols code through dedicated internal helpers.
-> >
-> > The concept of protocol handle is also introduced in the SCMI protocol code
-> > to represent a protocol instance initialized against a specific SCMI
-> > instance (handle), so that all the new protocol code uses such protocol
-> > handles wherever previously SCMI handle was used: this enable tigther
-> > control of what is exposed to the protocol code vs the SCMI drivers.
-> >
-> > Moreover protocol initialization is moved away from device probe and now
-> > happens on demand when the first user shows up (first .get_protocol), while
-> > de-initialization is performed once the last user of the protocol, even in
-> > terms of registered notifications callback, is gone, with the SCMI core
-> > taking care to perform all the needed underlying resource accounting.
-> >
-> > This way any new future standard or custom protocol implementation will
-> > expose a common unified interface which does not need to be extended
-> > endlessly: no need to maintain a custom interface only for vendor protos.
-> > SCMI drivers written on top of standard or custom protocols will use this
-> > same common interface to access any protocol operations.
-> >
-> > All existent upstream SCMI drivers are converted to this new interface.
-> >
-> > In order to make this migration painless and to avoid the need of a big
-> > un-mergeable jumbo patch touching all over the protocols and drivers (like
-> > it was in v2), since v3 the migration process has been heavily split with a
-> > bit of transient code added along the way (to preserve bisectability) and
-> > finally removed towards the ends of the series.
-> > Protocols and SCMI drivers migration to the new interface happens along
-> > patches 10->29.
-> >
-> > Note that even in v5 all the related SCMI drivers maintainers are still NOT
-> > CC'ed given I am still sort of gather consensus about the interface itself.
-> >
-> > Leveraging this new centralized and common initialization flow we took
-> > care also to refactor and simplify protocol-events registration and remove
-> > *notify_priv from the handle interface making it accessible only to the
-> > notification core.
-> >
-> > Patch 35 builds on top of this new interface and introduces a mechanism to
-> > define an SCMI protocol as a full blown module (possibly loadable) while
-> > leaving the core dealing with proper resource accounting.
-> > Standard protocols are still kept as builtins in this series, though.
-> >
-> > Finally, patch 36 introduces dynamic SCMI devices creation to avoid having
-> > to update the static module device table in the core each time a new driver
-> > is added.
-> >
-> > The whole SCMI stack can still be built alternatively as a module, with all
-> > the standard protocols included in scmi-module.ko in such a case.
-> >
-> > On top of this series an example SCMI Custom protocol 0x99 and related
-> > SCMI Custom Dummy driver has been built and it is available at [1] as a
-> > series of DEBUG patches on top this same series.
-> >
-> > The series is currently based on for-next/scmi [2] on top of:
-> >
-> > commit 6054d97ab512 ("MAINTAINERS: Update ARM SCMI entry")
-> >
-> > Any feedback welcome.
-> 
-> I have tested your patchset on my setup which includes:
-> 
-> - scmi performance protocol
-> - scmi power domain protocol
-> - scmi clock protocol
-> - scmi sensor protocol
-> - scmi notification
-> - registration of a custom scmi module (still under dev)
-> - 2 scmi channels
-> 
-> And everything worked fine. So FWIW,
-> 
-> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> 
+The benefits of these changes are rather minimal.  In some cases they 
+actually make the code worse (doing an unnecessary allocation in order 
+to copy a buffer that doesn't need to be copied).
 
-Great !
-Thanks to have spent time on this.
+>  drivers/usb/misc/usbtest.c | 69 ++++++++++++++++----------------------
+>  1 file changed, 29 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
+> index 150090ee4ec1..4337eff2a749 100644
+> --- a/drivers/usb/misc/usbtest.c
+> +++ b/drivers/usb/misc/usbtest.c
+> @@ -672,19 +672,15 @@ static int get_altsetting(struct usbtest_dev *dev)
+>  	struct usb_device	*udev = interface_to_usbdev(iface);
+>  	int			retval;
+>  
+> -	retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+> -			USB_REQ_GET_INTERFACE, USB_DIR_IN|USB_RECIP_INTERFACE,
+> -			0, iface->altsetting[0].desc.bInterfaceNumber,
+> -			dev->buf, 1, USB_CTRL_GET_TIMEOUT);
+> -	switch (retval) {
+> -	case 1:
+> -		return dev->buf[0];
+> -	case 0:
+> -		retval = -ERANGE;
+> -		fallthrough;
+> -	default:
+> +	retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_INTERFACE,
+> +				      USB_DIR_IN|USB_RECIP_INTERFACE,
+> +				      0, iface->altsetting[0].desc.bInterfaceNumber,
+> +				      dev->buf, 1, USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
 
-Cristian
+Here dev->buf is aleady DMA-able; there's no need to copy it.  The only 
+advantage is avoiding the short-read check.
 
-> >
-> > Thanks,
-> >
-> > Cristian
-> >
-> > ---
-> > v4 --> v5
-> > - using standard kernel list instead of ad-hoc lists in 36/36
-> > - renamed devm_get/put_ops to devm_get/put_protocol
-> > - dropped RFC patch on non devres get/put_ops
-> >
-> > v3 --> v4
-> > - rebased on sudeep/for-next/scmi v5.11-rc1
-> > - added a few comments more
-> >
-> > v2 --> v3
-> > - added dynamic SCMI devices creation (getting rid of static device table)
-> > - heavy split of protocols and drivers migrations to the new interface
-> > - rebased on top of next-20201201 so migrating also:
-> >   + SCMIv3.0 Voltage Domain protocol & SCMI Regulator
-> >   + SCMIv3.0 Sensor Extensions
-> >
-> > v1 --> v2
-> > - rebased on for-next/scmi v5.10-rc1
-> > - introduced protocol handles
-> > - added devres managed devm_ variant for protocols operations
-> > - made all scmi_protocol refs const
-> > - introduced IDR to handle protocols instead of static array
-> > - refactored code around fast path
-> >
-> > [1]:https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_modules_ext_V5/
-> > [2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
-> >
-> >
-> > Cristian Marussi (36):
-> >   firmware: arm_scmi: review protocol registration interface
-> >   firmware: arm_scmi: introduce protocol handle definitions
-> >   firmware: arm_scmi: introduce devres get/put protocols operations
-> >   firmware: arm_scmi: make notifications aware of protocols users
-> >   firmware: arm_scmi: introduce new devres notification ops
-> >   firmware: arm_scmi: refactor events registration
-> >   firmware: arm_scmi: convert events registration to protocol handles
-> >   firmware: arm_scmi: add new protocol handle core xfer ops
-> >   firmware: arm_scmi: add helper to access revision area memory
-> >   firmware: arm_scmi: port Base protocol to new interface
-> >   firmware: arm_scmi: port Perf protocol to new protocols interface
-> >   cpufreq: scmi: port driver to the new scmi_perf_proto_ops interface
-> >   firmware: arm_scmi: remove legacy scmi_perf_ops protocol interface
-> >   firmware: arm_scmi: port Power protocol to new protocols interface
-> >   firmware: arm_scmi: port GenPD driver to the new scmi_power_proto_ops
-> >     interface
-> >   firmware: arm_scmi: remove legacy scmi_power_ops protocol interface
-> >   firmware: arm_scmi: port Clock protocol to new protocols interface
-> >   clk: scmi: port driver to the new scmi_clk_proto_ops interface
-> >   firmware: arm_scmi: remove legacy scmi_clk_ops protocol interface
-> >   firmware: arm_scmi: port Reset protocol to new protocols interface
-> >   reset: reset-scmi: port driver to the new scmi_reset_proto_ops
-> >     interface
-> >   firmware: arm_scmi: remove legacy scmi_reset_ops protocol interface
-> >   firmware: arm_scmi: port Sensor protocol to new protocols interface
-> >   hwmon: (scmi) port driver to the new scmi_sensor_proto_ops interface
-> >   firmware: arm_scmi: remove legacy scmi_sensor_ops protocol interface
-> >   firmware: arm_scmi: port SystemPower protocol to new protocols
-> >     interface
-> >   firmware: arm_scmi: port Voltage protocol to new protocols interface
-> >   regulator: scmi: port driver to the new scmi_voltage_proto_ops
-> >     interface
-> >   firmware: arm_scmi: remove legacy scmi_voltage_ops protocol interface
-> >   firmware: arm_scmi: make references to handle const
-> >   firmware: arm_scmi: cleanup legacy protocol init code
-> >   firmware: arm_scmi: cleanup unused core xfer wrappers
-> >   firmware: arm_scmi: cleanup events registration transient code
-> >   firmware: arm_scmi: make notify_priv really private
-> >   firmware: arm_scmi: add protocol modularization support
-> >   firmware: arm_scmi: add dynamic scmi devices creation
-> >
-> >  drivers/clk/clk-scmi.c                     |  27 +-
-> >  drivers/cpufreq/scmi-cpufreq.c             |  37 +-
-> >  drivers/firmware/arm_scmi/base.c           | 140 ++--
-> >  drivers/firmware/arm_scmi/bus.c            | 100 ++-
-> >  drivers/firmware/arm_scmi/clock.c          | 129 ++--
-> >  drivers/firmware/arm_scmi/common.h         | 117 +++-
-> >  drivers/firmware/arm_scmi/driver.c         | 759 +++++++++++++++++++--
-> >  drivers/firmware/arm_scmi/notify.c         | 297 ++++++--
-> >  drivers/firmware/arm_scmi/notify.h         |  38 +-
-> >  drivers/firmware/arm_scmi/perf.c           | 262 +++----
-> >  drivers/firmware/arm_scmi/power.c          | 134 ++--
-> >  drivers/firmware/arm_scmi/reset.c          | 146 ++--
-> >  drivers/firmware/arm_scmi/scmi_pm_domain.c |  26 +-
-> >  drivers/firmware/arm_scmi/sensors.c        | 230 ++++---
-> >  drivers/firmware/arm_scmi/system.c         |  61 +-
-> >  drivers/firmware/arm_scmi/voltage.c        | 122 ++--
-> >  drivers/hwmon/scmi-hwmon.c                 |  24 +-
-> >  drivers/regulator/scmi-regulator.c         |  40 +-
-> >  drivers/reset/reset-scmi.c                 |  33 +-
-> >  include/linux/scmi_protocol.h              | 183 ++---
-> >  20 files changed, 1996 insertions(+), 909 deletions(-)
-> >
-> > --
-> > 2.17.1
-> >
+> +
+> +	if (retval < 0)
+>  		return retval;
+> -	}
+> +
+> +	return dev->buf[0];
+>  }
+>  
+>  static int set_altsetting(struct usbtest_dev *dev, int alternate)
+> @@ -872,14 +868,15 @@ static int ch9_postconfig(struct usbtest_dev *dev)
+>  		 * ... although some cheap devices (like one TI Hub I've got)
+>  		 * won't return config descriptors except before set_config.
+>  		 */
+> -		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+> -				USB_REQ_GET_CONFIGURATION,
+> -				USB_DIR_IN | USB_RECIP_DEVICE,
+> -				0, 0, dev->buf, 1, USB_CTRL_GET_TIMEOUT);
+> -		if (retval != 1 || dev->buf[0] != expected) {
+> +		retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_CONFIGURATION,
+> +					      USB_DIR_IN | USB_RECIP_DEVICE,  0,
+> +					      0, dev->buf, 1, USB_CTRL_GET_TIMEOUT,
+> +					      GFP_KERNEL);
+> +
+> +		if (retval != 0 || dev->buf[0] != expected) {
+>  			dev_err(&iface->dev, "get config --> %d %d (1 %d)\n",
+>  				retval, dev->buf[0], expected);
+> -			return (retval < 0) ? retval : -EDOM;
+> +			return retval;
+
+Here again, the advantage is minimal at best.
+
+>  		}
+>  	}
+>  
+> @@ -1683,10 +1680,10 @@ static int test_halt(struct usbtest_dev *tdev, int ep, struct urb *urb)
+>  		return retval;
+>  
+>  	/* set halt (protocol test only), verify it worked */
+> -	retval = usb_control_msg(urb->dev, usb_sndctrlpipe(urb->dev, 0),
+> -			USB_REQ_SET_FEATURE, USB_RECIP_ENDPOINT,
+> -			USB_ENDPOINT_HALT, ep,
+> -			NULL, 0, USB_CTRL_SET_TIMEOUT);
+> +	retval = usb_control_msg_send(urb->dev, 0, USB_REQ_SET_FEATURE,
+> +				      USB_RECIP_ENDPOINT, USB_ENDPOINT_HALT,
+> +				      ep, NULL, 0, USB_CTRL_SET_TIMEOUT,
+> +				      GFP_KERNEL);
+
+Here there is no advantage at all.  There is no buffer to copy and no 
+possibility of a short write.
+
+>  	if (retval < 0) {
+>  		ERROR(tdev, "ep %02x couldn't set halt, %d\n", ep, retval);
+>  		return retval;
+> @@ -1845,30 +1842,22 @@ static int ctrl_out(struct usbtest_dev *dev,
+>  		/* write patterned data */
+>  		for (j = 0; j < len; j++)
+>  			buf[j] = (u8)(i + j);
+> -		retval = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+> -				0x5b, USB_DIR_OUT|USB_TYPE_VENDOR,
+> -				0, 0, buf, len, USB_CTRL_SET_TIMEOUT);
+> -		if (retval != len) {
+> +		retval = usb_control_msg_send(udev, 0, 0x5b,
+> +					      USB_DIR_OUT | USB_TYPE_VENDOR, 0,
+> +					      0, buf, len, USB_CTRL_SET_TIMEOUT,
+> +					      GFP_KERNEL);
+> +		if (retval < 0) {
+>  			what = "write";
+> -			if (retval >= 0) {
+> -				ERROR(dev, "ctrl_out, wlen %d (expected %d)\n",
+> -						retval, len);
+> -				retval = -EBADMSG;
+> -			}
+>  			break;
+>  		}
+
+Here buf doesn't need to be copied, and a short write will return an 
+error code anyway.
+
+>  
+>  		/* read it back -- assuming nothing intervened!!  */
+> -		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+> -				0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
+> -				0, 0, buf, len, USB_CTRL_GET_TIMEOUT);
+> -		if (retval != len) {
+> +		retval = usb_control_msg_recv(udev, 0,
+> +					      0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
+> +					      0, 0, buf, len, USB_CTRL_GET_TIMEOUT,
+> +					      GFP_KERNEL);
+> +		if (retval < 0) {
+>  			what = "read";
+> -			if (retval >= 0) {
+> -				ERROR(dev, "ctrl_out, rlen %d (expected %d)\n",
+> -						retval, len);
+> -				retval = -EBADMSG;
+> -			}
+
+Similar to one of the cases above.
+
+Alan Stern
+
+>  			break;
+>  		}
+>  
+> -- 
+> 2.25.1
+> 
