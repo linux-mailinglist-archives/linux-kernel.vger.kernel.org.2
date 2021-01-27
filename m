@@ -2,636 +2,1135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CDD305920
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C88305961
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236132AbhA0LE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:04:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236293AbhA0LAc (ORCPT
+        id S236402AbhA0LPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:15:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24683 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236305AbhA0LBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:00:32 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on0624.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::624])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED29AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:59:46 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k4EX1iIbWfcerqslD1lpuk9hVOidf9Koix7RcQN39TPAD3JWo8YL0XAapTnCmqPLyLeawIzCkyQIGMUdy4dGG61boGjN0BRFUBW91A2/ofV6JzdFfr65VF35ClaqGuzwEoGCa9eVMQRMMG57S49FJbDHLRIrEHlXNtrKfYulPqpNQun///3S4Yf21I1BcYcbc8d/MZUWCvgO8oRh/9muiiC7x1yEu8eX1Chc1blOGQw1o3jz20vXpw0rlwknueGavQWXKYEBJ6PXKRDG9Y7yuX71I545gynW30ClCdCgYIAxAMoTVPYkw2/WiKQbLh/oOtenWVIYNaCAOLNpelNnMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KEGTMWiLpYFYRSGXWEoWmgl4qaheWwh5CNvYEDCRCn4=;
- b=S4Fr/Pfmx7DzRA/1A/W79eArxnK5AhP+cT6oruJ3BPSVYNZ5RxHbRMLu/eVubZU0omgA+TxUM6aTDuGtIY0qun3Y0h6k2u2pByLOjLtBHj3qyJU2ip5nncCzGc/vivF+XMpa8thY39p3NIFzIN8gPxO343Xn73SdBMEYo0EpV/kf0XfZ6jpmq6V3PDt4VpNvoqyKLLTHEUP9IvCPQw6dX3n/lXcmBXrr5QU1TWJl3e3VwFPqJde5MHIGUOGXSHJ0akhvs0vDBw/YDxE0XHJ2NjNHFLenTZoL/YCY/nlZmtReqOOwAhWHneK5v2Z16Y/BgpoFutFH4nGZnY9FLkvzLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KEGTMWiLpYFYRSGXWEoWmgl4qaheWwh5CNvYEDCRCn4=;
- b=N6Hw8A6SWDLqkjqq8k8hGYe5XmE3e/aKuJram8Jz6D60CGkEdbwiNryUxg91V6QmfbUUL39iuO30FQA8kqn6IsaNHj6PXN9GHfetZq+28nBGWYGPlWVRkBnERQRZV+s7EJ0VKG2Yei6dHDMsIEdBpcKn2NYgK6g1f4QinSacrCY=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB4108.eurprd04.prod.outlook.com (2603:10a6:5:21::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Wed, 27 Jan
- 2021 10:58:52 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9d2b:182e:ba3b:5920]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9d2b:182e:ba3b:5920%3]) with mapi id 15.20.3805.017; Wed, 27 Jan 2021
- 10:58:52 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        kjain@linux.ibm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 4/4] perf vendor events: Add JSON metrics for imx8mp DDR Perf
-Date:   Wed, 27 Jan 2021 18:57:34 +0800
-Message-Id: <20210127105734.12198-5-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210127105734.12198-1-qiangqing.zhang@nxp.com>
-References: <20210127105734.12198-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SGBP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::32)
- To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+        Wed, 27 Jan 2021 06:01:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611745169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5A0EToVhBBszKqdbfzh8W7kjpz9ghiAtpMLuYPLvA1A=;
+        b=TM6bAlo80TQAtl6XV8i2P7KeGcVXwx9hvZpOrPINCjkCa7XHcDBfk2aZe/AXrer819N3s2
+        kcEmbU3Z+8KKNgYtL/Yy3zu50694AjdIrmmfEKkevbDbtLjChSSOFpHpaf3s9zLq8anaEM
+        4V/sk3Xx2XYGm6ITVEEkPT1hW4Xb/CM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-49-XohAPOHkMBqUn1UhhgAlJQ-1; Wed, 27 Jan 2021 05:59:26 -0500
+X-MC-Unique: XohAPOHkMBqUn1UhhgAlJQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C100F100F341;
+        Wed, 27 Jan 2021 10:59:24 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 294D85D9DD;
+        Wed, 27 Jan 2021 10:59:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210127215101.2ed0a5ae@canb.auug.org.au>
+References: <20210127215101.2ed0a5ae@canb.auug.org.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     dhowells@redhat.com,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the notifications tree with the pidfd tree
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SGBP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 10:58:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7f7a2973-6539-4701-2b80-08d8c2b28835
-X-MS-TrafficTypeDiagnostic: DB7PR04MB4108:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB4108991BE9A222A902B59012E6BB0@DB7PR04MB4108.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aqKpV5ulEmNSYI1NhSXWxfBgZNa3OUSNAFiTgYjitpdS/K8RPd9t26nKE8kdaQB9/miKmmQQlhvwGqlj3GhNsy5Clnfc07wrlG0Bqk2PdakfJ/nQamlZbA6hA2NSV/YYTN0on6wluGbqYldtFFsryUYmeP/htu50mYk1DEb+Sp4QRGL+xojobk0OLu3N8IYss/QPxwmVU+O7PcMhZc5b1qRLG2WDhtWygSBLwzelt4TsShnEY3AVil/X0cuaXNk221NmghmtNVn7XLorryiM/BIMMNTio345j4DCi7xIush0V2GO4MO+P/SKWA7/Rog4yWhqd3KPQtnpcaJPaE5qTZT7QF7YHV3icuulOquL8nP32AQBbLSW+e4eBMlRZVLGOmBAYdsQoF9KMkhNllJWtWGICqbP92DXogzqhKpOQcYPyu7qALEp9p14NvQvgNfPaqnfcWzWMZ2kanF8/+FYhsOhgKmVozCyqvXli1n3260=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(52116002)(66476007)(921005)(26005)(66946007)(66556008)(6666004)(4326008)(8936002)(8676002)(1076003)(478600001)(30864003)(956004)(36756003)(2616005)(16526019)(69590400011)(6506007)(86362001)(6512007)(2906002)(316002)(6486002)(7416002)(186003)(5660300002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3X6T2EqnBm2IdfOto1AodRkLbvuWwDDbpKEte9UPMwg4CMeRD+a5YZtpfj85?=
- =?us-ascii?Q?bB+vMyja4p4ebdtKSVeLkKtfjUaYWrFx46H5uLIu9pS4oR4oy7ypE/9PqxXY?=
- =?us-ascii?Q?kpOFLya2ddzlp98RkV7SenMdc7cgfXJJYX+Hhw+0NhXIbSSeoSj2W6eRAsBU?=
- =?us-ascii?Q?Dpk/JPEscH+I0qd2wwWu971NrC44+1uIuAG6FHKe+bqOVJ1BPdO00ylcaZhl?=
- =?us-ascii?Q?3Dyx11ukah5ARQFx/0w6kvp9dcXc7H1xA1bh0kOZhKIxlME/W4v6DqXFLSIr?=
- =?us-ascii?Q?CpEoaFu8z2Uenar1ex0oy9T3zU4/GCQ82D3ygYLtekKipv6dkumEQEdXfst1?=
- =?us-ascii?Q?6iKearxJTfP5+T1d6gSUfMZU/VCOlInKUMwE9wvbG9h1SHbq89XTJfjXC7zj?=
- =?us-ascii?Q?TDb7NU1Q2llOKJsY8/liiwxBTodE6xzvDYeDHXANZQB9nemMJlDeNjcuUhVX?=
- =?us-ascii?Q?Zn54xDdObWdfoaAEX9U3s7auoX+YiXMyEjvQQ0q46QyumpNgMByWtRAEgqsL?=
- =?us-ascii?Q?iA9YoasR0SSzRBWFUfdqEoSAzGEXET8WgcJwtNlS0tQ5djnxy2GNCvIy40k4?=
- =?us-ascii?Q?77NPdMXIstRw9LAHMAepDVOaoDmHFzWSxh9UneSweoUUOyoJEywrUnqOJ9ss?=
- =?us-ascii?Q?apVYIIw0+9dn2N0EQycxtEIiWRsVWPg4yiEXtCjcv61AqxvuK4OotKNktRoD?=
- =?us-ascii?Q?IyHhw8CqL2qZtCkHpPUHKOb9Uhb2LjaNNRnMsIV69E7+2S1nky4zgGMZ+cAI?=
- =?us-ascii?Q?slqnAKdZzI4H1JgsVlMqtoQTNbrYYsEHZ5IeJ/8tC65HWZLOh0A8pZzYeEMC?=
- =?us-ascii?Q?5CqT+4nZthLf4YDjz2cQaLni0bHfaLhOCR/hhz6dP/6MTgd3zioYN3vPDEPM?=
- =?us-ascii?Q?zbwYcjfAEQwb/lPfSSRlnAvPXmAMdud3+Mo9oogybULamfYqxc+4qdPTUiUA?=
- =?us-ascii?Q?c84T0BMY76gNa9UmKsk/0t54/JfAZPrPkz7g8p/cfFTUQwdFGKA2NJEqDPYE?=
- =?us-ascii?Q?M9UBGQ7ScTFHkmMh9ILGvz2Fjz/Es7xdOe4cXc64PhsTwJsOKmQht+NWrODR?=
- =?us-ascii?Q?nP9NBjzV?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f7a2973-6539-4701-2b80-08d8c2b28835
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 10:58:52.1921
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WnOjA7bt7aOiEBzeXQ+O6e4xz+EeQMT9OSuZg3aHt/tMfJ9xXIxQy+2DOpIEEUwbvdjxO0NPhWS7tcwTLNXhCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4108
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3058202.1611745162.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 27 Jan 2021 10:59:22 +0000
+Message-ID: <3058203.1611745162@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JSON metrics for imx8mp DDR Perf.
+#!/usr/bin/perl -w
+#
+# This script can be used to add, remove, rename and renumber system calls=
+ in
+# the kernel sources and resolve simple git conflicts when a branch carryi=
+ng
+# new system calls is merged into another that also has new system calls w=
+ith
+# conflicting numbers.
+#
+# Usage:
+#
+#  ./scripts/syscall-manage.pl --add <name> [--compat]
+#
+#	Add a new system call, giving it the specified name and allocating it
+#	the next number, bumping __NR_syscalls.  If --compat is specified, then
+#	__SC_COMP() will be used in lieu of __SYSCALL() and the script will
+#	attempt to emit appropriate compatibility lines into the tables.
+#
+#  ./scripts/syscall-manage.pl --rm <name>
+#
+#	Remove the system call with the specified name, decrementing
+#	__NR_syscalls if it was the final one.
+#
+#  ./scripts/syscall-manage.pl --rename <name> <new_name>
+#
+#	Rename the system call with the specified name to the new name.
+#
+#  ./scripts/syscall-manage.pl --renumber
+#
+#	Renumber the system calls between 424 and __NR_syscalls to remove any
+#	holes and update __NR_syscalls.
+#
+#  ./scripts/syscall-manage.pl --resolve
+#
+#	Resolve simple git conflicts across all system call table files
+#	resulting from one branch being merged into another where both branches
+#	add system calls with conflicting numbers.  The new syscalls are
+#	renumbered, __NR_syscalls is updated and the conflict markers and any
+#	extra definition of __NR_syscalls are removed.
+#
+use strict;
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- .../arch/arm64/freescale/imx8mp/sys/ddrc.json |  37 ++
- .../arm64/freescale/imx8mp/sys/metrics.json   | 466 ++++++++++++++++++
- 2 files changed, 503 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/ddrc.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/metrics.json
+#
+# List of files that need to be altered and their insertion patterns
+#
+my $master =3D "include/uapi/asm-generic/unistd.h";
+my $sys_ni =3D "kernel/sys_ni.c";
+my @tables =3D (
+    { file	=3D> "arch/alpha/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME",
+      num_offset =3D> 110 },
+    { file	=3D> "arch/arm/tools/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    { file	=3D> "arch/ia64/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    { file	=3D> "arch/m68k/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    { file	=3D> "arch/microblaze/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    { file	=3D> "arch/mips/kernel/syscalls/syscall_n32.tbl",
+      pattern	=3D> "%NUM n32 %NAME sys_%NAME",
+      compat	=3D> 0 },
+    { file	=3D> "arch/mips/kernel/syscalls/syscall_n32.tbl",
+      pattern	=3D> "%NUM n32 %NAME compat_sys_%NAME",
+      compat	=3D> 1 },
+    { file	=3D> "arch/mips/kernel/syscalls/syscall_n64.tbl",
+      pattern	=3D> "%NUM n64 %NAME sys_%NAME" },
+    { file	=3D> "arch/mips/kernel/syscalls/syscall_o32.tbl",
+      pattern	=3D> "%NUM o32 %NAME sys_%NAME",
+      compat	=3D> 0 },
+    { file	=3D> "arch/mips/kernel/syscalls/syscall_o32.tbl",
+      pattern	=3D> "%NUM o32 %NAME sys_%NAME compat_sys_%NAME",
+      compat	=3D> 1 },
+    { file	=3D> "arch/parisc/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME",
+      compat	=3D> 0 },
+    { file	=3D> "arch/parisc/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME compat_sys_%NAME",
+      compat	=3D> 1 },
+    { file	=3D> "arch/powerpc/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME",
+      compat	=3D> 0 },
+    { file	=3D> "arch/powerpc/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME compat_sys_%NAME",
+      compat	=3D> 1 },
+    { file	=3D> "arch/s390/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME sys_%NAME",
+      widths	=3D> [ 8, 8, 24, 32, 32],
+      compat	=3D> 0 },
+    { file	=3D> "arch/s390/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME compat_sys_%NAME",
+      widths	=3D> [ 8, 8, 24, 32, 32],
+      compat	=3D> 1 },
+    { file	=3D> "arch/sh/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    { file	=3D> "arch/sparc/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME",
+      compat	=3D> 0 },
+    { file	=3D> "arch/sparc/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME compat_sys_%NAME",
+      compat	=3D> 1 },
+    { file	=3D> "arch/x86/entry/syscalls/syscall_32.tbl",
+      pattern	=3D> "%NUM i386 %NAME sys_%NAME __ia32_sys_%NAME",
+      widths	=3D> [ 8, 8, 24, 32, 32],
+      compat	=3D> 0 },
+    { file	=3D> "arch/x86/entry/syscalls/syscall_32.tbl",
+      pattern	=3D> "%NUM i386 %NAME sys_%NAME __ia32_compat_sys_%NAME",
+      widths	=3D> [ 8, 8, 24, 32, 32],
+      compat	=3D> 1 },
+    { file	=3D> "arch/x86/entry/syscalls/syscall_64.tbl",
+      pattern	=3D> "%NUM common %NAME __x64_sys_%NAME",
+      widths	=3D> [ 8, 8, 24, 32, 32] },
+    { file	=3D> "arch/xtensa/kernel/syscalls/syscall.tbl",
+      pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    #{ file	=3D> "tools/perf/arch/powerpc/entry/syscalls/syscall.tbl",
+    #  pattern	=3D> "%NUM common %NAME sys_%NAME" },
+    #{ file	=3D> "tools/perf/arch/s390/entry/syscalls/syscall.tbl",
+    #  pattern	=3D> "%NUM common %NAME sys_%NAME sys_%NAME" },
+    #{ file	=3D> "tools/perf/arch/x86/entry/syscalls/syscall_64.tbl",
+    #  pattern	=3D> "%NUM common %NAME __x64_sys_%NAME" },
+    );
 
-diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/ddrc.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/ddrc.json
-new file mode 100644
-index 000000000000..f9a89efc9b24
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/ddrc.json
-@@ -0,0 +1,37 @@
-+[
-+   {
-+           "BriefDescription": "ddr cycles event",
-+           "EventCode": "0x00",
-+           "EventName": "imx8mp_ddr.cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MP"
-+   },
-+   {
-+           "BriefDescription": "ddr read-cycles event",
-+           "EventCode": "0x2a",
-+           "EventName": "imx8mp_ddr.read_cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MP"
-+   },
-+   {
-+           "BriefDescription": "ddr write-cycles event",
-+           "EventCode": "0x2b",
-+           "EventName": "imx8mp_ddr.write_cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MP"
-+   },
-+   {
-+           "BriefDescription": "ddr read event",
-+           "EventCode": "0x35",
-+           "EventName": "imx8mp_ddr.read",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MP"
-+   },
-+   {
-+           "BriefDescription": "ddr write event",
-+           "EventCode": "0x38",
-+           "EventName": "imx8mp_ddr.write",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.MX8MP"
-+   }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/metrics.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/metrics.json
-new file mode 100644
-index 000000000000..8b9544424b3f
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mp/sys/metrics.json
-@@ -0,0 +1,466 @@
-+[
-+   {
-+	    "BriefDescription": "bytes of all masters read from ddr",
-+	    "MetricName": "imx8mp_ddr_read.all",
-+	    "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0xffff\\,axi_id\\=0x0000@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of all masters write to ddr",
-+	    "MetricName": "imx8mp_ddr_write.all",
-+	    "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0xffff\\,axi_id\\=0x0000@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of a53 core read from ddr",
-+	    "MetricName": "imx8mp_ddr_read.a53",
-+	    "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0000@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of a53 core write to ddr",
-+	    "MetricName": "imx8mp_ddr_write.a53",
-+	    "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0000@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of supermix(m7) core read from ddr",
-+	    "MetricName": "imx8mp_ddr_read.supermix",
-+	    "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x000f\\,axi_id\\=0x0020@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of supermix(m7) write to ddr",
-+	    "MetricName": "imx8mp_ddr_write.supermix",
-+	    "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x000f\\,axi_id\\=0x0020@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of gpu 3d read from ddr",
-+	    "MetricName": "imx8mp_ddr_read.3d",
-+	    "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0070@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of gpu 3d write to ddr",
-+	    "MetricName": "imx8mp_ddr_write.3d",
-+	    "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0070@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of gpu 2d read from ddr",
-+	    "MetricName": "imx8mp_ddr_read.2d",
-+	    "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0071@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of gpu 2d write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.2d",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0071@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display lcdif1 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.lcdif1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0068@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display lcdif1 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.lcdif1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0068@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display lcdif2 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.lcdif2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0069@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display lcdif2 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.lcdif2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0069@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isi1 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.isi1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x006a@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	    "BriefDescription": "bytes of display isi1 write to ddr",
-+	    "MetricName": "imx8mp_ddr_write.isi1",
-+	    "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x006a@",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isi2 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.isi2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x006b@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isi2 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.isi2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x006b@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isi3 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.isi3",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x006c@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isi3 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.isi3",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x006c@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isp1 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.isp1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x006d@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isp1 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.isp1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x006d@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isp2 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.isp2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x006e@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display isp2 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.isp2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x006e@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display dewarp read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.dewarp",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x006f@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of display dewarp write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.dewarp",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x006f@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of vpu1 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.vpu1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x007c@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of vpu1 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.vpu1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x007c@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of vpu2 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.vpu2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x007d@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of vpu2 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.vpu2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x007d@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of vpu3 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.vpu3",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x007e@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of vpu3 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.vpu3",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x007e@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of npu read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.npu",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0073@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of npu write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.npu",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0073@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hsio usb1 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.usb1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0078@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hsio usb1 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.usb1",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0078@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hsio usb2 read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.usb2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0079@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hsio usb2 write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.usb2",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0079@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hsio pci read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.pci",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x007a@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hsio pci write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.pci",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x007a@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hdmi_tx hrv_mwr read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.hdmi_hrv_mwr",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0074@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hdmi_tx hrv_mwr write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.hdmi_hrv_mwr",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0074@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hdmi_tx lcdif read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.hdmi_lcdif",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0075@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hdmi_tx lcdif write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.hdmi_lcdif",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0075@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hdmi_tx tx_hdcp read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.hdmi_hdcp",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0076@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of hdmi_tx tx_hdcp write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.hdmi_hdcp",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0076@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio dsp read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.audio_dsp",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0041@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio dsp write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.audio_dsp",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0041@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma2_per read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.audio_sdma2_per",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0062@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma2_per write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.audio_sdma2_per",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0062@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma2_burst read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.audio_sdma2_burst",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0063@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma2_burst write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.audio_sdma2_burst",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0063@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma3_per read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.audio_sdma3_per",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0064@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma3_per write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.audio_sdma3_per",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0064@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma3_burst read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.audio_sdma3_burst",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0065@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma3_burst write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.audio_sdma3_burst",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0065@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma_pif read from ddr",
-+	   "MetricName": "imx8mp_ddr_read.audio_sdma_pif",
-+	   "MetricExpr": "imx8_ddr0@axid\\-read\\,axi_mask\\=0x0000\\,axi_id\\=0x0066@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   },
-+   {
-+	   "BriefDescription": "bytes of audio sdma_pif write to ddr",
-+	   "MetricName": "imx8mp_ddr_write.audio_sdma_pif",
-+	   "MetricExpr": "imx8_ddr0@axid\\-write\\,axi_mask\\=0x0000\\,axi_id\\=0x0066@",
-+	   "ScaleUnit": "9.765625e-4KB",
-+	   "Unit": "imx8_ddr",
-+	   "Compat": "i.MX8MP"
-+   }
-+]
--- 
-2.17.1
+my $common_base =3D 424;
+
+#
+# Helpers
+#
+sub read_file($)
+{
+    my ($file) =3D @_;
+    my @lines;
+
+    open(FD, "<" . "$file") || die $file;
+    while (<FD>) {
+	chomp($_);
+	push @lines, $_;
+    }
+    close(FD) || die $file;
+    return \@lines;
+}
+
+sub write_file($$)
+{
+    my ($file, $lines) =3D @_;
+
+    print "Writing $file\n";
+    open(FD, ">" . "$file") || die $file;
+    print FD $_, "\n" foreach(@{$lines});
+    close(FD) || die $file;
+}
+
+##########################################################################=
+#####
+#
+# Add a new syscall to the master list and return the syscall number alloc=
+ated.
+#
+##########################################################################=
+#####
+sub add_to_master($$)
+{
+    my ($name, $compat) =3D @_;
+    my $f =3D $master;
+    my $lines =3D read_file($f);
+    my $num =3D -1;
+    my $nr =3D -1;
+    my $i;
+    my $j =3D -1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	if ($l =3D~ /^#define\s+__NR_syscalls\s+([0-9]+)/) {
+	    die "$f:$i: Multiple __NR_syscalls definitions\n" if ($nr !=3D -1);
+	    $nr =3D $1;
+	    $j =3D $i;
+	}
+
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    if ($1 eq $name) {
+		die "$f:$i: Syscall multiply defined (", $num, ")\n" if ($num !=3D -1);
+		print STDERR "$f:$i: Syscall already exists (", $2, ")\n";
+		$num =3D $2;
+	    }
+	}
+    }
+
+    die "$f: error: Can't find __NR_syscalls\n" if ($nr =3D=3D -1);
+
+    if ($num =3D=3D -1) {
+	# Update the last syscall number
+	$num =3D $nr;
+	print "Allocating syscall number ", $num, "\n";
+	$lines->[$j] =3D "#define __NR_syscalls " . ($nr + 1);
+
+	# Rewind to the last syscall number definition
+	while ($j--, $j >=3D 0 && $lines->[$j] eq "") {}
+	die "$f:$j: error: Expecting #undef __NR_syscalls\n"
+	    unless ($lines->[$j] =3D~ /^#undef\s+__NR_syscalls/);
+	while ($j--, $j >=3D 0 && $lines->[$j] eq "") {}
+	die "$f:%j: error: Expecting __SYSCALL or __SC_COMP\n"
+	    unless ($lines->[$j] =3D~ /^(__SYSCALL|__SC_COMP|__SC_3264|__SC_COMP_=
+3264)/);
+	if ($lines->[$j - 1] =3D~ /^#define __NR_([a-zA-Z0-9_]+) ([0-9]+)/) {
+	    die "$f:$j: error: Incorrect syscall number ($2 !=3D $num)\n"
+		if ($2 !=3D $num - 1);
+	} else {
+	    die "$f:$j: error: Expecting #define __NR_*\n";
+	}
+	$j++;
+
+	# Insert the new syscall number
+	if ($compat =3D=3D 0) {
+	    splice(@{$lines}, $j, 0,
+		   ( "#define __NR_$name $num",
+		     "__SYSCALL(__NR_$name, sys_$name)" ));
+	} elsif ($compat =3D=3D 1) {
+	    splice(@{$lines}, $j, 0,
+		   ( "#define __NR_$name $num",
+		     "__SC_COMP(__NR_$name, sys_$name, compat_sys_$name)" ));
+	} else {
+	    die;
+	}
+
+	write_file($f, $lines);
+    }
+
+    return $num;
+}
+
+##########################################################################=
+#####
+#
+# Add tabs to a string to pad it out
+#
+##########################################################################=
+#####
+sub tab_to($$)
+{
+    my ($s, $width) =3D @_;
+
+    if ($width =3D=3D 8) {
+	return $s . "\t";
+    } elsif ($width =3D=3D 16) {
+	return $s . "\t" if (length($s) > 7);
+	return $s . "\t\t";
+    } elsif ($width =3D=3D 24) {
+	return $s . "\t" if (length($s) > 15);
+	return $s . "\t\t" if (length($s) > 7);
+	return $s . "\t\t\t";
+    } elsif ($width =3D=3D 32) {
+	return $s . "\t" if (length($s) > 23);
+	return $s . "\t\t" if (length($s) > 15);
+	return $s . "\t\t\t" if (length($s) > 7);
+	return $s . "\t\t\t\t";
+    } else {
+	die "Width $width\n";
+    }
+}
+
+##########################################################################=
+#####
+#
+# Tabulate a table line appropriately.
+#
+##########################################################################=
+#####
+sub tabulate($$)
+{
+    my ($l, $widths) =3D @_;
+    my @bits =3D split(/\s+/, $l);
+
+    my $rl =3D tab_to($bits[0], $widths->[0]);	# Syscall number
+    $rl .=3D tab_to($bits[1], $widths->[1]);	# Syscall type
+    $rl .=3D tab_to($bits[2], $widths->[2]);	# Syscall name
+
+    # Add the syscall handlers
+    if ($#bits =3D=3D 3) {
+	$rl .=3D $bits[3];
+    } elsif ($#bits =3D=3D 4) {
+	$rl .=3D tab_to($bits[3], $widths->[3]);
+	$rl .=3D $bits[4];
+    } elsif ($#bits =3D=3D 5) {
+	$rl .=3D tab_to($bits[3], $widths->[4]);
+	$rl .=3D tab_to($bits[4], $widths->[5]);
+	$rl .=3D $bits[5];
+    } else {
+	die "Too many handlers\n";
+    }
+}
+
+##########################################################################=
+#####
+#
+# Add a new syscall to a syscall.tbl file.
+#
+##########################################################################=
+#####
+sub add_to_table($$$)
+{
+    my ($name, $num, $table) =3D @_;
+    my $f =3D $table->{file};
+    my $pattern =3D $table->{pattern};
+    my $widths =3D $table->{widths} ? $table->{widths} : [ 8, 8, 32, 32, 3=
+2 ];
+    my $lines =3D read_file($f);
+    my $i;
+    my $j =3D -1;
+
+    $num +=3D $table->{num_offset} if (exists $table->{num_offset});
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	my @bits =3D split(/\s+/, $l);
+	next if ($#bits =3D=3D -1);
+	if ($bits[0] eq $num - 1) {
+	    die "$f:$i: Duplicate syscall ", $num - 1, "\n" if $j !=3D -1;
+	    $j =3D $i;
+	}
+	if ($bits[0] eq $num) {
+	    if ($bits[2] eq $name) {
+		print STDERR "$f:$i: Ignoring already-added syscall ", $num, "\n";
+		return;
+	    }
+	    die "$f:$i: Conflicting syscall ", $num, "\n";
+	}
+    }
+
+    die "$f: error: Can't find syscall ", $num - 1, "\n" if ($j =3D=3D -1)=
+;
+
+    $pattern =3D~ s/%NAME/$name/g;
+    $pattern =3D~ s/%NUM/$num/g;
+    $pattern =3D tabulate($pattern, $widths);
+
+    # Insert the new syscall entry after the preceding one.
+    splice(@{$lines}, $j + 1, 0, ( $pattern ));
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Remove a syscall from the master list.
+#
+##########################################################################=
+#####
+sub remove_from_master($)
+{
+    my ($name) =3D @_;
+    my $f =3D $master;
+    my $lines =3D read_file($f);
+    my $num =3D -1;
+    my $nr =3D -1;
+    my $i;
+    my $i_nr =3D -1;
+    my $i_num =3D -1;
+    my $c =3D 1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	if ($l =3D~ /^#define\s+__NR_syscalls\s+([0-9]+)/) {
+	    die "$f:$i: Multiple __NR_syscalls definitions\n" if ($nr !=3D -1);
+	    $nr =3D $1;
+	    $i_nr =3D $i;
+	}
+
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    if ($1 eq $name) {
+		if ($num !=3D -1) {
+		    print STDERR "$f:$i: Syscall multiply defined (", $num, ")\n"
+		}
+		$num =3D $2; # Remove the last instance only
+		$i_num =3D $i;
+	    }
+	}
+    }
+
+    die "$f: error: Can't find __NR_syscalls\n" if ($i_nr =3D=3D -1);
+
+    if ($i_num =3D=3D -1) {
+	print "Syscall not found in unistd.h\n";
+	return;
+    }
+
+    # If the syscall number is the last one, deallocate it
+    if ($nr =3D=3D $num + 1) {
+	print "Deallocating syscall number ", $num, "\n";
+	$lines->[$i_nr] =3D "#define __NR_syscalls " . ($nr - 1);
+    }
+
+    # Remove the __SYSCALL or __SC_COMP line also
+    if ($lines->[$i_num + 1] =3D~ /^(__SYSCALL|__SC_COMP|__SC_3264|__SC_CO=
+MP_3264)[(]__NR_$name,/) {
+	$c++;
+	$c++ if ($lines->[$i_num + 1] =3D~ /\\$/);
+    }
+
+    splice(@{$lines}, $i_num, $c, ());
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Remove a syscall from a syscall.tbl file.
+#
+##########################################################################=
+#####
+sub remove_from_table($$)
+{
+    my ($name, $table) =3D @_;
+    my $f =3D $table->{file};
+    my $lines =3D read_file($f);
+    my $i;
+    my $j =3D -1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	my @bits =3D split(/\s+/, $l);
+	my $num =3D $bits[0];
+	next if ($#bits < 2);
+
+	if ($bits[2] eq $name) {
+	    print STDERR "$f:$i: Duplicate syscall ", $num, "\n" if ($j !=3D -1);
+	    $j =3D $i;
+	}
+    }
+
+    if ($j =3D=3D -1) {
+	print STDERR "$f: error: Can't find syscall ", $name, "\n";
+	return;
+    }
+
+    # Remove the syscall entry
+    splice(@{$lines}, $j, 1, ());
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Remove a syscall from kernel/sys_ni.c
+#
+##########################################################################=
+#####
+sub remove_from_sys_ni($)
+{
+    my ($name) =3D @_;
+    my $f =3D $sys_ni;
+    my $lines =3D read_file($f);
+    my $i;
+    my $j =3D -1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /COND_SYSCALL[_A-Z]*[(]$name[)]/) {
+	    if ($j =3D=3D -1) {
+		$j =3D $i;
+	    } else {
+		print STDERR "$f:$i: Multiple COND_SYSCALLs\n";
+	    }
+	}
+    }
+
+    return if ($j =3D=3D -1);
+
+    # Remove the COND_SYSCALL entry
+    splice(@{$lines}, $j, 1, ());
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Rename a syscall in the master list.
+#
+##########################################################################=
+#####
+sub rename_in_master($$)
+{
+    my ($name, $name2) =3D @_;
+    my $f =3D $master;
+    my $lines =3D read_file($f);
+    my $num =3D -1;
+    my $i;
+    my $i_num =3D -1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    if ($1 eq $name) {
+		if ($num !=3D -1) {
+		    print STDERR "$f:$i: Syscall multiply defined (", $num, ")\n"
+		}
+		$num =3D $2; # Rename the last instance only
+		$i_num =3D $i;
+	    }
+	}
+    }
+
+    if ($i_num =3D=3D -1) {
+	print "Syscall not found in unistd.h\n";
+	return;
+    }
+
+    # Rename the __SYSCALL or __SC_COMP line also
+    $lines->[$i_num] =3D~ s/$name/$name2/g;
+    if ($lines->[$i_num + 1] =3D~ /^(__SYSCALL|__SC_COMP|__SC_3264|__SC_CO=
+MP_3264)[(]__NR_$name,/) {
+	$lines->[$i_num + 1] =3D~ s/$name/$name2/g;
+	$lines->[$i_num + 2] =3D~ s/$name/$name2/g if ($lines->[$i_num + 1] =3D~ =
+/\\$/);
+    }
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Rename a syscall in a syscall.tbl file.
+#
+##########################################################################=
+#####
+sub rename_in_table($$$)
+{
+    my ($name, $name2, $table) =3D @_;
+    my $f =3D $table->{file};
+    my $pattern =3D $table->{pattern};
+    my $widths =3D $table->{widths} ? $table->{widths} : [ 8, 8, 32, 32, 3=
+2 ];
+    my $lines =3D read_file($f);
+    my $i;
+    my $j =3D -1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	my @bits =3D split(/\s+/, $l);
+	my $num =3D $bits[0];
+	next if ($#bits < 2);
+
+	if ($bits[2] eq $name) {
+	    print STDERR "$f:$i: Duplicate syscall ", $num, "\n" if ($j !=3D -1);
+	    $j =3D $i;
+	}
+    }
+
+    if ($j =3D=3D -1) {
+	print STDERR "$f: error: Can't find syscall ", $name, "\n";
+	return;
+    }
+
+    # Rename the syscall entry
+    my $l =3D $lines->[$j];
+    $l =3D~ s/$name/$name2/g;
+    $lines->[$j] =3D $pattern =3D tabulate($l, $widths);
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Rename a syscall in kernel/sys_ni.c
+#
+##########################################################################=
+#####
+sub rename_in_sys_ni($$)
+{
+    my ($name, $name2) =3D @_;
+    my $f =3D $sys_ni;
+    my $lines =3D read_file($f);
+    my $changed =3D 0;
+    my $i;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /COND_SYSCALL[_A-Z]*[(]$name[)]/) {
+	    $lines->[$i] =3D~ s/$name/$name2/;
+	    $changed =3D 1;
+	}
+    }
+
+    write_file($f, $lines) if ($changed);
+}
+
+##########################################################################=
+#####
+#
+# Resolve git-conflicted syscalls in the master list.
+#
+##########################################################################=
+#####
+sub resolve_conflicts_in_master()
+{
+    my $f =3D $master;
+    my $lines =3D read_file($f);
+    my $nr =3D -1;
+    my $i;
+    my $i_nr =3D -1;
+    my $begin =3D -1;
+    my $mid =3D -1;
+    my $end =3D -1;
+    my $in_section =3D 0;
+    my $nr_in_section =3D 0;
+    my %conflict_list =3D ();
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /^#define\s+__NR_syscalls\s+([0-9]+)/) {
+	    if ($in_section =3D=3D 0) {
+		# Before '<<<<<<<'
+		die "$f:$i: Multiple __NR_syscalls definitions\n[s=3D$in_section inr=3D$=
+i_nr nis=3D$nr_in_section]\n"
+		    unless ($i_nr =3D=3D -1);
+		$nr =3D $1;
+		$i_nr =3D $i;
+		$nr_in_section =3D 4;
+	    } elsif ($in_section =3D=3D 1 && $nr_in_section =3D=3D 0) {
+		# After '<<<<<<<'
+		$nr =3D $1;
+		$i_nr =3D $i;
+		$nr_in_section =3D 1;
+	    } elsif ($in_section =3D=3D 2 && $nr_in_section =3D=3D 1) {
+		# After '=3D=3D=3D=3D=3D=3D=3D'
+		$i_nr =3D $i;
+		$nr_in_section =3D 2;
+	    } elsif ($in_section =3D=3D 3 && $nr_in_section =3D=3D 0) {
+		# After '>>>>>>>'
+		$nr =3D $1;
+		$i_nr =3D $i;
+		$nr_in_section =3D 3;
+	    } else {
+		die "$f:$i: Multiple __NR_syscalls definitions\n[s=3D$in_section inr=3D$=
+i_nr nis=3D$nr_in_section]\n";
+	    }
+	    next;
+	}
+	next if ($in_section =3D=3D 3);
+
+	if ($l =3D~ /^<<<<<<</) {
+	    $begin =3D $i;
+	    $in_section =3D 1;
+	    next;
+	}
+	if ($l =3D~ /^=3D=3D=3D=3D=3D=3D=3D/) {
+	    $mid =3D $i;
+	    $in_section =3D 2;
+	    next;
+	}
+	if ($l =3D~ /^>>>>>>>/) {
+	    $end =3D $i;
+	    $in_section =3D 3;
+	    next;
+	}
+	next if ($in_section =3D=3D 0);
+    }
+
+    die "$f: error: Can't find __NR_syscalls\n" if ($i_nr =3D=3D -1);
+
+    # Analyse the pre-merge syscalls.
+    my $top =3D -1;
+    my $stop =3D ($begin =3D=3D -1) ? $#{$lines} : $begin;
+    for ($i =3D 0; $i < $stop; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    my $name =3D $1;
+	    my $num =3D $2;
+	    next if ($name eq "syscalls");
+	    die "$f:$i: Redefinition of $name\n" if (exists($conflict_list{$name}=
+));
+	    die "$f:$i: Number regression\n" if ($num < $top);
+	    $top =3D $num;
+	    $conflict_list{$name} =3D $num;
+	    #print "Keep __NR_", $name, " as ", $num, "\n";
+	}
+    }
+
+    if ($in_section =3D=3D 0) {
+	print "$f: Couldn't find section to be resolved\n";
+	return \%conflict_list;
+    }
+
+    # Analyse what we're merging into.
+    for ($i =3D $begin + 1; $i < $mid; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    my $name =3D $1;
+	    my $num =3D $2;
+	    next if ($name eq "syscalls");
+	    die "$f:$i: Redefinition of $name\n" if (exists($conflict_list{$name}=
+));
+	    die "$f:$i: Number regression\n" if ($num < $top);
+	    $top =3D $num;
+	    $conflict_list{$name} =3D $num;
+	    print "Keep __NR_", $name, " as ", $num, "\n";
+	}
+    }
+
+    die "$f: Last number (", $top, ") different to limit-1 (", $nr - 1, ")=
+\n"
+	if ($top !=3D -1 && $top !=3D $nr - 1);
+
+    # Renumber what we're merging in.
+    for ($i =3D $mid + 1; $i < $end; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    my $name =3D $1;
+	    my $num =3D $2;
+	    next if ($name eq "syscalls");
+	    if (exists($conflict_list{$name})) {
+		warn "$f:$i: Definition of $name in both branches\n";
+		# Remove the duplicate
+		splice(@{$lines}, $i, 2, ());
+		$end -=3D 2;
+		$i--;
+		next;
+	    }
+	    my $new =3D $nr;
+	    $conflict_list{$name} =3D $new;
+	    $l =3D~ s/(\s)$num/${1}$new/;
+	    print "Reassign __NR_", $name, " to ", $new, "\n";
+	    $lines->[$i] =3D $l;
+	    $nr++;
+	}
+    }
+
+    # Adjust __NR_syscalls
+    if ($lines->[$i_nr] =3D~ /^#define\s+__NR_syscalls\s+([0-9]+)/) {
+	my $num =3D $1;
+	$lines->[$i_nr] =3D~ s/(\s)$num/${1}$nr/;
+	print "__NR_syscalls set to $nr\n";
+    }
+
+    # Delete various bits, starting with the highest index and working tow=
+ards
+    # the lowest so as not to displace the higher indices.
+    splice(@{$lines}, $end, 1, ());
+    splice(@{$lines}, $mid, 1, ());
+    for ($i =3D $mid - 1; $i > $begin; $i--) {
+	my $l =3D $lines->[$i];
+
+	splice(@{$lines}, $i, 1, ()) if ($l =3D~ /^#undef\s+__NR_syscalls\s*$/);
+	splice(@{$lines}, $i, 1, ()) if ($l =3D~ /^#define\s+__NR_syscalls\s+([0-=
+9]+)/);
+	splice(@{$lines}, $i, 1, ()) if ($l =3D~ /^$/);
+    }
+    splice(@{$lines}, $begin, 1, ());
+
+    write_file($f, $lines);
+
+    return \%conflict_list;
+}
+
+##########################################################################=
+#####
+#
+# Resolve git-conflicted syscalls in a syscall.tbl file.
+#
+##########################################################################=
+#####
+sub resolve_conflicts_in_table($$)
+{
+    my ($conflict_list, $table) =3D @_;
+    my $f =3D $table->{file};
+    my $lines =3D read_file($f);
+    my $i;
+    my $begin =3D -1;
+    my $mid =3D -1;
+    my $end =3D -1;
+    my $in_section =3D 0;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+
+	if ($l =3D~ /^<<<<<<</) {
+	    $begin =3D $i;
+	    $in_section =3D 1;
+	    next;
+	}
+	if ($l =3D~ /^=3D=3D=3D=3D=3D=3D=3D/) {
+	    $mid =3D $i;
+	    $in_section =3D 2;
+	    next;
+	}
+	if ($l =3D~ /^>>>>>>>/) {
+	    $end =3D $i;
+	    $in_section =3D 3;
+	    last;
+	}
+	next if ($in_section =3D=3D 0);
+    }
+
+    if ($in_section =3D=3D 0) {
+	print "$f: Couldn't find section to be resolved\n";
+	return;
+    }
+
+    my %used =3D ();
+    for ($i =3D $begin + 1; $i < $mid; $i++) {
+	my $l =3D $lines->[$i];
+	next unless ($l =3D~ /^[0-9]/);
+	my @bits =3D split(/\s+/, $l);
+	my $num =3D $bits[0];
+	my $name =3D $bits[2];
+	next if ($#bits < 2);
+
+	die "$f:$i: Undefined (my) syscall '", $name, "'\n"
+	    unless (exists($conflict_list->{$name}));
+
+	my $new =3D $conflict_list->{$name};
+	$new +=3D $table->{num_offset} ? $table->{num_offset} : 0;
+	die "$f:$i: Redefined (my) syscall '", $name, "'\n" if (exists($used{$nam=
+e}));
+	$used{$name} =3D 1;
+	next if ($num =3D=3D $new);
+    }
+
+    for ($i =3D $mid + 1; $i < $end; $i++) {
+	my $l =3D $lines->[$i];
+	next unless ($l =3D~ /^[0-9]/);
+	my @bits =3D split(/\s+/, $l);
+	my $num =3D $bits[0];
+	next if ($#bits < 2);
+	my $name =3D $bits[2];
+
+	die "$f:$i: Undefined (other) syscall '", $name, "'\n"
+	    unless (exists($conflict_list->{$name}));
+
+	my $new =3D $conflict_list->{$name};
+	$new +=3D $table->{num_offset} ? $table->{num_offset} : 0;
+	if (exists($used{$name})) {
+	    warn "$f:$i: Redefined (other) syscall '", $name, "'\n";
+	    splice(@{$lines}, $i, 1, ());
+	    $i--;
+	    $end--;
+	    next;
+	}
+	$used{$name} =3D 1;
+	next if ($num =3D=3D $new);
+	$lines->[$i] =3D~ s/^$num/$new/;
+    }
+
+    # Delete the git markers, starting with the highest index and working
+    # towards the lowest so as not to displace the higher indices.
+    splice(@{$lines}, $end, 1, ());
+    splice(@{$lines}, $mid, 1, ());
+    splice(@{$lines}, $begin, 1, ());
+
+    #print $_, "\n" foreach (@{$lines});
+    #exit(88);
+    =
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Renumber the syscall numbers in the master list that are between 424 and
+# __NR_syscalls and reduce __NR_syscalls.
+#
+##########################################################################=
+#####
+sub renumber_master()
+{
+    my $f =3D $master;
+    my $lines =3D read_file($f);
+    my $nr =3D -1;
+    my $next =3D $common_base;
+    my $i;
+    my $i_nr =3D -1;
+    my %num_list =3D ();
+
+    # Find the __NR_syscalls value.
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	if ($l =3D~ /^#define\s+__NR_syscalls\s+([0-9]+)/) {
+	    die "$f:$i: Redefinition of __NR_syscalls\n" if ($i_nr !=3D -1);
+	    $nr =3D $1;
+	    $i_nr =3D $i;
+	}
+    }
+    die "$f: error: Can't find __NR_syscalls\n" if ($i_nr =3D=3D -1);
+
+    # Renumber the definitions.
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	if ($l =3D~ /^#define\s+__NR_([a-zA-Z0-9_]+)\s+([0-9]+)/) {
+	    my $name =3D $1;
+	    my $num =3D $2;
+
+	    next if ($num < $common_base || $num >=3D $nr);
+	    if ($num !=3D $next) {
+		print "Renumber ", $name, " from ", $num, " to ", $next, "\n";
+		$lines->[$i] =3D~ s/(\s)$num/${1}$next/;
+		$num_list{$name} =3D $next;
+	    }
+
+	    $next++;
+	}
+    }
+
+    # Adjust __NR_syscalls
+    $lines->[$i_nr] =3D~ s/(\s)$nr/${1}$next/;
+    print "__NR_syscalls set to $next\n";
+
+    write_file($f, $lines);
+    return \%num_list;
+}
+
+##########################################################################=
+#####
+#
+# Renumber the syscall numbers in a syscall.tbl file to match the master.
+#
+##########################################################################=
+#####
+sub renumber_table($$)
+{
+    my ($num_list, $table) =3D @_;
+    my $f =3D $table->{file};
+    my $lines =3D read_file($f);
+    my $i;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	my @bits =3D split(/\s+/, $l);
+	next if ($#bits < 2);
+	my $num =3D $bits[0];
+	my $name =3D $bits[2];
+
+	next unless (exists($num_list->{$name}));
+	my $new =3D $num_list->{$name};
+	$new +=3D $table->{num_offset} ? $table->{num_offset} : 0;
+	next if ($num eq $new);
+
+	$lines->[$i] =3D~ s/^$num/$new/;
+    }
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Change a syscall in a syscall.tbl file.
+#
+##########################################################################=
+#####
+sub change_in_table($$$)
+{
+    my ($name, $to_id, $table) =3D @_;
+    my $f =3D $table->{file};
+    my $pattern =3D $table->{pattern};
+    my $widths =3D $table->{widths} ? $table->{widths} : [ 8, 8, 32, 32, 3=
+2 ];
+    my $old_id =3D "";
+    my $lines =3D read_file($f);
+    my $i;
+    my $j =3D -1;
+
+    for ($i =3D 0; $i <=3D $#{$lines}; $i++) {
+	my $l =3D $lines->[$i];
+	my @bits =3D split(/\s+/, $l);
+	next if ($#bits < 2);
+	my $num =3D $bits[0];
+
+	if ($bits[2] eq $name) {
+	    print STDERR "$f:$i: Duplicate syscall ", $num, "\n" if ($j !=3D -1);
+	    $j =3D $i;
+	    $old_id =3D $bits[0];
+	}
+    }
+
+    if ($j =3D=3D -1) {
+	print STDERR "$f: error: Can't find syscall ", $name, "\n";
+	return;
+    }
+
+    if ($old_id eq "") {
+	print STDERR "$f: error: Can't find syscall number ", $name, "\n";
+	return;
+    }
+
+    # Rename the syscall entry
+    my $l =3D $lines->[$j];
+    $l =3D~ s/^$old_id/$to_id/g;
+    $lines->[$j] =3D $pattern =3D tabulate($l, $widths);
+
+    write_file($f, $lines);
+}
+
+##########################################################################=
+#####
+#
+# Decide what to do based on the script parameters
+#
+##########################################################################=
+#####
+sub format_error()
+{
+    print("Format: syscall-manage.pl --add <name> [--compat]\n");
+    print("                          --change <name> <to-id>\n");
+    print("                          --rm <name>\n");
+    print("                          --rename <name>\n");
+    print("                          --renumber\n");
+    print("                          --resolve\n");
+    exit(2);
+}
+
+format_error() if ($#ARGV < 0);
+
+if ($ARGV[0] eq "--add") {
+    format_error() if ($#ARGV < 1);
+
+    my $name =3D $ARGV[1];
+    my $compat =3D 0;
+    $compat =3D 1 if ($#ARGV =3D=3D 2 && $ARGV[2] eq "--compat");
+
+    my $num =3D add_to_master($name, $compat);
+    foreach my $table (@tables) {
+	next if (exists($table->{compat}) && $compat !=3D $table->{compat});
+	add_to_table($name, $num, $table);
+    }
+} elsif ($ARGV[0] eq "--change") {
+    format_error() if ($#ARGV < 2);
+
+    my $name =3D $ARGV[1];
+    my $to_id =3D $ARGV[2];
+    foreach (@tables) {
+	change_in_table($name, $to_id, $_);
+    }
+} elsif ($ARGV[0] eq "--rm") {
+    format_error() if ($#ARGV < 1);
+
+    my $name =3D $ARGV[1];
+    remove_from_master($name);
+    foreach (@tables) {
+	remove_from_table($name, $_);
+    }
+    remove_from_sys_ni($name);
+} elsif ($ARGV[0] eq "--rename") {
+    format_error() if ($#ARGV < 2);
+
+    my $name =3D $ARGV[1];
+    my $name2 =3D $ARGV[2];
+    rename_in_master($name, $name2);
+    foreach (@tables) {
+	rename_in_table($name, $name2, $_);
+    }
+    rename_in_sys_ni($name, $name2);
+} elsif ($ARGV[0] eq "--resolve") {
+    my $conflict_list =3D resolve_conflicts_in_master();
+    foreach (@tables) {
+	resolve_conflicts_in_table($conflict_list, $_);
+    }
+} elsif ($ARGV[0] eq "--renumber") {
+    my $num_list =3D renumber_master();
+    foreach (@tables) {
+	renumber_table($num_list, $_);
+    }
+} else {
+    format_error();
+}
 
