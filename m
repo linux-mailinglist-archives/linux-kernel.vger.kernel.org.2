@@ -2,181 +2,459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4117E305A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BD3305AE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbhA0MCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:02:52 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:12690 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237196AbhA0Lrc (ORCPT
+        id S237498AbhA0MJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:09:56 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12035 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237441AbhA0MBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:47:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611748050; x=1643284050;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=EhIgu5gLZiAXawRRGArIhTweK48qfRysf3CbNLocpT8=;
-  b=Gl0LMkbX2pTkQRxYdguMIR7nltyijNl7U1ZHseoPsJrH5qyvu7fpJMdI
-   2ZsHBP1/umlyomXkP882L+Zf+Jm6cHhzMm6V7qQTkkwtItUmsz7SZ9jw+
-   Qr4DJHikyUaJtt93n8x08Nss+kLe0QuiWq8J1FQ4k0042yTnIkL2dIyYc
-   BAC9UXrze2/2To7XYu5vF088RUxJH8GDd2M8ntwSFQhf8XLd06j0e+hOY
-   sMt0KQ43wRxShBYt0Bm12/PEeL7SiLJQOekEOjT4jGC5y6Dab/eA+laQV
-   qGR8/D/MaOcztYb9xn0wH36ddi1HmtJTfEOWGGOF0jOFr5y7geRgyC6A3
-   w==;
-IronPort-SDR: LAMMIe1lO0BJRXMPEFvOFjZEG98//Rdyfnuh17ILgTn1XgR0VqrRsTG6kNTiQUkdPaA7mqMZBK
- YdpoZfrXzuAI1Buswkve0mU0d9DBMQ8BMfY/0L3uPNErLmgzk+54DMun0dIi8AJBs27rcYVQkO
- 2iT2Czcj6G5bEeHuofEyXvrti4hu+2PYQ5dSsMppqddkUySrYF27z04ogyTjOUEQiGS1tAahq/
- pr/Br/AfPlO0dyGOGEKFzONEQCn13gRywZ391a9pEMZ3yxvj2Vfydm7738oE5b+krsG0K5mdkF
- IRU=
-X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
-   d="scan'208";a="104411886"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jan 2021 04:46:04 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 27 Jan 2021 04:46:03 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 27 Jan 2021 04:45:59 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 2/3] pinctrl: at91-pio4: add support for slew-rate
-Date:   Wed, 27 Jan 2021 13:45:44 +0200
-Message-ID: <1611747945-29960-3-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611747945-29960-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1611747945-29960-1-git-send-email-claudiu.beznea@microchip.com>
+        Wed, 27 Jan 2021 07:01:38 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQhwQ1HDjzMQfZ;
+        Wed, 27 Jan 2021 19:59:18 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.203.23) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 27 Jan 2021 20:00:43 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <valentin.schneider@arm.com>, <vincent.guittot@linaro.org>,
+        <mgorman@suse.de>, <mingo@kernel.org>, <peterz@infradead.org>,
+        <dietmar.eggemann@arm.com>, <morten.rasmussen@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <xuwei5@huawei.com>, <liguozhu@hisilicon.com>,
+        <tiantao6@hisilicon.com>, <jonathan.cameron@huawei.com>,
+        <wanghuiqiang@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
+        Meelis Roos <mroos@linux.ee>
+Subject: [RFC PATCH v2] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
+Date:   Thu, 28 Jan 2021 00:55:10 +1300
+Message-ID: <20210127115510.496-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.23]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAMA7G5 supports slew rate configuration. Adapt the driver for this.
-For output switching frequencies lower than 50MHz the slew rate needs to
-be enabled. Since most of the pins on SAMA7G5 fall into this category
-enabled the slew rate by default.
+As long as NUMA diameter > 2, building sched_domain by sibling's child domain
+will definitely create a sched_domain with sched_group which will span
+out of the sched_domain
+               +------+         +------+        +-------+       +------+
+               | node |  12     |node  | 20     | node  |  12   |node  |
+               |  0   +---------+1     +--------+ 2     +-------+3     |
+               +------+         +------+        +-------+       +------+
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+domain0        node0            node1            node2          node3
+
+domain1        node0+1          node0+1          node2+3        node2+3
+                                                 +
+domain2        node0+1+2                         |
+             group: node0+1                      |
+               group:node2+3 <-------------------+
+
+when node2 is added into the domain2 of node0, kernel is using the child
+domain of node2's domain2, which is domain1(node2+3). Node 3 is outside
+the span of the domain including node0+1+2.
+
+This will make load_balance() and select_task_rq_fair() run on wrong CPU
+and base on avg load.
+
+here we move to use the *child* domain of the *child* domain of node2's
+domain2 to build the sched_group.
+
+               +------+         +------+        +-------+       +------+
+               | node |  12     |node  | 20     | node  |  12   |node  |
+               |  0   +---------+1     +--------+ 2     +-------+3     |
+               +------+         +------+        +-------+       +------+
+
+domain0        node0            node1          +- node2          node3
+                                               |
+domain1        node0+1          node0+1        | node2+3        node2+3
+                                               |
+domain2        node0+1+2                       |
+             group: node0+1                    |
+               group:node2 <-------------------+
+
+A tricky thing is that we shouldn't use the first cpu of node2 as the unique
+ID for the sched_group generated by grandchild, otherwise, when this cpu
+becomes the balance_cpu of another sched_group of cpus other than node0,
+our sched_group generated by grandchild will have same ID with another
+sched_group generated by child in init_overlap_sched_group():
+        build_balance_mask(sd, sg, mask);
+        cpu = cpumask_first_and(sched_group_span(sg), mask);
+
+        sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+So here we move to use the second cpu. But we can put the cpu back during
+load_balance by using sched_group_span rather than group_balance_mask.
+For the corner case, if NUMA has only one CPU, we will get to a warning
+WARN_ON_ONCE here:
+static void init_overlap_sched_group(struct sched_domain *sd,
+                                     struct sched_group *sg)
+{
+        if (atomic_inc_return(&sg->sgc->ref) == 1)
+                cpumask_copy(group_balance_mask(sg), mask);
+        else
+                WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask));
+}
+But It is pretty much not a real case.
+
+Tested by the below topology:
+qemu-system-aarch64  -M virt -nographic \
+ -smp cpus=8 \
+ -numa node,cpus=0-1,nodeid=0 \
+ -numa node,cpus=2-3,nodeid=1 \
+ -numa node,cpus=4-5,nodeid=2 \
+ -numa node,cpus=6-7,nodeid=3 \
+ -numa dist,src=0,dst=1,val=12 \
+ -numa dist,src=0,dst=2,val=20 \
+ -numa dist,src=0,dst=3,val=22 \
+ -numa dist,src=1,dst=2,val=22 \
+ -numa dist,src=2,dst=3,val=12 \
+ -numa dist,src=1,dst=3,val=24 \
+ -m 4G -cpu cortex-a57 -kernel arch/arm64/boot/Image
+
+w/o patch, we get lots of "groups don't span domain->span":
+[    0.802139] CPU0 attaching sched-domain(s):
+[    0.802193]  domain-0: span=0-1 level=MC
+[    0.802443]   groups: 0:{ span=0 cap=1013 }, 1:{ span=1 cap=979 }
+[    0.802693]   domain-1: span=0-3 level=NUMA
+[    0.802731]    groups: 0:{ span=0-1 cap=1992 }, 2:{ span=2-3 cap=1943 }
+[    0.802811]    domain-2: span=0-5 level=NUMA
+[    0.802829]     groups: 0:{ span=0-3 cap=3935 }, 4:{ span=4-7 cap=3937 }
+[    0.802881] ERROR: groups don't span domain->span
+[    0.803058]     domain-3: span=0-7 level=NUMA
+[    0.803080]      groups: 0:{ span=0-5 mask=0-1 cap=5843 }, 6:{ span=4-7 mask=6-7 cap=4077 }
+[    0.804055] CPU1 attaching sched-domain(s):
+[    0.804072]  domain-0: span=0-1 level=MC
+[    0.804096]   groups: 1:{ span=1 cap=979 }, 0:{ span=0 cap=1013 }
+[    0.804152]   domain-1: span=0-3 level=NUMA
+[    0.804170]    groups: 0:{ span=0-1 cap=1992 }, 2:{ span=2-3 cap=1943 }
+[    0.804219]    domain-2: span=0-5 level=NUMA
+[    0.804236]     groups: 0:{ span=0-3 cap=3935 }, 4:{ span=4-7 cap=3937 }
+[    0.804302] ERROR: groups don't span domain->span
+[    0.804520]     domain-3: span=0-7 level=NUMA
+[    0.804546]      groups: 0:{ span=0-5 mask=0-1 cap=5843 }, 6:{ span=4-7 mask=6-7 cap=4077 }
+[    0.804677] CPU2 attaching sched-domain(s):
+[    0.804687]  domain-0: span=2-3 level=MC
+[    0.804705]   groups: 2:{ span=2 cap=934 }, 3:{ span=3 cap=1009 }
+[    0.804754]   domain-1: span=0-3 level=NUMA
+[    0.804772]    groups: 2:{ span=2-3 cap=1943 }, 0:{ span=0-1 cap=1992 }
+[    0.804820]    domain-2: span=0-5 level=NUMA
+[    0.804836]     groups: 2:{ span=0-3 mask=2-3 cap=3991 }, 4:{ span=0-1,4-7 mask=4-5 cap=5985 }
+[    0.804944] ERROR: groups don't span domain->span
+[    0.805108]     domain-3: span=0-7 level=NUMA
+[    0.805134]      groups: 2:{ span=0-5 mask=2-3 cap=5899 }, 6:{ span=0-1,4-7 mask=6-7 cap=6125 }
+[    0.805223] CPU3 attaching sched-domain(s):
+[    0.805232]  domain-0: span=2-3 level=MC
+[    0.805249]   groups: 3:{ span=3 cap=1009 }, 2:{ span=2 cap=934 }
+[    0.805319]   domain-1: span=0-3 level=NUMA
+[    0.805336]    groups: 2:{ span=2-3 cap=1943 }, 0:{ span=0-1 cap=1992 }
+[    0.805383]    domain-2: span=0-5 level=NUMA
+[    0.805399]     groups: 2:{ span=0-3 mask=2-3 cap=3991 }, 4:{ span=0-1,4-7 mask=4-5 cap=5985 }
+[    0.805458] ERROR: groups don't span domain->span
+[    0.805605]     domain-3: span=0-7 level=NUMA
+[    0.805626]      groups: 2:{ span=0-5 mask=2-3 cap=5899 }, 6:{ span=0-1,4-7 mask=6-7 cap=6125 }
+[    0.805712] CPU4 attaching sched-domain(s):
+[    0.805721]  domain-0: span=4-5 level=MC
+[    0.805738]   groups: 4:{ span=4 cap=984 }, 5:{ span=5 cap=924 }
+[    0.805787]   domain-1: span=4-7 level=NUMA
+[    0.805803]    groups: 4:{ span=4-5 cap=1908 }, 6:{ span=6-7 cap=2029 }
+[    0.805851]    domain-2: span=0-1,4-7 level=NUMA
+[    0.805867]     groups: 4:{ span=4-7 cap=3937 }, 0:{ span=0-3 cap=3935 }
+[    0.805915] ERROR: groups don't span domain->span
+[    0.806108]     domain-3: span=0-7 level=NUMA
+[    0.806130]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5985 }, 2:{ span=0-3 mask=2-3 cap=3991 }
+[    0.806214] CPU5 attaching sched-domain(s):
+[    0.806222]  domain-0: span=4-5 level=MC
+[    0.806240]   groups: 5:{ span=5 cap=924 }, 4:{ span=4 cap=984 }
+[    0.806841]   domain-1: span=4-7 level=NUMA
+[    0.806866]    groups: 4:{ span=4-5 cap=1908 }, 6:{ span=6-7 cap=2029 }
+[    0.806934]    domain-2: span=0-1,4-7 level=NUMA
+[    0.806953]     groups: 4:{ span=4-7 cap=3937 }, 0:{ span=0-3 cap=3935 }
+[    0.807004] ERROR: groups don't span domain->span
+[    0.807312]     domain-3: span=0-7 level=NUMA
+[    0.807386]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5985 }, 2:{ span=0-3 mask=2-3 cap=3991 }
+[    0.807686] CPU6 attaching sched-domain(s):
+[    0.807710]  domain-0: span=6-7 level=MC
+[    0.807750]   groups: 6:{ span=6 cap=1017 }, 7:{ span=7 cap=1012 }
+[    0.807840]   domain-1: span=4-7 level=NUMA
+[    0.807870]    groups: 6:{ span=6-7 cap=2029 }, 4:{ span=4-5 cap=1908 }
+[    0.807952]    domain-2: span=0-1,4-7 level=NUMA
+[    0.807985]     groups: 6:{ span=4-7 mask=6-7 cap=4077 }, 0:{ span=0-5 mask=0-1 cap=5843 }
+[    0.808045] ERROR: groups don't span domain->span
+[    0.808257]     domain-3: span=0-7 level=NUMA
+[    0.808571]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6125 }, 2:{ span=0-5 mask=2-3 cap=5899 }
+[    0.808848] CPU7 attaching sched-domain(s):
+[    0.808860]  domain-0: span=6-7 level=MC
+[    0.808880]   groups: 7:{ span=7 cap=1012 }, 6:{ span=6 cap=1017 }
+[    0.808953]   domain-1: span=4-7 level=NUMA
+[    0.808974]    groups: 6:{ span=6-7 cap=2029 }, 4:{ span=4-5 cap=1908 }
+[    0.809034]    domain-2: span=0-1,4-7 level=NUMA
+[    0.809055]     groups: 6:{ span=4-7 mask=6-7 cap=4077 }, 0:{ span=0-5 mask=0-1 cap=5843 }
+[    0.809128] ERROR: groups don't span domain->span
+[    0.810361]     domain-3: span=0-7 level=NUMA
+[    0.810400]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=5961 }, 2:{ span=0-5 mask=2-3 cap=5903 }
+
+w/ patch, we get no "groups don't span domain->span":
+[    0.868907] CPU0 attaching sched-domain(s):
+[    0.868962]  domain-0: span=0-1 level=MC
+[    0.869179]   groups: 0:{ span=0 cap=1013 }, 1:{ span=1 cap=983 }
+[    0.869405]   domain-1: span=0-3 level=NUMA
+[    0.869438]    groups: 0:{ span=0-1 cap=1996 }, 2:{ span=2-3 cap=2006 }
+[    0.869542]    domain-2: span=0-5 level=NUMA
+[    0.869559]     groups: 0:{ span=0-3 cap=4002 }, 5:{ span=4-5 cap=2048 }
+[    0.869603]     domain-3: span=0-7 level=NUMA
+[    0.869618]      groups: 0:{ span=0-5 mask=0-1 cap=5980 }, 6:{ span=4-7 mask=6-7 cap=4016 }
+[    0.870303] CPU1 attaching sched-domain(s):
+[    0.870314]  domain-0: span=0-1 level=MC
+[    0.870334]   groups: 1:{ span=1 cap=983 }, 0:{ span=0 cap=1013 }
+[    0.870381]   domain-1: span=0-3 level=NUMA
+[    0.870396]    groups: 0:{ span=0-1 cap=1996 }, 2:{ span=2-3 cap=2006 }
+[    0.870440]    domain-2: span=0-5 level=NUMA
+[    0.870454]     groups: 0:{ span=0-3 cap=4002 }, 5:{ span=4-5 cap=2048 }
+[    0.870507]     domain-3: span=0-7 level=NUMA
+[    0.870530]      groups: 0:{ span=0-5 mask=0-1 cap=5980 }, 6:{ span=4-7 mask=6-7 cap=4016 }
+[    0.870611] CPU2 attaching sched-domain(s):
+[    0.870619]  domain-0: span=2-3 level=MC
+[    0.870634]   groups: 2:{ span=2 cap=1007 }, 3:{ span=3 cap=999 }
+[    0.870677]   domain-1: span=0-3 level=NUMA
+[    0.870691]    groups: 2:{ span=2-3 cap=2006 }, 0:{ span=0-1 cap=1996 }
+[    0.870734]    domain-2: span=0-5 level=NUMA
+[    0.870748]     groups: 2:{ span=0-3 mask=2-3 cap=4054 }, 5:{ span=4-5 cap=2048 }
+[    0.870795]     domain-3: span=0-7 level=NUMA
+[    0.870809]      groups: 2:{ span=0-5 mask=2-3 cap=6032 }, 6:{ span=0-1,4-7 mask=6-7 cap=6064 }
+[    0.870913] CPU3 attaching sched-domain(s):
+[    0.870921]  domain-0: span=2-3 level=MC
+[    0.870936]   groups: 3:{ span=3 cap=999 }, 2:{ span=2 cap=1007 }
+[    0.870979]   domain-1: span=0-3 level=NUMA
+[    0.870993]    groups: 2:{ span=2-3 cap=2006 }, 0:{ span=0-1 cap=1996 }
+[    0.871035]    domain-2: span=0-5 level=NUMA
+[    0.871049]     groups: 2:{ span=0-3 mask=2-3 cap=4054 }, 5:{ span=4-5 cap=2048 }
+[    0.871096]     domain-3: span=0-7 level=NUMA
+[    0.871110]      groups: 2:{ span=0-5 mask=2-3 cap=6032 }, 6:{ span=0-1,4-7 mask=6-7 cap=6064 }
+[    0.871177] CPU4 attaching sched-domain(s):
+[    0.871185]  domain-0: span=4-5 level=MC
+[    0.871200]   groups: 4:{ span=4 cap=977 }, 5:{ span=5 cap=1001 }
+[    0.871243]   domain-1: span=4-7 level=NUMA
+[    0.871257]    groups: 4:{ span=4-5 cap=1978 }, 6:{ span=6-7 cap=1968 }
+[    0.871300]    domain-2: span=0-1,4-7 level=NUMA
+[    0.871314]     groups: 4:{ span=4-7 cap=3946 }, 1:{ span=0-1 cap=2048 }
+[    0.871356]     domain-3: span=0-7 level=NUMA
+[    0.871370]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5994 }, 2:{ span=0-3 mask=2-3 cap=4054 }
+[    0.871436] CPU5 attaching sched-domain(s):
+[    0.871443]  domain-0: span=4-5 level=MC
+[    0.871457]   groups: 5:{ span=5 cap=1001 }, 4:{ span=4 cap=977 }
+[    0.871512]   domain-1: span=4-7 level=NUMA
+[    0.871893]    groups: 4:{ span=4-5 cap=1978 }, 6:{ span=6-7 cap=1968 }
+[    0.871949]    domain-2: span=0-1,4-7 level=NUMA
+[    0.871966]     groups: 4:{ span=4-7 cap=3946 }, 1:{ span=0-1 cap=2048 }
+[    0.872010]     domain-3: span=0-7 level=NUMA
+[    0.872025]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5994 }, 2:{ span=0-3 mask=2-3 cap=4054 }
+[    0.872115] CPU6 attaching sched-domain(s):
+[    0.872123]  domain-0: span=6-7 level=MC
+[    0.872139]   groups: 6:{ span=6 cap=993 }, 7:{ span=7 cap=975 }
+[    0.872186]   domain-1: span=4-7 level=NUMA
+[    0.872202]    groups: 6:{ span=6-7 cap=1968 }, 4:{ span=4-5 cap=1978 }
+[    0.872246]    domain-2: span=0-1,4-7 level=NUMA
+[    0.872260]     groups: 6:{ span=4-7 mask=6-7 cap=4016 }, 1:{ span=0-1 cap=2048 }
+[    0.872309]     domain-3: span=0-7 level=NUMA
+[    0.872323]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6064 }, 2:{ span=0-5 mask=2-3 cap=6032 }
+[    0.872392] CPU7 attaching sched-domain(s):
+[    0.872399]  domain-0: span=6-7 level=MC
+[    0.872414]   groups: 7:{ span=7 cap=975 }, 6:{ span=6 cap=993 }
+[    0.872458]   domain-1: span=4-7 level=NUMA
+[    0.872472]    groups: 6:{ span=6-7 cap=1968 }, 4:{ span=4-5 cap=1978 }
+[    0.872662]    domain-2: span=0-1,4-7 level=NUMA
+[    0.872685]     groups: 6:{ span=4-7 mask=6-7 cap=4016 }, 1:{ span=0-1 cap=2048 }
+[    0.872737]     domain-3: span=0-7 level=NUMA
+[    0.872752]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6064 }, 2:{ span=0-5 mask=2-3 cap=6032 }
+
+Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Meelis Roos <mroos@linux.ee>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- drivers/pinctrl/pinctrl-at91-pio4.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ -v2: fix the span of sched_group rather than hacking the load balance
+ to compensate the topology problem(thanks for the comments of Vincent
+ and Valentin)
+ v1 link:
+ https://lore.kernel.org/lkml/20210115203632.34396-1-song.bao.hua@hisilicon.com/
 
-diff --git a/drivers/pinctrl/pinctrl-at91-pio4.c b/drivers/pinctrl/pinctrl-at91-pio4.c
-index d267367d94b9..f202cdb6dc3c 100644
---- a/drivers/pinctrl/pinctrl-at91-pio4.c
-+++ b/drivers/pinctrl/pinctrl-at91-pio4.c
-@@ -36,6 +36,7 @@
- #define		ATMEL_PIO_DIR_MASK		BIT(8)
- #define		ATMEL_PIO_PUEN_MASK		BIT(9)
- #define		ATMEL_PIO_PDEN_MASK		BIT(10)
-+#define		ATMEL_PIO_SR_MASK		BIT(11)
- #define		ATMEL_PIO_IFEN_MASK		BIT(12)
- #define		ATMEL_PIO_IFSCEN_MASK		BIT(13)
- #define		ATMEL_PIO_OPD_MASK		BIT(14)
-@@ -76,10 +77,12 @@
-  * @nbanks: number of PIO banks
-  * @last_bank_count: number of lines in the last bank (can be less than
-  *	the rest of the banks).
-+ * @slew_rate_support: slew rate support
-  */
- struct atmel_pioctrl_data {
- 	unsigned nbanks;
- 	unsigned last_bank_count;
-+	unsigned int slew_rate_support;
- };
+ kernel/sched/fair.c     |  9 ++++-
+ kernel/sched/sched.h    |  1 +
+ kernel/sched/topology.c | 84 ++++++++++++++++++++++++++---------------
+ 3 files changed, 63 insertions(+), 31 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f183dba4961e..3ce815045793 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9538,6 +9538,7 @@ static int should_we_balance(struct lb_env *env)
+ {
+ 	struct sched_group *sg = env->sd->groups;
+ 	int cpu;
++	struct cpumask *mask;
  
- struct atmel_group {
-@@ -117,6 +120,7 @@ struct atmel_pin {
-  * @pm_suspend_backup: backup/restore register values on suspend/resume
-  * @dev: device entry for the Atmel PIO controller.
-  * @node: node of the Atmel PIO controller.
-+ * @slew_rate_support: slew rate support
-  */
- struct atmel_pioctrl {
- 	void __iomem		*reg_base;
-@@ -138,6 +142,7 @@ struct atmel_pioctrl {
- 	} *pm_suspend_backup;
- 	struct device		*dev;
- 	struct device_node	*node;
-+	unsigned int		slew_rate_support;
- };
+ 	/*
+ 	 * Ensure the balancing environment is consistent; can happen
+@@ -9553,8 +9554,14 @@ static int should_we_balance(struct lb_env *env)
+ 	if (env->idle == CPU_NEWLY_IDLE)
+ 		return 1;
  
- static const char * const atmel_functions[] = {
-@@ -760,6 +765,13 @@ static int atmel_conf_pin_config_group_get(struct pinctrl_dev *pctldev,
- 			return -EINVAL;
- 		arg = 1;
- 		break;
-+	case PIN_CONFIG_SLEW_RATE:
-+		if (!atmel_pioctrl->slew_rate_support)
-+			return -EOPNOTSUPP;
-+		if (!(res & ATMEL_PIO_SR_MASK))
-+			return -EINVAL;
-+		arg = 1;
-+		break;
- 	case ATMEL_PIN_CONFIG_DRIVE_STRENGTH:
- 		if (!(res & ATMEL_PIO_DRVSTR_MASK))
- 			return -EINVAL;
-@@ -793,6 +805,10 @@ static int atmel_conf_pin_config_group_set(struct pinctrl_dev *pctldev,
- 		dev_dbg(pctldev->dev, "%s: pin=%u, config=0x%lx\n",
- 			__func__, pin_id, configs[i]);
++	/*
++	 * in build_balance_mask(), we removed the first cpu from the
++	 * balance_mask of the sched_group generated by grandchild;
++	 * the first cpu should be able to pull task if it is idle.
++	 */
++	mask = sg->from_grandchild ? sched_group_span(sg) : group_balance_mask(sg);
+ 	/* Try to find first idle CPU */
+-	for_each_cpu_and(cpu, group_balance_mask(sg), env->cpus) {
++	for_each_cpu_and(cpu, mask, env->cpus) {
+ 		if (!idle_cpu(cpu))
+ 			continue;
  
-+		/* Keep slew rate enabled by default. */
-+		if (atmel_pioctrl->slew_rate_support)
-+			conf |= ATMEL_PIO_SR_MASK;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 12ada79d40f3..3ad282fdc5b1 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1508,6 +1508,7 @@ struct sched_group {
+ 	unsigned int		group_weight;
+ 	struct sched_group_capacity *sgc;
+ 	int			asym_prefer_cpu;	/* CPU of highest priority in group */
++	int			from_grandchild;	/* this sched_group comes from grandchild */
+ 
+ 	/*
+ 	 * The CPUs this group covers.
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 5d3675c7a76b..23099f6dc034 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -93,7 +93,7 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
+ 				group->sgc->id,
+ 				cpumask_pr_args(sched_group_span(group)));
+ 
+-		if ((sd->flags & SD_OVERLAP) &&
++		if ((sd->flags & SD_OVERLAP) && !group->from_grandchild &&
+ 		    !cpumask_equal(group_balance_mask(group), sched_group_span(group))) {
+ 			printk(KERN_CONT " mask=%*pbl",
+ 				cpumask_pr_args(group_balance_mask(group)));
+@@ -723,35 +723,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ 	for (tmp = sd; tmp; tmp = tmp->parent)
+ 		numa_distance += !!(tmp->flags & SD_NUMA);
+ 
+-	/*
+-	 * FIXME: Diameter >=3 is misrepresented.
+-	 *
+-	 * Smallest diameter=3 topology is:
+-	 *
+-	 *   node   0   1   2   3
+-	 *     0:  10  20  30  40
+-	 *     1:  20  10  20  30
+-	 *     2:  30  20  10  20
+-	 *     3:  40  30  20  10
+-	 *
+-	 *   0 --- 1 --- 2 --- 3
+-	 *
+-	 * NUMA-3	0-3		N/A		N/A		0-3
+-	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
+-	 *
+-	 * NUMA-2	0-2		0-3		0-3		1-3
+-	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
+-	 *
+-	 * NUMA-1	0-1		0-2		1-3		2-3
+-	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
+-	 *
+-	 * NUMA-0	0		1		2		3
+-	 *
+-	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
+-	 * group span isn't a subset of the domain span.
+-	 */
+-	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
+-
+ 	sched_domain_debug(sd, cpu);
+ 
+ 	rq_attach_root(rq, rd);
+@@ -906,6 +877,7 @@ build_balance_mask(struct sched_domain *sd, struct sched_group *sg, struct cpuma
+ 	cpumask_clear(mask);
+ 
+ 	for_each_cpu(i, sg_span) {
++		int from_grandchild = 0;
+ 		sibling = *per_cpu_ptr(sdd->sd, i);
+ 
+ 		/*
+@@ -916,10 +888,27 @@ build_balance_mask(struct sched_domain *sd, struct sched_group *sg, struct cpuma
+ 		if (!sibling->child)
+ 			continue;
+ 
++		while (sibling->child &&
++			!cpumask_subset(sched_domain_span(sibling->child),
++					sched_domain_span(sd))) {
++			sibling = sibling->child;
++			from_grandchild = 1;
++		}
 +
- 		switch (param) {
- 		case PIN_CONFIG_BIAS_DISABLE:
- 			conf &= (~ATMEL_PIO_PUEN_MASK);
-@@ -850,6 +866,13 @@ static int atmel_conf_pin_config_group_set(struct pinctrl_dev *pctldev,
- 					ATMEL_PIO_SODR);
- 			}
- 			break;
-+		case PIN_CONFIG_SLEW_RATE:
-+			if (!atmel_pioctrl->slew_rate_support)
-+				break;
-+			/* And remove it if explicitly requested. */
-+			if (arg == 0)
-+				conf &= ~ATMEL_PIO_SR_MASK;
-+			break;
- 		case ATMEL_PIN_CONFIG_DRIVE_STRENGTH:
- 			switch (arg) {
- 			case ATMEL_PIO_DRVSTR_LO:
-@@ -901,6 +924,8 @@ static void atmel_conf_pin_config_dbg_show(struct pinctrl_dev *pctldev,
- 		seq_printf(s, "%s ", "open-drain");
- 	if (conf & ATMEL_PIO_SCHMITT_MASK)
- 		seq_printf(s, "%s ", "schmitt");
-+	if (atmel_pioctrl->slew_rate_support && (conf & ATMEL_PIO_SR_MASK))
-+		seq_printf(s, "%s ", "slew-rate");
- 	if (conf & ATMEL_PIO_DRVSTR_MASK) {
- 		switch ((conf & ATMEL_PIO_DRVSTR_MASK) >> ATMEL_PIO_DRVSTR_OFFSET) {
- 		case ATMEL_PIO_DRVSTR_ME:
-@@ -994,6 +1019,7 @@ static const struct atmel_pioctrl_data atmel_sama5d2_pioctrl_data = {
- static const struct atmel_pioctrl_data microchip_sama7g5_pioctrl_data = {
- 	.nbanks			= 5,
- 	.last_bank_count	= 8, /* sama7g5 has only PE0 to PE7 */
-+	.slew_rate_support	= 1,
- };
+ 		/* If we would not end up here, we can't continue from here */
+ 		if (!cpumask_equal(sg_span, sched_domain_span(sibling->child)))
+ 			continue;
  
- static const struct of_device_id atmel_pctrl_of_match[] = {
-@@ -1039,6 +1065,7 @@ static int atmel_pinctrl_probe(struct platform_device *pdev)
- 		atmel_pioctrl->npins -= ATMEL_PIO_NPINS_PER_BANK;
- 		atmel_pioctrl->npins += atmel_pioctrl_data->last_bank_count;
++		sg->from_grandchild = from_grandchild;
++		/*
++		 * use cpu other than the first one as the unique ID of this group
++		 * otherwise, the ID will conflict with another sched_group coming
++		 * from child rather than grandchild
++		 */
++		if (from_grandchild && i == cpumask_first(sg_span) &&
++				cpumask_weight(sg_span) > 1)
++			continue;
++
+ 		cpumask_set_cpu(i, mask);
  	}
-+	atmel_pioctrl->slew_rate_support = atmel_pioctrl_data->slew_rate_support;
  
- 	atmel_pioctrl->reg_base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(atmel_pioctrl->reg_base))
+@@ -1015,6 +1004,41 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 		if (!cpumask_test_cpu(i, sched_domain_span(sibling)))
+ 			continue;
+ 
++		/*
++		 * for NUMA diameter >= 3, building sched_domain by sibling's
++		 * child's child domain to prevent sched_group from spanning
++		 * out of sched_domain
++		 * if we don't do this, Diameter >=3 is misrepresented:
++		 *
++		 * Smallest diameter=3 topology is:
++		 *
++		 *   node   0   1   2   3
++		 *     0:  10  20  30  40
++		 *     1:  20  10  20  30
++		 *     2:  30  20  10  20
++		 *     3:  40  30  20  10
++		 *
++		 *   0 --- 1 --- 2 --- 3
++		 *
++		 * NUMA-3       0-3             N/A             N/A             0-3
++		 *  groups:     {0-2},{1-3}                                     {1-3},{0-2}
++		 *
++		 * NUMA-2       0-2             0-3             0-3             1-3
++		 *  groups:     {0-1},{1-3}     {0-2},{2-3}     {1-3},{0-1}     {2-3},{0-2}
++		 *
++		 * NUMA-1       0-1             0-2             1-3             2-3
++		 *  groups:     {0},{1}         {1},{2},{0}     {2},{3},{1}     {3},{2}
++		 *
++		 * NUMA-0       0               1               2               3
++		 *
++		 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
++		 * group span isn't a subset of the domain span.
++		 */
++		while (sibling->child &&
++		       !cpumask_subset(sched_domain_span(sibling->child),
++			               span))
++			sibling = sibling->child;
++
+ 		sg = build_group_from_child_sched_domain(sibling, cpu);
+ 		if (!sg)
+ 			goto fail;
 -- 
-2.7.4
+2.25.1
 
