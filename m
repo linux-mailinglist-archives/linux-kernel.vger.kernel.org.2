@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7713630534E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809B930534F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhA0Ggl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:36:41 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:37468 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233778AbhA0DN3 (ORCPT
+        id S232489AbhA0GhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234134AbhA0DNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:13:29 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R3A3MK120258;
-        Wed, 27 Jan 2021 03:12:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=8AMnw/TPTARnwZE0kp3nyNSvZtv301hDjy2wwGfGe58=;
- b=r+NgD+ZK85MOeCsmdhAjDLo92MlwNAk4puvQqS9TLCLntxOWFPJttuUUWooGRXtS26yV
- KwOYhYGv6wenyQQ2gK5bktwAggxkesPEeH7pUiQv6k80HDyhpGspRZjEsnj5UewdO7iN
- 0HBxa++YN1KOo9CUIB4eqF42MNS+aq+L4esd1MJ9PcjRgG3DA1Y/xyzBhoMUG8fDqRng
- exeOTbaAMgTXuFxw14rzx2BovN7vPT8hdiFRO4arEV6Z24sZGz+8bJ8qlc5ycQHHKJEZ
- UnGACZOE/dsK0RBUf0fBeltIqMPrB0x4jQEIfKY76diU1IUrrju0pde7i1BSP5TlWD0A rg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 368b7qw160-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 03:12:44 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R35eUB138696;
-        Wed, 27 Jan 2021 03:12:43 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-        by userp3020.oracle.com with ESMTP id 368wjryy1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 03:12:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QxNdsgaUAQhUE9iIx7q7I814LdHTd9dy7w8IZptr/mfko2lKCaz7BSWGVX/8WfdV49leyOKzQdb45XrDIy7kibu7MTiOqfSxAYXENn28pVK75ExZOWD/lrLUE0u4no/nqbmVAIq+GlqfdCv4zB47eVAKJszyKvEoA26vLfm+Pbh5eRzvNTyNz0SsTnCcxqqbae1NeVAObEQ8TGlHp8msLNaBOv4PtXFL11uMG2H0vfWBv0YylHlsjUI+11olcA4UFCNiyyPlQFEa7EOR18J7VW76sm4ZJ9UuxFUXTurDbbg9wTRHl9X+taU9QwnsDWWQhjJoGFkqgFUoKHbWRwUuxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8AMnw/TPTARnwZE0kp3nyNSvZtv301hDjy2wwGfGe58=;
- b=RvR6ZYxpzNX7FlbhBsr60+vp/R/KCte4RRSzoKhiZYt58Hj1iU42D8dlEMrn3LtDaQZQLhZjMwOyr1znAvX7yvdAi9I0LACoT+IhIoNf9+JKS90Mb1uMD0VHMwcQYFn3cymZoRFgLB9+YMPrNOeLiy3qzlTdgRmZ6SmIsqn51OqDx+ZjuIFa/yB6gu9cvCUKpVzTAO61k8DX0MQYl3SXM8zll4p7QwEPvkcWo3IYwbhqBxlTfv28NyZ6lfm1BXlJs2dAdz0dCupAFlokpErlnMHFse+rWVvPxcl0YNuzcGQbocbNE0jQfkd81Oh9DLPWQUnkwxQ1QGsEa1Eat5TZhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 26 Jan 2021 22:13:49 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21F6C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:13:09 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id f18so444837ilj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8AMnw/TPTARnwZE0kp3nyNSvZtv301hDjy2wwGfGe58=;
- b=Ksq0q+n7ub3KnIXCzeDdoCbXpJNDhFB+0qqn7V6V8NlGkLTBWQFeYW+uUgyVu39MKm8QtI5Ng1/hy+orkv3xwJM2EoAEvqUoZrsyEC2/drwvJGNgEzkTu4tIh5nUAV8rAqsxq+d+n3IIbHlermABWq3WA818Cci9u0zT/9BImEQ=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4423.namprd10.prod.outlook.com (2603:10b6:510:40::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Wed, 27 Jan
- 2021 03:12:41 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
- 03:12:41 +0000
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] scsi: lpfc: Add auto select on IRQ_POLL
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1zh0vvzs1.fsf@ca-mkp.ca.oracle.com>
-References: <20210126000554.309858-1-ztong0001@gmail.com>
-Date:   Tue, 26 Jan 2021 22:12:38 -0500
-In-Reply-To: <20210126000554.309858-1-ztong0001@gmail.com> (Tong Zhang's
-        message of "Mon, 25 Jan 2021 19:05:54 -0500")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: MWHPR1701CA0003.namprd17.prod.outlook.com
- (2603:10b6:301:14::13) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3M1zQf19J5vQNnJvY7qqgq7o0AemNbv+khJIT1wB/QE=;
+        b=IgAeFMvxPVf6VitI98plqk0WfuJtV2d7hnCerwwb9NTSW7TjlcGfJoi+7kATjlMXQl
+         GtoigKULokzQBIvZBGTcPjX/bIZC7AkpLnyjaGBc1quidSPpmtXH5cjSlW3Fh1FWSDxl
+         sXLEokobSfTLANbhRyTnH3/OwWXZXlmHXQBKj97pBZOqq0rEh33VOJlz2Fomr4enZL39
+         D6aMyxc6zPVBeVhxiHX/zTdiUyEF4ypPUZvs8yKOhlqqHmDbL8BIKRTWUIRuMzDXiCRY
+         bx27XGhIQJAviHmks2tKoMZ2reM9J3dDPA+j3ptzqDxGJT7cltYTAB8dI9riTFPYYZz4
+         k+Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3M1zQf19J5vQNnJvY7qqgq7o0AemNbv+khJIT1wB/QE=;
+        b=tCUnWfZQUVvbdVCnET4HR0CI8qKXWp+t5undf4ucUEgry4Xyh3Z+VGvsBc/Ot0Af4A
+         3+7qw2ljN0Ij2SHAMnMySUPtORTlkXxFMUsoVTxuLv+jmwsgxHZQguXrLs6hzdy0S+Yh
+         wDYHK1N36rP6eaANjttHXlrn7vJ/ulrPCmQjD9GUQVPXUd6I9scqzJvYiodr+Zl3QPMC
+         ABIQRz40LMp+2dHM3ex/p9M3qiV7Qd9m7+0FN5bz2Zo1ySPiIJdUFNdXtWe+pptFlkyK
+         2rVgzRE8/uOKgW2yZUN3UtGZhEx8y+SoiXpX8j9Ci6yueuP8qQTQ/qfoH/JeYRHCakDr
+         9lSw==
+X-Gm-Message-State: AOAM532AFtg6pYq6ONyZVQ2S5eP6Dyns9ibRmr4xMENIlLegElVfHUjT
+        X/aaheJEb+HlXArZZCe0tf8wcEiZl37Z5wys+G8=
+X-Google-Smtp-Source: ABdhPJx/vjoLbEAK5NmSmJJQvszKdv7pvcwgLTkU9XL7NNH/BMn4NGlskm6C0sKQ8XTL8zT2OBAlj4E6aBm8/ozN30Y=
+X-Received: by 2002:a05:6e02:cb:: with SMTP id r11mr7289042ilq.116.1611717189005;
+ Tue, 26 Jan 2021 19:13:09 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by MWHPR1701CA0003.namprd17.prod.outlook.com (2603:10b6:301:14::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 03:12:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 196414a1-3dea-4c82-cd71-08d8c2716875
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4423:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4423EA89A5BFBEC422B70BAD8EBB9@PH0PR10MB4423.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5MBZQB7nEk9uaM8yWf+COIst+AptjuCpx/EmcUtvQLlYQ8fAbLuvHKWhRXkbrXAwBtmNqM8sXVHCKf1W2I2qN00RdIm2qUOvTY8yCBzpay5LjFOkPp2fbKue9gf1W/ablSCLJEklUDpzdoB+IL7/Df06oJTD6jLT9v7JS5ozLxNKAAPfGjX9HB5RMiQFGnDFRJgsNyCkGbm3X75FfhC8k0afy1L5UIxZlIRa5UhMGgAx2ofmjUIIqvEPttwQ9M4d1PAWc/VeSzZQqkd21EOr+TgSY54cteKkctoR9y6zGZW2kUD8FNWkw6hwztR2gYEznnuPF4wJmzMtO93P1+xBNfsGlzWvGsPtgR+0mdNfq0Wff6nhD3FE7Zs69w0RaKzcfdM5ZAJmPNqXSpSFii8CtnBZKNnl1c1jmxe8BGL4tWMkqGra8TQiCZVLV4OngAXN/u5ev7ZAmf7DXUhqcM3e6UwT7kd4XxiKvUmm/xB5sVosCTLMP+LlZaBcbO9l54Sky2YN1Jl1eL3YfZW5z5kRUQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(366004)(346002)(136003)(396003)(52116002)(558084003)(5660300002)(2906002)(7696005)(8936002)(36916002)(478600001)(66946007)(16526019)(6916009)(956004)(4326008)(66476007)(66556008)(26005)(54906003)(8676002)(186003)(86362001)(55016002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tROrR4KR8+DbJxfTQ61bePtpzv1HGgAHBkD+5k9FFJddQgaCiNYKRRqtuxcz?=
- =?us-ascii?Q?hdCwC18p3Ots6NcZVPpKW0prRKwMHpZoxJIsYIuXYA87GND1MzI1rDclEssd?=
- =?us-ascii?Q?B/iVB+GX4VO2W/mHEKLcdU32Y3isK/XnBXEXxi09JUYh0xTiolnD91uxybGh?=
- =?us-ascii?Q?R4sOklccPQdKpWcX51eW9unQwvOw58lbeO7j2N6VLr8pLIKYdI5dkfuQTl6O?=
- =?us-ascii?Q?jAwuZLNwP3xspZvaKAOcWfycn1jwxCJ0ygaPMvNThhmkhTRfOkSn5+6u1+PZ?=
- =?us-ascii?Q?doIAwkUqXGIdrs34RpWvlq3MxtbEYRQQEx0BbhD9e8oc0THxZ3QIXmcKM4Zc?=
- =?us-ascii?Q?tS+C5jMiIqr2v/EQytHZbA46wLiQ2dtlyQ6qdoRR0PlpZeNuZ3ylmr+2YYF2?=
- =?us-ascii?Q?yE3+5c/YYhD6GHtJzgwCmkUzSh2Iv5EDMB9oQm5h2tB+V/edbNov5k2fJagq?=
- =?us-ascii?Q?nBXomyYA+HQgwMPkp705Pt14xjQbXlKgjyXb369Jbj00rAmeSy3w9ou3FKsK?=
- =?us-ascii?Q?t5qrjjnUkRYslZeLdGIbyOL8lzPmViLwrUCnhGxNq3iDNoRQ0NIp/yV2szp8?=
- =?us-ascii?Q?wg1zLLzVzy745NW/yS6p8IgBAit3iLPeLA4UVpKAQoXJjTyzRn6B7CemkDwx?=
- =?us-ascii?Q?BvN2yOsoDrUU+ngVUXid6DaKUJqXsga2ungtZx59X0kYtyy0c/BsM/PW+obE?=
- =?us-ascii?Q?nmhKkWiyQkDa2oFyipKnyBfomxDV2wKSvr3yiRC5c2U+nG17iwo55XQN3fuM?=
- =?us-ascii?Q?SAleGAC03FNwzJTGaaNeD7W1pMdbzugU678gA7F8dQVHR93dLQ5nYzHkdSEb?=
- =?us-ascii?Q?pHX0GCxBUgq+yvbkWFdJeAwH0QUNOD7UpI3zHcq1cIzU/bMqU+cUMgxzBCsH?=
- =?us-ascii?Q?c+gI9QwXuO0W863g0vPjBW2dm50jcUEvapnd8GGfuO84ZudEBJlf1chYxadT?=
- =?us-ascii?Q?H8Ql2GA1QvUTrhPSpWGF7A9tEhlgp9YVFA6VWwjAlCoYRcpXCQNWOKeQ40B8?=
- =?us-ascii?Q?UFpY+EkOCg3Lv2b/xndKNBpeA+XFkQmUxb/uShIPid14AKTD/u0M/aCOWtUt?=
- =?us-ascii?Q?0HATEpVw?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 196414a1-3dea-4c82-cd71-08d8c2716875
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 03:12:41.3793
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /PPVqMHPuyb0i34cj9MOKW8y26jhH7Hof7wsE1N1AtdItwOigY0r9x4oXFjMrmPzO3gajq2Za1NMBdRDgefkl8xwHCec/91N4xrt6Tm4NHk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4423
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- adultscore=0 mlxscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101270017
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270017
+References: <20210126171141.122639-1-paul.gortmaker@windriver.com> <20210126171141.122639-5-paul.gortmaker@windriver.com>
+In-Reply-To: <20210126171141.122639-5-paul.gortmaker@windriver.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Tue, 26 Jan 2021 19:12:58 -0800
+Message-ID: <CAAH8bW_BCPTK4H4CFShbfEv-cV6tiqXNMh_xNRbJV+gkjyw+mg@mail.gmail.com>
+Subject: Re: [PATCH 4/8] lib: bitmap: move ERANGE check from set_region to check_region
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 26, 2021 at 9:12 AM Paul Gortmaker
+<paul.gortmaker@windriver.com> wrote:
+>
+> It makes sense to do all the checks in check_region() and not 1/2
+> in check_region and 1/2 in set_region.
+>
+> Since set_region is called immediately after check_region, the net
+> effect on runtime is zero, but it gets rid of an if (...) return...
+>
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> ---
+>  lib/bitmap.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+>
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 162e2850c622..833f152a2c43 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -500,17 +500,12 @@ struct region {
+>         unsigned int nbits;
+>  };
+>
+> -static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
+> +static void bitmap_set_region(const struct region *r, unsigned long *bitmap)
+>  {
+>         unsigned int start;
+>
+> -       if (r->end >= r->nbits)
+> -               return -ERANGE;
+> -
+>         for (start = r->start; start <= r->end; start += r->group_len)
+>                 bitmap_set(bitmap, start, min(r->end - start + 1, r->off));
+> -
+> -       return 0;
+>  }
+>
+>  static int bitmap_check_region(const struct region *r)
+> @@ -518,6 +513,9 @@ static int bitmap_check_region(const struct region *r)
+>         if (r->start > r->end || r->group_len == 0 || r->off > r->group_len)
+>                 return -EINVAL;
+>
+> +       if (r->end >= r->nbits)
+> +               return -ERANGE;
+> +
+>         return 0;
+>  }
+>
+> @@ -656,9 +654,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+>                 if (ret)
+>                         return ret;
+>
+> -               ret = bitmap_set_region(&r, maskp);
+> -               if (ret)
+> -                       return ret;
+> +               bitmap_set_region(&r, maskp);
+>         }
+>
+>         return 0;
+> --
+> 2.17.1
 
-Tong,
-
-> lpfc depends on irq_poll library, but it is not selected
-> automatically.  When irq_poll is not selected, compiling it can run
-> into following error
-
-Applied to 5.12/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Acked-by: Yury Norov <yury.norov@gmail.com>
