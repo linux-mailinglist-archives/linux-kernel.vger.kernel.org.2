@@ -2,89 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF8930639B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF06830639E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbhA0Swy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:52:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51819 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232224AbhA0Swq (ORCPT
+        id S231880AbhA0S5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231132AbhA0S5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:52:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611773480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mF61cZgsITSGEqXTWGfoLqDo/tPq9X9q/y5wFM1TLDw=;
-        b=Rd9HULBE6FkYuPRPB5FIjMBw614zoghZfieTFaPJFX+SL5pIhBcxfdusf5zBFSSjbMpNQU
-        bgIUF5N0UirpPePR59FeGLm51Gzz6KdV9VQ3vArt/IcHSWc2/e7jPzKSMo/UBUvg9CQVTh
-        n1bqaMKdQaNwplyJZ8jGLBjqAdc1Ar8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-TSafYW7ROO2gEP1B8eSM9g-1; Wed, 27 Jan 2021 13:51:18 -0500
-X-MC-Unique: TSafYW7ROO2gEP1B8eSM9g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91E401800D42;
-        Wed, 27 Jan 2021 18:51:16 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4AE5E60C5F;
-        Wed, 27 Jan 2021 18:51:15 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 12:51:13 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210127185113.c3est2vssf5tlyyq@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210127180215.GA1745339@infradead.org>
- <20210127183856.moe3p5pxw6bbtunk@treble>
- <20210127184327.GA1755516@infradead.org>
+        Wed, 27 Jan 2021 13:57:48 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D3AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 10:57:07 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id e15so2198792qte.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 10:57:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mdl713s/21KiGyh/DTXFNyf+tvozyDwj9ae9RDlS6aw=;
+        b=XzAKeNrqFOuaPBSSM/RreTfJuczOhVS0Z2FAKftgmwEsY7l6P6DLJSRNSKyBRQivDd
+         UnugyZFEtIST2Llgtsh0M0YpXdh0A5yR9AST2/W3BQgJW9zsM9/5usouZLO48tTN3nkP
+         d6mcEoGxOwXCKYWOwzPPFoOSZNujHIrdYrpiufb1DDwc17R4ksutz+Ne45PWf6p8QO0c
+         yX4XCOBl9xM6KLna7NW8e69OaAUD2q11AxVtgEt10/BlHGbZLdsFIapasgCSX3hZ1/i/
+         Ym4dtZyXSheOWjFR3HtvVEL4YxRYX15Kmh0nwtA5N5Mf/9AbGys0sTzm4qFzD5P0U1Jg
+         qVTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mdl713s/21KiGyh/DTXFNyf+tvozyDwj9ae9RDlS6aw=;
+        b=fQ0drfNAox27eTyVBeytni1AT5twehcbcyi/MYnsv1kq+92ZJfzk6L+RntAs952Ec6
+         BTZHeLT5goMLB+7R9nyu3TVzVnJyR4JMVT0Oikv7MCHq2PEl/9un0YmpILQ0lF5zS0mW
+         tErxDUoskVjSlWU2sUXJjRXRltVh4s5+w8hrtyTCtMNRxpeNRiPjLyWfcUtPw1rvOIC7
+         Mjg3sa3rTTZ3YZHBotIKN2Oj/Qtv+EOgwdqKuelpsBuXtocIlFadB7CIL2L3OaMGPrjD
+         pMVMyehbM2qJDq3TYdQ1m4Je4twgD5Do25qUTUVp+6Qyo8bPLP1wSQSR2QVdQRzGOn6o
+         zCKA==
+X-Gm-Message-State: AOAM533wEzJcmFanjMkAkjRBmOUcdviudv4FVawbFkYLcFjO16nBfrDO
+        IpjkKsZa+AQnyA4hxYSBCLl6zK5Q9iQ7X4LgBTH+tA==
+X-Google-Smtp-Source: ABdhPJzudV+I630n1SVMaDIVN8XccwXytfWIVGc1y9T7v8EfrFOLYIK7l1kvgw2YoJ5d7EorNZFaJwSFzSBQJ0XZeJc=
+X-Received: by 2002:ac8:66c9:: with SMTP id m9mr422359qtp.43.1611773826679;
+ Wed, 27 Jan 2021 10:57:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210127184327.GA1755516@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <0000000000009bbb7905b9e4a624@google.com> <CACT4Y+agFz7Y32pkV7nObxB3KjCcN1p335h1HE4dr94rsDvndw@mail.gmail.com>
+ <20210127171453.GC358@willie-the-truck> <CACT4Y+ZtQS7wtKbYSxAL=TJTmWp9_Gq-fBi-JLtAk3mA6J7siA@mail.gmail.com>
+ <CAAeHK+yWe_GRDi8j7aPZAauTrfdjgYpYoj9F_KrsG3vtHDwTsw@mail.gmail.com>
+In-Reply-To: <CAAeHK+yWe_GRDi8j7aPZAauTrfdjgYpYoj9F_KrsG3vtHDwTsw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 27 Jan 2021 19:56:55 +0100
+Message-ID: <CACT4Y+bSUnXoB_GtaFG7Vhe3bDr5MY6ZWdvcvw=uy+4-ZD7B-A@mail.gmail.com>
+Subject: Re: WARNING in __do_kernel_fault
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        syzbot <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 06:43:27PM +0000, Christoph Hellwig wrote:
-> On Wed, Jan 27, 2021 at 12:38:56PM -0600, Josh Poimboeuf wrote:
-> > On Wed, Jan 27, 2021 at 06:02:15PM +0000, Christoph Hellwig wrote:
-> > > Please don't add all this garbage.  We only add infrastructure to the
-> > > kernel for what the kernel itself needs, not for weird out of tree
-> > > infrastructure.
-> > 
-> > This isn't new, the kernel already has the infrastructure for building
-> > out-of-tree modules.  It's widely used.  Are you suggesting we remove
-> > it?  Good luck with that...
-> > 
-> > Either it should be supported, or not.  Make the case either way.  But I
-> > can't understand why people are advocating to leave it half-broken.
-> 
-> 
-> It is not support as any kind of interface.  It is a little aid for
-> local development.
+On Wed, Jan 27, 2021 at 7:46 PM 'Andrey Konovalov' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
+>
+> On Wed, Jan 27, 2021 at 6:24 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Wed, Jan 27, 2021 at 6:15 PM Will Deacon <will@kernel.org> wrote:
+> > >
+> > > On Wed, Jan 27, 2021 at 06:00:30PM +0100, Dmitry Vyukov wrote:
+> > > > On Wed, Jan 27, 2021 at 5:56 PM syzbot
+> > > > <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com> wrote:
+> > > > >
+> > > > > Hello,
+> > > > >
+> > > > > syzbot found the following issue on:
+> > > > >
+> > > > > HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
+> > > > > git tree:       upstream
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15a25264d00000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=45b6fce29ff97069e2c5
+> > > > > userspace arch: arm64
+> > > > >
+> > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com
+> > > >
+> > > > This happens on arm64 instance with mte enabled.
+> > > > There is a GPF in reiserfs_xattr_init on x86_64 reported:
+> > > > https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde
+> > > > so I would assume it's just a plain NULL deref. Is this WARNING not
+> > > > indicative of a kernel bug? Or there is something special about this
+> > > > particular NULL deref?
+> > >
+> > > Congratulations, you're the first person to trigger this warning!
+> > >
+> > > This fires if we take an unexpected data abort in the kernel but when we
+> > > get into the fault handler the page-table looks ok (according to the CPU via
+> > > an 'AT' instruction). Are you using QEMU system emulation? Perhaps its
+> > > handling of AT isn't quite right.
+> >
+> > Hi Will,
+> >
+> > Yes, it's qemu-system-aarch64 5.2 with -machine virt,mte=on -cpu max.
+> > Do you see any way forward for this issue? Can somehow prove/disprove
+> > it's qemu at fault?
+>
+> I've reproduced this crash (by taking [1] and changing
+> sys_memfd_create to 279), but it manifests as a normal null-ptr-deref
+> for me. I'm using the latest QEMU master. Which QEMU does syzbot use
+> exactly?
 
-Is this a joke?  I've never met anybody who builds OOT modules as a
-development aid...
+qemu-system-aarch64 5.2 from this container:
+https://github.com/google/syzkaller/blob/master/tools/docker/syzbot/Dockerfile
+you can get a prebuilt version with:
+docker pull gcr.io/syzkaller/syzbot
 
-On the other hand I know of several very popular distros (some paid,
-some not) who rely on allowing users/partners to build OOT modules as
-part of their ecosystem.  To say it's not supported is a farce.
 
--- 
-Josh
-
+> [1] https://syzkaller.appspot.com/text?tag=ReproC&x=14d3621cd00000
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/CAAeHK%2ByWe_GRDi8j7aPZAauTrfdjgYpYoj9F_KrsG3vtHDwTsw%40mail.gmail.com.
