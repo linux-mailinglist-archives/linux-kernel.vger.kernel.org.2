@@ -2,108 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4E2306131
+	by mail.lfdr.de (Postfix) with ESMTP id CE3EA306132
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhA0Qno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:43:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhA0QnP (ORCPT
+        id S232758AbhA0Qnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:43:51 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:42340 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhA0Qn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:43:15 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB300C06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:42:34 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id 7so2626487wrz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:42:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1tAiaXaGj8nHlfWbqmlwZJ7XE36ne8Bkm3mEzlMeH+s=;
-        b=P+0mGfun2o4zL7Q0f89TXYvYd/8EqS+VkEdJjuz4aONa0EX9u8YUrxBiTE8yFTvino
-         W50gjZrMuri2xFbtqqkjMKKiFjxvzitXi+xOa/uqKK0TiWVZwbTMjAvK8xTbJPIuuNLH
-         CyD29eEn7O+mLnegXf0cI5/vcu0enw/ZaJ9akwxT9dUZalQMoiITLHjtiAb0a8cnV4sb
-         4xn9iUNaSjbrg2gAekgDuHewFyeo9K1iYuDXKdUEkC+fBjYhfeiKAXIm4qSTUaggkMat
-         rGhN8g/tFFAf54nS+i/jDXqoiqOcQWY3TpPyPB4BPO+XySIzMXOSUShhfQewfzVGaXUF
-         BjWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=1tAiaXaGj8nHlfWbqmlwZJ7XE36ne8Bkm3mEzlMeH+s=;
-        b=uj2HBKC6pYOtmICoh0uY1pznLe+GtPZSFC1QO17LLmV55DCgRLjh7hbppFosthXNS3
-         Txt4RPJhlmD7zlDSI9eVn/GwYPGvQvOVBbqUILVyoxIgGLnoitByh4jv/6Bp1Olqe0tp
-         En88k1K3H4lxIY6etYELrQ/DyHNYoS+hIB3RMHfkefBuMFxFsL18QB/nCjYoCaSHnS96
-         fKGTx3zD0ghUpb8VxdfPoKBQ88kc42Yl84uSblQwlOeHoaNv3NET0KdYxRQBSTqSqXhU
-         TcufQ/ke2AwiGZ37nKKXyEBju+Ry2IU2nUzQVY5wdc/0ufSykOssVsdAokCjqqiaP8Cp
-         iryg==
-X-Gm-Message-State: AOAM530J/sVTEXXL/jFkovs/Y7Gg7bP3TLQeUzxC3k51+OWMKI3oOFCp
-        qeBP9zH7Pi/BqTwo/JnHIz1A43HqVKae/g==
-X-Google-Smtp-Source: ABdhPJxtdqyMIMNjxuXt5Qy5j/YH4GAJ7I8A9a2o9QOBjwTi7Ho4fnssoJ5ApYOm6FeiNjuL/XqSAQ==
-X-Received: by 2002:adf:f1cd:: with SMTP id z13mr7998974wro.126.1611765753511;
-        Wed, 27 Jan 2021 08:42:33 -0800 (PST)
-Received: from stitch.. ([80.71.140.73])
-        by smtp.gmail.com with ESMTPSA id t8sm3109580wmq.36.2021.01.27.08.42.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 08:42:32 -0800 (PST)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH v2] vt: keyboard, use new API for keyboard_tasklet
-Date:   Wed, 27 Jan 2021 17:42:22 +0100
-Message-Id: <20210127164222.13220-1-kernel@esmil.dk>
-X-Mailer: git-send-email 2.30.0
+        Wed, 27 Jan 2021 11:43:29 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EF06520B7192;
+        Wed, 27 Jan 2021 08:42:46 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF06520B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611765768;
+        bh=FO30UjqgmiAYwhJ0OdAFnIScJQE6u1YWu3POuy85+gc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a/7j4GG09OTArp6DCoElga6PZ/s3lMMJQsiIn9bPawk9NyfoI8uzxi2qItXDCXHfl
+         3Ks+fwKYro9Ds+MI8FnheEAQCRL58lehiKbCs5GGSA2q9ZPM7bgXIfPdjZ+woSTg5E
+         AqnKRthYF6OdQnzDhenwsuZKI1ZGd/k2ZfVHRcrQ=
+Date:   Wed, 27 Jan 2021 10:42:30 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        james.morse@arm.com, vladimir.murzin@arm.com,
+        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
+        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
+        selindag@gmail.com
+Subject: Re: [PATCH v10 16/18] arm64: kexec: configure trans_pgd page table
+ for kexec
+Message-ID: <20210127164230.GA584465@sequoia>
+References: <20210125191923.1060122-1-pasha.tatashin@soleen.com>
+ <20210125191923.1060122-17-pasha.tatashin@soleen.com>
+ <d5b91732-1985-4d90-89a1-4873deaa5592@soleen.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5b91732-1985-4d90-89a1-4873deaa5592@soleen.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This converts the keyboard_tasklet to use the new API in
-commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+On 2021-01-25 19:21:22, Pavel Tatashin wrote:
+> I forgot to make changes to arch/arm64/Kconfig. The correct patch is
+> below.
+> 
+> ---
+> 
+> From a2bc374320d7c7efd3c40644ad3d6d59a024b301 Mon Sep 17 00:00:00 2001
+> From: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Date: Mon, 29 Jul 2019 21:24:25 -0400
+> Subject: [PATCH v10 16/18] arm64: kexec: configure trans_pgd page table for
+>  kexec
+> 
+> Configure a page table located in kexec-safe memory that has
+> the following mappings:
+> 
+> 1. identity mapping for text of relocation function with executable
+>    permission.
+> 2. va mappings for all source ranges
+> 3. va mappings for all destination ranges.
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  arch/arm64/Kconfig                |  2 +-
+>  arch/arm64/include/asm/kexec.h    | 12 ++++
+>  arch/arm64/kernel/asm-offsets.c   |  6 ++
+>  arch/arm64/kernel/machine_kexec.c | 91 ++++++++++++++++++++++++++++++-
+>  4 files changed, 109 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index fc0ed9d6e011..440abd0c0ee1 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1134,7 +1134,7 @@ config CRASH_DUMP
+>  
+>  config TRANS_TABLE
+>  	def_bool y
+> -	depends on HIBERNATION
+> +	depends on HIBERNATION || KEXEC_CORE
+>  
+>  config XEN_DOM0
+>  	def_bool y
+> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+> index b96d8a6aac80..049cde429b1b 100644
+> --- a/arch/arm64/include/asm/kexec.h
+> +++ b/arch/arm64/include/asm/kexec.h
+> @@ -105,6 +105,12 @@ extern const char arm64_kexec_el2_vectors[];
+>   * el2_vector	If present means that relocation routine will go to EL1
+>   *		from EL2 to do the copy, and then back to EL2 to do the jump
+>   *		to new world.
+> + * trans_ttbr0	idmap for relocation function and its argument
+> + * trans_ttbr1	map for source/destination addresses.
+> + * trans_t0sz	t0sz for idmap page in trans_ttbr0
+> + * src_addr	start address for source pages.
+> + * dst_addr	start address for destination pages.
+> + * copy_len	Number of bytes that need to be copied
+>   */
+>  struct kern_reloc_arg {
+>  	phys_addr_t head;
+> @@ -114,6 +120,12 @@ struct kern_reloc_arg {
+>  	phys_addr_t kern_arg2;
+>  	phys_addr_t kern_arg3;
+>  	phys_addr_t el2_vector;
+> +	phys_addr_t trans_ttbr0;
+> +	phys_addr_t trans_ttbr1;
+> +	unsigned long trans_t0sz;
+> +	unsigned long src_addr;
+> +	unsigned long dst_addr;
+> +	unsigned long copy_len;
+>  };
+>  
+>  #define ARCH_HAS_KIMAGE_ARCH
+> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> index 8a9475be1b62..06278611451d 100644
+> --- a/arch/arm64/kernel/asm-offsets.c
+> +++ b/arch/arm64/kernel/asm-offsets.c
+> @@ -160,6 +160,12 @@ int main(void)
+>    DEFINE(KEXEC_KRELOC_KERN_ARG2,	offsetof(struct kern_reloc_arg, kern_arg2));
+>    DEFINE(KEXEC_KRELOC_KERN_ARG3,	offsetof(struct kern_reloc_arg, kern_arg3));
+>    DEFINE(KEXEC_KRELOC_EL2_VECTOR,	offsetof(struct kern_reloc_arg, el2_vector));
+> +  DEFINE(KEXEC_KRELOC_TRANS_TTBR0,	offsetof(struct kern_reloc_arg, trans_ttbr0));
+> +  DEFINE(KEXEC_KRELOC_TRANS_TTBR1,	offsetof(struct kern_reloc_arg, trans_ttbr1));
+> +  DEFINE(KEXEC_KRELOC_TRANS_T0SZ,	offsetof(struct kern_reloc_arg, trans_t0sz));
+> +  DEFINE(KEXEC_KRELOC_SRC_ADDR,	offsetof(struct kern_reloc_arg, src_addr));
+> +  DEFINE(KEXEC_KRELOC_DST_ADDR,	offsetof(struct kern_reloc_arg, dst_addr));
+> +  DEFINE(KEXEC_KRELOC_COPY_LEN,	offsetof(struct kern_reloc_arg, copy_len));
+>  #endif
+>    return 0;
+>  }
+> diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+> index 41d1e3ca13f8..dc1b7e5a54fb 100644
+> --- a/arch/arm64/kernel/machine_kexec.c
+> +++ b/arch/arm64/kernel/machine_kexec.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/mmu_context.h>
+>  #include <asm/page.h>
+>  #include <asm/sections.h>
+> +#include <asm/trans_pgd.h>
+>  
+>  #include "cpu-reset.h"
+>  
+> @@ -71,11 +72,91 @@ static void *kexec_page_alloc(void *arg)
+>  	return page_address(page);
+>  }
+>  
+> +/*
+> + * Map source segments starting from src_va, and map destination
+> + * segments starting from dst_va, and return size of copy in
+> + * *copy_len argument.
+> + * Relocation function essentially needs to do:
+> + * memcpy(dst_va, src_va, copy_len);
+> + */
+> +static int map_segments(struct kimage *kimage, pgd_t *pgdp,
+> +			struct trans_pgd_info *info,
+> +			unsigned long src_va,
+> +			unsigned long dst_va,
+> +			unsigned long *copy_len)
+> +{
+> +	unsigned long *ptr = 0;
+> +	unsigned long dest = 0;
+> +	unsigned long len = 0;
+> +	unsigned long entry, addr;
+> +	int rc;
+> +
+> +	for (entry = kimage->head; !(entry & IND_DONE); entry = *ptr++) {
+> +		addr = entry & PAGE_MASK;
+> +
+> +		switch (entry & IND_FLAGS) {
+> +		case IND_DESTINATION:
+> +			dest = addr;
+> +			break;
+> +		case IND_INDIRECTION:
+> +			ptr = __va(addr);
+> +			if (rc)
 
-The new API changes the argument passed to the callback function, but
-fortunately the argument isn't used so it is straight forward to use
-DECLARE_TASKLET_DISABLED() rather than DECLARE_TASKLET_DISABLED_OLD().
+We're checking a potentially uninitialized value here. I think this
+whole "if (rc) return rc;" conditional can go away.
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
----
-v2: Rebased on Greg's tty/tty-next tree.
----
- drivers/tty/vt/keyboard.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Tyler
 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index 9f2eaa104ebc..77638629c562 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -131,8 +131,8 @@ static const unsigned char max_vals[] = {
- 
- static const int NR_TYPES = ARRAY_SIZE(max_vals);
- 
--static void kbd_bh(unsigned long dummy);
--static DECLARE_TASKLET_DISABLED_OLD(keyboard_tasklet, kbd_bh);
-+static void kbd_bh(struct tasklet_struct *unused);
-+static DECLARE_TASKLET_DISABLED(keyboard_tasklet, kbd_bh);
- 
- static struct input_handler kbd_handler;
- static DEFINE_SPINLOCK(kbd_event_lock);
-@@ -1245,7 +1245,7 @@ void vt_kbd_con_stop(int console)
-  * handle the scenario when keyboard handler is not registered yet
-  * but we already getting updates from the VT to update led state.
-  */
--static void kbd_bh(unsigned long dummy)
-+static void kbd_bh(struct tasklet_struct *unused)
- {
- 	unsigned int leds;
- 	unsigned long flags;
--- 
-2.30.0
-
+> +				return rc;
+> +			break;
+> +		case IND_SOURCE:
+> +			rc = trans_pgd_map_page(info, pgdp, __va(addr),
+> +						src_va, PAGE_KERNEL);
+> +			if (rc)
+> +				return rc;
+> +			rc = trans_pgd_map_page(info, pgdp, __va(dest),
+> +						dst_va, PAGE_KERNEL);
+> +			if (rc)
+> +				return rc;
+> +			dest += PAGE_SIZE;
+> +			src_va += PAGE_SIZE;
+> +			dst_va += PAGE_SIZE;
+> +			len += PAGE_SIZE;
+> +		}
+> +	}
+> +	*copy_len = len;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mmu_relocate_setup(struct kimage *kimage, void *reloc_code,
+> +			      struct kern_reloc_arg *kern_reloc_arg)
+> +{
+> +	struct trans_pgd_info info = {
+> +		.trans_alloc_page	= kexec_page_alloc,
+> +		.trans_alloc_arg	= kimage,
+> +	};
+> +	pgd_t *trans_pgd = kexec_page_alloc(kimage);
+> +	int rc;
+> +
+> +	if (!trans_pgd)
+> +		return -ENOMEM;
+> +
+> +	/* idmap relocation function */
+> +	rc = trans_pgd_idmap_page(&info, &kern_reloc_arg->trans_ttbr0,
+> +				  &kern_reloc_arg->trans_t0sz, reloc_code);
+> +	if (rc)
+> +		return rc;
+> +
+> +	kern_reloc_arg->src_addr = _PAGE_OFFSET(VA_BITS_MIN);
+> +	kern_reloc_arg->dst_addr = _PAGE_OFFSET(VA_BITS_MIN - 1);
+> +	kern_reloc_arg->trans_ttbr1 = phys_to_ttbr(__pa(trans_pgd));
+> +
+> +	rc = map_segments(kimage, trans_pgd, &info, kern_reloc_arg->src_addr,
+> +			  kern_reloc_arg->dst_addr, &kern_reloc_arg->copy_len);
+> +	return rc;
+> +}
+> +
+>  int machine_kexec_post_load(struct kimage *kimage)
+>  {
+>  	void *reloc_code = page_to_virt(kimage->control_code_page);
+>  	struct kern_reloc_arg *kern_reloc_arg = kexec_page_alloc(kimage);
+>  	long func_offset, vector_offset, reloc_size;
+> +	int rc = 0;
+>  
+>  	if (!kern_reloc_arg)
+>  		return -ENOMEM;
+> @@ -95,6 +176,14 @@ int machine_kexec_post_load(struct kimage *kimage)
+>  	if (is_hyp_mode_available() && !is_kernel_in_hyp_mode())
+>  		kern_reloc_arg->el2_vector = __pa(reloc_code) + vector_offset;
+>  
+> +	/*
+> +	 * If relocation is not needed, we do not need to enable MMU in
+> +	 * relocation routine, therefore do not create page tables for
+> +	 * scenarios such as crash kernel
+> +	 */
+> +	if (!(kimage->head & IND_DONE))
+> +		rc = mmu_relocate_setup(kimage, reloc_code, kern_reloc_arg);
+> +
+>  	kexec_image_info(kimage);
+>  
+>  	/* Flush the reloc_code in preparation for its execution. */
+> @@ -103,7 +192,7 @@ int machine_kexec_post_load(struct kimage *kimage)
+>  			   reloc_size);
+>  	__flush_dcache_area(kern_reloc_arg, sizeof(struct kern_reloc_arg));
+>  
+> -	return 0;
+> +	return rc;
+>  }
+>  
+>  /**
+> -- 
+> 2.25.1
+> 
