@@ -2,189 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D20B305E2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0286305E33
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbhA0OYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:24:18 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58394 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233891AbhA0OXx (ORCPT
+        id S233721AbhA0OYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234119AbhA0OYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:23:53 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RE4oFp116168;
-        Wed, 27 Jan 2021 09:23:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=abCIndYBDut4VI/X/3RWnOiv7VwnIApJOCQn/ytES68=;
- b=mN6Z6H53VlFemyoG1k5sJEs3OjLG2wd8se8YXp/6p6o40Aia6ZSlXAbdX071CjIA/cnW
- z3r8t40ZWsGPeGUjMwccjCBJL9+egTx2QauGnKhosIbPM9oS1l13sVeQ/fMyur9J+zjH
- TwwTdfZ7pE3OPg+ObeRbcqXXHsgWeWnvdhRAklb6owzbArd7e4W7on4X3FoAqISHqPRe
- BBD8zJfEnBKxWlU60NSY7WUkfdtBX/PHdYEqEBanBLmVXiWyGjIbFlhqwKfWyHf1+tEr
- 7QlDXCjtK7nztlqbPRCOVfCyevIqlOcmnNHwOkQzESfT2hC7WDJlG7gAhoOWMn0xdxSz kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36b4cqt817-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 09:23:12 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RE57JV118332;
-        Wed, 27 Jan 2021 09:23:11 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36b4cqt80v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 09:23:11 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10REH57s000752;
-        Wed, 27 Jan 2021 14:23:10 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma01dal.us.ibm.com with ESMTP id 36adttvc52-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 14:23:10 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10REN8fx37486878
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 14:23:08 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 978BB28058;
-        Wed, 27 Jan 2021 14:23:08 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DFA272805A;
-        Wed, 27 Jan 2021 14:23:05 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.138.51])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Jan 2021 14:23:05 +0000 (GMT)
-Subject: Re: [PATCH 4/4] vfio-pci/zdev: Introduce the zPCI I/O vfio region
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     cohuck@redhat.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
- <1611086550-32765-5-git-send-email-mjrosato@linux.ibm.com>
- <20210122164843.269f806c@omen.home.shazbot.org>
- <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
- <20210126161817.683485e0@omen.home.shazbot.org>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <b2d4e3bf-1c73-79fa-9f31-76286d394116@linux.ibm.com>
-Date:   Wed, 27 Jan 2021 09:23:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 27 Jan 2021 09:24:08 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB8DC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:23:28 -0800 (PST)
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7F08D240;
+        Wed, 27 Jan 2021 15:23:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611757406;
+        bh=yHssnq0BfnMXBckop2gm/NzN+62n1h1K6WDRQU6jT5c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OaAczokpnAaT3wyWGivHN9ZdCfnrY+1i7lifbfoUKA0X+9LRpjk+R0g/jVXX72EnW
+         fC8M3lAwfPZ0VBV49FXYgV86zlLXZFDDtHrPl/U971xN+9Pio3Da3GWkUAalT72M1U
+         yc3boxiEfq8bS94XYeb5avXoTKFb7o+WB9heNXBQ=
+Subject: Re: [PATCH v2] drm/omap: dsi: fix unreachable code in
+ dsi_vc_send_short()
+To:     menglong8.dong@gmail.com, sebastian.reichel@collabora.com
+Cc:     airlied@linux.ie, daniel@ffwll.ch,
+        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+References: <20210127015117.23267-1-dong.menglong@zte.com.cn>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+Message-ID: <65ce7efd-a7ae-5a47-9915-94964906e28b@ideasonboard.com>
+Date:   Wed, 27 Jan 2021 16:23:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210126161817.683485e0@omen.home.shazbot.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210127015117.23267-1-dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
- adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 6:18 PM, Alex Williamson wrote:
-> On Mon, 25 Jan 2021 09:40:38 -0500
-> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On 27/01/2021 03:51, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
->> On 1/22/21 6:48 PM, Alex Williamson wrote:
->>> On Tue, 19 Jan 2021 15:02:30 -0500
->>> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
->>>    
->>>> Some s390 PCI devices (e.g. ISM) perform I/O operations that have very
->>>> specific requirements in terms of alignment as well as the patterns in
->>>> which the data is read/written. Allowing these to proceed through the
->>>> typical vfio_pci_bar_rw path will cause them to be broken in up in such a
->>>> way that these requirements can't be guaranteed. In addition, ISM devices
->>>> do not support the MIO codepaths that might be triggered on vfio I/O coming
->>>> from userspace; we must be able to ensure that these devices use the
->>>> non-MIO instructions.  To facilitate this, provide a new vfio region by
->>>> which non-MIO instructions can be passed directly to the host kernel s390
->>>> PCI layer, to be reliably issued as non-MIO instructions.
->>>>
->>>> This patch introduces the new vfio VFIO_REGION_SUBTYPE_IBM_ZPCI_IO region
->>>> and implements the ability to pass PCISTB and PCILG instructions over it,
->>>> as these are what is required for ISM devices.
->>>
->>> There have been various discussions about splitting vfio-pci to allow
->>> more device specific drivers rather adding duct tape and bailing wire
->>> for various device specific features to extend vfio-pci.  The latest
->>> iteration is here[1].  Is it possible that such a solution could simply
->>> provide the standard BAR region indexes, but with an implementation that
->>> works on s390, rather than creating new device specific regions to
->>> perform the same task?  Thanks,
->>>
->>> Alex
->>>
->>> [1]https://lore.kernel.org/lkml/20210117181534.65724-1-mgurtovoy@nvidia.com/
->>>    
->>
->> Thanks for the pointer, I'll have to keep an eye on this.  An approach
->> like this could solve some issues, but I think a main issue that still
->> remains with relying on the standard BAR region indexes (whether using
->> the current vfio-pci driver or a device-specific driver) is that QEMU
->> writes to said BAR memory region are happening in, at most, 8B chunks
->> (which then, in the current general-purpose vfio-pci code get further
->> split up into 4B iowrite operations).  The alternate approach I'm
->> proposing here is allowing for the whole payload (4K) in a single
->> operation, which is significantly faster.  So, I suspect even with a
->> device specific driver we'd want this sort of a region anyhow..
+> The 'r' in dsi_vc_send_short() is of type 'unsigned int', so the
+> 'r < 0' can't be true.
 > 
-> Why is this device specific behavior?  It would be a fair argument that
-> acceptable device access widths for MMIO are always device specific, so
-> we should never break them down.  Looking at the PCI spec, a TLP
-> requires a dword (4-byte) aligned address with a 10-bit length field > indicating the number of dwords, so up to 4K data as you suggest is the
-
-Well, as I mentioned in a different thread, it's not really device 
-specific behavior but rather architecture/s390x specific behavior; 
-PCISTB is an interface available to all PCI devices on s390x, it just so 
-happens that ISM is the first device type that is running into the 
-nuance.  The architecture is designed in such a way that other devices 
-can use the same interface in the same manner.
-
-To drill down a bit, the PCISTB payload can either be 'strict' or 
-'relaxed', which via the s390x architecture 'relaxed' means it's not 
-dword-aligned but rather byte-aligned up to 4K.  We find out at init 
-time which interface a device supports --  So, for a device that 
-supports 'relaxed' PCISTB like ISM, an example would be a PCISTB of 11 
-bytes coming from a non-dword-aligned address is permissible, which 
-doesn't match the TLP from the spec as you described...  I believe this 
-'relaxed' operation that steps outside of the spec is unique to s390x. 
-(Conversely, devices that use 'strict' PCISTB conform to the typical TLP 
-definition)
-
-This deviation from spec is to my mind is another argument to treat 
-these particular PCISTB separately.
-
-> whole payload.  It's quite possible that the reason we don't have more
-> access width problems is that MMIO is typically mmap'd on other
-> platforms.  We get away with using the x-no-mmap=on flag for debugging,
-> but it's not unheard of that the device also doesn't work quite
-> correctly with that flag, which could be due to access width or timing
-> difference.
+> Fix this by introducing a 'err' of type 'int' insteaded.
 > 
-> So really, I don't see why we wouldn't want to maintain the guest
-> access width through QEMU and the kernel interface for all devices.  It
-> seems like that should be our default vfio-pci implementation.  I think
-> we chose the current width based on the QEMU implementation that was
-> already splitting accesses, and it (mostly) worked.  Thanks,
+> Fixes: 1ed6253856cb ("drm/omap: dsi: switch dsi_vc_send_long/short to mipi_dsi_msg")
 > 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+> v2:
+> - remove word wrap in 'Fixes' tag
+> ---
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> index 8e11612f5fe1..febcc87ddfe1 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi, int vc,
+>  			     const struct mipi_dsi_msg *msg)
+>  {
+>  	struct mipi_dsi_packet pkt;
+> +	int err;
+>  	u32 r;
+>  
+> -	r = mipi_dsi_create_packet(&pkt, msg);
+> -	if (r < 0)
+> -		return r;
+> +	err = mipi_dsi_create_packet(&pkt, msg);
+> +	if (err)
+> +		return err;
+>  
+>  	WARN_ON(!dsi_bus_is_locked(dsi));
+>  
 
-But unless you think that allowing more flexibility than the PCI spec 
-dictates (byte-aligned up to 4K rather than dword-aligned up to 4K, see 
-above) this still wouldn't allow me to solve the issue I'm trying to 
-with this patch set.
+Thanks! I'll apply to drm-misc-next.
 
-If you DO think allowing byte-aligned access up to 4K is OK, then I'm 
-still left with a further issue (@Niklas):  I'm also using this 
-region-based approach to ensure that the host uses a matching interface 
-when talking to the host device (basically, s390x has two different 
-versions of access to PCI devices, and for ISM at least we need to 
-ensure that the same operation intercepted from the guest is being used 
-on the host vs attempting to 'upgrade', which always happens via the 
-standard s390s kernel PCI interfaces).
+ Tomi
