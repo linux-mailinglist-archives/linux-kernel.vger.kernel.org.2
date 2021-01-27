@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75CB305A06
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C2D305A08
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbhA0Lj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:39:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49326 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236903AbhA0Lh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:37:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611747433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RAR74QWx5XWwobnvcUvVOIFG3CIVrWbE/mK4xOXsXGs=;
-        b=peM+VHGL2uwW8gsRFe8GrllvRLo2AbyNjCRNr4XNiT1YyPleCO44IQiugDEN3SN2XE5Zc+
-        ZVL/lBiI76hBNbBTr/0Enl47HekiR9lAngeDsKjiChispz6CKc6dMiEAlRw1Z2EnK5Kq6k
-        ifixZiFRb8rQCbqWqkmmrf1bpwLD3PA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37E02AD26;
-        Wed, 27 Jan 2021 11:37:13 +0000 (UTC)
-Subject: Re: [PATCH] xen-blkback: fix compatibility bug with single page rings
-To:     paul@xen.org
-Cc:     'Paul Durrant' <pdurrant@amazon.com>,
-        'Konrad Rzeszutek Wilk' <konrad.wilk@oracle.com>,
-        =?UTF-8?B?J1JvZ2VyIFBhdSBNb25uw6kn?= <roger.pau@citrix.com>,
-        'Jens Axboe' <axboe@kernel.dk>,
-        'Dongli Zhang' <dongli.zhang@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-References: <20210127103034.2559-1-paul@xen.org>
- <cd70ae5e-a389-7521-8caf-15650a276152@suse.com>
- <026001d6f49c$eab982b0$c02c8810$@xen.org>
- <ed1988d9-131a-daf1-787f-3f49269b91aa@suse.com>
- <026101d6f4a0$2e3de000$8ab9a000$@xen.org>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <40ab27a0-0f16-b010-1834-6d08ab0838c3@suse.com>
-Date:   Wed, 27 Jan 2021 12:37:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S236948AbhA0LkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:40:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236743AbhA0LiJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:38:09 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23355C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:37:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QJyndTWkn5XEvi71brp8E2w9iWAw89DA57TQ5d/JfX4=; b=ydI+/8w/RCePiHUHnfZcBYYAWJ
+        LEX5pdb4dhqsIxffzr6EBJQb9r5mfo1N4IIDHgeMF4D9ojV/ZlLZRFdyE+75FfU9Qxfxjs5TW9phM
+        yjo2qYSa5vcAC+M2WQGxR00ZR8sOj/O99ANyt3eMGn1tuhHDD1N6zIjMlPcbJJFnsyhYfJC6IW0jX
+        Omk2nEV9ufvpn1CE/SUao+LW/8XtQo5X+GoC9XV6jNJ773EWIFoYVmPwm5fQNtzKJl5T7vpXu9hb+
+        /tz/iH3zAc0rh+XakpwzLyhd3HDgIiW1ywpiABBX59YC2YpAkdSmSxoHqzkCpQ39vjXiviTPnDYU7
+        yBL/ievw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4j8P-0001Ql-Uq; Wed, 27 Jan 2021 11:37:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 56E83300DB4;
+        Wed, 27 Jan 2021 12:37:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3219F201F6C5D; Wed, 27 Jan 2021 12:37:16 +0100 (CET)
+Date:   Wed, 27 Jan 2021 12:37:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+Subject: Re: [PATCH] sched/tracing: Reset critical timings on scheduling
+Message-ID: <YBFQbF/BqmjXFAd0@hirez.programming.kicks-ass.net>
+References: <20210126135718.5bf8d273@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <026101d6f4a0$2e3de000$8ab9a000$@xen.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126135718.5bf8d273@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.01.2021 12:33, Paul Durrant wrote:
->> -----Original Message-----
->> From: Jan Beulich <jbeulich@suse.com>
->> Sent: 27 January 2021 11:21
->> To: paul@xen.org
->> Cc: 'Paul Durrant' <pdurrant@amazon.com>; 'Konrad Rzeszutek Wilk' <konrad.wilk@oracle.com>; 'Roger Pau
->> Monné' <roger.pau@citrix.com>; 'Jens Axboe' <axboe@kernel.dk>; 'Dongli Zhang'
->> <dongli.zhang@oracle.com>; linux-kernel@vger.kernel.org; linux-block@vger.kernel.org; xen-
->> devel@lists.xenproject.org
->> Subject: Re: [PATCH] xen-blkback: fix compatibility bug with single page rings
->>
->> On 27.01.2021 12:09, Paul Durrant wrote:
->>>> -----Original Message-----
->>>> From: Jan Beulich <jbeulich@suse.com>
->>>> Sent: 27 January 2021 10:57
->>>> To: Paul Durrant <paul@xen.org>
->>>> Cc: Paul Durrant <pdurrant@amazon.com>; Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>; Roger Pau
->>>> Monné <roger.pau@citrix.com>; Jens Axboe <axboe@kernel.dk>; Dongli Zhang <dongli.zhang@oracle.com>;
->>>> linux-kernel@vger.kernel.org; linux-block@vger.kernel.org; xen-devel@lists.xenproject.org
->>>> Subject: Re: [PATCH] xen-blkback: fix compatibility bug with single page rings
->>>>
->>>> On 27.01.2021 11:30, Paul Durrant wrote:
->>>>> From: Paul Durrant <pdurrant@amazon.com>
->>>>>
->>>>> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
->>>>> inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
->>>>> behaviour of xen-blkback when connecting to a frontend was:
->>>>>
->>>>> - read 'ring-page-order'
->>>>> - if not present then expect a single page ring specified by 'ring-ref'
->>>>> - else expect a ring specified by 'ring-refX' where X is between 0 and
->>>>>   1 << ring-page-order
->>>>>
->>>>> This was correct behaviour, but was broken by the afforementioned commit to
->>>>> become:
->>>>>
->>>>> - read 'ring-page-order'
->>>>> - if not present then expect a single page ring
->>>>> - expect a ring specified by 'ring-refX' where X is between 0 and
->>>>>   1 << ring-page-order
->>>>> - if that didn't work then see if there's a single page ring specified by
->>>>>   'ring-ref'
->>>>>
->>>>> This incorrect behaviour works most of the time but fails when a frontend
->>>>> that sets 'ring-page-order' is unloaded and replaced by one that does not
->>>>> because, instead of reading 'ring-ref', xen-blkback will read the stale
->>>>> 'ring-ref0' left around by the previous frontend will try to map the wrong
->>>>> grant reference.
->>>>>
->>>>> This patch restores the original behaviour.
->>>>
->>>> Isn't this only the 2nd of a pair of fixes that's needed, the
->>>> first being the drivers, upon being unloaded, to fully clean up
->>>> after itself? Any stale key left may lead to confusion upon
->>>> re-use of the containing directory.
->>>
->>> In a backend we shouldn't be relying on, nor really expect IMO, a frontend to clean up after itself.
->> Any backend should know *exactly* what xenstore nodes it’s looking for from a frontend.
->>
->> But the backend can't know whether a node exists because the present
->> frontend has written it, or because an earlier instance forgot to
->> delete it. It can only honor what's there. (In fact the other day I
->> was wondering whether some of the writes of boolean "false" nodes
->> wouldn't better be xenbus_rm() instead.)
+On Tue, Jan 26, 2021 at 01:57:18PM -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> In the particular case this patch is fixing for me, the frontends are the Windows XENVBD driver and the Windows crash version of the same driver (actually built from different code). The 'normal' instance is multi-page aware and the crash instance is not quite, i.e. it uses the old ring-ref but knows to clean up 'ring-page-order'.
-> Clearly, in a crash situation, we cannot rely on frontend to clean up
+> There's some paths that can call into the scheduler from interrupt disabled
+> or preempt disabled state. Specifically from the idle thread. The problem is
+> that it can call the scheduler, still stay idle, and continue. The preempt
+> and irq disabled tracer considers this a very long latency, and hides real
+> latencies that we care about.
+> 
+> For example, this is from a preemptirqsoff trace:
+> 
+>   <idle>-0         2dN.1   16us : tick_nohz_account_idle_ticks.isra.0 <-tick_nohz_idle_exit
+>   <idle>-0         2.N.1   17us : flush_smp_call_function_from_idle <-do_idle
+>   <idle>-0         2dN.1   17us : flush_smp_call_function_queue <-flush_smp_call_function_from_idle
+>   <idle>-0         2dN.1   17us : nohz_csd_func <-flush_smp_call_function_queue
+>   <idle>-0         2.N.1   18us : schedule_idle <-do_idle
+>   <idle>-0         2dN.1   18us : rcu_note_context_switch <-__schedule
+>   <idle>-0         2dN.1   18us : rcu_preempt_deferred_qs <-rcu_note_context_switch
+>   <idle>-0         2dN.1   19us : rcu_preempt_need_deferred_qs <-rcu_preempt_deferred_qs
+>   <idle>-0         2dN.1   19us : rcu_qs <-rcu_note_context_switch
+>   <idle>-0         2dN.1   19us : _raw_spin_lock <-__schedule
+>   <idle>-0         2dN.1   19us : preempt_count_add <-_raw_spin_lock
+>   <idle>-0         2dN.2   20us : do_raw_spin_trylock <-_raw_spin_lock
+> 
+> do_idle() calls schedule_idle() which calls __schedule, but the latency
+> continues on for 1.4 milliseconds.
 
-Ah, I see (and agree).
+I'm not sure I understand the problem from this... what?
 
-> so what you say does highlight that there indeed needs to be a second patch to xen-blkback to make sure it removes 'ring-page-order' itself as 'state' cycles through Closed and back to InitWait.
+> To handle this case, create a new function called
+> "reset_critical_timings()" which just calls stop_critical_timings() followed
+> by start_critical_timings() and place this in the scheduler. There's no
+> reason to worry about timings when the scheduler is called, as that should
+> allow everything to move forward.
 
-And not just this one node then, I suppose?
+And that's just really daft.. why are you adding two unconditional
+function calls to __schedule() that are a complete waste of time
+99.999999% of the time?
 
-> I think this patch does still stand on its own though.
-
-Perhaps, yes.
-
-Jan
+If anything, this should be fixed in schedule_idle().
