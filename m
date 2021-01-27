@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA3F30583D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1932A305841
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhA0KWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:22:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46042 "EHLO
+        id S235859AbhA0KXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:23:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59800 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235777AbhA0KT5 (ORCPT
+        by vger.kernel.org with ESMTP id S235688AbhA0KT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 05:19:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611742707;
+        s=mimecast20190719; t=1611742710;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LeueFFtmc2r/D9kvr3PLBuOowgUJrNaT10Vf8WSqmXE=;
-        b=AoxYXZ90w7hy4dnwQbkk3CKWVdH836d7LjLjWUvbj2n0zPpZya0WmrGKCCBrU2dap089R0
-        rpXf5Tv8wz7dyF01jfISVwDuN7FG2giQYrCIwtJYK1vTHjsy4a0uH8gwU3kBKAaUjet1pY
-        d/P92GwwGq77u/JFMWc88DfM9QgpfBw=
+        bh=Xjqz0z3B10MBMjRhyTzjYxNKEzPg2nutGw+BuiLIitY=;
+        b=OCEdIOXAAPSCnYv9GFWV3cbykt664ihtGgntZ26ipblwaxnoeCVPzxfC9j6YuHWHDIGLem
+        i0fAFTh9vU5FloPM+R8Wy03gnebii4yReNcs/Nj+Wjkmnh0vaI/J/ppRkuud5HHX0teTrN
+        zmngPQh7KrJfX+m/IQP+t/qpM2N0l8M=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-msfCqRKCPteJWQSiLSA3uw-1; Wed, 27 Jan 2021 05:18:23 -0500
-X-MC-Unique: msfCqRKCPteJWQSiLSA3uw-1
+ us-mta-102-nzpZ7BHTOPa1PH98o-_REw-1; Wed, 27 Jan 2021 05:18:25 -0500
+X-MC-Unique: nzpZ7BHTOPa1PH98o-_REw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E923A9CDA0;
-        Wed, 27 Jan 2021 10:18:21 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4601D801AB8;
+        Wed, 27 Jan 2021 10:18:24 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-237.ams2.redhat.com [10.36.114.237])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E96E86EF55;
-        Wed, 27 Jan 2021 10:18:19 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 445086EF55;
+        Wed, 27 Jan 2021 10:18:22 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -44,9 +44,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Oscar Salvador <osalvador@suse.de>,
         Michal Hocko <mhocko@kernel.org>,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v1 1/2] mm/cma: expose all pages to the buddy if activation of an area fails
-Date:   Wed, 27 Jan 2021 11:18:12 +0100
-Message-Id: <20210127101813.6370-2-david@redhat.com>
+Subject: [PATCH v1 2/2] mm/page_alloc: count CMA pages per zone and print them in /proc/zoneinfo
+Date:   Wed, 27 Jan 2021 11:18:13 +0100
+Message-Id: <20210127101813.6370-3-david@redhat.com>
 In-Reply-To: <20210127101813.6370-1-david@redhat.com>
 References: <20210127101813.6370-1-david@redhat.com>
 MIME-Version: 1.0
@@ -56,45 +56,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, if activation fails, we might already have exposed some pages to
-the buddy for CMA use (although they will never get actually used by CMA),
-and some pages won't be exposed to the buddy at all.
+Let's count the number of CMA pages per zone and print them in
+/proc/zoneinfo.
 
-Let's check for "single zone" early and on error, don't expose any pages
-for CMA use - instead, expose them to the buddy available for any use.
-Simply call free_reserved_page() on every single page - easier than
-going via free_reserved_area(), converting back and forth between pfns
-and virt addresses.
+Having access to the total number of CMA pages per zone is helpful for
+debugging purposes to know where exactly the CMA pages ended up, and to
+figure out how many pages of a zone might behave differently (e.g., like
+ZONE_MOVABLE) - even after some of these pages might already have been
+allocated.
 
-In addition, make sure to fixup totalcma_pages properly.
+For now, we are only able to get the global nr+free cma pages from
+/proc/meminfo and the free cma pages per zone from /proc/zoneinfo.
 
-Example: 6 GiB QEMU VM with "... hugetlb_cma=2G movablecore=20% ...":
-  [    0.006891] hugetlb_cma: reserve 2048 MiB, up to 2048 MiB per node
-  [    0.006893] cma: Reserved 2048 MiB at 0x0000000100000000
-  [    0.006893] hugetlb_cma: reserved 2048 MiB on node 0
-  ...
-  [    0.175433] cma: CMA area hugetlb0 could not be activated
-
-Before this patch:
-  # cat /proc/meminfo
-  MemTotal:        5867348 kB
-  MemFree:         5692808 kB
-  MemAvailable:    5542516 kB
-  ...
-  CmaTotal:        2097152 kB
-  CmaFree:         1884160 kB
-
-After this patch:
-  # cat /proc/meminfo
-  MemTotal:        6077308 kB
-  MemFree:         5904208 kB
-  MemAvailable:    5747968 kB
-  ...
-  CmaTotal:              0 kB
-  CmaFree:               0 kB
-
-Note: cma_init_reserved_mem() makes sure that we always cover full
-pageblocks / MAX_ORDER - 1 pages.
+Note: Track/print that information even without CONFIG_CMA, similar to
+"nr_free_cma" in /proc/zoneinfo. This is different to /proc/meminfo -
+maybe we want to make that consistent in the future (however, changing
+/proc/zoneinfo output might uglify the code a bit).
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -105,76 +82,68 @@ Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/cma.c | 43 +++++++++++++++++++++----------------------
- 1 file changed, 21 insertions(+), 22 deletions(-)
+ include/linux/mmzone.h | 4 ++++
+ mm/page_alloc.c        | 1 +
+ mm/vmstat.c            | 6 ++++--
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/mm/cma.c b/mm/cma.c
-index 0ba69cd16aeb..23d4a97c834a 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -94,34 +94,29 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index ae588b2f87ef..3bc18c9976fd 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -503,6 +503,9 @@ struct zone {
+ 	 * bootmem allocator):
+ 	 *	managed_pages = present_pages - reserved_pages;
+ 	 *
++	 * cma pages is present pages that are assigned for CMA use
++	 * (MIGRATE_CMA).
++	 *
+ 	 * So present_pages may be used by memory hotplug or memory power
+ 	 * management logic to figure out unmanaged pages by checking
+ 	 * (present_pages - managed_pages). And managed_pages should be used
+@@ -527,6 +530,7 @@ struct zone {
+ 	atomic_long_t		managed_pages;
+ 	unsigned long		spanned_pages;
+ 	unsigned long		present_pages;
++	unsigned long		cma_pages;
  
- static void __init cma_activate_area(struct cma *cma)
- {
--	unsigned long base_pfn = cma->base_pfn, pfn = base_pfn;
--	unsigned i = cma->count >> pageblock_order;
-+	unsigned long base_pfn = cma->base_pfn, pfn;
- 	struct zone *zone;
+ 	const char		*name;
  
- 	cma->bitmap = bitmap_zalloc(cma_bitmap_maxno(cma), GFP_KERNEL);
- 	if (!cma->bitmap)
- 		goto out_error;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b031a5ae0bd5..9a82375bbcb2 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2168,6 +2168,7 @@ void __init init_cma_reserved_pageblock(struct page *page)
+ 	}
  
--	WARN_ON_ONCE(!pfn_valid(pfn));
--	zone = page_zone(pfn_to_page(pfn));
--
--	do {
--		unsigned j;
--
--		base_pfn = pfn;
--		for (j = pageblock_nr_pages; j; --j, pfn++) {
--			WARN_ON_ONCE(!pfn_valid(pfn));
--			/*
--			 * alloc_contig_range requires the pfn range
--			 * specified to be in the same zone. Make this
--			 * simple by forcing the entire CMA resv range
--			 * to be in the same zone.
--			 */
--			if (page_zone(pfn_to_page(pfn)) != zone)
--				goto not_in_zone;
--		}
--		init_cma_reserved_pageblock(pfn_to_page(base_pfn));
--	} while (--i);
-+	/*
-+	 * alloc_contig_range() requires the pfn range specified to be in the
-+	 * same zone. Simplify by forcing the entire CMA resv range to be in the
-+	 * same zone.
-+	 */
-+	WARN_ON_ONCE(!pfn_valid(base_pfn));
-+	zone = page_zone(pfn_to_page(base_pfn));
-+	for (pfn = base_pfn + 1; pfn < base_pfn + cma->count; pfn++) {
-+		WARN_ON_ONCE(!pfn_valid(pfn));
-+		if (page_zone(pfn_to_page(pfn)) != zone)
-+			goto not_in_zone;
-+	}
-+
-+	for (pfn = base_pfn; pfn < base_pfn + cma->count;
-+	     pfn += pageblock_nr_pages)
-+		init_cma_reserved_pageblock(pfn_to_page(pfn));
+ 	adjust_managed_page_count(page, pageblock_nr_pages);
++	page_zone(page)->cma_pages += pageblock_nr_pages;
+ }
+ #endif
  
- 	mutex_init(&cma->lock);
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 7758486097f9..97fc32a53320 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1642,14 +1642,16 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		   "\n        high     %lu"
+ 		   "\n        spanned  %lu"
+ 		   "\n        present  %lu"
+-		   "\n        managed  %lu",
++		   "\n        managed  %lu"
++		   "\n        cma      %lu",
+ 		   zone_page_state(zone, NR_FREE_PAGES),
+ 		   min_wmark_pages(zone),
+ 		   low_wmark_pages(zone),
+ 		   high_wmark_pages(zone),
+ 		   zone->spanned_pages,
+ 		   zone->present_pages,
+-		   zone_managed_pages(zone));
++		   zone_managed_pages(zone),
++		   zone->cma_pages);
  
-@@ -135,6 +130,10 @@ static void __init cma_activate_area(struct cma *cma)
- not_in_zone:
- 	bitmap_free(cma->bitmap);
- out_error:
-+	/* Expose all pages to the buddy, they are useless for CMA. */
-+	for (pfn = base_pfn; pfn < base_pfn + cma->count; pfn++)
-+		free_reserved_page(pfn_to_page(pfn));
-+	totalcma_pages -= cma->count;
- 	cma->count = 0;
- 	pr_err("CMA area %s could not be activated\n", cma->name);
- 	return;
+ 	seq_printf(m,
+ 		   "\n        protection: (%ld",
 -- 
 2.29.2
 
