@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E073057FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC364305807
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235716AbhA0KOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:14:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44732 "EHLO mx2.suse.de"
+        id S232103AbhA0KPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:15:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:36810 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235679AbhA0KL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:11:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611742271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yPf2iJr5KkXD7cHfhYBFDDhckcK1meh6Ewd51gOqfVA=;
-        b=TcRl87hTHXiu0LMMLmcAeZugAde+Q45wqATiGZvDorIGR26b3XcTaRPcfpe8NVFEPaL1rR
-        nIiUgDsci2VWtrvWSmmxD/jdeiI4qDKr7ILOVdd/WCTK7AssE85lTPosVzPDuXqqTEU4mH
-        PToAbuFhI0ni1QfcSob3Us+oaWwG6/s=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 79988ADA2;
-        Wed, 27 Jan 2021 10:11:11 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 11:11:10 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Timur Tabi <timur@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        roman.fietze@magna.com, keescook@chromium.org,
-        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-Message-ID: <YBE8Pj8t8bsVroyQ@alley>
-References: <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
- <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
- <20210119014725.GH2260413@casper.infradead.org>
- <YAa2oCNWjExWlQTu@jagdpanzerIV.localdomain>
- <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
- <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
- <083dd940-60c1-4cc8-fc89-8815b253d5c5@suse.cz>
- <a9b38fe7-8a22-71b7-1e84-0ebf1e864306@kernel.org>
- <20210126123912.23a5c3a1@gandalf.local.home>
- <20210126124032.0915f408@gandalf.local.home>
+        id S235688AbhA0KMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:12:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8657A31B;
+        Wed, 27 Jan 2021 02:11:56 -0800 (PST)
+Received: from [10.57.4.29] (unknown [10.57.4.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA1D23F66B;
+        Wed, 27 Jan 2021 02:11:52 -0800 (PST)
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
+ power
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
+        cw00.choi@samsung.com, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+ <20210127091540.xesvwoeavyaf37jn@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <9aecd2cd-771e-58b8-6672-f133600b70b5@arm.com>
+Date:   Wed, 27 Jan 2021 10:11:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126124032.0915f408@gandalf.local.home>
+In-Reply-To: <20210127091540.xesvwoeavyaf37jn@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-26 12:40:32, Steven Rostedt wrote:
-> On Tue, 26 Jan 2021 12:39:12 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+
+
+On 1/27/21 9:15 AM, Viresh Kumar wrote:
+> On 26-01-21, 10:39, Lukasz Luba wrote:
+>> As it's a RFC, it still misses the cpufreq sysfs implementation, but would
+>> be addressed if all agree.
 > 
-> > On Tue, 26 Jan 2021 11:30:02 -0600
-> > Timur Tabi <timur@kernel.org> wrote:
-> > 
-> > > On 1/26/21 11:14 AM, Vlastimil Babka wrote:  
-> > > > If it was a boot option, I would personally be for leaving hashing enabled by
-> > > > default, with opt-in boot option to disable it.    
-> > > 
-> > > A boot option would solve all my problems.  I wouldn't need to recompile 
-> > > the kernel, and it would apply to all variations of printk.  
-> > 
-> > Should it be called "make-printk-insecure"
+> Not commenting on the whole stuff but if you ever need something for cpufreq, it
+> is already there. Look for these.
+> 
+> store_one(scaling_min_freq, min);
+> store_one(scaling_max_freq, max);
+> 
+> Hopefully they will work just fine.
+> 
 
-Nit: This makes me feel that printk() might break (block) the system.
-     Please, make it more clear that it is about unveiling some secret
-     information, something like:
+So, can I assume you don't mind to plumb it into these two?
 
-	"non-secret-printk"
-	"non-confidental-printk"
-	"unretricted-printk"
+Yes, I know them and the tricky macro. I just wanted to avoid
+one patch for this macro and one patch for cpufreq_cooling.c,
+which would use it.
 
-I do not mind about the words order or using the
-"make-printk-non-secret" form.
+If you agree and Chanwoo agrees for the devfreq, and Daniel
+for the new callback in cooling device, then I would continue
+by adding missing patches for cpufreq-cooling part.
 
-> And even if we make this a boot time option, perhaps we should still
-> include that nasty dmesg notice, which will let people know that the kernel
-> has unhashed values.
+Regards,
+Lukasz
 
-+1
-
-Best Regards,
-Petr
