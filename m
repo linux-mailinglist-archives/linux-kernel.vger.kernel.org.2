@@ -2,192 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ED8305647
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0BA305631
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhA0I62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:58:28 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49762 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232692AbhA0IvW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:51:22 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R8jmFG010090;
-        Wed, 27 Jan 2021 09:50:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=QPWdxWs7PH5WYouKWIG0geCQvYD0fgNKQ2Hujvn8Yuc=;
- b=wVnAyBPt3/9P7Rxjc3FBtmv10sdqLp+A8sZ+euIApTqPlALrFTd1/yvdobP2Xc7kTood
- WLX+GYcJkDOjH30HXz4ZfN6fn738MjaC3hDAkAK2imDUuTFjcw2PxbBtjnwj1nJ2KChn
- aAW5NIqwqq0llV+YtQ85tc7ilCbZYJDfEaKsFRLQA9g88k8fmWBM8ad+zhNqCEm3+uPZ
- wXC2j+4cN17IqcyOrsh7vcFpoBYeQxeZZgjYlbl3GnaTEWdUqJPMRzdZY2v3ugYgJDMG
- FXozUUsRUsm45zp+L+w1SLzdTzS41lPdNzlGPTKxTSMBZuD7dj7VU7HJReNY35sXHbAG BQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 368c15xb04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 09:50:34 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0019310002A;
-        Wed, 27 Jan 2021 09:50:32 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E628D2288C0;
-        Wed, 27 Jan 2021 09:50:32 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
- 2021 09:50:32 +0100
-Subject: Re: [PATCH v4 12/17] remoteproc: Introduce function rproc_detach()
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
- <20201218173228.2277032-13-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <406cd7ad-060e-a611-be20-5c1869f17e73@st.com>
-Date:   Wed, 27 Jan 2021 09:50:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233429AbhA0IzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:55:04 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:41610 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232904AbhA0Ivy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:51:54 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l4gX6-00007Q-CP; Wed, 27 Jan 2021 09:50:36 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     hminas@synopsys.com, gregkh@linuxfoundation.org
+Cc:     christoph.muellner@theobroma-systems.com, paulz@synopsys.com,
+        yousaf.kaukab@intel.com, balbi@ti.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, heiko@sntech.de,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] usb: dwc2: Fix endpoint direction check in ep_from_windex
+Date:   Wed, 27 Jan 2021 09:50:34 +0100
+Message-Id: <20210127085034.36397-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201218173228.2277032-13-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_03:2021-01-26,2021-01-27 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
+dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
+the endpoint for the index provided in the wIndex request param.
 
-On 12/18/20 6:32 PM, Mathieu Poirier wrote:
-> Introduce function rproc_detach() to enable the remoteproc
-> core to release the resources associated with a remote processor
-> without stopping its operation.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 71 +++++++++++++++++++++++++++-
->  include/linux/remoteproc.h           |  2 +
->  2 files changed, 72 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index e665ed4776c3..ece3f15070b9 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1673,7 +1673,7 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
->  /*
->   * __rproc_detach(): Does the opposite of rproc_attach()
->   */
-> -static int __maybe_unused __rproc_detach(struct rproc *rproc)
-> +static int __rproc_detach(struct rproc *rproc)
->  {
->  	struct device *dev = &rproc->dev;
->  	int ret;
-> @@ -1927,6 +1927,75 @@ void rproc_shutdown(struct rproc *rproc)
->  }
->  EXPORT_SYMBOL(rproc_shutdown);
->  
-> +/**
-> + * rproc_detach() - Detach the remote processor from the
-> + * remoteproc core
-> + *
-> + * @rproc: the remote processor
-> + *
-> + * Detach a remote processor (previously attached to with rproc_actuate()).
+In a test-case with a rndis gadget running and sending a malformed
+packet to it like:
+    dev.ctrl_transfer(
+        0x82,      # bmRequestType
+        0x00,       # bRequest
+        0x0000,     # wValue
+        0x0001,     # wIndex
+        0x00       # wLength
+    )
+it is possible to cause a crash:
 
-You rename the function to rproc_attach in you patch 04/17.
+[  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
+[  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
+...
+[  218.313189] Call trace:
+[  218.330217]  ep_from_windex+0x3c/0x54
+[  218.348565]  usb_gadget_giveback_request+0x10/0x20
+[  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
 
-Then Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+This happens because ep_from_windex wants to compare the endpoint
+direction even if index_to_ep() didn't return an endpoint due to
+the direction not matching.
 
-Thanks,
-Arnaud
+The fix is easy insofar that the actual direction check is already
+happening when calling index_to_ep() which will return NULL if there
+is no endpoint for the targeted direction, so the offending check
+can go away completely.
 
-> + *
-> + * In case @rproc is still being used by an additional user(s), then
-> + * this function will just decrement the power refcount and exit,
-> + * without disconnecting the device.
-> + *
-> + * Function rproc_detach() calls __rproc_detach() in order to let a remote
-> + * processor know that services provided by the application processor are
-> + * no longer available.  From there it should be possible to remove the
-> + * platform driver and even power cycle the application processor (if the HW
-> + * supports it) without needing to switch off the remote processor.
-> + */
-> +int rproc_detach(struct rproc *rproc)
-> +{
-> +	struct device *dev = &rproc->dev;
-> +	int ret;
-> +
-> +	ret = mutex_lock_interruptible(&rproc->lock);
-> +	if (ret) {
-> +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
-> +		return ret;
-> +	}
-> +
-> +	if (rproc->state != RPROC_RUNNING && rproc->state != RPROC_ATTACHED) {
-> +		ret = -EPERM;
-> +		goto out;
-> +	}
-> +
-> +	/* if the remote proc is still needed, bail out */
-> +	if (!atomic_dec_and_test(&rproc->power)) {
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	ret = __rproc_detach(rproc);
-> +	if (ret) {
-> +		atomic_inc(&rproc->power);
-> +		goto out;
-> +	}
-> +
-> +	/* clean up all acquired resources */
-> +	rproc_resource_cleanup(rproc);
-> +
-> +	rproc_disable_iommu(rproc);
-> +
-> +	/*
-> +	 * If the remote processor was booted by the core the cached table needs
-> +	 * to be freed and ->table_ptr set to NULL because it will be
-> +	 * invalidated by rproc_resource_cleanup().  If the remote processor was
-> +	 * attached to ->cached_table is NULL and kfree() returns right away.
-> +	 *
-> +	 * In either case ->table_ptr has to be set to NULL.  It will be set
-> +	 * again when the remote processor is re-attached to.
-> +	 */
-> +	kfree(rproc->cached_table);
-> +	rproc->cached_table = NULL;
-> +	rproc->table_ptr = NULL;
-> +out:
-> +	mutex_unlock(&rproc->lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(rproc_detach);
-> +
->  /**
->   * rproc_get_by_phandle() - find a remote processor by phandle
->   * @phandle: phandle to the rproc
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index 9bb34c3eb847..65ece6f177b7 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -659,6 +659,8 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
->  
->  int rproc_boot(struct rproc *rproc);
->  void rproc_shutdown(struct rproc *rproc);
-> +int rproc_detach(struct rproc *rproc);
-> +int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
->  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
->  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
->  int rproc_coredump_add_custom_segment(struct rproc *rproc,
-> 
+Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Cc: stable@vger.kernel.org
+---
+changes in v2:
+- remove unused struct dwc2_hsotg_ep *ep;
+
+ drivers/usb/dwc2/gadget.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
+index 0a0d11151cfb..ad4c94366dad 100644
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -1543,7 +1543,6 @@ static void dwc2_hsotg_complete_oursetup(struct usb_ep *ep,
+ static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
+ 					    u32 windex)
+ {
+-	struct dwc2_hsotg_ep *ep;
+ 	int dir = (windex & USB_DIR_IN) ? 1 : 0;
+ 	int idx = windex & 0x7F;
+ 
+@@ -1553,12 +1552,7 @@ static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
+ 	if (idx > hsotg->num_of_eps)
+ 		return NULL;
+ 
+-	ep = index_to_ep(hsotg, idx, dir);
+-
+-	if (idx && ep->dir_in != dir)
+-		return NULL;
+-
+-	return ep;
++	return index_to_ep(hsotg, idx, dir);
+ }
+ 
+ /**
+-- 
+2.29.2
+
