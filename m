@@ -2,83 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AC1305D4D
+	by mail.lfdr.de (Postfix) with ESMTP id E6543305D4E
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238509AbhA0NdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:33:21 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:52029 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238423AbhA0Nat (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:30:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1611754249; x=1643290249;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=hMDIUrtSgDyNN38BObbiWgDkPYmz8L7X/oKmht5reJ4=;
-  b=u4piFbLZlLNLZIlUkEYOkAgmOlG4ky33YW3gUe/uvic43Y+5ABMZvDgC
-   HofDEM5ip2WEF2vfAYCOEtWJmseooHsdhZkBO5VgqXmeZ9vyUeUZYGalW
-   Sew7jvSclypabkk8ud2Tv+Zhg+FmnHVJDiFX42KJkWmYzV4I5qPnrRoZp
-   U=;
-X-IronPort-AV: E=Sophos;i="5.79,379,1602547200"; 
-   d="scan'208";a="115119220"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1d-16425a8d.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 27 Jan 2021 13:30:07 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-16425a8d.us-east-1.amazon.com (Postfix) with ESMTPS id 87687100F80;
-        Wed, 27 Jan 2021 13:30:05 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 27 Jan 2021 13:30:03 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.244) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 27 Jan 2021 13:29:58 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kuniyu@amazon.co.jp>
-CC:     <aams@amazon.de>, <borisp@mellanox.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <tariqt@mellanox.com>
-Subject: RE: [PATCH net] net: Remove redundant calls of sk_tx_queue_clear().
-Date:   Wed, 27 Jan 2021 22:29:54 +0900
-Message-ID: <20210127132954.13465-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20210127125018.7059-1-kuniyu@amazon.co.jp>
-References: <20210127125018.7059-1-kuniyu@amazon.co.jp>
+        id S238529AbhA0Ndn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:33:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238477AbhA0NbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:31:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04BA1207A0;
+        Wed, 27 Jan 2021 13:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611754218;
+        bh=PRPfyBQ4qTkyM5ldK/G+fxEfNZ+SuyxPadtIZ8ggCS8=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=i/J0XSdmNCwo8OkCHOIeKDGqBQYncNk8FULsNG5fhh2wty7WMMKvbJcOdDCM2Pe3z
+         0bKsYWFYNIrIFh2MGx9cLVHlOSlVvfDEkLN/K6HONMD4ifSpzyeBd8KfBuBUSv4jJ/
+         /jIJ7Uh/N7hqLWJcs5bTiqQ1H7BVXySLd1BBKFzY=
+Date:   Wed, 27 Jan 2021 14:30:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] include: sysfs: Add macro to assign show for RO
+ attributes
+Message-ID: <YBFq5yiHFJ2/jnGK@kroah.com>
+References: <1611721162-29982-1-git-send-email-orsonzhai@gmail.com>
+ <YBEbRDOQhczI5/yC@kroah.com>
+ <20210127125126.GA7813@lenovo>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.244]
-X-ClientProxiedBy: EX13D05UWB003.ant.amazon.com (10.43.161.26) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127125126.GA7813@lenovo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Date:   Wed, 27 Jan 2021 21:50:18 +0900
-> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). However,
-> the original commit had already put sk_tx_queue_clear() in sk_prot_alloc():
-> the callee of sk_alloc() and sk_clone_lock(). Thus sk_tx_queue_clear() is
-> called twice in each path currently.
+On Wed, Jan 27, 2021 at 08:51:26PM +0800, Orson Zhai wrote:
+> On Wed, Jan 27, 2021 at 08:50:28AM +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Jan 27, 2021 at 12:19:22PM +0800, Orson Zhai wrote:
+> > > In some circumstances, multiple __ATTR_RO attributes need to be assigned
+> > > with a single show function.
+> > > 
+> > > Add this macro to make life easier with simple code.
+> > > 
+> > > Signed-off-by: Orson Zhai <orsonzhai@gmail.com>
+> > > ---
+> > >  Documentation/filesystems/sysfs.rst | 2 ++
+> > >  include/linux/sysfs.h               | 5 +++++
+> > >  2 files changed, 7 insertions(+)
+> > > 
+> > > diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystems/sysfs.rst
+> > > index 004d490..0e2274a 100644
+> > > --- a/Documentation/filesystems/sysfs.rst
+> > > +++ b/Documentation/filesystems/sysfs.rst
+> > > @@ -141,6 +141,8 @@ __ATTR_RO_MODE(name, mode):
+> > >  	         fore more restrictive RO access currently
+> > >                   only use case is the EFI System Resource Table
+> > >                   (see drivers/firmware/efi/esrt.c)
+> > > +__ATTR_RO_SHOW(name, show):
+> > > +		 assumes default mode 0444 with specified show.
+> > >  __ATTR_RW(name):
+> > >  	         assumes default name_show, name_store and setting
+> > >                   mode to 0644.
+> > > diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+> > > index 2caa34c..c851592 100644
+> > > --- a/include/linux/sysfs.h
+> > > +++ b/include/linux/sysfs.h
+> > > @@ -117,6 +117,11 @@ struct attribute_group {
+> > >  	.show	= _name##_show,						\
+> > >  }
+> > >  
+> > > +#define __ATTR_RO_SHOW(_name, _show) {					\
+> > > +	.attr	= { .name = __stringify(_name), .mode = 0444 },		\
+> > > +	.show	= _show,						\
+> > > +}
+> > 
+> > Do you have a real user for this?  Using "raw" kobject attributes is
 > 
-> This patch removes the redundant calls of sk_tx_queue_clear() in sk_alloc()
-> and sk_clone_lock().
+> Yes, I have found at least one user in current kernel code.
 > 
-> Fixes: 41b14fb8724d ("net: Do not clear the sock TX queue in sk_set_socket()")
-> CC: Tariq Toukan <tariqt@mellanox.com>
-> CC: Boris Pismenny <borisp@mellanox.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> Reviewed-by: Amit Shah <aams@amazon.de>
+> Please refer to [1].
+> 
+> The author implemented a similar marcro __ATRR_MRO as mine, plus an
+> __ATRR_MWO with specified restore.
 
-I'm sorry, I have respun the v2 patch.
-So, please ignore v1.
+Ick, no, that should be using DEVICE_ATTR_RO() as it is a struct device
+attribute, not a "raw" kobject attribute.  So that code should be fixed
+up anyway, no need for this macro :)
 
-v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
+> 
+> If this patch merged, I'd to replace his marcro with mine.
+> 
+> > rare and should not be used often, so who needs this?
+> 
+> Agree. But for some device drivers it might be useful without side effect.
 
-Best regards,
-Kuniyuki
+Drivers should NOT be ever using __ATTR* macros.  That is not what they
+are there for.
+
+> Another example is from Android increment-fs code out there.
+> That driver has 3 sysfs attributes which shared with same show function
+> which only prints "support" to userland.
+
+I can't take patches for out-of-tree code, sorry, you know this :)
+
+thanks,
+
+greg k-h
