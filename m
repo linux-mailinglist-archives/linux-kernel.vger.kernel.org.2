@@ -2,128 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A2F3063BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7F63063D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344193AbhA0TH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:07:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
+        id S1344360AbhA0TKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:10:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344084AbhA0THz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:07:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB1464D9D;
-        Wed, 27 Jan 2021 19:07:15 +0000 (UTC)
+        id S1344238AbhA0TJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:09:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B43864DAB;
+        Wed, 27 Jan 2021 19:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611774435;
-        bh=+2fq9fqcnJYIGiasm2Y78NeRv8I7YIdMcOI8TxM795s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YhRvfHT6RV1BMZil1zdzFYbHrjCJm7nZH8PN85tJkCvVMFjd6eDbEasUTop/t+LPD
-         +og8JbTEYZzAi04vEHfuIFInmDsmd231LW3n5RVJFYyM6vY3hmYrtWNfd8A82XdX6m
-         DjpPaS8pSa/DuHZYs6mKcfXHpOXTTFE56zyLkjQntGO4C+hsC0Ykvmz47tpeTx/84l
-         zXaW1LY6a8F7/TYczF+XBpza56l2dKK/8HzbEQZeM6w1bYXSP9+Xt5hPZiwG5xTEFf
-         wAw/S9OAFRpNo71WJjOFETco8uFIl0z2ETgQOd81ch+lFz7xSSy2QicZgzOBZ8Zlq9
-         XFs7hqikGgclQ==
-Received: by mail-ej1-f50.google.com with SMTP id a10so4179320ejg.10;
-        Wed, 27 Jan 2021 11:07:14 -0800 (PST)
-X-Gm-Message-State: AOAM532d+vzWmtu6C/Vd27Ep0mHE1prshOu1/I7LVcuMMITDgn7/M9f8
-        KgByfyq7GQmIT6pmTqJtqtmZSVWYJjBzEc6AhA==
-X-Google-Smtp-Source: ABdhPJwZ642wt52ernlRSW6Ok++wbRCAdfK+zZt0YWbSRLkd8I/BHIp2pHEsvorc0aidjP5dLvbM2BPXjvTf/vQ2vrY=
-X-Received: by 2002:a17:906:c9d8:: with SMTP id hk24mr8285418ejb.468.1611774433585;
- Wed, 27 Jan 2021 11:07:13 -0800 (PST)
+        s=k20201202; t=1611774505;
+        bh=2HavwUWRXPYAzxhXM+vrsP246g6dUCKujiewop5u6Mw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=exksylbd229tqjbMBx300VKVBsCgT8w/z3AhlXq2BxP1S2/hY+dwKeG/8OoOIQ9aV
+         +SmhYyjis9Jkkg/M+KsikSNf/WVHWJ+Q3pRFhmy1YjfUOedXkJ4vn4R21nng0OxJgN
+         4I0JhC+jnNgWMVlB4ue/EuBLoj7QvhfDT4b7s3EfoTZQSh9PCS7uvme/vSZjIZoFgg
+         lg7WRJNNX31lWDKYhuWPIROAc9BJ/rwL/slRUanza9D8RgBeZsk3S4QXVH51YA8+zJ
+         pNoUBy9AykXo3Mp2Xj0/qe4BczHrlP/0rNSLSqWrvDGeNjFbpKoBYva8P3zC5lNpii
+         X4JMWzj3HVAsQ==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l4qAx-003n4p-09; Wed, 27 Jan 2021 20:08:23 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Gow <davidgow@google.com>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Wang Hai <wanghai38@huawei.com>, Wei Xu <xuwei5@hisilicon.com>,
+        Yu Chen <chenyu56@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/7] Move Hisilicon 6421v600 SPMI and USB drivers out of staging
+Date:   Wed, 27 Jan 2021 20:08:15 +0100
+Message-Id: <cover.1611773727.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210119105203.15530-1-yong.wu@mediatek.com>
-In-Reply-To: <20210119105203.15530-1-yong.wu@mediatek.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 27 Jan 2021 13:07:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJB=MMeMobznBiAUihJLBt5aeiiL+AtDWh6tajePu=Now@mail.gmail.com>
-Message-ID: <CAL_JsqJB=MMeMobznBiAUihJLBt5aeiiL+AtDWh6tajePu=Now@mail.gmail.com>
-Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
- valid dma-ranges
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 4:52 AM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
-> supplanting dma_pfn_offset") always update dma_range_map even though it was
-> already set, like in the sunxi_mbus driver. the issue is reported at [1].
-> This patch avoid this(Updating it only when dev has valid dma-ranges).
+Hi Greg/Mark/Lee/Vinod,
 
-only when dev *doesn't* have valid dma-ranges?
+Just did a rebase on the top of staging-testing, and re-tested
+at the hardware.
 
-> Meanwhile, dma_range_map contains the devices' dma_ranges information,
-> This patch moves dma_range_map before of_iommu_configure. The iommu
-> driver may need to know the dma_address requirements of its iommu
-> consumer devices.
->
-> [1] https://lore.kernel.org/linux-arm-kernel/5c7946f3-b56e-da00-a750-be097c7ceb32@arm.com/
->
-> CC: Rob Herring <robh+dt@kernel.org>
-> CC: Frank Rowand <frowand.list@gmail.com>
-> Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset"),
-> Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/of/device.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/of/device.c b/drivers/of/device.c
-> index aedfaaafd3e7..1122daa8e273 100644
-> --- a/drivers/of/device.c
-> +++ b/drivers/of/device.c
-> @@ -162,9 +162,11 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->         mask = DMA_BIT_MASK(ilog2(end) + 1);
->         dev->coherent_dma_mask &= mask;
->         *dev->dma_mask &= mask;
-> -       /* ...but only set bus limit if we found valid dma-ranges earlier */
-> -       if (!ret)
-> +       /* ...but only set bus limit and range map if we found valid dma-ranges earlier */
-> +       if (!ret) {
->                 dev->bus_dma_limit = end;
-> +               dev->dma_range_map = map;
-> +       }
->
->         coherent = of_dma_is_coherent(np);
->         dev_dbg(dev, "device is%sdma coherent\n",
-> @@ -172,6 +174,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->
->         iommu = of_iommu_configure(dev, np, id);
->         if (PTR_ERR(iommu) == -EPROBE_DEFER) {
-> +               /* Don't touch range map if it wasn't set from a valid dma-ranges */
-> +               if (!ret)
-> +                       dev->dma_range_map = NULL;
->                 kfree(map);
->                 return -EPROBE_DEFER;
->         }
-> @@ -181,7 +186,6 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->
->         arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
->
-> -       dev->dma_range_map = map;
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(of_dma_configure_id);
-> --
-> 2.18.0
->
+This series contain the remaining patches for USB to start working,
+except for a final DTS patch, which depends on two patches
+that should be merged via the ARM SoC tree.
+
+Patches 1 and 2 convert the SPMI and regulator
+drivers to use regmap and simplifies the logic by using
+regmap helpers.
+
+I guess the best would be if Greg could apply both patches
+also via the staging tree.
+
+Patches 3-6 move the drivers and their corresponding
+DT documentation bindings out of staging.
+
+Patch 7 contains the DT which describes the regulator,
+SPMI controller and MFD.
+
+I'll submit the final patch with USB bindings after having
+everything set (e.g. after 5.12-rc1).
+
+Mauro Carvalho Chehab (7):
+  staging: hikey9xx: spmi driver: convert to regmap
+  staging: hikey9xx: hi6421v600-regulator: use some regmap helpers
+  phy: phy-hi3670-usb3: move driver from staging into phy
+  spmi: hisi-spmi-controller: move driver from staging
+  mfd: hi6421-spmi-pmic: move driver from staging
+  regulator: hi6421v600-regulator: move it from staging
+  dts: hisilicon: add support for the PMIC found on Hikey 970
+
+ .../mfd}/hisilicon,hi6421-spmi-pmic.yaml      |   0
+ .../bindings/phy/hisilicon,hi3670-usb3.yaml   |   0
+ .../spmi}/hisilicon,hisi-spmi-controller.yaml |   0
+ MAINTAINERS                                   |  24 +++-
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    |  22 +---
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  87 +++++++++++++
+ drivers/mfd/Kconfig                           |  15 +++
+ drivers/mfd/Makefile                          |   1 +
+ .../hikey9xx => mfd}/hi6421-spmi-pmic.c       | 115 ++++++------------
+ drivers/phy/hisilicon/Kconfig                 |  10 ++
+ drivers/phy/hisilicon/Makefile                |   1 +
+ .../hisilicon}/phy-hi3670-usb3.c              |   0
+ drivers/regulator/Kconfig                     |   8 ++
+ drivers/regulator/Makefile                    |   1 +
+ .../hi6421v600-regulator.c                    |  63 ++--------
+ drivers/spmi/Kconfig                          |   9 ++
+ drivers/spmi/Makefile                         |   1 +
+ .../hikey9xx => spmi}/hisi-spmi-controller.c  |   0
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/hikey9xx/Kconfig              |  50 --------
+ drivers/staging/hikey9xx/Makefile             |   7 --
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ include/linux/mfd/hi6421-spmi-pmic.h          |   7 +-
+ 24 files changed, 207 insertions(+), 222 deletions(-)
+ rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/mfd}/hisilicon,hi6421-spmi-pmic.yaml (100%)
+ rename drivers/staging/hikey9xx/phy-hi3670-usb3.yaml => Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml (100%)
+ rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/spmi}/hisilicon,hisi-spmi-controller.yaml (100%)
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ rename drivers/{staging/hikey9xx => mfd}/hi6421-spmi-pmic.c (72%)
+ rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
+ rename drivers/{staging/hikey9xx => regulator}/hi6421v600-regulator.c (81%)
+ rename drivers/{staging/hikey9xx => spmi}/hisi-spmi-controller.c (100%)
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+
+-- 
+2.29.2
+
+
