@@ -2,148 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF19305C1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFF2305C0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236958AbhA0MwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:52:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237987AbhA0MtD (ORCPT
+        id S237892AbhA0Mu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236296AbhA0Ms0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:49:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611751650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aOdVU2S1wjLYeAxjDzo6QAJ2zlJ7GdzXTsTuzIEKa+g=;
-        b=c7Ct+IyYgPHfzBDOTFQ5lG5aQ9SJBuQBxiklknT0GvQW+DH11iv5PT0dOFVDVW+LzGezes
-        Hhmfs/l515pepRMNHQuKgq38oyHBDL6ZxaUyua6UDwxfalX9/RGcgtj+cAVrEC+nWDTLfJ
-        2Ep7sGZdO1Gdt7D4Vy4zShd3uCCMKaA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-6HKH5GH6NU64pg4vMrXcDA-1; Wed, 27 Jan 2021 07:47:28 -0500
-X-MC-Unique: 6HKH5GH6NU64pg4vMrXcDA-1
-Received: by mail-wm1-f69.google.com with SMTP id u1so846888wml.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:47:28 -0800 (PST)
+        Wed, 27 Jan 2021 07:48:26 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C25C061574;
+        Wed, 27 Jan 2021 04:47:45 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id o10so2428473lfl.13;
+        Wed, 27 Jan 2021 04:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=ycFolyNp8VLN9fdHlmeqTVkpJxs4UNit0j6/is8DNJ8=;
+        b=AVqeJIkyvhXWwI+qn/+9ZIQhLYFrjzIjDLvlhBtFlhOEpwM/JTQp1kK+AdbfTrUUoO
+         lX1RBokgpz/EDBJMamvfSOPLPtN9BLcq5CvJJORkdwY2fDbek/zGLL6qywRTT3EeLDCH
+         RC8ERjakKTKly9R4KOOJrSfx+jN5BGHF8dEexWKtWyFrwItbl40plihJTIaemAAKLnE7
+         NrJFb0X6YEnrdYfRadXQmiDjtQywbDZ2Kt/clZzfGJH3YlqM5p7rQO05+eZPbT9eOWa2
+         6cyEmvDfNXNv4VUm7EuUmlU5BP1zf9cxOwhitGKra/HQWjau2xyZTyr08t5CqpHvmT6G
+         z27g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aOdVU2S1wjLYeAxjDzo6QAJ2zlJ7GdzXTsTuzIEKa+g=;
-        b=GWL5xGAEnj275sKTUv6uJAWPEADIm1P2aQpNlTePaiSVJuZCCbloGadPy2+N23ARjK
-         EKc63ZttDmsnb0NHzLXfBWZA609W3SqEKnJe2lWmCNAT1KtESC7056/YYw7Fw0bMDLfm
-         thrWUNgmmPJ46m+n3I0GF9kQA6TgQVPlgM8mpXl9ELNz1x3gnRx74P8v2TdOPi7JWgzt
-         h9sPQtKAmqDxJ0OW2HpaApxkM9tM23/a+dcILPorCYjjHXronxBPdcsidZ0PxwNy17eZ
-         sSn3LZWQW/kx1SaBk65EPs36Ikxo8S5jMmJVDYpNewjZ+Ql6MuwUDPMehCTvWK6oIYjO
-         uBIw==
-X-Gm-Message-State: AOAM5337NJ/p3awaIVBHDpw2E+XgmQMQ3JZ09ADeDYl3sVJJ7JcZ0OF1
-        zcjznXH06yDpvbWv5MMyAz7MSNIPDirYfzGzPYMWc1QNTkh0VsLIvwRY/d9hDXyqbSoCzxGlgum
-        F93keh6yuYXt8u5CMD0NGJRe6
-X-Received: by 2002:adf:f849:: with SMTP id d9mr11193414wrq.349.1611751647655;
-        Wed, 27 Jan 2021 04:47:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw6jR2V5MwJgGPqAttIKU4Cs/88SOEleQU/qrmSqPY0rvKN4j1E3jKNjiRR/h96bE2ml2/b8Q==
-X-Received: by 2002:adf:f849:: with SMTP id d9mr11193406wrq.349.1611751647520;
-        Wed, 27 Jan 2021 04:47:27 -0800 (PST)
-Received: from redhat.com (bzq-79-177-39-148.red.bezeqint.net. [79.177.39.148])
-        by smtp.gmail.com with ESMTPSA id z184sm2618398wmg.7.2021.01.27.04.47.19
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=ycFolyNp8VLN9fdHlmeqTVkpJxs4UNit0j6/is8DNJ8=;
+        b=RBj7oi0OltbOQ2bq1yWXoJruOoiyew9amytfjLwDGgoFjqd7PfMUsO8AT64AAD8P2K
+         I4dg40i67bSvdSLqO8td8kuswfQt71JYtAW4lxAi8lEFqrIj7wYEmSe240nIaHJnvioN
+         XMOq48JFlXkIc2+3j+DhfMvO110YnFxdCLI0WIBWCXiGKC3O0C4hBKhFDbYMiygPOL8z
+         QTec5B1SvKotN0S+vyPvWRczLFeC8EdD4Ly8ozWKUItozRvUYfvt8kyjzqBgwP/LADxy
+         Y/Spj2g6IL/USkBByGxejLagKnogdjLTtriyEFKelBtA3gSI1EASJJQPJ+e1r2wQ5esr
+         l/sg==
+X-Gm-Message-State: AOAM533At5lCoDk8lZTMQK9kXDo6F8nGgLT8swHArzaoLlLmeBOaz8H2
+        jAJG8VlGQ3GdZmEfrkVJ2Td3iacMAZwZYQ==
+X-Google-Smtp-Source: ABdhPJzihYE9Gh2cxfCvInz9t3p1/SnlfMWF6f35Lm2j8PelUN/RYdz2dj1DyXMoDpFwwMp0jaTVaw==
+X-Received: by 2002:a05:6512:1053:: with SMTP id c19mr4777315lfb.518.1611751663466;
+        Wed, 27 Jan 2021 04:47:43 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id u11sm473266lfr.124.2021.01.27.04.47.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 04:47:21 -0800 (PST)
-Date:   Wed, 27 Jan 2021 07:47:17 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     "Catangiu, Adrian Costin" <acatan@amazon.com>
-Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "Jason@zx2c4.com" <Jason@zx2c4.com>,
-        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "areber@redhat.com" <areber@redhat.com>,
-        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>
-Subject: Re: [PATCH v4 0/2] System Generation ID driver and VMGENID backend
-Message-ID: <20210127074549-mutt-send-email-mst@kernel.org>
-References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
- <20210112074658-mutt-send-email-mst@kernel.org>
- <9952EF0C-CD1D-4EDB-BAB8-21F72C0BF90D@amazon.com>
+        Wed, 27 Jan 2021 04:47:42 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 27 Jan 2021 13:47:40 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IOWbng==?=
+ =?utf-8?B?5aSNOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= rcu: Release per-cpu krcp page
+ cache when CPU going offline
+Message-ID: <20210127124740.GA1856@pc638.lan>
+References: <20210121064949.16164-1-qiang.zhang@windriver.com>
+ <20210121185615.GR2743@paulmck-ThinkPad-P72>
+ <20210121202635.GB2454@pc638.lan>
+ <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20210122143129.GB1873@pc638.lan>
+ <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20210126140705.GA1942@pc638.lan>
+ <BYAPR11MB26320FC73B7CE5E4195CB499FFBB9@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9952EF0C-CD1D-4EDB-BAB8-21F72C0BF90D@amazon.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB26320FC73B7CE5E4195CB499FFBB9@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:28:16AM +0000, Catangiu, Adrian Costin wrote:
-> On 12/01/2021, 14:49, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Wed, Jan 27, 2021 at 09:00:27AM +0000, Zhang, Qiang wrote:
 > 
->     On Tue, Jan 12, 2021 at 02:15:58PM +0200, Adrian Catangiu wrote:
->     > The first patch in the set implements a device driver which exposes a
->     > read-only device /dev/sysgenid to userspace, which contains a
->     > monotonically increasing u32 generation counter. Libraries and
->     > applications are expected to open() the device, and then call read()
->     > which blocks until the SysGenId changes. Following an update, read()
->     > calls no longer block until the application acknowledges the new
->     > SysGenId by write()ing it back to the device. Non-blocking read() calls
->     > return EAGAIN when there is no new SysGenId available. Alternatively,
->     > libraries can mmap() the device to get a single shared page which
->     > contains the latest SysGenId at offset 0.
 > 
->     Looking at some specifications, the gen ID might actually be located
->     at an arbitrary address. How about instead of hard-coding the offset,
->     we expose it e.g. in sysfs?
+> ________________________________________
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年1月26日 22:07
+> 收件人: Zhang, Qiang
+> 抄送: Uladzislau Rezki; Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: 回复: 回复: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
 > 
-> The functionality is split between SysGenID which exposes an internal u32
-> counter to userspace, and an (optional) VmGenID backend which drives
-> SysGenID generation changes based on hw vmgenid updates.
+> >
+> > On Fri, Jan 22, 2021 at 01:44:36AM +0000, Zhang, Qiang wrote:
+> > >
+> > >
+> > > ________________________________________
+> > > 发件人: Uladzislau Rezki <urezki@gmail.com>
+> > > 发送时间: 2021年1月22日 4:26
+> > > 收件人: Zhang, Qiang
+> > > 抄送: Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org; urezki@gmail.com
+> > > 主题: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> > > >Hello, Qiang,
+> > >
+> > > > On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> > > > > From: Zqiang <qiang.zhang@windriver.com>
+> > > > >
+> > > > > If CPUs go offline, the corresponding krcp's page cache can
+> > > > > not be use util the CPU come back online, or maybe the CPU
+> > > > > will never go online again, this commit therefore free krcp's
+> > > > > page cache when CPUs go offline.
+> > > > >
+> > > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > > >
+> > > >Do you consider it as an issue? We have 5 pages per CPU, that is 20480 bytes.
+> > > >
+> > >
+> > > Hello Rezki
+> > >
+> > > In a multi CPUs system, more than one CPUs may be offline, there are more than 5 pages,  and these offline CPUs may never go online again  or  in the process of CPUs online, there are errors, which lead to the failure of online, these scenarios will lead to the per-cpu krc page cache will never be released.
+> > >
+> > >Thanks for your answer. I was thinking more about if you knew some >platforms
+> > >which suffer from such extra page usage when CPU goes offline. Any >issues
+> > >your platforms or devices run into because of that.
+> > >
+> > >So i understand that if CPU goes offline the 5 pages associated with it >are
+> > >unused until it goes online back.
+> >
+> >  I agree with you, But I still want to talk about what I think
+> >
+> >  My understanding is that when the CPU is offline,  the pages is not
+> >  accessible,  beacuse we don't know when this CPU will
+> >  go online again, so we best to return these page to the buddy system,
+> >  when the CPU goes online again, we can allocate page from the buddy
+> >  system to fill krcp's page cache.  maybe you may think that this memory
+> >  is small and don't need to.
+> >
+> >BTW, we can release the caches via shrinker path instead, what is more makes
+> >sense to me. We already have a callback, that frees pages when a page allocator
+> >asks for it. I think in that case it would be fair to return it to the buddy
+> >system. It happens under low memory condition
 > 
-> The hw UUID you're referring to (vmgenid) is not mmap-ed to userspace or
-> otherwise exposed to userspace. It is only used internally by the vmgenid
-> driver to find out about VM generation changes and drive the more generic
-> SysGenID.
-> 
-> The SysGenID u32 monotonic increasing counter is the one that is mmaped to
-> userspace, but it is a software counter. I don't see any value in using a dynamic
-> offset in the mmaped page. Offset 0 is fast and easy and most importantly it is
-> static so no need to dynamically calculate or find it at runtime.
+>   I agree. it can be done in shrink callback, can release the currently existing per-cpu 
+>   page cache.
+>   
+Would not you mind to send a patch? If you need some input, i am happy
+to participate.
 
-Well you are burning a whole page on it, using an offset the page
-can be shared with other functionality.
+Thanks!
 
-> Thanks,
-> Adrian.
-> 
-> 
-> 
-> 
-> Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+--
+Vlad Rezki
