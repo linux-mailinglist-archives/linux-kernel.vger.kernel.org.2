@@ -2,182 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FEA306845
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34399306848
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbhA0XrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:47:21 -0500
-Received: from hera.aquilenet.fr ([185.233.100.1]:49032 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhA0Xpe (ORCPT
+        id S231903AbhA0XsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:48:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231265AbhA0XsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:45:34 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 5DFFB31F;
-        Thu, 28 Jan 2021 00:44:47 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id c5M_y3bmRZK7; Thu, 28 Jan 2021 00:44:46 +0100 (CET)
-Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 54CA47A;
-        Thu, 28 Jan 2021 00:44:46 +0100 (CET)
-Received: from samy by begin with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1l4uUP-004MFn-2b; Thu, 28 Jan 2021 00:44:45 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        linux-kernel@vger.kernel.org, speakup@linux-speakup.org
-Subject: [PATCH] speakup: Make dectlk flush timeout configurable
-Date:   Thu, 28 Jan 2021 00:44:44 +0100
-Message-Id: <20210127234444.1038813-1-samuel.thibault@ens-lyon.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 27 Jan 2021 18:48:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611791211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJ/gs4iMushfcp0d07qS8uhcoreW6Bo1+Q0lKFHyKMM=;
+        b=K5q5sx0F9JmAI66uRYMLVsuL2ASVd1C1MBvfcLdioqyRaISG82gNBKRXCOrZROvGZUtiZ9
+        y8zLocIlesXDIlwnh/KO/rQHKSzyd2x9YFRztxl1jASYcsw02vT4spmDS7FUni8+tDC6VS
+        4GxYoVfQdLf09Xl43EWhR+DbtvOVo2k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-WQ5wUpHQOfu8sZ2HJIUVTg-1; Wed, 27 Jan 2021 18:46:47 -0500
+X-MC-Unique: WQ5wUpHQOfu8sZ2HJIUVTg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C137E8030A0;
+        Wed, 27 Jan 2021 23:46:43 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E50C25C1BB;
+        Wed, 27 Jan 2021 23:46:41 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 16:46:41 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Cornelia Huck" <cohuck@redhat.com>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "James Morse" <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: Re: [PATCH v3 2/2] vfio/iommu_type1: Fix some sanity checks in
+ detach group
+Message-ID: <20210127164641.36e17bf5@omen.home.shazbot.org>
+In-Reply-To: <20210122092635.19900-3-zhukeqian1@huawei.com>
+References: <20210122092635.19900-1-zhukeqian1@huawei.com>
+        <20210122092635.19900-3-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-X-Rspamd-Server: hera
-Authentication-Results: hera.aquilenet.fr
-X-Rspamd-Queue-Id: 5DFFB31F
-X-Spamd-Result: default: False [5.00 / 15.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_MISSING_CHARSET(2.50)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[]
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case the serial port or cable got faulty, we may not be getting
-acknowledgements any more. The driver then currently waits for 4s to
-avoid jamming the device. This makes this delay configurable.
+On Fri, 22 Jan 2021 17:26:35 +0800
+Keqian Zhu <zhukeqian1@huawei.com> wrote:
 
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
----
- drivers/accessibility/speakup/speakup_dectlk.c | 11 ++++++++++-
- drivers/accessibility/speakup/spk_types.h      |  3 ++-
- drivers/accessibility/speakup/synth.c          |  3 +++
- drivers/accessibility/speakup/varhandlers.c    |  1 +
- 4 files changed, 16 insertions(+), 2 deletions(-)
+> vfio_sanity_check_pfn_list() is used to check whether pfn_list and
+> notifier are empty when remove the external domain, so it makes a
+> wrong assumption that only external domain will use the pinning
+> interface.
+> 
+> Now we apply the pfn_list check when a vfio_dma is removed and apply
+> the notifier check when all domains are removed.
+> 
+> Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++-----------------------
+>  1 file changed, 10 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 161725395f2f..d8c10f508321 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -957,6 +957,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
+>  
+>  static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
+>  {
+> +	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
+>  	vfio_unmap_unpin(iommu, dma, true);
+>  	vfio_unlink_dma(iommu, dma);
+>  	put_task_struct(dma->task);
+> @@ -2250,23 +2251,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
+>  	}
+>  }
+>  
+> -static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
+> -{
+> -	struct rb_node *n;
+> -
+> -	n = rb_first(&iommu->dma_list);
+> -	for (; n; n = rb_next(n)) {
+> -		struct vfio_dma *dma;
+> -
+> -		dma = rb_entry(n, struct vfio_dma, node);
+> -
+> -		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
+> -			break;
+> -	}
+> -	/* mdev vendor driver must unregister notifier */
+> -	WARN_ON(iommu->notifier.head);
+> -}
+> -
+>  /*
+>   * Called when a domain is removed in detach. It is possible that
+>   * the removed domain decided the iova aperture window. Modify the
+> @@ -2366,10 +2350,10 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  			kfree(group);
+>  
+>  			if (list_empty(&iommu->external_domain->group_list)) {
+> -				vfio_sanity_check_pfn_list(iommu);
+> -
+> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
+> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)) {
+> +					WARN_ON(iommu->notifier.head);
+>  					vfio_iommu_unmap_unpin_all(iommu);
+> +				}
+>  
+>  				kfree(iommu->external_domain);
+>  				iommu->external_domain = NULL;
+> @@ -2403,10 +2387,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>  		 */
+>  		if (list_empty(&domain->group_list)) {
+>  			if (list_is_singular(&iommu->domain_list)) {
+> -				if (!iommu->external_domain)
+> +				if (!iommu->external_domain) {
+> +					WARN_ON(iommu->notifier.head);
+>  					vfio_iommu_unmap_unpin_all(iommu);
+> -				else
+> +				} else {
+>  					vfio_iommu_unmap_unpin_reaccount(iommu);
+> +				}
+>  			}
+>  			iommu_domain_free(domain->domain);
+>  			list_del(&domain->next);
+> @@ -2488,9 +2474,10 @@ static void vfio_iommu_type1_release(void *iommu_data)
+>  	struct vfio_iommu *iommu = iommu_data;
+>  	struct vfio_domain *domain, *domain_tmp;
+>  
+> +	WARN_ON(iommu->notifier.head);
 
-diff --git a/drivers/accessibility/speakup/speakup_dectlk.c b/drivers/accessibility/speakup/speakup_dectlk.c
-index d75de36..580ec79 100644
---- a/drivers/accessibility/speakup/speakup_dectlk.c
-+++ b/drivers/accessibility/speakup/speakup_dectlk.c
-@@ -78,6 +78,8 @@ static struct kobj_attribute direct_attribute =
- 	__ATTR(direct, 0644, spk_var_show, spk_var_store);
- static struct kobj_attribute full_time_attribute =
- 	__ATTR(full_time, 0644, spk_var_show, spk_var_store);
-+static struct kobj_attribute flush_time_attribute =
-+	__ATTR(flush_time, 0644, spk_var_show, spk_var_store);
- static struct kobj_attribute jiffy_delta_attribute =
- 	__ATTR(jiffy_delta, 0644, spk_var_show, spk_var_store);
- static struct kobj_attribute trigger_time_attribute =
-@@ -99,6 +101,7 @@ static struct attribute *synth_attrs[] = {
- 	&delay_time_attribute.attr,
- 	&direct_attribute.attr,
- 	&full_time_attribute.attr,
-+	&flush_time_attribute.attr,
- 	&jiffy_delta_attribute.attr,
- 	&trigger_time_attribute.attr,
- 	NULL,	/* need to NULL terminate the list of attributes */
-@@ -118,6 +121,7 @@ static struct spk_synth synth_dectlk = {
- 	.trigger = 50,
- 	.jiffies = 50,
- 	.full = 40000,
-+	.flush_time = 4000,
- 	.dev_name = SYNTH_DEFAULT_DEV,
- 	.startup = SYNTH_START,
- 	.checkval = SYNTH_CHECK,
-@@ -200,18 +204,23 @@ static void do_catch_up(struct spk_synth *synth)
- 	static u_char last = '\0';
- 	unsigned long flags;
- 	unsigned long jiff_max;
--	unsigned long timeout = msecs_to_jiffies(4000);
-+	unsigned long timeout;
- 	DEFINE_WAIT(wait);
- 	struct var_t *jiffy_delta;
- 	struct var_t *delay_time;
-+	struct var_t *flush_time;
- 	int jiffy_delta_val;
- 	int delay_time_val;
-+	int timeout_val;
- 
- 	jiffy_delta = spk_get_var(JIFFY);
- 	delay_time = spk_get_var(DELAY);
-+	flush_time = spk_get_var(FLUSH);
- 	spin_lock_irqsave(&speakup_info.spinlock, flags);
- 	jiffy_delta_val = jiffy_delta->u.n.value;
-+	timeout_val = flush_time->u.n.value;
- 	spin_unlock_irqrestore(&speakup_info.spinlock, flags);
-+	timeout = msecs_to_jiffies(timeout_val);
- 	jiff_max = jiffies + jiffy_delta_val;
- 
- 	while (!kthread_should_stop()) {
-diff --git a/drivers/accessibility/speakup/spk_types.h b/drivers/accessibility/speakup/spk_types.h
-index 7789f5d..6a96ad9 100644
---- a/drivers/accessibility/speakup/spk_types.h
-+++ b/drivers/accessibility/speakup/spk_types.h
-@@ -48,7 +48,7 @@ enum var_id_t {
- 	ATTRIB_BLEEP, BLEEPS,
- 	RATE, PITCH, VOL, TONE, PUNCT, VOICE, FREQUENCY, LANG,
- 	DIRECT, PAUSE,
--	CAPS_START, CAPS_STOP, CHARTAB, INFLECTION,
-+	CAPS_START, CAPS_STOP, CHARTAB, INFLECTION, FLUSH,
- 	MAXVARS
- };
- 
-@@ -178,6 +178,7 @@ struct spk_synth {
- 	int trigger;
- 	int jiffies;
- 	int full;
-+	int flush_time;
- 	int ser;
- 	char *dev_name;
- 	short flags;
-diff --git a/drivers/accessibility/speakup/synth.c b/drivers/accessibility/speakup/synth.c
-index 6c14b68..2b86996 100644
---- a/drivers/accessibility/speakup/synth.c
-+++ b/drivers/accessibility/speakup/synth.c
-@@ -348,6 +348,7 @@ struct var_t synth_time_vars[] = {
- 	{ TRIGGER, .u.n = {NULL, 20, 10, 2000, 0, 0, NULL } },
- 	{ JIFFY, .u.n = {NULL, 50, 20, 200, 0, 0, NULL } },
- 	{ FULL, .u.n = {NULL, 400, 200, 60000, 0, 0, NULL } },
-+	{ FLUSH, .u.n = {NULL, 4000, 100, 4000, 0, 0, NULL } },
- 	V_LAST_VAR
- };
- 
-@@ -408,6 +409,8 @@ static int do_synth_init(struct spk_synth *in_synth)
- 		synth_time_vars[2].u.n.default_val = synth->jiffies;
- 	synth_time_vars[3].u.n.value =
- 		synth_time_vars[3].u.n.default_val = synth->full;
-+	synth_time_vars[4].u.n.value =
-+		synth_time_vars[4].u.n.default_val = synth->flush_time;
- 	synth_printf("%s", synth->init);
- 	for (var = synth->vars;
- 		(var->var_id >= 0) && (var->var_id < MAXVARS); var++)
-diff --git a/drivers/accessibility/speakup/varhandlers.c b/drivers/accessibility/speakup/varhandlers.c
-index d7f6bec..067c0da 100644
---- a/drivers/accessibility/speakup/varhandlers.c
-+++ b/drivers/accessibility/speakup/varhandlers.c
-@@ -23,6 +23,7 @@ static struct st_var_header var_headers[] = {
- 	{ "trigger_time", TRIGGER, VAR_TIME, NULL, NULL },
- 	{ "jiffy_delta", JIFFY, VAR_TIME, NULL, NULL },
- 	{ "full_time", FULL, VAR_TIME, NULL, NULL },
-+	{ "flush_time", FLUSH, VAR_TIME, NULL, NULL },
- 	{ "spell_delay", SPELL_DELAY, VAR_NUM, &spk_spell_delay, NULL },
- 	{ "bleeps", BLEEPS, VAR_NUM, &spk_bleeps, NULL },
- 	{ "attrib_bleep", ATTRIB_BLEEP, VAR_NUM, &spk_attrib_bleep, NULL },
--- 
-2.20.1
+I don't see that this does any harm, but isn't it actually redundant?
+It seems vfio-core only calls the iommu backend release function after
+removing all the groups, so the tests in _detach_group should catch all
+cases.  We're expecting the vfio bus/mdev driver to remove the notifier
+when a device is closed, which necessarily occurs before detaching the
+group.  Thanks,
+
+Alex
+
+> +
+>  	if (iommu->external_domain) {
+>  		vfio_release_domain(iommu->external_domain, true);
+> -		vfio_sanity_check_pfn_list(iommu);
+>  		kfree(iommu->external_domain);
+>  	}
+>  
 
