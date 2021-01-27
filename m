@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB17305F60
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E5E305F3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235544AbhA0PTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:19:54 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53670 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235491AbhA0POs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235493AbhA0POs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 27 Jan 2021 10:14:48 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RFCuh1053913;
-        Wed, 27 Jan 2021 09:12:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611760376;
-        bh=bypYKIW/QcBaXurae0qgKgxzwZFIrfQz9a7cz6+CsTo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=VqysvBLRXCrAh6Z6HAztWnjXrKUxHQRlOVZLk1TNhuMIB3BVScJapLNVHIx9i4jPx
-         2hNvcMJmN7EgfD/fgSC9yJp2MWh3rJDmkOkveCIDkK4hYE9ISp8WossG32bc7Jied1
-         UApMwgZOo4PDHM8fFAiijRyV9lScVXt4hfKGaPL0=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RFCuO3075853
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Jan 2021 09:12:56 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
- Jan 2021 09:12:56 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 27 Jan 2021 09:12:56 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RFCusX050134;
-        Wed, 27 Jan 2021 09:12:56 -0600
-Date:   Wed, 27 Jan 2021 09:12:56 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] dts: ti: k3-j7200-main: Add support for zeroth
- instance of GPIO subsystem
-Message-ID: <20210127151256.tgbhpngy6fi43edj@create>
-References: <20210127150815.16991-1-a-govindraju@ti.com>
- <20210127150815.16991-2-a-govindraju@ti.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235172AbhA0POF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:14:05 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97636C061573;
+        Wed, 27 Jan 2021 07:13:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6F17CTvYIALiq65AoqfJOblrS51pCyVqWNSm9pua6Tk=; b=qvqYWfb4BLt1DvC4i8rL9U65y
+        au7cTchIflxjLA/GTBw21/wF2phenfAoclDz0fVjj2huRXpD3ls7iNxKRQqqSCdP/CgcCbgCWAJrt
+        6U5FTONCBLZtuxZ699CXcQ0Jm9DQg34qLzozSbgyUz1T+HCrVFdRNFV9TTEjsipTcmdQi5kf8ky8N
+        S4z0NiY0utlJYaxWDctvFv/T6CAP5mF212EQkSlhxUliesA+5vnDgaMM4e9WiEII5iRkR8fl2bDNn
+        OdDwpmi0eZvtoSEwccvIE2NaI3qKJQMokDaIn4Dox72Lw2rB3wTR6vT53u1y0i6tbF/AypLYJyK0a
+        2MwXAZ8wA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53422)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l4mVV-0005c1-8z; Wed, 27 Jan 2021 15:13:21 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l4mVT-0004vP-RY; Wed, 27 Jan 2021 15:13:19 +0000
+Date:   Wed, 27 Jan 2021 15:13:19 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "atenart@kernel.org" <atenart@kernel.org>
+Subject: Re: [EXT] Re: [PATCH v4 net-next 19/19] net: mvpp2: add TX FC
+ firmware check
+Message-ID: <20210127151319.GO1551@shell.armlinux.org.uk>
+References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+ <1611747815-1934-20-git-send-email-stefanc@marvell.com>
+ <20210127140552.GM1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873034EAC12E956E6879967B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <20210127145955.GN1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873983229F0F664A0578A3DB0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127150815.16991-2-a-govindraju@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CO6PR18MB3873983229F0F664A0578A3DB0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20:38-20210127, Aswath Govindraju wrote:
-> Add support for the zeroth instance of GPIO subsystem in the main domain.
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+On Wed, Jan 27, 2021 at 03:10:11PM +0000, Stefan Chulski wrote:
+> You can devmem 0xF2400240(Device ID Status Register).
+> #define A8040_B0_DEVICE_ID      0x8045
+> #define A8040_AX_DEVICE_ID      0x8040
+> #define A7040_B0_DEVICE_ID      0x7045
+> #define A7040_AX_DEVICE_ID      0x7040
+> #define A3900_A1_DEVICE_ID      0x6025
+> #define CN9130_DEVICE_ID        0x7025
 
+Thanks. 0x00028040, so it's AX silicon. Is there nothing that can be
+done for flow control on that?
 
-I really dont want to pick up one patch per node instance. It is hard
-to scale and just creates a lot of noise.
-
-> ---
->  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> index 4cc2e9094d0e..75dffbb26d52 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> @@ -294,6 +294,23 @@
->  		pinctrl-single,function-mask = <0xffffffff>;
->  	};
->  
-> +	main_gpio0: gpio@600000 {
-> +		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-> +		reg = <0x0 0x00600000 0x0 0x100>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-parent = <&main_gpio_intr>;
-> +		interrupts = <145>, <146>, <147>, <148>,
-> +			     <149>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		ti,ngpio = <69>;
-> +		ti,davinci-gpio-unbanked = <0>;
-> +		power-domains = <&k3_pds 105 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 105 0>;
-> +		clock-names = "gpio";
-> +	};
-> +
->  	main_uart0: serial@2800000 {
->  		compatible = "ti,j721e-uart", "ti,am654-uart";
->  		reg = <0x00 0x02800000 0x00 0x100>;
-> -- 
-> 2.17.1
-> 
+It would probably also be a good idea to state this requirement in the
+message as well, rather than just suggesting the firmware revision.
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
