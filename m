@@ -2,199 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7183730564C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C14C30562F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233838AbhA0I7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:59:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:60946 "EHLO foss.arm.com"
+        id S233089AbhA0Iy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:54:29 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:39594 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233321AbhA0I4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:56:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F81F1474;
-        Wed, 27 Jan 2021 00:55:36 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 78FF23F66B;
-        Wed, 27 Jan 2021 00:55:33 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, lcherian@marvell.com,
-        linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 04/14] coresight: ete: Add support for ETE sysreg access
-Date:   Wed, 27 Jan 2021 14:25:28 +0530
-Message-Id: <1611737738-1493-5-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+        id S232736AbhA0Iuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:50:35 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 21ADA1A0546;
+        Wed, 27 Jan 2021 09:49:49 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 11F781A053C;
+        Wed, 27 Jan 2021 09:49:45 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 55A62402A9;
+        Wed, 27 Jan 2021 09:49:39 +0100 (CET)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
+        Biwen Li <biwen.li@nxp.com>
+Subject: [v2] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE to remove call trace
+Date:   Wed, 27 Jan 2021 16:58:18 +0800
+Message-Id: <20210127085818.23742-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+From: Biwen Li <biwen.li@nxp.com>
 
-Add support for handling the system registers for Embedded Trace
-Extensions (ETE). ETE shares most of the registers with ETMv4 except
-for some and also adds some new registers. Re-arrange the ETMv4x list
-to share the common definitions and add the ETE sysreg support.
+Add flag IRQCHIP_SKIP_SET_WAKE to remove call trace as follow,
+...
+[   45.605239] Unbalanced IRQ 120 wake disable
+[   45.609445] WARNING: CPU: 0 PID: 1124 at kernel/irq/manage.c:800 irq_set_irq_wake+0x154/0x1a0
+...
+[   45.645141] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+[   45.651144] pc : irq_set_irq_wake+0x154/0x1a0
+[   45.655497] lr : irq_set_irq_wake+0x154/0x1a0
+...
+[   45.742825] Call trace:
+[   45.745268]  irq_set_irq_wake+0x154/0x1a0
+[   45.749278]  ds3232_resume+0x38/0x50
 
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On ls2088ardb:
+In suspend progress(# echo mem > /sys/power/state),
+pm_suspend()->suspend_devices_and_enter()->dpm_suspend()->device_suspend()
+->ds3232_suspend()->enable_irq_wake()->irq_set_irq_wake()
+->set_irq_wake_real(), return -ENXIO, there get
+"Cannot set wakeup source" in ds3232_suspend().
+
+In resume progress(wakeup by flextimer)
+dpm_resume_end()->dpm_resume()
+->device_resume()->ds3232_resume()
+->disable_irq_wake()->irq_set_irq_wake()
+->set_irq_wake_real(), there get
+kernel call trace(Unbalanced IRQ 120 wake
+disable)
+
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 32 +++++++++++++
- drivers/hwtracing/coresight/coresight-etm4x.h      | 52 ++++++++++++++++++----
- 2 files changed, 75 insertions(+), 9 deletions(-)
+Change in v2:
+	- update description
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 9edf8be..9e92d2a 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -114,6 +114,38 @@ void etm4x_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit)
- 	}
- }
+ drivers/irqchip/irq-ls-extirq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+index 564e6de0bd8e..3c6ed7b4744d 100644
+--- a/drivers/irqchip/irq-ls-extirq.c
++++ b/drivers/irqchip/irq-ls-extirq.c
+@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
+ 	.irq_set_type		= ls_extirq_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+-	.flags                  = IRQCHIP_SET_TYPE_MASKED,
++	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
+ };
  
-+u64 ete_sysreg_read(u32 offset, bool _relaxed, bool _64bit)
-+{
-+	u64 res = 0;
-+
-+	switch (offset) {
-+	ETE_READ_CASES(res)
-+	default :
-+		WARN_ONCE(1, "ete: trying to read unsupported register @%x\n",
-+			 offset);
-+	}
-+
-+	if (!_relaxed)
-+		__iormb(res);	/* Imitate the !relaxed I/O helpers */
-+
-+	return res;
-+}
-+
-+void ete_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit)
-+{
-+	if (!_relaxed)
-+		__iowmb();	/* Imitate the !relaxed I/O helpers */
-+	if (!_64bit)
-+		val &= GENMASK(31, 0);
-+
-+	switch (offset) {
-+	ETE_WRITE_CASES(val)
-+	default :
-+		WARN_ONCE(1, "ete: trying to write to unsupported register @%x\n",
-+			offset);
-+	}
-+}
-+
- static void etm_detect_os_lock(struct etmv4_drvdata *drvdata,
- 			       struct csdev_access *csa)
- {
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index 0e86eba..ca24ac5 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -29,6 +29,7 @@
- #define TRCAUXCTLR			0x018
- #define TRCEVENTCTL0R			0x020
- #define TRCEVENTCTL1R			0x024
-+#define TRCRSR				0x028
- #define TRCSTALLCTLR			0x02C
- #define TRCTSCTLR			0x030
- #define TRCSYNCPR			0x034
-@@ -49,6 +50,7 @@
- #define TRCSEQRSTEVR			0x118
- #define TRCSEQSTR			0x11C
- #define TRCEXTINSELR			0x120
-+#define TRCEXTINSELRn(n)		(0x120 + (n * 4)) /* n = 0-3 */
- #define TRCCNTRLDVRn(n)			(0x140 + (n * 4)) /* n = 0-3 */
- #define TRCCNTCTLRn(n)			(0x150 + (n * 4)) /* n = 0-3 */
- #define TRCCNTVRn(n)			(0x160 + (n * 4)) /* n = 0-3 */
-@@ -160,10 +162,22 @@
- #define CASE_NOP(__unused, x)					\
- 	case (x):	/* fall through */
- 
-+#define ETE_ONLY_SYSREG_LIST(op, val)		\
-+	CASE_##op((val), TRCRSR)		\
-+	CASE_##op((val), TRCEXTINSELRn(1))	\
-+	CASE_##op((val), TRCEXTINSELRn(2))	\
-+	CASE_##op((val), TRCEXTINSELRn(3))
-+
- /* List of registers accessible via System instructions */
--#define ETM_SYSREG_LIST(op, val)		\
--	CASE_##op((val), TRCPRGCTLR)		\
-+#define ETM4x_ONLY_SYSREG_LIST(op, val)		\
- 	CASE_##op((val), TRCPROCSELR)		\
-+	CASE_##op((val), TRCVDCTLR)		\
-+	CASE_##op((val), TRCVDSACCTLR)		\
-+	CASE_##op((val), TRCVDARCCTLR)		\
-+	CASE_##op((val), TRCOSLAR)
-+
-+#define ETM_COMMON_SYSREG_LIST(op, val)		\
-+	CASE_##op((val), TRCPRGCTLR)		\
- 	CASE_##op((val), TRCSTATR)		\
- 	CASE_##op((val), TRCCONFIGR)		\
- 	CASE_##op((val), TRCAUXCTLR)		\
-@@ -180,9 +194,6 @@
- 	CASE_##op((val), TRCVIIECTLR)		\
- 	CASE_##op((val), TRCVISSCTLR)		\
- 	CASE_##op((val), TRCVIPCSSCTLR)		\
--	CASE_##op((val), TRCVDCTLR)		\
--	CASE_##op((val), TRCVDSACCTLR)		\
--	CASE_##op((val), TRCVDARCCTLR)		\
- 	CASE_##op((val), TRCSEQEVRn(0))		\
- 	CASE_##op((val), TRCSEQEVRn(1))		\
- 	CASE_##op((val), TRCSEQEVRn(2))		\
-@@ -277,7 +288,6 @@
- 	CASE_##op((val), TRCSSPCICRn(5))	\
- 	CASE_##op((val), TRCSSPCICRn(6))	\
- 	CASE_##op((val), TRCSSPCICRn(7))	\
--	CASE_##op((val), TRCOSLAR)		\
- 	CASE_##op((val), TRCOSLSR)		\
- 	CASE_##op((val), TRCACVRn(0))		\
- 	CASE_##op((val), TRCACVRn(1))		\
-@@ -369,12 +379,36 @@
- 	CASE_##op((val), TRCPIDR2)		\
- 	CASE_##op((val), TRCPIDR3)
- 
--#define ETM4x_READ_SYSREG_CASES(res)	ETM_SYSREG_LIST(READ, (res))
--#define ETM4x_WRITE_SYSREG_CASES(val)	ETM_SYSREG_LIST(WRITE, (val))
-+#define ETM4x_READ_SYSREG_CASES(res)		\
-+	ETM_COMMON_SYSREG_LIST(READ, (res))	\
-+	ETM4x_ONLY_SYSREG_LIST(READ, (res))
-+
-+#define ETM4x_WRITE_SYSREG_CASES(val)		\
-+	ETM_COMMON_SYSREG_LIST(WRITE, (val))	\
-+	ETM4x_ONLY_SYSREG_LIST(WRITE, (val))
-+
-+#define ETM_COMMON_SYSREG_LIST_CASES		\
-+	ETM_COMMON_SYSREG_LIST(NOP, __unused)
-+
-+#define ETM4x_SYSREG_LIST_CASES			\
-+	ETM_COMMON_SYSREG_LIST_CASES		\
-+	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
- 
--#define ETM4x_SYSREG_LIST_CASES		ETM_SYSREG_LIST(NOP, __unused)
- #define ETM4x_MMAP_LIST_CASES		ETM_MMAP_LIST(NOP, __unused)
- 
-+/* ETE only supports system register access */
-+#define ETE_READ_CASES(res)			\
-+	ETM_COMMON_SYSREG_LIST(READ, (res))	\
-+	ETE_ONLY_SYSREG_LIST(READ, (res))
-+
-+#define ETE_WRITE_CASES(val)			\
-+	ETM_COMMON_SYSREG_LIST(WRITE, (val))	\
-+	ETE_ONLY_SYSREG_LIST(WRITE, (val))
-+
-+#define ETE_ONLY_SYSREG_LIST_CASES		\
-+	ETM_COMMON_SYSREG_LIST_CASES		\
-+	ETE_ONLY_SYSREG_LIST(NOP, __unused)
-+
- #define read_etm4x_sysreg_offset(offset, _64bit)				\
- 	({									\
- 		u64 __val;							\
+ static int
 -- 
-2.7.4
+2.17.1
 
