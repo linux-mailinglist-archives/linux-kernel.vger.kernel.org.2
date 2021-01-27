@@ -2,94 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E2B3052C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B11D3052CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbhA0GDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237419AbhA0Dw5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:52:57 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB649C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:52:16 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id r190so510153qkf.19
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=5VPUeByKd/x9PZw0CSCTNgL+h32Hi7mgbgca394+vo0=;
-        b=JxB+HvBGYuQqW6HIGlYpTJ4RO/MLHRodFVPXzQmPP1wZKnUZ5txgtWQM4S7+/MeoBr
-         80GFHSro0RVzltbpf671RXyUxdCVdBUDCJxLYIADUsWS8TX1QBbtExU0tQdjDpfEcSqk
-         bZn9q2pyQygyBZiiFJtarfDdEmRGmn+HUu1y6L3k2It5wXfle/rvFD9M2R8O1gvjqIKW
-         7i+ir4S2OMTUoc4Yh+eXNnSLGhvsdhDsbHpR4hYg16xtdNGSD3mT5+bpGjpF6eouMErn
-         AsmTIVIVAQKSkqQQOLckPTP9etYcB+KG4G9A8+mowKctH6nAB5UhmctvhmttUVV+2c7V
-         aG2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=5VPUeByKd/x9PZw0CSCTNgL+h32Hi7mgbgca394+vo0=;
-        b=DDY0mZULo2pYrp1356jdmI6c8fXFqdEG9oG4tblcQ+09ppvCD70RmmJWWvVOKFjRze
-         hoptaIq7rz/8eNlJzYMUP0m0JZ0hb70Hy8E+gYdF9xUNJ0O2AE5YSIBYpER7sUjQEoX1
-         Q4E8bTPQSQmlXUMYQEF7fCcfoT7/nbcCZCYeBKwnwybtsz1u8DEPDU+wvro2DyYmpMnX
-         wSJSzT4aLd6njJkKBARXFE7+lWylwqjJfRIsHzyzz9cGwuvspr84zFZHPMTfHhtIq/0X
-         2BfmSxakstdOVJK5s+p5/IbCcJZ1CsFy6AZ4sOBU6tJjH9wPioUg8iTM39+MgUTwXTxJ
-         CGKA==
-X-Gm-Message-State: AOAM532jScREk2latFcUv8B+cIkQx3kWBVoDBD/QU+0wjFXoWHo0hPfT
-        SHrOhpqpDqUScMwJPTdiX919E1Vu8PWxfQ==
-X-Google-Smtp-Source: ABdhPJzs3mW0fP0yOL0zl7e2jbCHBKc8t1d39J1OXYWMBuUg6hRuKy5Jv1UtE/6otLrY0pHAhmNV26Afd489DQ==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7000:2f04:a262:7158])
- (user=davidgow job=sendgmr) by 2002:a05:6214:1348:: with SMTP id
- b8mr1991075qvw.26.1611719535980; Tue, 26 Jan 2021 19:52:15 -0800 (PST)
-Date:   Tue, 26 Jan 2021 19:51:47 -0800
-Message-Id: <20210127035146.1523286-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH] drivers: rtc: Make xilinx zynqmp driver depend on HAS_IOMEM
-From:   David Gow <davidgow@google.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Cc:     David Gow <davidgow@google.com>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S235318AbhA0GEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:04:09 -0500
+Received: from mga18.intel.com ([134.134.136.126]:42570 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237608AbhA0Dzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:55:35 -0500
+IronPort-SDR: 4neyQmTp2DOKMZJuGVDs3fR8/QFsQotwmgwOREQAU85OiK5MfOIwuV+XwR5JHcDTr2yG/6QB5s
+ H0aSLWKfJvhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="167684743"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="167684743"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:54:54 -0800
+IronPort-SDR: zUQpenv7S1YPTdoCBnbHAiu/wM0L/F0BKuoVZbQJ78z1FKrzRPZThfc/ZEYvVgPHqjCfKsTLBO
+ yWxpBD5vmXPg==
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="362253675"
+Received: from yuankuns-mobl.ccr.corp.intel.com ([10.249.169.180])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:54:53 -0800
+Message-ID: <e1fcf35b21e7e4af67621bd4f037e3f07af756e1.camel@intel.com>
+Subject: Re: linux-next: build warning after merge of the pm tree
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Wed, 27 Jan 2021 11:54:50 +0800
+In-Reply-To: <20210127124324.29b7c4d4@canb.auug.org.au>
+References: <20210127124324.29b7c4d4@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Xilinx zynqmp RTC driver makes use of IOMEM functions like
-devm_platform_ioremap_resource(), which are only available if
-CONFIG_HAS_IOMEM is defined.
+Hi, Stephen,
 
-This causes the driver not to be enable under make ARCH=um allyesconfig,
-even though it won't build.
+Sorry that I missed this build warning in the first place, thanks for
+reporting.
+The patch below fixes it.
 
-By adding a dependency on HAS_IOMEM, the driver will not be enabled on
-architectures which don't support it.
+BTW, Rafael, I think acpi_fpdt_init() also needs to be fixed to have
+proper return value.
+Do you prefer an incremental patch or a V2 of 208757d71098 ("ACPI:
+tables: introduce support for FPDT table"), which includes all these
+fixes?
 
-Fixes: 09ef18bcd5ac ("rtc: use devm_platform_ioremap_resource() to simplify code")
-Signed-off-by: David Gow <davidgow@google.com>
+thanks,
+rui
+
+From 2b8ed148351875b4bf227602a97edba12d08af7e Mon Sep 17 00:00:00 2001
+From: Zhang Rui <rui.zhang@intel.com>
+Date: Wed, 27 Jan 2021 11:33:33 +0800
+Subject: [PATCH] ACPI: FPDT: fix build warning
+
+Fix a build warning,
+In file included from ./include/linux/printk.h:7:0,
+                 from ./include/linux/kernel.h:16,
+                 from ./include/linux/list.h:9,
+                 from ./include/linux/kobject.h:19,
+                 from ./include/linux/of.h:17,
+                 from ./include/linux/irqdomain.h:35,
+                 from ./include/linux/acpi.h:13,
+                 from drivers/acpi/acpi_fpdt.c:11:
+drivers/acpi/acpi_fpdt.c: In function ‘acpi_init_fpdt’:
+./include/linux/kern_levels.h:5:18: warning: too many arguments for format [-Wformat-extra-args]
+ #define KERN_SOH "\001"  /* ASCII Start Of Header */
+                  ^
+./include/linux/kern_levels.h:14:19: note: in expansion of macro ‘KERN_SOH’
+ #define KERN_INFO KERN_SOH "6" /* informational */
+                   ^~~~~~~~
+./include/linux/printk.h:373:9: note: in expansion of macro ‘KERN_INFO’
+  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+         ^~~~~~~~~
+drivers/acpi/acpi_fpdt.c:255:4: note: in expansion of macro ‘pr_info’
+    pr_info(FW_BUG, "Invalid subtable type %d found.\n",
+    ^~~~~~~
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 ---
- drivers/rtc/Kconfig | 2 +-
+ drivers/acpi/acpi_fpdt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 6123f9f4fbc9..474d95184f20 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1300,7 +1300,7 @@ config RTC_DRV_OPAL
- 
- config RTC_DRV_ZYNQMP
- 	tristate "Xilinx Zynq Ultrascale+ MPSoC RTC"
--	depends on OF
-+	depends on OF && HAS_IOMEM
- 	help
- 	  If you say yes here you get support for the RTC controller found on
- 	  Xilinx Zynq Ultrascale+ MPSoC.
+diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
+index b8108117262a..64d5733dca0b 100644
+--- a/drivers/acpi/acpi_fpdt.c
++++ b/drivers/acpi/acpi_fpdt.c
+@@ -252,7 +252,7 @@ void acpi_init_fpdt(void)
+ 					      subtable->type);
+ 			break;
+ 		default:
+-			pr_info(FW_BUG, "Invalid subtable type %d found.\n",
++			pr_info(FW_BUG "Invalid subtable type %d found.\n",
+ 			       subtable->type);
+ 			return;
+ 		}
 -- 
-2.30.0.280.ga3ce27912f-goog
+2.17.1
+
+
+On Wed, 2021-01-27 at 12:43 +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the pm tree, today's linux-next build (x86_64
+> allmodconfig)
+> produced this warning:
+> 
+> In file included from include/linux/printk.h:7,
+>                  from include/linux/kernel.h:16,
+>                  from include/linux/list.h:9,
+>                  from include/linux/kobject.h:19,
+>                  from include/linux/of.h:17,
+>                  from include/linux/irqdomain.h:35,
+>                  from include/linux/acpi.h:13,
+>                  from drivers/acpi/acpi_fpdt.c:11:
+> drivers/acpi/acpi_fpdt.c: In function 'acpi_init_fpdt':
+> include/linux/kern_levels.h:5:18: warning: too many arguments for
+> format [-Wformat-extra-args]
+>     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>       |                  ^~~~~~
+> include/linux/kern_levels.h:14:19: note: in expansion of macro
+> 'KERN_SOH'
+>    14 | #define KERN_INFO KERN_SOH "6" /* informational */
+>       |                   ^~~~~~~~
+> include/linux/printk.h:373:9: note: in expansion of macro 'KERN_INFO'
+>   373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+>       |         ^~~~~~~~~
+> drivers/acpi/acpi_fpdt.c:255:4: note: in expansion of macro 'pr_info'
+>   255 |    pr_info(FW_BUG, "Invalid subtable type %d found.\n",
+>       |    ^~~~~~~
+> 
+> Introduced by commit
+> 
+>   208757d71098 ("ACPI: tables: introduce support for FPDT table")
+> 
 
