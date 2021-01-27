@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054E13057CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6023057D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhA0KFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbhA0KDZ (ORCPT
+        id S235524AbhA0KIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:08:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232528AbhA0KFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:03:25 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D109C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:02:38 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id cq1so947814pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=il+kK31I8ias7ly7K5qOOufoBmh6u4lYQGwfOmvXgok=;
-        b=umpaeJivTUc70rUr7oissDRdrd/NSPpIhzh+PzHhKbS1foIrTSpKsod+T8fwLF76Iz
-         f69EfcMpINZhd3O81tqlo4Tpn+b5chdPRtrh+GV+jK3Bebs3S4i/eyAPRMMAJUKuKRw3
-         VrsXTwbgqyLBfsYqxiFhAtRGgzvh3QUcZaDvOg50gDtwXRrhUwU/VtCAiejnZqu4Z4nF
-         NP/Huu7uiHrHdzYDfuPUxa4WxFD7HmfvqJfcAyb2/QU8IkqdahlYOGwj3NJHWgOiOT8e
-         RBTQH2tuP7jrHIez+K0hIVCP+8ncMQSCWCae+LFn5DWNmTtz0aF9uhjzz90wJA/sOTCH
-         mbog==
+        Wed, 27 Jan 2021 05:05:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611741865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rSBKskt+WQ4zYWYqyXQXePGFlrIIWEpfaYGgeOFkbk0=;
+        b=VaP2zxjdSvGp9sOyMbdK4HBV3qFC1Kh7KP8XBIF1BZkJhcEGom/1INDcAj6XacPJPf32Rp
+        VTcGgeCYV6rbCTo2IAghd5qALn5D/NvZFU3bxb4DtwaddP8XHAEZxMTUxc6z+PgfNOzXOy
+        wWz1p7LZ+u5+dGzj9vSepZHaDk8bJYA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-IyA5LhbNM9KOcntj8Zalcw-1; Wed, 27 Jan 2021 05:04:24 -0500
+X-MC-Unique: IyA5LhbNM9KOcntj8Zalcw-1
+Received: by mail-ej1-f70.google.com with SMTP id jg11so455504ejc.23
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:04:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=il+kK31I8ias7ly7K5qOOufoBmh6u4lYQGwfOmvXgok=;
-        b=SQLUsbxTbytGanIXP/JZPDjucNAF2s6AXweE+F6aNdEUxt562+T56ZKgJscrxt80j6
-         Nqw2sQGbUdPI10axb3AdVJs0L+5OzmzrFzDAAEihdh/N7ixttqGm6gmspgyNdGWmxttx
-         4KwYVkk2dbvtazwsR9Oa3f5SO8eYhyHgZP5YRZCmghu6cJXW08UL3/S6/qgbJod3XUFd
-         MA7/63olOtx3T5whPOvziohjfgpQafwEg6fpFxXn0wfIJKcywyzGYVR5sRrpa4ErPoc1
-         nEugV0ZlLk5/X0Oxx4gCmxNPt6WrwN6mJZKO9AnAFQNx6f+F/ZQRlNR22JO7lRY6ZcJh
-         stsA==
-X-Gm-Message-State: AOAM532PGxTaM6LCKDDSpKwiEEmhdqxvNFbSsyXiFTdw1jVCe3rspX67
-        YXTDP4A8V2ObOhCc2sHWxqC/SA==
-X-Google-Smtp-Source: ABdhPJzkvUySvZLn2EAxK9+DgBWy4yFjNe77BjjPxrFYXjaE3UdsYOaIrfwTFZCpMvBSxOMLFsam5Q==
-X-Received: by 2002:a17:902:bb8c:b029:dc:2e5e:2b2 with SMTP id m12-20020a170902bb8cb02900dc2e5e02b2mr10762965pls.10.1611741757318;
-        Wed, 27 Jan 2021 02:02:37 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id gv22sm1601853pjb.56.2021.01.27.02.02.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 02:02:36 -0800 (PST)
-Date:   Wed, 27 Jan 2021 15:32:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 11/13] devfreq: tegra30: Migrate to
- dev_pm_opp_set_opp()
-Message-ID: <20210127100234.vl2wwe7rjrrz4btz@vireshk-i7>
-References: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
- <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rSBKskt+WQ4zYWYqyXQXePGFlrIIWEpfaYGgeOFkbk0=;
+        b=MZwJyVwCt9hq/wnhlAqwWVt5N/Jdlqc3KPIm/o1FftOJkXhFSQYkqga7NvJhnwZ15s
+         iN7iLH1EC0MR6MwVryF6TSZOjbhDyvo/yq2P1D4QcbdNZ6QVHt828KYyvWtYf+dPaVmZ
+         ULNgZWf9DEZfm6IJoaZFktSvp8L7VABtqfp6Y535otNtqACPRNUYAvmjnWQCarLg2p/B
+         xrWBqVlUK0ozGVJSfRbhfWHTD0s0rZHln+y0BBUFRFCnby5jUc+cCsB7qD158nGNbF6V
+         /mvT6qQ0ClCBstuvl8GX1ved/jv9MzAaw+JUjSr3ukA5IGHGZ+XsAzu1p6pnwGPA89ry
+         RjNQ==
+X-Gm-Message-State: AOAM5321sJRtlojJVBD+WlylAPaLeqWRN+yYIqf8M1NX4BoFF2ZaXoi2
+        U7GMDhdqQNv2RyBV5HcpnG7sQkq8WI9xB3kYMiAD6RHXws4+Dre0bTJjXvfy5AIujeDQ9+RQukR
+        rzZceGgHw0W04PICVGLzeThRPuf8cgw8ZMrrnAT3FUNJiGNycGobEqA8ZvPHWK5hDWiADtlEHYZ
+        C3
+X-Received: by 2002:a17:907:20b9:: with SMTP id pw25mr6044131ejb.262.1611741862853;
+        Wed, 27 Jan 2021 02:04:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyHKzXG6sD3LHVACXcNLb3uTij9dZavO0HXzoqzanjNZbuIjiIAyut5K/eZqVI2THoEtNsTXw==
+X-Received: by 2002:a17:907:20b9:: with SMTP id pw25mr6044113ejb.262.1611741862684;
+        Wed, 27 Jan 2021 02:04:22 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x5sm991191edi.35.2021.01.27.02.04.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 02:04:21 -0800 (PST)
+Subject: Re: [RESEND PATCH 1/2] KVM: X86: Add support for the emulation of
+ DR6_BUS_LOCK bit
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210108064924.1677-1-chenyi.qiang@intel.com>
+ <20210108064924.1677-2-chenyi.qiang@intel.com>
+ <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
+ <5f3089a2-5a5c-a839-9ed9-471c404738a3@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <6bf8fc0d-ad7d-0282-9dcc-695f16af0715@redhat.com>
+Date:   Wed, 27 Jan 2021 11:04:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <5f3089a2-5a5c-a839-9ed9-471c404738a3@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-01-21, 14:40, Viresh Kumar wrote:
-> dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
-> be used instead. Migrate to the new API.
+On 27/01/21 04:41, Xiaoyao Li wrote:
+> On 1/27/2021 12:31 AM, Paolo Bonzini wrote:
+>> On 08/01/21 07:49, Chenyi Qiang wrote:
+>>> To avoid breaking the CPUs without bus lock detection, activate the
+>>> DR6_BUS_LOCK bit (bit 11) conditionally in DR6_FIXED_1 bits.
+>>>
+>>> The set/clear of DR6_BUS_LOCK is similar to the DR6_RTM in DR6
+>>> register. The processor clears DR6_BUS_LOCK when bus lock debug
+>>> exception is generated. (For all other #DB the processor sets this bit
+>>> to 1.) Software #DB handler should set this bit before returning to the
+>>> interrupted task.
+>>>
+>>> For VM exit caused by debug exception, bit 11 of the exit qualification
+>>> is set to indicate that a bus lock debug exception condition was
+>>> detected. The VMM should emulate the exception by clearing bit 11 of the
+>>> guest DR6.
+>>
+>> Please rename DR6_INIT to DR6_ACTIVE_LOW, and then a lot of changes 
+>> become simpler:
 > 
-> We don't want the OPP core to manage the clk for this driver, migrate to
-> dev_pm_opp_of_add_table_noclk() to make sure dev_pm_opp_set_opp()
-> doesn't have any side effects.
+> Paolo,
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> Dmitry,
-> 
-> This is based over the patches sent here:
-> 
-> https://lore.kernel.org/lkml/6c2160ff30a8f421563793020264cf9f533f293c.1611738228.git.viresh.kumar@linaro.org/
-> 
-> This should fix the problem you mentioned earlier. Will push this for
-> linux-next unless you have any issues with it.
-> 
->  drivers/devfreq/tegra30-devfreq.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 117cad7968ab..31f7dec5990b 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
->  		return PTR_ERR(opp);
->  	}
->  
-> -	ret = dev_pm_opp_set_bw(dev, opp);
-> +	ret = dev_pm_opp_set_opp(dev, opp);
->  	dev_pm_opp_put(opp);
->  
->  	return ret;
-> @@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  		return err;
->  	}
->  
-> -	err = dev_pm_opp_of_add_table(&pdev->dev);
-> +	err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
+> What do you want to convey with the new name DR6_ACTIVE_LOW? To be 
+> honest, the new name is confusing to me.
 
-Plus this, somehow was left uncommited in my tree :(
+"Active low" means that the bit is usually 1 and goes to 0 when the 
+condition (such as RTM or bus lock) happens.  For almost all those DR6 
+bits the value is in fact always 1, but if they are defined in the 
+future it will require no code change.
 
-diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-index 31f7dec5990b..ce83f883ca65 100644
---- a/drivers/devfreq/tegra30-devfreq.c
-+++ b/drivers/devfreq/tegra30-devfreq.c
-@@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
-                return err;
-        }
- 
--       err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
-+       err = dev_pm_opp_of_add_table_noclk(&pdev->dev, 0);
-        if (err) {
-                dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
-                goto put_hw;
+Paolo
 
--- 
-viresh
+>>> -        dr6 |= DR6_BD | DR6_RTM;
+>>> +        dr6 |= DR6_BD | DR6_RTM | DR6_BUS_LOCK;
+>>
+>> dr6 |= DR6_BD | DR6_ACTIVE_LOW;
+>>
+> 
+> 
+
