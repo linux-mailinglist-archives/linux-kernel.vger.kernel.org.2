@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E77D3064F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6883064EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhA0UT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:19:29 -0500
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:48180 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232039AbhA0UTV (ORCPT
+        id S231791AbhA0US2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231264AbhA0USV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:19:21 -0500
-Received: from localhost.localdomain ([92.131.99.25])
-        by mwinf5d75 with ME
-        id MwHZ240090Ys01Y03wHaW9; Wed, 27 Jan 2021 21:17:38 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 27 Jan 2021 21:17:38 +0100
-X-ME-IP: 92.131.99.25
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     stanimir.varbanov@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, mchehab@kernel.org,
-        georgi.djakov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: venus: core: Fix some resource leaks in the error path of 'venus_probe()'
-Date:   Wed, 27 Jan 2021 21:17:32 +0100
-Message-Id: <20210127201732.743938-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Wed, 27 Jan 2021 15:18:21 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D97C061574;
+        Wed, 27 Jan 2021 12:17:41 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id z21so2349231pgj.4;
+        Wed, 27 Jan 2021 12:17:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=M5prJnjp+IBjbrnVpwvStmTS1JWaLCOZpjntuh4TtrQ=;
+        b=FS9e+VNRM8U8d6RzRe5VpTEqUMb0x79Qmx0A824lxZD+vcKi7fxFdvysuZaNPcuVUO
+         elnCtb2NlumaCNjyMOqaeq8DV0q8i7HreBu/jOxSLl/zjErCBDUx5ytKQZO4PNK5ftSy
+         eu81OcdYqIjaQTvv9VAoKWyj8OVy9rub5IhKC1JWl3J7D0p0gyEaO6sYL3x043hpoFQs
+         8Fe77TXKczm9dIvsWdgDn+uIcvAMwcww6cvajSNgaeESw1bzMe1NYSoIGl1GV7/Q1/C7
+         pk+JXun8ZFI7jKnM218k//NW6eEF0XzAw/qu+EU7cP6FHjJKEbjir2Vljdc4qUFdzk5W
+         CfWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=M5prJnjp+IBjbrnVpwvStmTS1JWaLCOZpjntuh4TtrQ=;
+        b=Wj+jS/yWq/GH/rRNNZqZeH6Fj1OgNRhMenSF+r9c/SOmwpv2754MVfPvjigi5YVYgD
+         x8IefOnXVioen96tyQxISCZmloHmbQERe9oHA+NTIXhoCXtpA8nm8yZiNI0TbfPWDNpF
+         EYu8+Ce1kHeEYt2/KOUyRqvr1aovvQIdga/QkIzZ5Ulrr3SNsXeTuOQkp2b8QFoaOEpO
+         Bp3l04RhMaHONdM7S3r3cOYKBLwTNoqPNdQTA3Guz9rq7vlFwsKYr8LOcOwhkQbQuZ7x
+         KyiCu7PmKOwBITzUAXysOqxoJ7797LoSOrwiGLvECSdZwJ2ufIL12x4+io7Y600GklT/
+         qkrQ==
+X-Gm-Message-State: AOAM530ca25RHtBcHkJ8khlHebnlW+imxsCBBc4fzkwXWq2DKnA/++44
+        704/3bCoKJ8McLpM04PdoQ9uS70BWYY=
+X-Google-Smtp-Source: ABdhPJwor/F/ypzr1Hwh0gLclmeA13uoJ9YmLIDKqzUBaDCy0RSa0PyZ1JCEHWil5uYIaKIMMTpPAg==
+X-Received: by 2002:a63:da17:: with SMTP id c23mr12916767pgh.348.1611778660619;
+        Wed, 27 Jan 2021 12:17:40 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 21sm3164059pfu.136.2021.01.27.12.17.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 12:17:39 -0800 (PST)
+Subject: Re: [PATCH V2 1/1] net: dsa: rtl8366rb: standardize init jam tables
+To:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210127010632.23790-1-lorenzo.carletti98@gmail.com>
+ <20210127010632.23790-2-lorenzo.carletti98@gmail.com>
+ <20210127190159.s6irvdej3fs4cdai@skbuf>
+ <CABRCJOQDLrms1B4TsQonDEUAyXDV22-ufq4eGYZ8wq9KgHVKkA@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <21a30b7b-56ba-29e1-de0e-4d3969360a54@gmail.com>
+Date:   Wed, 27 Jan 2021 12:17:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABRCJOQDLrms1B4TsQonDEUAyXDV22-ufq4eGYZ8wq9KgHVKkA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful 'of_icc_get()' call, it must be
-undone by a corresponding 'icc_put()' call.
 
-Add it in the error handling path of the probe function as already done in
-the remove function.
 
-Fixes: 32f0a6ddc8c9 ("media: venus: Use on-chip interconnect API")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/media/platform/qcom/venus/core.c | 31 +++++++++++++++++-------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+On 1/27/2021 12:06 PM, Lorenzo Carletti wrote:
+> Many thanks for telling me that and for showing me how this works.
+> I find both very useful.
+> I'll be sure to follow the guidelines more carefully next time.
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 0bde19edac86..8fd5da941067 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -200,27 +200,35 @@ static int venus_probe(struct platform_device *pdev)
- 		return PTR_ERR(core->video_path);
- 
- 	core->cpucfg_path = of_icc_get(dev, "cpu-cfg");
--	if (IS_ERR(core->cpucfg_path))
--		return PTR_ERR(core->cpucfg_path);
-+	if (IS_ERR(core->cpucfg_path)) {
-+		ret = PTR_ERR(core->cpucfg_path);
-+		goto err_video_path_put;
-+	}
- 
- 	core->irq = platform_get_irq(pdev, 0);
--	if (core->irq < 0)
--		return core->irq;
-+	if (core->irq < 0) {
-+		ret = core->irq;
-+		goto err_cpucfg_path_put;
-+	}
- 
- 	core->res = of_device_get_match_data(dev);
--	if (!core->res)
--		return -ENODEV;
-+	if (!core->res) {
-+		ret = -ENODEV;
-+		goto err_cpucfg_path_put;
-+	}
- 
- 	mutex_init(&core->pm_lock);
- 
- 	core->pm_ops = venus_pm_get(core->res->hfi_version);
--	if (!core->pm_ops)
--		return -ENODEV;
-+	if (!core->pm_ops) {
-+		ret = -ENODEV;
-+		goto err_cpucfg_path_put;
-+	}
- 
- 	if (core->pm_ops->core_get) {
- 		ret = core->pm_ops->core_get(dev);
- 		if (ret)
--			return ret;
-+			goto err_cpucfg_path_put;
- 	}
- 
- 	ret = dma_set_mask_and_coherent(dev, core->res->dma_mask);
-@@ -305,6 +313,11 @@ static int venus_probe(struct platform_device *pdev)
- err_core_put:
- 	if (core->pm_ops->core_put)
- 		core->pm_ops->core_put(dev);
-+err_cpucfg_path_put:
-+	icc_put(core->cpucfg_path);
-+err_video_path_put:
-+	icc_put(core->video_path);
-+
- 	return ret;
- }
- 
+One of those guidelines is no top-posting and make sure you use a
+plaintext format for your emails otherwise the mailing-lists may be
+dropping your response (we may still get those responses because we are
+copied).
+
+Thanks!
 -- 
-2.27.0
-
+Florian
