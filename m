@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC788305046
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBBC30504A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237547AbhA0DyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:54:10 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11601 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S316661AbhA0Bja (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:39:30 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DQR6X5XNFz15sSR;
-        Wed, 27 Jan 2021 09:37:08 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Wed, 27 Jan 2021
- 09:38:16 +0800
-Subject: Re: [PATCH v2] dt-bindings: leds: Document commonly used LED triggers
-To:     Rob Herring <robh@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <dmurphy@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-leds@vger.kernel.org>
-References: <20201210082449.30586-1-manivannan.sadhasivam@linaro.org>
- <20201214223621.GA2493849@robh.at.kernel.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <30f805f7-81c0-49e5-7ad6-7509ad0b4b4a@huawei.com>
-Date:   Wed, 27 Jan 2021 09:38:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S237582AbhA0Dyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:54:53 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35288 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2392344AbhA0BmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 20:42:01 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxS+ShxBBgWooNAA--.21016S3;
+        Wed, 27 Jan 2021 09:40:50 +0800 (CST)
+Subject: Re: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64
+ to fix build errors
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
+ <67891f2f-a374-54fb-e6e5-44145190934f@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <add50f8c-7592-75ec-ffb2-84c4280f2fc7@loongson.cn>
+Date:   Wed, 27 Jan 2021 09:40:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201214223621.GA2493849@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <67891f2f-a374-54fb-e6e5-44145190934f@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+X-CM-TRANSID: AQAAf9DxS+ShxBBgWooNAA--.21016S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFyxXrW5ZFW7WFyfWr13XFb_yoW5XrWfpa
+        n3uanrKrWUXry5GayxCryUWr4Yy398G3yYgFWrWr45Aa4qqasagr4ktrW5urZ3GryIya1S
+        yr9xKF98GF1kZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        WxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb9mitUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manivannan:
-  Do you have time to prepare v3? Hope it can be applied into v5.12
-
-
-On 2020/12/15 6:36, Rob Herring wrote:
-> On Thu, Dec 10, 2020 at 01:54:49PM +0530, Manivannan Sadhasivam wrote:
->> This commit documents the LED triggers used commonly in the SoCs. Not
->> all triggers are documented as some of them are very application specific.
->> Most of the triggers documented here are currently used in devicetrees
->> of many SoCs.
-> 
-> The idea with recent LED binding changes is to move away from 
-> 'linux,default-trigger' to 'function' and 'trigger-sources' and to have 
-> some sort of standardized names.
-> 
+On 01/27/2021 12:01 AM, Daniel Borkmann wrote:
+> On 1/26/21 3:05 PM, Tiezhu Yang wrote:
+>> There exists many build errors when make M=samples/bpf on the Loongson
+>> platform, this issue is MIPS related, x86 compiles just fine.
 >>
->> While at it, let's also sort the triggers in ascending order.
-> 
-> I'm not sure we want that. Probably better to keep related functions 
-> together.
-> 
+>> Here are some errors:
+> [...]
 >>
->> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>> So we can do the similar things in samples/bpf/Makefile, just add
+>> platform specific and generic include dir for MIPS Loongson64 to
+>> fix the build errors.
+>
+> Your patch from [0] said ...
+>
+>   There exists many build warnings when make M=samples/bpf on the 
+> Loongson
+>   platform, this issue is MIPS related, x86 compiles just fine.
+>
+>   Here are some warnings:
+>   [...]
+>
+>   With #ifndef __SANE_USERSPACE_TYPES__  in tools/include/linux/types.h,
+>   the above error has gone and this ifndef change does not hurt other
+>   compilations.
+>
+> ... which ave the impression that all the issues were fixed. What else
+> is needed aside from this patch here? More samples/bpf fixes coming? If
+> yes, please all submit them as a series instead of individual ones.
+
+Hi Daniel,
+
+Thanks for your reply.
+
+This is the last samples/bpf patch to fix the obvious build issues when
+make M=samples/bpf on the MIPS Loongson64 platform.
+
+There is another MIPS patch to fix the following build error when make
+M=samples/bpf, but it seems a common and known issue when build MIPS
+kernel used with clang [1]:
+
+./arch/mips/include/asm/checksum.h:161:9: error: unsupported inline asm: 
+input with type 'unsigned long' matching output with type '__wsum' (aka 
+'unsigned int')
+         : "0" ((__force unsigned long)daddr),
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+
+Because these two patches are independent, this one is bpf-next related,
+the other one is mips-next related, so I submit them sepearately.
+
+[1] 
+https://lore.kernel.org/linux-mips/CAG_fn=W0JHf8QyUX==+rQMp8PoULHrsQCa9Htffws31ga8k-iw@mail.gmail.com/
+
+Thanks,
+Tiezhu
+
+>
+>  [0] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=190d1c921ad0862da14807e1670f54020f48e889
+>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 >> ---
+>>   samples/bpf/Makefile | 4 ++++
+>>   1 file changed, 4 insertions(+)
 >>
->> Changes in v2:
+>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>> index 362f314..45ceca4 100644
+>> --- a/samples/bpf/Makefile
+>> +++ b/samples/bpf/Makefile
+>> @@ -185,6 +185,10 @@ endif
+>>     ifeq ($(ARCH), mips)
+>>   TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
+>> +ifdef CONFIG_MACH_LOONGSON64
+>> +BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-loongson64
+>> +BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-generic
+>> +endif
+>>   endif
+>>     TPROGS_CFLAGS += -Wall -O2
 >>
->> * Added more triggers, fixed the regex
->> * Sorted triggers in ascending order
->>
->>  .../devicetree/bindings/leds/common.yaml      | 78 ++++++++++++++-----
->>  1 file changed, 60 insertions(+), 18 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
->> index f1211e7045f1..3c2e2208c1da 100644
->> --- a/Documentation/devicetree/bindings/leds/common.yaml
->> +++ b/Documentation/devicetree/bindings/leds/common.yaml
 
