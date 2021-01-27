@@ -2,169 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E24306582
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF2330658A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbhA0U5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S233862AbhA0U6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233716AbhA0U4t (ORCPT
+        with ESMTP id S233810AbhA0U6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:56:49 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB88AC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:56:04 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id d26so2282199qve.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:56:04 -0800 (PST)
+        Wed, 27 Jan 2021 15:58:03 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB318C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:57:22 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id m13so3669096oig.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:57:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=afydIjTboHZYNt7UhxBI9r/K8JAPb3TsRLb2cVHkJug=;
-        b=OEss27zfJ7iNp3b9IE3aHmQWzKmbK7MxprrUD6n6W3wsjaIXDpNdUha+30ZoETTBwP
-         84bE1InbOkYlY9PQ9QHdl2YXYFxHzdPpYzyVJ5ocIw2ZRnu77mmFttvuLaYi8BQcRSHD
-         zf4hRWKGUwtM+pgKaF+7/KQqA5QlkWvAi+azXjPy6RIkbqrWm4xUstPJIf1wgEE/fyzQ
-         MnsrhA1Ypuqu+XExTbjWuCgrK+SK3AumC0ds690JhPVfxG3GVVGxRskGn/t60npT5TDx
-         MJsLP63hBNEHn17qSig/tYbCvu/hKHgWGKD/7TQgV7HrBIG5sJe41yrKnig9P09i0mQa
-         O9gg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h/5giWFO3wXBwHEfC55BSYMxpJoJpAHOtOFoV5lHHRA=;
+        b=JPqZdhXyX1eoR5kq9AJVmmHtPIf8+TmY20tZ1iOVqrJYJ8CuKijXF/eZokWKR/JE3f
+         pHt3FTS0eCKoOE/7mlq0BvkQcwRekHJnRDaWObJkDEXu66CB4Fjk8laq9J8Pr8kHpapi
+         2mI5B64ZVH7Le+0FqQ2JifJ1RFea6Iinj32vjRKuel2gBlWEyfa2HzLtgQCcMIdYyY2D
+         AAyCUagm8BquLXLh9+mRd0+cuCcLlCIf6VO6LjJQpG7MF7yVh2HuCMDHP4YqnmvrkhLT
+         nQlayhBo0NS6DgzZ4knY55DrQLM0MRC6fIDyPWyjzQ3hJnZF+0/LirccUXYO/ypeNRVV
+         ZJvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=afydIjTboHZYNt7UhxBI9r/K8JAPb3TsRLb2cVHkJug=;
-        b=MFqUx/fiTn8shCWoIH9go7n7osN0y6L8iPO4VuEqQvZusa+uJZKCnJlQdSWABp1rMo
-         HkJXVlHeIW5e/5UVeBv1NGn1a0jeX0oWLoOsjGD6iUBGdfIGi2HlrDhZ8KGN6D3KRIuC
-         0SQsIVN6YLnOo6PFyljTsQM7dY1s2vZHLYkViIiUlIN+jiHv5gHXBfMEokRMW4yMofJx
-         56dlhtDHwqafdN2aqgAFAZlh1Q0t36iKenJ5MzRVty1feTmWI0NpBbTu/cPCSZ2oAlba
-         XQiH+hmG/+ruyRg/Q95/ppKP8x0l8Q4JGNRQqS+NLCeB30bClf3tONXpjD9yiF/c4HXq
-         w1Qg==
-X-Gm-Message-State: AOAM533LMOFdxjDbl7J7YuforbbbVVJmabvdYtTqRDQnrZ64yl1LqiDz
-        Q5DwJ7PONpz6Szg8dwGyopZhv2aQZTVt
-X-Google-Smtp-Source: ABdhPJyo+erd0t2C9lhJVscGgivAL6+qxWCusKgWAQe95FLVOrO+xKnIT46IU+7Udx+HnT9zbSiEY+fCjQv8
-Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
-X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
- (user=maskray job=sendgmr) by 2002:a05:6214:12ab:: with SMTP id
- w11mr12230114qvu.8.1611780963780; Wed, 27 Jan 2021 12:56:03 -0800 (PST)
-Date:   Wed, 27 Jan 2021 12:56:00 -0800
-In-Reply-To: <20210125172956.j2prlchhqwfcgzuc@google.com>
-Message-Id: <20210127205600.1227437-1-maskray@google.com>
-Mime-Version: 1.0
-References: <20210125172956.j2prlchhqwfcgzuc@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v4] x86: Treat R_386_PLT32 as R_386_PC32
-From:   Fangrui Song <maskray@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Michael Matz <matz@suse.de>, Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h/5giWFO3wXBwHEfC55BSYMxpJoJpAHOtOFoV5lHHRA=;
+        b=frxsy5xWPjlKiK1YGl3Qe1d+jc2ZwmPTj8qLE6sE3kSzp53XlpnxFDKwXzftSrdOqi
+         Xw8R4qOPYd6Ov/aFOHGSHJb9Xj4i3PGOdCbnQ3a0A85KIMqeQfJ47qJSnt8/QPG4RFBG
+         GTwwAz0r3TG17ZBv1RvQh9ff4jOUBr4IhZsn0R7zTXSEzWvns04KKSD6N0a1iM0F01EZ
+         T0YDnZUmBfkbdryGBIjftUtKNsxRFUm+ONWtIrCd7k447Mgamern1e/z8FSaEHW25DXf
+         z8YAlIMnG7hs1HuM9d56VqD40JbzwnqUfsuZsVIAZ6k4CdarXat7K9h9P8Y+EmpKEbSe
+         6g1w==
+X-Gm-Message-State: AOAM533on4bcdUKhoHS8kE3UAE0Rka9LB48z5z1ZGLBmhHG5ZoW2MeKx
+        mSj33anCB3uu4TvTKWtHrrrNfzfE2L8B/3GbwrADAg==
+X-Google-Smtp-Source: ABdhPJzI9VMOhe2Vm3gxoArLG691jzZ+q1LVeqHx82wJThfCmBid7tvx1tL8lNW4pOrJLIQqXv1m5Swfob8ImGMF1mM=
+X-Received: by 2002:a05:6808:8fa:: with SMTP id d26mr4522331oic.6.1611781041985;
+ Wed, 27 Jan 2021 12:57:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
+ <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+ <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
+ <20201023031433.GF23681@linux.intel.com> <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
+ <CALMp9eQ8C0pp5yP4tLsckVWq=j3Xb=e4M7UVZz67+pngaXJJUw@mail.gmail.com>
+ <f40e5d23-88b6-01c0-60f9-5419dac703a2@redhat.com> <CALMp9eRGBiQDPr1wpAY34V=T6Jjij_iuHOX+_-QQPP=5SEw3GQ@mail.gmail.com>
+ <4463f391-0a25-017e-f913-69c297e13c5e@redhat.com> <CALMp9eRnjdJtmU9bBosGNAxa2pvMzB8mHjtbYa-yb2uNoAkgdA@mail.gmail.com>
+ <CALMp9eR2ONSpz__H2+ZpM4qqT7FNowNwOfe4x9o-ocfhwRnEhw@mail.gmail.com>
+In-Reply-To: <CALMp9eR2ONSpz__H2+ZpM4qqT7FNowNwOfe4x9o-ocfhwRnEhw@mail.gmail.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 27 Jan 2021 12:57:10 -0800
+Message-ID: <CALMp9eTyoVwvkc6YH9oBPP74dABJmUsA0Gz98+O+5kANHobWbQ@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is similar to commit b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as
-R_X86_64_PC32"), but for i386.  As far as Linux kernel is concerned,
-R_386_PLT32 can be treated the same as R_386_PC32.
+On Wed, Jan 20, 2021 at 1:16 PM Jim Mattson <jmattson@google.com> wrote:
+>
+> On Fri, Jan 15, 2021 at 11:35 AM Jim Mattson <jmattson@google.com> wrote:
+> >
+> > On Fri, Oct 23, 2020 at 10:43 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > >
+> > > On 23/10/20 19:23, Jim Mattson wrote:
+> > > >> The information that we need is _not_ that provided by the advanced
+> > > >> VM-exit information (or by a page walk).  If a page is neither writable
+> > > >> nor executable, the advanced information doesn't say if the injected #PF
+> > > >> should be a W=1 or a F=1 fault.  We need the information in bits 0..2 of
+> > > >> the exit qualification for the final access, which however is not
+> > > >> available for the paging-structure access.
+> > > >>
+> > > > Are you planning to extend the emulator, then, to support all
+> > > > instructions? I'm not sure where you are going with this.
+> > >
+> > > I'm going to fix the bit 8=1 case, but for bit 8=0 there's not much that
+> > > you can do.  In all likelihood the guest is buggy anyway.
+> >
+> > Did this drop off your radar? Are you still planning to fix the bit8=1
+> > case to use advanced EPT exit qualification information? Or did I just
+> > miss it?
+>
+> Paolo,
+> If you're not working on this, do you mind if I ask Aaron to take a look at it?
 
-R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types which can
-only be used by branches. If the referenced symbol is defined
-externally, a PLT will be used.
-R_386_PC32/R_X86_64_PC32 are PC-relative relocation types which can be
-used by address taking operations and branches. If the referenced symbol
-is defined externally, a copy relocation/canonical PLT entry will be
-created in the executable.
-
-On x86-64, there is no PIC vs non-PIC PLT distinction and an
-R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
-`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
-This avoids canonical PLT entries (st_shndx=0, st_value!=0).
-
-On i386, there are 2 types of PLTs, PIC and non-PIC. Currently the
-GCC/GNU as convention is to use R_386_PC32 for non-PIC PLT and
-R_386_PLT32 for PIC PLT. Copy relocations/canonical PLT entries are
-possible ABI issues but GCC/GNU as will likely keep the status quo
-because (1) the ABI is legacy (2) the change will drop a GNU ld
-diagnostic for non-default visibility ifunc in shared objects.
-https://sourceware.org/bugzilla/show_bug.cgi?id=27169
-
-clang-12 -fno-pic (since
-https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
-can emit R_386_PLT32 for compiler generated function declarations,
-because preventing canonical PLT entries is weighed over the rare ifunc
-diagnostic.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1210
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-
----
-Change in v2:
-* Improve commit message
----
-Change in v3:
-* Change the GCC link to the more relevant GNU as link.
-* Fix the relevant llvm-project commit.
----
-Change in v4:
-* Improve comments and commit message
----
- arch/x86/kernel/module.c |  1 +
- arch/x86/tools/relocs.c  | 12 ++++++++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index 34b153cbd4ac..5e9a34b5bd74 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -114,6 +114,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
- 			*location += sym->st_value;
- 			break;
- 		case R_386_PC32:
-+		case R_386_PLT32:
- 			/* Add the value, subtract its position */
- 			*location += sym->st_value - (uint32_t)location;
- 			break;
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index ce7188cbdae5..1c3a1962cade 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -867,9 +867,11 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
- 	case R_386_PC32:
- 	case R_386_PC16:
- 	case R_386_PC8:
-+	case R_386_PLT32:
- 		/*
--		 * NONE can be ignored and PC relative relocations don't
--		 * need to be adjusted.
-+		 * NONE can be ignored and PC relative relocations don't need
-+		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
-+		 * be treated the same way as R_386_PC32.
- 		 */
- 		break;
- 
-@@ -910,9 +912,11 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
- 	case R_386_PC32:
- 	case R_386_PC16:
- 	case R_386_PC8:
-+	case R_386_PLT32:
- 		/*
--		 * NONE can be ignored and PC relative relocations don't
--		 * need to be adjusted.
-+		 * NONE can be ignored and PC relative relocations don't need
-+		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
-+		 * be treated the same way as R_386_PC32.
- 		 */
- 		break;
- 
--- 
-2.30.0.280.ga3ce27912f-goog
-
+Ugh. The advanced EPT exit qualification contains nothing useful here,
+AFAICT. It only contains x86 page protection information--nothing
+about the access itself.
