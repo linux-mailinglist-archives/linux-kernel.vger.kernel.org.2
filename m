@@ -2,152 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C6B3060D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A2A3060E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237091AbhA0QSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235395AbhA0QQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:16:16 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DF6C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:15:28 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id q67so2729997ybg.19
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:15:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=9Xv60zVJdPCczqkiRxegMesI9/uXHmAEZHHrmplL1fM=;
-        b=cVjd1wyoIvpXTMR4bPebeDTtMe139pQg6Wa7VaGTxksODku3ExYKVjBYZ6K0bOKjzI
-         bvqP6vAWovpeMRFmcg+7WffIPRoHkZKhTNX+c8fQfIcYjuLInGCZkojObUExOqjK/wJ1
-         VMG1DUU0CYg28ug47YripMY+WUH5knRtVZfKW3/oIhNtL3AD0+Iv2gtrPxQvBMoFsfUq
-         xuaooUZCrVsbefjPisTntTed6/5heZKc0JX/iEuJOvh9rK8QCUIPslHTGkRZwwLARad0
-         OI0oS3+VxNZXD4dajHNoYAlhPZaIYcE0AEVBvoVtxEUXYV2gsfqofKmfNIlG0JEkcvod
-         LuAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=9Xv60zVJdPCczqkiRxegMesI9/uXHmAEZHHrmplL1fM=;
-        b=oaDwAz/QQJC9xMWV58lOgM0FKBcx9X284SuG2mhNrYkVVwZNKaGtesd0FwolGd2TOC
-         Ijda5wwSGh//rKFgSXohduEopD41BczHYQpvcbSCQimp9n4B9PjYh0r5bjjtI6nt3L5/
-         RmC0K0PK4fyjwkJypQg+jBqG+KI1nx96iFaqhDfXgzuOfl+hP7stvH47UriGLgWRSHHS
-         TWt9zXkjp7l3PitNM9PO4NbLLNlSnQbN+FsjJCdaiG/aFxHg0IwhZAKFOUBL3w2enN1s
-         g4FOWA2W6FmHEzF6vON220v1T/db/woCe2Iatkp8tIwo/TTvZAzG6GeImi3xkO78zcRs
-         VTvQ==
-X-Gm-Message-State: AOAM531s9d8yNOmzKE0qpeU9JKi50zzGAcigeQRhKgz5nAw4VYokl5pe
-        fDj8WGS/4RqiYywvaXndsH3hF40pwcg=
-X-Google-Smtp-Source: ABdhPJxOVxm2ehXpuCNpDGvZJ1wvSjsZNmmaqdqSiL7GiFVkCM8pySxbBDfTAkaDvqqyjKZCrZsktPlhq8o=
-Sender: "pgonda via sendgmr" <pgonda@pgonda1.kir.corp.google.com>
-X-Received: from pgonda1.kir.corp.google.com ([2620:0:1008:11:f693:9fff:fef4:e3a2])
- (user=pgonda job=sendgmr) by 2002:a25:f20b:: with SMTP id i11mr17672537ybe.273.1611764127400;
- Wed, 27 Jan 2021 08:15:27 -0800 (PST)
-Date:   Wed, 27 Jan 2021 08:15:24 -0800
-Message-Id: <20210127161524.2832400-1-pgonda@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH V2] Fix unsynchronized access to sev members through svm_register_enc_region
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S236044AbhA0QTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:19:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236142AbhA0QQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 11:16:36 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A755B20789;
+        Wed, 27 Jan 2021 16:15:48 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 11:15:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+Subject: Re: [PATCH] sched/tracing: Reset critical timings on scheduling
+Message-ID: <20210127111547.5c33f1c5@gandalf.local.home>
+In-Reply-To: <YBFQbF/BqmjXFAd0@hirez.programming.kicks-ass.net>
+References: <20210126135718.5bf8d273@gandalf.local.home>
+        <YBFQbF/BqmjXFAd0@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Grab kvm->lock before pinning memory when registering an encrypted
-region; sev_pin_memory() relies on kvm->lock being held to ensure
-correctness when checking and updating the number of pinned pages.
+On Wed, 27 Jan 2021 12:37:16 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Add a lockdep assertion to help prevent future regressions.
+> And that's just really daft.. why are you adding two unconditional
+> function calls to __schedule() that are a complete waste of time
+> 99.999999% of the time?
+> 
+> If anything, this should be fixed in schedule_idle().
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: x86@kernel.org
-Cc: kvm@vger.kernel.org
-Cc: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Fixes: 1e80fdc09d12 ("KVM: SVM: Pin guest memory when SEV is active")
-Signed-off-by: Peter Gonda <pgonda@google.com>
+Note, those two unconditional calls are only called when you have the
+preempt or irqs off latency tracers enabled (which causes overhead on every
+preempt_enable/disable and irqs enabled/disabled as well, and why we tell
+people not to compile them in if you care about performance).
 
-V2
- - Fix up patch description
- - Correct file paths svm.c -> sev.c
- - Add unlock of kvm->lock on sev_pin_memory error
+When irqs and preempt latency tracers are not enabled, we have this:
 
-V1
- - https://lore.kernel.org/kvm/20210126185431.1824530-1-pgonda@google.com/
+# define stop_critical_timings() do { } while (0)
+# define start_critical_timings() do { } while (0)
 
----
- arch/x86/kvm/svm/sev.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+static inline void reset_critical_timings(void) {
+	stop_critical_timings();
+	start_critical_timings();
+}
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index c8ffdbc81709..b80e9bf0a31b 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -342,6 +342,8 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
- 	unsigned long first, last;
- 	int ret;
- 
-+	lockdep_assert_held(&kvm->lock);
-+
- 	if (ulen == 0 || uaddr + ulen < uaddr)
- 		return ERR_PTR(-EINVAL);
- 
-@@ -1119,12 +1121,20 @@ int svm_register_enc_region(struct kvm *kvm,
- 	if (!region)
- 		return -ENOMEM;
- 
-+	mutex_lock(&kvm->lock);
- 	region->pages = sev_pin_memory(kvm, range->addr, range->size, &region->npages, 1);
- 	if (IS_ERR(region->pages)) {
- 		ret = PTR_ERR(region->pages);
-+		mutex_unlock(&kvm->lock);
- 		goto e_free;
- 	}
- 
-+	region->uaddr = range->addr;
-+	region->size = range->size;
-+
-+	list_add_tail(&region->list, &sev->regions_list);
-+	mutex_unlock(&kvm->lock);
-+
- 	/*
- 	 * The guest may change the memory encryption attribute from C=0 -> C=1
- 	 * or vice versa for this memory range. Lets make sure caches are
-@@ -1133,13 +1143,6 @@ int svm_register_enc_region(struct kvm *kvm,
- 	 */
- 	sev_clflush_pages(region->pages, region->npages);
- 
--	region->uaddr = range->addr;
--	region->size = range->size;
--
--	mutex_lock(&kvm->lock);
--	list_add_tail(&region->list, &sev->regions_list);
--	mutex_unlock(&kvm->lock);
--
- 	return ret;
- 
- e_free:
--- 
-2.30.0.280.ga3ce27912f-goog
+which is basically a nop.
 
+If you still care about the overhead to schedule when these tracers are
+enabled (which is not much considered the overhead they cause elsewhere), we
+can make it more specific to cpu idle.
+
+I was worried that this could happen more than just in cpu idle, and added
+it to the scheduler directly to make sure I got any other case.
+
+-- Steve
