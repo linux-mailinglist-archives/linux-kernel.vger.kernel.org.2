@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A34306515
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6CC306528
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhA0U0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        id S233042AbhA0U3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232806AbhA0UZp (ORCPT
+        with ESMTP id S232955AbhA0U0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:25:45 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32625C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:25:05 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id gx1so2103380pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:25:05 -0800 (PST)
+        Wed, 27 Jan 2021 15:26:46 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF16C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:25:41 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id a12so3077978qkh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:25:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Rlmk7Ov7nnfuj7pxVxzad40PQjveYN2yuMGAEFRPmoc=;
-        b=a3sslUf17Pg+mFGci5W5qE0vZF4WPlKgjxlag/9I/0XnjAgEutgvfYqLiBjFRHl08R
-         tbXie8Ny+1Q6Z+E4HtfyYpbtZMFSlMd4skJnUeeYdfs/K0sW+jwHwOJ+26w86eS/EJyr
-         cQ3T5q330UmYaKwhgv55l2IAteSHPcIXyxfEdhu7jmgf0n41AGoKGZqprjElpr9QT4uA
-         UXt91ZOPxho7VUJj7MggyieaL4qkByeQeESC5L3vANqmk2Vr+sjAmORpyo+YFnXtnsAs
-         RAS6s1ls6OlbFHAA37DOhl7qULKKMsqiZ/rQmMKPHve0XJ4Ubm9zlJWiqhp9rcmSCbA4
-         Zocw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZoBtRS8YOTJzu29qNFHhNioiABAFU8p2auHgs06phc=;
+        b=dOg76lBVPdgpL3K73aYKg8S9kQsTuB3QhYLxcfe3hHPcoKGHrOFvkQQia+LkpUWZWb
+         0UIi0DLfFKVMkuPiul/U7qPVKpWdv7lvmz0i9DXyH/ih3tJxljDye/cpDcIc9GI0zexo
+         S+eAKL4OYxBDNi0rUvQiNCjudtuTDR0XWN6iyVWuzKXiZMxYHnonmBnrJ63QJ7yVO16a
+         apfU0eyuMBOxkwtaArHphf7XOWX72sDIS8qKoheNOO19geIOJEe0pEdEOVCd2LjrdoyH
+         Fw8LoVKhRxn919ILiOjY/WckYtg/hGwZXS9ZUQLeNT57uyhAIH6ybrrkNPmSclOMZOyS
+         wGWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Rlmk7Ov7nnfuj7pxVxzad40PQjveYN2yuMGAEFRPmoc=;
-        b=SoccEFc6mzzFZpsrHJu9pc+5+iXK7nmzLeXGO5XpFWInR9tPq0DFqlNvokCwWBTKj7
-         t+FoqEdmHVKrGP5rzcQto4y35fTeE80dlZpunjp8SZ1SeH6Bc2XzCV291xq9jBSDn/Tx
-         p1GEVdyYCNiptJ/hblWiZ2U1H3Pbctdd+fglOayRrKZrX4T0m9boHPXAF8bep6Ofz5A7
-         ZznoXWkbR+0Qoe1Dqa2CAk6RZJsHlc57GVfge880ejENjXJhVe4iVm5yDpii7+3riJE1
-         d2vwcPrlgZq8Q6maxxjxbjBlPn/YWvRLhWo6OcPIH4fMyF00ezsgf0/quWL/+M15MgNQ
-         mVTA==
-X-Gm-Message-State: AOAM531AQ1r5xNmUBr6ky+MqDhASlNMJis5xieEvugj+g+KTDzHWac9U
-        YvwGPHGKPV7VTccFsG/6YZw=
-X-Google-Smtp-Source: ABdhPJy+Rh6i6axNCsJNnX+AeXbpZY+kL7xAt5wrZmV/6qH/4J8qsaIRq4W5651fRwDaQ4qtEisGZg==
-X-Received: by 2002:a17:90a:d487:: with SMTP id s7mr7688196pju.124.1611779104714;
-        Wed, 27 Jan 2021 12:25:04 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id b18sm3377500pfi.173.2021.01.27.12.25.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 12:25:03 -0800 (PST)
-Subject: Re: [PATCH v7 1/2] ARM: PLT: Move struct plt_entries definition to
- header
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-References: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
- <20210127110944.41813-2-alexander.sverdlin@nokia.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2c256ea6-b9c7-610c-9b91-ca625a77393b@gmail.com>
-Date:   Wed, 27 Jan 2021 12:25:02 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZoBtRS8YOTJzu29qNFHhNioiABAFU8p2auHgs06phc=;
+        b=jiUUYWzeuReoys2+P1Yr4nq4YHeUNj39erCIeF/5FsT8aJUvNPnPzRI8PQROM2WKLj
+         zhyFqNscPcNkoKOZEC28PKecSFtD8KSG+lO4IptWLls5UMY+qtINb7Ffb60yHICinPZH
+         9AWpK4BKyrZVrkUtyzwXd5LJ1aXwZE9YZh5FWOQTcxoObfLZ5qgkIOz2gOXp5p8aP2Y7
+         f/jowhoIFstorD2AzH2yTpYZYrnwBUl2xFYx8XoTwGqLBURdplOyllpWPoGNus2RyGeR
+         qA3SkwSHP3yesPFvr8RfJTY8TdF8u/blq7Nsj2+MbKrkBTdFJMaE10l7dBY5jG45oCu4
+         wjTw==
+X-Gm-Message-State: AOAM532Vy4WqwsiDmHKMhLYy98WapCF6AUR4K1/df4CXRRWSWDSTZIBG
+        ShnM34M0+JHK6BP15eJj2TPnByPRMrACH/JKlU3az8WnX35lvjpv
+X-Google-Smtp-Source: ABdhPJzrXGIOvM2o8iMF0bkxogCRV5D8LhWKGv10+6bJZ18hS+cdFs/W7ewbDbyxyJtymoETwoc1+36mu6cH94Vad+w=
+X-Received: by 2002:a37:7003:: with SMTP id l3mr12574546qkc.467.1611779140267;
+ Wed, 27 Jan 2021 12:25:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210127110944.41813-2-alexander.sverdlin@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210121175502.274391-1-minchan@kernel.org> <20210121175502.274391-4-minchan@kernel.org>
+ <CALAqxLU3yU8e006G0W-mSBLogWAru6jOJcBbuH5wFHoi1JitPA@mail.gmail.com>
+In-Reply-To: <CALAqxLU3yU8e006G0W-mSBLogWAru6jOJcBbuH5wFHoi1JitPA@mail.gmail.com>
+From:   Hridya Valsaraju <hridya@google.com>
+Date:   Wed, 27 Jan 2021 12:25:04 -0800
+Message-ID: <CA+wgaPNoRm7GrUNm4wPV8BkWZT4KhqF5WHUb7f1U5Xz3zeSxGg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] dt-bindings: reserved-memory: Make DMA-BUF CMA
+ heap DT-configurable
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hyesoo Yu <hyesoo.yu@samsung.com>, david@redhat.com,
+        Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        KyongHo Cho <pullip.cho@samsung.com>,
+        John Dias <joaodias@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 25, 2021 at 11:07 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Thu, Jan 21, 2021 at 9:55 AM Minchan Kim <minchan@kernel.org> wrote:
+> >  .../reserved-memory/dma_heap_chunk.yaml       | 56 +++++++++++++++++++
+> >  1 file changed, 56 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml b/Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
+> > new file mode 100644
+> > index 000000000000..00db0ae6af61
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/reserved-memory/dma_heap_chunk.yaml
+> > @@ -0,0 +1,56 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/reserved-memory/dma_heap_chunk.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Device tree binding for chunk heap on DMA HEAP FRAMEWORK
+> > +
+> > +description: |
+> > +  The DMA chunk heap is backed by the Contiguous Memory Allocator (CMA) and
+> > +  supports bulk allocation of fixed size pages.
+> > +
+> > +maintainers:
+> > +  - Hyesoo Yu <hyesoo.yu@samsung.com>
+> > +  - John Stultz <john.stultz@linaro.org>
+> > +  - Minchan Kim <minchan@kernel.org>
+> > +  - Hridya Valsaraju<hridya@google.com>
+> > +
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - dma_heap,chunk
+> > +
+> > +  chunk-order:
+> > +    description: |
+> > +            order of pages that will get allocated from the chunk DMA heap.
+> > +    maxItems: 1
+> > +
+> > +  size:
+> > +    maxItems: 1
+> > +
+> > +  alignment:
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - size
+> > +  - alignment
+> > +  - chunk-order
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    reserved-memory {
+> > +        #address-cells = <2>;
+> > +        #size-cells = <1>;
+> > +
+> > +        chunk_memory: chunk_memory {
+> > +            compatible = "dma_heap,chunk";
+> > +            size = <0x3000000>;
+>
+> Hey Minchan,
+>   Looking closer here, would it make more sense to document the "reg =
+> <>" parameter here as well instead of just "size = <>"?
+>
+> That way the address of the region could be explicitly specified (for
+> instance, to ensure the CMA region created is 32bit addressable). And
+> more practically, trying to satisfy the base address alignment checks
+> in the final patch when its set dynamically may require a fair amount
+> of luck  - I couldn't manage it in my own testing on the hikey960 w/o
+> resorting to reg=  :)
+>
+> It does look like the RESERVEDMEM_OF_DECLARE() logic already supports
+> this, so it's likely just a matter of documenting it here?
 
+Thank you John, yes, that makes sense. We will add the 'reg' parameter
+as well when we send out the next version.
 
-On 1/27/2021 3:09 AM, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> 
-> No functional change, later it will be re-used in several files.
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Regards,
+Hridya
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>
+> thanks
+> -john
