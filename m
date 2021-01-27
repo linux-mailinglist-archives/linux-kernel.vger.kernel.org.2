@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8772C305DC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A632B305DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhA0OCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:02:19 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:33026 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbhA0OAz (ORCPT
+        id S233368AbhA0ODQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:03:16 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:36834 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232860AbhA0OBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:00:55 -0500
-Received: by mail-ot1-f52.google.com with SMTP id 63so1743850oty.0;
-        Wed, 27 Jan 2021 06:00:39 -0800 (PST)
+        Wed, 27 Jan 2021 09:01:05 -0500
+Received: by mail-oi1-f178.google.com with SMTP id d18so2220639oic.3;
+        Wed, 27 Jan 2021 06:00:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=h/XP4S0QrgFu5lhfiNjNNTiDPvZSTXVhFOBBdSSJhI0=;
-        b=C89ygd9sjCLcEgKX0k+phEmwX1UAZMBnc605QIyNAY5zt3B7ubmE3BczQjBLErSqyI
-         b+xqh/ec7LlM/jodXS/etFG+gkN/1DLIvalWf5zOcmsLFJOK/9WVVO14fbP9SZfvg+b0
-         s/0QEqr7ShFRHWhJSVU5otQsSEBXJDIEvuiu3MBHENfS8FssumbPtjM22w+R0Pv+ylI6
-         YdvHyTxF4VwyMLCwduPY1GFbFjKohMleEHh8TzIUThohEhQsPjt278mJSfs11El7hscd
-         vzwVL5j3T216N/6FIkwqEmPkECgMGKd9uveCTXYC6O7TnhQwY3gOEc+9ua7RVZL2HRVa
-         nx4g==
-X-Gm-Message-State: AOAM533h5pgsRIdRJADJckCupcdAH3cNCk8IKW3AL//7/aGcqYFsR+lA
-        yaJn1aIOsCxnt46L/NHYsg==
-X-Google-Smtp-Source: ABdhPJwG1SJ4BiGFh1W5LAqX7QPY43/jyoKNzbqEUEzFLpeeFKXUzWOwYN3vIUuV4fazsG3ZMdt8tg==
-X-Received: by 2002:a9d:5cc3:: with SMTP id r3mr8293768oti.286.1611756013636;
-        Wed, 27 Jan 2021 06:00:13 -0800 (PST)
+        bh=y/x7h2/Tlf0NCV9O9EgPMrRqhsMDU2V0T/uDOYfMhr0=;
+        b=bVuMm0RxfD5Z7tmIFZgilRhEtqUpY2d6q7X9EW29CWqKtwrdJLEQ4ocfr7h39+rnpU
+         8SP+YKbCCOxNct5IDodzQs+wNTL7OpQazmLaaGFGg6F4+N1vDXT64FO2jfDWCl6OFXFf
+         UpG1DAIWlLR37kJX2Ak2CRj3AH/vGVzzNIbdDKIHaTduT3ApDKACzjuL4kBYLvZTIgLd
+         2gQ8Tqyq3euh0UTHTk/xxPIh+HzmiFA2OJeUHVcASaHdMbwyv2n5Cd3d79og+byyr5gp
+         ryVKagc7rrjb7EgMNCvNKC5DTBO0iK3Qq8rzI6U4fGqIxCi6T/kNZgFNuOOXKyTaIlJ0
+         Hvog==
+X-Gm-Message-State: AOAM533mk7RP8Y+yCo5WqsUBbg0Tt70cUMr9wSOJNr17hBkUMbBO2Zqk
+        +zB0+m6eqFo9Ee3XYSTSP66Z0qf6sQ==
+X-Google-Smtp-Source: ABdhPJyuQObuCHMCQ4jgeoAWt/Yii6rkM96cP9bWT0FdrTRLZbrrQQOt/5i37+Ih/99k5vGKfoOUWg==
+X-Received: by 2002:aca:d14:: with SMTP id 20mr3343402oin.157.1611756024766;
+        Wed, 27 Jan 2021 06:00:24 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w11sm375352otl.13.2021.01.27.06.00.11
+        by smtp.gmail.com with ESMTPSA id s69sm436896oih.38.2021.01.27.06.00.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:00:12 -0800 (PST)
-Received: (nullmailer pid 1429681 invoked by uid 1000);
+        Wed, 27 Jan 2021 06:00:23 -0800 (PST)
+Received: (nullmailer pid 1429686 invoked by uid 1000);
         Wed, 27 Jan 2021 14:00:11 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     mgross@linux.intel.com
-Cc:     jassisinghbrar@gmail.com, palmerdabbelt@google.com,
-        dragan.cvetic@xilinx.com, devicetree@vger.kernel.org,
-        arnd@arndb.de, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        gregkh@linuxfoundation.org, markgross@kernel.org, corbet@lwn.net,
-        damien.lemoal@wdc.com, Paul Murphy <paul.j.murphy@intel.com>,
-        bp@suse.de, peng.fan@nxp.com, shawnguo@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210126054036.61587-7-mgross@linux.intel.com>
-References: <20210126054036.61587-1-mgross@linux.intel.com> <20210126054036.61587-7-mgross@linux.intel.com>
-Subject: Re: [PATCH v3 06/34] dt-bindings: Add bindings for Keem Bay VPU IPC driver
+Cc:     markgross@kernel.org, bp@suse.de, shawnguo@kernel.org,
+        Seamus Kelly <seamus.kelly@intel.com>,
+        Ryan Carnaghi <ryan.r.carnaghi@intel.com>,
+        palmerdabbelt@google.com, gregkh@linuxfoundation.org,
+        corbet@lwn.net, jassisinghbrar@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dragan.cvetic@xilinx.com, peng.fan@nxp.com, arnd@arndb.de,
+        paul.walmsley@sifive.com, robh+dt@kernel.org, damien.lemoal@wdc.com
+In-Reply-To: <20210126054036.61587-20-mgross@linux.intel.com>
+References: <20210126054036.61587-1-mgross@linux.intel.com> <20210126054036.61587-20-mgross@linux.intel.com>
+Subject: Re: [PATCH v3 19/34] xlink-core: Add xlink core device tree bindings
 Date:   Wed, 27 Jan 2021 08:00:11 -0600
-Message-Id: <1611756011.180359.1429680.nullmailer@robh.at.kernel.org>
+Message-Id: <1611756011.206606.1429685.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 21:40:08 -0800, mgross@linux.intel.com wrote:
-> From: Paul Murphy <paul.j.murphy@intel.com>
+On Mon, 25 Jan 2021 21:40:21 -0800, mgross@linux.intel.com wrote:
+> From: Seamus Kelly <seamus.kelly@intel.com>
 > 
-> Add DT bindings documentation for the Keem Bay VPU IPC driver.
+> Add device tree bindings for keembay-xlink.
 > 
 > Cc: Rob Herring <robh+dt@kernel.org>
 > Cc: devicetree@vger.kernel.org
 > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Paul Murphy <paul.j.murphy@intel.com>
-> Co-developed-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
+> Signed-off-by: Ryan Carnaghi <ryan.r.carnaghi@intel.com>
 > ---
->  .../soc/intel/intel,keembay-vpu-ipc.yaml      | 153 ++++++++++++++++++
->  1 file changed, 153 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+>  .../bindings/misc/intel,keembay-xlink.yaml    | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml:21:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml:21:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
 
-See https://patchwork.ozlabs.org/patch/1432168
+See https://patchwork.ozlabs.org/patch/1432165
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
