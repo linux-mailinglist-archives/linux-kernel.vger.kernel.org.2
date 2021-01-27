@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BBE305703
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ADA305704
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhA0JbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:31:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhA0J1e (ORCPT
+        id S235256AbhA0Jd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:33:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56329 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235309AbhA0JbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:27:34 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3F5C0613D6;
-        Wed, 27 Jan 2021 01:26:37 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id z21so1175732pgj.4;
-        Wed, 27 Jan 2021 01:26:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=VlZoZLBDHB4T/YMJIRvfZ215W20PBGmlP7rUa/kbeTE=;
-        b=Rx6L/dzb+PTIyI7DqI/ktCHUMBm59DVOBMgR7YEtBRsitAiGP0B3mtvfCX5iqklZhq
-         VXzl1QYGhSzgyS3d1UER9u9RkDlvCMnyGb0Z5wJKnXiBqh4pTGhN/E28k/apx6Z9imhW
-         c95BvtjoreLkwhzwlCPSurK+3AVgYTsvqT7/24d6ProSzBX+FM4w3DhX5ni4/r9yKq44
-         4ONeHfdbfLjPvWivYr0EP8gKpMebu2NmDwHyYnnKCLrt1QJK3eSmtGr7OcdxwmIrPBKG
-         OtSaLuaUZxmyHalSyJEP/bn/Uuw4+pIdhdWyORK2s7NmPPRTqIa9NxVY02LrEX3jCrbS
-         5sIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=VlZoZLBDHB4T/YMJIRvfZ215W20PBGmlP7rUa/kbeTE=;
-        b=Vk/NwHEKPua9JsXE5ilRfDsMNbKBteCTbWJsAb5xDbHswwQ6XSmxaLZiOhnNp+TG5c
-         s9gxzwyLklh2tPowN+4+Gb+RuRyO/icLJvwhOyH5zVU8kkCxPspP5vKsD22+KFnTYcfY
-         sZSrTTDTmoP42jNXBKckNqkj2thljDayM47cFkw29UfHHNGMRE+bw/1NCpsHsoQdr2zu
-         +jZ65TPl0r2sJlpAhusYyoqgLOVpXs7XhyKC9Wam1BEFkas0ygKNngBenAadcWq8o+zh
-         rzQbGeNRcKvQUBde5I4xahhGG+OfjOc8FtQckRFUDHhNO+L8uVtJ3uy5HKNFuVc7q8Ak
-         TCeg==
-X-Gm-Message-State: AOAM533+1OB36gA4sThMfGdNz7waORUfunnY21RrcuLluCh6Uemz8JVe
-        bLqqWkhIAqb9YlPYJc19Vb4=
-X-Google-Smtp-Source: ABdhPJxk9kiZWo3vZgXC5SEmEnufwVt5fJXqLZTuie25SOyDno9HYRBGpqPOmD+gQGQ5rRynQeJcsw==
-X-Received: by 2002:a65:4385:: with SMTP id m5mr10413483pgp.296.1611739597098;
-        Wed, 27 Jan 2021 01:26:37 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id a21sm1829002pgd.57.2021.01.27.01.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 01:26:36 -0800 (PST)
-Date:   Wed, 27 Jan 2021 17:26:31 +0800
-From:   carlis <zhangxuezhi3@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Colin King <colin.king@canonical.com>,
-        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
-        mh12gx2825@gmail.com, Stefano Brivio <sbrivio@redhat.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6] fbtft: add tearing signal detect
-Message-ID: <20210127172631.00001846@gmail.com>
-In-Reply-To: <CAMuHMdV5VxNBNV-UMswKKZmQRFUvG+pnBbOOW8XJT8pbbvmp5Q@mail.gmail.com>
-References: <1611732502-99639-1-git-send-email-zhangxuezhi3@gmail.com>
-        <CAMuHMdV5VxNBNV-UMswKKZmQRFUvG+pnBbOOW8XJT8pbbvmp5Q@mail.gmail.com>
-Organization: Tyzmig-ryrjum-8kedto
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Wed, 27 Jan 2021 04:31:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611739786;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ItSoLVGYUiCKrPAbo40LokW1ZKTdfq0+45C+lOgmDE=;
+        b=Ah3OMtDDA1j6z7MfpKCoZiS0XWHl8L4fXgAltk6M7aVDnXVYT5YikPNm9IycpG67aYC6ka
+        N8fgEzGQYnESfHTydnHa3Ne78godQeDt3CACV+GsM7ZnEuG6YQMighs4nEy6CRoa9Xl1fc
+        1D8TOine0a1i9hSgz9E4WqlD2zEPm/A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-ptvbeAz4MFSs7M6zZKZacw-1; Wed, 27 Jan 2021 04:29:42 -0500
+X-MC-Unique: ptvbeAz4MFSs7M6zZKZacw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 608A3801817;
+        Wed, 27 Jan 2021 09:29:40 +0000 (UTC)
+Received: from [10.36.114.237] (ovpn-114-237.ams2.redhat.com [10.36.114.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A87C85D9C6;
+        Wed, 27 Jan 2021 09:29:37 +0000 (UTC)
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
+ <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
+ <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
+ <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
+ <4c7a92f3-4c5a-c3c6-7fed-befed2f3d3cb@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+Message-ID: <8ad7d1d2-6d0a-1c3c-5c18-3d5b8ca5feb8@redhat.com>
+Date:   Wed, 27 Jan 2021 10:29:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <4c7a92f3-4c5a-c3c6-7fed-befed2f3d3cb@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 10:00:13 +0100
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On 27.01.21 05:06, Anshuman Khandual wrote:
+> 
+> 
+> On 1/25/21 2:43 PM, David Hildenbrand wrote:
+>> On 25.01.21 07:22, Anshuman Khandual wrote:
+>>>
+>>> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
+>>>> pfn_valid() asserts that there is a memblock entry for a given pfn without
+>>>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
+>>>> that they do not have memblock entries. Hence memblock_is_map_memory() will
+>>>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
+>>>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
+>>>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
+>>>> into the system via memremap_pages() called from a driver, their respective
+>>>> memory sections will not have SECTION_IS_EARLY set.
+>>>>
+>>>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
+>>>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
+>>>> for firmware reserved memory regions. memblock_is_map_memory() can just be
+>>>> skipped as its always going to be positive and that will be an optimization
+>>>> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
+>>>> normal memory too will not have SECTION_IS_EARLY set for their sections.
+>>>>
+>>>> Skipping memblock_is_map_memory() for all non early memory sections would
+>>>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
+>>>> performance for normal hotplug memory as well.
+>>>>
+>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>> Cc: Will Deacon <will@kernel.org>
+>>>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>>>> Cc: Robin Murphy <robin.murphy@arm.com>
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>
+>>> Hello David/Mike,
+>>>
+>>> Given that we would need to rework early sections, memblock semantics via a
+>>> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
+>>> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
+>>> which fixes a problem (and improves performance) can be merged first. After
+>>> that, I could start working on the proposed rework. Could you please let me
+>>> know your thoughts on this. Thank you.
+>>
+>> As I said, we might have to throw in an pfn_section_valid() check, to
+>> catch not-section-aligned ZONE_DEVICE ranges (I assume this is possible
+>> on arm64 as well, no?).
+> 
+> pfn_section_valid() should be called only for !early_section() i.e normal
+> hotplug and ZONE_DEVICE memory ? Because early boot memory should always
+> be section aligned.
 
-> Hi Carlis,
-> 
-> On Wed, Jan 27, 2021 at 9:52 AM Carlis <zhangxuezhi3@gmail.com> wrote:
-> > From: zhangxuezhi <zhangxuezhi1@yulong.com>
-> >
-> > For st7789v ic,add tearing signal detect to avoid screen tearing
-> >
-> > Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>  
-> 
-> Thanks for your patch!
-> 
-> > --- a/drivers/staging/fbtft/fb_st7789v.c
-> > +++ b/drivers/staging/fbtft/fb_st7789v.c  
-> 
-> > @@ -82,6 +111,34 @@ enum st7789v_command {
-> >   */
-> >  static int init_display(struct fbtft_par *par)
-> >  {
-> > +       int rc;
-> > +       struct device *dev = par->info->device;
-> > +
-> > +       par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
-> > GPIOD_IN);
-> > +       if (IS_ERR(par->gpio.te)) {
-> > +               rc = PTR_ERR(par->gpio.te);
-> > +               pr_err("Failed to request te gpio: %d\n", rc);
-> > +               par->gpio.te = NULL;  
-> 
-> Errors (e.g. -EPROBE_DEFER) should be propagated upstream,
-> not ignored.
-> 
-> > +       }
-> > +       if (par->gpio.te) {
-> > +               init_completion(&spi_panel_te);
-> > +               mutex_init(&te_mutex);
-> > +               rc = devm_request_irq(dev,
-> > +                                     gpiod_to_irq(par->gpio.te),
-> > +                                    spi_panel_te_handler,
-> > IRQF_TRIGGER_RISING,
-> > +                                    "TE_GPIO", par);
-> > +               if (rc) {
-> > +                       pr_err("TE request_irq failed.\n");
-> > +                       devm_gpiod_put(dev, par->gpio.te);
-> > +                       par->gpio.te = NULL;  
-> 
-> Errors (e.g. -EPROBE_DEFER) should be propagated upstream,
-> not ignored.
-> 
-> > +               } else {
-> > +
-> > disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> > +                       pr_info("TE request_irq completion.\n");
-> > +               }
-> > +       } else {
-> > +               pr_info("%s:%d, TE gpio not specified\n",
-> > +                       __func__, __LINE__);
-> > +       }
-> >         /* turn off sleep mode */
-> >         write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
-> >         mdelay(120);  
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+Well, at least not on x86-64 you can have early sections intersect with 
+ZONE_DEVICE memory.
 
-hi,i will fix in the patch v7
+E.g., have 64MB boot memory in a section. Later, we add ZONE_DEVICE 
+memory which might cover the remaining 64MB. For pfn_valid() on x86-64, 
+we always return "true" for such sections, because we always have the 
+memmap for the whole early section allocated during boot. So, there it's 
+"simple".
+
+Now, arm64 seems to discard some parts of the vmemmap, so the remaining 
+64MB in such an early section might not have a memmap anymore? TBH, I 
+don't know.
+
+Most probably only performing the check for
+!early_section() is sufficient on arm64, but I really can't tell as I 
+don't know what we're actually discarding and if something as described 
+for x86-64 is even possible on arm64.
+
+We should really try to take the magic out of arm64 vmemmap handling.
+
+> 
+>>
+>> Apart from that, I'm fine with a simple fix upfront, that can be more
+>> easily backported if needed. (Q: do we? is this stable material?)
+>>
+> 
+> Right, an upfront fix here would help in backporting. AFAICS it should be
+> backported to the stable as pte_devmap and ZONE_DEVICE have been around
+> for some time now. Do you have a particular stable version which needs to
+> be tagged in the patch ?
+
+I haven't looked yet TBH. I guess it is broken since ZONE_DEVICE was 
+enabled on arm64?
+
+-- 
+Thanks,
+
+David / dhildenb
+
