@@ -2,125 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8DA305F04
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD989305F18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhA0PCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbhA0PA2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:00:28 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C650C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:54:45 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id d6so2011254ilo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:54:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sTdyNYkze+hI+OFRZCPwqiZbewY8o758U81yg52mX4M=;
-        b=q8pB9egRttgWsLnscO5G4bYRpXSZAEr3Czk7HDYKghXyYGkiR66u90ioZFw7tahaDB
-         CRGEkXinK6SxoxNHkCZVsQBD9lx8K9iIfwCaFFI2JewouxfQOryXga8qneDuVLCvyMeh
-         arIMCS6QW8H6wS49vnLZvbTB7u3t3Mhk5LAJtuxVabZRSEafRpP5DAE2ABVKbfqAhSIw
-         Xh3Ro1U23HmvBdQsN9sAkGVktk4YcULQJndthgOAd5l6CIazx6bo6unngx1qigZFlvft
-         OABmeGgEvmJAJFBTkgBVz4lUcIweqDeHE4Hclkon06Fyfy36GeiimnRdN+9yrwYyhaSd
-         Yv0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sTdyNYkze+hI+OFRZCPwqiZbewY8o758U81yg52mX4M=;
-        b=g3kIMPDv4RftVxZRSVqjYNdkcLzV918qsMx0X7wVMTA58ZXrwE6Ngxi3R48eu9yM22
-         DZI3TGmT4HYZfqG4MxpkQ/okOKxbkSYG7QYM3wrAsCVn6JhzOFFUosDqgtCE5gNzq++Z
-         kxUtSgl4Lz4CIjGi0hrxfB5cZcq932wzUGy5XlUsrR6kKTHkv1xnTV36AGqLJ1rvsJMU
-         Ocmrh92V2aFTMDtEyjeUBs+/iNNU59vkRwjnSBmLjKENyo0XqiTl/YJSe1jFuROUAO22
-         Bgi8ioFkxIFRwzEDepyWaYx45t6lwIJeMGXwJwlFXlq1kw7PZejsZN2IjswV6kuvD7Sj
-         OzJg==
-X-Gm-Message-State: AOAM533HAmSrDGidpi0JVLQIXn1Gv/pwbWOaLu7oQyosMJCS++OEfBG4
-        SYViAFOFrDk2L6vzXvUr/CIWxheKEo6CyX4UoJXI4g==
-X-Google-Smtp-Source: ABdhPJym5YHdk7S2GBOskLrJaJULn2+Xd5bDT5AbmWnQMa5r6J68lPTVZvdEBa+glr+j4eSggYZNORX6z7pePV/Rzf4=
-X-Received: by 2002:a92:d8c2:: with SMTP id l2mr9200045ilo.216.1611759284256;
- Wed, 27 Jan 2021 06:54:44 -0800 (PST)
+        id S235581AbhA0PHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:07:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235179AbhA0PAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:00:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5FE42168B;
+        Wed, 27 Jan 2021 14:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611759575;
+        bh=JM2jUIXgJm/G0mRyqIdPww2k7oyM3aT7ynnTGBy/5GQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D7ImwHZtNvYrHEqzVN1Yj5Da81j3XEjjWtSacJTgE9jeCggYRPnLAMwKfSPVNqgW5
+         OgKANGuuK+EFvNmYmBmoys7jHK/2Ier7ZHypTVwgvxxepOVKlFGgsyYs4e2pJT9oTN
+         TnWtzR07vH1LKmuDT7unROFVfZNLKRc9t/7o7dGf4Dc+ajrFYPU2mYUwwvUR3GmCqA
+         ezOk83NQFInlrrMHwqBvTz3FmQyx7ti0Kswu5oQaZKAb+hedFj9sVKcZMArUJiRAEG
+         oPp2G1Qodd3mPxwYdUNW8MQplqfgJiTjRTzE4saLZvUhf2PjCjpuFqpZJmP4txABTQ
+         myPquQLIqYfIA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4mIL-0001wh-VX; Wed, 27 Jan 2021 15:59:46 +0100
+Date:   Wed, 27 Jan 2021 15:59:45 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Tom Rix <trix@redhat.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 06/12] usb: misc: iowarrior: update to use the
+ usb_control_msg_{send|recv}() API
+Message-ID: <YBF/4XYi854hyYhZ@hovoldconsulting.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126183403.911653-7-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-References: <20210127125018.7059-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20210127125018.7059-1-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 27 Jan 2021 15:54:32 +0100
-Message-ID: <CANn89iJF_LOMDj9RZAe0QDkkJwCs7CgFA4KMijs5siz904DSzg@mail.gmail.com>
-Subject: Re: [PATCH net] net: Remove redundant calls of sk_tx_queue_clear().
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Amit Shah <aams@amazon.de>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Boris Pismenny <borisp@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126183403.911653-7-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 1:50 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
->
-> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). However,
-> the original commit had already put sk_tx_queue_clear() in sk_prot_alloc():
-> the callee of sk_alloc() and sk_clone_lock(). Thus sk_tx_queue_clear() is
-> called twice in each path currently.
-
-Are you sure ?
-
-I do not clearly see the sk_tx_queue_clear() call from the cloning part.
-
-Please elaborate.
-
-In any case, this seems to be a candidate for net-next, this is not
-fixing a bug,
-this would be an optimization at most, and potentially adding a bug.
-
-So if you resend this patch, you can mention the old commit in the changelog,
-but do not add a dubious Fixes: tag
-
-
->
-> This patch removes the redundant calls of sk_tx_queue_clear() in sk_alloc()
-> and sk_clone_lock().
->
-> Fixes: 41b14fb8724d ("net: Do not clear the sock TX queue in sk_set_socket()")
-> CC: Tariq Toukan <tariqt@mellanox.com>
-> CC: Boris Pismenny <borisp@mellanox.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> Reviewed-by: Amit Shah <aams@amazon.de>
+On Wed, Jan 27, 2021 at 12:03:57AM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, instances of usb_control_msg() have been replaced with
+> usb_control_msg_{recv|send}() appropriately.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 > ---
->  net/core/sock.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index bbcd4b97eddd..5c665ee14159 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1759,7 +1759,6 @@ struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
->                 cgroup_sk_alloc(&sk->sk_cgrp_data);
->                 sock_update_classid(&sk->sk_cgrp_data);
->                 sock_update_netprioidx(&sk->sk_cgrp_data);
-> -               sk_tx_queue_clear(sk);
->         }
->
->         return sk;
-> @@ -1983,7 +1982,6 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
->                  */
->                 sk_refcnt_debug_inc(newsk);
->                 sk_set_socket(newsk, NULL);
-> -               sk_tx_queue_clear(newsk);
->                 RCU_INIT_POINTER(newsk->sk_wq, NULL);
->
->                 if (newsk->sk_prot->sockets_allocated)
-> --
-> 2.17.2 (Apple Git-113)
->
+>  drivers/usb/misc/iowarrior.c | 34 +++++++++++++++++-----------------
+>  1 file changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/iowarrior.c b/drivers/usb/misc/iowarrior.c
+> index efbd317f2f25..9d6a7548e537 100644
+> --- a/drivers/usb/misc/iowarrior.c
+> +++ b/drivers/usb/misc/iowarrior.c
+> @@ -109,12 +109,12 @@ static int usb_get_report(struct usb_device *dev,
+>  			  struct usb_host_interface *inter, unsigned char type,
+>  			  unsigned char id, void *buf, int size)
+>  {
+> -	return usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+> -			       USB_REQ_GET_REPORT,
+> -			       USB_DIR_IN | USB_TYPE_CLASS |
+> -			       USB_RECIP_INTERFACE, (type << 8) + id,
+> -			       inter->desc.bInterfaceNumber, buf, size,
+> -			       GET_TIMEOUT*HZ);
+> +	return usb_control_msg_recv(dev, 0,
+> +				    USB_REQ_GET_REPORT,
+> +				    USB_DIR_IN | USB_TYPE_CLASS |
+> +				    USB_RECIP_INTERFACE, (type << 8) + id,
+> +				    inter->desc.bInterfaceNumber, buf, size,
+> +				    GET_TIMEOUT*HZ, GFP_KERNEL);
+>  }
+>  //#endif
+>  
+> @@ -123,13 +123,13 @@ static int usb_get_report(struct usb_device *dev,
+>  static int usb_set_report(struct usb_interface *intf, unsigned char type,
+>  			  unsigned char id, void *buf, int size)
+>  {
+> -	return usb_control_msg(interface_to_usbdev(intf),
+> -			       usb_sndctrlpipe(interface_to_usbdev(intf), 0),
+> -			       USB_REQ_SET_REPORT,
+> -			       USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> -			       (type << 8) + id,
+> -			       intf->cur_altsetting->desc.bInterfaceNumber, buf,
+> -			       size, HZ);
+> +	return usb_control_msg_send(interface_to_usbdev(intf),
+> +				    0,
+> +				    USB_REQ_SET_REPORT,
+> +				    USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+> +				    (type << 8) + id,
+> +				    intf->cur_altsetting->desc.bInterfaceNumber, buf,
+> +				    size, HZ, GFP_KERNEL);
+>  }
+
+But here the buffers are already DMA-able so that the new helpers only
+add redundant allocations and memcpy's() for no real gain.
+
+I'd just drop this one as well.
+
+You could consider adding the missing sanity check to the IOW_READ
+ioctl, which would currently return zeroed data in case of a short read
+(so there are no info leaks either way). But perhaps that is done on
+purpose, so perhaps better to leave that too.
+
+Johan
