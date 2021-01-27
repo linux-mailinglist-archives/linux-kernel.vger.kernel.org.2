@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0C8305618
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DB8305615
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhA0IsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:48:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbhA0Iow (ORCPT
+        id S232544AbhA0Iro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:47:44 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:46408 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231949AbhA0Io7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:44:52 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FBEC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:44:02 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id by1so1531846ejc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:44:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VBoX9hVLIK+oMgTk+dawfpHrm1ttGvw0qHc2NqmHHf8=;
-        b=elkDXousOGGrCcsRX8PGXQELxv21CQthn7MNhBUY6RhzHlJz5eyXpk5Vqet0bfEY0R
-         TgAimdqJ+ztzHIDojc9jgK2TSno/AHzKTAdFIEeOvYk6DZDpnzHywc0KYYXJXRwPndOz
-         dYxrvbff3oo/PAXeEfOuU218rtraIRrakhx4Ij0CDmhKPUEcDOQcIYjkndmTf1ukwGzD
-         fsn406xnUcxhtuW/mrVZuU7vQoGKaoQHqO5BVcbGDOAjCrX2UBwJ0DWTUCAnuOy5jM71
-         7Y0b0+9JWgSb/CK98zFez9Cldkcp4IaWA+IE6znpNV9U5LLvEI9AXNXHXM97Lj0wk385
-         /iuA==
+        Wed, 27 Jan 2021 03:44:59 -0500
+Received: by mail-oi1-f171.google.com with SMTP id k25so1346232oik.13;
+        Wed, 27 Jan 2021 00:44:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VBoX9hVLIK+oMgTk+dawfpHrm1ttGvw0qHc2NqmHHf8=;
-        b=DzWTC2GLNw/A3mYL4GqFPC+WX8so8tLUohI22PMHB20aao03+AI1xnzIlb646AszuA
-         JVHRGbWXR87R2rJVLlLEpi949VsAC7Hw0Z8FvQLrZOzNigB6/69tBYiVmurcP9K2Jbsd
-         DthZ8x218IEGQBTWhze+oYQCIcKk5M3AGtweRsg0F0JpuPHh9Gndq6CuIZ6bYAYWIBu9
-         EAfMfjtAaZ3VwQXqUhB+pHq9B7y6KYUOAaTUPe/8FOpGeQ/LeHKECpfbROiDFK2le+FU
-         9cZUqm/nt4ZMHfOZH9wII0tNgUmmGf+FvjxeQiIIlk4U09QplXkrx9qgbOL9Taq7YfPe
-         +oWw==
-X-Gm-Message-State: AOAM531/hWN8XkfF0ULLnPd0dnW5+wpDl8Hy3XD6Jsly0WT+X4xQdMgm
-        GjPBSffwdihGU55vkCovB6MWAB9lY4rp/0cyudGYHA==
-X-Google-Smtp-Source: ABdhPJxRGbmBX6Yc8OicV5+mz00/YJkUOHcaOdkdyE5ZXdtl8tF5n6ay1RAg7fhgfwWLA+JF8TsqGlRpAq7cGpEhdIM=
-X-Received: by 2002:a17:906:b042:: with SMTP id bj2mr5995258ejb.261.1611737039385;
- Wed, 27 Jan 2021 00:43:59 -0800 (PST)
+        bh=mutFHLc1gkkZrR4Fer8oAQQ0VCNtXv8me5nxm8JFG6o=;
+        b=DnOA1IGmjQYbY4KLzonEeZkIja7LjirV7YHOmwmHDUGLetyAeWN0fFNbm78SfD7wNx
+         PJ4dvjIU0x2UgJ2DtDpXzUJ+8x9lwIZR7619AjdskX+ywN20rMm+OoDx6ITAB+canVcN
+         W5DpEI//d0luRFxn5WX967QDKNQhrmEOoX7+yDAy3wNsI3qQMzLeiagbKdTEDerXe2a7
+         vjnNegZjmzAwlJGaZta5Rm7ci5sOWMm6dYNjwIKOHZKQ7q5mNsj+Br1cWTVtfnI2+YTo
+         U6Ityr3DdKz86xPqWDnA/tAZoJxY14f2aBlr7EQFwbjVwTIg3U1c2B4XmKrenxtSjX9d
+         bi8g==
+X-Gm-Message-State: AOAM533tMZ1OoROfyCDdheIyKMK1mhzBjQhYinA12IggeZa6uv8Z1WhE
+        C4j2eUEa3++cDXNfvei+ovxF+G5rtI8MA9DeDVI=
+X-Google-Smtp-Source: ABdhPJyRilKemvCJEv7600MUD7rrw3Vm6t3WWaVeIyKZk2WvWyk7vpQeeMYS1vDHeon2cuMn7KqlF1medC/JKjRyBlE=
+X-Received: by 2002:a54:4e88:: with SMTP id c8mr2448439oiy.148.1611737056266;
+ Wed, 27 Jan 2021 00:44:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115111311.31601-1-brgl@bgdev.pl> <20210120170032.GA22929@lst.de>
-In-Reply-To: <20210120170032.GA22929@lst.de>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 27 Jan 2021 09:43:48 +0100
-Message-ID: <CAMRc=MfpX_Ta42bMcOW14zqh+gWm+Sxhrb5abfa52PKXfmQb0w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] configfs: implement committable items and add
- sample code
-To:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>
+References: <20210126182113.19892-1-david@redhat.com> <20210126182113.19892-2-david@redhat.com>
+In-Reply-To: <20210126182113.19892-2-david@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 27 Jan 2021 09:44:05 +0100
+Message-ID: <CAMuHMdVp=K6UpR_BfrJjiFEJgQt4nC7n35M8O+Wr2kSqfeERxQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] video: fbdev: acornfb: remove free_unused_pages()
+To:     David Hildenbrand <david@redhat.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+        Linux MM <linux-mm@kvack.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 6:00 PM Christoph Hellwig <hch@lst.de> wrote:
+On Tue, Jan 26, 2021 at 11:54 PM David Hildenbrand <david@redhat.com> wrote:
+> This function is never used and it is one of the last remaining user of
+> __free_reserved_page(). Let's just drop it.
 >
-> Joel,
->
-> if you are fine with this version I think we should let Bartosz pick
-> this up through whatever tree he needs it for.  I'd be more comfortable
-> if you ACKed this as you know the original design better than I do.
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Hi Joel,
+Fixes: ffd29195ed720188 ("drivers/video/acornfb.c: remove dead code")
 
-Gentle ping about this series. Since the user facing interface is
-mostly agreed upon, I already started working on the module using it -
-it would be great if we could get it in for v5.12.
+Gr{oetje,eeting}s,
 
-Best Regards,
-Bartosz Golaszewski
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
