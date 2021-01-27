@@ -2,149 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00300305E13
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2429305E10
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhA0OUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:20:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37433 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233119AbhA0OS5 (ORCPT
+        id S231714AbhA0OUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233084AbhA0ORz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:18:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611757049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VsZNc1B4nakIPnI1xAuLfFHKosTfI1vVpMK0rv+pxEo=;
-        b=a+QR/sXRBkstBtucRjEr6DpuUXm2jMhhp58IApfBdGu8lvPWNC1DtNe/qozmklrW4d3gQN
-        Ymn5xqeVBmmGYc1xkyczK9MCOUfX9uQ4bMQecP33eeTN+gOANRYnM9/bKp9obzyDHu3Z7w
-        LeBqbOwp0oj5sxlR6z96alOXzs04eDY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-ixX6X7loMQOpAE3pZKoF5A-1; Wed, 27 Jan 2021 09:17:26 -0500
-X-MC-Unique: ixX6X7loMQOpAE3pZKoF5A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29D99107ACF9;
-        Wed, 27 Jan 2021 14:17:20 +0000 (UTC)
-Received: from [10.40.192.126] (unknown [10.40.192.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F14AA5D9CA;
-        Wed, 27 Jan 2021 14:17:07 +0000 (UTC)
-Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
- CPUs
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "frederic@kernel.org" <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        juri.lelli@redhat.com, abelits@marvell.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        jinyuqi@huawei.com, zhangshaokun@hisilicon.com
-References: <20200625223443.2684-1-nitesh@redhat.com>
- <20200625223443.2684-2-nitesh@redhat.com>
- <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
- <20210127121939.GA54725@fuller.cnet>
- <c5cba5f3-287a-d087-c329-6e6613634370@arm.com>
- <20210127130925.GA64740@fuller.cnet>
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-Organization: Red Hat Inc,
-Message-ID: <7b810c5a-c732-4df3-1034-c2959ae86e65@redhat.com>
-Date:   Wed, 27 Jan 2021 09:16:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 27 Jan 2021 09:17:55 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BF1C061573;
+        Wed, 27 Jan 2021 06:17:15 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id t29so1260512pfg.11;
+        Wed, 27 Jan 2021 06:17:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=SBU3ke6fyTe5WhDbhpXLXYEkr+BqHP21ZqQYSRrwOXs=;
+        b=Q5O8nvrkMwwMaxaEqijSY2y5joaR6h/NQ2dkol0M9GtexhWliJre8V2Fycbtml+4MI
+         E2pbHs5wpZYfbJCnxdoxXgDgANbKAK2u12ZpxY3ksMl1VtiK6JosOfiOuiPhbYLCAeM9
+         vMUXzRMhFdbnDb43rvl4YvOlW9IYkWrBkpiHPROLYLIyebh0RN1WDOEld5Nln7Axs5g4
+         rJCPFE/ZkOPPFO7APRdtrPLLNC7ln2KqIii6YaBkkfJn90Y58ubwszV9DWFtaeDdtlJO
+         +sK/ybhRyCN1SSdON+HpfdJZWutf+6Zhy16rNyJAEwtw7klziC3BYFGOmg4jg4M1+nPA
+         Kw1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=SBU3ke6fyTe5WhDbhpXLXYEkr+BqHP21ZqQYSRrwOXs=;
+        b=Haut9q0nFJb5xQ7mZjSL39X4sLitpmvQZytI9XE/vGMkFvvmT3P2m3yWrGbTukQcfR
+         DxQJo+EUJWUYCVIW6CiDy71g0ruLsjZLOjt/rsbB3iFMOfpb9K2Aytuq55TWjhxBBydR
+         e224HjhP3DKXlxKhtPkFpUAU2aP20mhIDGjm6+6xzVSU8xPoG5eJt/QksRc3n5iy2ncs
+         AXWnllYPywByCWklxCdygJvHmSR/VUmN09/Rj5jmRHQJtfFaqWx4HzsSjzZhNVZSu8CH
+         6ba0CRHwDjuGdPzcR/oFmobXosWUR/Vz4a+J2a0AX08gtLbvFwpE8NsCh5o6w1NZ8E6w
+         hxEw==
+X-Gm-Message-State: AOAM5335NsiHvw9EO1fWASgRtF24E/YzEHDw6WfGeG+YsPr4MKfPITSp
+        AWRh4kNp01OFRn/PYQHAOMA=
+X-Google-Smtp-Source: ABdhPJxCJImDA6E9Uooenclpkv0Ck2OHxQ2VhnjVf7XXOlKRkkDt0sWmIOf2xGknjCNxTRopaoTIqw==
+X-Received: by 2002:a62:160b:0:b029:1bf:56ca:a594 with SMTP id 11-20020a62160b0000b02901bf56caa594mr10748988pfw.57.1611757035311;
+        Wed, 27 Jan 2021 06:17:15 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id s15sm2492502pfh.107.2021.01.27.06.17.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 06:17:14 -0800 (PST)
+Date:   Wed, 27 Jan 2021 22:17:08 +0800
+From:   carlis <zhangxuezhi3@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
+        mh12gx2825@gmail.com, oliver.graute@kococonnector.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        sbrivio@redhat.com, colin.king@canonical.com,
+        zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
+Message-ID: <20210127221708.00002568@gmail.com>
+In-Reply-To: <YBF08Xf7qaZx3YZ1@kroah.com>
+References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
+        <YBFv+12xfsoxacDb@kroah.com>
+        <20210127220809.000026fb@gmail.com>
+        <YBF08Xf7qaZx3YZ1@kroah.com>
+Organization: Tyzmig-ryrjum-8kedto
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210127130925.GA64740@fuller.cnet>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 27 Jan 2021 15:13:05 +0100
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
-On 1/27/21 8:09 AM, Marcelo Tosatti wrote:
-> On Wed, Jan 27, 2021 at 12:36:30PM +0000, Robin Murphy wrote:
->> On 2021-01-27 12:19, Marcelo Tosatti wrote:
->>> On Wed, Jan 27, 2021 at 11:57:16AM +0000, Robin Murphy wrote:
->>>> Hi,
->>>>
->>>> On 2020-06-25 23:34, Nitesh Narayan Lal wrote:
->>>>> From: Alex Belits <abelits@marvell.com>
->>>>>
->>>>> The current implementation of cpumask_local_spread() does not respect the
->>>>> isolated CPUs, i.e., even if a CPU has been isolated for Real-Time task,
->>>>> it will return it to the caller for pinning of its IRQ threads. Having
->>>>> these unwanted IRQ threads on an isolated CPU adds up to a latency
->>>>> overhead.
->>>>>
->>>>> Restrict the CPUs that are returned for spreading IRQs only to the
->>>>> available housekeeping CPUs.
->>>>>
->>>>> Signed-off-by: Alex Belits <abelits@marvell.com>
->>>>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
->>>>> ---
->>>>>    lib/cpumask.c | 16 +++++++++++-----
->>>>>    1 file changed, 11 insertions(+), 5 deletions(-)
->>>>>
->>>>> diff --git a/lib/cpumask.c b/lib/cpumask.c
->>>>> index fb22fb266f93..85da6ab4fbb5 100644
->>>>> --- a/lib/cpumask.c
->>>>> +++ b/lib/cpumask.c
->>>>> @@ -6,6 +6,7 @@
->>>>>    #include <linux/export.h>
->>>>>    #include <linux/memblock.h>
->>>>>    #include <linux/numa.h>
->>>>> +#include <linux/sched/isolation.h>
->>>>>    /**
->>>>>     * cpumask_next - get the next cpu in a cpumask
->>>>> @@ -205,22 +206,27 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
->>>>>     */
->>>>>    unsigned int cpumask_local_spread(unsigned int i, int node)
->>>>>    {
->>>>> -	int cpu;
->>>>> +	int cpu, hk_flags;
->>>>> +	const struct cpumask *mask;
->>>>> +	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
->>>>> +	mask = housekeeping_cpumask(hk_flags);
->>>> AFAICS, this generally resolves to something based on cpu_possible_mask
->>>> rather than cpu_online_mask as before, so could now potentially return an
->>>> offline CPU. Was that an intentional change?
->>> Robin,
->>>
->>> AFAICS online CPUs should be filtered.
->> Apologies if I'm being thick, but can you explain how? In the case of
->> isolation being disabled or compiled out, housekeeping_cpumask() is
->> literally just "return cpu_possible_mask;". If we then iterate over that
->> with for_each_cpu() and just return the i'th possible CPU (e.g. in the
->> NUMA_NO_NODE case), what guarantees that CPU is actually online?
->>
->> Robin.
-> Nothing, but that was the situation before 1abdfe706a579a702799fce465bceb9fb01d407c
-> as well.
+> On Wed, Jan 27, 2021 at 10:08:09PM +0800, carlis wrote:
+> > On Wed, 27 Jan 2021 14:51:55 +0100
+> > Greg KH <gregkh@linuxfoundation.org> wrote:
+> >   
+> > > On Wed, Jan 27, 2021 at 09:42:52PM +0800, Carlis wrote:  
+> > > > From: zhangxuezhi <zhangxuezhi1@yulong.com>
+> > > > 
+> > > > For st7789v ic,when we need continuous full screen refresh, it
+> > > > is best to wait for the TE signal arrive to avoid screen tearing
+> > > > 
+> > > > Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>    
+> > > 
+> > > Please slow down and wait at least a day between patch
+> > > submissions, there is no rush here.
+> > > 
+> > > And also, ALWAYS run scripts/checkpatch.pl on your submissions, so
+> > > that you don't have a maintainer asking you about basic problems,
+> > > like are in this current patch :(
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h  
+> > 
+> > hi,
+> >   This is my first patch contribution to Linux, so some of the rules
+> > are not very clear .In addition, I can confirm that before sending
+> > patch, I check it with checkPatch.py every time.Thank you very much
+> > for your help  
+> 
+> Please read Documentation/SubmittingPatches which has a link to the
+> checklist and other documentation you should read.
+> 
+> And I doubt you are running checkpatch on your submission, as there is
+> obvious coding style issues in it.  If so, please provide the output
+> as it must be broken :(
+> 
+> thanks,
+> 
+> greg k-h
+hi, the patch v11 checkpatch.pl output is below:
 
-Marcelo, before the commit cpumask_local_spread, was in fact, relying on
-cpu_online_mask as Robin mentioned.
-The problem here is with housekeeping_cpumask which always relied on the
-cpu_possible_mask.
+carlis@bf-rmsz-10:~/work/linux-kernel/linux$ ./scripts/checkpatch.pl
+0001-staging-fbtft-add-tearing-signal-detect.patch total: 0 errors, 0
+warnings, 0 checks, 176 lines checked
 
->
-> cpumask_local_spread() should probably be disabling CPU hotplug.
+0001-staging-fbtft-add-tearing-signal-detect.patch has no obvious style
+problems and is ready for submission.
 
 
-Yes and this should also be done at several other places in the drivers
-which don't take CPU hotplug into account eg. at the time of vector
-allocation.
-
-
--- 
-Thanks
-Nitesh
+regards
+zhangxuezhi
 
