@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D38305A2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFFF305A27
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236979AbhA0LpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:45:12 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:12752 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236761AbhA0L3A (ORCPT
+        id S237020AbhA0LoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:44:11 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:35726 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236768AbhA0L3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:29:00 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RBQ0fT027957;
-        Wed, 27 Jan 2021 03:28:01 -0800
+        Wed, 27 Jan 2021 06:29:01 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RBPbOk006149;
+        Wed, 27 Jan 2021 03:28:05 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=jHj3s3iXXpCO8yHV4b3z6m4cHi7TjGgzFyI8TGqe+Rk=;
- b=jlK7JPoDCHerW/HZy9OqM+dvauhyK1zJYQKJL6T5iV2VSAXGKeRUARTfy3u4dXrKpTOD
- TA5OTSZ3hzfQ+SWb37kLNVb2NRabjyDIWnQKaoplLLYMXGSUgJCBf1gTBTErKAJKjn8V
- qY/b69RKhHC39aPdquqhJS15E3PB/n/cKTPn8C0mbABnRah06ZANt5uNK6wINLWToriz
- I6j+fF1/2RBbIhXB3A9DyqxRFYU+HPoByJOXM8zcJrafMjuZAZ+6ihsFzcF2e5fKv0ol
- YRReHMKl926gwCupkOS/9r3QhuWbPYB8ZVyatdqrq+n0pC5yCcZxcRbKcKsq8CtkiYF0 Vw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36b1xpgt2k-1
+ content-type; s=pfpt0220; bh=VnO9xWbapIND4EXdMxnGEqAT/bCJQc4DY3nKKvQv6hc=;
+ b=DuSgqAqaAPyHWqitHsO+PQ6Yg/PPPlGXjbJtNkGwtbye/nMBQ26UkKHZ0As26GDhwryk
+ TOYJysya8D9lu/kwcYnsgo2HC9NCv+5IAz5mgUiG0zVX4k2YOqOmanCBeMiR19j7z52y
+ e+t5R33losA5/DWt+xnd812hed4545qwZngd6Bmp+ausG56/yoQvvk8WrJbkTJno7Q+p
+ rjNxlZW3HQTJcj3uOrpr5Bfi5V506i0FuX00M1TQEMah1wSi95BcXDTucK7t3yPCtTYr
+ aVFmnUwyKJ7ntzZLoeJpAAZKQHmYWyTs4phlXYvgFl60qIqEduCY/gmQ9SmVPx08QXOV Lw== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 368j1ubd7r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 03:28:01 -0800
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
- 2021 03:28:00 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
+        Wed, 27 Jan 2021 03:28:05 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
+ 2021 03:28:04 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
  (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
- 2021 03:27:59 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 27 Jan 2021 03:27:59 -0800
+ 2021 03:28:03 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 27 Jan 2021 03:28:03 -0800
 Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
-        by maili.marvell.com (Postfix) with ESMTP id 6C83E3F703F;
-        Wed, 27 Jan 2021 03:27:55 -0800 (PST)
+        by maili.marvell.com (Postfix) with ESMTP id CA6C33F703F;
+        Wed, 27 Jan 2021 03:27:59 -0800 (PST)
 From:   <kostap@marvell.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>
@@ -49,9 +49,9 @@ CC:     <linux-kernel@vger.kernel.org>, <lkundrak@v3.sk>,
         <miquel.raynal@bootlin.com>, <mw@semihalf.com>, <jaz@semihalf.com>,
         <nadavh@marvell.com>, <stefanc@marvell.com>, <bpeled@marvell.com>,
         "Konstantin Porotchkin" <kostap@marvell.com>
-Subject: [PATCH 3/4] arch/arm64: dts: add support for Marvell CP110 UTMI driver
-Date:   Wed, 27 Jan 2021 13:27:18 +0200
-Message-ID: <20210127112719.30632-4-kostap@marvell.com>
+Subject: [PATCH 4/4] arch/arm64: dts: enable CP110 UTMI driver
+Date:   Wed, 27 Jan 2021 13:27:19 +0200
+Message-ID: <20210127112719.30632-5-kostap@marvell.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210127112719.30632-1-kostap@marvell.com>
 References: <20210127112719.30632-1-kostap@marvell.com>
@@ -65,43 +65,228 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Konstantin Porotchkin <kostap@marvell.com>
 
-Add support for Marvell CP110 UTMI driver in a common DTSI
+Enable support for CP110 UTMI driver in Armada SoC family platform
+device trees.
 
 Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
 ---
- arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/arm64/boot/dts/marvell/armada-7040-db.dts     | 12 ++++++++----
+ arch/arm64/boot/dts/marvell/armada-8040-db.dts     | 18 ++++++++++++++++--
+ arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi | 16 ++++++++++++++--
+ arch/arm64/boot/dts/marvell/cn9130-db.dts          | 10 ++++++++--
+ arch/arm64/boot/dts/marvell/cn9131-db.dts          |  8 ++++++--
+ arch/arm64/boot/dts/marvell/cn9132-db.dts          |  9 +++++++--
+ 6 files changed, 59 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-index 994a2fce449a..5f1f5d51c881 100644
---- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-@@ -275,6 +275,25 @@
- 			};
- 		};
+diff --git a/arch/arm64/boot/dts/marvell/armada-7040-db.dts b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
+index a7eb4e7697a2..ef792b932912 100644
+--- a/arch/arm64/boot/dts/marvell/armada-7040-db.dts
++++ b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
+@@ -218,6 +218,10 @@
+ 	};
+ };
  
-+		CP11X_LABEL(utmi): utmi@580000 {
-+			compatible = "marvell,cp110-utmi-phy";
-+			reg = <0x580000 0x2000>;
-+			marvell,system-controller = <&CP11X_LABEL(syscon0)>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
++&cp0_utmi {
++	status = "okay";
++};
 +
-+			CP11X_LABEL(utmi0): phy@0 {
-+				reg = <0>;
-+				#phy-cells = <0>;
-+			};
+ &cp0_comphy1 {
+ 	cp0_usbh0_con: connector {
+ 		compatible = "usb-a-connector";
+@@ -226,8 +230,8 @@
+ };
+ 
+ &cp0_usb3_0 {
+-	phys = <&cp0_comphy1 0>;
+-	phy-names = "cp0-usb3h0-comphy";
++	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
++	phy-names = "cp0-usb3h0-comphy", "utmi";
+ 	status = "okay";
+ };
+ 
+@@ -239,8 +243,8 @@
+ };
+ 
+ &cp0_usb3_1 {
+-	phys = <&cp0_comphy4 1>;
+-	phy-names = "cp0-usb3h1-comphy";
++	phys = <&cp0_comphy4 1>, <&cp0_utmi1>;
++	phy-names = "cp0-usb3h1-comphy", "utmi";
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-db.dts b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
+index 09fb5256f1db..f1af6beeb9f9 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-db.dts
++++ b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
+@@ -154,8 +154,14 @@
+ };
+ 
+ /* CON9 on CP0 expansion */
++&cp0_utmi {
++	status = "okay";
++};
 +
-+			CP11X_LABEL(utmi1): phy@1 {
-+				reg = <1>;
-+				#phy-cells = <0>;
-+			};
-+		};
+ &cp0_usb3_0 {
+ 	usb-phy = <&cp0_usb3_0_phy>;
++	phys = <&cp0_utmi0>;
++	phy-names = "utmi";
+ 	status = "okay";
+ };
+ 
+@@ -168,8 +174,8 @@
+ 
+ /* CON10 on CP0 expansion */
+ &cp0_usb3_1 {
+-	phys = <&cp0_comphy4 1>;
+-	phy-names = "cp0-usb3h1-comphy";
++	phys = <&cp0_comphy4 1>, <&cp0_utmi1>;
++	phy-names = "usb", "utmi";
+ 	status = "okay";
+ };
+ 
+@@ -306,14 +312,22 @@
+ 	};
+ };
+ 
++&cp1_utmi {
++	status = "okay";
++};
 +
- 		CP11X_LABEL(usb3_0): usb@500000 {
- 			compatible = "marvell,armada-8k-xhci",
- 			"generic-xhci";
+ /* CON9 on CP1 expansion */
+ &cp1_usb3_0 {
+ 	usb-phy = <&cp1_usb3_0_phy>;
++	phys = <&cp1_utmi0>;
++	phy-names = "utmi";
+ 	status = "okay";
+ };
+ 
+ /* CON10 on CP1 expansion */
+ &cp1_usb3_1 {
++	phys = <&cp1_utmi1>;
++	phy-names = "utmi";
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi b/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi
+index cbcb210cb6d8..b3258a3984a3 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi
+@@ -259,13 +259,21 @@
+ 	vqmmc-supply = <&v_3_3>;
+ };
+ 
++&cp0_utmi {
++	status = "okay";
++};
++
+ &cp0_usb3_0 {
+ 	/* J38? - USB2.0 only */
++	phys = <&cp0_utmi0>;
++	phy-names = "utmi";
+ 	status = "okay";
+ };
+ 
+ &cp0_usb3_1 {
+ 	/* J38? - USB2.0 only */
++	phys = <&cp0_utmi1>;
++	phy-names = "utmi";
+ 	status = "okay";
+ };
+ 
+@@ -364,9 +372,13 @@
+ 	};
+ };
+ 
++&cp1_utmi {
++	status = "okay";
++};
++
+ &cp1_usb3_0 {
+ 	/* CPS Lane 2 - CON7 */
+-	phys = <&cp1_comphy2 0>;
+-	phy-names = "cp1-usb3h0-comphy";
++	phys = <&cp1_comphy2 0>, <&cp1_utmi0>;
++	phy-names = "cp1-usb3h0-comphy", "utmi";
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/marvell/cn9130-db.dts b/arch/arm64/boot/dts/marvell/cn9130-db.dts
+index ce49a70d88a0..02218422509c 100644
+--- a/arch/arm64/boot/dts/marvell/cn9130-db.dts
++++ b/arch/arm64/boot/dts/marvell/cn9130-db.dts
+@@ -390,14 +390,20 @@
+ 	};
+ };
+ 
++&cp0_utmi {
++	status = "okay";
++};
++
+ &cp0_usb3_0 {
+ 	status = "okay";
+ 	usb-phy = <&cp0_usb3_0_phy0>;
+-	phy-names = "usb";
++	phys = <&cp0_utmi0>;
++	phy-names = "utmi";
+ };
+ 
+ &cp0_usb3_1 {
+ 	status = "okay";
+ 	usb-phy = <&cp0_usb3_0_phy1>;
+-	phy-names = "usb";
++	phys =  <&cp0_utmi1>;
++	phy-names = "utmi";
+ };
+diff --git a/arch/arm64/boot/dts/marvell/cn9131-db.dts b/arch/arm64/boot/dts/marvell/cn9131-db.dts
+index 3c975f98b2a3..17e189875182 100644
+--- a/arch/arm64/boot/dts/marvell/cn9131-db.dts
++++ b/arch/arm64/boot/dts/marvell/cn9131-db.dts
+@@ -193,10 +193,14 @@
+ };
+ 
+ /* CON58 */
++&cp1_utmi {
++	status = "okay";
++};
++
+ &cp1_usb3_1 {
+ 	status = "okay";
+ 	usb-phy = <&cp1_usb3_0_phy0>;
+ 	/* Generic PHY, providing serdes lanes */
+-	phys = <&cp1_comphy3 1>;
+-	phy-names = "usb";
++	phys = <&cp1_comphy3 1>, <&cp1_utmi1>;
++	phy-names = "usb", "utmi";
+ };
+diff --git a/arch/arm64/boot/dts/marvell/cn9132-db.dts b/arch/arm64/boot/dts/marvell/cn9132-db.dts
+index 4ef0df3097ca..87da1dc3707c 100644
+--- a/arch/arm64/boot/dts/marvell/cn9132-db.dts
++++ b/arch/arm64/boot/dts/marvell/cn9132-db.dts
+@@ -205,9 +205,14 @@
+ 	};
+ };
+ 
++&cp2_utmi {
++	status = "okay";
++};
++
+ &cp2_usb3_0 {
+ 	status = "okay";
+ 	usb-phy = <&cp2_usb3_0_phy0>;
++	phys = <&cp2_utmi0>;
+ 	phy-names = "usb";
+ };
+ 
+@@ -215,7 +220,7 @@
+ &cp2_usb3_1 {
+ 	status = "okay";
+ 	usb-phy = <&cp2_usb3_0_phy1>;
+-	phy-names = "usb";
+ 	/* Generic PHY, providing serdes lanes */
+-	phys = <&cp2_comphy3 1>;
++	phys = <&cp2_comphy3 1>, <&cp2_utmi1>;
++	phy-names = "usb", "utmi";
+ };
 -- 
 2.17.1
 
