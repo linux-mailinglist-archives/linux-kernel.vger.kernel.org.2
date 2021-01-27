@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F86305541
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCF330557E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhA0IHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:07:30 -0500
-Received: from mga12.intel.com ([192.55.52.136]:28009 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234556AbhA0IE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:04:27 -0500
-IronPort-SDR: GKchp/Z0CdiRUue+jAS9glrbTB4H3HqgPrcjMi9omGCIpNrJdd+PtZ6hgSktnKGW8OpYjRByry
- d1gBeUA4ZDTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="159205375"
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="159205375"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 23:56:02 -0800
-IronPort-SDR: YzrXAU9p2ySptudqCtzH9ZZeMVaeIugJCS4jLIXJFSFvXghfopsQbswjup9H1WFQYr0E+nEfIO
- IOQX1uyqXPdg==
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="388211654"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 23:56:00 -0800
-Subject: Re: [RFC 2/7] KVM: VMX: Expose IA32_PKRS MSR
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200807084841.7112-1-chenyi.qiang@intel.com>
- <20200807084841.7112-3-chenyi.qiang@intel.com>
- <62f5f5ba-cbe9-231d-365a-80a656208e37@redhat.com>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-Message-ID: <24789af6-e85f-6485-50a0-98c0c4195112@intel.com>
-Date:   Wed, 27 Jan 2021 15:55:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S233433AbhA0ITL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:19:11 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45396 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234534AbhA0IB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:01:57 -0500
+Received: by mail-oi1-f173.google.com with SMTP id g69so1243986oib.12;
+        Tue, 26 Jan 2021 23:58:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XfyRLzMlIoi5X9bZM312ztK9szh1Uoj2MAF1xDhQS7U=;
+        b=jxVe1oXUUUCsWzoLJXun+atiFfR/EYnfNlSpM3x0kW+kos0Ap/CA5hL+UBo2w5LaPV
+         Wpa0movbvR31EIK7ME3wQg+0Ya0ly4nh6SaHtWjeAd1StGQsqsSrJXxRhNmPqsRqvuiX
+         gsfTo0PZ3V8rddWAqMFCJe5ZKZZgh8MziigyqfLTUWf8OEssV+gTzyLArFg08ACIyoCV
+         dMNiX5CMQnHwqp7dKVsj/G1cE5OMoA/PDIcj+xe7Idxawu1ADfVXRjS8F84NRhvI97Vv
+         yPBDarhobiZMJGaUXUs+U1MWKXrl/1TFfdFN+REfNPdi5y6yjkedArkcz0TAIyaQJfqh
+         q10A==
+X-Gm-Message-State: AOAM531qeaB0sku99TQ+Z6+rLxs4E3cawYlntJmodlXowfQI9NpftPdr
+        UZguxNdiM0+Spt6qqDftX28F3mb60Sqq9w+chQ3hf0EG
+X-Google-Smtp-Source: ABdhPJyQk+t/A9YKLA2LqVfKqKypKtLzXPHN3IoCxXpEFRU4g2uVJpYn7UJ6W85zp4YH2b4RCWqBZ10Q9spNLMqH93w=
+X-Received: by 2002:aca:4d8d:: with SMTP id a135mr2327538oib.153.1611734299722;
+ Tue, 26 Jan 2021 23:58:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <62f5f5ba-cbe9-231d-365a-80a656208e37@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-3-geert+renesas@glider.be> <YBCPoOKGRZYkdfPn@pendragon.ideasonboard.com>
+In-Reply-To: <YBCPoOKGRZYkdfPn@pendragon.ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 27 Jan 2021 08:58:08 +0100
+Message-ID: <CAMuHMdVD_g2HW4PBup4Si8H5kJ12PzUHXnZcHp7O_He-MHvtmg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] dmaengine: rcar-dmac: Add for_each_rcar_dmac_chan()
+ helper
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Laurent,
 
+On Tue, Jan 26, 2021 at 10:55 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Mon, Jan 25, 2021 at 03:24:29PM +0100, Geert Uytterhoeven wrote:
+> > Add and helper macro for iterating over all DMAC channels, taking into
+>
+> s/and helper/a helper/
 
-On 1/27/2021 2:01 AM, Paolo Bonzini wrote:
-> On 07/08/20 10:48, Chenyi Qiang wrote:
->> +{
->> +    struct vcpu_vmx *vmx = to_vmx(vcpu);
->> +    unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
->> +    bool pks_supported = guest_cpuid_has(vcpu, X86_FEATURE_PKS);
->> +
->> +    /*
->> +     * set intercept for PKRS when the guest doesn't support pks
->> +     */
->> +    vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_PKRS, MSR_TYPE_RW, 
->> !pks_supported);
->> +
->> +    if (pks_supported) {
->> +        vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
->> +        vm_exit_controls_setbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
->> +    } else {
->> +        vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
->> +        vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
->> +    }
-> 
-> Is the guest expected to do a lot of reads/writes to the MSR (e.g. at 
-> every context switch)?
-> 
+Oops.
 
-In current design for PKS, the PMEM stray write protection is the only 
-implemented use case, and PKRS is only temporarily changed during 
-specific code paths. Thus reads/writes to MSR is not so frequent, I think.
+> > account the channel mask.  Use it where appropriate, to simplify code.
+> >
+> > Restore "reverse Christmas tree" order of local variables while adding a
+> > new variable.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> Even if this is the case, the MSR intercepts and the entry/exit controls 
-> should only be done if CR4.PKS=1.  If the guest does not use PKS, KVM 
-> should behave as if these patches did not exist.
-> 
+> > --- a/drivers/dma/sh/rcar-dmac.c
+> > +++ b/drivers/dma/sh/rcar-dmac.c
+> > @@ -209,6 +209,10 @@ struct rcar_dmac {
+> >
+> >  #define to_rcar_dmac(d)              container_of(d, struct rcar_dmac, engine)
+> >
+> > +#define for_each_rcar_dmac_chan(i, chan, dmac)                                               \
+>
+> I would have placed the iterator (chan) after the container being
+> iterated (dmac), but it seems there are some for_each_* macros doing it
+> the other way around (they may be older though).
 
+Makes sense.
 
-I pass through the PKRS and enable the entry/exit controls when PKS is 
-supported, and just want to narrow down the window of MSR switch during 
-the VMX transition. But yeah, I should also consider the enabling status 
-of guest PKS according to CR4.PKS, will fix it in next version.
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> Paolo
-> 
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
