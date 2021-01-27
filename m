@@ -2,100 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFBE305D0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B4D305D28
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238366AbhA0NZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:25:39 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:12616 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238355AbhA0NXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:23:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1611753786; x=1643289786;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=KrUTu8hKVvdhX21kN7ECBHdjF8qc0AA/jylBcvei2f4=;
-  b=KAghYjUi0xErofb/sml+gFlw9VYwe6m0DARw8WKx4jWz+8gkSXeEgnqD
-   fBEj2yNiadB/e4wRPALpmNRuLs+t6Dw6gX2FDzMBrlANyPa9JT3zP3ieE
-   YAsuZ7up1i2GCPmOdyOn7Jvi3d+GYzKbvKQRhpwDomRjwvt+BNwfd5YxY
-   8=;
-X-IronPort-AV: E=Sophos;i="5.79,379,1602547200"; 
-   d="scan'208";a="80468539"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 27 Jan 2021 13:22:29 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id D19EF22900F;
-        Wed, 27 Jan 2021 13:22:28 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 27 Jan 2021 13:22:28 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.247) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 27 Jan 2021 13:22:23 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-CC:     Amit Shah <aams@amazon.de>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        "Boris Pismenny" <borisp@mellanox.com>
-Subject: [PATCH v2 net] net: Remove redundant calls of sk_tx_queue_clear().
-Date:   Wed, 27 Jan 2021 22:22:15 +0900
-Message-ID: <20210127132215.10842-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+        id S238390AbhA0N2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:28:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238266AbhA0NZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:25:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3A502ABDA;
+        Wed, 27 Jan 2021 13:24:38 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Subject: [PATCH] MIPS: of: Introduce helper function to get DTB
+Date:   Wed, 27 Jan 2021 14:24:30 +0100
+Message-Id: <20210127132431.143374-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.247]
-X-ClientProxiedBy: EX13D23UWC004.ant.amazon.com (10.43.162.219) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). However,
-the original commit had already put sk_tx_queue_clear() in sk_prot_alloc():
-the callee of sk_alloc() and sk_clone_lock(). Thus sk_tx_queue_clear() is
-called twice in each path currently.
+Selection of the DTB to be used was burried in more or less readable
+code in head.S. Move this code into a inline helper function and
+use it.
 
-This patch removes the redundant calls of sk_tx_queue_clear() in sk_alloc()
-and sk_clone_lock().
-
-Fixes: 41b14fb8724d ("net: Do not clear the sock TX queue in sk_set_socket()")
-CC: Tariq Toukan <tariqt@mellanox.com>
-CC: Boris Pismenny <borisp@mellanox.com>
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- net/core/sock.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/mips/ath79/setup.c               | 13 +++++------
+ arch/mips/bmips/setup.c               |  7 +++---
+ arch/mips/generic/init.c              |  5 ++---
+ arch/mips/include/asm/bootinfo.h      | 22 ++++++++++++++++++-
+ arch/mips/include/asm/octeon/octeon.h |  1 -
+ arch/mips/kernel/head.S               | 31 ---------------------------
+ arch/mips/kernel/setup.c              |  4 ----
+ arch/mips/lantiq/prom.c               |  7 ++----
+ arch/mips/pic32/pic32mzda/init.c      | 15 +------------
+ arch/mips/ralink/of.c                 | 11 +++-------
+ 10 files changed, 39 insertions(+), 77 deletions(-)
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index bbcd4b97eddd..5c665ee14159 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1759,7 +1759,6 @@ struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
- 		cgroup_sk_alloc(&sk->sk_cgrp_data);
- 		sock_update_classid(&sk->sk_cgrp_data);
- 		sock_update_netprioidx(&sk->sk_cgrp_data);
--		sk_tx_queue_clear(sk);
- 	}
+diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
+index 7e7bf9c2ad26..891f495c4c3c 100644
+--- a/arch/mips/ath79/setup.c
++++ b/arch/mips/ath79/setup.c
+@@ -213,16 +213,17 @@ unsigned int get_c0_compare_int(void)
  
- 	return sk;
-@@ -1983,7 +1982,6 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
+ void __init plat_mem_setup(void)
+ {
+-	unsigned long fdt_start;
++	void *dtb;
+ 
+ 	set_io_port_base(KSEG1);
+ 
+ 	/* Get the position of the FDT passed by the bootloader */
+-	fdt_start = fw_getenvl("fdt_start");
+-	if (fdt_start)
+-		__dt_setup_arch((void *)KSEG0ADDR(fdt_start));
+-	else if (fw_passed_dtb)
+-		__dt_setup_arch((void *)KSEG0ADDR(fw_passed_dtb));
++	dtb = (void *)fw_getenvl("fdt_start");
++	if (dtb == NULL)
++		dtb = get_fdt();
++
++	if (dtb)
++		__dt_setup_arch((void *)KSEG0ADDR(dtb));
+ 
+ 	ath79_reset_base = ioremap(AR71XX_RESET_BASE,
+ 					   AR71XX_RESET_SIZE);
+diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+index 10e31d91ca8f..95f8f10d8697 100644
+--- a/arch/mips/bmips/setup.c
++++ b/arch/mips/bmips/setup.c
+@@ -161,11 +161,10 @@ void __init plat_mem_setup(void)
+ 	/* intended to somewhat resemble ARM; see Documentation/arm/booting.rst */
+ 	if (fw_arg0 == 0 && fw_arg1 == 0xffffffff)
+ 		dtb = phys_to_virt(fw_arg2);
+-	else if (fw_passed_dtb) /* UHI interface or appended dtb */
+-		dtb = (void *)fw_passed_dtb;
+-	else if (&__dtb_start != &__dtb_end)
+-		dtb = (void *)__dtb_start;
+ 	else
++		dtb = get_fdt();
++
++	if (!dtb)
+ 		panic("no dtb found");
+ 
+ 	__dt_setup_arch(dtb);
+diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
+index 68763fcde1d0..1842cddd8356 100644
+--- a/arch/mips/generic/init.c
++++ b/arch/mips/generic/init.c
+@@ -39,14 +39,13 @@ void __init *plat_get_fdt(void)
+ 		/* Already set up */
+ 		return (void *)fdt;
+ 
+-	if (fw_passed_dtb && !fdt_check_header((void *)fw_passed_dtb)) {
++	fdt = (void *)get_fdt();
++	if (fdt && !fdt_check_header(fdt)) {
+ 		/*
+ 		 * We have been provided with the appropriate device tree for
+ 		 * the board. Make use of it & search for any machine struct
+ 		 * based upon the root compatible string.
  		 */
- 		sk_refcnt_debug_inc(newsk);
- 		sk_set_socket(newsk, NULL);
--		sk_tx_queue_clear(newsk);
- 		RCU_INIT_POINTER(newsk->sk_wq, NULL);
+-		fdt = (void *)fw_passed_dtb;
+-
+ 		for_each_mips_machine(check_mach) {
+ 			match = mips_machine_is_compatible(check_mach, fdt);
+ 			if (match) {
+diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
+index aa03b1237155..5be10ece3ef0 100644
+--- a/arch/mips/include/asm/bootinfo.h
++++ b/arch/mips/include/asm/bootinfo.h
+@@ -112,7 +112,27 @@ extern char arcs_cmdline[COMMAND_LINE_SIZE];
+ extern unsigned long fw_arg0, fw_arg1, fw_arg2, fw_arg3;
  
- 		if (newsk->sk_prot->sockets_allocated)
+ #ifdef CONFIG_USE_OF
+-extern unsigned long fw_passed_dtb;
++#include <linux/libfdt.h>
++#include <linux/of_fdt.h>
++
++extern char __appended_dtb[];
++
++static inline void *get_fdt(void)
++{
++	if (IS_ENABLED(CONFIG_MIPS_RAW_APPENDED_DTB) ||
++	    IS_ENABLED(CONFIG_MIPS_ELF_APPENDED_DTB))
++		if (fdt_magic(&__appended_dtb) == FDT_MAGIC)
++			return &__appended_dtb;
++
++	if (fw_arg0 == -2) /* UHI interface */
++		return (void *)fw_arg1;
++
++	if (IS_ENABLED(CONFIG_BUILTIN_DTB))
++		if (&__dtb_start != &__dtb_end)
++			return &__dtb_start;
++
++	return NULL;
++}
+ #endif
+ 
+ /*
+diff --git a/arch/mips/include/asm/octeon/octeon.h b/arch/mips/include/asm/octeon/octeon.h
+index 08d48f37c046..7e714aefc76d 100644
+--- a/arch/mips/include/asm/octeon/octeon.h
++++ b/arch/mips/include/asm/octeon/octeon.h
+@@ -282,7 +282,6 @@ union octeon_cvmemctl {
+ extern void octeon_check_cpu_bist(void);
+ 
+ int octeon_prune_device_tree(void);
+-extern const char __appended_dtb;
+ extern const char __dtb_octeon_3xxx_begin;
+ extern const char __dtb_octeon_68xx_begin;
+ 
+diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+index 61b73580b877..b825ed4476c7 100644
+--- a/arch/mips/kernel/head.S
++++ b/arch/mips/kernel/head.S
+@@ -93,33 +93,6 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
+ 	jr	t0
+ 0:
+ 
+-#ifdef CONFIG_USE_OF
+-#if defined(CONFIG_MIPS_RAW_APPENDED_DTB) || \
+-	defined(CONFIG_MIPS_ELF_APPENDED_DTB)
+-
+-	PTR_LA		t2, __appended_dtb
+-
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-	li		t1, 0xd00dfeed
+-#else  /* !CONFIG_CPU_BIG_ENDIAN */
+-	li		t1, 0xedfe0dd0
+-#endif /* !CONFIG_CPU_BIG_ENDIAN */
+-	lw		t0, (t2)
+-	beq		t0, t1, dtb_found
+-#endif /* CONFIG_MIPS_RAW_APPENDED_DTB || CONFIG_MIPS_ELF_APPENDED_DTB */
+-	li		t1, -2
+-	move		t2, a1
+-	beq		a0, t1, dtb_found
+-
+-#ifdef CONFIG_BUILTIN_DTB
+-	PTR_LA	t2, __dtb_start
+-	PTR_LA	t1, __dtb_end
+-	bne		t1, t2, dtb_found
+-#endif /* CONFIG_BUILTIN_DTB */
+-
+-	li		t2, 0
+-dtb_found:
+-#endif /* CONFIG_USE_OF */
+ 	PTR_LA		t0, __bss_start		# clear .bss
+ 	LONG_S		zero, (t0)
+ 	PTR_LA		t1, __bss_stop - LONGSIZE
+@@ -133,10 +106,6 @@ dtb_found:
+ 	LONG_S		a2, fw_arg2
+ 	LONG_S		a3, fw_arg3
+ 
+-#ifdef CONFIG_USE_OF
+-	LONG_S		t2, fw_passed_dtb
+-#endif
+-
+ 	MTC0		zero, CP0_CONTEXT	# clear context register
+ #ifdef CONFIG_64BIT
+ 	MTC0		zero, CP0_XCONTEXT
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 7e1f8e277437..3785c72bc3bc 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -792,10 +792,6 @@ void __init setup_arch(char **cmdline_p)
+ unsigned long kernelsp[NR_CPUS];
+ unsigned long fw_arg0, fw_arg1, fw_arg2, fw_arg3;
+ 
+-#ifdef CONFIG_USE_OF
+-unsigned long fw_passed_dtb;
+-#endif
+-
+ #ifdef CONFIG_DEBUG_FS
+ struct dentry *mips_debugfs_dir;
+ static int __init debugfs_mips(void)
+diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
+index 363937121617..bc9f58fcbdf9 100644
+--- a/arch/mips/lantiq/prom.c
++++ b/arch/mips/lantiq/prom.c
+@@ -73,11 +73,8 @@ void __init plat_mem_setup(void)
+ 
+ 	set_io_port_base((unsigned long) KSEG1);
+ 
+-	if (fw_passed_dtb) /* UHI interface */
+-		dtb = (void *)fw_passed_dtb;
+-	else if (&__dtb_start != &__dtb_end)
+-		dtb = (void *)__dtb_start;
+-	else
++	dtb = get_fdt();
++	if (dtb == NULL)
+ 		panic("no dtb found");
+ 
+ 	/*
+diff --git a/arch/mips/pic32/pic32mzda/init.c b/arch/mips/pic32/pic32mzda/init.c
+index 1897aa863573..764f2d022fae 100644
+--- a/arch/mips/pic32/pic32mzda/init.c
++++ b/arch/mips/pic32/pic32mzda/init.c
+@@ -21,24 +21,11 @@ const char *get_system_type(void)
+ 	return "PIC32MZDA";
+ }
+ 
+-static ulong get_fdtaddr(void)
+-{
+-	ulong ftaddr = 0;
+-
+-	if (fw_passed_dtb && !fw_arg2 && !fw_arg3)
+-		return (ulong)fw_passed_dtb;
+-
+-	if (&__dtb_start < &__dtb_end)
+-		ftaddr = (ulong)__dtb_start;
+-
+-	return ftaddr;
+-}
+-
+ void __init plat_mem_setup(void)
+ {
+ 	void *dtb;
+ 
+-	dtb = (void *)get_fdtaddr();
++	dtb = get_fdt();
+ 	if (!dtb) {
+ 		pr_err("pic32: no DTB found.\n");
+ 		return;
+diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
+index 2c9af61efc20..8286c3521476 100644
+--- a/arch/mips/ralink/of.c
++++ b/arch/mips/ralink/of.c
+@@ -64,20 +64,15 @@ static int __init early_init_dt_find_memory(unsigned long node,
+ 
+ void __init plat_mem_setup(void)
+ {
+-	void *dtb = NULL;
++	void *dtb;
+ 
+ 	set_io_port_base(KSEG1);
+ 
+ 	/*
+ 	 * Load the builtin devicetree. This causes the chosen node to be
+-	 * parsed resulting in our memory appearing. fw_passed_dtb is used
+-	 * by CONFIG_MIPS_APPENDED_RAW_DTB as well.
++	 * parsed resulting in our memory appearing.
+ 	 */
+-	if (fw_passed_dtb)
+-		dtb = (void *)fw_passed_dtb;
+-	else if (&__dtb_start != &__dtb_end)
+-		dtb = (void *)__dtb_start;
+-
++	dtb = get_fdt();
+ 	__dt_setup_arch(dtb);
+ 
+ 	of_scan_flat_dt(early_init_dt_find_memory, NULL);
 -- 
-2.17.2 (Apple Git-113)
+2.29.2
 
