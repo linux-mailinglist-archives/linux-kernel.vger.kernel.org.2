@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F271305ADF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292C5305ADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbhA0MID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42234 "EHLO mail.kernel.org"
+        id S237642AbhA0MHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:07:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237541AbhA0MFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:05:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD01220781;
-        Wed, 27 Jan 2021 12:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611749109;
-        bh=3RBTVL1iF42NCBHvowP/tzdrAJTD7tRnl7zSmjKg/BU=;
+        id S237477AbhA0MFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:05:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12BD420780;
+        Wed, 27 Jan 2021 12:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611749097;
+        bh=yTmGQ0DVnvKLau7tig8myya+Wgj/1YA3iyYkOFhac4c=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RqiTxbZ+x1490GbJal6dfrK8j/avd6fsnOy+FrkbXMElpnrSd3nLHJDKtC2Mz5y6d
-         ChtaV0tRp36ta2YMGyfuLXxdCdBmK96FpKGkW8mHtEdX371me5Mqwvpp4YXJhXdlEs
-         OGTwXdUPK/SHwqWHUwxhI9XAkWhpAX9eSSpSb1NDQy5hFjqGVPleJDzUOatmguqZUI
-         YolMtRHNDRPs4pdP5iOD2bSl5VuxPxkk1xjgxE76ykYL2BGXufO3Qw4QVweCnWb/1e
-         nfvCxRX6ZKMZIHguB4ysQDYP8dyTaUn6Cp6wqLtlSKuj7p7Cj/ueKMFnIoQub6ITTP
-         hApq6CKKK0jqg==
-Date:   Wed, 27 Jan 2021 12:04:26 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Mayulong <mayulong1@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-arm-msm@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Colin Ian King <colin.king@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v5 00/21] Move Hisilicon 6421v600 SPMI driver set out of
- staging
-Message-ID: <20210127120426.GB4387@sirena.org.uk>
-References: <cover.1611212783.git.mchehab+huawei@kernel.org>
- <YBBXcdLbj92yMJhw@kroah.com>
- <20210126175752.GF4839@sirena.org.uk>
- <YBBZP9LjXPi/rzfP@kroah.com>
- <20210126181124.GG4839@sirena.org.uk>
- <YBErBByYD8lNIWAX@kroah.com>
+        b=HvvVUu2qRmQyYXd1/HWhxJjQMiHV7QRrST1dY4bSA+zoeWEfbDUCc7nSreQjncaWh
+         HDoY9lJQfJ7VZSf2ut5MQTzKLnUqqlAQPeHgfZPlsLjO8UARzQhtpdvRxZlm32NKwd
+         dJV2rFyTNEQA/mlqcx8oMSyC6owhW3NeBbJ0t8gE=
+Date:   Wed, 27 Jan 2021 13:04:55 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     richard.gong@linux.intel.com
+Cc:     mdf@kernel.org, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>
+Subject: Re: [PATCHv3 1/6] firmware: stratix10-svc: add
+ COMMAND_AUTHENTICATE_BITSTREAM flag
+Message-ID: <YBFW50LPP/yEbvEW@kroah.com>
+References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
+ <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBErBByYD8lNIWAX@kroah.com>
-X-Cookie: La-dee-dee, la-dee-dah.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 25, 2021 at 02:56:23PM -0600, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
+> 
+> Add COMMAND_AUTHENTICATE_BITSTREAM command flag for new added bitstream
+> authentication feature. Authenticating a bitstream is to make sure a signed
+> bitstream has the valid signatures.
+> 
+> Except for the actual configuration of the device, the bitstream
+> authentication works the same way as FPGA configuration does. If the
+> authentication passes, the signed bitstream will be programmed into QSPI
+> flash memory and will be expected to boot without issues.
+> 
+> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
+> aligns with the firmware settings.
+> 
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> ---
+> v3: no change
+> v2: new added
+> ---
+>  include/linux/firmware/intel/stratix10-svc-client.h | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+> index ebc2956..7ada1f2 100644
+> --- a/include/linux/firmware/intel/stratix10-svc-client.h
+> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
+> @@ -51,12 +51,17 @@
+>  #define SVC_STATUS_NO_SUPPORT		6
+>  
+>  /*
+> - * Flag bit for COMMAND_RECONFIG
+> + * Flag for COMMAND_RECONFIG, in bit number
+>   *
+>   * COMMAND_RECONFIG_FLAG_PARTIAL:
+> - * Set to FPGA configuration type (full or partial).
+> + * Set for partial FPGA configuration.
+> + *
+> + * COMMAND_AUTHENTICATE_BITSTREAM:
+> + * Set for bitstream authentication, which makes sure a signed bitstream
+> + * has valid signatures before committing it to QSPI flash memory.
+>   */
+> -#define COMMAND_RECONFIG_FLAG_PARTIAL	1
+> +#define COMMAND_RECONFIG_FLAG_PARTIAL	0
 
---RASg3xLB4tUQ4RcS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So is this a bugfix, changing this value to the correct one?
 
-On Wed, Jan 27, 2021 at 09:57:40AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Jan 26, 2021 at 06:11:24PM +0000, Mark Brown wrote:
+If so, shouldn't this be a stand-alone patch and get backported to
+stable kernel releases?
 
-> > > Do you need a tag to pull from?
+If not, then no one uses this flag today?
 
-> > It'd be nice but not essential.
+thanks,
 
-> Why do you want/need this?  Having these changes in your tree is good,
-> but what about other coding style cleanups that I will end up applying
-> over time before the 5.12-rc1 merge window opens?  Are you wanting to
-> take the moved driver in your tree, or something else?
-
-I want to apply the regulator driver so I stop being sent this patch
-series which will help keep my backlog more manageable.
-
-> Traditionally moving drivers out of staging can be done 2 ways:
-> 	- all happens in the staging tree, I take an ack from the
-> 	  subsystem maintainer that this is ok to do.
-> 	- A new driver enters the "real" subsystem tree, and then I
-> 	  delete the driver in the staging tree.  This doesn't preserve
-> 	  history as well (not at all), but can be easier for trees that
-> 	  move quickly (like networking.)
-
-The whole reason the driver is in the staging tree is that Mauro has a
-requirement to do things in a way that preserves history and so won't
-send any non-incremental patches.
-
-> Which ever works for you is fine with me, but relying on the code to
-> stay "not touched" in my tree after you pull it almost never happens due
-> to the number of drive-by coding style cleanups that end up in the
-> staging tree every week.
-
-I'm sure someone can work out the conflicts if they're going to happen.
-
---RASg3xLB4tUQ4RcS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmARVsoACgkQJNaLcl1U
-h9CwZwf/Y4GV970+UoDmVlH4gvV6PpELe5BpI9sfABbfvY4sD+ozqjiJdzjRecw3
-yn5O3nm62AX6VR3vEhua6wA8iZAg6ShI1kVX8u8atddzuPwPDYkIjjW0y94kI5j0
-Fle7XbIJQpaSkFOykOaqKe6PoVl/CdGXp2dQ1Dvno6LecZnEkalJ47lSdLawUgax
-9POSQ0pg5htrSwGfBSjsmtIO1szwkuJs2KTn/nwQR+EF9+HMZH/fdDOwoslB06cA
-m+SM+rQyE7O/cbEZepBc1REC9ND4cpZPIQ9VmodaoqajQ89oSdGf3dhN8RaFpBWq
-9j/SadeGlnCgk583W33vC5H3R73uZA==
-=Voti
------END PGP SIGNATURE-----
-
---RASg3xLB4tUQ4RcS--
+greg k-h
