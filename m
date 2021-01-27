@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78D430590D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4200230591C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232692AbhA0LBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:01:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56172 "EHLO mail.kernel.org"
+        id S236315AbhA0LDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:03:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231959AbhA0K5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:57:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 903A52074B;
-        Wed, 27 Jan 2021 10:56:32 +0000 (UTC)
+        id S236335AbhA0K70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:59:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9603B20770;
+        Wed, 27 Jan 2021 10:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611744993;
-        bh=SBYnYjuYiKWziA1UaYv1e3bdv/LS8hXZt4gpUT6pA0k=;
+        s=korg; t=1611745014;
+        bh=QDzl1ovuUSa6aCqAcBWeRjk76zT/aNmdk61ejaarg8U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kfyh1mtXUTtdlxJu8WQLh/9ZZM/tZpcmWgTHneXYnB9+D3WYELwzAG5NRA6+QuEH5
-         u+xCK5Z0D7QjID022a2mqw86cC1UK1sJjjHCT46iSns8dLC6ZvS0UINEDIQbUXuQOx
-         pPsjel9XQtJdMdeY20/yi7wK0CTR0WAMOCRdbVdc=
-Date:   Wed, 27 Jan 2021 11:56:30 +0100
+        b=M9iSICozDsKJp9HIgOkzKy860uwMzbEhJkWiJqKslDjqrQq/Y63JOnSv+d/gWyyGu
+         Xp5E8ngIIhG2JrErtHAjBfnOfFYdAF0y52wzvSRXFMdQpwLvMiDj8EL2+CJMgXamX4
+         EqQ4RMKlTcqLUT+Wg4KXXlgHwrEAFTwWsWMAb3gk=
+Date:   Wed, 27 Jan 2021 11:56:51 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
+To:     Pavel Machek <pavel@denx.de>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
 Subject: Re: [PATCH 5.10 000/203] 5.10.11-rc2 review
-Message-ID: <YBFG3vzd8KliEs3/@kroah.com>
+Message-ID: <YBFG8yKLQ6AXF0Ja@kroah.com>
 References: <20210126094313.589480033@linuxfoundation.org>
- <20210126192658.GC31936@roeck-us.net>
+ <20210126113817.GA23197@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126192658.GC31936@roeck-us.net>
+In-Reply-To: <20210126113817.GA23197@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:26:58AM -0800, Guenter Roeck wrote:
-> On Tue, Jan 26, 2021 at 11:03:12AM +0100, Greg Kroah-Hartman wrote:
+On Tue, Jan 26, 2021 at 12:38:17PM +0100, Pavel Machek wrote:
+> Hi!
+> 
 > > This is the start of the stable review cycle for the 5.10.11 release.
 > > There are 203 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
@@ -47,15 +49,14 @@ On Tue, Jan 26, 2021 at 11:26:58AM -0800, Guenter Roeck wrote:
 > > 
 > > Responses should be made by Thu, 28 Jan 2021 09:42:40 +0000.
 > > Anything received after that time might be too late.
-> > 
 > 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 427 pass: 427 fail: 0
+> CIP testing did not find any problems here. (Due to minimal changs
+> between -rc1 and rc2, that's expectd I guess)
 > 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
+> 
+> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Thanks for testing.
+Thanks for testing 2 of these and letting me know.
 
 greg k-h
