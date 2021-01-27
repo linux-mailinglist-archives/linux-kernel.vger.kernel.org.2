@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A1C30616C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE4E306169
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbhA0Q7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:59:43 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:39922 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbhA0Q5E (ORCPT
+        id S233555AbhA0Q7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:59:10 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:53896 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233446AbhA0Q5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:57:04 -0500
-Received: by mail-il1-f197.google.com with SMTP id e11so2193149ils.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:56:48 -0800 (PST)
+        Wed, 27 Jan 2021 11:57:03 -0500
+Received: by mail-io1-f71.google.com with SMTP id s21so2044611ioe.20
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:56:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=l/aVeDKTBQ9QZ6G/vbWHBu+UX2b0yRaS/S8fyUsx9vQ=;
-        b=HGdCOryv25/THceLkGYgUlzCsoriEqzVzQma4XxaIugy8Gl4xh/7bgjKqCb8wm8wB+
-         8xqQevCzQ8dtmT79xJ5lJbyfhE6iLMde/NDE/3ywsMDFCUMpdDBbyQbWFuoHM+6E6zk9
-         mEkRACcuxbwx2ZfgkOeoyNrBGubCd/c0no5FxigJfU2FCz2p92u/b40t9WWy90Pe4RPS
-         0RjOYvFuzfDZRQw7U4krZWdVH2Y6BCFQ90sm2hnIjdXBpva1w6wqiPcZktiMdrJ9gmI0
-         XA69DyrM7GIU4Hmq1Zd/+kvwwE8ijihYYqMLhYo30uYzeDOwMGOtztG1ajOTe8iGMckG
-         4HmA==
-X-Gm-Message-State: AOAM53117RqwkT/W4MitD4W31nP+DaCyM0y9w3jCtMuxlgVGD77RxKHm
-        0MFGzog7w3ONIA4GYLYrKyXRN/QRM6FJ6VJ/54AAnVrsWB4C
-X-Google-Smtp-Source: ABdhPJzXirQ+/bLhDe/iqJka1KLsT+EEumuwLl4oWMu8CmR9BtN8xc2YofHeXhmPjArq1x/Tpq/EYF5ooUgGfMZAfELGsc+SH2IK
+        bh=BAFZkHZVCqTETJOe/W7Z1KtkSwQo6pDsmbUH1AUEjKw=;
+        b=ah97KvDmpFT3CxSO1sXFmax8pCC0RbpnpmGNuiRFWrRuGa+FzuBu2tTe8kyIPXsnQa
+         Szfaf3Ef9K6vR3L1oIygy9Vh7XtIC4BVp6jojc9ViTWlIQH9erK5xkWncjY96ylsHyQw
+         rG8wpmlNjMlf/fCcsfDQqa5TOhxdRlIra+z11uZgBCs0IDBcgNEEstd/lSY5iUJzJUBi
+         W3wr4xpX0PL5rWquLTD/dTGGBXirT7eWSdg52ZSUEhTaI7oo0LlJDd4KU64BVr4L9q7M
+         oL5hpdnFQ2fCCsa8bHMakGrw7OdU+mKihs7YUstZVGPfyd0w19kHTk0LG131b3jThxpe
+         3K2A==
+X-Gm-Message-State: AOAM531wcm02HNzqHy+ruwLaLVQCgGyAalvJ6U6WNeEl5WZ1AjyQUjV1
+        MGNRximDx7TCtcQ99bZMVXyx5QtbV6wJFZTMMAvOvgVzA5O1
+X-Google-Smtp-Source: ABdhPJyEsafsti7/bFBg9EyG4UmcYQFwCrINFeZsq0H+Hg9xgTbZW8CBtyFnAqx2mOP8rchP8iz8LNWA6FDkCxA1QDl6Z0IGNsZ4
 MIME-Version: 1.0
-X-Received: by 2002:a02:3441:: with SMTP id z1mr9774976jaz.63.1611766582715;
+X-Received: by 2002:a92:d244:: with SMTP id v4mr9272701ilg.191.1611766582457;
  Wed, 27 Jan 2021 08:56:22 -0800 (PST)
 Date:   Wed, 27 Jan 2021 08:56:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009fae0b05b9e4a6dd@google.com>
-Subject: linux-next test error: possible deadlock in cfg80211_netdev_notifier_call
-From:   syzbot <syzbot+3d2d5e6cc3fb15c6a0fd@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000009bbb7905b9e4a624@google.com>
+Subject: WARNING in __do_kernel_fault
+From:   syzbot <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com>
+To:     Dave.Martin@arm.com, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, syzkaller-bugs@googlegroups.com,
+        will@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,94 +49,76 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    b28241d8 Add linux-next specific files for 20210127
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13316b44d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37c8f99c7210a867
-dashboard link: https://syzkaller.appspot.com/bug?extid=3d2d5e6cc3fb15c6a0fd
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a25264d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
+dashboard link: https://syzkaller.appspot.com/bug?extid=45b6fce29ff97069e2c5
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3d2d5e6cc3fb15c6a0fd@syzkaller.appspotmail.com
+Reported-by: syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com
 
-batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
-device hsr_slave_0 entered promiscuous mode
-device hsr_slave_1 entered promiscuous mode
-============================================
-WARNING: possible recursive locking detected
-5.11.0-rc5-next-20210127-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.0/8425 is trying to acquire lock:
-ffff8881446785e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
-ffff8881446785e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: cfg80211_netdev_notifier_call+0x615/0x1180 net/wireless/core.c:1393
-
-but task is already holding lock:
-ffff8881446785e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
-ffff8881446785e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: virt_wifi_newlink+0x4cb/0x940 drivers/net/wireless/virt_wifi.c:540
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&rdev->wiphy.mtx);
-  lock(&rdev->wiphy.mtx);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor.0/8425:
- #0: ffffffff8cc71b08 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8cc71b08 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5550
- #1: ffff8881446785e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
- #1: ffff8881446785e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: virt_wifi_newlink+0x4cb/0x940 drivers/net/wireless/virt_wifi.c:540
-
-stack backtrace:
-CPU: 1 PID: 8425 Comm: syz-executor.0 Not tainted 5.11.0-rc5-next-20210127-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
- check_deadlock kernel/locking/lockdep.c:2872 [inline]
- validate_chain kernel/locking/lockdep.c:3661 [inline]
- __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4899
- lock_acquire kernel/locking/lockdep.c:5509 [inline]
- lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5474
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
- wiphy_lock include/net/cfg80211.h:5267 [inline]
- cfg80211_netdev_notifier_call+0x615/0x1180 net/wireless/core.c:1393
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
- call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
- call_netdevice_notifiers net/core/dev.c:2066 [inline]
- register_netdevice+0x1034/0x14a0 net/core/dev.c:10008
- virt_wifi_newlink+0x4d3/0x940 drivers/net/wireless/virt_wifi.c:541
- __rtnl_newlink+0x108b/0x16e0 net/core/rtnetlink.c:3443
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- __sys_sendto+0x21c/0x320 net/socket.c:1977
- __do_sys_sendto net/socket.c:1989 [inline]
- __se_sys_sendto net/socket.c:1985 [inline]
- __x64_sys_sendto+0xdd/0x1b0 net/socket.c:1985
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x417c97
-Code: 2c 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 81 19 00 00 c3 48 83 ec 08 e8 e7 fa ff ff 48 89 04 24 49 89 ca b8 2c 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 2d fb ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffd43a145b0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00000000016b4300 RCX: 0000000000417c97
-RDX: 000000000000004c RSI: 00000000016b4350 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007ffd43a145c0 R09: 000000000000000c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 00000000016b4350 R15: 0000000000000003
+REISERFS (device loop0): Using rupasov hash to sort names
+------------[ cut here ]------------
+Ignoring spurious kernel translation fault at virtual address 0000000000000030
+WARNING: CPU: 1 PID: 5380 at arch/arm64/mm/fault.c:364 __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
+Modules linked in:
+CPU: 1 PID: 5380 Comm: syz-executor.0 Not tainted 5.11.0-rc5-syzkaller-00037-g2ab38c17aac1 #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+pc : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
+lr : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
+sp : ffff800014933830
+x29: ffff800014933830 x28: f1ff00000c28bc00 
+x27: ffff80001231db80 x26: f0ff00002054a0b8 
+x25: 0000000000000000 x24: f1ff000004217680 
+x23: 0000000097c78006 x22: 0000000000000030 
+x21: 0000000000000025 x20: ffff800014933960 
+x19: 0000000097c78006 x18: 00000000fffffffb 
+x17: 0000000000000000 x16: 0000000000000000 
+x15: 0000000000000020 x14: 6c656e72656b2073 
+x13: 00000000000006f9 x12: ffff8000149334e0 
+x11: ffff80001313b450 x10: 00000000ffffe000 
+x9 : ffff80001313b450 x8 : ffff80001308b450 
+x7 : ffff80001313b450 x6 : 0000000000000000 
+x5 : ffff00007fbe1948 x4 : 0000000000015ff5 
+x3 : 0000000000000001 x2 : 0000000000000000 
+x1 : 0000000000000000 x0 : f1ff00000c28bc00 
+Call trace:
+ __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
+ do_page_fault+0x1c0/0x3a0 arch/arm64/mm/fault.c:649
+ do_translation_fault+0xb4/0xc4 arch/arm64/mm/fault.c:660
+ do_mem_abort+0x44/0xbc arch/arm64/mm/fault.c:793
+ el1_abort+0x40/0x6c arch/arm64/kernel/entry-common.c:118
+ el1_sync_handler+0xb0/0xcc arch/arm64/kernel/entry-common.c:209
+ el1_sync+0x70/0x100 arch/arm64/kernel/entry.S:656
+ reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:79 [inline]
+ reiserfs_security_init+0x98/0x10c fs/reiserfs/xattr_security.c:70
+ reiserfs_mkdir+0xf4/0x320 fs/reiserfs/namei.c:821
+ xattr_mkdir.constprop.0+0x24/0x3c fs/reiserfs/xattr.c:76
+ create_privroot fs/reiserfs/xattr.c:889 [inline]
+ reiserfs_xattr_init+0x16c/0x320 fs/reiserfs/xattr.c:1011
+ reiserfs_fill_super+0xa34/0xd20 fs/reiserfs/super.c:2177
+ mount_bdev+0x1c4/0x1f0 fs/super.c:1366
+ get_super_block+0x1c/0x30 fs/reiserfs/super.c:2606
+ legacy_get_tree+0x34/0x64 fs/fs_context.c:592
+ vfs_get_tree+0x2c/0xf0 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0x3e8/0xaf0 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount fs/namespace.c:3409 [inline]
+ __arm64_sys_mount+0x1a8/0x2fc fs/namespace.c:3409
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
+ el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:159
+ do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:198
+ el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
+ el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
+ el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
 
 
 ---
