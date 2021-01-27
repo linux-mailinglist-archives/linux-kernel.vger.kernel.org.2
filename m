@@ -2,194 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62C43058FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8716F3058FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhA0K70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:59:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236168AbhA0K4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:56:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611744880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=86WV7E6lV+Cr2RhV35tDcglEpjUTrr3fQsjJztebOZY=;
-        b=htjK9i6phx9oysmoStRQXwN7hufLAPtkqgjNUxUqnPbfFDi1iaqwHvWmRDRw/JN4z+3Yty
-        qd7GoqIvXJFrQEE33mfQuTobocWuQV99HmRM/7MUyTiqnomaUOtu4uNy6Q0cRVX/onbBeX
-        RBEiOzO009GF/ptyv3l7/WzNLhX53No=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-NGmf-o5jM4CM6bfRCj0YXg-1; Wed, 27 Jan 2021 05:54:38 -0500
-X-MC-Unique: NGmf-o5jM4CM6bfRCj0YXg-1
-Received: by mail-ed1-f69.google.com with SMTP id u19so1155755edr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:54:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=86WV7E6lV+Cr2RhV35tDcglEpjUTrr3fQsjJztebOZY=;
-        b=iW+fvSnawWXxXSWUKSz702pu9OeoDGD0XIgwd3CbNleHfmT5sPXRZ96qVsVWqhLRtV
-         CNR7Lu0q2QBeyZuYt3skOsfWRmyoYDwrQcif5uDCdwQK3wGi/SgglaSwwe2wRpZLk3ou
-         tDmYOQxtsEAC5zIVU3xskMj63qLmBF+adXEEocbaKSLww3vCYx/A0mgY9h1UzfJXFFyi
-         cVo75Nh4gemqunpQJl5txtDaHa2VgJ36Ldldmnc5FNY2zIs1PWfDwauCKtl86PnCW9LG
-         +7lWHp1OVkPajQqS8CNHUmYNfiQ4iDgw5bdpzQEQ4fbV7FdV/YYsXkzIwwKrSCOBJjlH
-         6F7A==
-X-Gm-Message-State: AOAM530UnI98JW+l1DdJdZ/1O3dwVCbQ/5wOzaqFj89ZezRbWvalkY5x
-        DbxNch8ms3QI6fcUKiAXtfcMXa+9tuxFbZvb5rf4HwmWbuG1BfWsyUWjK6/mbwv40x8Gq9XB4RC
-        ZLhKiEvvMsY1CLNi5f/2zDDAlZUEfSb0YyaxYr5TX7pOmaufy+D3e9VRBm1j/Oc6bN2SZFCrAJh
-        OD
-X-Received: by 2002:a17:906:b082:: with SMTP id x2mr5991233ejy.100.1611744877324;
-        Wed, 27 Jan 2021 02:54:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzButKZSAE0oNfPAxP2xn91tk8KEclK6UYubWMNxhMbU8m2nbPyIZgrLIH+IerQL/gdSH2s4w==
-X-Received: by 2002:a17:906:b082:: with SMTP id x2mr5991209ejy.100.1611744877070;
-        Wed, 27 Jan 2021 02:54:37 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id pj11sm635689ejb.58.2021.01.27.02.54.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 02:54:35 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86/mmu: Add '__func__' in rmap_printk()
-To:     Stephen Zhang <stephenzhangzsd@gmail.com>, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1611713325-3591-1-git-send-email-stephenzhangzsd@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <244f1c7f-d6ca-bd7c-da5e-8da3bf8b5aee@redhat.com>
-Date:   Wed, 27 Jan 2021 11:54:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S236245AbhA0K6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:58:24 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:60155 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236132AbhA0Kzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:55:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611744923; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=/qNmclXhxwVXmVl4tjdqIraPRX5cu7590EP4VSPq95g=; b=JD6Os8z3/kWMx5vmQ1T2wjS2O04Bp4szqWzcPHrK0O0zaToxC4+tNYv46PUErDGloCrjySnN
+ pXqj1aFUO/If4bG0QHQ0/sayYkmgJIkUftYduLlTrsdeRcLyPX+5zvlAAkOKmqo2U3BkB4mV
+ OwuMZVOQR708C14Dccl13WPS/yI=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60114674362ca03da6cece12 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 10:54:44
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0D5B0C43461; Wed, 27 Jan 2021 10:54:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.2] (unknown [49.37.158.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8EBD2C433ED;
+        Wed, 27 Jan 2021 10:54:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8EBD2C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Remove bit clock state check
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210127063038.1399-1-srivasam@codeaurora.org>
+ <16199fa8-7a87-6e7f-9db6-1d5cd8493d4c@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <d33fd359-9dbf-b03c-ccd1-d93c7d207ccf@codeaurora.org>
+Date:   Wed, 27 Jan 2021 16:24:36 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <1611713325-3591-1-git-send-email-stephenzhangzsd@gmail.com>
+In-Reply-To: <16199fa8-7a87-6e7f-9db6-1d5cd8493d4c@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/01/21 03:08, Stephen Zhang wrote:
-> Given the common pattern:
-> 
-> rmap_printk("%s:"..., __func__,...)
-> 
-> we could improve this by adding '__func__' in rmap_printk().
-> 
-> Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c          | 20 ++++++++++----------
->   arch/x86/kvm/mmu/mmu_internal.h |  2 +-
->   2 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6d16481..1460705 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -844,17 +844,17 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
->   	int i, count = 0;
->   
->   	if (!rmap_head->val) {
-> -		rmap_printk("pte_list_add: %p %llx 0->1\n", spte, *spte);
-> +		rmap_printk("%p %llx 0->1\n", spte, *spte);
->   		rmap_head->val = (unsigned long)spte;
->   	} else if (!(rmap_head->val & 1)) {
-> -		rmap_printk("pte_list_add: %p %llx 1->many\n", spte, *spte);
-> +		rmap_printk("%p %llx 1->many\n", spte, *spte);
->   		desc = mmu_alloc_pte_list_desc(vcpu);
->   		desc->sptes[0] = (u64 *)rmap_head->val;
->   		desc->sptes[1] = spte;
->   		rmap_head->val = (unsigned long)desc | 1;
->   		++count;
->   	} else {
-> -		rmap_printk("pte_list_add: %p %llx many->many\n", spte, *spte);
-> +		rmap_printk("%p %llx many->many\n", spte, *spte);
->   		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
->   		while (desc->sptes[PTE_LIST_EXT-1]) {
->   			count += PTE_LIST_EXT;
-> @@ -906,14 +906,14 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
->   		pr_err("%s: %p 0->BUG\n", __func__, spte);
->   		BUG();
->   	} else if (!(rmap_head->val & 1)) {
-> -		rmap_printk("%s:  %p 1->0\n", __func__, spte);
-> +		rmap_printk("%p 1->0\n", spte);
->   		if ((u64 *)rmap_head->val != spte) {
->   			pr_err("%s:  %p 1->BUG\n", __func__, spte);
->   			BUG();
->   		}
->   		rmap_head->val = 0;
->   	} else {
-> -		rmap_printk("%s:  %p many->many\n", __func__, spte);
-> +		rmap_printk("%p many->many\n", spte);
->   		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
->   		prev_desc = NULL;
->   		while (desc) {
-> @@ -1115,7 +1115,7 @@ static bool spte_write_protect(u64 *sptep, bool pt_protect)
->   	      !(pt_protect && spte_can_locklessly_be_made_writable(spte)))
->   		return false;
->   
-> -	rmap_printk("rmap_write_protect: spte %p %llx\n", sptep, *sptep);
-> +	rmap_printk("spte %p %llx\n", sptep, *sptep);
->   
->   	if (pt_protect)
->   		spte &= ~SPTE_MMU_WRITEABLE;
-> @@ -1142,7 +1142,7 @@ static bool spte_clear_dirty(u64 *sptep)
->   {
->   	u64 spte = *sptep;
->   
-> -	rmap_printk("rmap_clear_dirty: spte %p %llx\n", sptep, *sptep);
-> +	rmap_printk("spte %p %llx\n", sptep, *sptep);
->   
->   	MMU_WARN_ON(!spte_ad_enabled(spte));
->   	spte &= ~shadow_dirty_mask;
-> @@ -1184,7 +1184,7 @@ static bool spte_set_dirty(u64 *sptep)
->   {
->   	u64 spte = *sptep;
->   
-> -	rmap_printk("rmap_set_dirty: spte %p %llx\n", sptep, *sptep);
-> +	rmap_printk("spte %p %llx\n", sptep, *sptep);
->   
->   	/*
->   	 * Similar to the !kvm_x86_ops.slot_disable_log_dirty case,
-> @@ -1331,7 +1331,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
->   	bool flush = false;
->   
->   	while ((sptep = rmap_get_first(rmap_head, &iter))) {
-> -		rmap_printk("%s: spte %p %llx.\n", __func__, sptep, *sptep);
-> +		rmap_printk("spte %p %llx.\n", sptep, *sptep);
->   
->   		pte_list_remove(rmap_head, sptep);
->   		flush = true;
-> @@ -1363,7 +1363,7 @@ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->   
->   restart:
->   	for_each_rmap_spte(rmap_head, &iter, sptep) {
-> -		rmap_printk("kvm_set_pte_rmapp: spte %p %llx gfn %llx (%d)\n",
-> +		rmap_printk("spte %p %llx gfn %llx (%d)\n",
->   			    sptep, *sptep, gfn, level);
->   
->   		need_flush = 1;
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index bfc6389..5ec15e4 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -12,7 +12,7 @@
->   extern bool dbg;
->   
->   #define pgprintk(x...) do { if (dbg) printk(x); } while (0)
-> -#define rmap_printk(x...) do { if (dbg) printk(x); } while (0)
-> +#define rmap_printk(fmt, args...) do { if (dbg) printk("%s: " fmt, __func__, ## args); } while (0)
->   #define MMU_WARN_ON(x) WARN_ON(x)
->   #else
->   #define pgprintk(x...) do { } while (0)
-> 
+Thanks Srinivas For Your time!!!
 
-Queued, thanks.
+On 1/27/2021 3:21 PM, Srinivas Kandagatla wrote:
+>
+>
+> On 27/01/2021 06:30, Srinivasa Rao Mandadapu wrote:
+>> No need of BCLK state maintenance from driver side as
+>> clock_enable and clk_disable API's maintaing state counter.
+>>
+>> One of the major issue was spotted when Headset jack inserted
+>> while playback continues, due to same PCM device node opens twice
+>> for playaback/capture and closes once for capture and playback 
+>> continues.
+>>
+>> It can resolve the errors in such scenarios.
+>>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>
+> Thanks for the cleanup, yes clk core will take care of this by 
+> enable_count check!
+>
+> You should add
+>
+> Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF 
+> invalid state")
+>
+Okay. I will do in next patch.
+>
+>> ---
+>>   sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
+>>   sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
+>>   sound/soc/qcom/lpass.h           |  1 -
+>>   3 files changed, 8 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+>> index ae8efbc89af2..a669202e0001 100644
+>> --- a/sound/soc/qcom/lpass-cpu.c
+>> +++ b/sound/soc/qcom/lpass-cpu.c
+>> @@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct 
+>> snd_pcm_substream *substream,
+>>               dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+>>                   ret);
+>>   -        if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
+>> -            ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+>> -            if (ret) {
+>> -                dev_err(dai->dev, "error in enabling mi2s bit clk: 
+>> %d\n", ret);
+>> -                clk_disable(drvdata->mi2s_osr_clk[id]);
+>> -                return ret;
+>> -            }
+>> -            drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
+>> +        ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+>> +        if (ret) {
+>> +            dev_err(dai->dev, "error in enabling mi2s bit clk: 
+>> %d\n", ret);
+>> +            clk_disable(drvdata->mi2s_osr_clk[id]);
+>
+> Can you also remove this unnecessary disable here!
+>
+>
+Actually this is MI2S OSR clock disable on failure of bit clock enable.
 
-Paolo
+Do You think it's redundant?
+
+> -srini
+>
+>> +            return ret;
+>>           }
+>> -
+>>           break;
+>>       case SNDRV_PCM_TRIGGER_STOP:
+>>       case SNDRV_PCM_TRIGGER_SUSPEND:
+>> @@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct 
+>> snd_pcm_substream *substream,
+>>           if (ret)
+>>               dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+>>                   ret);
+>> -        if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
+>> - clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+>> -            drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
+>> -        }
+>> +
+>> + clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+>> +
+>>           break;
+>>       }
+>>   @@ -861,7 +856,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct 
+>> platform_device *pdev)
+>>                   PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+>>               return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+>>           }
+>> -        drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
+>>       }
+>>         /* Allocation for i2sctl regmap fields */
+>> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h 
+>> b/sound/soc/qcom/lpass-lpaif-reg.h
+>> index 405542832e99..c8e1d75340b2 100644
+>> --- a/sound/soc/qcom/lpass-lpaif-reg.h
+>> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
+>> @@ -60,9 +60,6 @@
+>>   #define LPAIF_I2SCTL_BITWIDTH_24    1
+>>   #define LPAIF_I2SCTL_BITWIDTH_32    2
+>>   -#define LPAIF_BIT_CLK_DISABLE        0
+>> -#define LPAIF_BIT_CLK_ENABLE        1
+>> -
+>>   #define LPAIF_I2SCTL_RESET_STATE    0x003C0004
+>>   #define LPAIF_DMACTL_RESET_STATE    0x00200000
+>>   diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+>> index 2d68af0da34d..83b2e08ade06 100644
+>> --- a/sound/soc/qcom/lpass.h
+>> +++ b/sound/soc/qcom/lpass.h
+>> @@ -68,7 +68,6 @@ struct lpass_data {
+>>       unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
+>>       unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
+>>       int hdmi_port_enable;
+>> -    int bit_clk_state[LPASS_MAX_MI2S_PORTS];
+>>         /* low-power audio interface (LPAIF) registers */
+>>       void __iomem *lpaif;
+>>
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
