@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D547930679E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161B030676E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhA0XPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:15:22 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60924 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233821AbhA0XHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:07:43 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RMVXH5109943;
-        Wed, 27 Jan 2021 17:39:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ynM+t9piKJBCMZZ5Lsh/QsnYco++i2SGz87esxAJErA=;
- b=kK4M3H0IuZhCYUfUWU6NrORFRdjvIAR3KO8hQ1XCfkYlbIaxq7hxCMsHmOSwt/eOzng1
- 0fjgD3bhGilP2i5Uyhx82zbm6qQhv/qgr5biqSoKBGJssdF9BPkGCjcznqDt1K6BWV5O
- qNi3if1L+QS+lOwY7QUipsn00tpYzI67bRSNRUKy6M2akAqdqVdKpZDxFQrt7WIVbLmQ
- JsADrAozeZpMxqsTlU80wrp4OVMvlPQYYZ8PgzoJhyGVNazeTYPnUb0/TdZmL42YZ5fd
- LstD9G6QX5Y8WmXDJhY8gr0Q+tNtXbn1u9Oh2gHlLaz+1YixxAKkIOTFrh4PCC7NWTJu Fg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36bdh8ds9w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 17:39:08 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RMWh46112963;
-        Wed, 27 Jan 2021 17:39:07 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36bdh8ds9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 17:39:07 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RMatiL005442;
-        Wed, 27 Jan 2021 22:39:07 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma04wdc.us.ibm.com with ESMTP id 36ag3yc1jf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 22:39:07 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RMd6NK12058942
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 22:39:06 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CDAE8AC066;
-        Wed, 27 Jan 2021 22:39:06 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4F93AC065;
-        Wed, 27 Jan 2021 22:39:06 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Jan 2021 22:39:06 +0000 (GMT)
-Subject: Re: [PATCH v3 2/3] x509: Add support for parsing x509 certs with NIST
- p256 keys
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, patrick@puiterwijk.org
-References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
- <20210127123350.817593-3-stefanb@linux.vnet.ibm.com>
- <20210127193152.GA27505@gondor.apana.org.au>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <d7f04b7a-75f4-fce8-b826-d268e522cf42@linux.ibm.com>
-Date:   Wed, 27 Jan 2021 17:39:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210127193152.GA27505@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S233697AbhA0XBq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Jan 2021 18:01:46 -0500
+Received: from mga03.intel.com ([134.134.136.65]:51950 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233180AbhA0W6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:58:36 -0500
+IronPort-SDR: o4vl8oV3+xkYJzeeabT2VAxLXJR9JJNKch3svPDyL4uk6TmMdjyNN7RXsE7Pd1BjxFUXNakjzg
+ jBxgDE1wT+BQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180223146"
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="180223146"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 14:40:00 -0800
+IronPort-SDR: UGA1dZN8wKbLyOMVSV8oG7V54a3T3baKRL9nzJr1vxYI5rB51CKkE0qcfRrQcEZ/5CgPieowmg
+ AyKGNJrOffRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="353967511"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by orsmga003.jf.intel.com with ESMTP; 27 Jan 2021 14:40:00 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 27 Jan 2021 14:40:00 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 27 Jan 2021 14:39:59 -0800
+Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
+ ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
+ Wed, 27 Jan 2021 14:39:59 -0800
+From:   "Yu, Fenghua" <fenghua.yu@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: RE: [PATCH v4 1/4] x86/cpufeatures: Enumerate #DB for bus lock
+ detection
+Thread-Topic: [PATCH v4 1/4] x86/cpufeatures: Enumerate #DB for bus lock
+ detection
+Thread-Index: AQHW9PFAPoRJX+AnhkuFXC9BaOBb+qo7/kbA
+Date:   Wed, 27 Jan 2021 22:39:59 +0000
+Message-ID: <adf4082ffef7410c961cfe76acc93606@intel.com>
+References: <20201124205245.4164633-1-fenghua.yu@intel.com>
+ <20201124205245.4164633-2-fenghua.yu@intel.com>
+ <87wnvydqxi.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87wnvydqxi.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-US
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_09:2021-01-27,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101270110
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 2:31 PM, Herbert Xu wrote:
-> On Wed, Jan 27, 2021 at 07:33:49AM -0500, Stefan Berger wrote:
->> +static struct akcipher_alg ecc_nist_p256 = {
->> +	.verify = ecdsa_verify,
->> +	.set_pub_key = ecc_set_pub_key,
->> +	.max_size = ecc_nist_p256_max_size,
->> +	.init = ecc_nist_p256_init_tfm,
->> +	.exit = ecc_exit_tfm,
->> +	.base = {
->> +		.cra_name = "nist_p256",
->> +		.cra_driver_name = "ecc-nist-p256",
->> +		.cra_priority = 100,
->> +		.cra_module = THIS_MODULE,
->> +		.cra_ctxsize = sizeof(struct ecc_ctx),
->> +	},
->> +};
-> This is not how we name generic algorithms.
+Hi, Thomas,
 
+> On Wed, Jan 27, 2021 2:16 PM, Thomas Gleixner wrote:
+> On Tue, Nov 24 2020 at 20:52, Fenghua Yu wrote:
+> 
+> > A bus lock is acquired though either split locked access to writeback
+> > (WB) memory or any locked access to non-WB memory. This is typically
+> > >1000 cycles slower than an atomic operation within a cache line. It
+> > also disrupts performance on other cores.
+> >
+> > Some CPUs have ability to notify the kernel by an #DB trap after a
+> > user instruction acquires a bus lock and is executed. This allows the
+> > kernel to enforce user application throttling or mitigations.
+> 
+> That's nice, but how does that interact with a data breakpoint on the same
+> location?
 
-Are saying that I cannot name it "nist_p256" but should call it 'ecdsa' 
-and the driver becomes "ecdsa-generic"?
+If both data breakpoint and bus lock happen on the same location, the bus lock
+is handled first and then the data breakpoint is handled in the same exception:
 
+1. If warn on bus lock, a rate limited warning is printed for the bus lock and then
+    a SIGTRAP is sent to the user process.
+2. If fatal on bus lock, a SIGBUS is sent to the user process for the bus lock and a
+    SIGTRAP is also sent to the user process. I think the SIGBUS will be delivered first
+    to the process and then SIGTRAP will be delivered to the process.
+3. If ratelimit on bus lock, first the tasks in the user sleep for specified time, then
+    SIGTRAP is sent to the user process.
 
+Is the interaction OK?
 
->
-> Please split this out and submit them through the crypto tree
-> instead.
+> 
+> Also the information you pointed to in the cover letter
+> 
+> >  [1] Intel Instruction Set Extension Chapter 8:
+> > https://software.intel.com/sites/default/files/managed/c5/15/architect
+> > ure-instruction-set-extensions-programming-reference.pdf
+> 
+> does not contain anything which is even remotely related to this patch series.
+> That chapter describes another bit in TEST_CTRL_MSR ...
 
-Will do.
+I think either I gave an old link or the content in the link was changed to an older version of ISE doc after this series was released.
 
+Here is the new ISE doc and the bus lock exception is described in Chapter 9.
+https://software.intel.com/content/dam/develop/public/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf
 
->
-> Thanks,
+I'll update the link in the next version.
 
+Thanks!
 
+-Fenghua
