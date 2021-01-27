@@ -2,194 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939D3306580
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA870306572
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbhA0U4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:56:46 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:17352 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhA0U4I (ORCPT
+        id S233576AbhA0Uyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233543AbhA0Uyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:56:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611780967; x=1643316967;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lqPm3w8R6W+6/EKBHQZN4ymXoXRvTekFol5Yx69SaXk=;
-  b=izKweRADdm7ibk44TwW8Ve/MOpaHZ5JpR+A3iSU2N8nR/gkgPLLrxFbr
-   2giSZpop2acbQoFA/qX95lvNXkrxcTiRF+weyS1bbMJ9L9n1f3/NFzzpK
-   HOnJpnJJYeoT5YIAW5VrKbkjkW51fQKJ+2sQlEKpbamK1icM1F5ovV1V4
-   VktWJMsoiJhsN9Rl3ZQuwED51MadXYyN7bkglCOTpZwSVq2GV2tgwxv46
-   o73py3ONr4kjnwahC9XJ++6VZlSxq1FpmlF54u/ehjxh7HFMZXaDsQ57j
-   L6EAGMXPmxuPcASGPZI/vFeivn7TGryFMQrfOdfCl15DymDGi00QFkN+7
-   g==;
-IronPort-SDR: C8SDGbPGgqNkojSPzdsNfQMQm8AhjxlmUil+dXh4t/XISN3NlGvfo0fNpJiZjxUUHS9qJQyUFK
- 7dI7/s5BODfkD35MtRhvavOx9agc6p1YbVreDjMVQ+buXCZUgJyApsXwkn/q++FtuWa2zybz9m
- LIIGx3IkqZ01NOxEiKHNnzl8GMcrqEdn9Q5KgCg+cUOtZ4i9w7QZJ0HWyzlAnBH9bzaxEOAj2C
- p3HGNxFfMcW56HOjnl0lG9s5xPLNJQeR519LFXp6Dxpp2XK5vykhIyHD3PTb/cRywKapGByWfy
- 32E=
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="107543338"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jan 2021 13:54:09 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 27 Jan 2021 13:54:09 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 27 Jan 2021 13:54:07 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
-        <rasmus.villemoes@prevas.dk>, <andrew@lunn.ch>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v2 4/4] bridge: mrp: Update br_mrp to use new return values of br_mrp_switchdev
-Date:   Wed, 27 Jan 2021 21:52:41 +0100
-Message-ID: <20210127205241.2864728-5-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210127205241.2864728-1-horatiu.vultur@microchip.com>
-References: <20210127205241.2864728-1-horatiu.vultur@microchip.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        Wed, 27 Jan 2021 15:54:49 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0F1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:54:08 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id j11so1959899pjw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:54:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=GkOvP5v/o3GajsI5MgubNi5t/flwcnqO6XOeJr4quWc=;
+        b=ByN1JbanGaIqjEPno/blmbB0rR/xp916N4CWocXaaoDrbT+eTt7ZRiI9WDE/lLA8F0
+         GJsZ6fmOa35TnKSvcrkpJ0YCqhgHEXKxiMJSuMxp6cCmAQ5YpDoDa3em/a3K0l4A8jx/
+         3vPSDHYa2MMChTt8sPFegZy0jPeaLc+ls6v68Vi4b3bqopujtHSkVG8L+8TkfjF+GemU
+         pS8oIXcvzS1R9j64LNa845LQA7qv/F7Z6KWlAq/GCMl2JLuS4w6LT3g2B1hDvXN4Qlm1
+         vZ4E07AmuTk9iLtD9RXeCa9dQkJ3TnRJPjK9Kez+nxkTy4ARkp+h0Ca+MurX1VihvJEq
+         LyEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=GkOvP5v/o3GajsI5MgubNi5t/flwcnqO6XOeJr4quWc=;
+        b=dzbTKrCW+INKpMbdmRc2dXo8DGpOl0I2OWor6synZeTtcxLB461mQOO7ft38KhduFP
+         YyPyVsXz4ZTwFw6nuA28YmRCJWBov0aUE/ndZ2KtGhcGqt/2uS6YqoI/KL8EQoJ8eWv2
+         KUVeZI0QW9cG7B4roZZ+flqcfSD8djJNq+i1gdnP/0h1Z4czT+6oUG7bLuULZR88YqOF
+         DOfOBg4onjh5czQs7fvYLQAMHuOUKvrtK2boi+yfWJopD3rLlNU4c0CihqWAInOy8e9J
+         8psKWNaiqOxfEL2kYV2Ke2kTcnxziQGSjchsvzOZ7IYJDxI6sN7YmzbQiWGRf6bhamos
+         LNHA==
+X-Gm-Message-State: AOAM533tTJ0Fo5SJC4GvjpA5DoasEgL1Nt41uZe31nsJo/J8zZqGc7Xp
+        2Y8HtfblczrsBe7OmmPYAo1DrUIcS83G8qOX4HhsR3af6dlYa7ThcLfY84sGyj8gRMNA+CvPfeK
+        vXfbEPKyz0jOgbq4WKZ0/7KhM+NvnBJRZZUHQGw6wUKH9t4ms7qdl0wX1uJISXFqMBMfzw+aJ8c
+        Q=
+X-Google-Smtp-Source: ABdhPJwo0G4Y8YKSiLIMyagZ9KSO4YTzftWwpcmlAA6xIhbCTkikU5ODYKDZYrLgqaj0tOztBgM059aFwOhbEA==
+Sender: "jmattson via sendgmr" <jmattson@turtle.sea.corp.google.com>
+X-Received: from turtle.sea.corp.google.com ([2620:15c:100:202:f1a0:c0ca:d724:8a8a])
+ (user=jmattson job=sendgmr) by 2002:a17:90b:28d:: with SMTP id
+ az13mr7844034pjb.55.1611780848096; Wed, 27 Jan 2021 12:54:08 -0800 (PST)
+Date:   Wed, 27 Jan 2021 12:53:58 -0800
+Message-Id: <20210127205358.3227383-1-jmattson@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH] perf/x86/kvm: Add Cascade Lake Xeon steppings to isolation_ucodes[]
+From:   Jim Mattson <jmattson@google.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check the return values of the br_mrp_switchdev function.
-In case of:
-- BR_MRP_NONE, return the error to userspace,
-- BR_MRP_SW, continue with SW implementation,
-- BR_MRP_HW, continue without SW implementation,
+Cascade Lake Xeon parts have the same model number as Skylake Xeon
+parts, so they are tagged with the intel_pebs_isolation
+quirk. However, as with Skylake Xeon H0 stepping parts, the PEBS
+isolation issue is fixed in all microcode versions.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+Add the Cascade Lake Xeon steppings (5, 6, and 7) to the
+isolation_ucodes[] table so that these parts benefit from Andi's
+optimization in commit 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary
+work in guest filtering").
+
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 ---
- net/bridge/br_mrp.c | 43 +++++++++++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+ arch/x86/events/intel/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index fc0a98874bfc..faa4ccb20f0a 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -636,7 +636,7 @@ int br_mrp_set_ring_role(struct net_bridge *br,
- 			 struct br_mrp_ring_role *role)
- {
- 	struct br_mrp *mrp = br_mrp_find_id(br, role->ring_id);
--	int err;
-+	enum br_mrp_hw_support support;
- 
- 	if (!mrp)
- 		return -EINVAL;
-@@ -644,9 +644,9 @@ int br_mrp_set_ring_role(struct net_bridge *br,
- 	mrp->ring_role = role->ring_role;
- 
- 	/* If there is an error just bailed out */
--	err = br_mrp_switchdev_set_ring_role(br, mrp, role->ring_role);
--	if (err && err != -EOPNOTSUPP)
--		return err;
-+	support = br_mrp_switchdev_set_ring_role(br, mrp, role->ring_role);
-+	if (support == BR_MRP_NONE)
-+		return -EOPNOTSUPP;
- 
- 	/* Now detect if the HW actually applied the role or not. If the HW
- 	 * applied the role it means that the SW will not to do those operations
-@@ -654,7 +654,7 @@ int br_mrp_set_ring_role(struct net_bridge *br,
- 	 * SW when ring is open, but if the is not pushed to the HW the SW will
- 	 * need to detect when the ring is open
- 	 */
--	mrp->ring_role_offloaded = err == -EOPNOTSUPP ? 0 : 1;
-+	mrp->ring_role_offloaded = support == BR_MRP_SW ? 0 : 1;
- 
- 	return 0;
- }
-@@ -667,6 +667,7 @@ int br_mrp_start_test(struct net_bridge *br,
- 		      struct br_mrp_start_test *test)
- {
- 	struct br_mrp *mrp = br_mrp_find_id(br, test->ring_id);
-+	enum br_mrp_hw_support support;
- 
- 	if (!mrp)
- 		return -EINVAL;
-@@ -674,9 +675,13 @@ int br_mrp_start_test(struct net_bridge *br,
- 	/* Try to push it to the HW and if it fails then continue with SW
- 	 * implementation and if that also fails then return error.
- 	 */
--	if (!br_mrp_switchdev_send_ring_test(br, mrp, test->interval,
--					     test->max_miss, test->period,
--					     test->monitor))
-+	support = br_mrp_switchdev_send_ring_test(br, mrp, test->interval,
-+						  test->max_miss, test->period,
-+						  test->monitor);
-+	if (support == BR_MRP_NONE)
-+		return -EOPNOTSUPP;
-+
-+	if (support == BR_MRP_HW)
- 		return 0;
- 
- 	mrp->test_interval = test->interval;
-@@ -718,8 +723,8 @@ int br_mrp_set_in_state(struct net_bridge *br, struct br_mrp_in_state *state)
- int br_mrp_set_in_role(struct net_bridge *br, struct br_mrp_in_role *role)
- {
- 	struct br_mrp *mrp = br_mrp_find_id(br, role->ring_id);
-+	enum br_mrp_hw_support support;
- 	struct net_bridge_port *p;
--	int err;
- 
- 	if (!mrp)
- 		return -EINVAL;
-@@ -777,10 +782,10 @@ int br_mrp_set_in_role(struct net_bridge *br, struct br_mrp_in_role *role)
- 	mrp->in_id = role->in_id;
- 
- 	/* If there is an error just bailed out */
--	err = br_mrp_switchdev_set_in_role(br, mrp, role->in_id,
--					   role->ring_id, role->in_role);
--	if (err && err != -EOPNOTSUPP)
--		return err;
-+	support = br_mrp_switchdev_set_in_role(br, mrp, role->in_id,
-+					       role->ring_id, role->in_role);
-+	if (support == BR_MRP_NONE)
-+		return -EOPNOTSUPP;
- 
- 	/* Now detect if the HW actually applied the role or not. If the HW
- 	 * applied the role it means that the SW will not to do those operations
-@@ -788,7 +793,7 @@ int br_mrp_set_in_role(struct net_bridge *br, struct br_mrp_in_role *role)
- 	 * SW when interconnect ring is open, but if the is not pushed to the HW
- 	 * the SW will need to detect when the interconnect ring is open.
- 	 */
--	mrp->in_role_offloaded = err == -EOPNOTSUPP ? 0 : 1;
-+	mrp->in_role_offloaded = support == BR_MRP_SW ? 0 : 1;
- 
- 	return 0;
- }
-@@ -801,6 +806,7 @@ int br_mrp_start_in_test(struct net_bridge *br,
- 			 struct br_mrp_start_in_test *in_test)
- {
- 	struct br_mrp *mrp = br_mrp_find_in_id(br, in_test->in_id);
-+	enum br_mrp_hw_support support;
- 
- 	if (!mrp)
- 		return -EINVAL;
-@@ -811,8 +817,13 @@ int br_mrp_start_in_test(struct net_bridge *br,
- 	/* Try to push it to the HW and if it fails then continue with SW
- 	 * implementation and if that also fails then return error.
- 	 */
--	if (!br_mrp_switchdev_send_in_test(br, mrp, in_test->interval,
--					   in_test->max_miss, in_test->period))
-+	support =  br_mrp_switchdev_send_in_test(br, mrp, in_test->interval,
-+						 in_test->max_miss,
-+						 in_test->period);
-+	if (support == BR_MRP_NONE)
-+		return -EOPNOTSUPP;
-+
-+	if (support == BR_MRP_HW)
- 		return 0;
- 
- 	mrp->in_test_interval = in_test->interval;
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index af457f8cb29d..af28b2f5f895 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4383,6 +4383,9 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
++	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
++	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 6, 0x00000000),
++	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 7, 0x00000000),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_L,		 3, 0x0000007c),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE,		 3, 0x0000007c),
+ 	INTEL_CPU_DESC(INTEL_FAM6_KABYLAKE,		 9, 0x0000004e),
 -- 
-2.27.0
+2.30.0.280.ga3ce27912f-goog
 
