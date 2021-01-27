@@ -2,321 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554A0305B9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD66C305BC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343598AbhA0Mhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:37:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237847AbhA0McG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:32:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60210207A0;
-        Wed, 27 Jan 2021 12:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611750683;
-        bh=GgmsYgRnqPem1diFVqgBfF6jWftAlLJThW/+Et9aoVs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V13Gzbc6cr5l7CJcx1xJtajs6OLek3RBtod1GBQ4VQL7Ma6igq6/3+WBsuee8NYSV
-         KD0gxH1rlzYyLyJWEvXVMalCVZeSzI/m0/4sLxXGJzMjdn9z3C1CXxzUOeAqJRghiw
-         4sz8egaHFW6zPYvS3ZVpXnAezNygRrJIqHNLqV9QA/SCK8tI/po3myNAeage+asNdt
-         rFFWh1r8EfsqNBxed2dEhss4ciHWJQPJprYDdQ6w7Fs/vgRCPS3CtZGIusLB6K6usV
-         GsAkEBOErMNwzAvyblIHLNLBgM+xGrWXtoo2DUKaKdW03x13BEocF1T3VTbZETGCFx
-         +2rnYCDTzounA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        id S237375AbhA0MmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:42:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55252 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237068AbhA0MdC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:33:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611750696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dgQSgW3ijk3bfBjv9KOVXpYx518XkO0noyOhJ5F3E3A=;
+        b=C+9rPgGxN6h89CQ9cH133XONXa273qZWAs1tl4QcQd1+Tb6VWzLN09Aitm0mzQ8ew9Gy1u
+        mr0U2v07I4WVdaVVTlZy3OzBOD7J7tqDavHy3U1vHdqIt/z1ozxEOwXtwvS4qICJ7E89n6
+        pQEmBeO3agQXD9/+z+ohrRrnrZD+vDc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-0PL812tAM1G95JRW1IOSfQ-1; Wed, 27 Jan 2021 07:31:33 -0500
+X-MC-Unique: 0PL812tAM1G95JRW1IOSfQ-1
+Received: by mail-ed1-f71.google.com with SMTP id n8so1255015edo.19
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:31:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dgQSgW3ijk3bfBjv9KOVXpYx518XkO0noyOhJ5F3E3A=;
+        b=am3wXkcZauK5+672CDsUTUKiMyx6yuS9YzdxnS/4n0/DOw52FNjJfIH2+u3d+GZ/q8
+         U2oK1Uqm5aXokprWc/sr0GBGcNf4LGViuKD5tgGTqG1YwhAaxl1dznU/Y2YqPG6dfWRh
+         pDipytMK6c3K5wb6gbJ8FT12386zjYt5N3NCHaJVPX+qEjSWRR1zldpo9HDUaRnCy/1n
+         zBEX/9JHZGwUKbnzaR6akYDDiV2mLUJi3+tESOa7XG3zrKiKyDnzS97UBmhjywGXnXLI
+         kkJ7hKl9/xum3eR6Ft9tPXiZwzJXFwe7Viif4NlonhxukRdmnXKZJnZy9+26PmjcA/J0
+         EV2Q==
+X-Gm-Message-State: AOAM5333Rsko/qFB4LmYhLfic8JyyjQ8KylEnPBsFY3lUvq1cjPw3+cv
+        RDOHZnLNF+y9UfYRbtYdEGE4k3ezA3wTPPYJxzgaivhDn6Kw4DHiIa0nvKIMEOObWxTzvRDjdAF
+        OZtOlRNJJyuj6ul64B0a9/9whH9+GqUpxpBqzBPaR6fZ+DMbVUr9OZD4mf/0gNNHczdDJ2i7i6b
+        Nc
+X-Received: by 2002:a17:907:abc:: with SMTP id bz28mr6574931ejc.395.1611750691991;
+        Wed, 27 Jan 2021 04:31:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzc1oAB7j1wPAy0H1JqWaCELA6b6i1a9cpil4PF64M6jRO8hfU1/lDcvxu5D+D2AA/JEXdYfQ==
+X-Received: by 2002:a17:907:abc:: with SMTP id bz28mr6574901ejc.395.1611750691764;
+        Wed, 27 Jan 2021 04:31:31 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s18sm1250961edw.66.2021.01.27.04.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 04:31:30 -0800 (PST)
+Subject: Re: [RESEND PATCH 2/2] KVM: X86: Expose bus lock debug exception to
+ guest
+To:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kbuild-all@lists.01.org, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] arm64: dts: qcom: Add basic devicetree support for SM8350-MTP board
-Date:   Wed, 27 Jan 2021 18:00:54 +0530
-Message-Id: <20210127123054.263231-7-vkoul@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210127123054.263231-1-vkoul@kernel.org>
-References: <20210127123054.263231-1-vkoul@kernel.org>
+References: <20210108064924.1677-3-chenyi.qiang@intel.com>
+ <202101090218.oqYcWXa4-lkp@intel.com>
+ <cfc345ea-980d-821d-f3a6-cea1f8e7ba03@redhat.com>
+ <3c38f1be-47c3-e8f8-ee72-9642e99ac93f@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bc5dfd66-e9bb-cb1b-fbb7-d3ecefeac52b@redhat.com>
+Date:   Wed, 27 Jan 2021 13:31:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3c38f1be-47c3-e8f8-ee72-9642e99ac93f@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic devicetree support for Qualcomm Technologies, Inc SM8350 SoC
-MTP board. This enabled uart node and adds rpmh-regulators present for
-this board.
+On 27/01/21 01:57, Chenyi Qiang wrote:
+>>
+>> What is the status of the patch to introduce 
+>> X86_FEATURE_BUS_LOCK_DETECT (I saw 
+>> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2389369.html)? 
+>>
+>>
+>> Paolo
+> 
+> Fenghua sent the v4 patch and pinged x86 maintainers, but still no 
+> feedback.
+> https://lore.kernel.org/lkml/YA8bkmYjShKwmyXx@otcwcpicx3.sc.intel.com/
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- arch/arm64/boot/dts/qcom/Makefile       |   1 +
- arch/arm64/boot/dts/qcom/sm8350-mtp.dts | 250 ++++++++++++++++++++++++
- 2 files changed, 251 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm8350-mtp.dts
+Ok, please include it when you repost.  Thanks!
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 5113fac80b7a..25f8a69ed530 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -49,3 +49,4 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm8350-mtp.dts b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
-new file mode 100644
-index 000000000000..8923657579fb
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm8350-mtp.dts
-@@ -0,0 +1,250 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2020, Linaro Limited
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include "sm8350.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. sm8350 MTP";
-+	compatible = "qcom,sm8350-mtp", "qcom,sm8350";
-+
-+	aliases {
-+		serial0 = &uart2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+};
-+
-+&apps_rsc {
-+	pm8350-rpmh-regulators {
-+		compatible = "qcom,pm8350-rpmh-regulators";
-+		qcom,pmic-id = "b";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-s8-supply = <&vph_pwr>;
-+		vdd-s9-supply = <&vph_pwr>;
-+		vdd-s10-supply = <&vph_pwr>;
-+		vdd-s11-supply = <&vph_pwr>;
-+		vdd-s12-supply = <&vph_pwr>;
-+
-+		vdd-l1-l4-supply = <&vreg_s11b_0p95>;
-+		vdd-l2-l7-supply = <&vreg_bob>;
-+		vdd-l3-l5-supply = <&vreg_bob>;
-+		vdd-l6-l9-l10-supply = <&vreg_s11b_0p95>;
-+		vdd-l8-supply = <&vreg_s2c_0p8>;
-+
-+		vreg_s10b_1p8: smps10 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		vreg_s11b_0p95: smps11 {
-+			regulator-min-microvolt = <752000>;
-+			regulator-max-microvolt = <1000000>;
-+		};
-+
-+		vreg_s12b_1p25: smps12 {
-+			regulator-min-microvolt = <1224000>;
-+			regulator-max-microvolt = <1360000>;
-+		};
-+
-+		vreg_l1b_0p88: ldo1 {
-+			regulator-min-microvolt = <912000>;
-+			regulator-max-microvolt = <920000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2b_3p07: ldo2 {
-+			regulator-min-microvolt = <3072000>;
-+			regulator-max-microvolt = <3072000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3b_0p9: ldo3 {
-+			regulator-min-microvolt = <904000>;
-+			regulator-max-microvolt = <904000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5b_0p88: ldo5 {
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <888000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6b_1p2: ldo6 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1208000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7b_2p96: ldo7 {
-+			regulator-min-microvolt = <2400000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9b_1p2: ldo9 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	pm8350c-rpmh-regulators {
-+		compatible = "qcom,pm8350c-rpmh-regulators";
-+		qcom,pmic-id = "c";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-s8-supply = <&vph_pwr>;
-+		vdd-s9-supply = <&vph_pwr>;
-+		vdd-s10-supply = <&vph_pwr>;
-+
-+		vdd-l1-l12-supply = <&vreg_s1c_1p86>;
-+		vdd-l2-l8-supply = <&vreg_s1c_1p86>;
-+		vdd-l3-l4-l5-l7-l13-supply = <&vreg_bob>;
-+		vdd-l6-l9-l11-supply = <&vreg_bob>;
-+		vdd-l10-supply = <&vreg_s12b_1p25>;
-+
-+		vdd-bob-supply = <&vph_pwr>;
-+
-+		vreg_s1c_1p86: smps1 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1952000>;
-+		};
-+
-+		vreg_s2c_0p8: smps2 {
-+			regulator-min-microvolt = <640000>;
-+			regulator-max-microvolt = <1000000>;
-+		};
-+
-+		vreg_s10c_1p05: smps10 {
-+			regulator-min-microvolt = <1048000>;
-+			regulator-max-microvolt = <1128000>;
-+		};
-+
-+		vreg_bob: bob {
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-+		};
-+
-+		vreg_l1c_1p8: ldo1 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2c_1p8: ldo2 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3c_3p0: ldo3 {
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4c_uim1: ldo4 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5c_uim2: ldo5 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6c_1p8: ldo6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7c_3p0: ldo7 {
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8c_1p8: ldo8 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9c_2p96: ldo9 {
-+			regulator-min-microvolt = <2960000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10c_1p2: ldo10 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11c_2p96: ldo11 {
-+			regulator-min-microvolt = <2400000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12c_1p8: ldo12 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13c_3p0: ldo13 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <52 8>;
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
--- 
-2.26.2
+Paolo
 
