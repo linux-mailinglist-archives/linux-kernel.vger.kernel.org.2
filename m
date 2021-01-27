@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3AC3058AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932753058B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235983AbhA0Kl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:41:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34804 "EHLO mx2.suse.de"
+        id S236057AbhA0Kmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:42:53 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:42078 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236028AbhA0KjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:39:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E383AD57;
-        Wed, 27 Jan 2021 10:38:18 +0000 (UTC)
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Timur Tabi <timur@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        roman.fietze@magna.com, keescook@chromium.org,
-        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-References: <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
- <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
- <20210119014725.GH2260413@casper.infradead.org>
- <YAa2oCNWjExWlQTu@jagdpanzerIV.localdomain>
- <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
- <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
- <083dd940-60c1-4cc8-fc89-8815b253d5c5@suse.cz>
- <a9b38fe7-8a22-71b7-1e84-0ebf1e864306@kernel.org>
- <20210126123912.23a5c3a1@gandalf.local.home>
- <20210126124032.0915f408@gandalf.local.home> <YBE8Pj8t8bsVroyQ@alley>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d021c867-3f24-9933-65d4-124e1b2dac33@suse.cz>
-Date:   Wed, 27 Jan 2021 11:38:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S235841AbhA0KkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:40:25 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l4iEU-0000kX-2Y; Wed, 27 Jan 2021 11:39:30 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     hminas@synopsys.com, gregkh@linuxfoundation.org
+Cc:     christoph.muellner@theobroma-systems.com, paulz@synopsys.com,
+        yousaf.kaukab@intel.com, balbi@ti.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, heiko@sntech.de,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Gerhard Klostermeier <gerhard.klostermeier@syss.de>,
+        stable@vger.kernel.org
+Subject: [PATCH v3] usb: dwc2: Fix endpoint direction check in ep_from_windex
+Date:   Wed, 27 Jan 2021 11:39:19 +0100
+Message-Id: <20210127103919.58215-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <YBE8Pj8t8bsVroyQ@alley>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 11:11 AM, Petr Mladek wrote:
-> On Tue 2021-01-26 12:40:32, Steven Rostedt wrote:
->> On Tue, 26 Jan 2021 12:39:12 -0500
->> Steven Rostedt <rostedt@goodmis.org> wrote:
->> 
->> > On Tue, 26 Jan 2021 11:30:02 -0600
->> > Timur Tabi <timur@kernel.org> wrote:
->> > 
->> > > On 1/26/21 11:14 AM, Vlastimil Babka wrote:  
->> > > > If it was a boot option, I would personally be for leaving hashing enabled by
->> > > > default, with opt-in boot option to disable it.    
->> > > 
->> > > A boot option would solve all my problems.  I wouldn't need to recompile 
->> > > the kernel, and it would apply to all variations of printk.  
->> > 
->> > Should it be called "make-printk-insecure"
-> 
-> Nit: This makes me feel that printk() might break (block) the system.
->      Please, make it more clear that it is about unveiling some secret
->      information, something like:
-> 
-> 	"non-secret-printk"
-> 	"non-confidental-printk"
-> 	"unretricted-printk"
-> 
-> I do not mind about the words order or using the
-> "make-printk-non-secret" form.
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-Yeah, let's not be overly dramatic here.
+dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
+the endpoint for the index provided in the wIndex request param.
 
->> And even if we make this a boot time option, perhaps we should still
->> include that nasty dmesg notice, which will let people know that the kernel
->> has unhashed values.
-> 
-> +1
+In a test-case with a rndis gadget running and sending a malformed
+packet to it like:
+    dev.ctrl_transfer(
+        0x82,      # bmRequestType
+        0x00,       # bRequest
+        0x0000,     # wValue
+        0x0001,     # wIndex
+        0x00       # wLength
+    )
+it is possible to cause a crash:
 
-If it's what it takes to have that option, fine :)
+[  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
+[  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
+...
+[  218.313189] Call trace:
+[  218.330217]  ep_from_windex+0x3c/0x54
+[  218.348565]  usb_gadget_giveback_request+0x10/0x20
+[  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
 
-> Best Regards,
-> Petr
-> 
+This happens because ep_from_windex wants to compare the endpoint
+direction even if index_to_ep() didn't return an endpoint due to
+the direction not matching.
+
+The fix is easy insofar that the actual direction check is already
+happening when calling index_to_ep() which will return NULL if there
+is no endpoint for the targeted direction, so the offending check
+can go away completely.
+
+Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
+Reported-by: Gerhard Klostermeier <gerhard.klostermeier@syss.de>
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Cc: stable@vger.kernel.org
+---
+changes in v3:
+- added Reported-by tag
+changes in v2:
+- remove unused struct dwc2_hsotg_ep *ep;
+
+ drivers/usb/dwc2/gadget.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
+index 0a0d11151cfb..ad4c94366dad 100644
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -1543,7 +1543,6 @@ static void dwc2_hsotg_complete_oursetup(struct usb_ep *ep,
+ static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
+ 					    u32 windex)
+ {
+-	struct dwc2_hsotg_ep *ep;
+ 	int dir = (windex & USB_DIR_IN) ? 1 : 0;
+ 	int idx = windex & 0x7F;
+ 
+@@ -1553,12 +1552,7 @@ static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
+ 	if (idx > hsotg->num_of_eps)
+ 		return NULL;
+ 
+-	ep = index_to_ep(hsotg, idx, dir);
+-
+-	if (idx && ep->dir_in != dir)
+-		return NULL;
+-
+-	return ep;
++	return index_to_ep(hsotg, idx, dir);
+ }
+ 
+ /**
+-- 
+2.29.2
 
