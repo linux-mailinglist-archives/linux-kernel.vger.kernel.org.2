@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9935F3064C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 348063064D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhA0UJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhA0UJL (ORCPT
+        id S232427AbhA0ULs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:11:48 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:45767 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232429AbhA0ULq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:09:11 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDF4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:08:31 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id e7so3070559ile.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:08:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qtr4/UsyDkpIQ8U8d9McR2WPMXf3/1f68QaCIUjLUM4=;
-        b=n/qI9B9hkvHTblIJpBpxFCHU118DO2sb/JJFStdA9xz7u1nsgpUKyEzFerPSC4h9WU
-         3hO2roxCuHrI7izOAlYY4Wi+O5+pxtIPg+gjMOUc5UW2jg8FWSyVpG6KvW6jKBY8UHWF
-         r1AxjtlO67xDW1lxE+L+0yItxlVDegxkZFmcRGZQ37eFT8t3jnJnTP9pugFB1JpuBxB9
-         7KN4UbBMn/ijRXV3OQJGvpKp/b7TYPTxbGnH2yy6kGJ7RVSHhfEhkAdyJsb42yJO55F7
-         NSvAZ0M1c+OhrfKvNyKG5+PjQV+UH5k8MWPgkP96HMBuvMyaQI0LsI50LKETZUya7+fx
-         Nvtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qtr4/UsyDkpIQ8U8d9McR2WPMXf3/1f68QaCIUjLUM4=;
-        b=MONnZaPUVALJlHnR71EUwXfUgdxaZJNGlh9JgfadllNB5M2DjuKRaN/OGrqzpxQRh1
-         PFUy0hXNtZyLcIQNE4FBL38XpgK8rBZH51ahECVQjxpOCEMsXTZlzhDyToM1luEceS5j
-         c8ShuRQtUd8DxL3T+oyoA1IPSJVB5y4bl6ePqyo2K6E9lkrrMSr+HLfg3+PPHZXtLDWB
-         lFq9aMdyNMEpZRRWkp3vwS7JViuwPGHsjcB9tI0scEopsmweBwhcTB1gPN6WxGISeWRX
-         hBfDIMiKIx8Or7UC4LJ8YqqgLkCx4aS9JKKS6yYY4XPFpT9zEm6esseP+XRdUrfEWcrq
-         n4Tg==
-X-Gm-Message-State: AOAM532AL9ABQuKZGwkgTJKs8YFm293WThhJYX/KCHaVRSKMRE1qcfeq
-        ydC7gjdQuOdEgsB0P1qiZ9kgSTRYFnNUJCA+TD+xTA==
-X-Google-Smtp-Source: ABdhPJz8sEIFWpW+7sSR7uXmCSqfZlQd96FlhohFXqBaHkyKDHeDSfASNlJ+QdEIK802FV1rQJz4umf3jV8DEK1cWj8=
-X-Received: by 2002:a92:cbce:: with SMTP id s14mr5351480ilq.306.1611778110766;
- Wed, 27 Jan 2021 12:08:30 -0800 (PST)
+        Wed, 27 Jan 2021 15:11:46 -0500
+Date:   Wed, 27 Jan 2021 20:10:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611778257; bh=VdLcOnTLbHfFNHFlN/XjYPHtoWTcOg+AoFdHQrfr7jE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Xk5AAUW2hzwHMulLeDd1o8jFMxpHFcNn5Lvyslpc98CPdmGW4hNZNh3OaAbwjkSWF
+         oRIUWJF6XzV3pvfkbhNTHAgvLjD1kCMdekHFzEH3aT3J99QoFSDjRqhaxPk0zkda4E
+         t6ZOnF3hrDrAuzwJf3UsUBN+qukP/a/neSV503kp2b969Qcxk+IxK556S/wA6rijux
+         fPvxxFUbr0ObBC1OXrkGd3Xpr4RzPPRCNiBQ0Gpc3V0F6+CioAvlmc8HKKlahZTVif
+         Lf2ETDXjkBX+TWCVy0ex1AB8YM/aUks2vTia/rjzIUxIRVi1U+zeOL7SuD+exMYml9
+         xhEDv9ixZi3hA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v2 net-next 0/4] net: consolidate page_is_pfmemalloc() usage
+Message-ID: <20210127201031.98544-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210112181041.356734-1-bgardon@google.com> <20210112181041.356734-16-bgardon@google.com>
- <YAjIddUuw/SZ+7ut@google.com> <460d38b9-d920-9339-1293-5900d242db37@redhat.com>
- <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
- <fae0e326-cfd4-bf5d-97b5-ae632fb2de34@redhat.com> <CANgfPd_TOpc_cinPwAyH-0WajRM1nZvn9q6s70jno5LFf2vsdQ@mail.gmail.com>
- <f1ef3118-2a8e-4bf2-b3b0-60ac4947e106@redhat.com>
-In-Reply-To: <f1ef3118-2a8e-4bf2-b3b0-60ac4947e106@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 27 Jan 2021 12:08:19 -0800
-Message-ID: <CANgfPd9FaPhQiEkJ=VHKiVWZ_5S3k2uWHU+ViCi4nEF=GU4qsw@mail.gmail.com>
-Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:48 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 26/01/21 19:11, Ben Gardon wrote:
-> > When I did a strict replacement I found ~10% worse memory population
-> > performance.
-> > Running dirty_log_perf_test -v 96 -b 3g -i 5 with the TDP MMU
-> > disabled, I got 119 sec to populate memory as the baseline and 134 sec
-> > with an earlier version of this series which just replaced the
-> > spinlock with an rwlock. I believe this difference is statistically
-> > significant, but didn't run multiple trials.
-> > I didn't take notes when profiling, but I'm pretty sure the rwlock
-> > slowpath showed up a lot. This was a very high contention scenario, so
-> > it's probably not indicative of real-world performance.
-> > In the slow path, the rwlock is certainly slower than a spin lock.
-> >
-> > If the real impact doesn't seem too large, I'd be very happy to just
-> > replace the spinlock.
->
-> Ok, so let's use the union idea and add a "#define KVM_HAVE_MMU_RWLOCK"
-> to x86.  The virt/kvm/kvm_main.c MMU notifiers functions can use the
-> #define to pick between write_lock and spin_lock.
+page_is_pfmemalloc() is used mostly by networking drivers to test
+if a page can be considered for reusing/recycling.
+It doesn't write anything to the struct page itself, so its sole
+argument can be constified, as well as the first argument of
+skb_propagate_pfmemalloc().
+In Page Pool core code, it can be simply inlined instead.
+Most of the callers from NIC drivers were just doppelgangers of
+the same condition tests. Derive them into a new common function
+do deduplicate the code.
 
-I'm not entirely sure I understand this suggestion. Are you suggesting
-we'd have the spinlock and rwlock in a union in struct kvm but then
-use a static define to choose which one is used by other functions? It
-seems like if we're using static defines the union doesn't add value.
-If we do use the union, I think the advantages offered by __weak
-wrapper functions, overridden on a per-arch basis, are worthwhile.
+Since v1 [0]:
+ - new: reduce code duplication by introducing a new common function
+   to test if a page can be reused/recycled (David Rientjes);
+ - collect autographs for Page Pool bits (Jesper Dangaard Brouer,
+   Ilias Apalodimas).
 
->
-> For x86 I want to switch to tdp_mmu=1 by default as soon as parallel
-> page faults are in, so we can use the rwlock unconditionally and drop
-> the wrappers, except possibly for some kind of kvm_mmu_lock/unlock_root
-> that choose between read_lock for TDP MMU and write_lock for shadow MMU.
->
-> Thanks!
->
-> Paolo
->
+[0] https://lore.kernel.org/netdev/20210125164612.243838-1-alobakin@pm.me
+
+Alexander Lobakin (4):
+  mm: constify page_is_pfmemalloc() argument
+  skbuff: constify skb_propagate_pfmemalloc() "page" argument
+  net: introduce common dev_page_is_reserved()
+  net: page_pool: simplify page recycling condition tests
+
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 10 ++--------
+ drivers/net/ethernet/intel/fm10k/fm10k_main.c |  9 ++-------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 +--------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 15 +--------------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 11 +----------
+ drivers/net/ethernet/intel/igb/igb_main.c     |  7 +------
+ drivers/net/ethernet/intel/igc/igc_main.c     |  7 +------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  7 +------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  7 +------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +------
+ include/linux/mm.h                            |  2 +-
+ include/linux/skbuff.h                        | 19 +++++++++++++++++--
+ net/core/page_pool.c                          | 14 ++++----------
+ 13 files changed, 34 insertions(+), 96 deletions(-)
+
+--=20
+2.30.0
+
+
