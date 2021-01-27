@@ -2,71 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B93C30610C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A583060FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhA0Q34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:29:56 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:52911 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343953AbhA0Q2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:28:55 -0500
-Received: from envy.fritz.box ([82.207.222.125]) by mrelayeu.kundenserver.de
- (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MLzWL-1lMC4N2uMT-00HyRm; Wed, 27 Jan 2021 17:26:06 +0100
-From:   mail@richard-neumann.de
-To:     nehal-bakulchandra.shah@amd.com, sandeep.singh@amd.com,
-        mail@richard-neumann.de, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH v2 3/3] Updated MAINTAINERS
-Date:   Wed, 27 Jan 2021 17:26:00 +0100
-Message-Id: <20210127162600.35927-4-mail@richard-neumann.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210127162600.35927-1-mail@richard-neumann.de>
-References: <20210127162600.35927-1-mail@richard-neumann.de>
+        id S1343588AbhA0Q1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:27:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:53814 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237070AbhA0Q1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 11:27:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D64E31B;
+        Wed, 27 Jan 2021 08:26:14 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B96AA3F66E;
+        Wed, 27 Jan 2021 08:26:12 -0800 (PST)
+Date:   Wed, 27 Jan 2021 16:26:05 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, james.quinlan@broadcom.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Subject: Re: [PATCH v5 0/36] SCMI vendor protocols and modularization
+Message-ID: <20210127162605.GB9873@e120937-lin>
+References: <20210112192018.34994-1-cristian.marussi@arm.com>
+ <CAKfTPtD5EwmDQJvx2yhG3cd6hKh-qJYW15DpW5cdPkgUc2tFfA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:xJ1Sf5XKgUYAdsgkLIj4+KmeVkDv6QJ7cYbj41W7dEMUjJh6VYx
- TkQ4oPHh4vWLAhgpWHwFnTVXw67mAP3yXPygIWr76NBF5bqVBOFR66an1QmiOITIC5bwU12
- 9H4wbDHcNOMJ9ZmcJpqVAzM+Ui4phkN4BIxq58z5q4g2SDjVpfau0R1Oto866KQ0007GWQ1
- yz9KrsLUJqu37k/eraE4Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xIcAJy1itWc=:yq5/TTGMaYjr1ZLTOHaqES
- SZy2LdtLvkof84KecRMCzEzKSRJ4JM5MOIcRzGrS//uU7x8Z8xW9oK9OORVPnMl2G7fOzn/h2
- jqi27hln7v0BthDXj+flfDIjhHffamvrQa2YEZ3V8zCuEsKjS1KyPYeBuTKWZ51FP6LUJdzEQ
- w4jLblONB0BZfaeu2rfwVUTtlVG67KL5tQsZciaEFQfn7s6EzB+ld2Ey+IBdVKYdROpxwIdCo
- WnS42dTOPZXbvHIdgVZGWG4q24V6oj5bGArjZnPyllEcFZAidRMXskpkE1roK5F5pNCjYTSif
- ToVFja0TYS34csEs5ln72/fzfUeC2RpMhPJF1+9rM8IPM6h2Dvb4FtuNuscWmjhHmnt84h2n3
- cYQjLHYZrnYOxBxIb6MNb7iJ4XS9MdoRGAYeXqE8+7bLa20cWO5EYbX27QWhkuqapMHGiA+P3
- AzPDo9R72w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtD5EwmDQJvx2yhG3cd6hKh-qJYW15DpW5cdPkgUc2tFfA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Neumann <mail@richard-neumann.de>
+Hi Vincent,
 
-Added Richard Neumann (me) to the list of maintainers for the
-AMD Sensor Fusion Hub driver.
+On Wed, Jan 27, 2021 at 05:21:15PM +0100, Vincent Guittot wrote:
+> Hi Cristian,
+> 
+> 
+> On Tue, 12 Jan 2021 at 20:20, Cristian Marussi <cristian.marussi@arm.com> wrote:
+> >
+> > Hi all,
+> >
+> > The current SCMI implementation does not provide an interface to easily
+> > develop and include a custom vendor protocol implementation as prescribed
+> > by the SCMI standard, also because, there is not currently any custom
+> > protocol in the upstream to justify the development of a custom interface
+> > and its maintenance.
+> >
+> > Moreover the current interface exposes protocol operations to the SCMI
+> > driver users attaching per-protocol operations directly to the handle
+> > structure, which, in this way, tends to grow indefinitely for each new
+> > protocol addition.
+> >
+> > Beside this, protocols private data are also exposed via handle *_priv
+> > pointers, making such private data accessible also to the SCMI drivers
+> > even if neither really needed nor advisable.
+> >
+> > This series wants to address this by simplifying the SCMI protocols
+> > interface and reducing it, roughly, to these common generic operations:
+> >
+> >         - handle->devm_get_protocol()
+> >         -  handle->devm_put_protocol()
+> >         - handle->notify_ops()
+> >
+> > All protocols' private data pointers are removed from handle too and made
+> > accessible only to the protocols code through dedicated internal helpers.
+> >
+> > The concept of protocol handle is also introduced in the SCMI protocol code
+> > to represent a protocol instance initialized against a specific SCMI
+> > instance (handle), so that all the new protocol code uses such protocol
+> > handles wherever previously SCMI handle was used: this enable tigther
+> > control of what is exposed to the protocol code vs the SCMI drivers.
+> >
+> > Moreover protocol initialization is moved away from device probe and now
+> > happens on demand when the first user shows up (first .get_protocol), while
+> > de-initialization is performed once the last user of the protocol, even in
+> > terms of registered notifications callback, is gone, with the SCMI core
+> > taking care to perform all the needed underlying resource accounting.
+> >
+> > This way any new future standard or custom protocol implementation will
+> > expose a common unified interface which does not need to be extended
+> > endlessly: no need to maintain a custom interface only for vendor protos.
+> > SCMI drivers written on top of standard or custom protocols will use this
+> > same common interface to access any protocol operations.
+> >
+> > All existent upstream SCMI drivers are converted to this new interface.
+> >
+> > In order to make this migration painless and to avoid the need of a big
+> > un-mergeable jumbo patch touching all over the protocols and drivers (like
+> > it was in v2), since v3 the migration process has been heavily split with a
+> > bit of transient code added along the way (to preserve bisectability) and
+> > finally removed towards the ends of the series.
+> > Protocols and SCMI drivers migration to the new interface happens along
+> > patches 10->29.
+> >
+> > Note that even in v5 all the related SCMI drivers maintainers are still NOT
+> > CC'ed given I am still sort of gather consensus about the interface itself.
+> >
+> > Leveraging this new centralized and common initialization flow we took
+> > care also to refactor and simplify protocol-events registration and remove
+> > *notify_priv from the handle interface making it accessible only to the
+> > notification core.
+> >
+> > Patch 35 builds on top of this new interface and introduces a mechanism to
+> > define an SCMI protocol as a full blown module (possibly loadable) while
+> > leaving the core dealing with proper resource accounting.
+> > Standard protocols are still kept as builtins in this series, though.
+> >
+> > Finally, patch 36 introduces dynamic SCMI devices creation to avoid having
+> > to update the static module device table in the core each time a new driver
+> > is added.
+> >
+> > The whole SCMI stack can still be built alternatively as a module, with all
+> > the standard protocols included in scmi-module.ko in such a case.
+> >
+> > On top of this series an example SCMI Custom protocol 0x99 and related
+> > SCMI Custom Dummy driver has been built and it is available at [1] as a
+> > series of DEBUG patches on top this same series.
+> >
+> > The series is currently based on for-next/scmi [2] on top of:
+> >
+> > commit 6054d97ab512 ("MAINTAINERS: Update ARM SCMI entry")
+> >
+> > Any feedback welcome.
+> 
+> I have tested your patchset on my setup which includes:
+> 
+> - scmi performance protocol
+> - scmi power domain protocol
+> - scmi clock protocol
+> - scmi sensor protocol
+> - scmi notification
+> - registration of a custom scmi module (still under dev)
+> - 2 scmi channels
+> 
+> And everything worked fine. So FWIW,
+> 
+> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> 
 
-Signed-off-by: Richard Neumann <mail@richard-neumann.de>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Great !
+Thanks to have spent time on this.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 992fe3b0900a..de28236a08fe 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -958,6 +958,7 @@ F:	drivers/net/ethernet/amd/xgbe/
- AMD SENSOR FUSION HUB DRIVER
- M:	Nehal Shah <nehal-bakulchandra.shah@amd.com>
- M:	Sandeep Singh <sandeep.singh@amd.com>
-+M:	Richard Neumann <mail@richard-neumann.de>
- L:	linux-input@vger.kernel.org
- S:	Maintained
- F:	Documentation/hid/amd-sfh*
--- 
-2.30.0
+Cristian
 
+> >
+> > Thanks,
+> >
+> > Cristian
+> >
+> > ---
+> > v4 --> v5
+> > - using standard kernel list instead of ad-hoc lists in 36/36
+> > - renamed devm_get/put_ops to devm_get/put_protocol
+> > - dropped RFC patch on non devres get/put_ops
+> >
+> > v3 --> v4
+> > - rebased on sudeep/for-next/scmi v5.11-rc1
+> > - added a few comments more
+> >
+> > v2 --> v3
+> > - added dynamic SCMI devices creation (getting rid of static device table)
+> > - heavy split of protocols and drivers migrations to the new interface
+> > - rebased on top of next-20201201 so migrating also:
+> >   + SCMIv3.0 Voltage Domain protocol & SCMI Regulator
+> >   + SCMIv3.0 Sensor Extensions
+> >
+> > v1 --> v2
+> > - rebased on for-next/scmi v5.10-rc1
+> > - introduced protocol handles
+> > - added devres managed devm_ variant for protocols operations
+> > - made all scmi_protocol refs const
+> > - introduced IDR to handle protocols instead of static array
+> > - refactored code around fast path
+> >
+> > [1]:https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_modules_ext_V5/
+> > [2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+> >
+> >
+> > Cristian Marussi (36):
+> >   firmware: arm_scmi: review protocol registration interface
+> >   firmware: arm_scmi: introduce protocol handle definitions
+> >   firmware: arm_scmi: introduce devres get/put protocols operations
+> >   firmware: arm_scmi: make notifications aware of protocols users
+> >   firmware: arm_scmi: introduce new devres notification ops
+> >   firmware: arm_scmi: refactor events registration
+> >   firmware: arm_scmi: convert events registration to protocol handles
+> >   firmware: arm_scmi: add new protocol handle core xfer ops
+> >   firmware: arm_scmi: add helper to access revision area memory
+> >   firmware: arm_scmi: port Base protocol to new interface
+> >   firmware: arm_scmi: port Perf protocol to new protocols interface
+> >   cpufreq: scmi: port driver to the new scmi_perf_proto_ops interface
+> >   firmware: arm_scmi: remove legacy scmi_perf_ops protocol interface
+> >   firmware: arm_scmi: port Power protocol to new protocols interface
+> >   firmware: arm_scmi: port GenPD driver to the new scmi_power_proto_ops
+> >     interface
+> >   firmware: arm_scmi: remove legacy scmi_power_ops protocol interface
+> >   firmware: arm_scmi: port Clock protocol to new protocols interface
+> >   clk: scmi: port driver to the new scmi_clk_proto_ops interface
+> >   firmware: arm_scmi: remove legacy scmi_clk_ops protocol interface
+> >   firmware: arm_scmi: port Reset protocol to new protocols interface
+> >   reset: reset-scmi: port driver to the new scmi_reset_proto_ops
+> >     interface
+> >   firmware: arm_scmi: remove legacy scmi_reset_ops protocol interface
+> >   firmware: arm_scmi: port Sensor protocol to new protocols interface
+> >   hwmon: (scmi) port driver to the new scmi_sensor_proto_ops interface
+> >   firmware: arm_scmi: remove legacy scmi_sensor_ops protocol interface
+> >   firmware: arm_scmi: port SystemPower protocol to new protocols
+> >     interface
+> >   firmware: arm_scmi: port Voltage protocol to new protocols interface
+> >   regulator: scmi: port driver to the new scmi_voltage_proto_ops
+> >     interface
+> >   firmware: arm_scmi: remove legacy scmi_voltage_ops protocol interface
+> >   firmware: arm_scmi: make references to handle const
+> >   firmware: arm_scmi: cleanup legacy protocol init code
+> >   firmware: arm_scmi: cleanup unused core xfer wrappers
+> >   firmware: arm_scmi: cleanup events registration transient code
+> >   firmware: arm_scmi: make notify_priv really private
+> >   firmware: arm_scmi: add protocol modularization support
+> >   firmware: arm_scmi: add dynamic scmi devices creation
+> >
+> >  drivers/clk/clk-scmi.c                     |  27 +-
+> >  drivers/cpufreq/scmi-cpufreq.c             |  37 +-
+> >  drivers/firmware/arm_scmi/base.c           | 140 ++--
+> >  drivers/firmware/arm_scmi/bus.c            | 100 ++-
+> >  drivers/firmware/arm_scmi/clock.c          | 129 ++--
+> >  drivers/firmware/arm_scmi/common.h         | 117 +++-
+> >  drivers/firmware/arm_scmi/driver.c         | 759 +++++++++++++++++++--
+> >  drivers/firmware/arm_scmi/notify.c         | 297 ++++++--
+> >  drivers/firmware/arm_scmi/notify.h         |  38 +-
+> >  drivers/firmware/arm_scmi/perf.c           | 262 +++----
+> >  drivers/firmware/arm_scmi/power.c          | 134 ++--
+> >  drivers/firmware/arm_scmi/reset.c          | 146 ++--
+> >  drivers/firmware/arm_scmi/scmi_pm_domain.c |  26 +-
+> >  drivers/firmware/arm_scmi/sensors.c        | 230 ++++---
+> >  drivers/firmware/arm_scmi/system.c         |  61 +-
+> >  drivers/firmware/arm_scmi/voltage.c        | 122 ++--
+> >  drivers/hwmon/scmi-hwmon.c                 |  24 +-
+> >  drivers/regulator/scmi-regulator.c         |  40 +-
+> >  drivers/reset/reset-scmi.c                 |  33 +-
+> >  include/linux/scmi_protocol.h              | 183 ++---
+> >  20 files changed, 1996 insertions(+), 909 deletions(-)
+> >
+> > --
+> > 2.17.1
+> >
