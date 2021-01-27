@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31461305F68
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948DF305F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343783AbhA0PU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235531AbhA0POu (ORCPT
+        id S234558AbhA0PWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:22:19 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:45542 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343746AbhA0PQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:14:50 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D385BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:14:09 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id d22so2893163edy.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=65ksyZM56LYMi/17n5/nAjH2134nzomrwEiQi+8o7zE=;
-        b=QvBUcDhfRre5rgXFZhYrYnO3VKwX8PbnCtBsVFGAG0PA13IkgQ2XRjN0X9y1v94zoB
-         gBKtWqHyra8gcbf/JCH13pPvPwb9di+6XiLSEtS8n4a+Pyugks026dNW9xRTiMRVkGTv
-         +4z8jRerwsiPf0fcYn2dv4T10Utb66B5Kc59R5bP5W7xttmBxRwM61JT66IJpb0RMYVZ
-         s7TDJw9ZXJcUoyS+J0kUaB534ln2ybiroHCpOMIBnSaR6wPdV39WavvjOKfgCHHRTBAN
-         xrLEy4rM6f6X6c8+fTA0nZbb/twPxjnmX1CkatKEcWHmVjkUoDndSbqDLp1sXYvuFhnx
-         SBWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=65ksyZM56LYMi/17n5/nAjH2134nzomrwEiQi+8o7zE=;
-        b=chdlYSxmh4iyQldI0jbhiNvHwU7TZmSZv/m3dzZwbAM1wHLkbuvCgpaUOxaF2NnA58
-         zeinmMAub17ZABiMDVZ9zevxmrcrCVSbmbinvbb4izJ6D/JomDGrCh8nuas/Ry94oc/b
-         Tb6TyjjbINMr6aHLZ2At1ACOVDTLPwP7HYSuHbDykx+YG5K1ZnJoKtbRtLRmCo/soCp8
-         FNYdOABhfd1eWGilBEpfJbOuWDkbaKLFSLfURasxZPd0SraDPLpgIJHHEmEWnYhQRNpw
-         I1VB069hwgWTsKMlg9MuyPNaizLHn07d3yt4+kWkPPweENpuO/xrrRfVBcHktug3tood
-         62hg==
-X-Gm-Message-State: AOAM533E0xkC7N+Qc9w1wTNjik9uc0EfnQiXOz3Q9SAeNrsBeG9kw0wO
-        Kv70slIbAGTC/rT7xAIZ7d+7nA==
-X-Google-Smtp-Source: ABdhPJwVjoCGsw0QUtN6fAwKI2x8vq18sti3VRWHotgE12FpaSzKE03fMU244ooBacr70pUhd3FdIg==
-X-Received: by 2002:a05:6402:4310:: with SMTP id m16mr9573676edc.207.1611760448361;
-        Wed, 27 Jan 2021 07:14:08 -0800 (PST)
-Received: from google.com ([2a00:79e0:2:11:1ea0:b8ff:fe79:fe73])
-        by smtp.gmail.com with ESMTPSA id m10sm1470468edi.54.2021.01.27.07.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 07:14:07 -0800 (PST)
-Date:   Wed, 27 Jan 2021 16:14:01 +0100
-From:   Piotr Figiel <figiel@google.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH v3] fs/proc: Expose RSEQ configuration
-Message-ID: <YBGDOQutIx53Xbe+@google.com>
-References: <20210126185412.175204-1-figiel@google.com>
- <177374191.8780.1611694726862.JavaMail.zimbra@efficios.com>
+        Wed, 27 Jan 2021 10:16:11 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RFEVCG058568;
+        Wed, 27 Jan 2021 09:14:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611760471;
+        bh=4NQBA4dCnOaDfbMECaOrJvmo/NRM4KAaRb+m2hEf9hc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Wz9Ku7VryzljpzemnYEFqMC3Dtk/2IbrVchF2rXdF05OoeRrMddUnwoR5puTy4s0y
+         0At5KYZpE3dlVMwhfM8uWvN0SgZpP2DNwWS6gyWIdxYY+UQU5Yge3Y3dWvocbn2crd
+         EsVThcd7KzqJOwdIFCA9kLpJ1TrF+X+1fefQkzso=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RFEVBV079130
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Jan 2021 09:14:31 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
+ Jan 2021 09:14:31 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 27 Jan 2021 09:14:31 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RFEVXH107951;
+        Wed, 27 Jan 2021 09:14:31 -0600
+Date:   Wed, 27 Jan 2021 09:14:31 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] arm64: dts: ti: k3-j7200: Add support for higher
+ speed modes in MMCSD subsystems
+Message-ID: <20210127151431.pzqpbtumqzpqiqop@delta>
+References: <20210127150815.16991-1-a-govindraju@ti.com>
+ <20210127150815.16991-3-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <177374191.8780.1611694726862.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210127150815.16991-3-a-govindraju@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 03:58:46PM -0500, Mathieu Desnoyers wrote:
-> ----- On Jan 26, 2021, at 1:54 PM, Piotr Figiel figiel@google.com wrote:
-> [...]
-> > diff --git a/kernel/rseq.c b/kernel/rseq.c
-> > index a4f86a9d6937..6aea67878065 100644
-> > --- a/kernel/rseq.c
-> > +++ b/kernel/rseq.c
-> > @@ -322,8 +322,10 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32,
-> > rseq_len,
-> > 		ret = rseq_reset_rseq_cpu_id(current);
-> > 		if (ret)
-> > 			return ret;
-> > +		task_lock(current);
-> > 		current->rseq = NULL;
-> > 		current->rseq_sig = 0;
-> > +		task_unlock(current);
-> > 		return 0;
-> > 	}
-> > 
-> > @@ -353,8 +355,10 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32,
-> > rseq_len,
-> > 		return -EINVAL;
-> > 	if (!access_ok(rseq, rseq_len))
-> > 		return -EFAULT;
-> > +	task_lock(current);
-> > 	current->rseq = rseq;
-> > 	current->rseq_sig = sig;
-> > +	task_unlock(current);
+On 20:38-20210127, Aswath Govindraju wrote:
+> The following speed modes are now supported in J7200 SoC,
+> - HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
+> - UHS-I speed modes in MMCSD1 subsystem [1].
 > 
-> So AFAIU, the locks are there to make sure that whenever a user-space
-> thread reads that state through that new /proc file ABI, it observes
-> coherent "rseq" vs "rseq_sig" values.
-
-Yes, that was the intention.
-
-> However, I'm not convinced this is the right approach to consistency
-> here.
+> Add support for UHS-I modes by adding voltage regulator device tree nodes
+> and corresponding pinmux details, to power cycle and voltage switch cards.
+> Also set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1
+> device tree nodes.
 > 
-> Because if you add locking as done here, you ensure that the /proc
-> file reader sees coherent values, but between the point where those
-> values are read from kernel-space, copied to user-space, and then
-> acted upon by user-space, those can very well have become outdated if
-> the observed process runs concurrently.
+> [1] - section 12.3.6.1.1 MMCSD Features, in
+>       https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+> 
+> performance test logs using EXT4 filesystem for eMMC HS400 speed mode,
+> https://pastebin.ubuntu.com/p/KFphDYXj93/
+> 
 
-You are right here, but I think this comment is valid for most of the
-process information exported via procfs. The user can almost always make
-a time of check/time of use race when interacting with procfs. I agree
-that the locking added in v3 doesn't help much, but at least it does
-provide a well defined answer: i.e. at least in some point of time the
-effective configuration was as returned.
-It makes it a bit easier to document and reason about the file contents,
-compared to the inconsistent version.
+5.11.0-rc3-next-20210118-00004 :
 
-> So my understanding here is that the only non-racy way to effectively
-> use those values is to either read them from /proc/self/* (from the
-> thread owning the task struct), or to ensure that the thread is
-> stopped/frozen while the read is done.
+a) could you make sure to post patches when you test with latest next?
+b) I see 2 patches in this series, but delta seems to be 4 patches, is
+there a dependency I am not aware of?
 
-Constraining this solely to the owning thread I think is a bit too
-limiting. I think we could limit it to stopped threads but I don't think
-it eliminates the potential of time of check/time of use races for the
-user.  In this shape as in v3 - it's up to the user to decide if there
-is a relevant risk of a race, if it's unwanted then the thread can be
-stopped with e.g. ptrace, cgroup freeze or SIGSTOP.
-
-Best regards,
-Piotr.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
