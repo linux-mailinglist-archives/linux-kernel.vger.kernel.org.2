@@ -2,109 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8102305313
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E72030530F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhA0F6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:58:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235008AbhA0DPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:15:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7F0205CA;
-        Wed, 27 Jan 2021 03:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611717276;
-        bh=D0Qq+Fw7Ddpu0yizF3n5QBzokiqxWrewo5KH/Easwik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fYWt+0D25u7m4Iq1090WJSF102xxsHTBSVde3fj9qpWZTIFJNRCq2YJIMyX8sPprW
-         pUCd7qr/nvaZRES0gBYmtLm5Qx4GIKOelnPMlNH5EjgkAndsfH/8qEdgZSbtXRs6U/
-         9eItQFngZuPySenDulB9lX+ZhcDRMnKxW9Z6bZzAXlPHMgsF6sMmOnkEdB8/66qoNQ
-         FVt9rhhyVrXvbPNZX7/+0k0Inl2MAyDzoQOu7U9UsyYZHktIE35SYCBAboT2xNIqgS
-         SJNq4zClby/GkEeWJ0YyYo113vyObZG8w26okc3VhHJd/X0T1iXH/Z/rVAcoUvHo+j
-         8Vl4pUp/eDKfQ==
-Date:   Tue, 26 Jan 2021 19:14:35 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the xfs tree
-Message-ID: <20210127031435.GB7695@magnolia>
-References: <20210125095532.64288d47@canb.auug.org.au>
- <20210125132616.GB2047559@bfoster>
+        id S233145AbhA0F66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:58:58 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:55198 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235462AbhA0DTU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:19:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1611717480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HIAx60ikiQQYOQQjrJJlart459I8rbWOAQpqNzkAUB0=;
+        b=Xe7H7IsLrpXoyYgoLqQnxDt1iDBSv2Dqs4ZrK5P6y9kxO+oyr5ZNIVjF3wYAaOJHqKFObC
+        O2Zu/ccltQHmYED4F2zn+f7M0f3m24p7aoOmMhWck2jA9nvllnMxk0hMwp0RsnwCebmH9c
+        YSFT5ijaRAg/mfxri2vd0uRUof78ATQ=
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-am5eur02lp2054.outbound.protection.outlook.com [104.47.4.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-29--dFvhWaGPwWFFGJ0Mpangw-1; Wed, 27 Jan 2021 04:17:59 +0100
+X-MC-Unique: -dFvhWaGPwWFFGJ0Mpangw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HnawU/7RWikxBQqEe9lRNNg72Tr4D9yP2G4tupQGGtx23aMGrX760SproBllEfPh7OYgQNwiwr7EtPWGxA+8lSf04dG3r17clsgRzyOeiNmJLqfyPOfeMBK6lgq0cmrxOrZTmtbntk3a9iU176APONCNpHkzO8eyB67V+ytD2Vp9kib4yizmvUjRyji0Mccz0/LX0S3lcPVx/qSpQyzi1mqmmuvaL8HrQJhFWzzK4XSzvvU1pvxT2ztwXQXUzTtnAvJAAHxkjdB6bAlLSnnyyS6SeldSlRqJIagz5sb33PX+Zs7z9dt764n1+hyPx4c2PvdMaR8UEzkBl2pn2okzMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HIAx60ikiQQYOQQjrJJlart459I8rbWOAQpqNzkAUB0=;
+ b=Y2OLctzJvoB3YElcJUr0fo0hjuZYBvd4EAhSKzpDB8BEaBDMzeRzn2xKmhTzqFMZhITOb8UWCam0Y+9i4Rgk/q6KUEdVLlEvaKGczafV5I87Jg9gvkzjuA0LUoUqSAyxtOzOFR0iEbG8xgMtuArJ2jNJ2SIBK2ZXI5jTehivNJg7+XwxCG+2Ajqaqv1GHNrg6aFulC1R9QS/f6cWrwD/4+KReIzliQwfHiqKK/FjvFs+Ur4R+tFVFTdB78SeHw0G5PGN6QDyNCVrpBag7YgwcjpOjPnEOM8pMzltWTDdnnKmrfP6GuG05LdRTZAjOyk+fvEe+i3rsau5PK1M4dAEpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM5PR04MB3089.eurprd04.prod.outlook.com (2603:10a6:206:b::28)
+ by AS8PR04MB7815.eurprd04.prod.outlook.com (2603:10a6:20b:28a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Wed, 27 Jan
+ 2021 03:17:58 +0000
+Received: from AM5PR04MB3089.eurprd04.prod.outlook.com
+ ([fe80::c60:6150:342e:e042]) by AM5PR04MB3089.eurprd04.prod.outlook.com
+ ([fe80::c60:6150:342e:e042%6]) with mapi id 15.20.3805.016; Wed, 27 Jan 2021
+ 03:17:58 +0000
+Subject: Re: [PATCH] fnic: fixup patch to resolve stack frame issues
+To:     Lee Duncan <leeman.duncan@gmail.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Hannes Reinecke <hare@suse.de>, stable@vger.kernel.org
+References: <20210127012124.22241-1-leeman.duncan@gmail.com>
+From:   Lee Duncan <lduncan@suse.com>
+Message-ID: <31165152-290b-ce04-03b7-ab3d63ea0e93@suse.com>
+Date:   Tue, 26 Jan 2021 19:17:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <20210127012124.22241-1-leeman.duncan@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [73.25.22.216]
+X-ClientProxiedBy: AM0PR08CA0035.eurprd08.prod.outlook.com
+ (2603:10a6:208:d2::48) To AM5PR04MB3089.eurprd04.prod.outlook.com
+ (2603:10a6:206:b::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125132616.GB2047559@bfoster>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.20.3] (73.25.22.216) by AM0PR08CA0035.eurprd08.prod.outlook.com (2603:10a6:208:d2::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 03:17:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ad69e69a-4f27-4e85-e38f-08d8c27225ae
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7815:
+X-Microsoft-Antispam-PRVS: <AS8PR04MB7815A75986F211463972B44DDABB0@AS8PR04MB7815.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZvYQuKCWyPEs6k95IfFa+hyx1pcU+ZA+SddcVhNLT7OHTUnaO7HObUAVERYnODUeeVFMjnCTqJmiN3cpSPyB02IdiMzYfZAH98vyIiAK6u7RC/QtpyPIYVwcXNp4hVypS/yfiCBkllGUwdRlS26Fi7HT1v5hKNkfefw1KTngTvR6KZh5WxkC+NYlGPVIZfbl4uLkr5DqhuWXVwVi/cZhzyBKRcIqfYkukL7TiDvFlQbaJJu7wP0flVAF/yUtNKL6vm7GJUDmqrBl+8fcXuvUYShk2Nawn8TsoBRh9lxdNXhhyr2rlHKPcGbBDz7E2NdhXNk0GWounsCGGMRAR7kRMAuMWOetcx/uDrUyOgfC3CzbIIFQ7zALbyStC7d1nNvIMzY08mVaYZSGqzFsmsV7hrmbzVNW1/T2FJh1nvvXXLaV/E6G8G631J6oLw3FhE6IjF68V36/QQK88zbk3l3rNOEPC9gmYVNUPCBlBgAoJclW/n72BoMXXq85TBl1BIJVHP9++1zd+bMwNh4apOnsMw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3089.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39850400004)(366004)(136003)(376002)(346002)(52116002)(31686004)(16576012)(316002)(956004)(2616005)(31696002)(2906002)(478600001)(86362001)(4326008)(66476007)(66556008)(66946007)(36756003)(6486002)(53546011)(16526019)(186003)(26005)(8936002)(8676002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S1JncWhRY01wSmxINVh6TGdrL0NNeGV3SDZYbU82MlN4MDV3Q2I5NzBzbGZG?=
+ =?utf-8?B?ZHV3Qjdienk4ZjNjN0tzSUdzdjRnLzdtQmxyZzVyWS81TUtESFJ6OEVqclFu?=
+ =?utf-8?B?enczYWxta1Irb0RKV2xxeG8rQUg0Z3VPY2V2bmdUMnVjd0Y4a3R3Y09tL3NB?=
+ =?utf-8?B?V29TZE92MUcrUkpsM3NuQ2g0Z3Q2TEFNTUxKRThzSHFKaDhWTndIR3hVQThQ?=
+ =?utf-8?B?QXk3YWt4NDkybFJpUTNPMDNZN0pvd1FxdkRqMmcvQlJldTh5eThIOFZ1RWI4?=
+ =?utf-8?B?dEs3UWJSUFAvNkhVUmdLajFCbzh3NFl4TG5OT2k0MUVIcVNRVUlzTXYrNjZ0?=
+ =?utf-8?B?OTRiNWoxbmRQODRubVgzNXBMNkJ0T2dKQTFvZTE1QkQ4Q2xEcDJNdmtydFRq?=
+ =?utf-8?B?RmxzSXMzYXBobmVoMUtlUGdCa2xJVS9rQTRVYmJGYjhERmxzSzVGVEFUUnI5?=
+ =?utf-8?B?cmNaS0pyeEZxb2taLzlZbDk0S0FaM2JyanZWckRsdUpEVlg4di83V0xHV0VY?=
+ =?utf-8?B?enpsNzdBQkdMWVpJQzdoSFVnWkhuSTVZK1VhTkoyUk1ZcmpRVzkxMCsrSWJn?=
+ =?utf-8?B?OUlQQkRueVJRK3pvZXBLTmNXVFgzMkhUSSsvOFBlYmdiK1NBZUFNNDBiVVE3?=
+ =?utf-8?B?ek00T2wyM2ZIVVlCSWVFM1V4eVBJcGI3dnFxQ2RsSzBCMkdRSTF5SnFQZCt3?=
+ =?utf-8?B?SldSZDBWNzQzYU5aOHZmYmFsTmhBQUp3OURzYVJvNWRRRVV1dE1oNHRmTFEr?=
+ =?utf-8?B?RVFQRVd3bGswYkMycmJTRkNWQjQvcHBQamZzMUkweUVCRW9BUEYvUXdlZkV0?=
+ =?utf-8?B?Z28xSyt3NVl4ZFAva0hDSUNTenk5WnpDUzJpSmoxV3F2ZG44eGNpT0xVUkxt?=
+ =?utf-8?B?djNLWitlMnZQS0owTUI2VTNCbkxOYmVSRXRudzRnYWJaUFFRYmVRQlNlZGFo?=
+ =?utf-8?B?RHNSblZTZDhIY1VHcmMybDdpRjJkbXFOZnZ5RFIyZHB1dzhTemkxRUNoOUVJ?=
+ =?utf-8?B?OE1lU0xCMk5KS3V3eUowazBNQ2hWOWZDNlVYWVhqVjk4ZnNWWmJVQU02Yk02?=
+ =?utf-8?B?b0tsLzJKM3NEOC8yY1hRWTlGbXU3ajV5YWFqNGFzekZkL0Ezc01mYWZuQ09N?=
+ =?utf-8?B?R1pPUExoK1RQbXd1NVErS0NRTXZ1NlRqNDg1bnNzZVZyb09jYjR5VDk4cldF?=
+ =?utf-8?B?UC85bktCMFovT3N6T2hEZzNVNUZubFM2YXhrSnNXQndnZUJrdHVmSjh2WXN2?=
+ =?utf-8?B?bzU3Kzlrc0tFd2dvYU42d0I3dUdRZ0NxK3dKa3FDSUZRK3o5dlpUUU8wM3NB?=
+ =?utf-8?B?VmdNdkJhV2VVZ1B2T2xwNmNUcDJack9WWU9BRnNqVHNMV2VZNzRzTk52MDFv?=
+ =?utf-8?B?Uk1sRTdNeVZEd0JiQ3dWN1hTZWJlYVVCNjVIRUt3VEp0WkhxblhXZGtUUnlq?=
+ =?utf-8?Q?WptE3DDk?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad69e69a-4f27-4e85-e38f-08d8c27225ae
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3089.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 03:17:58.8273
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TSj5cgcm7myQ7GbDf6hCld6ba0NUh8HNiS0HBktjAxuA7CCp1wKk/LtEUQPfk1McT/liWkgPg93k1ntMbQ3GzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7815
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:26:16AM -0500, Brian Foster wrote:
-> On Mon, Jan 25, 2021 at 09:55:32AM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the xfs tree, today's linux-next build (powerpc
-> > ppc64_defconfig) produced this warning:
-> > 
-> > fs/xfs/xfs_log.c: In function 'xfs_log_cover':
-> > fs/xfs/xfs_log.c:1111:16: warning: unused variable 'log' [-Wunused-variable]
-> >  1111 |  struct xlog  *log = mp->m_log;
-> >       |                ^~~
-> > 
-> > Introduced by commit
-> > 
-> >   303591a0a947 ("xfs: cover the log during log quiesce")
-> > 
+On 1/26/21 5:21 PM, Lee Duncan wrote:
+> From: Hannes Reinecke <hare@suse.de>
 > 
-> Oops, patch below. Feel free to apply or squash into the original
-> commit.
+> Commit 42ec15ceaea7 fixed a gcc issue with unused variables, but
+> introduced errors since it allocated an array of two u64-s but
+> then used more than that. Set the arrays to the proper size.
 > 
-> Brian
-> 
-> --- 8< ---
-> 
-> From 6078f06e2bd4c82111a85a2032c39a56654b0be6 Mon Sep 17 00:00:00 2001
-> From: Brian Foster <bfoster@redhat.com>
-> Date: Mon, 25 Jan 2021 08:22:56 -0500
-> Subject: [PATCH] xfs: fix unused log variable in xfs_log_cover()
-> 
-> The log variable is only used in kernels with asserts enabled.
-> Remove it and open code the dereference to avoid unused variable
-> warnings.
-> 
-> Signed-off-by: Brian Foster <bfoster@redhat.com>
-
-Looks ok to me...
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
+> Fixes: 42ec15ceaea74b5f7a621fc6686cbf69ca66c4cf
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hannes Reinecke <hare@suse.de>
+> Signed-off-by: Lee Duncan <lduncan@suse.com>
 > ---
->  fs/xfs/xfs_log.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/scsi/fnic/vnic_dev.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-> index 58699881c100..d8b814227734 100644
-> --- a/fs/xfs/xfs_log.c
-> +++ b/fs/xfs/xfs_log.c
-> @@ -1108,12 +1108,11 @@ static int
->  xfs_log_cover(
->  	struct xfs_mount	*mp)
+> diff --git a/drivers/scsi/fnic/vnic_dev.c b/drivers/scsi/fnic/vnic_dev.c
+> index 5988c300cc82..d29999064b89 100644
+> --- a/drivers/scsi/fnic/vnic_dev.c
+> +++ b/drivers/scsi/fnic/vnic_dev.c
+> @@ -697,7 +697,7 @@ int vnic_dev_hang_notify(struct vnic_dev *vdev)
+>  
+>  int vnic_dev_mac_addr(struct vnic_dev *vdev, u8 *mac_addr)
 >  {
-> -	struct xlog		*log = mp->m_log;
->  	int			error = 0;
->  	bool			need_covered;
+> -	u64 a[2] = {};
+> +	u64 a[ETH_ALEN] = {};
+>  	int wait = 1000;
+>  	int err, i;
 >  
-> -	ASSERT((xlog_cil_empty(log) && xlog_iclogs_empty(log) &&
-> -	        !xfs_ail_min_lsn(log->l_ailp)) ||
-> +	ASSERT((xlog_cil_empty(mp->m_log) && xlog_iclogs_empty(mp->m_log) &&
-> +	        !xfs_ail_min_lsn(mp->m_log->l_ailp)) ||
->  	       XFS_FORCED_SHUTDOWN(mp));
+> @@ -734,7 +734,7 @@ void vnic_dev_packet_filter(struct vnic_dev *vdev, int directed, int multicast,
 >  
->  	if (!xfs_log_writable(mp))
-> -- 
-> 2.26.2
+>  void vnic_dev_add_addr(struct vnic_dev *vdev, u8 *addr)
+>  {
+> -	u64 a[2] = {};
+> +	u64 a[ETH_ALEN] = {};
+>  	int wait = 1000;
+>  	int err;
+>  	int i;
+> @@ -749,7 +749,7 @@ void vnic_dev_add_addr(struct vnic_dev *vdev, u8 *addr)
+>  
+>  void vnic_dev_del_addr(struct vnic_dev *vdev, u8 *addr)
+>  {
+> -	u64 a[2] = {};
+> +	u64 a[ETH_ALEN] = {};
+>  	int wait = 1000;
+>  	int err;
+>  	int i;
 > 
+
+This may not be correct. Please do not review this yet. I will re-submit
+once I clear up my confusion.
+
+-- 
+Lee Duncan
+
