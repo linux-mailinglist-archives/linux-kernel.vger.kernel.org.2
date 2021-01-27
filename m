@@ -2,200 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A228E3051B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5176A3051BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhA0FIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:08:40 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58347 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343614AbhA0EUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:20:17 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQVjw2rdQz9sSs;
-        Wed, 27 Jan 2021 15:19:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611721173;
-        bh=hcMVls7/rWUAocZd0P28uIj8Y0Eh18tkBzcPYsyo+VA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mYDysqBSFLze7BgXbbcXvcRGKhJxIQzJJRpRWCuezqicyh6QlziEXHOWxjdnbbBD4
-         acmcXwUQh2N2g2CiSGTw9NJdIWEKcqyoZ613e0rSKKJufPfUKhVqynUZLADWVdWhLR
-         k36YHYRDGlDM3YTtdMnDyi27aNWwce27xpukpYD1vMvO16zHgbT/2ODqFD3FzJ3HSH
-         Tt3o+y123dfufStItIxvR/8FLN36SScYq+nkIHq1KNVRt+O6q+dCt49f5z2dK8kIug
-         dhA+DKHS6g4jwEOFsjrF/KoE2FwvxZU1/g2CxbFj5O2XwD3WjBEDTeGUB4IcDWb07P
-         laJtQOGwa3fxA==
-Date:   Wed, 27 Jan 2021 15:19:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Subject: linux-next: manual merge of the integrity tree with the pidfd tree
-Message-ID: <20210127151931.530d7aa9@canb.auug.org.au>
+        id S231916AbhA0FKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:10:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238648AbhA0E1T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 23:27:19 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D428C061222;
+        Tue, 26 Jan 2021 20:23:49 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id j21so330905pls.7;
+        Tue, 26 Jan 2021 20:23:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PKMm5WhbWomId6dxJtacT4f+Nb7CE6/RbR+lQ9lmvb8=;
+        b=UW33n3jIrggYz8eQvlnv9rDrFdzrfgPgGdjalR9v2xllzOnf1kAkZFmJwHc2UdcKPO
+         kQe7jUjYGLp4dApSP0ZRnEavAo2kfz4QSb1BncBDwk0jgM4jOhe8tHNDGdobFRA53syd
+         CNL1uyWHgiEyJsighUHWku3991edDvA+BJ2IoZjZuoHVbxm6znDXQQJpHSDrcSHmqFRg
+         LTfCDVY3+hKudRCtZ2YY6TgyZABOPu3dlmHkjvVQ7bWU/O0v7lznEOyYOQWM0zdl5zSE
+         YHLNeucGEF+A0ZhoUa/2B0YtGvhoBaRPOmGM0GTO3IrJN3LNZ7yOjcSWCk1G9ubFK+dH
+         vkfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PKMm5WhbWomId6dxJtacT4f+Nb7CE6/RbR+lQ9lmvb8=;
+        b=LkXkJQ7Woem6GmnIBAQyz5Sxv0wk+bstjIsgNUqwLfM4w49WvenCx/LK00yMXcKWfu
+         aYBrD5cvXJ0BXs46NrAE6TeI4z79/PyFt8ef3tB5u6GpW0n738kAVhjE2xXMKUlR5hSN
+         YqkY3rjRUQUB3QoKX045CiGuNW/opTjaB1cRsOTLylAZUKxzO8EuCa5XP5kK1fkHtA1z
+         eVS5WMvd4RG6m8U/xFM4of06ZhaJBcwUr2BbOBn/MguX1kB9Iz0ntSKedXXuejAX3nk3
+         91xxzHz1rNODL+DeoaDFjmMcXIQpmE4lXrfKRCgutthLro7u3dU0ig9kdskzUcwRF4Oz
+         ImGw==
+X-Gm-Message-State: AOAM531EH6PTn5ZhavnirS+Rk8MYmYUL3TV1F0sB59ggrFOPuLMx2g1I
+        83y++V5VBhpbeEYRbKnGjC4=
+X-Google-Smtp-Source: ABdhPJyJiZ1xdd00sOoiKgrEjoKuhoY44Kn3r4lbP0vycU+dJuEXzZdcYHq6tuAEpXZUgpmZuBalmA==
+X-Received: by 2002:a17:90a:4a4:: with SMTP id g33mr3330295pjg.221.1611721428398;
+        Tue, 26 Jan 2021 20:23:48 -0800 (PST)
+Received: from ubuntu ([1.53.255.147])
+        by smtp.gmail.com with ESMTPSA id n12sm605264pff.29.2021.01.26.20.23.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 26 Jan 2021 20:23:47 -0800 (PST)
+Date:   Wed, 27 Jan 2021 11:23:41 +0700
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
+ bpf_map_area_alloc
+Message-ID: <20210127042341.GA4948@ubuntu>
+References: <20210126082606.3183-1-minhquangbui99@gmail.com>
+ <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X+mOyQpyJ7UhJU.3fj3vIA1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X+mOyQpyJ7UhJU.3fj3vIA1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jan 26, 2021 at 09:36:57AM +0000, Lorenz Bauer wrote:
+> On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+> >
+> > In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+> > the expression becomes the multiplication between 2 32-bit integer which
+> > can potentially leads to integer overflow. As a result,
+> > bpf_map_area_alloc() allocates less memory than needed.
+> >
+> > Fix this by casting 1 operand to u64.
+> 
+> Some quick thoughts:
+> * Should this have a Fixes tag?
 
-Hi all,
+Ok, I will add Fixes tag in later version patch.
 
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
+> * Seems like there are quite a few similar calls scattered around
+> (cpumap, etc.). Did you audit these as well?
 
-Today's linux-next merge of the integrity tree got a conflict in:
+I spotted another bug after re-auditting. In hashtab, there ares 2 places using
+the same calls
 
-  security/integrity/ima/ima_main.c
+	static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+	{
+		/* ... snip ... */
+		if (htab->n_buckets == 0 ||
+		    htab->n_buckets > U32_MAX / sizeof(struct bucket))
+			goto free_htab;
 
-between commit:
+		htab->buckets = bpf_map_area_alloc(htab->n_buckets *
+						   sizeof(struct bucket),
+						   htab->map.numa_node);
+	}
 
-  a2d2329e30e2 ("ima: handle idmapped mounts")
+This is safe because of the above check.
 
-from the pidfd tree and commits:
+	static int prealloc_init(struct bpf_htab *htab)
+	{
+		u32 num_entries = htab->map.max_entries;
+		htab->elems = bpf_map_area_alloc(htab->elem_size * num_entries,
+						 htab->map.numa_node);
+	}
 
-  2b4a2474a202 ("IMA: generalize keyring specific measurement constructs")
-  291af651b350 ("IMA: add support to measure buffer data hash")
-  d6e645012d97 ("IMA: define a hook to measure kernel integrity critical da=
-ta")
+This is not safe since there is no limit check in elem_size.
 
-from the integrity tree.
+In cpumap,
 
-In ima_measure_critical_data(), process_buffer_measurement() is called
-with a NULL inode and func set to CRITCTAL_DATA.  In this case, the
-mnt_userns parameter is not used (I followed the call chain down) and
-so I just passed a NULL for it.
+	static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
+	{
+		cmap->cpu_map = bpf_map_area_alloc(cmap->map.max_entries *
+						   sizeof(struct bpf_cpu_map_entry *),
+						   cmap->map.numa_node);
+	}
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+I think this is safe because max_entries is not permitted to be larger than NR_CPUS.
 
---=20
-Cheers,
-Stephen Rothwell
+In stackmap, there is a place that I'm not very sure about
 
-diff --cc security/integrity/ima/ima_main.c
-index cb1c56eccd6d,6a429846f90a..000000000000
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@@ -816,22 -809,22 +816,24 @@@ int ima_post_load_data(char *buf, loff_
-  }
- =20
-  /*
--  * process_buffer_measurement - Measure the buffer to ima log.
-+  * process_buffer_measurement - Measure the buffer or the buffer data hash
- + * @mnt_userns:	user namespace of the mount the inode was found from
-   * @inode: inode associated with the object being measured (NULL for KEY_=
-CHECK)
-   * @buf: pointer to the buffer that needs to be added to the log.
-   * @size: size of buffer(in bytes).
-   * @eventname: event name to be used for the buffer entry.
-   * @func: IMA hook
-   * @pcr: pcr to extend the measurement
--  * @keyring: keyring name to determine the action to be performed
-+  * @func_data: func specific data, may be NULL
-+  * @buf_hash: measure buffer data hash
-   *
--  * Based on policy, the buffer is measured into the ima log.
-+  * Based on policy, either the buffer data or buffer data hash is measured
-   */
- -void process_buffer_measurement(struct inode *inode, const void *buf, int=
- size,
- +void process_buffer_measurement(struct user_namespace *mnt_userns,
- +				struct inode *inode, const void *buf, int size,
-  				const char *eventname, enum ima_hooks func,
-- 				int pcr, const char *keyring)
-+ 				int pcr, const char *func_data,
-+ 				bool buf_hash)
-  {
-  	int ret =3D 0;
-  	const char *audit_cause =3D "ENOMEM";
-@@@ -869,9 -864,8 +873,9 @@@
-  	 */
-  	if (func) {
-  		security_task_getsecid(current, &secid);
- -		action =3D ima_get_action(inode, current_cred(), secid, 0, func,
- -					&pcr, &template, func_data);
- +		action =3D ima_get_action(mnt_userns, inode, current_cred(),
- +					secid, 0, func, &pcr, &template,
-- 					keyring);
-++					func_data);
-  		if (!(action & IMA_MEASURE))
-  			return;
-  	}
-@@@ -929,12 -937,38 +947,38 @@@ void ima_kexec_cmdline(int kernel_fd, c
-  	if (!f.file)
-  		return;
- =20
- -	process_buffer_measurement(file_inode(f.file), buf, size,
- -				   "kexec-cmdline", KEXEC_CMDLINE, 0, NULL,
- -				   false);
- +	process_buffer_measurement(file_mnt_user_ns(f.file), file_inode(f.file),
- +				   buf, size, "kexec-cmdline", KEXEC_CMDLINE, 0,
-- 				   NULL);
-++				   NULL, false);
-  	fdput(f);
-  }
- =20
-+ /**
-+  * ima_measure_critical_data - measure kernel integrity critical data
-+  * @event_label: unique event label for grouping and limiting critical da=
-ta
-+  * @event_name: event name for the record in the IMA measurement list
-+  * @buf: pointer to buffer data
-+  * @buf_len: length of buffer data (in bytes)
-+  * @hash: measure buffer data hash
-+  *
-+  * Measure data critical to the integrity of the kernel into the IMA log
-+  * and extend the pcr.  Examples of critical data could be various data
-+  * structures, policies, and states stored in kernel memory that can
-+  * impact the integrity of the system.
-+  */
-+ void ima_measure_critical_data(const char *event_label,
-+ 			       const char *event_name,
-+ 			       const void *buf, size_t buf_len,
-+ 			       bool hash)
-+ {
-+ 	if (!event_name || !event_label || !buf || !buf_len)
-+ 		return;
-+=20
- -	process_buffer_measurement(NULL, buf, buf_len, event_name,
-++	process_buffer_measurement(NULL, NULL, buf, buf_len, event_name,
-+ 				   CRITICAL_DATA, 0, event_label,
-+ 				   hash);
-+ }
-+=20
-  static int __init init_ima(void)
-  {
-  	int error;
+	static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+	{
+		u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
+		smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
+						 smap->map.numa_node);
+	}
 
---Sig_/X+mOyQpyJ7UhJU.3fj3vIA1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+This is called after another bpf_map_area_alloc in stack_map_alloc(). In the first
+bpf_map_area_alloc() the argument is calculated in an u64 variable; so if in the second
+one, there is an integer overflow then the first one must be called with size > 4GB. I 
+think the first one will probably fail (I am not sure about the actual limit of vmalloc()),
+so the second one might not be called.
 
------BEGIN PGP SIGNATURE-----
+Overall, I think it is error prone in this pattern, maybe we should use typecasting in all
+similar calls or make a comment why we don't use typecasting. As I see typecasting is not so
+expensive and we can typecast the sizeof() operand so this change only affect 32-bit
+architecture.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAQ6dMACgkQAVBC80lX
-0GzKXAf/RZl7tG3seTEZtjpJpsBTRyUnbS4DD8xqHdpYt+HNcRIJbgGPNx/qmvi8
-HpMfo7KFfAv+AKpOAN1E/gBxXYYQU1H0lhgB+eCMcV5xMLIace1uPZ3NNjpLBx1x
-VywqlSuUYv2uSQp534bFQdVevlFSdCMXZZ93/QZ0k/d2fXgd0JApA3BP/py4gA56
-BWOE9J+iHjKIIpilA3XtQURyGVNwdCExhbFCA+kvu7jH79mPpv85LJgmOPufbhgh
-49j95Lw1rg1K4j6anKTiS4IFn2MJfTXLjo/PzIMpwBElnL+XIFErCpSKVG4gZRGu
-MUmtmgfGvgVw/KlDGDhnuGLF5pJzMQ==
-=nk4Y
------END PGP SIGNATURE-----
+> * I'd prefer a calloc style version of bpf_map_area_alloc although
+> that might conflict with Fixes tag.
 
---Sig_/X+mOyQpyJ7UhJU.3fj3vIA1--
+Yes, I think the calloc style will prevent this kind of integer overflow bug.
+
+Thank you,
+Quang Minh.
+
