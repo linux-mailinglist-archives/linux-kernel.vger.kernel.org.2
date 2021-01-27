@@ -2,88 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0943A305644
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ED8305647
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhA0I6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:58:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37568 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232902AbhA0Iv2 (ORCPT
+        id S233735AbhA0I62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:58:28 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49762 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232692AbhA0IvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:51:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611737401;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZKX1UCx3ZNXEFtloLyNV1dAqkIOruWYHKq9kXw8w0Wk=;
-        b=Ctw5qBFgb4TQg+qkWxI4F/XefGPJD8WOp7sauKJOp0xBFTR81GyK/G1eJ8mt9TS8ox4myk
-        APQbTDypbLPJe4fXpGuD7RX2+bv+mNVHe5xELj7oobKkdb3g35Nffem9r0iXscKOOhbJMV
-        F5ZoAeDiCvlMNyofjI1XLIeaLxPMDTk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-PdZiYRXNML-Ra9KKEtWSEQ-1; Wed, 27 Jan 2021 03:49:57 -0500
-X-MC-Unique: PdZiYRXNML-Ra9KKEtWSEQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A2C6802B40;
-        Wed, 27 Jan 2021 08:49:56 +0000 (UTC)
-Received: from [10.36.114.237] (ovpn-114-237.ams2.redhat.com [10.36.114.237])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 56F2260C05;
-        Wed, 27 Jan 2021 08:49:53 +0000 (UTC)
-Subject: Re: [PATCH v1] csky: use free_initmem_default() in free_initmem()
-To:     Guo Ren <guoren@kernel.org>, Mike Rapoport <rppt@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-csky@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20210126181420.19223-1-david@redhat.com>
- <20210126182648.GR6332@kernel.org>
- <CAJF2gTRsqZ4DTvZm2V9VRKP_f6u-p5aupCjrvuGy_7m8tiQQVQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <fb51bf47-a6ab-1a5a-60cf-0ec375a9511a@redhat.com>
-Date:   Wed, 27 Jan 2021 09:49:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 27 Jan 2021 03:51:22 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R8jmFG010090;
+        Wed, 27 Jan 2021 09:50:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=QPWdxWs7PH5WYouKWIG0geCQvYD0fgNKQ2Hujvn8Yuc=;
+ b=wVnAyBPt3/9P7Rxjc3FBtmv10sdqLp+A8sZ+euIApTqPlALrFTd1/yvdobP2Xc7kTood
+ WLX+GYcJkDOjH30HXz4ZfN6fn738MjaC3hDAkAK2imDUuTFjcw2PxbBtjnwj1nJ2KChn
+ aAW5NIqwqq0llV+YtQ85tc7ilCbZYJDfEaKsFRLQA9g88k8fmWBM8ad+zhNqCEm3+uPZ
+ wXC2j+4cN17IqcyOrsh7vcFpoBYeQxeZZgjYlbl3GnaTEWdUqJPMRzdZY2v3ugYgJDMG
+ FXozUUsRUsm45zp+L+w1SLzdTzS41lPdNzlGPTKxTSMBZuD7dj7VU7HJReNY35sXHbAG BQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 368c15xb04-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 09:50:34 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0019310002A;
+        Wed, 27 Jan 2021 09:50:32 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E628D2288C0;
+        Wed, 27 Jan 2021 09:50:32 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
+ 2021 09:50:32 +0100
+Subject: Re: [PATCH v4 12/17] remoteproc: Introduce function rproc_detach()
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+ <20201218173228.2277032-13-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <406cd7ad-060e-a611-be20-5c1869f17e73@st.com>
+Date:   Wed, 27 Jan 2021 09:50:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAJF2gTRsqZ4DTvZm2V9VRKP_f6u-p5aupCjrvuGy_7m8tiQQVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201218173228.2277032-13-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_03:2021-01-26,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.01.21 08:52, Guo Ren wrote:
-> Thx Mike,
+
+
+On 12/18/20 6:32 PM, Mathieu Poirier wrote:
+> Introduce function rproc_detach() to enable the remoteproc
+> core to release the resources associated with a remote processor
+> without stopping its operation.
 > 
-
-Thanks for triggering a build/test! I'd be curious if there is an easy 
-way to trigger this myself (I assume, fork csky buildroot on gitlab, 
-reroute CSKY kernel repo, adjust CSKY_LINUX_NEXT_VERSION); if so, it 
-would be worth documenting - thanks!
-
-Thanks Mike for the valuable links :) For now I was only relying on 
-cross-compilers as shipped by Fedora, now I can upgrade my cross-build 
-environment :)
-
-> It's under test:
-> https://gitlab.com/c-sky/buildroot/-/pipelines/247353584
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 71 +++++++++++++++++++++++++++-
+>  include/linux/remoteproc.h           |  2 +
+>  2 files changed, 72 insertions(+), 1 deletion(-)
 > 
-> kernel:
-> https://github.com/c-sky/csky-linux/commit/9d986b01feb991ded3fb8c1f8153a0c80ea84b9c
-> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index e665ed4776c3..ece3f15070b9 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1673,7 +1673,7 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+>  /*
+>   * __rproc_detach(): Does the opposite of rproc_attach()
+>   */
+> -static int __maybe_unused __rproc_detach(struct rproc *rproc)
+> +static int __rproc_detach(struct rproc *rproc)
+>  {
+>  	struct device *dev = &rproc->dev;
+>  	int ret;
+> @@ -1927,6 +1927,75 @@ void rproc_shutdown(struct rproc *rproc)
+>  }
+>  EXPORT_SYMBOL(rproc_shutdown);
+>  
+> +/**
+> + * rproc_detach() - Detach the remote processor from the
+> + * remoteproc core
+> + *
+> + * @rproc: the remote processor
+> + *
+> + * Detach a remote processor (previously attached to with rproc_actuate()).
 
+You rename the function to rproc_attach in you patch 04/17.
 
--- 
+Then Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+
 Thanks,
+Arnaud
 
-David / dhildenb
-
+> + *
+> + * In case @rproc is still being used by an additional user(s), then
+> + * this function will just decrement the power refcount and exit,
+> + * without disconnecting the device.
+> + *
+> + * Function rproc_detach() calls __rproc_detach() in order to let a remote
+> + * processor know that services provided by the application processor are
+> + * no longer available.  From there it should be possible to remove the
+> + * platform driver and even power cycle the application processor (if the HW
+> + * supports it) without needing to switch off the remote processor.
+> + */
+> +int rproc_detach(struct rproc *rproc)
+> +{
+> +	struct device *dev = &rproc->dev;
+> +	int ret;
+> +
+> +	ret = mutex_lock_interruptible(&rproc->lock);
+> +	if (ret) {
+> +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
+> +		return ret;
+> +	}
+> +
+> +	if (rproc->state != RPROC_RUNNING && rproc->state != RPROC_ATTACHED) {
+> +		ret = -EPERM;
+> +		goto out;
+> +	}
+> +
+> +	/* if the remote proc is still needed, bail out */
+> +	if (!atomic_dec_and_test(&rproc->power)) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	ret = __rproc_detach(rproc);
+> +	if (ret) {
+> +		atomic_inc(&rproc->power);
+> +		goto out;
+> +	}
+> +
+> +	/* clean up all acquired resources */
+> +	rproc_resource_cleanup(rproc);
+> +
+> +	rproc_disable_iommu(rproc);
+> +
+> +	/*
+> +	 * If the remote processor was booted by the core the cached table needs
+> +	 * to be freed and ->table_ptr set to NULL because it will be
+> +	 * invalidated by rproc_resource_cleanup().  If the remote processor was
+> +	 * attached to ->cached_table is NULL and kfree() returns right away.
+> +	 *
+> +	 * In either case ->table_ptr has to be set to NULL.  It will be set
+> +	 * again when the remote processor is re-attached to.
+> +	 */
+> +	kfree(rproc->cached_table);
+> +	rproc->cached_table = NULL;
+> +	rproc->table_ptr = NULL;
+> +out:
+> +	mutex_unlock(&rproc->lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(rproc_detach);
+> +
+>  /**
+>   * rproc_get_by_phandle() - find a remote processor by phandle
+>   * @phandle: phandle to the rproc
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 9bb34c3eb847..65ece6f177b7 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -659,6 +659,8 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
+>  
+>  int rproc_boot(struct rproc *rproc);
+>  void rproc_shutdown(struct rproc *rproc);
+> +int rproc_detach(struct rproc *rproc);
+> +int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
+>  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
+>  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
+>  int rproc_coredump_add_custom_segment(struct rproc *rproc,
+> 
