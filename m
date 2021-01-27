@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EEB30600C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DF2306026
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhA0Pqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:46:50 -0500
-Received: from mga17.intel.com ([192.55.52.151]:12380 "EHLO mga17.intel.com"
+        id S236694AbhA0PsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:48:11 -0500
+Received: from mga17.intel.com ([192.55.52.151]:12371 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236566AbhA0PoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:44:08 -0500
-IronPort-SDR: 0/u6g8XhEvSrUuzvFMd+R9hFH36yoOIheRgDRHZKkrjNc61W45/910NoYF2hR9u9FJuPCBHT+7
- idX4zOfEBSDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159861132"
+        id S236467AbhA0Pq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:46:59 -0500
+IronPort-SDR: Bw9iuddzLUCiYLMFNbf35I1q1PU+OikSgNxbWDeXL1K2Q5j9tHhaW0HsG6baXN+MQuJQwf4JUV
+ Ii8cioHfL/QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159861134"
 X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
-   d="scan'208";a="159861132"
+   d="scan'208";a="159861134"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 07:42:17 -0800
-IronPort-SDR: zt1udkALSa9EN1cjchdp2JOvvTnIaBobaZ7TdZYYRhkVntNNeg7YwsSr4WlGJbFnjStmMgDgft
- a34q/e6NJ2Gg==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 07:42:18 -0800
+IronPort-SDR: 4wICnYjyt04yG2PPy83l2PSy02O3y9CO4JIHjJqbI/Q9j89ioJdrIzltTXNGXkBPUIrGRup0Fu
+ T8xGTgAAZqoQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
-   d="scan'208";a="369514631"
+   d="scan'208";a="369514636"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 27 Jan 2021 07:42:17 -0800
+  by orsmga002.jf.intel.com with ESMTP; 27 Jan 2021 07:42:18 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
         ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
         maddy@linux.vnet.ibm.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 2/5] perf/x86/intel: Factor out intel_update_topdown_event()
-Date:   Wed, 27 Jan 2021 07:38:42 -0800
-Message-Id: <1611761925-159055-3-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V2 3/5] perf/x86/intel: Filter unsupported Topdown metrics event
+Date:   Wed, 27 Jan 2021 07:38:43 -0800
+Message-Id: <1611761925-159055-4-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611761925-159055-1-git-send-email-kan.liang@linux.intel.com>
 References: <1611761925-159055-1-git-send-email-kan.liang@linux.intel.com>
@@ -43,91 +43,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Similar to Ice Lake, Intel Sapphire Rapids server also supports the
-topdown performance metrics feature. The difference is that Intel
-Sapphire Rapids server extends the PERF_METRICS MSR to feature TMA
-method level two metrics, which will introduce 8 metrics events. Current
-icl_update_topdown_event() only check 4 level one metrics events.
+Current perf doesn't check the index of a Topdown metrics event before
+updating the event. A perf tool user may get a value from an unsupported
+Topdown metrics event.
 
-Factor out intel_update_topdown_event() to facilitate the code sharing
-between Ice Lake and Sapphire Rapids.
+For example, the L2 topdown event, cpu/event=0x00,umask=0x84/, is not
+supported on Ice Lake. A perf tool user may mistakenly use the
+unsupported events via RAW format. In this case, the scheduler follows
+the unknown event handling and assigns a GP counter to the event. The
+icl_get_topdown_value() returns the value of the slots to the event.
+The perf tool user will get the value for the unsupported
+Topdown metrics event.
+
+Add a check in the __icl_update_topdown_event() and avoid updating
+unsupported events.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/core.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ arch/x86/events/intel/core.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index d4569bf..8eba41b 100644
+index 8eba41b..b02d482 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -2337,8 +2337,8 @@ static void __icl_update_topdown_event(struct perf_event *event,
- 	}
- }
- 
--static void update_saved_topdown_regs(struct perf_event *event,
--				      u64 slots, u64 metrics)
-+static void update_saved_topdown_regs(struct perf_event *event, u64 slots,
-+				      u64 metrics, int metric_end)
+@@ -2319,6 +2319,17 @@ static void __icl_update_topdown_event(struct perf_event *event,
  {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct perf_event *other;
-@@ -2347,7 +2347,7 @@ static void update_saved_topdown_regs(struct perf_event *event,
- 	event->hw.saved_slots = slots;
- 	event->hw.saved_metric = metrics;
+ 	u64 delta, last = 0;
  
--	for_each_set_bit(idx, cpuc->active_mask, INTEL_PMC_IDX_TD_BE_BOUND + 1) {
-+	for_each_set_bit(idx, cpuc->active_mask, metric_end + 1) {
- 		if (!is_topdown_idx(idx))
- 			continue;
- 		other = cpuc->events[idx];
-@@ -2362,7 +2362,8 @@ static void update_saved_topdown_regs(struct perf_event *event,
-  * The PERF_METRICS and Fixed counter 3 are read separately. The values may be
-  * modify by a NMI. PMU has to be disabled before calling this function.
-  */
--static u64 icl_update_topdown_event(struct perf_event *event)
++	/*
++	 * Although the unsupported topdown events are not exposed to users,
++	 * users may mistakenly use the unsupported events via RAW format.
++	 * For example, using L2 topdown event, cpu/event=0x00,umask=0x84/,
++	 * on Ice Lake. In this case, the scheduler follows the unknown
++	 * event handling and assigns a GP counter to the event.
++	 * Check the case, and avoid updating unsupported events.
++	 */
++	if (event->hw.idx < INTEL_PMC_IDX_FIXED)
++		return;
 +
-+static u64 intel_update_topdown_event(struct perf_event *event, int metric_end)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct perf_event *other;
-@@ -2378,7 +2379,7 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 	/* read PERF_METRICS */
- 	rdpmcl(INTEL_PMC_FIXED_RDPMC_METRICS, metrics);
- 
--	for_each_set_bit(idx, cpuc->active_mask, INTEL_PMC_IDX_TD_BE_BOUND + 1) {
-+	for_each_set_bit(idx, cpuc->active_mask, metric_end + 1) {
- 		if (!is_topdown_idx(idx))
- 			continue;
- 		other = cpuc->events[idx];
-@@ -2404,7 +2405,7 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 		 * Don't need to reset the PERF_METRICS and Fixed counter 3.
- 		 * Because the values will be restored in next schedule in.
- 		 */
--		update_saved_topdown_regs(event, slots, metrics);
-+		update_saved_topdown_regs(event, slots, metrics, metric_end);
- 		reset = false;
- 	}
- 
-@@ -2413,12 +2414,17 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 		wrmsrl(MSR_CORE_PERF_FIXED_CTR3, 0);
- 		wrmsrl(MSR_PERF_METRICS, 0);
- 		if (event)
--			update_saved_topdown_regs(event, 0, 0);
-+			update_saved_topdown_regs(event, 0, 0, metric_end);
- 	}
- 
- 	return slots;
- }
- 
-+static u64 icl_update_topdown_event(struct perf_event *event)
-+{
-+	return intel_update_topdown_event(event, INTEL_PMC_IDX_TD_BE_BOUND);
-+}
-+
- static void intel_pmu_read_topdown_event(struct perf_event *event)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+ 	delta = icl_get_topdown_value(event, slots, metrics);
+ 	if (last_slots)
+ 		last = icl_get_topdown_value(event, last_slots, last_metrics);
 -- 
 2.7.4
 
