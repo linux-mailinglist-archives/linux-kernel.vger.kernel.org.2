@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C14C30562F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72EA3056A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhA0Iy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:54:29 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:39594 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhA0Iuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:50:35 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 21ADA1A0546;
-        Wed, 27 Jan 2021 09:49:49 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 11F781A053C;
-        Wed, 27 Jan 2021 09:49:45 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 55A62402A9;
-        Wed, 27 Jan 2021 09:49:39 +0100 (CET)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
-        Biwen Li <biwen.li@nxp.com>
-Subject: [v2] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE to remove call trace
-Date:   Wed, 27 Jan 2021 16:58:18 +0800
-Message-Id: <20210127085818.23742-1-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S235142AbhA0JQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:16:47 -0500
+Received: from mail-m973.mail.163.com ([123.126.97.3]:38884 "EHLO
+        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235088AbhA0JK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:10:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hjAQg
+        72DsEIZ+Ey6+22wZHDMCqauOkUOV9p7pmt86tc=; b=TTDIHSJ4pXQSWJeic4ZYx
+        2JLRhfGhFilQmUx+xtD51UFhtWoi18dmCWznKfzIe4bsEDYyiq1nUJ1vlR4AsZPy
+        sLjOC6+6wLjaIr/asu7Q9EtX9j9TJnEOzFjAx6V9c+agAOiCfTSkYnoNZ+U+HM3y
+        6/F945dDaXM+6Uesh+N+e4=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp3 (Coremail) with SMTP id G9xpCgBH3MgKIhFgTAg4Uw--.52268S2;
+        Wed, 27 Jan 2021 16:19:28 +0800 (CST)
+From:   dingsenjie@163.com
+To:     akpm@linux-foundation.org, colin.king@canonical.com,
+        naoki.hayama@lineo.co.jp, xndchn@gmail.com, sjpark@amazon.de,
+        ebiggers@google.com, joe@perches.com
+Cc:     linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH v2] scripts/spelling.txt: add "allocted" and "exeeds" typo
+Date:   Wed, 27 Jan 2021 16:19:19 +0800
+Message-Id: <20210127081919.1928-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: G9xpCgBH3MgKIhFgTAg4Uw--.52268S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtr47urWfuFy3uw1kKryDKFg_yoW3Cwb_u3
+        W8twn5WFyDtFsrtwn0yrWFqr4Fg3yUCrW0gF93Ww1fuas8AF4vy3ZxKryUuF47W39FyFn8
+        Z39Igr4xKw1IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeEdgJUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRUnyFUMcFIUcwADsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+From: dingsenjie <dingsenjie@yulong.com>
 
-Add flag IRQCHIP_SKIP_SET_WAKE to remove call trace as follow,
-...
-[   45.605239] Unbalanced IRQ 120 wake disable
-[   45.609445] WARNING: CPU: 0 PID: 1124 at kernel/irq/manage.c:800 irq_set_irq_wake+0x154/0x1a0
-...
-[   45.645141] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-[   45.651144] pc : irq_set_irq_wake+0x154/0x1a0
-[   45.655497] lr : irq_set_irq_wake+0x154/0x1a0
-...
-[   45.742825] Call trace:
-[   45.745268]  irq_set_irq_wake+0x154/0x1a0
-[   45.749278]  ds3232_resume+0x38/0x50
+Increase "allocted" and "exeeds" spelling error check.
 
-On ls2088ardb:
-In suspend progress(# echo mem > /sys/power/state),
-pm_suspend()->suspend_devices_and_enter()->dpm_suspend()->device_suspend()
-->ds3232_suspend()->enable_irq_wake()->irq_set_irq_wake()
-->set_irq_wake_real(), return -ENXIO, there get
-"Cannot set wakeup source" in ds3232_suspend().
-
-In resume progress(wakeup by flextimer)
-dpm_resume_end()->dpm_resume()
-->device_resume()->ds3232_resume()
-->disable_irq_wake()->irq_set_irq_wake()
-->set_irq_wake_real(), there get
-kernel call trace(Unbalanced IRQ 120 wake
-disable)
-
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
 ---
-Change in v2:
-	- update description
+ scripts/spelling.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
- drivers/irqchip/irq-ls-extirq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
-index 564e6de0bd8e..3c6ed7b4744d 100644
---- a/drivers/irqchip/irq-ls-extirq.c
-+++ b/drivers/irqchip/irq-ls-extirq.c
-@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
- 	.irq_set_type		= ls_extirq_set_type,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_affinity	= irq_chip_set_affinity_parent,
--	.flags                  = IRQCHIP_SET_TYPE_MASKED,
-+	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
- };
- 
- static int
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 953f4a2..f326473 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -103,6 +103,7 @@ alloated||allocated
+ allocatote||allocate
+ allocatrd||allocated
+ allocte||allocate
++allocted||allocated
+ allpication||application
+ alocate||allocate
+ alogirhtms||algorithms
+@@ -574,6 +575,7 @@ excellant||excellent
+ execeeded||exceeded
+ execeeds||exceeds
+ exeed||exceed
++exeeds||exceeds
+ exeuction||execution
+ existance||existence
+ existant||existent
 -- 
-2.17.1
+1.9.1
 
