@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443DA305916
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC774305915
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236370AbhA0LCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:02:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236252AbhA0K4s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:56:48 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255F3C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:56:08 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id u14so1220214wmq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:56:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=5ZypdbGue2nFWiMnP3sDxiiEiuMQbxRDc+4h+Q/e794=;
-        b=pNrZuakhy4nMglczzFTxUJnnX/9b0g7MGkGsWCJ84IeQcC8u2mhBI+a4Wcw/p1b4yH
-         4JCC3dw6bgLAiAQljagvI4VsBiR+Usw6qrCYpm+VaPyUh+L60ix3fmTqRQwsrll6ZwHQ
-         AcOKpudZCn6/StlgzEnqWKLmuEG9Pv+bCqc1iX5lfrj5KUT6LSnH3d4xFpojxm+eqzh7
-         fCJ9vFjx4V5ka9riCsTNExqUB4jP4x0qNDUMkisfVsLICGXn4TWmw3GPDzhNH7F39iYX
-         Nv5SRtpENSirwyBD+YR7NcFCr8zp8EE+jG7PyuxlHKDbLA9+jti28l6gOwRhYVZyH7ZR
-         kwww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5ZypdbGue2nFWiMnP3sDxiiEiuMQbxRDc+4h+Q/e794=;
-        b=eVtg0feoNyNON1P8ifPmDU7QKQOWdL1ajKtuckykwRCW2y8/pFvBi2g9X9KW2KWs4M
-         l6comsOWFvqVp6bpnvdeI6W2GF81GQYnakILdc4V/rzQ0L9S+27Yt/p42VYo9iQedS+M
-         iN4We8DgaqatyRIf1i5myJwquOvmn4CSZYfeEhwi7er9zN7JFdXSjST5viKPu0cd6rIC
-         F6VsxRzcYgQKcUzP2jUDn+K6ebzJLVAJs56IIDDX5lVXeAHQtxNJoQIFfBQEDN0rjQ+G
-         tEMOhoVnfviudKzKwpV7TiMtAcOea1xpQ+zOoJk4TGPqAuJf9kVb6Os/JiBq2CxqodiE
-         57uw==
-X-Gm-Message-State: AOAM533Xu7B6kxkKmiM6Ue0Z0NZQ2UnjAd3XNyrcTiK4Tk7/WZI6Fcz7
-        p5v+GrCU2Qgqx6WmJ61JOgySCE4FlNSzig==
-X-Google-Smtp-Source: ABdhPJze1zv39dN3foB3pelQvWpQEDLYXG7Q4xIRAOPF4Qy58C+fieDmIVrY+Znepr5x1AX+M8whVw==
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr3651337wmp.156.1611744966607;
-        Wed, 27 Jan 2021 02:56:06 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l11sm2375202wrt.23.2021.01.27.02.56.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 02:56:05 -0800 (PST)
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Remove bit clock state check
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210127063038.1399-1-srivasam@codeaurora.org>
- <16199fa8-7a87-6e7f-9db6-1d5cd8493d4c@linaro.org>
- <d33fd359-9dbf-b03c-ccd1-d93c7d207ccf@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <0bdf2a43-799b-1c89-940d-8dd0f54ab24e@linaro.org>
-Date:   Wed, 27 Jan 2021 10:56:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S234649AbhA0LB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:01:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236276AbhA0K5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:57:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C4D22076D;
+        Wed, 27 Jan 2021 10:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611744984;
+        bh=ZKTW8gU3jiRPRbEEF3iQJp3X2qckwuCZGY84MYAe2e8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PJvKdRRyWvkw781a8Deb5aArB4vz4p51gqHlewKw9orH7Q3VlZo7lgo33sQdNmo6B
+         JH8LT6ltyoeX2vPOsN85FufNxFHAzzyw7sViYAlenvTR9h4UPkp7xOkSqSNWacceG6
+         fXM+/zlOMXV9wmBnrExxSGUsAuXxIa1GRNPCDG6w=
+Date:   Wed, 27 Jan 2021 11:56:22 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.10 000/203] 5.10.11-rc2 review
+Message-ID: <YBFG1u0WId5k1J0l@kroah.com>
+References: <20210126094313.589480033@linuxfoundation.org>
+ <CA+G9fYvWxoK=hOdvVUcB1n7Nk5vmWdh-4GzyaaFFyRijHLrnyA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d33fd359-9dbf-b03c-ccd1-d93c7d207ccf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYvWxoK=hOdvVUcB1n7Nk5vmWdh-4GzyaaFFyRijHLrnyA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 27/01/2021 10:54, Srinivasa Rao Mandadapu wrote:
->>
-> Actually this is MI2S OSR clock disable on failure of bit clock enable.
+On Tue, Jan 26, 2021 at 11:16:43PM +0530, Naresh Kamboju wrote:
+> On Tue, 26 Jan 2021 at 15:33, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.10.11 release.
+> > There are 203 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 28 Jan 2021 09:42:40 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Do You think it's redundant?
-My Bad!! Just ignore my comment on removing this!
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
+> 
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
---srini
+Great, thanks for testing and letting me know.
+
+greg k-h
