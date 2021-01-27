@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B853053D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AF43053E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhA0HAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:00:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhA0G7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 01:59:41 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935BDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 22:58:49 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id u4so749094pjn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 22:58:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hdH070fYQGRrVFXSs6VUzPA20L1MAMda+ejAucezRlo=;
-        b=bcxwQY9v7gG8/ZLRsynArRtdDbnVjaCQYtuVwVy4gAD09HJ0afvA9irJzEB9sle0aI
-         rOJweiDeWGPx5J1nbkpKcf22eLrwJ2GJu8oNzqJ8NFQdlrkcsFG9hMMaPgx7ZnNralqJ
-         bXiqaEZyrKKD9h9vOUiGT0e9cY0riXPAjo3ar9rJXXTr6rWQQGUnG+he/PyqPS0y9Mfd
-         Yvg4RvXCCeorEy3smliUnT/OrysHSP6tcCR6b+dRweRZFZMMEaSNJbNh+CgICb4xryRf
-         5PsnDzVJUqLlOHOjfIicTMFhn7pSqTUkxbScpKohKp3OB2avLlmBf0UsKnsITVnppNIw
-         4Qfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hdH070fYQGRrVFXSs6VUzPA20L1MAMda+ejAucezRlo=;
-        b=e7OVivGHmNg8sJ93a3tA8NUP2mk5G6MUxNIPy3vGD9IX++4bd9IJ1JXtdm0EopAUU2
-         mlHT9XAaCbVJ86jdLtfQ0KCYWDvn9oyq7BHd26R12P7JrCxw2xzVs4onFX1PqwBxaD7d
-         tO3DY3wmzobyeX1FI4f5hm92qxUa1vjR/l17nUZDirNKj2Qy3YRAMwmE7T0gRI0JuEAG
-         pP/Bt3QEOYj2Hd9NPV4t0z6CObZAsJkkmRTPERe+D5vDlO0fMWFCnG42aBlSd+KniucL
-         QviMJg3R5lmI9rvDzKyhSP+7DhkKOo4+OTeeLzvc5zLDGtfHYzuNwj1auWlXyCZZ6Fjk
-         K+gA==
-X-Gm-Message-State: AOAM531axSfShrOdm7mZ//uNL5uJ07sT0VHXh8kBXmTAWQFu/j5O4hBn
-        rKbW8dE5xKpvhR7gc8J68ONrbw==
-X-Google-Smtp-Source: ABdhPJyaTToGexohyPD3a1AnlyINM47VgWjzZWARW91p7Tk9RAH8ZSmplUpcdPIxJZ4yB7OyWIpFyA==
-X-Received: by 2002:a17:90a:de2:: with SMTP id 89mr4105815pjv.26.1611730729086;
-        Tue, 26 Jan 2021 22:58:49 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id j16sm947790pjj.18.2021.01.26.22.58.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Jan 2021 22:58:48 -0800 (PST)
-Date:   Wed, 27 Jan 2021 12:28:46 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 07/13] opp: Allow _generic_set_opp_clk_only() to work for
- non-freq devices
-Message-ID: <20210127065846.c2usquegqrqib45r@vireshk-i7>
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <1585f6c21ea8aee64fe4da0bf72b36ea4d74a779.1611227342.git.viresh.kumar@linaro.org>
- <9b2638e6-b842-8737-e5a0-aeeb84927fce@gmail.com>
- <20210122043506.lm6yiefzlyubq5my@vireshk-i7>
- <7d6573e3-7885-fb0b-2290-c181e2c557f9@gmail.com>
+        id S232634AbhA0HFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:05:10 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34041 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232840AbhA0HCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 02:02:32 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQZK61XNjz9sWH;
+        Wed, 27 Jan 2021 18:01:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611730906;
+        bh=l/MrulFb49v1zcRyeG/wr4btEhEEd48FW+4ULIXMaKQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YJO/8q6OES6IfrpiHR7JzAkV0h2e22RqCaawNYUKWOshspGslCNfcxNDU++oso1Wr
+         cPaov9RYcFTfNgpGIrrGbrqipG0FEyPlj09UL/KY8ELzHpe9/9hfcwPIDduqjklyh5
+         Vv4REgpI/f6t3i6Uz0tA46PeYw+G205e3THccKf13SGq2G/MnvlMxPpV+FtwX6gNXb
+         9UOKmvOoWsMot/3GeZWnKV0OYLqbv0L38QIu/ssXsDjD9NBCrCxyR6NE4iHIrBcr+e
+         MUDzXfI8bTyjzLTE2/FrygVfKRg1ZBIrvjtq/rrTaMYeXSYEFHoCmB/gA4xIfNnyeO
+         c1/dD1pFyuKWw==
+Date:   Wed, 27 Jan 2021 18:01:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+Message-ID: <20210127180145.5b955898@canb.auug.org.au>
+In-Reply-To: <17ccd90b-8616-1f20-ad5d-e250834c02fe@interlog.com>
+References: <20210125151310.20e71400@canb.auug.org.au>
+        <17ccd90b-8616-1f20-ad5d-e250834c02fe@interlog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d6573e3-7885-fb0b-2290-c181e2c557f9@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/.xegP0jk/SIH7PqgT/xq65K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-01-21, 00:09, Dmitry Osipenko wrote:
-> Please remove unlikely() around IS_ERR(), it already has the unlikely().
+--Sig_/.xegP0jk/SIH7PqgT/xq65K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Right.
+Hi all,
 
-> https://elixir.bootlin.com/linux/v5.11-rc4/source/include/linux/err.h#L22
-> 
-> I'd also recommend to remove all the unlikely() from OPP code since it
-> doesn't bring any value if not used in a very performance-critical code
-> path. OPP core doesn't have such code paths. The [un]likely() only make
-> code less readable and may result in a worse assembly.
+On Mon, 25 Jan 2021 00:53:59 -0500 Douglas Gilbert <dgilbert@interlog.com> =
+wrote:
+>
+> On 2021-01-24 11:13 p.m., Stephen Rothwell wrote:
+> >=20
+> > After merging the scsi-mkp tree, today's linux-next build (powerpc
+> > ppc64_defconfig) failed like this:
+> >=20
+> > drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
+> > drivers/scsi/sg.c:2908:4: error: expected '}' before 'else'
+> >   2908 |    else
+> >        |    ^~~~
+> > drivers/scsi/sg.c:2902:16: warning: unused variable 'cptp' [-Wunused-va=
+riable]
+> >   2902 |    const char *cptp =3D "pack_id=3D";
+> >        |                ^~~~
+> > drivers/scsi/sg.c:2896:5: error: label 'good' used but not defined
+> >   2896 |     goto good;
+> >        |     ^~~~
+> > drivers/scsi/sg.c: At top level:
+> > drivers/scsi/sg.c:2913:2: error: expected identifier or '(' before 'ret=
+urn'
+> >   2913 |  return NULL;
+> >        |  ^~~~~~
+> > drivers/scsi/sg.c:2914:5: error: expected '=3D', ',', ';', 'asm' or '__=
+attribute__' before ':' token
+> >   2914 | good:
+> >        |     ^
+> > drivers/scsi/sg.c:2917:2: error: expected identifier or '(' before 'ret=
+urn'
+> >   2917 |  return srp;
+> >        |  ^~~~~~
+> > drivers/scsi/sg.c:2918:1: error: expected identifier or '(' before '}' =
+token
+> >   2918 | }
+> >        | ^
+> > drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
+> > drivers/scsi/sg.c:2912:2: error: control reaches end of non-void functi=
+on [-Werror=3Dreturn-type]
+> >   2912 |  }
+> >        |  ^
+> >=20
+> > Caused by commit
+> >=20
+> >    7323ad3618b6 ("scsi: sg: Replace rq array with xarray")
+> >=20
+> > SG_LOG() degenerates to "{}" in some configs ...
+> >=20
+> > I have used the scsi-mkp tree from next-20210122 for today.
+>=20
+> I sent a new patchset to the linux-scsi list about 4 hours ago to
+> fix that.
+>=20
+> Doug Gilbert
 
-The likely/unlikely() stuff is to optimize code, not necessarily the stuff in
-the hot path alone, therwise stuff like IS_ERR() would never have it. It surely
-does bring value by optimizing the code, surely the result isn't significant
-enough but that is fine, every effort counts.
+I am still getting this build failure.
 
-AFAIK, if we are sure of path the code will almost always take, then we should
-rather use these and so I am inclined towards keeping them. Though I understand
-that using them may result in bad behavior (performance) if they fail.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-viresh
+--Sig_/.xegP0jk/SIH7PqgT/xq65K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmARD9kACgkQAVBC80lX
+0GzmYgf9HxDTgbGajMySS4vfNVu1jklyPWPXiZevuQsFh3y2v+BXSjYfYEuPhs8g
+o9E/MuN/wRViS3stAsfUn/+q1Z+KsJ8wnIOgQGtRwQc/1Hr7Y6hxTxKt9kW5pzfG
+m4LqPmwzjbJNPrOVAr0yp72LBsVOdcguNMwcBhBvxH57EAnL3MJrWzI+aG5XV1cj
+todVNJfv+zNpJ47w0hUirg1XKrpcO4N32Gz5WDLbjwzMSvtlYg7/fBXKwWGFS92I
+dfa32uinDlMSGodxzMFNwKbmXxN8Ak7T+azIDb6ax5KL+mAhUbP8m4rN1z4ZUxbm
+LqmklRP5aUSXGfpI5pfHCBeBXLmDGA==
+=YRpF
+-----END PGP SIGNATURE-----
+
+--Sig_/.xegP0jk/SIH7PqgT/xq65K--
