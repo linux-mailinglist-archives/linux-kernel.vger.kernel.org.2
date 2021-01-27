@@ -2,175 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD84F306726
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C9130672A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237135AbhA0WUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhA0WTo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:19:44 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A17C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:19:04 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id s7so3781697ybj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:19:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=n659vTkbVZagxuC1KCd65CsCxB1C/4ji4FFXQhlT6SM=;
-        b=Ee/E+KLVmMv42Eck8UyUBf3Cal3qGAoGtLEzzIia+55jGeCLo4X6MVPS1sYmXLt0m/
-         DUepJxRm1Fw+0ace8HUNMrdb5UF8p4Lvgy4D02gN3X1w8gfka2xDuJvWXKuX6Dt3i/IG
-         spyAuYNpS+kx2w18LBa0YGfT/Hb5fF4sABb6n4Lr9TtkLb5hKeNSCg4COZfaZrNDoj3x
-         BxGBGnv13HwjtPs3mudItZGszjNYMfrTi1nczPJKbyjlSXfawlUWsEtjjfm2x7RG/+Kg
-         xWGi3u2dJ5Pge2uZWvCThjKDXU3bwBR6+CWX2z90USCSrrFOj2/qN1HbhfoeRG+78GGG
-         OQdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=n659vTkbVZagxuC1KCd65CsCxB1C/4ji4FFXQhlT6SM=;
-        b=B+2tNoRia1USX3Opf12OqXrfbwTk+V2JYFS6hE7XhqMx7VBmLXCsjG1Prd3jGJabxx
-         aQ+XGqDpYasPXLqwAF+34aGt/j7c8iiXpLwZW+6qAMcY4LSYJetCmleYXHduQ9OMCWiP
-         N+DZwh+Z40II0qHq+cDO7/gbuzw79nYq2UG1L33vze0keR2fOAzuGtKH+05+mW9x/P7a
-         8iFrU6bLS2/wvCPO2r0PPQjsc573Sqrz5UDUVING16X2EFDntHxiEAr0G06tkY+I0VRM
-         9lpBHcLgeDAOfzxS16WWw1MK6Q3GZlO2Zd5DmADFHfjNzt40cyn2K6SCvutbid9lqzGL
-         oPBA==
-X-Gm-Message-State: AOAM532m7cvAlfMexFgUuF5CmaOcfLg4g77dfYWXjsinI61099ufdrY7
-        QugTUxpjkFT1j9vTiRiyl3fTyEWnrXGa
-X-Google-Smtp-Source: ABdhPJwbc2mNRHnTGIC2C/qfPGnRVPnVIfldELiXxeQJQ0EGLrHwn0IsWcwcfUl6QC22s6NXREoWPpXh/JgB
-Sender: "yudiliu via sendgmr" <yudiliu@yudiliu.mtv.corp.google.com>
-X-Received: from yudiliu.mtv.corp.google.com ([2620:15c:202:201:8edc:d4ff:fe53:2823])
- (user=yudiliu job=sendgmr) by 2002:a25:a527:: with SMTP id
- h36mr19236482ybi.400.1611785943188; Wed, 27 Jan 2021 14:19:03 -0800 (PST)
-Date:   Wed, 27 Jan 2021 14:18:59 -0800
-Message-Id: <20210127141821.v2.1.I7d3819e3c406b20307a56fe96159e8f842f72d89@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v2] Bluetooth: Skip eSCO 2M params when not supported
-From:   Yu Liu <yudiliu@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        chromeos-bluetooth-upstreaming@chromium.org
-Cc:     Yu Liu <yudiliu@google.com>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S237174AbhA0WUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:20:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237124AbhA0WUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:20:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCB5D64D9F;
+        Wed, 27 Jan 2021 22:19:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611785986;
+        bh=8Vumxy5sgtpiFy5Xedhu2PELo2yTfRiVO0cxvR9NpfM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u+exvneJjPwNmemiRRMMCCDV/jP1oLJ+aQrEuREFMgspANJbkg/FXhudzP0yP5ZgM
+         1M8NHZBFIDOjbAFW3MA8I6puVO2XtP1rBLsFBsQxsanYPgsnkfK/0r+29S43cbxuNb
+         UoPD74xkSFx69/x/gKvJvsx2263rEFhrBxYOOVuw2bVe7+I5H8ZvVDJ/z7k0btPMIi
+         TqgIDTKznePyr7bNU6IqXYU9ZTXyShdxFiu1FMZDCwOyB0/yTXGI5IGM+F0tWtL7Um
+         zKdO6hEwFFBGn0uJvP+E9EIcI1f9o1FQS9FFQxa/3t+HGtQx6/HruxigoOs2HM+f4a
+         rYRFwy8YdNtPQ==
+Date:   Wed, 27 Jan 2021 22:19:39 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+Subject: Re: [PATCH v9 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
+Message-ID: <20210127221939.GA848@willie-the-truck>
+References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
+ <CAAeHK+xTWrdJ2as6kBLX+z64iu3e6JEGppOkN-i_jsH74c6xoA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+xTWrdJ2as6kBLX+z64iu3e6JEGppOkN-i_jsH74c6xoA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a peer device doesn't support eSCO 2M we should skip the params that
-use it when setting up sync connection since they will always fail.
+On Wed, Jan 27, 2021 at 09:00:17PM +0100, Andrey Konovalov wrote:
+> On Tue, Jan 26, 2021 at 2:46 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+> >
+> > This patchset implements the asynchronous mode support for ARMv8.5-A
+> > Memory Tagging Extension (MTE), which is a debugging feature that allows
+> > to detect with the help of the architecture the C and C++ programmatic
+> > memory errors like buffer overflow, use-after-free, use-after-return, etc.
+> >
+> > MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+> > (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+> > subset of its address space that is multiple of a 16 bytes granule. MTE
+> > is based on a lock-key mechanism where the lock is the tag associated to
+> > the physical memory and the key is the tag associated to the virtual
+> > address.
+> > When MTE is enabled and tags are set for ranges of address space of a task,
+> > the PE will compare the tag related to the physical memory with the tag
+> > related to the virtual address (tag check operation). Access to the memory
+> > is granted only if the two tags match. In case of mismatch the PE will raise
+> > an exception.
+> >
+> > The exception can be handled synchronously or asynchronously. When the
+> > asynchronous mode is enabled:
+> >   - Upon fault the PE updates the TFSR_EL1 register.
+> >   - The kernel detects the change during one of the following:
+> >     - Context switching
+> >     - Return to user/EL0
+> >     - Kernel entry from EL1
+> >     - Kernel exit to EL1
+> >   - If the register has been updated by the PE the kernel clears it and
+> >     reports the error.
+> >
+> > The series is based on linux-next/akpm.
+> >
+> > To simplify the testing a tree with the new patches on top has been made
+> > available at [1].
+> >
+> > [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
+> >
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> > Cc: Alexander Potapenko <glider@google.com>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Evgenii Stepanov <eugenis@google.com>
+> > Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+> > Cc: Andrey Konovalov <andreyknvl@google.com>
+> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> 
+> Tested-by: Andrey Konovalov <andreyknvl@google.com>
+> 
+> > Vincenzo Frascino (4):
+> >   arm64: mte: Add asynchronous mode support
+> >   kasan: Add KASAN mode kernel parameter
+> >   kasan: Add report for async mode
+> >   arm64: mte: Enable async tag check fault
+> 
+> Andrew, could you pick this up into mm? The whole series will need to
+> go through mm due to dependencies on the patches that are already
+> there.
 
-Signed-off-by: Yu Liu <yudiliu@google.com>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
----
+Please can you check that it doesn't conflict with the arm64 for-next/core
+branch first?
 
-Changes in v2:
-- Fix title
-
-Changes in v1:
-- Initial change
-
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_conn.c         | 39 +++++++++++++++++++++++---------
- 2 files changed, 29 insertions(+), 11 deletions(-)
-
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 239ab72f16c6e..71468a9ea798a 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1237,6 +1237,7 @@ void hci_conn_del_sysfs(struct hci_conn *conn);
- #define lmp_le_capable(dev)        ((dev)->features[0][4] & LMP_LE)
- #define lmp_sniffsubr_capable(dev) ((dev)->features[0][5] & LMP_SNIFF_SUBR)
- #define lmp_pause_enc_capable(dev) ((dev)->features[0][5] & LMP_PAUSE_ENC)
-+#define lmp_esco_2m_capable(dev)   ((dev)->features[0][5] & LMP_EDR_ESCO_2M)
- #define lmp_ext_inq_capable(dev)   ((dev)->features[0][6] & LMP_EXT_INQ)
- #define lmp_le_br_capable(dev)     (!!((dev)->features[0][6] & LMP_SIMUL_LE_BR))
- #define lmp_ssp_capable(dev)       ((dev)->features[0][6] & LMP_SIMPLE_PAIR)
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 07c34c55fc508..18740af603963 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -39,24 +39,25 @@ struct sco_param {
- 	u16 pkt_type;
- 	u16 max_latency;
- 	u8  retrans_effort;
-+	bool cap_2m_reqd;
- };
- 
- static const struct sco_param esco_param_cvsd[] = {
--	{ EDR_ESCO_MASK & ~ESCO_2EV3, 0x000a,	0x01 }, /* S3 */
--	{ EDR_ESCO_MASK & ~ESCO_2EV3, 0x0007,	0x01 }, /* S2 */
--	{ EDR_ESCO_MASK | ESCO_EV3,   0x0007,	0x01 }, /* S1 */
--	{ EDR_ESCO_MASK | ESCO_HV3,   0xffff,	0x01 }, /* D1 */
--	{ EDR_ESCO_MASK | ESCO_HV1,   0xffff,	0x01 }, /* D0 */
-+	{ EDR_ESCO_MASK & ~ESCO_2EV3, 0x000a,	0x01,   true  }, /* S3 */
-+	{ EDR_ESCO_MASK & ~ESCO_2EV3, 0x0007,	0x01,   true  }, /* S2 */
-+	{ EDR_ESCO_MASK | ESCO_EV3,   0x0007,	0x01,   false }, /* S1 */
-+	{ EDR_ESCO_MASK | ESCO_HV3,   0xffff,	0x01,   false }, /* D1 */
-+	{ EDR_ESCO_MASK | ESCO_HV1,   0xffff,	0x01,   false }, /* D0 */
- };
- 
- static const struct sco_param sco_param_cvsd[] = {
--	{ EDR_ESCO_MASK | ESCO_HV3,   0xffff,	0xff }, /* D1 */
--	{ EDR_ESCO_MASK | ESCO_HV1,   0xffff,	0xff }, /* D0 */
-+	{ EDR_ESCO_MASK | ESCO_HV3,   0xffff,	0xff,   false }, /* D1 */
-+	{ EDR_ESCO_MASK | ESCO_HV1,   0xffff,	0xff,   false }, /* D0 */
- };
- 
- static const struct sco_param esco_param_msbc[] = {
--	{ EDR_ESCO_MASK & ~ESCO_2EV3, 0x000d,	0x02 }, /* T2 */
--	{ EDR_ESCO_MASK | ESCO_EV3,   0x0008,	0x02 }, /* T1 */
-+	{ EDR_ESCO_MASK & ~ESCO_2EV3, 0x000d,	0x02,   true  }, /* T2 */
-+	{ EDR_ESCO_MASK | ESCO_EV3,   0x0008,	0x02,   false }, /* T1 */
- };
- 
- /* This function requires the caller holds hdev->lock */
-@@ -278,6 +279,20 @@ static void hci_add_sco(struct hci_conn *conn, __u16 handle)
- 	hci_send_cmd(hdev, HCI_OP_ADD_SCO, sizeof(cp), &cp);
- }
- 
-+static bool find_next_esco_param(struct hci_conn *conn,
-+				 const struct sco_param *esco_param, int size)
-+{
-+	for (; conn->attempt <= size; conn->attempt++) {
-+		if (lmp_esco_2m_capable(conn->link) ||
-+		    !esco_param[conn->attempt - 1].cap_2m_reqd)
-+			break;
-+		BT_DBG("hcon %p skipped attempt %d, eSCO 2M not supported",
-+		       conn, conn->attempt);
-+	}
-+
-+	return conn->attempt <= size;
-+}
-+
- bool hci_setup_sync(struct hci_conn *conn, __u16 handle)
- {
- 	struct hci_dev *hdev = conn->hdev;
-@@ -299,13 +314,15 @@ bool hci_setup_sync(struct hci_conn *conn, __u16 handle)
- 
- 	switch (conn->setting & SCO_AIRMODE_MASK) {
- 	case SCO_AIRMODE_TRANSP:
--		if (conn->attempt > ARRAY_SIZE(esco_param_msbc))
-+		if (!find_next_esco_param(conn, esco_param_msbc,
-+					  ARRAY_SIZE(esco_param_msbc)))
- 			return false;
- 		param = &esco_param_msbc[conn->attempt - 1];
- 		break;
- 	case SCO_AIRMODE_CVSD:
- 		if (lmp_esco_capable(conn->link)) {
--			if (conn->attempt > ARRAY_SIZE(esco_param_cvsd))
-+			if (!find_next_esco_param(conn, esco_param_cvsd,
-+						  ARRAY_SIZE(esco_param_cvsd)))
- 				return false;
- 			param = &esco_param_cvsd[conn->attempt - 1];
- 		} else {
--- 
-2.30.0.280.ga3ce27912f-goog
-
+Will
