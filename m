@@ -2,139 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3670530533C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006B830534D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhA0Gbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhA0DI6 (ORCPT
+        id S231895AbhA0GgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:36:01 -0500
+Received: from m97179.mail.qiye.163.com ([220.181.97.179]:41140 "EHLO
+        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233793AbhA0DMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:08:58 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB431C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:08:16 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id f18so436686ilj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pUTNAgUXNGecAG/Nta5GFejsQORS+HhEBWnkH5z0cEk=;
-        b=hpyeUAxjuKdnw26P1gWM08hqPghTI3CglMRiQp2OT36T3hGp/+azIwBxeAM11JfEjo
-         msYwzi6XAj73owIzURFZnNvnpPUyv2lV9l39W2PLS598febakRWeFO8Jt+wT9uvlF/yw
-         lDQnz1N3ij79boJoc77aIVNIUcRgeASUxlhrkKBJhchg9txt8XGH1dPJJ/tMsH5UAC56
-         C1pPoTcJT79DGuJTWHN8RAFxwPruop+fos8dxBkO4csGyEZr5UbFS+eqlSgiRxy4SAwE
-         EP5QMZ6BbFRDc/HlELHJfnq7lGepKsd68wYlJzlAm2AFWZPNbGiRq/J3wItwtAxBkFtK
-         1yUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pUTNAgUXNGecAG/Nta5GFejsQORS+HhEBWnkH5z0cEk=;
-        b=AX0lr+A2CSbB+8pqEZ/NDGMcqdqb1M/smIbJYcENCW/o8xB+qNjYQ294KMP/WBdMBU
-         raEhLRiazdCQ4evPkgsn5AZVoHDz4QQ3FibHI2/T9MMCOAt6kiZJA0rTbsg1tE0EVzcN
-         0IrLcErRzKKG8pK6NlB+e3SDNkgmGs37r0oPYGqPBcCTshvvxVWAmJVwz7vaIj5HXTfH
-         ByCZIskqRJseNQsIIrgiuVhbCde3adOub4B4Ne0giVy4C96E0YPmJgidpcmViI+CNwaf
-         i4f75aXRMw7dIcdUIXF2BMlc10EujGPih3u6K/eJgvRsJmldpgvEmO9cgey+OWHMEa6L
-         PvqA==
-X-Gm-Message-State: AOAM532RWV44FidVdi8JxK3pImEqd58AzqBxdilDWBNe7cm0queD/vob
-        HWUwy3m410lmiE4Aw++/gO8BxzU3d0xpZaBmroM=
-X-Google-Smtp-Source: ABdhPJz3xRkk2w3mvSEBbuT/hBzsk8B1KsIYhyX5dMQOsNuvknmjdLwV/nejWpiGyQ14g66dzk/Zl0RZbc6pFzgk/hM=
-X-Received: by 2002:a92:c6cb:: with SMTP id v11mr275556ilm.238.1611716896143;
- Tue, 26 Jan 2021 19:08:16 -0800 (PST)
+        Tue, 26 Jan 2021 22:12:39 -0500
+Received: from localhost.localdomain (unknown [218.94.118.90])
+        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 926D7E02834;
+        Wed, 27 Jan 2021 11:11:14 +0800 (CST)
+From:   Dongsheng Yang <dongsheng.yang@easystack.cn>
+To:     colyli@suse.de, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchristi@redhat.com
+Cc:     Dongsheng Yang <dongsheng.yang@easystack.cn>
+Subject: [PATCH V2] bcache: dont reset bio opf in bch_data_insert_start
+Date:   Wed, 27 Jan 2021 11:11:11 +0800
+Message-Id: <20210127031111.3493-1-dongsheng.yang@easystack.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com> <20210126171141.122639-4-paul.gortmaker@windriver.com>
-In-Reply-To: <20210126171141.122639-4-paul.gortmaker@windriver.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Tue, 26 Jan 2021 19:08:05 -0800
-Message-ID: <CAAH8bW8efPcdd9SoYhhVAujQcg7SUQe8sOrpCfG6bNDCB-bSCg@mail.gmail.com>
-Subject: Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZGkgZGExDSR1KHkkaVkpNSkpMSkxLTE9DT05VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MAg6Sjo6HD0zNghMGgIxHigq
+        Pi4aCh5VSlVKTUpKTEpMS0xOS0hNVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
+        V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBSE5KTDcG
+X-HM-Tid: 0a7741d2df4320bdkuqy926d7e02834
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 9:12 AM Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> This will reduce parameter passing and enable using nbits as part
-> of future dynamic region parameter parsing.
->
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  lib/bitmap.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 75006c4036e9..162e2850c622 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
->
->  /*
->   * Region 9-38:4/10 describes the following bitmap structure:
-> - * 0      9  12    18                  38
-> - * .........****......****......****......
-> - *         ^  ^     ^                   ^
-> - *      start  off   group_len        end
-> + * 0      9  12    18                  38           N
-> + * .........****......****......****..................
-> + *         ^  ^     ^                   ^           ^
-> + *      start  off   group_len        end       nbits
->   */
->  struct region {
->         unsigned int start;
->         unsigned int off;
->         unsigned int group_len;
->         unsigned int end;
-> +       unsigned int nbits;
->  };
->
-> -static int bitmap_set_region(const struct region *r,
-> -                               unsigned long *bitmap, int nbits)
-> +static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
->  {
->         unsigned int start;
->
-> -       if (r->end >= nbits)
-> +       if (r->end >= r->nbits)
->                 return -ERANGE;
->
->         for (start = r->start; start <= r->end; start += r->group_len)
-> @@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->         struct region r;
->         long ret;
->
-> -       bitmap_zero(maskp, nmaskbits);
-> +       r.nbits = nmaskbits;
-> +       bitmap_zero(maskp, r.nbits);
->
->         while (buf) {
->                 buf = bitmap_find_region(buf);
-> @@ -655,7 +656,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->                 if (ret)
->                         return ret;
->
-> -               ret = bitmap_set_region(&r, maskp, nmaskbits);
-> +               ret = bitmap_set_region(&r, maskp);
->                 if (ret)
->                         return ret;
->         }
-> --
-> 2.17.1
+commit ad0d9e76(bcache: use bio op accessors) makes the bi_opf
+modified by bio_set_op_attrs(). But there is a logical
+problem in this commit:
 
-Acked-by: Yury Norov <yury.norov@gmail.com>
+                trace_bcache_cache_insert(k);
+                bch_keylist_push(&op->insert_keys);
+
+-               n->bi_rw |= REQ_WRITE;
++               bio_set_op_attrs(n, REQ_OP_WRITE, 0);
+                bch_submit_bbio(n, op->c, k, 0);
+        } while (n != bio);
+
+The old code add REQ_WRITE into bio n and keep other flags; the
+new code set REQ_OP_WRITE to bi_opf, but reset all other flags.
+
+This problem is discoverd in our performance testing:
+(1) start a fio with 1M x 128depth for read in /dev/nvme0n1p1
+(2) start a fio with 1M x 128depth for write in /dev/escache0 (cache
+device is /dev/nvme0n1p2)
+
+We found the BW of reading is 2000+M/s, but the BW of writing is
+0-100M/s. After some debugging, we found the problem is io submit in
+writting is very slow.
+
+bch_data_insert_start() insert a bio to /dev/nvme0n1p1, but as
+cached_dev submit stack bio will be added into current->bio_list, and
+return.Then __submit_bio_noacct() will submit the new bio in bio_list
+into /dev/nvme0n1p1. This operation would be slow in
+blk_mq_submit_bio() -> rq_qos_throttle(q, bio);
+
+The rq_qos_throttle() will call wbt_should_throttle(),
+static inline bool wbt_should_throttle(struct rq_wb *rwb, struct bio *bio)
+{
+        switch (bio_op(bio)) {
+        case REQ_OP_WRITE:
+                /*
+                 * Don't throttle WRITE_ODIRECT
+                 */
+                if ((bio->bi_opf & (REQ_SYNC | REQ_IDLE)) ==
+                    (REQ_SYNC | REQ_IDLE))
+                        return false;
+... ...
+}
+
+As the bio_set_op_attrs() reset the (REQ_SYNC | REQ_IDLE), so this write
+bio will be considered as non-direct write.
+
+After this fix, bio to nvme will flaged as (REQ_SYNC | REQ_IDLE),
+then fio for writing will get about 1000M/s bandwidth.
+
+Fixes: ad0d9e76a412 ("bcache: use bio op accessors")
+Close: EAS-60259
+CC: Mike Christie <mchristi@redhat.com>
+Signed-off-by: Dongsheng Yang <dongsheng.yang@easystack.cn>
+---
+ drivers/md/bcache/request.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
+index c7cadaafa947..eb734f7ddaac 100644
+--- a/drivers/md/bcache/request.c
++++ b/drivers/md/bcache/request.c
+@@ -244,7 +244,7 @@ static void bch_data_insert_start(struct closure *cl)
+ 		trace_bcache_cache_insert(k);
+ 		bch_keylist_push(&op->insert_keys);
+ 
+-		bio_set_op_attrs(n, REQ_OP_WRITE, 0);
++		n->bi_opf |= REQ_OP_WRITE;
+ 		bch_submit_bbio(n, op->c, k, 0);
+ 	} while (n != bio);
+ 
+-- 
+2.25.1
+
