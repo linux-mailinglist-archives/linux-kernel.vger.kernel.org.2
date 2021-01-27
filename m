@@ -2,58 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A971E30641C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909F930643C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344448AbhA0TdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbhA0Tb4 (ORCPT
+        id S1344602AbhA0Th2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:37:28 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58408 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhA0Tb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:31:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0F6C0613ED;
-        Wed, 27 Jan 2021 11:31:16 -0800 (PST)
+        Wed, 27 Jan 2021 14:31:57 -0500
 Date:   Wed, 27 Jan 2021 19:31:11 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1611775872;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9KJpESEezEw7FjK+8Es36GYVxqjET2QbkM5fuH5NNI=;
-        b=B/Q/ntJfB8QT/TcvewwOVIfuK/vi24dXZe/p7wS7f9XHeo5UTHExWxYKb3xg3nwrdeRc4y
-        D0QaNLlWHP2jYO+Ypdq0cpElIbGqnJgwRqGRcSM7PYs2uBQjQm0bqj41nRvCUlEwvoGfR4
-        ZL9fJJ1PFsR66XSIZmX1L12sy2xj1E0fOPKzrwuceAkF/c3d4vkm4V2QBuu9+IcQvOz+B9
-        qGw323nOphOEjSiY26xUvkrCaaq1wzvx3CbC3TyKbvpEMhnJAgUK/Ac86H7KBO2Fz7NZ43
-        SpjWv5fnUplVOkx+NyEm/j+9NPvyVTyzdzzKDxdF7Rou9B6dJZaVQzj33VIGpg==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=AhKO4K2HzOCvVQ9ZqBgzClyMjpmqqFgQQ03NcZYTka0=;
+        b=O1dzd2sXtkQ/HIue1ZEDQcGJHDmcsCshEWrrVODkiFQwMuYh2WziOzifEqpu+iAidXSY62
+        u3EH9auoYlq0gTfjzQt5LgNjIDdTxEiojraz6f1PbaC7kI/rwmXCbb3oUqPqGKYMg0EayN
+        6CiReOg308JPxyj4hT+s0wUy1rM+WpXqL7zPvWZAd17hgSnI6biSCYFxfs14vXlWLRcAF+
+        PetowfUvoHrsd/cH4eEIMZyQxCXZzg6ykjYzbL6BAEuMu4YP5HYrE+dBE6xf4q5HJ2KYoH
+        K6rLn05vNRWY7zqlpFDCZZv8VkSZL0vBAmjIf3NoepedQGNqSOJkui2ZsjFZPA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1611775872;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9KJpESEezEw7FjK+8Es36GYVxqjET2QbkM5fuH5NNI=;
-        b=NEAbkJu30Mfk1ccQH/2iDUDiLqcXtahPDP/GXHpiigRZTawJSOCwIEpcuOkYZ6FI3LKIJI
-        lv4sUUYF2r9BreCQ==
-From:   "tip-bot2 for Lukas Wunner" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=AhKO4K2HzOCvVQ9ZqBgzClyMjpmqqFgQQ03NcZYTka0=;
+        b=uvsiEMxXmELnpj0Cwi1Lrrz3XHd0qtq33oNy+aaNLkiTB9dtd1Ydw20AHu46/1C7WQ3DYf
+        DDseE7Nuw/ep4/Dw==
+From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi/apple-properties: Reinstate support for boolean
- properties
-Cc:     <stable@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
+Subject: [tip: efi/core] efi: ia64: move IA64-only declarations to new
+ asm/efi.h header
+Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
         Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <be958bda75331a011d53c696d1deec8dccd06fd2.1609388549.git.lukas@wunner.de>
-References: <be958bda75331a011d53c696d1deec8dccd06fd2.1609388549.git.lukas@wunner.de>
 MIME-Version: 1.0
-Message-ID: <161177587165.23325.6382610532034532665.tip-bot2@tip-bot2>
+Message-ID: <161177587138.23325.17245237441010462333.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,78 +51,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/urgent branch of tip:
+The following commit has been merged into the efi/core branch of tip:
 
-Commit-ID:     355845b738e76445c8522802552146d96cb4afa7
-Gitweb:        https://git.kernel.org/tip/355845b738e76445c8522802552146d96cb4afa7
-Author:        Lukas Wunner <lukas@wunner.de>
-AuthorDate:    Thu, 31 Dec 2020 06:10:32 +01:00
+Commit-ID:     8ff059b8531f3b98e14f0461859fc7cdd95823e4
+Gitweb:        https://git.kernel.org/tip/8ff059b8531f3b98e14f0461859fc7cdd95823e4
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Mon, 18 Jan 2021 13:38:42 +01:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Thu, 31 Dec 2020 10:28:53 +01:00
+CommitterDate: Mon, 18 Jan 2021 13:50:37 +01:00
 
-efi/apple-properties: Reinstate support for boolean properties
+efi: ia64: move IA64-only declarations to new asm/efi.h header
 
-Since commit 4466bf82821b ("efi/apple-properties: use
-PROPERTY_ENTRY_U8_ARRAY_LEN"), my MacBook Pro issues a -ENODATA error
-when trying to assign EFI properties to the discrete GPU:
+Move some EFI related declarations that are only referenced on IA64 to
+a new asm/efi.h arch header.
 
-pci 0000:01:00.0: assigning 56 device properties
-pci 0000:01:00.0: error -61 assigning properties
-
-That's because some of the properties have no value.  They're booleans
-whose presence can be checked by drivers, e.g. "use-backlight-blanking".
-
-Commit 6e98503dba64 ("efi/apple-properties: Remove redundant attribute
-initialization from unmarshal_key_value_pairs()") employed a trick to
-store such booleans as u8 arrays (which is the data type used for all
-other EFI properties on Macs):  It cleared the property_entry's
-"is_array" flag, thereby denoting that the value is stored inline in the
-property_entry.
-
-Commit 4466bf82821b erroneously removed that trick.  It was probably a
-little fragile to begin with.
-
-Reinstate support for boolean properties by explicitly invoking the
-PROPERTY_ENTRY_BOOL() initializer for properties with zero-length value.
-
-Fixes: 4466bf82821b ("efi/apple-properties: use PROPERTY_ENTRY_U8_ARRAY_LEN")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Link: https://lore.kernel.org/r/be958bda75331a011d53c696d1deec8dccd06fd2.1609388549.git.lukas@wunner.de
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/apple-properties.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ arch/ia64/include/asm/efi.h      | 13 +++++++++++++
+ arch/ia64/kernel/efi.c           |  1 +
+ arch/ia64/kernel/machine_kexec.c |  1 +
+ arch/ia64/kernel/mca.c           |  1 +
+ arch/ia64/kernel/smpboot.c       |  1 +
+ arch/ia64/kernel/time.c          |  1 +
+ arch/ia64/kernel/uncached.c      |  4 +---
+ arch/ia64/mm/contig.c            |  1 +
+ arch/ia64/mm/discontig.c         |  1 +
+ arch/ia64/mm/init.c              |  1 +
+ include/linux/efi.h              |  6 ------
+ 11 files changed, 22 insertions(+), 9 deletions(-)
+ create mode 100644 arch/ia64/include/asm/efi.h
 
-diff --git a/drivers/firmware/efi/apple-properties.c b/drivers/firmware/efi/apple-properties.c
-index 34f53d8..e192648 100644
---- a/drivers/firmware/efi/apple-properties.c
-+++ b/drivers/firmware/efi/apple-properties.c
-@@ -3,8 +3,9 @@
-  * apple-properties.c - EFI device properties on Macs
-  * Copyright (C) 2016 Lukas Wunner <lukas@wunner.de>
-  *
-- * Note, all properties are considered as u8 arrays.
-- * To get a value of any of them the caller must use device_property_read_u8_array().
-+ * Properties are stored either as:
-+ * u8 arrays which can be retrieved with device_property_read_u8_array() or
-+ * booleans which can be queried with device_property_present().
-  */
- 
- #define pr_fmt(fmt) "apple-properties: " fmt
-@@ -88,8 +89,12 @@ static void __init unmarshal_key_value_pairs(struct dev_header *dev_header,
- 
- 		entry_data = ptr + key_len + sizeof(val_len);
- 		entry_len = val_len - sizeof(val_len);
--		entry[i] = PROPERTY_ENTRY_U8_ARRAY_LEN(key, entry_data,
--						       entry_len);
-+		if (entry_len)
-+			entry[i] = PROPERTY_ENTRY_U8_ARRAY_LEN(key, entry_data,
-+							       entry_len);
-+		else
-+			entry[i] = PROPERTY_ENTRY_BOOL(key);
+diff --git a/arch/ia64/include/asm/efi.h b/arch/ia64/include/asm/efi.h
+new file mode 100644
+index 0000000..6a4a50d
+--- /dev/null
++++ b/arch/ia64/include/asm/efi.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_EFI_H
++#define _ASM_EFI_H
 +
- 		if (dump_properties) {
- 			dev_info(dev, "property: %s\n", key);
- 			print_hex_dump(KERN_INFO, pr_fmt(), DUMP_PREFIX_OFFSET,
++typedef int (*efi_freemem_callback_t) (u64 start, u64 end, void *arg);
++
++void *efi_get_pal_addr(void);
++void efi_map_pal_code(void);
++void efi_memmap_walk(efi_freemem_callback_t, void *);
++void efi_memmap_walk_uc(efi_freemem_callback_t, void *);
++void efi_gettimeofday(struct timespec64 *ts);
++
++#endif
+diff --git a/arch/ia64/kernel/efi.c b/arch/ia64/kernel/efi.c
+index f932b25..dd7fd75 100644
+--- a/arch/ia64/kernel/efi.c
++++ b/arch/ia64/kernel/efi.c
+@@ -34,6 +34,7 @@
+ #include <linux/kexec.h>
+ #include <linux/mm.h>
+ 
++#include <asm/efi.h>
+ #include <asm/io.h>
+ #include <asm/kregs.h>
+ #include <asm/meminit.h>
+diff --git a/arch/ia64/kernel/machine_kexec.c b/arch/ia64/kernel/machine_kexec.c
+index efc9b56..af310dc 100644
+--- a/arch/ia64/kernel/machine_kexec.c
++++ b/arch/ia64/kernel/machine_kexec.c
+@@ -16,6 +16,7 @@
+ #include <linux/numa.h>
+ #include <linux/mmzone.h>
+ 
++#include <asm/efi.h>
+ #include <asm/numa.h>
+ #include <asm/mmu_context.h>
+ #include <asm/setup.h>
+diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
+index 2703f77..0fea266 100644
+--- a/arch/ia64/kernel/mca.c
++++ b/arch/ia64/kernel/mca.c
+@@ -91,6 +91,7 @@
+ #include <linux/gfp.h>
+ 
+ #include <asm/delay.h>
++#include <asm/efi.h>
+ #include <asm/meminit.h>
+ #include <asm/page.h>
+ #include <asm/ptrace.h>
+diff --git a/arch/ia64/kernel/smpboot.c b/arch/ia64/kernel/smpboot.c
+index 093040f..49b4885 100644
+--- a/arch/ia64/kernel/smpboot.c
++++ b/arch/ia64/kernel/smpboot.c
+@@ -45,6 +45,7 @@
+ #include <asm/cache.h>
+ #include <asm/current.h>
+ #include <asm/delay.h>
++#include <asm/efi.h>
+ #include <asm/io.h>
+ #include <asm/irq.h>
+ #include <asm/mca.h>
+diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
+index ed9fc3d..a37f161 100644
+--- a/arch/ia64/kernel/time.c
++++ b/arch/ia64/kernel/time.c
+@@ -26,6 +26,7 @@
+ #include <linux/sched/cputime.h>
+ 
+ #include <asm/delay.h>
++#include <asm/efi.h>
+ #include <asm/hw_irq.h>
+ #include <asm/ptrace.h>
+ #include <asm/sal.h>
+diff --git a/arch/ia64/kernel/uncached.c b/arch/ia64/kernel/uncached.c
+index 0750f36..51883a6 100644
+--- a/arch/ia64/kernel/uncached.c
++++ b/arch/ia64/kernel/uncached.c
+@@ -20,14 +20,12 @@
+ #include <linux/genalloc.h>
+ #include <linux/gfp.h>
+ #include <linux/pgtable.h>
++#include <asm/efi.h>
+ #include <asm/page.h>
+ #include <asm/pal.h>
+ #include <linux/atomic.h>
+ #include <asm/tlbflush.h>
+ 
+-
+-extern void __init efi_memmap_walk_uc(efi_freemem_callback_t, void *);
+-
+ struct uncached_pool {
+ 	struct gen_pool *pool;
+ 	struct mutex add_chunk_mutex;	/* serialize adding a converted chunk */
+diff --git a/arch/ia64/mm/contig.c b/arch/ia64/mm/contig.c
+index bfc4ecd..62fe80a 100644
+--- a/arch/ia64/mm/contig.c
++++ b/arch/ia64/mm/contig.c
+@@ -21,6 +21,7 @@
+ #include <linux/swap.h>
+ #include <linux/sizes.h>
+ 
++#include <asm/efi.h>
+ #include <asm/meminit.h>
+ #include <asm/sections.h>
+ #include <asm/mca.h>
+diff --git a/arch/ia64/mm/discontig.c b/arch/ia64/mm/discontig.c
+index c731113..03b3a02 100644
+--- a/arch/ia64/mm/discontig.c
++++ b/arch/ia64/mm/discontig.c
+@@ -24,6 +24,7 @@
+ #include <linux/efi.h>
+ #include <linux/nodemask.h>
+ #include <linux/slab.h>
++#include <asm/efi.h>
+ #include <asm/tlb.h>
+ #include <asm/meminit.h>
+ #include <asm/numa.h>
+diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+index 9b5acf8..24583a3 100644
+--- a/arch/ia64/mm/init.c
++++ b/arch/ia64/mm/init.c
+@@ -27,6 +27,7 @@
+ #include <linux/swiotlb.h>
+ 
+ #include <asm/dma.h>
++#include <asm/efi.h>
+ #include <asm/io.h>
+ #include <asm/numa.h>
+ #include <asm/patch.h>
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 763b816..0c31af3 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -167,8 +167,6 @@ struct capsule_info {
+ 
+ int __efi_capsule_setup_info(struct capsule_info *cap_info);
+ 
+-typedef int (*efi_freemem_callback_t) (u64 start, u64 end, void *arg);
+-
+ /*
+  * Types and defines for Time Services
+  */
+@@ -605,10 +603,6 @@ efi_guid_to_str(efi_guid_t *guid, char *out)
+ }
+ 
+ extern void efi_init (void);
+-extern void *efi_get_pal_addr (void);
+-extern void efi_map_pal_code (void);
+-extern void efi_memmap_walk (efi_freemem_callback_t callback, void *arg);
+-extern void efi_gettimeofday (struct timespec64 *ts);
+ #ifdef CONFIG_EFI
+ extern void efi_enter_virtual_mode (void);	/* switch EFI to virtual mode, if possible */
+ #else
