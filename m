@@ -2,164 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603F4306269
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0C630626F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344122AbhA0RpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
+        id S1344067AbhA0Rp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344109AbhA0RoX (ORCPT
+        with ESMTP id S1344135AbhA0RpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:44:23 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C62C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:43:43 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id t29so1647630pfg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:43:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7sj7pim5IetR456CHcvRdOi+mjzmrDoe/hWhqa9Dot0=;
-        b=nZn951upXHINIYPKAhqqnA0gSx9fm6BFVM/jP6hftSq00DD9x0fQ79puVIjzJIf+Wy
-         iz9lW1hiLD0uRu0nh13kS4yHg7O3hEcaW0s59nyCqYBxc053a/nqV04OX2KJSn7J44g+
-         V8moEFcNU3aSxiW1iWkOW/VanCas20nn/jHn9FJLLkkkc2maImUnd6Ldl7xHRe4sU/lS
-         GjaY2uNfKEAvsh2J9AP/NRQp/iqK17FHew7+NCrz1GulAxqmMrqdpVNtJk6QyHIP20U6
-         NiRec482FiU3hQ8fIjjs06E1pqCY2G3DBMZqGbJBGe6TmcSLPnjcz+EIwl7eQWVhT1ll
-         84cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7sj7pim5IetR456CHcvRdOi+mjzmrDoe/hWhqa9Dot0=;
-        b=ptDzJNXM2m3AMnOFVcE55tTs270x45Q0g63OH3jhpbs+ItlgBrrq+e0U44IDhfuGxn
-         dya6HoWEg4YQxN1eTEpvAUjWt0HfO2DiORlt78whn7cdHA42NwVDyzJsKHyV8F3nbhdD
-         jznwpsobCIrELcy7++SLBf/NjHMYPKhpcCdyUdVmgS7b6UlcZAHF5re07zguCy+o9tyV
-         lH53wN4ekr7uMvun9vir/GercQAuetf1j82ztZ3mp2Ug+y6yIjzUYDFb2awUG9Bw9AK+
-         cyxoKO0S7mHNMLoNtsZFw0GnbO+WLPE9RPkID7q8mC8Y1qlABX3rvDd1gwu/pwhmMFVI
-         go6A==
-X-Gm-Message-State: AOAM532vFYiHj/byIsKnRH0d933WDrRJnG6hSy5NljEnVll5xC94iP2R
-        XCBPfnP5qcfAgmkMjvuKPlpUdQ==
-X-Google-Smtp-Source: ABdhPJwjvSKmNhCa/kWyqmBXH7mVKkYXDuapfT2VYBLLHkHVh7PWO3Yk6lwHCS5IEBayb3JboBIycw==
-X-Received: by 2002:a05:6a00:2286:b029:1ae:6c7f:31ce with SMTP id f6-20020a056a002286b02901ae6c7f31cemr11645761pfe.6.1611769423153;
-        Wed, 27 Jan 2021 09:43:43 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 6sm2918057pfz.34.2021.01.27.09.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 09:43:42 -0800 (PST)
-Date:   Wed, 27 Jan 2021 10:43:40 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Leo Yan <leo.yan@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH v2] coresight: etm4x: Handle accesses to TRCSTALLCTLR
-Message-ID: <20210127174340.GA1162729@xps15>
-References: <20210126145614.3607093-1-suzuki.poulose@arm.com>
- <20210127120032.3611851-1-suzuki.poulose@arm.com>
+        Wed, 27 Jan 2021 12:45:12 -0500
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A690C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:44:31 -0800 (PST)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4DQrZC1sm4zQlPB;
+        Wed, 27 Jan 2021 18:44:03 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
+        s=MBO0001; t=1611769441;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BbL3vUcELfbaOwBw/4tXD2Y99BB4p9qaJZnpHQ13JIo=;
+        b=k/omoxNgYrI3A/SBtOePZZUjnQu8bqO3U863H8NsLVsiTyQpi32x8jhaiHS2CxyYjtLcWT
+        WrIzAru2KWc6tWGAIoHxuZfzjvdbchDCu8mjucaJ/EtKZWEz3Hz8TSEGqr9i3qHwSCRn+D
+        SMMM/d8t/Ofje1wCNt3Y4zXDDENdG6ISIFjgvQw4anDRo7gdskTK9a92a4qlf8q+AgA/uJ
+        4C1ZLu/JUMbDe4FLc8+2zIfopzlm3uOCEhSro77Q0ulqGzo0qUaHpBb4TVZmNbmQQC0Kzd
+        iuFqoiLdoxfilb9/kbv9xxHzYRdnq6dHokch5mRu5UXdOLzOjFuprmlNHbsaqA==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id 3_33cucYWK21; Wed, 27 Jan 2021 18:43:58 +0100 (CET)
+From:   Dylan Van Assche <me@dylanvanassche.be>
+To:     gregkh@linuxfoundation.org, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, nsaenzjulienne@suse.de,
+        vkor@vkten.in, devel@driverdev.osuosl.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Dylan Van Assche <me@dylanvanassche.be>
+Subject: [PATCH] staging: vc4_services: bcm2835-audio: Add SNDRV_PCM_INFO_BATCH flag
+Date:   Wed, 27 Jan 2021 18:43:48 +0100
+Message-Id: <20210127174348.10192-1-me@dylanvanassche.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127120032.3611851-1-suzuki.poulose@arm.com>
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -0.06 / 15.00 / 15.00
+X-Rspamd-Queue-Id: D8A251848
+X-Rspamd-UID: c4a93a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+Playing audio with PulseAudio and the bcm2835-pcm driver results
+in distorted sound. Timer-based scheduling does not properly work
+with bcm2835-pcm since configuring PulseAudio with tsched=0
+avoids this problem.
 
-On Wed, Jan 27, 2021 at 12:00:32PM +0000, Suzuki K Poulose wrote:
-> TRCSTALLCTLR register is only implemented if
-> 
->    TRCIDR3.STALLCTL == 0b1
-> 
-> Make sure the driver touches the register only it is implemented.
-> 
-> Cc: stable@vger.kernel.org
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v1:
->   - No change to the patch, fixed the stable email address and
->     added usual reviewers.
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x-core.c  | 9 ++++++---
->  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 3 +++
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index b40e3c2bf818..814b49dae0c7 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -367,7 +367,8 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->  	etm4x_relaxed_write32(csa, 0x0, TRCAUXCTLR);
->  	etm4x_relaxed_write32(csa, config->eventctrl0, TRCEVENTCTL0R);
->  	etm4x_relaxed_write32(csa, config->eventctrl1, TRCEVENTCTL1R);
-> -	etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
-> +	if (drvdata->stallctl)
-> +		etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
->  	etm4x_relaxed_write32(csa, config->ts_ctrl, TRCTSCTLR);
->  	etm4x_relaxed_write32(csa, config->syncfreq, TRCSYNCPR);
->  	etm4x_relaxed_write32(csa, config->ccctlr, TRCCCCTLR);
-> @@ -1545,7 +1546,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  	state->trcauxctlr = etm4x_read32(csa, TRCAUXCTLR);
->  	state->trceventctl0r = etm4x_read32(csa, TRCEVENTCTL0R);
->  	state->trceventctl1r = etm4x_read32(csa, TRCEVENTCTL1R);
-> -	state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
-> +	if (drvdata->stallctl)
-> +		state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
->  	state->trctsctlr = etm4x_read32(csa, TRCTSCTLR);
->  	state->trcsyncpr = etm4x_read32(csa, TRCSYNCPR);
->  	state->trcccctlr = etm4x_read32(csa, TRCCCCTLR);
-> @@ -1657,7 +1659,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
->  	etm4x_relaxed_write32(csa, state->trcauxctlr, TRCAUXCTLR);
->  	etm4x_relaxed_write32(csa, state->trceventctl0r, TRCEVENTCTL0R);
->  	etm4x_relaxed_write32(csa, state->trceventctl1r, TRCEVENTCTL1R);
-> -	etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
-> +	if (drvdata->stallctl)
-> +		etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
->  	etm4x_relaxed_write32(csa, state->trctsctlr, TRCTSCTLR);
->  	etm4x_relaxed_write32(csa, state->trcsyncpr, TRCSYNCPR);
->  	etm4x_relaxed_write32(csa, state->trcccctlr, TRCCCCTLR);
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> index 1c490bcef3ad..cd9249fbf913 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> @@ -296,6 +296,9 @@ static ssize_t mode_store(struct device *dev,
->  	if (kstrtoul(buf, 16, &val))
->  		return -EINVAL;
->  
-> +	if ((val & ETM_MODE_ISTALL_EN) && !drvdata->stallctl)
-> +		return -EINVAL;
-> +
+Setting the SNDRV_PCM_INFO_BATCH flag prevents PulseAudio to use
+timer-based scheduling by default. Settings this flag makes audio
+works out of the box.
 
-We have two choices here:
+Based on: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7f2430cda819a9ecb1df5a0f3ef4f1c20db3f811
 
-1) Follow what is already done in this function for implementation define
-options like ETM_MODE_BB, ETMv4_MODE_CTXID, ETM_MODE_RETURNSTACK and others.  In
-that case we would have:
+Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
+---
+Tested on my Raspberry Pi 3B+ with Kodi and postmarketOS.
 
-        /* bit[8], Instruction stall bit */
-        if ((config->mode & ETM_MODE_ISTALL_EN) && drvdata->stallctl == true))
-                config->stall_ctrl |= BIT(8);
-        else    
-                config->stall_ctrl &= ~BIT(8); 
+ drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-2) Return -EINVAL when something is not supported, like you have above.  In that
-case we'd have to enact the same behavior for all the options, which has the
-potential of breaking user space.
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
+index f783b632141b..1c200b923dfd 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
+@@ -12,7 +12,7 @@
+ static const struct snd_pcm_hardware snd_bcm2835_playback_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+-		 SNDRV_PCM_INFO_SYNC_APPLPTR),
++		 SNDRV_PCM_INFO_SYNC_APPLPTR | SNDRV_PCM_INFO_BATCH),
+ 	.formats = SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_48000,
+ 	.rate_min = 8000,
+@@ -29,7 +29,7 @@ static const struct snd_pcm_hardware snd_bcm2835_playback_hw = {
+ static const struct snd_pcm_hardware snd_bcm2835_playback_spdif_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+-		 SNDRV_PCM_INFO_SYNC_APPLPTR),
++		 SNDRV_PCM_INFO_SYNC_APPLPTR | SNDRV_PCM_INFO_BATCH),
+ 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_44100 |
+ 	SNDRV_PCM_RATE_48000,
+-- 
+2.30.0
 
-I think option 1 is best.
-
-Thanks,
-Mathieu
-
->  	spin_lock(&drvdata->spinlock);
->  	config->mode = val & ETMv4_MODE_ALL;
->  
-> -- 
-> 2.24.1
-> 
