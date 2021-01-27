@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A2B305F21
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8D4305F23
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343707AbhA0PKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:10:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235635AbhA0PH7 (ORCPT
+        id S234641AbhA0PKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:10:38 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44440 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343677AbhA0PJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:07:59 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841EBC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:07:17 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id rv9so3063097ejb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:07:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N7A1x2GC1x0hF+kEQdhgJbtckU1NEuvdrANE8Zk2mBc=;
-        b=PwO46OqOPXu+s13hTP8dIKnBU7ghxNkqb7PMprEjiCc6JwFpe65E/p95W2LoKqZ0K+
-         aqE2Q0kATuO5txfH2C7ti1pKIEW/fcipNQh4EEysIke8rK3e7MvDnpB8RI5g8aJ6PzvI
-         ttlHr2PXcKsfWLso+s3LtOzSVFIR1fgy2Nb4VGsVAQaFtsMpfXH8jVewSTfWsKNYIoF/
-         fUctJgZ2E0i7HqIDsfJ4wonPFkXT7Tec7Z1s+GbnaQRH08YFVNFfxRBbIoXhlZ21RT7D
-         5U1PduvF3d5Wj2dcWmhS0Tp4RFU5HaIbnRK/AkpX9QoxhaLwNZEF4ldk4gb4K4tpgcVo
-         tIRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N7A1x2GC1x0hF+kEQdhgJbtckU1NEuvdrANE8Zk2mBc=;
-        b=qzgt7svxySD7Okz3Nc9emP9yXRnY7e2dXxBt/wqpj7U9IpiJrwxzktnMrbDXzyldkF
-         f/uvjgWr6zGmnTzj8q9DEbW852WOHdGUfcjo24Ogh5nmkX99jfVNYA8LikuQVhno0hzI
-         qji2rsq4Z58wOA4mP2/SWJoKKDQ1jLbzXyt7Ha311miON9rZYvRW00/5JCiGqKtxJVxF
-         whRjPLbHfO6GFKtjaf3e6v76gW1Y+VZcxAo79TZRvun6cArqeHyQN9AkY7Qqo2DLFbuy
-         HpqrQjxIGvcS9xI7sjhg+6WSM0KTyzkkIdaFHhjVrmPzSzICVzgM6vf/rypm0aHYRqXA
-         c1vg==
-X-Gm-Message-State: AOAM530Gnu/JfY9gwIiB/ahGdiMIYkHCdltVFbC3XDCQHgS5OXydg/I2
-        kb01r3/u+ta7jN/b5hBm11ISBQ==
-X-Google-Smtp-Source: ABdhPJyH0Ua5BpkkZT8m+HW+HXL+QZRCAvd2STIW12zU9jFUOSFTkPgl0rUhiiiIAHB8ZtWkX9Yoxg==
-X-Received: by 2002:a17:906:5846:: with SMTP id h6mr7083231ejs.521.1611760036032;
-        Wed, 27 Jan 2021 07:07:16 -0800 (PST)
-Received: from google.com ([2a00:79e0:2:11:1ea0:b8ff:fe79:fe73])
-        by smtp.gmail.com with ESMTPSA id s15sm962666ejy.68.2021.01.27.07.07.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 07:07:15 -0800 (PST)
-Date:   Wed, 27 Jan 2021 16:07:09 +0100
-From:   Piotr Figiel <figiel@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        mathieu.desnoyers@efficios.com, viro@zeniv.linux.org.uk,
-        peterz@infradead.org, paulmck@kernel.org, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
-        pjt@google.com
-Subject: Re: [PATCH v3] fs/proc: Expose RSEQ configuration
-Message-ID: <YBGBnQWJDVZ7Y7s6@google.com>
-References: <20210126185412.175204-1-figiel@google.com>
- <20210126112547.d3f18b6a2abe864e8bfa7fcd@linux-foundation.org>
+        Wed, 27 Jan 2021 10:09:23 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RF8N32056709;
+        Wed, 27 Jan 2021 09:08:23 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611760103;
+        bh=5N5q9nhYj+BGX2ORC5A0F5lNAWdEa8rtx39OJBBAdmE=;
+        h=From:To:CC:Subject:Date;
+        b=lCKZXXb6AXuXeg1DkWNnu+BWnSvJjduAqAv5l9Llauk4KVNxi6h8BEC9HPqlg42w4
+         LJZdG6Rx0Hh7Ah9l4MUDvKsjuFC1P3pKQOuZ4LQV92uYwIzh6D5XIFl1MJzdWE9Q5g
+         phlCDPjfpweI7ASh4JnD1eH1ENe1lL7XB3tf8jVg=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RF8NS8007552
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Jan 2021 09:08:23 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
+ Jan 2021 09:08:23 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 27 Jan 2021 09:08:23 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RF8IH8064427;
+        Wed, 27 Jan 2021 09:08:19 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/2] J7200: Add support for higher speed modes in MMCSD subsystems
+Date:   Wed, 27 Jan 2021 20:38:13 +0530
+Message-ID: <20210127150815.16991-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126112547.d3f18b6a2abe864e8bfa7fcd@linux-foundation.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:25:47AM -0800, Andrew Morton wrote:
-> On Tue, 26 Jan 2021 19:54:12 +0100 Piotr Figiel <figiel@google.com> wrote:
-> > To achieve above goals expose the RSEQ structure address and the
-> > signature value with the new per-thread procfs file "rseq".
-> Using "/proc/<pid>/rseq" would be more informative.
-> 
-> >  fs/exec.c      |  2 ++
-> >  fs/proc/base.c | 22 ++++++++++++++++++++++
-> >  kernel/rseq.c  |  4 ++++
-> 
-> A Documentation/ update would be appropriate.
-> 
-> > +	task_lock(current);
-> >  	rseq_execve(current);
-> > +	task_unlock(current);
-> 
-> There's a comment over the task_lock() implementation which explains
-> what things it locks.  An update to that would be helpful.
+The following series of patches 
+- Add support for the zeroth instance of GPIO subsystem in the main domain
+- Add voltage regulator device tree nodes and their corresponding pinmux 
+  to support power cycle and voltage switch required for UHS-I modes
+- sets respective tags in sdhci0 node to support higher speeds
+- remove no-1-8-v tag from sdhci1 node to support UHS-I modes 
 
-Agreed I'll include fixes for above comments in v4.
+Changes since v2:
+- Added main_gpio0 DT node
+- Added voltage regulator device tree nodes required to support UHS-I modes
 
-> > --- a/fs/proc/base.c
-> > +++ b/fs/proc/base.c
-> > @@ -662,6 +662,22 @@ static int proc_pid_syscall(struct seq_file *m, struct pid_namespace *ns,
-> >  
-> >  	return 0;
-> >  }
-> > +
-> > +#ifdef CONFIG_RSEQ
-> > +static int proc_pid_rseq(struct seq_file *m, struct pid_namespace *ns,
-> > +				struct pid *pid, struct task_struct *task)
-> > +{
-> > +	int res = lock_trace(task);
-> > +
-> > +	if (res)
-> > +		return res;
-> > +	task_lock(task);
-> > +	seq_printf(m, "%px %08x\n", task->rseq, task->rseq_sig);
-> > +	task_unlock(task);
-> > +	unlock_trace(task);
-> > +	return 0;
-> > +}
-> 
-> Do we actually need task_lock() for this purpose?  Would
-> exec_update_lock() alone be adequate and appropriate?
+Changes since v1:
+- squashed the two patches into one
+- added performance logs for the above mentioned speed modes
 
-Now rseq syscall which modifies those fields isn't synchronised with
-exec_update_lock. So either a new lock or task_lock() could be used or
-exec_update_lock could be reused in the syscall.  I decided against
-exec_update_lock reuse in the syscall because it's normally used to
-guard access checks against concurrent setuid exec. This could be
-potentially confusing as it's not relevant for the the rseq syscall
-code.
-I think task_lock usage here is also consistent with how it's used
-across the kernel.
+Aswath Govindraju (2):
+  dts: ti: k3-j7200-main: Add support for zeroth instance of GPIO subsystem
+  arm64: dts: ti: k3-j7200: Add support for higher speed modes in MMCSD
+    subsystems
 
-Whether we need consistent rseq and rseq_sig pairs in the proc output, I
-think there's some argument for it (discussed also in parallel thread
-with Mathieu Desnoyers).
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 31 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 20 +++++++++++-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
 
-Best regards,
-Piotr.
+-- 
+2.17.1
+
