@@ -2,721 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59FE306817
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3F930681B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhA0XjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:39:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhA0XhG (ORCPT
+        id S234061AbhA0Xj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:39:58 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:39972 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233151AbhA0Xhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:37:06 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24966C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:36:12 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1l4uM4-0004kw-KY; Thu, 28 Jan 2021 00:36:08 +0100
-Received: from mgr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1l4uM3-0004io-Lv; Thu, 28 Jan 2021 00:36:07 +0100
-Date:   Thu, 28 Jan 2021 00:36:07 +0100
-From:   Michael Grzeschik <mgr@pengutronix.de>
-To:     Manish Narani <MNARANI@xilinx.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Michal Simek <michals@xilinx.com>, git <git@xilinx.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx platforms
-Message-ID: <20210127233607.GG19259@pengutronix.de>
-References: <1608015291-52007-1-git-send-email-manish.narani@xilinx.com>
- <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
- <20210118134223.GE12316@pengutronix.de>
- <20210122080846.GI12316@pengutronix.de>
- <BYAPR02MB589689FC1EAE48B5D2213E96C1A09@BYAPR02MB5896.namprd02.prod.outlook.com>
- <20210122133452.GK12316@pengutronix.de>
+        Wed, 27 Jan 2021 18:37:50 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10RNFMTI120191;
+        Wed, 27 Jan 2021 23:36:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=NxsoP6LZIIriYwWOadOhSSOFWa60pgRlgKoPwSaLfNs=;
+ b=nNfzr9pezrVr20yNT18m214enf+U+QzIXfUm60rDvLWyQbVp2cwru2TIFVVP0n160Qlc
+ qC7hXHuV+06lxC86Z6AfkOzWm3Rlds7KVfOGT/m+hC5OvU5AhDbzhwpcayloKpvRs0fu
+ jauu/MtTM4bDUSijmyP6OTou/hDTGcWg2QDPf+fRXRH4h9AV2tXh/aLu/4H6HGiHqn03
+ XkA1XvlnWRz8Na6JTzLLneSGODnhZGhJG8vWpB/2zdz/MgRJIS69VKeQ1gZzTaXQiNcX
+ KAw5PYFfc8Lx4vnYeDc7glIrGCnk/UKf/q1NIr0iaPqTMkM+GWHY1Z2D/+VO+fkA79Yh Og== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 3689aasve2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 23:36:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10RNGBbW194940;
+        Wed, 27 Jan 2021 23:36:45 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by userp3030.oracle.com with ESMTP id 368wqyfm1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 23:36:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QF7gUStS5A3jpTeHpxeDM5uCOhdzucKrNa9Eokjcd3uYSRpZ0Jjb7i+Yas/bQMc6dLdczvTTZRT/bRDh4xos5Xgiw37ecISDn5XHQ8IPQYzv54QQvG96luV8M171Uxw+kAOaFWweqZu+giPB3zZLTjgJy1HcZlnnUN4GaFwB5LxC1j0fYf1nZu08zP+T8t15LLE8O5CjNWNOgu6bLC4XbMCNl7B20hze1sxLSFyuWLMMurd695DaqgR2VN63QfB6SaZT3v8EhKqhxmKbHseylT7drlbTerlbycYDmg51NlCyVAQFV7ISloAnDfek0iZSpF30WmJxEnXat8FJIC5+uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NxsoP6LZIIriYwWOadOhSSOFWa60pgRlgKoPwSaLfNs=;
+ b=RUVr6cHsM7xr4UXd3j32iOXziwNmA/MhAISouVF/+5eBgEtxgqsV++dLwkVkBww7GqLx4uAX1rMNw/cjMzEFjW8gIXQCIXhBrmq87NoIISWA3XaNe2GRIHjOhsOfyzuC2ZgAbRsevbSdi/D1Gzr19d9HzR/JBOp/xDGLzwzrnVT+7MZH8mX8xhl6DxhJeWjPNIbK6LdBs1Z+nxuLKG3DWjQ5om5iqBxZHQJ+gR5Spl6MpyERDMMvsADQPpdggPIs5bpMr69C096hwr/j1ZO6EkTLHmt44NV/flG7MmDPlvFkRYwcwTxV7h61bDhH+LL8RWvVMwq1STvUBqeF/cGEFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NxsoP6LZIIriYwWOadOhSSOFWa60pgRlgKoPwSaLfNs=;
+ b=qu79aCPQyPr1d86AgJ2XlZFDbiAjMnU6pDocbldFxry0cRdO4blbr4N89DkJy/RAxEGsNSR15WrgKa+JwC15c/1m0ZJbBwy5Qttt2rIXSTcnMxPHEa30xm7d3KBa3s0hu1tL+kLpZg0eqVEdf4wPeYGCeYobwsN/6zj4XtBKr5s=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by CO1PR10MB4609.namprd10.prod.outlook.com (2603:10b6:303:91::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Wed, 27 Jan
+ 2021 23:36:42 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 23:36:42 +0000
+Subject: Re: [PATCH v3 3/5] hugetlb: only set HPageMigratable for migratable
+ hstates
+To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210122195231.324857-1-mike.kravetz@oracle.com>
+ <20210122195231.324857-4-mike.kravetz@oracle.com>
+ <20210127103523.GI827@dhcp22.suse.cz>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <2196d93e-f573-7163-183e-0ad2cec7555e@oracle.com>
+Date:   Wed, 27 Jan 2021 15:36:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210127103523.GI827@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW4PR03CA0110.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::25) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9/eUdp+dLtKXvemk"
-Content-Disposition: inline
-In-Reply-To: <20210122133452.GK12316@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 00:25:30 up 56 days, 11:52, 79 users,  load average: 0.15, 0.11,
- 0.12
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0110.namprd03.prod.outlook.com (2603:10b6:303:b7::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 23:36:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c1d1155b-341e-46c9-e2da-08d8c31c66a1
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4609:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB46098FB7554E3100B8B684C6E2BB9@CO1PR10MB4609.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xHeG7/YkpmCFemH1kC94lzdTVVECy75HeC5qm0xtnvtT75+3lRl6GS9Fagw1O1v6fBbyFEx5JpkRphnRLRMwAaQ/0LKjCpDDyd98p8LIQDseOSaAGSBcqCr7HsniEKGkjTzeRzznGP4LzGDyTPBUyk/wVRS0usn6zMkzxUgoGXj80liBLK4rsthNQ7gXebB3kR7AV4ndU1zjkfYFkEKJ8tak0ZRJ5zxW6/z5W/isfqfyqlte3scD+rsnEyaDW2xLhHmjEZVnaYBcQu2w5C/tg4aSQNwTclR3aYxYu1uSpGT7vzW/maObSBEmbJfPzSeSpryC7pi25bWeEUnKIUOhK3i/JZJx+vs7MdvGUC7AF+YtMtc/YQKckoi++56xxUd5RjskycDfkPt2oo0dj3ZMIl7r4Teg34zIzNqw9rtogOgiUs1c0i1ZUzNhamjwVndkGM7+XVKa8KdkNQVJYKqN89mhX+mivuVvOk+E+VokvF0LegYOb35RlHWlg49O49ICvg8u+zes88a6R/W04xvU9OacUOLwxza89VLjg/xZ1movxeX0D6s97gDYfBJ+C8N9+TQ49QQu/iRNsej49kSXJ32bcd4IEGMov9IoiSRu4VI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(366004)(346002)(39860400002)(7416002)(4326008)(186003)(2616005)(8676002)(44832011)(478600001)(16576012)(31686004)(956004)(16526019)(31696002)(6486002)(83380400001)(110136005)(26005)(316002)(53546011)(86362001)(54906003)(52116002)(5660300002)(66556008)(66476007)(8936002)(36756003)(66946007)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?czhCSFZmS3lkTE0yQjdld3lSaHAwV3lzQlQ4YkNyMktqMzMrNlFmOVo0a0FJ?=
+ =?utf-8?B?M3Q5WmJacHJTZGIwN1Rha1kvR2JMYVNmQkZzMHIrMWNpQmhnckdLSjhQWE9D?=
+ =?utf-8?B?czRLdEZIYmUvY0laOEJwMlkyNEdZVEh4cXBoZ2I3T1RvcVNvMlpwWEVrNnpE?=
+ =?utf-8?B?TlUzazhQY2hPZ0FYTjlGai9XNHZrNGhnV1lSWGJBUkxOYVYvYmRHRFVIZTM4?=
+ =?utf-8?B?TDE1ME02V3hwVllyMGhLV1pneGdONGhWdkpPMUdNZ1JlQndPakp3b2t6NU05?=
+ =?utf-8?B?aUpKNkNnSlg3TldjS3RDdEFSOGk3WHZpZS9uSmcydHlkeVlkaVIyOWNwb0dD?=
+ =?utf-8?B?SXkydCtsUStSTXlML2xhMWlFN3BpQUNzV2xTM1pWLzZleFp0bVludkx0YTFp?=
+ =?utf-8?B?OUdRNjN3RVZiSUJsc2kxOEJFVG50SkpvQkZnN2VaMmdDVm1lVHlUcVZxcGF6?=
+ =?utf-8?B?TjR6Y0xDdThoaHZ5WkNUSXZTSm9Wemd6ai9QVFZrTVJpblAxdGhiM2NvRzlW?=
+ =?utf-8?B?YVo2RDlaV2xlZ2J3QStncFNFK21QNUp3WG9FNUJtZkc0NGkzcGxRdm1MRWF5?=
+ =?utf-8?B?bHBZTElQUUQ2ZUpoZDN2VS8rWUhCWWMzR1F5ZVZaWE9yTWhHL3R0b3JPU1Np?=
+ =?utf-8?B?a1VRNHVkQkxXSytERXBNZ1FUWnM0Szcrdk9VczJTZVBoSFJTa0I3Q2xNQ0Zm?=
+ =?utf-8?B?U3BoWHJWZXpyQ3BaY0FMOVBvaVFLWXBoM2Rzbm92aUw4MjhrOUlkNkRxMnZO?=
+ =?utf-8?B?ckh3U1NNaG01RmpyRlRnY1VTQityczJPTGNTWTc2bFA5MUtkVFJYRUdsZ2tS?=
+ =?utf-8?B?ZTBmQjlrWWZlRklyVSt1ZCtJdVIzdlNhUktJMVVGY09aWk5uWmdzY0hVbmNp?=
+ =?utf-8?B?MWR3ZW5yejQ1T2tTWVQwUW5PSTkxdlRLdXd1b3E3M24xZHVBQitHaFY2L2VZ?=
+ =?utf-8?B?c1ZOS1FldDl1MVREUWtqVUFUTmFmdElKOTA5TXB3KzBBUW9Uc0x4WmpobG1Q?=
+ =?utf-8?B?UWFFUnk5aDB4ZTArQWgrU2Yvamg0RVpHWmk4Skg4Z0w1UVZYQ0J2RXBvRTZ0?=
+ =?utf-8?B?ei93eWIySW5sTDJjUTE5N01mUWg1VzJaRW95OWJwVnIzK1JJSk1Cb29HVnFo?=
+ =?utf-8?B?WGlKbnZtbDdRQ01YUG05MkhiWnAraVdVRnBCYTdpeGc0V1E0ckVWQWpBT21J?=
+ =?utf-8?B?TWJPTXRqVEhqalhEajk1akM1R2ppQUdkSlJPY2ljWjBwaktnNzk5aEFJbEVz?=
+ =?utf-8?B?bndEN2ZnY21SMW1VWWFEU1RVaEF5SkdNUFB5ZDZFSTUzMkEwNHByUlhDUU1O?=
+ =?utf-8?B?MlR4YWJXWllabjIrYXZXaDJrRmRQYVlpajh1L2lzeWg0Mk9jWkdoell2WWZv?=
+ =?utf-8?B?MENEd1NURzJaNnJNZGhjZlF4Y3lKNWtsRUtFUzRMbWQ2bmdsMnhzejJhWitn?=
+ =?utf-8?Q?BAUk6Out?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1d1155b-341e-46c9-e2da-08d8c31c66a1
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 23:36:42.4229
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KqNToq65E2f6/7SW0P4PYhEzHsVins/YcXBUNrRcHGY2t0/oG+48YWahBcfK1NdeCKlxZ46MJoy0d6K0n0s2cQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4609
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270116
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 phishscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---9/eUdp+dLtKXvemk
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jan 22, 2021 at 02:34:52PM +0100, Michael Grzeschik wrote:
->On Fri, Jan 22, 2021 at 01:06:22PM +0000, Manish Narani wrote:
->>Hi Michael,
+On 1/27/21 2:35 AM, Michal Hocko wrote:
+> On Fri 22-01-21 11:52:29, Mike Kravetz wrote:
+>> The HP_Migratable flag indicates a page is a candidate for migration.
+>> Only set the flag if the page's hstate supports migration.  This allows
+>> the migration paths to detect non-migratable pages earlier.  If migration
+>> is not supported for the hstate, HP_Migratable will not be set, the page
+>> will not be isolated and no attempt will be made to migrate.  We should
+>> never get to unmap_and_move_huge_page for a page where migration is not
+>> supported, so throw a warning if we do.
 >>
->>>-----Original Message-----
->>>From: Michael Grzeschik <mgr@pengutronix.de>
->>>Sent: Friday, January 22, 2021 1:39 PM
->>>To: Manish Narani <MNARANI@xilinx.com>
->>>Cc: devicetree@vger.kernel.org; kernel@pengutronix.de; balbi@kernel.org;
->>>gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; Michal Simek
->>><michals@xilinx.com>; linux-kernel@vger.kernel.org; robh+dt@kernel.org;
->>>git <git@xilinx.com>; p.zabel@pengutronix.de; linux-arm-
->>>kernel@lists.infradead.org
->>>Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx
->>>platforms
->>>
->>>Hello!
->>>
->>>On Mon, Jan 18, 2021 at 02:42:24PM +0100, Michael Grzeschik wrote:
->>>>Hi!
->>>>
->>>>On Tue, Dec 15, 2020 at 12:24:51PM +0530, Manish Narani wrote:
->>>>>Add a new driver for supporting Xilinx platforms. This driver is used
->>>>>for some sequence of operations required for Xilinx USB controllers.
->>>>>This driver is also used to choose between PIPE clock coming from SerD=
-es
->>>>>and the Suspend Clock. Before the controller is out of reset, the clock
->>>>>selection should be changed to PIPE clock in order to make the USB
->>>>>controller work. There is a register added in Xilinx USB controller
->>>>>register space for the same.
->>>>
->>>>I tried out this driver with the vanilla kernel on an zynqmp. Without
->>>>this patch the USB-Gadget is already acting buggy. In the gadget mode,
->>>>some iterations of plug/unplug results to an stalled gadget which will
->>>>never come back without a reboot.
->>>>
->>>>With the corresponding code of this driver (reset assert, clk modify,
->>>>reset deassert) in the downstream kernels phy driver we found out it is
->>>>totaly stable. But using this exact glue driver which should do the same
->>>>as the downstream code, the gadget still was buggy the way described
->>>>above.
->>>>
->>>>I suspect the difference lays in the different order of operations.
->>>>While the downstream code is runing the resets inside the phy driver
->>>>which is powered and initialized in the dwc3-core itself. With this glue
->>>>layser approach of this patch the whole phy init is done before even
->>>>touching dwc3-core in any way. It seems not to have the same effect,
->>>>though.
->>>>
->>>>If really the order of operations is limiting us, we probably need
->>>>another solution than this glue layer. Any Ideas?
->>>
->>>I found out what the difference between the Downstream and this
->>>Glue is. When using vanilla with this Glue code we may not set
->>>the following bit:
->>>
->>>https://www.xilinx.com/html_docs/registers/ug1087/ug1087-zynq-
->>>ultrascale-registers.html#usb3_regs___fpd_power_prsnt.html
->>>
->>>>>+	/* Set PIPE Power Present signal in FPD Power Present Register*/
->>>>>+	writel(PIPE_POWER_ON, priv_data->regs +
->>>XLNX_USB_FPD_POWER_PRSNT);
->>>
->>>When I comment this out, the link stays stable. This is different in
->>>the Downstream Xilinx Kernel, where the bit is also set but has no
->>>negativ effect.
->>>
->>>Manish, can you give me a pointer what to look for?
->>>So setting this will also work with mainline?
->>I am looking further on this but from what I see here is that,
->>In order to make USB function properly, there are some dt changes needed =
-in mainline for
->>USB node which include defining clocks coming from serdes.
->>The DT changes are pending to be sent to mainline.
->
->Can you push that state somewhere, so I could test it?
->Or is in the downstream kernel some things to copy?
->
->>Can you share the DT settings for USB node on your side?
->
->Here is my current configuration for the device node at usb0:
->
->zynqmp.dtsi
->
->zynqmp_reset: reset-controller {
->	compatible =3D "xlnx,zynqmp-reset";
->	#reset-cells =3D <1>;
->};
->
->usb0: usb@ff9d0000 {
->	#address-cells =3D <2>;
->	#size-cells =3D <2>;
->	status =3D "disabled";
->	compatible =3D "xlnx,zynqmp-dwc3";
->	reg =3D <0x0 0xff9d0000 0x0 0x100>;
->	clock-names =3D "bus_clk", "ref_clk";
->	power-domains =3D <&zynqmp_firmware PD_USB_0>;
->	ranges;
->	resets =3D <&zynqmp_reset ZYNQMP_RESET_USB0_CORERESET>,
->		<&zynqmp_reset ZYNQMP_RESET_USB0_HIBERRESET>,
->		<&zynqmp_reset ZYNQMP_RESET_USB0_APB>;
->	reset-names =3D "usb_crst", "usb_hibrst", "usb_apbrst";
->	phy-names =3D "usb3-phy";
->	phys =3D <&psgtr 2 PHY_TYPE_USB3 0 2>;
->
->	usb0_dwc3: dwc3@fe200000 {
->		compatible =3D "snps,dwc3";
->		interrupt-parent =3D <&gic>;
->		interrupts =3D <0 65 4>;
->		clock-names =3D "ref", "bus_early", "suspend";
->		reg =3D <0x0 0xfe200000 0x0 0x40000>;
->	};
->};
->
->platform.dts
->
->&usb0 {
->	status =3D "okay";
->	phy-names =3D "usb3-phy";
->	phys =3D <&psgtr 2 PHY_TYPE_USB3 0 2>;
->};
->
->&usb0_dwc3 {
->	dr_mode =3D "peripheral";
->
->	/* The following quirks are required, since the bInterval is 1 and we
->	 * handle steady ISOC streaming. See Usecase 3 in commit 729dcffd1ed3
->	 * ("usb: dwc3: gadget: Add support for disabling U1 and U2 entries").
->	 */
->	snps,dis-u1-entry-quirk;
->	snps,dis-u2-entry-quirk;
->};
->
->
->>Meanwhile I will keep updating on the same.
->
->Thanks, that sounds great!
-
-I have more feedback regarding this issues. As we saw new uncommon
-effects, when using the glue. Regarding to get the plug/unplug behaviour
-stable, we sticked with leaving out the setting of PIPE_POWER_ON in that
-driver. Unfortunately, with that change, the dwc3 is not only not
-sending any Erratic Errors any more, but also is lacking to send
-disconnect interrupts.
-
-Double checking with downstream shows that disconnects are working
-completely fine in your downstream stack.
-
-I think we should really need to know why PIPE_POWER_ON is making
-a difference before we can say the dwc3 is stable with that glue.
-
-Regards,
-Michael
-
->>>>>Signed-off-by: Manish Narani <manish.narani@xilinx.com>
->>>>>---
->>>>>drivers/usb/dwc3/Kconfig          |   9 +
->>>>>drivers/usb/dwc3/Makefile         |   1 +
->>>>>drivers/usb/dwc3/dwc3-of-simple.c |   1 -
->>>>>drivers/usb/dwc3/dwc3-xilinx.c    | 334
->>>++++++++++++++++++++++++++++++
->>>>>4 files changed, 344 insertions(+), 1 deletion(-)
->>>>>create mode 100644 drivers/usb/dwc3/dwc3-xilinx.c
->>>>>
->>>>>diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
->>>>>index 7a2304565a73..0e00e6dfccd8 100644
->>>>>--- a/drivers/usb/dwc3/Kconfig
->>>>>+++ b/drivers/usb/dwc3/Kconfig
->>>>>@@ -139,4 +139,13 @@ config USB_DWC3_QCOM
->>>>>	  for peripheral mode support.
->>>>>	  Say 'Y' or 'M' if you have one such device.
->>>>>
->>>>>+config USB_DWC3_XILINX
->>>>>+	tristate "Xilinx Platforms"
->>>>>+	depends on (ARCH_ZYNQMP || ARCH_VERSAL) && OF
->>>>>+	default USB_DWC3
->>>>>+	help
->>>>>+	  Support Xilinx SoCs with DesignWare Core USB3 IP.
->>>>>+	  This driver handles both ZynqMP and Versal SoC operations.
->>>>>+	  Say 'Y' or 'M' if you have one such device.
->>>>>+
->>>>>endif
->>>>>diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
->>>>>index ae86da0dc5bd..add567578b1f 100644
->>>>>--- a/drivers/usb/dwc3/Makefile
->>>>>+++ b/drivers/usb/dwc3/Makefile
->>>>>@@ -51,3 +51,4 @@ obj-$(CONFIG_USB_DWC3_MESON_G12A)	+=3D
->>>dwc3-meson-g12a.o
->>>>>obj-$(CONFIG_USB_DWC3_OF_SIMPLE)	+=3D dwc3-of-simple.o
->>>>>obj-$(CONFIG_USB_DWC3_ST)		+=3D dwc3-st.o
->>>>>obj-$(CONFIG_USB_DWC3_QCOM)		+=3D dwc3-qcom.o
->>>>>+obj-$(CONFIG_USB_DWC3_XILINX)		+=3D dwc3-xilinx.o
->>>>>diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-
->>>of-simple.c
->>>>>index e62ecd22b3ed..71fd620c5161 100644
->>>>>--- a/drivers/usb/dwc3/dwc3-of-simple.c
->>>>>+++ b/drivers/usb/dwc3/dwc3-of-simple.c
->>>>>@@ -172,7 +172,6 @@ static const struct dev_pm_ops
->>>dwc3_of_simple_dev_pm_ops =3D {
->>>>>
->>>>>static const struct of_device_id of_dwc3_simple_match[] =3D {
->>>>>	{ .compatible =3D "rockchip,rk3399-dwc3" },
->>>>>-	{ .compatible =3D "xlnx,zynqmp-dwc3" },
->>>>>	{ .compatible =3D "cavium,octeon-7130-usb-uctl" },
->>>>>	{ .compatible =3D "sprd,sc9860-dwc3" },
->>>>>	{ .compatible =3D "allwinner,sun50i-h6-dwc3" },
->>>>>diff --git a/drivers/usb/dwc3/dwc3-xilinx.c b/drivers/usb/dwc3/dwc3-
->>>xilinx.c
->>>>>new file mode 100644
->>>>>index 000000000000..7e485951d2f7
->>>>>--- /dev/null
->>>>>+++ b/drivers/usb/dwc3/dwc3-xilinx.c
->>>>>@@ -0,0 +1,334 @@
->>>>>+// SPDX-License-Identifier: GPL-2.0
->>>>>+/**
->>>>>+ * dwc3-xilinx.c - Xilinx DWC3 controller specific glue driver
->>>>>+ *
->>>>>+ * Authors: Manish Narani <manish.narani@xilinx.com>
->>>>>+ *          Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
->>>>>+ */
->>>>>+
->>>>>+#include <linux/module.h>
->>>>>+#include <linux/kernel.h>
->>>>>+#include <linux/slab.h>
->>>>>+#include <linux/clk.h>
->>>>>+#include <linux/of.h>
->>>>>+#include <linux/platform_device.h>
->>>>>+#include <linux/dma-mapping.h>
->>>>>+#include <linux/of_platform.h>
->>>>>+#include <linux/pm_runtime.h>
->>>>>+#include <linux/reset.h>
->>>>>+#include <linux/of_address.h>
->>>>>+#include <linux/delay.h>
->>>>>+#include <linux/firmware/xlnx-zynqmp.h>
->>>>>+#include <linux/io.h>
->>>>>+
->>>>>+#include <linux/phy/phy.h>
->>>>>+
->>>>>+/* USB phy reset mask register */
->>>>>+#define XLNX_USB_PHY_RST_EN			0x001C
->>>>>+#define XLNX_PHY_RST_MASK			0x1
->>>>>+
->>>>>+/* Xilinx USB 3.0 IP Register */
->>>>>+#define XLNX_USB_TRAFFIC_ROUTE_CONFIG		0x005C
->>>>>+#define XLNX_USB_TRAFFIC_ROUTE_FPD		0x1
->>>>>+
->>>>>+/* Versal USB Reset ID */
->>>>>+#define VERSAL_USB_RESET_ID			0xC104036
->>>>>+
->>>>>+#define XLNX_USB_FPD_PIPE_CLK			0x7c
->>>>>+#define PIPE_CLK_DESELECT			1
->>>>>+#define PIPE_CLK_SELECT				0
->>>>>+#define XLNX_USB_FPD_POWER_PRSNT		0x80
->>>>>+#define PIPE_POWER_ON				1
->>>>>+#define PIPE_POWER_OFF				0
->>>>>+
->>>>>+struct dwc3_xlnx {
->>>>>+	int				num_clocks;
->>>>>+	struct clk_bulk_data		*clks;
->>>>>+	struct device			*dev;
->>>>>+	void __iomem			*regs;
->>>>>+	int				(*pltfm_init)(struct dwc3_xlnx *data);
->>>>>+};
->>>>>+
->>>>>+static void dwc3_xlnx_mask_phy_rst(struct dwc3_xlnx *priv_data, bool
->>>mask)
->>>>>+{
->>>>>+	u32 reg;
->>>>>+
->>>>>+	/*
->>>>>+	 * Enable or disable ULPI PHY reset from USB Controller.
->>>>>+	 * This does not actually reset the phy, but just controls
->>>>>+	 * whether USB controller can or cannot reset ULPI PHY.
->>>>>+	 */
->>>>>+	reg =3D readl(priv_data->regs + XLNX_USB_PHY_RST_EN);
->>>>>+
->>>>>+	if (mask)
->>>>>+		reg &=3D ~XLNX_PHY_RST_MASK;
->>>>>+	else
->>>>>+		reg |=3D XLNX_PHY_RST_MASK;
->>>>>+
->>>>>+	writel(reg, priv_data->regs + XLNX_USB_PHY_RST_EN);
->>>>>+}
->>>>>+
->>>>>+static int dwc3_xlnx_init_versal(struct dwc3_xlnx *priv_data)
->>>>>+{
->>>>>+	struct device		*dev =3D priv_data->dev;
->>>>>+	int			ret;
->>>>>+
->>>>>+	dwc3_xlnx_mask_phy_rst(priv_data, false);
->>>>>+
->>>>>+	/* Assert and De-assert reset */
->>>>>+	ret =3D zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
->>>>>+				     PM_RESET_ACTION_ASSERT);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err_probe(dev, ret, "failed to assert Reset\n");
->>>>>+		return ret;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
->>>>>+				     PM_RESET_ACTION_RELEASE);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err_probe(dev, ret, "failed to De-assert Reset\n");
->>>>>+		return ret;
->>>>>+	}
->>>>>+
->>>>>+	dwc3_xlnx_mask_phy_rst(priv_data, true);
->>>>>+
->>>>>+	return 0;
->>>>>+}
->>>>>+
->>>>>+static int dwc3_xlnx_init_zynqmp(struct dwc3_xlnx *priv_data)
->>>>>+{
->>>>>+	struct device		*dev =3D priv_data->dev;
->>>>>+	struct reset_control	*crst, *hibrst, *apbrst;
->>>>>+	struct phy		*usb3_phy;
->>>>>+	int			ret;
->>>>>+	u32			reg;
->>>>>+
->>>>>+	crst =3D devm_reset_control_get_exclusive(dev, "usb_crst");
->>>>>+	if (IS_ERR(crst)) {
->>>>>+		ret =3D PTR_ERR(crst);
->>>>>+		dev_err_probe(dev, ret,
->>>>>+			      "failed to get core reset signal\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	hibrst =3D devm_reset_control_get_exclusive(dev, "usb_hibrst");
->>>>>+	if (IS_ERR(hibrst)) {
->>>>>+		ret =3D PTR_ERR(hibrst);
->>>>>+		dev_err_probe(dev, ret,
->>>>>+			      "failed to get hibernation reset signal\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	apbrst =3D devm_reset_control_get_exclusive(dev, "usb_apbrst");
->>>>>+	if (IS_ERR(apbrst)) {
->>>>>+		ret =3D PTR_ERR(apbrst);
->>>>>+		dev_err_probe(dev, ret,
->>>>>+			      "failed to get APB reset signal\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D reset_control_assert(crst);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err(dev, "Failed to assert core reset\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D reset_control_assert(hibrst);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err(dev, "Failed to assert hibernation reset\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D reset_control_assert(apbrst);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err(dev, "Failed to assert APB reset\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	usb3_phy =3D devm_phy_get(dev, "usb3-phy");
->>>>>+
->>>>>+	ret =3D phy_init(usb3_phy);
->>>>>+	if (ret < 0) {
->>>>>+		phy_exit(usb3_phy);
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D reset_control_deassert(apbrst);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err(dev, "Failed to release APB reset\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	/* Set PIPE Power Present signal in FPD Power Present Register*/
->>>>>+	writel(PIPE_POWER_ON, priv_data->regs +
->>>XLNX_USB_FPD_POWER_PRSNT);
->>>
->>>This is somehow leading to an unstable link when using vanilla.
->>>
->>>>>+
->>>>>+	/* Set the PIPE Clock Select bit in FPD PIPE Clock register */
->>>>>+	writel(PIPE_CLK_SELECT, priv_data->regs +
->>>XLNX_USB_FPD_PIPE_CLK);
->>>>>+
->>>>>+	ret =3D reset_control_deassert(crst);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err(dev, "Failed to release core reset\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D reset_control_deassert(hibrst);
->>>>>+	if (ret < 0) {
->>>>>+		dev_err(dev, "Failed to release hibernation reset\n");
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	ret =3D phy_power_on(usb3_phy);
->>>>>+	if (ret < 0) {
->>>>>+		phy_exit(usb3_phy);
->>>>>+		goto err;
->>>>>+	}
->>>>>+
->>>>>+	/*
->>>>>+	 * This routes the USB DMA traffic to go through FPD path instead
->>>>>+	 * of reaching DDR directly. This traffic routing is needed to
->>>>>+	 * make SMMU and CCI work with USB DMA.
->>>>>+	 */
->>>>>+	if (of_dma_is_coherent(dev->of_node) ||
->>>device_iommu_mapped(dev)) {
->>>>>+		reg =3D readl(priv_data->regs +
->>>XLNX_USB_TRAFFIC_ROUTE_CONFIG);
->>>>>+		reg |=3D XLNX_USB_TRAFFIC_ROUTE_FPD;
->>>>>+		writel(reg, priv_data->regs +
->>>XLNX_USB_TRAFFIC_ROUTE_CONFIG);
->>>>>+	}
->>>>>+
->>>>>+err:
->>>>>+	return ret;
->>>>>+}
->>>>>+
->>>>>+static const struct of_device_id dwc3_xlnx_of_match[] =3D {
->>>>>+	{
->>>>>+		.compatible =3D "xlnx,zynqmp-dwc3",
->>>>>+		.data =3D &dwc3_xlnx_init_zynqmp,
->>>>>+	},
->>>>>+	{
->>>>>+		.compatible =3D "xlnx,versal-dwc3",
->>>>>+		.data =3D &dwc3_xlnx_init_versal,
->>>>>+	},
->>>>>+	{ /* Sentinel */ }
->>>>>+};
->>>>>+MODULE_DEVICE_TABLE(of, dwc3_xlnx_of_match);
->>>>>+
->>>>>+static int dwc3_xlnx_probe(struct platform_device *pdev)
->>>>>+{
->>>>>+	struct dwc3_xlnx		*priv_data;
->>>>>+	struct device			*dev =3D &pdev->dev;
->>>>>+	struct device_node		*np =3D dev->of_node;
->>>>>+	const struct of_device_id	*match;
->>>>>+	void __iomem			*regs;
->>>>>+	int				ret;
->>>>>+
->>>>>+	priv_data =3D devm_kzalloc(dev, sizeof(*priv_data), GFP_KERNEL);
->>>>>+	if (!priv_data)
->>>>>+		return -ENOMEM;
->>>>>+
->>>>>+	regs =3D devm_platform_ioremap_resource(pdev, 0);
->>>>>+	if (IS_ERR(regs)) {
->>>>>+		ret =3D PTR_ERR(regs);
->>>>>+		dev_err_probe(dev, ret, "failed to map registers\n");
->>>>>+		return ret;
->>>>>+	}
->>>>>+
->>>>>+	match =3D of_match_node(dwc3_xlnx_of_match, pdev->dev.of_node);
->>>>>+
->>>>>+	priv_data->pltfm_init =3D match->data;
->>>>>+	priv_data->regs =3D regs;
->>>>>+	priv_data->dev =3D dev;
->>>>>+
->>>>>+	platform_set_drvdata(pdev, priv_data);
->>>>>+
->>>>>+	ret =3D devm_clk_bulk_get_all(priv_data->dev, &priv_data->clks);
->>>>>+	if (ret < 0)
->>>>>+		return ret;
->>>>>+
->>>>>+	priv_data->num_clocks =3D ret;
->>>>>+
->>>>>+	ret =3D clk_bulk_prepare_enable(priv_data->num_clocks, priv_data-
->>>>clks);
->>>>>+	if (ret)
->>>>>+		return ret;
->>>>>+
->>>>>+	ret =3D priv_data->pltfm_init(priv_data);
->>>>>+	if (ret)
->>>>>+		goto err_clk_put;
->>>>>+
->>>>>+	ret =3D of_platform_populate(np, NULL, NULL, dev);
->>>>>+	if (ret)
->>>>>+		goto err_clk_put;
->>>>>+
->>>>>+	pm_runtime_set_active(dev);
->>>>>+	pm_runtime_enable(dev);
->>>>>+	pm_suspend_ignore_children(dev, false);
->>>>>+	pm_runtime_get_sync(dev);
->>>>>+
->>>>>+	return 0;
->>>>>+
->>>>>+err_clk_put:
->>>>>+	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data-
->>>>clks);
->>>>>+	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
->>>>>+
->>>>>+	return ret;
->>>>>+}
->>>>>+
->>>>>+static int dwc3_xlnx_remove(struct platform_device *pdev)
->>>>>+{
->>>>>+	struct dwc3_xlnx	*priv_data =3D platform_get_drvdata(pdev);
->>>>>+	struct device		*dev =3D &pdev->dev;
->>>>>+
->>>>>+	of_platform_depopulate(dev);
->>>>>+
->>>>>+	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data-
->>>>clks);
->>>>>+	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
->>>>>+	priv_data->num_clocks =3D 0;
->>>>>+
->>>>>+	pm_runtime_disable(dev);
->>>>>+	pm_runtime_put_noidle(dev);
->>>>>+	pm_runtime_set_suspended(dev);
->>>>>+
->>>>>+	return 0;
->>>>>+}
->>>>>+
->>>>>+static int __maybe_unused dwc3_xlnx_suspend_common(struct device
->>>*dev)
->>>>>+{
->>>>>+	struct dwc3_xlnx *priv_data =3D dev_get_drvdata(dev);
->>>>>+
->>>>>+	clk_bulk_disable(priv_data->num_clocks, priv_data->clks);
->>>>>+
->>>>>+	return 0;
->>>>>+}
->>>>>+
->>>>>+static int __maybe_unused dwc3_xlnx_resume_common(struct device
->>>*dev)
->>>>>+{
->>>>>+	struct dwc3_xlnx *priv_data =3D dev_get_drvdata(dev);
->>>>>+
->>>>>+	return clk_bulk_enable(priv_data->num_clocks, priv_data->clks);
->>>>>+}
->>>>>+
->>>>>+static int __maybe_unused dwc3_xlnx_runtime_idle(struct device *dev)
->>>>>+{
->>>>>+	pm_runtime_mark_last_busy(dev);
->>>>>+	pm_runtime_autosuspend(dev);
->>>>>+
->>>>>+	return 0;
->>>>>+}
->>>>>+
->>>>>+static UNIVERSAL_DEV_PM_OPS(dwc3_xlnx_dev_pm_ops,
->>>dwc3_xlnx_suspend_common,
->>>>>+			    dwc3_xlnx_resume_common,
->>>dwc3_xlnx_runtime_idle);
->>>>>+
->>>>>+static struct platform_driver dwc3_xlnx_driver =3D {
->>>>>+	.probe		=3D dwc3_xlnx_probe,
->>>>>+	.remove		=3D dwc3_xlnx_remove,
->>>>>+	.driver		=3D {
->>>>>+		.name		=3D "dwc3-xilinx",
->>>>>+		.of_match_table	=3D dwc3_xlnx_of_match,
->>>>>+		.pm		=3D &dwc3_xlnx_dev_pm_ops,
->>>>>+	},
->>>>>+};
->>>>>+
->>>>>+module_platform_driver(dwc3_xlnx_driver);
->>>>>+
->>>>>+MODULE_LICENSE("GPL v2");
->>>>>+MODULE_DESCRIPTION("Xilinx DWC3 controller specific glue driver");
->>>>>+MODULE_AUTHOR("Manish Narani <manish.narani@xilinx.com>");
->>>>>+MODULE_AUTHOR("Anurag Kumar Vulisha
->>><anurag.kumar.vulisha@xilinx.com>");
->>>>>--
->>>>>2.17.1
->>>>>
->>>>>
->>>>>_______________________________________________
->>>>>linux-arm-kernel mailing list
->>>>>linux-arm-kernel@lists.infradead.org
->>>>>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>>>
->>>>--
->>>>Pengutronix e.K.                           |                           =
-  |
->>>>Steuerwalder Str. 21                       | http://www.pengutronix.de/=
-  |
->>>>31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0  =
-  |
->>>>Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-555=
-5 |
->>>
->>>
->>>
->>>>_______________________________________________
->>>>linux-arm-kernel mailing list
->>>>linux-arm-kernel@lists.infradead.org
->>>>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>>
->>>
->>>--
->>>Pengutronix e.K.                           |                            =
- |
->>>Steuerwalder Str. 21                       | http://www.pengutronix.de/ =
- |
->>>31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0   =
- |
->>>Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555=
- |
+>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>> ---
+>>  fs/hugetlbfs/inode.c    | 2 +-
+>>  include/linux/hugetlb.h | 9 +++++++++
+>>  mm/hugetlb.c            | 8 ++++----
+>>  mm/migrate.c            | 9 ++++-----
+>>  4 files changed, 18 insertions(+), 10 deletions(-)
 >>
->>_______________________________________________
->>linux-arm-kernel mailing list
->>linux-arm-kernel@lists.infradead.org
->>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
->
->--=20
->Pengutronix e.K.                           |                             |
->Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
->31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
->Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+>> index e1d7ed2a53a9..93f7b8d3c5fd 100644
+>> --- a/fs/hugetlbfs/inode.c
+>> +++ b/fs/hugetlbfs/inode.c
+>> @@ -735,7 +735,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>>  
+>>  		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+>>  
+>> -		SetHPageMigratable(page);
+>> +		SetHPageMigratableIfSupported(page);
+>>  		/*
+>>  		 * unlock_page because locked by add_to_page_cache()
+>>  		 * put_page() due to reference from alloc_huge_page()
+>> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+>> index 58be44a915d1..cd1960541f2a 100644
+>> --- a/include/linux/hugetlb.h
+>> +++ b/include/linux/hugetlb.h
+>> @@ -740,6 +740,15 @@ static inline bool hugepage_migration_supported(struct hstate *h)
+>>  	return arch_hugetlb_migration_supported(h);
+>>  }
+>>  
+>> +/*
+>> + * Only set HPageMigratable if migration supported for page
+>> + */
+>> +static inline void SetHPageMigratableIfSupported(struct page *page)
+> 
+> This is really mouthful...
+> 
+>> +{
+>> +	if (hugepage_migration_supported(page_hstate(page)))
+>> +		SetHPageMigratable(page);
+> 
+> and it is really a trivial wrapper. I do understand why you want to
+> prevent from the code duplication and potentially a missing check but
+> this all is just an internal hugetlb code. Even if the flag is set on
+> non-migrateable hugetlb page then this will not be fatal. The migration
+> can fail even on those pages for which migration is supported right?
+> 
+> So I am not really sure this is an improvement in the end. But up to you
+> I do not really have a strong opinion here.
 
+Yes, this patch is somewhat optional.  It should be a minor improvement
+in cases where we are dealing with hpages in a non-migratable hstate.
+Although, I do not believe this is the common case.
 
+The real reason for even looking into this was a comment by Oscar.  With
+the name change to HPageMigratable, it implies that the page is migratable.
+However, this is not the case if the page's hstate does not support migration.
+So, if we check the hstate when setting the flag we can eliminate those
+cases where the page is certainly not migratable.
 
->_______________________________________________
->linux-arm-kernel mailing list
->linux-arm-kernel@lists.infradead.org
->http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+I don't really love this patch.  It has minimal functional value.
 
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---9/eUdp+dLtKXvemk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmAR+OQACgkQC+njFXoe
-LGSFpBAAsaJuYR7isq563lkrQ0uHWetk2j3OIQzRk5PWzv9IzFbRYoXLjbMrX8VQ
-wTfVaJ/I87hpJxrDScnnw9VddSbag2Xkuvlm9w9VBCoq/JHsg9uTsP+0DZp9l5yv
-sQDXabJbHKDjUobschEUH9UzznXiuRW+6vzF3HjNMZAfKluN6afPgsipYNsLwvBR
-4tsmOi5CPsUH/l7cpln4NxwS5k6T3G0KgbPjE5kXr13zg2yQCS6LDbPFhmiSW5Wy
-Ztisu57HT9JryD9RcNjVpjjC7PRx3+IXMVHkwPhG9dJJ897KrsxrWZ393T8oodlR
-QH41cUT1cQFpyVOhZIlNV+YtNG9CGnlKR7t4ihxMmXVMU2xoecS/JhLlmtwjfPma
-fYzNtasyWvsftEr6rrFFlyJxteLlsJI8/CW3RYYVIppA1N679U12+tmTQUmN73Jh
-ThrTLDE+kGB1kx978X7ktoa4j5Nl4+WAmaxw6mKEpFEwRCXOyXYLkzadB9HTk4nM
-h+j0rc2oMSoCCS7EGTYUoGLZ1r0iq2Z3VfmNNhUE+SVjadm1mDgt/A3Glc+orC6/
-K/maqbZqiTjuitxsUAOw3caDWRPB4fhaG8N9DqT40z6JbeIHTWWnb5/9p9rp9eFQ
-CwVeM/PkJYvHTzCmkrAe0AnMG3xHPDqfiinN69zq8NFk74/9sOQ=
-=FXWj
------END PGP SIGNATURE-----
-
---9/eUdp+dLtKXvemk--
+Oscar, what do you think about dropping this?
+-- 
+Mike Kravetz
