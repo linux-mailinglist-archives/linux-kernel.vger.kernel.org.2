@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F704305F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB17305F60
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235091AbhA0PQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:16:50 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:25658 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235727AbhA0PP3 (ORCPT
+        id S235544AbhA0PTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:19:54 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53670 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235491AbhA0POs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:15:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611760528; x=1643296528;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=C2n2qbZr6K8K8MlNh1JdDi0Gp2waOLViiNEO8MOhZ0s=;
-  b=Uonukni7nqGl1uJYZqoYwV6v9MoOr07sS90UPToepsxOxi38oN2Y87nK
-   TPKAvlM4iihAUVVwx/2OQsqs4wzLkpBGVxqLwzojoFVdZCh+t535TN+M2
-   LGk/erislm+CdOD7FfAVp6aG68z8HaIBmuD2dFl//LTj5qm9CCwTkfT6K
-   Yhy0f7b7AnSYkSPQmUEQzjvkD2rQ5EuA8OVckHL8m3JPMuba7Q2MWSfE7
-   8lHNbNmdL3vp9TtA55GAyZTmi57BmhjU0fNJVAWMbswjEeb+jvF4IzJ+6
-   +AF/0yUWkztzWsHCqHD9TiL2Gb7dUmHfnk1ald1AlTWX5efs6Qn1dLGBH
-   g==;
-IronPort-SDR: hwLWqOL9bWDVA/StNymDDFvmFEw64d47dpOrn1os+1A+p1SZeFX4NT7KBFTvbiOsSS9E690yE0
- J22QsvhYueHZVB4+NRZuC6POFFKgaQrZuJhaPIBz9HABhObDmrlQbfds+PvxGKzMkbG4iNjwcD
- wLYYG85nARvAz78bp2URatH+v/OsVO7j2JzM0atrbTRqOiMzB/dMaeWQ/nEC0G9/8jCqNcvNcC
- G4OJRY/7iLNsW2kbAPErqqWR0GLGf5kegno7loI+elgZ2dGi5GMbzRgOeEGRORBEUmbemTc6OR
- Mzk=
-X-IronPort-AV: E=Sophos;i="5.79,379,1602518400"; 
-   d="scan'208";a="159631247"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Jan 2021 23:13:45 +0800
-IronPort-SDR: OGeUd8Ln1ZDER3s9Lv/aGn+y+1jPuceKcrY2Pi5U43bWaMSnYGO9XwoiVP9Vcp51VeaZ4NvU/J
- 9iWkUafBYpJDCAKMAbX7nN6IfTQAkUGtsm0G87rEbxSiUS1CjYlNden3NPUEq2UGdCG7DK9y1z
- 5c48ET/IP8pJiot/ricZ743l61l3rZlXv50eydYUbFkjRfPZdQrpW/B7Un78aMigckByUTHTpM
- ljfiRsDrM7hFSbuQOlOWbgQW+tFnMeaaq1qvhbV6lFtW7EgcUIuVBNyLsVqglpN7vyYaE7QkuN
- prl29T63d1W9PBt9+Do+rxvO
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 06:56:04 -0800
-IronPort-SDR: o489SMbUEnyxQWr0H2UZf+VKLk5mCIyRERRszbtbajz3gCxfZiZ4cH/cCjfwtFRNsbcP6Mcbiu
- Kpk42Onft1VInu73GYHn42xhGdusAF0n5+6cCXDjHsZJCuoezJsoVmTvM/1GuIvTSumtCLMDTa
- a9YUvyKXXmmRn4v7OtqHn2OVbaJnYtpM4ppARefBzXv66x8AtME/IiaxQm7TEp6i1DsOxBBXlC
- eVjsDH5uBnOAu2EwxQ/SQvzR1ry4G1jBe8G04W2FbrGl2OMLBDb5WWxuSIsAdOeytLoWcQkn3p
- Tf4=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip01.wdc.com with ESMTP; 27 Jan 2021 07:13:41 -0800
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH 8/8] scsi: ufshpb: Add support for host control mode
-Date:   Wed, 27 Jan 2021 17:12:17 +0200
-Message-Id: <20210127151217.24760-9-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210127151217.24760-1-avri.altman@wdc.com>
-References: <20210127151217.24760-1-avri.altman@wdc.com>
+        Wed, 27 Jan 2021 10:14:48 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RFCuh1053913;
+        Wed, 27 Jan 2021 09:12:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611760376;
+        bh=bypYKIW/QcBaXurae0qgKgxzwZFIrfQz9a7cz6+CsTo=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=VqysvBLRXCrAh6Z6HAztWnjXrKUxHQRlOVZLk1TNhuMIB3BVScJapLNVHIx9i4jPx
+         2hNvcMJmN7EgfD/fgSC9yJp2MWh3rJDmkOkveCIDkK4hYE9ISp8WossG32bc7Jied1
+         UApMwgZOo4PDHM8fFAiijRyV9lScVXt4hfKGaPL0=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RFCuO3075853
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Jan 2021 09:12:56 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
+ Jan 2021 09:12:56 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 27 Jan 2021 09:12:56 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RFCusX050134;
+        Wed, 27 Jan 2021 09:12:56 -0600
+Date:   Wed, 27 Jan 2021 09:12:56 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] dts: ti: k3-j7200-main: Add support for zeroth
+ instance of GPIO subsystem
+Message-ID: <20210127151256.tgbhpngy6fi43edj@create>
+References: <20210127150815.16991-1-a-govindraju@ti.com>
+ <20210127150815.16991-2-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210127150815.16991-2-a-govindraju@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support devices that report they are using host control mode.
+On 20:38-20210127, Aswath Govindraju wrote:
+> Add support for the zeroth instance of GPIO subsystem in the main domain.
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufshpb.c | 6 ------
- 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 482f01c3b3ee..3ea9f7079189 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -2035,12 +2035,6 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
- 	int version;
- 
- 	ufshpb_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
--	if (ufshpb_mode == HPB_HOST_CONTROL) {
--		dev_err(hba->dev, "%s: host control mode is not supported.\n",
--			__func__);
--		hpb_dev_info->hpb_disabled = true;
--		return;
--	}
- 
- 	version = get_unaligned_be16(desc_buf + DEVICE_DESC_PARAM_HPB_VER);
- 	if (version != HPB_SUPPORT_VERSION) {
+I really dont want to pick up one patch per node instance. It is hard
+to scale and just creates a lot of noise.
+
+> ---
+>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> index 4cc2e9094d0e..75dffbb26d52 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> @@ -294,6 +294,23 @@
+>  		pinctrl-single,function-mask = <0xffffffff>;
+>  	};
+>  
+> +	main_gpio0: gpio@600000 {
+> +		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
+> +		reg = <0x0 0x00600000 0x0 0x100>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		interrupt-parent = <&main_gpio_intr>;
+> +		interrupts = <145>, <146>, <147>, <148>,
+> +			     <149>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <2>;
+> +		ti,ngpio = <69>;
+> +		ti,davinci-gpio-unbanked = <0>;
+> +		power-domains = <&k3_pds 105 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 105 0>;
+> +		clock-names = "gpio";
+> +	};
+> +
+>  	main_uart0: serial@2800000 {
+>  		compatible = "ti,j721e-uart", "ti,am654-uart";
+>  		reg = <0x00 0x02800000 0x00 0x100>;
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.25.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
