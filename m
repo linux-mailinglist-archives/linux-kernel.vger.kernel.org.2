@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861833066F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC703066FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236797AbhA0WEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:04:50 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36304 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhA0WCe (ORCPT
+        id S236839AbhA0WEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236585AbhA0WDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:02:34 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 146801C0B8E; Wed, 27 Jan 2021 23:01:35 +0100 (CET)
-Date:   Wed, 27 Jan 2021 23:01:34 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Dan Murphy <dmurphy@ti.com>,
-        linux-ide@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: 5.11 new lockdep warning related to led-class code (also may
- involve ata / piix controller)
-Message-ID: <20210127220134.GC23419@amd>
-References: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
- <20210112223015.GB28214@duo.ucw.cz>
- <f344f1db-1a7a-0a80-1cb1-f9c3fbf83abd@redhat.com>
- <0ec34bca-f7e0-8954-c253-d07ed6b71b80@redhat.com>
+        Wed, 27 Jan 2021 17:03:50 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C851C061573;
+        Wed, 27 Jan 2021 14:02:48 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id g1so4323629edu.4;
+        Wed, 27 Jan 2021 14:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=idtjhYoE5wXkN+IDNxcvxujnOhFSiptRGKFL5jD/Gtk=;
+        b=MG7F5b5YyMngK8hKuMhC0ejRw4o2BfEWsGcdYoNZ/sKZ9bfSYaLS1IuY4ubPvfoZNq
+         GEDglY3CVMWtdkC/OqZUA9Ai9u6ftYhqy4Yalr402cTfALBiC8Wah1keefVBZReIBf4L
+         ij+ek558k4mJM3BVLxzI9VsIz92KAEUoZNyEtymnQzUbzxY1cb6bWQgt6k96UeHeybPo
+         dcSKfBVCt9Eaz1ngEMfuCPCIXeYOuESfXne6nsMaPV0Wu20vVxysx2jxv6+P/DIVijrJ
+         bWwM4blo1PrZW6//sV+cKmrnnieIKoY6NYvC9klrcIXohAYftNfVR2C5dXIiywc7JyNe
+         tLsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=idtjhYoE5wXkN+IDNxcvxujnOhFSiptRGKFL5jD/Gtk=;
+        b=nmgN9eMJ8c4D64kCDEXvHmT/trsLhlZAETYf08GxqP8gDBVu6UQ7LCUmyruNATVs1E
+         /MxXJ9WsvywYtbZB2xue7B2kshgHl4pTKUZmFwCyo63MrGM3Notsyzn+nHmCntmeTYaB
+         au6d7/K3BvQDFwBCsbNG3LaxsqygnMdLvi8e1yF5T59qpWrHTxAH0Ss8lUt1WAVocTd3
+         /1Kp6Fkl1obAKdSBNXNEDOlDmqywTqZoPWEUbmCBvMkH2nWhxGr1r5TexsUtflpKshT8
+         dOVWectlgx33u9KGQaOsdkqUyfAdfzxzhhxPf6IMnrFCYqI2ABkrG3Tj0xS8Nat6GGf7
+         uymw==
+X-Gm-Message-State: AOAM530X9n/f3SzLU/s+5sZI3o0I5zZMkmilrs2R2iCKAovR0vZAXktW
+        Vs8PFVbNtZk9VirZe4nmA+0=
+X-Google-Smtp-Source: ABdhPJxzIocTMZOy+9kF63lWBmSCy5wsG9xx4YD6iavchBy/Ei1LslVXL4ZN+gyf/c0kTtshr3sgWQ==
+X-Received: by 2002:aa7:c0cd:: with SMTP id j13mr10727303edp.217.1611784967509;
+        Wed, 27 Jan 2021 14:02:47 -0800 (PST)
+Received: from lorenzo-HP-650-Notebook-PC ([95.236.1.158])
+        by smtp.gmail.com with ESMTPSA id v25sm1431998ejw.21.2021.01.27.14.02.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 27 Jan 2021 14:02:46 -0800 (PST)
+Date:   Wed, 27 Jan 2021 23:02:44 +0100
+From:   Lorenzo Carletti <lorenzo.carletti98@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/1] net: dsa: rtl8366rb: standardize init jam tables
+Message-ID: <20210127215753.GA4935@lorenzo-HP-650-Notebook-PC>
+References: <20210127010632.23790-1-lorenzo.carletti98@gmail.com>
+ <20210127010632.23790-2-lorenzo.carletti98@gmail.com>
+ <20210127190159.s6irvdej3fs4cdai@skbuf>
+ <CABRCJOQDLrms1B4TsQonDEUAyXDV22-ufq4eGYZ8wq9KgHVKkA@mail.gmail.com>
+ <21a30b7b-56ba-29e1-de0e-4d3969360a54@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="xesSdrSSBC0PokLI"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0ec34bca-f7e0-8954-c253-d07ed6b71b80@redhat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <21a30b7b-56ba-29e1-de0e-4d3969360a54@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 27, 2021 at 12:17:37PM -0800, Florian Fainelli wrote:
+> One of those guidelines is no top-posting and make sure you use a
+> plaintext format for your emails otherwise the mailing-lists may be
+> dropping your response (we may still get those responses because we are
+> copied).
 
---xesSdrSSBC0PokLI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> >>> Booting a 5.11-rc2 kernel with lockdep enabled inside a virtualbox vm=
- (which still
-> >>> emulates good old piix ATA controllers) I get the below lockdep splat=
- early on during boot:
-> >>>
-> >>> This seems to be led-class related but also seems to have a (P)ATA
-> >>> part to it. To the best of my knowledge this is a new problem in
-> >>> 5.11 .
-> >>
-> >> This is on my for-next branch:
-> >>
-> >> commit 9a5ad5c5b2d25508996f10ee6b428d5df91d9160 (HEAD -> for-next, ori=
-gin/for-next)
-> >>
-> >>     leds: trigger: fix potential deadlock with libata
-> >>    =20
-> >>     We have the following potential deadlock condition:
-> >>    =20
-> >>      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>      WARNING: possible irq lock inversion dependency detected
-> >>      5.10.0-rc2+ #25 Not tainted
-> >>      --------------------------------------------------------
-> >>      swapper/3/0 just changed the state of lock:
-> >>      ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interru=
-pt+0x27/0x200
-> >>      but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-> >>       (&trig->leddev_list_lock){.+.?}-{2:2}
-> >>
-> >> If I'm not mistaken, that should fix your issue.
-> >=20
-> > I can confirm that this fixes things, thanks.
-> >=20
-> > I assume that this will be part of some future 5.11 fixes pull-req?
->=20
-> This *regression* fix seems to still have not landed in 5.11-rc5, can
-> we please get this on its way to Linus ?
-
-Is it a regression? AFAIK it is a bug that has been there
-forever... My original plan was to simply wait for 5.12, so it gets
-full release of testing...
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---xesSdrSSBC0PokLI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAR4r4ACgkQMOfwapXb+vLEXwCfU7pzN5sd4BvJkfx9HKxXllqu
-StEAn108AVDOFbau5fHaq6ldYOH9imcd
-=YcTn
------END PGP SIGNATURE-----
-
---xesSdrSSBC0PokLI--
+My bad. I was using a client and only when the second message I sent was
+rejected as well, did I understand what was happening.
+I switched to mutt. Many thanks for your patience!
