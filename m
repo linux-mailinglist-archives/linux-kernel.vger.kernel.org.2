@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A2B3056A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9031E3056AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbhA0JRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:17:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
+        id S234668AbhA0JTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbhA0JOr (ORCPT
+        with ESMTP id S235073AbhA0JQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:14:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CB1C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cI7ne5sAKnl60zHFpX7JAq+fvPms0iaYd3sctP7DFcQ=; b=kmH9Pn/nfsA42sRuItmhn/VsLh
-        9YGn03GU1IqflWHp/k89kRILt30JIW7LmBRP7a7ZdUSdS2x9NuHg3lHWoZqjrXZZ/fA59Edt5F5uv
-        z8iDBUvta4JuHEJfHrJO198UP4/rFpEYHOKZx3M6ArAhVFQsKhoxiEgGW88/I+7pTbMABk6Ok760u
-        Irm8w3MassOpf/S8/VbKR1V0IaILAiknUUSlW8dWaLA+NYUDDgaH8IVeUQw5+wFOnlfGShsyXGYjB
-        j5u4kwNn+n7zoeBbpQ17bcGjLKUMWVvQ3fhj7TVsR42ceb+RyO6AqC79wfLZGGFHrEQs/iBMZY17L
-        EeWGzDaQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4gtZ-0007Pb-Ku; Wed, 27 Jan 2021 09:13:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5E493010C8;
-        Wed, 27 Jan 2021 10:13:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 87C212144C090; Wed, 27 Jan 2021 10:13:47 +0100 (CET)
-Date:   Wed, 27 Jan 2021 10:13:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        rostedt@goodmis.org, jbaron@akamai.com, ardb@kernel.org
-Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
- preempt_schedule[_notrace]() static calls
-Message-ID: <YBEuy6zlBcV8gLvY@hirez.programming.kicks-ass.net>
-References: <20210118141223.123667-1-frederic@kernel.org>
- <20210118141223.123667-7-frederic@kernel.org>
- <20210122165226.GD16371@worktop.programming.kicks-ass.net>
- <20210126235730.lgfa2uida5se5urn@treble>
+        Wed, 27 Jan 2021 04:16:24 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C3FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:15:44 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id s15so688359plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rHTuJRyQa6IkZrOcDXTmo6V/IoSpFtVtzeo39+057VI=;
+        b=dmnt1BJLmLK2Vo/16KBvlnaM7idcAawcelXBUw5dhxKYqSDfSBrDnn27AZSVB7VDAX
+         BHgnauR75tqa3K9s60YI5HYGLOdzB2Eleb/F2jRKrUTwQCUG2KWiya/xnrK7sigchZIG
+         GisJli3Bf2a6aKU8NU4B5Jmgl5Ur/kLovqH0RDq6X7wgaLFqH/ulnljDcuKsRV+qCObg
+         oReMdsMO3US8RZuOgvNzDWu9FD86j4dODKCWNTwB5ADFm6sWurjavt5ZS8X6mLFN3zAN
+         UXRxfa71YeEZhCFdT6MmD2IBl6r6C8OgBL0m9L1kNCLuhtJMuGklH52bYTX5HkZFyUUl
+         cUIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rHTuJRyQa6IkZrOcDXTmo6V/IoSpFtVtzeo39+057VI=;
+        b=fsqXsCueLGUCoFfF6ftCW8pU3br0FfliPdUIyh+1mTKY5QFVszEzmW7cZFBmgN8emj
+         PsWWtzyJg3dSCPneKmM/4Q3syFH4WT6wmalE/bRNOa/YwNG9kdvFmvRtxBIP3K7RKBcp
+         D/sQbqyiMCtsyIzSFS6PbAGIxW58gqBhqW7xkVXAp/a4FVtFJj8tWlnRMXc/Pyob8uhU
+         kYsHV14IfP4k1a/lNxNbn4P3WsaIp/ndhxiEmlyEWAsuFZMKRnKEjAT1urhPu3QPsEyC
+         SJN5YM9b7bCyAB3thE4leTP1YjuQXsx1CajI5AqF+MUbn/HXjHAuTzKFuN9xr0EKDdoP
+         j6RA==
+X-Gm-Message-State: AOAM532XrILMed4U3mmIQB5RGUJJdkSEk1jtUerXg851KO1/nIDqd/7e
+        grp7wXlLTEI2jIWBhSG5+CLpfQ==
+X-Google-Smtp-Source: ABdhPJxVeb44ivUo66HnFGdBrk/qrgUBS0F2cVMI0Yypoc35AI8bYl8wJKGjX0U4VTNtJgyrRVHY7A==
+X-Received: by 2002:a17:903:31ca:b029:e0:ee2:c076 with SMTP id v10-20020a17090331cab02900e00ee2c076mr9189669ple.58.1611738943733;
+        Wed, 27 Jan 2021 01:15:43 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id o13sm1619126pfg.124.2021.01.27.01.15.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 01:15:42 -0800 (PST)
+Date:   Wed, 27 Jan 2021 14:45:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
+        cw00.choi@samsung.com, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
+ power
+Message-ID: <20210127091540.xesvwoeavyaf37jn@vireshk-i7>
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126235730.lgfa2uida5se5urn@treble>
+In-Reply-To: <20210126104001.20361-1-lukasz.luba@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 05:57:30PM -0600, Josh Poimboeuf wrote:
-> On Fri, Jan 22, 2021 at 05:52:26PM +0100, Peter Zijlstra wrote:
-> >  static int static_call_add_module(struct module *mod)
-> >  {
-> > -	return __static_call_init(mod, mod->static_call_sites,
-> > -				  mod->static_call_sites + mod->num_static_call_sites);
-> > +	struct static_call_site *start = mod->static_call_sites;
-> > +	struct static_call_site *stop = start + mod->num_static_call_sites;
-> > +	struct static_call_site *site;
-> > +
-> > +	for (site = start; site != stop; site++) {
-> > +		unsigned long addr = (unsigned long)static_call_key(site);
-> > +		struct static_call_ass *ass;
-> > +
-> > +		/*
-> > +		 * Gotta fix up the keys that point to the trampoline.
-> > +		 */
-> > +		if (!kernel_text_address(addr))
-> > +			continue;
-> > +
-> > +		ass = static_call_find_ass(addr);
-> > +		if (!ass) {
-> > +			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
-> > +				static_call_addr(site));
-> > +			return -EINVAL;
-> > +		}
-> > +		site->key = ((unsigned long)ass->key - (unsigned long)&site->key) |
-> > +			    (site->key & STATIC_CALL_SITE_FLAGS);
-> 
-> Well, I hate it, but I'm not sure I have any better ideas.  It should be
-> possible to use kallsyms, instead of the rb-tree/register nonsense.  Not
-> sure about the performance impact though.  Might be a good reason to
-> speed up kallsyms!
+On 26-01-21, 10:39, Lukasz Luba wrote:
+> As it's a RFC, it still misses the cpufreq sysfs implementation, but would
+> be addressed if all agree.
 
-Oh right, let me see if I can make that work.
+Not commenting on the whole stuff but if you ever need something for cpufreq, it
+is already there. Look for these.
 
-> Also I do have some naming suggestions ;-)
+store_one(scaling_min_freq, min);
+store_one(scaling_max_freq, max);
 
-Nah, we need a little more fun back in the code :-)
+Hopefully they will work just fine.
+
+-- 
+viresh
