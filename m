@@ -2,208 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCCC305E43
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBEE305E4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhA0O25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:28:57 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52648 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhA0O16 (ORCPT
+        id S231883AbhA0O3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233800AbhA0O3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:27:58 -0500
-Received: by mail-io1-f72.google.com with SMTP id x17so1698900iov.19
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:27:42 -0800 (PST)
+        Wed, 27 Jan 2021 09:29:03 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF3CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:28:23 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id k25so2266877oik.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:28:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uZa34iNLZXzZFgCkFyw7+98Rs100rokiObLD8pmRuUY=;
+        b=yHqCtsgEWEiNMgr3d8KZv+/5sk6UJ89UeB9BAL3BFj9o4ADvdN6+u8tG5k/Gl6GYZc
+         CRTLYHmkqbDMJNBBwu7ATXI3LVZ3IK1o5GUuZQ9dXt+kr1DddbDURJoAlR+ccpYq7+4A
+         9ge0Bsdk//cV/+T4qkXpLSfOjbt3IAIrsi3GWAnheW2ESPhOLsekKEYyrL27yP4Ck5bD
+         QhvOwdZJwS+PDNLXLl4FG6NXmo50Luqyb8czBlyzMcmrqvaE0UGMbopQaONAfs6e6gqU
+         vsJnALNRxfYLw91zQ8zZ8Fw4qBkiuLDwVC84tuO3Xl6VVIjahKvxSMsMbFYtMBLqXe6x
+         qBGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8VGU7lzcZPBC9+aLCSWRVDY7ZbRBLcCqKCjAuMe7EJs=;
-        b=qYKDKYymGMmqCVGy4j0EPmbhI38XbwdKHDxZQVGWVieD0NEVigu9U4q9gzcbcZBPi4
-         2cpvxwXMPG1FfEi/qm696Dck1Ru5YGTMYgdQ15+UIvhprWhzN31yk/Fv0TMKZJZg+bRd
-         IYCznQPZshAw7Ticb7voLvXH2S3+naol1tpuB00+hvr8nx5H0JslQm5tWxubb/NvyT7Y
-         5cHL4gfU8I49kWnFv8mQXVoV90Y5eZiGpwSNZhbOwWg/+qSgdq6PrXSVDECeRjYgJHDv
-         3JYaV5V7CV76ODuiQiyQ3Xl2VkU6OqBdsRJndUQ96iCGAIa6Wr4O2U7YazkYlZP95KRG
-         RSfQ==
-X-Gm-Message-State: AOAM532eK4RHHLGQGC2YP2ahTGiWF62/+LcpW/JsfHVMgvyC5oRZAYsq
-        Z+rno0c6LpPvEvgVVzeo46kLoIuOoYtDzZcwee14aw9S0gBf
-X-Google-Smtp-Source: ABdhPJx02bpZ3C7AxDk7opvltlU2/f4W54mUwJ+nKtavYPVvihkm7WfYoXEp56/hCu+8oiWolEf1k/0U6Dh7P5N1vXxb5bczYer1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uZa34iNLZXzZFgCkFyw7+98Rs100rokiObLD8pmRuUY=;
+        b=jqs5uHDMTuuLHBLM58Q+PtLObTU33+BcYxAaKDmeEgsOnkSvFU4FGL8L/BdqjZtxM9
+         q3axyEZbcvR1hJOLzeEUykyQ/P3s5553qBrDMRaOrWSuy9WqX+ubukWFQkJwzwsGUFaa
+         KPKWtMqlruNKJsfVcvxzD1uzPtevCp5zrzhHfGrGmgFM0TutiIzvUt7NCMyWx0NO4W1f
+         XKM6VcX1y4wV4VCPGQkPp7K+mnHtwoGOLQTQy5qCIsNxRFZkJnaLWMlhyB/Tw9AdsisT
+         Paq0rUK1f020NfIa2MgM7dYMEn8GJ3IW0fUe2C54pn6tgX+W1GhOcAtfMM8dfebN6zoJ
+         2kVg==
+X-Gm-Message-State: AOAM530js+TcpHnDPSMZ0/HaFt+Q1nT3pOYQHLDciCRT3FcRTTve8EQR
+        3Uhww0PKUglnoHBWJbQXGf93jw==
+X-Google-Smtp-Source: ABdhPJyhQ4wAJpSym7gzJXvKfZnElEhvu5w+a0f37qggO3T/TY6IL6fTsq4O7xKUQ5kuB6KwcLlssA==
+X-Received: by 2002:aca:1a17:: with SMTP id a23mr3323036oia.120.1611757702385;
+        Wed, 27 Jan 2021 06:28:22 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 68sm380107otr.16.2021.01.27.06.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 06:28:21 -0800 (PST)
+Date:   Wed, 27 Jan 2021 08:28:19 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "N?colas F. R. A. Prado" <nfraprado@protonmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Russell King <linux@armlinux.org.uk>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH v2 1/4] dt-bindings: leds: Add binding for qcom-spmi-flash
+Message-ID: <YBF4g3Oh8x24jfzX@builder.lan>
+References: <20210126140240.1517044-1-nfraprado@protonmail.com>
+ <20210126140240.1517044-2-nfraprado@protonmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cf0f:: with SMTP id q15mr9429480jar.40.1611757636751;
- Wed, 27 Jan 2021 06:27:16 -0800 (PST)
-Date:   Wed, 27 Jan 2021 06:27:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000672eda05b9e291ff@google.com>
-Subject: KASAN: invalid-free in p9_client_create (2)
-From:   syzbot <syzbot+d0bd96b4696c1ef67991@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, asmadeus@codewreck.org,
-        davem@davemloft.net, ericvh@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, lucho@ionkov.net,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, wanghai38@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126140240.1517044-2-nfraprado@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue 26 Jan 08:04 CST 2021, N?colas F. R. A. Prado wrote:
 
-syzbot found the following issue on:
+> Add devicetree binding for QCOM SPMI Flash LEDs, which are part of
+> PM8941, and are used both as lantern and camera flash.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
+> Changes in v2:
+> - Add this commit
+> 
+>  .../bindings/leds/leds-qcom-spmi-flash.yaml   | 94 +++++++++++++++++++
+>  .../dt-bindings/leds/leds-qcom-spmi-flash.h   | 15 +++
+>  2 files changed, 109 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
+>  create mode 100644 include/dt-bindings/leds/leds-qcom-spmi-flash.h
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
+> new file mode 100644
+> index 000000000000..169716e14f67
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
+> @@ -0,0 +1,94 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-qcom-spmi-flash.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm SPMI Flash LEDs
+> +
+> +maintainers:
+> +  - Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> +
+> +description: |
+> +  The Qualcomm SPMI Flash LEDs are part of Qualcomm PMICs and are used primarily
+> +  as a camera or video flash. They can also be used as a lantern when on torch
+> +  mode.
+> +  The PMIC is connected to Host processor via SPMI bus.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,spmi-flash
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  flash-boost-supply:
+> +    description: SMBB regulator for LED flash mode
+> +
+> +  torch-boost-supply:
+> +    description: SMBB regulator for LED torch mode
+> +
+> +patternProperties:
+> +  "^led[0-1]$":
+> +    type: object
+> +    $ref: common.yaml#
+> +
+> +    properties:
+> +      qcom,clamp-curr:
+> +        description: current to clamp at, in uA
+> +        $ref: /schemas/types.yaml#definitions/uint32
+> +
+> +      qcom,headroom:
+> +        description: |
+> +          headroom to use. Use one of QCOM_SPMI_FLASH_HEADROOM_* defined in
+> +          include/dt-bindings/leds/leds-qcom-spmi-flash.h
 
-HEAD commit:    fe75a218 Merge tag 'for-5.11/dm-fixes-2' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b7d52cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be33d8015c9de024
-dashboard link: https://syzkaller.appspot.com/bug?extid=d0bd96b4696c1ef67991
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138a8eb4d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131ac26f500000
+Please make the unit of this property millivolts, instead of describing
+it indirectly using the defines in the header file.
 
-The issue was bisected to:
+> +        $ref: /schemas/types.yaml#definitions/uint32
+> +        minimum: 0
+> +        maximum: 3
 
-commit dde3c6b72a16c2db826f54b2d49bdea26c3534a2
-Author: Wang Hai <wanghai38@huawei.com>
-Date:   Wed Jun 3 22:56:21 2020 +0000
+And you can then list out the valid values here.
 
-    mm/slub: fix a memory leak in sysfs_slab_add()
+> +
+> +      qcom,startup-dly:
+> +        description: |
+> +          delay before flashing. Use one of QCOM_SPMI_FLASH_STARTUP_DLY_*
+> +          defined in include/dt-bindings/leds/leds-qcom-spmi-flash.h
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=138e36b4d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=104e36b4d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=178e36b4d00000
+As above, please describe this in microseconds.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d0bd96b4696c1ef67991@syzkaller.appspotmail.com
-Fixes: dde3c6b72a16 ("mm/slub: fix a memory leak in sysfs_slab_add()")
+> +        $ref: /schemas/types.yaml#definitions/uint32
+> +        minimum: 0
+> +        maximum: 3
+> +
+> +      qcom,safety-timer:
+> +        description: include for safety timer use, otherwise watchdog timer will be used
+> +        type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - flash-boost-supply
+> +  - torch-boost-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +    #include <dt-bindings/leds/leds-qcom-spmi-flash.h>
+> +
+> +    qcom,leds@d300 {
 
-==================================================================
-BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3142 [inline]
-BUG: KASAN: double-free or invalid-free in kmem_cache_free+0x82/0x350 mm/slub.c:3158
+Please no "qcom," in the node name.
 
-CPU: 0 PID: 8594 Comm: syz-executor034 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:355
- ____kasan_slab_free+0xfd/0x110 mm/kasan/common.c:341
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- create_cache mm/slab_common.c:269 [inline]
- kmem_cache_create_usercopy+0x2ab/0x300 mm/slab_common.c:352
- p9_client_create+0xc9f/0x1110 net/9p/client.c:1063
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9c0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2881 [inline]
- path_mount+0x13ad/0x20c0 fs/namespace.c:3211
- do_mount fs/namespace.c:3224 [inline]
- __do_sys_mount fs/namespace.c:3432 [inline]
- __se_sys_mount fs/namespace.c:3409 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3409
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x447579
-Code: e8 ac e7 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 cb 05 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fda7a63bd88 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00000000006dcc68 RCX: 0000000000447579
-RDX: 0000000020000280 RSI: 00000000200002c0 RDI: 0000000000000000
-RBP: 00000000006dcc60 R08: 0000000020000480 R09: 0000000000003333
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc6c
-R13: 00007fda7a63bd90 R14: 0000000000000007 R15: 0000000000000064
+Regards,
+Bjorn
 
-Allocated by task 8594:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kasan_slab_alloc include/linux/kasan.h:209 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2891 [inline]
- slab_alloc mm/slub.c:2899 [inline]
- kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2904
- kmem_cache_zalloc include/linux/slab.h:672 [inline]
- create_cache mm/slab_common.c:246 [inline]
- kmem_cache_create_usercopy+0x1a6/0x300 mm/slab_common.c:352
- p9_client_create+0xc9f/0x1110 net/9p/client.c:1063
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9c0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2881 [inline]
- path_mount+0x13ad/0x20c0 fs/namespace.c:3211
- do_mount fs/namespace.c:3224 [inline]
- __do_sys_mount fs/namespace.c:3432 [inline]
- __se_sys_mount fs/namespace.c:3409 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3409
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 8594:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x540 lib/kobject.c:753
- sysfs_slab_add+0x164/0x1d0 mm/slub.c:5628
- __kmem_cache_create+0x471/0x5a0 mm/slub.c:4444
- create_cache mm/slab_common.c:257 [inline]
- kmem_cache_create_usercopy+0x1ed/0x300 mm/slab_common.c:352
- p9_client_create+0xc9f/0x1110 net/9p/client.c:1063
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9c0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2881 [inline]
- path_mount+0x13ad/0x20c0 fs/namespace.c:3211
- do_mount fs/namespace.c:3224 [inline]
- __do_sys_mount fs/namespace.c:3432 [inline]
- __se_sys_mount fs/namespace.c:3409 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3409
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888021cf28c0
- which belongs to the cache kmem_cache of size 224
-The buggy address is located 0 bytes inside of
- 224-byte region [ffff888021cf28c0, ffff888021cf29a0)
-The buggy address belongs to the page:
-page:00000000b5194f0f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x21cf2
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010041000
-raw: 0000000000000000 00000000800c000c 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888021cf2780: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888021cf2800: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->ffff888021cf2880: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-                                           ^
- ffff888021cf2900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888021cf2980: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> +        compatible = "qcom,spmi-flash";
+> +        reg = <0xd300 0x100>;
+> +        flash-boost-supply = <&pm8941_5vs1>;
+> +        torch-boost-supply = <&pm8941_5v>;
+> +
+> +        led0 {
+> +            led-sources = <0>;
+> +            function = LED_FUNCTION_FLASH;
+> +            color = <LED_COLOR_ID_WHITE>;
+> +            led-max-microamp = <200000>;
+> +            flash-max-microamp = <1000000>;
+> +            flash-max-timeout-us = <1280000>;
+> +            default-state = "off";
+> +            qcom,clamp-curr = <200000>;
+> +            qcom,headroom = <QCOM_SPMI_FLASH_HEADROOM_500MV>;
+> +            qcom,startup-dly = <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
+> +            qcom,safety-timer;
+> +        };
+> +    };
+> +...
+> diff --git a/include/dt-bindings/leds/leds-qcom-spmi-flash.h b/include/dt-bindings/leds/leds-qcom-spmi-flash.h
+> new file mode 100644
+> index 000000000000..8bd54a8e831d
+> --- /dev/null
+> +++ b/include/dt-bindings/leds/leds-qcom-spmi-flash.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _DT_BINDINGS_LEDS_QCOM_SPMI_FLASH_H
+> +#define _DT_BINDINGS_LEDS_QCOM_SPMI_FLASH_H
+> +
+> +#define QCOM_SPMI_FLASH_HEADROOM_250MV	0
+> +#define QCOM_SPMI_FLASH_HEADROOM_300MV	1
+> +#define QCOM_SPMI_FLASH_HEADROOM_400MV	2
+> +#define QCOM_SPMI_FLASH_HEADROOM_500MV	3
+> +
+> +#define QCOM_SPMI_FLASH_STARTUP_DLY_10US	0
+> +#define QCOM_SPMI_FLASH_STARTUP_DLY_32US	1
+> +#define QCOM_SPMI_FLASH_STARTUP_DLY_64US	2
+> +#define QCOM_SPMI_FLASH_STARTUP_DLY_128US	3
+> +
+> +#endif
+> -- 
+> 2.30.0
+> 
+> 
