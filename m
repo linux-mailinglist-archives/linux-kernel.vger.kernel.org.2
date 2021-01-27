@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292C5305ADC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5290305AE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237642AbhA0MHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:07:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
+        id S235560AbhA0MLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:11:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237477AbhA0MFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:05:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12BD420780;
-        Wed, 27 Jan 2021 12:04:56 +0000 (UTC)
+        id S237638AbhA0MHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:07:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D7920784;
+        Wed, 27 Jan 2021 12:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611749097;
-        bh=yTmGQ0DVnvKLau7tig8myya+Wgj/1YA3iyYkOFhac4c=;
+        s=korg; t=1611749184;
+        bh=dVANB09LwALkp+sTk1/RHGXfqYtVo6LFn5maSabxK30=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HvvVUu2qRmQyYXd1/HWhxJjQMiHV7QRrST1dY4bSA+zoeWEfbDUCc7nSreQjncaWh
-         HDoY9lJQfJ7VZSf2ut5MQTzKLnUqqlAQPeHgfZPlsLjO8UARzQhtpdvRxZlm32NKwd
-         dJV2rFyTNEQA/mlqcx8oMSyC6owhW3NeBbJ0t8gE=
-Date:   Wed, 27 Jan 2021 13:04:55 +0100
+        b=qDieFINuIfQ5HlI+Q7d4qhudf9ZCuiTBRaas2DMe7dboSfmIU5iWI+Qev11I7Xil8
+         1ek08I89gKNZBTTj7gDXhuYErxetiuAhTydHkj1+ei+GCJl5hqUiIKCIsE3ht+Muml
+         CLfsbz52X/gHRe7p5poUYUB6LM4yJOnB4UwjDXdA=
+Date:   Wed, 27 Jan 2021 13:06:21 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
-        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv3 1/6] firmware: stratix10-svc: add
- COMMAND_AUTHENTICATE_BITSTREAM flag
-Message-ID: <YBFW50LPP/yEbvEW@kroah.com>
-References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
- <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
+To:     Hridya Valsaraju <hridya@google.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        kernel-team@android.com, john.stultz@linaro.org, surenb@google.com,
+        hyesoo.yu@samsung.com, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v3] dmabuf: Add the capability to expose DMA-BUF stats in
+ sysfs
+Message-ID: <YBFXPbePURupbe+y@kroah.com>
+References: <20210126204240.418297-1-hridya@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126204240.418297-1-hridya@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:56:23PM -0600, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
+On Tue, Jan 26, 2021 at 12:42:36PM -0800, Hridya Valsaraju wrote:
+> This patch allows statistics to be enabled for each DMA-BUF in
+> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
 > 
-> Add COMMAND_AUTHENTICATE_BITSTREAM command flag for new added bitstream
-> authentication feature. Authenticating a bitstream is to make sure a signed
-> bitstream has the valid signatures.
+> The following stats will be exposed by the interface:
 > 
-> Except for the actual configuration of the device, the bitstream
-> authentication works the same way as FPGA configuration does. If the
-> authentication passes, the signed bitstream will be programmed into QSPI
-> flash memory and will be expected to boot without issues.
+> /sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
+> /sys/kernel/dmabuf/buffers/<inode_number>/size
+> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/device
+> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/map_counter
 > 
-> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
-> aligns with the firmware settings.
+> The inode_number is unique for each DMA-BUF and was added earlier [1]
+> in order to allow userspace to track DMA-BUF usage across different
+> processes.
 > 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> Currently, this information is exposed in
+> /sys/kernel/debug/dma_buf/bufinfo.
+> However, since debugfs is considered unsafe to be mounted in production,
+> it is being duplicated in sysfs.
+> 
+> This information will be used to derive DMA-BUF
+> per-exporter stats and per-device usage stats for Android Bug reports.
+> The corresponding userspace changes can be found at [2].
+> Telemetry tools will also capture this information(along with other
+> memory metrics) periodically as well as on important events like a
+> foreground app kill (which might have been triggered by Low Memory
+> Killer). It will also contribute to provide a snapshot of the system
+> memory usage on other events such as OOM kills and Application Not
+> Responding events.
+> 
+> A shell script that can be run on a classic Linux environment to read
+> out the DMA-BUF statistics can be found at [3](suggested by John
+> Stultz).
+> 
+> The patch contains the following improvements over the previous version:
+> 1) Each attachment is represented by its own directory to allow creating
+> a symlink to the importing device and to also provide room for future
+> expansion.
+> 2) The number of distinct mappings of each attachment is exposed in a
+> separate file.
+> 3) The per-buffer statistics are now in /sys/kernel/dmabuf/buffers
+> inorder to make the interface expandable in future.
+> 
+> All of the improvements above are based on suggestions/feedback from
+> Daniel Vetter and Christian König.
+> 
+> [1]: https://lore.kernel.org/patchwork/patch/1088791/
+> [2]: https://android-review.googlesource.com/q/topic:%22dmabuf-sysfs%22+(status:open%20OR%20status:merged)
+> [3]: https://android-review.googlesource.com/c/platform/system/memory/libmeminfo/+/1549734
+> 
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 > ---
-> v3: no change
-> v2: new added
-> ---
->  include/linux/firmware/intel/stratix10-svc-client.h | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+> Changes in v3:
+> Fix a warning reported by the kernel test robot.
 > 
-> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-> index ebc2956..7ada1f2 100644
-> --- a/include/linux/firmware/intel/stratix10-svc-client.h
-> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
-> @@ -51,12 +51,17 @@
->  #define SVC_STATUS_NO_SUPPORT		6
->  
->  /*
-> - * Flag bit for COMMAND_RECONFIG
-> + * Flag for COMMAND_RECONFIG, in bit number
->   *
->   * COMMAND_RECONFIG_FLAG_PARTIAL:
-> - * Set to FPGA configuration type (full or partial).
-> + * Set for partial FPGA configuration.
-> + *
-> + * COMMAND_AUTHENTICATE_BITSTREAM:
-> + * Set for bitstream authentication, which makes sure a signed bitstream
-> + * has valid signatures before committing it to QSPI flash memory.
->   */
-> -#define COMMAND_RECONFIG_FLAG_PARTIAL	1
-> +#define COMMAND_RECONFIG_FLAG_PARTIAL	0
+> Changes in v2:
+> -Move statistics to /sys/kernel/dmabuf/buffers in oder to allow addition
+> of other DMA-BUF-related sysfs stats in future. Based on feedback from
+> Daniel Vetter.
+> -Each attachment has its own directory to represent attaching devices as
+> symlinks and to introduce map_count as a separate file. Based on
+> feedback from Daniel Vetter and Christian König. Thank you both!
+> -Commit messages updated to point to userspace code in AOSP that will
+> read the DMA-BUF sysfs stats.
+> 
+> 
+>  .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  52 ++++
+>  drivers/dma-buf/Kconfig                       |  11 +
+>  drivers/dma-buf/Makefile                      |   1 +
+>  drivers/dma-buf/dma-buf-sysfs-stats.c         | 285 ++++++++++++++++++
+>  drivers/dma-buf/dma-buf-sysfs-stats.h         |  62 ++++
+>  drivers/dma-buf/dma-buf.c                     |  37 +++
+>  include/linux/dma-buf.h                       |  20 ++
+>  7 files changed, 468 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
+>  create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
+>  create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
 
-So is this a bugfix, changing this value to the correct one?
+I don't know the dma-buf code at all, but from a sysfs/kobject point of
+view, this patch looks good to me:
 
-If so, shouldn't this be a stand-alone patch and get backported to
-stable kernel releases?
-
-If not, then no one uses this flag today?
-
-thanks,
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
