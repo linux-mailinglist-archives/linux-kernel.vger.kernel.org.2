@@ -2,182 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0883058B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078CB3058BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhA0KpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:45:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35850 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231570AbhA0KkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:40:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611743975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l6uF3roNeJhRHw5q8sy79omE8Ub4IQK2TXpHusNPPLw=;
-        b=hr1t+qt3MXNaAiulIwQsmIORaGyAw7LIhuaf1nNnPzfdPfezgJLxsslx7wLQWjiw5Vklua
-        HaIVG2Re2E5LSHUeYTZEqtBpGpv5ivZ/h+OUe4wdhF6eQTilnk6qGiM8/uy/vEzETOPqmf
-        SNmrLqVPjCf0b0TNeOpyKamp7T2jjcU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5FBC3AEAC;
-        Wed, 27 Jan 2021 10:39:35 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 11:39:34 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 4/5] hugetlb: convert PageHugeTemporary() to
- HPageTemporary flag
-Message-ID: <20210127103934.GJ827@dhcp22.suse.cz>
-References: <20210122195231.324857-1-mike.kravetz@oracle.com>
- <20210122195231.324857-5-mike.kravetz@oracle.com>
+        id S236084AbhA0KpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:45:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235994AbhA0Kke (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:40:34 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760ACC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:39:54 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id t8so1476888ljk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:39:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kynONSqCbqdcdiah54rWGTqQzykbjM1cg4MBwXEB1H8=;
+        b=iJDPLKg6uKjqwHR3jX23Avi06ct0dryd2wx/ddYmg3k4eScn844B2XKnDt2iHO7eKF
+         /mezplxCHVF9hd6KPY0a0mj625TfjDdtpcZeNL1icY8e55PY7P8SRdv73ubmAH8U0q1V
+         Db/QNLAuHPeVMRF3/qfPve4Pg1YgtHJFy72WFP40nPINwFsK6vKwAmwAyfMUj5wm8eTZ
+         93a0VT671e+yqFxa9+XCnrQRdyouoASfhMMuitS9Y7fKf1v8iU8OMSMyV383EqRKg+/v
+         HNp1bdPn0QaThgDlQyHxrcasxUNYl15xTaZGXvbyuP7GoLNxHPSqj8zMlLQAY8zyVnc3
+         SNVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kynONSqCbqdcdiah54rWGTqQzykbjM1cg4MBwXEB1H8=;
+        b=L7X94kGLh8Lgjop/mT2FpouiCWnsdciXGMxzxsG1doUq+WG9PDCauWSTKRaoU48ubC
+         ERn9YDUKNp876vDveqGFdh2mNPPgWavAUGsUb+jpTb0YzKqHmgkuYAqvny//JjbLHG2g
+         qvaHmqSALU1pBpmaAMagbrPepFA1Qf5wDCAf7zsgGzN3JZeiD9GPIBB2mrGBRx5jyfy6
+         hB0Z0I+VLJcUOLSkedPFYn5BAb0gmNmjFdZOLKsd0pt0sZpnsBhN1QV6kWB/TzHC7ujG
+         0eduC/M8WeAUR0biM7KpaPQpAxyiyhaLlyXB3ycQ6obPmIPsSP78899wrenhlXo+cdFM
+         DKBw==
+X-Gm-Message-State: AOAM530R2t4QIzTR7hdEAZ9ufthXth+XOkXEIiUD3yWH1LiGNBx9sf8J
+        sURueRJcSre21z4Q49ugGATba+GeudCue246jLdZVA==
+X-Google-Smtp-Source: ABdhPJzbKSwPkXZnuJDhuDNWIslaKQJpEoGEa0ZfbWEIcK60fI/L5xGq57v09mVH4pXgOopy4NgjHKdsielgFzuXLGk=
+X-Received: by 2002:a2e:9548:: with SMTP id t8mr4669192ljh.284.1611743992878;
+ Wed, 27 Jan 2021 02:39:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122195231.324857-5-mike.kravetz@oracle.com>
+References: <20210125085909.4600-1-mgorman@techsingularity.net> <20210125085909.4600-4-mgorman@techsingularity.net>
+In-Reply-To: <20210125085909.4600-4-mgorman@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 27 Jan 2021 11:39:41 +0100
+Message-ID: <CAKfTPtBLVHkdBKJetToWpGoFQemd6dQ9xF8Uj07sipKNUjE+sA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] sched/fair: Remove select_idle_smt()
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 22-01-21 11:52:30, Mike Kravetz wrote:
-> Use new hugetlb specific HPageTemporary flag to replace the
-> PageHugeTemporary() interfaces.  PageHugeTemporary does contain
-> a PageHuge() check.  However, this interface is only used within
-> hugetlb code where we know we are dealing with a hugetlb page.
-> Therefore, the check can be eliminated.
+On Mon, 25 Jan 2021 at 09:59, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> From: Peter Zijlstra <peterz@infradead.org>
+>
+> From: Peter Zijlstra (Intel) <peterz@infradead.org>
+>
+> In order to make the next patch more readable, and to quantify the
+> actual effectiveness of this pass, start by removing it.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-A dedicated flag is definitely something I would go for if that was
-available back then when I introduced it.
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
 > ---
->  include/linux/hugetlb.h |  6 ++++++
->  mm/hugetlb.c            | 36 +++++++-----------------------------
->  2 files changed, 13 insertions(+), 29 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index cd1960541f2a..3c86c3a0e144 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -483,10 +483,15 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
->   * HPG_migratable  - Set after a newly allocated page is added to the page
->   *	cache and/or page tables.  Indicates the page is a candidate for
->   *	migration.
-> + * HPG_temporary - - Set on a page that is temporarily allocated from the buddy
-> + *	allocator.  Typically used for migration target pages when no pages
-> + *	are available in the pool.  The hugetlb free page path will
-> + *	immediately free pages with this flag set to the buddy allocator.
->   */
->  enum hugetlb_page_flags {
->  	HPG_restore_reserve = 0,
->  	HPG_migratable,
-> +	HPG_temporary,
->  	__NR_HPAGEFLAGS,
->  };
->  
-> @@ -530,6 +535,7 @@ static inline void ClearHPage##uname(struct page *page)		\
->   */
->  HPAGEFLAG(RestoreReserve, restore_reserve)
->  HPAGEFLAG(Migratable, migratable)
-> +HPAGEFLAG(Temporary, temporary)
->  
->  #ifdef CONFIG_HUGETLB_PAGE
->  
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 4da1a29ac5e2..70ffa1027988 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1353,28 +1353,6 @@ struct hstate *size_to_hstate(unsigned long size)
->  	return NULL;
+>  kernel/sched/fair.c | 30 ------------------------------
+>  1 file changed, 30 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index c8d8e185cf3b..fe587350ea14 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6101,27 +6101,6 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+>         return -1;
 >  }
->  
+>
 > -/*
-> - * Internal hugetlb specific page flag. Do not use outside of the hugetlb
-> - * code
+> - * Scan the local SMT mask for idle CPUs.
 > - */
-> -static inline bool PageHugeTemporary(struct page *page)
+> -static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
 > -{
-> -	if (!PageHuge(page))
-> -		return false;
+> -       int cpu;
 > -
-> -	return (unsigned long)page[2].mapping == -1U;
+> -       if (!static_branch_likely(&sched_smt_present))
+> -               return -1;
+> -
+> -       for_each_cpu(cpu, cpu_smt_mask(target)) {
+> -               if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
+> -                   !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+> -                       continue;
+> -               if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> -                       return cpu;
+> -       }
+> -
+> -       return -1;
 > -}
 > -
-> -static inline void SetPageHugeTemporary(struct page *page)
-> -{
-> -	page[2].mapping = (void *)-1U;
-> -}
-> -
-> -static inline void ClearPageHugeTemporary(struct page *page)
-> -{
-> -	page[2].mapping = NULL;
-> -}
-> -
->  static void __free_huge_page(struct page *page)
->  {
->  	/*
-> @@ -1422,9 +1400,9 @@ static void __free_huge_page(struct page *page)
->  	if (restore_reserve)
->  		h->resv_huge_pages++;
->  
-> -	if (PageHugeTemporary(page)) {
-> +	if (HPageTemporary(page)) {
->  		list_del(&page->lru);
-> -		ClearPageHugeTemporary(page);
-> +		ClearHPageTemporary(page);
->  		update_and_free_page(h, page);
->  	} else if (h->surplus_huge_pages_node[nid]) {
->  		/* remove the page from active list */
-> @@ -1860,7 +1838,7 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
->  	 * codeflow
->  	 */
->  	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages) {
-> -		SetPageHugeTemporary(page);
-> +		SetHPageTemporary(page);
->  		spin_unlock(&hugetlb_lock);
->  		put_page(page);
->  		return NULL;
-> @@ -1891,7 +1869,7 @@ static struct page *alloc_migrate_huge_page(struct hstate *h, gfp_t gfp_mask,
->  	 * We do not account these pages as surplus because they are only
->  	 * temporary and will be released properly on the last reference
->  	 */
-> -	SetPageHugeTemporary(page);
-> +	SetHPageTemporary(page);
->  
->  	return page;
+>  #else /* CONFIG_SCHED_SMT */
+>
+>  static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
+> @@ -6129,11 +6108,6 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
+>         return -1;
 >  }
-> @@ -5612,12 +5590,12 @@ void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason)
->  	 * here as well otherwise the global surplus count will not match
->  	 * the per-node's.
->  	 */
-> -	if (PageHugeTemporary(newpage)) {
-> +	if (HPageTemporary(newpage)) {
->  		int old_nid = page_to_nid(oldpage);
->  		int new_nid = page_to_nid(newpage);
->  
-> -		SetPageHugeTemporary(oldpage);
-> -		ClearPageHugeTemporary(newpage);
-> +		SetHPageTemporary(oldpage);
-> +		ClearHPageTemporary(newpage);
->  
->  		spin_lock(&hugetlb_lock);
->  		if (h->surplus_huge_pages_node[old_nid]) {
-> -- 
-> 2.29.2
-
--- 
-Michal Hocko
-SUSE Labs
+>
+> -static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+> -{
+> -       return -1;
+> -}
+> -
+>  #endif /* CONFIG_SCHED_SMT */
+>
+>  /*
+> @@ -6323,10 +6297,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>         if ((unsigned)i < nr_cpumask_bits)
+>                 return i;
+>
+> -       i = select_idle_smt(p, sd, target);
+> -       if ((unsigned)i < nr_cpumask_bits)
+> -               return i;
+> -
+>         return target;
+>  }
+>
+> --
+> 2.26.2
+>
