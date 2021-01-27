@@ -2,66 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727983058DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA413058E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235744AbhA0KyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:54:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:38536 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236011AbhA0Kto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:49:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 175D531B;
-        Wed, 27 Jan 2021 02:48:59 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 157943F66B;
-        Wed, 27 Jan 2021 02:48:57 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Yue Hu <zbestahu@gmail.com>, thara.gopinath@linaro.org,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com,
-        zhangwen@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] init/Kconfig: correct thermal pressure retrieve API
-In-Reply-To: <20210127054451.1240-1-zbestahu@gmail.com>
-References: <20210127054451.1240-1-zbestahu@gmail.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Wed, 27 Jan 2021 10:48:49 +0000
-Message-ID: <jhjr1m61wq6.mognet@arm.com>
+        id S236148AbhA0Kzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235686AbhA0Kv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:51:57 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBD8C061574;
+        Wed, 27 Jan 2021 02:51:16 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQgPm2Th2z9sW8;
+        Wed, 27 Jan 2021 21:51:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611744672;
+        bh=+ywgQaolNGmukL2yQG2H6B9aEm+Pg307wOCZdG8iSEQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=moDW0+gCCoXumcOxp5kHVOGZGkMp2OVYzDGJsm+kjcAXfUBFJ/Df4CK+7G/bgJKh6
+         yocU8MZkB0YU+4bz4IFfoCGnqlU6EEDJsseEdkZsQWC3TasLXJQNgkLtUYRVgyJWmU
+         bWMAAN14bZs8gMN6OHDXdw1QqHd6SP8sXNcD9EwTe7xCOESkW9S/nwJFc7NIkY88rJ
+         6ZskwoSjW48hGofvLjjIvkOJjyMo8LK01DpBnbT+WsQ6NcoEP9bkSVk6dkK7zcPdfd
+         IVI90oKixxj8GV0zXSBiGLXKX0BeqSI5X/51CvHDZNTZK9DT1occEULoDutmTIhPmB
+         qhYj0HInrBSSA==
+Date:   Wed, 27 Jan 2021 21:51:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the notifications tree with the pidfd
+ tree
+Message-ID: <20210127215101.2ed0a5ae@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/7lB.CR0BkTb=8zo84RCIP_X";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/01/21 13:44, Yue Hu wrote:
-> From: Yue Hu <huyue2@yulong.com>
->
-> We're using arch_scale_thermal_pressure() to retrieve per CPU thermal
-> pressure.
->
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
+--Sig_/7lB.CR0BkTb=8zo84RCIP_X
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Whoever wrote that clearly got "arch" and "topology" mixed up!
+Hi all,
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Today's linux-next merge of the notifications tree got conflicts in:
 
-> ---
->  init/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index c4e0a7e..5b35e15 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -525,7 +525,7 @@ config SCHED_THERMAL_PRESSURE
->         i.e. put less load on throttled CPUs than on non/less throttled ones.
->
->         This requires the architecture to implement
-> -	  arch_set_thermal_pressure() and arch_get_thermal_pressure().
-> +	  arch_set_thermal_pressure() and arch_scale_thermal_pressure().
->
->  config BSD_PROCESS_ACCT
->       bool "BSD Process Accounting"
-> --
-> 1.9.1
+  arch/alpha/kernel/syscalls/syscall.tbl
+  arch/arm/tools/syscall.tbl
+  arch/arm64/include/asm/unistd32.h
+  arch/ia64/kernel/syscalls/syscall.tbl
+  arch/m68k/kernel/syscalls/syscall.tbl
+  arch/microblaze/kernel/syscalls/syscall.tbl
+  arch/mips/kernel/syscalls/syscall_n32.tbl
+  arch/mips/kernel/syscalls/syscall_n64.tbl
+  arch/mips/kernel/syscalls/syscall_o32.tbl
+  arch/parisc/kernel/syscalls/syscall.tbl
+  arch/powerpc/kernel/syscalls/syscall.tbl
+  arch/s390/kernel/syscalls/syscall.tbl
+  arch/sh/kernel/syscalls/syscall.tbl
+  arch/sparc/kernel/syscalls/syscall.tbl
+  arch/x86/entry/syscalls/syscall_32.tbl
+  arch/x86/entry/syscalls/syscall_64.tbl
+  arch/xtensa/kernel/syscalls/syscall.tbl
+  fs/namespace.c
+  include/uapi/asm-generic/unistd.h
+
+between various commits from the pidfd tree and commit:
+
+  0358d747f97b ("watch_queue: Implement mount topology and attribute change=
+ notifications")
+
+from the notifications tree.
+
+Its too late at night, so I dropped the notifications tree for today
+and will try to work it out tomorrow, sorry.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7lB.CR0BkTb=8zo84RCIP_X
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmARRZUACgkQAVBC80lX
+0GxrEwf/ctbBWpn7mU5k9aY30WJPdQLT89YRob8pnoW3k9gpbuBpB+FHsBYYlWzN
+9U6HLrg8Ia3s5x+VZuMySmRS9cdbNMBdKEnTk0gVeNbPIZtDqObHrNDlDdmjQnHm
+2r3St2mD3HTUtLaVHMO842E+5YhJ3SK0f6oe1BbsJXzu0jWsV/Lw38GbCcF9jYk7
+XAHnfmKByS3pnL5Uos5Wx4jKCXC7tTwcEPuAumVpSsFt4oY7y87+ntRCkgcvxJUc
+UkYxPA+A8A1wqBnOHAbwOK0PyWddg4JisSHAXzLoKj7gKGifj90GgcTenqG/H4Gt
+G7K9jpodbQuRsGWBxED4gpbBCK3xxw==
+=9Tps
+-----END PGP SIGNATURE-----
+
+--Sig_/7lB.CR0BkTb=8zo84RCIP_X--
