@@ -2,151 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE19306068
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC06305FBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236879AbhA0P7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:59:53 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9679 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343499AbhA0P6w (ORCPT
+        id S236104AbhA0Pdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhA0Pcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:58:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60118d930000>; Wed, 27 Jan 2021 07:58:11 -0800
-Received: from [10.2.60.78] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
- 2021 15:58:09 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Wed, 27 Jan 2021 10:32:31 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C762C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:31:50 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id a20so1449598pjs.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:31:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dU6g9mi3ERsID3siwO0ykMtHlMa1lGIiwksNicPZPaE=;
+        b=hKbj2i3Pcfc0rprG2zHmihA1wdgU6nvStL72l8TgmAgxEDakE5GljigP5mAZkOgtss
+         O6upoWyP4225vJA6N+o/ZWvkzqTetM5wlxikX/Rygpz6MvAdSdc9pPpk14he1zJ5K0T4
+         yd+tc/0LWGfZZ1aEvYlfM5jYP7XBdn+WX6qSrA/UwfZuRuoXlxVezavdgyecwEKzv+8f
+         1rRf7oBs5Co68CedLGdwJPaMgKGKNn9zJx+A+lyoSyR7eHO2cBvt07A9a8ub71gwaNkH
+         cvTb2yfHKkUZ+ZwoktjfEukgB1bZC7LE5sCFG5j36E/Sij/znfHEuQ9d/JclJ/LhxAJ/
+         CHow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dU6g9mi3ERsID3siwO0ykMtHlMa1lGIiwksNicPZPaE=;
+        b=pF2jr57wpLlUyCBXRI0rTOVbOclybGYnFgydnXKJOV5xL/TIRIGcgpPPHBh5VEzHlk
+         fEGwQOGHNC2KDNfRWhhmV/T3twYji3u7sgZNXsWowSRx6HEcq3DCG5uJ/IIfis3mwALD
+         6e3lrkI9nyXJWgM0ZI9/rD64jaXPZxKerkcpgiM40Yn3iSzh8n9lieJMBFTRQuBckk0y
+         YgvEm7rlrW96XHv+xpfjb7LcfagE7JYFbUzhxnfovRReTldeKWsDN+Y7dU2LoUQ2EYhJ
+         7hPizXzWK9ppLunhJqr9kYC9CrPRXWsi4TB0WOG5MDPINj3T0wcSW8kFcQgkPCB0zKiD
+         SjZQ==
+X-Gm-Message-State: AOAM532jBlsk4X5Loy5Xsdxkw8oLbiaGquPqtHNeWfCVDXksTApUJR/N
+        enjmN49FhDgT9OOe8S/V3cSU+HMrDQKWGUUr
+X-Google-Smtp-Source: ABdhPJxXnsuadaVidHvrpo8dVt85uRo6ZGAGKQwbk1zQHcTrrdIIvFrWaYCUjzS4ZrWHUHz7Ef9CKA==
+X-Received: by 2002:a17:90b:4c0b:: with SMTP id na11mr6048883pjb.45.1611761509927;
+        Wed, 27 Jan 2021 07:31:49 -0800 (PST)
+Received: from localhost ([47.251.4.198])
+        by smtp.gmail.com with ESMTPSA id d133sm2754059pfd.6.2021.01.27.07.31.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 07:31:48 -0800 (PST)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH v1 1/2] mm/cma: expose all pages to the buddy if
- activation of an area fails
-Date:   Wed, 27 Jan 2021 10:58:07 -0500
-X-Mailer: MailMate (1.14r5757)
-Message-ID: <F48ADDA3-7860-4F30-A3E8-B778359D10AA@nvidia.com>
-In-Reply-To: <20210127101813.6370-2-david@redhat.com>
-References: <20210127101813.6370-1-david@redhat.com>
- <20210127101813.6370-2-david@redhat.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Kees Cook <keescook@chromium.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Brian Gerst <brgerst@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Mike Hommey <mh@glandium.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Jay Lang <jaytlang@mit.edu>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>
+Subject: [PATCH V3 0/6] x86: don't abuse tss.sp1
+Date:   Thu, 28 Jan 2021 00:32:16 +0800
+Message-Id: <20210127163231.12709-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611763091; bh=9f29pbSqkFcdd7oAkk+SxFMIq+bbPbn8eq0ySyEkrP8=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=ah2XlkaWBFiiZS0L9idrb9CF+xCVfPvoK3ioAPJQ4Uhc0WVBrrMJPJA8RUI/PRWmp
-         Nn7Cf34Ip2pyzXs8ESvPdjyJtPMIsttP58MurpzmtYX0QOc7WjzFCh+f6Yccole0wO
-         gkTZUW5ZMcR7kT55+8CYBNJNpMMI13q+3+dW6ER7YBe+cadDphDNWIfU4/bJ8Cxx//
-         X+Yzx1AdQiBb66jOWBZ9Zmi+Qw+WJ0sOvSjhawUlMBNrVktOfwcuPtwaE3LuYPlfnW
-         H5k8LQMj3hDXeXXbHjBK2kB71uHI+/Qd+quW1j+XJxspawmdXYb5KLyfdssuxAa8aY
-         4rkT6re6/mE6g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-On 27 Jan 2021, at 5:18, David Hildenbrand wrote:
+In x86_64, tss.sp1 is reused as cpu_current_top_of_stack.  But we can
+directly use percpu since CR3 and gs_base is correct when it is used.
 
-> Right now, if activation fails, we might already have exposed some page=
-s to
-> the buddy for CMA use (although they will never get actually used by CM=
-A),
-> and some pages won't be exposed to the buddy at all.
->
-> Let's check for "single zone" early and on error, don't expose any page=
-s
-> for CMA use - instead, expose them to the buddy available for any use.
-> Simply call free_reserved_page() on every single page - easier than
-> going via free_reserved_area(), converting back and forth between pfns
-> and virt addresses.
->
-> In addition, make sure to fixup totalcma_pages properly.
->
-> Example: 6 GiB QEMU VM with "... hugetlb_cma=3D2G movablecore=3D20% ...=
-":
->   [    0.006891] hugetlb_cma: reserve 2048 MiB, up to 2048 MiB per node=
+In x86_32, tss.sp1 is resued as thread.sp0 in three places in entry
+code.  We have the correct CR3 and %fs at two of the places.  The last
+one is sysenter.  This patchset makes %fs available earlier so that
+we can also use percpu in sysenter.  And add a percpu cpu_current_thread_sp0
+for thread.sp0 instead of tss.sp1
 
->   [    0.006893] cma: Reserved 2048 MiB at 0x0000000100000000
->   [    0.006893] hugetlb_cma: reserved 2048 MiB on node 0
->   ...
->   [    0.175433] cma: CMA area hugetlb0 could not be activated
->
-> Before this patch:
->   # cat /proc/meminfo
->   MemTotal:        5867348 kB
->   MemFree:         5692808 kB
->   MemAvailable:    5542516 kB
->   ...
->   CmaTotal:        2097152 kB
->   CmaFree:         1884160 kB
->
-> After this patch:
->   # cat /proc/meminfo
->   MemTotal:        6077308 kB
->   MemFree:         5904208 kB
->   MemAvailable:    5747968 kB
->   ...
->   CmaTotal:              0 kB
->   CmaFree:               0 kB
->
-> Note: cma_init_reserved_mem() makes sure that we always cover full
-> pageblocks / MAX_ORDER - 1 pages.
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/cma.c | 43 +++++++++++++++++++++----------------------
->  1 file changed, 21 insertions(+), 22 deletions(-)
+[V2]: https://lore.kernel.org/lkml/20210125173444.22696-1-jiangshanlai@gmail.com/
+[V1]: https://lore.kernel.org/lkml/20210123084900.3118-1-jiangshanlai@gmail.com/
 
-LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
+Changed from V2
+	Add missing "%ss:" reported by Brian Gerst.
 
-=E2=80=94
-Best Regards,
-Yan Zi
+Changed from V1
+	Requested from Andy to also fix sp1 for x86_32.
+	Update comments in the x86_64 patch as Andy sugguested.
 
---=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
+Lai Jiangshan (6):
+  x86_64: move cpu_current_top_of_stack out of TSS
+  x86_32: use percpu instead of offset-calculation to get thread.sp0
+    when SWITCH_TO_KERNEL_STACK
+  x86_32/sysenter: switch to the task stack without emptying the entry
+    stack
+  x86_32/sysenter: restore %fs before switching stack
+  x86_32/sysenter: use percpu to get thread.sp0 when sysenter
+  x86_32: use cpu_current_thread_sp0 instead of cpu_tss_rw.x86_tss.sp1
 
------BEGIN PGP SIGNATURE-----
+ arch/x86/entry/entry_32.S          | 38 +++++++++++++++++-------------
+ arch/x86/include/asm/processor.h   | 12 ++--------
+ arch/x86/include/asm/switch_to.h   |  9 ++-----
+ arch/x86/include/asm/thread_info.h |  6 -----
+ arch/x86/kernel/asm-offsets.c      |  1 -
+ arch/x86/kernel/asm-offsets_32.c   | 10 --------
+ arch/x86/kernel/cpu/common.c       | 12 +++++++++-
+ arch/x86/kernel/process.c          |  7 ------
+ arch/x86/mm/pti.c                  |  7 +++---
+ 9 files changed, 40 insertions(+), 62 deletions(-)
 
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmARjY8PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKyU4P/22fuj51aHN6OYJfCdJFXadykeJMaDU8w57E
-P7k1tXv7vtcg7TWJBZLNLLVNU8myIzGs2Buj948GqSv0eiRzIElRx/5XWIjA6zz2
-JJw8uY8NfoQcma0ooVxO7rf7TYU0sqwVXMy55yKvnP0jmMqnvcxgh4w47tWJHgno
-8PiC49x00WmS6V/LO4/ve2qe65un0u7moyaf+7Ev1h9n2Dk9t8yR6jTAoq0nUIUo
-uRyuX0Rhc3o/1aic9vbN1aT/CF9b23utOdiwjGo2cWn0lIL8CLZKJ1Cu6UXsjV80
-upibyL6hfsy8oXfH81BbLcuCCbslLKyxm+MPaAk81HgVdg9S0Joho6PGR82tpkmO
-3vlIkhrNQ0USB9XaqJr2eYs8t2Zu0kABmonuJbbArBwDmRrDc5E5XKNgTA1XztiD
-Gxr2W85AJBexWySTc68YQEWJUhL+LJ5cqCsQg/C835ZLXGEMgirBiXeKzybTwwhh
-FbBiFzHFb5sN0aVC9RfM3IPQJ/dSWK3kIBe4l3EVS6Z0mWKzBAtJ54JOiTQSU5Ke
-MUBrvYUeFJdpaghds4G8iTfovDDyuG6UbZnK8v+/HdA2Z2RCvLTsDeMCziqvDtrh
-6iT5Uu4GbXb62iAFtAtU5Ll+5K1s5YXa8I1vCWPGcKM3bqH/IFTBLzz4R+OR2Wkl
-F4+Y+kxh
-=drxX
------END PGP SIGNATURE-----
+-- 
+2.19.1.6.gb485710b
 
---=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=--
