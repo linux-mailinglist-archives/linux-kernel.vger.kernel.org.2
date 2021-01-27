@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD25730637B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49655306386
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343799AbhA0SoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:44:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232828AbhA0SoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:44:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B141601FB;
-        Wed, 27 Jan 2021 18:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611773008;
-        bh=GZ0Dc/tE/vX/hQMmkRpmanBmWtj6NrDessKfg0CzNQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hq9cayECysR7wC0JyvXib4KeHkGCaDldIGwVp3rDHBgGkQ1LymJfYzNCHYTWnOteh
-         D/a4R7QdG6BOOOf3X8N/DYX4m5Ylj8hR8GIRpKFTInswxgi9aim5djfTEopswbiYBh
-         5cA3sd60j8+bOtwsXdyKysCNG6+ZDeOICgWE8vnTanfwhOSE9JVUDFtyd3gYWECdt5
-         uJ23zMZoj7kUW4bL5vIrmLcZeFPgxo+vAXyEmEU1WFwVLyjQQDigv+6af5vmTVauJf
-         vhk8QGF8ckom1KSdAuAF9nbs/lM+XOOP1TzBNrf9cDTNKAeVMosfDtKRDoEL8tGPUi
-         Tv/6eJXRVeqfg==
-Date:   Wed, 27 Jan 2021 18:43:20 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v15 09/10] arm64: Call kmalloc() to allocate DTB buffer
-Message-ID: <20210127184319.GA676@willie-the-truck>
-References: <20210115173017.30617-1-nramas@linux.microsoft.com>
- <20210115173017.30617-10-nramas@linux.microsoft.com>
- <20210127165208.GA358@willie-the-truck>
- <d3330793-6054-6e59-b727-44bf8e5653cd@linux.microsoft.com>
+        id S1344040AbhA0SpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343525AbhA0Sol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 13:44:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA88C061574;
+        Wed, 27 Jan 2021 10:44:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qvOVQ+emId709g0fRRromVJAvjd0lfbW3+lzsS9Pf9A=; b=g7GNAB87PYB6KJ9b4Mn3hMyUPC
+        5HjWpORzs4qDR/FcrBIOsXK9DfSH7nTIcy4gzCcCanwdbuvF+y1sJjgSdrIr2VLs0MdpdaFXg5ofa
+        WORsZI/N82fl6JYXdj4b9kFE27DcSOJjAzPiwDI/avADX6/cY2lHzHoWr8xdBZSQxGqCgy/4N2H3Z
+        +culQWyh16I9l69fxoBgKPWtTD2duCWIrrRagA+EGEz9Iy3gbfcml87oW7g1m9GIyj33KGKj/G7Dm
+        qZY2r3aiI407tHThpuRYzcsHZIgl0fyFdFpyUiGEk2tED6LxXYe/uIrzMN/KCaJIwNd6RF8OK8Jlg
+        lzmDhfzw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4pmp-007Mme-AY; Wed, 27 Jan 2021 18:43:35 +0000
+Date:   Wed, 27 Jan 2021 18:43:27 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <20210127184327.GA1755516@infradead.org>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210127180215.GA1745339@infradead.org>
+ <20210127183856.moe3p5pxw6bbtunk@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d3330793-6054-6e59-b727-44bf8e5653cd@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210127183856.moe3p5pxw6bbtunk@treble>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:59:38AM -0800, Lakshmi Ramasubramanian wrote:
-> On 1/27/21 8:52 AM, Will Deacon wrote:
+On Wed, Jan 27, 2021 at 12:38:56PM -0600, Josh Poimboeuf wrote:
+> On Wed, Jan 27, 2021 at 06:02:15PM +0000, Christoph Hellwig wrote:
+> > Please don't add all this garbage.  We only add infrastructure to the
+> > kernel for what the kernel itself needs, not for weird out of tree
+> > infrastructure.
 > 
-> Hi Will,
+> This isn't new, the kernel already has the infrastructure for building
+> out-of-tree modules.  It's widely used.  Are you suggesting we remove
+> it?  Good luck with that...
 > 
-> > On Fri, Jan 15, 2021 at 09:30:16AM -0800, Lakshmi Ramasubramanian wrote:
-> > > create_dtb() function allocates kernel virtual memory for
-> > > the device tree blob (DTB).  This is not consistent with other
-> > > architectures, such as powerpc, which calls kmalloc() for allocating
-> > > memory for the DTB.
-> > > 
-> > > Call kmalloc() to allocate memory for the DTB, and kfree() to free
-> > > the allocated memory.
-> > > 
-> > > Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> > > Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> > > ---
-> > >   arch/arm64/kernel/machine_kexec_file.c | 12 +++++++-----
-> > >   1 file changed, 7 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-> > > index 7de9c47dee7c..51c40143d6fa 100644
-> > > --- a/arch/arm64/kernel/machine_kexec_file.c
-> > > +++ b/arch/arm64/kernel/machine_kexec_file.c
-> > > @@ -29,7 +29,7 @@ const struct kexec_file_ops * const kexec_file_loaders[] = {
-> > >   int arch_kimage_file_post_load_cleanup(struct kimage *image)
-> > >   {
-> > > -	vfree(image->arch.dtb);
-> > > +	kfree(image->arch.dtb);
-> > >   	image->arch.dtb = NULL;
-> > >   	vfree(image->arch.elf_headers);
-> > > @@ -59,19 +59,21 @@ static int create_dtb(struct kimage *image,
-> > >   			+ cmdline_len + DTB_EXTRA_SPACE;
-> > >   	for (;;) {
-> > > -		buf = vmalloc(buf_size);
-> > > +		buf = kmalloc(buf_size, GFP_KERNEL);
-> > 
-> > Is there a functional need for this patch? I build the 'dtbs' target just
-> > now and sdm845-db845c.dtb is approaching 100K, which feels quite large
-> > for kmalloc().
-> 
-> Changing the allocation from vmalloc() to kmalloc() would help us further
-> consolidate the DTB setup code for powerpc and arm64.
+> Either it should be supported, or not.  Make the case either way.  But I
+> can't understand why people are advocating to leave it half-broken.
 
-Ok, but at the risk of allocation failure. Can powerpc use vmalloc()
-instead?
 
-Will
+It is not support as any kind of interface.  It is a little aid for
+local development.  Adding any kond of complexities for out of tree
+modules is a complete no-go.
