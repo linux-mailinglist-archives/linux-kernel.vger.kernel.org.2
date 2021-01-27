@@ -2,58 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A648305E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 917C6305E2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbhA0OX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:23:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233375AbhA0OWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:22:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD16E207B7;
-        Wed, 27 Jan 2021 14:22:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611757323;
-        bh=ilkgzF27O2aG4zXfw3/KubkNM0t7h6Ensqcg3lB2FE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AEMXgirm7mDr1xljqooCJhzV7vrx5icUzRjwAFBheoFBvzfuFg47bjeOFzM+mBaA0
-         Vf73zeQqBis9jFFRm3U0ZeLqXIwU9yY7MT2TnXYxicLXUmON8AxdNbB9dV/BI4Czk9
-         L8rVaN0fNroQ0GpW8dC40AhJp9th7MG4VJgauUYI=
-Date:   Wed, 27 Jan 2021 15:22:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH] vt: keyboard, use new API for keyboard_tasklet
-Message-ID: <YBF3CCdnXWfSRbHU@kroah.com>
-References: <20210123214739.2042-1-kernel@esmil.dk>
+        id S231635AbhA0OYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:24:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233852AbhA0OXl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 09:23:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611757335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3x3v94BjOwEDdN4Q5vF6tZl1Pibldsq9m5DYt5qg7Fk=;
+        b=I4XK9cCuevyW9/6QbUWqvf23p7KFCy4wYbjgX52k79agQ0kAPUMxO6VLnIeSDeIby/UPpB
+        xTMtKznk02+dFfI9xFEAn2ZVcMn371zqmNx8C2nnnuAThv15wpVJzdHipTsbK0BaF2XViC
+        zW0bcZoXq57YAdo8DPDKZXIymPF5zf8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-hrOrMKrXOam1O0EEU5Fuow-1; Wed, 27 Jan 2021 09:22:12 -0500
+X-MC-Unique: hrOrMKrXOam1O0EEU5Fuow-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA00B193578E;
+        Wed, 27 Jan 2021 14:22:10 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A5F519716;
+        Wed, 27 Jan 2021 14:22:09 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192 keys
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123214739.2042-1-kernel@esmil.dk>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3114061.1611757328.1@warthog.procyon.org.uk>
+Date:   Wed, 27 Jan 2021 14:22:08 +0000
+Message-ID: <3114062.1611757328@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 10:47:39PM +0100, Emil Renner Berthing wrote:
-> This converts the keyboard_tasklet to use the new API in
-> commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
+
+> This series of patches adds support for x509 certificates signed by a CA
+> that uses NIST p256 or p192 keys for signing. It also adds support for
+> certificates where the public key is a NIST p256 or p192 key. The math
+> for ECDSA signature verification is also added.
 > 
-> The new API changes the argument passed to the callback function, but
-> fortunately the argument isn't used so it is straight forward to use
-> DECLARE_TASKLET_DISABLED() rather than DECLARE_TASKLET_DISABLED_OLD().
+> Since self-signed certificates are verified upon loading, the following
+> script can be used for testing:
 > 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->  drivers/tty/vt/keyboard.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> k=$(keyctrl newring test @u)
+> 
+> while :; do
+> 	for hash in sha1 sha224 sha256 sha384 sha512; do
+> 		openssl req \
+> 			-x509 \
+> 			-${hash} \
+> 			-newkey ec \
+> 			-pkeyopt ec_paramgen_curve:prime256v1 \
+> 			-keyout key.pem \
+> 			-days 365 \
+> 			-subj '/CN=test' \
+> 			-nodes \
+> 			-outform der \
+> 			-out cert.der
+> 		keyctl padd asymmetric testkey $k < cert.der
+> 		if [ $? -ne 0 ]; then
+> 			echo "ERROR"
+> 			exit 1
+> 		fi
+> 	done
+> done
+> 
+> It also works with restricted keyrings where an RSA key is used to sign
+> a NIST P256/P192 key. Scripts for testing are here:
+> 
+> https://github.com/stefanberger/eckey-testing
+> 
+> The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+> file signatures stored in RPM packages will use substantially less space
+> than if RSA signatures were to be used.
 
-Does not apply to my tty-next branch of my tty.git tree :(
+I've pulled this into my keys-next branch.
 
-Please rebase and resend.
+David
 
-thanks,
-
-greg k-h
