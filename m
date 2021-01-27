@@ -2,161 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283E9305F8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263B6305F82
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343782AbhA0P1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:27:13 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:37938 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343758AbhA0PTo (ORCPT
+        id S235891AbhA0PZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:25:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49290 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343837AbhA0PUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:19:44 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611760758; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=FiCUTpUrxAWVMK/SZ+r7dBcDFEIkz30ww9kPsaUFmTg=; b=gtxwlQvC9Ytw6xf3zLLPMEVMydxRZNovKOiEycNDdHBnN6rBrAtDHQ5HcDIT2Dj0XNBk4UmE
- 8EOW5pbEFDQdNZ9PudXlK6+oJFSE3E8hgQ/o1sZCuMp4QLYSwdbLBlUfvZP/kOvmmGgUlW6X
- ua0K1aalbNeqLisX1XOoOTg3vZA=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 601184512c36b2106d2a904c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 15:18:41
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DBD0BC43463; Wed, 27 Jan 2021 15:18:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Wed, 27 Jan 2021 10:20:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611760734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y8CI0qhLiRTzgvTJnz39fBqQX6rleE9goWMGoeQDUHM=;
+        b=a7tsz9TTubscatFWvEvc/rQiaezS3f5SMmxhQy3n+UqH33/4+bMWEtuM3HP91uM7P9g1fm
+        M6ncizZwR+eSjeRMP3SQVL3AnXid7US1+zafq/LuB5RnQBiy5oSGZyrqZZ3Qyw07iK2V88
+        K2Cj1tAdYjWoZZIeFgXlQQcfq3o04ss=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-Q_p0DMDDOLWzMbA0s1tO-Q-1; Wed, 27 Jan 2021 10:18:50 -0500
+X-MC-Unique: Q_p0DMDDOLWzMbA0s1tO-Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6E85C433ED;
-        Wed, 27 Jan 2021 15:18:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D6E85C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2] ASoC: qcom: lpass-cpu: Remove bit clock state check
-Date:   Wed, 27 Jan 2021 20:48:24 +0530
-Message-Id: <20210127151824.8929-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 826648797E7;
+        Wed, 27 Jan 2021 15:18:48 +0000 (UTC)
+Received: from T590 (ovpn-12-152.pek2.redhat.com [10.72.12.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 634A45D9CA;
+        Wed, 27 Jan 2021 15:18:44 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 23:18:38 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "block: simplify set_init_blocksize" to regain
+ lost performance
+Message-ID: <20210127151838.GA1325688@T590>
+References: <20210126195907.2273494-1-maxtram95@gmail.com>
+ <d3effbdc-12c2-c6aa-98ba-7bde006fc4e1@acm.org>
+ <CAKErNvpCdTvg-Bx-U+k3jYiazoz-Pr0LwruaSh+LszH9yP5c8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKErNvpCdTvg-Bx-U+k3jYiazoz-Pr0LwruaSh+LszH9yP5c8A@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need of BCLK state maintenance from driver side as
-clock_enable and clk_disable API's maintaing state counter.
+On Wed, Jan 27, 2021 at 09:44:50AM +0200, Maxim Mikityanskiy wrote:
+> On Wed, Jan 27, 2021 at 6:23 AM Bart Van Assche <bvanassche@acm.org> wrote:
+> >
+> > On 1/26/21 11:59 AM, Maxim Mikityanskiy wrote:
+> > > The cited commit introduced a serious regression with SATA write speed,
+> > > as found by bisecting. This patch reverts this commit, which restores
+> > > write speed back to the values observed before this commit.
+> > >
+> > > The performance tests were done on a Helios4 NAS (2nd batch) with 4 HDDs
+> > > (WD8003FFBX) using dd (bs=1M count=2000). "Direct" is a test with a
+> > > single HDD, the rest are different RAID levels built over the first
+> > > partitions of 4 HDDs. Test results are in MB/s, R is read, W is write.
+> > >
+> > >                 | Direct | RAID0 | RAID10 f2 | RAID10 n2 | RAID6
+> > > ----------------+--------+-------+-----------+-----------+--------
+> > > 9011495c9466    | R:256  | R:313 | R:276     | R:313     | R:323
+> > > (before faulty) | W:254  | W:253 | W:195     | W:204     | W:117
+> > > ----------------+--------+-------+-----------+-----------+--------
+> > > 5ff9f19231a0    | R:257  | R:398 | R:312     | R:344     | R:391
+> > > (faulty commit) | W:154  | W:122 | W:67.7    | W:66.6    | W:67.2
+> > > ----------------+--------+-------+-----------+-----------+--------
+> > > 5.10.10         | R:256  | R:401 | R:312     | R:356     | R:375
+> > > unpatched       | W:149  | W:123 | W:64      | W:64.1    | W:61.5
+> > > ----------------+--------+-------+-----------+-----------+--------
+> > > 5.10.10         | R:255  | R:396 | R:312     | R:340     | R:393
+> > > patched         | W:247  | W:274 | W:220     | W:225     | W:121
+> > >
+> > > Applying this patch doesn't hurt read performance, while improves the
+> > > write speed by 1.5x - 3.5x (more impact on RAID tests). The write speed
+> > > is restored back to the state before the faulty commit, and even a bit
+> > > higher in RAID tests (which aren't HDD-bound on this device) - that is
+> > > likely related to other optimizations done between the faulty commit and
+> > > 5.10.10 which also improved the read speed.
+> > >
+> > > Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+> > > Fixes: 5ff9f19231a0 ("block: simplify set_init_blocksize")
+> > > Cc: Christoph Hellwig <hch@lst.de>
+> > > Cc: Jens Axboe <axboe@kernel.dk>
+> > > ---
+> > >  fs/block_dev.c | 10 +++++++++-
+> > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/block_dev.c b/fs/block_dev.c
+> > > index 3b8963e228a1..235b5042672e 100644
+> > > --- a/fs/block_dev.c
+> > > +++ b/fs/block_dev.c
+> > > @@ -130,7 +130,15 @@ EXPORT_SYMBOL(truncate_bdev_range);
+> > >
+> > >  static void set_init_blocksize(struct block_device *bdev)
+> > >  {
+> > > -     bdev->bd_inode->i_blkbits = blksize_bits(bdev_logical_block_size(bdev));
+> > > +     unsigned int bsize = bdev_logical_block_size(bdev);
+> > > +     loff_t size = i_size_read(bdev->bd_inode);
+> > > +
+> > > +     while (bsize < PAGE_SIZE) {
+> > > +             if (size & bsize)
+> > > +                     break;
+> > > +             bsize <<= 1;
+> > > +     }
+> > > +     bdev->bd_inode->i_blkbits = blksize_bits(bsize);
+> > >  }
+> > >
+> > >  int set_blocksize(struct block_device *bdev, int size)
+> >
+> > How can this patch affect write speed? I haven't found any calls of
+> > set_init_blocksize() in the I/O path. Did I perhaps overlook something?
+> 
+> I don't know the exact mechanism how this change affects the speed,
+> I'm not an expert in the block device subsystem (I'm a networking
+> guy). This commit was found by git bisect, and my performance test
+> confirmed that reverting it fixes the bug.
+> 
+> It looks to me as this function sets the block size as part of control
+> flow, and this size is used later in the fast path, and the commit
+> that removed the loop decreased this block size.
 
-One of the major issue was spotted when Headset jack inserted
-while playback continues, due to same PCM device node opens twice
-for playaback/capture and closes once for capture and playback continues.
+Right, the issue is stupid __block_write_full_page() which submits single bio
+for each buffer head. And I have tried to improve the situation by merging
+BHs into single bio, see below patch:
 
-It can resolve the errors in such scenarios.
+	https://lore.kernel.org/linux-block/20201230000815.3448707-1-ming.lei@redhat.com/
 
-Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
+The above patch should improve perf for your test case.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes since v1: 
-   -- Commit message changed
-
- sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
- sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
- sound/soc/qcom/lpass.h           |  1 -
- 3 files changed, 8 insertions(+), 18 deletions(-)
-
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index ae8efbc89af2..a669202e0001 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
- 
--		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
--			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
--			if (ret) {
--				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
--				clk_disable(drvdata->mi2s_osr_clk[id]);
--				return ret;
--			}
--			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
-+		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-+		if (ret) {
-+			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-+			clk_disable(drvdata->mi2s_osr_clk[id]);
-+			return ret;
- 		}
--
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-@@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		if (ret)
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
--		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
--			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
--			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
--		}
-+
-+		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
-+
- 		break;
- 	}
- 
-@@ -861,7 +856,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
- 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
- 		}
--		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
- 	}
- 
- 	/* Allocation for i2sctl regmap fields */
-diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-index 405542832e99..c8e1d75340b2 100644
---- a/sound/soc/qcom/lpass-lpaif-reg.h
-+++ b/sound/soc/qcom/lpass-lpaif-reg.h
-@@ -60,9 +60,6 @@
- #define LPAIF_I2SCTL_BITWIDTH_24	1
- #define LPAIF_I2SCTL_BITWIDTH_32	2
- 
--#define LPAIF_BIT_CLK_DISABLE		0
--#define LPAIF_BIT_CLK_ENABLE		1
--
- #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
- #define LPAIF_DMACTL_RESET_STATE	0x00200000
- 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 2d68af0da34d..83b2e08ade06 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -68,7 +68,6 @@ struct lpass_data {
- 	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	int hdmi_port_enable;
--	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
- 
- 	/* low-power audio interface (LPAIF) registers */
- 	void __iomem *lpaif;
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Ming
 
