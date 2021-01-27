@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28841305861
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D91305863
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhA0K0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235746AbhA0KYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:24:43 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF403C061573;
-        Wed, 27 Jan 2021 02:24:02 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id jx18so1066922pjb.5;
-        Wed, 27 Jan 2021 02:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=xRcgTb91tK28anYqrlC++wtp+Am92iHcjy/4eSWbMUs=;
-        b=ZVd0VPHkqckjxZmYv4/v2cboiZSDr8qUPwHMzMlYHsy0Hu3sK1Sh2jfHizwSenYTig
-         AhejQOWtpeZ6dqXMdwqVaZLcgU4eRtnJIhzFAUjdHqTxQdJOLRaJM3nA+QMX5DBrFf0l
-         FEjo16QriDvnD/40PuuhCJfhDE37wGRKgRZgqGdh1w7ZQLl9zmuB+/UpKLSRkCkeKgbs
-         Qtk5QufgvK8Hdz7om32gkQZ8rOPszKZnTwGaPCHTaZEIe4VlQxkTHRQOdObfncNdfbww
-         lF8aItGo2wKUlFFRS9qH3RqjWY4t4aWl5oWjSJIMHSSUnpgu4Nyk5kTyPImZSSTwvPIk
-         129g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=xRcgTb91tK28anYqrlC++wtp+Am92iHcjy/4eSWbMUs=;
-        b=sHnyJIMr2LB26quLykEue5ScEauT/BaGBl78jj3lC5bRSPkDIu7Ycrj+MNjy2lAT+h
-         9oRv8hf7tkAFqCwcqR2+xvAJ/5HdKSbNTRyLK3409GLewquiisGHWtHiA/P7LmO1Nttx
-         qt23sa42EMLg5KerU10/tvWmqvb+7pmW2S5VNKX31FNsUv8XFJrDuEpCACgtnJGxqkG5
-         qX5X6WRnsrr3uX3TKhbAWhrhw1YUPZZ7qk+lWPoUxNkM2zdpVH7ajtjDQ1ZBEgloDswZ
-         Z9EpqNr3QTUl38Gr0a3YO8UsT0na/i5Cdulf7e+U8WXUxct8zDHtczTr1btGEJwxW7VY
-         ZHxg==
-X-Gm-Message-State: AOAM5326cRiCc08KsI9U0XCSpq3FaDY0LqdFgGAMXf6T7E917Gb5hcK7
-        UBafnJBbXBe75Ie2cicHHPU=
-X-Google-Smtp-Source: ABdhPJzTgP2xJ9TiEus/lM8X6G6P4az0ohaUTLuqRAbnoOTXq0i9h7FnZEwNwwYqWfTlv5yT/U1Epg==
-X-Received: by 2002:a17:90a:3f82:: with SMTP id m2mr4895955pjc.235.1611743042596;
-        Wed, 27 Jan 2021 02:24:02 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id d128sm2152572pga.87.2021.01.27.02.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 02:24:01 -0800 (PST)
-Date:   Wed, 27 Jan 2021 18:23:55 +0800
-From:   carlis <zhangxuezhi3@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
-        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
-        colin.king@canonical.com, zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v6] fbtft: add tearing signal detect
-Message-ID: <20210127182355.00007300@gmail.com>
-In-Reply-To: <20210127085951.GE2696@kadam>
-References: <1611732502-99639-1-git-send-email-zhangxuezhi3@gmail.com>
-        <20210127085951.GE2696@kadam>
-Organization: Tyzmig-ryrjum-8kedto
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S235917AbhA0K1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:27:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:37374 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235812AbhA0KZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:25:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D72231B;
+        Wed, 27 Jan 2021 02:24:53 -0800 (PST)
+Received: from [10.57.4.29] (unknown [10.57.4.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F21263F66B;
+        Wed, 27 Jan 2021 02:24:50 -0800 (PST)
+Subject: Re: [PATCH] drm/lima: add governor data with pre-defined thresholds
+To:     Christian Hewitt <christianshewitt@gmail.com>
+Cc:     Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Steven Price <steven.price@arm.com>
+References: <20210125081804.13016-1-christianshewitt@gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <9e30a8e1-ef69-5929-17f1-cdb603686495@arm.com>
+Date:   Wed, 27 Jan 2021 10:24:48 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210125081804.13016-1-christianshewitt@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 11:59:51 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
+Hi Christian,
 
-> On Wed, Jan 27, 2021 at 03:28:22PM +0800, Carlis wrote:
-> >  static int init_display(struct fbtft_par *par)
-> >  {
-> > +	int rc;
-> > +	struct device *dev = par->info->device;
-> > +
-> > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
-> > GPIOD_IN);
-> > +	if (IS_ERR(par->gpio.te)) {
-> > +		rc = PTR_ERR(par->gpio.te);
-> > +		pr_err("Failed to request te gpio: %d\n", rc);
-> > +		par->gpio.te = NULL;
-> > +	}
-> > +	if (par->gpio.te) {
-> > +		init_completion(&spi_panel_te);
-> > +		mutex_init(&te_mutex);
-> > +		rc = devm_request_irq(dev,
-> > +				      gpiod_to_irq(par->gpio.te),
-> > +				     spi_panel_te_handler,
-> > IRQF_TRIGGER_RISING,
-> > +				     "TE_GPIO", par);
-> > +		if (rc) {
-> > +			pr_err("TE request_irq failed.\n");
-> > +			devm_gpiod_put(dev, par->gpio.te);
-> > +			par->gpio.te = NULL;
-> > +		} else {
-> > +
-> > disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> > +			pr_info("TE request_irq completion.\n");  
+On 1/25/21 8:18 AM, Christian Hewitt wrote:
+> This patch adapts the panfrost pre-defined thresholds change [0] to the
+> lima driver to improve real-world performance. The upthreshold value has
+> been set to ramp GPU frequency to max freq faster (compared to panfrost)
+> to compensate for the lower overall performance of utgard devices.
 > 
-> #SadFaceEmoji
+> [0] https://patchwork.kernel.org/project/dri-devel/patch/20210121170445.19761-1-lukasz.luba@arm.com/
 > 
-> > +		}
-> > +	} else {
-> > +		pr_info("%s:%d, TE gpio not specified\n",
-> > +			__func__, __LINE__);
-> > +	}  
-> 
-> regards,
-> dan carpenter
-> 
-Sorry,i will delete this log in patch v8
-regards
-zhangxuezhi
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> ---
+> I have been using Kodi as my test application. If you scroll in library
+> views with hundreds of list items and the panfrost values the slow GPU
+> ramp up is quite noticeable and the GUI feels sluggish. As everything
+> lima runs on is inherently slower than panfrost using devices I believe
+> it's better to ramp up to max freq quicker.
+
+It's quite low value for the upthreshold, but I believe you have
+experimented and observed that a bit higher (30, 40?) don't work well.
+I don't know the Kodi system, though.
+
+You can check if the other frequencies are also used in statistics for
+devfreq device:
+cat /sys/class/devfreq/<your_gpu>/trans_stats
+
+If they are also used, then it OK (better than stuck at min freq).
+
+Regards,
+Lukasz
