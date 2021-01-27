@@ -2,185 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C39430603D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB5D30603B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236645AbhA0Pwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:52:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50382 "EHLO mx2.suse.de"
+        id S236497AbhA0Pvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:51:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235972AbhA0PuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:50:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EDB0CAE8D;
-        Wed, 27 Jan 2021 15:49:40 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
+        id S235493AbhA0PvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:51:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED7B207B7;
+        Wed, 27 Jan 2021 15:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611762626;
+        bh=3lSogROR7eblCTF10SVJeAABAapek6VwIQuPU+LvZnI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ZH8tAPulqtV+01DssnEN3ps2dW0ccm7v0EBAh/S4Owpdj5DRFnMYj7yVwF6EQXypG
+         gRqaAHab+oft1jovSoXOa6xZCsGG1vNfl24+ifYHobm9wRkR31Zo4mgsaekb00BBVo
+         r97dLeUmsDek8yH8uF8sFhhl/6YINXBpJoGBy3d0DbYXzO0f8oL1loBvXHnQJfL/pi
+         JFaKQGFgkc8B1kp/uotpmyrFNU+RlmqUyZE9dQtt5g4skA5ikYy/SeE+GMm1So+Aml
+         nOitgwEDMeD3kRrZT/Qls/Qo4RN7jE/dS3Nys0RT7JC98BOnKoAfw4n9Q+T4POpFdg
+         g4w28p32BuJBg==
+Date:   Wed, 27 Jan 2021 09:50:23 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kenneth R. Crudup" <kenny@panix.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 4/4] selftest: firmware: Add ZSTD compressed file tests
-Date:   Wed, 27 Jan 2021 16:49:39 +0100
-Message-Id: <20210127154939.13288-5-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210127154939.13288-1-tiwai@suse.de>
-References: <20210127154939.13288-1-tiwai@suse.de>
+Subject: Re: Commit 4257f7e0 ("PCI/ASPM: Save/restore L1SS Capability for
+ suspend/resume") causing hibernate resume failures
+Message-ID: <20210127155023.GA2988674@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2563ba4a-81bc-d27-2670-cae48690db5e@panix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's similar like XZ compressed files.  For the simplicity, both XZ
-and ZSTD tests are done in a single function.  The format is specified
-via $COMPRESS_FORMAT and the compression function is pre-defined.
+On Fri, Jan 22, 2021 at 12:11:08PM -0800, Kenneth R. Crudup wrote:
+> > > From: Kenneth R. Crudup <kenny@panix.com>
+> > > I've been running Linus' master branch on my laptop (Dell XPS 13
+> > > 2-in-1).  With this commit in place, after resuming from hibernate
+> > > my machine is essentially useless, with a torrent of disk I/O errors
+> > > on my NVMe device (at least, and possibly other devices affected)
+> > > until a reboot.
+> > >
+> > > I do use tlp to set the PCIe ASPM to "performance" on AC and
+> > > "powersupersave" on battery.
+> 
+> On Sun, 27 Dec 2020, Bjorn Helgaas wrote:
+> 
+> > Thanks a lot for the report, and sorry for the breakage.
+> > 4257f7e008ea restores PCI_L1SS_CTL1, then PCI_L1SS_CTL2.  I think it
+> > should do those in the reverse order, since the Enable bits are in
+> > PCI_L1SS_CTL1.  It also restores L1SS state (potentially enabling
+> > L1.x) before we restore the PCIe Capability (potentially enabling ASPM
+> > as a whole).  Those probably should also be in the other order.
+> 
+> Any new news on this? Disabling "tlp" (which just shifts the problem around
+> on my machine) shouldn't be a solution for this issue.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- .../selftests/firmware/fw_filesystem.sh       | 75 ++++++++++++++-----
- tools/testing/selftests/firmware/fw_lib.sh    | 12 ++-
- 2 files changed, 64 insertions(+), 23 deletions(-)
+Agreed; disabling "tlp" is a workaround but not a solution.
 
-diff --git a/tools/testing/selftests/firmware/fw_filesystem.sh b/tools/testing/selftests/firmware/fw_filesystem.sh
-index f1976e650672..abaceac83d6e 100755
---- a/tools/testing/selftests/firmware/fw_filesystem.sh
-+++ b/tools/testing/selftests/firmware/fw_filesystem.sh
-@@ -211,7 +211,7 @@ read_firmwares()
- 	else
- 		fwfile="$FW"
- 	fi
--	if [ "$1" = "xzonly" ]; then
-+	if [ "$1" = "componly" ]; then
- 		fwfile="${fwfile}-orig"
- 	fi
- 	for i in $(seq 0 3); do
-@@ -235,7 +235,7 @@ read_partial_firmwares()
- 		fwfile="${FW}"
- 	fi
- 
--	if [ "$1" = "xzonly" ]; then
-+	if [ "$1" = "componly" ]; then
- 		fwfile="${fwfile}-orig"
- 	fi
- 
-@@ -409,10 +409,8 @@ test_request_firmware_nowait_custom()
- 	config_unset_uevent
- 	RANDOM_FILE_PATH=$(setup_random_file)
- 	RANDOM_FILE="$(basename $RANDOM_FILE_PATH)"
--	if [ "$2" = "both" ]; then
--		xz -9 -C crc32 -k $RANDOM_FILE_PATH
--	elif [ "$2" = "xzonly" ]; then
--		xz -9 -C crc32 $RANDOM_FILE_PATH
-+	if [ -n "$2" -a "$2" != "normal" ]; then
-+		compress-"$2"-$COMPRESS_FORMAT $RANDOM_FILE_PATH
- 	fi
- 	config_set_name $RANDOM_FILE
- 	config_trigger_async
-@@ -488,21 +486,58 @@ test_request_partial_firmware_into_buf_nofile 0 5
- test_request_partial_firmware_into_buf_nofile 1 6
- test_request_partial_firmware_into_buf_nofile 2 10
- 
--test "$HAS_FW_LOADER_COMPRESS" != "yes" && exit 0
-+test_request_firmware_compressed ()
-+{
-+	export COMPRESS_FORMAT="$1"
- 
--# test with both files present
--xz -9 -C crc32 -k $FW
--xz -9 -C crc32 -k $FW_INTO_BUF
--config_set_name $NAME
--echo
--echo "Testing with both plain and xz files present..."
--do_tests both
-+	# test with both files present
-+	compress-both-$COMPRESS_FORMAT $FW
-+	compress-both-$COMPRESS_FORMAT $FW_INTO_BUF
- 
--# test with only xz file present
--mv "$FW" "${FW}-orig"
--mv "$FW_INTO_BUF" "${FW_INTO_BUF}-orig"
--echo
--echo "Testing with only xz file present..."
--do_tests xzonly
-+	config_set_name $NAME
-+	echo
-+	echo "Testing with both plain and $COMPRESS_FORMAT files present..."
-+	do_tests both
-+
-+	# test with only compressed file present
-+	mv "$FW" "${FW}-orig"
-+	mv "$FW_INTO_BUF" "${FW_INTO_BUF}-orig"
-+
-+	config_set_name $NAME
-+	echo
-+	echo "Testing with only $COMPRESS_FORMAT file present..."
-+	do_tests componly
-+
-+	mv "${FW}-orig" "$FW"
-+	mv "${FW_INTO_BUF}-orig" "$FW_INTO_BUF"
-+}
-+
-+compress-both-XZ ()
-+{
-+	xz -k -9 -C crc32 "$@"
-+}
-+
-+compress-componly-XZ ()
-+{
-+	xz -9 -C crc32 "$@"
-+}
-+
-+compress-both-ZSTD ()
-+{
-+	zstd -q -k "$@"
-+}
-+
-+compress-componly-ZSTD ()
-+{
-+	zstd -q --rm "$@"
-+}
-+
-+if test "$HAS_FW_LOADER_COMPRESS_XZ" = "yes"; then
-+	test_request_firmware_compressed XZ
-+fi
-+
-+if test "$HAS_FW_LOADER_COMPRESS_ZSTD" = "yes"; then
-+	test_request_firmware_compressed ZSTD
-+fi
- 
- exit 0
-diff --git a/tools/testing/selftests/firmware/fw_lib.sh b/tools/testing/selftests/firmware/fw_lib.sh
-index 5b8c0fedee76..3fa8282b053b 100755
---- a/tools/testing/selftests/firmware/fw_lib.sh
-+++ b/tools/testing/selftests/firmware/fw_lib.sh
-@@ -62,7 +62,8 @@ check_setup()
- {
- 	HAS_FW_LOADER_USER_HELPER="$(kconfig_has CONFIG_FW_LOADER_USER_HELPER=y)"
- 	HAS_FW_LOADER_USER_HELPER_FALLBACK="$(kconfig_has CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y)"
--	HAS_FW_LOADER_COMPRESS="$(kconfig_has CONFIG_FW_LOADER_COMPRESS=y)"
-+	HAS_FW_LOADER_COMPRESS_XZ="$(kconfig_has CONFIG_FW_LOADER_COMPRESS_XZ=y)"
-+	HAS_FW_LOADER_COMPRESS_ZSTD="$(kconfig_has CONFIG_FW_LOADER_COMPRESS_ZSTD=y)"
- 	PROC_FW_IGNORE_SYSFS_FALLBACK="0"
- 	PROC_FW_FORCE_SYSFS_FALLBACK="0"
- 
-@@ -98,9 +99,14 @@ check_setup()
- 
- 	OLD_FWPATH="$(cat /sys/module/firmware_class/parameters/path)"
- 
--	if [ "$HAS_FW_LOADER_COMPRESS" = "yes" ]; then
-+	if [ "$HAS_FW_LOADER_COMPRESS_XZ" = "yes" ]; then
- 		if ! which xz 2> /dev/null > /dev/null; then
--			HAS_FW_LOADER_COMPRESS=""
-+			HAS_FW_LOADER_COMPRESS_XZ=""
-+		fi
-+	fi
-+	if [ "$HAS_FW_LOADER_COMPRESS_ZSTD" = "yes" ]; then
-+		if ! which zstd 2> /dev/null > /dev/null; then
-+			HAS_FW_LOADER_COMPRESS_ZSTD=""
- 		fi
- 	fi
- }
--- 
-2.26.2
+> I'd thought it may have been tied to some of the PM regressions of the last
+> week of December, but all of those have been fixed but this still remains.
 
+I haven't seen anything yet and haven't had a chance to look into it
+more myself.
+
+We're at v5.11-rc5 already, so I guess we'll have to think about
+reverting 4257f7e008ea ("PCI/ASPM: Save/restore L1SS Capability for
+suspend/resume") before v5.11-final unless we can make some progress.
+
+That would mean ASPM L1 substate configuration would be lost by a
+suspend/resume, so we'd give up some power saving.  But that's better
+than the regression you're seeing.
+
+I'll tentatively queue up a revert on for-linus pending progress on a
+better fix.  For some reason I can't find your initial report of the
+regression.  The first thing I can find is this:
+
+https://lore.kernel.org/linux-pci/20201228040513.GA611645@bjorn-Precision-5520/
+
+Do you have a URL for your initial report that I could include in the
+revert commit log?
+
+Bjorn
