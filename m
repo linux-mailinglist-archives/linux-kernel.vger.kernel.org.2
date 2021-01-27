@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172BF305DCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0A9305DCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhA0ODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:03:04 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:41713 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232784AbhA0OBC (ORCPT
+        id S233668AbhA0ODq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:03:46 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:43068 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232775AbhA0OBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:01:02 -0500
-Received: by mail-ot1-f41.google.com with SMTP id k8so1711354otr.8;
-        Wed, 27 Jan 2021 06:00:47 -0800 (PST)
+        Wed, 27 Jan 2021 09:01:01 -0500
+Received: by mail-oi1-f172.google.com with SMTP id i25so2177681oie.10;
+        Wed, 27 Jan 2021 06:00:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=Pvt6d5CGxTpASp51QfzOAN0WTM5rhfa8sxsywVVWTQU=;
-        b=TKRW92nmZoNHGUHtCg8A1p5Bx1ljqZgctxs3hOyteW000GF1DLdTNJkIb5WO4qpK3m
-         XhpjeMjm4DFtXiAik7Jt/7IIB35nOq+Zin+L3siyvJT2v2qmjDdaqLs8YH3rWri0xqqB
-         eta9+c+7CrFXs79LgIpKTNlY/DzNpsE8FnSNzeJfZH/eVa+P8+XwYyCHbnrywGPyWxT9
-         hlWDSyCita96G4DumQM9tHhYT2lik4COmYGLmkEuiqmTRfeIpSzbU6wmTzeagZY/CxOX
-         mq5GIJbk9ukbngN7UFEWk1ZZIdoYt7yZ3x5gN0vMv7HFq+8VqcsxwNJ8zqvZ7t9wEdlj
-         WeuA==
-X-Gm-Message-State: AOAM532alZm29j7SBHhDzdRrThLzbXj++4VHs+QT87Qt7DDMAU1Awh3G
-        JayQ6XUSjOPVmD5jRs8zFQ==
-X-Google-Smtp-Source: ABdhPJxrv2PX6DjBNA4sK0RpUtZ4n5E/3ozNvvrU/J4B1isCcaGQnkD28bbKGMc8th2nG4cPX+a1GQ==
-X-Received: by 2002:a05:6830:2152:: with SMTP id r18mr7951897otd.296.1611756022385;
-        Wed, 27 Jan 2021 06:00:22 -0800 (PST)
+        bh=Hk3zfjFe35sbucjkkXwLkWfsMmYdk7hwJLDIIv4M2H8=;
+        b=VHT80QNUNLJuRY4uyrrtKnzEew+/u6n1ux931o3numRqUkiB2nWZPfFltctoolAs1f
+         32+Nrp+kctRGjIaCdv/5MXI4uyrItDhjh+XOmZo5cuz2tkuW5uZtgOFcWlde/nq956B5
+         6cP68Q0fIWJaUu7JphgXfSejPENd9Saqa4J1J0uIXAIhnMzueIw7y02kyu8eaQNsBpuA
+         ZpathD9mGT9NoY8Nkdk/iDaLEitT7gOZxvHg8wLn6FXcthPZFiQL8VxfqgHz0+CNqHnH
+         mGW2vItEfKiwFl0rqBpJZ86nlA+gPb06a0krI5LsJ7OSy9wWlWF+x3+ByoWDHpM7dl5q
+         lAEg==
+X-Gm-Message-State: AOAM532Exm4GAoJ3qznXO81OVVacAj9UmmZNArK4voPEn/gkUues0mUY
+        YxaZsvD4AS9OsqiT0QZzjg==
+X-Google-Smtp-Source: ABdhPJz4CHBJ4UvRditVqnhKW1z+Md2lGKVf1vYf6KX9zfQ8jhAbIwY6/hFRB1FEB42VGacvlO/WOw==
+X-Received: by 2002:a05:6808:57d:: with SMTP id j29mr3340540oig.146.1611756019662;
+        Wed, 27 Jan 2021 06:00:19 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g13sm364529otr.74.2021.01.27.06.00.20
+        by smtp.gmail.com with ESMTPSA id x197sm458043ooa.27.2021.01.27.06.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:00:21 -0800 (PST)
-Received: (nullmailer pid 1429684 invoked by uid 1000);
+        Wed, 27 Jan 2021 06:00:18 -0800 (PST)
+Received: (nullmailer pid 1429688 invoked by uid 1000);
         Wed, 27 Jan 2021 14:00:11 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     mgross@linux.intel.com
-Cc:     bp@suse.de, damien.lemoal@wdc.com, shawnguo@kernel.org,
-        Seamus Kelly <seamus.kelly@intel.com>,
-        jassisinghbrar@gmail.com, markgross@kernel.org,
-        Ryan Carnaghi <ryan.r.carnaghi@intel.com>,
-        devicetree@vger.kernel.org, paul.walmsley@sifive.com,
-        arnd@arndb.de, linux-kernel@vger.kernel.org, corbet@lwn.net,
-        peng.fan@nxp.com, robh+dt@kernel.org, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, palmerdabbelt@google.com
-In-Reply-To: <20210126054036.61587-18-mgross@linux.intel.com>
-References: <20210126054036.61587-1-mgross@linux.intel.com> <20210126054036.61587-18-mgross@linux.intel.com>
-Subject: Re: [PATCH v3 17/34] xlink-ipc: Add xlink ipc device tree bindings
+To:     =?utf-8?b?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        lkcamp@lists.libreplanetbr.org, Pavel Machek <pavel@ucw.cz>,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, andrealmeid@collabora.com,
+        ~postmarketos/upstreaming@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>,
+        Brian Masney <masneyb@onstation.org>,
+        Dan Murphy <dmurphy@ti.com>
+In-Reply-To: <20210126140240.1517044-2-nfraprado@protonmail.com>
+References: <20210126140240.1517044-1-nfraprado@protonmail.com> <20210126140240.1517044-2-nfraprado@protonmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: leds: Add binding for qcom-spmi-flash
 Date:   Wed, 27 Jan 2021 08:00:11 -0600
-Message-Id: <1611756011.192491.1429683.nullmailer@robh.at.kernel.org>
+Message-Id: <1611756011.217281.1429687.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 21:40:19 -0800, mgross@linux.intel.com wrote:
-> From: Seamus Kelly <seamus.kelly@intel.com>
+On Tue, 26 Jan 2021 14:04:08 +0000, Nícolas F. R. A. Prado wrote:
+> Add devicetree binding for QCOM SPMI Flash LEDs, which are part of
+> PM8941, and are used both as lantern and camera flash.
 > 
-> Add device tree bindings for the xLink IPC driver which enables xLink to
-> control and communicate with the VPU IP present on the Intel Keem Bay
-> SoC.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
-> Signed-off-by: Ryan Carnaghi <ryan.r.carnaghi@intel.com>
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
 > ---
->  .../misc/intel,keembay-xlink-ipc.yaml         | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+> Changes in v2:
+> - Add this commit
+> 
+>  .../bindings/leds/leds-qcom-spmi-flash.yaml   | 94 +++++++++++++++++++
+>  .../dt-bindings/leds/leds-qcom-spmi-flash.h   | 15 +++
+>  2 files changed, 109 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
+>  create mode 100644 include/dt-bindings/leds/leds-qcom-spmi-flash.h
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml:21:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: patternProperties:^led[0-1]$:properties:qcom,startup-dly: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+	Additional properties are not allowed ('maximum', '$ref', 'minimum' were unexpected)
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: patternProperties:^led[0-1]$:properties:qcom,startup-dly: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+	'/schemas/types.yaml#definitions/uint32' does not match 'types.yaml#/definitions/'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: patternProperties:^led[0-1]$:properties:qcom,clamp-curr: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+	Additional properties are not allowed ('$ref' was unexpected)
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: patternProperties:^led[0-1]$:properties:qcom,clamp-curr: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+	'/schemas/types.yaml#definitions/uint32' does not match 'types.yaml#/definitions/'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: patternProperties:^led[0-1]$:properties:qcom,headroom: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+	Additional properties are not allowed ('maximum', '$ref', 'minimum' were unexpected)
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: patternProperties:^led[0-1]$:properties:qcom,headroom: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+	'/schemas/types.yaml#definitions/uint32' does not match 'types.yaml#/definitions/'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml: ignoring, error in schema: patternProperties: ^led[0-1]$: properties: qcom,startup-dly
+warning: no schema found in file: ./Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
 
-See https://patchwork.ozlabs.org/patch/1432167
+See https://patchwork.ozlabs.org/patch/1431711
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
