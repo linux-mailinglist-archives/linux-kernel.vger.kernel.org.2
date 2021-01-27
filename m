@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DBA305BDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAA0305B71
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237964AbhA0Mpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237810AbhA0M14 (ORCPT
+        id S237946AbhA0Mc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:32:57 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56866 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237961AbhA0M2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:27:56 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A1DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:27:16 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id q131so1080823pfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:27:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X8Y03bu49J/8z/b5VQ/tq5hDCio2gSq+A4AEUVaOxBA=;
-        b=ItSCf3HQRNHqDt++Opr117nlJknLUPYbHU0N29vC0QSnHpK2+WD4WhwcYmQamTvSx8
-         fM5dSOHGwjuiqRDu1IOwrTM/cZDh35FSaHLckf5jXtqyIxVyyX6aJourxzhLuQhKgOgq
-         AmWEVHIiguXyTvaGJMH3DKvsYiHnVJCK4Qk67FU1bQb/P5BgxVTWbN1ZaTC12uOTKh1Z
-         Do8BAxRCsCjvZ8TuBmsEMMZh76bcRxb5iWfX/dQo7Sth5SWiYwR6IhRc3yZqdFxnTYw2
-         oUDH1JCFATJv8iy4LBeMRzZP1wCKIW0ymfkxpgJ0LMWk/j9XLvEwEsfx5ha2kTJvnRQN
-         Agrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X8Y03bu49J/8z/b5VQ/tq5hDCio2gSq+A4AEUVaOxBA=;
-        b=eVvBF24jaZ2ibsVNXYbFBm68FW8mWI7oe087FNsg6TC/bbDYxDneLUyzPMQjbqMKet
-         1SFrwMM0MT3/peYFxhlVlPjRcl2BOjZL8MT6h60YNCELSYcyiNkQ8rrfLiqJLdCOo4rF
-         Swhww6KYv09YuLOJVr4n1hFvJZ7F7gpX///97FxW/Uvz23vAf9efZjFDlW2MPD1Jows1
-         rfGXIDIZ7+8Aw1l5YHeboIlwDLhEesST+fDJ7KQkdBhPR7o/BRRTTC9Kxhdo7U3acX2S
-         jflpJCXL9T1m/SHVjp50+R4xj64gD/dHdrQvXsF0YsMS5AdTn3jaQ5Mmzn7NKItERoMt
-         cxkw==
-X-Gm-Message-State: AOAM530Ofk4/YmdNYIr0oKw36fv+178tYt0Mx0VQB34WfFJEA/SKd2u8
-        wTFuiUcP9HzMhZ0hq5+91O4=
-X-Google-Smtp-Source: ABdhPJx7b2WJqZNWKnmQrPGC0g+Oa+Dcml8KS5cDMPqzBe77bhaijCbu0AHRvk6SSijMJuKJCDYsSw==
-X-Received: by 2002:a62:2984:0:b029:1b4:72bd:f2bf with SMTP id p126-20020a6229840000b02901b472bdf2bfmr10316931pfp.59.1611750436146;
-        Wed, 27 Jan 2021 04:27:16 -0800 (PST)
-Received: from localhost (g54.222-224-210.ppp.wakwak.ne.jp. [222.224.210.54])
-        by smtp.gmail.com with ESMTPSA id s21sm2146513pjz.13.2021.01.27.04.27.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 04:27:15 -0800 (PST)
-Date:   Wed, 27 Jan 2021 21:27:12 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     David Gow <davidgow@google.com>
-Cc:     Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soc: litex: Properly depend on HAS_IOMEM
-Message-ID: <20210127122712.GU2002709@lianli.shorne-pla.net>
-References: <20210127033603.1519127-1-davidgow@google.com>
+        Wed, 27 Jan 2021 07:28:53 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RC2o2o086614;
+        Wed, 27 Jan 2021 07:27:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=yAL17kfc48Z4BiRbtL4ut6pvuFXm4N9KOyQ3CdCN/7M=;
+ b=ozPAJihs0Pdnhajajx0Cx7EhJhDAHUudmsvS75PAuRTM+2LzoFr/lhMavxG9dbcBapEn
+ vReMZ8rPB8JrqB70W1FKmFjEyHp/eJ/sq2w31fenKZej3q5QhvZeUgsQ+Syi90ASk7ZO
+ x5R4poy+XGkZHw5L9X6NSZYnkqar61SJsOcxYNBHbawIdKQm2H/DWfgrcuZ3kJdA3Luj
+ ra9tvfaKtWf7iPHkOycCLKWYaZP1d9N1lBYgYIeub9muzuHm4nsu3IINYWL+PbMGYhfU
+ MN0PwGJUiCLdOpLHbyUhGP6qXcfK6tDJ8GprrAJ3wVp3m4eCyLMWXDDp2TZ7yAA7Lovj pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36b3kfr9uk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 07:27:39 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RC3Ugb092531;
+        Wed, 27 Jan 2021 07:27:39 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36b3kfr9tb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 07:27:39 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RCDt7T027459;
+        Wed, 27 Jan 2021 12:27:37 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 368be89ybk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 12:27:36 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RCRXq829688178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 12:27:34 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C5C434204C;
+        Wed, 27 Jan 2021 12:27:33 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2097F42045;
+        Wed, 27 Jan 2021 12:27:33 +0000 (GMT)
+Received: from localhost (unknown [9.171.68.8])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 27 Jan 2021 12:27:33 +0000 (GMT)
+Date:   Wed, 27 Jan 2021 13:27:31 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>, x86@kernel.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH] stacktrace: Move documentation for
+ arch_stack_walk_reliable() to header
+Message-ID: <your-ad-here.call-01611750451-ext-7215@work.hours>
+References: <20210118211021.42308-1-broonie@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210127033603.1519127-1-davidgow@google.com>
+In-Reply-To: <20210118211021.42308-1-broonie@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ spamscore=0 adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 07:36:04PM -0800, David Gow wrote:
-> The LiteX SOC controller driver makes use of IOMEM functions like
-> devm_platform_ioremap_resource(), which are only available if
-> CONFIG_HAS_IOMEM is defined.
+On Mon, Jan 18, 2021 at 09:10:21PM +0000, Mark Brown wrote:
+> Currently arch_stack_wallk_reliable() is documented with an identical
+> comment in both x86 and S/390 implementations which is a bit redundant.
+> Move this to the header and convert to kerneldoc while we're at it.
 > 
-> This causes the driver not to be enable under make ARCH=um allyesconfig,
-> even though it won't build.
-
-Is this wording correct?  I suspect it causes to driver TO BE enabled.
-
-> 
-> By adding a dependency on HAS_IOMEM, the driver will not be enabled on
-> architectures which don't support it.
-> 
-> Fixes: 22447a99c97e ("drivers/soc/litex: add LiteX SoC Controller driver")
-> Signed-off-by: David Gow <davidgow@google.com>a
-
-This looks ok to me.  I can queue it for 5.11 fixes, if you can help with the
-wording above.
-
--Stafford
-
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Miroslav Benes <mbenes@suse.cz>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Joe Lawrence <joe.lawrence@redhat.com>
+> Cc: x86@kernel.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: live-patching@vger.kernel.org
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
->  drivers/soc/litex/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
-> index 7c6b009b6f6c..7a7c38282e11 100644
-> --- a/drivers/soc/litex/Kconfig
-> +++ b/drivers/soc/litex/Kconfig
-> @@ -8,6 +8,7 @@ config LITEX
->  config LITEX_SOC_CONTROLLER
->  	tristate "Enable LiteX SoC Controller driver"
->  	depends on OF || COMPILE_TEST
-> +	depends on HAS_IOMEM
->  	select LITEX
->  	help
->  	  This option enables the SoC Controller Driver which verifies
-> -- 
-> 2.30.0.280.ga3ce27912f-goog
-> 
+>  arch/s390/kernel/stacktrace.c |  6 ------
+>  arch/x86/kernel/stacktrace.c  |  6 ------
+>  include/linux/stacktrace.h    | 19 +++++++++++++++++++
+>  3 files changed, 19 insertions(+), 12 deletions(-)
+
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
