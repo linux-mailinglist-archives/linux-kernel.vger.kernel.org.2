@@ -2,61 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D543063D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EBD3063DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344395AbhA0TKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:10:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34486 "EHLO mail.kernel.org"
+        id S1344430AbhA0TL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:11:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344213AbhA0TJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:09:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 91AF864DC0;
-        Wed, 27 Jan 2021 19:08:42 +0000 (UTC)
+        id S1344381AbhA0TKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:10:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C984A64DCA;
+        Wed, 27 Jan 2021 19:09:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611774522;
-        bh=/f/xj5aM5a5bRUtpOaT08vnk1gauFpcfVrZSJxcZmHg=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=RccW/k132Oe0M9fwI1NXxZPFhV7efXigp/QPojJXhyPMDQBefCEjIg0Co6LqivL2O
-         uCEAWDoYRNUvF0RgDa1cbroEXEes7fuMfyG+G0iAGw+Iqw5U2mODzYHr3U8u08W3RW
-         gprA0eVofzbS2nAUm9pL4Myx9D5Ajt+LHw4zpPQaY0BXVOlk6d44j2nn0TdYhCc3yO
-         Uuqej5wdRJLG/CnuW4hh3Fh1H3MXXDVlLtpMJq+xARz/UzIYzznc0r3rjj8m1G66NN
-         Vkw5gddZsgFEV0njIDTv8WhisVVC8R+6p3GFa0yok9AQ3/5JiFb855pK7mp0XJoRcd
-         ky3ZUr+0F2aAg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8C78D61E3D;
-        Wed, 27 Jan 2021 19:08:42 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture updates for kernel v5.11-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210127155622.GA13805@ls3530.fritz.box>
-References: <20210127155622.GA13805@ls3530.fritz.box>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210127155622.GA13805@ls3530.fritz.box>
-X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-2
-X-PR-Tracked-Commit-Id: 00e35f2b0e8acb88d4e1aa96ff0490e3bfe46580
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 76c057c84d286140c6c416c3b4ba832cd1d8984e
-Message-Id: <161177452256.15019.4593802395711492824.pr-tracker-bot@kernel.org>
-Date:   Wed, 27 Jan 2021 19:08:42 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        s=k20201202; t=1611774579;
+        bh=CxVDcZVJbTgcZjdsMfJhxJ/yjKbh0SkOEhIy1FhN6KI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dMLi9XGhBP7sr8rYS8BJ6RsXQgysILPqv1nJNJw5qZ2DyBAUhNdQHjQzvgV8VDl5V
+         i9ALC6nJBeYrDal6V0wxRS4Oj1rRdlQYA2H+6vx80Ni8//ZnxbR84eJSWfwHwrfZ+m
+         huSnvJCgYsqg1ZdsYmI36XpPssTAyzZXC+4+K+R4HGTQDEa3D+1wQRcxlMx60l4siq
+         AfiYedGDWYh3rdmwOf3EskK8mgLe27CYkM02ik5LmlsDCtLrT6rKv/7dbdltGG8jZf
+         /EYeZUc7HMTHGMwYIun5xzt1qfY9eHYEiUSksWtwoi1uycXl8bbKrxFsjyJ+0QBHbZ
+         W+EkVBD/JX9uw==
+Received: by mail-ed1-f46.google.com with SMTP id f1so3751203edr.12;
+        Wed, 27 Jan 2021 11:09:38 -0800 (PST)
+X-Gm-Message-State: AOAM533ee0bvwVtjxOHRSPUstARXrusgjWfaHvh6j6X6pI80TFi5R4Qg
+        iTnnoL1iHMyfl+PBj8afjaftyZbpImDXpHPFPw==
+X-Google-Smtp-Source: ABdhPJxDhEsE7SeDYEXoCEJP81XWI54Z2K7fxKs16oNcCLHvf630uv8EyH4cluj/eac/SPi55kJ7fCq1wMrnsmcwKMs=
+X-Received: by 2002:a05:6402:1751:: with SMTP id v17mr10650676edx.289.1611774577245;
+ Wed, 27 Jan 2021 11:09:37 -0800 (PST)
+MIME-Version: 1.0
+References: <20210119105203.15530-1-yong.wu@mediatek.com> <YBFj9whLvqlV2erm@aptenodytes>
+ <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
+In-Reply-To: <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 27 Jan 2021 13:09:25 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
+Message-ID: <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
+Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
+ valid dma-ranges
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 27 Jan 2021 16:56:22 +0100:
+On Wed, Jan 27, 2021 at 7:13 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> [ + Christoph, Marek ]
+>
+> On 2021-01-27 13:00, Paul Kocialkowski wrote:
+> > Hi,
+> >
+> > On Tue 19 Jan 21, 18:52, Yong Wu wrote:
+> >> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
+> >> supplanting dma_pfn_offset") always update dma_range_map even though it was
+> >> already set, like in the sunxi_mbus driver. the issue is reported at [1].
+> >> This patch avoid this(Updating it only when dev has valid dma-ranges).
+> >>
+> >> Meanwhile, dma_range_map contains the devices' dma_ranges information,
+> >> This patch moves dma_range_map before of_iommu_configure. The iommu
+> >> driver may need to know the dma_address requirements of its iommu
+> >> consumer devices.
+> >
+> > Just a gentle ping on this issue, it would be nice to have this fix merged
+> > ASAP, in the next RC :)
+>
+> Ack to that - Rob, Frank, do you want to take this through the OF tree,
+> or shall we take it through the DMA-mapping tree like the original culprit?
 
-> http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-2
+I've already got some fixes queued up and can take it.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/76c057c84d286140c6c416c3b4ba832cd1d8984e
+Suggested-by doesn't mean you are happy with the implementation. So
+Acked-by or Reviewed-by?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Rob
