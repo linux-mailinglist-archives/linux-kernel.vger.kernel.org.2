@@ -2,92 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609B0305070
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42290305078
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhA0EJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
+        id S238266AbhA0EKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236572AbhA0DhS (ORCPT
+        with ESMTP id S237120AbhA0Dr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:37:18 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8331EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:36:37 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id m21so294912qtp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:36:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=qECvV0vEOBtkzXawSawHLbAty2xo5aEM+k93CM/ziPA=;
-        b=NAOSQ9r8E6p/8OGQfOlbgD56yMIEC60Qbs/s+/17Ahfy22VHxTXEfCD2sC781QI2Gp
-         lbUvRJfzA5tM5xn03JeqR3rrsisrXdiA1MsYPSywI2J6NqpS4FEzdyBC8oB/BgZx/iEW
-         vvZGVwyWXTUKdN6j1fSgIR69qjq0GlKLfvSuDBL8s/hHUpkBLbh6QBE9sQ2DTfYlpM9/
-         oulQwjSGlogkQP039Kzt3SLPPlZ8bOOMN+IpgaIo5I5iueEUjmM+QkVgTFJ/ZSwp6+d+
-         MurFADrIsNpVUtdCsMubXi1wGCZBn5iBowPQoV5DEyFUhn+rHDh6+Lzw/1UDHn6ua3Kc
-         Csrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=qECvV0vEOBtkzXawSawHLbAty2xo5aEM+k93CM/ziPA=;
-        b=NBF7zcefdK3YMwCAMH11eJCioBCeYS9uswlUb8DufYQukwDcqAsanVV58mtf+gTPNW
-         Kk1L2szb9LVgylMTPtX8XIG5FU/KGjR5LZyrwyMrSnMK11vS8LziojWiRlf05rdhXtOe
-         BwBBG4QGzpWjn/AdUK/k+Xhiubciq5pMVIusSMy3yURi9UvFynHH84CkC/eWVnR3tPgv
-         48k5F9Gkv199pTpRrD0tcOwDvz3eCfI+nam64/VIJntODKIl55TYAzsWkxJi+uDmHNaT
-         4ECeOHXELpKIFdzpd5wb3RDlGvYeGMfccIa8LxpmEjJBJG8PQjh4Nrqq5p0NVujstS/e
-         nVEw==
-X-Gm-Message-State: AOAM532KuGJS6xMz6Hp+dAPmttT4UhTJd26E1W2FBimYBqzBaHtkcljG
-        CUXuvFzYa4h4kmX2wbXQDOa7u7ssQjhYuw==
-X-Google-Smtp-Source: ABdhPJwcnZEfgIWpJyjaIvY9ypSi2EtVessUlqUKFq1j7QfqAaXyU1EhZkf9M3JcEsWUFHFSD7lb0m8T+4zqpg==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7000:2f04:a262:7158])
- (user=davidgow job=sendgmr) by 2002:a0c:b929:: with SMTP id
- u41mr8874953qvf.30.1611718596681; Tue, 26 Jan 2021 19:36:36 -0800 (PST)
-Date:   Tue, 26 Jan 2021 19:36:04 -0800
-Message-Id: <20210127033603.1519127-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH] soc: litex: Properly depend on HAS_IOMEM
-From:   David Gow <davidgow@google.com>
-To:     Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Mateusz Holenko <mholenko@antmicro.com>
-Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 26 Jan 2021 22:47:56 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6460FC061574;
+        Tue, 26 Jan 2021 19:47:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Zj/SeFFQ0DPQiZOul3omKOYcchar1PDV+FfUWz8iVLY=; b=XC8weHwcgwkduDzj8UlGC53QHZ
+        LNJHTuataRohH3ieb8X7GXuoNlozXlgh1xjt2Yo7AvulVTOYnYeYHXnVF17PM881Ar5I5aKWJOBTd
+        akIuWJ/G3PoKB//dv3Nuw/4vt51/m3cW0Liu3yseIDpxibyscOMXpB2JwESJb5Aq3dILToNUQmC8f
+        yPQvO1XeBYsvP0MV38XOHDGnCTuNjdk7AaYYdoGJK3NNby74qkggnM8dWPgoVQRdoV+1HGVvh/hDG
+        ISidqHZT5pLZDFx9+OrqUslwVkMevx9I4kooClmvWcDwQjHrbac7tgKOpefhdz7cONWT1xANzLmBU
+        SxYYWQ6Q==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4bnL-0007fz-Av; Wed, 27 Jan 2021 03:47:03 +0000
+Subject: Re: [PATCH 1/2] fs/efs/inode.c: follow style guide
+To:     Amy Parker <enbyamy@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5d005259-feec-686d-dc32-e1b10cf74459@infradead.org>
+Date:   Tue, 26 Jan 2021 19:46:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LiteX SOC controller driver makes use of IOMEM functions like
-devm_platform_ioremap_resource(), which are only available if
-CONFIG_HAS_IOMEM is defined.
+Hi Amy,
 
-This causes the driver not to be enable under make ARCH=um allyesconfig,
-even though it won't build.
+What mail client did you use?
+It is breaking (splitting) long lines into shorter lines and that
+makes it not possible to apply the patch cleanly.
 
-By adding a dependency on HAS_IOMEM, the driver will not be enabled on
-architectures which don't support it.
+You can see this problem below or on the web in an email archive.
 
-Fixes: 22447a99c97e ("drivers/soc/litex: add LiteX SoC Controller driver")
-Signed-off-by: David Gow <davidgow@google.com>
----
- drivers/soc/litex/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Possibly Documentation/process/email-clients.rst can help you.
 
-diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
-index 7c6b009b6f6c..7a7c38282e11 100644
---- a/drivers/soc/litex/Kconfig
-+++ b/drivers/soc/litex/Kconfig
-@@ -8,6 +8,7 @@ config LITEX
- config LITEX_SOC_CONTROLLER
- 	tristate "Enable LiteX SoC Controller driver"
- 	depends on OF || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	select LITEX
- 	help
- 	  This option enables the SoC Controller Driver which verifies
+
+On 1/26/21 12:58 PM, Amy Parker wrote:
+> This patch updates inode.c for EFS to follow the kernel style guide.
+> 
+> Signed-off-by: Amy Parker <enbyamy@gmail.com>
+> ---
+> fs/efs/inode.c | 64 +++++++++++++++++++++++++-------------------------
+> 1 file changed, 32 insertions(+), 32 deletions(-)
+> 
+> diff --git a/fs/efs/inode.c b/fs/efs/inode.c
+> index 89e73a6f0d36..4e81e7a15afb 100644
+> --- a/fs/efs/inode.c
+> +++ b/fs/efs/inode.c
+> @@ -109,9 +109,9 @@ struct inode *efs_iget(struct super_block *super,
+> unsigned long ino)
+>        /* this is the number of blocks in the file */
+>        if (inode->i_size == 0) {
+>                inode->i_blocks = 0;
+> -       } else {
+> +       else
+>                inode->i_blocks = ((inode->i_size - 1) >>
+> EFS_BLOCKSIZE_BITS) + 1;
+> -       }
+> +
+> 
+>        rdev = be16_to_cpu(efs_inode->di_u.di_dev.odev);
+>        if (rdev == 0xffff) {
+> @@ -120,15 +120,16 @@ struct inode *efs_iget(struct super_block
+> *super, unsigned long ino)
+>                        device = 0;
+>                else
+>                        device = MKDEV(sysv_major(rdev), sysv_minor(rdev));
+> -       } else
+> +       } else {
+>                device = old_decode_dev(rdev);
+> +    }
+> 
+>        /* get the number of extents for this object */
+>        in->numextents = be16_to_cpu(efs_inode->di_numextents);
+>        in->lastextent = 0;
+> 
+>        /* copy the extents contained within the inode to memory */
+> -       for(i = 0; i < EFS_DIRECTEXTENTS; i++) {
+> +       for (i = 0; i < EFS_DIRECTEXTENTS; i++) {
+>                extent_copy(&(efs_inode->di_u.di_extents[i]), &(in->extents[i]));
+>                if (i < in->numextents && in->extents[i].cooked.ex_magic != 0) {
+>                        pr_warn("extent %d has bad magic number in inode %lu\n",
+> @@ -142,28 +143,28 @@ struct inode *efs_iget(struct super_block
+> *super, unsigned long ino)
+>        pr_debug("efs_iget(): inode %lu, extents %d, mode %o\n",
+>                 inode->i_ino, in->numextents, inode->i_mode);
+>        switch (inode->i_mode & S_IFMT) {
+> -               case S_IFDIR:
+> -                       inode->i_op = &efs_dir_inode_operations;
+> -                       inode->i_fop = &efs_dir_operations;
+> -                       break;
+> -               case S_IFREG:
+> -                       inode->i_fop = &generic_ro_fops;
+> -                       inode->i_data.a_ops = &efs_aops;
+> -                       break;
+> -               case S_IFLNK:
+> -                       inode->i_op = &page_symlink_inode_operations;
+> -                       inode_nohighmem(inode);
+> -                       inode->i_data.a_ops = &efs_symlink_aops;
+> -                       break;
+> -               case S_IFCHR:
+> -               case S_IFBLK:
+> -               case S_IFIFO:
+> -                       init_special_inode(inode, inode->i_mode, device);
+> -                       break;
+> -               default:
+> -                       pr_warn("unsupported inode mode %o\n", inode->i_mode);
+> -                       goto read_inode_error;
+> -                       break;
+> +    case S_IFDIR:
+> +        inode->i_op = &efs_dir_inode_operations;
+> +        inode->i_fop = &efs_dir_operations;
+> +        break;
+> +    case S_IFREG:
+> +        inode->i_fop = &generic_ro_fops;
+> +        inode->i_data.a_ops = &efs_aops;
+> +        break;
+> +    case S_IFLNK:
+> +        inode->i_op = &page_symlink_inode_operations;
+> +        inode_nohighmem(inode);
+> +        inode->i_data.a_ops = &efs_symlink_aops;
+> +        break;
+> +    case S_IFCHR:
+> +    case S_IFBLK:
+> +    case S_IFIFO:
+> +        init_special_inode(inode, inode->i_mode, device);
+> +        break;
+> +    default:
+> +        pr_warn("unsupported inode mode %o\n", inode->i_mode);
+> +        goto read_inode_error;
+> +        break;
+>        }
+> 
+>        unlock_new_inode(inode);
+> @@ -189,11 +190,10 @@ efs_extent_check(efs_extent *ptr, efs_block_t
+> block, struct efs_sb_info *
+> sb) {
+>        length = ptr->cooked.ex_length;
+>        offset = ptr->cooked.ex_offset;
+> 
+> -       if ((block >= offset) && (block < offset+length)) {
+> +       if ((block >= offset) && (block < offset+length))
+>                return(sb->fs_start + start + block - offset);
+> -       } else {
+> +       else
+>                return 0;
+> -       }
+> }
+> 
+> efs_block_t efs_map_block(struct inode *inode, efs_block_t block) {
+> @@ -225,7 +225,7 @@ efs_block_t efs_map_block(struct inode *inode,
+> efs_block_t block) {
+>                 * check the stored extents in the inode
+>                 * start with next extent and check forwards
+>                 */
+> -               for(dirext = 1; dirext < direxts; dirext++) {
+> +               for (dirext = 1; dirext < direxts; dirext++) {
+>                        cur = (last + dirext) % in->numextents;
+>                        if ((result =
+> efs_extent_check(&in->extents[cur], block, sb))) {
+>                                in->lastextent = cur;
+> @@ -242,7 +242,7 @@ efs_block_t efs_map_block(struct inode *inode,
+> efs_block_t block) {
+>        direxts = in->extents[0].cooked.ex_offset;
+>        indexts = in->numextents;
+> 
+> -       for(indext = 0; indext < indexts; indext++) {
+> +       for (indext = 0; indext < indexts; indext++) {
+>                cur = (last + indext) % indexts;
+> 
+>                /*
+> @@ -253,7 +253,7 @@ efs_block_t efs_map_block(struct inode *inode,
+> efs_block_t block) {
+>                 *
+>                 */
+>                ibase = 0;
+> -               for(dirext = 0; cur < ibase && dirext < direxts; dirext++) {
+> +               for (dirext = 0; cur < ibase && dirext < direxts; dirext++) {
+>                        ibase += in->extents[dirext].cooked.ex_length *
+>                                (EFS_BLOCKSIZE / sizeof(efs_extent));
+>                }
+> --
+> 2.29.2
+> 
+
+
 -- 
-2.30.0.280.ga3ce27912f-goog
-
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+netiquette: https://people.kernel.org/tglx/notes-about-netiquette
