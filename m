@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA413058E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1453E3058E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236148AbhA0Kzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235686AbhA0Kv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:51:57 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBD8C061574;
-        Wed, 27 Jan 2021 02:51:16 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQgPm2Th2z9sW8;
-        Wed, 27 Jan 2021 21:51:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611744672;
-        bh=+ywgQaolNGmukL2yQG2H6B9aEm+Pg307wOCZdG8iSEQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=moDW0+gCCoXumcOxp5kHVOGZGkMp2OVYzDGJsm+kjcAXfUBFJ/Df4CK+7G/bgJKh6
-         yocU8MZkB0YU+4bz4IFfoCGnqlU6EEDJsseEdkZsQWC3TasLXJQNgkLtUYRVgyJWmU
-         bWMAAN14bZs8gMN6OHDXdw1QqHd6SP8sXNcD9EwTe7xCOESkW9S/nwJFc7NIkY88rJ
-         6ZskwoSjW48hGofvLjjIvkOJjyMo8LK01DpBnbT+WsQ6NcoEP9bkSVk6dkK7zcPdfd
-         IVI90oKixxj8GV0zXSBiGLXKX0BeqSI5X/51CvHDZNTZK9DT1occEULoDutmTIhPmB
-         qhYj0HInrBSSA==
-Date:   Wed, 27 Jan 2021 21:51:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the notifications tree with the pidfd
- tree
-Message-ID: <20210127215101.2ed0a5ae@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7lB.CR0BkTb=8zo84RCIP_X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S236075AbhA0KzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:55:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:38626 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235846AbhA0KwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:52:18 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DD491042;
+        Wed, 27 Jan 2021 02:51:32 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.4.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 78B783F66B;
+        Wed, 27 Jan 2021 02:51:28 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        lima@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     yuq825@gmail.com, christianshewitt@gmail.com, lukasz.luba@arm.com
+Subject: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
+Date:   Wed, 27 Jan 2021 10:51:21 +0000
+Message-Id: <20210127105121.20345-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7lB.CR0BkTb=8zo84RCIP_X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Devfreq framework supports 2 modes for monitoring devices.
+Use delayed timer as default instead of deferrable timer
+in order to monitor the GPU status regardless of CPU idle.
 
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
 Hi all,
 
-Today's linux-next merge of the notifications tree got conflicts in:
+I've missed the Lima driver while working on Panfrost patch for fixing
+the issue with default devfreq framework polling mode. More about this
+and the patch, can be found here [1].
 
-  arch/alpha/kernel/syscalls/syscall.tbl
-  arch/arm/tools/syscall.tbl
-  arch/arm64/include/asm/unistd32.h
-  arch/ia64/kernel/syscalls/syscall.tbl
-  arch/m68k/kernel/syscalls/syscall.tbl
-  arch/microblaze/kernel/syscalls/syscall.tbl
-  arch/mips/kernel/syscalls/syscall_n32.tbl
-  arch/mips/kernel/syscalls/syscall_n64.tbl
-  arch/mips/kernel/syscalls/syscall_o32.tbl
-  arch/parisc/kernel/syscalls/syscall.tbl
-  arch/powerpc/kernel/syscalls/syscall.tbl
-  arch/s390/kernel/syscalls/syscall.tbl
-  arch/sh/kernel/syscalls/syscall.tbl
-  arch/sparc/kernel/syscalls/syscall.tbl
-  arch/x86/entry/syscalls/syscall_32.tbl
-  arch/x86/entry/syscalls/syscall_64.tbl
-  arch/xtensa/kernel/syscalls/syscall.tbl
-  fs/namespace.c
-  include/uapi/asm-generic/unistd.h
+Regards,
+Lukasz Luba
 
-between various commits from the pidfd tree and commit:
+[1] https://lore.kernel.org/lkml/20210105164111.30122-1-lukasz.luba@arm.com/
 
-  0358d747f97b ("watch_queue: Implement mount topology and attribute change=
- notifications")
+ drivers/gpu/drm/lima/lima_devfreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-from the notifications tree.
+diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
+index 5686ad4aaf7c..f1c9eb3e71bd 100644
+--- a/drivers/gpu/drm/lima/lima_devfreq.c
++++ b/drivers/gpu/drm/lima/lima_devfreq.c
+@@ -81,6 +81,7 @@ static int lima_devfreq_get_dev_status(struct device *dev,
+ }
+ 
+ static struct devfreq_dev_profile lima_devfreq_profile = {
++	.timer = DEVFREQ_TIMER_DELAYED,
+ 	.polling_ms = 50, /* ~3 frames */
+ 	.target = lima_devfreq_target,
+ 	.get_dev_status = lima_devfreq_get_dev_status,
+-- 
+2.17.1
 
-Its too late at night, so I dropped the notifications tree for today
-and will try to work it out tomorrow, sorry.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7lB.CR0BkTb=8zo84RCIP_X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmARRZUACgkQAVBC80lX
-0GxrEwf/ctbBWpn7mU5k9aY30WJPdQLT89YRob8pnoW3k9gpbuBpB+FHsBYYlWzN
-9U6HLrg8Ia3s5x+VZuMySmRS9cdbNMBdKEnTk0gVeNbPIZtDqObHrNDlDdmjQnHm
-2r3St2mD3HTUtLaVHMO842E+5YhJ3SK0f6oe1BbsJXzu0jWsV/Lw38GbCcF9jYk7
-XAHnfmKByS3pnL5Uos5Wx4jKCXC7tTwcEPuAumVpSsFt4oY7y87+ntRCkgcvxJUc
-UkYxPA+A8A1wqBnOHAbwOK0PyWddg4JisSHAXzLoKj7gKGifj90GgcTenqG/H4Gt
-G7K9jpodbQuRsGWBxED4gpbBCK3xxw==
-=9Tps
------END PGP SIGNATURE-----
-
---Sig_/7lB.CR0BkTb=8zo84RCIP_X--
