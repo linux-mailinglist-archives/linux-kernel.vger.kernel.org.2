@@ -2,62 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C62305AE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD2B305B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235339AbhA0MKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
+        id S236313AbhA0MWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237641AbhA0MHY (ORCPT
+        with ESMTP id S237336AbhA0MOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:07:24 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A264C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:06:44 -0800 (PST)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 14E8F303; Wed, 27 Jan 2021 13:06:42 +0100 (CET)
-Date:   Wed, 27 Jan 2021 13:06:40 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        will@kernel.org
-Subject: Re: [PATCH v4 00/13] iommu/amd: Add Generic IO Page Table Framework
- Support
-Message-ID: <20210127120640.GF32671@8bytes.org>
-References: <20201215073705.123786-1-suravee.suthikulpanit@amd.com>
+        Wed, 27 Jan 2021 07:14:40 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E32C061573;
+        Wed, 27 Jan 2021 04:13:59 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id md11so1154087pjb.0;
+        Wed, 27 Jan 2021 04:13:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YLLhgi+NiVGDqhBaYQHDfMrKV4DMWFVLqCYi85ZNzho=;
+        b=K/LKbJ18NNtDlWPKhhN9q8pyPtPZcXJNc0IclJOz2d4MmqjquK68m1DYuIAIObBQjx
+         S8bV5zkpxajM1TXSWIILfAA+BMOBLmnQT7MMuTTU0vIk4tckHYSivJ3jGocs/rWjw5CC
+         L01TVUA+PGr2MMvekkAHBI+HuGlmsBaGXnSKkT3l6AXIkTLw8U+7U9Ijqr3OpqGfneno
+         AVpfI4EwEg1Dzq2l8YrvEmwzJco05mk89YZKwABIpHVexBioetJBQGuqkBJOyzMFkWo9
+         26a8VcKrkx0aaD2H21dK75yGbfbf+0cYq3oMNWNuBlneq71AeR4pimCYtCJqYDRQWIVb
+         394w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YLLhgi+NiVGDqhBaYQHDfMrKV4DMWFVLqCYi85ZNzho=;
+        b=Gvl9dC3MsblE4tvKst+tZG+gw/L14t1+caAMgHj2Zqp2zH18cu2yV78ZYaZN01H03s
+         AF1IXN3afurCrMuphoBuF2Pfn9inictVZH8UR3/ZNvhSwjZjS9HZDIv6XdP9rF5AxjbP
+         cMsZ1wpcwOyxkkI/H9TChbMYe2xK4d/denwaU1VZs2GWUjjkbadCI+QAKR6nV7uzw9B/
+         O8XG8IP0UwGeQ9Yl0q/XuAhd+W/0zLGfcKyw9T9sm+UOuJZz8k3vxXJhAGqkZpjd4Vn/
+         1nxuO5QUIgWdUFwNpRcTKQ3OJLzkblRB6MmkWXE+YTlAjfwnP6J+bUrt9RrXPtUbNwhn
+         Guxw==
+X-Gm-Message-State: AOAM53084di7D2n8x+pMglWcOqIBGohwR1X/scUe6SWQ4XKQN/p64eMs
+        MYOWu6YZZGCYNef51V4XbYo=
+X-Google-Smtp-Source: ABdhPJwGlxqoH0mpc3HshizQEQaAmfuPRd9Ap8ytEXfRDlWeUY6tHV3ZCb0e9VW5oWGOTadzRqU9sA==
+X-Received: by 2002:a17:903:1c2:b029:de:ad0a:2dbf with SMTP id e2-20020a17090301c2b02900dead0a2dbfmr11190998plh.44.1611749639192;
+        Wed, 27 Jan 2021 04:13:59 -0800 (PST)
+Received: from localhost.localdomain ([49.207.195.86])
+        by smtp.gmail.com with ESMTPSA id 67sm2365488pfv.20.2021.01.27.04.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 04:13:58 -0800 (PST)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zqiang <qiang.zhang@windriver.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 12/12] usb: misc: usbtest: update to use the usb_control_msg_{send|recv}() API
+Date:   Wed, 27 Jan 2021 17:42:47 +0530
+Message-Id: <20210127121247.9938-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215073705.123786-1-suravee.suthikulpanit@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suravee,
+The newer usb_control_msg_{send|recv}() API are an improvement on the
+existing usb_control_msg() as it ensures that a short read/write is treated
+as an error, data can be used off the stack, and raw usb pipes need not be
+created in the calling functions.
+For this reason, instances of usb_control_msg() have been replaced with
+usb_control_msg_{recv|send}() and the return value checking conditions have
+also been modified appropriately.
 
-On Tue, Dec 15, 2020 at 01:36:52AM -0600, Suravee Suthikulpanit wrote:
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+Resending this patch since the subject line for the initial submission 
+(sent as a part of the patch series) wasn't set correctly.
+
+ drivers/usb/misc/usbtest.c | 69 ++++++++++++++++----------------------
+ 1 file changed, 29 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
+index 150090ee4ec1..4337eff2a749 100644
+--- a/drivers/usb/misc/usbtest.c
++++ b/drivers/usb/misc/usbtest.c
+@@ -672,19 +672,15 @@ static int get_altsetting(struct usbtest_dev *dev)
+ 	struct usb_device	*udev = interface_to_usbdev(iface);
+ 	int			retval;
  
-> Suravee Suthikulpanit (13):
->   iommu/amd: Re-define amd_iommu_domain_encode_pgtable as inline
->   iommu/amd: Prepare for generic IO page table framework
->   iommu/amd: Move pt_root to struct amd_io_pgtable
->   iommu/amd: Convert to using amd_io_pgtable
->   iommu/amd: Declare functions as extern
->   iommu/amd: Move IO page table related functions
->   iommu/amd: Restructure code for freeing page table
->   iommu/amd: Remove amd_iommu_domain_get_pgtable
->   iommu/amd: Rename variables to be consistent with struct
->     io_pgtable_ops
->   iommu/amd: Refactor fetch_pte to use struct amd_io_pgtable
->   iommu/amd: Introduce iommu_v1_iova_to_phys
->   iommu/amd: Introduce iommu_v1_map_page and iommu_v1_unmap_page
->   iommu/amd: Adopt IO page table framework for AMD IOMMU v1 page table
+-	retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-			USB_REQ_GET_INTERFACE, USB_DIR_IN|USB_RECIP_INTERFACE,
+-			0, iface->altsetting[0].desc.bInterfaceNumber,
+-			dev->buf, 1, USB_CTRL_GET_TIMEOUT);
+-	switch (retval) {
+-	case 1:
+-		return dev->buf[0];
+-	case 0:
+-		retval = -ERANGE;
+-		fallthrough;
+-	default:
++	retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_INTERFACE,
++				      USB_DIR_IN|USB_RECIP_INTERFACE,
++				      0, iface->altsetting[0].desc.bInterfaceNumber,
++				      dev->buf, 1, USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
++
++	if (retval < 0)
+ 		return retval;
+-	}
++
++	return dev->buf[0];
+ }
+ 
+ static int set_altsetting(struct usbtest_dev *dev, int alternate)
+@@ -872,14 +868,15 @@ static int ch9_postconfig(struct usbtest_dev *dev)
+ 		 * ... although some cheap devices (like one TI Hub I've got)
+ 		 * won't return config descriptors except before set_config.
+ 		 */
+-		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				USB_REQ_GET_CONFIGURATION,
+-				USB_DIR_IN | USB_RECIP_DEVICE,
+-				0, 0, dev->buf, 1, USB_CTRL_GET_TIMEOUT);
+-		if (retval != 1 || dev->buf[0] != expected) {
++		retval = usb_control_msg_recv(udev, 0, USB_REQ_GET_CONFIGURATION,
++					      USB_DIR_IN | USB_RECIP_DEVICE,  0,
++					      0, dev->buf, 1, USB_CTRL_GET_TIMEOUT,
++					      GFP_KERNEL);
++
++		if (retval != 0 || dev->buf[0] != expected) {
+ 			dev_err(&iface->dev, "get config --> %d %d (1 %d)\n",
+ 				retval, dev->buf[0], expected);
+-			return (retval < 0) ? retval : -EDOM;
++			return retval;
+ 		}
+ 	}
+ 
+@@ -1683,10 +1680,10 @@ static int test_halt(struct usbtest_dev *tdev, int ep, struct urb *urb)
+ 		return retval;
+ 
+ 	/* set halt (protocol test only), verify it worked */
+-	retval = usb_control_msg(urb->dev, usb_sndctrlpipe(urb->dev, 0),
+-			USB_REQ_SET_FEATURE, USB_RECIP_ENDPOINT,
+-			USB_ENDPOINT_HALT, ep,
+-			NULL, 0, USB_CTRL_SET_TIMEOUT);
++	retval = usb_control_msg_send(urb->dev, 0, USB_REQ_SET_FEATURE,
++				      USB_RECIP_ENDPOINT, USB_ENDPOINT_HALT,
++				      ep, NULL, 0, USB_CTRL_SET_TIMEOUT,
++				      GFP_KERNEL);
+ 	if (retval < 0) {
+ 		ERROR(tdev, "ep %02x couldn't set halt, %d\n", ep, retval);
+ 		return retval;
+@@ -1845,30 +1842,22 @@ static int ctrl_out(struct usbtest_dev *dev,
+ 		/* write patterned data */
+ 		for (j = 0; j < len; j++)
+ 			buf[j] = (u8)(i + j);
+-		retval = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+-				0x5b, USB_DIR_OUT|USB_TYPE_VENDOR,
+-				0, 0, buf, len, USB_CTRL_SET_TIMEOUT);
+-		if (retval != len) {
++		retval = usb_control_msg_send(udev, 0, 0x5b,
++					      USB_DIR_OUT | USB_TYPE_VENDOR, 0,
++					      0, buf, len, USB_CTRL_SET_TIMEOUT,
++					      GFP_KERNEL);
++		if (retval < 0) {
+ 			what = "write";
+-			if (retval >= 0) {
+-				ERROR(dev, "ctrl_out, wlen %d (expected %d)\n",
+-						retval, len);
+-				retval = -EBADMSG;
+-			}
+ 			break;
+ 		}
+ 
+ 		/* read it back -- assuming nothing intervened!!  */
+-		retval = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
+-				0, 0, buf, len, USB_CTRL_GET_TIMEOUT);
+-		if (retval != len) {
++		retval = usb_control_msg_recv(udev, 0,
++					      0x5c, USB_DIR_IN|USB_TYPE_VENDOR,
++					      0, 0, buf, len, USB_CTRL_GET_TIMEOUT,
++					      GFP_KERNEL);
++		if (retval < 0) {
+ 			what = "read";
+-			if (retval >= 0) {
+-				ERROR(dev, "ctrl_out, rlen %d (expected %d)\n",
+-						retval, len);
+-				retval = -EBADMSG;
+-			}
+ 			break;
+ 		}
+ 
+-- 
+2.25.1
 
-Applied this series, thanks for the work! Given testing goes well you
-can consider this queued for 5.12.
-
-Thanks,
-
-	Joerg
