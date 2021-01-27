@@ -2,273 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8E530626E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603F4306269
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344131AbhA0Rpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:45:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344113AbhA0Rop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:44:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE4C64DAB;
-        Wed, 27 Jan 2021 17:44:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611769444;
-        bh=nKMkFUHaSTfKVckAiAHyokgYBSAZMI5YajPz5v4qFHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nFusQBh4rpYd3P6HqPKOv0VhRePsmVxQchr0pZyLNdhSjNS6Ahcu6nPbPHs415xTV
-         9c4Uv/m87hQJ+LZ9W+MSwJF4S29LknTuQgT9soDAgE4hL6EgKp+VrtodhZ2nvQlcK0
-         NcH54uhaLvzhKWE4bjnTX8BYB8OriV1+hc8zU8MgoW9+8cj7y/cRskqmRsT80U4V0h
-         9c9bURjDVYSAEP/5Y9qhhC+BdRbMDJCEodckXDR+H6Ye0etw4xtiD2EXJj/ISz83XB
-         NID9G2O7jVnxnmHA1vwAAcGNwOxUSt4GPmNHmiTWUjdpcQ4fPVuJBw34BSgQOpfzj8
-         ZdSZele9/nP6g==
-Date:   Wed, 27 Jan 2021 17:43:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com>,
-        amit.kachhap@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: KASAN: invalid-access Read in kmem_cache_destroy
-Message-ID: <20210127174322.GH4387@sirena.org.uk>
-References: <0000000000008d396205b9e4adee@google.com>
- <CACT4Y+ZisDCO0w9O57tOp+7FL6VqJiFdxaRJ739rjW5z52PeXg@mail.gmail.com>
+        id S1344122AbhA0RpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344109AbhA0RoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:44:23 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C62C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:43:43 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id t29so1647630pfg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:43:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7sj7pim5IetR456CHcvRdOi+mjzmrDoe/hWhqa9Dot0=;
+        b=nZn951upXHINIYPKAhqqnA0gSx9fm6BFVM/jP6hftSq00DD9x0fQ79puVIjzJIf+Wy
+         iz9lW1hiLD0uRu0nh13kS4yHg7O3hEcaW0s59nyCqYBxc053a/nqV04OX2KJSn7J44g+
+         V8moEFcNU3aSxiW1iWkOW/VanCas20nn/jHn9FJLLkkkc2maImUnd6Ldl7xHRe4sU/lS
+         GjaY2uNfKEAvsh2J9AP/NRQp/iqK17FHew7+NCrz1GulAxqmMrqdpVNtJk6QyHIP20U6
+         NiRec482FiU3hQ8fIjjs06E1pqCY2G3DBMZqGbJBGe6TmcSLPnjcz+EIwl7eQWVhT1ll
+         84cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7sj7pim5IetR456CHcvRdOi+mjzmrDoe/hWhqa9Dot0=;
+        b=ptDzJNXM2m3AMnOFVcE55tTs270x45Q0g63OH3jhpbs+ItlgBrrq+e0U44IDhfuGxn
+         dya6HoWEg4YQxN1eTEpvAUjWt0HfO2DiORlt78whn7cdHA42NwVDyzJsKHyV8F3nbhdD
+         jznwpsobCIrELcy7++SLBf/NjHMYPKhpcCdyUdVmgS7b6UlcZAHF5re07zguCy+o9tyV
+         lH53wN4ekr7uMvun9vir/GercQAuetf1j82ztZ3mp2Ug+y6yIjzUYDFb2awUG9Bw9AK+
+         cyxoKO0S7mHNMLoNtsZFw0GnbO+WLPE9RPkID7q8mC8Y1qlABX3rvDd1gwu/pwhmMFVI
+         go6A==
+X-Gm-Message-State: AOAM532vFYiHj/byIsKnRH0d933WDrRJnG6hSy5NljEnVll5xC94iP2R
+        XCBPfnP5qcfAgmkMjvuKPlpUdQ==
+X-Google-Smtp-Source: ABdhPJwjvSKmNhCa/kWyqmBXH7mVKkYXDuapfT2VYBLLHkHVh7PWO3Yk6lwHCS5IEBayb3JboBIycw==
+X-Received: by 2002:a05:6a00:2286:b029:1ae:6c7f:31ce with SMTP id f6-20020a056a002286b02901ae6c7f31cemr11645761pfe.6.1611769423153;
+        Wed, 27 Jan 2021 09:43:43 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 6sm2918057pfz.34.2021.01.27.09.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 09:43:42 -0800 (PST)
+Date:   Wed, 27 Jan 2021 10:43:40 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Leo Yan <leo.yan@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH v2] coresight: etm4x: Handle accesses to TRCSTALLCTLR
+Message-ID: <20210127174340.GA1162729@xps15>
+References: <20210126145614.3607093-1-suzuki.poulose@arm.com>
+ <20210127120032.3611851-1-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dMyqICaxQaaUjrCL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZisDCO0w9O57tOp+7FL6VqJiFdxaRJ739rjW5z52PeXg@mail.gmail.com>
-X-Cookie: La-dee-dee, la-dee-dah.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210127120032.3611851-1-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good day,
 
---dMyqICaxQaaUjrCL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 27, 2021 at 12:00:32PM +0000, Suzuki K Poulose wrote:
+> TRCSTALLCTLR register is only implemented if
+> 
+>    TRCIDR3.STALLCTL == 0b1
+> 
+> Make sure the driver touches the register only it is implemented.
+> 
+> Cc: stable@vger.kernel.org
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Changes since v1:
+>   - No change to the patch, fixed the stable email address and
+>     added usual reviewers.
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c  | 9 ++++++---
+>  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 3 +++
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index b40e3c2bf818..814b49dae0c7 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -367,7 +367,8 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  	etm4x_relaxed_write32(csa, 0x0, TRCAUXCTLR);
+>  	etm4x_relaxed_write32(csa, config->eventctrl0, TRCEVENTCTL0R);
+>  	etm4x_relaxed_write32(csa, config->eventctrl1, TRCEVENTCTL1R);
+> -	etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
+> +	if (drvdata->stallctl)
+> +		etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
+>  	etm4x_relaxed_write32(csa, config->ts_ctrl, TRCTSCTLR);
+>  	etm4x_relaxed_write32(csa, config->syncfreq, TRCSYNCPR);
+>  	etm4x_relaxed_write32(csa, config->ccctlr, TRCCCCTLR);
+> @@ -1545,7 +1546,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	state->trcauxctlr = etm4x_read32(csa, TRCAUXCTLR);
+>  	state->trceventctl0r = etm4x_read32(csa, TRCEVENTCTL0R);
+>  	state->trceventctl1r = etm4x_read32(csa, TRCEVENTCTL1R);
+> -	state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
+> +	if (drvdata->stallctl)
+> +		state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
+>  	state->trctsctlr = etm4x_read32(csa, TRCTSCTLR);
+>  	state->trcsyncpr = etm4x_read32(csa, TRCSYNCPR);
+>  	state->trcccctlr = etm4x_read32(csa, TRCCCCTLR);
+> @@ -1657,7 +1659,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  	etm4x_relaxed_write32(csa, state->trcauxctlr, TRCAUXCTLR);
+>  	etm4x_relaxed_write32(csa, state->trceventctl0r, TRCEVENTCTL0R);
+>  	etm4x_relaxed_write32(csa, state->trceventctl1r, TRCEVENTCTL1R);
+> -	etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
+> +	if (drvdata->stallctl)
+> +		etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
+>  	etm4x_relaxed_write32(csa, state->trctsctlr, TRCTSCTLR);
+>  	etm4x_relaxed_write32(csa, state->trcsyncpr, TRCSYNCPR);
+>  	etm4x_relaxed_write32(csa, state->trcccctlr, TRCCCCTLR);
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> index 1c490bcef3ad..cd9249fbf913 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> @@ -296,6 +296,9 @@ static ssize_t mode_store(struct device *dev,
+>  	if (kstrtoul(buf, 16, &val))
+>  		return -EINVAL;
+>  
+> +	if ((val & ETM_MODE_ISTALL_EN) && !drvdata->stallctl)
+> +		return -EINVAL;
+> +
 
-On Wed, Jan 27, 2021 at 06:14:13PM +0100, Dmitry Vyukov wrote:
-> On Wed, Jan 27, 2021 at 5:58 PM syzbot
-> <syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D12eb4ad8d00=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dad43be24faf=
-1194c
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D2a52b6c31dbef=
-b1e9d9f
-> > userspace arch: arm64
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com
->=20
-> This happens on arm64 instance with MTE enabled.
-> I don't see any corresponding reports on x86_64. So I would assume
-> it's a generic latent bug, or probably more likely a bug in MTE
-> support.
+We have two choices here:
 
-Copying in Vincenso who's done a bunch of MTE stuff recently.
+1) Follow what is already done in this function for implementation define
+options like ETM_MODE_BB, ETMv4_MODE_CTXID, ETM_MODE_RETURNSTACK and others.  In
+that case we would have:
 
-> > loop0: detected capacity change from 131072 to 0
-> > F2FS-fs (loop0): Found nat_bits in checkpoint
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > BUG: KASAN: invalid-access in kmem_cache_destroy+0x34/0x174 mm/slab_com=
-mon.c:492
-> > Read at addr fbff00000cd1ef40 by task syz-executor.0/8859
-> > Pointer tag: [fb], memory tag: [fe]
-> >
-> > CPU: 0 PID: 8859 Comm: syz-executor.0 Not tainted 5.11.0-rc5-syzkaller-=
-00037-g2ab38c17aac1 #0
-> > Hardware name: linux,dummy-virt (DT)
-> > Call trace:
-> >  dump_backtrace+0x0/0x1b0 arch/arm64/kernel/stacktrace.c:117
-> >  show_stack+0x1c/0x70 arch/arm64/kernel/stacktrace.c:196
-> >  __dump_stack lib/dump_stack.c:79 [inline]
-> >  dump_stack+0xd0/0x12c lib/dump_stack.c:120
-> >  print_address_description+0x70/0x29c mm/kasan/report.c:230
-> >  __kasan_report mm/kasan/report.c:396 [inline]
-> >  kasan_report+0x104/0x200 mm/kasan/report.c:413
-> >  report_tag_fault arch/arm64/mm/fault.c:311 [inline]
-> >  do_tag_recovery arch/arm64/mm/fault.c:325 [inline]
-> >  __do_kernel_fault+0x17c/0x1c0 arch/arm64/mm/fault.c:369
-> >  do_bad_area arch/arm64/mm/fault.c:462 [inline]
-> >  do_tag_check_fault+0x78/0x8c arch/arm64/mm/fault.c:717
-> >  do_mem_abort+0x44/0xbc arch/arm64/mm/fault.c:793
-> >  el1_abort+0x40/0x6c arch/arm64/kernel/entry-common.c:118
-> >  el1_sync_handler+0xb0/0xcc arch/arm64/kernel/entry-common.c:209
-> >  el1_sync+0x70/0x100 arch/arm64/kernel/entry.S:656
-> >  kmem_cache_destroy+0x34/0x174 mm/slab_common.c:492
-> >  f2fs_recover_fsync_data+0x60c/0x1cc0 fs/f2fs/recovery.c:869
-> >  f2fs_fill_super+0x174c/0x1e8c fs/f2fs/super.c:3804
-> >  mount_bdev+0x1c4/0x1f0 fs/super.c:1366
-> >  f2fs_mount+0x1c/0x30 fs/f2fs/super.c:3962
-> >  legacy_get_tree+0x34/0x64 fs/fs_context.c:592
-> >  vfs_get_tree+0x2c/0xf0 fs/super.c:1496
-> >  do_new_mount fs/namespace.c:2881 [inline]
-> >  path_mount+0x3e8/0xaf0 fs/namespace.c:3211
-> >  do_mount fs/namespace.c:3224 [inline]
-> >  __do_sys_mount fs/namespace.c:3432 [inline]
-> >  __se_sys_mount fs/namespace.c:3409 [inline]
-> >  __arm64_sys_mount+0x1a8/0x2fc fs/namespace.c:3409
-> >  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-> >  invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
-> >  el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:159
-> >  do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:198
-> >  el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
-> >  el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
-> >  el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
-> >
-> > Allocated by task 8858:
-> >  stack_trace_save+0x50/0x80 kernel/stacktrace.c:121
-> >  kasan_save_stack+0x2c/0x60 mm/kasan/common.c:38
-> >  kasan_set_track mm/kasan/common.c:46 [inline]
-> >  set_alloc_info mm/kasan/common.c:401 [inline]
-> >  ____kasan_kmalloc+0xe8/0x160 mm/kasan/common.c:429
-> >  __kasan_slab_alloc+0x20/0x30 mm/kasan/common.c:437
-> >  kasan_slab_alloc include/linux/kasan.h:209 [inline]
-> >  slab_post_alloc_hook mm/slab.h:512 [inline]
-> >  slab_alloc_node mm/slub.c:2892 [inline]
-> >  slab_alloc mm/slub.c:2900 [inline]
-> >  kmem_cache_alloc+0x1b0/0x310 mm/slub.c:2905
-> >  kmem_cache_zalloc include/linux/slab.h:672 [inline]
-> >  create_cache mm/slab_common.c:246 [inline]
-> >  kmem_cache_create_usercopy+0x148/0x2ac mm/slab_common.c:352
-> >  kmem_cache_create+0x20/0x30 mm/slab_common.c:410
-> >  f2fs_kmem_cache_create fs/f2fs/f2fs.h:2411 [inline]
-> >  f2fs_recover_fsync_data+0x7c/0x1cc0 fs/f2fs/recovery.c:790
-> >  f2fs_fill_super+0x174c/0x1e8c fs/f2fs/super.c:3804
-> >  mount_bdev+0x1c4/0x1f0 fs/super.c:1366
-> >  f2fs_mount+0x1c/0x30 fs/f2fs/super.c:3962
-> >  legacy_get_tree+0x34/0x64 fs/fs_context.c:592
-> >  vfs_get_tree+0x2c/0xf0 fs/super.c:1496
-> >  do_new_mount fs/namespace.c:2881 [inline]
-> >  path_mount+0x3e8/0xaf0 fs/namespace.c:3211
-> >  do_mount fs/namespace.c:3224 [inline]
-> >  __do_sys_mount fs/namespace.c:3432 [inline]
-> >  __se_sys_mount fs/namespace.c:3409 [inline]
-> >  __arm64_sys_mount+0x1a8/0x2fc fs/namespace.c:3409
-> >  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-> >  invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
-> >  el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:159
-> >  do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:198
-> >  el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
-> >  el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
-> >  el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
-> >
-> > Freed by task 8858:
-> >  stack_trace_save+0x50/0x80 kernel/stacktrace.c:121
-> >  kasan_save_stack+0x2c/0x60 mm/kasan/common.c:38
-> >  kasan_set_track+0x2c/0x40 mm/kasan/common.c:46
-> >  kasan_set_free_info+0x24/0x30 mm/kasan/hw_tags.c:178
-> >  ____kasan_slab_free.constprop.0+0x184/0x1c0 mm/kasan/common.c:362
-> >  __kasan_slab_free+0x14/0x20 mm/kasan/common.c:369
-> >  kasan_slab_free include/linux/kasan.h:192 [inline]
-> >  slab_free_hook mm/slub.c:1547 [inline]
-> >  slab_free_freelist_hook+0x9c/0x190 mm/slub.c:1580
-> >  slab_free mm/slub.c:3143 [inline]
-> >  kmem_cache_free+0xa0/0x460 mm/slub.c:3159
-> >  slab_kmem_cache_release+0x34/0x4c mm/slab_common.c:479
-> >  kmem_cache_release+0x18/0x24 mm/slub.c:5535
-> >  kobject_cleanup lib/kobject.c:705 [inline]
-> >  kobject_release lib/kobject.c:736 [inline]
-> >  kref_put include/linux/kref.h:65 [inline]
-> >  kobject_put+0x74/0x11c lib/kobject.c:753
-> >  sysfs_slab_release+0x2c/0x40 mm/slub.c:5659
-> >  shutdown_cache mm/slab_common.c:466 [inline]
-> >  kmem_cache_destroy+0x134/0x174 mm/slab_common.c:498
-> >  f2fs_recover_fsync_data+0x60c/0x1cc0 fs/f2fs/recovery.c:869
-> >  f2fs_fill_super+0x174c/0x1e8c fs/f2fs/super.c:3804
-> >  mount_bdev+0x1c4/0x1f0 fs/super.c:1366
-> >  f2fs_mount+0x1c/0x30 fs/f2fs/super.c:3962
-> >  legacy_get_tree+0x34/0x64 fs/fs_context.c:592
-> >  vfs_get_tree+0x2c/0xf0 fs/super.c:1496
-> >  do_new_mount fs/namespace.c:2881 [inline]
-> >  path_mount+0x3e8/0xaf0 fs/namespace.c:3211
-> >  do_mount fs/namespace.c:3224 [inline]
-> >  __do_sys_mount fs/namespace.c:3432 [inline]
-> >  __se_sys_mount fs/namespace.c:3409 [inline]
-> >  __arm64_sys_mount+0x1a8/0x2fc fs/namespace.c:3409
-> >  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-> >  invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
-> >  el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:159
-> >  do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:198
-> >  el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
-> >  el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
-> >  el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
-> >
-> > The buggy address belongs to the object at ffff00000cd1ef00
-> >  which belongs to the cache kmem_cache of size 216
-> > The buggy address is located 64 bytes inside of
-> >  216-byte region [ffff00000cd1ef00, ffff00000cd1efd8)
-> > The buggy address belongs to the page:
-> > page:0000000028de1119 refcount:1 mapcount:0 mapping:0000000000000000 in=
-dex:0xf0ff00000cd1ec00 pfn:0x4cd1e
-> > flags: 0x1ffffc000000200(slab)
-> > raw: 01ffffc000000200 dead000000000100 dead000000000122 f1ff000004001000
-> > raw: f0ff00000cd1ec00 000000008010000a 00000001ffffffff 0000000000000000
-> > page dumped because: kasan: bad access detected
-> >
-> > Memory state around the buggy address:
-> >  ffff00000cd1ed00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> >  ffff00000cd1ee00: f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 f0 fe fe
-> > >ffff00000cd1ef00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> >                                ^
-> >  ffff00000cd1f000: f4 f4 f4 f4 fe fe fe fe f9 f9 f9 f9 fe fe fe fe
-> >  ffff00000cd1f100: f9 f9 f9 f9 fe fe fe fe f1 f1 f1 f1 fe fe fe fe
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > --
-> > You received this message because you are subscribed to the Google Grou=
-ps "syzkaller-bugs" group.
-> > To unsubscribe from this group and stop receiving emails from it, send =
-an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/ms=
-gid/syzkaller-bugs/0000000000008d396205b9e4adee%40google.com.
+        /* bit[8], Instruction stall bit */
+        if ((config->mode & ETM_MODE_ISTALL_EN) && drvdata->stallctl == true))
+                config->stall_ctrl |= BIT(8);
+        else    
+                config->stall_ctrl &= ~BIT(8); 
 
---dMyqICaxQaaUjrCL
-Content-Type: application/pgp-signature; name="signature.asc"
+2) Return -EINVAL when something is not supported, like you have above.  In that
+case we'd have to enact the same behavior for all the options, which has the
+potential of breaking user space.
 
------BEGIN PGP SIGNATURE-----
+I think option 1 is best.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmARpjkACgkQJNaLcl1U
-h9AlXwf/b0Gc8r+gMVXky7EmtDUjaHnthY27p/Qoox+DZW/PZzZn7pph+/LhFe81
-wW3jtfnOOJsFir2Bfbg7rvvwGDbFnTQB9hSdCFLiKPrcPrFTXXCME3PkKQzVN740
-LqKracyQnHYlPKW/CHKWOrMqtHkxaergYH8E1Dcw2HWJHU637k1c7xDnm4luAiq/
-DLnJ4H8SUO5TaevjMNrDhCUQcylqSrGeW7YkKVTX+85kdlDW55WXwqUYdXOjFVUr
-EziTYajSmL/lG2GpBfBxO2nZehZxbmBeIA0oeGR0VZeXpBxWpCkDzAtAlxXCDX6L
-FzEXgVYU6IrTymHPIPoXgtTgFNBkPA==
-=gsD8
------END PGP SIGNATURE-----
+Thanks,
+Mathieu
 
---dMyqICaxQaaUjrCL--
+>  	spin_lock(&drvdata->spinlock);
+>  	config->mode = val & ETMv4_MODE_ALL;
+>  
+> -- 
+> 2.24.1
+> 
