@@ -2,263 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4140305DB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E24305DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhA0OAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:00:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44624 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232902AbhA0N6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:58:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E9212AE2D;
-        Wed, 27 Jan 2021 13:58:08 +0000 (UTC)
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Michal Rostecki <mrostecki@suse.com>
-Subject: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
-Date:   Wed, 27 Jan 2021 14:57:27 +0100
-Message-Id: <20210127135728.30276-1-mrostecki@suse.de>
-X-Mailer: git-send-email 2.30.0
+        id S232852AbhA0OBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233230AbhA0N7I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:59:08 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348BDC061574;
+        Wed, 27 Jan 2021 05:58:28 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id rv9so2736805ejb.13;
+        Wed, 27 Jan 2021 05:58:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HWOLqctN03iPgf1OHxnbyaiPwcazrOMON+VZMndD6U4=;
+        b=eifbrOa7j6ER30jIUYtDpdiqHn9CZr7e+gR807aYg3fAn2g1AhDKNzvyP3M5qYhtfh
+         Bg2JtfxFNfRKwHGDKkttqp5TvgosRvJkNrwKVYX4xhsJzZ9+EEpkOahCG9cpk0ZwBHjZ
+         TpVWfvSDDbGitue4m3p5qXk+j0F6AcGadhLq8AEsVNbE8qJYTlXk2rnt8rMYXO0wxTVL
+         xnB3LuxDDxcNIY9Ls8TC6zeHFDIhHIc+dV11NdpTlwEpHu6UKP1r+QRn3DyrIbnffgBS
+         UZ0cLHT0L6pTikDgIMRPpYajN7FINL/Km9zXNqYD0fK2jl+43LZdsIJvm/oLJnrQ17NO
+         XAoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HWOLqctN03iPgf1OHxnbyaiPwcazrOMON+VZMndD6U4=;
+        b=Q3jEC1F7M4L+At0KCv7GcNUtenUBTVsNckiPkC4bDeDZS7gdyXa6vk0B2ot93uWVH8
+         Rq7MLycEJbS32feXgF+IPK/EbgyYKHuItfAZDkPKzl344v5DSZ5fJc4HRRgsA23kcoJU
+         q3XFNaCUdVh03yr8hr+0mNHtOXc8Gy8Bgles+8Jzvg+ovulnHjy7pLw4WsB4TiYAfNJs
+         uVK4hDZ8QASB1pyI8ZR7MZvnntvGR+WrX7VC8AzZa2VArXTqHos3UIFe8K3WoA+metsf
+         UHda1fkzz/xLS4S4LAjDObSD/rWjmhqDKy8UTP01raF4uFN63PreX2bBT/6qo20sKHBs
+         /ecg==
+X-Gm-Message-State: AOAM532iWKG7INsHWG8eAcZ9Fdm7kwNEAr/csgJ6R624kbngzyJe2KAm
+        80g1bisB1H2oLTRxIynUmftXhJDARQJR8g==
+X-Google-Smtp-Source: ABdhPJysSXhgaQ8FxkGoW4fuZXGpMNUkS45F4rmzs7fFCGXEfuO8n/ayd6F3eZ4H2dCrWBrB3IbiMA==
+X-Received: by 2002:a17:906:c793:: with SMTP id cw19mr6721127ejb.246.1611755906888;
+        Wed, 27 Jan 2021 05:58:26 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id gt12sm866450ejb.38.2021.01.27.05.58.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 05:58:25 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Subject: Re: [GIT PULL] KVM fixes for Linux 5.11-rc6
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210127102246.1599444-1-pbonzini@redhat.com>
+Message-ID: <ab1f5612-dd23-3a5a-0bf0-13ab6bdcbfe4@redhat.com>
+Date:   Wed, 27 Jan 2021 14:58:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210127102246.1599444-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Rostecki <mrostecki@suse.com>
+On 27/01/21 11:22, Paolo Bonzini wrote:
+> Linus,
+> 
+> I sent this yesterday but I cannot find it in the archives (weird),
+> so I am resending it.
 
-Before this change, the btrfs_get_io_geometry() function was calling
-btrfs_get_chunk_map() to get the extent mapping, necessary for
-calculating the I/O geometry. It was using that extent mapping only
-internally and freeing the pointer after its execution.
+Nevermind, I now see that you've pulled it already, though I've gotten 
+no pr-tracker-bot reply either.  Sorry about the noise.
 
-That resulted in calling btrfs_get_chunk_map() de facto twice by the
-__btrfs_map_block() function. It was calling btrfs_get_io_geometry()
-first and then calling btrfs_get_chunk_map() directly to get the extent
-mapping, used by the rest of the function.
+Paolo
 
-This change fixes that by passing the extent mapping to the
-btrfs_get_io_geometry() function as an argument.
-
-v2:
-When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
-- Use errno_to_blk_status(PTR_ERR(em)) as the status
-- Set em to NULL
-
-Signed-off-by: Michal Rostecki <mrostecki@suse.com>
----
- fs/btrfs/inode.c   | 38 +++++++++++++++++++++++++++++---------
- fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
- fs/btrfs/volumes.h |  5 +++--
- 3 files changed, 48 insertions(+), 34 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0dbe1aaa0b71..e2ee3a9c1140 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 	struct inode *inode = page->mapping->host;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	u64 logical = bio->bi_iter.bi_sector << 9;
-+	struct extent_map *em;
- 	u64 length = 0;
- 	u64 map_length;
--	int ret;
-+	int ret = 0;
- 	struct btrfs_io_geometry geom;
- 
- 	if (bio_flags & EXTENT_BIO_COMPRESSED)
-@@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 
- 	length = bio->bi_iter.bi_size;
- 	map_length = length;
--	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
--				    &geom);
-+	em = btrfs_get_chunk_map(fs_info, logical, map_length);
-+	if (IS_ERR(em))
-+		return PTR_ERR(em);
-+	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
-+				    map_length, &geom);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
--	if (geom.len < length + size)
--		return 1;
--	return 0;
-+	if (geom.len < length + size) {
-+		ret = 1;
-+		goto out;
-+	}
-+out:
-+	free_extent_map(em);
-+	return ret;
- }
- 
- /*
-@@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	u64 submit_len;
- 	int clone_offset = 0;
- 	int clone_len;
-+	int logical;
- 	int ret;
- 	blk_status_t status;
- 	struct btrfs_io_geometry geom;
- 	struct btrfs_dio_data *dio_data = iomap->private;
-+	struct extent_map *em;
- 
- 	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
- 	if (!dip) {
-@@ -7970,11 +7980,18 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	}
- 
- 	start_sector = dio_bio->bi_iter.bi_sector;
-+	logical = start_sector << 9;
- 	submit_len = dio_bio->bi_iter.bi_size;
- 
- 	do {
--		ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
--					    start_sector << 9, submit_len,
-+		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
-+		if (IS_ERR(em)) {
-+			status = errno_to_blk_status(PTR_ERR(em));
-+			em = NULL;
-+			goto out_err;
-+		}
-+		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
-+					    logical, submit_len,
- 					    &geom);
- 		if (ret) {
- 			status = errno_to_blk_status(ret);
-@@ -8030,12 +8047,15 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 		clone_offset += clone_len;
- 		start_sector += clone_len >> 9;
- 		file_offset += clone_len;
-+
-+		free_extent_map(em);
- 	} while (submit_len > 0);
- 	return BLK_QC_T_NONE;
- 
- out_err:
- 	dip->dio_bio->bi_status = status;
- 	btrfs_dio_private_put(dip);
-+	free_extent_map(em);
- 	return BLK_QC_T_NONE;
- }
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a8ec8539cd8d..4c753b17c0a2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op)
- }
- 
- /*
-- * btrfs_get_io_geometry - calculates the geomery of a particular (address, len)
-+ * btrfs_get_io_geometry - calculates the geometry of a particular (address, len)
-  *		       tuple. This information is used to calculate how big a
-  *		       particular bio can get before it straddles a stripe.
-  *
-- * @fs_info - the filesystem
-- * @logical - address that we want to figure out the geometry of
-- * @len	    - the length of IO we are going to perform, starting at @logical
-- * @op      - type of operation - write or read
-- * @io_geom - pointer used to return values
-+ * @fs_info: the filesystem
-+ * @em:      mapping containing the logical extent
-+ * @op:      type of operation - write or read
-+ * @logical: address that we want to figure out the geometry of
-+ * @len:     the length of IO we are going to perform, starting at @logical
-+ * @io_geom: pointer used to return values
-  *
-  * Returns < 0 in case a chunk for the given logical address cannot be found,
-  * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
-  */
--int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
--			u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
-+int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
-+			  enum btrfs_map_op op, u64 logical, u64 len,
-+			  struct btrfs_io_geometry *io_geom)
- {
--	struct extent_map *em;
- 	struct map_lookup *map;
- 	u64 offset;
- 	u64 stripe_offset;
-@@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	u64 stripe_len;
- 	u64 raid56_full_stripe_start = (u64)-1;
- 	int data_stripes;
--	int ret = 0;
- 
- 	ASSERT(op != BTRFS_MAP_DISCARD);
- 
--	em = btrfs_get_chunk_map(fs_info, logical, len);
--	if (IS_ERR(em))
--		return PTR_ERR(em);
--
- 	map = em->map_lookup;
- 	/* Offset of this logical address in the chunk */
- 	offset = logical - em->start;
-@@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		btrfs_crit(fs_info,
- "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
- 			stripe_offset, offset, em->start, logical, stripe_len);
--		ret = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	/* stripe_offset is the offset of this block in its stripe */
-@@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	io_geom->stripe_offset = stripe_offset;
- 	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
- 
--out:
--	/* once for us */
--	free_extent_map(em);
--	return ret;
-+	return 0;
- }
- 
- static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
-@@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
- 	ASSERT(bbio_ret);
- 	ASSERT(op != BTRFS_MAP_DISCARD);
- 
--	ret = btrfs_get_io_geometry(fs_info, op, logical, *length, &geom);
-+	em = btrfs_get_chunk_map(fs_info, logical, *length);
-+	ASSERT(!IS_ERR(em));
-+
-+	ret = btrfs_get_io_geometry(fs_info, em, op, logical, *length, &geom);
- 	if (ret < 0)
- 		return ret;
- 
--	em = btrfs_get_chunk_map(fs_info, logical, *length);
--	ASSERT(!IS_ERR(em));
- 	map = em->map_lookup;
- 
- 	*length = geom.len;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index c43663d9c22e..04e2b26823c2 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		     u64 logical, u64 *length,
- 		     struct btrfs_bio **bbio_ret);
--int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
--		u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
-+int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *map,
-+			  enum btrfs_map_op op, u64 logical, u64 len,
-+			  struct btrfs_io_geometry *io_geom);
- int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
- int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
--- 
-2.30.0
+> The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+> 
+>    Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+> 
+> are available in the Git repository at:
+> 
+>    https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> 
+> for you to fetch changes up to 9a78e15802a87de2b08dfd1bd88e855201d2c8fa:
+> 
+>    KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX (2021-01-25 18:54:09 -0500)
+> 
+> ----------------------------------------------------------------
+> * x86 bugfixes
+> * Documentation fixes
+> * Avoid performance regression due to SEV-ES patches
+> 
+> ARM:
+> - Don't allow tagged pointers to point to memslots
+> - Filter out ARMv8.1+ PMU events on v8.0 hardware
+> - Hide PMU registers from userspace when no PMU is configured
+> - More PMU cleanups
+> - Don't try to handle broken PSCI firmware
+> - More sys_reg() to reg_to_encoding() conversions
+> 
+> ----------------------------------------------------------------
+> Alexandru Elisei (1):
+>        KVM: arm64: Use the reg_to_encoding() macro instead of sys_reg()
+> 
+> David Brazdil (1):
+>        KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
+> 
+> Jay Zhou (1):
+>        KVM: x86: get smi pending status correctly
+> 
+> Like Xu (2):
+>        KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
+>        KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
+> 
+> Lorenzo Brescia (1):
+>        kvm: tracing: Fix unmatched kvm_entry and kvm_exit events
+> 
+> Marc Zyngier (4):
+>        KVM: arm64: Hide PMU registers from userspace when not available
+>        KVM: arm64: Simplify handling of absent PMU system registers
+>        KVM: arm64: Filter out v8.1+ events on v8.0 HW
+>        KVM: Forbid the use of tagged userspace addresses for memslots
+> 
+> Maxim Levitsky (1):
+>        KVM: nVMX: Sync unsync'd vmcs02 state to vmcs12 on migration
+> 
+> Paolo Bonzini (2):
+>        Merge tag 'kvmarm-fixes-5.11-2' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
+>        KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX
+> 
+> Quentin Perret (1):
+>        KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
+> 
+> Sean Christopherson (3):
+>        KVM: x86: Add more protection against undefined behavior in rsvd_bits()
+>        KVM: SVM: Unconditionally sync GPRs to GHCB on VMRUN of SEV-ES guest
+>        KVM: x86: Revert "KVM: x86: Mark GPRs dirty when written"
+> 
+> Steven Price (1):
+>        KVM: arm64: Compute TPIDR_EL2 ignoring MTE tag
+> 
+> Zenghui Yu (1):
+>        KVM: Documentation: Update description of KVM_{GET,CLEAR}_DIRTY_LOG
+> 
+>   Documentation/virt/kvm/api.rst       | 21 ++++----
+>   arch/arm64/kvm/arm.c                 |  3 +-
+>   arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 ++---
+>   arch/arm64/kvm/pmu-emul.c            | 10 ++--
+>   arch/arm64/kvm/sys_regs.c            | 93 ++++++++++++++++++++++--------------
+>   arch/x86/kvm/kvm_cache_regs.h        | 51 ++++++++++----------
+>   arch/x86/kvm/mmu.h                   |  9 +++-
+>   arch/x86/kvm/svm/nested.c            |  3 ++
+>   arch/x86/kvm/svm/sev.c               | 15 +++---
+>   arch/x86/kvm/svm/svm.c               |  2 +
+>   arch/x86/kvm/vmx/nested.c            | 44 ++++++++++++-----
+>   arch/x86/kvm/vmx/pmu_intel.c         |  6 ++-
+>   arch/x86/kvm/vmx/vmx.c               |  2 +
+>   arch/x86/kvm/x86.c                   | 11 +++--
+>   virt/kvm/kvm_main.c                  |  1 +
+>   15 files changed, 172 insertions(+), 112 deletions(-)
+> 
 
