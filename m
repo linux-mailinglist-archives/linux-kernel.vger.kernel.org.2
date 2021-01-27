@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917C6305E2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C88305E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhA0OYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:24:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42892 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233852AbhA0OXl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:23:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611757335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3x3v94BjOwEDdN4Q5vF6tZl1Pibldsq9m5DYt5qg7Fk=;
-        b=I4XK9cCuevyW9/6QbUWqvf23p7KFCy4wYbjgX52k79agQ0kAPUMxO6VLnIeSDeIby/UPpB
-        xTMtKznk02+dFfI9xFEAn2ZVcMn371zqmNx8C2nnnuAThv15wpVJzdHipTsbK0BaF2XViC
-        zW0bcZoXq57YAdo8DPDKZXIymPF5zf8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-hrOrMKrXOam1O0EEU5Fuow-1; Wed, 27 Jan 2021 09:22:12 -0500
-X-MC-Unique: hrOrMKrXOam1O0EEU5Fuow-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA00B193578E;
-        Wed, 27 Jan 2021 14:22:10 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A5F519716;
-        Wed, 27 Jan 2021 14:22:09 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
-References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192 keys
+        id S233950AbhA0OXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:23:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232605AbhA0OXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 09:23:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87F8A206C2;
+        Wed, 27 Jan 2021 14:22:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611757364;
+        bh=ZdFZWdy2q+BzBz8XtqPuZ8Pkn2F91NEia9uSbRYZ4k0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q07RymNwPPrnaHyRAiKbJ0zyIhiJLm9QGQ+PjBkavZnBoL4BvnmXg/qtKSIsRHAm9
+         1vmVYjPOC0pQHisMM9CjDHIFWyOKAyMge2Y0ekjXb2eFeLCoLP7jx+1efi+dEeLgjV
+         FSB9nltK7ZBUUpcMLxm8ajdRf15rMCZZT+AlIvug=
+Date:   Wed, 27 Jan 2021 15:22:41 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        kernel-team@android.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+Message-ID: <YBF3MVttE1aTfx7o@kroah.com>
+References: <20210122193600.1415639-1-saravanak@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3114061.1611757328.1@warthog.procyon.org.uk>
-Date:   Wed, 27 Jan 2021 14:22:08 +0000
-Message-ID: <3114062.1611757328@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122193600.1415639-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
+On Fri, Jan 22, 2021 at 11:35:59AM -0800, Saravana Kannan wrote:
+> There are multiple instances of GPIO device tree nodes of the form:
+> 
+> foo {
+> 	compatible = "acme,foo";
+> 	...
+> 
+> 	gpio0: gpio0@xxxxxxxx {
+> 		compatible = "acme,bar";
+> 		...
+> 		gpio-controller;
+> 	};
+> 
+> 	gpio1: gpio1@xxxxxxxx {
+> 		compatible = "acme,bar";
+> 		...
+> 		gpio-controller;
+> 	};
+> 
+> 	...
+> }
+> 
+> bazz {
+> 	my-gpios = <&gpio0 ...>;
+> }
+> 
+> Case 1: The driver for "foo" populates struct device for these gpio*
+> nodes and then probes them using a driver that binds with "acme,bar".
+> This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
+> This lines up with how DT nodes with the "compatible" property are
+> typically converted to struct devices and then registered with driver
+> core to probe them. This also allows the gpio* devices to hook into all
+> the driver core capabilities like runtime PM, probe deferral,
+> suspend/resume ordering, device links, etc.
+> 
+> Case 2: The driver for "foo" doesn't populate struct devices for these
+> gpio* nodes before registering them with gpiolib. Instead it just loops
+> through its child nodes and directly registers the gpio* nodes with
+> gpiolib.
+> 
+> Drivers that follow case 2 cause problems with fw_devlink=on. This is
+> because fw_devlink will prevent bazz from probing until there's a struct
+> device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
+> supplier). Once the struct device is available, fw_devlink will create a
+> device link with gpio0 device as the supplier and bazz device as the
+> consumer. After this point, since the gpio0 device will never bind to a
+> driver, the device link will prevent bazz device from ever probing.
+> 
+> Finding and refactoring all the instances of drivers that follow case 2
+> will cause a lot of code churn and it is not something that can be done
+> in one shot. In some instances it might not even be possible to refactor
+> them cleanly. Examples of such instances are [1] [2].
+> 
+> This patch works around this problem and avoids all the code churn by
+> simply setting the fwnode of the gpio_device and creating a stub driver
+> to bind to the gpio_device. This allows all the consumers to continue
+> probing when the driver follows case 2.
+> 
+> [1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
+> [2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> Cc: Kever Yang <kever.yang@rock-chips.com>
+> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
 
-> This series of patches adds support for x509 certificates signed by a CA
-> that uses NIST p256 or p192 keys for signing. It also adds support for
-> certificates where the public key is a NIST p256 or p192 key. The math
-> for ECDSA signature verification is also added.
-> 
-> Since self-signed certificates are verified upon loading, the following
-> script can be used for testing:
-> 
-> k=$(keyctrl newring test @u)
-> 
-> while :; do
-> 	for hash in sha1 sha224 sha256 sha384 sha512; do
-> 		openssl req \
-> 			-x509 \
-> 			-${hash} \
-> 			-newkey ec \
-> 			-pkeyopt ec_paramgen_curve:prime256v1 \
-> 			-keyout key.pem \
-> 			-days 365 \
-> 			-subj '/CN=test' \
-> 			-nodes \
-> 			-outform der \
-> 			-out cert.der
-> 		keyctl padd asymmetric testkey $k < cert.der
-> 		if [ $? -ne 0 ]; then
-> 			echo "ERROR"
-> 			exit 1
-> 		fi
-> 	done
-> done
-> 
-> It also works with restricted keyrings where an RSA key is used to sign
-> a NIST P256/P192 key. Scripts for testing are here:
-> 
-> https://github.com/stefanberger/eckey-testing
-> 
-> The ECDSA signature verification will be used by IMA Appraisal where ECDSA
-> file signatures stored in RPM packages will use substantially less space
-> than if RSA signatures were to be used.
+As this commit is in my driver-core git tree, can I just take this in
+the same tree?  Can I get an ack from the maintainer for this?
 
-I've pulled this into my keys-next branch.
+thanks,
 
-David
-
+greg k-h
