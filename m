@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24145305D00
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14818305D01
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238360AbhA0NXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:23:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238241AbhA0NUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:20:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52CDF207A2;
-        Wed, 27 Jan 2021 13:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611753600;
-        bh=inUC5PP/mCtOcJb9zEFFxMqaSkScQIwSvgVH1JRqWvI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VNuRicZmVe/PskXlJzjLEJ722ZnXFAQLGeRAKTwdR9iqt8/1zUf0zHi0a93TqOGkP
-         rd8J65szwWJe+FtycVSdjA/Pp/AKW60v17pMS7LryT8DkN5iWh0XRN509189hWu1NC
-         jOXWisvo/4jyP2t9Bd+lGFriZvCvIB8ss7aB45OJw7wtGKw+k4zm3ftZh65z5ODLxm
-         1Ol1KFwT6HKrPc7oGrdIdPgYUU49minUmwqG3Q3rdt0Y+1iKUtoXMA7U/bgxniSlHS
-         bzV8KHX8UUQSGKM4SAl1HSQgAXL1RXse2L7wLfmgvCLY9frBzkvDeDYcOMrLBPNXuZ
-         qP3grMuikAOow==
-From:   Will Deacon <will@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>, Yong Wu <yong.wu@mediatek.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, anan.sun@mediatek.com,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        David Laight <David.Laight@ACULAB.COM>,
-        srv_heupstream@mediatek.com, Krzysztof Kozlowski <krzk@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>, chao.hao@mediatek.com,
-        youlin.pei@mediatek.com, linux-mediatek@lists.infradead.org,
-        Tomasz Figa <tfiga@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v4 0/7] MediaTek IOMMU improve tlb flush performance in map/unmap
-Date:   Wed, 27 Jan 2021 13:19:53 +0000
-Message-Id: <161175074760.1106263.14591124622667700357.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210107122909.16317-1-yong.wu@mediatek.com>
-References: <20210107122909.16317-1-yong.wu@mediatek.com>
+        id S238192AbhA0NX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233033AbhA0NUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:20:49 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985B1C061574;
+        Wed, 27 Jan 2021 05:20:08 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id y187so1630447wmd.3;
+        Wed, 27 Jan 2021 05:20:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=yPWKRv9GrknOWoi0+WWcWBO8SWSui1xeocnHbNhYmqc=;
+        b=qGCHzSFQWqKUQeA2u+SzdadvcmuxSzHEU+OYN10h+zN1iHgGE/TbVopjxHX6Va+1UO
+         oR8f4aCwi7iPagNhwBEdc+7nxxR009a0HlIyN8KDd9/z6eNgBs7strgSzpDRHJaAVlYF
+         hdPKneUqNS6smHgIgvpPo9Hv46rBM4+Ef+HqdC3T9gkhGYorYy6zFE0QbV4LOuXo5YjZ
+         P6LpbDI+yDkc920mnr2TOQrBcYNtGM+6uTUdtKw73CQOL0Z5ayqXabHUgjQ3KdCNBsPh
+         xBgTxUh4V7MR27ILkvsvlh3nFwv8p1LLku3PdeyW4XplPDo8KHYdWyo5gMnJCrR8XbPw
+         4baw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=yPWKRv9GrknOWoi0+WWcWBO8SWSui1xeocnHbNhYmqc=;
+        b=VhcI0HrHiRuIddZ0LijJuBdpJjiC1xBWF+9WV8RikOCSmrfAANj5PW8dI+6laJ1ad4
+         TcS4fF7Mx0bGCsZstRUAGgW7HRVcJ1zw53m1M4DQ7efqMTFtstMqfzUUdf/62e6zbMXS
+         UwxiHDbwpOchMn3zIm66T0TSU1jTft0l/NaFz2qZNYrI7c9HOLVVF+8WCq4JbpAunxSy
+         q3LTqM3FIQixUHTfOdV+3+m0YskYzkp3LYz61PxeJENmwgiwoBmn7QYfmi9l7v/zrCyO
+         Ql9YBjh3HHjmaydJwaemXPKJ2d50PwPBRh/zOtKLmanZ2a447IKCHnWaLiDjCejYDHiO
+         6JSg==
+X-Gm-Message-State: AOAM533wjf6mEGRZxIfLm7hhlqNdZi99xj1ZT/abX4B4t6TwUTblLfUZ
+        gfLATexTPTf4wpfzw7vZX8M=
+X-Google-Smtp-Source: ABdhPJyWvkH/VrWnONhdA+0B+w9mXaRcLeVQtBC3fU4GW+AJd2Bz40qRXrs3jMv9eS/X+hfvQuxcXA==
+X-Received: by 2002:a1c:68c5:: with SMTP id d188mr4378988wmc.64.1611753607360;
+        Wed, 27 Jan 2021 05:20:07 -0800 (PST)
+Received: from [192.168.1.21] ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id k15sm2549242wmj.6.2021.01.27.05.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 05:20:06 -0800 (PST)
+Message-ID: <3470feebc41ee2c05bb7e71760f2b97a45ce71d7.camel@gmail.com>
+Subject: Re: [PATCH v2 5/9] gpio: ep93xx: Fix typo s/hierarchial/hierarchical
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 27 Jan 2021 14:20:05 +0100
+In-Reply-To: <20210127104617.1173-6-nikita.shubin@maquefel.me>
+References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+         <20210127104617.1173-1-nikita.shubin@maquefel.me>
+         <20210127104617.1173-6-nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 20:29:02 +0800, Yong Wu wrote:
-> This patchset is to improve tlb flushing performance in iommu_map/unmap
-> for MediaTek IOMMU.
+Hi!
+
+On Wed, 2021-01-27 at 13:46 +0300, Nikita Shubin wrote:
+> Fix typo in comment.
 > 
-> For iommu_map, currently MediaTek IOMMU use IO_PGTABLE_QUIRK_TLBI_ON_MAP
-> to do tlb_flush for each a memory chunk. this is so unnecessary. we could
-> improve it by tlb flushing one time at the end of iommu_map.
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
+> ---
+>  drivers/gpio/gpio-ep93xx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
+> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+> index dee19372ebbd..8f66e3ca0cfb 100644
+> --- a/drivers/gpio/gpio-ep93xx.c
+> +++ b/drivers/gpio/gpio-ep93xx.c
+> @@ -402,7 +402,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
+> *gc,
+>  
+>                 /*
+>                  * FIXME: convert this to use hierarchical IRQ
+> support!
+> -                * this requires fixing the root irqchip to be
+> hierarchial.
+> +                * this requires fixing the root irqchip to be
+> hierarchical.
+>                  */
+>                 girq->parent_handler = ep93xx_gpio_f_irq_handler;
+>                 girq->num_parents = 8;
 
-After discussion with Joerg, I'll queue this (and hopefully the next posting
-of your IOMMU driver) along with the Arm SMMU patches, and then send that
-all together.
-
-Applied to will (for-joerg/mtk), thanks!
-
-[1/7] iommu: Move iotlb_sync_map out from __iommu_map
-      https://git.kernel.org/arm64/c/d8c1df02ac7f
-[2/7] iommu: Add iova and size as parameters in iotlb_sync_map
-      https://git.kernel.org/arm64/c/2ebbd25873ce
-[3/7] iommu/mediatek: Add iotlb_sync_map to sync whole the iova range
-      https://git.kernel.org/arm64/c/20143451eff0
-[4/7] iommu: Switch gather->end to the inclusive end
-      https://git.kernel.org/arm64/c/862c3715de8f
-[5/7] iommu/io-pgtable: Allow io_pgtable_tlb ops optional
-      https://git.kernel.org/arm64/c/77e0992aee4e
-[6/7] iommu/mediatek: Gather iova in iommu_unmap to achieve tlb sync once
-      https://git.kernel.org/arm64/c/f21ae3b10084
-[7/7] iommu/mediatek: Remove the tlb-ops for v7s
-      https://git.kernel.org/arm64/c/0954d61a59e3
-
-Cheers,
 -- 
-Will
+Alexander Sverdlin.
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+
