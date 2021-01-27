@@ -2,164 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E82730542D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189053053F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbhA0HN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S317532AbhA0Apg (ORCPT
+        id S233073AbhA0HIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:08:38 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:14101 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhA0HFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:45:36 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7135EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:44:54 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id k132so407246ybf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:44:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cZ1VOxuGzH4//g/DaFwaGuEQdEVHQtm8F+WWpgu+EU4=;
-        b=YFwJyraNsG0Ipsao5vP9jRz0JyTwxqIANtk6nOQvZcx29nRAsdCLR454XFhdNB/idA
-         a3FNw884X2BUO1qiZsLlgWPb+/KCVDt3R+chLAaTpm17Fua/LBF+uUKkAf7aOi9HrG9p
-         5dpDZ8ieVaz3zoxM5tOHYe16Jw9bnA4d96zpVhB9gPwYy/GWLl/RKqHBBalAj9es8iCH
-         /tiEeD08cviEUow2rlvj1zDrv+FrDqCUzEM+A4rD6vr+xtrZoz1J//6JSZ82sFxVLi/5
-         Xp2fPWAgj666ooBEDH3gmcJ8tnwxPVi3dqK6yGJEh3FiUN+W2E9P9zRPX78dyoM16Mzk
-         xWKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cZ1VOxuGzH4//g/DaFwaGuEQdEVHQtm8F+WWpgu+EU4=;
-        b=mslXXEXmPtC+YvTji8fsz6MrAvXtUjAOG19JIchIqP0fbIb8jYmCFAvZSsqCDORT5R
-         M3V9BbJ7S+gKPPv++Lq1WJtanJQPlupSpXyBRC8RYfme0BbNExYAuIXy6HfMZUuWGHXI
-         Y645R8Se2MQYzXadyup2N6wG9chNRGF96i4yTHVP2PF+lNh/YsRu3Ou5eDn8cDWVtfGW
-         /zqlLEchlio9aJYmqEqRwcr7daFhWA6KX4yovrLrk//mWc2iCFYf0ydAiS+QvkZDl4QG
-         iUXh7gNhvS3oIZ4EQH5Wv5u3osjQ04XCH+0JIQmdGKFooQAMLd/XybmwYIslleI23jOd
-         Psfg==
-X-Gm-Message-State: AOAM533lVptgJIgnmwp5rH0gEbd79pqSJpBrXYVGRyTuL4PUTtluhANU
-        lT0fk0s26W0e39nxF7YRuB48F6gb3UZgbDFgcns/Rg==
-X-Google-Smtp-Source: ABdhPJz06rM3i8q6OzxaIC/5CSA959lRbZ/D6V9CzjqmU5rjnj+8/8N4uqtfABX3dPXZ1Isz9zmWSUJ0cBdlthZyPRw=
-X-Received: by 2002:a25:f8a:: with SMTP id 132mr12458631ybp.228.1611708293540;
- Tue, 26 Jan 2021 16:44:53 -0800 (PST)
+        Wed, 27 Jan 2021 02:05:24 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210127070441epoutp04f4f6c235cb0ec263f9e873ad079dc8e0~eBOD-uFi60400504005epoutp04X
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:04:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210127070441epoutp04f4f6c235cb0ec263f9e873ad079dc8e0~eBOD-uFi60400504005epoutp04X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611731081;
+        bh=/9GXwtk+Q8GHQwdg9UnSZMO0QoLlwz57chrmsVfWQNU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=AOAs4G62ZSFlIC3EHo86of9Tt1vckdYuquQEzQ375TR/7snjdPaVdhCtAdeqJofoY
+         gQ5MJD9MV0UbAdtRbM45uNP1DbfIkviKy9JivgII6lDj845yOY/XRJ8H1B3qiaYfV8
+         l3adg7Evd5BW0JvZuc38fp/Vyv2y2zpPya1meD7s=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210127070440epcas1p2ed4265e43fe14f38a48eaa4b77c82bbf~eBODKy6pX2500625006epcas1p21;
+        Wed, 27 Jan 2021 07:04:40 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DQZNR0pFJz4x9Q3; Wed, 27 Jan
+        2021 07:04:39 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A7.F4.09582.68011106; Wed, 27 Jan 2021 16:04:38 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22~eBOBhwOAd2976129761epcas1p4-;
+        Wed, 27 Jan 2021 07:04:38 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210127070438epsmtrp11b07975bee6c1e8030ab2cfd88a99d91~eBOBg4km90481904819epsmtrp1k;
+        Wed, 27 Jan 2021 07:04:38 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-d2-60111086bd67
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AD.D9.13470.68011106; Wed, 27 Jan 2021 16:04:38 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210127070438epsmtip2934a782075884d33a8cfa3cb852a3267~eBOBP7WJ52627226272epsmtip2C;
+        Wed, 27 Jan 2021 07:04:38 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     martin.petersen@oracle.com
+Cc:     Damien.LeMoal@wdc.com, arnd@arndb.de, hch@lst.de,
+        jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, michael.christie@oracle.com,
+        mj0123.lee@samsung.com, nanich.lee@samsung.com, oneukum@suse.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH 1/1] scsi: sd: use max_xfer_blocks for set rw_max if
+ max_xfer_blocks is available
+Date:   Wed, 27 Jan 2021 15:49:08 +0900
+Message-Id: <20210127064908.13571-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <yq1tur3vzkz.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
- <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
- <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
- <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
-In-Reply-To: <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 26 Jan 2021 16:44:17 -0800
-Message-ID: <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmrm67gGCCwWkji7+TjrFbtLZ/Y7JY
+        ufook8WiG9uYLHqeNLFafH1YbHF51xw2i+7rO9gslh//xwRUe4PVYvrmOcwW1+6fYbfoeryS
+        zeLcyU+sFvMeO1ic2jGZ2WL93p9sDoIev39NYvSYsOgAo8fumw1sHh+f3mLx6NuyitFj/Zar
+        LB6fN8l5tB/oZgrgiMqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVV
+        cvEJ0HXLzAF6QkmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeu
+        l5yfa2VoYGBkClSZkJNx++xbloJTfBXvnu1kbGC8wN3FyMkhIWAicWfdSvYuRi4OIYEdjBLT
+        e98yQzifGCVWnl4O5XxjlOi8vYQNpuX4vqOMEIm9jBJzmmeyQDifGSX2ztjHCFLFJqAj0ff2
+        FliHiICcxKTX35hAipgF2pglWtpfAzkcHMIC6RLffoPVswioSnxa/pAJxOYVsJb41f0Gapu8
+        xNNekDM4OTgFjCWObH0FVSMocXLmExYQmxmopnnrbLBTJQROcEhcvDWbGaLZReLygqWsELaw
+        xKvjW9ghbCmJl/1t7BAN3YwSzW3zGSGcCYwSS54vY4KoMpb49PkzI8ilzAKaEut36UOEFSV2
+        /p7LCLGZT+Ld1x5WkBIJAV6JjjYhiBIViTMt95lhdj1fuxNqoofEq+2XwG4QEmhjlLi22W8C
+        o8IsJP/MQvLPLITFCxiZVzGKpRYU56anFhsWGCPH8SZGcLrWMt/BOO3tB71DjEwcjIcYJTiY
+        lUR43ysLJAjxpiRWVqUW5ccXleakFh9iNAWG9kRmKdHkfGDGyCuJNzQ1MjY2tjAxMzczNVYS
+        500yeBAvJJCeWJKanZpakFoE08fEwSnVwPTYQGSTv1L0zZMfyjsqjP6ecTWeIv+x4qzWlSC9
+        omyH6R9vpy+2fy3DKrnl7ux28V8epkkdrd8kpl/Z5zs/orruqHEFW0Ts9Ru7r16Xd570OTdl
+        XaFqjr/Gvfx5z9gVk9KrN1gHTDyqIu94bNM36fU/F55Y46rQyv5/yVG/r64fDFw/eEo45WWF
+        BypsdK0s13qs7Ri0YtLFZf0+kixvnjoHhjRfk+M4uPrG/4MxytWLps5Jzo2tOvPml2X2uoPT
+        l0w4Fcm7fXXK9l/RGorrLthkr7q443Df97cxrFOaQte8OpWg9ShwhqbJ3ti1R1ewhmt3sJY0
+        ak3tubvjmpcVl2LgiscbFD94fTspNvXB5T4lluKMREMt5qLiRABXtSngYAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJXrdNQDDB4NU2fou/k46xW7S2f2Oy
+        WLn6KJPFohvbmCx6njSxWnx9WGxxedccNovu6zvYLJYf/8cEVHuD1WL65jnMFtfun2G36Hq8
+        ks3i3MlPrBbzHjtYnNoxmdli/d6fbA6CHr9/TWL0mLDoAKPH7psNbB4fn95i8ejbsorRY/2W
+        qywenzfJebQf6GYK4IjisklJzcksSy3St0vgyrh99i1LwSm+infPdjI2MF7g7mLk5JAQMJE4
+        vu8oYxcjF4eQwG5GianLNrJCJKQkjp94C2RzANnCEocPF0PUfGSUuPP5HjtIDZuAjkTf21ts
+        ILaIgJzEpNffmECKmAVmMUs8+3cOrFlYIFVi7yw7kBoWAVWJT8sfMoHYvALWEr+637BB7JKX
+        eNq7nBnE5hQwljiy9RVYjZCAkcSNrsNsEPWCEidnPmEBsZmB6pu3zmaewCgwC0lqFpLUAkam
+        VYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwTGlpbmDcfuqD3qHGJk4GA8xSnAwK4nw
+        vlcWSBDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qBaeoF
+        lsVakhXrFhy/2T1Ba81uz37HhTMnTdn+MSONdw1D06pzC9xXVHq7fmv8NXuJoe+vmq+susv0
+        XLa0sj1Srv30c853/Qzj9K6lpa0OnRON+nRt255Ef+tcM1Odc7veu7hX/UrbH+s1OT04kX5F
+        /cjm9IVlGwMCS/3757jeP7hzTY1j9RH95SwTplYHXHYynJ7jGbn6rJ2ZhqY304y/OrEXS0P+
+        T/YOnykkxTH7gdK+gJm/Zj35vv/VC41sNaOiiGC7O+7xrYWcz6s3LpzAIGzPmzE797iNX/M3
+        D+vtJ5Z97Z3Vtynz4uSLpyt2f3jEPOubQGXrI5NJKSt2c7T07ZN9/fM18+FLArY27tqK65RY
+        ijMSDbWYi4oTAQvoXPIYAwAA
+X-CMS-MailID: 20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22
+References: <yq1tur3vzkz.fsf@ca-mkp.ca.oracle.com>
+        <CGME20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
-> > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
-> > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
-> > > > wrote:
-> > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
-> > > >> wrote:
-> > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> > > >> > > wrote:
-> > > >> > >>
-> > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
-> > > >> > >> all CCs to BCCs :(]
-> > > >> > >>
-> > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> > > >> > >> >>
-> > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> > > >> > >> >> wrote:
-> > > >> > >> >> >
-> > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
-> > > >> > >> >>
-> > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> > > >> > >> >> shouldn't it be fixed or removed?
-> > > >> > >> >
-> > > >> > >> > I was actually thinking about this too. The problem with fixing
-> > > >> > >> > builtin_platform_driver_probe() to behave like
-> > > >> > >> > builtin_platform_driver() is that these probe functions could be
-> > > >> > >> > marked with __init. But there are also only 20 instances of
-> > > >> > >> > builtin_platform_driver_probe() in the kernel:
-> > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> > > >> > >> > 20
-> > > >> > >> >
-> > > >> > >> > So it might be easier to just fix them to not use
-> > > >> > >> > builtin_platform_driver_probe().
-> > > >> > >> >
-> > > >> > >> > Michael,
-> > > >> > >> >
-> > > >> > >> > Any chance you'd be willing to help me by converting all these to
-> > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> > > >> > >>
-> > > >> > >> If it just moving the probe function to the _driver struct and
-> > > >> > >> remove the __init annotations. I could look into that.
-> > > >> > >
-> > > >> > > Yup. That's pretty much it AFAICT.
-> > > >> > >
-> > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> > > >> > > for async probe, etc. But I doubt anyone is actually setting async
-> > > >> > > flags and still using builtin_platform_driver_probe().
-> > > >> >
-> > > >> > Hasn't module_platform_driver_probe() the same problem? And there
-> > > >> > are ~80 drivers which uses that.
-> > > >>
-> > > >> Yeah. The biggest problem with all of these is the __init markers.
-> > > >> Maybe some familiar with coccinelle can help?
-> > > >
-> > > > And dropping them will increase memory usage.
-> > >
-> > > Although I do have the changes for the builtin_platform_driver_probe()
-> > > ready, I don't think it makes much sense to send these unless we agree
-> > > on the increased memory footprint. While there are just a few
-> > > builtin_platform_driver_probe() and memory increase _might_ be
-> > > negligible, there are many more module_platform_driver_probe().
-> >
-> > While it's good to drop code that'll not be used past kernel init, the
-> > module_platform_driver_probe() is going even more extreme. It doesn't
-> > even allow deferred probe (well before kernel init is done). I don't
-> > think that behavior is right and that's why we should delete it. Also,
->
-> This construct is typically used for builtin hardware for which the
-> dependencies are registered very early, and thus known to probe at
-> first try (if present).
->
-> > I doubt if any of these probe functions even take up 4KB of memory.
->
-> How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
-> How many can you afford to waste?
+> Hello Changheun!
+> 
+> > I want to discuss using max_xfer_blocks instead of opt_xfer_blocks as
+> > a optional.  For example, device reports opt_xfer_blocks is 512KB and
+> > 1MB as a max_xfer_blocks too. Currently rw_max is set with 512KB only.
+> 
+> Because that's what the device asks for. If a device explicitly requests
+> us to use 512 KB I/Os we should not be sending it 1 MB requests.
+> 
+> The spec is very clear. It says that if you send a command *larger* than
+> opt_xfer_blocks, you should expect *slower* performance. That makes
+> max_xfer_blocks a particularly poor choice for setting the default I/O
+> size.
+> 
+> In addition to being slower, max_xfer_blocks could potentially also be
+> much, much larger than opt_xfer_blocks. I understand your 512 KB vs. 1
+> MB example. But if the max_xfer_blocks limit is reported as 1 GB, is
+> that then the right value to use instead of 512 KB? Probably not.
+> 
+> If a device does not report an opt_xfer_blocks value that suits your
+> workload, just override the resulting max_sectors_kb in sysfs. This is
+> intentionally a soft limit so it can be adjusted by the user without
+> having to change the kernel.
+> 
+> -- 
+> Martin K. Petersen	Oracle Linux Engineering
+> 
 
-There are only a few instances of this macro in the kernel. How many
-of those actually fit the description above? We can probably just
-check the DT?
+I understood what you said. I reviewed meaning of opt_xfer_blocks from
+SCSI spec again. I think below is what you saw in spec.
 
--Saravana
+The OPTIMAL TRANSFER LENGTH field indicates the optimal transfer size in
+logical blocks for a single command shown in table 197. If a device server
+receives one of these commands with a transfer size greater than this value,
+then the device server may incur significant delays in processing the
+command. If the OPTIMAL TRANSFER LENGTH field is set to zero, then there
+is no reported optimal transfer size.
+
+Thank you for kindly feedback. :)
+
+---
+Changheun Lee
+Samsung Electronics
