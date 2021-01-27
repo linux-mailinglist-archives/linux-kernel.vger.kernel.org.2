@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB83130648A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07B5306482
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbhA0T56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:57:58 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53808 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbhA0T5t (ORCPT
+        id S231731AbhA0T46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231367AbhA0T4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:57:49 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RJu3AP032953;
-        Wed, 27 Jan 2021 13:56:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611777363;
-        bh=DCCrToReH6eXlJZ57Np7e3COK3zFm1KkQuCb2WzGcC4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=U/oREB/R43BwBXPwGsLyrQcRRAy4/ZgRaQLLiSgVvv7NIkCiXs60Ax1ZZfnBi7gvF
-         LXorYkcDTmEyfqfelAHrb4892+GtAaYmsLjMQ9uqBe9r/v0IWC9vBx5DrUYr8dlzX1
-         J9Ky3qdT4/X184NRuwbJIElLx5xYVLzZRi/bcBxA=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RJu2mN006262
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Jan 2021 13:56:03 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
- Jan 2021 13:56:03 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 27 Jan 2021 13:56:03 -0600
-Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RJu3Md081572;
-        Wed, 27 Jan 2021 13:56:03 -0600
-Received: from localhost ([10.250.69.64])
-        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 10RJu3kP082367;
-        Wed, 27 Jan 2021 13:56:03 -0600
-From:   Suman Anna <s-anna@ti.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [PATCH 2/2] mailbox: omap: Add support for K3 AM64x SoCs
-Date:   Wed, 27 Jan 2021 13:56:00 -0600
-Message-ID: <20210127195600.23501-3-s-anna@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210127195600.23501-1-s-anna@ti.com>
-References: <20210127195600.23501-1-s-anna@ti.com>
+        Wed, 27 Jan 2021 14:56:55 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2EEC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:56:15 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id a16so1168938uad.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:56:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=65FVE3sIUI1qUS2aQ7B54EcM5lYLq0ggA4200iyt3fI=;
+        b=FgSFYzCyE34qUmN13bvroMyOtKF4VyncZ+cUZ5HSu69JWJk+QTFqGb7j0O2X1eiJ8g
+         UtOe3fYCKSUxh067OeTaWjsA+ydU68z/cSfkMr89AJTIqXkLOoTyT8HslXiiXcJ6Uz3p
+         PrS7xdLGOgp6JzRpvL157N8nsTlhaTjvQ9B6+Oe6RB+qaRXhOfM2cyEFFCtGU9rqj2Dq
+         UBMk6jH30QVUfd/ymjM7UCFYi/y7Zd6yEUBub7CNfCs/wZHom+Je6rQewERs/odcUFKf
+         7mPeRblP4B4BowltsI0VvkRy/wLteLlsP5tWSVuwdOVFykB2eriH7sTmykitYLGOxwEn
+         lWFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=65FVE3sIUI1qUS2aQ7B54EcM5lYLq0ggA4200iyt3fI=;
+        b=iyQcjR1UN0rUUSryvrMcyIutPHhHnrURJ1HQ2h7YC3zRxkAbd1eGIYUj6BD/bVtaY6
+         VsaWhvTsvwrVvSQI/hTn0eU2V3/jB0DeieJfIfI+0q2NE1pmCOIg5Yam2ZV/k0ZulxUh
+         gle3LwzqIaFkvtRO1oGem5G6q5no0Z7ipktTtssvQ3VkmurE3glmlEMHkAGexOnsmWem
+         HjlGu37q4Tsp1nKtaeIEOPesODfvyJbBKZnhIKLymBZTHa1nh7sp5iBIr8tjovlGSiC+
+         d2zIDnZizIaBXYn+Zz6+nyERrNvjcuydaYxesfDO7nIyLDCXDhyk/EJkutWx6qd46/NV
+         sJkg==
+X-Gm-Message-State: AOAM532PvfCXYLa9lw5f/wG03iLJPISN9bjO3KdP/OUfAZYJ02QSFc9s
+        /tImzIoOYeSo4iTfIBDpoF0+74ZTV2nmO5XsXVRdmoAw6HZJ/w==
+X-Google-Smtp-Source: ABdhPJwbmgLT2Pit9wTfaAHoTwUiPBco/OYOYX5LOtDcT2wvl5l/tmFJHGC4A/YjhsQbpiiIy+C+9XILbO3WH7RP0pY=
+X-Received: by 2002:ab0:2eb0:: with SMTP id y16mr9240152uay.123.1611777374340;
+ Wed, 27 Jan 2021 11:56:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210123205516.2738060-1-zenczykowski@gmail.com> <YBFu9WkVMdsfy51I@kroah.com>
+In-Reply-To: <YBFu9WkVMdsfy51I@kroah.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date:   Wed, 27 Jan 2021 11:56:03 -0800
+Message-ID: <CANP3RGcoXV+gDXjhYV5USYURHOyiZE=t6ptwp2hZb=vni3RP7g@mail.gmail.com>
+Subject: Re: [PATCH] configfs: make directories inherit uid/gid from creator
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AM64x SoC contains a Mailbox IP instance with multiple clusters
-in the MAIN domain, and is a variant of the IP on current AM65x and
-J721E SoCs. The AM64x SoC has only 8 clusters with no interrupts
-routed to the A53 core on the first 2 clusters. The interrupt outputs
-from the IP do not go through any Interrupt Routers and are hard-wired
-to each processor, with only couple of interrupts from each cluster
-reaching the A53 core. The IP is also not built with the K3 safety
-feature in hardware.
+> > Currently a non-root process can create directories, but cannot
+> > create stuff in the directories it creates.
+>
+> Isn't that on purpose?
 
-Add the support for this IP through a new compatible.
+Is it?  What's the use case of being able to create empty directories
+you can't use?
+Why allow their creation in the first place then?
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
----
- drivers/mailbox/omap-mailbox.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> > +             (void)configfs_setattr(dentry, &ia);
+>
+> No need for (void), here, right?
 
-diff --git a/drivers/mailbox/omap-mailbox.c b/drivers/mailbox/omap-mailbox.c
-index 93fe08aef3ca..7295e3835e30 100644
---- a/drivers/mailbox/omap-mailbox.c
-+++ b/drivers/mailbox/omap-mailbox.c
-@@ -3,7 +3,7 @@
-  * OMAP mailbox driver
-  *
-  * Copyright (C) 2006-2009 Nokia Corporation. All rights reserved.
-- * Copyright (C) 2013-2019 Texas Instruments Incorporated - https://www.ti.com
-+ * Copyright (C) 2013-2021 Texas Instruments Incorporated - https://www.ti.com
-  *
-  * Contact: Hiroshi DOYU <Hiroshi.DOYU@nokia.com>
-  *          Suman Anna <s-anna@ti.com>
-@@ -663,6 +663,10 @@ static const struct of_device_id omap_mailbox_of_match[] = {
- 		.compatible	= "ti,am654-mailbox",
- 		.data		= &omap4_data,
- 	},
-+	{
-+		.compatible	= "ti,am64-mailbox",
-+		.data		= &omap4_data,
-+	},
- 	{
- 		/* end */
- 	},
--- 
-2.29.2
+Just being clear we're ignoring any potential error return.
 
+> And this feels like a big user-visible change, what is going to break
+> with this?
+
+That I don't know, but it's unlikely to break anything, since it's virtually
+impossible to use as it is now.  If non-root creates the directory, it's
+currently root-owned, so can only be used by root (or something with
+appropriate caps).
+Something with capabilities will be able to use it even if it is no
+longer owned by root.
