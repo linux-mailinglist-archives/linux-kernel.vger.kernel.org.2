@@ -2,218 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8776D305F94
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045A7305F95
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343837AbhA0P14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:27:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343881AbhA0PYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:24:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 944CE207B0;
-        Wed, 27 Jan 2021 15:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611761005;
-        bh=bUaHqKG/IoHAawf9yAR4S3Kaji5t7hZh/OYxKzctjq8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xHAO+HDcLNsDqqFYVnYY9RbWIM2d2j/S3iZPj4rFTVZtZtUd7dOP6fg/senoypzmx
-         +SX4TrZ+/+U+FULYcw00top68ss7hFPumbVgp7WMaXfYtjqUmHE6ThkORxctPxDuQ6
-         pGSIfR9ZuTzqP20mXqDvuPhewvqLTitMmjf8En+8=
-Date:   Wed, 27 Jan 2021 16:23:22 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com
-Subject: Re: [PATCH 7/8] scsi: ufshpb: Add "Cold" regions timer
-Message-ID: <YBGFamLN83K5AHZe@kroah.com>
-References: <20210127151217.24760-1-avri.altman@wdc.com>
- <20210127151217.24760-8-avri.altman@wdc.com>
+        id S1343857AbhA0P2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:28:20 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:11900 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235869AbhA0PYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:24:53 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RFK9CF029171;
+        Wed, 27 Jan 2021 07:24:01 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=IrfmPQXhcGZMPRR5AhDhQYd0lAi4VlVIKC2Tmv5kS7k=;
+ b=iEtgl0ETHgwoPxA74Ab2ARSSzBpa1ilZrFJ2NP3iHmtCj6Sy7M/XDIDq1hgVWlgSxdU4
+ 1/Rja8sVAeHNAPuaB4V6pPEJzOR348k3gwVBCKgObSVzRKq4w2VBr7+fZSGc0fH7bJrQ
+ ZepbTNoU7Jn2kag7naolC6Fq5I5BTJMQEnnQX0jXD+CnDiA3tJIhB8bgrNg/eTGtJBjw
+ RkrZNqQ+fu1vquehBvjsuN1C4VzaCyI0enhoizkyWFrXEj+yovkqFv5TIS+lZlCnpvmQ
+ f5jBvjJxYZK7Bb1p2fKWTkNrnL3quDxmVu6XDNhUTz3EYvXnqXSVFoohMr0IfB90yEvD qA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36b1xphbmc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 07:24:01 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
+ 2021 07:24:00 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
+ 2021 07:23:59 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 27 Jan 2021 07:23:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BNuQSdZjX8jAL/YKED1cN7k7ClNkKI6LiJDtX/V5sB5XpBKmg7QsZ6LaFh50xN+w+Pqi2eqdbaqgzE6KLmfAwLj1DU/4c38g+MnNu3U4woezGWiibiX4tcTioex3gyL8Suq5j8PNbIQa18zKKljub127cQvdwUmBdxctqtgBiJ9ELvRFID9ZhruSU1XsX085K3RR66uwlQAhD2Y07nSzxwkKgs9LILv3eFSC0AJvq1uPBRPWvuBGEITY09Wmx2U4ZGe6RL+IAUJAwGXb5L0c3GLCZ3K2XhrUi0VMvd7TJXvSpsqMdCDAN0/MgMC22rU0/s8xKelGqZs9oHLLU8QASw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IrfmPQXhcGZMPRR5AhDhQYd0lAi4VlVIKC2Tmv5kS7k=;
+ b=Ga+c0Ndfyx7r7M812kndPe+gbEhhIxD9ItZgQ6NUfMbEwnSoOxMK2YinGmnb9/6QA8cU4o+Hi+YiQL3EyCH0d/cHC+muMbteexE0GaOpt4P9mXLtjcFX4CMStak9t99SlA3XWpDNbWonxW2pL90J2HKl9Y6PQ20iOVMgsQU+9q8+fC1o8tRLE5XG7gsnBO69xnlrh4ycEqyiaYlzXOF+U/eaCiJuNaSerXW1u0Y+cL70vfMB2AyFM+1PjfvC3GMwFfLAL9mgW7tcT6LVJIPvaJm6wiLeWGFeLAd6tDqtYPeugiC7Ookr1CgHDmy5cL0S3NMSdxMjJuewdX5WQ/pgJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IrfmPQXhcGZMPRR5AhDhQYd0lAi4VlVIKC2Tmv5kS7k=;
+ b=BR5U4FuIA5HxDLFfF+pG/mElcptxl9ab8ZJgJHDSzFcGPQnc7PzU7buzsrMflyOPh+zhYud6BAcxu1TDpuZJdEr6UzRdecarHdRntoVrXaOVSY4JjzxwPK6zpzFVXlzXfl1Bd7fnEeUguuvQrS2CjxHoHYjdk+cfhorY65jGmD4=
+Received: from CO6PR18MB3873.namprd18.prod.outlook.com (2603:10b6:5:350::23)
+ by MWHPR1801MB1856.namprd18.prod.outlook.com (2603:10b6:301:6b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
+ 2021 15:23:56 +0000
+Received: from CO6PR18MB3873.namprd18.prod.outlook.com
+ ([fe80::c041:1c61:e57:349a]) by CO6PR18MB3873.namprd18.prod.outlook.com
+ ([fe80::c041:1c61:e57:349a%3]) with mapi id 15.20.3805.017; Wed, 27 Jan 2021
+ 15:23:56 +0000
+From:   Stefan Chulski <stefanc@marvell.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "atenart@kernel.org" <atenart@kernel.org>
+Subject: RE: [EXT] Re: [PATCH v4 net-next 19/19] net: mvpp2: add TX FC
+ firmware check
+Thread-Topic: [EXT] Re: [PATCH v4 net-next 19/19] net: mvpp2: add TX FC
+ firmware check
+Thread-Index: AQHW9KHjwS0UHLuva0e0y+cDZ3p/aKo7gciAgAAH8aCAAAcogIAAAiVwgAABmYCAAADuoA==
+Date:   Wed, 27 Jan 2021 15:23:56 +0000
+Message-ID: <CO6PR18MB3873DB2951C432DF87F6F0B3B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+ <1611747815-1934-20-git-send-email-stefanc@marvell.com>
+ <20210127140552.GM1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873034EAC12E956E6879967B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <20210127145955.GN1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873983229F0F664A0578A3DB0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <20210127151319.GO1551@shell.armlinux.org.uk>
+In-Reply-To: <20210127151319.GO1551@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=marvell.com;
+x-originating-ip: [80.230.11.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ffc5a54b-c748-4617-64e7-08d8c2d7904f
+x-ms-traffictypediagnostic: MWHPR1801MB1856:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1801MB185614CED22EB3D3C5E975E6B0BB9@MWHPR1801MB1856.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vZivYS4mN6HAp5BacB5LSXeYcWKtpzifbJctYzpTnMfQPjSQoZVi9QanaNROtCyp3lkOyCZkyuZ1Xl9J9CX4I5BTEFPe8IHUD4d81tPx4bANQeQ/hEBqGM8O+RQzVmt21KmEXWZ854bzWSVo2NmMUt295BrrOMdjtI7H+PUZFIaDlj5+RBTW7K+HMhsnO40278cvyIhXWEphjTZRdPRKeU+J5gag1epEfS+AA2VPKy0/xTI/dH8+ZRpnjN9cunNIqWUMFs/rIYd518SpNVcFORxH6+GhoEpUglNCeDJs5Ycw5A+Blt+QcF5vmUBtQAPR20lCzrFGPPbYojx25H1wyXmtx2mu8xxsOwhAGs3cfBKFacNCxHf3rSx9Rq0XCXOKFpPhFJou2/a8INRyLHmQyk8cxf3IlqZYOkuRxPdTp+pJb8GvzwMB83UxYW998zgpQWUPDj5jBNUAnPi64HiU9YeUka3gVqKddo6MJLBPD7rXQwK9OTcPztSS+so2bjRQmqqxehzBXw7JEy44oo712g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB3873.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(6506007)(6916009)(8676002)(8936002)(66556008)(2906002)(64756008)(186003)(9686003)(55016002)(86362001)(71200400001)(83380400001)(52536014)(7696005)(5660300002)(54906003)(4326008)(4744005)(66476007)(26005)(33656002)(316002)(76116006)(478600001)(66946007)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Vyk5XdsNy9ueIuhFcI+cbteujjalA3/tWPa2OiTxeeCNFyl+l/DosZPjQly9?=
+ =?us-ascii?Q?WEoAiFHzuUXrd4CyHNhViq1PYIDdxOf487yJFIrUhLmrBqYc4rNzqFfWrETj?=
+ =?us-ascii?Q?DKQkN33kF6PY9wdNk80ENS9EkU0BFs/8uQKY6b7UCE8sDBo7EzpgIUar5hdc?=
+ =?us-ascii?Q?x8+eEZs9ka1BroN2mtmbJo2lBvVJEdE/z8V1j6WR3cpeVM1gl02u7RuSDtGy?=
+ =?us-ascii?Q?XlGFKKwCF3c8ZZAUMVaU3APwhCLFhb0aBzx0jBZfQ8WpktC4IEXiBkOazKCC?=
+ =?us-ascii?Q?DXzf25/IeQEbBLiab8dnHmozO0m0f3o+tE+n1ARx2vKP/CtM6LyRl1wDJHCd?=
+ =?us-ascii?Q?1PzhOLZrtUIAS+gg53EITf/GIhOB7mACrRlON2F/aMVNJe5eNxXrUHyTI5C6?=
+ =?us-ascii?Q?lZSYo6rJDRNjmxTWC6T8KK/xzHnCENsEGf433jfKjuTZmeqplAKCo8CBvqnm?=
+ =?us-ascii?Q?U0PLWbX0ZXM3140nAAlAWo18JYprB0Gr5B+rPc6h8GOP4tI0q11LyBq8CXdr?=
+ =?us-ascii?Q?73k7kcAonON+pKAyX1yPlCTDb3zRyVkzilajj2Pl51+HiWzNFlEplahEoPvY?=
+ =?us-ascii?Q?w/UQLDOcqXqvxZIL/JeG3EeiJVNFboEOCq82nPNC0/3n1140PvCDqayEpmBo?=
+ =?us-ascii?Q?RjYRWBIgi/vtlqmoWtndt2Okn6DjjqttTYfcngSeSdCZ/ZEilT0HqBwx0FpA?=
+ =?us-ascii?Q?6wAf8mk4zwULvPOVO6yvJqLu83MJwkjv0j6guPZ3j+4VY9N5s0DPjOPo6TRD?=
+ =?us-ascii?Q?gtJXowppjmsg1oYXhAsiLv/XovA+N1eCgLPJDZ+/T0vUOvLSe0oSof6qExoa?=
+ =?us-ascii?Q?+4ezcaT/U3qNK4H9R3RXSsRflXwh10GxhWsy0Ug72KH++zW8el9kwWxRYIR5?=
+ =?us-ascii?Q?7/2ZxjfEQ7DYiGS6sVfMiK+wsUS8bU99yAEWS3uZJOGAD18lj5t2DwYWLlzk?=
+ =?us-ascii?Q?s9d8cQEAWRHvpOqAlhDqzcv0EfCjuYT44NoYE8L6i1i1lFKahabuebUHWPfr?=
+ =?us-ascii?Q?9GKvv/aZ8GTYTR1CTG7CVw3QEDVEknrfyehrwwMO7zYTCBLJtx/Y1QKN8DaJ?=
+ =?us-ascii?Q?tVKWHnGu?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210127151217.24760-8-avri.altman@wdc.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB3873.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffc5a54b-c748-4617-64e7-08d8c2d7904f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jan 2021 15:23:56.7018
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cqWsTOxg4fc2cRghSqaH70rbt+yyRHIis0+Py9e8XXwdRTfLQ0LBEVY00i6Gq5i5Ov3DyhbPuWqQD93GJKmxkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1801MB1856
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 05:12:16PM +0200, Avri Altman wrote:
-> In order not to hang on to “cold” regions, we shall inactivate a
-> region that has no READ access for a predefined amount of time -
-> READ_TO_MS. For that purpose we shall monitor the active regions list,
-> polling it on every POLLING_INTERVAL_MS. On timeout expiry we shall add
-> the region to the "to-be-inactivated" list, unless it is clean and did
-> not exahust its READ_TO_EXPIRIES - another parameter.
-> 
-> All this does not apply to pinned regions.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 75 ++++++++++++++++++++++++++++++++++++++-
->  drivers/scsi/ufs/ufshpb.h |  7 ++++
->  2 files changed, 81 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index cb99b57b4319..482f01c3b3ee 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -18,8 +18,12 @@
->  
->  #define WORK_PENDING 0
->  #define RESET_PENDING 1
-> +#define TIMEOUT_WORK_PENDING 2
->  #define ACTIVATION_THRSHLD 4 /* 4 IOs */
->  #define EVICTION_THRSHLD (ACTIVATION_THRSHLD << 6) /* 256 IOs */
-> +#define READ_TO_MS 1000
-> +#define READ_TO_EXPIRIES 100
-> +#define POLLING_INTERVAL_MS 200
->  
->  /* memory management */
->  static struct kmem_cache *ufshpb_mctx_cache;
-> @@ -671,12 +675,69 @@ static int ufshpb_check_srgns_issue_state(struct ufshpb_lu *hpb,
->  	return 0;
->  }
->  
-> +static void ufshpb_read_to_handler(struct work_struct *work)
-> +{
-> +	struct delayed_work *dwork = to_delayed_work(work);
-> +	struct ufshpb_lu *hpb;
-> +	struct victim_select_info *lru_info;
-> +	struct ufshpb_region *rgn, *next_rgn;
-> +	unsigned long flags;
-> +	LIST_HEAD(expired_list);
-> +
-> +	hpb = container_of(dwork, struct ufshpb_lu, ufshpb_read_to_work);
-> +
-> +	if (test_and_set_bit(TIMEOUT_WORK_PENDING, &hpb->work_data_bits))
-> +		return;
-> +
-> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +
-> +	lru_info = &hpb->lru_info;
-> +
-> +	list_for_each_entry_safe(rgn, next_rgn, &lru_info->lh_lru_rgn,
-> +				 list_lru_rgn) {
-> +		bool timedout = ktime_after(ktime_get(), rgn->read_timeout);
-> +		bool dirty, expired;
-> +
-> +		if (!timedout)
-> +			continue;
-> +
-> +		dirty = is_rgn_dirty(rgn);
-> +		expired = atomic_dec_and_test(&rgn->read_timeout_expiries);
-> +
-> +		if (dirty || expired)
-> +			list_add(&rgn->list_expired_rgn, &expired_list);
-> +		else
-> +			rgn->read_timeout = ktime_add_ms(ktime_get(),
-> +							 READ_TO_MS);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +
-> +	list_for_each_entry_safe(rgn, next_rgn, &expired_list,
-> +				 list_expired_rgn) {
-> +		list_del_init(&rgn->list_expired_rgn);
-> +		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
-> +		ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
-> +		hpb->stats.rb_inactive_cnt++;
-> +		spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
-> +	}
-> +
-> +	clear_bit(TIMEOUT_WORK_PENDING, &hpb->work_data_bits);
-> +
-> +	schedule_delayed_work(&hpb->ufshpb_read_to_work,
-> +			      msecs_to_jiffies(POLLING_INTERVAL_MS));
-> +}
-> +
->  static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
-> -				       struct ufshpb_region *rgn)
-> +				struct ufshpb_region *rgn)
->  {
->  	rgn->rgn_state = HPB_RGN_ACTIVE;
->  	list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
->  	atomic_inc(&lru_info->active_cnt);
-> +	if (ufshpb_mode == HPB_HOST_CONTROL) {
-> +		rgn->read_timeout = ktime_add_ms(ktime_get(), READ_TO_MS);
-> +		atomic_set(&rgn->read_timeout_expiries, READ_TO_EXPIRIES);
-> +	}
->  }
->  
->  static void ufshpb_hit_lru_info(struct victim_select_info *lru_info,
-> @@ -1404,6 +1465,7 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
->  
->  		INIT_LIST_HEAD(&rgn->list_inact_rgn);
->  		INIT_LIST_HEAD(&rgn->list_lru_rgn);
-> +		INIT_LIST_HEAD(&rgn->list_expired_rgn);
->  
->  		if (rgn_idx == hpb->rgns_per_lu - 1)
->  			srgn_cnt = ((hpb->srgns_per_lu - 1) %
-> @@ -1536,6 +1598,8 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
->  			  ufshpb_normalization_work_handler);
->  		INIT_WORK(&hpb->ufshpb_lun_reset_work,
->  			  ufshpb_reset_work_handler);
-> +		INIT_DELAYED_WORK(&hpb->ufshpb_read_to_work,
-> +				  ufshpb_read_to_handler);
->  	}
->  
->  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
-> @@ -1562,6 +1626,10 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
->  
->  	ufshpb_stat_init(hpb);
->  
-> +	if (ufshpb_mode == HPB_HOST_CONTROL)
-> +		schedule_delayed_work(&hpb->ufshpb_read_to_work,
-> +				      msecs_to_jiffies(POLLING_INTERVAL_MS));
-> +
->  	return 0;
->  
->  release_m_page_cache:
-> @@ -1624,6 +1692,7 @@ static void ufshpb_discard_rsp_lists(struct ufshpb_lu *hpb)
->  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->  {
->  	if (ufshpb_mode == HPB_HOST_CONTROL) {
-> +		cancel_delayed_work_sync(&hpb->ufshpb_read_to_work);
->  		cancel_work_sync(&hpb->ufshpb_lun_reset_work);
->  		cancel_work_sync(&hpb->ufshpb_normalization_work);
->  	}
-> @@ -1734,6 +1803,10 @@ void ufshpb_resume(struct ufs_hba *hba)
->  			continue;
->  		ufshpb_set_state(hpb, HPB_PRESENT);
->  		ufshpb_kick_map_work(hpb);
-> +		if (ufshpb_mode == HPB_HOST_CONTROL)
-> +			schedule_delayed_work(&hpb->ufshpb_read_to_work,
-> +				msecs_to_jiffies(POLLING_INTERVAL_MS));
-> +
->  	}
->  }
->  
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index 4bf77169af00..86c16a4127bd 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -121,6 +121,12 @@ struct ufshpb_region {
->  
->  	/* region reads - for host mode */
->  	atomic64_t reads;
-> +
-> +	/* region "cold" timer - for host mode */
-> +	ktime_t read_timeout;
-> +	atomic_t read_timeout_expiries;
+> > You can devmem 0xF2400240(Device ID Status Register).
+> > #define A8040_B0_DEVICE_ID      0x8045
+> > #define A8040_AX_DEVICE_ID      0x8040
+> > #define A7040_B0_DEVICE_ID      0x7045
+> > #define A7040_AX_DEVICE_ID      0x7040
+> > #define A3900_A1_DEVICE_ID      0x6025
+> > #define CN9130_DEVICE_ID        0x7025
+>=20
+> Thanks. 0x00028040, so it's AX silicon. Is there nothing that can be done=
+ for
+> flow control on that?
 
-Why does this have to be an atomic when you have a lock to protect this
-structure already taken?
+No, we cannot support FC with AX on A8040.
+=20
+> It would probably also be a good idea to state this requirement in the
+> message as well, rather than just suggesting the firmware revision.
 
-thanks,
+Ok, I would update this.
 
-greg k-h
+Thanks,
+Stefan.
