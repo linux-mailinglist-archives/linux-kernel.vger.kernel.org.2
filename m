@@ -2,212 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42290305078
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C79C30507B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238266AbhA0EKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237120AbhA0Dr4 (ORCPT
+        id S238284AbhA0EKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:10:53 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:60572 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237233AbhA0Dto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:47:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6460FC061574;
-        Tue, 26 Jan 2021 19:47:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=Zj/SeFFQ0DPQiZOul3omKOYcchar1PDV+FfUWz8iVLY=; b=XC8weHwcgwkduDzj8UlGC53QHZ
-        LNJHTuataRohH3ieb8X7GXuoNlozXlgh1xjt2Yo7AvulVTOYnYeYHXnVF17PM881Ar5I5aKWJOBTd
-        akIuWJ/G3PoKB//dv3Nuw/4vt51/m3cW0Liu3yseIDpxibyscOMXpB2JwESJb5Aq3dILToNUQmC8f
-        yPQvO1XeBYsvP0MV38XOHDGnCTuNjdk7AaYYdoGJK3NNby74qkggnM8dWPgoVQRdoV+1HGVvh/hDG
-        ISidqHZT5pLZDFx9+OrqUslwVkMevx9I4kooClmvWcDwQjHrbac7tgKOpefhdz7cONWT1xANzLmBU
-        SxYYWQ6Q==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4bnL-0007fz-Av; Wed, 27 Jan 2021 03:47:03 +0000
-Subject: Re: [PATCH 1/2] fs/efs/inode.c: follow style guide
-To:     Amy Parker <enbyamy@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5d005259-feec-686d-dc32-e1b10cf74459@infradead.org>
-Date:   Tue, 26 Jan 2021 19:46:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 26 Jan 2021 22:49:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UN.u3o9_1611719322;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN.u3o9_1611719322)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Jan 2021 11:48:46 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     marcel@holtmann.org
+Cc:     johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH v2] net/bluetooth/hci_debugfs.c:  fix coccicheck warnings
+Date:   Wed, 27 Jan 2021 11:48:40 +0800
+Message-Id: <1611719320-87593-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amy,
+Use DEFINE_DEBUGFS_ATTRIBUTE rather than DEFINE_SIMPLE_ATTRIBUTE
+for debugfs files.
 
-What mail client did you use?
-It is breaking (splitting) long lines into shorter lines and that
-makes it not possible to apply the patch cleanly.
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+Changes in v2:
+  -Modifying row alignment.
 
-You can see this problem below or on the web in an email archive.
+ net/bluetooth/hci_debugfs.c | 80 ++++++++++++++++++++++-----------------------
+ 1 file changed, 40 insertions(+), 40 deletions(-)
 
-Possibly Documentation/process/email-clients.rst can help you.
-
-
-On 1/26/21 12:58 PM, Amy Parker wrote:
-> This patch updates inode.c for EFS to follow the kernel style guide.
-> 
-> Signed-off-by: Amy Parker <enbyamy@gmail.com>
-> ---
-> fs/efs/inode.c | 64 +++++++++++++++++++++++++-------------------------
-> 1 file changed, 32 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/efs/inode.c b/fs/efs/inode.c
-> index 89e73a6f0d36..4e81e7a15afb 100644
-> --- a/fs/efs/inode.c
-> +++ b/fs/efs/inode.c
-> @@ -109,9 +109,9 @@ struct inode *efs_iget(struct super_block *super,
-> unsigned long ino)
->        /* this is the number of blocks in the file */
->        if (inode->i_size == 0) {
->                inode->i_blocks = 0;
-> -       } else {
-> +       else
->                inode->i_blocks = ((inode->i_size - 1) >>
-> EFS_BLOCKSIZE_BITS) + 1;
-> -       }
-> +
-> 
->        rdev = be16_to_cpu(efs_inode->di_u.di_dev.odev);
->        if (rdev == 0xffff) {
-> @@ -120,15 +120,16 @@ struct inode *efs_iget(struct super_block
-> *super, unsigned long ino)
->                        device = 0;
->                else
->                        device = MKDEV(sysv_major(rdev), sysv_minor(rdev));
-> -       } else
-> +       } else {
->                device = old_decode_dev(rdev);
-> +    }
-> 
->        /* get the number of extents for this object */
->        in->numextents = be16_to_cpu(efs_inode->di_numextents);
->        in->lastextent = 0;
-> 
->        /* copy the extents contained within the inode to memory */
-> -       for(i = 0; i < EFS_DIRECTEXTENTS; i++) {
-> +       for (i = 0; i < EFS_DIRECTEXTENTS; i++) {
->                extent_copy(&(efs_inode->di_u.di_extents[i]), &(in->extents[i]));
->                if (i < in->numextents && in->extents[i].cooked.ex_magic != 0) {
->                        pr_warn("extent %d has bad magic number in inode %lu\n",
-> @@ -142,28 +143,28 @@ struct inode *efs_iget(struct super_block
-> *super, unsigned long ino)
->        pr_debug("efs_iget(): inode %lu, extents %d, mode %o\n",
->                 inode->i_ino, in->numextents, inode->i_mode);
->        switch (inode->i_mode & S_IFMT) {
-> -               case S_IFDIR:
-> -                       inode->i_op = &efs_dir_inode_operations;
-> -                       inode->i_fop = &efs_dir_operations;
-> -                       break;
-> -               case S_IFREG:
-> -                       inode->i_fop = &generic_ro_fops;
-> -                       inode->i_data.a_ops = &efs_aops;
-> -                       break;
-> -               case S_IFLNK:
-> -                       inode->i_op = &page_symlink_inode_operations;
-> -                       inode_nohighmem(inode);
-> -                       inode->i_data.a_ops = &efs_symlink_aops;
-> -                       break;
-> -               case S_IFCHR:
-> -               case S_IFBLK:
-> -               case S_IFIFO:
-> -                       init_special_inode(inode, inode->i_mode, device);
-> -                       break;
-> -               default:
-> -                       pr_warn("unsupported inode mode %o\n", inode->i_mode);
-> -                       goto read_inode_error;
-> -                       break;
-> +    case S_IFDIR:
-> +        inode->i_op = &efs_dir_inode_operations;
-> +        inode->i_fop = &efs_dir_operations;
-> +        break;
-> +    case S_IFREG:
-> +        inode->i_fop = &generic_ro_fops;
-> +        inode->i_data.a_ops = &efs_aops;
-> +        break;
-> +    case S_IFLNK:
-> +        inode->i_op = &page_symlink_inode_operations;
-> +        inode_nohighmem(inode);
-> +        inode->i_data.a_ops = &efs_symlink_aops;
-> +        break;
-> +    case S_IFCHR:
-> +    case S_IFBLK:
-> +    case S_IFIFO:
-> +        init_special_inode(inode, inode->i_mode, device);
-> +        break;
-> +    default:
-> +        pr_warn("unsupported inode mode %o\n", inode->i_mode);
-> +        goto read_inode_error;
-> +        break;
->        }
-> 
->        unlock_new_inode(inode);
-> @@ -189,11 +190,10 @@ efs_extent_check(efs_extent *ptr, efs_block_t
-> block, struct efs_sb_info *
-> sb) {
->        length = ptr->cooked.ex_length;
->        offset = ptr->cooked.ex_offset;
-> 
-> -       if ((block >= offset) && (block < offset+length)) {
-> +       if ((block >= offset) && (block < offset+length))
->                return(sb->fs_start + start + block - offset);
-> -       } else {
-> +       else
->                return 0;
-> -       }
-> }
-> 
-> efs_block_t efs_map_block(struct inode *inode, efs_block_t block) {
-> @@ -225,7 +225,7 @@ efs_block_t efs_map_block(struct inode *inode,
-> efs_block_t block) {
->                 * check the stored extents in the inode
->                 * start with next extent and check forwards
->                 */
-> -               for(dirext = 1; dirext < direxts; dirext++) {
-> +               for (dirext = 1; dirext < direxts; dirext++) {
->                        cur = (last + dirext) % in->numextents;
->                        if ((result =
-> efs_extent_check(&in->extents[cur], block, sb))) {
->                                in->lastextent = cur;
-> @@ -242,7 +242,7 @@ efs_block_t efs_map_block(struct inode *inode,
-> efs_block_t block) {
->        direxts = in->extents[0].cooked.ex_offset;
->        indexts = in->numextents;
-> 
-> -       for(indext = 0; indext < indexts; indext++) {
-> +       for (indext = 0; indext < indexts; indext++) {
->                cur = (last + indext) % indexts;
-> 
->                /*
-> @@ -253,7 +253,7 @@ efs_block_t efs_map_block(struct inode *inode,
-> efs_block_t block) {
->                 *
->                 */
->                ibase = 0;
-> -               for(dirext = 0; cur < ibase && dirext < direxts; dirext++) {
-> +               for (dirext = 0; cur < ibase && dirext < direxts; dirext++) {
->                        ibase += in->extents[dirext].cooked.ex_length *
->                                (EFS_BLOCKSIZE / sizeof(efs_extent));
->                }
-> --
-> 2.29.2
-> 
-
-
+diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
+index 4626e02..cd400a0 100644
+--- a/net/bluetooth/hci_debugfs.c
++++ b/net/bluetooth/hci_debugfs.c
+@@ -237,8 +237,8 @@ static int conn_info_min_age_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
+-			conn_info_min_age_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(conn_info_min_age_fops, conn_info_min_age_get,
++			 conn_info_min_age_set, "%llu\n");
+ 
+ static int conn_info_max_age_set(void *data, u64 val)
+ {
+@@ -265,8 +265,8 @@ static int conn_info_max_age_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_info_max_age_fops, conn_info_max_age_get,
+-			conn_info_max_age_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(conn_info_max_age_fops, conn_info_max_age_get,
++			 conn_info_max_age_set, "%llu\n");
+ 
+ static ssize_t use_debug_keys_read(struct file *file, char __user *user_buf,
+ 				   size_t count, loff_t *ppos)
+@@ -419,8 +419,8 @@ static int voice_setting_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(voice_setting_fops, voice_setting_get,
+-			NULL, "0x%4.4llx\n");
++DEFINE_DEBUGFS_ATTRIBUTE(voice_setting_fops, voice_setting_get,
++			 NULL, "0x%4.4llx\n");
+ 
+ static ssize_t ssp_debug_mode_read(struct file *file, char __user *user_buf,
+ 				   size_t count, loff_t *ppos)
+@@ -476,9 +476,9 @@ static int min_encrypt_key_size_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(min_encrypt_key_size_fops,
+-			min_encrypt_key_size_get,
+-			min_encrypt_key_size_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(min_encrypt_key_size_fops,
++			 min_encrypt_key_size_get,
++			 min_encrypt_key_size_set, "%llu\n");
+ 
+ static int auto_accept_delay_get(void *data, u64 *val)
+ {
+@@ -491,8 +491,8 @@ static int auto_accept_delay_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
+-			auto_accept_delay_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
++			 auto_accept_delay_set, "%llu\n");
+ 
+ static ssize_t force_bredr_smp_read(struct file *file,
+ 				    char __user *user_buf,
+@@ -558,8 +558,8 @@ static int idle_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
+-			idle_timeout_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(idle_timeout_fops, idle_timeout_get,
++			 idle_timeout_set, "%llu\n");
+ 
+ static int sniff_min_interval_set(void *data, u64 val)
+ {
+@@ -586,8 +586,8 @@ static int sniff_min_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
+-			sniff_min_interval_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(sniff_min_interval_fops, sniff_min_interval_get,
++			 sniff_min_interval_set, "%llu\n");
+ 
+ static int sniff_max_interval_set(void *data, u64 val)
+ {
+@@ -614,8 +614,8 @@ static int sniff_max_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(sniff_max_interval_fops, sniff_max_interval_get,
+-			sniff_max_interval_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(sniff_max_interval_fops, sniff_max_interval_get,
++			 sniff_max_interval_set, "%llu\n");
+ 
+ void hci_debugfs_create_bredr(struct hci_dev *hdev)
+ {
+@@ -706,8 +706,8 @@ static int rpa_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(rpa_timeout_fops, rpa_timeout_get,
+-			rpa_timeout_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(rpa_timeout_fops, rpa_timeout_get,
++			 rpa_timeout_set, "%llu\n");
+ 
+ static int random_address_show(struct seq_file *f, void *p)
+ {
+@@ -869,8 +869,8 @@ static int conn_min_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
+-			conn_min_interval_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(conn_min_interval_fops, conn_min_interval_get,
++			 conn_min_interval_set, "%llu\n");
+ 
+ static int conn_max_interval_set(void *data, u64 val)
+ {
+@@ -897,8 +897,8 @@ static int conn_max_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_max_interval_fops, conn_max_interval_get,
+-			conn_max_interval_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(conn_max_interval_fops, conn_max_interval_get,
++			 conn_max_interval_set, "%llu\n");
+ 
+ static int conn_latency_set(void *data, u64 val)
+ {
+@@ -925,8 +925,8 @@ static int conn_latency_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(conn_latency_fops, conn_latency_get,
+-			conn_latency_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(conn_latency_fops, conn_latency_get,
++			 conn_latency_set, "%llu\n");
+ 
+ static int supervision_timeout_set(void *data, u64 val)
+ {
+@@ -953,8 +953,8 @@ static int supervision_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(supervision_timeout_fops, supervision_timeout_get,
+-			supervision_timeout_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(supervision_timeout_fops, supervision_timeout_get,
++			 supervision_timeout_set, "%llu\n");
+ 
+ static int adv_channel_map_set(void *data, u64 val)
+ {
+@@ -981,8 +981,8 @@ static int adv_channel_map_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
+-			adv_channel_map_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
++			 adv_channel_map_set, "%llu\n");
+ 
+ static int adv_min_interval_set(void *data, u64 val)
+ {
+@@ -1009,8 +1009,8 @@ static int adv_min_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(adv_min_interval_fops, adv_min_interval_get,
+-			adv_min_interval_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(adv_min_interval_fops, adv_min_interval_get,
++			 adv_min_interval_set, "%llu\n");
+ 
+ static int adv_max_interval_set(void *data, u64 val)
+ {
+@@ -1037,8 +1037,8 @@ static int adv_max_interval_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(adv_max_interval_fops, adv_max_interval_get,
+-			adv_max_interval_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(adv_max_interval_fops, adv_max_interval_get,
++			 adv_max_interval_set, "%llu\n");
+ 
+ static int min_key_size_set(void *data, u64 val)
+ {
+@@ -1065,8 +1065,8 @@ static int min_key_size_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(min_key_size_fops, min_key_size_get,
+-			min_key_size_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(min_key_size_fops, min_key_size_get,
++			 min_key_size_set, "%llu\n");
+ 
+ static int max_key_size_set(void *data, u64 val)
+ {
+@@ -1093,8 +1093,8 @@ static int max_key_size_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(max_key_size_fops, max_key_size_get,
+-			max_key_size_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(max_key_size_fops, max_key_size_get,
++			 max_key_size_set, "%llu\n");
+ 
+ static int auth_payload_timeout_set(void *data, u64 val)
+ {
+@@ -1121,9 +1121,9 @@ static int auth_payload_timeout_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(auth_payload_timeout_fops,
+-			auth_payload_timeout_get,
+-			auth_payload_timeout_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(auth_payload_timeout_fops,
++			 auth_payload_timeout_get,
++			 auth_payload_timeout_set, "%llu\n");
+ 
+ static ssize_t force_no_mitm_read(struct file *file,
+ 				  char __user *user_buf,
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-netiquette: https://people.kernel.org/tglx/notes-about-netiquette
+1.8.3.1
+
