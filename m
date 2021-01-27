@@ -2,149 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B5A305D8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAC6305D9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhA0NvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:51:23 -0500
-Received: from mail-vi1eur05on2105.outbound.protection.outlook.com ([40.107.21.105]:22784
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231233AbhA0NuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:50:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W7B0b2j4UxJHZ2Ee6jSVN8El4zmgK8flRNK+z19fwscFqkkF/igiM42mKs3WUmcdaSNTYWCPe/NThJ9dULsj3MtN9kyDIOo5UW+7+CM4mqQeEm3siHWEU8XHGqPUjUZIraieZATPjmXd3BwgeVBWHAKqGTEX40KmTOWOyuH0xFE0kHqOM3PgdFLvlfEl9kRTFgu2bms7q4l/yljBPYeioRpjITzXE9tSjhvthaIhZWo5nOb9LBN1wINxgCGjJ7ziEIfv/jEAlK8cGp0evhV8sVl1myrZrCIEecMdQN/uKWo30ZsehJBl5qdXXKkGUVIDmCai2TaMQ0WkogLXOdVwKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+QkQYF/h9Hscxv7XLgsByDhoLXnoIFgLJcznNhKnjdA=;
- b=AxX5t0dsPTngZHVPumTtVjFcjTML8DY6iGe3FdatY3oXpIPJyHNAtnc0jTqfk9AMTVK4J8EEQFDgH8HYWg35h6pzyWXGvmd1VZaCTunkXIdqrMBQZUEMN/aDBzW8XZpGIH3tQNYXprYkKpBjTY4b5x2L3MkB7xOZ99Me4p+gt394fQ5d7I0lsqcZFcplR8S5Na8d6hsVf1aasX0P4v+G5f57FlIK23JS4GEyxywWfDf2ILlKkhaKKhqFK3ucilxG0gs8HJSMJY9Seg4B6ibzHgwfBZoINM1btpGkjRJtFs689J9AFwH3X0lG2X4LKsYc9C6c/0yd/xA0HEf0TyKd7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+QkQYF/h9Hscxv7XLgsByDhoLXnoIFgLJcznNhKnjdA=;
- b=LcrB21QO4/FBtkNB3EpyqlpSBNP91xAOHkP/kQ7FJ3oxmKVKntqhWOoZF7jgFB+YTHLGmbUeUZx8SN4Fo+YoowjfYc41zCk6EPPoNugksIFDiivAfWJNznkgqlzOwpqFOV9IwrIFVttZK1e6g8pMGxS0Dt1QWrGNtkUTKAVr50U=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM9PR10MB4321.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:269::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 27 Jan
- 2021 13:49:23 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::58b2:6a2a:b8f9:bc1a]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::58b2:6a2a:b8f9:bc1a%3]) with mapi id 15.20.3784.017; Wed, 27 Jan 2021
- 13:49:22 +0000
-Subject: Re: [PATCH] dt-bindings: rtc: pcf2127: update bindings
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201219013418.3474461-1-alexandre.belloni@bootlin.com>
- <c5290432-a6b0-2b96-585f-3abc2dcc56f6@prevas.dk>
- <20210126224835.GE1196852@piout.net>
- <0a8fd7f3-58c1-9e20-bcfa-9872b3dc3550@prevas.dk>
- <20210127131821.GH1196852@piout.net>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Message-ID: <21d5858b-85b6-8d03-ca82-d314c2a2f2dc@prevas.dk>
-Date:   Wed, 27 Jan 2021 14:49:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210127131821.GH1196852@piout.net>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [5.186.115.188]
-X-ClientProxiedBy: AM5P194CA0014.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:203:8f::24) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S232369AbhA0Nv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:51:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231403AbhA0Nu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:50:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33261207A3;
+        Wed, 27 Jan 2021 13:49:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611755386;
+        bh=24kau5dRxNvNkOJxfzZ0cHryerwzFFv0aEway+hPzJg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oMEQhTvGgFb516J1ynVDH68s1bM6PW9bB7Crgw2gra4DFSIBeyHNfLsM227UBHxso
+         xvHiYDiqVqj838JGX7Kv3b25oLXqTSCBwKDu67BYwKWt8wuzBNflZMpHtFpST57z8x
+         YMF5SSMDoxf728i4nQgG4JhYFMdA3pZF4bVyEwMpGdY2564k3MZoIG8v1w0vYbjznr
+         k5ZWbJaff5rJOqpUfaFSzfHsc1Njb7Wp9W7Er49xImkmn2Um9cZ60JWRH7ROQlrjHO
+         FmEvZgvDBrp1P+gX7idKIN0DlOS+lf+gPe6BKEDWOZb4yFOCTUHvx6PPnkyXK5qfMS
+         vajLS/4k4ayWg==
+Date:   Wed, 27 Jan 2021 14:49:38 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 13/13] module: remove EXPORY_UNUSED_SYMBOL*
+Message-ID: <YBFvcmUiHRjkucbf@gunter>
+References: <20210121074959.313333-1-hch@lst.de>
+ <20210121074959.313333-14-hch@lst.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (5.186.115.188) by AM5P194CA0014.EURP194.PROD.OUTLOOK.COM (2603:10a6:203:8f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Wed, 27 Jan 2021 13:49:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ee79458f-f950-49f4-3e9a-08d8c2ca5a57
-X-MS-TrafficTypeDiagnostic: AM9PR10MB4321:
-X-Microsoft-Antispam-PRVS: <AM9PR10MB4321778ACBCC377B4D713ED393BB0@AM9PR10MB4321.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kYKb7Cmp00dF7TK1CN4DSI2PQalfaLvMKA6IdAd2zzNN7O6/WBuMHFhZH2JlXcSXnTSNWOwDNUAud5TBBM98n1INHTSNQzZuK6CuPs7gnPeu+nP1hx5I0z79EWpq6Qr+T2YCI6De6SRq0Ir8QaEsFzuCQkOetjzYesuk1jVH9Rkn5AcMHAvKnVEfQGUbz+v2RQktO92ujwW+4SagCMjfBjnp486HQ+VuyJwSuWR0RMYnoCcym1rmp+Cw8vlmEpGOkNoUoz756WJ+a40Pgz2xQkYhUOSIhe86If+yfN4uq0hnIs+IAkWDh6hTOykpTKSpsWCMST8vKe3GmSmFOlR/G9GHXRwEZSGWt7kRcPXWZsbEkzQtT+zKLVci1aZOgRAvsBPFD9ju84DZCr70xocho12oAxxggYl71+79ikvvauksPmdb7jUlwetcr6KR+wMkwo+Y+/k7zUN/nLVHlmTlhxqXNqhKNu9JXOzzpRgTIQI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(136003)(39850400004)(346002)(366004)(376002)(6916009)(8676002)(8976002)(83380400001)(8936002)(66476007)(66946007)(16526019)(66556008)(52116002)(26005)(478600001)(6486002)(186003)(956004)(316002)(15650500001)(16576012)(36756003)(4326008)(86362001)(5660300002)(54906003)(2616005)(44832011)(31696002)(31686004)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?Txpy7OQHlZEJ0MaVAEB2R1Vounvpp4qG+OrzQidK1bvfOAPJumk1Bip1?=
- =?Windows-1252?Q?cZrqyn1PX2YZ62t5uoXZEil3K/F5hfhzHe7XYzy1cjVCiPoLZGmO4veZ?=
- =?Windows-1252?Q?6lU2jQWGK3TiTviQSLwKGnLZuqz/qGSGa7/bykYUDbNunuwjktEcywut?=
- =?Windows-1252?Q?swz1lYoS6Yy3kF8Dl0QLXUBPcGyZzEc/I/hrCJ9ZbvcoTeh7IKajy0A8?=
- =?Windows-1252?Q?HkQmNl2fs28sPtsJaPp0QR8N2v6NAZcYIrIDlN3w6XnKr1s9YWxeDpYY?=
- =?Windows-1252?Q?y8vAYz8DqN9gIj453JVVQEAoREpEdfCPLzUKikQ+yfa4QdRawVQj3h+s?=
- =?Windows-1252?Q?Xb++gluLRepzwEJel5IG9LP8pvmGOgoa1DmqfUxl2qu8bhEarJZJb4NP?=
- =?Windows-1252?Q?wAT7BHVIvCUNHMDnVV+0iYgOFs0WfiBFz+k1L4qSv+q1p7D8+TYg9Irn?=
- =?Windows-1252?Q?Nudjk5gX4+tXZ4AKEAA0k7K7RDvAQbSlx2wvHIBwYxC8q1EpUW/2mXM1?=
- =?Windows-1252?Q?F6mSA4GLzYQb0d0C0bvF7pBphMwr3AC1/9yETrs7lE1WyOH0peSzRZa8?=
- =?Windows-1252?Q?zvj7Ah+r6H4SDHTkA6VqyvlTxdSBEghztoH7pYRF1LVMi74TfwOLV4n2?=
- =?Windows-1252?Q?+5oBqBqECMtDmWpi2bf14lKfH4JwyWIn4XSMN//SG2Q6WkNiEunVRWJ3?=
- =?Windows-1252?Q?bVzRmcKz/AHjmhu9LOOWK1qkNEtbgXzWmFxQ8+jlYewblYRhjr6tdbA2?=
- =?Windows-1252?Q?igG3Hvu2aPf92nHeBLo9biS/FcQdh0O+Z0p4+UVGKXOhsfjyxbMOCLlX?=
- =?Windows-1252?Q?sIq6+4zg9QiC1DKPM50Mn6np7gKS2iKOQ4aoHZgQPQFApcHEiMaPGPDq?=
- =?Windows-1252?Q?s3LhLZ9sVBSp8i9y4abfBEMjbeqZ2oEODmCtvabPOn78Guu7teXCKa7L?=
- =?Windows-1252?Q?0SSNJ9ZYp0kr6P9ZwagVY//goUFJ3tmyKFo3uFSJi0KddLPIr2dHrzA6?=
- =?Windows-1252?Q?txJG5MmSr7fqL/HuqgFlpQrfUbLog3zXV2hiqDouM6QQkxguwfqHtasc?=
- =?Windows-1252?Q?oejJnRvyYE1JLThbnStKmv4JbXxKiCgg9GPhNaBZCdxcFoqSLVEi79Th?=
- =?Windows-1252?Q?qnFvv7ECWY9c9WlZkrnSE4Dd?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee79458f-f950-49f4-3e9a-08d8c2ca5a57
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 13:49:22.8953
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LdnlG8GYz93olrs2XEDRP/xm4jZhANYTww214nT4MvIcPGaJrWD3w0n6oQKYxV4yijx3XAYVKFYxBSjo6H5i2P3eFyMd0VoitZnvgUwB+1U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4321
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210121074959.313333-14-hch@lst.de>
+X-OS:   Linux gunter 5.10.7-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/01/2021 14.18, Alexandre Belloni wrote:
-> On 27/01/2021 14:07:59+0100, Rasmus Villemoes wrote:
->> On 26/01/2021 23.48, Alexandre Belloni wrote:
->>> On 21/12/2020 22:17:54+0100, Rasmus Villemoes wrote:
->>>> On 19/12/2020 02.34, Alexandre Belloni wrote:
->>>>> pcf2127, pcf2129 and pca2129 support start-year and reset-source.
->>>>>
->>>>
->>>> No, the 2129 variant doesn't even have a reset output pin. Not sure if
->>>> there's any way to reflect that, and it probably doesn't matter, since
->>>> nobody's going to add the reset-source property to a 2129 node. But the
->>>> commit message is a bit misleading.
->>>>
->>>
->>> Actually no, the INT pin can be used as a reset, the pcf/pca2129
->>> can be used as a watchdog and so it may need the reset-source property.
->>
->> Unless I'm missing something, that would require some rather creative
->> extra circuitry: The interrupt pin is kept low until the appropriate bit
->> in the rtc is cleared, so if that is routed directly to a reset pin on
->> the SOC, the SOC would be kept in reset indefinitely.
->>
-> 
-> You mean inverting the level of INT? I don't think this is creative or
-> complicated...
++++ Christoph Hellwig [21/01/21 08:49 +0100]:
+>EXPORT_UNUSED_SYMBOL* is not actually used anywhere.  Remove the
+>unused functionality as we generally just remove unused code anyway.
+>
+>Signed-off-by: Christoph Hellwig <hch@lst.de>
+>---
+> arch/arm/configs/bcm2835_defconfig          |  1 -
+> arch/arm/configs/mxs_defconfig              |  1 -
+> arch/mips/configs/nlm_xlp_defconfig         |  1 -
+> arch/mips/configs/nlm_xlr_defconfig         |  1 -
+> arch/parisc/configs/generic-32bit_defconfig |  1 -
+> arch/parisc/configs/generic-64bit_defconfig |  1 -
+> arch/powerpc/configs/ppc6xx_defconfig       |  1 -
+> arch/s390/configs/debug_defconfig           |  1 -
+> arch/s390/configs/defconfig                 |  1 -
+> arch/sh/configs/edosk7760_defconfig         |  1 -
+> arch/sh/configs/sdk7780_defconfig           |  1 -
+> arch/x86/configs/i386_defconfig             |  1 -
+> arch/x86/configs/x86_64_defconfig           |  1 -
+> arch/x86/tools/relocs.c                     |  4 +-
+> include/asm-generic/vmlinux.lds.h           | 28 ---------
+> include/linux/export.h                      |  8 ---
+> include/linux/module.h                      | 13 ----
+> init/Kconfig                                | 17 -----
+> kernel/module.c                             | 69 ++-------------------
+> scripts/checkpatch.pl                       |  6 +-
+> scripts/mod/modpost.c                       | 39 +-----------
+> scripts/mod/modpost.h                       |  2 -
+> scripts/module.lds.S                        |  4 --
+> tools/include/linux/export.h                |  2 -
+> 24 files changed, 13 insertions(+), 192 deletions(-)
+>
+>diff --git a/arch/arm/configs/bcm2835_defconfig b/arch/arm/configs/bcm2835_defconfig
+>index 44ff9cd88d8161..d6c6c2e031c43a 100644
+>--- a/arch/arm/configs/bcm2835_defconfig
+>+++ b/arch/arm/configs/bcm2835_defconfig
+>@@ -177,7 +177,6 @@ CONFIG_BOOT_PRINTK_DELAY=y
+> CONFIG_DYNAMIC_DEBUG=y
+> CONFIG_DEBUG_INFO=y
+> # CONFIG_ENABLE_MUST_CHECK is not set
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_DEBUG_MEMORY_INIT=y
+> CONFIG_LOCKUP_DETECTOR=y
+> CONFIG_SCHED_TRACER=y
+>diff --git a/arch/arm/configs/mxs_defconfig b/arch/arm/configs/mxs_defconfig
+>index a9c6f32a9b1c9d..ca32446b187f5d 100644
+>--- a/arch/arm/configs/mxs_defconfig
+>+++ b/arch/arm/configs/mxs_defconfig
+>@@ -164,7 +164,6 @@ CONFIG_FONTS=y
+> CONFIG_PRINTK_TIME=y
+> CONFIG_DEBUG_INFO=y
+> CONFIG_FRAME_WARN=2048
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_MAGIC_SYSRQ=y
+> CONFIG_DEBUG_KERNEL=y
+> CONFIG_SOFTLOCKUP_DETECTOR=y
+>diff --git a/arch/mips/configs/nlm_xlp_defconfig b/arch/mips/configs/nlm_xlp_defconfig
+>index 72a211d2d556fd..32c29061172325 100644
+>--- a/arch/mips/configs/nlm_xlp_defconfig
+>+++ b/arch/mips/configs/nlm_xlp_defconfig
+>@@ -549,7 +549,6 @@ CONFIG_PRINTK_TIME=y
+> CONFIG_DEBUG_INFO=y
+> # CONFIG_ENABLE_MUST_CHECK is not set
+> CONFIG_FRAME_WARN=1024
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_DEBUG_MEMORY_INIT=y
+> CONFIG_DETECT_HUNG_TASK=y
+> CONFIG_SCHEDSTATS=y
+>diff --git a/arch/mips/configs/nlm_xlr_defconfig b/arch/mips/configs/nlm_xlr_defconfig
+>index 4ecb157e56d427..bf9b9244929ecd 100644
+>--- a/arch/mips/configs/nlm_xlr_defconfig
+>+++ b/arch/mips/configs/nlm_xlr_defconfig
+>@@ -500,7 +500,6 @@ CONFIG_CRC7=m
+> CONFIG_PRINTK_TIME=y
+> CONFIG_DEBUG_INFO=y
+> # CONFIG_ENABLE_MUST_CHECK is not set
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_DEBUG_MEMORY_INIT=y
+> CONFIG_DETECT_HUNG_TASK=y
+> CONFIG_SCHEDSTATS=y
+>diff --git a/arch/parisc/configs/generic-32bit_defconfig b/arch/parisc/configs/generic-32bit_defconfig
+>index 3cbcfad5f7249d..7611d48c599e01 100644
+>--- a/arch/parisc/configs/generic-32bit_defconfig
+>+++ b/arch/parisc/configs/generic-32bit_defconfig
+>@@ -22,7 +22,6 @@ CONFIG_PCI_LBA=y
+> CONFIG_MODULES=y
+> CONFIG_MODULE_UNLOAD=y
+> CONFIG_MODULE_FORCE_UNLOAD=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> # CONFIG_BLK_DEV_BSG is not set
+> # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+> CONFIG_BINFMT_MISC=m
+>diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
+>index 8f81fcbf04c413..53054b81461a10 100644
+>--- a/arch/parisc/configs/generic-64bit_defconfig
+>+++ b/arch/parisc/configs/generic-64bit_defconfig
+>@@ -31,7 +31,6 @@ CONFIG_MODULE_FORCE_LOAD=y
+> CONFIG_MODULE_UNLOAD=y
+> CONFIG_MODULE_FORCE_UNLOAD=y
+> CONFIG_MODVERSIONS=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_BLK_DEV_INTEGRITY=y
+> CONFIG_BINFMT_MISC=m
+> # CONFIG_COMPACTION is not set
+>diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
+>index ef09f3cce1fa85..34c3859040f9f7 100644
+>--- a/arch/powerpc/configs/ppc6xx_defconfig
+>+++ b/arch/powerpc/configs/ppc6xx_defconfig
+>@@ -1072,7 +1072,6 @@ CONFIG_NLS_ISO8859_15=m
+> CONFIG_NLS_KOI8_R=m
+> CONFIG_NLS_KOI8_U=m
+> CONFIG_DEBUG_INFO=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_HEADERS_INSTALL=y
+> CONFIG_MAGIC_SYSRQ=y
+> CONFIG_DEBUG_KERNEL=y
+>diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+>index c4f6ff98a612cd..58e54d17e3154b 100644
+>--- a/arch/s390/configs/debug_defconfig
+>+++ b/arch/s390/configs/debug_defconfig
+>@@ -71,7 +71,6 @@ CONFIG_MODULE_FORCE_UNLOAD=y
+> CONFIG_MODVERSIONS=y
+> CONFIG_MODULE_SRCVERSION_ALL=y
+> CONFIG_MODULE_SIG_SHA256=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_BLK_DEV_INTEGRITY=y
+> CONFIG_BLK_DEV_THROTTLING=y
+> CONFIG_BLK_WBT=y
+>diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+>index 51135893cffe34..b5e62c0d3e23e0 100644
+>--- a/arch/s390/configs/defconfig
+>+++ b/arch/s390/configs/defconfig
+>@@ -66,7 +66,6 @@ CONFIG_MODULE_FORCE_UNLOAD=y
+> CONFIG_MODVERSIONS=y
+> CONFIG_MODULE_SRCVERSION_ALL=y
+> CONFIG_MODULE_SIG_SHA256=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_BLK_DEV_THROTTLING=y
+> CONFIG_BLK_WBT=y
+> CONFIG_BLK_CGROUP_IOLATENCY=y
+>diff --git a/arch/sh/configs/edosk7760_defconfig b/arch/sh/configs/edosk7760_defconfig
+>index 02ba622985769d..d77f54e906fd04 100644
+>--- a/arch/sh/configs/edosk7760_defconfig
+>+++ b/arch/sh/configs/edosk7760_defconfig
+>@@ -102,7 +102,6 @@ CONFIG_NLS_UTF8=y
+> CONFIG_PRINTK_TIME=y
+> # CONFIG_ENABLE_MUST_CHECK is not set
+> CONFIG_MAGIC_SYSRQ=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_DEBUG_KERNEL=y
+> CONFIG_DEBUG_SHIRQ=y
+> CONFIG_DETECT_HUNG_TASK=y
+>diff --git a/arch/sh/configs/sdk7780_defconfig b/arch/sh/configs/sdk7780_defconfig
+>index d10a0414123a51..d53c4595fb2e98 100644
+>--- a/arch/sh/configs/sdk7780_defconfig
+>+++ b/arch/sh/configs/sdk7780_defconfig
+>@@ -130,7 +130,6 @@ CONFIG_NLS_ISO8859_15=y
+> CONFIG_NLS_UTF8=y
+> # CONFIG_ENABLE_MUST_CHECK is not set
+> CONFIG_MAGIC_SYSRQ=y
+>-CONFIG_UNUSED_SYMBOLS=y
+> CONFIG_DEBUG_KERNEL=y
+> CONFIG_DETECT_HUNG_TASK=y
+> # CONFIG_SCHED_DEBUG is not set
+>diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+>index 78210793d357cf..9c9c4a888b1dbf 100644
+>--- a/arch/x86/configs/i386_defconfig
+>+++ b/arch/x86/configs/i386_defconfig
+>@@ -50,7 +50,6 @@ CONFIG_JUMP_LABEL=y
+> CONFIG_MODULES=y
+> CONFIG_MODULE_UNLOAD=y
+> CONFIG_MODULE_FORCE_UNLOAD=y
+>-# CONFIG_UNUSED_SYMBOLS is not set
+> CONFIG_BINFMT_MISC=y
+> CONFIG_NET=y
+> CONFIG_PACKET=y
+>diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+>index 9936528e19393a..b60bd2d8603499 100644
+>--- a/arch/x86/configs/x86_64_defconfig
+>+++ b/arch/x86/configs/x86_64_defconfig
+>@@ -48,7 +48,6 @@ CONFIG_JUMP_LABEL=y
+> CONFIG_MODULES=y
+> CONFIG_MODULE_UNLOAD=y
+> CONFIG_MODULE_FORCE_UNLOAD=y
+>-# CONFIG_UNUSED_SYMBOLS is not set
+> CONFIG_BINFMT_MISC=y
+> CONFIG_NET=y
+> CONFIG_PACKET=y
+>diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+>index 0d210d0e83e241..b9c577a3cacca6 100644
+>--- a/arch/x86/tools/relocs.c
+>+++ b/arch/x86/tools/relocs.c
+>@@ -61,8 +61,8 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
+> 	"(__iommu_table|__apicdrivers|__smp_locks)(|_end)|"
+> 	"__(start|end)_pci_.*|"
+> 	"__(start|end)_builtin_fw|"
+>-	"__(start|stop)___ksymtab(|_gpl|_unused|_unused_gpl)|"
+>-	"__(start|stop)___kcrctab(|_gpl|_unused|_unused_gpl)|"
+>+	"__(start|stop)___ksymtab(|_gpl)|"
+>+	"__(start|stop)___kcrctab(|_gpl)|"
+> 	"__(start|stop)___param|"
+> 	"__(start|stop)___modver|"
+> 	"__(start|stop)___bug_table|"
+>diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+>index 83243506e68b00..1fa338ac6a5477 100644
+>--- a/include/asm-generic/vmlinux.lds.h
+>+++ b/include/asm-generic/vmlinux.lds.h
+>@@ -481,20 +481,6 @@
+> 		__stop___ksymtab_gpl = .;				\
+> 	}								\
+> 									\
+>-	/* Kernel symbol table: Normal unused symbols */		\
+>-	__ksymtab_unused  : AT(ADDR(__ksymtab_unused) - LOAD_OFFSET) {	\
+>-		__start___ksymtab_unused = .;				\
+>-		KEEP(*(SORT(___ksymtab_unused+*)))			\
+>-		__stop___ksymtab_unused = .;				\
+>-	}								\
+>-									\
+>-	/* Kernel symbol table: GPL-only unused symbols */		\
+>-	__ksymtab_unused_gpl : AT(ADDR(__ksymtab_unused_gpl) - LOAD_OFFSET) { \
+>-		__start___ksymtab_unused_gpl = .;			\
+>-		KEEP(*(SORT(___ksymtab_unused_gpl+*)))			\
+>-		__stop___ksymtab_unused_gpl = .;			\
+>-	}								\
+>-									\
+> 	/* Kernel symbol table: Normal symbols */			\
+> 	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
+> 		__start___kcrctab = .;					\
+>@@ -509,20 +495,6 @@
+> 		__stop___kcrctab_gpl = .;				\
+> 	}								\
+> 									\
+>-	/* Kernel symbol table: Normal unused symbols */		\
+>-	__kcrctab_unused  : AT(ADDR(__kcrctab_unused) - LOAD_OFFSET) {	\
+>-		__start___kcrctab_unused = .;				\
+>-		KEEP(*(SORT(___kcrctab_unused+*)))			\
+>-		__stop___kcrctab_unused = .;				\
+>-	}								\
+>-									\
+>-	/* Kernel symbol table: GPL-only unused symbols */		\
+>-	__kcrctab_unused_gpl : AT(ADDR(__kcrctab_unused_gpl) - LOAD_OFFSET) { \
+>-		__start___kcrctab_unused_gpl = .;			\
+>-		KEEP(*(SORT(___kcrctab_unused_gpl+*)))			\
+>-		__stop___kcrctab_unused_gpl = .;			\
+>-	}								\
+>-									\
+> 	/* Kernel symbol table: strings */				\
+>         __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET) {	\
+> 		*(__ksymtab_strings)					\
+>diff --git a/include/linux/export.h b/include/linux/export.h
+>index 362b64f8d4a7c2..6271a5d9c988fa 100644
+>--- a/include/linux/export.h
+>+++ b/include/linux/export.h
+>@@ -160,14 +160,6 @@ struct kernel_symbol {
+> #define EXPORT_SYMBOL_NS(sym, ns)	__EXPORT_SYMBOL(sym, "", #ns)
+> #define EXPORT_SYMBOL_NS_GPL(sym, ns)	__EXPORT_SYMBOL(sym, "_gpl", #ns)
+>
+>-#ifdef CONFIG_UNUSED_SYMBOLS
+>-#define EXPORT_UNUSED_SYMBOL(sym)	_EXPORT_SYMBOL(sym, "_unused")
+>-#define EXPORT_UNUSED_SYMBOL_GPL(sym)	_EXPORT_SYMBOL(sym, "_unused_gpl")
+>-#else
+>-#define EXPORT_UNUSED_SYMBOL(sym)
+>-#define EXPORT_UNUSED_SYMBOL_GPL(sym)
+>-#endif
+>-
+> #endif /* !__ASSEMBLY__ */
+>
+> #endif /* _LINUX_EXPORT_H */
+>diff --git a/include/linux/module.h b/include/linux/module.h
+>index 8f4d577d4707c2..0e70596c9a704a 100644
+>--- a/include/linux/module.h
+>+++ b/include/linux/module.h
+>@@ -392,18 +392,6 @@ struct module {
+> 	const s32 *gpl_crcs;
+> 	bool using_gplonly_symbols;
+>
+>-#ifdef CONFIG_UNUSED_SYMBOLS
+>-	/* unused exported symbols. */
+>-	const struct kernel_symbol *unused_syms;
+>-	const s32 *unused_crcs;
+>-	unsigned int num_unused_syms;
+>-
+>-	/* GPL-only, unused exported symbols. */
+>-	unsigned int num_unused_gpl_syms;
+>-	const struct kernel_symbol *unused_gpl_syms;
+>-	const s32 *unused_gpl_crcs;
+>-#endif
+>-
+> #ifdef CONFIG_MODULE_SIG
+> 	/* Signature was verified. */
+> 	bool sig_ok;
+>@@ -592,7 +580,6 @@ struct symsearch {
+> 		GPL_ONLY,
+> 		WILL_BE_GPL_ONLY,
+> 	} license;
+>-	bool unused;
+> };
 
-No, that is not what I meant nor what I wrote.
+Thanks for the cleanups. While we're here, I noticed that struct
+symsearch is only used internally in kernel/module.c, so I don't think
+it actually needs to be in include/linux/module.h. I don't see it used
+anywhere else. We could move maybe that to kernel/module-internal.h.
 
-> And anyway, INT# is active low, like RST# so if the SoC has an RST#
-> input, this should just work.
-
-AFAIK (and that may certainly be wrong), most SOCs require a _pulse_ on
-their reset input; asserting and keeping the reset pin low would just
-keep the cpu in reset, never allowing it to leave that state and then
-talk to the RTC to clear the bit that would clear the interrupt.
-
-That's also how the 2127 RST# behaves: it generates a pulse (of width
-244us or 15ms). The INT# and RST# pins cannot be used interchangeably.
-
-Rasmus
