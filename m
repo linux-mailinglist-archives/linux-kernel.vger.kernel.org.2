@@ -2,130 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA348305D9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AFE305DA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhA0Nwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:52:38 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:34156 "EHLO vps0.lunn.ch"
+        id S232573AbhA0Nxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:53:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232381AbhA0NwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:52:16 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l4lEL-002sH3-JO; Wed, 27 Jan 2021 14:51:33 +0100
-Date:   Wed, 27 Jan 2021 14:51:33 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, sgoutham@marvell.com,
-        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
-        sbhatta@marvell.com, Christina Jacob <cjacob@marvell.com>
-Subject: Re: [Patch v2 net-next 6/7] octeontx2-pf: ethtool physical link
- status
-Message-ID: <YBFv5ZqTDMyhEIgP@lunn.ch>
-References: <1611733552-150419-1-git-send-email-hkelam@marvell.com>
- <1611733552-150419-7-git-send-email-hkelam@marvell.com>
+        id S232486AbhA0Nwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:52:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 633032074D;
+        Wed, 27 Jan 2021 13:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611755519;
+        bh=JF5TlDZRR0Gah+FV8gwiJ/9IJZq8Lw6RRJVjyCiEUfk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gmiuS7AnX4qO1a/NuuueqEdDLWjZXf3gUErpMddujZlMD1rJbZaoiJ7uUV42ygZZO
+         /3dd3lBBeOou/Lx06YAsYbobqmegUKIDiG8uq3b7hI/bmB0yL50AA7FFMwrMqMtCC5
+         yQhc1Dv9TACleyQPpOIB9f5BgqjGaUU4pmRdmLes=
+Date:   Wed, 27 Jan 2021 14:51:55 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Carlis <zhangxuezhi3@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
+        mh12gx2825@gmail.com, oliver.graute@kococonnector.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        sbrivio@redhat.com, colin.king@canonical.com,
+        zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
+Message-ID: <YBFv+12xfsoxacDb@kroah.com>
+References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611733552-150419-7-git-send-email-hkelam@marvell.com>
+In-Reply-To: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void otx2_get_link_mode_info(u64 index, int mode,
-> +				    struct ethtool_link_ksettings
-> +				    *link_ksettings)
-> +{
-> +	u64 ethtool_link_mode = 0;
-> +	int bit_position = 0;
-> +	u64 link_modes = 0;
-> +
-> +	/* CGX link modes to Ethtool link mode mapping */
-> +	const int cgx_link_mode[29] = {0, /* SGMII  Mode */
-> +		ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
-> +		ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
-> +		ETHTOOL_LINK_MODE_10000baseSR_Full_BIT,
-> +		ETHTOOL_LINK_MODE_10000baseLR_Full_BIT,
-> +		ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
-> +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> +		ETHTOOL_LINK_MODE_25000baseSR_Full_BIT,
-> +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> +		ETHTOOL_LINK_MODE_25000baseCR_Full_BIT,
-> +		ETHTOOL_LINK_MODE_25000baseKR_Full_BIT,
-> +		ETHTOOL_LINK_MODE_40000baseSR4_Full_BIT,
-> +		ETHTOOL_LINK_MODE_40000baseLR4_Full_BIT,
-> +		ETHTOOL_LINK_MODE_40000baseCR4_Full_BIT,
-> +		ETHTOOL_LINK_MODE_40000baseKR4_Full_BIT,
-> +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> +		ETHTOOL_LINK_MODE_50000baseSR_Full_BIT,
-> +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> +		ETHTOOL_LINK_MODE_50000baseLR_ER_FR_Full_BIT,
-> +		ETHTOOL_LINK_MODE_50000baseCR_Full_BIT,
-> +		ETHTOOL_LINK_MODE_50000baseKR_Full_BIT,
-> +		OTX2_RESERVED_ETHTOOL_LINK_MODE,
-> +		ETHTOOL_LINK_MODE_100000baseSR4_Full_BIT,
-> +		ETHTOOL_LINK_MODE_100000baseLR4_ER4_Full_BIT,
-> +		ETHTOOL_LINK_MODE_100000baseCR4_Full_BIT,
-> +		ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT
-> +	};
-> +
-> +	link_modes = index & OTX2_ETHTOOL_SUPPORTED_MODES;
-> +
-> +	for (bit_position = 0; link_modes; bit_position++, link_modes >>= 1) {
-> +		if (!(link_modes & 1))
-> +			continue;
-> +
-> +		if (bit_position ==  0)
-> +			ethtool_link_mode = 0x3F;
-> +
-> +		if (cgx_link_mode[bit_position])
-> +			ethtool_link_mode |= 1ULL << cgx_link_mode[bit_position];
-> +
-> +		if (mode)
-> +			*link_ksettings->link_modes.advertising |=
-> +							ethtool_link_mode;
-> +		else
-> +			*link_ksettings->link_modes.supported |=
-> +							ethtool_link_mode;
+On Wed, Jan 27, 2021 at 09:42:52PM +0800, Carlis wrote:
+> From: zhangxuezhi <zhangxuezhi1@yulong.com>
+> 
+> For st7789v ic,when we need continuous full screen refresh, it is best to
+> wait for the TE signal arrive to avoid screen tearing
+> 
+> Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
 
-You should not be derefererncing these bitmask like this. Use the
-helpers, ethtool_link_ksettings_add_link_mode(). You cannot assume
-these a ULL, they are not.
+Please slow down and wait at least a day between patch submissions,
+there is no rush here.
 
-Please review all the patches. There are too many levels of
-obfustication for me to easily follow the code, bit it looks like you
-have other bitwise operations which might be operating on kernel
-bitmaps, and you are not using the helpers.
+And also, ALWAYS run scripts/checkpatch.pl on your submissions, so that
+you don't have a maintainer asking you about basic problems, like are in
+this current patch :(
 
+thanks,
 
-> +	}
-> +}
-> +
-> +static int otx2_get_link_ksettings(struct net_device *netdev,
-> +				   struct ethtool_link_ksettings *cmd)
-> +{
-> +	struct otx2_nic *pfvf = netdev_priv(netdev);
-> +	struct cgx_fw_data *rsp = NULL;
-> +	u32 supported = 0;
-> +
-> +	cmd->base.duplex  = pfvf->linfo.full_duplex;
-> +	cmd->base.speed   = pfvf->linfo.speed;
-> +	cmd->base.autoneg = pfvf->linfo.an;
-> +
-> +	rsp = otx2_get_fwdata(pfvf);
-> +	if (IS_ERR(rsp))
-> +		return PTR_ERR(rsp);
-> +
-> +	if (rsp->fwdata.supported_an)
-> +		supported |= SUPPORTED_Autoneg;
-> +	ethtool_convert_legacy_u32_to_link_mode(cmd->link_modes.supported,
-> +						supported);
-
-Why use the legacy stuff when you can directly set the bit using the
-helpers. Don't the word legacy actually suggest you should not be
-using it in new code?
-
-	Andrew
+greg k-h
