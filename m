@@ -2,90 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE395305F30
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A2B305F21
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbhA0PMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:12:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235587AbhA0PH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:07:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57384207E2;
-        Wed, 27 Jan 2021 15:06:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611759991;
-        bh=TWIRJM6gVAm1vQZqku9qg1fMLOchvryOpdAYf8HGPDU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aHXsweOIcpqgkuspQ3fcjfaTCA0kdWWEAK7WZ3nQZCBqhIXNC5bSXA+Y83TTOkjxv
-         H7enIR2piMgV/sMCuZyCih2ERruJOrH8t24mGD5h29UOaGuyFhPRez+fP60Ot2yS6t
-         j9NHwH2JXoyHvJm4aN5DzivxDDEVf/ZK3R0yIYXp4EA72CMJ3W98vIexPYNXOtMMm5
-         zEznLnjohJ15VFkq7+7nJ+XaIWA3uN/ZrPcd9fn9mbWsmBX9Syj7942CqVvnHqSl3p
-         rdYZCBKEC5SY+TnXzed9wxR8uwOOMjbtx4XogwATG2MHXkFS5SRWhu2U2PWMh9SFcq
-         qbEtJ5UP4idHQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l4mP5-0001xv-H6; Wed, 27 Jan 2021 16:06:43 +0100
-Date:   Wed, 27 Jan 2021 16:06:43 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 08/12] usb: misc: ldusb: update to use
- usb_control_msg_send()
-Message-ID: <YBGBg5ofIzUHxoYn@hovoldconsulting.com>
-References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
- <20210126183403.911653-9-anant.thazhemadam@gmail.com>
+        id S1343707AbhA0PKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:10:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235635AbhA0PH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:07:59 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841EBC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:07:17 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id rv9so3063097ejb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:07:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N7A1x2GC1x0hF+kEQdhgJbtckU1NEuvdrANE8Zk2mBc=;
+        b=PwO46OqOPXu+s13hTP8dIKnBU7ghxNkqb7PMprEjiCc6JwFpe65E/p95W2LoKqZ0K+
+         aqE2Q0kATuO5txfH2C7ti1pKIEW/fcipNQh4EEysIke8rK3e7MvDnpB8RI5g8aJ6PzvI
+         ttlHr2PXcKsfWLso+s3LtOzSVFIR1fgy2Nb4VGsVAQaFtsMpfXH8jVewSTfWsKNYIoF/
+         fUctJgZ2E0i7HqIDsfJ4wonPFkXT7Tec7Z1s+GbnaQRH08YFVNFfxRBbIoXhlZ21RT7D
+         5U1PduvF3d5Wj2dcWmhS0Tp4RFU5HaIbnRK/AkpX9QoxhaLwNZEF4ldk4gb4K4tpgcVo
+         tIRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N7A1x2GC1x0hF+kEQdhgJbtckU1NEuvdrANE8Zk2mBc=;
+        b=qzgt7svxySD7Okz3Nc9emP9yXRnY7e2dXxBt/wqpj7U9IpiJrwxzktnMrbDXzyldkF
+         f/uvjgWr6zGmnTzj8q9DEbW852WOHdGUfcjo24Ogh5nmkX99jfVNYA8LikuQVhno0hzI
+         qji2rsq4Z58wOA4mP2/SWJoKKDQ1jLbzXyt7Ha311miON9rZYvRW00/5JCiGqKtxJVxF
+         whRjPLbHfO6GFKtjaf3e6v76gW1Y+VZcxAo79TZRvun6cArqeHyQN9AkY7Qqo2DLFbuy
+         HpqrQjxIGvcS9xI7sjhg+6WSM0KTyzkkIdaFHhjVrmPzSzICVzgM6vf/rypm0aHYRqXA
+         c1vg==
+X-Gm-Message-State: AOAM530Gnu/JfY9gwIiB/ahGdiMIYkHCdltVFbC3XDCQHgS5OXydg/I2
+        kb01r3/u+ta7jN/b5hBm11ISBQ==
+X-Google-Smtp-Source: ABdhPJyH0Ua5BpkkZT8m+HW+HXL+QZRCAvd2STIW12zU9jFUOSFTkPgl0rUhiiiIAHB8ZtWkX9Yoxg==
+X-Received: by 2002:a17:906:5846:: with SMTP id h6mr7083231ejs.521.1611760036032;
+        Wed, 27 Jan 2021 07:07:16 -0800 (PST)
+Received: from google.com ([2a00:79e0:2:11:1ea0:b8ff:fe79:fe73])
+        by smtp.gmail.com with ESMTPSA id s15sm962666ejy.68.2021.01.27.07.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 07:07:15 -0800 (PST)
+Date:   Wed, 27 Jan 2021 16:07:09 +0100
+From:   Piotr Figiel <figiel@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        mathieu.desnoyers@efficios.com, viro@zeniv.linux.org.uk,
+        peterz@infradead.org, paulmck@kernel.org, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
+        pjt@google.com
+Subject: Re: [PATCH v3] fs/proc: Expose RSEQ configuration
+Message-ID: <YBGBnQWJDVZ7Y7s6@google.com>
+References: <20210126185412.175204-1-figiel@google.com>
+ <20210126112547.d3f18b6a2abe864e8bfa7fcd@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126183403.911653-9-anant.thazhemadam@gmail.com>
+In-Reply-To: <20210126112547.d3f18b6a2abe864e8bfa7fcd@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:03:59AM +0530, Anant Thazhemadam wrote:
-> The newer usb_control_msg_{send|recv}() API are an improvement on the
-> existing usb_control_msg() as it ensures that a short read/write is treated
-> as an error, data can be used off the stack, and raw usb pipes need not be
-> created in the calling functions.
-> For this reason, the instance of usb_control_msg_send() has been replaced
-> with usb_control_msg_send() appropriately.
+On Tue, Jan 26, 2021 at 11:25:47AM -0800, Andrew Morton wrote:
+> On Tue, 26 Jan 2021 19:54:12 +0100 Piotr Figiel <figiel@google.com> wrote:
+> > To achieve above goals expose the RSEQ structure address and the
+> > signature value with the new per-thread procfs file "rseq".
+> Using "/proc/<pid>/rseq" would be more informative.
 > 
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
->  drivers/usb/misc/ldusb.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
+> >  fs/exec.c      |  2 ++
+> >  fs/proc/base.c | 22 ++++++++++++++++++++++
+> >  kernel/rseq.c  |  4 ++++
 > 
-> diff --git a/drivers/usb/misc/ldusb.c b/drivers/usb/misc/ldusb.c
-> index 670e4d91e9ca..259ead4edecb 100644
-> --- a/drivers/usb/misc/ldusb.c
-> +++ b/drivers/usb/misc/ldusb.c
-> @@ -573,15 +573,13 @@ static ssize_t ld_usb_write(struct file *file, const char __user *buffer,
->  	}
->  
->  	if (dev->interrupt_out_endpoint == NULL) {
-> -		/* try HID_REQ_SET_REPORT=9 on control_endpoint instead of interrupt_out_endpoint */
-> -		retval = usb_control_msg(interface_to_usbdev(dev->intf),
-> -					 usb_sndctrlpipe(interface_to_usbdev(dev->intf), 0),
-> -					 9,
-> +		retval = usb_control_msg_send(interface_to_usbdev(dev->intf),
-> +					 0, 9,
->  					 USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
->  					 1 << 8, 0,
->  					 dev->interrupt_out_buffer,
->  					 bytes_to_write,
-> -					 USB_CTRL_SET_TIMEOUT);
-> +					 USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
->  		if (retval < 0)
->  			dev_err(&dev->intf->dev,
->  				"Couldn't submit HID_REQ_SET_REPORT %d\n",
+> A Documentation/ update would be appropriate.
+> 
+> > +	task_lock(current);
+> >  	rseq_execve(current);
+> > +	task_unlock(current);
+> 
+> There's a comment over the task_lock() implementation which explains
+> what things it locks.  An update to that would be helpful.
 
-This would also only introduce a redundant allocation and memcpy() as
-the buffer is already DMA-able and used for that purpose in other places
-as well.
+Agreed I'll include fixes for above comments in v4.
 
-I suggest dropping this one too.
+> > --- a/fs/proc/base.c
+> > +++ b/fs/proc/base.c
+> > @@ -662,6 +662,22 @@ static int proc_pid_syscall(struct seq_file *m, struct pid_namespace *ns,
+> >  
+> >  	return 0;
+> >  }
+> > +
+> > +#ifdef CONFIG_RSEQ
+> > +static int proc_pid_rseq(struct seq_file *m, struct pid_namespace *ns,
+> > +				struct pid *pid, struct task_struct *task)
+> > +{
+> > +	int res = lock_trace(task);
+> > +
+> > +	if (res)
+> > +		return res;
+> > +	task_lock(task);
+> > +	seq_printf(m, "%px %08x\n", task->rseq, task->rseq_sig);
+> > +	task_unlock(task);
+> > +	unlock_trace(task);
+> > +	return 0;
+> > +}
+> 
+> Do we actually need task_lock() for this purpose?  Would
+> exec_update_lock() alone be adequate and appropriate?
 
-Johan
+Now rseq syscall which modifies those fields isn't synchronised with
+exec_update_lock. So either a new lock or task_lock() could be used or
+exec_update_lock could be reused in the syscall.  I decided against
+exec_update_lock reuse in the syscall because it's normally used to
+guard access checks against concurrent setuid exec. This could be
+potentially confusing as it's not relevant for the the rseq syscall
+code.
+I think task_lock usage here is also consistent with how it's used
+across the kernel.
+
+Whether we need consistent rseq and rseq_sig pairs in the proc output, I
+think there's some argument for it (discussed also in parallel thread
+with Mathieu Desnoyers).
+
+Best regards,
+Piotr.
