@@ -2,312 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEEA305E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4140305DB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhA0OVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:21:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhA0OVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:21:24 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F8DC061788
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:20:43 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id MqLe240084C55Sk01qLeUd; Wed, 27 Jan 2021 15:20:39 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l4lgU-0018sw-Hv; Wed, 27 Jan 2021 15:20:38 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l4ksG-008TOt-Qe; Wed, 27 Jan 2021 14:28:44 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] [RFC] dt-bindings: power: sysc-remobile: Convert to json-schema
-Date:   Wed, 27 Jan 2021 14:28:40 +0100
-Message-Id: <20210127132840.2019595-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S231851AbhA0OAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:00:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44624 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232902AbhA0N6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:58:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E9212AE2D;
+        Wed, 27 Jan 2021 13:58:08 +0000 (UTC)
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Rostecki <mrostecki@suse.com>
+Subject: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
+Date:   Wed, 27 Jan 2021 14:57:27 +0100
+Message-Id: <20210127135728.30276-1-mrostecki@suse.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Renesas R-Mobile System Controller (SYSC) Device Tree
-binding documentation to json-schema.
+From: Michal Rostecki <mrostecki@suse.com>
 
-Document missing properties.
-Drop consumer example, as it does not belong here.
+Before this change, the btrfs_get_io_geometry() function was calling
+btrfs_get_chunk_map() to get the extent mapping, necessary for
+calculating the I/O geometry. It was using that extent mapping only
+internally and freeing the pointer after its execution.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+That resulted in calling btrfs_get_chunk_map() de facto twice by the
+__btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+first and then calling btrfs_get_chunk_map() directly to get the extent
+mapping, used by the rest of the function.
+
+This change fixes that by passing the extent mapping to the
+btrfs_get_io_geometry() function as an argument.
+
+v2:
+When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
+- Use errno_to_blk_status(PTR_ERR(em)) as the status
+- Set em to NULL
+
+Signed-off-by: Michal Rostecki <mrostecki@suse.com>
 ---
-Marked RFC, as it does not check deeper levels than the first level of
-the "pm-domains" subnode.
+ fs/btrfs/inode.c   | 38 +++++++++++++++++++++++++++++---------
+ fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
+ fs/btrfs/volumes.h |  5 +++--
+ 3 files changed, 48 insertions(+), 34 deletions(-)
 
-I think the reference in
-
-    additionalProperties:
-	$ref: "#/patternProperties"
-
-should become "#/patternProperties/0/additionalProperties", but that
-gives:
-
-    Unresolvable JSON pointer: 'patternProperties/0/additionalProperties'
-
-https://opis.io/json-schema/1.x/pointers.html taught me about relative
-SJON pointers, but "2/additionalProperties" and "2/0" fail with
-
-    Unknown file referenced: [Errno 2] No such file or directory: 'dt-schema/dtschema/schemas/power/2/additionalProperties'
-    Unknown file referenced: [Errno 2] No such file or directory: 'dt-schema/dtschema/schemas/power/2/0'
-
-Anyone with a clue?
-
-Thanks!
----
- .../bindings/power/renesas,sysc-rmobile.txt   | 100 ---------------
- .../bindings/power/renesas,sysc-rmobile.yaml  | 117 ++++++++++++++++++
- 2 files changed, 117 insertions(+), 100 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/renesas,sysc-rmobile.txt
- create mode 100644 Documentation/devicetree/bindings/power/renesas,sysc-rmobile.yaml
-
-diff --git a/Documentation/devicetree/bindings/power/renesas,sysc-rmobile.txt b/Documentation/devicetree/bindings/power/renesas,sysc-rmobile.txt
-deleted file mode 100644
-index 49aba15dff8b7e4d..0000000000000000
---- a/Documentation/devicetree/bindings/power/renesas,sysc-rmobile.txt
-+++ /dev/null
-@@ -1,100 +0,0 @@
--DT bindings for the Renesas R-Mobile System Controller
--
--== System Controller Node ==
--
--The R-Mobile System Controller provides the following functions:
--  - Boot mode management,
--  - Reset generation,
--  - Power management.
--
--Required properties:
--- compatible: Should be "renesas,sysc-<soctype>", "renesas,sysc-rmobile" as
--	      fallback.
--	      Examples with soctypes are:
--		- "renesas,sysc-r8a73a4" (R-Mobile APE6)
--		- "renesas,sysc-r8a7740" (R-Mobile A1)
--		- "renesas,sysc-sh73a0" (SH-Mobile AG5)
--- reg: Two address start and address range blocks for the device:
--         - The first block refers to the normally accessible registers,
--         - the second block refers to the registers protected by the HPB
--	   semaphore.
--
--Optional nodes:
--- pm-domains: This node contains a hierarchy of PM domain nodes, which should
--  match the Power Area Hierarchy in the Power Domain Specifications section of
--  the device's datasheet.
--
--
--== PM Domain Nodes ==
--
--Each of the PM domain nodes represents a PM domain, as documented by the
--generic PM domain bindings in
--Documentation/devicetree/bindings/power/power-domain.yaml.
--
--The nodes should be named by the real power area names, and thus their names
--should be unique.
--
--Required properties:
--  - #power-domain-cells: Must be 0.
--
--Optional properties:
--- reg: If the PM domain is not always-on, this property must contain the bit
--       index number for the corresponding power area in the various Power
--       Control and Status Registers. The parent's node must contain the
--       following two properties:
--	 - #address-cells: Must be 1,
--	 - #size-cells: Must be 0.
--       If the PM domain is always-on, this property must be omitted.
--
--
--Example:
--
--This shows a subset of the r8a7740 PM domain hierarchy, containing the
--C5 "always-on" domain, 2 of its subdomains (A4S and A4SU), and the A3SP domain,
--which is a subdomain of A4S.
--
--	sysc: system-controller@e6180000 {
--		compatible = "renesas,sysc-r8a7740", "renesas,sysc-rmobile";
--		reg = <0xe6180000 0x8000>, <0xe6188000 0x8000>;
--
--		pm-domains {
--			pd_c5: c5 {
--				#address-cells = <1>;
--				#size-cells = <0>;
--				#power-domain-cells = <0>;
--
--				pd_a4s: a4s@10 {
--					reg = <10>;
--					#address-cells = <1>;
--					#size-cells = <0>;
--					#power-domain-cells = <0>;
--
--					pd_a3sp: a3sp@11 {
--						reg = <11>;
--						#power-domain-cells = <0>;
--					};
--				};
--
--				pd_a4su: a4su@20 {
--					reg = <20>;
--					#power-domain-cells = <0>;
--				};
--			};
--		};
--	};
--
--
--== PM Domain Consumers ==
--
--Hardware blocks belonging to a PM domain should contain a "power-domains"
--property that is a phandle pointing to the corresponding PM domain node.
--
--Example:
--
--	tpu: pwm@e6600000 {
--		compatible = "renesas,tpu-r8a7740", "renesas,tpu";
--		reg = <0xe6600000 0x100>;
--		clocks = <&mstp3_clks R8A7740_CLK_TPU0>;
--		power-domains = <&pd_a3sp>;
--		#pwm-cells = <3>;
--	};
-diff --git a/Documentation/devicetree/bindings/power/renesas,sysc-rmobile.yaml b/Documentation/devicetree/bindings/power/renesas,sysc-rmobile.yaml
-new file mode 100644
-index 0000000000000000..2081d8c59b91beee
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/renesas,sysc-rmobile.yaml
-@@ -0,0 +1,117 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/renesas,sysc-rmobile.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0dbe1aaa0b71..e2ee3a9c1140 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+ 	struct inode *inode = page->mapping->host;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	u64 logical = bio->bi_iter.bi_sector << 9;
++	struct extent_map *em;
+ 	u64 length = 0;
+ 	u64 map_length;
+-	int ret;
++	int ret = 0;
+ 	struct btrfs_io_geometry geom;
+ 
+ 	if (bio_flags & EXTENT_BIO_COMPRESSED)
+@@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+ 
+ 	length = bio->bi_iter.bi_size;
+ 	map_length = length;
+-	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
+-				    &geom);
++	em = btrfs_get_chunk_map(fs_info, logical, map_length);
++	if (IS_ERR(em))
++		return PTR_ERR(em);
++	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
++				    map_length, &geom);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+-	if (geom.len < length + size)
+-		return 1;
+-	return 0;
++	if (geom.len < length + size) {
++		ret = 1;
++		goto out;
++	}
++out:
++	free_extent_map(em);
++	return ret;
+ }
+ 
+ /*
+@@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+ 	u64 submit_len;
+ 	int clone_offset = 0;
+ 	int clone_len;
++	int logical;
+ 	int ret;
+ 	blk_status_t status;
+ 	struct btrfs_io_geometry geom;
+ 	struct btrfs_dio_data *dio_data = iomap->private;
++	struct extent_map *em;
+ 
+ 	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
+ 	if (!dip) {
+@@ -7970,11 +7980,18 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+ 	}
+ 
+ 	start_sector = dio_bio->bi_iter.bi_sector;
++	logical = start_sector << 9;
+ 	submit_len = dio_bio->bi_iter.bi_size;
+ 
+ 	do {
+-		ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
+-					    start_sector << 9, submit_len,
++		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
++		if (IS_ERR(em)) {
++			status = errno_to_blk_status(PTR_ERR(em));
++			em = NULL;
++			goto out_err;
++		}
++		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
++					    logical, submit_len,
+ 					    &geom);
+ 		if (ret) {
+ 			status = errno_to_blk_status(ret);
+@@ -8030,12 +8047,15 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+ 		clone_offset += clone_len;
+ 		start_sector += clone_len >> 9;
+ 		file_offset += clone_len;
 +
-+title: Renesas R-Mobile System Controller
++		free_extent_map(em);
+ 	} while (submit_len > 0);
+ 	return BLK_QC_T_NONE;
+ 
+ out_err:
+ 	dip->dio_bio->bi_status = status;
+ 	btrfs_dio_private_put(dip);
++	free_extent_map(em);
+ 	return BLK_QC_T_NONE;
+ }
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a8ec8539cd8d..4c753b17c0a2 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op)
+ }
+ 
+ /*
+- * btrfs_get_io_geometry - calculates the geomery of a particular (address, len)
++ * btrfs_get_io_geometry - calculates the geometry of a particular (address, len)
+  *		       tuple. This information is used to calculate how big a
+  *		       particular bio can get before it straddles a stripe.
+  *
+- * @fs_info - the filesystem
+- * @logical - address that we want to figure out the geometry of
+- * @len	    - the length of IO we are going to perform, starting at @logical
+- * @op      - type of operation - write or read
+- * @io_geom - pointer used to return values
++ * @fs_info: the filesystem
++ * @em:      mapping containing the logical extent
++ * @op:      type of operation - write or read
++ * @logical: address that we want to figure out the geometry of
++ * @len:     the length of IO we are going to perform, starting at @logical
++ * @io_geom: pointer used to return values
+  *
+  * Returns < 0 in case a chunk for the given logical address cannot be found,
+  * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
+  */
+-int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+-			u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
++int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
++			  enum btrfs_map_op op, u64 logical, u64 len,
++			  struct btrfs_io_geometry *io_geom)
+ {
+-	struct extent_map *em;
+ 	struct map_lookup *map;
+ 	u64 offset;
+ 	u64 stripe_offset;
+@@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	u64 stripe_len;
+ 	u64 raid56_full_stripe_start = (u64)-1;
+ 	int data_stripes;
+-	int ret = 0;
+ 
+ 	ASSERT(op != BTRFS_MAP_DISCARD);
+ 
+-	em = btrfs_get_chunk_map(fs_info, logical, len);
+-	if (IS_ERR(em))
+-		return PTR_ERR(em);
+-
+ 	map = em->map_lookup;
+ 	/* Offset of this logical address in the chunk */
+ 	offset = logical - em->start;
+@@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		btrfs_crit(fs_info,
+ "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
+ 			stripe_offset, offset, em->start, logical, stripe_len);
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	/* stripe_offset is the offset of this block in its stripe */
+@@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	io_geom->stripe_offset = stripe_offset;
+ 	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
+ 
+-out:
+-	/* once for us */
+-	free_extent_map(em);
+-	return ret;
++	return 0;
+ }
+ 
+ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+@@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+ 	ASSERT(bbio_ret);
+ 	ASSERT(op != BTRFS_MAP_DISCARD);
+ 
+-	ret = btrfs_get_io_geometry(fs_info, op, logical, *length, &geom);
++	em = btrfs_get_chunk_map(fs_info, logical, *length);
++	ASSERT(!IS_ERR(em));
 +
-+maintainers:
-+  - Geert Uytterhoeven <geert+renesas@glider.be>
-+  - Magnus Damm <magnus.damm@gmail.com>
-+
-+description: |
-+  The R-Mobile System Controller provides the following functions:
-+    - Boot mode management,
-+    - Reset generation,
-+    - Power management.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - renesas,sysc-r8a73a4    # R-Mobile APE6
-+          - renesas,sysc-r8a7740    # R-Mobile A1
-+          - renesas,sysc-sh73a0     # SH-Mobile AG5
-+      - const: renesas,sysc-rmobile # Generic SH/R-Mobile
-+
-+  reg:
-+    items:
-+      - description: Normally accessible register block
-+      - description: Register block protected by the HPB semaphore
-+
-+required:
-+  - compatible
-+  - reg
-+
-+patternProperties:
-+  "^pm-domains$":
-+    type: object
-+    description: |
-+      This node contains a hierarchy of PM domain nodes, which should match the
-+      Power Area Hierarchy in the Power Domain Specifications section of the
-+      device's datasheet.
-+
-+    properties:
-+      '#address-cells':
-+        const: 1
-+
-+      '#size-cells':
-+        const: 0
-+
-+    additionalProperties:
-+      type: object
-+      description:
-+        PM domain node representing a PM domain.  This node hould be named by
-+        the real power area names, and thus its names should be unique.
-+
-+      properties:
-+        '#address-cells':
-+          const: 1
-+
-+        '#size-cells':
-+          const: 0
-+
-+        reg:
-+          maxItems: 1
-+          description:
-+            If the PM domain is not always-on, this property must contain the
-+            bit index number for the corresponding power area in the various
-+            Power Control and Status Registers.
-+            If the PM domain is always-on, this property must be omitted.
-+
-+        '#power-domain-cells':
-+          const: 0
-+
-+      required:
-+        - '#power-domain-cells'
-+
-+      additionalProperties:
-+        $ref: "#/patternProperties"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    // This shows a subset of the r8a7740 PM domain hierarchy, containing the
-+    // C5 "always-on" domain, 2 of its subdomains (A4S and A4SU), and the A3SP
-+    // domain, which is a subdomain of A4S.
-+    sysc: system-controller@e6180000 {
-+            compatible = "renesas,sysc-r8a7740", "renesas,sysc-rmobile";
-+            reg = <0xe6180000 0x8000>, <0xe6188000 0x8000>;
-+
-+            pm-domains {
-+                    pd_c5: c5 {
-+                            #address-cells = <1>;
-+                            #size-cells = <0>;
-+                            #power-domain-cells = <0>;
-+
-+                            pd_a4s: a4s@10 {
-+                                    reg = <10>;
-+                                    #address-cells = <1>;
-+                                    #size-cells = <0>;
-+                                    #power-domain-cells = <0>;
-+
-+                                    pd_a3sp: a3sp@11 {
-+                                            reg = <11>;
-+                                            #power-domain-cells = <0>;
-+                                    };
-+                            };
-+
-+                            pd_a4su: a4su@20 {
-+                                    reg = <20>;
-+                                    #power-domain-cells = <0>;
-+                            };
-+                    };
-+            };
-+    };
++	ret = btrfs_get_io_geometry(fs_info, em, op, logical, *length, &geom);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	em = btrfs_get_chunk_map(fs_info, logical, *length);
+-	ASSERT(!IS_ERR(em));
+ 	map = em->map_lookup;
+ 
+ 	*length = geom.len;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index c43663d9c22e..04e2b26823c2 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		     u64 logical, u64 *length,
+ 		     struct btrfs_bio **bbio_ret);
+-int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+-		u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
++int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *map,
++			  enum btrfs_map_op op, u64 logical, u64 len,
++			  struct btrfs_io_geometry *io_geom);
+ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
+ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
+ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
 -- 
-2.25.1
+2.30.0
 
