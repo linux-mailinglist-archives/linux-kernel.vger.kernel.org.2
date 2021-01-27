@@ -2,134 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60BD3058A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C36CC3058A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbhA0KkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:40:06 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:37454 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231570AbhA0Kgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:36:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611743781; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=CaXXVSQ1one582ViqeYOwh6mcykQucWxm/rUc3Fag+0=; b=eN+05usRmKt/Ll17H/omXuInwJKvJ6Um9F8Xwe8jUNX+sJbfMuYPI2v2wzggAAEXLXA6aqAJ
- 3qYAAjk+ljJJ09TsDMnKL6sK2V+7ZI+rVud9csH8A9aATcnwdkIpQqS+/8gPrZq/CHEgkqau
- aEUehFGTceLwihgdm6cxn8Sgycs=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60114200bdcf4682871cf1bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 10:35:44
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ABFF5C433C6; Wed, 27 Jan 2021 10:35:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S236018AbhA0KlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:41:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39803 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235993AbhA0KiA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:38:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611743793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SCPzZ58zrnooW9g+/emDghb7lm/E/AgOMGI9bAy3zYE=;
+        b=e5GJqwMa9axlJcsX5B1CCDT5Q4Q5YFdeXL9vBLMBTDgpx5oHIIKxd7RZsOn5z4qcIuqKad
+        Xcr/RUCBIlAhhGLBWsMgRUsLd+/dEABCACPio6kO5T0QdQPsgRDuSNgLWax+NndopR4p7j
+        py/Hf4buG8m6l5AU47tjRU4Ime/lHQQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-71-lIVf9Fe2Nnu587VehfUqmw-1; Wed, 27 Jan 2021 05:36:29 -0500
+X-MC-Unique: lIVf9Fe2Nnu587VehfUqmw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 053AAC433C6;
-        Wed, 27 Jan 2021 10:35:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 053AAC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ath9k: fix build error with LEDS_CLASS=m
-References: <20210125113654.2408057-1-arnd@kernel.org>
-        <CAJKOXPfteJ3Jia4Qd9DabjxcOtax3uDgi1fSbz4_+cHsJ1prQQ@mail.gmail.com>
-        <CAK8P3a0apBUbck9Z3UMKfwSJw8a-UbbXLTLUvSyOKEwTgPLjqg@mail.gmail.com>
-        <CAJKOXPc6LWnqiyO9WgxUZPo-vitNcQQr2oDoyD44P2YTSJ7j=g@mail.gmail.com>
-        <CAK8P3a1NEbZtXVA0Z4P3K97L9waBp7nkCWOkdYjR3+7FUF0P0Q@mail.gmail.com>
-        <CAJKOXPdWouEFtCp_iG+py1JcyrEU2Fj98jBAPTKZXQXCDQE54A@mail.gmail.com>
-        <CAK8P3a3ygYTEwjLbFuArdfNF1-yydVjtS2NZDAURKjOJGAxkAQ@mail.gmail.com>
-Date:   Wed, 27 Jan 2021 12:35:37 +0200
-In-Reply-To: <CAK8P3a3ygYTEwjLbFuArdfNF1-yydVjtS2NZDAURKjOJGAxkAQ@mail.gmail.com>
-        (Arnd Bergmann's message of "Mon, 25 Jan 2021 16:22:18 +0100")
-Message-ID: <87bldaacqu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 769BE190B2A2;
+        Wed, 27 Jan 2021 10:36:25 +0000 (UTC)
+Received: from [10.36.114.237] (ovpn-114-237.ams2.redhat.com [10.36.114.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 504195C5FD;
+        Wed, 27 Jan 2021 10:36:16 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com,
+        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com>
+ <20210126092942.GA10602@linux>
+ <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
+ <20210126145819.GB16870@linux>
+ <259b9669-0515-01a2-d714-617011f87194@redhat.com>
+ <20210126153448.GA17455@linux>
+ <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
+ associated with each HugeTLB page
+Message-ID: <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
+Date:   Wed, 27 Jan 2021 11:36:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
-
-> On Mon, Jan 25, 2021 at 4:04 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->> On Mon, 25 Jan 2021 at 15:38, Arnd Bergmann <arnd@kernel.org> wrote:
->> > On Mon, Jan 25, 2021 at 2:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On 26.01.21 16:56, David Hildenbrand wrote:
+> On 26.01.21 16:34, Oscar Salvador wrote:
+>> On Tue, Jan 26, 2021 at 04:10:53PM +0100, David Hildenbrand wrote:
+>>> The real issue seems to be discarding the vmemmap on any memory that has
+>>> movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, we
+>>> can reuse parts of the thingy we're freeing for the vmemmap. Not that it
+>>> would be ideal: that once-a-huge-page thing will never ever be a huge page
+>>> again - but if it helps with OOM in corner cases, sure.
 >>
->> I meant that having MAC80211_LEDS selected causes the ath9k driver to
->> toggle on/off the WiFi LED. Every second, regardless whether it's
->> doing something or not. In my setup, I have problems with a WiFi
->> dongle somehow crashing (WiFi disappears, nothing comes from the
->> dongle... maybe it's Atheros FW, maybe some HW problem) and I found
->> this LED on/off slightly increases the chances of this dongle-crash.
->> That was the actual reason behind my commits.
+>> Yes, that is one way, but I am not sure how hard would it be to implement.
+>> Plus the fact that as you pointed out, once that memory is used for vmemmap
+>> array, we cannot use it again.
+>> Actually, we would fragment the memory eventually?
 >>
->> Second reason is that I don't want to send USB commands every second
->> when the device is idle. It unnecessarily consumes power on my
->> low-power device.
->
-> Ok, I see.
->
->> Of course another solution is to just disable the trigger via sysfs
->> LED API. It would also work but my patch allows entire code to be
->> compiled-out (which was conditional in ath9k already).
+>>> Possible simplification: don't perform the optimization for now with free
+>>> huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: what
+>>> happens when migrating a huge page from ZONE_NORMAL to (ZONE_MOVABLE|CMA)?
 >>
->> Therefore the patch I sent allows the ath9k LED option to be fully
->> choosable. Someone wants every-second-LED-blink, sure, enable
->> ATH9K_LEDS and you have it. Someone wants to reduce the kernel size,
->> don't enable ATH9K_LEDS.
->
-> Originally, I think this is what CONFIG_MAC80211_LEDS was meant
-> for, but it seems that this is not actually practical, since this also
-> gets selected by half of the drivers using it, while the other half have
-> a dependency on it. Out of the ones that select it, some in turn
-> select LEDS_CLASS, while some depend on it.
->
-> I think this needs a larger-scale cleanup for consistency between
-> (at least) all the wireless drivers using LEDs.
+>> But if we do not allow theose pages to be in ZONE_MOVABLE or CMA, there is no
+>> point in migrate them, right?
+> 
+> Well, memory unplug "could" still work and migrate them and
+> alloc_contig_range() "could in the future" still want to migrate them
+> (virtio-mem, gigantic pages, powernv memtrace). Especially, the latter
+> two don't work with ZONE_MOVABLE/CMA. But, I mean, it would be fair
+> enough to say "there are no guarantees for
+> alloc_contig_range()/offline_pages() with ZONE_NORMAL, so we can break
+> these use cases when a magic switch is flipped and make these pages
+> non-migratable anymore".
+> 
+> I assume compaction doesn't care about huge pages either way, not sure
+> about numa balancing etc.
+> 
+> 
+> However, note that there is a fundamental issue with any approach that
+> allocates a significant amount of unmovable memory for user-space
+> purposes (excluding CMA allocations for unmovable stuff, CMA is
+> special): pairing it with ZONE_MOVABLE becomes very tricky as your user
+> space might just end up eating all kernel memory, although the system
+> still looks like there is plenty of free memory residing in
+> ZONE_MOVABLE. I mentioned that in the context of secretmem in a reduced
+> form as well.
+> 
+> We theoretically have that issue with dynamic allocation of gigantic
+> pages, but it's something a user explicitly/rarely triggers and it can
+> be documented to cause problems well enough. We'll have the same issue
+> with GUP+ZONE_MOVABLE that Pavel is fixing right now - but GUP is
+> already known to be broken in various ways and that it has to be treated
+> in a special way. I'd like to limit the nasty corner cases.
+> 
+> Of course, we could have smart rules like "don't online memory to
+> ZONE_MOVABLE automatically when the magic switch is active". That's just
+> ugly, but could work.
+> 
 
-I agree, this needs cleanup.
+Extending on that, I just discovered that only x86-64, ppc64, and arm64 
+really support hugepage migration.
 
-> Either your patch or mine should get applied in the meantime, and I
-> don't care much which one in this case, as we still have the remaining
-> inconsistency.
+Maybe one approach with the "magic switch" really would be to disable 
+hugepage migration completely in hugepage_migration_supported(), and 
+consequently making hugepage_movable_supported() always return false.
 
-My problem with Krzysztof's patch[1] is that it adds a new Kconfig
-option for ath9k, is that really necessary? Like Arnd said, we should
-fix drivers to use CONFIG_MAC80211_LEDS instead of having driver
-specific options.
-
-So I would prefer take this Arnd's patch instead and queue it for v5.11.
-But as it modifies mac80211 I'll need an ack from Johannes, what do you
-think?
-
-[1] https://patchwork.kernel.org/project/linux-wireless/patch/20201227143034.1134829-1-krzk@kernel.org/
+Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be 
+migrated. The problem I describe would apply (careful with using 
+ZONE_MOVABLE), but well, it can at least be documented.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Thanks,
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+David / dhildenb
+
