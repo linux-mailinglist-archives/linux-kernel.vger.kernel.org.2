@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46D030579F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD033057A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbhA0KAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:00:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbhA0IsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:48:07 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976B4C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:47:05 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id l12so1029915wry.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JGwXlHMaXT173PPtQ79fzLXztmdUly2hAj///m0uLCg=;
-        b=SXE27hziJfU4EBynm15TM/u52B8UvFkNRSF+gnCKLb/HGMnMX6l7oDQkx0uu6o+VoV
-         al7SPenpCQDpTSH3iIM6ZeIvQ6DxYFF4/PvbAePm2AC7/VtDIG8gwdBHQs63Lf1GMHAY
-         2cY7PtAvItUM0cs2azR/ZkUJclB+Lq0au/26FNgiGQxFYSw5jAKzkuF0cwf9n5YmKX5m
-         C3EYfkmi06Wq72JwGyeXuXj3C6j2W0JJDDWCI26a0lxNCBjDWxLxYs+H28gOppi9R2/u
-         sh905FCskKV5SVa4GYZ6KHEZRaV31m6AmxhIsY2X6Dcw4qNUrMljBeLh9I7tXQASNDzH
-         U43g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JGwXlHMaXT173PPtQ79fzLXztmdUly2hAj///m0uLCg=;
-        b=tXm3j4Hb0AecRYaYKAWXtkn5aYwKBklFNg1JQpgWtdkXDT6OdyJVyKdTwe4BreWrDC
-         qXuKxBiNzSw0Z5UfZfef3AAHLzKJOJB2Auf+wnYHMIWRwgr2FRkNMYgBMeg1PwEfFx11
-         p2k58D7qjdgwGizIhq16Fay9TBp3p9UCBK5fZGrJ8EPZr1bwW7ZxcJYzy6Pn1aG3LyQW
-         SFdPUfyjKO3/K5r7coFSDIjjM4WThmNuKffsqubirBZXhDjVDC6suLpRu5x2pSPWGFRJ
-         zbdLBjCPFjVfaj6dA5it37sJSePt4uDnDZfUXMCiA6K2nndvenfO4Am6XoIbeIq4xpr7
-         fjXA==
-X-Gm-Message-State: AOAM532O2HnoM8lCxOIBkl1a0m6e8Mmk5txT1gXxgCSex6XowkvJeJrf
-        jNE8wR9FThf4CsUKnVZWQwJJAg==
-X-Google-Smtp-Source: ABdhPJxuhMeVdTk1V1OzkLPPzrSnWj5/KeHaXq3KQwTTyvrJzFK6e4xVEJmli2GGZtLJSpfZmbzvNw==
-X-Received: by 2002:adf:a2ca:: with SMTP id t10mr9928487wra.370.1611737224262;
-        Wed, 27 Jan 2021 00:47:04 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1cd8:ab51:e378:c21c? ([2a01:e34:ed2f:f020:1cd8:ab51:e378:c21c])
-        by smtp.googlemail.com with ESMTPSA id j13sm1623902wmi.24.2021.01.27.00.47.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 00:47:03 -0800 (PST)
-Subject: Re: [GIT PULL] timer drivers fixes for v5.11-rc5
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>, trix@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <ae3bcda6-5180-639d-6246-d2dfd271c3e7@linaro.org>
-Message-ID: <7a90ec96-d8e5-e505-bd5a-38cc00892021@linaro.org>
-Date:   Wed, 27 Jan 2021 09:47:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <ae3bcda6-5180-639d-6246-d2dfd271c3e7@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S235424AbhA0KBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:01:43 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:35586 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232340AbhA0Irc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:47:32 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D62381A04FC;
+        Wed, 27 Jan 2021 09:46:36 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BF2CD1A0248;
+        Wed, 27 Jan 2021 09:46:32 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 08B88402A2;
+        Wed, 27 Jan 2021 09:46:26 +0100 (CET)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
+        Biwen Li <biwen.li@nxp.com>
+Subject: [PATCH] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE to remove call trace
+Date:   Wed, 27 Jan 2021 16:55:09 +0800
+Message-Id: <20210127085509.18948-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Biwen Li <biwen.li@nxp.com>
 
-Hi Thomas,
+Add flag IRQCHIP_SKIP_SET_WAKE to remove call trace as follow,
+...
+[   45.605239] Unbalanced IRQ 120 wake disable
+[   45.609445] WARNING: CPU: 0 PID: 1124 at kernel/irq/manage.c:800 irq_set_irq_wake+0x154/0x1a0
+...
+[   45.645141] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+[   45.651144] pc : irq_set_irq_wake+0x154/0x1a0
+[   45.655497] lr : irq_set_irq_wake+0x154/0x1a0
+...
+[   45.742825] Call trace:
+[   45.745268]  irq_set_irq_wake+0x154/0x1a0
+[   45.749278]  ds3232_resume+0x38/0x50
 
-just a gentle ping
+On ls2088ardb:
+In suspend progress(# echo mem > /sys/power/state),
+pm_suspend()->suspend_devices_and_enter()->dpm_suspend()->device_suspend()
+->ds3232_suspend()->enable_irq_wake()->irq_set_irq_wake()
+->set_irq_wake_real(), return -ENXIO, there get
+"Cannot set wakeup source" in ds3232_suspend().
 
-On 20/01/2021 09:31, Daniel Lezcano wrote:
-> 
-> Hi Thomas,
-> 
-> please consider the following three fixes for the timer drivers.
-> 
-> Thanks
-> 
->   -- Daniel
-> 
-> The following changes since commit e3fab2f3de081e98c50b7b4ace1b040161d95310:
-> 
->   ntp: Fix RTC synchronization on 32-bit platforms (2021-01-12 21:13:01
-> +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.linaro.org/people/daniel.lezcano/linux.git
-> tags/timers-v5.11-rc5
-> 
-> for you to fetch changes up to 7da390694afbaed8e0f05717a541dfaf1077ba51:
-> 
->   clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is
-> defined (2021-01-18 22:28:59 +0100)
-> 
-> ----------------------------------------------------------------
-> - Fix harmless warning with the ixp4xx when the TIMER_OF option is not
-> selected (Arnd Bergmann)
-> 
-> - Make sure channel clock supply is enabled on sh_cmt (Geert Uytterhoeven)
-> 
-> - Fix compilation error when DEBUG is defined with the mxs_timer (Tom Rix)
-> 
-> ----------------------------------------------------------------
-> Arnd Bergmann (1):
->       clocksource/drivers/ixp4xx: Select TIMER_OF when needed
-> 
-> Geert Uytterhoeven (1):
->       clocksource/drivers/sh_cmt: Make sure channel clock supply is enabled
-> 
-> Tom Rix (1):
->       clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is
-> defined
-> 
->  arch/arm/mach-ixp4xx/Kconfig    |  1 -
->  drivers/clocksource/Kconfig     |  1 +
->  drivers/clocksource/mxs_timer.c |  5 +----
->  drivers/clocksource/sh_cmt.c    | 16 +++++++++++++---
->  4 files changed, 15 insertions(+), 8 deletions(-)
-> 
+In resume progress(wakeup by flextimer)
+dpm_resume_end()->dpm_resume()
+->device_resume()->ds3232_resume()
+->disable_irq_wake()->irq_set_irq_wake()
+->set_irq_wake_real(), there get
+kernel call trace(Unbalanced IRQ 120 wake
+disable)
 
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+Change in v2:
+	- update description
 
+ drivers/irqchip/irq-ls-extirq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+index 564e6de0bd8e..3c6ed7b4744d 100644
+--- a/drivers/irqchip/irq-ls-extirq.c
++++ b/drivers/irqchip/irq-ls-extirq.c
+@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
+ 	.irq_set_type		= ls_extirq_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+-	.flags                  = IRQCHIP_SET_TYPE_MASKED,
++	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
+ };
+ 
+ static int
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.17.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
