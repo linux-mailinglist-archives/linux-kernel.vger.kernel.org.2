@@ -2,174 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55854305054
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91F305053
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhA0D7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:59:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231761AbhA0CzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 21:55:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E77C6206CA;
-        Wed, 27 Jan 2021 02:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611715382;
-        bh=W9tlT0efskTAUPKZ2HeTLOQ7jcJgCM815PUeixWj7lc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=beO0RZN+vYk+ctrD6mqWpHBGirSHQOF+G3QxtoMkM5mbOjO2FUyUmoCUXvU1RIcxr
-         x19lbatbeqOgSAbMi6yVfHOzCD7r5OMO6F3rbIL6LgO0JOz5zEZ6yajO4j4KhWJUEn
-         v5z0NKBllwXAghDG5qf+JguVHv0YVt2lXBbdwC4eaxh0UbSBstLL+7A3yTPrapJIpE
-         +8nzVLWb3UzUHkn6vplTbzV71YVpWfZ9lPqdK/7ITXy2pZNuQJM0qZMFc9GkCDos3R
-         DX/NHXjfxHkTtb4q3daUNF8pdcWuEjSTLEUTnjeWiVT0+J4yP1VRTtau96lh7zMBy2
-         DSFWt2DKhxpFQ==
-Date:   Tue, 26 Jan 2021 18:43:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Ahern <dsahern@gmail.com>,
-        Praveen Chaudhary <praveen5582@gmail.com>
-Cc:     davem@davemloft.net, corbet@lwn.net, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenggen Xu <zxu@linkedin.com>,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH v4 net-next 1/1] Allow user to set metric on default
- route learned via Router Advertisement.
-Message-ID: <20210126184301.525297cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <21884a37-ee26-3c8c-690e-9ea29d77d8b9@gmail.com>
-References: <20210125214430.24079-1-pchaudhary@linkedin.com>
-        <21884a37-ee26-3c8c-690e-9ea29d77d8b9@gmail.com>
+        id S237858AbhA0D7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231966AbhA0CzL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 21:55:11 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4012C061222
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 18:45:49 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id cq1so385765pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 18:45:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7PtWXNzHrzTp7A9th7APDIEImQRlLS2mGOWSoaKCv+4=;
+        b=BrtxP2Kw4oAJZWLYhPtp+ptr4ogWuI50wfy8gQE2Ga0c07iSWeUli+TqOMp7KQ3DNM
+         HzFzbmh40furMmKuniJgnZFQAs0PI5WDjP97KQMQo/UxgicGFtik8YyomHk4XHAuhukH
+         Mlnh6Fo1TdiWgV9bWfXtrj4tb7ZZtvJHcwnD0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7PtWXNzHrzTp7A9th7APDIEImQRlLS2mGOWSoaKCv+4=;
+        b=l2Erw9swPnCE8bb7ZPudzrdDwf+VPQiidK7TIqr+ssQ+V0v+vfJpNLrkOjMVbNVUyd
+         S5EX7w7PxMKQczavpwVMQTDheGMpubgJ9km4G+2cxtZ5v/2EDVDJstmdg8jigMvRVfEG
+         WXk+k3+qD3rb2/E3IYxbpyC4+iSS95OghgoVsl0ocgyhKjx2ZxZYydQkGVO5YUG6miBm
+         UVrFiFG30MByFAcUlYf4QWgv4C0K8v5aync8LAE+fYvBGd5ZbB8+VrQ2qjqiUMqjc5F8
+         A1BW7G2E0KkEYehSAdgJUyDR8ER1yozKyquyMQ1GEkHSKaeTS+b88nAfH7+ZuViP6u8e
+         HgyA==
+X-Gm-Message-State: AOAM533qgETlbGL9o5SeJpN9L6SwihpbPkZOJa+rqfFdRaFP05sHcalx
+        uSYGjgQ3jJ4cqU9R/52SlsuSuO4x+2gUzQ==
+X-Google-Smtp-Source: ABdhPJx9soZ2g5SyR6Sp+xlR7Exg7c0f4vDMem4XLIp37iD5OQJdbs3wxxqnvGnGT0/mr+DipLiGCg==
+X-Received: by 2002:a17:902:6843:b029:e0:52c:ad88 with SMTP id f3-20020a1709026843b02900e0052cad88mr9197016pln.72.1611715549193;
+        Tue, 26 Jan 2021 18:45:49 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:55b7:86cc:655d:9dcb])
+        by smtp.gmail.com with ESMTPSA id w66sm391620pfd.48.2021.01.26.18.45.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 18:45:48 -0800 (PST)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Stevens <stevensd@chromium.org>
+Subject: [PATCH v2] KVM: x86/mmu: consider the hva in mmu_notifier retry
+Date:   Wed, 27 Jan 2021 11:45:04 +0900
+Message-Id: <20210127024504.613844-1-stevensd@google.com>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 20:34:56 -0700 David Ahern wrote:
-> On 1/25/21 2:44 PM, Praveen Chaudhary wrote:
-> > For IPv4, default route is learned via DHCPv4 and user is allowed to ch=
-ange
-> > metric using config etc/network/interfaces. But for IPv6, default route=
- can
-> > be learned via RA, for which, currently a fixed metric value 1024 is us=
-ed.
-> >=20
-> > Ideally, user should be able to configure metric on default route for I=
-Pv6
-> > similar to IPv4. This fix adds sysctl for the same.
-> >=20
-> > Signed-off-by: Praveen Chaudhary <pchaudhary@linkedin.com>
-> > Signed-off-by: Zhenggen Xu <zxu@linkedin.com>
-> >=20
-> > Reviewed-by: David Ahern <dsahern@kernel.org>
-> >=20
-> > Changes in v1.
-> > 1.) Correct the call to rt6_add_dflt_router.
-> >=20
-> > Changes in v2.
-> > 1.) Replace accept_ra_defrtr_metric to ra_defrtr_metric.
-> > 2.) Change Type to __u32 instead of __s32.
-> > 3.) Change description in Documentation/networking/ip-sysctl.rst.
-> > 4.) Use proc_douintvec instead of proc_dointvec.
-> > 5.) Code style in ndisc_router_discovery().
-> > 6.) Change Type to u32 instead of unsigned int.
-> >=20
-> > Changes in v3:
-> > 1.) Removed '---' and '```' from description.
-> > 2.) Remove stray ' after accept_ra_defrtr.
-> > 3.) Fix tab in net/ipv6/addrconf.c.
-> >=20
-> > Changes in v4:
-> > 1.) Remove special case of 0 and use IP6_RT_PRIO_USER as default.
-> > 2.) Do not allow 0.
-> > 3.) Change Documentation accordingly.
-> > 4.) Remove extra brackets and compare with zero in ndisc_router_discove=
-ry().
-> > 5.) Remove compare with zero in rt6_add_dflt_router().
-> >=20
-> > Logs:
-> >=20
-> > For IPv4:
-> >=20
-> > Config in etc/network/interfaces:
-> > auto eth0
-> > iface eth0 inet dhcp
-> >     metric 4261413864
-> >=20
-> > IPv4 Kernel Route Table:
-> > $ ip route list
-> > default via 172.21.47.1 dev eth0 metric 4261413864
-> >=20
-> > FRR Table, if a static route is configured:
-> > [In real scenario, it is useful to prefer BGP learned default route ove=
-r DHCPv4 default route.]
-> > Codes: K - kernel route, C - connected, S - static, R - RIP,
-> >        O - OSPF, I - IS-IS, B - BGP, P - PIM, E - EIGRP, N - NHRP,
-> >        T - Table, v - VNC, V - VNC-Direct, A - Babel, D - SHARP, =20
-> >        > - selected route, * - FIB route =20
-> >  =20
-> > S>* 0.0.0.0/0 [20/0] is directly connected, eth0, 00:00:03 =20
-> > K   0.0.0.0/0 [254/1000] via 172.21.47.1, eth0, 6d08h51m
-> >=20
-> > i.e. User can prefer Default Router learned via Routing Protocol in IPv=
-4.
-> > Similar behavior is not possible for IPv6, without this fix.
-> >=20
-> > After fix [for IPv6]:
-> > sudo sysctl -w net.ipv6.conf.eth0.net.ipv6.conf.eth0.ra_defrtr_metric=
-=3D1996489705
-> >=20
-> > IP monitor: [When IPv6 RA is received]
-> > default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 19964897=
-05  pref high
-> >=20
-> > Kernel IPv6 routing table
-> > $ ip -6 route list
-> > default via fe80::be16:65ff:feb3:ce8e dev eth0 proto ra metric 19964897=
-05 expires 21sec hoplimit 64 pref high
-> >=20
-> > FRR Table, if a static route is configured:
-> > [In real scenario, it is useful to prefer BGP learned default route ove=
-r IPv6 RA default route.]
-> > Codes: K - kernel route, C - connected, S - static, R - RIPng,
-> >        O - OSPFv3, I - IS-IS, B - BGP, N - NHRP, T - Table,
-> >        v - VNC, V - VNC-Direct, A - Babel, D - SHARP, =20
-> >        > - selected route, * - FIB route =20
-> >  =20
-> > S>* ::/0 [20/0] is directly connected, eth0, 00:00:06 =20
-> > K   ::/0 [119/1001] via fe80::xx16:xxxx:feb3:ce8e, eth0, 6d07h43m
-> >=20
-> > If the metric is changed later, the effect will be seen only when next =
-IPv6
-> > RA is received, because the default route must be fully controlled by R=
-A msg.
-> > Below metric is changed from 1996489705 to 1996489704.
-> >=20
-> > $ sudo sysctl -w net.ipv6.conf.eth0.ra_defrtr_metric=3D1996489704
-> > net.ipv6.conf.eth0.ra_defrtr_metric =3D 1996489704
-> >=20
-> > IP monitor:
-> > [On next IPv6 RA msg, Kernel deletes prev route and installs new route =
-with updated metric]
-> >=20
-> > Deleted default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric =
-1996489705=C2=A0=C2=A0expires 3sec hoplimit 64 pref high
-> > default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 19964897=
-04=C2=A0=C2=A0pref high
-> > ---
-> >  Documentation/networking/ip-sysctl.rst | 10 ++++++++++
-> >  include/linux/ipv6.h                   |  1 +
-> >  include/net/ip6_route.h                |  3 ++-
-> >  include/uapi/linux/ipv6.h              |  1 +
-> >  include/uapi/linux/sysctl.h            |  1 +
-> >  net/ipv6/addrconf.c                    | 11 +++++++++++
-> >  net/ipv6/ndisc.c                       | 12 ++++++++----
-> >  net/ipv6/route.c                       |  5 +++--
-> >  8 files changed, 37 insertions(+), 7 deletions(-)
-> >  =20
->=20
-> Reviewed-by: David Ahern <dsahern@kernel.org>
+From: David Stevens <stevensd@chromium.org>
 
-Did my best to untangle the commit message and applied.
+Track the range being invalidated by mmu_notifier and skip page fault
+retries if the fault address is not affected by the in-progress
+invalidation. Handle concurrent invalidations by finding the minimal
+range which includes all ranges being invalidated. Although the combined
+range may include unrelated addresses and cannot be shrunk as individual
+invalidation operations complete, it is unlikely the marginal gains of
+proper range tracking are worth the additional complexity.
 
-Thanks!
+The primary benefit of this change is the reduction in the likelihood of
+extreme latency when handing a page fault due to another thread having
+been preempted while modifying host virtual addresses.
+
+Signed-off-by: David Stevens <stevensd@chromium.org>
+---
+v1 -> v2:
+ - improve handling of concurrent invalidation requests by unioning
+   ranges, instead of just giving up and using [0, ULONG_MAX).
+ - add lockdep check
+ - code comments and formatting
+
+ arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
+ arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
+ arch/x86/kvm/mmu/mmu.c                 | 16 ++++++++------
+ arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
+ include/linux/kvm_host.h               | 27 +++++++++++++++++++++++-
+ virt/kvm/kvm_main.c                    | 29 ++++++++++++++++++++++----
+ 6 files changed, 67 insertions(+), 16 deletions(-)
+
+diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+index 38ea396a23d6..8e06cd3f759c 100644
+--- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
+@@ -590,7 +590,7 @@ int kvmppc_book3s_hv_page_fault(struct kvm_vcpu *vcpu,
+ 	} else {
+ 		/* Call KVM generic code to do the slow-path check */
+ 		pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
+-					   writing, &write_ok);
++					   writing, &write_ok, NULL);
+ 		if (is_error_noslot_pfn(pfn))
+ 			return -EFAULT;
+ 		page = NULL;
+diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+index bb35490400e9..e603de7ade52 100644
+--- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+@@ -822,7 +822,7 @@ int kvmppc_book3s_instantiate_page(struct kvm_vcpu *vcpu,
+ 
+ 		/* Call KVM generic code to do the slow-path check */
+ 		pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
+-					   writing, upgrade_p);
++					   writing, upgrade_p, NULL);
+ 		if (is_error_noslot_pfn(pfn))
+ 			return -EFAULT;
+ 		page = NULL;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d16481aa29d..79166288ed03 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3658,8 +3658,8 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ }
+ 
+ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+-			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, bool write,
+-			 bool *writable)
++			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
++			 bool write, bool *writable)
+ {
+ 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+ 	bool async;
+@@ -3672,7 +3672,8 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+ 	}
+ 
+ 	async = false;
+-	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async, write, writable);
++	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async,
++				    write, writable, hva);
+ 	if (!async)
+ 		return false; /* *pfn has correct page already */
+ 
+@@ -3686,7 +3687,8 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
+ 			return true;
+ 	}
+ 
+-	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL, write, writable);
++	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
++				    write, writable, hva);
+ 	return false;
+ }
+ 
+@@ -3699,6 +3701,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 	gfn_t gfn = gpa >> PAGE_SHIFT;
+ 	unsigned long mmu_seq;
+ 	kvm_pfn_t pfn;
++	hva_t hva;
+ 	int r;
+ 
+ 	if (page_fault_handle_page_track(vcpu, error_code, gfn))
+@@ -3717,7 +3720,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
+ 	smp_rmb();
+ 
+-	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, write, &map_writable))
++	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
++			 write, &map_writable))
+ 		return RET_PF_RETRY;
+ 
+ 	if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
+@@ -3725,7 +3729,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 
+ 	r = RET_PF_RETRY;
+ 	spin_lock(&vcpu->kvm->mmu_lock);
+-	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
++	if (mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
+ 		goto out_unlock;
+ 	r = make_mmu_pages_available(vcpu);
+ 	if (r)
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 50e268eb8e1a..3171784139a4 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -790,6 +790,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+ 	struct guest_walker walker;
+ 	int r;
+ 	kvm_pfn_t pfn;
++	hva_t hva;
+ 	unsigned long mmu_seq;
+ 	bool map_writable, is_self_change_mapping;
+ 	int max_level;
+@@ -840,8 +841,8 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+ 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
+ 	smp_rmb();
+ 
+-	if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, write_fault,
+-			 &map_writable))
++	if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
++			 write_fault, &map_writable))
+ 		return RET_PF_RETRY;
+ 
+ 	if (handle_abnormal_pfn(vcpu, addr, walker.gfn, pfn, walker.pte_access, &r))
+@@ -869,7 +870,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+ 
+ 	r = RET_PF_RETRY;
+ 	spin_lock(&vcpu->kvm->mmu_lock);
+-	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
++	if (mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
+ 		goto out_unlock;
+ 
+ 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index f3b1013fb22c..08f22c958d64 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -11,6 +11,7 @@
+ #include <linux/signal.h>
+ #include <linux/sched.h>
+ #include <linux/bug.h>
++#include <linux/minmax.h>
+ #include <linux/mm.h>
+ #include <linux/mmu_notifier.h>
+ #include <linux/preempt.h>
+@@ -502,6 +503,8 @@ struct kvm {
+ 	struct mmu_notifier mmu_notifier;
+ 	unsigned long mmu_notifier_seq;
+ 	long mmu_notifier_count;
++	unsigned long mmu_notifier_range_start;
++	unsigned long mmu_notifier_range_end;
+ #endif
+ 	long tlbs_dirty;
+ 	struct list_head devices;
+@@ -729,7 +732,7 @@ kvm_pfn_t gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn);
+ kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn);
+ kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
+ 			       bool atomic, bool *async, bool write_fault,
+-			       bool *writable);
++			       bool *writable, hva_t *hva);
+ 
+ void kvm_release_pfn_clean(kvm_pfn_t pfn);
+ void kvm_release_pfn_dirty(kvm_pfn_t pfn);
+@@ -1203,6 +1206,28 @@ static inline int mmu_notifier_retry(struct kvm *kvm, unsigned long mmu_seq)
+ 		return 1;
+ 	return 0;
+ }
++
++static inline int mmu_notifier_retry_hva(struct kvm *kvm,
++					 unsigned long mmu_seq,
++					 unsigned long hva)
++{
++#ifdef CONFIG_LOCKDEP
++	lockdep_is_held(&kvm->mmu_lock);
++#endif
++	/*
++	 * If mmu_notifier_count is non-zero, then the range maintained by
++	 * kvm_mmu_notifier_invalidate_range_start contains all addresses that
++	 * might be being invalidated. Note that it may include some false
++	 * positives, due to shortcuts when handing concurrent invalidations.
++	 */
++	if (unlikely(kvm->mmu_notifier_count) &&
++	    kvm->mmu_notifier_range_start <= hva &&
++	    hva < kvm->mmu_notifier_range_end)
++		return 1;
++	if (kvm->mmu_notifier_seq != mmu_seq)
++		return 1;
++	return 0;
++}
+ #endif
+ 
+ #ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index fa9e3614d30e..b4b0a1eeb4c5 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -483,6 +483,24 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 	 * count is also read inside the mmu_lock critical section.
+ 	 */
+ 	kvm->mmu_notifier_count++;
++	if (likely(kvm->mmu_notifier_count == 1)) {
++		kvm->mmu_notifier_range_start = range->start;
++		kvm->mmu_notifier_range_end = range->end;
++	} else {
++		/*
++		 * Fully tracking multiple concurrent ranges has dimishing
++		 * returns. Keep things simple and just find the minimal range
++		 * which includes the current and new ranges. As there won't be
++		 * enough information to subtract a range after its invalidate
++		 * completes, any ranges invalidated concurrently will
++		 * accumulate and persist until all outstanding invalidates
++		 * complete.
++		 */
++		kvm->mmu_notifier_range_start =
++			min(kvm->mmu_notifier_range_start, range->start);
++		kvm->mmu_notifier_range_end =
++			max(kvm->mmu_notifier_range_end, range->end);
++	}
+ 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
+ 					     range->flags);
+ 	/* we've to flush the tlb before the pages can be freed */
+@@ -2010,10 +2028,13 @@ static kvm_pfn_t hva_to_pfn(unsigned long addr, bool atomic, bool *async,
+ 
+ kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
+ 			       bool atomic, bool *async, bool write_fault,
+-			       bool *writable)
++			       bool *writable, hva_t *hva)
+ {
+ 	unsigned long addr = __gfn_to_hva_many(slot, gfn, NULL, write_fault);
+ 
++	if (hva)
++		*hva = addr;
++
+ 	if (addr == KVM_HVA_ERR_RO_BAD) {
+ 		if (writable)
+ 			*writable = false;
+@@ -2041,19 +2062,19 @@ kvm_pfn_t gfn_to_pfn_prot(struct kvm *kvm, gfn_t gfn, bool write_fault,
+ 		      bool *writable)
+ {
+ 	return __gfn_to_pfn_memslot(gfn_to_memslot(kvm, gfn), gfn, false, NULL,
+-				    write_fault, writable);
++				    write_fault, writable, NULL);
+ }
+ EXPORT_SYMBOL_GPL(gfn_to_pfn_prot);
+ 
+ kvm_pfn_t gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
+ {
+-	return __gfn_to_pfn_memslot(slot, gfn, false, NULL, true, NULL);
++	return __gfn_to_pfn_memslot(slot, gfn, false, NULL, true, NULL, NULL);
+ }
+ EXPORT_SYMBOL_GPL(gfn_to_pfn_memslot);
+ 
+ kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn)
+ {
+-	return __gfn_to_pfn_memslot(slot, gfn, true, NULL, true, NULL);
++	return __gfn_to_pfn_memslot(slot, gfn, true, NULL, true, NULL, NULL);
+ }
+ EXPORT_SYMBOL_GPL(gfn_to_pfn_memslot_atomic);
+ 
+-- 
+2.30.0.280.ga3ce27912f-goog
+
