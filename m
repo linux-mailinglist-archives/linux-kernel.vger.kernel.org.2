@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB973064B2
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9943064B3
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhA0UC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:02:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59324 "EHLO
+        id S232358AbhA0UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232508AbhA0UAJ (ORCPT
+        with ESMTP id S231739AbhA0UBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:00:09 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76864C061574;
-        Wed, 27 Jan 2021 11:59:28 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id rv9so4343665ejb.13;
-        Wed, 27 Jan 2021 11:59:28 -0800 (PST)
+        Wed, 27 Jan 2021 15:01:19 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE06BC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:00:29 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id c132so2322027pga.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:00:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FcjjaJ3LJyxy+uNzIzTchssZp72itK8F22M5j8rqleY=;
-        b=rAh4JF5v8cmWUB9UB7r076rKQ1gHJZaMCAIfg7L3LTGdalysoqApkvFvFhZ6Sbwz72
-         bZi+4KetTp1E/6O3vmudgGIUHvA4FIwOAXz/l/Dz9Dvjiqq7/bQgdJF3simpSeXKV3EX
-         EF1HRnulmioETAkOHV0h5kSu7O+bVaBhJWdIFbHNT/XMJH3tZRbG0tosmYtWZDjY7LNc
-         F1wqx+6sfRTigrT7UR3a8Ca/PwqaoM5VSMRWeTUK93AglTcIWd2lJWp6keoguhd6OLyK
-         XG83KmTvEdxt3yZK4yVMr7yX2/CV5CnMY/Px+NjdjLXZLCtQo+bgeQcxl/MGUq/QcWHd
-         Np5g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yBdA7Nf3DvwxZdzX00Eonq9lYvdJAq2LlEJMLWdaFgQ=;
+        b=V8QOj+Q+1fHQ1H36xr+mUp/WLDS2EcuSMZmc3AhtOrMAlBC08U5jBNgEgdLpDfKk22
+         jDomIQbrzVEPkpuY4r0FDcuKPa71M2VwQ5mVu56lFvAabiAabf3SFJ30yV20/zie+UtP
+         ThS07AmNNrFpW9WPjRKVsZ+zXRV+dnQZ876CLYA8CzLOTrj/Sh12NQLdOoKN6Da1Moj1
+         tJlY2axMIQUOOG25y0uKnFzIp9Gz5jBdPvLN4+EzuTihFe220dYgPBKobx+VI0C3eduj
+         FiwkkFxMpNbjAEYGZZFmWoUUbk8p2pE1uzpa5N0nBIzAfjxu8mJJlQwZhk5G196DdQ+g
+         f/Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FcjjaJ3LJyxy+uNzIzTchssZp72itK8F22M5j8rqleY=;
-        b=hyldb7n92PYr8YYDVDxaVHGLt+UPiXznpCi78WyR+J9NXEnFY9j4SvMheur9KhgpaL
-         Af1VWmfrvr/nNaR+zHLFOK/iO68fU3uOTuL97uNAStFytd9cAu2AFf1L1jKet49bh6lm
-         yVzzSTRD539u1Xz6a5AQ7TqlP3lhHEWd9QNtPgp4cFjBa8XfJ3Tgp+daCpT3/unVOVgo
-         jj6UHA/xKIKw/bgUJiD9wSYgwHGyb+n6pm3XGKeru9l3QzeryaEOntjCLCcmBnUTl0mF
-         pGlvZxTRUTdFu6jZw+IrYgbq49ABmzeLhFFxgusE3itwbXlYYP6DpWqWtnKLe2tx9JoC
-         fo+A==
-X-Gm-Message-State: AOAM530BmbWGFTCOXC2LDzlZ4cd/GW5SIutZ4LEuuv56Pg4P+VN5gecU
-        1H4UhIJWd8OvCFhHIG45bbI=
-X-Google-Smtp-Source: ABdhPJxsZ5qCNGOkVZNfIEF0LokBpL3PZycaH0nidSbMOoonJmAPdse1uYv1Rrepehnjmf5kQ5E3Ww==
-X-Received: by 2002:a17:906:38c3:: with SMTP id r3mr8125792ejd.193.1611777567251;
-        Wed, 27 Jan 2021 11:59:27 -0800 (PST)
-Received: from cinterion-pc.localdomain (dynamic-077-013-132-254.77.13.pool.telefonica.de. [77.13.132.254])
-        by smtp.googlemail.com with ESMTPSA id v25sm1910363edx.49.2021.01.27.11.59.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 11:59:26 -0800 (PST)
-From:   Christoph Schemmel <christoph.schemmel@gmail.com>
-To:     johan@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hans-christoph.schemmel@thalesgroup.com,
-        Christoph Schemmel <christoph.schemmel@gmail.com>
-Subject: [PATCH] USB: serial: option: Adding support for Cinterion MV31
-Date:   Wed, 27 Jan 2021 20:58:46 +0100
-Message-Id: <20210127195846.3663-1-christoph.schemmel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yBdA7Nf3DvwxZdzX00Eonq9lYvdJAq2LlEJMLWdaFgQ=;
+        b=sciZ1VcyWGPnwHPWw785nueDQ49cRU20TXXdnJnxt3qaUzZZIjCfBFH3c+3WkBTo7M
+         jPZbHR3+IAsjKCh0H0j6W3RrwkYEb6bpSIr3RfCWaGvzkfmyEeSsqVNftfysIr4RyZE+
+         gNkn2HBm9DmMgL1pIUhKwI5tSDkmvVQQz85G+cvEl9oxqCEyD9OIGxC3n++qf+v6Czdg
+         fLoeVZRraw7V6eH/aKm5dPMw43yWzE0dbiplmeh6EqXu6kLrKroPMSEcQBO/+cqH5MLt
+         c4hwMYM6k7c47rIXwRZIQA62hZH8boNZHgQdhm9vt9ShNKJsxFq26GHqpN7L0hXG8xjF
+         QEEg==
+X-Gm-Message-State: AOAM533yWAz4BiguVWs2oDw/RIfTb5PrYetVV+WjWV6jfalaGMDoRwu0
+        emV7mmEEWOk2/zmGxEaBNS7PsczLaPFd/rIVyHeAiw==
+X-Google-Smtp-Source: ABdhPJwWsCylpOTXaqGgHO65KypzzRkHx0ONCfMqo85qSNqnMB6z0xpBZYv3zD7Rba2abGuLqVWa1DFPdbHH4ELjGsY=
+X-Received: by 2002:a05:6a00:1:b029:1c1:2d5f:dc16 with SMTP id
+ h1-20020a056a000001b02901c12d5fdc16mr12176024pfk.55.1611777628828; Wed, 27
+ Jan 2021 12:00:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
+In-Reply-To: <20210126134603.49759-1-vincenzo.frascino@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 27 Jan 2021 21:00:17 +0100
+Message-ID: <CAAeHK+xTWrdJ2as6kBLX+z64iu3e6JEGppOkN-i_jsH74c6xoA@mail.gmail.com>
+Subject: Re: [PATCH v9 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support for Cinterion device MV31 for enumeration with
-PID 0x00B3 and 0x00B7.
+On Tue, Jan 26, 2021 at 2:46 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+>
+> This patchset implements the asynchronous mode support for ARMv8.5-A
+> Memory Tagging Extension (MTE), which is a debugging feature that allows
+> to detect with the help of the architecture the C and C++ programmatic
+> memory errors like buffer overflow, use-after-free, use-after-return, etc.
+>
+> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+> subset of its address space that is multiple of a 16 bytes granule. MTE
+> is based on a lock-key mechanism where the lock is the tag associated to
+> the physical memory and the key is the tag associated to the virtual
+> address.
+> When MTE is enabled and tags are set for ranges of address space of a task,
+> the PE will compare the tag related to the physical memory with the tag
+> related to the virtual address (tag check operation). Access to the memory
+> is granted only if the two tags match. In case of mismatch the PE will raise
+> an exception.
+>
+> The exception can be handled synchronously or asynchronously. When the
+> asynchronous mode is enabled:
+>   - Upon fault the PE updates the TFSR_EL1 register.
+>   - The kernel detects the change during one of the following:
+>     - Context switching
+>     - Return to user/EL0
+>     - Kernel entry from EL1
+>     - Kernel exit to EL1
+>   - If the register has been updated by the PE the kernel clears it and
+>     reports the error.
+>
+> The series is based on linux-next/akpm.
+>
+> To simplify the testing a tree with the new patches on top has been made
+> available at [1].
+>
+> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Evgenii Stepanov <eugenis@google.com>
+> Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-usb-devices output for 0x00B3
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  6 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-P:  Vendor=1e2d ProdID=00b3 Rev=04.14
-S:  Manufacturer=Cinterion
-S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
-S:  SerialNumber=b3246eed
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=cdc_wdm
-I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
 
-usb-devices output for 0x00B7
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  5 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-P:  Vendor=1e2d ProdID=00b7 Rev=04.14
-S:  Manufacturer=Cinterion
-S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
-S:  SerialNumber=b3246eed
-C:  #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#=0x0 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+> Vincenzo Frascino (4):
+>   arm64: mte: Add asynchronous mode support
+>   kasan: Add KASAN mode kernel parameter
+>   kasan: Add report for async mode
+>   arm64: mte: Enable async tag check fault
 
-Signed-off-by: Christoph Schemmel <christoph.schemmel@gmail.com>
----
- drivers/usb/serial/option.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 3fe959104311..e6a9b3379070 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -425,6 +425,8 @@ static void option_instat_callback(struct urb *urb);
- #define CINTERION_PRODUCT_AHXX_2RMNET		0x0084
- #define CINTERION_PRODUCT_AHXX_AUDIO		0x0085
- #define CINTERION_PRODUCT_CLS8			0x00b0
-+#define CINTERION_PRODUCT_MV31_MBIM		0x00b3
-+#define CINTERION_PRODUCT_MV31_RMNET		0x00b7
- 
- /* Olivetti products */
- #define OLIVETTI_VENDOR_ID			0x0b3c
-@@ -1914,6 +1916,10 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDMNET) },
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) }, /* HC28 enumerates with Siemens or Cinterion VID depending on FW revision */
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC28_MDMNET) },
-+	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_MV31_MBIM, 0xff),
-+	  .driver_info = RSVD(3)},
-+	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_MV31_RMNET, 0xff),
-+	  .driver_info = RSVD(0)},
- 	{ USB_DEVICE(OLIVETTI_VENDOR_ID, OLIVETTI_PRODUCT_OLICARD100),
- 	  .driver_info = RSVD(4) },
- 	{ USB_DEVICE(OLIVETTI_VENDOR_ID, OLIVETTI_PRODUCT_OLICARD120),
--- 
-2.25.1
-
+Andrew, could you pick this up into mm? The whole series will need to
+go through mm due to dependencies on the patches that are already
+there.
