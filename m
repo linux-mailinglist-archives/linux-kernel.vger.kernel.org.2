@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7CB306704
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BBC306719
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhA0WKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236589AbhA0WKU (ORCPT
+        id S236976AbhA0WQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:16:11 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37418 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231153AbhA0WQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:10:20 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4878EC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:09:40 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611785378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRHi3vNzIfr8TCLFZ6ldJ5CafgzcNszokGa318PJPEk=;
-        b=4m3utNItU5lTkzKPDwpu6Ls28uBgchIegkVXHvHZmHpy7XJ3B86OXr5O4NICMLQdsx8dYG
-        EsCqOXQY4fxWUbsJ7FTYPJGK3QffKdgwPS/8RmYu6G/e8GC14u169liwvUtPvWxFkkwxe8
-        1/zl5iLa6U+qd4Gx5epmenev0dGWql84q2MjGwAosMzVGIB0EBnlxj2SJP9GHZBzkbqDK9
-        VmCzuynlMlAqlZknS9txUfuKPrg4jBVV2HOWCQtbIJu1zebO9HVL+6odSHw9Qm8+sBawtp
-        AmEeyfzkLlqH4Z2MWeDXoMzCilWT/wP7Zfbigd8y8WFDLPXI/QWF7RQy2fbbrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611785378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRHi3vNzIfr8TCLFZ6ldJ5CafgzcNszokGa318PJPEk=;
-        b=K7y1cVn38ujc2CSQ/vRCbO/1Z+SLHEzcmRUGEhlEL3sxstdfMi74aKB5ujNk6jWgf6ZIBW
-        Iksf60JMloEO1NCQ==
-To:     Fenghua Yu <fenghua.yu@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: Re: [PATCH v4 4/4] Documentation/admin-guide: Change doc for split_lock_detect parameter
-In-Reply-To: <20201124205245.4164633-5-fenghua.yu@intel.com>
-References: <20201124205245.4164633-1-fenghua.yu@intel.com> <20201124205245.4164633-5-fenghua.yu@intel.com>
-Date:   Wed, 27 Jan 2021 23:09:38 +0100
-Message-ID: <87o8hadobh.fsf@nanos.tec.linutronix.de>
+        Wed, 27 Jan 2021 17:16:03 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 88E5B1C0B8E; Wed, 27 Jan 2021 23:15:05 +0100 (CET)
+Date:   Wed, 27 Jan 2021 23:15:05 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Adrian Catangiu <acatan@amazon.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qemu-devel@nongnu.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, gregkh@linuxfoundation.org,
+        graf@amazon.com, arnd@arndb.de, ebiederm@xmission.com,
+        rppt@kernel.org, 0x7f454c46@gmail.com, borntraeger@de.ibm.com,
+        Jason@zx2c4.com, jannh@google.com, w@1wt.eu, colmmacc@amazon.com,
+        luto@kernel.org, tytso@mit.edu, ebiggers@kernel.org,
+        dwmw@amazon.co.uk, bonzini@gnu.org, sblbir@amazon.com,
+        raduweis@amazon.com, corbet@lwn.net, mst@redhat.com,
+        mhocko@kernel.org, rafael@kernel.org, mpe@ellerman.id.au,
+        areber@redhat.com, ovzxemul@gmail.com, avagin@gmail.com,
+        ptikhomirov@virtuozzo.com, gil@azul.com, asmehra@redhat.com,
+        dgunigun@redhat.com, vijaysun@ca.ibm.com, oridgar@gmail.com,
+        ghammer@redhat.com
+Subject: Re: [PATCH v4 1/2] drivers/misc: sysgenid: add system generation id
+ driver
+Message-ID: <20210127221505.GB24799@amd>
+References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
+ <1610453760-13812-2-git-send-email-acatan@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="qlTNgmc+xy1dBmNv"
+Content-Disposition: inline
+In-Reply-To: <1610453760-13812-2-git-send-email-acatan@amazon.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24 2020 at 20:52, Fenghua Yu wrote:
-> Since #DB for bus lock detect changes the split_lock_detect parameter,
-> update the documentation for the changes.
 
-Why is this seperate and an all in one thing? patch 2/4 changes the
-parameter first and 3/4 adds a new option....
+--qlTNgmc+xy1dBmNv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> ---
-> Change Log:
-> v4:
-> - Fix a ratelimit wording issue in the doc (Randy).
-> - Patch 4 is acked by Randy (Randy).
->
-> v3:
-> - Enable Bus Lock Detection when fatal to handle bus lock from non-WB
->   (PeterZ).
->
-> v1:
-> - Fix a few wording issues (Randy).
->
-> RFC v2:
-> - Simplify the documentation (Randy).
->
->  .../admin-guide/kernel-parameters.txt         | 30 +++++++++++++++----
->  1 file changed, 24 insertions(+), 6 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 44fde25bb221..28228539b02a 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5051,27 +5051,45 @@
->  	spia_peddr=
-> +
-> +			ratelimit:N -
-> +				  Set rate limit to N bus locks per second
-> +				  for bus lock detection. 0 < N <= HZ/2.
+Hi!
 
-Oh well. So if I have ratelimit:500 on the kernel command line and then
-this works for CONFIG_HZ=1000, but after rebuilding the kernel with
-HZ=250 it fails. What?
+> - Solution
+>=20
+> The System Generation ID is a simple concept meant to alleviate the
+> issue by providing a monotonically increasing u32 counter that changes
+> each time the VM or container is restored from a snapshot.
 
-If I allow 500 hits per second then CONFIG_HZ has absolutely nothing to
-do with it. A second stays a second independent of CONFIG_HZ.
+I'd make it u64.
 
-So what's the purpose of this HZ business?
+But as people explained, this has race problems that may be impossible
+to solve?
 
-Thanks,
+Best regards,
+								Pavel
+							=09
+--=20
+http://www.livejournal.com/~pavelmachek
 
-        tglx
+--qlTNgmc+xy1dBmNv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAR5ekACgkQMOfwapXb+vIeRACdFFlEw9Qzjgj/nAuNJzxFeb2z
+28wAoKXL22jBt2ohyVp9BgmFr64wldNZ
+=T3KQ
+-----END PGP SIGNATURE-----
+
+--qlTNgmc+xy1dBmNv--
