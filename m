@@ -2,21 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D378305C70
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0126305C75
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238027AbhA0NFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:05:23 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:50267 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238012AbhA0NCq (ORCPT
+        id S238130AbhA0NGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:06:39 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:39575 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238108AbhA0NDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:02:46 -0500
+        Wed, 27 Jan 2021 08:03:53 -0500
+X-Originating-IP: 93.29.109.196
 Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
         (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E0F3910000F;
-        Wed, 27 Jan 2021 13:01:56 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 14:01:56 +0100
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5B6B9E0007;
+        Wed, 27 Jan 2021 13:03:04 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 14:03:03 +0100
 From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
@@ -27,21 +28,22 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 1/2] of: device: Allow DMA range map to be set before
- of_dma_configure_id
-Message-ID: <YBFkRGMlcyPGKKNT@aptenodytes>
+Subject: Re: [PATCH 2/2] soc: sunxi: mbus: Remove DE2 display engine
+ compatibles
+Message-ID: <YBFkh/faoPnTRZtl@aptenodytes>
 References: <20210115175831.1184260-1-paul.kocialkowski@bootlin.com>
+ <20210115175831.1184260-2-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Y50gX4HMZh5UW8il"
+        protocol="application/pgp-signature"; boundary="bbVqFsb3TWznXX56"
 Content-Disposition: inline
-In-Reply-To: <20210115175831.1184260-1-paul.kocialkowski@bootlin.com>
+In-Reply-To: <20210115175831.1184260-2-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Y50gX4HMZh5UW8il
+--bbVqFsb3TWznXX56
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -49,27 +51,18 @@ Content-Transfer-Encoding: quoted-printable
 Hi,
 
 On Fri 15 Jan 21, 18:58, Paul Kocialkowski wrote:
-> A mechanism was recently introduced for the sunxi architecture where
-> the DMA offset for specific devices (under the MBUS) is set by a common
-> driver (sunxi_mbus). This driver calls dma_direct_set_offset to set
-> the device's dma_range_map manually.
+> The DE2 display engine hardware takes physical addresses that do not
+> need PHYS_BASE subtracted. As a result, they should not be present
+> on the mbus driver match list. Remove them.
 >=20
-> However this information was overwritten by of_dma_configure_id, which
-> obtains the map from of_dma_get_range (or keeps it NULL when it fails
-> and the force_dma argument is true, which is the case for platform
-> devices).
->=20
-> As a result, the dma_range_map was always overwritten and the mechanism
-> could not correctly take effect.
->=20
-> This adds a check to ensure that no previous DMA range map is
-> overwritten and prints a warning when the map was already set while
-> also being available from dt. In this case, the map that was already
-> set is kept.
+> This was tested on the A83T, along with the patch allowing the DMA
+> range map to be non-NULL and restores a working display.
 
-FYI this patch has been superseded by the following:
-https://patchwork.kernel.org/project/linux-mediatek/patch/20210119105203.15=
-530-1-yong.wu@mediatek.com/
+Could we get this merged ASAP (in this RC cycle), hopefully with the patch
+that superseded 1/2 from this series so that we don't end up with either
+CSI or DE2 broken in the next release?
+
+Cheers,
 
 Paul
 
@@ -77,30 +70,27 @@ Paul
 tral place")
 > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 > ---
->  drivers/of/device.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>  drivers/soc/sunxi/sunxi_mbus.c | 5 -----
+>  1 file changed, 5 deletions(-)
 >=20
-> diff --git a/drivers/of/device.c b/drivers/of/device.c
-> index aedfaaafd3e7..db1b8634c2c7 100644
-> --- a/drivers/of/device.c
-> +++ b/drivers/of/device.c
-> @@ -181,7 +181,14 @@ int of_dma_configure_id(struct device *dev, struct d=
-evice_node *np,
+> diff --git a/drivers/soc/sunxi/sunxi_mbus.c b/drivers/soc/sunxi/sunxi_mbu=
+s.c
+> index e9925c8487d7..d90e4a264b6f 100644
+> --- a/drivers/soc/sunxi/sunxi_mbus.c
+> +++ b/drivers/soc/sunxi/sunxi_mbus.c
+> @@ -23,12 +23,7 @@ static const char * const sunxi_mbus_devices[] =3D {
+>  	"allwinner,sun7i-a20-display-engine",
+>  	"allwinner,sun8i-a23-display-engine",
+>  	"allwinner,sun8i-a33-display-engine",
+> -	"allwinner,sun8i-a83t-display-engine",
+> -	"allwinner,sun8i-h3-display-engine",
+> -	"allwinner,sun8i-r40-display-engine",
+> -	"allwinner,sun8i-v3s-display-engine",
+>  	"allwinner,sun9i-a80-display-engine",
+> -	"allwinner,sun50i-a64-display-engine",
 > =20
->  	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
-> =20
-> -	dev->dma_range_map =3D map;
-> +	if (!dev->dma_range_map) {
-> +		dev->dma_range_map =3D map;
-> +	} else if (map) {
-> +		dev_warn(dev,
-> +			 "DMA range map was already set, ignoring range map from dt\n");
-> +		kfree(map);
-> +	}
-> +
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(of_dma_configure_id);
+>  	/*
+>  	 * And now we have the regular devices connected to the MBUS
 > --=20
 > 2.30.0
 >=20
@@ -110,19 +100,19 @@ Paul Kocialkowski, Bootlin
 Embedded Linux and kernel engineering
 https://bootlin.com
 
---Y50gX4HMZh5UW8il
+--bbVqFsb3TWznXX56
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmARZEQACgkQ3cLmz3+f
-v9GJ4Af/addS8U7AjGXOW//0Aerp8AOTyKd8dlzqnoFR9K3CmoS6UDRBy6Ha5gG5
-AQa+JC44HwACPrON49EBdI6spbf2VeuODIL7eM9LWYPEgjM6BWwMA+tIwF2deWMM
-KU7LYJP91VG3vSeb9n4YfbHDmWMbtbV8GS/Pka7qQbx/L0DZ20HvGqh+YVEhk2tm
-3NRVlwWEvrMYRSeaxmdjMM5FSysuJYT3TdymPqgwwkDo8wsXOrXpflU+lkZl/6r2
-XxstkhAm9ff79Le01DqYz43n+oDlIhIWaaxzpz12j+TJvyRwu6igIOC8PbsA3aeW
-Ze0sW5qbbX6jU3K/SM4qfXgYQxR1aA==
-=HeCq
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmARZIcACgkQ3cLmz3+f
+v9Emzwf+P8S2dFpKeB4P2PR3KW+FmVA7hWSXJBmQLEE4uG4DGUjORSMotAWQO4Qq
+V1Gz1A1cd/eaRD9IvH/YC5mJqi1cP87bqZFmrD1LIrGgG5EdiSXKMYPLqnxtMY9W
+XzraXD+Yau2dBlz4c4/r4X4rwQL7zmwssVoTheKHD9NlC8CG9+EuggFJ5tjCm0P+
++bsrm8xVpFwq9iI09tU9aqjOe9C5hh9EwjkD+2k6rcJubWHDPgUXV4ID9wBWrf3u
+C3eWR2qxK9dM1dGibTjYStM5GHBCunIEH11VcN6j0ZayIRNmLqeqWimw0+mJ5qrr
+X5PE5cbITJLLMvJjSZikSzW6Drno3g==
+=AG+n
 -----END PGP SIGNATURE-----
 
---Y50gX4HMZh5UW8il--
+--bbVqFsb3TWznXX56--
