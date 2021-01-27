@@ -2,71 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDC8305097
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8E5305098
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhA0D67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:58:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbhA0Buv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:50:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D716C64D84;
-        Wed, 27 Jan 2021 01:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611712210;
-        bh=H4LNNlGkkI9AJgqotdQld1JsAZi8JDwvywXfbSQd6ls=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RB6NzZBu0gi+ricd4LH/5HIFGE3p0CsqejyFwUCO1kHZp0grU2QznUlhizS1xaZQc
-         BNIEEle5rZhvsk27QfRKc7KcEHtt7EYBR1XUqpPLalyNaEPAMXuXPi7Fdu12vSZnK6
-         7z8RrNKi8K72hF05nbEZnvUn4Oelo5rpWDAAjLZE8k5X4e+nOyfHAihzPaTnFU/DYZ
-         2KWVW0NG/uBdThZyE/OL7UhAknQ0mWec3mLe2u+OeDUGIMRcgJqpUxx1S+tTxc20Fl
-         oXAiAc6GELWfrfOt2nrf/m1CG1xhggXP6aFKuzwo4XgYl7Zi+FyojF/kCx9KGV2QF5
-         922g+hqb/7R7g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CB04D652E0;
-        Wed, 27 Jan 2021 01:50:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237805AbhA0D7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S316534AbhA0Bws (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 20:52:48 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB0C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:51:31 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id u4so348134pjn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yvptWfKORCEVwYy1ACTtiGifr+3cTipupRyRjthl2g=;
+        b=W3oELcA9iI1ZLJQf2lRy3K5z1tVR/fGJ6GASMr9lo87icBB8J8WcIyHnigXabQnMTh
+         DNe9drkZ9T1P6DYkqvsF5kMQiNMmtRRfhKvjBuWfLJA7AgdoohRPZNW4zzJy47IUOiyc
+         SJqXZ2bQeybF2XHiEGZuFC7+WP1PrEJpRLPCJNIRgBQQqxLD9QVJAfbKGDuD5h1f7G8r
+         Q1XSQg2XbwMUauHVq+K2soVh6soXod/I3NTwh6OObO0KO6TxqpsZeywgmV4nNiFrtKPH
+         5UC+VdH00MsFTGst9EwWAroDJX41Sxmb9S6fm/0wweL0gdLoIyANlEsuA8iGHawAbDoK
+         Hf9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yvptWfKORCEVwYy1ACTtiGifr+3cTipupRyRjthl2g=;
+        b=Ha1xJbfUyxlPEkxPSHhaLHiEBb55OP2lp8ZOU8fXQaUQPz2omFfZ2tKhTJ8tX+7tYG
+         hdHpgpUINE5GPpY0v1VKAsf8sn6ftG2HfpPdIsvQuv77bksk3bRtsea11+y5zW5ltZMA
+         yMrXhwo4tBikAyMklpHIja21RIsDfxhBwYjqnhqa49GQF8H/kuWVfNoPNmCyzUyyCAsj
+         WgIJqMSRuAMPo58qU4WPuujZDkME4BpRA3yxukepTu2BZXSIMAFsjiFibrcGDJQW0LXn
+         PWFZ1XFE/8fASkbXGJHClaY7JTrzTc6bTAFSt7ksZ7nxyRYxYxW9GDvaX0uyvVpZ3sXD
+         bPGw==
+X-Gm-Message-State: AOAM533t7sCG5C5wRXZY+kTeq5HtLWlxW0ltgd/z8z7dhkM5xmNkPhvu
+        4RO6uaj/oKc8jWkqNZDBqn10LyAf4qM=
+X-Google-Smtp-Source: ABdhPJytgnP3XVHxsTdmA0Cu8bWPloY+2QADc/bc0RiANnTwjheceTjWakSGLieRfhC/iuWuQkgHEA==
+X-Received: by 2002:a17:902:8ec7:b029:e0:a02:3d26 with SMTP id x7-20020a1709028ec7b02900e00a023d26mr8724235plo.24.1611712290234;
+        Tue, 26 Jan 2021 17:51:30 -0800 (PST)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id p7sm325105pfn.52.2021.01.26.17.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 17:51:29 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     tomba@kernel.org, sebastian.reichel@collabora.com
+Cc:     airlied@linux.ie, daniel@ffwll.ch,
+        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH v2] drm/omap: dsi: fix unreachable code in dsi_vc_send_short()
+Date:   Tue, 26 Jan 2021 17:51:17 -0800
+Message-Id: <20210127015117.23267-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] [net-next] bonding: add TLS dependency
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161171221082.14694.3231614939806661225.git-patchwork-notify@kernel.org>
-Date:   Wed, 27 Jan 2021 01:50:10 +0000
-References: <20210125113209.2248522-1-arnd@kernel.org>
-In-Reply-To: <20210125113209.2248522-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, arnd@arndb.de,
-        mchehab+huawei@kernel.org, f.fainelli@gmail.com, andrew@lunn.ch,
-        loic.poulain@linaro.org, pablo@netfilter.org, masahiroy@kernel.org,
-        martin.varghese@nokia.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+The 'r' in dsi_vc_send_short() is of type 'unsigned int', so the
+'r < 0' can't be true.
 
-On Mon, 25 Jan 2021 12:31:59 +0100 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When TLS is a module, the built-in bonding driver may cause a
-> link error:
-> 
-> x86_64-linux-ld: drivers/net/bonding/bond_main.o: in function `bond_start_xmit':
-> bond_main.c:(.text+0xc451): undefined reference to `tls_validate_xmit_skb'
-> 
-> [...]
+Fix this by introducing a 'err' of type 'int' insteaded.
 
-Here is the summary with links:
-  - [net-next] bonding: add TLS dependency
-    https://git.kernel.org/netdev/net-next/c/285715ac9a81
+Fixes: 1ed6253856cb ("drm/omap: dsi: switch dsi_vc_send_long/short to mipi_dsi_msg")
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+v2:
+- remove word wrap in 'Fixes' tag
+---
+ drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+index 8e11612f5fe1..febcc87ddfe1 100644
+--- a/drivers/gpu/drm/omapdrm/dss/dsi.c
++++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+@@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi, int vc,
+ 			     const struct mipi_dsi_msg *msg)
+ {
+ 	struct mipi_dsi_packet pkt;
++	int err;
+ 	u32 r;
+ 
+-	r = mipi_dsi_create_packet(&pkt, msg);
+-	if (r < 0)
+-		return r;
++	err = mipi_dsi_create_packet(&pkt, msg);
++	if (err)
++		return err;
+ 
+ 	WARN_ON(!dsi_bus_is_locked(dsi));
+ 
+-- 
+2.25.1
 
