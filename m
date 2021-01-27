@@ -2,172 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7173054ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA7C3054F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhA0Hp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:45:56 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:35477 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbhA0Hoi (ORCPT
+        id S234144AbhA0HsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234163AbhA0Hp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:44:38 -0500
-Received: by mail-ot1-f46.google.com with SMTP id 36so847210otp.2;
-        Tue, 26 Jan 2021 23:44:22 -0800 (PST)
+        Wed, 27 Jan 2021 02:45:57 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7221C0613D6;
+        Tue, 26 Jan 2021 23:45:16 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id n25so1034018pgb.0;
+        Tue, 26 Jan 2021 23:45:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uTfYbJAap7yGynm8d/+sMaK1UOCcnfG0vCnXAvPBlz0=;
+        b=sxAhR0Mk9LXCRMlMt8zcK3dONFgs2i0d+G/LaVHVWx3PrurCM+WtEY8d+6/51tiy7r
+         NBh5Htci+KqjP1Zo+aIesW1nUnoUOjgUaDr7Tax/Aag3C+acfrmxPsb07tHcHdSMgZe7
+         sam8tbDKGQbGN2Nvv0k6wju9GMPstmRAjpTwWI65iG+7W26ZkajObhoNscblHdnLPR5d
+         0YUolJtkSG91GYIoGR/pj7UeajirGmn5t1MZCMPhO/db8QdiZp5uDoQPqcV3JnIH1vi6
+         s2AS5mwX0ggCI7U8BQvOe8RQTVKNJ68rLJ7TeE5s+YM/93UoYbSZqSUNEa8jKj9Lgsmf
+         Ok9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=x0dGkBBCOjjdRO5NeNomyXurGTss4C1Z8jAZPD1nTr0=;
-        b=D/t6/XpngIhr+dElHpkKgt7I9raIdEFD/aIUvplW60JNP0cGyfm8vB5RupvZjShzK8
-         o9tAFA7R1prXP1p4TWSIDLkFG3Ok12Pr731mwn36mh6OTJ6NZINfAlsYeJiYCMn4aPE8
-         SoJJP9OWxg7MTI1M8h2hTZq7jAqlg7xGRNqPg+nXVJu12OokR1Tpl3dBANluMPjYMzJd
-         ililMEOfD6U8Wqr+uSU3mqavqrZ1scytN5GGfOAR5AYlkG3bSHsoUnzvbhkv3qH3Tz2A
-         v3cVkmUc3XEWwej1GhByKCSx44Cwci6TR6WIFhOYA/47d0kdY0MbOWh5Hy40AvsjGOAS
-         QW/g==
-X-Gm-Message-State: AOAM532/RncdhhlpjY2XqfIjMmv+jhWUhCflVCbduVIUpwgMM/NL5QHn
-        KAKKdqvgiH1tZvbdGNoeo4s8OzikM3SJEHe6N+A=
-X-Google-Smtp-Source: ABdhPJytEiLX+kMjV4Ea2i2rFfKnTCKJB2DxU0jLTV+BpUesrQ9gHru0x+sIRyJPwSKOmvFMZ1Gze3L0qvmdO0bLsr0=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr6698124otr.107.1611733436883;
- Tue, 26 Jan 2021 23:43:56 -0800 (PST)
+        bh=uTfYbJAap7yGynm8d/+sMaK1UOCcnfG0vCnXAvPBlz0=;
+        b=ZAQ3N3qwYmYD1y2w+lzD5k1XdindTRTmo0e3Q25sUzEFCU8HDgNsdjmytTYH7hBHXq
+         dhIyQnsYiRpgAUOeIzhEiSAaxON9m9612cxcK1QlZrqhoZ+BwyQ8i6QjxJVLMiuVuhId
+         U/EJQstrdXUijKU4PDBh19AWMXzif48tPVO88fVveNfl4D1S9jM8QLMi+95jefofKsdF
+         +l19O0hbT57R10bbYWetHo/8uwDwSHhm1r1gmEJkaiZ4X/09dbJD8+c2a/zQaTq+3CPJ
+         5quj+ZVn2hlI3etKTqXuTJe0Xo0l44SaFI8QAlcAwG4WaB5YpdRVc4muTVjs347GAjfV
+         8yDg==
+X-Gm-Message-State: AOAM530FbKDCivyMW+biTprQlE2jtp7mTVD5KS2xhoLubskCm6/P2Nrh
+        8a5aKrDZjuSa2OLs+VHV2xOIOIE4SpHvLor4vY4=
+X-Google-Smtp-Source: ABdhPJzOz9cyhS3OPBYhiCs+26hRU+EmgHfFR87lQhmweB0bdIjQgBfMkjgL5cmIfvI8MFGV15W+00ap3eIC0FYCniI=
+X-Received: by 2002:a63:656:: with SMTP id 83mr9969603pgg.222.1611733516481;
+ Tue, 26 Jan 2021 23:45:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
- <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
- <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
- <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com> <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
-In-Reply-To: <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Jan 2021 08:43:45 +0100
-Message-ID: <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20210126195907.2273494-1-maxtram95@gmail.com> <d3effbdc-12c2-c6aa-98ba-7bde006fc4e1@acm.org>
+In-Reply-To: <d3effbdc-12c2-c6aa-98ba-7bde006fc4e1@acm.org>
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+Date:   Wed, 27 Jan 2021 09:44:50 +0200
+Message-ID: <CAKErNvpCdTvg-Bx-U+k3jYiazoz-Pr0LwruaSh+LszH9yP5c8A@mail.gmail.com>
+Subject: Re: [PATCH] Revert "block: simplify set_init_blocksize" to regain
+ lost performance
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
-> > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
-> > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
-> > > > > wrote:
-> > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
-> > > > >> wrote:
-> > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> > > > >> > > wrote:
-> > > > >> > >>
-> > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
-> > > > >> > >> all CCs to BCCs :(]
-> > > > >> > >>
-> > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> > > > >> > >> >>
-> > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> > > > >> > >> >> wrote:
-> > > > >> > >> >> >
-> > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
-> > > > >> > >> >>
-> > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> > > > >> > >> >> shouldn't it be fixed or removed?
-> > > > >> > >> >
-> > > > >> > >> > I was actually thinking about this too. The problem with fixing
-> > > > >> > >> > builtin_platform_driver_probe() to behave like
-> > > > >> > >> > builtin_platform_driver() is that these probe functions could be
-> > > > >> > >> > marked with __init. But there are also only 20 instances of
-> > > > >> > >> > builtin_platform_driver_probe() in the kernel:
-> > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> > > > >> > >> > 20
-> > > > >> > >> >
-> > > > >> > >> > So it might be easier to just fix them to not use
-> > > > >> > >> > builtin_platform_driver_probe().
-> > > > >> > >> >
-> > > > >> > >> > Michael,
-> > > > >> > >> >
-> > > > >> > >> > Any chance you'd be willing to help me by converting all these to
-> > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> > > > >> > >>
-> > > > >> > >> If it just moving the probe function to the _driver struct and
-> > > > >> > >> remove the __init annotations. I could look into that.
-> > > > >> > >
-> > > > >> > > Yup. That's pretty much it AFAICT.
-> > > > >> > >
-> > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
-> > > > >> > > flags and still using builtin_platform_driver_probe().
-> > > > >> >
-> > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
-> > > > >> > are ~80 drivers which uses that.
-> > > > >>
-> > > > >> Yeah. The biggest problem with all of these is the __init markers.
-> > > > >> Maybe some familiar with coccinelle can help?
-> > > > >
-> > > > > And dropping them will increase memory usage.
-> > > >
-> > > > Although I do have the changes for the builtin_platform_driver_probe()
-> > > > ready, I don't think it makes much sense to send these unless we agree
-> > > > on the increased memory footprint. While there are just a few
-> > > > builtin_platform_driver_probe() and memory increase _might_ be
-> > > > negligible, there are many more module_platform_driver_probe().
-> > >
-> > > While it's good to drop code that'll not be used past kernel init, the
-> > > module_platform_driver_probe() is going even more extreme. It doesn't
-> > > even allow deferred probe (well before kernel init is done). I don't
-> > > think that behavior is right and that's why we should delete it. Also,
-> >
-> > This construct is typically used for builtin hardware for which the
-> > dependencies are registered very early, and thus known to probe at
-> > first try (if present).
-> >
-> > > I doubt if any of these probe functions even take up 4KB of memory.
-> >
-> > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
-> > How many can you afford to waste?
+On Wed, Jan 27, 2021 at 6:23 AM Bart Van Assche <bvanassche@acm.org> wrote:
 >
-> There are only a few instances of this macro in the kernel. How many
+> On 1/26/21 11:59 AM, Maxim Mikityanskiy wrote:
+> > The cited commit introduced a serious regression with SATA write speed,
+> > as found by bisecting. This patch reverts this commit, which restores
+> > write speed back to the values observed before this commit.
+> >
+> > The performance tests were done on a Helios4 NAS (2nd batch) with 4 HDDs
+> > (WD8003FFBX) using dd (bs=1M count=2000). "Direct" is a test with a
+> > single HDD, the rest are different RAID levels built over the first
+> > partitions of 4 HDDs. Test results are in MB/s, R is read, W is write.
+> >
+> >                 | Direct | RAID0 | RAID10 f2 | RAID10 n2 | RAID6
+> > ----------------+--------+-------+-----------+-----------+--------
+> > 9011495c9466    | R:256  | R:313 | R:276     | R:313     | R:323
+> > (before faulty) | W:254  | W:253 | W:195     | W:204     | W:117
+> > ----------------+--------+-------+-----------+-----------+--------
+> > 5ff9f19231a0    | R:257  | R:398 | R:312     | R:344     | R:391
+> > (faulty commit) | W:154  | W:122 | W:67.7    | W:66.6    | W:67.2
+> > ----------------+--------+-------+-----------+-----------+--------
+> > 5.10.10         | R:256  | R:401 | R:312     | R:356     | R:375
+> > unpatched       | W:149  | W:123 | W:64      | W:64.1    | W:61.5
+> > ----------------+--------+-------+-----------+-----------+--------
+> > 5.10.10         | R:255  | R:396 | R:312     | R:340     | R:393
+> > patched         | W:247  | W:274 | W:220     | W:225     | W:121
+> >
+> > Applying this patch doesn't hurt read performance, while improves the
+> > write speed by 1.5x - 3.5x (more impact on RAID tests). The write speed
+> > is restored back to the state before the faulty commit, and even a bit
+> > higher in RAID tests (which aren't HDD-bound on this device) - that is
+> > likely related to other optimizations done between the faulty commit and
+> > 5.10.10 which also improved the read speed.
+> >
+> > Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+> > Fixes: 5ff9f19231a0 ("block: simplify set_init_blocksize")
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Jens Axboe <axboe@kernel.dk>
+> > ---
+> >  fs/block_dev.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/block_dev.c b/fs/block_dev.c
+> > index 3b8963e228a1..235b5042672e 100644
+> > --- a/fs/block_dev.c
+> > +++ b/fs/block_dev.c
+> > @@ -130,7 +130,15 @@ EXPORT_SYMBOL(truncate_bdev_range);
+> >
+> >  static void set_init_blocksize(struct block_device *bdev)
+> >  {
+> > -     bdev->bd_inode->i_blkbits = blksize_bits(bdev_logical_block_size(bdev));
+> > +     unsigned int bsize = bdev_logical_block_size(bdev);
+> > +     loff_t size = i_size_read(bdev->bd_inode);
+> > +
+> > +     while (bsize < PAGE_SIZE) {
+> > +             if (size & bsize)
+> > +                     break;
+> > +             bsize <<= 1;
+> > +     }
+> > +     bdev->bd_inode->i_blkbits = blksize_bits(bsize);
+> >  }
+> >
+> >  int set_blocksize(struct block_device *bdev, int size)
+>
+> How can this patch affect write speed? I haven't found any calls of
+> set_init_blocksize() in the I/O path. Did I perhaps overlook something?
 
-$ git grep -lw builtin_platform_driver_probe | wc -l
-21
-$ git grep -lw module_platform_driver_probe | wc -l
-86
+I don't know the exact mechanism how this change affects the speed,
+I'm not an expert in the block device subsystem (I'm a networking
+guy). This commit was found by git bisect, and my performance test
+confirmed that reverting it fixes the bug.
 
-+ the ones that haven't been converted to the above yet:
+It looks to me as this function sets the block size as part of control
+flow, and this size is used later in the fast path, and the commit
+that removed the loop decreased this block size.
 
-$ git grep -lw platform_driver_probe | wc -l
-58
-
-> of those actually fit the description above? We can probably just
-> check the DT?
-
-What do you mean by checking the DT?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Bart.
+>
+>
