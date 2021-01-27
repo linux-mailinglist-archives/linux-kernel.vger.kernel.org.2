@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A4A3063C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8573063DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344264AbhA0TJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34252 "EHLO mail.kernel.org"
+        id S1344411AbhA0TLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:11:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344236AbhA0TJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:09:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C68F64DBD;
+        id S1344210AbhA0TJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:09:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 725A564DBF;
         Wed, 27 Jan 2021 19:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611774505;
-        bh=ygweX2/0R4x98GDDaiFr4D90OTDW02BhB/598asBbtA=;
+        bh=LB/l4OuOTRtyk9xHlpxof8ovDcLCW5uGGpujh/VAx5Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4hZOzk7IkxQVML0IM/gglIye0pLVut4BgUig13A44nq2ixBwBve4PulDUrOmj3L6
-         tYoFbfialdkGcodF99wmQaeiFUL3BlhfuxauH9lRk7Yo6NKVRGQgTtsiB2AG3BjsGv
-         Fpk6q1SFqu/N5Deft1RT4JzClCJ9hDpv7F7Q50Ed14Qtd8yqB9zxrKFR/uCMkQEgh6
-         ZYDWxq9HiAH6tX27w/zqe2zlH/teOvHH5wL/4mAQCH1p5BmykPS1Ww94rtxLNMOKVW
-         qjh2IgwH3fuwLJ1GDfoQ16XCcuD1cj0Vlw0dnh9eYUEMKr3X6GO8EUWrjth/gTTcBp
-         p5p9hoYrwwMxg==
+        b=WATsIDLOsM2aX0TEcdQUxFZ7PyZ0j+iEqEsoUDFpoRNKLFDnAieCmsDRtLlRiepAd
+         4OHL2IjO7cP+cw8KLENnBKIL5v3Dw2lbxY9m9dtz1eBwWZaZ3ktbg8SDsKEA0coHDH
+         IfQLPGPrqh4fbeKk5AwXYzY/W5l8phXGnOZ0tKe1dEvAoyUJhbNqT/CetaMwaqH/sb
+         8sq49cgD85qRoXPyE3CSh+9gsUPtoRUYybol1NAiDSurL6HBkPsWcDD5zG5Ru2HQhY
+         BXMnmo4X75DtmxEMzibV/VineP8k8nuNj13GfzczAW4a+/4iG0g3n6qxfkc4eAhvsj
+         25CIaTiQG52eQ==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l4qAx-003n4u-2t; Wed, 27 Jan 2021 20:08:23 +0100
+        id 1l4qAx-003n4w-3g; Wed, 27 Jan 2021 20:08:23 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mark Brown <broonie@kernel.org>,
         Lee Jones <lee.jones@linaro.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        David Gow <davidgow@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Yu Chen <chenyu56@huawei.com>,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 2/7] staging: hikey9xx: hi6421v600-regulator: use some regmap helpers
-Date:   Wed, 27 Jan 2021 20:08:17 +0100
-Message-Id: <a4b76eebb5872df8c7114dd84099e34ee61cbd76.1611773727.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v6 3/7] phy: phy-hi3670-usb3: move driver from staging into phy
+Date:   Wed, 27 Jan 2021 20:08:18 +0100
+Message-Id: <b74d127e45b586119dce5009b5630ddbd4a7f28d.1611773727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611773727.git.mchehab+huawei@kernel.org>
 References: <cover.1611773727.git.mchehab+huawei@kernel.org>
@@ -46,90 +51,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver was ported to use regmap, let's use
-some help functions in order to simplify the code a little
-bit.
+The phy USB3 driver for Hisilicon 970 (hi3670) is ready
+for mainstream. Mode it from staging into the main driver's
+phy/ directory.
 
-Suggested-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../staging/hikey9xx/hi6421v600-regulator.c   | 45 ++-----------------
- 1 file changed, 3 insertions(+), 42 deletions(-)
+ .../bindings/phy/hisilicon,hi3670-usb3.yaml           |  0
+ MAINTAINERS                                           |  9 ++++++++-
+ drivers/phy/hisilicon/Kconfig                         | 10 ++++++++++
+ drivers/phy/hisilicon/Makefile                        |  1 +
+ .../hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c      |  0
+ drivers/staging/hikey9xx/Kconfig                      | 11 -----------
+ drivers/staging/hikey9xx/Makefile                     |  2 --
+ 7 files changed, 19 insertions(+), 14 deletions(-)
+ rename drivers/staging/hikey9xx/phy-hi3670-usb3.yaml => Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml (100%)
+ rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
 
-diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-index 9e319fa11137..7090107b9ec2 100644
---- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
-+++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-@@ -95,17 +95,6 @@ static const unsigned int ldo34_voltages[] = {
- 		.eco_uA			= ecoamp,			       \
- 	}
+diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.yaml b/Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
+similarity index 100%
+rename from drivers/staging/hikey9xx/phy-hi3670-usb3.yaml
+rename to Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 992fe3b0900a..fb49e654a1db 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18371,7 +18371,7 @@ L:	linux-usb@vger.kernel.org
+ S:	Maintained
+ F:	drivers/usb/roles/intel-xhci-usb-role-switch.c
  
--static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)
--{
--	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
--	struct hi6421_spmi_pmic *pmic = sreg->pmic;
--	u32 reg_val;
--
--	regmap_read(pmic->map, rdev->desc->enable_reg, &reg_val);
--
--	return ((reg_val & rdev->desc->enable_mask) != 0);
--}
--
- static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
- {
- 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-@@ -136,34 +125,6 @@ static int hi6421_spmi_regulator_disable(struct regulator_dev *rdev)
- 				  rdev->desc->enable_mask, 0);
- }
+-USB IP DRIVER FOR HISILICON KIRIN
++USB IP DRIVER FOR HISILICON KIRIN 960
+ M:	Yu Chen <chenyu56@huawei.com>
+ M:	Binghui Wang <wangbinghui@hisilicon.com>
+ L:	linux-usb@vger.kernel.org
+@@ -18379,6 +18379,13 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/phy/hisilicon,hi3660-usb3.yaml
+ F:	drivers/phy/hisilicon/phy-hi3660-usb3.c
  
--static int hi6421_spmi_regulator_get_voltage_sel(struct regulator_dev *rdev)
--{
--	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
--	struct hi6421_spmi_pmic *pmic = sreg->pmic;
--	u32 reg_val;
--
--	regmap_read(pmic->map, rdev->desc->vsel_reg, &reg_val);
--
--	return (reg_val & rdev->desc->vsel_mask) >> (ffs(rdev->desc->vsel_mask) - 1);
--}
--
--static int hi6421_spmi_regulator_set_voltage_sel(struct regulator_dev *rdev,
--						 unsigned int selector)
--{
--	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
--	struct hi6421_spmi_pmic *pmic = sreg->pmic;
--	u32 reg_val;
--
--	if (selector >= rdev->desc->n_voltages)
--		return -EINVAL;
--
--	reg_val = selector << (ffs(rdev->desc->vsel_mask) - 1);
--
--	/* set voltage selector */
--	return regmap_update_bits(pmic->map, rdev->desc->vsel_reg,
--				  rdev->desc->vsel_mask, reg_val);
--}
--
- static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
- {
- 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-@@ -214,13 +175,13 @@ hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
- }
++USB IP DRIVER FOR HISILICON KIRIN 970
++M:	Mauro Carvalho Chehab <mchehab@kernel.org>
++L:	linux-usb@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/phy/hisilicon,kirin970-usb3.yaml
++F:	drivers/phy/hisilicon/phy-kirin970-usb3.c
++
+ USB ISP116X DRIVER
+ M:	Olav Kongas <ok@artecdesign.ee>
+ L:	linux-usb@vger.kernel.org
+diff --git a/drivers/phy/hisilicon/Kconfig b/drivers/phy/hisilicon/Kconfig
+index 1c73053bcc98..4d008cfc279c 100644
+--- a/drivers/phy/hisilicon/Kconfig
++++ b/drivers/phy/hisilicon/Kconfig
+@@ -23,6 +23,16 @@ config PHY_HI3660_USB
  
- static const struct regulator_ops hi6421_spmi_ldo_rops = {
--	.is_enabled = hi6421_spmi_regulator_is_enabled,
-+	.is_enabled = regulator_is_enabled_regmap,
- 	.enable = hi6421_spmi_regulator_enable,
- 	.disable = hi6421_spmi_regulator_disable,
- 	.list_voltage = regulator_list_voltage_table,
- 	.map_voltage = regulator_map_voltage_iterate,
--	.get_voltage_sel = hi6421_spmi_regulator_get_voltage_sel,
--	.set_voltage_sel = hi6421_spmi_regulator_set_voltage_sel,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
- 	.get_mode = hi6421_spmi_regulator_get_mode,
- 	.set_mode = hi6421_spmi_regulator_set_mode,
- 	.get_optimum_mode = hi6421_spmi_regulator_get_optimum_mode,
+ 	  To compile this driver as a module, choose M here.
+ 
++config PHY_HI3670_USB
++	tristate "hi3670 USB PHY support"
++	depends on (ARCH_HISI && ARM64) || COMPILE_TEST
++	select GENERIC_PHY
++	select MFD_SYSCON
++	help
++	  Enable this to support the HISILICON HI3670 USB PHY.
++
++	  To compile this driver as a module, choose M here.
++
+ config PHY_HISTB_COMBPHY
+ 	tristate "HiSilicon STB SoCs COMBPHY support"
+ 	depends on (ARCH_HISI && ARM64) || COMPILE_TEST
+diff --git a/drivers/phy/hisilicon/Makefile b/drivers/phy/hisilicon/Makefile
+index 92e874ae9c74..51729868145b 100644
+--- a/drivers/phy/hisilicon/Makefile
++++ b/drivers/phy/hisilicon/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_PHY_HI6220_USB)		+= phy-hi6220-usb.o
+ obj-$(CONFIG_PHY_HI3660_USB)		+= phy-hi3660-usb3.o
++obj-$(CONFIG_PHY_HI3670_USB)		+= phy-hi3670-usb3.o
+ obj-$(CONFIG_PHY_HISTB_COMBPHY)		+= phy-histb-combphy.o
+ obj-$(CONFIG_PHY_HISI_INNO_USB2)	+= phy-hisi-inno-usb2.o
+ obj-$(CONFIG_PHY_HIX5HD2_SATA)		+= phy-hix5hd2-sata.o
+diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/phy/hisilicon/phy-hi3670-usb3.c
+similarity index 100%
+rename from drivers/staging/hikey9xx/phy-hi3670-usb3.c
+rename to drivers/phy/hisilicon/phy-hi3670-usb3.c
+diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
+index 2e48ded92a7e..cc1fc58866c5 100644
+--- a/drivers/staging/hikey9xx/Kconfig
++++ b/drivers/staging/hikey9xx/Kconfig
+@@ -1,16 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-# to be placed at drivers/phy
+-config PHY_HI3670_USB
+-	tristate "hi3670 USB PHY support"
+-	depends on (ARCH_HISI && ARM64) || COMPILE_TEST
+-	select GENERIC_PHY
+-	select MFD_SYSCON
+-	help
+-	  Enable this to support the HISILICON HI3670 USB PHY.
+-
+-	  To compile this driver as a module, choose M here.
+-
+ # to be placed at drivers/spmi
+ config SPMI_HISI3670
+ 	tristate "Hisilicon 3670 SPMI Controller"
+diff --git a/drivers/staging/hikey9xx/Makefile b/drivers/staging/hikey9xx/Makefile
+index 1924fadac952..9371dcc3d35b 100644
+--- a/drivers/staging/hikey9xx/Makefile
++++ b/drivers/staging/hikey9xx/Makefile
+@@ -1,7 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-obj-$(CONFIG_PHY_HI3670_USB)		+= phy-hi3670-usb3.o
+-
+ obj-$(CONFIG_SPMI_HISI3670)		+= hisi-spmi-controller.o
+ obj-$(CONFIG_MFD_HI6421_SPMI)		+= hi6421-spmi-pmic.o
+ obj-$(CONFIG_REGULATOR_HI6421V600)	+= hi6421v600-regulator.o
 -- 
 2.29.2
 
