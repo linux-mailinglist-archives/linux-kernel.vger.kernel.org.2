@@ -2,157 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B523061CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB82C3061D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbhA0RUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:20:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235701AbhA0RRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:17:54 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65237C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:17:14 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id n10so2006738pgl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:17:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9fC6ts20yKV4bzlJx7IpwEHMXNBp8xI9QfFWOht0bGc=;
-        b=NM4AHvu1x7e38zoonn+GYjYHhJxMxvVXmC3YRcpAjhdXTlLJJxJnSV9NE+3OlAe3+j
-         ykUeOmgxtAKCPPmMHlTJBN3TjeLZxMvld5THx6nRI3WjyOSNfV02vxNag12YSSg90Q3a
-         pjd8y7ISKXpmk+b5jcTDC1RhHrj6sOcQQR0Ls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9fC6ts20yKV4bzlJx7IpwEHMXNBp8xI9QfFWOht0bGc=;
-        b=PFV5Ok5aRC3WZQTlO4/ONznsdE4L5+2EjcLDmZvniqJ9ZDd7yFIFICAeF/7dUorPos
-         G8tdzy3iQsDr0wI5eB1l1iGI+c0pVa8vbDHn162z2znUxpilm1ZEswr/xOQ9G2mgF8d9
-         pMi2kz34t30HC/v/+Y7tPYqpuHRKbMVjDkT56nmAvP1Z1zxBNtzG9ejlN/NCeyBIH2hw
-         s086O9Q8FqBZSiKIJRJ+c3F+OPB6ozkmrHQOGMImqeIvyn3Gm0BWSWW6QZNkiHrgcYI9
-         n9EOaPYLkoS3V0TSKxZC4dv/YVPlWBq4/L2rMWj+IahmS15u4NyPQQomgl+7ockJhtyD
-         0byw==
-X-Gm-Message-State: AOAM533W+pXybW5iryYP5BEYDfX7AvVEwohiuQ6jcPHxozovO+o7VUEs
-        RvmBilnpw3D0GCaJCvNwUaKR1A==
-X-Google-Smtp-Source: ABdhPJx4/PC0sya58MSmJSowX/6IYjoSLQS8WfvtMtUmiCJPrJruY7D1XAiNpmHWp0mGtdxxUOnxEQ==
-X-Received: by 2002:a63:ca45:: with SMTP id o5mr12194630pgi.48.1611767833941;
-        Wed, 27 Jan 2021 09:17:13 -0800 (PST)
-Received: from localhost ([2620:15c:202:201:58a2:e0e6:6d20:24bd])
-        by smtp.gmail.com with ESMTPSA id t25sm3154709pgv.30.2021.01.27.09.17.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 09:17:13 -0800 (PST)
-From:   Miao-chen Chou <mcchou@chromium.org>
-To:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>
-Cc:     Alain Michaud <alainm@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v4] Bluetooth: Keep MSFT ext info throughout a hci_dev's life cycle
-Date:   Wed, 27 Jan 2021 09:17:07 -0800
-Message-Id: <20210127091600.v4.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+        id S1343523AbhA0RVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:21:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234165AbhA0RUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:20:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 690DB60187;
+        Wed, 27 Jan 2021 17:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611767978;
+        bh=34HKEYL8Uu56NwWdQHHa7lTy6DQWGDrOdbZLSeUzLas=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CcfFkYALbXpYIR968k4K6VSsCwjYIKLLVO+TvoC+Uwp/6Mcl9+I7o6GUH6bpcgxzr
+         xjx6Ukd7k7EPj4FuuZorAxyP7AEZms03pxIi/r+8XCmB29XBl6kYFT+FuIFFNOu1Hi
+         8p2FFSNJTmgymdMUCY5weC7GKTkOGoQh8J2R32PZ/9E/yPS7KCOa01BGz59E2q0sX8
+         npXkHmlqBK9FwbDxsYK0CKrc9u4yjfxAfuZ9xhJzmupMsDW1DUFhGQnHhKc+OIqBDA
+         EjsYtWaWd26MsVU1+Rmu42B8MqRdBh3/WqBKDL4SYU2uQ6YyRSRqmeBhV5+GyaMIra
+         zQw1qZ9+a5YZQ==
+Date:   Wed, 27 Jan 2021 19:19:34 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jerome Forissier <jerome@forissier.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        op-tee@lists.trustedfirmware.org, Jonathan Corbet <corbet@lwn.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-integrity@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Subject: Re: [PATCH v8 2/4] KEYS: trusted: Introduce TEE based Trusted Keys
+Message-ID: <YBGgpj1OgLihwSd0@kernel.org>
+References: <YAa0ys4YJcZtKdfF@kernel.org>
+ <YAeH2pb8szQyjusL@kernel.org>
+ <CAFA6WYP5G6NfGk96ePOC+2kpD6B+4hz9nywyUM9Nh=dJDYMiuA@mail.gmail.com>
+ <01000177223f74d3-1eef7685-4a19-40d2-ace6-d4cd7f35579d-000000@email.amazonses.com>
+ <dc3979e8-6bf0-adb7-164d-d50e805a048f@forissier.org>
+ <YAmYu9FxWcLPhBhs@kernel.org>
+ <YAmcyKnYCK+Y4IGW@kernel.org>
+ <1486cfe8-bc30-1266-12bd-0049f2b64820@forissier.org>
+ <YAsVenGkaqb8205f@kernel.org>
+ <CAFA6WYPQ+LZyHKZJQb=3euTy8f8TO3HqCADojpZaHXgtzNj+fw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFA6WYPQ+LZyHKZJQb=3euTy8f8TO3HqCADojpZaHXgtzNj+fw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This moves msft_do_close() from hci_dev_do_close() to
-hci_unregister_dev() to avoid clearing MSFT extension info. This also
-re-reads MSFT info upon every msft_do_open() even if MSFT extension has
-been initialized.
+On Mon, Jan 25, 2021 at 02:47:38PM +0530, Sumit Garg wrote:
+> Hi Jarkko,
+> 
+> On Fri, 22 Jan 2021 at 23:42, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >
+> > On Thu, Jan 21, 2021 at 05:23:45PM +0100, Jerome Forissier wrote:
+> > >
+> > >
+> > > On 1/21/21 4:24 PM, Jarkko Sakkinen wrote:
+> > > > On Thu, Jan 21, 2021 at 05:07:42PM +0200, Jarkko Sakkinen wrote:
+> > > >> On Thu, Jan 21, 2021 at 09:44:07AM +0100, Jerome Forissier wrote:
+> > > >>>
+> > > >>>
+> > > >>> On 1/21/21 1:02 AM, Jarkko Sakkinen via OP-TEE wrote:
+> > > >>>> On Wed, Jan 20, 2021 at 12:53:28PM +0530, Sumit Garg wrote:
+> > > >>>>> On Wed, 20 Jan 2021 at 07:01, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > >>>>>>
+> > > >>>>>> On Tue, Jan 19, 2021 at 12:30:42PM +0200, Jarkko Sakkinen wrote:
+> > > >>>>>>> On Fri, Jan 15, 2021 at 11:32:31AM +0530, Sumit Garg wrote:
+> > > >>>>>>>> On Thu, 14 Jan 2021 at 07:35, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > >>>>>>>>>
+> > > >>>>>>>>> On Wed, Jan 13, 2021 at 04:47:00PM +0530, Sumit Garg wrote:
+> > > >>>>>>>>>> Hi Jarkko,
+> > > >>>>>>>>>>
+> > > >>>>>>>>>> On Mon, 11 Jan 2021 at 22:05, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> On Tue, Nov 03, 2020 at 09:31:44PM +0530, Sumit Garg wrote:
+> > > >>>>>>>>>>>> Add support for TEE based trusted keys where TEE provides the functionality
+> > > >>>>>>>>>>>> to seal and unseal trusted keys using hardware unique key.
+> > > >>>>>>>>>>>>
+> > > >>>>>>>>>>>> Refer to Documentation/tee.txt for detailed information about TEE.
+> > > >>>>>>>>>>>>
+> > > >>>>>>>>>>>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> I haven't yet got QEMU environment working with aarch64, this produces
+> > > >>>>>>>>>>> just a blank screen:
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -kernel output/images/Image -initrd output/images/rootfs.cpio -serial stdio
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> My BuildRoot fork for TPM and keyring testing is located over here:
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/buildroot-tpmdd.git/
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> The "ARM version" is at this point in aarch64 branch. Over time I will
+> > > >>>>>>>>>>> define tpmdd-x86_64 and tpmdd-aarch64 boards and everything will be then
+> > > >>>>>>>>>>> in the master branch.
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> To create identical images you just need to
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> $ make tpmdd_defconfig && make
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> Can you check if you see anything obviously wrong? I'm eager to test this
+> > > >>>>>>>>>>> patch set, and in bigger picture I really need to have ready to run
+> > > >>>>>>>>>>> aarch64 environment available.
+> > > >>>>>>>>>>
+> > > >>>>>>>>>> I would rather suggest you to follow steps listed here [1] as to test
+> > > >>>>>>>>>> this feature on Qemu aarch64 we need to build firmwares such as TF-A,
+> > > >>>>>>>>>> OP-TEE, UEFI etc. which are all integrated into OP-TEE Qemu build
+> > > >>>>>>>>>> system [2]. And then it would be easier to migrate them to your
+> > > >>>>>>>>>> buildroot environment as well.
+> > > >>>>>>>>>>
+> > > >>>>>>>>>> [1] https://lists.trustedfirmware.org/pipermail/op-tee/2020-May/000027.html
+> > > >>>>>>>>>> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#qemu-v8
+> > > >>>>>>>>>>
+> > > >>>>>>>>>> -Sumit
+> > > >>>>>>>>>
+> > > >>>>>>>>> Can you provide 'keyctl_change'? Otherwise, the steps are easy to follow.
+> > > >>>>>>>>>
+> > > >>>>>>>>
+> > > >>>>>>>> $ cat keyctl_change
+> > > >>>>>>>> diff --git a/common.mk b/common.mk
+> > > >>>>>>>> index aeb7b41..663e528 100644
+> > > >>>>>>>> --- a/common.mk
+> > > >>>>>>>> +++ b/common.mk
+> > > >>>>>>>> @@ -229,6 +229,7 @@ BR2_PACKAGE_OPTEE_TEST_SDK ?= $(OPTEE_OS_TA_DEV_KIT_DIR)
+> > > >>>>>>>>  BR2_PACKAGE_OPTEE_TEST_SITE ?= $(OPTEE_TEST_PATH)
+> > > >>>>>>>>  BR2_PACKAGE_STRACE ?= y
+> > > >>>>>>>>  BR2_TARGET_GENERIC_GETTY_PORT ?= $(if
+> > > >>>>>>>> $(CFG_NW_CONSOLE_UART),ttyAMA$(CFG_NW_CONSOLE_UART),ttyAMA0)
+> > > >>>>>>>> +BR2_PACKAGE_KEYUTILS := y
+> > > >>>>>>>>
+> > > >>>>>>>>  # All BR2_* variables from the makefile or the environment are appended to
+> > > >>>>>>>>  # ../out-br/extra.conf. All values are quoted "..." except y and n.
+> > > >>>>>>>> diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
+> > > >>>>>>>> index 368c18a..832ab74 100644
+> > > >>>>>>>> --- a/kconfigs/qemu.conf
+> > > >>>>>>>> +++ b/kconfigs/qemu.conf
+> > > >>>>>>>> @@ -20,3 +20,5 @@ CONFIG_9P_FS=y
+> > > >>>>>>>>  CONFIG_9P_FS_POSIX_ACL=y
+> > > >>>>>>>>  CONFIG_HW_RANDOM=y
+> > > >>>>>>>>  CONFIG_HW_RANDOM_VIRTIO=y
+> > > >>>>>>>> +CONFIG_TRUSTED_KEYS=y
+> > > >>>>>>>> +CONFIG_ENCRYPTED_KEYS=y
+> > > >>>>>>>>
+> > > >>>>>>>>> After I've successfully tested 2/4, I'd suggest that you roll out one more
+> > > >>>>>>>>> version and CC the documentation patch to Elaine and Mini, and clearly
+> > > >>>>>>>>> remark in the commit message that TEE is a standard, with a link to the
+> > > >>>>>>>>> specification.
+> > > >>>>>>>>>
+> > > >>>>>>>>
+> > > >>>>>>>> Sure, I will roll out the next version after your testing.
+> > > >>>>>>>
+> > > >>>>>>> Thanks, I'll try this at instant, and give my feedback.
+> > > >>>>>>
+> > > >>>>>> I bump into this:
+> > > >>>>>>
+> > > >>>>>> $ make run-only
+> > > >>>>>> ln -sf /home/jarkko/devel/tpm/optee/build/../out-br/images/rootfs.cpio.gz /home/jarkko/devel/tpm/optee/build/../out/bin/
+> > > >>>>>> ln: failed to create symbolic link '/home/jarkko/devel/tpm/optee/build/../out/bin/': No such file or directory
+> > > >>>>>> make: *** [Makefile:194: run-only] Error 1
+> > > >>>>>>
+> > > >>>>>
+> > > >>>>> Could you check if the following directory tree is built after
+> > > >>>>> executing the below command?
+> > > >>>>>
+> > > >>>>> $ make -j`nproc`
+> > > >>>>> CFG_IN_TREE_EARLY_TAS=trusted_keys/f04a0fe7-1f5d-4b9b-abf7-619b85b4ce8c
+> > > >>>>>
+> > > >>>>> $ tree out/bin/
+> > > >>>>> out/bin/
+> > > >>>>> ├── bl1.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl1.bin
+> > > >>>>> ├── bl2.bin -> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl2.bin
+> > > >>>>> ├── bl31.bin ->
+> > > >>>>> /home/sumit/build/optee/build/../trusted-firmware-a/build/qemu/release/bl31.bin
+> > > >>>>> ├── bl32.bin ->
+> > > >>>>> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-header_v2.bin
+> > > >>>>> ├── bl32_extra1.bin ->
+> > > >>>>> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pager_v2.bin
+> > > >>>>> ├── bl32_extra2.bin ->
+> > > >>>>> /home/sumit/build/optee/build/../optee_os/out/arm/core/tee-pageable_v2.bin
+> > > >>>>> ├── bl33.bin ->
+> > > >>>>> /home/sumit/build/optee/build/../edk2/Build/ArmVirtQemuKernel-AARCH64/RELEASE_GCC49/FV/QEMU_EFI.fd
+> > > >>>>> ├── Image -> /home/sumit/build/optee/build/../linux/arch/arm64/boot/Image
+> > > >>>>> └── rootfs.cpio.gz ->
+> > > >>>>> /home/sumit/build/optee/build/../out-br/images/rootfs.cpio.gz
+> > > >>>>>
+> > > >>>>> 0 directories, 9 files
+> > > >>>>>
+> > > >>>>> -Sumit
+> > > >>>>
+> > > >>>> I actually spotted a build error that was unnoticed last time:
+> > > >>>>
+> > > >>>> make[2]: Entering directory '/home/jarkko/devel/tpm/optee/edk2/BaseTools/Tests'
+> > > >>>> /bin/sh: 1: python: not found
+> > > >>>>
+> > > >>>> I'd prefer not to install Python2. It has been EOL over a year.
+> > > >>>
+> > > >>> AFAIK, everything should build fine with Python3. On my Ubuntu 20.04
+> > > >>> machine, this is accomplished by installing package "python-is-python3"
+> > > >>> (after uninstalling "python-is-python2" if need be).
+> > > >>>
+> > > >>> $ ls -l /usr/bin/python
+> > > >>> lrwxrwxrwx 1 root root 7 Apr 15  2020 /usr/bin/python -> python3
+> > > >>
+> > > >> Right, just found about this in unrelated context :-) [*]
+> > > >>
+> > > >> Hope this will work out...
+> > > >>
+> > > >> [*] https://github.com/surge-synthesizer/surge/pull/3655
+> > > >
+> > > > Now I get
+> > > >
+> > > > Traceback (most recent call last):
+> > > >   File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/RunTests.py", line 36, in <module>
+> > > >     allTests = GetAllTestsSuite()
+> > > >   File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/RunTests.py", line 33, in GetAllTestsSuite
+> > > >     return unittest.TestSuite([GetCTestSuite(), GetPythonTestSuite()])
+> > > >   File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/RunTests.py", line 25, in GetCTestSuite
+> > > >     import CToolsTests
+> > > >   File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/CToolsTests.py", line 22, in <module>
+> > > >     import TianoCompress
+> > > >   File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/TianoCompress.py", line 69, in <module>
+> > > >     TheTestSuite = TestTools.MakeTheTestSuite(locals())
+> > > >   File "/home/jarkko/Projects/tpm/optee/edk2/BaseTools/Tests/TestTools.py", line 43, in MakeTheTestSuite
+> > > >     for name, item in localItems.iteritems():
+> > > > AttributeError: 'dict' object has no attribute 'iteritems'
+> > >
+> > > Right. Same here after removing all traces of Python2 from my system :-/
+> > >
+> > > A couple of fixes are needed:
+> > > 1. EDK2 needs to be upgraded to tag or later [1]
+> > > 2. The PYTHON3_ENABLE environment variable needs to be set to TRUE [2]
+> > >
+> > > [1] https://github.com/OP-TEE/manifest/pull/177
+> > > [2] https://github.com/OP-TEE/build/pull/450
+> >
+> > BTW, Is to *really* impossible to test this with plain BuildRoot.  It's
+> > obvious that this forks BR internally.
+> >
+> > I mean even if I get this working once, this will feels like a clumsy way
+> > to test Aarch64 regularly. I use BuildRoot extensively for x86 testing. And
+> > it would be nice to be able to start doing regular ARM testing.
+> 
+> The main reason to guide you towards the OP-TEE build system is that
+> you will be able to build all the firmwares (TF-A, OP-TEE, edk2 etc.)
+> from source. If you don't need to rebuild those then I have prepared a
+> flash firmware binary blob for your testing (attached flash.bin). So
+> Qemu cmdline will look like:
+> 
+> $ qemu-system-aarch64 -nographic -s -machine virt,secure=on -cpu
+> cortex-a57 -kernel out/bin/Image -no-acpi -append
+> 'console=ttyAMA0,38400 keep_bootcon root=/dev/vda2' -initrd
+> out/bin/rootfs.cpio.gz -smp 2 -m 1024 -bios flash.bin -d unimp
+> 
+> Here you can use "Image" and "rootfs.cpio.gz" from your plain BR builds.
+> 
+> Give it a try and let me know if this works for you.
 
-The following test steps were performed.
-(1) boot the test device and verify the MSFT support debug log in syslog
-(2) restart bluetoothd and verify msft_do_close() doesn't get invoked
-    and msft_do_open re-reads the MSFT support.
+Hi, sorry something happened with Evolution that I don't understand
+and it just sent the message quoted without my response. Should
+always stick to mutt.
 
-Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
----
+There's a bug in BuildRoot that prevents me testing right now, when
+you use LINUX_OVERRIDE_SRCDIR. BR developers are looking into that.
 
-Changes in v4:
-- Re-read the MSFT data instead of skipping if it's initiated already
+I'll test this once there's a resolution for that.
 
-Changes in v3:
-- Remove the accepted commits from the series
-
- net/bluetooth/hci_core.c |  4 ++--
- net/bluetooth/msft.c     | 21 ++++++++++++++++++---
- 2 files changed, 20 insertions(+), 5 deletions(-)
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index eeafed2efc0da..8056f0d4ae172 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1764,8 +1764,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 
- 	hci_sock_dev_event(hdev, HCI_DEV_DOWN);
- 
--	msft_do_close(hdev);
--
- 	if (hdev->flush)
- 		hdev->flush(hdev);
- 
-@@ -3844,6 +3842,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
- 	unregister_pm_notifier(&hdev->suspend_notifier);
- 	cancel_work_sync(&hdev->suspend_prepare);
- 
-+	msft_do_close(hdev);
-+
- 	hci_dev_do_close(hdev);
- 
- 	if (!test_bit(HCI_INIT, &hdev->flags) &&
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index 8579bfeb28364..4465d018280eb 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -73,16 +73,31 @@ static bool read_supported_features(struct hci_dev *hdev,
- 
- void msft_do_open(struct hci_dev *hdev)
- {
--	struct msft_data *msft;
-+	struct msft_data *msft = NULL;
- 
- 	if (hdev->msft_opcode == HCI_OP_NOP)
- 		return;
- 
- 	bt_dev_dbg(hdev, "Initialize MSFT extension");
- 
--	msft = kzalloc(sizeof(*msft), GFP_KERNEL);
--	if (!msft)
-+	/* If MSFT data exists, reset its members */
-+	if (hdev->msft_data) {
-+		msft = hdev->msft_data;
-+		hdev->msft_data = NULL;
-+
-+		msft->features = 0;
-+		kfree(msft->evt_prefix);
-+		msft->evt_prefix = NULL;
-+		msft->evt_prefix_len = 0;
-+
-+	} else {
-+		msft = kzalloc(sizeof(*msft), GFP_KERNEL);
-+	}
-+
-+	if (!msft) {
-+		bt_dev_err(hdev, "Failed to init MSFT extension");
- 		return;
-+	}
- 
- 	if (!read_supported_features(hdev, msft)) {
- 		kfree(msft);
--- 
-2.30.0.280.ga3ce27912f-goog
-
+/Jarkko
