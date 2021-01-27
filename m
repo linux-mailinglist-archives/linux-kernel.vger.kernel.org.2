@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A64305918
+	by mail.lfdr.de (Postfix) with ESMTP id AFF56305919
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236217AbhA0LCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:02:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46450 "EHLO mx2.suse.de"
+        id S236380AbhA0LCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:02:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46604 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236284AbhA0K5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:57:43 -0500
+        id S236007AbhA0K5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:57:52 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611745017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1611745026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X22pjoc3R05cEyBcSdDS4M+jzZBi8OqIcNLr6tG6NLo=;
-        b=nWOlT5MKFwcGje+YqBzXMPqVKCRFjabR9mcyxK5VaWeAAj2AB61FSPqmvMIC96JshZSh15
-        E/ttqk3HsfnyQzDb3FuyzUWFrqGv9F4pRupOeYjEtUX5mzbiu9+YhMg+RkxaVWKQYiyG/v
-        y4OM9V4DsGMBEY4bt99qv7mCEL/8r3I=
+        bh=KNfOaCzUHOdUdJ/TqcQ2MmdjRFgh4Um7ViH2fY+0P1o=;
+        b=Osv0B8NTTHLSjRsWyItdGALjB1hmRVEfoeriP2Empr4NuhKsZOwIKcW8ZLdySJ34JX62OV
+        vXFExcsQ4aRL2zV3o9PZVl4kF7AaidDuXnH/tHCl/MDFBVtiB1QGxtaSDGyjtvGyamPMQg
+        gEyFuLN0R70gEluj9kfRaQCanEcC+uU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F674AD2B;
-        Wed, 27 Jan 2021 10:56:57 +0000 (UTC)
-Subject: Re: [PATCH] xen-blkback: fix compatibility bug with single page rings
-To:     Paul Durrant <paul@xen.org>
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-References: <20210127103034.2559-1-paul@xen.org>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <cd70ae5e-a389-7521-8caf-15650a276152@suse.com>
-Date:   Wed, 27 Jan 2021 11:56:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        by mx2.suse.de (Postfix) with ESMTP id EE9ABAD57;
+        Wed, 27 Jan 2021 10:57:05 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 11:57:03 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Kalesh Singh <kaleshsingh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        kernel-team <kernel-team@android.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>, Hui Su <sh_def@163.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
+Message-ID: <YBFG/zBxgnapqLAK@dhcp22.suse.cz>
+References: <20210126225138.1823266-1-kaleshsingh@google.com>
+ <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127103034.2559-1-paul@xen.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.01.2021 11:30, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
+On Wed 27-01-21 11:47:29, Jann Horn wrote:
+> +jeffv from Android
 > 
-> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
-> inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
-> behaviour of xen-blkback when connecting to a frontend was:
+> On Tue, Jan 26, 2021 at 11:51 PM Kalesh Singh <kaleshsingh@google.com> wrote:
+> > In order to measure how much memory a process actually consumes, it is
+> > necessary to include the DMA buffer sizes for that process in the memory
+> > accounting. Since the handle to DMA buffers are raw FDs, it is important
+> > to be able to identify which processes have FD references to a DMA buffer.
 > 
-> - read 'ring-page-order'
-> - if not present then expect a single page ring specified by 'ring-ref'
-> - else expect a ring specified by 'ring-refX' where X is between 0 and
->   1 << ring-page-order
-> 
-> This was correct behaviour, but was broken by the afforementioned commit to
-> become:
-> 
-> - read 'ring-page-order'
-> - if not present then expect a single page ring
-> - expect a ring specified by 'ring-refX' where X is between 0 and
->   1 << ring-page-order
-> - if that didn't work then see if there's a single page ring specified by
->   'ring-ref'
-> 
-> This incorrect behaviour works most of the time but fails when a frontend
-> that sets 'ring-page-order' is unloaded and replaced by one that does not
-> because, instead of reading 'ring-ref', xen-blkback will read the stale
-> 'ring-ref0' left around by the previous frontend will try to map the wrong
-> grant reference.
-> 
-> This patch restores the original behaviour.
+> Or you could try to let the DMA buffer take a reference on the
+> mm_struct and account its size into the mm_struct? That would probably
+> be nicer to work with than having to poke around in procfs separately
+> for DMA buffers.
 
-Isn't this only the 2nd of a pair of fixes that's needed, the
-first being the drivers, upon being unloaded, to fully clean up
-after itself? Any stale key left may lead to confusion upon
-re-use of the containing directory.
+Yes that would make some sense to me as well but how do you know that
+the process actually uses a buffer? If it mmaps it then you already have
+that information via /proc/<pid>/maps. My understanding of dma-buf is
+really coarse but my impression is that you can consume the memory via
+standard read syscall as well. How would you account for that.
 
-Jan
+[...]
+Skipping over a large part of your response but I do agree that the
+interface is really elaborate to drill down to the information.
+
+> I'm not convinced that introducing a new procfs file for this is the
+> right way to go. And the idea of having to poke into multiple
+> different files in procfs and in sysfs just to be able to compute a
+> proper memory usage score for a process seems weird to me. "How much
+> memory is this process using" seems like the kind of question the
+> kernel ought to be able to answer (and the kernel needs to be able to
+> answer somewhat accurately so that its own OOM killer can do its job
+> properly)?
+
+Well, shared buffers are tricky but it is true that we already consider
+shmem in badness so this wouldn't go out of line. Kernel oom killer
+could be more clever with these special fds though and query for buffer
+size directly.
+-- 
+Michal Hocko
+SUSE Labs
