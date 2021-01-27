@@ -2,238 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C59D3061E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149AD3061EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343525AbhA0RZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232218AbhA0RZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:25:14 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F6DC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:24:34 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id n3so1402805qvf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:24:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d+T9WW2t0eLXWm4ldUVqyOgoINJcqY85/YDqVsYwVYo=;
-        b=OP+0zWLa5OcRmF9NbiZTz9TRF80TDeQo1M9ixIDxKmfEAfyLbmN/qZAMFyQO2hrofo
-         epFkWL3OFNZ7Za6BtU+q4EkKnuIGNdPQldHf3HCz8FTFdqCncrbgYtZK95ponwrH0uUC
-         4Stg5ofr6l1v0+jf2Y2xzjNPX+8t49pboUAQRWDJVhIOqHIhNWilCsvbXT20knAn+OOO
-         0ZSRruP5OE3AxiyW7INFjAxAn90r1L2cBYtUFbyGxzckPyy4+63YvMNrrgWLd71bXjeO
-         TahAXrUEhSv5/LT9aN4Ot50xhMJAHpLOMZZcVrEbSz9/Eu4OBRXruN3lRmHvYB77j23l
-         kpDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d+T9WW2t0eLXWm4ldUVqyOgoINJcqY85/YDqVsYwVYo=;
-        b=OwZfyvw5GedEBWzjX+M1zz1caRutiqAeg2m50RsEa0pZ/6tFcpzPR1BOAiKPFR0/zd
-         7RSHbybQxA/c4iC/Z1efOLxW+nHW/wXYk6fIZMGHdl0FjgLt2sOfiPDnzUvhQzxxSaVE
-         YTRkHLS/R7eNlmc139nwA3uTOKhtPwwrciT6a8QqpdOgDchjjNGcHOQqUf67Y8IQHd/c
-         J7uUEi8t+4IdivHHWw7c8isSZxjBNZmUH4WB1dyTqmb9mRX9kDTn8s+mGf7fqW35iQj8
-         tud71/7QmKUMdIosP2aQ1FVCIHxyBcJTfSa1gAgITcvur0+0hQoXzp3RGgvfSox/bq90
-         eJGQ==
-X-Gm-Message-State: AOAM532E6+U+aUBBc3P+L9Gw96qxQi0ZUAg3QN3u7Ed5oyp04eO0zD9e
-        u96LwPkDIXyt6h7m96agl5l+xNubh85NVbG+jxjB/A==
-X-Google-Smtp-Source: ABdhPJz/PbEPrEoNinOT51hgz9ZRZeQND/dn17pX3Yx6ZYswB3G5FPqwe1dGAeRgbYwjsXMyAPLmNHViQzWsyXhH1cQ=
-X-Received: by 2002:a0c:fd8e:: with SMTP id p14mr11550426qvr.37.1611768273412;
- Wed, 27 Jan 2021 09:24:33 -0800 (PST)
-MIME-Version: 1.0
-References: <0000000000009bbb7905b9e4a624@google.com> <CACT4Y+agFz7Y32pkV7nObxB3KjCcN1p335h1HE4dr94rsDvndw@mail.gmail.com>
- <20210127171453.GC358@willie-the-truck>
-In-Reply-To: <20210127171453.GC358@willie-the-truck>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 27 Jan 2021 18:24:22 +0100
-Message-ID: <CACT4Y+ZtQS7wtKbYSxAL=TJTmWp9_Gq-fBi-JLtAk3mA6J7siA@mail.gmail.com>
-Subject: Re: WARNING in __do_kernel_fault
-To:     Will Deacon <will@kernel.org>
-Cc:     syzbot <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235509AbhA0R0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:26:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:56368 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234551AbhA0R0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:26:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66A311FB;
+        Wed, 27 Jan 2021 09:25:47 -0800 (PST)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83C923F66E;
+        Wed, 27 Jan 2021 09:25:45 -0800 (PST)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: [PATCH v5 00/20] arm64: sunxi: Initial Allwinner H616 SoC support
+Date:   Wed, 27 Jan 2021 17:24:40 +0000
+Message-Id: <20210127172500.13356-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.14.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:15 PM Will Deacon <will@kernel.org> wrote:
->
-> On Wed, Jan 27, 2021 at 06:00:30PM +0100, Dmitry Vyukov wrote:
-> > On Wed, Jan 27, 2021 at 5:56 PM syzbot
-> > <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=15a25264d00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=45b6fce29ff97069e2c5
-> > > userspace arch: arm64
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com
-> >
-> > This happens on arm64 instance with mte enabled.
-> > There is a GPF in reiserfs_xattr_init on x86_64 reported:
-> > https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde
-> > so I would assume it's just a plain NULL deref. Is this WARNING not
-> > indicative of a kernel bug? Or there is something special about this
-> > particular NULL deref?
->
-> Congratulations, you're the first person to trigger this warning!
->
-> This fires if we take an unexpected data abort in the kernel but when we
-> get into the fault handler the page-table looks ok (according to the CPU via
-> an 'AT' instruction). Are you using QEMU system emulation? Perhaps its
-> handling of AT isn't quite right.
+Hi,
 
-Hi Will,
+this is a small update from v4, fixing some DT validation issues:
+dtbs_check now comes back clean for me.
+Also I dropped USB support for now. It turns out that this is more messy
+than we thought: it only works if all four USB controllers are enabled
+(and not just some PHYs). That smells like some shared reset or clock
+gate, but we haven't found the culprit yet. Also the BSP source suggests
+that there is a "hardware design issue" that requires some PHY tune
+register to be programmed, so we probably need more code anyway.
+I also dropped the DT node for the second EMAC, as this is mostly
+untested at this point.
 
-Yes, it's qemu-system-aarch64 5.2 with -machine virt,mte=on -cpu max.
-Do you see any way forward for this issue? Can somehow prove/disprove
-it's qemu at fault?
-The instance just started running, but it seems to be the most common
-crash so far and it seems to happen on _all_ gpf's.
-You can see all arm64 crashes so far here:
-https://syzkaller.appspot.com/upstream?manager=ci-qemu2-arm64-mte
-They all happen in reiserfs_security_init, but locally I got a bunch
-of different stacks, e.g.:
+Changelog below. Based on the (updated) sunxi/for-next branch.
 
+I was hoping that at least the clock and AXP patches (01/20-06/20) could
+make it into 5.12 still?  That would allow booting boards from SD card.
+Patch 08/20 would enable Ethernet.
+U-Boot support is now merged into its master tree.
 
-------------[ cut here ]------------
-Ignoring spurious kernel translation fault at virtual address ffff8000170f5fe0
-WARNING: CPU: 1 PID: 16450 at arch/arm64/mm/fault.c:364
-__do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-Modules linked in:
-CPU: 1 PID: 16450 Comm: syz-executor.1 Not tainted 5.11.0-rc3 #36
-Hardware name: linux,dummy-virt (DT)
-pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-lr : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-sp : ffff800015443550
-x29: ffff800015443550 x28: fcff00002db4bc00
-x27: 0000000000000020 x26: 0000000000000001
-x25: 0000000000000018 x24: 0000000000000008
-x23: 0000000080400009 x22: ffff8000170f5fe0
-x21: 0000000000000025 x20: ffff800015443620
-x19: 0000000097800047 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000
-x15: 00003d8e94eba1ca x14: 0000000000000017
-x13: 0000000000000017 x12: 0000000000000000
-x11: 0000000000000010 x10: 68b6895a9d433f2e
-x9 : f39ec128c34c6307 x8 : fcff00002db4ca98
-x7 : f5ff00000e65a400 x6 : 000000403e245885
-x5 : 0000000000000000 x4 : ffff00007dbe1948
-x3 : ffff00007dbe84b0 x2 : ffff00007dbe1948
-x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
- do_bad_area arch/arm64/mm/fault.c:462 [inline]
- do_translation_fault+0x5c/0xc4 arch/arm64/mm/fault.c:662
- do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:792
- el1_abort+0x40/0x6c arch/arm64/kernel/entry-common.c:118
- el1_sync_handler+0xb0/0xcc arch/arm64/kernel/entry-common.c:209
- el1_sync+0x70/0x100 arch/arm64/kernel/entry.S:656
- fast_imageblit drivers/video/fbdev/core/sysimgblt.c:229 [inline]
- sys_imageblit+0x3b4/0x440 drivers/video/fbdev/core/sysimgblt.c:275
- drm_fb_helper_sys_imageblit drivers/gpu/drm/drm_fb_helper.c:794 [inline]
- drm_fbdev_fb_imageblit+0x5c/0x80 drivers/gpu/drm/drm_fb_helper.c:2266
- bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:139 [inline]
- bit_putcs+0x23c/0x470 drivers/video/fbdev/core/bitblit.c:188
- fbcon_putcs+0xfc/0x120 drivers/video/fbdev/core/fbcon.c:1304
- do_update_region+0x158/0x1b4 drivers/tty/vt/vt.c:676
- invert_screen+0xe4/0x1f4 drivers/tty/vt/vt.c:800
- highlight drivers/tty/vt/selection.c:57 [inline]
- clear_selection drivers/tty/vt/selection.c:84 [inline]
- clear_selection+0x50/0x70 drivers/tty/vt/selection.c:80
- vc_do_resize+0x4f8/0x574 drivers/tty/vt/vt.c:1241
- vc_resize+0x24/0x30 drivers/tty/vt/vt.c:1346
- fbcon_do_set_font+0xd8/0x2c0 drivers/video/fbdev/core/fbcon.c:2402
- fbcon_set_font+0x200/0x260 drivers/video/fbdev/core/fbcon.c:2488
- con_font_set drivers/tty/vt/vt.c:4667 [inline]
- con_font_op+0x2b8/0x444 drivers/tty/vt/vt.c:4711
- vt_io_ioctl drivers/tty/vt/vt_ioctl.c:587 [inline]
- vt_ioctl+0x17b0/0x2020 drivers/tty/vt/vt_ioctl.c:817
- tty_ioctl+0xa60/0xe5c drivers/tty/tty_io.c:2658
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xac/0xf0 fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:158
- do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:204
- el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
- el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
- el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
+Thanks!
+Andre
 
+==================
+This series gathers patches to support the Allwinner H616 SoC. This is
+a rather uninspired SoC (Quad-A53 with the usual peripherals), but
+allows for some cheap development boards and TV boxes, and supports
+up to 4GB of DRAM.
 
-WARNING: CPU: 1 PID: 399 at arch/arm64/mm/fault.c:364
-__do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-Modules linked in:
+Various DT binding patches are sprinkled throughout the series, to add
+the new compatible names right before they are used.
+Patch 2 and 3 add clock support. For the -R clock this is shared with
+the H6 code, as the clocks are identical, with the H616 just having
+fewer of them. The main clocks are different enough to warrant a separate
+file.
+Patches 5 and 6 teach the AXP MFD driver to get along without having an
+interrupt, as the missing NMI pin on the H616 leads to some boards not
+having the AXP IRQ line connected.
+Patch 8 and 16 add some tweaks to the syscon and EMAC driver, to deal
+with the second EMAC clock used for the second Ethernet controller.
+This is somewhat optional for the current .dts, as this doesn't use
+the second EMAC.
 
-CPU: 1 PID: 399 Comm: syz-executor.1 Not tainted 5.11.0-rc3 #36
-Hardware name: linux,dummy-virt (DT)
-pstate: 60400089 (nZCv daIf +PAN -UAO -TCO BTYPE=--)
-pc : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-lr : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-sp : ffff800030b33a80
-x29: ffff800030b33a80
-x28: f0ff00000c0d4b00
+The remaining patches add DT bindings, which just add the new compatible
+string along with an existing name as a fallback string.
+Eventually we get the .dtsi for the SoC in patch 19, and the .dts for
+the OrangePi Zero2 board[1] in the last patch.
 
-x27: ffff800012d79098
-x26: ffff80001333ce68
+We have U-Boot and Trusted-Firmware support in a working state, booting
+via FEL or SD card and even TFTPing kernels work already [2][3].
+The U-Boot patches are already merged into the mainline repository.
 
-x25: f0ff00001aaa4a00
-x24: faff00000f219680
+Many thanks to Jernej for his tremendous help on this, also for the
+awesome input and help from the #linux-sunxi Freenode channel.
 
-x23: 0000000097810006 x22: 0000000000000114
-x21: 0000000000000025 x20: ffff800030b33bb0
-x19: 0000000097810006 x18: 0000000000000020
-x17: 0000000000000000 x16: 0000000000000000
-x15: f0ff00000c0d5010 x14: 6c656e72656b2073
-x13: 756f697275707320 x12: 756166206e6f6974
-x11: 616c736e61727420 x10: 6461206c61757472
-x9 : 697620746120746c x8 : 3030303030303030
-x7 : 3030207373657264 x6 : ffff8000132e79bf
-x5 : 000000000000000a x4 : 0000000000000000
-x3 : 0000000000000001 x2 : ffff00007dbe1950
-x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
- do_page_fault+0x1c0/0x3a0 arch/arm64/mm/fault.c:649
- do_translation_fault+0xb4/0xc4 arch/arm64/mm/fault.c:660
- do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:792
- el1_abort+0x40/0x6c arch/arm64/kernel/entry-common.c:118
- el1_sync_handler+0xb0/0xcc arch/arm64/kernel/entry-common.c:209
- el1_sync+0x70/0x100 arch/arm64/kernel/entry.S:656
- spin_unlock_irq include/linux/spinlock.h:404 [inline]
- io_ring_set_wakeup_flag fs/io_uring.c:6930 [inline]
- io_disable_sqo_submit+0x5c/0x90 fs/io_uring.c:8891
- io_uring_create fs/io_uring.c:9711 [inline]
- io_uring_setup+0x6b8/0xe10 fs/io_uring.c:9739
- __do_sys_io_uring_setup fs/io_uring.c:9745 [inline]
- __se_sys_io_uring_setup fs/io_uring.c:9742 [inline]
- __arm64_sys_io_uring_setup+0x20/0x30 fs/io_uring.c:9742
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:158
- do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:204
- el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
- el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
- el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
+The whole series (including the other patches) can also be found here:
+https://github.com/apritzel/linux/commits/h616-v5
+
+Happy reviewing!
+
+Cheers,
+Andre
+
+[1] https://linux-sunxi.org/Xunlong_Orange_Pi_Zero2
+[2] https://github.com/jernejsk/u-boot/commits/h616-v2
+[3] https://github.com/apritzel/arm-trusted-firmware/commits/h616-v1
+
+Changelog v4 .. v5:
+- Fix CCU binding to pass dtbs_check
+- Add RSB compatible string to binding doc
+- Rename IR pin name to pass dtbs_check
+- Add EMAC compatible string to binding doc
+- Drop USB PHY support and binding doc patches 
+- Drop USB nodes from .dtsi and .dts
+- Drop second EMAC node from .dtsi
+
+Changelog v3 .. v4:
+- Drop MMC and pinctrl matches (already in some -next trees)
+- Add Maxime's Acks
+- Add patch to update the AXP MFD DT bindings
+- Add new patch (05/21) to fix axp20x-pek driver
+- Change AXP IRQ fix to check for invalid IRQ line number
+- Split joint DT bindings patch (v3 18/21) into subsystems
+- move dwmac variable to keep christmas tree
+- Use enums for USB PHY compatible strings in DT binding
+- Enable watchdog (briefly verified to work)
+- Add PHY2 to HCI1&3, this fixes USB
+- limit r-ccu register frame length to not collide with NMI controller
+- add interrupt-controller property to AXP DT node
+
+Changelog v2 .. v3:
+- Add Rob's Acks
+- Drop redundant maxItems from pinctrl DT binding
+- Rename h_i2s* to just i2s* in pinctrl names
+- Use more declarative i2s0_d{in,out}{0,1} names
+- Add RSB pins to pinctrl
+- Include RSB clocks (sharing with newly added H6 versions)
+- Fix CEC clock (add 2nd enable bit, also fix predivider flag)
+- Rename PMU_UNK1 register in USB PHY
+- Add USB and MUSB DT binding patches
+- Add MMC/SD speed modes to .dtsi
+
+Changelog v1 .. v2:
+- pinctrl: adjust irq bank map to cover undocumented GPIO bank IRQs
+- use differing h_i2s0 pin output names
+- r-ccu: fix number of used clocks
+- ccu: remove PLL-PERIPHy(4X)
+- ccu: fix gpu1 divider range
+- ccu: fix usb-phy3 parent
+- ccu: add missing TV clocks
+- ccu: rework to CLK_OF_DECLARE style
+- ccu: enable output bit for PLL clocks
+- ccu: renumber clocks
+- .dtsi: drop sun50i-a64-system-control fallback
+- .dtsi: drop unknown SRAM regions
+- .dtsi: add more (undocumented) GPIO interrupts
+- .dtsi: fix I2C3 pin names
+- .dtsi: use a100-emmc fallback for MMC2
+- .dtsi: add second EMAC controller
+- .dtsi: use H3 MUSB controller fallback
+- .dtsi: fix frame size for USB PHY PMU registers
+- .dtsi: add USB0 PHY references
+- .dtsi: fix IR controller clock source
+- .dts: fix LED naming and swap pins
+- .dts: use 5V supply parent for USB supply
+- .dts: drop dummy IRQ for AXP
+- .dts: enable 3V3 header pin power rail
+- .dts: add SPI flash node
+- .dts: make USB-C port peripheral only
+- add IRQ-less AXP support
+- add two patches to support more than one EMAC clock
+- add patch to rework and extend USB PHY support
+- add DT binding documentation patches
+
+Andre Przywara (20):
+  dt-bindings: clk: sunxi-ccu: Add compatible string for Allwinner H616
+  clk: sunxi-ng: Add support for the Allwinner H616 R-CCU
+  clk: sunxi-ng: Add support for the Allwinner H616 CCU
+  dt-bindings: mfd: axp20x: Add AXP305 compatible (plus optional IRQ)
+  Input: axp20x-pek: Bail out if AXP has no interrupt line connected
+  mfd: axp20x: Allow AXP chips without interrupt lines
+  dt-bindings: sram: sunxi-sram: Add H616 compatible string
+  soc: sunxi: sram: Add support for more than one EMAC clock
+  dt-bindings: watchdog: sun4i: Add H616 compatible string
+  dt-bindings: i2c: mv64xxx: Add H616 compatible string
+  dt-bindings: media: IR: Add H616 IR compatible string
+  dt-bindings: rtc: sun6i: Add H616 compatible string
+  dt-bindings: spi: sunxi: Add H616 compatible string
+  dt-bindings: bus: rsb: Add H616 compatible string
+  dt-bindings: net: sun8i-emac: Add H616 compatible string
+  net: stmmac: dwmac-sun8i: Prepare for second EMAC clock register
+  phy: sun4i-usb: Rework HCI PHY (aka. "pmu_unk1") handling
+  arm64: dts: allwinner: Add Allwinner H616 .dtsi file
+  dt-bindings: arm: sunxi: Add OrangePi Zero 2 binding
+  arm64: dts: allwinner: Add OrangePi Zero 2 .dts
+
+ .../devicetree/bindings/arm/sunxi.yaml        |    5 +
+ .../bindings/bus/allwinner,sun8i-a23-rsb.yaml |    4 +-
+ .../clock/allwinner,sun4i-a10-ccu.yaml        |    4 +
+ .../bindings/i2c/marvell,mv64xxx-i2c.yaml     |   21 +-
+ .../media/allwinner,sun4i-a10-ir.yaml         |   16 +-
+ .../devicetree/bindings/mfd/axp20x.txt        |    3 +-
+ .../net/allwinner,sun8i-a83t-emac.yaml        |    4 +-
+ .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml |    3 +
+ .../bindings/spi/allwinner,sun6i-a31-spi.yaml |    1 +
+ .../allwinner,sun4i-a10-system-control.yaml   |    1 +
+ .../watchdog/allwinner,sun4i-a10-wdt.yaml     |   12 +-
+ arch/arm64/boot/dts/allwinner/Makefile        |    1 +
+ .../allwinner/sun50i-h616-orangepi-zero2.dts  |  203 +++
+ .../arm64/boot/dts/allwinner/sun50i-h616.dtsi |  573 ++++++++
+ drivers/clk/sunxi-ng/Kconfig                  |    7 +-
+ drivers/clk/sunxi-ng/Makefile                 |    1 +
+ drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c        |   48 +
+ drivers/clk/sunxi-ng/ccu-sun50i-h616.c        | 1150 +++++++++++++++++
+ drivers/clk/sunxi-ng/ccu-sun50i-h616.h        |   56 +
+ drivers/input/misc/axp20x-pek.c               |    4 +
+ drivers/mfd/axp20x.c                          |   17 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |   12 +-
+ drivers/phy/allwinner/phy-sun4i-usb.c         |   29 +-
+ drivers/soc/sunxi/sunxi_sram.c                |   31 +-
+ include/dt-bindings/clock/sun50i-h616-ccu.h   |  115 ++
+ include/dt-bindings/reset/sun50i-h616-ccu.h   |   70 +
+ 26 files changed, 2323 insertions(+), 68 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+ create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-h616.c
+ create mode 100644 drivers/clk/sunxi-ng/ccu-sun50i-h616.h
+ create mode 100644 include/dt-bindings/clock/sun50i-h616-ccu.h
+ create mode 100644 include/dt-bindings/reset/sun50i-h616-ccu.h
+
+-- 
+2.17.5
+
