@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6931306440
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C75306445
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344611AbhA0TiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344587AbhA0Tg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:36:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A25BC061573;
-        Wed, 27 Jan 2021 11:36:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=e8MHSFAxiS7UdxXBZlqFbrVKBNkvXqogAmgOIMEikQ8=; b=yvGMjwoP/+k3rHesHCE2f9nLbG
-        gUEDn2qyX4KQfjBPkeO/5HRFsYk5/WO5eAMK4s/c32DNGpbsxZNole9VkwCxML/ZvMfMDhprCutw2
-        37RcmBVLFLVxuNwVxxfmu006aE0vToyIicusfdagBwrPaPeGhKyDFxOzvE6uw9dNAhXHq9xoB/ib9
-        KlPCwdV9ots8gUxsOBp0qbIE3Y88d9FheNRK9C8AlkcbMJuwRQ0lggO22QAdzRyYdB5BcwNuF+dTn
-        sNRM1+A4fzKWkwLOl1fRyvInSpaIiWIBp5BzrqM+fupHzHAoLEBVQjghRQeXSGGtd90WaAd1n4cBX
-        HfO6NuFg==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4qbp-0002hL-Ag; Wed, 27 Jan 2021 19:36:09 +0000
-Subject: Re: mmotm 2021-01-25-21-18 uploaded (drm/i915/Kconfig.debug)
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-References: <20210126051917.rcgrHGfQS%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0f9e7192-622d-c016-561f-7b5d5ee9ecd1@infradead.org>
-Date:   Wed, 27 Jan 2021 11:36:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1344498AbhA0Tjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:39:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:34058 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344566AbhA0ThV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:37:21 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95AF5106F;
+        Wed, 27 Jan 2021 11:36:34 -0800 (PST)
+Received: from [10.57.47.135] (unknown [10.57.47.135])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C789B3F68F;
+        Wed, 27 Jan 2021 11:36:31 -0800 (PST)
+Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
+ valid dma-ranges
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+References: <20210119105203.15530-1-yong.wu@mediatek.com>
+ <YBFj9whLvqlV2erm@aptenodytes> <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
+ <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8f742f94-4087-7fb6-4b7c-9058593b67cf@arm.com>
+Date:   Wed, 27 Jan 2021 19:36:30 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210126051917.rcgrHGfQS%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 9:19 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2021-01-25-21-18 has been uploaded to
+On 2021-01-27 19:09, Rob Herring wrote:
+> On Wed, Jan 27, 2021 at 7:13 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> [ + Christoph, Marek ]
+>>
+>> On 2021-01-27 13:00, Paul Kocialkowski wrote:
+>>> Hi,
+>>>
+>>> On Tue 19 Jan 21, 18:52, Yong Wu wrote:
+>>>> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
+>>>> supplanting dma_pfn_offset") always update dma_range_map even though it was
+>>>> already set, like in the sunxi_mbus driver. the issue is reported at [1].
+>>>> This patch avoid this(Updating it only when dev has valid dma-ranges).
+>>>>
+>>>> Meanwhile, dma_range_map contains the devices' dma_ranges information,
+>>>> This patch moves dma_range_map before of_iommu_configure. The iommu
+>>>> driver may need to know the dma_address requirements of its iommu
+>>>> consumer devices.
+>>>
+>>> Just a gentle ping on this issue, it would be nice to have this fix merged
+>>> ASAP, in the next RC :)
+>>
+>> Ack to that - Rob, Frank, do you want to take this through the OF tree,
+>> or shall we take it through the DMA-mapping tree like the original culprit?
 > 
->    https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
+> I've already got some fixes queued up and can take it.
 
-on x86_64:
+Brilliant, thanks!
 
-when CONFIG_COMPILE_TEST=y:
+> Suggested-by doesn't mean you are happy with the implementation. So
+> Acked-by or Reviewed-by?
 
-WARNING: unmet direct dependencies detected for DRM_I915_WERROR
-  Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && !COMPILE_TEST [=y]
-  Selected by [m]:
-  - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && EXPERT [=y] && DRM_I915 [=m]
+It still feels slightly awkward to give a tag to say "yes, this is 
+exactly what I suggested", but for the avoidance of doubt,
 
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-
+Cheers,
+Robin.
