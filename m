@@ -2,235 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB7C305621
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9602F305628
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhA0IuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:50:13 -0500
-Received: from mga02.intel.com ([134.134.136.20]:26216 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232431AbhA0Irp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:47:45 -0500
-IronPort-SDR: o2XKfvX519nD2g9oaTiTOw8g8MUA9uh/ARYbbcSiHJLU+c92vLnK9rDLaPRkJOghUtuRZn0GAy
- M7Rm46DrWszA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="167134756"
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="167134756"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 00:46:44 -0800
-IronPort-SDR: M1OOinZFSBTwVI4+3ZJhjZPcCHhvEPLMw0LqvMInuxZThwEf+BFSVlNVtcQh9IKrK2uOhsIPX5
- 9fggA7L0CfUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="394011932"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 27 Jan 2021 00:46:44 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l4gTL-0001TC-PD; Wed, 27 Jan 2021 08:46:43 +0000
-Date:   Wed, 27 Jan 2021 16:46:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:for-mingo] BUILD SUCCESS
- 5eb0ba4459b72a445b5d595e96d65c9ce3825f62
-Message-ID: <60112868.Zh/E29sxS0H7BOkZ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232573AbhA0Ivv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:51:51 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:38690 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232554AbhA0IsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:48:12 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10R8g0Cn016192;
+        Wed, 27 Jan 2021 09:47:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=EJrDVDhMiwCtkLqAD61LGV8ruUi4Cea0wgqr66As5hg=;
+ b=Z252hjhbkzJGkZLuOcHKUGYMehGbL2rT+LE8cYKIq//lan2LUikYGVXhM2nPNAT5v8jx
+ a2t29pw/iP9sKe04gjaF7LR2BrBTsP/p36gCCOTR3O6az/qvXgfa+ZSIu+EWxu4aE5pp
+ CXATFA3tTjNP9PDgxamBKUdJY93OyPgUgv1Ac2SnEOxJfpO+/ZbYR+brMtTIwZy9yp1P
+ 0l5bZdVILu983Msjh9O4wDEi6E8te7kKQo7EEEcTl4VQtOyKYUfIu8gQyw7DUWKCKcQ2
+ EPVE8Kl5zz2lP4p5gmuMdr0XpyxjE2PBWK2f6mEWWrhiR3dNNFQtW2Uri/dQbC7oMco5 Xg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 368bjnegfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 09:47:00 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B209E10002A;
+        Wed, 27 Jan 2021 09:46:59 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A0C052280FF;
+        Wed, 27 Jan 2021 09:46:59 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
+ 2021 09:46:59 +0100
+Subject: Re: [PATCH v4 11/17] remoteproc: Introduce function __rproc_detach()
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+ <20201218173228.2277032-12-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <5419749d-5e81-8b0c-616f-e0d5e237ac9a@st.com>
+Date:   Wed, 27 Jan 2021 09:46:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20201218173228.2277032-12-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_03:2021-01-26,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
-branch HEAD: 5eb0ba4459b72a445b5d595e96d65c9ce3825f62  Merge branch 'clocksource.2021.01.12a' into HEAD
 
-elapsed time: 721m
 
-configs tested: 173
-configs skipped: 3
+On 12/18/20 6:32 PM, Mathieu Poirier wrote:
+> Introduce function __rproc_detach() to perform the same kind of
+> operation as rproc_stop(), but instead of switching off the
+> remote processor using rproc->ops->stop(), it uses
+> rproc->ops->detach().  That way it is possible for the core
+> to release the resources associated with a remote processor while
+> the latter is kept operating.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 42 ++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index fc28053c7f89..e665ed4776c3 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1670,6 +1670,48 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * __rproc_detach(): Does the opposite of rproc_attach()
+> + */
+> +static int __maybe_unused __rproc_detach(struct rproc *rproc)
+> +{
+> +	struct device *dev = &rproc->dev;
+> +	int ret;
+> +
+> +	/* No need to continue if a detach() operation has not been provided */
+> +	if (!rproc->ops->detach)
+> +		return -EINVAL;
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I wonder if this ops should be optional.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          landisk_defconfig
-powerpc                     redwood_defconfig
-m68k                          atari_defconfig
-m68k                             allmodconfig
-powerpc                     tqm8540_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                        warp_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                      ep88xc_defconfig
-sh                          kfr2r09_defconfig
-powerpc                    klondike_defconfig
-powerpc                    mvme5100_defconfig
-mips                           ip22_defconfig
-openrisc                    or1ksim_defconfig
-arm                        clps711x_defconfig
-mips                     decstation_defconfig
-powerpc                  storcenter_defconfig
-arm                          ep93xx_defconfig
-powerpc                         wii_defconfig
-sh                           se7780_defconfig
-sh                             sh03_defconfig
-arm                      footbridge_defconfig
-m68k                        m5272c3_defconfig
-sh                        edosk7705_defconfig
-mips                         tb0287_defconfig
-sh                          polaris_defconfig
-xtensa                    smp_lx200_defconfig
-parisc                generic-32bit_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                     kilauea_defconfig
-powerpc                     tqm8541_defconfig
-arm                            lart_defconfig
-openrisc                            defconfig
-c6x                         dsk6455_defconfig
-powerpc                        cell_defconfig
-riscv                            allmodconfig
-xtensa                    xip_kc705_defconfig
-arm                       imx_v6_v7_defconfig
-arm                        realview_defconfig
-arm                         vf610m4_defconfig
-alpha                               defconfig
-mips                           ci20_defconfig
-mips                         rt305x_defconfig
-mips                  cavium_octeon_defconfig
-arm                       netwinder_defconfig
-powerpc                      katmai_defconfig
-arm                           viper_defconfig
-arm                        trizeps4_defconfig
-arm                  colibri_pxa300_defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                                 defconfig
-powerpc                     taishan_defconfig
-arm                            hisi_defconfig
-powerpc                    adder875_defconfig
-arm                       cns3420vb_defconfig
-um                            kunit_defconfig
-sh                         ap325rxa_defconfig
-sh                           se7751_defconfig
-arm                           h5000_defconfig
-mips                           ip32_defconfig
-microblaze                          defconfig
-arc                     nsimosci_hs_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                     powernv_defconfig
-arm                          pcm027_defconfig
-mips                       capcella_defconfig
-arm                             pxa_defconfig
-parisc                           alldefconfig
-arm                         lubbock_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                        spear6xx_defconfig
-powerpc                           allnoconfig
-arm                        spear3xx_defconfig
-sh                           se7750_defconfig
-sh                          rsk7264_defconfig
-m68k                          amiga_defconfig
-powerpc                     asp8347_defconfig
-powerpc                       ppc64_defconfig
-arc                         haps_hs_defconfig
-mips                        nlm_xlr_defconfig
-arm                        neponset_defconfig
-arm                        multi_v7_defconfig
-arm                            qcom_defconfig
-arm                        shmobile_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                     pseries_defconfig
-arm                          lpd270_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a001-20210126
-i386                 randconfig-a002-20210126
-i386                 randconfig-a004-20210126
-i386                 randconfig-a006-20210126
-i386                 randconfig-a003-20210126
-i386                 randconfig-a005-20210126
-x86_64               randconfig-a012-20210126
-x86_64               randconfig-a016-20210126
-x86_64               randconfig-a015-20210126
-x86_64               randconfig-a011-20210126
-x86_64               randconfig-a013-20210126
-x86_64               randconfig-a014-20210126
-x86_64               randconfig-a003-20210127
-x86_64               randconfig-a002-20210127
-x86_64               randconfig-a001-20210127
-x86_64               randconfig-a005-20210127
-x86_64               randconfig-a006-20210127
-x86_64               randconfig-a004-20210127
-i386                 randconfig-a013-20210126
-i386                 randconfig-a011-20210126
-i386                 randconfig-a012-20210126
-i386                 randconfig-a015-20210126
-i386                 randconfig-a014-20210126
-i386                 randconfig-a016-20210126
-i386                 randconfig-a013-20210127
-i386                 randconfig-a011-20210127
-i386                 randconfig-a012-20210127
-i386                 randconfig-a015-20210127
-i386                 randconfig-a014-20210127
-i386                 randconfig-a016-20210127
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> +
+> +	/* Stop any subdevices for the remote processor */
+> +	rproc_stop_subdevices(rproc, false);
+> +
+> +	/*
+> +	 * If the remote processors was started by the core then a cached_table
+> +	 * is present and we must follow the same cleanup sequence as we would
+> +	 * for a shutdown().  As it is in rproc_stop(), use the cached resource
+> +	 * table for the rest of the detach process since ->table_ptr will
+> +	 * become invalid as soon as carveouts are released in
+> +	 * rproc_resource_cleanup().
+> +	 */
+> +	if (rproc->cached_table)
+> +		rproc->table_ptr = rproc->cached_table;
+> +
+> +	/* Tell the remote processor the core isn't available anymore */
+> +	ret = rproc->ops->detach(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "can't detach from rproc: %d\n", ret);
+> +		rproc_start_subdevices(rproc);
 
-clang tested configs:
-x86_64               randconfig-a003-20210126
-x86_64               randconfig-a002-20210126
-x86_64               randconfig-a001-20210126
-x86_64               randconfig-a005-20210126
-x86_64               randconfig-a006-20210126
-x86_64               randconfig-a004-20210126
+Not sure that this would be possible in all cases, without a unprepare and
+prepare. What about having the same behavior as the rproc_stop failure?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks
+Arnaud.
+
+> +		return ret;
+> +	}
+> +
+> +	rproc_unprepare_subdevices(rproc);
+> +
+> +	rproc->state = RPROC_DETACHED;
+> +
+> +	dev_info(dev, "detached remote processor %s\n", rproc->name);
+> +
+> +	return 0;
+> +}
+>  
+>  /**
+>   * rproc_trigger_recovery() - recover a remoteproc
+> 
