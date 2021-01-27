@@ -2,279 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C923066C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157023066C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbhA0VvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhA0Vur (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:50:47 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137D4C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:50:05 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id j13so4305766edp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yObEDkSpXRht54hsxbs0XEblBX1qn3LI3lsbc70OJVo=;
-        b=PuLPCRlKN9J1PT9OxMJCAm4AMyt/K9bVtjR+w6e7+AdoayRI0H2gEeY9BQ9FBmFK9w
-         AwVa0/zi4z9DMtZHsA3gEqTsV8g116acSZ8E9O8haGh6Be+TH7+8SzU7JVGlb0PUUq9L
-         LGfAE402W5TH9bbeWaxhF0qegu5ZjWLUpGZ5J6ARqNafeHWmpGYKAUIgL+dOCMyXoGuL
-         U96NMuM0UPRA6NhRKN5mnyfx/YkbVnTOV1knDyxKPni+jfBzsmphvMqRoTIV1zyMT9hs
-         l2vy3I4csUXbUGiikt6bz9j85UmPagbq5Cq/TkYSUJay+xE/MGtNG+migXMC+MO9ZPZG
-         /S4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yObEDkSpXRht54hsxbs0XEblBX1qn3LI3lsbc70OJVo=;
-        b=JlL2w/0SVa/gzU7kzOQi1yqPPxYhN1TSpJL1STKgitwKUAb7bfH/4q3Qnj3299VkYT
-         GIjIoukq7jWMICrP8/x9nCbP/23twgNAcf23xboPOE03d5fa00UoTek59a6mio4PFzNY
-         pOfGH6LHK3xukX+blpn9irvnKDeT+EPk/JTuBhMwv6URzyMvF/RVS6xz9tudkbUesDBq
-         XaTQ9OBP6pZwtkUVbKvZHb2RuKOWiEvTSssPLkePqIdsPh7dkmoiIY94X1Csw+5UYOVR
-         mtQAtNf9tM18rRU5El3kDh2oKAhTentoX6oXc6WvPGUg+5/6vASZ3Ktn1MBOASrQsV9b
-         SjaQ==
-X-Gm-Message-State: AOAM532CzXMFnzgtyWG/BXUOvlg7W2GU0OVSjDVDRhFVkzuSRG/jPPYY
-        aD/vhFX9co+LVUXg8YEySEkLLvMFbGWHxCyUpFIM4Q==
-X-Google-Smtp-Source: ABdhPJwGEcoybrMRsfLcaoLACgIqVf6nk6S70dEHFSXn5sqBmvkBu7EkrJ8nIZ0NclWDiZBC2IJaQse8YoNqoczpriI=
-X-Received: by 2002:a05:6402:402:: with SMTP id q2mr11022393edv.116.1611784203679;
- Wed, 27 Jan 2021 13:50:03 -0800 (PST)
+        id S235141AbhA0Vva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:51:30 -0500
+Received: from mail-bn7nam10on2079.outbound.protection.outlook.com ([40.107.92.79]:25824
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234951AbhA0VvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:51:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RgtP/tF4s4xxNjv7RFDisbFXHUvdDn56s9oU2extczQ8OhtK7pR4ECJB3Xj0oL7Fj0cTVNq2xwQZFG1916dP+gO8rN8El3BH5hZXTZvHhVZ2feQloOD/UJOZbEmo1byWsXbnho/A6U5yoHik7SdeFZNBae2CC8XcDxeWw3nPPAVsNE91c+jj89OmskmjvPFkFa9sbhcxx5e3AYsr5xF/xUWPZjsT2CnAva6mz9IN7dnjvSmeuOwORV1gb2TDb00CmZdLvE+JUfWxV6NNCrFaL58F9ttEk2feJ3cnvKIMOyoxsvYaZf6RfaS4oFVzK8FKt9qqFG6jdwqcpOuQI1K/kA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=phummsQVpQoLfdupR+43JoKzuSKiL1GByqw0/cKucxY=;
+ b=LvKfJyXv8Rc5LmKkBe15nBiggXeNI19hj7T7wLJkTBwIsYym1LPvWk1zCAoxNpCZWcXCJ8YCj6wHit8ZOInOfdFC58g2alHx5VfBgC+WHiaymCVmJC/hdEEpN2hOGSofOSGjO9+VUtEo7/qIfqYaL7reoyLPsbWeXRvcyVpMsfzhIbdq8k4XO8UeCanmCNhfLQbhtrQ7VcrL6yZM1Upmwqzoh7SqXApLi7Xo6qnvCrci9En2Sr+T9d6EHi9K7WALd+MJ8DPe3aKjVNf9Uitfa0g2BA1picNawnfp9ll9y+QdMhY0StdWOyHZN0254swmiGj6PAwKjMfP+DX8BQz01g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=phummsQVpQoLfdupR+43JoKzuSKiL1GByqw0/cKucxY=;
+ b=0Kj1C4STcKdu1riDvg/lK95H4KpatkrvXH9OlW9ecfJHHbhF9rUIGNV4HmizNk94pQM9lreGYV2ja3NanN9HqCKkwQ5r8wapQi9ZFWhlT1Mlc1nuerUWylH1wKxzIaiYcLhhkRlZ++4qtcENyLkiXKbRG8/Vze0Qr7yqY9KGeXU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
+ by BL0PR12MB2355.namprd12.prod.outlook.com (2603:10b6:207:3f::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Wed, 27 Jan
+ 2021 21:50:09 +0000
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::ec8d:851e:525d:a6ab]) by BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::ec8d:851e:525d:a6ab%8]) with mapi id 15.20.3784.017; Wed, 27 Jan 2021
+ 21:50:09 +0000
+Subject: Re: [PATCH] drm/amdkfd: dqm fence memory corruption
+To:     Qu Huang <jinsdb@126.com>
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1611750806-10730-1-git-send-email-jinsdb@126.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <4de809ac-fdd7-b02a-c55f-3c79321cfb7f@amd.com>
+Date:   Wed, 27 Jan 2021 16:50:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <1611750806-10730-1-git-send-email-jinsdb@126.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [142.117.121.176]
+X-ClientProxiedBy: YT1PR01CA0094.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::33) To BL0PR12MB4948.namprd12.prod.outlook.com
+ (2603:10b6:208:1cc::20)
 MIME-Version: 1.0
-References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
- <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com>
-In-Reply-To: <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 27 Jan 2021 16:49:27 -0500
-Message-ID: <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
-Subject: Re: dax alignment problem on arm64 (and other achitectures)
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        James Morris <jmorris@namei.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.117.121.176) by YT1PR01CA0094.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Wed, 27 Jan 2021 21:50:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5dfa1c2f-a72c-46f6-1f02-08d8c30d842e
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2355:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB2355787346AA623A25ECF14492BB9@BL0PR12MB2355.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gbENbqAy+oYfjNXwbiu46mMCgmV+iuizXX/QKhylUEZpgKRCJl2fDwLpmV40DF6QCUj0sDR2cS5PLNtHbrqLwPgbZAwlmMv3xDR20T0yacxU+K9nMzvlp9fHj1o+SCkNEsmyrxIEES0rGVob9vPVdAVlK5r3yX0eDI8Bs8z3vfmD821JVEYmSK6CJqdGzDqLoGuDzpIJ8LG7W7DMsRe4EbdzfpbYq3OJhP0/yqSoJ7NbbwBHykGoqUZZxq8uiFzKtU4iHOy36SpmwVHJFHC/opi2erxng+woVe9LZ7yndtSUdwlcwMsEILxZc6YuCYKZHytuW1qzxB1A14m81EJ2oVRk/otBLSTI7cFblY6gpnoCZuleyXSNRz7stDu3S8iNuR4e9qD9ufZSU/LcsEnJSesH56bVSzpMD2xH2vxu7Qzg54bMcKpFDv/XvmdsiQM3uRbrxrT4r44DmhpGYRCjgJKjFo8THYm2rgNCZ54sAbtRyNztluQZneVQnvxe4GHdN0E4+s/VLX2g1dVlM47wg+hkJjMT0L3jMVRufJgp01lvdg9sb1w1WCHNGmumn3tpiu5OXQ+3qpLofUsjuQAJbyeW4jmKJczsVuQjbbFpuaQuSLmiCP1e8LLcPZ8voJPkEdbytnUWD+RZ75UGWPR9ZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(376002)(39860400002)(346002)(83380400001)(16526019)(186003)(8936002)(316002)(26005)(6486002)(16576012)(44832011)(478600001)(4326008)(6916009)(8676002)(86362001)(66556008)(66476007)(52116002)(2616005)(31686004)(66946007)(36756003)(956004)(31696002)(2906002)(5660300002)(525324002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VVdIcm9UaXFhWHdDZ3pRS01UaWhVUUJNVXdtR2NlcGxnS3pTM0U5Y25hb0d5?=
+ =?utf-8?B?ZXh4UmlSQ0hBNzZCb05ERmx5bzJ1R25BemcxcGtPVTUvSFhGd1JnZU9EdWJo?=
+ =?utf-8?B?VUxxUzJXeUd0VW9vRzY0YUpMLy8wSU5LSitZa3JOVU56MGtxN3BXNWFhTkRk?=
+ =?utf-8?B?TCtzRkRtclNJWW1ueFl4M2JnZzR4eTA2MFBTT1hqQ2NhSzk5TkFJWFVxejZC?=
+ =?utf-8?B?dUJ0U3picEx4amkwWlROcGVuOCtDaGl3WHRVVWxKK2JkcnRlNEVndmREUnZi?=
+ =?utf-8?B?dFZIOXZobklNSVYrL04rUXFEQVh4eHgwakQwTEpDT1YxM0hpNTdLQTdvMUho?=
+ =?utf-8?B?aTgvR0VsUXY0YzNVTjdvUmNVTTV4N3pUYkREcldZRDZvRUJZSVF2Z2VkNS82?=
+ =?utf-8?B?eUltbFFNUGlDSUsya1Rpek9wTnBodzEyNEtrZk10ZkZtNDk2OUJISit5Y3RM?=
+ =?utf-8?B?RmozcjZGVlF4NjJ2R2N3SWhmU21NMHp3RlgwM1ZwZ0NPcUdUekpJeU8xSXRI?=
+ =?utf-8?B?WXkzVUt2QjBCTHVkT2ZvcTgzVm9CbXNOWVdaZFRGdlFkdVhrQVFObFlTZnh5?=
+ =?utf-8?B?MEJqSUtWQmY3Slc0MExCMzBnWVNLYnVzcHVMZXVpUHB6TEhvemYzcE95cWZp?=
+ =?utf-8?B?MVZadzVhK1orS2luTitSNXdGMzAzRkNITHYwbUUrWWF3Si8xcWFzR2hDYldS?=
+ =?utf-8?B?RWVMNnlMQU9RdnBiV0tTLzdmSElGc1hENG9HckJqTDI1dHphU0gzaTJreWhz?=
+ =?utf-8?B?M0xvOFF1MURLVWJVSTYwV3pocFpNbUdHaE9mSU53cFQ1RjhTamVPekFoa3Z4?=
+ =?utf-8?B?Yk5aMHJSZEVUNThtR04zcStIUzFHQmtNbTVaejVmWFVScnRpYkdaTWhPdDFL?=
+ =?utf-8?B?NVJ6ekdVbVpMZyt6TnFGL1pEUjBNaHFrREdYbTVvSVRmRTR5Y3ptZU4vUXk3?=
+ =?utf-8?B?cWZxMWdWOHgzc3p3UGlGVktHWnh4RDVIU20zRlNTZ1ZXUnBuM0hsSlFYbFNI?=
+ =?utf-8?B?eWYwVFcvQWNLNGhvTktITm1wMUhmZWVncDA2UlFpU21HSXo1RUpBTzN5SWt3?=
+ =?utf-8?B?Rk1KYVo4V2d3QUdDaGdrQlpmMCtmL1F6RnpiSkNmZW9qN3ZZM3JEM1E0Z3FL?=
+ =?utf-8?B?YlJ2OEVZek1LYml5dkhNcHRpT0U3elZ5enptcm5TOVpGa0xDUERRTkRQR1l0?=
+ =?utf-8?B?VEVtSVBObi9teFFJWENKODFidm50YzA4N21RVGRTZG0xZmdGNlBiRGFHc0JC?=
+ =?utf-8?B?b1piWHh4bmhDMlhCNGpVeEVBMWJ6N1RmT3I5KzJFbFNZb2dkcUhiYmFQWjdm?=
+ =?utf-8?B?ZTdIdjBHVXlRd3JObStCaklFQ3VFTmNHUUU4OVpUMlFpOTFvajNUM2hZTWdL?=
+ =?utf-8?B?UU1jMGF6UFhscFN4Qi9NSUc2UGhGdXZRUUZJNUdDZ3BVT0trSGNreko5UVFm?=
+ =?utf-8?B?WHhKUHY0dHhNNVlMRUo3L2N6c2tCMTdoeHFoMTRBPT0=?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5dfa1c2f-a72c-46f6-1f02-08d8c30d842e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 21:50:09.3626
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N3WVE+fSN6JU5dFi3WgoDQSdkYoMnm1FinimAnGQEy9A1Z4QADDEcRsvdewf949iMUeu1iPd0vhsfx45drDjoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2355
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 4:09 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 27.01.21 21:43, Pavel Tatashin wrote:
-> > This is something that Dan Williams and I discussed off the mailing
-> > list sometime ago, but I want to have a broader discussion about this
-> > problem so I could send out a fix that would be acceptable.
-> >
-> > We have a 2G pmem device that is carved out of regular memory that we
-> > use to pass data across reboots. After the machine is rebooted we
->
-> Ordinary reboots or kexec-style reboots? I assume the latter, because
-> otherwise there is no guarantee about persistence, right?
+Am 2021-01-27 um 7:33 a.m. schrieb Qu Huang:
+> Amdgpu driver uses 4-byte data type as DQM fence memory,
+> and transmits GPU address of fence memory to microcode
+> through query status PM4 message. However, query status
+> PM4 message definition and microcode processing are all
+> processed according to 8 bytes. Fence memory only allocates
+> 4 bytes of memory, but microcode does write 8 bytes of memory,
+> so there is a memory corruption.
 
-Both, our firmware supports cold and warm reboot. When we do warm
-reboot, memory content is not initialized. However, for performance
-reasons, we mostly do kexec reboots.
+Thank you for pointing out that discrepancy. That's a good catch!
 
->
-> I remember for kexec-style reboots there is a different approach (using
-> tmpfs) on the list.
+I'd prefer to fix this properly by making dqm->fence_addr a u64 pointer.
+We should probably also fix up the query_status and
+amdkfd_fence_wait_timeout function interfaces to use a 64 bit fence
+values everywhere to be consistent.
 
-Right, we are using a similar approach to that tmpfs, but that tmpfs
-approach was never upstreamed.
-
->
-> > hotplug that memory back, so we do not lose 2G of system memory
-> > (machine is small, only 8G of RAM total).
-> >
-> > In order to hotplug pmem memory it first must be converted to devdax.
-> > Devdax has a label 2M in size that is placed at the beginning of the
-> > pmem device memory which brings the problem.
-> >
-> > The section size is a hotplugging unit on Linux. Whatever gets
-> > hot-plugged or hot-removed must be section size aligned. On x86
-> > section size is 128M on arm64 it is 1G (because arm64 supports 64K
-> > pages, and 128M does not work with 64K pages). Because the first 2M
->
-> Note that it's soon 128M with 4k and 16k base pages and 512MB with 64k.
-> The arm64 patch for that is already queued.
-
-This is great. Do you have a pointer to that series? It means we can
-get rid of our special section size workaround patch, and use the 128M
-section size for 4K pages. However, we still can't move to 64K because
-losing 510M is too much.
-
->
-> > are subtracted from the pmem device to create devdax, that actual
-> > hot-pluggable memory is not 1G/128M aligned, and instead we lose 126M
-> > on x86 or 1022M on arm64 of memory that is getting hot-plugged, the
-> > whole first section is skipped when memory gets hot plugged because of
-> > 2M label.
-> >
-> > As a  workaround, so we do not lose 1022M out of 8G of memory on arm64
-> > we have section size reduced to 128M. We are using this patch [1].
-> > This way we are losing 126M (which I still hate!)
-> >
-> > I would like to get rid of this workaround. First, because I would
-> > like us to switch to 64K pages to gain performance, and second so we
-> > do not depend on an unofficial patch which already has given us some
-> > headache with kdump support.
->
-> I'd want to see 128M sections on arm64 with 64k base pages. "How?" you
-> might ask. One idea would be to switch from 512M THP to 2MB THP (using
-> cont pages), and instead implement 512MB gigantic pages. Then we can
-> reduce pageblock_order / MAX_ORDER - 1 and no longer have the section
-> limitations. Stuff for the future, though (if even ever).
-
-Interesting, but this is not something that would address the
-immediate issue. Because, even losing 126M is something I would like
-to fix. However, what other benefits reducing section size on arm64
-would bring? Do we have requirement where reducing section size is
-actually needed?
-
->
-> >
-> > Here are some solutions that I think we can do:
-> >
-> > 1. Instead of carving the memory at 1G aligned address, do it at 1G -
-> > 2M address, this way when devdax is created it is perfectly 1G
-> > aligned. On ARM64 it causes a panic because there is a 2M hole in
-> > memory. Even if panic is fixed, I do not think this is a proper fix.
-> > This is simply a workaround to the underlying problem.
->
-> I remember arm64 already has to deal with all different kinds of memory
-> holes (including huge ones). I don't think this should be a fundamental
-> issue.
-
-Perhaps not. I can root cause, and report here what actually happens.
-
->
-> I think it might be a reasonable thing to do for such a special use
-> case. Does it work on x86-64?
-
-It does.
-
-> > 2.  Dan Williams introduced subsections [2]. They, however do not work
-> > with devdax, and hot-plugging in general. Those patches take care of
-> > __add_pages() side of things, and not add_memory(). Also, it is
-> > unclear what kind of user interface changes need to be made in order
-> > to enable subsection features to online/offline pages.
->
-> I am absolutely no fan of teaching add_memory() and friends in general
-> about sub-sections.
->
-> >
-> > 3. Allow to hot plug daxdev together with the label, but teach the
-> > kernel not to touch label (i.e. allocate its memory). IMO, kind of
-> > ugly solution, because when devdax is hot-plugged it is not even aware
-> > of label size. But, perhaps that can be changed.
->
-> I mean, we could teach add_memory() to "skip the first X pages" when
-> onlining/offlining, not exposing them to the buddy. Something similar we
-> already do with Oscars vmemmap-on-memory series.
->
-> But I guess the issue is that the memmap for the label etc. is already
-> allocated? Is the label memremapped ZONE_DEVICE memory or what is it? Is
-> the label exposed in the resource tree?
-
-It is exposed:
-
-# ndctl create-namespace --mode raw -e namespace0.0 -f
-{
-  "dev":"namespace0.0",
-  "mode":"raw",
-  "size":"2.00 GiB (2.15 GB)",
-  "sector_size":512,
-  "blockdev":"pmem0"
-}
-
-The raw device is exactly 2G
-
-# cat /proc/iomem | grep 'dax\|namespace'
-980000000-9ffffffff : namespace0.0
-
-namespace0.0 is 2G, and there is dax0.0.
-
-Create devdax device:
-# ndctl create-namespace --mode devdax --map mem -e namespace0.0 -f
-{
-  "dev":"namespace0.0",
-  "mode":"devdax",
-  "map":"mem",
-  "size":"2046.00 MiB (2145.39 MB)",
-  "uuid":"ed4d6a34-6a11-4ced-8a4f-b2487bddf5d7",
-  "daxregion":{
-    "id":0,
-    "size":"2046.00 MiB (2145.39 MB)",
-    "align":2097152,
-    "devices":[
-      {
-        "chardev":"dax0.0",
-        "size":"2046.00 MiB (2145.39 MB)",
-        "mode":"devdax"
-      }
-    ]
-  },
-  "align":2097152
-}
-
-Now, the device is 2046M in size instead of 2G.
-
-root@dplat-cp22:/# cat /proc/iomem | grep 'namespace\|dax'
-980000000-9801fffff : namespace0.0
-980200000-9ffffffff : dax0.0
-
-We can see the namespace0.0 is 2M, which is label, and dax0.0 is 2046M.
+Regards,
+  Felix
 
 
 >
-> In case "it's just untouched/unexposed memory", it's fairly simple. In
-> case the label is exposed as ZONE_DEVICE already, it's more of an issue
-> and might require further tweaks.
+> Signed-off-by: Qu Huang <jinsdb@126.com>
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> >
-> > 4. Other ideas? (move dax label to the end? a special case without a
-> > label? label outside of data?)
->
-> What does the label include in your example? Sorry, I have no idea about
-> devdax labels.
->
-> I read "ndctl-create-namespace" - "--no-autolabel: Manage labels for
-> legacy NVDIMMs that do not support labels". So I assume there is at
-> least some theoretical way to not have a label on the memory?
-
-Right, but I do not think it is possible to do for dax devices (as of
-right now). I assume, it contains information about what kind of
-device it is: devdax, fsdax, sector, uuid etc.
-See [1] namespaces tabel. It contains summary of pmem devices types,
-and which of them have label (all except for raw).
-
-[1] https://nvdimm.wiki.kernel.org/
->
-> >
-> > Thank you,
-> > Pasha
-> >
-> > [1] https://lore.kernel.org/lkml/20190423203843.2898-1-pasha.tatashin@soleen.com
-> > [2] https://lore.kernel.org/lkml/156092349300.979959.17603710711957735135.stgit@dwillia2-desk3.amr.corp.intel.com
-> >
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> index e686ce2..8b38d0c 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+> @@ -1161,7 +1161,7 @@ static int start_cpsch(struct device_queue_manager *dqm)
+>  	pr_debug("Allocating fence memory\n");
+>  
+>  	/* allocate fence memory on the gart */
+> -	retval = kfd_gtt_sa_allocate(dqm->dev, sizeof(*dqm->fence_addr),
+> +	retval = kfd_gtt_sa_allocate(dqm->dev, sizeof(uint64_t),
+>  					&dqm->fence_mem);
+>  
+>  	if (retval)
