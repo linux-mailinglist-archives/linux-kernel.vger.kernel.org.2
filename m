@@ -2,212 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A676D3055A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F39305563
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhA0I1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:27:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49146 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232753AbhA0IYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:24:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611734963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1fW61Yyz000lJma0e90KAjMru2VB6URi6ayHKhomjEk=;
-        b=AnZ++RAjn4k4Pa52rJa5VSmFeeWGTFBfWzL8jJuBJjLtJIGfD3CUojWbWVCwgoBnHv6WKq
-        9wfBZH6ofa93VkUZz//wC3OeO+K29nicNAehCLb14pyCK95WiIM5tw7zjCzFvKlhitbDHN
-        jPYri7LtOEgXBZQEj4yH+ZHs7pygyXQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B2FFB925;
-        Wed, 27 Jan 2021 08:09:23 +0000 (UTC)
-Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
-To:     Roger Pau Monne <roger.pau@citrix.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Arthur Borsboom <arthurborsboom@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org
-References: <20210119105727.95173-1-roger.pau@citrix.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <f7b648c7-4d50-99ee-6b2a-0667fba1b829@suse.com>
-Date:   Wed, 27 Jan 2021 09:09:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234675AbhA0IQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhA0IM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:12:59 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F4AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:12:18 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id p5so1305405oif.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:12:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=25W2kJLNwjwbRDxf2IsFRfKvZZi9bUbt8wUssI4fr4Y=;
+        b=jw8d6qMiUfaPqQD4kaocGfMbezmyYGzNz2KHLPzEa8hMe756DtzSwz0wBMnSJx5PvH
+         PVp7gS1VNbeCN4/gosx6DoPqS5m+vlgZ9QyMoNlFJHYKfkrfxixzBd7jFPzcHRmsA81w
+         5noBZqA3DOKFGX6qOJfFTufgmgGu4i7Xz64tQeJiSPok95WaL32xensQpVg+odu6iW/j
+         VynVzpLa1gaLDx3eKMWbfNMZ0BDZpvsQ7SrHQNaA4PlM3gosmovE0wLoigowqA96tYIw
+         SL1GpR8bQaN1BDdM1QoLLP1ZrsircFxO+N7pQhA+FLOzfzrII1qxma5yk7mob+BCsdYb
+         xqDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=25W2kJLNwjwbRDxf2IsFRfKvZZi9bUbt8wUssI4fr4Y=;
+        b=EuPStsPc7jlVKx6I72GVNsa0wEJdeSE1oNGL5OTi9yjW/e2KG7d4ueDhY21uodZiTg
+         +K8pYrZASlkScZCP2nxpVc94LryKZQVRo3aoC4WWQkhHXwbgODGtZJRIDOMbw/5SrrEa
+         P67z+PNbvhrCbRtcvLllxGOmWDltSjd1FZpzJk5m8GQnrwQYUwFKfcA91Di5smff4EX/
+         JOwSDOgzyBbum45FLR3zqnvev2x67J+/a3c6v9kVxrIYhtmeooHb+vyEsDlmAJo++jYk
+         qmbGaPVBvapvH+iYRZTu/978RQ9svF8i3BFm1ATLifBm9PPklt2tmKIJpRn0d3wHhM7C
+         zAhQ==
+X-Gm-Message-State: AOAM532KRnQcRrlSEiuQDdyN5yG4FcEOhpCNpGmWJbrV+k6dcIu+Sueb
+        aQTCh+SLv7a/xCFsxwgPkeWhuhgJxnBgWFD+XYEWKMs3BBM/cg==
+X-Google-Smtp-Source: ABdhPJzMwCKXbA0OoGZ3+aicGxeuc19AbDEVx7LEelMZQmSqaYh5TE8wT+QW1C15EvnGb4MJj17SASAdeHzT/Q/8fac=
+X-Received: by 2002:aca:31c1:: with SMTP id x184mr2383932oix.74.1611735138053;
+ Wed, 27 Jan 2021 00:12:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119105727.95173-1-roger.pau@citrix.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Ao7bLDbznaqcyEQTExnEqI1zOWS70IXqQ"
+References: <20210119220637.494476-1-avagin@gmail.com>
+In-Reply-To: <20210119220637.494476-1-avagin@gmail.com>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Wed, 27 Jan 2021 00:10:30 -0800
+Message-ID: <CANaxB-zwjDu5PSFJebeJe5zH94HC7mThOwyPYSjE4tkQ0zwvBA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] arm64/ptrace: allow to get all registers on syscall traps
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        keno@juliacomputing.com, dave.martin@arm.com
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrei Vagin <avagin@google.com>,
+        Howard Zhang <howard.zhang@arm.com>,
+        Anthony Steinhauser <asteinhauser@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ao7bLDbznaqcyEQTExnEqI1zOWS70IXqQ
-Content-Type: multipart/mixed; boundary="FRInysTtmyvFTlxIDrkfHUnELRzHe5eK6";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Roger Pau Monne <roger.pau@citrix.com>, linux-kernel@vger.kernel.org
-Cc: Arthur Borsboom <arthurborsboom@gmail.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Jens Axboe
- <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
- linux-block@vger.kernel.org
-Message-ID: <f7b648c7-4d50-99ee-6b2a-0667fba1b829@suse.com>
-Subject: Re: [PATCH v2] xen-blkfront: allow discard-* nodes to be optional
-References: <20210119105727.95173-1-roger.pau@citrix.com>
-In-Reply-To: <20210119105727.95173-1-roger.pau@citrix.com>
+On Tue, Jan 19, 2021 at 2:08 PM Andrei Vagin <avagin@gmail.com> wrote:
+>
+> Right now, ip/r12 for AArch32 and x7 for AArch64 is used to indicate
+> whether or not the stop has been signalled from syscall entry or syscall
+> exit. This means that:
+>
+> - Any writes by the tracer to this register during the stop are
+>   ignored/discarded.
+>
+> - The actual value of the register is not available during the stop,
+>   so the tracer cannot save it and restore it later.
+>
+> This series introduces NT_ARM_PRSTATUS to get all registers and makes it
+> possible to change ip/r12 and x7 registers when tracee is stopped in
+> syscall traps.
+>
+> For applications like the user-mode Linux or gVisor, it is critical to
+> have access to the full set of registers at any moment. For example,
+> they need to change values of all registers to emulate rt_sigreturn and
+> they need to have the full set of registers to build a signal frame.
 
---FRInysTtmyvFTlxIDrkfHUnELRzHe5eK6
-Content-Type: multipart/mixed;
- boundary="------------4908A862D18199B275B706C3"
-Content-Language: en-US
+I have found the thread [1] where Keno, Will, and Dave discussed the same
+problem. If I understand this right, the problem was not fixed, because there
+were no users who needed it.
 
-This is a multi-part message in MIME format.
---------------4908A862D18199B275B706C3
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+gVisor is a general-purpose sandbox to run untrusted workloads. It has a
+platform interface that is responsible for syscall interception, context
+switching, and managing process address spaces. Right now, we have kvm and
+ptrace platforms. The ptrace platform runs a guest code in the context of stub
+processes and intercepts syscalls with help of PTRACE_SYSEMU. All system calls
+are handled by the gVisor kernel including rt_sigreturn and execve. Signal
+handling is happing inside the gVisor kernel too. Each stub process can have
+more than one thread, but we don't bind guest threads to stub threads and we
+can run more than one guest thread in the context of one stub thread. Taking
+into account all these facts, we need to have access to all registers at any
+moment when a stub thread has been stopped.
 
-On 19.01.21 11:57, Roger Pau Monne wrote:
-> This is inline with the specification described in blkif.h:
->=20
->   * discard-granularity: should be set to the physical block size if
->     node is not present.
->   * discard-alignment, discard-secure: should be set to 0 if node not
->     present.
->=20
-> This was detected as QEMU would only create the discard-granularity
-> node but not discard-alignment, and thus the setup done in
-> blkfront_setup_discard would fail.
->=20
-> Fix blkfront_setup_discard to not fail on missing nodes, and also fix
-> blkif_set_queue_limits to set the discard granularity to the physical
-> block size if none is specified in xenbus.
->=20
-> Fixes: ed30bf317c5ce ('xen-blkfront: Handle discard requests.')
-> Reported-by: Arthur Borsboom <arthurborsboom@gmail.com>
-> Signed-off-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
-
-Committed to xen/tip.git for-linus-5.11
+We were able to introduce the workaround [3] for this issue. Each time when a
+stub process is stopped on a system call, we queue a fake signal and resume a
+process to stop it on the signal. It works, but we need to do extra interaction
+with a stub process what is expensive. My benchmarks show that this workaround
+slows down syscalls in gVisor for more than 50%. BTW: it is one of the major
+reasons why PTRACE_SYSEMU was introduced instead of emulating it via
+two calls of PTRACE_SYSCALL.
 
 
-Juergen
+[1] https://lore.kernel.org/lkml/CABV8kRz0mKSc=u1LeonQSLroKJLOKWOWktCoGji2nvEBc=e7=w@mail.gmail.com/#r
+[2] https://github.com/google/gvisor/issues/5238
+[3] https://github.com/google/gvisor/commit/a44efaab6d4b815880749a39647fb3ed9634a489
 
---------------4908A862D18199B275B706C3
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------4908A862D18199B275B706C3--
-
---FRInysTtmyvFTlxIDrkfHUnELRzHe5eK6--
-
---Ao7bLDbznaqcyEQTExnEqI1zOWS70IXqQ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmARH7IFAwAAAAAACgkQsN6d1ii/Ey/v
-oAf/TEpzdSHar9X+a0NQnn6Oz8Nwafmw+zkLlUhyuZxlAy/NatX+pVuxJsyYApKsa7dOiD+HJVYZ
-390CHtMgLg492orvIE7GrazMaR3vnc3qMdP8/xc/ed6G7bWQKm5d10gpe8N8FP88+wWs2iXaNoIe
-wqz+hmKGk478pgb0ZqPS0OQ4lwsn5zCU1u0dN2uPqpCrOEBO81QzzeQ+CyHPUvDBmyA0Jd32tr1W
-ZqHMW3fhoSqFFlwtHgnjxDpdXB/hhfykTETHAGyKyOJRdj1P5cuT3UuaKzUXRRvUu/yuFb80QqEG
-qH3YvkoxG7/DXjbe8gyJsyDkxYHy318WBIL4maVuug==
-=6Mjr
------END PGP SIGNATURE-----
-
---Ao7bLDbznaqcyEQTExnEqI1zOWS70IXqQ--
+>
+> Andrei Vagin (3):
+>   arm64/ptrace: don't clobber task registers on syscall entry/exit traps
+>   arm64/ptrace: introduce NT_ARM_PRSTATUS to get a full set of registers
+>   selftest/arm64/ptrace: add a test for NT_ARM_PRSTATUS
+>
+>  arch/arm64/include/asm/ptrace.h               |   5 +
+>  arch/arm64/kernel/ptrace.c                    | 130 +++++++++++-----
+>  include/uapi/linux/elf.h                      |   1 +
+>  tools/testing/selftests/arm64/Makefile        |   2 +-
+>  tools/testing/selftests/arm64/ptrace/Makefile |   6 +
+>  .../arm64/ptrace/ptrace_syscall_regs_test.c   | 142 ++++++++++++++++++
+>  6 files changed, 246 insertions(+), 40 deletions(-)
+>  create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
+>  create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
+>
+> --
+> 2.29.2
+>
