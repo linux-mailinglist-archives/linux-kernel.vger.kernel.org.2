@@ -2,128 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367A1305C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA92305C56
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236357AbhA0NJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:09:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S313764AbhAZWpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:45:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 580642067C;
-        Tue, 26 Jan 2021 22:44:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611701083;
-        bh=ODWHnU+vUf2zfuDRfx2nVSDz1hdZBIUFISiJD8zI944=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cm0HODEsGvYSt66s7yWvSYeipeNHgw7iJSiylVvHSbmELaVFGwhS6FqhY1C2tdYZu
-         za78pd2l+y8I2MJbsrUkxDraY/lyO5dQubf3h2Ewicc9LFdUVwu6EEPcHmf9ORgQLd
-         IKnaEucx9p8sbMFUn3aASGITf2kZd3T9VSBH063OIEfjsgjX1nvyyiIbm3w+VQFqEj
-         FVi8nwwZVW6A0Jlnj+/qRRSGba+Gn7d/Pc7cgKIXqbCPwPOplHezYXOV9AxwOhSZqN
-         FDVoAxRMStCc4hOzDMO9YethvEhzmLcD0aRB1N+E2rz2MBvVLxznmeEYH2ACi3r7iO
-         xJxQiqBppqo9A==
-Received: by mail-ot1-f43.google.com with SMTP id s2so15741069otp.5;
-        Tue, 26 Jan 2021 14:44:43 -0800 (PST)
-X-Gm-Message-State: AOAM5323MuP2GX7vaSWctRwroh6pcBmvgeWwcOAaIQQ9sCiTfEOnFii2
-        XUQX6j0XSgcBogWvuu4+ru2tNENTNAi8G7joHZg=
-X-Google-Smtp-Source: ABdhPJzg0PioE3hyZfUsZDHfNvyWERk/FdAgJhW90LOsfXvhX3C8sd8uQKUfre227TyRQcaQEUc84+K8otcpSOdPX+Y=
-X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr5713513otc.251.1611701082742;
- Tue, 26 Jan 2021 14:44:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20201120085637.7299-1-m.szyprowski@samsung.com>
- <CGME20201120085652eucas1p1da360ab03f5b5b02a197d0f1ee435737@eucas1p1.samsung.com>
- <20201120085637.7299-3-m.szyprowski@samsung.com> <20201120110503.GB26836@kozik-lap>
- <14102bab-33a1-45e0-0faf-883c7b1133a5@samsung.com>
-In-Reply-To: <14102bab-33a1-45e0-0faf-883c7b1133a5@samsung.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 26 Jan 2021 23:44:26 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3QvbfYe5d_X4YcaRZaO4rykqoM_hm7nF-jwJGn0AQaug@mail.gmail.com>
-Message-ID: <CAK8P3a3QvbfYe5d_X4YcaRZaO4rykqoM_hm7nF-jwJGn0AQaug@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        Marian Mihailescu <mihailescu2m@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1343701AbhA0M75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:59:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343523AbhA0M6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:58:14 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B7BC061756;
+        Wed, 27 Jan 2021 04:57:34 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id w14so1149295pfi.2;
+        Wed, 27 Jan 2021 04:57:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=F9W4+7uzsBNtVZhW1bDqksxXGipQGVpT1LjrbV0CWH4=;
+        b=QFRS/2g6YZ4xhKVPlevAIyq+7Xpzuzqp6wmjplm/vbWHR2IY0jJOXYbs+zIE0QB/IG
+         FSYjoF/LfxN8MT3gXR6okS0HUi/cr/4GUuX8eUz/rby6xDBPRm4cdcWLBZ2+iGVhSPJb
+         pNB+V8uhqiLhXXwskTBLtihswLYijt28v1hZZgABtr2YoWMzldwD9BiA/8cBkUS5s4Uz
+         SWoUX49Q8pkMzowhcreN7uXw9Ub+ofI1Fj8PVWY4304nd0g1QVaVS9JjoDNTfX3QdygA
+         cnuq0OziLm5parPukRRZ2wkS4L3Ifm0iuUMt7ZD5vM86hUEcYRmPtXf0mwBqjftDxrA4
+         wd2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=F9W4+7uzsBNtVZhW1bDqksxXGipQGVpT1LjrbV0CWH4=;
+        b=iFHdPtCdT4azY+GWs80GY93tljloTwLly1x0KFmV6uHbKEXzD9HS/FcqeB2DLQn4Yu
+         AjFfPxGeGXqW1GRsR0t/C4nzIOYtG9QikVxJFGkKaLTSHuP0l27JweRgkQQPr1ilf8ui
+         d75OS4sPYGjvJ/fS0UC+jfGYN6U1UeFml1bYhaGhJft438xz/0P2BANzrIabYZ4IFPZN
+         v0CkRo3OrHm/cDlcfTmHJ13blS4GOwrZAooUPHUdvJdmurQnXaYgkLfZQCetH2RRleTv
+         KsvP0yJ/xnGqDa608Tpt/Ll7+sFOaa2QcCYuybY0BD56flWqVF9qyY6JNXOaxIbuniog
+         xETg==
+X-Gm-Message-State: AOAM533n1vLc7xIJgyKNIkuyWwqDRS+vEvZkVgcJbr997Y/mC2lSlTQL
+        Rrdy8LfD6WEE2yEYoFE98jE=
+X-Google-Smtp-Source: ABdhPJyd8mQVRanXsapYqp4HbZOUKxSfNeDytVMl49Z/9mAnF9QzElbq175w/hLvJxaUacBEBy7UyQ==
+X-Received: by 2002:a62:e217:0:b029:1c1:59ed:ae73 with SMTP id a23-20020a62e2170000b02901c159edae73mr10747786pfi.6.1611752254125;
+        Wed, 27 Jan 2021 04:57:34 -0800 (PST)
+Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id y6sm2374966pfn.123.2021.01.27.04.57.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 04:57:33 -0800 (PST)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
+        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9] staging: fbtft: add tearing signal detect
+Date:   Wed, 27 Jan 2021 20:57:37 +0800
+Message-Id: <1611752257-150851-1-git-send-email-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:10 PM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
-> On 20.11.2020 12:05, Krzysztof Kozlowski wrote:
-> > On Fri, Nov 20, 2020 at 09:56:37AM +0100, Marek Szyprowski wrote:
-> >> USB2.0 PHY in Exynos5420 differs from Exynos5250 variant a bit, so use the
-> >> recently introduced dedicated compatible for Exynos5420.
-> >>
-> >> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> >> ---
-> >>   arch/arm/boot/dts/exynos54xx.dtsi | 6 +++---
-> >>   1 file changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/arch/arm/boot/dts/exynos54xx.dtsi b/arch/arm/boot/dts/exynos54xx.dtsi
-> >> index fe9d34c23374..2ddb7a5f12b3 100644
-> >> --- a/arch/arm/boot/dts/exynos54xx.dtsi
-> >> +++ b/arch/arm/boot/dts/exynos54xx.dtsi
-> >> @@ -188,7 +188,7 @@
-> >>                      compatible = "samsung,exynos4210-ehci";
-> >>                      reg = <0x12110000 0x100>;
-> >>                      interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-> >> -                    phys = <&usb2_phy 1>;
-> >> +                    phys = <&usb2_phy 0>;
-> >>                      phy-names = "host";
-> >>              };
-> >>
-> >> @@ -196,12 +196,12 @@
-> >>                      compatible = "samsung,exynos4210-ohci";
-> >>                      reg = <0x12120000 0x100>;
-> >>                      interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-> >> -                    phys = <&usb2_phy 1>;
-> >> +                    phys = <&usb2_phy 0>;
-> >>                      phy-names = "host";
-> >>              };
-> >>
-> >>              usb2_phy: phy@12130000 {
-> >> -                    compatible = "samsung,exynos5250-usb2-phy";
-> >> +                    compatible = "samsung,exynos5420-usb2-phy";
-> > The DTS change will wait till PHY driver adjustements get merged... or
-> > if the difference is not critical, maybe using both compatibles (5420
-> > and 5250) would have sense?
->
-> It won't work easily with both compatibles, because in the 5420 variant
-> I've also changed the PHY indices (5420 has no device and second hsic
-> phy). IMHO the dts change can wait for the next release.
+From: zhangxuezhi <zhangxuezhi1@yulong.com>
 
-I see this made it into the pull request now, but I had not been aware
-of the change earlier, and I'm slightly annoyed to have received it this
-way:
+For st7789v ic,add tearing signal detect to avoid screen tearing
 
-- This is clearly an incompatible change to the dtb, and you all
-   noticed that because it would cause a bisection problem. As
-   a general rule, if a dts change does not work across bisection,
-   we should not merge it at all, because it causes problems for
-   anyone with external dts or dtb files.
+Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+---
+v9: change pr_* to dev_*
+---
+ drivers/staging/fbtft/fb_st7789v.c | 132 ++++++++++++++++++++++++++++++++++++-
+ drivers/staging/fbtft/fbtft.h      |   1 +
+ 2 files changed, 132 insertions(+), 1 deletion(-)
 
-- It would likely have been possible to define the new binding in
-  a backward-compatible way. I don't see a reason why the index
-  values in the binding had to change here, other than a slight
-  inconvenience for the driver.
+diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
+index 3a280cc..9aa2f36 100644
+--- a/drivers/staging/fbtft/fb_st7789v.c
++++ b/drivers/staging/fbtft/fb_st7789v.c
+@@ -9,9 +9,12 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
++#include <linux/mutex.h>
++#include <linux/interrupt.h>
++#include <linux/completion.h>
+ #include <linux/module.h>
+ #include <video/mipi_display.h>
+-
++#include <linux/gpio/consumer.h>
+ #include "fbtft.h"
+ 
+ #define DRVNAME "fb_st7789v"
+@@ -66,6 +69,32 @@ enum st7789v_command {
+ #define MADCTL_MX BIT(6) /* bitmask for column address order */
+ #define MADCTL_MY BIT(7) /* bitmask for page address order */
+ 
++#define SPI_PANEL_TE_TIMEOUT	400
++static struct mutex te_mutex;/*mutex for tearing line*/
++static struct completion spi_panel_te;
++
++static irqreturn_t spi_panel_te_handler(int irq, void *data)
++{
++	complete(&spi_panel_te);
++	return IRQ_HANDLED;
++}
++
++static void set_spi_panel_te_irq_status(struct fbtft_par *par, bool enable)
++{
++	static int te_irq_count;
++
++	mutex_lock(&te_mutex);
++
++	if (enable) {
++		if (++te_irq_count == 1)
++			enable_irq(gpiod_to_irq(par->gpio.te));
++	} else {
++		if (--te_irq_count == 0)
++			disable_irq(gpiod_to_irq(par->gpio.te));
++	}
++	mutex_unlock(&te_mutex);
++}
++
+ /**
+  * init_display() - initialize the display controller
+  *
+@@ -82,6 +111,33 @@ enum st7789v_command {
+  */
+ static int init_display(struct fbtft_par *par)
+ {
++	int rc;
++	struct device *dev = par->info->device;
++
++	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
++	if (IS_ERR(par->gpio.te)) {
++		rc = PTR_ERR(par->gpio.te);
++		dev_err(par->info->device, "Failed to request te gpio: %d\n", rc);
++		return rc;
++	}
++	if (par->gpio.te) {
++		init_completion(&spi_panel_te);
++		mutex_init(&te_mutex);
++		rc = devm_request_irq(dev,
++				      gpiod_to_irq(par->gpio.te),
++				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
++				     "TE_GPIO", par);
++		if (rc) {
++			dev_err(par->info->device, "TE request_irq failed.\n");
++			devm_gpiod_put(dev, par->gpio.te);
++			return rc;
++		}
++
++		disable_irq_nosync(gpiod_to_irq(par->gpio.te));
++	} else {
++		dev_info(par->info->device, "%s:%d, TE gpio not specified\n",
++			 __func__, __LINE__);
++	}
+ 	/* turn off sleep mode */
+ 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
+ 	mdelay(120);
+@@ -137,6 +193,9 @@ static int init_display(struct fbtft_par *par)
+ 	 */
+ 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
+ 
++    /*Tearing Effect Line On*/
++	if (par->gpio.te)
++		write_reg(par, 0x35, 0x00);
+ 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
+ 
+ 	if (HSD20_IPS)
+@@ -145,6 +204,76 @@ static int init_display(struct fbtft_par *par)
+ 	return 0;
+ }
+ 
++/*****************************************************************************
++ *
++ *   int (*write_vmem)(struct fbtft_par *par);
++ *
++ *****************************************************************************/
++
++/* 16 bit pixel over 8-bit databus */
++static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
++{
++	u16 *vmem16;
++	__be16 *txbuf16 = par->txbuf.buf;
++	size_t remain;
++	size_t to_copy;
++	size_t tx_array_size;
++	int i;
++	int ret = 0;
++	size_t startbyte_size = 0;
++
++	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
++		      __func__, offset, len);
++
++	remain = len / 2;
++	vmem16 = (u16 *)(par->info->screen_buffer + offset);
++
++	if (par->gpio.dc)
++		gpiod_set_value(par->gpio.dc, 1);
++
++	/* non buffered write */
++	if (!par->txbuf.buf)
++		return par->fbtftops.write(par, vmem16, len);
++
++	/* buffered write */
++	tx_array_size = par->txbuf.len / 2;
++
++	if (par->startbyte) {
++		txbuf16 = par->txbuf.buf + 1;
++		tx_array_size -= 2;
++		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
++		startbyte_size = 1;
++	}
++
++	while (remain) {
++		to_copy = min(tx_array_size, remain);
++		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
++			to_copy, remain - to_copy);
++
++		for (i = 0; i < to_copy; i++)
++			txbuf16[i] = cpu_to_be16(vmem16[i]);
++
++		vmem16 = vmem16 + to_copy;
++		if (par->gpio.te) {
++			set_spi_panel_te_irq_status(par, true);
++			reinit_completion(&spi_panel_te);
++			ret = wait_for_completion_timeout(&spi_panel_te,
++							  msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
++			if (ret == 0)
++				dev_err(par->info->device, "wait panel TE time out\n");
++		}
++		ret = par->fbtftops.write(par, par->txbuf.buf,
++					 startbyte_size + to_copy * 2);
++		if (par->gpio.te)
++			set_spi_panel_te_irq_status(par, false);
++		if (ret < 0)
++			return ret;
++		remain -= to_copy;
++	}
++
++	return ret;
++}
++
+ /**
+  * set_var() - apply LCD properties like rotation and BGR mode
+  *
+@@ -259,6 +388,7 @@ static int blank(struct fbtft_par *par, bool on)
+ 	.gamma = HSD20_IPS_GAMMA,
+ 	.fbtftops = {
+ 		.init_display = init_display,
++		.write_vmem = st7789v_write_vmem16_bus8,
+ 		.set_var = set_var,
+ 		.set_gamma = set_gamma,
+ 		.blank = blank,
+diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
+index 76f8c09..93bac05 100644
+--- a/drivers/staging/fbtft/fbtft.h
++++ b/drivers/staging/fbtft/fbtft.h
+@@ -212,6 +212,7 @@ struct fbtft_par {
+ 		struct gpio_desc *wr;
+ 		struct gpio_desc *latch;
+ 		struct gpio_desc *cs;
++		struct gpio_desc *te;
+ 		struct gpio_desc *db[16];
+ 		struct gpio_desc *led[16];
+ 		struct gpio_desc *aux[16];
+-- 
+1.9.1
 
-- If the change was really unavoidable, I would have expected
-  a long explanation about why it had to be done in both the
-  commit message and in the tag description for the pull
-  request.
-
-I've dropped the pull request for now, maybe this can still
-be sorted out with another driver change that makes the
-new compatible string backward-compatible.
-
-        Arnd
