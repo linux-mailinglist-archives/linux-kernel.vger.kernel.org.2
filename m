@@ -2,30 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40106305750
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C7C305793
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235501AbhA0Jsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:48:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:32944 "EHLO foss.arm.com"
+        id S235518AbhA0J6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:58:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:32942 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233891AbhA0I7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233880AbhA0I7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 03:59:08 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45D1D1477;
-        Wed, 27 Jan 2021 00:55:39 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED6A41478;
+        Wed, 27 Jan 2021 00:55:42 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A0ED33F66B;
-        Wed, 27 Jan 2021 00:55:36 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C58723F66B;
+        Wed, 27 Jan 2021 00:55:39 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
 Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
         mike.leach@linaro.org, lcherian@marvell.com,
         linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V3 05/14] coresight: ete: Add support for ETE tracing
-Date:   Wed, 27 Jan 2021 14:25:29 +0530
-Message-Id: <1611737738-1493-6-git-send-email-anshuman.khandual@arm.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: [PATCH V3 06/14] dts: bindings: Document device tree bindings for ETE
+Date:   Wed, 27 Jan 2021 14:25:30 +0530
+Message-Id: <1611737738-1493-7-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
 References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
@@ -35,267 +36,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Add ETE as one of the supported device types we support
-with ETM4x driver. The devices are named following the
-existing convention as ete<N>.
+Document the device tree bindings for Embedded Trace Extensions.
+ETE can be connected to legacy coresight components and thus
+could optionally contain a connection graph as described by
+the CoreSight bindings.
 
-ETE mandates that the trace resource status register is programmed
-before the tracing is turned on. For the moment simply write to
-it indicating TraceActive.
-
+Cc: devicetree@vger.kernel.org
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Rob Herring <robh@kernel.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/hwtracing/coresight/Kconfig                | 10 ++--
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 56 +++++++++++++++++-----
- .../hwtracing/coresight/coresight-etm4x-sysfs.c    | 19 ++++++--
- drivers/hwtracing/coresight/coresight-etm4x.h      | 16 ++++++-
- 4 files changed, 79 insertions(+), 22 deletions(-)
+Changes in V3:
 
-diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-index 7b44ba2..f154ae7 100644
---- a/drivers/hwtracing/coresight/Kconfig
-+++ b/drivers/hwtracing/coresight/Kconfig
-@@ -97,15 +97,15 @@ config CORESIGHT_SOURCE_ETM3X
- 	  module will be called coresight-etm3x.
- 
- config CORESIGHT_SOURCE_ETM4X
--	tristate "CoreSight Embedded Trace Macrocell 4.x driver"
-+	tristate "CoreSight ETMv4.x / ETE driver"
- 	depends on ARM64
- 	select CORESIGHT_LINKS_AND_SINKS
- 	select PID_IN_CONTEXTIDR
- 	help
--	  This driver provides support for the ETM4.x tracer module, tracing the
--	  instructions that a processor is executing. This is primarily useful
--	  for instruction level tracing. Depending on the implemented version
--	  data tracing may also be available.
-+	  This driver provides support for the CoreSight Embedded Trace Macrocell
-+	  version 4.x and the Embedded Trace Extensions (ETE). Both are CPU tracer
-+	  modules, tracing the instructions that a processor is executing. This is
-+	  primarily useful for instruction level tracing.
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called coresight-etm4x.
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 9e92d2a..b40e3c2 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -431,6 +431,13 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 		etm4x_relaxed_write32(csa, trcpdcr | TRCPDCR_PU, TRCPDCR);
- 	}
- 
-+	/*
-+	 * ETE mandates that the TRCRSR is written to before
-+	 * enabling it.
-+	 */
-+	if (etm4x_is_ete(drvdata))
-+		etm4x_relaxed_write32(csa, TRCRSR_TA, TRCRSR);
+- Fixed all DT yaml semantics problems
+
+ Documentation/devicetree/bindings/arm/ete.yaml | 74 ++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
+
+diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
+new file mode 100644
+index 0000000..edc1fe2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/ete.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
++# Copyright 2021, Arm Ltd
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/arm/ete.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
- 	/* Enable the trace unit */
- 	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
- 
-@@ -864,13 +871,24 @@ static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
- 	 * ETMs implementing sysreg access must implement TRCDEVARCH.
- 	 */
- 	devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
--	if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
-+	switch (devarch & ETM_DEVARCH_ID_MASK) {
-+	case ETM_DEVARCH_ETMv4x_ARCH:
-+		*csa = (struct csdev_access) {
-+			.io_mem	= false,
-+			.read	= etm4x_sysreg_read,
-+			.write	= etm4x_sysreg_write,
-+		};
-+		break;
-+	case ETM_DEVARCH_ETE_ARCH:
-+		*csa = (struct csdev_access) {
-+			.io_mem	= false,
-+			.read	= ete_sysreg_read,
-+			.write	= ete_sysreg_write,
-+		};
-+		break;
-+	default:
- 		return false;
--	*csa = (struct csdev_access) {
--		.io_mem	= false,
--		.read	= etm4x_sysreg_read,
--		.write	= etm4x_sysreg_write,
--	};
-+	}
- 
- 	drvdata->arch = etm_devarch_to_arch(devarch);
- 	return true;
-@@ -1808,6 +1826,8 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
- 	struct etmv4_drvdata *drvdata;
- 	struct coresight_desc desc = { 0 };
- 	struct etm4_init_arg init_arg = { 0 };
-+	u8 major, minor;
-+	char *type_name;
- 
- 	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
- 	if (!drvdata)
-@@ -1834,10 +1854,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
- 	if (drvdata->cpu < 0)
- 		return drvdata->cpu;
- 
--	desc.name = devm_kasprintf(dev, GFP_KERNEL, "etm%d", drvdata->cpu);
--	if (!desc.name)
--		return -ENOMEM;
--
- 	init_arg.drvdata = drvdata;
- 	init_arg.csa = &desc.access;
- 	init_arg.pid = etm_pid;
-@@ -1853,6 +1869,20 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
- 	if (!desc.access.io_mem ||
- 	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
- 		drvdata->skip_power_up = true;
-+	major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
-+	minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);
-+	if (etm4x_is_ete(drvdata)) {
-+		type_name = "ete";
-+		/* ETE v1 has major version == 5. Adjust this for logging.*/
-+		major -= 4;
-+	} else {
-+		type_name = "etm";
-+	}
++title: ARM Embedded Trace Extensions
 +
-+	desc.name = devm_kasprintf(dev, GFP_KERNEL,
-+				   "%s%d", type_name, drvdata->cpu);
-+	if (!desc.name)
-+		return -ENOMEM;
- 
- 	etm4_init_trace_id(drvdata);
- 	etm4_set_default(&drvdata->config);
-@@ -1881,9 +1911,8 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
- 
- 	etmdrvdata[drvdata->cpu] = drvdata;
- 
--	dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
--		 drvdata->cpu, ETM_ARCH_MAJOR_VERSION(drvdata->arch),
--		 ETM_ARCH_MINOR_VERSION(drvdata->arch));
-+	dev_info(&drvdata->csdev->dev, "CPU%d: %s v%d.%d initialized\n",
-+		 drvdata->cpu, type_name, major, minor);
- 
- 	if (boot_enable) {
- 		coresight_enable(drvdata->csdev);
-@@ -2027,6 +2056,7 @@ static struct amba_driver etm4x_amba_driver = {
- 
- static const struct of_device_id etm4_sysreg_match[] = {
- 	{ .compatible	= "arm,coresight-etm4x-sysreg" },
-+	{ .compatible	= "arm,embedded-trace-extension" },
- 	{}
- };
- 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-index b646d53..1c490bc 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-@@ -2374,12 +2374,20 @@ static inline bool
- etm4x_register_implemented(struct etmv4_drvdata *drvdata, u32 offset)
- {
- 	switch (offset) {
--	ETM4x_SYSREG_LIST_CASES
-+	ETM_COMMON_SYSREG_LIST_CASES
- 		/*
--		 * Registers accessible via system instructions are always
--		 * implemented.
-+		 * Common registers to ETE & ETM4x accessible via system
-+		 * instructions are always implemented.
- 		 */
- 		return true;
++maintainers:
++  - Suzuki K Poulose <suzuki.poulose@arm.com>
++  - Mathieu Poirier <mathieu.poirier@linaro.org>
 +
-+	ETM4x_ONLY_SYSREG_LIST_CASES
-+		/*
-+		 * We only support etm4x and ete. So if the device is not
-+		 * ETE, it must be ETMv4x.
-+		 */
-+		return !etm4x_is_ete(drvdata);
++description: |
++  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
++  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
++  architecture and has extended support for future architecture changes.
++  The trace generated by the ETE could be stored via legacy CoreSight
++  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
++  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
++  legacy CoreSight components, a node must be listed per instance, along
++  with any optional connection graph as per the coresight bindings.
++  See bindings/arm/coresight.txt.
 +
- 	ETM4x_MMAP_LIST_CASES
- 		/*
- 		 * Registers accessible only via memory-mapped registers
-@@ -2389,8 +2397,13 @@ etm4x_register_implemented(struct etmv4_drvdata *drvdata, u32 offset)
- 		 * coresight_register() and the csdev is not initialized
- 		 * until that is done. So rely on the drvdata->base to
- 		 * detect if we have a memory mapped access.
-+		 * Also ETE doesn't implement memory mapped access, thus
-+		 * it is sufficient to check that we are using mmio.
- 		 */
- 		return !!drvdata->base;
++properties:
++  $nodename:
++    pattern: "^ete([0-9a-f]+)$"
++  compatible:
++    items:
++      - const: arm,embedded-trace-extension
 +
-+	ETE_ONLY_SYSREG_LIST_CASES
-+		return etm4x_is_ete(drvdata);
- 	}
- 
- 	return false;
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index ca24ac5..8b90de5 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -128,6 +128,8 @@
- #define TRCCIDR2			0xFF8
- #define TRCCIDR3			0xFFC
- 
-+#define TRCRSR_TA			BIT(12)
++  cpu:
++    description: |
++      Handle to the cpu this ETE is bound to.
++    $ref: /schemas/types.yaml#/definitions/phandle
 +
- /*
-  * System instructions to access ETM registers.
-  * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
-@@ -390,6 +392,9 @@
- #define ETM_COMMON_SYSREG_LIST_CASES		\
- 	ETM_COMMON_SYSREG_LIST(NOP, __unused)
- 
-+#define ETM4x_ONLY_SYSREG_LIST_CASES		\
-+	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
++  out-ports:
++    type: object
++    description: |
++      Output connections from the ETE to legacy CoreSight trace bus.
++    properties:
++      port:
++        $ref: /schemas/graph.yaml#/properties/port
 +
- #define ETM4x_SYSREG_LIST_CASES			\
- 	ETM_COMMON_SYSREG_LIST_CASES		\
- 	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
-@@ -406,7 +411,6 @@
- 	ETE_ONLY_SYSREG_LIST(WRITE, (val))
- 
- #define ETE_ONLY_SYSREG_LIST_CASES		\
--	ETM_COMMON_SYSREG_LIST_CASES		\
- 	ETE_ONLY_SYSREG_LIST(NOP, __unused)
- 
- #define read_etm4x_sysreg_offset(offset, _64bit)				\
-@@ -589,11 +593,14 @@
- 	((ETM_DEVARCH_MAKE_ARCHID_ARCH_VER(major)) | ETM_DEVARCH_ARCHID_ARCH_PART(0xA13))
- 
- #define ETM_DEVARCH_ARCHID_ETMv4x		ETM_DEVARCH_MAKE_ARCHID(0x4)
-+#define ETM_DEVARCH_ARCHID_ETE			ETM_DEVARCH_MAKE_ARCHID(0x5)
- 
- #define ETM_DEVARCH_ID_MASK						\
- 	(ETM_DEVARCH_ARCHITECT_MASK | ETM_DEVARCH_ARCHID_MASK | ETM_DEVARCH_PRESENT)
- #define ETM_DEVARCH_ETMv4x_ARCH						\
- 	(ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETMv4x | ETM_DEVARCH_PRESENT)
-+#define ETM_DEVARCH_ETE_ARCH						\
-+	(ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETE | ETM_DEVARCH_PRESENT)
- 
- #define TRCSTATR_IDLE_BIT		0
- #define TRCSTATR_PMSTABLE_BIT		1
-@@ -683,6 +690,8 @@
- #define ETM_ARCH_MINOR_VERSION(arch)	((arch) & 0xfU)
- 
- #define ETM_ARCH_V4	ETM_ARCH_VERSION(4, 0)
-+#define ETM_ARCH_ETE	ETM_ARCH_VERSION(5, 0)
++required:
++  - compatible
++  - cpu
 +
- /* Interpretation of resource numbers change at ETM v4.3 architecture */
- #define ETM_ARCH_V4_3	ETM_ARCH_VERSION(4, 3)
- 
-@@ -989,4 +998,9 @@ void etm4_config_trace_mode(struct etmv4_config *config);
- 
- u64 etm4x_sysreg_read(u32 offset, bool _relaxed, bool _64bit);
- void etm4x_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit);
++additionalProperties: false
 +
-+static inline bool etm4x_is_ete(struct etmv4_drvdata *drvdata)
-+{
-+	return drvdata->arch >= ETM_ARCH_ETE;
-+}
- #endif
++examples:
++
++# An ETE node without legacy CoreSight connections
++  - |
++    ete0 {
++      compatible = "arm,embedded-trace-extension";
++      cpu = <&cpu_0>;
++    };
++# An ETE node with legacy CoreSight connections
++  - |
++   ete1 {
++      compatible = "arm,embedded-trace-extension";
++      cpu = <&cpu_1>;
++
++      out-ports {        /* legacy coresight connection */
++         port {
++             ete1_out_port: endpoint {
++                remote-endpoint = <&funnel_in_port0>;
++             };
++         };
++      };
++   };
++
++...
 -- 
 2.7.4
 
