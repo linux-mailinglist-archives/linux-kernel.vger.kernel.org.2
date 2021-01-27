@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99463054BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19C63054B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhA0Hcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:32:52 -0500
-Received: from ozlabs.org ([203.11.71.1]:45449 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S317618AbhA0AZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:25:28 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQPVz6zzKz9sVn;
-        Wed, 27 Jan 2021 11:24:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611707084;
-        bh=wxcrmcFKLcpmBfDwHHqxzsVjsKMNHYMHtVTwR7K7A8M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KBqDiHsTqz6q07nKZ/c4wL2/JyZRz3SAZNgRtdXBQ7TPEhQfFbiuPew74EIRRu73U
-         m+quntsAzwvjgIaHUsJEOI81gmx2vWNNeXC1hGM3cF2UcX8MLxNsKOOcky60sOWBqD
-         H7ZdowInjEY9Pk+RfrV7TIDivRmnlwKy/0fyvV7HulDdcDkWi+wF/hJsWUiA2NZTke
-         2MCG8cEkScqna03raVHJMeU09ViL4TAMmoY2Lh1fsW/k9bOLlKSG6cSTRJ07qF5qwr
-         BCcH6U1CwDHIFsy5d/GU0wLD9EMLt7NidO9zQhvQK4OAsHBscanrI693mrFXSxbf9e
-         3jwctmL3DyfsQ==
-Date:   Wed, 27 Jan 2021 11:24:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the pidfd tree with the xfs tree
-Message-ID: <20210127112441.1d07c1d4@canb.auug.org.au>
-In-Reply-To: <20210125171414.41ed957a@canb.auug.org.au>
-References: <20210125171414.41ed957a@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/is=.Kudvs87+PhegErpkY=s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S234193AbhA0Hc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:32:26 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:39799 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S316622AbhA0A1B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 19:27:01 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2F4A9580A86;
+        Tue, 26 Jan 2021 19:25:17 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Tue, 26 Jan 2021 19:25:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=PWoGEuMDDaDq0/pzXUUiU1EckS7iVUN
+        1oFV3i9oQBqU=; b=ijJP6ZrcT4CZpTc74xXzMI2pxevxBiB9raVSnMYyR3XEr9f
+        ZvTbpO/Cv3Ts9ZgESw+B2H7zHkMQ81/s1YPxw9Umyf/DOkYHpTMbv0rJcFzZN6sz
+        h6zLgANlm1G9OdyCsZhq4Xn0MbyT0szBEw0NDMC7qpbKb6ajKp+zZvPmxEF/Wa9h
+        x/tYkP34EglzHAwI/9Rekk0jUvHjMvb95wuFVp5W6XSFv65Pe1ltmc23v8c3aKyR
+        wsg+ed1PltmlLunEAQcaRBwiIRjhWa9QngDoCdl6v/QlxPArLxi8BfU0/0AskhJx
+        8aZgHqfxRzfFe07tr/X0jX6RQ7Oda+lxtT7WhsA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PWoGEu
+        MDDaDq0/pzXUUiU1EckS7iVUN1oFV3i9oQBqU=; b=juzHo2ERd2n3YX6adW2OnL
+        1N2Lcs+iMO3u0lHnRCNU+G0QiOiQ6Bxp88DZLVuycTPl2EZbp6pSvkAJuqbIiZVk
+        7hKv5/ECVpBa428xHcpHMYMTzup8Z2dufAnY3ea7drNrTx0VvoYir1BQUkOavdPN
+        h6EeFMfUXFb/5t1xqgg/DtJZUH+0Zkmz0OiNmvcw+gbaj7DaqbrdIwsG0sh1RxGz
+        VpljwS3yLEGoSXcKHidiY7Ji0a9l7qw3FFgbvOzQDBZtL1ulonAMYYtKs0N0IyhL
+        uvhfNPw2RWvneouixTI7Y2sNMdcG7uA5AWAkqQonnsVdnvM+0gcLxbmFX4UlRG/Q
+        ==
+X-ME-Sender: <xms:67IQYBn8zZXF8aV1RL_0StSGOYIqxaIZpgly8jt4COCgAgtGwllFeA>
+    <xme:67IQYM3oNDYWI-tCEy477uy5A8_jkyYEDz9iZAlq_ATf5fsL7z_mzbh0JBe78vlkX
+    HNdvqzoh6MJdz_HIQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgddvfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:7LIQYHqlC_id2kk_RUPPOjvILObK-6rLPAF0rdMpgN-cO2dcN0PlBQ>
+    <xmx:7LIQYBl9_LBn5Q2kfDBVLjH2lfV5yEtoavFtu2HhrMuLx4apq7EmcA>
+    <xmx:7LIQYP19NXFgSEQW7lDZAmIcFU3kWOFppZ43ScCjIf_cWKOONFJySA>
+    <xmx:7bIQYIt6bnrgYF6qn5gSA3F0qVPgYqpnlefxekr4vtmCelQAJagDWw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E5484A0005D; Tue, 26 Jan 2021 19:25:15 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-84-gfc141fe8b8-fm-20210125.001-gfc141fe8
+Mime-Version: 1.0
+Message-Id: <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
+In-Reply-To: <20210114131622.8951-2-chiawei_wang@aspeedtech.com>
+References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
+ <20210114131622.8951-2-chiawei_wang@aspeedtech.com>
+Date:   Wed, 27 Jan 2021 10:54:55 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Lee Jones" <lee.jones@linaro.org>
+Cc:     BMC-SW@aspeedtech.com, "Haiyue Wang" <haiyue.wang@linux.intel.com>,
+        "Robert Lippert" <rlippert@google.com>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Corey Minyard" <minyard@acm.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/is=.Kudvs87+PhegErpkY=s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Mon, 25 Jan 2021 17:14:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the pidfd tree got a conflict in:
->=20
->   fs/xfs/xfs_inode.c
->=20
-> between commit:
->=20
->   01ea173e103e ("xfs: fix up non-directory creation in SGID directories")
->=20
-> from the xfs tree and commit:
->=20
->   f736d93d76d3 ("xfs: support idmapped mounts")
->=20
-> from the pidfd tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc fs/xfs/xfs_inode.c
-> index e2a1db4cee43,95b7f2ba4e06..000000000000
-> --- a/fs/xfs/xfs_inode.c
-> +++ b/fs/xfs/xfs_inode.c
-> @@@ -809,13 -810,13 +810,13 @@@ xfs_init_new_inode
->   	inode->i_rdev =3D rdev;
->   	ip->i_d.di_projid =3D prid;
->  =20
->  -	if (pip && XFS_INHERIT_GID(pip)) {
->  -		inode->i_gid =3D VFS_I(pip)->i_gid;
->  -		if ((VFS_I(pip)->i_mode & S_ISGID) && S_ISDIR(mode))
->  -			inode->i_mode |=3D S_ISGID;
->  +	if (dir && !(dir->i_mode & S_ISGID) &&
->  +	    (mp->m_flags & XFS_MOUNT_GRPID)) {
->  +		inode->i_uid =3D current_fsuid();
+On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
+> The LPC controller has no concept of the BMC and the Host partitions.
+> This patch fixes the documentation by removing the description on LPC
+> partitions. The register offsets illustrated in the DTS node examples
+> are also fixed to adapt to the LPC DTS change.
+> 
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
 
-Looking a bit harder, I replaced the above line with
-		inode->i_uid =3D fsuid_into_mnt(mnt_userns);
+Any thoughts Lee? If you ack it would you be happy for the patch to go through 
+the Aspeed tree?
 
->  +		inode->i_gid =3D dir->i_gid;
->  +		inode->i_mode =3D mode;
->   	} else {
-> - 		inode_init_owner(inode, dir, mode);
->  -		inode->i_gid =3D fsgid_into_mnt(mnt_userns);
-> ++		inode_init_owner(mnt_userns, inode, dir, mode);
->   	}
->  =20
->   	/*
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/is=.Kudvs87+PhegErpkY=s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAQsskACgkQAVBC80lX
-0Gyopwf+MTSEq9Q8h1tsi2YkgSc6nKqer6DFyTX7rMlvCMpiDX8OpVp54nZ7oZAl
-HDo4Q4soJs887yjd23HL+4nLBIl4xYx39IRbJnkfPjPROu56xGgUKEwESBU3daLn
-KFIQX26KvxK6y7Sl9iwTJWom0kwQBJSkGb7GSSrwLoerAdvil7vUwROV3Pbqg0+L
-Fr59B/5cP6PfJpk6YqxBI3MrLn5q+y1ANyBU87RWTnCc6pIeqvHR6ppIqIRf19vA
-XOGoHJ6T+mzoxxW9L6juii11MT0u8+MGnAjSKJJH/12T4WGXViiZw9NP2m5qB3nZ
-ja6ck9FfT24AHQQlMpxEjhm3kQEbaw==
-=Dkxo
------END PGP SIGNATURE-----
-
---Sig_/is=.Kudvs87+PhegErpkY=s--
+Andrew
