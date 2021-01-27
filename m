@@ -2,85 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5543061C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771BA3061D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbhA0RT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:19:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235671AbhA0RR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:17:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3543864D99;
-        Wed, 27 Jan 2021 17:16:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611767772;
-        bh=QEn3AwN++ibSZJbYsfjHXLopDcjytE0gWYxS4s3GF0Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rxjRVJoX2E1b3ub3NeXROX65hjFV/n3ruiDX3Jg2rFspZSMEQYHzkQ+DhSocI9MFy
-         V8Lz947ClecGI7JzSVvBD/apXNXAhwDvaLSvB2bcZCdqBFnXa8fT/mkjSts7uCMtyB
-         gqZfF4y8iSF+TZHdXCMMdKG3qBmTEQVqKIY6e9eIGl3/X6fQSg0G6uWAC1c0GNEoWB
-         aubrx1wrsptYu8LS0SrOkAvUpdzrOjM3QNohwquR8iCEJ9osuK8FLOSD39IJ7igtle
-         BDYb9/BUm/2uZaTUzqkUE/xOApbDCFLdUpxLTFQhwy4h7JWwNFCXuWfFv6+guQPdNX
-         CDEkII+uEdF1w==
-Date:   Wed, 27 Jan 2021 17:16:06 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 0/8] Create 'old' ptes for faultaround mappings on
- arm64 with hardware access flag
-Message-ID: <20210127171605.GD358@willie-the-truck>
-References: <20210120173612.20913-1-will@kernel.org>
- <20210126230851.GE30941@willie-the-truck>
- <alpine.LSU.2.11.2101261522260.2650@eggly.anvils>
+        id S235599AbhA0RWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235601AbhA0RRP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:17:15 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CDDC06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:16:35 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id m6so1618039pfk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:16:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eZkRAFReyCaCfsUebKjqhppx54eZqZXUA8gRquKcsPU=;
+        b=dimGUWBu88dX8OdBPtqV1K4RlZBNMOe3qLaj2DFeriW0zXGvfLXQdvpDQW90G+pq8w
+         p6xdN0AtXLBzz2oPtDzXqxZIr8psZaQU+lB+nDni6Zl/WIpcblkhLxycbxPAvV8te05i
+         KsVIp+ePdyQmOMOK1htw20UOkkjeFnjUvviVoIEY2ofKY9lhBjfLrheC8MM/6mQmKGDo
+         lgZrbx94cvm3t6pqu1kCexYTDa1cFG519/QRDEJtzXaZ7GklAYFE3S3JdLgmQXJO7Olf
+         5tbc9e9YBFuaJlg9N990aaa1pAzjhautowBMkQc84YuILgD85YeIKeYhHvbjucdynQoo
+         2yeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eZkRAFReyCaCfsUebKjqhppx54eZqZXUA8gRquKcsPU=;
+        b=G7djzSWBOJQkGv5P1zvOiQllApXVTQG68DluVbtDT8WWLO8+cAeHw7FcsWpjxyqRYS
+         6YYzWRSfSQTXwBSLqcfb3CsNPYMvwYm4wwStIByUpB735+84yNf3FICFvAa4xocJ55d7
+         0z4A3ZoL7nrP3lNasRWKVF7GaRNMPOn0RDdgOUG74saXGgTFyLSxjbr1hn1289TAhWSX
+         nRdj9qXYSadKt6fqC6SCyv4EjEZ5ifFd5UVHWjBG/nkqZKlRegG5V/OZT3lS/M2NGtpq
+         5Otm86CullkkumL0SumKWUgcvFju/TSJu1kmf1lcHSSZfcdaa4YvMrsWyHMpMtVkpp7K
+         R6lw==
+X-Gm-Message-State: AOAM532xT+aLbTSux72qg4Cnm89/JiADHCEeFqFm8M+ebdKbs+zZd3h3
+        h6UjaWkn9+jkicEdkCVx9SbgynGCiWX/+mhQ2QlEDA==
+X-Google-Smtp-Source: ABdhPJxKQ8+LIsyyI6CfO9fy/6S4KtVkebVD7Kd1qkb+yv7kQN6fPglxpJCY+HhjUK+MV4uOLoP/VTT9u1mKmJvI5fg=
+X-Received: by 2002:a63:724a:: with SMTP id c10mr10790208pgn.124.1611767794770;
+ Wed, 27 Jan 2021 09:16:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2101261522260.2650@eggly.anvils>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210126225138.1823266-1-kaleshsingh@google.com> <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
+In-Reply-To: <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Wed, 27 Jan 2021 12:16:23 -0500
+Message-ID: <CAC_TJvfuFiDSWD+ud_rJJ6zFQjYhcK1Rfqyrne4OBB4ZfJ0oMQ@mail.gmail.com>
+Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
+To:     Jann Horn <jannh@google.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        kernel-team <kernel-team@android.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>, Hui Su <sh_def@163.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 03:28:22PM -0800, Hugh Dickins wrote:
-> On Tue, 26 Jan 2021, Will Deacon wrote:
-> > On Wed, Jan 20, 2021 at 05:36:04PM +0000, Will Deacon wrote:
-> > > Hi all,
-> > > 
-> > > This is version four of the patches I previously posted here:
-> > > 
-> > >   v1: https://lore.kernel.org/r/20201209163950.8494-1-will@kernel.org
-> > >   v2: https://lore.kernel.org/r/20210108171517.5290-1-will@kernel.org
-> > >   v3: https://lore.kernel.org/r/20210114175934.13070-1-will@kernel.org
-> > > 
-> > > The patches allow architectures to opt-in at runtime for faultaround
-> > > mappings to be created as 'old' instead of 'young'. Although there have
-> > > been previous attempts at this, they failed either because the decision
-> > > was deferred to userspace [1] or because it was done unconditionally and
-> > > shown to regress benchmarks for particular architectures [2].
-> > > 
-> > > The big change since v3 is that the immutable fields of 'struct vm_fault'
-> > > now live in a 'const' anonymous struct. Although Clang will silently
-> > > accept modifications to these fields [3], GCC emits an error. The
-> > > resulting diffstat is _considerably_ more manageable with this approach.
-> > 
-> > The only changes I have pending against this series are cosmetic (commit
-> > logs). Can I go ahead and queue this in the arm64 tree so that it can sit
-> > in linux-next for a bit? (positive or negative feedback appreciated!).
-> 
-> That would be fine by me: I ran v3 on rc3, then the nicer smaller v4
-> on rc4, and saw no problems when running either of them (x86_64 only).
+On Wed, Jan 27, 2021 at 5:47 AM Jann Horn <jannh@google.com> wrote:
+>
+> +jeffv from Android
+>
+> On Tue, Jan 26, 2021 at 11:51 PM Kalesh Singh <kaleshsingh@google.com> wr=
+ote:
+> > In order to measure how much memory a process actually consumes, it is
+> > necessary to include the DMA buffer sizes for that process in the memor=
+y
+> > accounting. Since the handle to DMA buffers are raw FDs, it is importan=
+t
+> > to be able to identify which processes have FD references to a DMA buff=
+er.
+>
+> Or you could try to let the DMA buffer take a reference on the
+> mm_struct and account its size into the mm_struct? That would probably
+> be nicer to work with than having to poke around in procfs separately
+> for DMA buffers.
+>
+> > Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
+> > /proc/<pid>/fdinfo -- both of which are only root readable, as follows:
+>
+> That's not quite right. They can both also be accessed by the user
+> owning the process. Also, fdinfo is a standard interface for
+> inspecting process state that doesn't permit reading process memory or
+> manipulating process state - so I think it would be fine to permit
+> access to fdinfo under a PTRACE_MODE_READ_FSCRED check, just like the
+> interface you're suggesting.
 
-Thanks, Hugh. I'll stick these into -next later today and we'll see how we
-get on.
 
-Will
+Hi everyone. Thank you for the feedback.
+
+I understand there is a deeper problem of accounting shared memory in
+the kernel, that=E2=80=99s not only specific to the DMA buffers. In this ca=
+se
+DMA buffers, I think Jann=E2=80=99s proposal is the cleanest way to attribu=
+te
+the shared buffers to processes. I can respin a patch modifying fdinfo
+as suggested, if this is not an issue from a security perspective.
+
+Thanks,
+Kalesh
+
+>
+>
+> >   1. Do a readlink on each FD.
+> >   2. If the target path begins with "/dmabuf", then the FD is a dmabuf =
+FD.
+> >   3. stat the file to get the dmabuf inode number.
+> >   4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
+> >
+> > Android captures per-process system memory state when certain low memor=
+y
+> > events (e.g a foreground app kill) occur, to identify potential memory
+> > hoggers. To include a process=E2=80=99s dmabuf usage as part of its mem=
+ory state,
+> > the data collection needs to be fast enough to reflect the memory state=
+ at
+> > the time of such events.
+> >
+> > Since reading /proc/<pid>/fd/ and /proc/<pid>/fdinfo/ requires root
+> > privileges, this approach is not suitable for production builds.
+>
+> It should be easy to add enough information to /proc/<pid>/fdinfo/ so
+> that you don't need to look at /proc/<pid>/fd/ anymore.
+>
+> > Granting
+> > root privileges even to a system process increases the attack surface a=
+nd
+> > is highly undesirable. Additionally this is slow as it requires many
+> > context switches for searching and getting the dma-buf info.
+>
+> What do you mean by "context switches"? Task switches or kernel/user
+> transitions (e.g. via syscall)?
+>
+> > With the addition of per-buffer dmabuf stats in sysfs [1], the DMA buff=
+er
+> > details can be queried using their unique inode numbers.
+> >
+> > This patch proposes adding a /proc/<pid>/task/<tid>/dmabuf_fds interfac=
+e.
+> >
+> > /proc/<pid>/task/<tid>/dmabuf_fds contains a list of inode numbers for
+> > every DMA buffer FD that the task has. Entries with the same inode
+> > number can appear more than once, indicating the total FD references
+> > for the associated DMA buffer.
+> >
+> > If a thread shares the same files as the group leader then its
+> > dmabuf_fds file will be empty, as these dmabufs are reported by the
+> > group leader.
+> >
+> > The interface requires PTRACE_MODE_READ_FSCRED (same as /proc/<pid>/map=
+s)
+> > and allows the efficient accounting of per-process DMA buffer usage wit=
+hout
+> > requiring root privileges. (See data below)
+>
+> I'm not convinced that introducing a new procfs file for this is the
+> right way to go. And the idea of having to poke into multiple
+> different files in procfs and in sysfs just to be able to compute a
+> proper memory usage score for a process seems weird to me. "How much
+> memory is this process using" seems like the kind of question the
+> kernel ought to be able to answer (and the kernel needs to be able to
+> answer somewhat accurately so that its own OOM killer can do its job
+> properly)?
