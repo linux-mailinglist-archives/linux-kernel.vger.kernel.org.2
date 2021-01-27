@@ -2,231 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E033306287
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E281E30629C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344205AbhA0RsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:48:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344167AbhA0Rr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:47:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39A0C64DAC;
-        Wed, 27 Jan 2021 17:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611769607;
-        bh=hvO4AqTEzf34evOjNGv/VdbBc5+wBs7kWrb33Xxpmo8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=sXMrIvpsM3fXd27A5BLOQ8QShiQrzWV0FsPIRevj1nAKytaHuosjUFazNmMH+pIcR
-         swqkPVetLAWUaUP+g+duhApa8ADVsFoRCR1Qz77qgP5Cu3+2L8cJOuWg4iQOLWFVby
-         b5gPEFCc4rNUYBOgXbbTLAcwsucZilJtVHQJjvUaIR8cbVCfr9AqyYRPjopwHasmr+
-         gXFvVrV8joAZQGg5vaEsR2BthWyrH5yIEtjro348B/ds/y3Igj9fHlNW9p0lFqfYdz
-         sx9m5tlfCOaP6wD3B3jfVRHJvzimAT1PEfPfA9JEtw4UDsoTMumav1+ZSyMD6mKakt
-         R09EsUG2rSVQw==
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 4/4] media: i2c: imx258: get clock from device properties and enable it via runtime PM
-Date:   Wed, 27 Jan 2021 18:46:35 +0100
-Message-Id: <20210127174635.3596-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210127174635.3596-1-krzk@kernel.org>
-References: <20210127174635.3596-1-krzk@kernel.org>
+        id S234612AbhA0RvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:51:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344193AbhA0Rtc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:49:32 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D99C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:48:51 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id s24so3764448wmj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:48:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fA8V3wK/iXuNUDNxQGGXePONMGKipgMljYi7+GjKWGw=;
+        b=a8OhkeDNIrmKqsh/XjliHEErqfLR1649OYBoBGFEvLBOZ+ggHDLSWAX/n6j/z3w97I
+         O9tH41Smi3ymg1pzgGeLbzIMLsO1feji4tUOSibpYzaPjyI82MNd0eb9IWB7PxDjg0G0
+         oxyBWYBW+1tVrQZsIKJypSvyl4xSYL6BjScCBKZXOj15rIGNmx6Y2hxnOya6A+R0gFYw
+         nztYfgt+1rsHdsegI70WVsq2XlPBJoH0aNeyT1TF2D7loXZjMTjNyppoXG6dOigQsqHY
+         Yseux6Wu2pv1M40LIaXYKK+8w94rILX4hZXdN1tnWevAeuMKey6Q3DlEpnyb6rlTCzWk
+         vZxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fA8V3wK/iXuNUDNxQGGXePONMGKipgMljYi7+GjKWGw=;
+        b=ONpZCN4lKUZI8QEDblIrz9Z8J2CDz477rww5y2vtlWj2doDs+lXjMQNwbgUKg0cnJu
+         SotEI9Ek0xO624ic5pQU6yVtPhLWn76kBuceioHbm8gc0OTCN0HTAX93GTa+PueZNOlj
+         H7wLwViJEq3+X19Sqki9x66l9ryZQ7u4HaBfeNZG31LCUa3uL50FlaB6dDqzAceMJLai
+         TIGRVtiPnUe011UWl5bE4JFv3hM5S/ftiXYDP/XvO1CQA1iw/ucpKuOlKjBHn6RXyN6I
+         BX+sYLvhS/VTL2FZC9vxtaDPyNyXeprsVlRE0/fmtfMIQt15ZTH4iawajFH5HOFTEJPt
+         q0iw==
+X-Gm-Message-State: AOAM5337UXKFdOh0Qh6jfq8s3SJsgy1eZ07losAlDvt+0wUm+VKgBaAC
+        uwyLHTnYIEcMcTx1ieqO3q+lJM2xVW/CNA==
+X-Google-Smtp-Source: ABdhPJytQUIw/wSZmG+xRMZTNwB9UYiZ1gjegwsMACvZMcy5esdmS9dTfu0F9n4G/uSGin5bLFQNew==
+X-Received: by 2002:a1c:6486:: with SMTP id y128mr5397108wmb.12.1611769730244;
+        Wed, 27 Jan 2021 09:48:50 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id e12sm3680787wrs.67.2021.01.27.09.48.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 09:48:49 -0800 (PST)
+Subject: Re: [PATCH v2] ASoC: qcom: lpass-cpu: Remove bit clock state check
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210127151824.8929-1-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <752d2980-2c84-c03f-7960-b9de8027c4d6@linaro.org>
+Date:   Wed, 27 Jan 2021 17:48:48 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210127151824.8929-1-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IMX258 sensor driver checked in device properties for a
-clock-frequency property which actually does not mean that the clock is
-really running such frequency or is it even enabled.
 
-Get the provided clock and check it frequency.  If none is provided,
-fall back to old property.
 
-Enable the clock when accessing the IMX258 registers and when streaming
-starts with runtime PM.
+On 27/01/2021 15:18, Srinivasa Rao Mandadapu wrote:
+> No need of BCLK state maintenance from driver side as
+> clock_enable and clk_disable API's maintaing state counter.
+> 
+> One of the major issue was spotted when Headset jack inserted
+> while playback continues, due to same PCM device node opens twice
+> for playaback/capture and closes once for capture and playback continues.
+> 
+> It can resolve the errors in such scenarios.
+> 
+> Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
----
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Changes since v6:
-1. None
-
-Changes since v5:
-1. Move clk_get_rate() out of else block.
-
-Changes since v4:
-1. Add missing imx258_power_off.
-
-Changes since v3:
-1. None
-
-Changes since v2:
-1. Do not try to set drvdata, wrap lines.
-2. Use dev_dbg.
-
-Changes since v1:
-1. Use runtime PM for clock toggling
----
- drivers/media/i2c/imx258.c | 69 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 61 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index 505981e02cff..61d74b794582 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -2,6 +2,7 @@
- // Copyright (C) 2018 Intel Corporation
- 
- #include <linux/acpi.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
-@@ -68,6 +69,9 @@
- #define REG_CONFIG_MIRROR_FLIP		0x03
- #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
- 
-+/* Input clock frequency in Hz */
-+#define IMX258_INPUT_CLOCK_FREQ		19200000
-+
- struct imx258_reg {
- 	u16 address;
- 	u8 val;
-@@ -610,6 +614,8 @@ struct imx258 {
- 
- 	/* Streaming on/off */
- 	bool streaming;
-+
-+	struct clk *clk;
- };
- 
- static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
-@@ -972,6 +978,29 @@ static int imx258_stop_streaming(struct imx258 *imx258)
- 	return 0;
- }
- 
-+static int imx258_power_on(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct imx258 *imx258 = to_imx258(sd);
-+	int ret;
-+
-+	ret = clk_prepare_enable(imx258->clk);
-+	if (ret)
-+		dev_err(dev, "failed to enable clock\n");
-+
-+	return ret;
-+}
-+
-+static int imx258_power_off(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct imx258 *imx258 = to_imx258(sd);
-+
-+	clk_disable_unprepare(imx258->clk);
-+
-+	return 0;
-+}
-+
- static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
- {
- 	struct imx258 *imx258 = to_imx258(sd);
-@@ -1199,9 +1228,26 @@ static int imx258_probe(struct i2c_client *client)
- 	int ret;
- 	u32 val = 0;
- 
--	device_property_read_u32(&client->dev, "clock-frequency", &val);
--	if (val != 19200000)
-+	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-+	if (!imx258)
-+		return -ENOMEM;
-+
-+	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
-+	if (!imx258->clk) {
-+		dev_dbg(&client->dev,
-+			"no clock provided, using clock-frequency property\n");
-+
-+		device_property_read_u32(&client->dev, "clock-frequency", &val);
-+		if (val != IMX258_INPUT_CLOCK_FREQ)
-+			return -EINVAL;
-+	} else if (IS_ERR(imx258->clk)) {
-+		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
-+				     "error getting clock\n");
-+	}
-+	if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
-+		dev_err(&client->dev, "input clock frequency not supported\n");
- 		return -EINVAL;
-+	}
- 
- 	/*
- 	 * Check that the device is mounted upside down. The driver only
-@@ -1211,24 +1257,25 @@ static int imx258_probe(struct i2c_client *client)
- 	if (ret || val != 180)
- 		return -EINVAL;
- 
--	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
--	if (!imx258)
--		return -ENOMEM;
--
- 	/* Initialize subdev */
- 	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
- 
-+	/* Will be powered off via pm_runtime_idle */
-+	ret = imx258_power_on(&client->dev);
-+	if (ret)
-+		return ret;
-+
- 	/* Check module identity */
- 	ret = imx258_identify_module(imx258);
- 	if (ret)
--		return ret;
-+		goto error_identify;
- 
- 	/* Set default mode to max resolution */
- 	imx258->cur_mode = &supported_modes[0];
- 
- 	ret = imx258_init_controls(imx258);
- 	if (ret)
--		return ret;
-+		goto error_identify;
- 
- 	/* Initialize subdev */
- 	imx258->sd.internal_ops = &imx258_internal_ops;
-@@ -1258,6 +1305,9 @@ static int imx258_probe(struct i2c_client *client)
- error_handler_free:
- 	imx258_free_controls(imx258);
- 
-+error_identify:
-+	imx258_power_off(&client->dev);
-+
- 	return ret;
- }
- 
-@@ -1271,6 +1321,8 @@ static int imx258_remove(struct i2c_client *client)
- 	imx258_free_controls(imx258);
- 
- 	pm_runtime_disable(&client->dev);
-+	if (!pm_runtime_status_suspended(&client->dev))
-+		imx258_power_off(&client->dev);
- 	pm_runtime_set_suspended(&client->dev);
- 
- 	return 0;
-@@ -1278,6 +1330,7 @@ static int imx258_remove(struct i2c_client *client)
- 
- static const struct dev_pm_ops imx258_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(imx258_suspend, imx258_resume)
-+	SET_RUNTIME_PM_OPS(imx258_power_off, imx258_power_on, NULL)
- };
- 
- #ifdef CONFIG_ACPI
--- 
-2.25.1
-
+> ---
+> Changes since v1:
+>     -- Commit message changed
+> 
+>   sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
+>   sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
+>   sound/soc/qcom/lpass.h           |  1 -
+>   3 files changed, 8 insertions(+), 18 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index ae8efbc89af2..a669202e0001 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+>   				ret);
+>   
+> -		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
+> -			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+> -			if (ret) {
+> -				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+> -				clk_disable(drvdata->mi2s_osr_clk[id]);
+> -				return ret;
+> -			}
+> -			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
+> +		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+> +		if (ret) {
+> +			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+> +			clk_disable(drvdata->mi2s_osr_clk[id]);
+> +			return ret;
+>   		}
+> -
+>   		break;
+>   	case SNDRV_PCM_TRIGGER_STOP:
+>   	case SNDRV_PCM_TRIGGER_SUSPEND:
+> @@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   		if (ret)
+>   			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+>   				ret);
+> -		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
+> -			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+> -			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
+> -		}
+> +
+> +		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+> +
+>   		break;
+>   	}
+>   
+> @@ -861,7 +856,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+>   				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+>   			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+>   		}
+> -		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
+>   	}
+>   
+>   	/* Allocation for i2sctl regmap fields */
+> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+> index 405542832e99..c8e1d75340b2 100644
+> --- a/sound/soc/qcom/lpass-lpaif-reg.h
+> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
+> @@ -60,9 +60,6 @@
+>   #define LPAIF_I2SCTL_BITWIDTH_24	1
+>   #define LPAIF_I2SCTL_BITWIDTH_32	2
+>   
+> -#define LPAIF_BIT_CLK_DISABLE		0
+> -#define LPAIF_BIT_CLK_ENABLE		1
+> -
+>   #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
+>   #define LPAIF_DMACTL_RESET_STATE	0x00200000
+>   
+> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+> index 2d68af0da34d..83b2e08ade06 100644
+> --- a/sound/soc/qcom/lpass.h
+> +++ b/sound/soc/qcom/lpass.h
+> @@ -68,7 +68,6 @@ struct lpass_data {
+>   	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
+>   	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
+>   	int hdmi_port_enable;
+> -	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
+>   
+>   	/* low-power audio interface (LPAIF) registers */
+>   	void __iomem *lpaif;
+> 
