@@ -2,349 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0915A3053E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E82730542D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhA0HDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:03:30 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:18338 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S316679AbhA0A75 (ORCPT
+        id S233303AbhA0HN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S317532AbhA0Apg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:59:57 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210127005903epoutp03ae37d30ba5cc3434f154e7f14327ffe7~d8O055pTZ0274402744epoutp03V
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 00:59:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210127005903epoutp03ae37d30ba5cc3434f154e7f14327ffe7~d8O055pTZ0274402744epoutp03V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611709143;
-        bh=C1c2cvHMBLReQnOIkyv9l0xmKe43Mvm6VhttaZ2S5Pc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sXSLY7je1OOhWUBug/Q8Dh+Rg00X/Zhfj7JSLR9wCyX06vNYPVD1YM6b3rY40lMhp
-         QdpFKkT8ybS9erLRCiBA4g7jYVUsrTUaZtkc+NwYjUwEeQkToJ20+PpxacmMaAKFLj
-         cfn6GSB2bT1MchcJX99lKZcAajUbl21Tsbgis1is=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210127005902epcas1p2df0160eb1e8be7e9f30e1ed3e1f14e80~d8O0DmhbE3269432694epcas1p2A;
-        Wed, 27 Jan 2021 00:59:02 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DQQGX6qBfz4x9Q5; Wed, 27 Jan
-        2021 00:59:00 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6D.74.09582.4DAB0106; Wed, 27 Jan 2021 09:59:00 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210127005900epcas1p2456b0f3321b404995445b8654468c30e~d8OyNJmeA3269432694epcas1p29;
-        Wed, 27 Jan 2021 00:59:00 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210127005900epsmtrp132c860266a308635260bd88f2f35426c~d8OyMB08T2674726747epsmtrp1G;
-        Wed, 27 Jan 2021 00:59:00 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-7c-6010bad4daf7
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AA.D1.08745.4DAB0106; Wed, 27 Jan 2021 09:59:00 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210127005900epsmtip23f8629b97cb2dea3f623d7a0cd3c25bd~d8Ox_pV5K1071710717epsmtip2D;
-        Wed, 27 Jan 2021 00:59:00 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     ming.lei@redhat.com
-Cc:     Damien.LeMoal@wdc.com, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mj0123.lee@samsung.com,
-        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: Re: [PATCH v3 1/2] bio: limit bio max size
-Date:   Wed, 27 Jan 2021 09:43:31 +0900
-Message-Id: <20210127004331.8386-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210126115439.GA1116639@T590>
+        Tue, 26 Jan 2021 19:45:36 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7135EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:44:54 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id k132so407246ybf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:44:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cZ1VOxuGzH4//g/DaFwaGuEQdEVHQtm8F+WWpgu+EU4=;
+        b=YFwJyraNsG0Ipsao5vP9jRz0JyTwxqIANtk6nOQvZcx29nRAsdCLR454XFhdNB/idA
+         a3FNw884X2BUO1qiZsLlgWPb+/KCVDt3R+chLAaTpm17Fua/LBF+uUKkAf7aOi9HrG9p
+         5dpDZ8ieVaz3zoxM5tOHYe16Jw9bnA4d96zpVhB9gPwYy/GWLl/RKqHBBalAj9es8iCH
+         /tiEeD08cviEUow2rlvj1zDrv+FrDqCUzEM+A4rD6vr+xtrZoz1J//6JSZ82sFxVLi/5
+         Xp2fPWAgj666ooBEDH3gmcJ8tnwxPVi3dqK6yGJEh3FiUN+W2E9P9zRPX78dyoM16Mzk
+         xWKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cZ1VOxuGzH4//g/DaFwaGuEQdEVHQtm8F+WWpgu+EU4=;
+        b=mslXXEXmPtC+YvTji8fsz6MrAvXtUjAOG19JIchIqP0fbIb8jYmCFAvZSsqCDORT5R
+         M3V9BbJ7S+gKPPv++Lq1WJtanJQPlupSpXyBRC8RYfme0BbNExYAuIXy6HfMZUuWGHXI
+         Y645R8Se2MQYzXadyup2N6wG9chNRGF96i4yTHVP2PF+lNh/YsRu3Ou5eDn8cDWVtfGW
+         /zqlLEchlio9aJYmqEqRwcr7daFhWA6KX4yovrLrk//mWc2iCFYf0ydAiS+QvkZDl4QG
+         iUXh7gNhvS3oIZ4EQH5Wv5u3osjQ04XCH+0JIQmdGKFooQAMLd/XybmwYIslleI23jOd
+         Psfg==
+X-Gm-Message-State: AOAM533lVptgJIgnmwp5rH0gEbd79pqSJpBrXYVGRyTuL4PUTtluhANU
+        lT0fk0s26W0e39nxF7YRuB48F6gb3UZgbDFgcns/Rg==
+X-Google-Smtp-Source: ABdhPJz06rM3i8q6OzxaIC/5CSA959lRbZ/D6V9CzjqmU5rjnj+8/8N4uqtfABX3dPXZ1Isz9zmWSUJ0cBdlthZyPRw=
+X-Received: by 2002:a25:f8a:: with SMTP id 132mr12458631ybp.228.1611708293540;
+ Tue, 26 Jan 2021 16:44:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGJsWRmVeSWpSXmKPExsWy7bCmvu6VXQIJBqvnm1jMWbWN0WL13X42
-        i9b2b0wWPU+aWC3+dt1jsvj6sNhi7y1ti8u75rBZHJrczGQxffMcZotr98+wWxy+d5XF4uGS
-        icwW505+YrWY99jB4tfyo4wW739cZ7c4tWMys8X6vT/ZHIQ9Jja/Y/fYOesuu8fls6Uem1Z1
-        snm833eVzaNvyypGj8+b5DzaD3QzBXBE5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoa
-        WlqYKynkJeam2iq5+AToumXmAH2jpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkw
-        NCjQK07MLS7NS9dLzs+1MjQwMDIFqkzIyejZfYGt4HRERUPPPqYGxm8OXYycHBICJhLPH9xj
-        6WLk4hAS2MEo8XXtcTaQhJDAJ0aJtz8TIRKfGSUWbvnACNPxsW0FI0RiF6PE4elr2eCqVjdu
-        ZgWpYhPQkeh7ewtslIiAuETrklVMIEXMAgeYJV4c+gFWJCxgLHG+u5kFxGYRUJU4e3MrmM0r
-        YCXx89QmJoh18hJPe5czg9icQEOvfHzCBlEjKHFy5hOwemagmuats5lBFkgIXOGQaJn8nR2i
-        2UVi5ZNzUHcLS7w6vgUqLiXxsr+NHaKhm1GiuW0+I4QzgVFiyfNlUKuNJT59/gyU4ABaoSmx
-        fpc+RFhRYufvuYwQm/kk3n3tYQUpkRDglehoE4IoUZE403KfGWbX87U7oSZ6SHy/8ZYdEsD1
-        EleOvGOawKgwC8k/s5D8Mwth8QJG5lWMYqkFxbnpqcWGBcbIcbyJEZzAtcx3ME57+0HvECMT
-        B+MhRgkOZiUR3vfKAglCvCmJlVWpRfnxRaU5qcWHGE2BoT2RWUo0OR+YQ/JK4g1NjYyNjS1M
-        zMzNTI2VxHmTDB7ECwmkJ5akZqemFqQWwfQxcXBKNTBxmx+3rhJ0rP3CqbR9W+6CGIdFvk9W
-        mC/V+lKjdM/98PWb7ipd9yz+nwh8L2+fcPVcptJ0f+3DYvF5SroSGUGuryXnSs2eermptWsl
-        z8f+tOB52usn2Yk/qC7pUJgef1Fm7Xz3n38ZCtdLzYpZf+myc3LlxoDrKqodTtVHD/j027Aa
-        TBUwu8b2YU0Wa3qsnNMCR8YLE5l/69ywD166SLZaXX9DQGD4IZGImldJuye8iPc/7cJz3u71
-        3iO2PJ/2n1lrmDAz8VD88drT7xL2pu7Ylas56fdD3RlpHMz/ey36ruqX7zla/otZZOuHOxMq
-        1ggeFShX/fFCTP9YeQzjzbKlt8+U9OrMvfavIs/q13klluKMREMt5qLiRAAxb4w6aQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LZdlhJXvfKLoEEg5vHRC3mrNrGaLH6bj+b
-        RWv7NyaLnidNrBZ/u+4xWXx9WGyx95a2xeVdc9gsDk1uZrKYvnkOs8W1+2fYLQ7fu8pi8XDJ
-        RGaLcyc/sVrMe+xg8Wv5UUaL9z+us1uc2jGZ2WL93p9sDsIeE5vfsXvsnHWX3ePy2VKPTas6
-        2Tze77vK5tG3ZRWjx+dNch7tB7qZAjiiuGxSUnMyy1KL9O0SuDJ6dl9gKzgdUdHQs4+pgfGb
-        QxcjJ4eEgInEx7YVjF2MXBxCAjsYJS4t2sMEkZCSOH7iLWsXIweQLSxx+HAxRM1HRomemReY
-        QWrYBHQk+t7eYgOxRQTEJVqXrGICKWIWuMYs8XvFVBaQhLCAscT57mYwm0VAVeLsza1gNq+A
-        lcTPU5uglslLPO1dDjaUE2jolY9PwIYKCWhLbO+YxAhRLyhxcuYTsF5moPrmrbOZJzAKzEKS
-        moUktYCRaRWjZGpBcW56brFhgVFearlecWJucWleul5yfu4mRnCUaWntYNyz6oPeIUYmDsZD
-        jBIczEoivO+VBRKEeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi
-        4JRqYBI8vDAh+F/greqYzRMY7x++vr86q/7JnfqI+gMxH3eu2di3eFvNxluKkfLrJNIqG3o+
-        Troxd+Gdg3nlhYFW6q68L/OPyN+pZOz3MFz3I5zjD8uNJWXFFVp62swL9+8KOb9n4vraDPfj
-        /YyfczPXv7T7NSFqcqbJL23lt+xqizviUtri035tNIqd81j26rTcU2Gv5vIvLH+qsFCD45Cq
-        6v8z1h0bmwrOrnitfIXtZTZjpJFwfvOJpEKpF+2q1+uZ6mRVImeEn1YpUF25eamwh9s2Q94n
-        J3v7Mkr5L9V2e9Uu3f96ffO/0pmRq/PPi/RvmJ9SJtT44nT8dMbSN0siuR68+1/6b8L7dcxr
-        twpdEVViKc5INNRiLipOBACj72kEIQMAAA==
-X-CMS-MailID: 20210127005900epcas1p2456b0f3321b404995445b8654468c30e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210127005900epcas1p2456b0f3321b404995445b8654468c30e
-References: <20210126115439.GA1116639@T590>
-        <CGME20210127005900epcas1p2456b0f3321b404995445b8654468c30e@epcas1p2.samsung.com>
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+ <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
+ <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
+In-Reply-To: <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 26 Jan 2021 16:44:17 -0800
+Message-ID: <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Jan 26, 2021 at 06:26:02AM +0000, Damien Le Moal wrote:
-> > On 2021/01/26 15:07, Ming Lei wrote:
-> > > On Tue, Jan 26, 2021 at 04:06:06AM +0000, Damien Le Moal wrote:
-> > >> On 2021/01/26 12:58, Ming Lei wrote:
-> > >>> On Tue, Jan 26, 2021 at 10:32:34AM +0900, Changheun Lee wrote:
-> > >>>> bio size can grow up to 4GB when muli-page bvec is enabled.
-> > >>>> but sometimes it would lead to inefficient behaviors.
-> > >>>> in case of large chunk direct I/O, - 32MB chunk read in user space -
-> > >>>> all pages for 32MB would be merged to a bio structure if the pages
-> > >>>> physical addresses are contiguous. it makes some delay to submit
-> > >>>> until merge complete. bio max size should be limited to a proper size.
-> > >>>>
-> > >>>> When 32MB chunk read with direct I/O option is coming from userspace,
-> > >>>> kernel behavior is below now. it's timeline.
-> > >>>>
-> > >>>>  | bio merge for 32MB. total 8,192 pages are merged.
-> > >>>>  | total elapsed time is over 2ms.
-> > >>>>  |------------------ ... ----------------------->|
-> > >>>>                                                  | 8,192 pages merged a bio.
-> > >>>>                                                  | at this time, first bio submit is done.
-> > >>>>                                                  | 1 bio is split to 32 read request and issue.
-> > >>>>                                                  |--------------->
-> > >>>>                                                   |--------------->
-> > >>>>                                                    |--------------->
-> > >>>>                                                               ......
-> > >>>>                                                                    |--------------->
-> > >>>>                                                                     |--------------->|
-> > >>>>                           total 19ms elapsed to complete 32MB read done from device. |
-> > >>>>
-> > >>>> If bio max size is limited with 1MB, behavior is changed below.
-> > >>>>
-> > >>>>  | bio merge for 1MB. 256 pages are merged for each bio.
-> > >>>>  | total 32 bio will be made.
-> > >>>>  | total elapsed time is over 2ms. it's same.
-> > >>>>  | but, first bio submit timing is fast. about 100us.
-> > >>>>  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-> > >>>>       | 256 pages merged a bio.
-> > >>>>       | at this time, first bio submit is done.
-> > >>>>       | and 1 read request is issued for 1 bio.
-> > >>>>       |--------------->
-> > >>>>            |--------------->
-> > >>>>                 |--------------->
-> > >>>>                                       ......
-> > >>>>                                                  |--------------->
-> > >>>>                                                   |--------------->|
-> > >>>>         total 17ms elapsed to complete 32MB read done from device. |
-> > >>>>
-> > >>>> As a result, read request issue timing is faster if bio max size is limited.
-> > >>>> Current kernel behavior with multipage bvec, super large bio can be created.
-> > >>>> And it lead to delay first I/O request issue.
-> > >>>>
-> > >>>> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> > >>>> ---
-> > >>>>  block/bio.c            | 17 ++++++++++++++++-
-> > >>>>  include/linux/bio.h    |  4 +++-
-> > >>>>  include/linux/blkdev.h |  3 +++
-> > >>>>  3 files changed, 22 insertions(+), 2 deletions(-)
-> > >>>>
-> > >>>> diff --git a/block/bio.c b/block/bio.c
-> > >>>> index 1f2cc1fbe283..ec0281889045 100644
-> > >>>> --- a/block/bio.c
-> > >>>> +++ b/block/bio.c
-> > >>>> @@ -287,6 +287,21 @@ void bio_init(struct bio *bio, struct bio_vec *table,
-> > >>>>  }
-> > >>>>  EXPORT_SYMBOL(bio_init);
-> > >>>>  
-> > >>>> +unsigned int bio_max_size(struct bio *bio)
-> > >>>> +{
-> > >>>> +	struct request_queue *q;
-> > >>>> +
-> > >>>> +	if (!bio->bi_disk)
-> > >>>> +		return UINT_MAX;
-> > >>>> +
-> > >>>> +	q = bio->bi_disk->queue;
-> > >>>> +	if (!blk_queue_limit_bio_size(q))
-> > >>>> +		return UINT_MAX;
-> > >>>> +
-> > >>>> +	return blk_queue_get_max_sectors(q, bio_op(bio)) << SECTOR_SHIFT;
-> > >>>> +}
-> > >>>> +EXPORT_SYMBOL(bio_max_size);
-> > >>>> +
-> > >>>>  /**
-> > >>>>   * bio_reset - reinitialize a bio
-> > >>>>   * @bio:	bio to reset
-> > >>>> @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
-> > >>>>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
-> > >>>>  
-> > >>>>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> > >>>> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> > >>>> +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
-> > >>>>  				*same_page = false;
-> > >>>>  				return false;
-> > >>>>  			}
-> > >>>
-> > >>> So far we don't need bio->bi_disk or bio->bi_bdev(will be changed in
-> > >>> Christoph's patch) during adding page to bio, so there is null ptr
-> > >>> refereance risk.
-> > >>>
-> > >>>> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > >>>> index 1edda614f7ce..cdb134ca7bf5 100644
-> > >>>> --- a/include/linux/bio.h
-> > >>>> +++ b/include/linux/bio.h
-> > >>>> @@ -100,6 +100,8 @@ static inline void *bio_data(struct bio *bio)
-> > >>>>  	return NULL;
-> > >>>>  }
-> > >>>>  
-> > >>>> +extern unsigned int bio_max_size(struct bio *);
-> > >>>> +
-> > >>>>  /**
-> > >>>>   * bio_full - check if the bio is full
-> > >>>>   * @bio:	bio to check
-> > >>>> @@ -113,7 +115,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
-> > >>>>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
-> > >>>>  		return true;
-> > >>>>  
-> > >>>> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
-> > >>>> +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
-> > >>>>  		return true;
-> > >>>>  
-> > >>>>  	return false;
-> > >>>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > >>>> index f94ee3089e01..3aeab9e7e97b 100644
-> > >>>> --- a/include/linux/blkdev.h
-> > >>>> +++ b/include/linux/blkdev.h
-> > >>>> @@ -621,6 +621,7 @@ struct request_queue {
-> > >>>>  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
-> > >>>>  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
-> > >>>>  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
-> > >>>> +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
-> > >>>>  
-> > >>>>  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
-> > >>>>  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
-> > >>>> @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
-> > >>>>  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
-> > >>>>  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
-> > >>>>  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
-> > >>>> +#define blk_queue_limit_bio_size(q)	\
-> > >>>> +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
-> > >>>
-> > >>> I don't think it is a good idea by adding queue flag for this purpose,
-> > >>> since this case just needs to limit bio size for not delay bio submission
-> > >>> too much, which is kind of logical thing, nothing to do with request queue.
-> > >>>
-> > >>> Just wondering why you don't take the following way:
-> > >>>
-> > >>>
-> > >>> diff --git a/block/bio.c b/block/bio.c
-> > >>> index 99040a7e6656..35852f7f47d4 100644
-> > >>> --- a/block/bio.c
-> > >>> +++ b/block/bio.c
-> > >>> @@ -1081,7 +1081,7 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
-> > >>>   * It's intended for direct IO, so doesn't do PSI tracking, the caller is
-> > >>>   * responsible for setting BIO_WORKINGSET if necessary.
-> > >>>   */
-> > >>> -int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
-> > >>> +int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter, bool sync)
-> > >>>  {
-> > >>>  	int ret = 0;
-> > >>>  
-> > >>> @@ -1092,12 +1092,20 @@ int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
-> > >>>  		bio_set_flag(bio, BIO_NO_PAGE_REF);
-> > >>>  		return 0;
-> > >>>  	} else {
-> > >>> +		/*
-> > >>> +		 * Don't add too many pages in case of sync dio for
-> > >>> +		 * avoiding delay bio submission too much especially
-> > >>> +		 * pinning user pages in memory isn't cheap.
-> > >>> +		 */
-> > >>> +		const unsigned int max_size = sync ? (1U << 12) : UINT_MAX;
-> > >>
-> > >> 4KB max bio size ? That is a little small :)
-> > > 
-> > > It should have been (1U << 20), :-(
-> > 
-> > Sounds better !
-> > 
-> > > 
-> > >> In any case, I am not a fan of using an arbitrary value not related to the
-> > >> actual device characteristics. Wouldn't it be better to us the device
-> > >> max_sectors limit ? And that limit would need to be zone_append_max_sectors for
-> > >> zone append writes. So some helper like Changheun bio_max_size() may be useful.
-> > > 
-> > > Firstly, bio->bi_disk may not be initialized when adding page to bio; secondly this
-> > > limit isn't really related with device, is it? Also if it is one queue limit, it has
-> > > to be stacked.
-> > 
-> > 1MB can be used as a fallback default if the gendisk is not yet set. If it is,
-> 
-> IMO, only sync dio on slow machine needs such limit because pinning userspace
-> pages to memory may take a bit long, so far not see other workloads needs this limit.
-> 
-> Even today I get queries from client about why 4MB user space IO won't be converted to
-> 4MB bio, some workload needs big size IO.
-> 
+On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
+> > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
+> > > > wrote:
+> > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
+> > > >> wrote:
+> > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> > > >> > > wrote:
+> > > >> > >>
+> > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> > > >> > >> all CCs to BCCs :(]
+> > > >> > >>
+> > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > > >> > >> >>
+> > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > > >> > >> >> wrote:
+> > > >> > >> >> >
+> > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
+> > > >> > >> >>
+> > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > > >> > >> >> shouldn't it be fixed or removed?
+> > > >> > >> >
+> > > >> > >> > I was actually thinking about this too. The problem with fixing
+> > > >> > >> > builtin_platform_driver_probe() to behave like
+> > > >> > >> > builtin_platform_driver() is that these probe functions could be
+> > > >> > >> > marked with __init. But there are also only 20 instances of
+> > > >> > >> > builtin_platform_driver_probe() in the kernel:
+> > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> > > >> > >> > 20
+> > > >> > >> >
+> > > >> > >> > So it might be easier to just fix them to not use
+> > > >> > >> > builtin_platform_driver_probe().
+> > > >> > >> >
+> > > >> > >> > Michael,
+> > > >> > >> >
+> > > >> > >> > Any chance you'd be willing to help me by converting all these to
+> > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> > > >> > >>
+> > > >> > >> If it just moving the probe function to the _driver struct and
+> > > >> > >> remove the __init annotations. I could look into that.
+> > > >> > >
+> > > >> > > Yup. That's pretty much it AFAICT.
+> > > >> > >
+> > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> > > >> > > for async probe, etc. But I doubt anyone is actually setting async
+> > > >> > > flags and still using builtin_platform_driver_probe().
+> > > >> >
+> > > >> > Hasn't module_platform_driver_probe() the same problem? And there
+> > > >> > are ~80 drivers which uses that.
+> > > >>
+> > > >> Yeah. The biggest problem with all of these is the __init markers.
+> > > >> Maybe some familiar with coccinelle can help?
+> > > >
+> > > > And dropping them will increase memory usage.
+> > >
+> > > Although I do have the changes for the builtin_platform_driver_probe()
+> > > ready, I don't think it makes much sense to send these unless we agree
+> > > on the increased memory footprint. While there are just a few
+> > > builtin_platform_driver_probe() and memory increase _might_ be
+> > > negligible, there are many more module_platform_driver_probe().
+> >
+> > While it's good to drop code that'll not be used past kernel init, the
+> > module_platform_driver_probe() is going even more extreme. It doesn't
+> > even allow deferred probe (well before kernel init is done). I don't
+> > think that behavior is right and that's why we should delete it. Also,
+>
+> This construct is typically used for builtin hardware for which the
+> dependencies are registered very early, and thus known to probe at
+> first try (if present).
+>
+> > I doubt if any of these probe functions even take up 4KB of memory.
+>
+> How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
+> How many can you afford to waste?
 
-IMO, your solution is good. But I think it's a scenario specific solution.
-Current approach could be better to remove bio submission delay basically.
-And this is a option to enable in runtime by queue flag, default is no
-limit of bio size. I think this solution affacts little on your work.
+There are only a few instances of this macro in the kernel. How many
+of those actually fit the description above? We can probably just
+check the DT?
 
-> > using a queue limit that does not cause bio splitting after submit makes most
-> > sense as that avoid useless overhead. I agree, it is not critical, but it would
-> > be nice to have some number that causes less splitting than the arbitrary 1MB.
-> 
-> That is another story. Each fs bio needs two allocation(one fixed length
-> bio allocation, and variable length of bvec table), however bio splitting just
-> needs single fixed length bio allocation. So if the source bio(fs bio) for holding
-> data becomes smaller, splitting may become less, but more fs bio and bvec table
-> allocation may be involved, not sure this way always gets better performance.
-> 
-> Also in theory, bio splitting may not need to allocate one whole bio
-> allocation, what matters is just the actual position/size info of the
-> to-be-splitted bio.
-> 
-> > E,g, most HDDs will likely have that 1MB BIO split... And max_sectors is a
-> > stacked queue limit, no ? We could use max_hw_sectors too I think.
-> 
-> bio_add_page() is really fast path, and checking queue limit here may
-> hurt performance because queue_limits reference is added to the fast path.
-> 
-
-Your concern point is good I don't like it too. But it'll be better than
-adding new variable in bio structure I think.
-Actually adding new check condition is not good itself, But queue flag
-checking load is smaller than many condition checks in page_is_mergeable(). :)
-
-> 
-> 
-> Thanks,
-> Ming
-
----
-Changheun Lee
-Samsung Electronics
+-Saravana
