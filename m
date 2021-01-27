@@ -2,124 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B94305355
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5DA305356
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbhA0Gig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
+        id S232557AbhA0GjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231572AbhA0GSm (ORCPT
+        with ESMTP id S229578AbhA0GUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 01:18:42 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A35FC06174A;
-        Tue, 26 Jan 2021 22:18:02 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id y17so737536ili.12;
-        Tue, 26 Jan 2021 22:18:02 -0800 (PST)
+        Wed, 27 Jan 2021 01:20:15 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690BBC061574;
+        Tue, 26 Jan 2021 22:19:35 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id my11so2487541pjb.1;
+        Tue, 26 Jan 2021 22:19:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ECfYTa8g/RycDbRtH0Yn068mLUNU/nijcXJNyLlgQgY=;
-        b=eDw4roxzk2VITFd9zUB48hbCgR9FB1N9cd2g7I7ayoi9LWIjrpHZgrtvgIJBSfLWD+
-         eorNCdswJvZUQCPzFRzbQsAtKdztjr+cJ9Vd8+UR07mCBr2qHA1JymoLnCHRd696NvjX
-         uOslp6y4BKiKdhVlS9Xixpsphrh0P5jTOcZW74OvAyp9ddPsm7HrHyFrlK8EPVoXdPr9
-         +8Fk6Ovf1qUAeQYwwDPXLdCMonkMPUicaCPS30q3znj1XuWuN6WusHvbQugQtBd4pwOr
-         CthT7yQagTUJYu4zCDYmybJqqDOjzu0HMCLt9RqPyqdBl6Pf8bFwMJ4LNdWOwXPDXSZ3
-         ywrg==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=+AVxzGfMqYMx9RPIgoRtcct2VE1ZRqZ1PBLR8znjyvQ=;
+        b=jQGw6IpPbNt4L5SXLZ6/mKlNuFjt5RROmiIjibyXO+me3dqe6+J9AGUFDjNXYKkqjM
+         qVqGmLPPpkmYWNenr063FwvG7ZWOeVOWPsTZKPLvvAlS9mEfSXmVJrMbXwrvbx10D90s
+         SZve8a4DPC8Kw8nuQ8qXCH2yYbdXUJ6nnS9LIS3kggQWUWhBY9eY/LYZJa6HWIMJ3vw8
+         02Yd6E8icfCEJ4S49jZK9N8X9c/T/rrT2u1yDMkPM5Psp9pW2PcI/eiDINV0f/FFuBAc
+         VVNRbdC4Kph5tndKiflPXfs179eMyxaCC3Rb27VPIkTw7utVRzoeY+qg9h9ax+2gJ/f8
+         xpQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ECfYTa8g/RycDbRtH0Yn068mLUNU/nijcXJNyLlgQgY=;
-        b=VhvWj1CZQjREbXo41XK7cQ40FTjsXQJNWQNJFU28gcGwLw9qpuFUnK2DwZGmUZeymw
-         EKk4/TMUREWTNAPxYQ8dkQ+nNN4pUBO7r5l4dwuCoI80I8N5Tw9QX6ovA38UFyqscdLI
-         QO3XME0q5rNlQO8+8NfZSBfiNh3QmIjdhr3CUFWSndG5lUIMgQuPC+tY+rbyhb+It46j
-         iNKM2reb35DgSOHaP399nF2JjPDrC4el652ZklOGg5NFOXNSM/jf/XIr0s8wccXLQNBH
-         NLItd/iiD2cJtc0QeIgCBuz23OgimtHDrH1w6DAJx0kHChGo7HYe9sDJDGhDC8DaZnPl
-         TE6Q==
-X-Gm-Message-State: AOAM531WXF/VDzLjlsv5jboQaEtdzm+Zy5I5yamcHewOwzW+Ya3K9qW5
-        iLy9tBVszc7pLzU8mYZDZKgS/buBFjUftQ==
-X-Google-Smtp-Source: ABdhPJz82JoqeNCni7Sw0B4tNgZbCVA/qBL4J2zNUePZmXzJdMP0M/BzJxS+yDG9sz+arplzdzsBlQ==
-X-Received: by 2002:a92:a803:: with SMTP id o3mr2618129ilh.82.1611728281311;
-        Tue, 26 Jan 2021 22:18:01 -0800 (PST)
-Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id r6sm547556ilt.56.2021.01.26.22.18.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=+AVxzGfMqYMx9RPIgoRtcct2VE1ZRqZ1PBLR8znjyvQ=;
+        b=gkfaMy+7ynSNBe0kNXQFN5CRq2tMKIAJmjQLmrv1FU8kFAPyh/4vsGDD7SIH7dpLTb
+         k3piliVGnEUEfzleI1y8HxxWDSPhjR01QNbjuX3FinCpFsuuj1Urxqj2dgLq/0TmL1QS
+         ZMXp70I2crI0C4uL675kXhtoccqgZ1bbA8k3fPKu3/nkv3eMcsvH2XeevRavSuy1lDIA
+         2PAa8XLkryYmS+d4OtIKcdPDTfOAcNVEwWpoGI+HfSQ+Mw/2Q/feRdwqp0mRsXnSDj5F
+         J+Hdp785w0HKGpVdVT+IRSaA44d3PDH2cUwUafgDL3HA/1F9QixLLTyf/Ea7AXPESy7D
+         xaqw==
+X-Gm-Message-State: AOAM531OnvtQujHaY8e1Su6IH9TS4JetYiMvfa5m0dh4ihUbCjbQvU/r
+        ss5tpybb6VA0b4jnAGpmT2A=
+X-Google-Smtp-Source: ABdhPJw3xTWutH1s20TQixwXD6pOjBaO3Uam1zSz+Lc9n84CDHMRzzsMAr0X6sMA+/isS4YpBnlbFA==
+X-Received: by 2002:a17:903:22c2:b029:dd:f952:e341 with SMTP id y2-20020a17090322c2b02900ddf952e341mr9583056plg.67.1611728374922;
+        Tue, 26 Jan 2021 22:19:34 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id i7sm1057917pfc.50.2021.01.26.22.19.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 22:18:00 -0800 (PST)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH 19/20] dyndbg: try conditional linker expression in KEEP - RFC
-Date:   Tue, 26 Jan 2021 23:17:52 -0700
-Message-Id: <20210127061752.120083-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 26 Jan 2021 22:19:34 -0800 (PST)
+Date:   Wed, 27 Jan 2021 14:19:27 +0800
+From:   carlis <zhangxuezhi3@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
+        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
+        colin.king@canonical.com, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v5] fbtft: add tearing signal detect
+Message-ID: <20210127141927.00004472@gmail.com>
+In-Reply-To: <20210127054523.GA2696@kadam>
+References: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
+        <20210127054523.GA2696@kadam>
+Organization: Tyzmig-ryrjum-8kedto
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the last patch in v3 of patchest Ive sent previously:
-v2: https://lore.kernel.org/lkml/?q=Cromie+v2+00%2F19+2020-12-25+-Re
+On Wed, 27 Jan 2021 08:45:23 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-It isolates my only issue now, Id appreciate advice, and dont want to
-distract you with the 18 previous commits.
+> On Wed, Jan 27, 2021 at 09:32:20AM +0800, Carlis wrote:
+> > @@ -82,6 +111,29 @@ enum st7789v_command {
+> >   */
+> >  static int init_display(struct fbtft_par *par)
+> >  {
+> > +	int rc;
+> > +	struct device *dev = par->info->device;
+> > +
+> > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> > GPIOD_IN);
+> > +	if (par->gpio.te) {
+> > +		init_completion(&spi_panel_te);
+> > +		mutex_init(&te_mutex);
+> > +		rc = devm_request_irq(dev,
+> > +				      gpiod_to_irq(par->gpio.te),
+> > +				     spi_panel_te_handler,
+> > IRQF_TRIGGER_RISING,
+> > +				     "TE_GPIO", par);
+> > +		if (rc) {
+> > +			pr_err("TE request_irq failed.\n");
+> > +			devm_gpiod_put(dev, par->gpio.te);
+> > +			par->gpio.te = NULL;
+> > +		} else {
+> > +
+> > disable_irq_nosync(gpiod_to_irq(par->gpio.te));
+> > +			pr_info("TE request_irq completion.\n");
+> > +		}
+> > +	} else {
+> > +		pr_info("%s:%d, TE gpio not specified\n",
+> > +			__func__, __LINE__);
+> > +	}  
+> 
+> I'm sorry that I was not clear before.  This code will crash if
+> devm_gpiod_get_index_optional() returns an error.  You *NEED* to check
+> for error pointers and return the error code.  Write it exactly like
+> this:
+> 
+> 	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> GPIOD_IN); if (IS_ERR(par->gpio.te))
+> 		return PTR_ERR(par->gpio.te);
+> 
+> 	if (par->gpio.te) {
+> 		init_completion(&spi_panel_te);
+> 
+> 
+> regards,
+> dan carpenter
+> 
 
-Im trying to use ? : inside a KEEP(*(expression)) to only include
-A_header when A has content.
+hi,i will fix it like below:
+	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+GPIOD_IN); if (IS_ERR(par->gpio.te)) {
+		rc = PTR_ERR(par->gpio.te);
+		pr_err("Failed to request  te gpio: %d\n", rc);
+		par->gpio.te = NULL;
+	}
+	if (par->gpio.te) {
+		init_completion(&spi_panel_te);
+		mutex_init(&te_mutex);
+		rc = devm_request_irq(dev,
+				      gpiod_to_irq(par->gpio.te),
+				     spi_panel_te_handler,
+IRQF_TRIGGER_RISING, "TE_GPIO", par);
+		if (rc) {
+			pr_err("TE request_irq failed.\n");
+			devm_gpiod_put(dev, par->gpio.te);
+			par->gpio.te = NULL;
+		} else {
+			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
+			pr_info("TE request_irq completion.\n");
+		}
+	} else {
+		pr_info("%s:%d, TE gpio not specified\n",
+			__func__, __LINE__);
+	}
 
-IE:
-  KEEP(*( A ? A_header : ))
-
-It fails with inscrutable linker error.
-  GEN     modules.builtin
-  LD      .tmp_vmlinux.kallsyms1
-ld:./arch/x86/kernel/vmlinux.lds:46: syntax error
-
-Is this possible by other modes of expression ?
-
-I tried inserting {} 1st, that failed, appearing to foreclose any
-foreach-like construct.  I also tried () around each term, and a
-preceding, embedded "_loc=.;" statement to test the parser.
-
-I didnt try doing this with 2 separate KEEPs; while it would be
-simple, it defeats the adjacency guaranteed by *(.text .rdata), which
-is the point of this.
-
-If this were to be possible, it opens up interesting options to
-statically construct table headers, and possibly even tree structures
-in the linker script.  Id use it to add 1 header for each module, and
-strip a column out of the table.
-
-Ive pulled binutils to take a look at the source; having never done
-anything bison-ish, I anticipate a long study without some focused
-primer knowledge.
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- include/asm-generic/vmlinux.lds.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 87868c5a980a..6198cc850f9b 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -329,10 +329,10 @@
- #define DYNAMIC_DEBUG_DATA()						\
- 	. = ALIGN(8);							\
- 	__start___dyndbg_sites = .;					\
--	KEEP(*(__dyndbg_sites .gnu.linkonce.*.dyndbg_site))			\
-+	KEEP(*(__dyndbg_sites ? .gnu.linkonce.*.dyndbg_site : ))	\
- 	__stop___dyndbg_sites = .;					\
- 	__start___dyndbg = .;						\
--	KEEP(*(__dyndbg .gnu.linkonce.*.dyndbg))				\
-+	KEEP(*(__dyndbg ? .gnu.linkonce.*.dyndbg : ))			\
- 	__stop___dyndbg = .;
- #else
- #define DYNAMIC_DEBUG_DATA()
--- 
-2.29.2
-
+regards,
+zhangxuezhi
