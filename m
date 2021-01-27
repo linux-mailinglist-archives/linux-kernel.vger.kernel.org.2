@@ -2,57 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E02306262
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8C0306266
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344092AbhA0RoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        id S1344119AbhA0Ros (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:44:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344091AbhA0Rn2 (ORCPT
+        with ESMTP id S1344075AbhA0Rns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:43:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CF6C06174A;
-        Wed, 27 Jan 2021 09:42:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xd+uIcB9boMDv2AI+keRyfyXEtS7DSKuNnB+UiVIp6E=; b=wYIx+FrtwtEd9dbfWzT3RY+FCV
-        x6CfTpNoKT+FirsTDPbw8V6iuNR9G+bUTYrJ1cIO4EaB84E+wu+/1SzSeGtuVBb+8qxPx+HjjUMT/
-        Bqbt79SQrlIulDCBLow9jY1kzc5LyVgv44chulcZVPnSM9xDSTnVgiaLfx9WgUcNalAlPnoVsUp7d
-        dGR4pcZEqv9MDSt9mAGcL5ipW91I/1W+8kJG/T5VwRmxGdC/vua+gtPw0dXpDNyZw9zM3WT8wyjGJ
-        /ghuacrfs9tqhEAapZAXuxLrqcazqXG8Nidek+P+mvcAReVOXBdb0wjo0KhQMc/IyMplCVgnDi3xE
-        vcVhk/wQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4opj-007Iqm-36; Wed, 27 Jan 2021 17:42:27 +0000
-Date:   Wed, 27 Jan 2021 17:42:23 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>, wanghaibin.wang@huawei.com,
-        yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v1 2/4] vfio: Add a page fault handler
-Message-ID: <20210127174223.GB1738577@infradead.org>
-References: <20210125090402.1429-1-lushenming@huawei.com>
- <20210125090402.1429-3-lushenming@huawei.com>
+        Wed, 27 Jan 2021 12:43:48 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB8FC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:43:07 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id y205so1660426pfc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:43:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zlwiY5SxMJVOztEip+vRdaCeKk5Mm+nlE5fqo+Zb0FA=;
+        b=LpPZBL7IWp+avvUD4AzUU5jkTSOv4a2L96b3/nHUQiyqFMkCQODtNnG+XsUmnKs3AY
+         hlvumGo0Dj549j+PRP3qUNrLdlKKR/46GPBYBzBlzvwzjAMvtFO5W9XEq1t4pAp7cmVC
+         e1mYanbpEoIstcZ9nVIXuEg19mBEduL5ROQ9fkq0uTYv4qZlD8pSaqyW+1YicpfqMpkX
+         8CD9cYUMQhXbEpQecXTs49RWQQ+/ADXxBpUjJPlaGD/RZ7uY4j+XquI0EOXXgzy17JP0
+         34KT/8TVBWYwBpUnRprfcr+OSFNnRrnPAbsQnDh7WD0CLNwlJc3cR8wLz0nz+C9PDVJG
+         IzZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zlwiY5SxMJVOztEip+vRdaCeKk5Mm+nlE5fqo+Zb0FA=;
+        b=Cwb3GlIgpEiCXyhjigC6TSnMAiCuBHJKfAE+UHwqhjItqhOZ5jYdYDOsXhqvz8j00n
+         cPnzIDErhMrrLBtMvFKMdY3pHgAv3+3ULkSY+lCvwpDCWrqRD3C41ZVTLATAs2BGuVWw
+         R/Xe0+Eq4BXlQEbyCCBs54lFd+/Tic4Vmhetphe14VPWOUbit1wYdTwZgs1jwRoiPCmN
+         Kb03ZDu3UNUiOavQOSCXg8HRZdZ31aCCxW8Xl1MSCzOeVVM1rbsNJp/pz9dHzTcxQ8gx
+         eh0BZAIMXatWKo/ZF7WW/VjobtKNzC4xJ/7u9EhEF8qSJ/JtIzz6MP8KKNDWgy4tqiIS
+         4TJA==
+X-Gm-Message-State: AOAM533Hp+HIWoR9sKs0CIyHSuwpNwTNdfSp14wqjT6S6XDz6dNjsHVi
+        58qeYz/LbpU8L3cbiL7/3OnEiInqhzB8NpFgdG5ZPA==
+X-Google-Smtp-Source: ABdhPJwnFQZuCHywqpXUd+Rn7Fhnk/fsLe0zWZ6CkZDkDXRUlH9WCvv5YJN9kgMDFXVH/aAMtrq8ZLTaEoBobivddX0=
+X-Received: by 2002:a63:7e10:: with SMTP id z16mr12444711pgc.263.1611769387089;
+ Wed, 27 Jan 2021 09:43:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125090402.1429-3-lushenming@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210125085622.2322-1-candlesea@gmail.com> <97d1f36a3b534b7fbd3790a0277ccaf5@AcuMS.aculab.com>
+ <CAPnx3XPRnpPQyW7UO_TTmQrHwitDw+_i3ESVkaGq+JyiY9Pu0w@mail.gmail.com>
+ <CAKwvOdnH8kXt+jAutjqsL_5H5PzswLGEZOieaGru2SDn13pj+w@mail.gmail.com> <9b48470af3b841e4bd8ba15a4ee5e745@AcuMS.aculab.com>
+In-Reply-To: <9b48470af3b841e4bd8ba15a4ee5e745@AcuMS.aculab.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 27 Jan 2021 09:42:55 -0800
+Message-ID: <CAKwvOd=Zx-uQxjRBPUitq7wp8OS06Vf6P09BXYmCt07sfZ_Prw@mail.gmail.com>
+Subject: Re: [PATCH] lkdtm: fix memory copy size for WRITE_KERN
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Candle Sun <candlesea@gmail.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "natechancellor@gmail.com" <natechancellor@gmail.com>,
+        "candle.sun@unisoc.com" <candle.sun@unisoc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 05:04:00PM +0800, Shenming Lu wrote:
-> +EXPORT_SYMBOL_GPL(vfio_iommu_dev_fault_handler);
+On Tue, Jan 26, 2021 at 2:53 PM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Nick Desaulniers
+> > Sent: 26 January 2021 18:40
+> >
+> > On Tue, Jan 26, 2021 at 6:13 AM Candle Sun <candlesea@gmail.com> wrote:
+> > >
+> > > On Mon, Jan 25, 2021 at 6:37 PM David Laight <David.Laight@aculab.com> wrote:
+> > > >
+> > > > From: Candle Sun
+> > > > > Sent: 25 January 2021 08:56
+> > > > >
+> > > > > From: Candle Sun <candle.sun@unisoc.com>
+> > > > >
+> > > > > Though do_overwritten() follows do_nothing() in source code, the final
+> > > > > memory address order is determined by compiler. We can't always assume
+> > > > > address of do_overwritten() is bigger than do_nothing(). At least the
+> > > > > Clang we are using places do_overwritten() before do_nothing() in the
+> > > > > object. This causes the copy size in lkdtm_WRITE_KERN() is *really*
+> > > > > big and WRITE_KERN test on ARM32 arch will fail.
+> > > > >
+> > > > > Compare the address order before doing the subtraction.
+> > > >
+> > > > It isn't clear that helps.
+> > > > Compile with -ffunction-sections and/or do LTO an there
+> > > > is no reason at all why the functions should be together.
+> > > >
+> > > > Even without that lkdtm_WRITE_KERN() could easily be between them.
+> > > >
+> > > > You need to get the size of the 'empty function' from the
+> > > > symbol table.
+> > > >
+> > > >         David
+> > >
+> > > Thanks David.
+> > >
+> > > I think using abs() by Nick's advice would be better. But could you
+> > > point out which kernel function can get function size?
+> >
+> > The Elf symbol table should contain this info, IIUC.
+> >
+> > Given a string literal of a symbol (such as a function identifier),
+> > kallsyms_lookup_name() can be used to return its address.
+> >
+> > From there we'd want to fetch the Elf_Sym for the address which should
+> > contain a st_size field which I think corresponds to the size in bytes
+> > of the function.  (At least, from playing with `llvm-readelf -s`)
+> > Probably would want to validate it's an STT_FUNC symbol type, too.  We
+> > basically want something like kexec_purgatory_find_symbol(), but that
+> > knows about the entire kernel image, and not the purgatory image used
+> > during kexec.  I don't see any such function currently in the
+> > kernel...but it's a large codebase to search through.
+>
+> The alternative is to get the linker script to define a specific
+> constant to the size of the function.
+> You can then link against it (by using it as the address of a symbol).
 
-This function is only used in vfio.c itself, so it should not be
-exported, but rather marked static.
+Or use __attribute__((__section())) to place the code we need to
+measure in a custom section, then in the linker script define symbols
+that bound the section then place it in .text.  That pattern is used
+throughout the kernel.  But I suspect this is overkill for this
+module.
+
+A constant would depend on the arch.
+
+>
+> It may be easier to use an asm file for the 'return 0' code.
+> I'm guessing there are things in the static branch area
+> that could be used.
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
