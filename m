@@ -2,141 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35FC306761
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16E930673C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhA0W7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:59:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232220AbhA0W4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:56:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE60B64DD7;
-        Wed, 27 Jan 2021 22:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611787564;
-        bh=uROissysf+CU6pZjzSRwu08EBosF7bzlGdIMuNFG3zI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOQIW5BS1ZFMSzOuJ9u+9XhodGwsSr5aV8xy1886Ou4+dKQzm5cisXenswjogpF30
-         jJUQM1o28F4IPO9y8MMxxovXTcOmucI4uoxm1XOvWYtaf+2NSupdtKT9llqm9Mtlnt
-         cXrtGy2xjs5dc8dqWgNBzSu+xfOKiwXuZvkaKpckUb6FFLOHPBAa1ZSfYWzSFc+c/r
-         lstY66RnwNggohTgRyG4bFGr18473Zt+KSA1AeREgb2+v2QT3YqVMOK3BvsCtm2/ZU
-         tpLMfXgksSIAP+M5tx3UAUOZANRqUPSZaiAbf2Y5oFa2WkeL0GHocTIcksUq6VCxio
-         lz8Synao9jD7w==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v3] ubsan: Implement __ubsan_handle_alignment_assumption
-Date:   Wed, 27 Jan 2021 15:44:52 -0700
-Message-Id: <20210127224451.2587372-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210113001242.1662786-1-natechancellor@gmail.com>
-References: <20210113001242.1662786-1-natechancellor@gmail.com>
+        id S231388AbhA0Wvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:51:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhA0Wvo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:51:44 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282F4C061354;
+        Wed, 27 Jan 2021 14:51:04 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id 16so3625622ioz.5;
+        Wed, 27 Jan 2021 14:51:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KghPEGZU40F6HmOvZcdkJbtEvvG/Mj5OqeU4qLAbrBk=;
+        b=vRGLo7J6JC301pFrg3XZhPgPMQhWFQs3WrPjGNBR4bJUhW1b7ayZgWHnRpEiN0fg1m
+         gJ+iORoEKely8Wg1eGS+ryGIRNnlmhqHMFw2FjgGfX38yJkmrw+zgapvR9l/cOW8vxnw
+         0tK2woCvBIWOuOc463ybALpR9N3IMssrqoavjE8Z7+NrzOzYa83tQYRhZkQAxkpN3zjV
+         AAfhmfUsQfbGWpAMcEN0YooToZrJplO8j5N51tqm6nKcY6rYN048ziYMcyr5o4l0u74R
+         98pGJlQWrLt9CIYEJV/d19sELYb4nH230Q63zRpMqE/fDvJedSmk+OkV33TIehqctmcf
+         DT9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KghPEGZU40F6HmOvZcdkJbtEvvG/Mj5OqeU4qLAbrBk=;
+        b=f5ZJGNMvF4FkhCMFgP7XsqE+A73Up1MkLBFeed9GL0vphv6Vqd6EFOqoH/X0z2lkzA
+         ez+47mOutk9bmA3cvM68EdRNxFWKA0RjCtIaI0Yfhlzj6tQG4IP5B4TEzE+pkttWS6T6
+         Pfj4vcRYqPCX7n1brA3JyNB3q877J2B7qe0TeuPJuawvrJ99JIgz7IlBeFtS86HWve9c
+         vL++e+3RneCPSwpwgOXHF6RwLJTEKN++snt5dfHkXLPS1tbIKpXt0WMu5Ni8MXuqsvU2
+         QMKq2EZogydbTRc6vpX+yBC4V9x4+KUNYUpRoaGwWNr3JgLXG8YopZgZ/PxFunvNVJAi
+         Bilw==
+X-Gm-Message-State: AOAM531vteLa1Z5b2ZuIcKimDqMzVUUBfe4GkvNHYD89r5z7qs+Nh0rC
+        kwYIanmVyjsvB6y+Hljtb1R3sjfh6A65G/bH3xs=
+X-Google-Smtp-Source: ABdhPJyStPj5yx4BQyvOfARFMCt/BHM1nSrzBANiCDQxLeyi5a1WXtZiIx64RxYivVviTPLOFL76WG/Pzxrtw611VEU=
+X-Received: by 2002:a6b:2bca:: with SMTP id r193mr9525550ior.167.1611787863568;
+ Wed, 27 Jan 2021 14:51:03 -0800 (PST)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20210126134103.240031-1-jlayton@kernel.org>
+In-Reply-To: <20210126134103.240031-1-jlayton@kernel.org>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Wed, 27 Jan 2021 23:50:57 +0100
+Message-ID: <CAOi1vP-3Ma4LdCcu6sPpwVbmrto5HnOAsJ6r9_973hYY3ODBUQ@mail.gmail.com>
+Subject: Re: [PATCH 0/6] ceph: convert to new netfs read helpers
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Ceph Development <ceph-devel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-cachefs@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building ARCH=mips 32r2el_defconfig with CONFIG_UBSAN_ALIGNMENT:
+On Tue, Jan 26, 2021 at 2:41 PM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> This patchset converts ceph to use the new netfs readpage, write_begin,
+> and readahead helpers to handle buffered reads. This is a substantial
+> reduction in code in ceph, but shouldn't really affect functionality in
+> any way.
+>
+> Ilya, if you don't have any objections, I'll plan to let David pull this
+> series into his tree to be merged with the netfs API patches themselves.
 
-ld.lld: error: undefined symbol: __ubsan_handle_alignment_assumption
->>> referenced by slab.h:557 (include/linux/slab.h:557)
->>>               main.o:(do_initcalls) in archive init/built-in.a
->>> referenced by slab.h:448 (include/linux/slab.h:448)
->>>               do_mounts_rd.o:(rd_load_image) in archive init/built-in.a
->>> referenced by slab.h:448 (include/linux/slab.h:448)
->>>               do_mounts_rd.o:(identify_ramdisk_image) in archive init/built-in.a
->>> referenced 1579 more times
+Sure, that works for me.
 
-Implement this for the kernel based on LLVM's
-handleAlignmentAssumptionImpl because the kernel is not linked against
-the compiler runtime.
+I would have expected that the new netfs infrastructure is pushed
+to a public branch that individual filesystems could peruse, but since
+David's set already includes patches for AFS and NFS, let's tag along.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1245
-Link: https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/compiler-rt/lib/ubsan/ubsan_handlers.cpp#L151-L190
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
+Thanks,
 
-v2 -> v3:
-
-* Add prototype right above definition to avoid introducing a warning
-  with W=1.
-
-v1 -> v2:
-
-* Use __ffs instead of ffs because due to size of input (unsigned long
-  vs int) and we want a zero based index (Nick Desaulniers).
-
-* Pick up Kees's ack.
-
- lib/ubsan.c | 31 +++++++++++++++++++++++++++++++
- lib/ubsan.h |  6 ++++++
- 2 files changed, 37 insertions(+)
-
-diff --git a/lib/ubsan.c b/lib/ubsan.c
-index 3e3352f3d0da..bec38c64d6a6 100644
---- a/lib/ubsan.c
-+++ b/lib/ubsan.c
-@@ -427,3 +427,34 @@ void __ubsan_handle_load_invalid_value(void *_data, void *val)
- 	ubsan_epilogue();
- }
- EXPORT_SYMBOL(__ubsan_handle_load_invalid_value);
-+
-+void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
-+					 unsigned long align,
-+					 unsigned long offset);
-+void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
-+					 unsigned long align,
-+					 unsigned long offset)
-+{
-+	struct alignment_assumption_data *data = _data;
-+	unsigned long real_ptr;
-+
-+	if (suppress_report(&data->location))
-+		return;
-+
-+	ubsan_prologue(&data->location, "alignment-assumption");
-+
-+	if (offset)
-+		pr_err("assumption of %lu byte alignment (with offset of %lu byte) for pointer of type %s failed",
-+		       align, offset, data->type->type_name);
-+	else
-+		pr_err("assumption of %lu byte alignment for pointer of type %s failed",
-+		       align, data->type->type_name);
-+
-+	real_ptr = ptr - offset;
-+	pr_err("%saddress is %lu aligned, misalignment offset is %lu bytes",
-+	       offset ? "offset " : "", BIT(real_ptr ? __ffs(real_ptr) : 0),
-+	       real_ptr & (align - 1));
-+
-+	ubsan_epilogue();
-+}
-+EXPORT_SYMBOL(__ubsan_handle_alignment_assumption);
-diff --git a/lib/ubsan.h b/lib/ubsan.h
-index 7b56c09473a9..9a0b71c5ff9f 100644
---- a/lib/ubsan.h
-+++ b/lib/ubsan.h
-@@ -78,6 +78,12 @@ struct invalid_value_data {
- 	struct type_descriptor *type;
- };
- 
-+struct alignment_assumption_data {
-+	struct source_location location;
-+	struct source_location assumption_location;
-+	struct type_descriptor *type;
-+};
-+
- #if defined(CONFIG_ARCH_SUPPORTS_INT128)
- typedef __int128 s_max;
- typedef unsigned __int128 u_max;
-
-base-commit: 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
--- 
-2.30.0
-
+                Ilya
