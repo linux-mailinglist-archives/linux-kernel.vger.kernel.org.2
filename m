@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2606330607D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C724306074
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhA0QC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:02:57 -0500
-Received: from verein.lst.de ([213.95.11.211]:53502 "EHLO verein.lst.de"
+        id S236942AbhA0QBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:01:39 -0500
+Received: from mout.gmx.net ([212.227.15.19]:33483 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236827AbhA0P4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:56:53 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5554C68AFE; Wed, 27 Jan 2021 16:56:08 +0100 (CET)
-Date:   Wed, 27 Jan 2021 16:56:08 +0100
-From:   ". Christoph Hellwig" <hch@lst.de>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     ". Christoph Hellwig" <hch@lst.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-Message-ID: <20210127155608.GA20272@lst.de>
-References: <20201201033658.GE3723071@google.com> <20201201144916.GA14682@lst.de> <CAAFQd5BBEbmENrrZ-vMK9cKOap19XWmfcxwrxKfjWx-wEew8rg@mail.gmail.com> <20201208071320.GA1667627@google.com> <20201209111639.GB22806@lst.de> <CANiDSCtsOdJUK3r_t8UNKhh7Px0ANNFJkuwM1fBgZ7wnVh0JFA@mail.gmail.com> <20210111083614.GA27589@lst.de> <CANiDSCvuvj47=nhoWhvzc5raMxM60w+JYRWjd0YepcbcbkrUjA@mail.gmail.com> <20210126170659.GA9104@lst.de> <CANiDSCsz+9DJesOTJ5C5HGEH-wwuTmEd3c8yLoHjnDz=2+ndJw@mail.gmail.com>
+        id S236864AbhA0P6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:58:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611762987;
+        bh=CP+ZV9x7pYPLb0ZLGilMnKmtm1IV5SmcQIld6+JgAhE=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=AgvzQR7JnAJBHEb7ME/c57A5ySlk4qE14+aL3vJ63bKHGnYKWOkIJBegHbqWOR2cQ
+         cSWf16v7b8YrK38kf7dwEV2NmmGQ6Oh+pmUVBtmcJBzxFqKdE0sQ04GGyevgJ2uD+H
+         qcfLPAE5KOVIimyiOV3Cy26170XogIeUKi9GBp5I=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.167.183]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MiJZE-1lb7Oe3N5S-00fSIn; Wed, 27
+ Jan 2021 16:56:26 +0100
+Date:   Wed, 27 Jan 2021 16:56:22 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture updates for kernel v5.11-rc6
+Message-ID: <20210127155622.GA13805@ls3530.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANiDSCsz+9DJesOTJ5C5HGEH-wwuTmEd3c8yLoHjnDz=2+ndJw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Provags-ID: V03:K1:6EALqzxabRMhIIqc06AyJ8Po7PpkbJuofYLFx+EtH8MQPZpu8hq
+ KHbEzSA2jbQDOBqN++CYPDBzFWYzDYv/lSs0KXfUrNsTYN6rGYaKdn7P6seTe5VW3pubAqH
+ YUaNIUSIi3OuxgKKd9JEioW4Wx4fcCmrn+/4KedT6/aXOGD8cy2/aR35b7Z3OnmuY42O3DZ
+ Se6rjkBP+NhRKcJfJiJvQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Z9BvlV4e9Dk=:iAmNk/yzEiJRYRDBPA/b6K
+ ja+ecd54C0z7kguTDSruiiZJkrufEHnUgmzJEX3HJzwRK/4grfeUcgwNBIttc087QkGPYYl2V
+ EjyH56Cs7VKP2hur6BaYSA5zNtlKFzkpG8Rzl7VNgBxLwaTlyJviZ6FBZgQzpDKdI+NjxpSCE
+ 5q/dJ6K2WiYuU8cvxvs9t+D6JMHA9AtAXsNRBPjLlFwxRNmk0O99XbeqjGGhSznkzd1pIZEFP
+ c0ZP0jYMI9OLzKWDOghIyzX5OnJNssgOf6tf/tGq9N44gy3lZWdEl3iAIyKjiIK5CkEkO96uu
+ UeR6OYdso927NvaAy2kKO6aiYxthKdn7rpiilzmDY3rJ9a9uWGy9vvP8+wwebJJbe/pcBivxP
+ NASp1nvTzOhSM+k4I637ItGnM1I0J3X6SKUTzDNy2QE5CXhP5/EtITC2JMqKalm2AhybIw7Cy
+ UsXSrY1buLtDT8OksTBXFVlymGim2h5xsQzu/ao2UYskwKqlQ4ZzAMozQA3nZ0oZSt+NvoFHH
+ 9IQAuJlV7YAC19STnltOZa+KYwA85zKhs//MYfmbuodP+DbKx/W+L7c9zPT8WixoVsPgqFqKI
+ HUnyT5K8osHU/zaWnro2p8Bp1HxW4nCXS9phpY4yHGVXtHmpWIeVZaeyx95EVN6hVu4MlkIse
+ vvmjMYktG4V+Fd9ssINQxQhGfuBzcTJy9sK/G/CklXoWY64NFBzXLk0uLAHeayu49l225iyLA
+ 7S+P/fuRi+l5dVHlF06PS1KPcN+a0rm5TSOjioCUsvwxEJTzBR3xAhkMUZs3aBu0d5Hik1iH+
+ 25ufJ2UQ0xKYeSZJuwPUt2Qju2xPZbpfGJcoK7Nj80ltbigZYm7Zk5TXiWf284QEt5ymKoal5
+ dWKdG/MA55p2NfnLLJ0w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:29:08AM +0100, Ricardo Ribalda wrote:
-> - Is there any platform where dma_alloc_noncontiguos can fail?
-> This is, !ops->alloc_noncontiguous and !dev->coherent_dma_mask
-> If yes then we need to add a function to let the driver know in
-> advance that it has to use the coherent allocator (usb_alloc_coherent
-> for uvc)
+Hi Linus,
 
-dev->coherent_dma_mask is set by the driver.  So the only reason why
-dma_alloc_noncontiguos will fail is because is because it can't
-allocate any memory.
+please pull two fixes for the parisc architecture for kernel 5.11-rc6 from:
 
-> - In dma_alloc_noncontiguos, on the dma_alloc_pages fallback. If we
-> have a device where the dma happens in only one direction, could not
-> get more performance with DMA_FROM/TO_DEVICE instead of
-> DMA_BIDIRECTIONAL ?
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-2
 
-Yes, we could probably do that.
+Two small fixes:
+* Fix linking error with 64-bit kernel when modules are disabled,
+  reported by kernel test robot.
+* Remove leftover reference to power_tasklet, by Davidlohr Bueso
 
-> 
-> 
-> Then I have tried to use the API, and I have encountered a problem: on
-> uvcvideo the device passed to the memory allocator is different for
-> DMA_PAGES and NON_CONTIGUOUS:
-> https://github.com/ribalda/linux/blob/042cd497739f71c8d4a83a67ee970369e2baca4a/drivers/media/usb/uvc/uvc_video.c#L1236
-> 
-> I need to dig a bit tomorrow to figure out why this is, I have
-> hardware to test both paths, so it should not be too difficult.
+Thanks,
+Helge
 
-I always found the USB dma alloc API a little weird, but we might have
-to follow the scheme of the usb coherent wrappers there.
+----------------------------------------------------------------
+Davidlohr Bueso (1):
+      parisc: Remove leftover reference to the power_tasklet
+
+Helge Deller (1):
+      parisc: Enable -mlong-calls gcc option by default when !CONFIG_MODULES
+
+ arch/parisc/Kconfig           |  5 ++---
+ arch/parisc/include/asm/irq.h |  3 ---
+ arch/parisc/kernel/entry.S    | 13 ++++++++++---
+ 3 files changed, 12 insertions(+), 9 deletions(-)
