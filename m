@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141D8305434
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068D0305470
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhA0HNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:13:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        id S233757AbhA0HWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S317508AbhA0Aov (ORCPT
+        with ESMTP id S317497AbhA0AmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:44:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BA4C061573;
-        Tue, 26 Jan 2021 16:43:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TEW2JYzn+vqvCtp0wfRNcEJNG8YlfIBkSfIXrU7EIyI=; b=RUqjEncrRoERE8rbq+OKuNfu1R
-        kyqA6pQUBIWFphnHhodhd9ds/DPt4HvE8aKVtFV9/wPkE7zn894nykm9jQPCBXMYKEibeytNJYLeq
-        w3Nsmi9R8b+afWrgXFw6V5yMS1S/StpMOUm+wAuWkkqNA5Si9gBJAmDemonDm3halNX7nNu+CzSyu
-        aycFgfm8MwMoDQarKZAKEcrBxM3dhDt8z1BbipvnXFjDmS1xl0dtZTMVuZk/qv27DW2KRwfackNeT
-        lLN6L6arAZlIG+0WXrLlvgPqzpJINe5mSg8t1zfauFs3kXWTR38HIrn7npnmZKFgkDusFXc/8hZpc
-        JdS+1yyw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4Ytg-006RUT-Vz; Wed, 27 Jan 2021 00:42:16 +0000
-Date:   Wed, 27 Jan 2021 00:41:24 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>
-Subject: Re: Preemptible idr_alloc() in QRTR code
-Message-ID: <20210127004124.GP308988@casper.infradead.org>
-References: <20210126104734.GB80448@C02TD0UTHF1T.local>
- <20210126145833.GM308988@casper.infradead.org>
- <20210126162154.GD80448@C02TD0UTHF1T.local>
- <YBBKla3I2TxMFIvZ@builder.lan>
- <20210126183534.GA90035@C02TD0UTHF1T.local>
+        Tue, 26 Jan 2021 19:42:23 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9A1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:41:40 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id b11so370516ybj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:41:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sp41synaVHOuSVQtii9ixbvOGDzx9cyX8huZX1w1U9I=;
+        b=c4KjGbX0lBoGhM6l+Uv9s10uJdLuSxAi8eZh+mrrrR/dwXfhvZdJE+j8AruMkNYsIH
+         sK5kpEo202ahk1ppqDGgBapZdLOzx+Zzd5b/7CzCu6z5FG1CSYi3iNuOTm9wAmllxyFM
+         7HLM48BDWJbdnzbgAvCKvPZ5n34/pJnM7/80OL2RSdSjZfHEE2OPAoODspFnTO0OLGrg
+         yQISbAt1A5EIsQk1eHXbtWJPVl+KCGqGRXZjh98SVkvtd8G+LaqaGfMH4RaO185da4qP
+         fCogWZ8ZF7MLJRqZXYIYCTkkbaWtswpiVbesqduRsK2us2Wo4BEuO0Iv2GyDOAlxLDvC
+         Zqjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sp41synaVHOuSVQtii9ixbvOGDzx9cyX8huZX1w1U9I=;
+        b=ldTYy/Vw+1LrPqviIFzV9nPGQPGF5WLFsHwILV4rhGsw9XDRcKx5JqEn63F2mCiPbG
+         itxx0oMWc1/4irwZjykbEZN/PvQzsn+GgaoWmDtS3T/7hRe1WX0RZ794JHlHFfG8cLML
+         9IMQ026yu1oIuQkPNi5zvSrlHR1anYVssXDXD66MffXRlC0QplaX2gTgPQdKBSquXuKd
+         nmdMlKdsz2eYS3Y9mpb+zZ3sILV0S7v4TtlvSIUfdi7gTvaiIczb4DEbZ+dz58gGveyc
+         oZ7xv90n7OF+8nUP2QbHMMx5bVrmQThiibHjHe33Gmh0mzT/K7UEsh8rSoQ3oVnz6h7p
+         zEsA==
+X-Gm-Message-State: AOAM531QYdYE9DJCiT3wlDsOjVLQcvz0HhIW49Dy//zq9KYEs9sEm4HD
+        PwWgoEErZx276Ka1eG3Tz+VA9JfeNSj2s3VxtCR1Xb4tpyraZw==
+X-Google-Smtp-Source: ABdhPJyHIGgIfchxwCtyTwopsp5lk+2pHWVxRsYiFXZz/TlqpgRoIq69sGt0qtRAyist8LMHEtiU5zmccYm65eqrmTA=
+X-Received: by 2002:a25:538a:: with SMTP id h132mr11851786ybb.247.1611708099327;
+ Tue, 26 Jan 2021 16:41:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126183534.GA90035@C02TD0UTHF1T.local>
+References: <20210126212730.2097108-1-nathan@kernel.org>
+In-Reply-To: <20210126212730.2097108-1-nathan@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 27 Jan 2021 01:41:28 +0100
+Message-ID: <CANiq72mrh_rU2vOcx4DY8uQKeLRgr74ei2XBgq5wdsU8uyiDCw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS/.mailmap: Use my @kernel.org address
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 06:36:02PM +0000, Mark Rutland wrote:
-> On Tue, Jan 26, 2021 at 11:00:05AM -0600, Bjorn Andersson wrote:
-> > On Tue 26 Jan 10:21 CST 2021, Mark Rutland wrote:
-> > 
-> > > On Tue, Jan 26, 2021 at 02:58:33PM +0000, Matthew Wilcox wrote:
-> > > > On Tue, Jan 26, 2021 at 10:47:34AM +0000, Mark Rutland wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > When fuzzing arm64 with Syzkaller, I'm seeing some splats where
-> > > > > this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
-> > > > > radix_tree_node_alloc(), in a preemptible context:
-> > > > 
-> > > > I sent a patch to fix this last June.  The maintainer seems to be
-> > > > under the impression that I care an awful lot more about their
-> > > > code than I do.
-> > > > 
-> > > > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
-> > > 
-> > > Ah; I hadn't spotted the (glaringly obvious) GFP_ATOMIC abuse, thanks
-> > > for the pointer, and sorry for the noise.
-> > > 
-> > 
-> > I'm afraid this isn't as obvious to me as it is to you. Are you saying
-> > that one must not use GFP_ATOMIC in non-atomic contexts?
-> > 
-> > That said, glancing at the code I'm puzzled to why it would use
-> > GFP_ATOMIC.
-> 
-> I'm also not entirely sure about the legitimacy of GFP_ATOMIC outside of
-> atomic contexts -- I couldn't spot any documentation saying that wasn't
-> legitimate, but Matthew's commit message implies so, and it sticks out
-> as odd.
+On Tue, Jan 26, 2021 at 10:27 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Use my @kernel.org for all points of contact so that I am always
+> accessible.
+>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-It's actually an assumption in the radix tree code.  If you say you
-can't be preempted by saying GFP_ATOMIC, it takes you at your word and
-does some things which cannot be done in preemptable context.
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
