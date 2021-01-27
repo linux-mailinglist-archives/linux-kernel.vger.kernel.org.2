@@ -2,88 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5369306844
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FEA306845
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbhA0XrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234216AbhA0XpC (ORCPT
+        id S229552AbhA0XrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:47:21 -0500
+Received: from hera.aquilenet.fr ([185.233.100.1]:49032 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233731AbhA0Xpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:45:02 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B1AC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:44:22 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id r4so2066636pls.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:44:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=Mxms3zmarGgtqLSA2knr9DFUQbJNpMaXiC1Rwt/vXfQ=;
-        b=Rk78kGbTRTMsJht7TyBKfA+4NY6T9q1+B9xyRJPxErypmxzfFg1Nv607eX/zhWOilm
-         xIF2iZKJNNs0OizLmf5xQchxGNztXdG+MejWZt4vq9jUdoGE3p13+Ow2gj+UnyxxLMZh
-         820dcly26qnDHkf+TMfpinOCa5mKEnv3EoTWeuKmPOAvBVp5douEF2TFDaFVJX8O7Aqa
-         LcCdL+M1mXHI1pP2L6BrJGNIOAtJvb/1syYMNQ758u8UN2y9var1hizA1oYqPNmZo61S
-         0CFz4y8J5l+Bepx+5SfQ3rwd+HCH5CXiUK0kK8LHvswJ70Tr3B7u0ognkccOZsO5ruRp
-         /QEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=Mxms3zmarGgtqLSA2knr9DFUQbJNpMaXiC1Rwt/vXfQ=;
-        b=Vq+1XSgC4t7WzRjNI5X0kY1UDV8yzn9dqRfjwuMjfMwjpG/rkeei1AiqhhFyuGhdnY
-         Zv25LUAaApFGAgmnCpQlrGGwhJ2kPmQcnNWg3kQLyWxW6z5jyfqrtxnmlxFurODGFi6s
-         JGBC5DoWCAUrNV5eUwIROv7UjtWmNiJBuAcfbZ+0DgcW76uB1rSRYhyWIQlxGuUeNyaX
-         4W/fJxLbz+Fdj7toQvKFnW+L0llRyOZb0vwwle4HxuzazlBMQA4bpkIexpKIM5iiBbhB
-         BuVnPs1TDT64G2X+ofgqr5+a356Fc2ylYLam65A7Jjg37uI3Ysmsta2jksk7sAaK1/jE
-         HMhQ==
-X-Gm-Message-State: AOAM530FT6nHFoq1icmYuMkVHeJigc9EXZXM3MUY5RO2tit8kfHObDZD
-        N4Wbsgncx72DFmSxwh+2yJo=
-X-Google-Smtp-Source: ABdhPJy973JY/GinSGJtf5a+0PiKQqWLhevqbbKoXQxFTvmud+BGNyTfcj6DSK6CkRQf8lc4vFUuNw==
-X-Received: by 2002:a17:90b:1004:: with SMTP id gm4mr8190388pjb.97.1611791061723;
-        Wed, 27 Jan 2021 15:44:21 -0800 (PST)
-Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
-        by smtp.gmail.com with ESMTPSA id r14sm3828769pgi.27.2021.01.27.15.44.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 15:44:21 -0800 (PST)
-Date:   Thu, 28 Jan 2021 09:44:15 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 2/5] kernel/dma: remove unnecessary unmap_kernel_range
-To:     Christoph Hellwig <hch@lst.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Robin Murphy <robin.murphy@arm.com>
-References: <20210126045404.2492588-1-npiggin@gmail.com>
-        <20210126045404.2492588-3-npiggin@gmail.com>
-        <YBCS7toITTwP04aK@Konrads-MacBook-Pro.local> <20210127071059.GA21133@lst.de>
-In-Reply-To: <20210127071059.GA21133@lst.de>
+        Wed, 27 Jan 2021 18:45:34 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 5DFFB31F;
+        Thu, 28 Jan 2021 00:44:47 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id c5M_y3bmRZK7; Thu, 28 Jan 2021 00:44:46 +0100 (CET)
+Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 54CA47A;
+        Thu, 28 Jan 2021 00:44:46 +0100 (CET)
+Received: from samy by begin with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1l4uUP-004MFn-2b; Thu, 28 Jan 2021 00:44:45 +0100
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     gregkh@linuxfoundation.org
+Cc:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+Subject: [PATCH] speakup: Make dectlk flush timeout configurable
+Date:   Thu, 28 Jan 2021 00:44:44 +0100
+Message-Id: <20210127234444.1038813-1-samuel.thibault@ens-lyon.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Message-Id: <1611790740.civn6atbwp.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+X-Rspamd-Server: hera
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Queue-Id: 5DFFB31F
+X-Spamd-Result: default: False [5.00 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christoph Hellwig's message of January 27, 2021 5:10 pm:
-> On Tue, Jan 26, 2021 at 05:08:46PM -0500, Konrad Rzeszutek Wilk wrote:
->> On Tue, Jan 26, 2021 at 02:54:01PM +1000, Nicholas Piggin wrote:
->> > vunmap will remove ptes.
->>=20
->> Should there be some ASSERT after the vunmap to make sure that is the
->> case?=20
->=20
-> Not really.  removing the PTEs is the whole point of vunmap.  Everything
-> else is just house keeping.
+In case the serial port or cable got faulty, we may not be getting
+acknowledgements any more. The driver then currently waits for 4s to
+avoid jamming the device. This makes this delay configurable.
 
-Agree. I did double check this and wrote a quick test to check ptes were=20
-there before the vunmap and cleared after, just to make sure I didn't=20
-make a silly mistake with the patch. But in general drivers should be=20
-able to trust code behind the API call will do the right thing. Such=20
-assertions should go in the vunmap() implementation as appropriate.
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ drivers/accessibility/speakup/speakup_dectlk.c | 11 ++++++++++-
+ drivers/accessibility/speakup/spk_types.h      |  3 ++-
+ drivers/accessibility/speakup/synth.c          |  3 +++
+ drivers/accessibility/speakup/varhandlers.c    |  1 +
+ 4 files changed, 16 insertions(+), 2 deletions(-)
 
-Thanks,
-Nick
+diff --git a/drivers/accessibility/speakup/speakup_dectlk.c b/drivers/accessibility/speakup/speakup_dectlk.c
+index d75de36..580ec79 100644
+--- a/drivers/accessibility/speakup/speakup_dectlk.c
++++ b/drivers/accessibility/speakup/speakup_dectlk.c
+@@ -78,6 +78,8 @@ static struct kobj_attribute direct_attribute =
+ 	__ATTR(direct, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute full_time_attribute =
+ 	__ATTR(full_time, 0644, spk_var_show, spk_var_store);
++static struct kobj_attribute flush_time_attribute =
++	__ATTR(flush_time, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute jiffy_delta_attribute =
+ 	__ATTR(jiffy_delta, 0644, spk_var_show, spk_var_store);
+ static struct kobj_attribute trigger_time_attribute =
+@@ -99,6 +101,7 @@ static struct attribute *synth_attrs[] = {
+ 	&delay_time_attribute.attr,
+ 	&direct_attribute.attr,
+ 	&full_time_attribute.attr,
++	&flush_time_attribute.attr,
+ 	&jiffy_delta_attribute.attr,
+ 	&trigger_time_attribute.attr,
+ 	NULL,	/* need to NULL terminate the list of attributes */
+@@ -118,6 +121,7 @@ static struct spk_synth synth_dectlk = {
+ 	.trigger = 50,
+ 	.jiffies = 50,
+ 	.full = 40000,
++	.flush_time = 4000,
+ 	.dev_name = SYNTH_DEFAULT_DEV,
+ 	.startup = SYNTH_START,
+ 	.checkval = SYNTH_CHECK,
+@@ -200,18 +204,23 @@ static void do_catch_up(struct spk_synth *synth)
+ 	static u_char last = '\0';
+ 	unsigned long flags;
+ 	unsigned long jiff_max;
+-	unsigned long timeout = msecs_to_jiffies(4000);
++	unsigned long timeout;
+ 	DEFINE_WAIT(wait);
+ 	struct var_t *jiffy_delta;
+ 	struct var_t *delay_time;
++	struct var_t *flush_time;
+ 	int jiffy_delta_val;
+ 	int delay_time_val;
++	int timeout_val;
+ 
+ 	jiffy_delta = spk_get_var(JIFFY);
+ 	delay_time = spk_get_var(DELAY);
++	flush_time = spk_get_var(FLUSH);
+ 	spin_lock_irqsave(&speakup_info.spinlock, flags);
+ 	jiffy_delta_val = jiffy_delta->u.n.value;
++	timeout_val = flush_time->u.n.value;
+ 	spin_unlock_irqrestore(&speakup_info.spinlock, flags);
++	timeout = msecs_to_jiffies(timeout_val);
+ 	jiff_max = jiffies + jiffy_delta_val;
+ 
+ 	while (!kthread_should_stop()) {
+diff --git a/drivers/accessibility/speakup/spk_types.h b/drivers/accessibility/speakup/spk_types.h
+index 7789f5d..6a96ad9 100644
+--- a/drivers/accessibility/speakup/spk_types.h
++++ b/drivers/accessibility/speakup/spk_types.h
+@@ -48,7 +48,7 @@ enum var_id_t {
+ 	ATTRIB_BLEEP, BLEEPS,
+ 	RATE, PITCH, VOL, TONE, PUNCT, VOICE, FREQUENCY, LANG,
+ 	DIRECT, PAUSE,
+-	CAPS_START, CAPS_STOP, CHARTAB, INFLECTION,
++	CAPS_START, CAPS_STOP, CHARTAB, INFLECTION, FLUSH,
+ 	MAXVARS
+ };
+ 
+@@ -178,6 +178,7 @@ struct spk_synth {
+ 	int trigger;
+ 	int jiffies;
+ 	int full;
++	int flush_time;
+ 	int ser;
+ 	char *dev_name;
+ 	short flags;
+diff --git a/drivers/accessibility/speakup/synth.c b/drivers/accessibility/speakup/synth.c
+index 6c14b68..2b86996 100644
+--- a/drivers/accessibility/speakup/synth.c
++++ b/drivers/accessibility/speakup/synth.c
+@@ -348,6 +348,7 @@ struct var_t synth_time_vars[] = {
+ 	{ TRIGGER, .u.n = {NULL, 20, 10, 2000, 0, 0, NULL } },
+ 	{ JIFFY, .u.n = {NULL, 50, 20, 200, 0, 0, NULL } },
+ 	{ FULL, .u.n = {NULL, 400, 200, 60000, 0, 0, NULL } },
++	{ FLUSH, .u.n = {NULL, 4000, 100, 4000, 0, 0, NULL } },
+ 	V_LAST_VAR
+ };
+ 
+@@ -408,6 +409,8 @@ static int do_synth_init(struct spk_synth *in_synth)
+ 		synth_time_vars[2].u.n.default_val = synth->jiffies;
+ 	synth_time_vars[3].u.n.value =
+ 		synth_time_vars[3].u.n.default_val = synth->full;
++	synth_time_vars[4].u.n.value =
++		synth_time_vars[4].u.n.default_val = synth->flush_time;
+ 	synth_printf("%s", synth->init);
+ 	for (var = synth->vars;
+ 		(var->var_id >= 0) && (var->var_id < MAXVARS); var++)
+diff --git a/drivers/accessibility/speakup/varhandlers.c b/drivers/accessibility/speakup/varhandlers.c
+index d7f6bec..067c0da 100644
+--- a/drivers/accessibility/speakup/varhandlers.c
++++ b/drivers/accessibility/speakup/varhandlers.c
+@@ -23,6 +23,7 @@ static struct st_var_header var_headers[] = {
+ 	{ "trigger_time", TRIGGER, VAR_TIME, NULL, NULL },
+ 	{ "jiffy_delta", JIFFY, VAR_TIME, NULL, NULL },
+ 	{ "full_time", FULL, VAR_TIME, NULL, NULL },
++	{ "flush_time", FLUSH, VAR_TIME, NULL, NULL },
+ 	{ "spell_delay", SPELL_DELAY, VAR_NUM, &spk_spell_delay, NULL },
+ 	{ "bleeps", BLEEPS, VAR_NUM, &spk_bleeps, NULL },
+ 	{ "attrib_bleep", ATTRIB_BLEEP, VAR_NUM, &spk_attrib_bleep, NULL },
+-- 
+2.20.1
+
