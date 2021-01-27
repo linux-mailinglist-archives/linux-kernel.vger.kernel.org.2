@@ -2,87 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595DA30535D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BFD305365
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhA0Gn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:43:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232509AbhA0Gh4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 01:37:56 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB2BC061574;
-        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id o16so917578pgg.5;
-        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=W0uuLo/4/wCey2dN/nEYFd5YvwQZJzT08touWgY4O8w=;
-        b=TUE4PN3EDWJkxwfN/6yW4sXh09Op1ZfGs87T0vPXMo2V2CUoevdBs0ZON/iG+qZZqz
-         Nm+7tnV72tMSF8+lEMdVx9wuVGqcn6rbhUFJPh31xc6R/0sfQV6zjchM0y1DNW8J/s8Q
-         neAWRok4qYmLx9jmUG4OJma0f84V4xDYy4W+F5xN0H7kyLR0OZxgB6/D9BWNxpAbhGMK
-         Gpd+9oYmUvzguvnc2FbUsLpuJ5sio+bZwy+heoV5GnOIjqkxzajuyao/W+oxm0eNAI9Y
-         vzqguRCGWWKF4XJtfqvSTXteaBP3M8p+TxQRSlIENIb1pTvDyj0mghBgYzOZtYT/NTiF
-         QQ6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=W0uuLo/4/wCey2dN/nEYFd5YvwQZJzT08touWgY4O8w=;
-        b=X9wxGjp/U8RgLolmO0llJFrQNaZav+PkHcJ8LV98VvfofM/ptNnMc60QtsXEsJlGhw
-         uWGdl14lur++1TVBSyIMcizHFPYj1V+1uV8sjkGU1KbHvlx3mY/Jwd9wFOpwjNI7F7KG
-         etLpDMNOvT6teGkPbTfeNTgKra6cbP/035cv4gZ9/wRCpuKUsHYh8YF5mdAMAq1MGORS
-         XDNz0UnX/gOuCFTLjedXn0u7/JaVqlNrgANmqRtgDyNfXIvUh4JcLKSxve68Sv+0tvAJ
-         ZUdaAhKdj+FMpZVrFIYUmDuglkHfxFkuktaPufrv/ycJeDZrqMk9q4T1ZZQubfsF3M4a
-         0/3Q==
-X-Gm-Message-State: AOAM5310abMjhFqpmAnWZJXn2v1lbqNXbm1LCrk5P6AG9sAm9ab7EWoW
-        5qVS1HwVyNqgRfuNjXKGY9u4suzdqlBYoh0n
-X-Google-Smtp-Source: ABdhPJzh1C84Hi+SAxJwm9/lhQAEyp9wdc9QrUhAJj915LWhtVjGpOpzm2MMrtRjVGk88F/LHp2GNg==
-X-Received: by 2002:aa7:8f1c:0:b029:1c0:60c7:f7c5 with SMTP id x28-20020aa78f1c0000b02901c060c7f7c5mr9220246pfr.59.1611729435387;
-        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
-Received: from android.asia-east2-a.c.savvy-summit-295307.internal (204.60.92.34.bc.googleusercontent.com. [34.92.60.204])
-        by smtp.googlemail.com with ESMTPSA id v3sm1038824pff.217.2021.01.26.22.37.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 22:37:14 -0800 (PST)
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, minhquangbui99@gmail.com
-Subject: [PATCH] bpf: Check for integer overflow when using roundup_pow_of_two()
-Date:   Wed, 27 Jan 2021 06:36:53 +0000
-Message-Id: <20210127063653.3576-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S231163AbhA0Gqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:46:45 -0500
+Received: from mga04.intel.com ([192.55.52.120]:61582 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232261AbhA0Gnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 01:43:31 -0500
+IronPort-SDR: AB/u04AAT+qh/yyQz6pES6WuN/Nzm0Ut+MZwUWAtGFoj437kgNhcANzcHqN8BROgLe3XwGbYGf
+ KpEYhYWBW5WA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="177457867"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="177457867"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 22:42:39 -0800
+IronPort-SDR: 9nwOMXbb/0BgNi41l0JKib7QYyFRbc1Sv0qwK1N6sDajvCRMvqkveKW8jdEdBz44755xVpwIQp
+ NEeiPLDigHZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="407007641"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Jan 2021 22:42:38 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l4eXF-0001PZ-Mi; Wed, 27 Jan 2021 06:42:37 +0000
+Date:   Wed, 27 Jan 2021 14:41:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.01.22b] BUILD SUCCESS
+ c6f6fddad7c84f0bd7fba3f1b076b71d6b902ab4
+Message-ID: <60110b2b.xPEoUiTLmt9MXBpv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 32-bit architecture, roundup_pow_of_two() can return 0 when the argument
-has upper most bit set due to resulting 1UL << 32. Add a check for this
-case.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.01.22b
+branch HEAD: c6f6fddad7c84f0bd7fba3f1b076b71d6b902ab4  rcu-tasks: Rectify kernel-doc for struct rcu_tasks
 
-Fixes: d5a3b1f ("bpf: introduce BPF_MAP_TYPE_STACK_TRACE")
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+elapsed time: 726m
+
+configs tested: 103
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+xtensa                generic_kc705_defconfig
+x86_64                           allyesconfig
+nios2                         10m50_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                 mpc85xx_cds_defconfig
+xtensa                         virt_defconfig
+arc                         haps_hs_defconfig
+arm                          prima2_defconfig
+mips                           rs90_defconfig
+arm                            xcep_defconfig
+mips                         tb0287_defconfig
+sh                          polaris_defconfig
+xtensa                    smp_lx200_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                     kilauea_defconfig
+mips                         rt305x_defconfig
+mips                  cavium_octeon_defconfig
+arm                       netwinder_defconfig
+powerpc                      katmai_defconfig
+arm                           viper_defconfig
+arm                        trizeps4_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                     powernv_defconfig
+arm                          pcm027_defconfig
+mips                       capcella_defconfig
+arm                          ep93xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210126
+i386                 randconfig-a002-20210126
+i386                 randconfig-a004-20210126
+i386                 randconfig-a006-20210126
+i386                 randconfig-a003-20210126
+i386                 randconfig-a005-20210126
+x86_64               randconfig-a012-20210126
+x86_64               randconfig-a016-20210126
+x86_64               randconfig-a015-20210126
+x86_64               randconfig-a011-20210126
+x86_64               randconfig-a013-20210126
+x86_64               randconfig-a014-20210126
+i386                 randconfig-a013-20210126
+i386                 randconfig-a011-20210126
+i386                 randconfig-a012-20210126
+i386                 randconfig-a015-20210126
+i386                 randconfig-a014-20210126
+i386                 randconfig-a016-20210126
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210126
+x86_64               randconfig-a002-20210126
+x86_64               randconfig-a001-20210126
+x86_64               randconfig-a005-20210126
+x86_64               randconfig-a006-20210126
+x86_64               randconfig-a004-20210126
+
 ---
- kernel/bpf/stackmap.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index aea96b638473..bfafbf115bf3 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -115,6 +115,8 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
- 
- 	/* hash table size must be power of 2 */
- 	n_buckets = roundup_pow_of_two(attr->max_entries);
-+	if (!n_buckets)
-+		return ERR_PTR(-E2BIG);
- 
- 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
- 	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
