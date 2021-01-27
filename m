@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BED3067E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1DC3067F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhA0Xa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:30:28 -0500
-Received: from ozlabs.org ([203.11.71.1]:58261 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234800AbhA0X2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:28:48 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DR0Bs1sQnz9sSs;
-        Thu, 28 Jan 2021 10:27:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611790074;
-        bh=OTWDb98vidPLgsGQvW27UC+yhbiHyf44Fpn+cy08QhA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Pw+4WD4UxG24bbzVbz1f4WRkIdB+if+EP4iZqupZuPcx7HGyF3oQeRpznndITtAOw
-         t0Fr+pXpr9uuuiVtlwJe5NgMafOKSoHQrIyLSMwYXOSVSClAFiJ3wllDjgzaTMZNUw
-         5m/9f9Q0PWei53t+pSIXkxysipeIyU07HICOdqDAyPlx6nXRVrVfwRIuTF6N6VBWgC
-         eQL6DM5Mtdz69VtiCJfWnHoCAUlbqDrOQbL1iw7E5GKP5nlzx5y2+ifX2yQDGf2iXt
-         stjbuicUGQyvKtiKcorprX9YxeTU+pgqqsYPKlIu+q2PaQ5Hn6ON9zJnUrIKdIqmHo
-         4BoHsJivLg5fw==
-Date:   Thu, 28 Jan 2021 10:27:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>
-Subject: linux-next: manual merge of the risc-v tree with the arm64 tree
-Message-ID: <20210128102747.3ae8e5eb@canb.auug.org.au>
+        id S235541AbhA0Xbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:31:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233522AbhA0XbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 18:31:17 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FD8C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:29:09 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611790146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ovKlPzpKCMynzgFtEXCUWBxt30oNgDe6PQkZXpXltUA=;
+        b=C/tBOjYGSKvMIq4ciJOkKiAxjDcyNQ+81R7SWA7tWAwRiKX0TGdmh/WVQiihEScPSNcXc+
+        C1cYSr9oAAGuTDX9K4VQtWoSwIAYYJABGO7IBcHFL+a0aTQjJ5uMgvlnfHZSQ1zcRsJKvG
+        X7a1IOxKQpM/exo1QP/N/AHDhot8ROujrqwyA1AdTMEiOaSQMEDXiyJ8GTGyqkpyvD/PwO
+        xV/36kZfOPBaQmXNecESa69z2ovJB4aZ5grm60n5uY5sbVeOeXu4r5NCjHWV4rwNv6qmLJ
+        TspgAK3key6s8A8KsWqzFdq/ix8f1nB9gQf8LYciO3aT8UD4Pvq9BDIvBq4h4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611790146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ovKlPzpKCMynzgFtEXCUWBxt30oNgDe6PQkZXpXltUA=;
+        b=JJFCLAa8lWBu1muEWqTMVrgiMNXfffjAYOQnL5m1DE3P0ielD0T3ncr+RZTA83IQXkZc2D
+        hF046Xs3itYu1ICA==
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@linux.intel.com
+Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
+In-Reply-To: <87bldaaxcc.fsf@jogness.linutronix.de>
+References: <20210122081311.GA12834@xsang-OptiPlex-9020> <YAr7d6A4CkMpgx+g@alley> <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain> <87bldaaxcc.fsf@jogness.linutronix.de>
+Date:   Thu, 28 Jan 2021 00:35:06 +0106
+Message-ID: <878s8eari5.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uzHRzYvuqbXg=DLHTAYsZJF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uzHRzYvuqbXg=DLHTAYsZJF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021-01-27, John Ogness <john.ogness@linutronix.de> wrote:
+> I was finally able to trigger this by using my workstation
 
-Hi all,
+Well, I don't know how reliably I can trigger this. I think my time will
+be better spent getting lkp to trigger, since that shows to be reliable.
 
-Today's linux-next merge of the risc-v tree got a conflict in:
+It took me an hour to trigger this one and I have the feeling I got
+lucky with it.
 
-  arch/arm64/mm/Makefile
+[ 1854.183816] INFO: rcu_tasks detected stalls on tasks:
+[ 1854.184502] 0000000036ce200f: .. nvcsw: 0/0 holdout: 1 idle_cpu: -1/1
+[ 1854.185234] task:dd              state:R  running task     stack:    0 pid:19891 ppid:   668 flags:0x00000000
+[ 1854.185273] Call Trace:
+[ 1854.185275]  __schedule+0xfa9/0x1056
+[ 1854.185283]  ? firmware_map_remove+0x172/0x172
+[ 1854.185300]  ? ksys_write+0x147/0x180
+[ 1854.185304]  schedule+0x170/0x1e3
+[ 1854.185307]  exit_to_user_mode_prepare+0x27/0xac
+[ 1854.185312]  syscall_exit_to_user_mode+0x41/0x4f
+[ 1854.185316]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 1854.185321] RIP: 0033:0x7f99bf52fc00
+[ 1854.185324] RSP: 002b:00007ffd75722bf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[ 1854.185328] RAX: 0000000000000001 RBX: 00007f99bfa1b690 RCX: 00007f99bf52fc00
+[ 1854.185331] RDX: 0000000000000001 RSI: 0000560056ce3010 RDI: 0000000000000001
+[ 1854.185335] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+[ 1854.185338] R10: 00007ffd757229c0 R11: 0000000000000246 R12: 0000560056ce3010
+[ 1854.185341] R13: 0000000000000001 R14: 0000560056ce3010 R15: 0000560056ce3010
 
-between commit:
+To generate syscalls and interrupts, "dd" was doing:
 
-  072e3d96a79a ("arm64: hibernate: move page handling function to new trans=
-_pgd.c")
+    dd if=/dev/zero bs=1 count=100000000 | nc 10.0.2.2 12345
 
-from the arm64 tree and commit:
+I'm not even sure how to go about debugging this. The only printk load I
+can really see are the:
 
-  ae3c107cd8be ("numa: Move numa implementation to common code")
+    "tasks-torture:torture_onoff task: online 0 failed: errno -5"
 
-from the risc-v tree.
+error messages. But they are only occurring at a rate of 40-50 per
+second. They are coming from the pr_alert() in kernel/torture.c:174, so
+it should still be hitting spinlocks (either from the console driver or
+@console_owner_lock).
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+I will re-focus on reproducing this with lkp.
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/mm/Makefile
-index 77222d92667a,cd60e4fed78f..000000000000
---- a/arch/arm64/mm/Makefile
-+++ b/arch/arm64/mm/Makefile
-@@@ -6,8 -6,6 +6,7 @@@ obj-y				:=3D dma-mapping.o extable.o fau
-  obj-$(CONFIG_HUGETLB_PAGE)	+=3D hugetlbpage.o
-  obj-$(CONFIG_PTDUMP_CORE)	+=3D ptdump.o
-  obj-$(CONFIG_PTDUMP_DEBUGFS)	+=3D ptdump_debugfs.o
- +obj-$(CONFIG_TRANS_TABLE)	+=3D trans_pgd.o
-- obj-$(CONFIG_NUMA)		+=3D numa.o
-  obj-$(CONFIG_DEBUG_VIRTUAL)	+=3D physaddr.o
-  obj-$(CONFIG_ARM64_MTE)		+=3D mteswap.o
-  KASAN_SANITIZE_physaddr.o	+=3D n
-
---Sig_/uzHRzYvuqbXg=DLHTAYsZJF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAR9vQACgkQAVBC80lX
-0GxjQwf8DZsExCauOxTwgqd/ymd2lFTpvFbn7ZytOTmZ1gGK/xPv9Tdcxj+bjYKD
-3JSN4cHC5wHV6VU+TTBZqgxmPamY++pI4IQ6rykaxjYARQo5xjs+Td0mwOSj13/H
-Vub/f8XVcuQb2B7OAuCNF0L0P1ij9lfSW8r6MbRxmVo2OaEFaVZIQrUi0+dkyX73
-6Bosb0kz1OAwp/c3XGI+twD6vqJD/WruhcvzJOt4qlcZ6Ctcoipz5uHKXi1QBga+
-NXEiAjZucngOvC5bwF6xfIrhNNN4C7uNlTrzKPx7qcHHBRm1dfvTwqrvosDHAyTh
-9KyLKr27GAZreOoYi+p+UTTqanU2ZA==
-=PVHd
------END PGP SIGNATURE-----
-
---Sig_/uzHRzYvuqbXg=DLHTAYsZJF--
+John Ogness
