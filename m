@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DD730580D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9741305817
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbhA0KQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbhA0KN4 (ORCPT
+        id S235766AbhA0KSY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Jan 2021 05:18:24 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40524 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235711AbhA0KPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:13:56 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97378C06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:13:15 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id p15so968200pjv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:13:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Mcz+n2KoieLg/hGSE9zSgqjZ3omTpFzpCsqi6lR9mNU=;
-        b=Ahc7KfA/dLG+hjxO7xTdu6fZyx4C/906vWzeWofgUe/6CaRU1DHJK5ISHOazKQP5WJ
-         6Vr0BDQGq7izi6Zn6QRim0jmb2b6k/ej8k7bpDdHpa5p7vjSA66sXk+yi8r7Wk4ZxBdK
-         0vjhlayifatx1tNVCOOMy7OzKOILKO1D2MdZtwr1NEKPX+evVrs1X4d+OaEmBPBbeg0a
-         VhQAb6Hd2g/Hj48lrIqzrVc/5eHLCCXWWmd/g6BXpMz5HYGQYEWSpMqIkEWsvnVHlCAF
-         f/1roVVMKousaGUqN2vEgwIuZjT8K4EthxaOI0uOgvWfvSCS+axfIg7UDkBVdN3KVuxT
-         VJ1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mcz+n2KoieLg/hGSE9zSgqjZ3omTpFzpCsqi6lR9mNU=;
-        b=Utjg9gZC9DpCopRGOnnn+Ze5RVx6Wj6Z97myOGY/9AEHPX7Gy0iYN34c2/rq6D+ei6
-         JemTbk0OmowmF7y7mWsron49WMw7Fi/5dCVZ1G0iTAKLcd1MfqD+OvMXRj3kacAGXQzJ
-         1ENLviad9mK3Ct2jtLS2CgnjdcgAupfe6gGWsrtyGjkltm7W9/YVgsHFJM6TY6xi3wk1
-         EIl90WLNsvsotJ872dH2DYZalLe0amGYz242ODkupVgmdN7LSKm/JJUwphvMeyvsISMi
-         eMTWM677SdVe9MWvScjlahHmJwvHfu9ifT2y1HvjpoSDGkNXMm7+oAsir/WQqim+eefj
-         SSLQ==
-X-Gm-Message-State: AOAM533ihywu0pNTB1Gq7EFXzuTKMiHKHL4sADN8cBR9GSi4vofl3dBe
-        Oikwyt44kGnGHhA/1v9q58wByg==
-X-Google-Smtp-Source: ABdhPJzEix8bPHI1p6ys7MVr2aWJCOVZqkIIlbL9JmuGH0aKPJCG52MhIgXpVz4ZqkPs7cmilM6n5w==
-X-Received: by 2002:a17:90a:c705:: with SMTP id o5mr4935503pjt.64.1611742395169;
-        Wed, 27 Jan 2021 02:13:15 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id a189sm2056145pfd.117.2021.01.27.02.13.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 02:13:14 -0800 (PST)
-Date:   Wed, 27 Jan 2021 15:43:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
-        cw00.choi@samsung.com, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com
-Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
- power
-Message-ID: <20210127101312.ve7qlpvda6tabquu@vireshk-i7>
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
- <20210127091540.xesvwoeavyaf37jn@vireshk-i7>
- <9aecd2cd-771e-58b8-6672-f133600b70b5@arm.com>
+        Wed, 27 Jan 2021 05:15:52 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-29-zmoLVMLnMvui0pT--GB9Ew-1; Wed, 27 Jan 2021 10:14:12 +0000
+X-MC-Unique: zmoLVMLnMvui0pT--GB9Ew-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 27 Jan 2021 10:14:10 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 27 Jan 2021 10:14:10 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Xie He' <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        "Krzysztof Halasa" <khc@pm.waw.pl>
+Subject: RE: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB
+ frames
+Thread-Topic: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB
+ frames
+Thread-Index: AQHW9I1sli8DbRQswEiQZfQBLL+Jnqo7Omkg
+Date:   Wed, 27 Jan 2021 10:14:10 +0000
+Message-ID: <77971dffcff441c3ad3d257825dc214b@AcuMS.aculab.com>
+References: <20210127090747.364951-1-xie.he.0141@gmail.com>
+In-Reply-To: <20210127090747.364951-1-xie.he.0141@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9aecd2cd-771e-58b8-6672-f133600b70b5@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-01-21, 10:11, Lukasz Luba wrote:
+From: Xie He
+> Sent: 27 January 2021 09:08
 > 
+> An HDLC hardware driver may call netif_stop_queue to temporarily stop
+> the TX queue when the hardware is busy sending a frame, and after the
+> hardware has finished sending the frame, call netif_wake_queue to
+> resume the TX queue.
 > 
-> On 1/27/21 9:15 AM, Viresh Kumar wrote:
-> > On 26-01-21, 10:39, Lukasz Luba wrote:
-> > > As it's a RFC, it still misses the cpufreq sysfs implementation, but would
-> > > be addressed if all agree.
-> > 
-> > Not commenting on the whole stuff but if you ever need something for cpufreq, it
-> > is already there. Look for these.
-> > 
-> > store_one(scaling_min_freq, min);
-> > store_one(scaling_max_freq, max);
-> > 
-> > Hopefully they will work just fine.
-> > 
+> However, the LAPB module doesn't know about this. Whether or not the
+> hardware driver has stopped the TX queue, the LAPB module still feeds
+> outgoing frames to the hardware driver for transmission. This can cause
+> frames to be dropped by the hardware driver.
 > 
-> So, can I assume you don't mind to plumb it into these two?
+> It's not easy to fix this issue in the LAPB module. We can indeed let the
+> LAPB module check whether the TX queue has been stopped before feeding
+> each frame to the hardware driver, but when the hardware driver resumes
+> the TX queue, it's not easy to immediately notify the LAPB module and ask
+> it to resume transmission.
+> 
+> Instead, we can fix this issue at the hdlc_x25 layer, by using qdisc TX
+> queues to queue outgoing LAPB frames. The qdisc TX queue will then
+> automatically be controlled by netif_stop_queue and netif_wake_queue.
+> 
+> This way, when sending, we will use the qdisc queue to queue and send
+> the data twice: once as the L3 packet and then (after processed by the
+> LAPB module) as an LAPB (L2) frame. This does not make the logic of the
+> code messy, because when receiving, data are already "received" on the
+> device twice: once as an LAPB (L2) frame and then (after processed by
+> the LAPB module) as the L3 packet.
 
-No :)
+If I read this correctly it adds a (potentially big) queue between the
+LAPB code that adds the sequence numbers to the frames and the hardware
+that actually sends them.
 
-As I said at the top, I am not commenting on the whole thing yet, may
-need to think over a bit and Rafael will comment as well.
+IIRC [1] there is a general expectation that the NR in a transmitted frame
+will be the same as the last received NS unless acks are being delayed
+for flow control reasons.
 
--- 
-viresh
+You definitely want to be able to ack a received frame while transmitting
+back-to-back I-frames.
+
+This really means that you only want 2 frames in the hardware driver.
+The one being transmitted and the next one - so it gets sent with a
+shared flag.
+There is no point sending an RR unless the hardware link is actually idle.
+
+[1] I've been doing to much SS7 MTP2 recently, I can't quite remember
+all of LAPB!
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
