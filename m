@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59979305047
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC788305046
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbhA0Dyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S317127AbhA0Bjy (ORCPT
+        id S237547AbhA0DyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:54:10 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11601 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S316661AbhA0Bja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:39:54 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DC8C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:39:05 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C146F240;
-        Wed, 27 Jan 2021 02:37:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611711442;
-        bh=V9vA/sNlPmooK07pq3bXsoG2K/kwhxOi3TDZS5PulQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MokMB9WzOH0S16kD9nKJ478Pcdi0P6RqMAthVg6Z5QOV411+Sa39Zq5GnhPXopkCZ
-         8M+G7DEYrH/vh/dhgrfqo1y72lN13VHXh3r1rZjy7OFXpAOqLUIUZDukJeNwrMFXQF
-         5ifxQbLajiBR0PBW+SQ1IOcV705NuU/kJXxmuYUE=
-Date:   Wed, 27 Jan 2021 03:37:02 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hyun Kwon <hyun.kwon@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: remove myself from the list
-Message-ID: <YBDDvmLHrYpuTBkn@pendragon.ideasonboard.com>
-References: <20210127011312.697159-1-hyun.kwon@xilinx.com>
+        Tue, 26 Jan 2021 20:39:30 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DQR6X5XNFz15sSR;
+        Wed, 27 Jan 2021 09:37:08 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Wed, 27 Jan 2021
+ 09:38:16 +0800
+Subject: Re: [PATCH v2] dt-bindings: leds: Document commonly used LED triggers
+To:     Rob Herring <robh@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <dmurphy@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>
+References: <20201210082449.30586-1-manivannan.sadhasivam@linaro.org>
+ <20201214223621.GA2493849@robh.at.kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <30f805f7-81c0-49e5-7ad6-7509ad0b4b4a@huawei.com>
+Date:   Wed, 27 Jan 2021 09:38:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210127011312.697159-1-hyun.kwon@xilinx.com>
+In-Reply-To: <20201214223621.GA2493849@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hyun,
+Hi Manivannan:
+  Do you have time to prepare v3? Hope it can be applied into v5.12
 
-Thank you for the patch.
 
-On Tue, Jan 26, 2021 at 05:13:12PM -0800, Hyun Kwon wrote:
-> The email will become invalid soon.
-
-Is there, by any chance, anyone at Xilinx would could help maintaining
-these drivers ?
-
-> Signed-off-by: Hyun Kwon <hyun.kwon@xilinx.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> ---
->  MAINTAINERS | 3 ---
->  1 file changed, 3 deletions(-)
+On 2020/12/15 6:36, Rob Herring wrote:
+> On Thu, Dec 10, 2020 at 01:54:49PM +0530, Manivannan Sadhasivam wrote:
+>> This commit documents the LED triggers used commonly in the SoCs. Not
+>> all triggers are documented as some of them are very application specific.
+>> Most of the triggers documented here are currently used in devicetrees
+>> of many SoCs.
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 992fe3b0900a..4fc00c2da56d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6048,7 +6048,6 @@ F:	Documentation/gpu/xen-front.rst
->  F:	drivers/gpu/drm/xen/
->  
->  DRM DRIVERS FOR XILINX
-> -M:	Hyun Kwon <hyun.kwon@xilinx.com>
->  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
-> @@ -19577,7 +19576,6 @@ S:	Maintained
->  F:	drivers/tty/serial/uartlite.c
->  
->  XILINX VIDEO IP CORES
-> -M:	Hyun Kwon <hyun.kwon@xilinx.com>
->  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
-> @@ -19587,7 +19585,6 @@ F:	drivers/media/platform/xilinx/
->  F:	include/uapi/linux/xilinx-v4l2-controls.h
->  
->  XILINX ZYNQMP DPDMA DRIVER
-> -M:	Hyun Kwon <hyun.kwon@xilinx.com>
->  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->  L:	dmaengine@vger.kernel.org
->  S:	Supported
+> The idea with recent LED binding changes is to move away from 
+> 'linux,default-trigger' to 'function' and 'trigger-sources' and to have 
+> some sort of standardized names.
+> 
+>>
+>> While at it, let's also sort the triggers in ascending order.
+> 
+> I'm not sure we want that. Probably better to keep related functions 
+> together.
+> 
+>>
+>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>> ---
+>>
+>> Changes in v2:
+>>
+>> * Added more triggers, fixed the regex
+>> * Sorted triggers in ascending order
+>>
+>>  .../devicetree/bindings/leds/common.yaml      | 78 ++++++++++++++-----
+>>  1 file changed, 60 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+>> index f1211e7045f1..3c2e2208c1da 100644
+>> --- a/Documentation/devicetree/bindings/leds/common.yaml
+>> +++ b/Documentation/devicetree/bindings/leds/common.yaml
 
--- 
-Regards,
-
-Laurent Pinchart
