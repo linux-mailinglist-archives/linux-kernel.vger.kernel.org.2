@@ -2,260 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D01D305776
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2910830577A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235098AbhA0Jy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:54:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56366 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235634AbhA0Jwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:52:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4495CAD78;
-        Wed, 27 Jan 2021 09:51:40 +0000 (UTC)
-From:   Michal Rostecki <mrostecki@suse.de>
-Cc:     Michal Rostecki <mrostecki@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: Avoid calling btrfs_get_chunk_map() twice
-Date:   Wed, 27 Jan 2021 10:51:31 +0100
-Message-Id: <20210127095131.22600-1-mrostecki@suse.de>
-X-Mailer: git-send-email 2.30.0
+        id S233073AbhA0Jzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235629AbhA0JwT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:52:19 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7A4C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:51:39 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id c128so1048218wme.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:51:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ZsyXSLBpqyoZDJLOwz36YTbFMR5XUsNbF337fUqt2Cg=;
+        b=XM+7AUuC9pRqUpcQ44jgThIg1R06D5+ODzaBzxFVy6O64Bfu3YlokaUj/qZWDDalUp
+         H1tJpg6SXSRIcUkpK8HTmhqT1G6g0LpQNcjyvtx05XkcUMVACa4uGoKORoO9VkYU6F67
+         XfJHrUU6dlCoDYzyHoGyp4Nd+ZobKt/vswc5d+m3eg9Ru/wvjBAKxow2DqBRLn4pD8T/
+         CZCnXmjCH8jTugGpZVNvAV8VELYQhbTLew1vPcjbYx+fP36sZYMuFhhQCB52lR0c0zbo
+         fpVdMahWflCeMErqu01wEo9kvYnyiiG4V7dKhoMB40f6EakwJIJnqz/mr/g3O7bMqNce
+         bbdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZsyXSLBpqyoZDJLOwz36YTbFMR5XUsNbF337fUqt2Cg=;
+        b=f1PvdluhO1+h8KozPQr+ry/v1j7Q0IKxSw2I9JpMrVm5f9AQ8bXaRj6kuQU4wmZbOn
+         Z/0QJVmOtKJDDgWvVmT0U1CHbqURq2auya9kTAkqwBNHCcxacHacWDB1KqVXGRm6LQve
+         +P8kBWZX7OcxHpFNResUN8NpzVP5VQGYfW746v96E1p2iZN+TknwjYlHu6alpH9DL+4m
+         v0dNH5NjwDyVWCg8wt6rcbrx2YP6tfhoqMY0vJNUFweqQ8t47kt5j8scEVvbZ9NeVxF/
+         EV6SUDWTD6z9sbegHhlqYdVFPsaHO9CE/X2AmFiNPbYOa1nnSjezvIg1gGEmBOMOVw2A
+         AXSA==
+X-Gm-Message-State: AOAM532badlBs7dOdmMe96HRFF59SOOzsr7Mu33p5UuYcCapSAUSXdiQ
+        AF6TaHgsbhB5nenrTw178TBQxipjKnXSqQ==
+X-Google-Smtp-Source: ABdhPJz/BXkWanv6XHkXGTic7kAcimSL/5joj2dCuqTeRbrnaMy0dPjNX+1atXk2Dz/Jdmydy0V3FA==
+X-Received: by 2002:a7b:cb8a:: with SMTP id m10mr3359497wmi.127.1611741097661;
+        Wed, 27 Jan 2021 01:51:37 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id o17sm2213535wrm.52.2021.01.27.01.51.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 01:51:36 -0800 (PST)
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Remove bit clock state check
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210127063038.1399-1-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <16199fa8-7a87-6e7f-9db6-1d5cd8493d4c@linaro.org>
+Date:   Wed, 27 Jan 2021 09:51:35 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210127063038.1399-1-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Rostecki <mrostecki@suse.com>
 
-Before this change, the btrfs_get_io_geometry() function was calling
-btrfs_get_chunk_map() to get the extent mapping, necessary for
-calculating the I/O geometry. It was using that extent mapping only
-internally and freeing the pointer after its execution.
 
-That resulted in calling btrfs_get_chunk_map() de facto twice by the
-__btrfs_map_block() function. It was calling btrfs_get_io_geometry()
-first and then calling btrfs_get_chunk_map() directly to get the extent
-mapping, used by the rest of the function.
+On 27/01/2021 06:30, Srinivasa Rao Mandadapu wrote:
+> No need of BCLK state maintenance from driver side as
+> clock_enable and clk_disable API's maintaing state counter.
+> 
+> One of the major issue was spotted when Headset jack inserted
+> while playback continues, due to same PCM device node opens twice
+> for playaback/capture and closes once for capture and playback continues.
+> 
+> It can resolve the errors in such scenarios.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-This change fixes that by passing the extent mapping to the
-btrfs_get_io_geometry() function as an argument.
+Thanks for the cleanup, yes clk core will take care of this by 
+enable_count check!
 
-Fixes: 89b798ad1b42 ("btrfs: Use btrfs_get_io_geometry appropriately")
-Signed-off-by: Michal Rostecki <mrostecki@suse.com>
----
- fs/btrfs/inode.c   | 37 ++++++++++++++++++++++++++++---------
- fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
- fs/btrfs/volumes.h |  5 +++--
- 3 files changed, 47 insertions(+), 34 deletions(-)
+You should add
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0dbe1aaa0b71..a4ce8501ed4d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 	struct inode *inode = page->mapping->host;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	u64 logical = bio->bi_iter.bi_sector << 9;
-+	struct extent_map *em;
- 	u64 length = 0;
- 	u64 map_length;
--	int ret;
-+	int ret = 0;
- 	struct btrfs_io_geometry geom;
- 
- 	if (bio_flags & EXTENT_BIO_COMPRESSED)
-@@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 
- 	length = bio->bi_iter.bi_size;
- 	map_length = length;
--	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
--				    &geom);
-+	em = btrfs_get_chunk_map(fs_info, logical, map_length);
-+	if (IS_ERR(em))
-+		return PTR_ERR(em);
-+	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
-+				    map_length, &geom);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
--	if (geom.len < length + size)
--		return 1;
--	return 0;
-+	if (geom.len < length + size) {
-+		ret = 1;
-+		goto out;
-+	}
-+out:
-+	free_extent_map(em);
-+	return ret;
- }
- 
- /*
-@@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	u64 submit_len;
- 	int clone_offset = 0;
- 	int clone_len;
-+	int logical;
- 	int ret;
- 	blk_status_t status;
- 	struct btrfs_io_geometry geom;
- 	struct btrfs_dio_data *dio_data = iomap->private;
-+	struct extent_map *em;
- 
- 	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
- 	if (!dip) {
-@@ -7970,11 +7980,17 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	}
- 
- 	start_sector = dio_bio->bi_iter.bi_sector;
-+	logical = start_sector << 9;
- 	submit_len = dio_bio->bi_iter.bi_size;
- 
- 	do {
--		ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
--					    start_sector << 9, submit_len,
-+		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
-+		if (IS_ERR(em)) {
-+			status = errno_to_blk_status(ret);
-+			goto out_err;
-+		}
-+		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
-+					    logical, submit_len,
- 					    &geom);
- 		if (ret) {
- 			status = errno_to_blk_status(ret);
-@@ -8030,12 +8046,15 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 		clone_offset += clone_len;
- 		start_sector += clone_len >> 9;
- 		file_offset += clone_len;
-+
-+		free_extent_map(em);
- 	} while (submit_len > 0);
- 	return BLK_QC_T_NONE;
- 
- out_err:
- 	dip->dio_bio->bi_status = status;
- 	btrfs_dio_private_put(dip);
-+	free_extent_map(em);
- 	return BLK_QC_T_NONE;
- }
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a8ec8539cd8d..4c753b17c0a2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op)
- }
- 
- /*
-- * btrfs_get_io_geometry - calculates the geomery of a particular (address, len)
-+ * btrfs_get_io_geometry - calculates the geometry of a particular (address, len)
-  *		       tuple. This information is used to calculate how big a
-  *		       particular bio can get before it straddles a stripe.
-  *
-- * @fs_info - the filesystem
-- * @logical - address that we want to figure out the geometry of
-- * @len	    - the length of IO we are going to perform, starting at @logical
-- * @op      - type of operation - write or read
-- * @io_geom - pointer used to return values
-+ * @fs_info: the filesystem
-+ * @em:      mapping containing the logical extent
-+ * @op:      type of operation - write or read
-+ * @logical: address that we want to figure out the geometry of
-+ * @len:     the length of IO we are going to perform, starting at @logical
-+ * @io_geom: pointer used to return values
-  *
-  * Returns < 0 in case a chunk for the given logical address cannot be found,
-  * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
-  */
--int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
--			u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
-+int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
-+			  enum btrfs_map_op op, u64 logical, u64 len,
-+			  struct btrfs_io_geometry *io_geom)
- {
--	struct extent_map *em;
- 	struct map_lookup *map;
- 	u64 offset;
- 	u64 stripe_offset;
-@@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	u64 stripe_len;
- 	u64 raid56_full_stripe_start = (u64)-1;
- 	int data_stripes;
--	int ret = 0;
- 
- 	ASSERT(op != BTRFS_MAP_DISCARD);
- 
--	em = btrfs_get_chunk_map(fs_info, logical, len);
--	if (IS_ERR(em))
--		return PTR_ERR(em);
--
- 	map = em->map_lookup;
- 	/* Offset of this logical address in the chunk */
- 	offset = logical - em->start;
-@@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		btrfs_crit(fs_info,
- "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
- 			stripe_offset, offset, em->start, logical, stripe_len);
--		ret = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	/* stripe_offset is the offset of this block in its stripe */
-@@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	io_geom->stripe_offset = stripe_offset;
- 	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
- 
--out:
--	/* once for us */
--	free_extent_map(em);
--	return ret;
-+	return 0;
- }
- 
- static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
-@@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
- 	ASSERT(bbio_ret);
- 	ASSERT(op != BTRFS_MAP_DISCARD);
- 
--	ret = btrfs_get_io_geometry(fs_info, op, logical, *length, &geom);
-+	em = btrfs_get_chunk_map(fs_info, logical, *length);
-+	ASSERT(!IS_ERR(em));
-+
-+	ret = btrfs_get_io_geometry(fs_info, em, op, logical, *length, &geom);
- 	if (ret < 0)
- 		return ret;
- 
--	em = btrfs_get_chunk_map(fs_info, logical, *length);
--	ASSERT(!IS_ERR(em));
- 	map = em->map_lookup;
- 
- 	*length = geom.len;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index c43663d9c22e..04e2b26823c2 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		     u64 logical, u64 *length,
- 		     struct btrfs_bio **bbio_ret);
--int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
--		u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
-+int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *map,
-+			  enum btrfs_map_op op, u64 logical, u64 len,
-+			  struct btrfs_io_geometry *io_geom);
- int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
- int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
--- 
-2.30.0
+Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF 
+invalid state")
 
+
+> ---
+>   sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
+>   sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
+>   sound/soc/qcom/lpass.h           |  1 -
+>   3 files changed, 8 insertions(+), 18 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index ae8efbc89af2..a669202e0001 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+>   				ret);
+>   
+> -		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
+> -			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+> -			if (ret) {
+> -				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+> -				clk_disable(drvdata->mi2s_osr_clk[id]);
+> -				return ret;
+> -			}
+> -			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
+> +		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+> +		if (ret) {
+> +			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+> +			clk_disable(drvdata->mi2s_osr_clk[id]);
+
+Can you also remove this unnecessary disable here!
+
+
+-srini
+
+> +			return ret;
+>   		}
+> -
+>   		break;
+>   	case SNDRV_PCM_TRIGGER_STOP:
+>   	case SNDRV_PCM_TRIGGER_SUSPEND:
+> @@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   		if (ret)
+>   			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+>   				ret);
+> -		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
+> -			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+> -			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
+> -		}
+> +
+> +		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+> +
+>   		break;
+>   	}
+>   
+> @@ -861,7 +856,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+>   				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+>   			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+>   		}
+> -		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
+>   	}
+>   
+>   	/* Allocation for i2sctl regmap fields */
+> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+> index 405542832e99..c8e1d75340b2 100644
+> --- a/sound/soc/qcom/lpass-lpaif-reg.h
+> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
+> @@ -60,9 +60,6 @@
+>   #define LPAIF_I2SCTL_BITWIDTH_24	1
+>   #define LPAIF_I2SCTL_BITWIDTH_32	2
+>   
+> -#define LPAIF_BIT_CLK_DISABLE		0
+> -#define LPAIF_BIT_CLK_ENABLE		1
+> -
+>   #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
+>   #define LPAIF_DMACTL_RESET_STATE	0x00200000
+>   
+> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+> index 2d68af0da34d..83b2e08ade06 100644
+> --- a/sound/soc/qcom/lpass.h
+> +++ b/sound/soc/qcom/lpass.h
+> @@ -68,7 +68,6 @@ struct lpass_data {
+>   	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
+>   	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
+>   	int hdmi_port_enable;
+> -	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
+>   
+>   	/* low-power audio interface (LPAIF) registers */
+>   	void __iomem *lpaif;
+> 
