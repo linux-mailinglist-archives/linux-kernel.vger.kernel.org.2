@@ -2,143 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7973067A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F119C3067A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235518AbhA0XQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:16:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234802AbhA0XOx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:14:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611789205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pr6Co7ntJ1/liHxJICICBCAntdg2dYIVuYNiuoPSsbc=;
-        b=HURBjrt8Clp9yCneNnvbtbVqS7e/UshdQuL1BfJdqUAGe2gdoVQKHeENaMwNIQsthU1Icz
-        OY74NLV+DxZ0WOv8dmBEB0GoSPrdEuYa5eibVeZhebqJhwHrd3IwQ/QyT/OC3/dFU6UJEl
-        TuFbcb6G8OOFWcBC3okOqMjVmaapzSA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-uKk1FXqGMLaoZEWpVyVdDA-1; Wed, 27 Jan 2021 18:13:21 -0500
-X-MC-Unique: uKk1FXqGMLaoZEWpVyVdDA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75D0F801AA7;
-        Wed, 27 Jan 2021 23:13:19 +0000 (UTC)
-Received: from krava (ovpn-112-48.ams2.redhat.com [10.36.112.48])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6EEAC10023B3;
-        Wed, 27 Jan 2021 23:13:17 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 00:13:16 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH 1/2] perf script: Support filtering by hex address
-Message-ID: <20210127222905.GD284633@krava>
-References: <20210124232750.19170-1-yao.jin@linux.intel.com>
+        id S235383AbhA0XQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:16:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233713AbhA0XO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 18:14:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1951460C3D;
+        Wed, 27 Jan 2021 23:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611789225;
+        bh=OG86KZQjlQK/iphbVSEABQExPs4plghOMLe7bxUvZQk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hiXR4SPij5BE91XtvMKGChI7asIK50gRj/Z4Lxm/glG9RzkAxpyJspZLwbwys9nps
+         tI03uwRMyhgEkIxQcuiaPm3ZgMz4bBEtPlvi3IDzC5wDtZcL2A4lAoqMpt1g+UosSA
+         wLTOZ9jePGGUbsufEsqPvQnmsgTqhAr99x2RSYgByv1mkkpm6EkRbk8bv1XdG7HMqN
+         lKxGdoLkSbt4X+NuVD6ceY/nb7J2Ff7mFQj2a1j/FnikHzR6RurcOQhNhtq5tlslBa
+         gfuiakBGS5QnzkiMepjRh+mx4bTXDq7IRbBz/yUbE4efmesD8ZExJtOZR2bk1CpbeT
+         4NEmBQoS+pSdw==
+Date:   Wed, 27 Jan 2021 23:13:35 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v15 10/10] arm64: Add IMA log information in kimage used
+ for kexec
+Message-ID: <20210127231334.GB1016@willie-the-truck>
+References: <20210115173017.30617-1-nramas@linux.microsoft.com>
+ <20210115173017.30617-11-nramas@linux.microsoft.com>
+ <20210127165424.GB358@willie-the-truck>
+ <dec23eb8-0b27-3227-d1ef-f759338a7f9f@linux.microsoft.com>
+ <20210127180230.GA593@willie-the-truck>
+ <8a573f84-732a-3591-8751-f7b08edaa01d@linux.microsoft.com>
+ <6343ab2eec390ab7582beea04f8006af095850c8.camel@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210124232750.19170-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <6343ab2eec390ab7582beea04f8006af095850c8.camel@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 07:27:49AM +0800, Jin Yao wrote:
+On Wed, Jan 27, 2021 at 01:31:02PM -0500, Mimi Zohar wrote:
+> On Wed, 2021-01-27 at 10:24 -0800, Lakshmi Ramasubramanian wrote:
+> > On 1/27/21 10:02 AM, Will Deacon wrote:
+> > > On Wed, Jan 27, 2021 at 09:56:53AM -0800, Lakshmi Ramasubramanian wrote:
+> > >> On 1/27/21 8:54 AM, Will Deacon wrote:
+> > >>> On Fri, Jan 15, 2021 at 09:30:17AM -0800, Lakshmi Ramasubramanian wrote:
+> > >>>> Address and size of the buffer containing the IMA measurement log need
+> > >>>> to be passed from the current kernel to the next kernel on kexec.
+> > >>>>
+> > >>>> Add address and size fields to "struct kimage_arch" for ARM64 platform
+> > >>>> to hold the address and size of the IMA measurement log buffer.
+> > >>>>
+> > >>>> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC, if CONFIG_IMA
+> > >>>> is enabled, to indicate that the IMA measurement log information is
+> > >>>> present in the device tree for ARM64.
+> > >>>>
+> > >>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> > >>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> > >>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > >>>> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> > >>>> ---
+> > >>>>    arch/arm64/Kconfig             | 1 +
+> > >>>>    arch/arm64/include/asm/kexec.h | 5 +++++
+> > >>>>    2 files changed, 6 insertions(+)
+> > >>>>
+> > >>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > >>>> index 1d466addb078..ea7f7fe3dccd 100644
+> > >>>> --- a/arch/arm64/Kconfig
+> > >>>> +++ b/arch/arm64/Kconfig
+> > >>>> @@ -1094,6 +1094,7 @@ config KEXEC
+> > >>>>    config KEXEC_FILE
+> > >>>>    	bool "kexec file based system call"
+> > >>>>    	select KEXEC_CORE
+> > >>>> +	select HAVE_IMA_KEXEC if IMA
+> > >>>>    	help
+> > >>>>    	  This is new version of kexec system call. This system call is
+> > >>>>    	  file based and takes file descriptors as system call argument
+> > >>>> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+> > >>>> index d24b527e8c00..2bd19ccb6c43 100644
+> > >>>> --- a/arch/arm64/include/asm/kexec.h
+> > >>>> +++ b/arch/arm64/include/asm/kexec.h
+> > >>>> @@ -100,6 +100,11 @@ struct kimage_arch {
+> > >>>>    	void *elf_headers;
+> > >>>>    	unsigned long elf_headers_mem;
+> > >>>>    	unsigned long elf_headers_sz;
+> > >>>> +
+> > >>>> +#ifdef CONFIG_IMA_KEXEC
+> > >>>> +	phys_addr_t ima_buffer_addr;
+> > >>>> +	size_t ima_buffer_size;
+> > >>>> +#endif
+> > >>>
+> > >>> Why do these need to be in the arch structure instead of 'struct kimage'?
+> > >>>
+> > >>
+> > >> Currently, only powerpc and, with this patch set, arm64 have support for
+> > >> carrying forward IMA measurement list across kexec system call. The above
+> > >> fields are used for tracking IMA measurement list.
+> > >>
+> > >> Do you see a reason to move these fields to "struct kimage"?
+> > > 
+> > > If they're gated on CONFIG_IMA_KEXEC, then it seems harmless for them to
+> > > be added to the shared structure. Or are you saying that there are
+> > > architectures which have CONFIG_IMA_KEXEC but do not want these fields?
+> > > 
+> > 
+> > As far as I know, there are no other architectures that define 
+> > CONFIG_IMA_KEXEC, but do not use these fields.
+> 
+> Yes, CONFIG_IMA_KEXEC enables "carrying the IMA measurement list across
+> a soft boot".   The only arch that currently carries the IMA
+> measurement across kexec is powerpc.
 
-SNIP
+Ok, in which case this sounds like it should be in the shared structure, no?
 
->  	perf script --symbols=noploop,0x4007a0
->  
-> +	Support filtering trace records by symbol name, start address of
-> +	symbol, any hexadecimal address and address range.
-> +
-> +	The comparison order is:
-> +	1. symbol name comparison
-> +	2. symbol start address comparison.
-> +	3. any hexadecimal address comparison.
-> +	4. address range comparison (see --addr-range).
-> +
-> +--addr-range::
-> +	Use with -S or --symbols to list traced records within address range.
-> +
-> +	For example, to list the traced records within the address range
-> +	[0x4007a0, 0x0x4007a9]:
-> +	perf script -S 0x4007a0 --addr-range 10
-> +
->  --call-trace::
->  	Show call stream for intel_pt traces. The CPUs are interleaved, but
->  	can be filtered with -C.
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index edacfa98d073..e0feda33dbb9 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -3525,6 +3525,8 @@ int cmd_script(int argc, const char **argv)
->  		    "system-wide collection from all CPUs"),
->  	OPT_STRING('S', "symbols", &symbol_conf.sym_list_str, "symbol[,symbol...]",
->  		   "only consider these symbols"),
-> +	OPT_INTEGER(0, "addr-range", &symbol_conf.addr_range,
-> +		    "Use with -S to list traced records within address range"),
->  	OPT_CALLBACK_OPTARG(0, "insn-trace", &itrace_synth_opts, NULL, NULL,
->  			"Decode instructions from itrace", parse_insn_trace),
->  	OPT_CALLBACK_OPTARG(0, "xed", NULL, NULL, NULL,
-> diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-> index fbe8578e4c47..525b859cb445 100644
-> --- a/tools/perf/util/event.c
-> +++ b/tools/perf/util/event.c
-> @@ -645,6 +645,22 @@ struct symbol *thread__find_symbol_fb(struct thread *thread, u8 cpumode,
->  	return al->sym;
->  }
->  
-> +static bool check_address_range(struct strlist *sym_list, int addr_range,
-> +				struct addr_location *al)
-> +{
-> +	struct str_node *pos;
-> +	char *endptr;
-> +	u64 addr, al_addr = al->map->unmap_ip(al->map, al->addr);
-> +
-> +	strlist__for_each_entry(pos, sym_list) {
-> +		addr = strtoull(pos->s, &endptr, 16);
-> +		if (al_addr >= addr && al_addr < addr + addr_range)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  /*
->   * Callers need to drop the reference to al->thread, obtained in
->   * machine__findnew_thread()
-> @@ -709,6 +725,26 @@ int machine__resolve(struct machine *machine, struct addr_location *al,
->  			ret = strlist__has_entry(symbol_conf.sym_list,
->  						al_addr_str);
->  		}
-> +		if (!ret && al->map) {
-> +			snprintf(al_addr_str, sz, "0x%"PRIx64,
-> +				al->map->unmap_ip(al->map, al->addr));
-> +			ret = strlist__has_entry(symbol_conf.sym_list,
-> +						 al_addr_str);
-> +			if (!ret) {
-> +				/* Check for hex without "0x" prefix */
-> +				snprintf(al_addr_str, sz, "%"PRIx64,
-> +					al->map->unmap_ip(al->map, al->addr));
-> +				ret = strlist__has_entry(symbol_conf.sym_list,
-> +							 al_addr_str);
-> +			}
-
-that seems tricky.. what if user specify more leading zeros,
-I think it'd be better to search intlist instead
-
-we could move all 'address' entries from sym_list to
-new intlist (in symbol__init) and use it for this search
-
-jirka
-
+Will
