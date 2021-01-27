@@ -2,212 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1363630569B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A217A3056A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhA0JPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:15:46 -0500
-Received: from mail-bn8nam11on2064.outbound.protection.outlook.com ([40.107.236.64]:36321
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S234915AbhA0JQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:16:18 -0500
+Received: from mail-dm6nam12on2059.outbound.protection.outlook.com ([40.107.243.59]:38357
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233532AbhA0JNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:13:32 -0500
+        id S235139AbhA0JOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:14:02 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kNNMn8Py/ym0FBjhC4IN3SHAZ0I2C/1frVugQPnviE6+0YlK1nqA0y0BtUfscqdam4LBLHwt0vtd2mQtt00kIZ4FTuab65RfqjfQthAWE9MYNEBZCLghcJE742J22uJ8qysPVyeOM14bltHgk/e225i2fhM8FzMwa0+VqzgWSIfjIsY0JbGFquJQjj/URgqQlYDPYgd36t7NLoSK0ilqORJkewRKpY1L0laNb5soBUncj+X3vCluRctrjDwRA/yKwnIt/OyFfLU30Ze60JJ0QQmXtH1qawcKds+E8x2sCZWLJzxjvswf6RwFtW+KpZWwkCrlqvqrFMLnmZ8rCBKazg==
+ b=LohmYt2zLd6lFmmvKhQ3nC19chbP1WVOdEH3FsMCbR6gp2uTp5RexPF/+k+WImCBDim0rf+RQz8/NepwMDbjfg2cLLQS8f8UJnYyQOucJKIKbjhfWpmLBhVmK52ttQT0KUPlL+tKQcf4kxJXcAK4jxG1Yhv9WAULXqgtCdVOVN5LLFbYrqn0QXC0w1WPy7FyMzp57jQSN2f93/T3d/LZ8feBqBoI2xFBLDlUKyHy/DjZeb+OlDSmEjKj050+eRrHMGC8zDCas/iAqejsbqiQk1m4aaxLYDCgAM2Qf4coFAkTxfE2f0JIWfcDqIkaaUPEm6HYSgqLapqcQy+N77upcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1CNSFQ7Av24ZOf+xqpGVTVnpU9e6E+rkwDRiIi8X7pA=;
- b=Ga6VmeNY8G9UE/rVHYb5zC93huWOOvSKureEoo7lhlTb4LodApaAfUSFci0tgTVMJ8sfPCdy1HChKhntni+4uIVDazZz8tF7crpunjsaHDdgsorWQPU/k3fZrIddQpByJsvlLEI4djfC7zzNlQ1uM0cems2FgaPhObiWY9O+KDKYD7qbHe9nGcD7r7rM8rKRwPWBp9/vpanr9LH5bN9RSlPpWtkLUipBCBE5nVmB8tN7TCpChFKfddgTsa5RBi5Cmmn5IPQCb8QEKmITrWtBwW0ZNbsE/ovL7e5w2DSKt3RlVPqJCHbdjZxZCRNmbfnumeosK1HbEEZ4p/fN7J0xwA==
+ bh=QpUXPHHejkMZch0Ue7H+fUos5ht1izOazQ2shcfH1Fo=;
+ b=GZ7QTOYOn5sXEKSFVNC1101dBl6vII8Qys1V98V1tbeSHHgkIxfOsYhlskx1NTEeL+FoOroWJd+wvp3qk/3wUEqfMhBmxo6aXEYMTfpPp2aDfFOuRuEmfV0skz1iiJcpHvPMISovj15hGelHaI0cwCg5O6i/sBfWEn0MyJlkDBBPjJpThSWgG1LLiDZGh/OmirqVIKfo9fJLfF4pF7PlWUcmhs5DS4WGdEdLqoaOP8DFsDkblKPYnVIjoeh5aSRZUgTHfwohYiDw6vkTV8bPk202zgGKIiQc+Ed4Z944dgJC1rit9hPflyqpMVJOq8ZLd98lTEIXIq+ZsHX9RBhJ6Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1CNSFQ7Av24ZOf+xqpGVTVnpU9e6E+rkwDRiIi8X7pA=;
- b=mpFmClhkFVariiXjd2mHUigA8OqJmN5TQ1MIpTvZF0yUQY2wDX0B6f55eQVViazGXpe72TxJNKyKMfBMMVz9vobq3ruUDt74aW1/4w3xGTrxGt7dNF2bP+oLBKfei/iagAohD0cpiFMMf7iXFuxP8UyUbFQxwwp/94OXQ0jxQ/w=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM5PR11MB0012.namprd11.prod.outlook.com (2603:10b6:4:68::36) with
+ bh=QpUXPHHejkMZch0Ue7H+fUos5ht1izOazQ2shcfH1Fo=;
+ b=PpRTboLm1UbzZCjrVrGZBXnmZdez5k8glAw1utXsPYputt9zXaaG/o1FLSVRVr7d5ll/Qaya9cT5vcRCGKqY0g1xgMW2S5BVUqvsWy71tkSrQUkUdKrPBMZ3E903PCi/DqU49gZo6dnUP7126Qspiq8d2eVSADmsB7GWYfGIbRg=
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com (2603:10b6:300:44::9)
+ by MWHPR02MB2381.namprd02.prod.outlook.com (2603:10b6:300:5a::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.19; Wed, 27 Jan
- 2021 09:12:41 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d%5]) with mapi id 15.20.3805.017; Wed, 27 Jan 2021
- 09:12:41 +0000
-Date:   Wed, 27 Jan 2021 04:12:38 -0500
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 0/8] support for bitmap (and hence CPU) list "N"
- abbreviation
-Message-ID: <20210127091238.GH23530@windriver.com>
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
- <CAAH8bW-6GQkx67=iiwozKwG=4b4rJ8sqNB3UrMeS5eregNvkzA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAH8bW-6GQkx67=iiwozKwG=4b4rJ8sqNB3UrMeS5eregNvkzA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YTXPR0101CA0065.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::42) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
+ 2021 09:13:06 +0000
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::c4a8:8d45:c13b:9942]) by MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::c4a8:8d45:c13b:9942%3]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 09:13:06 +0000
+From:   Nava kishore Manne <navam@xilinx.com>
+To:     Moritz Fischer <mdf@kernel.org>
+CC:     "trix@redhat.com" <trix@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>
+Subject: RE: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
+Thread-Topic: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
+Thread-Index: AQHW7UWZwDiwSbkqzUWMwmmZwUyntqozISAAgAgZmKA=
+Date:   Wed, 27 Jan 2021 09:13:06 +0000
+Message-ID: <MWHPR02MB2623B63A5359BB35B89BF086C2BB9@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <20210118025058.10051-1-nava.manne@xilinx.com>
+ <YApf1jlEghbnDFo/@archbook>
+In-Reply-To: <YApf1jlEghbnDFo/@archbook>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.128]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: cef5470f-ecb8-49aa-ece3-08d8c2a3c1eb
+x-ms-traffictypediagnostic: MWHPR02MB2381:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR02MB2381DF63744BEAB32807104EC2BB9@MWHPR02MB2381.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:612;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2bdy+VEABgmcEHN5WePQMgVPvnys0/uZ7zm3pOAIsAA0WyhpzJjgiDeO9SU6X/EJAkB66EcfJUUxKsh5UEUidEqOOIvhExOfOX4bAfoIM7uBx4yxqGP1mu/C1VVEBD9PqiS+Y+FruzvY+wvesw1GKaBpW0IOIk1lokgHgylP4uNyUFFj6VgSh8ckEh3IaSEUOBrNrWdmfZovXOz/i4zN4oD11CiOZdTaNKkJt2CgQIjBtwKWuXzXbxZ1uVd5CF6m0/5JVrFU/dFxotbowcoY3aQQ/O/qmgDkHf3LlzSQQKRXrke2Bm7ru5WvU4KUVabBY0rd8kLsCXOw2KswQgBegx1JjlxAf4kPaaFF0v/A5zA5QwJ5IlSde0gd87TFvltYYpPUhHcuiCFbVSqM+fJiZ+jC0EStMYxSoMN1wsx7p+aH+6uIjfXYijOfdMz0oa+8aPKWoCAY9poHVQHJQzeOC33/qJm4eKpRjf9JFuweYgOD45Ez9PGIdbek82Grn72sgfzStm6U2Jg5ps1qOJYi3Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR02MB2623.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(366004)(346002)(136003)(83380400001)(66446008)(66476007)(478600001)(66946007)(76116006)(66556008)(7696005)(64756008)(33656002)(6506007)(186003)(6916009)(26005)(4326008)(8676002)(8936002)(5660300002)(2906002)(53546011)(52536014)(86362001)(54906003)(55016002)(316002)(71200400001)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?jFRuOpIE15nAbr9TU1rkn2NFWPG3xCRgto5owftopY74DaqaChMVtP9z4ulC?=
+ =?us-ascii?Q?/Js74avefxdbFU42qVWEnjgjhplgMRrLQ8XVAzSUGigvCVXIsQmmQ/G6xyg7?=
+ =?us-ascii?Q?tzUKThL3hU3hx7/FY9WT5uMYdtPMbNjMTle1GcWFZirwihNBZwhmCH1DxRHT?=
+ =?us-ascii?Q?BxmOuk4h0gQyuVu0DpjX7Wk7qU5XcX5O9mSwl0F6HCxvrXIH01WvWDqpxD+f?=
+ =?us-ascii?Q?2nnKR+T+6mjWe663aPqXzWjnweFpAkzKP1bqEcM0XRGPPSdklEMegjTRmwAs?=
+ =?us-ascii?Q?mxiXbjDlqhV64g5ZO6NMFmQam/lD+dZtd3qmSnloDf+U1VfP0scUZ8J0m7W9?=
+ =?us-ascii?Q?UPlQAL3yn+tTeIdoAe0B3R5gF9lgdW2SdV1+UrU4N2B8FRxCyNARYnymk4yH?=
+ =?us-ascii?Q?enenhOn8A7EujTizOgR8iJcNEYZOIzB6a24oFWEhVWLJrrN7A2IJq5uaY25z?=
+ =?us-ascii?Q?asVJv8Ll+v8EQ3khVqEhueH/gNgezsoTLJ8DHOcTPvI6E+X/VtFROP1nxApf?=
+ =?us-ascii?Q?6HjWFXme2+1tW2dxObv/sq2lgVs87X/NKYserQ3oueIQ7oQV8Uoj2ifDI25H?=
+ =?us-ascii?Q?GHhDeYmsS1QXYQUuh6dG0jQoiOci0A94hwqkbtqZXQRqg1UdnbkcsEYM015q?=
+ =?us-ascii?Q?WhL48pCwD3NvKe1zri5LqpXQ9H1hBpTjeY4LPS+JNxyD4JnVEIun8UjkmHou?=
+ =?us-ascii?Q?gmp7S41eO+pEUHqB6QZyRp97mcpu0rgcAHvZtc6sZgqyyVOTGdJYc/oao08e?=
+ =?us-ascii?Q?tTHA8lZlRBUyAVFlI4RAk2EeIu7sqM4DepLuSvzrCM3gJv8vKxQTbj9nMAxJ?=
+ =?us-ascii?Q?+DXEYIa+MwTQCED12nG2YmRKLSP5Fr79V4m4w/AH0ne8PGsibS9/usAaTMq3?=
+ =?us-ascii?Q?BoAQd8AqNblmICTzsbBLIaHQL4r1e0CxdnoiTkZ9aykbSvPq8ah1zoOuZgRP?=
+ =?us-ascii?Q?zzchKc5IH1VpvBdIC9a/Pb9//EhmkgKhnQZjaDtKn7Bg8etV7fAiq+jPDVi2?=
+ =?us-ascii?Q?M/aFdy1R6IuzkU6PK2PCKLtwH7rMz06YCeVvuy1L6aXbEp5+z8dRRheSU6bd?=
+ =?us-ascii?Q?xPlmeDEH?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by YTXPR0101CA0065.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 09:12:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4b332f54-9d2e-4822-389f-08d8c2a3b32b
-X-MS-TrafficTypeDiagnostic: DM5PR11MB0012:
-X-Microsoft-Antispam-PRVS: <DM5PR11MB0012B9B3E6C9635CD628544683BB9@DM5PR11MB0012.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I6IodU5IZWYoCOz0Ca+x7RqTJyI+Mgdwovrqw5VwLRuKUxZv3m83/qME/YtbBVxJerjYfTnesMbmxPhcTLNSNBv1lclYLLXiCKXL61TAfrlP6/Ios2iklD2DxhR6VFARDOiEJ3autikcE4y0MU38aQC4znDhgvj+ebmXNoKOD8sVYpEVRVyyCd5MpbJlbFJ1yA0k4Z8UHBFGy1itC9xIYC/mTg36mjYVCLxceJXSjMaYbi0Kp9/fm+QLEYtV7H63C6K/jB+RZVCP44KhKS2rvRKIDvjkN0K/FK4JX9wl9o7IOu1cdBMCxGe+iEplQcM0XzbnB/eE98ixIcjSm9kINZEFgEi1PzMeycEar95rjmT16RPn9Lpm5E0IATu7JC4urIOQPoubZEkpm2ZPmJ1xjZjt0RYkimJ1RBHyxy2uTVPNctk6NSa2DRJVXdXUR+uRI7Ii7rnrP6xw92jqo7s61A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(136003)(39850400004)(346002)(86362001)(186003)(36756003)(6916009)(2616005)(16526019)(53546011)(83380400001)(956004)(26005)(44832011)(8676002)(66556008)(2906002)(1076003)(478600001)(52116002)(54906003)(316002)(4326008)(8936002)(33656002)(966005)(66476007)(5660300002)(66946007)(55016002)(8886007)(7696005)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?blQZRrVKwrJLpDQ0t7tDdnkJ8XuQMWc/jb0CtRSUfSxfbrqa1AutwG94xk66?=
- =?us-ascii?Q?bJ6Z3H4YYoRd2f6j8r4ZlUzrxvK8NoMpYeXGYmNR42MLX+3WIFI+eRaOaQPD?=
- =?us-ascii?Q?bED2iLCCD/vpIf5bpsdJO8/1GayhK3jNzzrEjjl3myrrDzud76iEaVTv+7OS?=
- =?us-ascii?Q?RvcfkQFwHIHCLtIx6KAOaA0lWjct2C5Fhogh7qS+cvyEL8t1sDIbPjINJlzI?=
- =?us-ascii?Q?IHQTe3WWIJrZhTU8GP1cdbyv4+3EDgdYTyG7+YQ3UQ8eP4uF4LzNNBeq2vyv?=
- =?us-ascii?Q?+UF4L27t3TnTMCKypnSqECWeuDHTftTkavkwpDUtohP6crADb3uTeQnyU0fa?=
- =?us-ascii?Q?vq5EsM6qyYJF3q49c4EdkNW7i7kZ1bXKNrA3z2xhhrLucTwaYggmvU1WdmUl?=
- =?us-ascii?Q?8ZWiW0sdItNIq4h39xl8mUCU1GezoCEYAowTTsX/6rH08n5u9s+/Nz9lFKT7?=
- =?us-ascii?Q?aKZQ0y/J11Jh39/mTL20D9nyuKabz7ScyErevpES+CqXQmhkOdsWyBsx7uLT?=
- =?us-ascii?Q?1tIvnBxv48zQLqpKueTCwmCjDsQ8lQY8lfUNtcqObVa0k4Y2wQdCByiMhCLu?=
- =?us-ascii?Q?Xemiq2A3X+w0lwhst06VO2KG9Ptm1OsE3n/Vi6xceho0a9IlLmuFGXwcSujs?=
- =?us-ascii?Q?/c2sD9ahymyt/1cAL2RTFFQYPd3IEvawNP9dmMhn87bM505txe11zpQX8QaW?=
- =?us-ascii?Q?KY3UQvSSTsJcyrqV+FGxgOKb9JGRFC0RAv906v8sSmCzHj7mMcVLYK0maeF3?=
- =?us-ascii?Q?maipsG2SQakdXexLQ8d5qJd74qNTOsvTJzYE+dab+0jLhR4tMrhmGF526Yfz?=
- =?us-ascii?Q?KKL+1VLL1ugFqjjwuISWHaH5dm2JW8yxvrQjQgU/vErlilPR5stqAyXiiJzy?=
- =?us-ascii?Q?Afh5nrNONTvmMEjRAH++hyDC6DJtDE6UwOeOHzmNyA8yv6iVf+h0Qkb4UuKc?=
- =?us-ascii?Q?xmq1vyiHeaRM679xve0Wdi5rzdWCo4d2Q2mbRwIWTB27DhIF+Sb1CdVMS3xY?=
- =?us-ascii?Q?IRI356CWoc02bgIHnemdVB10N9bEHqmirryv3TJsRKZwLgh5DVDYm1yw36Tn?=
- =?us-ascii?Q?fmAGrWro?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b332f54-9d2e-4822-389f-08d8c2a3b32b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
+X-OriginatorOrg: xilinx.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 09:12:41.5641
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR02MB2623.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cef5470f-ecb8-49aa-ece3-08d8c2a3c1eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jan 2021 09:13:06.0517
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mlBnsWOmorcOwIu3Qigi7mTyuJF1MQFuXjvq9gsCvyxVtAQE+US8JAfXB2TuHbYA6AqOd2W+SE9Wt6SE8t2z46b3K/8EOjrGorBycQNiy2k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB0012
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sgR4wdS1jwAt28aRETVDew3QqXCX/zNJNQR3LU59hIw7lLOgdpge/d7jIUkDMBpWTwWvETV30oYXs5qLZwTCuA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2381
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Re: [PATCH v3 0/8] support for bitmap (and hence CPU) list "N" abbreviation] On 26/01/2021 (Tue 14:27) Yury Norov wrote:
+Hi Moritz,
 
-> On Tue, Jan 26, 2021 at 9:12 AM Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
+	Thanks for the review.
+Please find my response inline.
+
+> -----Original Message-----
+> From: Moritz Fischer <mdf@kernel.org>
+> Sent: Friday, January 22, 2021 10:47 AM
+> To: Nava kishore Manne <navam@xilinx.com>
+> Cc: mdf@kernel.org; trix@redhat.com; robh+dt@kernel.org; Michal Simek
+> <michals@xilinx.com>; linux-fpga@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; git <git@xilinx.com>; chinnikishore369@gmail.com
+> Subject: Re: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
+>=20
+> On Mon, Jan 18, 2021 at 08:20:57AM +0530, Nava kishore Manne wrote:
+> > This commit adds secure flags to the framework to support secure
+> > BitStream Loading.
 > >
-> > This was on a 16 core machine with CONFIG_NR_CPUS=16 in .config file.
-> >
-> > Note that "N" is a dynamic quantity, and can change scope if the bitmap
-> > is changed in size.  So at the risk of stating the obvious, don't use it
-> > for "burn_eFuse=128-N" or "secure_erase_firmware=32-N" type stuff.
-> 
-> I think it's worth moving this sentence to the Documentation. Another
-
-Dynamic nature comment added to Documentation
-
-> caveat with
-> N is that users' config may surprisingly become invalid, like if user
-> says 32-N, and
-> on some machine with a smaller bitmap this config fails to boot.
-
-Updated example to indicate that "16-N" becomes invalid if moved from 32
-core system to quad core.  I'm not currently able to think of an example
-where boot will fail -- vs. a subsystem getting -EINVAL from bitmap code
-and printing a subsystem error instead.
-
-> It doesn't mean of course that I'm against 'N'. I think it's very
-> useful especially in
-> such common cases like "N", "0-N", "1-N".
-> 
-> Would it make sense to treat the mask "32-N" when N < 32 as N-N,
-> and bark something in dmesg?
-
-I don't think so.  For the same reasons you used to convince me -- that N
-should be treated as just another number and not have special rules.
-
-If I boot now, with "important_cpu="32-3" on a quad core then I get what
-I get for being stupid.   We don't special case that and subsitute in a
-"3-3" (which would then be "3") -- and nor should we!
-
-Sticking to the CPU example, we have no idea what the caller's use case
-is -- we don't know if NUMA stuff might be present and whether having
-the single CPU #3 in that set is better or worse than EINVAL and no CPUs
-in the set.   Expand that to bitmaps in general and we have no idea what
-the "right" reaction to garbage input is.
-
-The context of the caller could be simply test_bitmap.c itself -- which
-would be expecting the EINVAL, and not some kind of "hot patching" of
-the region in order to make it valid.
-
-The only sane option is for the bitmap code to return EINVAL and let the
-calling subsystem (with the appropriate context/info) make the decision
-as to what to do next.  Which is what the series does now.
-
-Paul.
---
-
-> 
-> > Paul.
+> > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
 > > ---
+> >  drivers/fpga/of-fpga-region.c | 10 ++++++++++
+> > include/linux/fpga/fpga-mgr.h | 12 ++++++++++++
+> >  2 files changed, 22 insertions(+)
 > >
-> > [v1: https://lore.kernel.org/lkml/20210106004850.GA11682@paulmck-ThinkPad-P72/
+> > diff --git a/drivers/fpga/of-fpga-region.c
+> > b/drivers/fpga/of-fpga-region.c index e405309baadc..3a5eb4808888
+> > 100644
+> > --- a/drivers/fpga/of-fpga-region.c
+> > +++ b/drivers/fpga/of-fpga-region.c
+> > @@ -228,6 +228,16 @@ static struct fpga_image_info
+> *of_fpga_region_parse_ov(
+> >  	if (of_property_read_bool(overlay, "encrypted-fpga-config"))
+> >  		info->flags |=3D FPGA_MGR_ENCRYPTED_BITSTREAM;
 > >
-> > [v2: push code down from cpu subsys to core bitmap code as per
-> >  Yury's comments.  Change "last" to simply be "N" as per PeterZ.]
-> >  https://lore.kernel.org/lkml/20210121223355.59780-1-paul.gortmaker@windriver.com/
-> >
-> > [v3: Allow "N" to be used anywhere in the region spec, i.e. "N-N:N/N" vs.
-> >  just being allowed at end of range like "0-N".  Add new self-tests.  Drop
-> >  "all" and "none" aliases as redundant and not worth the extra complication. ]
-> >
-> > Cc: Li Zefan <lizefan@huawei.com>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Yury Norov <yury.norov@gmail.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Cc: Frederic Weisbecker <fweisbec@gmail.com>
-> > Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > ---
-> >
-> > Paul Gortmaker (8):
-> >   lib: test_bitmap: clearly separate ERANGE from EINVAL tests.
-> >   lib: test_bitmap: add more start-end:offset/len tests
-> >   lib: bitmap: fold nbits into region struct
-> >   lib: bitmap: move ERANGE check from set_region to check_region
-> >   lib: bitmap_getnum: separate arg into region and field
-> >   lib: bitmap: support "N" as an alias for size of bitmap
-> >   lib: test_bitmap: add tests for "N" alias
-> >   rcu: deprecate "all" option to rcu_nocbs=
-> >
-> >  .../admin-guide/kernel-parameters.rst         |  2 +
-> >  .../admin-guide/kernel-parameters.txt         |  4 +-
-> >  kernel/rcu/tree_plugin.h                      |  6 +--
-> >  lib/bitmap.c                                  | 46 ++++++++++--------
-> >  lib/test_bitmap.c                             | 48 ++++++++++++++++---
-> >  5 files changed, 72 insertions(+), 34 deletions(-)
-> >
-> > --
-> > 2.17.1
-> >
+> > +	if (of_property_read_bool(overlay, "userkey-encrypted-fpga-
+> config"))
+> > +		info->flags |=3D
+> FPGA_MGR_USERKEY_ENCRYPTED_BITSTREAM;
+>=20
+> Can this just be encrypted-fpga-config/FPGA_MGR_ENCRYPTED?
+
+In Encryption we have two kinds of use case one is Encrypted Bitstream load=
+ing with Device-key and
+Other one is Encrypted Bitstream loading with User-key. To differentiate bo=
+th the use cases this
+Changes are needed.
+
+Regards,
+Navakishore.
