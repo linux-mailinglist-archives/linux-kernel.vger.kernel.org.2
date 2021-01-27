@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6432305B53
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D217F305B31
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236753AbhA0M1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:27:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S314044AbhAZWzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:55:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5DDE2065D;
-        Tue, 26 Jan 2021 22:54:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611701699;
-        bh=7/yqTNqWIqQ7XCIx1WSLqU/snxBtDCQ23qUfG8HlO5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hxfU/IRuv3TUSul3I/evOCCOqIPlij7Fp31pMB/khCbDtR9z8LV26+bh8BQ6A4D5H
-         Uq6Ao6JNAEzjMpilMG6xm7GxiAKvj/FOBV4T5u++joQDdfLKG1YcevdvOPMchYnQL5
-         dR64tGX8kKpzZdmaGAYt7JHF65SsvAsX4aF6OOzy2vG/uyXamFVONJlj7Iaz6Adbu/
-         LEY2tk3cW4TpsdZlqoPVTZiSzGNkH2fDVm+iqF0C/113G8xoke/nSmDYfRYddMEIAw
-         3l6N9G7bZ6O7HocoxzYRRF0iUibB5D5RzXhmA+I1JFNpag/Q5v+LNgqQRm4egUMNf/
-         yrOTMJv1AnUmg==
-Date:   Tue, 26 Jan 2021 22:54:54 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jon Masters <jcm@jonmasters.org>, mark.rutland@arm.com,
-        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-Message-ID: <20210126225454.GB30941@willie-the-truck>
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <20210107181416.GA3536@willie-the-truck>
- <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
- <20210108103216.GA17931@e121166-lin.cambridge.arm.com>
- <20210122194829.GE25471@willie-the-truck>
- <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
+        id S237676AbhA0MXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:23:30 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:56180 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237187AbhA0LrE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:47:04 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RBe9Zb018612;
+        Wed, 27 Jan 2021 03:44:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=/g/es+Tg5FBzCKG2QIZyAEonCnsAEgNRvkP3FuHc02k=;
+ b=d2mFTU/CRIR/4vCOiupboOEpBjeGmkQKhfwkQcwr/uBVJRg06mHTKPtn5T9YZo+6xoP8
+ OTMMfs8ubnVzCzT/d3DS5efMDNU3znKsbvyuj/CXKWoHhiUn5GLCSyPMCPxOxtexvJXS
+ mkWnUGNl9cBlm0Kwk+S65S6Q7FFIK6kVahba2gNFGuIjBdYbRLdzDwI1zJHe7Jx4hcCn
+ 4h+HvemdmYPmZbPSSbIvdY3ImZuh7btpWj2+MUDFQb1whmThsgcZ4C8RovdXtiuK1psj
+ ZXTS3hRyauDjLIqHlPBVAbqewjZHL0MOnQ0cIbubuNXzDPxW6OxvNynpeVG0V6+pV3Sd mg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36b1xpgu3d-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 03:44:16 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
+ 2021 03:44:13 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 27 Jan 2021 03:44:14 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 015F53F7040;
+        Wed, 27 Jan 2021 03:44:10 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [PATCH v4 net-next 08/19] net: mvpp2: increase RXQ size to 1024 descriptors
+Date:   Wed, 27 Jan 2021 13:43:24 +0200
+Message-ID: <1611747815-1934-9-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_05:2021-01-27,2021-01-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:46:04AM -0600, Jeremy Linton wrote:
-> On 1/22/21 1:48 PM, Will Deacon wrote:
-> > This isn't like the usual fragmentation problems, where firmware swoops in
-> > to save the day; CPU onlining, spectre mitigations, early entropy etc. All
-> > of these problems exist because there isn't a standard method to implement
-> > them outside of firmware, and so adding a layer of abstraction there makes
-> > sense.
-> 
-> There are a lot of parallels with PSCI here because there were existing
-> standards for cpu online.
+From: Stefan Chulski <stefanc@marvell.com>
 
-I don't recall anything that I would consider a standard at the time.
+RXQ size increased to support Firmware Flow Control.
+Minimum depletion thresholds to support FC is 1024 buffers.
+Default set to 1024 descriptors and maximum size to 2048.
 
-> > But PCIe is already a standard!
-> 
-> And it says that ECAM is optional, particularly if there are
-> firmware/platform standardized ways of accessing the config space.
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Nice loophole; I haven't checked.
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index 8dc669d..cac9885 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -715,8 +715,8 @@
+ #define MVPP2_PORT_MAX_RXQ		32
+ 
+ /* Max number of Rx descriptors */
+-#define MVPP2_MAX_RXD_MAX		1024
+-#define MVPP2_MAX_RXD_DFLT		128
++#define MVPP2_MAX_RXD_MAX		2048
++#define MVPP2_MAX_RXD_DFLT		1024
+ 
+ /* Max number of Tx descriptors */
+ #define MVPP2_MAX_TXD_MAX		2048
+-- 
+1.9.1
 
-> > We shouldn't paper over hardware designers' inability to follow a ~20 year
-> > old standard by hiding it behind another standard that is hot off the press.
-> > Seriously.
-> 
-> No disagreement, but its been more than half a decade and there are some
-> high (millions!) volume parts, that still don't have kernel support.
-
-Ok.
-
-> > There is not a scrap of evidence to suggest that the firmware
-> > implementations will be any better, but they will certainly be harder to
-> > debug and maintain.  I have significant reservations about Arm's interest in
-> > maintaining the spec as both more errata appear and the PCIe spec evolves
-> > (after all, this is outside of SBSA, no?). The whole thing stinks of "if all
-> > you have is a hammer, then everything looks like a nail". But this isn't the
-> > sort of problem that is solved with yet another spec -- instead, how about
-> > encouraging vendors to read the specs that already exist?
-> 
-> PSCI, isn't a good example of a firmware interface that works?
-
-Not sure what you're getting at here.
-
-> > > The SMC is an olive branch and just to make sure it is crystal clear
-> > > there won't be room for adding quirks if the implementation turns out
-> > > to be broken, if a line in the sand is what we want here it is.
-> > 
-> > I appreciate the sentiment, but you're not solving the problem here. You're
-> > moving it somewhere else. Somewhere where you don't have to deal with it
-> > (and I honestly can't blame you for that), but also somewhere where you
-> > _can't_ necessarily deal with it. The inevitable outcome is an endless
-> > succession of crappy, non-compliant machines which only appear to operate
-> > correctly with particularly kernel/firmware combinations. Imagine trying to
-> > use something like that?
-> > 
-> > The approach championed here actively discourages vendors from building
-> > spec-compliant hardware and reduces our ability to work around problems
-> > on such hardware at the same time.
-> > 
-> > So I won't be applying these patches, sorry.
-> 
-> Does that mean its open season for ECAM quirks, and we can expect them to
-> start being merged now?
-
-That's not for me to say.
-
-Will
