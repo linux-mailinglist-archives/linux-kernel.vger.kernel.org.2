@@ -2,192 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972F2306231
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BA930622A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343864AbhA0RhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344004AbhA0Rfa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:35:30 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4476CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:34:48 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id d81so2693830iof.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:34:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oW5mp8XPI8J87KFQ43usYsmmtjjAtdQhi+BnJucpFYE=;
-        b=uUsfaWlv6TVs5zs6K/oE+oT9TTqRp8a5YCvVhkjEfazYsFU11U/46r4y4Hmodxicg5
-         T9WuFX9SwaWcOuJJGCSvXWwraipDzlJwp8TL84Gv5M0G+l4Y3Yt5+oy9NxXWnXN0rxXI
-         I1NxSjpnSji1P+xBMqhi+amm7WjbuGPndYHorAWpGhAyXVRws6N0EmsG45EXJLoVRs9n
-         EkDQBNf3/XF+R7g4kI813x0r3f/qDZAfWvTemxyOfyhcyGBlwPYWFxp0U1ZLyLy8pqTG
-         3MxgHvhNdiJaWVzANwE1RVWLx1uphH43/we08wn4ZC7F4vArPIw8bellaO9nEXlsyCYq
-         7cmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oW5mp8XPI8J87KFQ43usYsmmtjjAtdQhi+BnJucpFYE=;
-        b=gPvgJEq1Yf0ldXurXZXewHiv8Hx+QFrCRD2X6lifqz3Xxpw+SKwldQuT/gUSTMqovJ
-         9MgJ7MxKH+Q2WC7zPfABiiog9kPpYDUa5Q6sax/TPtqL7KU/tXZXiriGp2ZSu/9JztIH
-         vzTsR/VoXXrrG00qOJO36fWzKkk9kEfsXkBwR3cPbKenQxH8qxWi3815jS4ulYEd3Pkc
-         sUMB5T2gUJyJHsUEFvQ2ZrWbm38RuJ4grOlqVOGmMHlnUZiK0gtPlVw4DI74QvVjnfR9
-         BpYvuq8mfALRMas7cCeEUR7M/Wv6u1TpX+i1mvvOi+nzyPzlwL/BsvL2iYKmyFz6G6BU
-         ZdFg==
-X-Gm-Message-State: AOAM532j7qA2tNL7dmvTnk3quKyB1llalc3Gv0jcH5TzTS0n9g4k+z/f
-        OSAMSvGvf3fBGucyTDrHfYTN+SlaSxprCZSSjnjyKA==
-X-Google-Smtp-Source: ABdhPJxtIonezTwyuOb3+abTlRlG2xus/TYXqhbMOoc+/bBSA0vwRyHQNz2I8V/qUMIJPn/cLo5xklKergbaeX/dl1g=
-X-Received: by 2002:a6b:1d1:: with SMTP id 200mr8413965iob.195.1611768887340;
- Wed, 27 Jan 2021 09:34:47 -0800 (PST)
-MIME-Version: 1.0
-References: <CANn89iK2cd6rRFfNL-vp_Dy4xvtuk_5vA-xg=MbbWb-ybzHheg@mail.gmail.com>
- <20210127173145.58887-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20210127173145.58887-1-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 27 Jan 2021 18:34:35 +0100
-Message-ID: <CANn89iKE0GFK1UzQvqYxKKy8E4Qcc57=JFFWCGmtpfgWRhpOpA@mail.gmail.com>
-Subject: Re: [PATCH net] net: Remove redundant calls of sk_tx_queue_clear().
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     Amit Shah <aams@amazon.de>, Boris Pismenny <borisp@mellanox.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        id S1344026AbhA0Rgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:36:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344006AbhA0Rfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:35:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B8F664DA8;
+        Wed, 27 Jan 2021 17:34:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611768892;
+        bh=i6kHf86hLpvjWynPpLsneLVR/FYqJtB9g8RT/GX0Tr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KCJaJjgMjSKyieVO4eEAN41pY0xDAHjHDuSNqLlL1y8IyCp4pOivok0N64T+pGuoG
+         YOIwWAGMYTesWPQGD8fy4jIbOKv7Ff3DS5zx5cPNZeKF1o/UyUB7YaMdceXQKjCUIq
+         HL0a5tMHZqR5Semz3f9IV5y7YKMBBZQdMRO9b+whKhLNB63Mcki+Yv9+Z+Qq8FQK8m
+         IGMRZfctb0V8GL/TP2f4xvNIHkkJigJY1QYzxBZ/WRhwvsDjCDgRGGi1oqPQ7zDrID
+         6dMxH9pcl+f92uoBH1Y+dop6c2AFhp73c/p1sqIMeEujgco1WvQ0YwzC5+NY9FID6D
+         oAcnESnPja+rg==
+Date:   Wed, 27 Jan 2021 17:34:47 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Rutland <mark.rutland@arm.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: WARNING in __do_kernel_fault
+Message-ID: <20210127173446.GE358@willie-the-truck>
+References: <0000000000009bbb7905b9e4a624@google.com>
+ <CACT4Y+agFz7Y32pkV7nObxB3KjCcN1p335h1HE4dr94rsDvndw@mail.gmail.com>
+ <20210127171453.GC358@willie-the-truck>
+ <CACT4Y+ZtQS7wtKbYSxAL=TJTmWp9_Gq-fBi-JLtAk3mA6J7siA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+ZtQS7wtKbYSxAL=TJTmWp9_Gq-fBi-JLtAk3mA6J7siA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:32 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
->
-> From:   Eric Dumazet <edumazet@google.com>
-> Date:   Wed, 27 Jan 2021 18:05:24 +0100
-> > On Wed, Jan 27, 2021 at 5:52 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > >
-> > > From:   Eric Dumazet <edumazet@google.com>
-> > > Date:   Wed, 27 Jan 2021 15:54:32 +0100
-> > > > On Wed, Jan 27, 2021 at 1:50 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > > > >
-> > > > > The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> > > > > sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> > > > > it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> > > > > the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). However,
-> > > > > the original commit had already put sk_tx_queue_clear() in sk_prot_alloc():
-> > > > > the callee of sk_alloc() and sk_clone_lock(). Thus sk_tx_queue_clear() is
-> > > > > called twice in each path currently.
-> > > >
-> > > > Are you sure ?
-> > > >
-> > > > I do not clearly see the sk_tx_queue_clear() call from the cloning part.
-> > > >
-> > > > Please elaborate.
-> > >
-> > > If sk is not NULL in sk_prot_alloc(), sk_tx_queue_clear() is called [1].
-> > > Also the callers of sk_prot_alloc() are only sk_alloc() and sk_clone_lock().
-> > > If they finally return not NULL pointer, sk_tx_queue_clear() is called in
-> > > each function [2][3].
-> > >
-> > > In the cloning part, sock_copy() is called after sk_prot_alloc(), but
-> > > skc_tx_queue_mapping is defined between skc_dontcopy_begin and
-> > > skc_dontcopy_end in struct sock_common [4]. So, sock_copy() does not
-> > > overwrite skc_tx_queue_mapping, and thus we can initialize it in
-> > > sk_prot_alloc().
+On Wed, Jan 27, 2021 at 06:24:22PM +0100, Dmitry Vyukov wrote:
+> On Wed, Jan 27, 2021 at 6:15 PM Will Deacon <will@kernel.org> wrote:
 > >
-> > That is a lot of assumptions.
-> >
-> > What guarantees do we have that skc_tx_queue_mapping will never be
-> > moved out of this section ?
-> > AFAIK it was there by accident, for cache locality reasons, that might
-> > change in the future as we add more stuff in socket.
-> >
-> > I feel this optimization is risky for future changes, for a code path
-> > that is spending thousands of cycles anyway.
->
-> If someone try to move skc_tx_queue_mapping out of the section, should
-> they take care about where it is used ?
-
-Certainly not. You hide some knowledge, without a comment or some runtime check.
-
-You can not ask us (maintainers) to remember thousands of tricks.
-
->
-> But I agree that we should not write error-prone code.
->
-> Currently, sk_tx_queue_clear() is the only initialization code in
-> sk_prot_alloc(). So, does it make sense to remove sk_tx_queue_clear() in
-> sk_prot_alloc() so that it does only allocation and other fields are
-> initialized in each caller ?
->
->
-> > >
-> > > [1] sk_prot_alloc
-> > > https://github.com/torvalds/linux/blob/master/net/core/sock.c#L1693
-> > >
-> > > [2] sk_alloc
-> > > https://github.com/torvalds/linux/blob/master/net/core/sock.c#L1762
-> > >
-> > > [3] sk_clone_lock
-> > > https://github.com/torvalds/linux/blob/master/net/core/sock.c#L1986
-> > >
-> > > [4] struct sock_common
-> > > https://github.com/torvalds/linux/blob/master/include/net/sock.h#L218-L240
-> > >
-> > >
-> > > > In any case, this seems to be a candidate for net-next, this is not
-> > > > fixing a bug,
-> > > > this would be an optimization at most, and potentially adding a bug.
+> > On Wed, Jan 27, 2021 at 06:00:30PM +0100, Dmitry Vyukov wrote:
+> > > On Wed, Jan 27, 2021 at 5:56 PM syzbot
+> > > <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com> wrote:
 > > > >
-> > > > So if you resend this patch, you can mention the old commit in the changelog,
-> > > > but do not add a dubious Fixes: tag
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15a25264d00000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=45b6fce29ff97069e2c5
+> > > > userspace arch: arm64
+> > > >
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > Reported-by: syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com
 > > >
-> > > I see.
-> > >
-> > > I will remove the tag and resend this as a net-next candidate.
-> > >
-> > > Thank you,
-> > > Kuniyuki
-> > >
-> > >
-> > > > >
-> > > > > This patch removes the redundant calls of sk_tx_queue_clear() in sk_alloc()
-> > > > > and sk_clone_lock().
-> > > > >
-> > > > > Fixes: 41b14fb8724d ("net: Do not clear the sock TX queue in sk_set_socket()")
-> > > > > CC: Tariq Toukan <tariqt@mellanox.com>
-> > > > > CC: Boris Pismenny <borisp@mellanox.com>
-> > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > > Reviewed-by: Amit Shah <aams@amazon.de>
-> > > > > ---
-> > > > >  net/core/sock.c | 2 --
-> > > > >  1 file changed, 2 deletions(-)
-> > > > >
-> > > > > diff --git a/net/core/sock.c b/net/core/sock.c
-> > > > > index bbcd4b97eddd..5c665ee14159 100644
-> > > > > --- a/net/core/sock.c
-> > > > > +++ b/net/core/sock.c
-> > > > > @@ -1759,7 +1759,6 @@ struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
-> > > > >                 cgroup_sk_alloc(&sk->sk_cgrp_data);
-> > > > >                 sock_update_classid(&sk->sk_cgrp_data);
-> > > > >                 sock_update_netprioidx(&sk->sk_cgrp_data);
-> > > > > -               sk_tx_queue_clear(sk);
-> > > > >         }
-> > > > >
-> > > > >         return sk;
-> > > > > @@ -1983,7 +1982,6 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
-> > > > >                  */
-> > > > >                 sk_refcnt_debug_inc(newsk);
-> > > > >                 sk_set_socket(newsk, NULL);
-> > > > > -               sk_tx_queue_clear(newsk);
-> > > > >                 RCU_INIT_POINTER(newsk->sk_wq, NULL);
-> > > > >
-> > > > >                 if (newsk->sk_prot->sockets_allocated)
-> > > > > --
-> > > > > 2.17.2 (Apple Git-113)
-> > > > >
+> > > This happens on arm64 instance with mte enabled.
+> > > There is a GPF in reiserfs_xattr_init on x86_64 reported:
+> > > https://syzkaller.appspot.com/bug?id=8abaedbdeb32c861dc5340544284167dd0e46cde
+> > > so I would assume it's just a plain NULL deref. Is this WARNING not
+> > > indicative of a kernel bug? Or there is something special about this
+> > > particular NULL deref?
+> >
+> > Congratulations, you're the first person to trigger this warning!
+> >
+> > This fires if we take an unexpected data abort in the kernel but when we
+> > get into the fault handler the page-table looks ok (according to the CPU via
+> > an 'AT' instruction). Are you using QEMU system emulation? Perhaps its
+> > handling of AT isn't quite right.
+> 
+> Yes, it's qemu-system-aarch64 5.2 with -machine virt,mte=on -cpu max.
+> Do you see any way forward for this issue? Can somehow prove/disprove
+> it's qemu at fault?
+> The instance just started running, but it seems to be the most common
+> crash so far and it seems to happen on _all_ gpf's.
+> You can see all arm64 crashes so far here:
+> https://syzkaller.appspot.com/upstream?manager=ci-qemu2-arm64-mte
+> They all happen in reiserfs_security_init, but locally I got a bunch
+> of different stacks, e.g.:
+
+Your best bet is to hack is_spurious_el1_translation_fault() to dump addr,
+es and par, then we can help decipher the logs here. It could also easily be
+a bug in that code, since it hasn't been run before (well, other than
+contrived testing when I wrote it).
+
+Will
