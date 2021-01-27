@@ -2,135 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE993054DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014F33054DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhA0HmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:42:01 -0500
-Received: from mail-eopbgr750057.outbound.protection.outlook.com ([40.107.75.57]:42573
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234414AbhA0Hii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:38:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AiXe6Op+dro2OzBhIVYRroMStj6zVrH6DIgGbzcp2MIlpwWW7xai7fnGF5Vf1kxzPGqNx18rtbzaP4s6ykJXGNsZe3wIzkdPsetFizJ9quX4dQOtLNcJHHJSWURLrO4Vs690zvVYFNdZED9jnCRhUH00355YfJlfJoLSBrv7Fu0vQNW2kCO5Y3+5v9AEQ6yN/TCIeVrmxBWT5w0w2e5AI8ufKH+m3KqiiDR4l0Psus0uOfM2070u0Tw4sM3rQP4czSFRNcojvDlS6a+g2DzByTSvupJOSv5lhZ3/ykfK9XNjw4lDmLsuBqJuTYR7oIwGInjAAMvtPnlg5Gv/tIRUjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZCxccbosQ9EoEUvWK665lHw4Z2dj5MbiRfuPjgGIsHk=;
- b=ZPcEPuR8XUq4uDk8YJV5ZgK5k0hgEG0BknM12pfA26LaxZpUGnB+5TwmqjjjamVWrukDqjgWa9kpWI83GqedXUQtxwy/RVybH7I40/65izQW/O1aLjZFoMAyqWSochuJ42AoupFtjQkJURYqmKTTJ0gGW4sqjtMUdu+d+cum+Q9h2RIITJanVf2MPXwJRaDFUKBZ3NtMoFMgmLBhJEDl2ZkpNWTFX6pUgRMrlGdcVNE5JmA5J+hBC9n8eTBLUrQMn8I66v7H/TNlnGCkD9XtzIvHCZ9qpg4bCaUrxI9o0cijo4Os7DZl4Gn3+dbw8QA2FlUxpPflYfcGv83viUwBFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZCxccbosQ9EoEUvWK665lHw4Z2dj5MbiRfuPjgGIsHk=;
- b=NMAs8G3G7uum7wyvYpYVdrRnnOxxDaKZwcLJNb2WZR2Zj1vd+GE8WAYWh3L3AahJXXyr/tOKOG28kXkY+bAMaKBEdlsX/aRTjl3nUKsyBAXOs2aLBv1s6n7BlMeXI4j49Y+14DijxzxJ8DONgMdOcKxv1Uehozqy+Hu6kV95H20=
-Received: from SN6PR05CA0016.namprd05.prod.outlook.com (2603:10b6:805:de::29)
- by CO6PR02MB7842.namprd02.prod.outlook.com (2603:10b6:303:ad::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Wed, 27 Jan
- 2021 07:37:51 +0000
-Received: from SN1NAM02FT046.eop-nam02.prod.protection.outlook.com
- (2603:10b6:805:de:cafe::cc) by SN6PR05CA0016.outlook.office365.com
- (2603:10b6:805:de::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.7 via Frontend
- Transport; Wed, 27 Jan 2021 07:37:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT046.mail.protection.outlook.com (10.152.72.191) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3784.12 via Frontend Transport; Wed, 27 Jan 2021 07:37:50 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 26 Jan 2021 23:37:50 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 26 Jan 2021 23:37:50 -0800
-Envelope-to: hyunk@xilinx.com,
- hyun.kwon@xilinx.com,
- linux-kernel@vger.kernel.org,
- laurent.pinchart@ideasonboard.com
-Received: from [172.30.17.109] (port=43194)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1l4fOg-0004MI-6o; Tue, 26 Jan 2021 23:37:50 -0800
-Subject: Re: [PATCH 1/1] MAINTAINERS: remove myself from the list
-To:     Hyun Kwon <hyun.kwon@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Hyun Kwon <hyunk@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210127011312.697159-1-hyun.kwon@xilinx.com>
- <YBDDvmLHrYpuTBkn@pendragon.ideasonboard.com>
- <20210127021855.GA706721@xilinx.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <7f1de920-98d6-e3e0-5091-d0f03d4dd44f@xilinx.com>
-Date:   Wed, 27 Jan 2021 08:37:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234506AbhA0Hmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:42:42 -0500
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:32864 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234419AbhA0Hiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 02:38:51 -0500
+Received: by mail-lf1-f44.google.com with SMTP id b2so1336129lfq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 23:38:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ezWwTV1FnM+L0u7wKXSfslLFz/62TL+jV5C7HliRjgE=;
+        b=L+6ygur2VdGrB77/UJhX/PSEFKFLF67EFDLLPGzZt+z4Ld7EvIovn/d7pFIeqzCx6S
+         XbiKxMJX8gPbqF76rFW04blTKrH4taXqwpl6t+dgJ8dLKyNgy7HB4HQh4EUbDFJC7zL7
+         I0651lpfOpWvpRgSN0D10S1ow0ZC0/DZhRxPwYbNYjT/n+9hyfyWnLkk56IfSt6BWl1v
+         qcPFr3prfy+MoSu4R1yPiJWYXJEpk1E/JNzq3/QUAYoN7Kii+l7nl9kHmsqG8ToN4QQs
+         hvG5En6rQHHsDwO+Vx8vmG4kDvXYVT/15ASgVeNsfRPr+cfjPF6p0jL0DF+ArXYlQY7J
+         nNpg==
+X-Gm-Message-State: AOAM533Rgk2FUEywGUHOaK0ITJEDELINFE/9OzhrWnFmXktlWVKoCTzj
+        SUh8QYlS0Kj8anh7/6jZhj4iXwz3dXAqBi6/D3w=
+X-Google-Smtp-Source: ABdhPJyIflbtmzjnJI1eAiWARoCJMq/wR69iPUNLzcv+u4lsZWyvISTS9qXp94cZkHxEUS3WNyMYEUUy5etfod3Xrzo=
+X-Received: by 2002:a05:6512:a8b:: with SMTP id m11mr4429110lfu.112.1611733082856;
+ Tue, 26 Jan 2021 23:38:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210127021855.GA706721@xilinx.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5e0cb106-610c-4935-f40b-08d8c2967359
-X-MS-TrafficTypeDiagnostic: CO6PR02MB7842:
-X-Microsoft-Antispam-PRVS: <CO6PR02MB7842320940605FAE940AFC51C6BB9@CO6PR02MB7842.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YFIp+eTU3WT7oecmXcUziVz+smdaW2JkAv/o6HbPTOgQJPyrgHr4QMgSCSgy0rXDBpaD+yIm8ULPEKQPtg80tTlwLwBk0cxR41BmdbCFCcJf74Up/WUqFnVb97kriVGTNG9L9k6qooGhcnc13HRW8CcSXw/O2/+D+xQh06yaG4GSj/w6FbpbBjF//lAmrRHxNOfgTmehPqMV2b0p28xBK5+iAMJB558Ip+IkSMKdaokpxoEOqvWkp3pGyxRRdxPGXqe+oZM6kuqnddSPrPWmW/szANcKeva0WfzCVNUTbYRYOfW/yd2vC4XpbF6eGptirtUdp56c3B3QoEq8GQz2XY72vp5v2C40g8Kkh4okfEM/ti+6aXZbUsmvg96bejqE30l6DwMDGfMvOIqBoAbBDEgtvOguAhf63eo74b+L2FNyk/uC59WDCJWyeqRcGoISjZ2tpArasFvPaOG0q+1zKLEcBSQymbyq57NAsXdzN0oI6hnL7MxXSyJW9LXBzj1+jYixtvQD8RN19RVIJQ6Jbw==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(46966006)(70586007)(53546011)(336012)(426003)(9786002)(4326008)(316002)(70206006)(2906002)(54906003)(47076005)(82310400003)(31686004)(31696002)(110136005)(5660300002)(8936002)(26005)(478600001)(186003)(36756003)(356005)(82740400003)(8676002)(44832011)(2616005)(7636003)(4744005)(36906005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 07:37:50.8279
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e0cb106-610c-4935-f40b-08d8c2967359
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT046.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7842
+References: <20210116011920.34487-1-cuibixuan@huawei.com> <20210116011920.34487-2-cuibixuan@huawei.com>
+In-Reply-To: <20210116011920.34487-2-cuibixuan@huawei.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 27 Jan 2021 16:37:51 +0900
+Message-ID: <CAM9d7cgPpeCyjd2Z3Ld6yya7BCE3KxVg0P4xeF2gDZ0Y5mw2HQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] perf tools: add 'perf irq' to measure the hardware interrupts
+To:     Bixuan Cui <cuibixuan@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        john.wanghui@huawei.com, Alexei Budankov <abudankov@huawei.com>,
+        yz.yuzhou@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On 1/27/21 3:18 AM, Hyun Kwon wrote:
-> Hi Laurent,
-> 
-> On Tue, Jan 26, 2021 at 05:37:02PM -0800, Laurent Pinchart wrote:
->> Hi Hyun,
->>
->> Thank you for the patch.
->>
->> On Tue, Jan 26, 2021 at 05:13:12PM -0800, Hyun Kwon wrote:
->>> The email will become invalid soon.
->>
->> Is there, by any chance, anyone at Xilinx would could help maintaining
->> these drivers ?
->>
-> 
-> Yes, there will be. I gave my recommendations, but it's still under discussion.
-> I'll ensure it's decided sooner than later.
+On Sat, Jan 16, 2021 at 10:20 AM Bixuan Cui <cuibixuan@huawei.com> wrote:
+>
+> Add 'perf irq' to trace/measure the hardware interrupts.
+>
+> Now three functions are provided:
+>   1. 'perf irq record <command>' to record the irq handler events.
+>   2. 'perf irq script' to see a detailed trace of the workload that
+>    was recorded.
+>   3. 'perf irq report' to calculate the time consumed by each
+>    hardware interrupt processing function.
+>
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> ---
+>  tools/perf/Build         |   1 +
+>  tools/perf/builtin-irq.c | 283 +++++++++++++++++++++++++++++++++++++++
+>  tools/perf/builtin.h     |   1 +
+>  tools/perf/perf.c        |   1 +
+>  4 files changed, 286 insertions(+)
+>  create mode 100644 tools/perf/builtin-irq.c
+>
+> diff --git a/tools/perf/Build b/tools/perf/Build
+> index 5f392dbb88fc..d52a1e1d6d8a 100644
+> --- a/tools/perf/Build
+> +++ b/tools/perf/Build
+> @@ -24,6 +24,7 @@ perf-y += builtin-mem.o
+>  perf-y += builtin-data.o
+>  perf-y += builtin-version.o
+>  perf-y += builtin-c2c.o
+> +perf-y += builtin-irq.o
+>
+>  perf-$(CONFIG_TRACE) += builtin-trace.o
+>  perf-$(CONFIG_LIBELF) += builtin-probe.o
+> diff --git a/tools/perf/builtin-irq.c b/tools/perf/builtin-irq.c
+> new file mode 100644
+> index 000000000000..25ba0669a875
+> --- /dev/null
+> +++ b/tools/perf/builtin-irq.c
+[SNIP]
+> +
+> +#define IRQ_NAME_LEN           20
+> +#define MAX_CPUS               4096
+> +
+> +static const char *cpu_list;
+> +static DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
+> +
+> +struct perf_irq;
 
-I am still around and I will make sure that someone will take a look at
-it. Just let me know that you are expecting any input from Xilinx till
-we have someone.
+Seems unnecessary.
+
+> +
+> +struct perf_irq {
+> +       struct perf_tool tool;
+> +       bool force;
+> +
+> +       u32 irq_entry_irq;
+> +       char irq_name[IRQ_NAME_LEN];
+> +       u32 cpu;
+> +       u64 irq_entry_time;
+> +       u32 irq_entry_pid;
+> +       u32 irq_exit_irq;
+> +       u64 irq_exit_time;
+> +       u32 irq_exit_pid;
+> +};
+> +
+> +typedef int (*irq_handler)(struct perf_tool *tool,
+> +                         union perf_event *event,
+> +                         struct evsel *evsel,
+> +                         struct perf_sample *sample,
+> +                         struct machine *machine);
+
+You don't need to pass all the arguments if unused.
+
+> +
+> +static int perf_report_process_sample(struct perf_tool *tool,
+> +                                        union perf_event *event,
+> +                                        struct perf_sample *sample,
+> +                                        struct evsel *evsel,
+> +                                        struct machine *machine)
+> +{
+> +       int err = 0;
+> +
+> +       if (evsel->handler != NULL) {
+> +               irq_handler f = evsel->handler;
+> +               err = f(tool, event, evsel, sample, machine);
+> +       }
+> +
+> +       return err;
+> +}
+> +
+> +static void output_report(struct perf_irq *irq)
+> +{
+> +       int ret, i;
+> +       char irq_entry_time[30], irq_exit_time[30], irq_diff[30];
+> +
+> +       /* The entry and exit of the hardware irq function
+> +        * exist at the same time. Check it by irq and pid.
+> +        */
+> +       if (irq->irq_entry_pid != irq->irq_exit_pid ||
+> +           irq->irq_entry_irq != irq->irq_exit_irq)
+> +               return;
+
+Is there only a single instance of the perf_irq here?
+Then I don't think this is correct and you should keep
+pairs of irq entry/exit per cpu.  Otherwise overlapped
+irqs from different cpus will be discarded (wrongly).
+
+> +
+> +       timestamp__scnprintf_usec(irq->irq_entry_time,
+> +                                 irq_entry_time, sizeof(irq_entry_time));
+> +       timestamp__scnprintf_usec(irq->irq_exit_time,
+> +                                 irq_exit_time, sizeof(irq_exit_time));
+> +       timestamp__scnprintf_usec(irq->irq_exit_time - irq->irq_entry_time,
+> +                                 irq_diff, sizeof(irq_diff));
+> +
+> +       ret = printf("   %s ", irq->irq_name);
+> +       for (i = 0; i < IRQ_NAME_LEN - ret; i++)
+> +               printf(" ");
+> +
+> +       printf("| [%04d] | %13s s | %16s s | %16s s\n",
+> +               irq->cpu, irq_diff, irq_entry_time, irq_exit_time);
+> +}
+> +
+> +static int report_irq_handler_entry_event(struct perf_tool *tool,
+> +                                     union perf_event *event __maybe_unused,
+> +                                     struct evsel *evsel,
+> +                                     struct perf_sample *sample,
+> +                                     struct machine *machine __maybe_unused)
+> +{
+> +       int err = 0;
+> +       struct perf_irq *irq = container_of(tool, struct perf_irq, tool);
+> +
+> +       const char *name = evsel__strval(evsel, sample, "name");
+> +
+> +       irq->irq_entry_pid = evsel__intval(evsel, sample, "pid");
+> +       irq->irq_entry_irq = evsel__intval(evsel, sample, "irq");
+> +       irq->irq_entry_time = sample->time;
+> +       strncpy(irq->irq_name, name, IRQ_NAME_LEN);
+
+Note that strncpy doesn't guarantee the NUL-termination.
+You'd better do it by yourself just in case.
 
 Thanks,
-Michal
+Namhyung
+
+> +
+> +       return err;
+> +}
+> +
+> +static int report_irq_handler_exit_event(struct perf_tool *tool,
+> +                                     union perf_event *event __maybe_unused,
+> +                                     struct evsel *evsel,
+> +                                     struct perf_sample *sample,
+> +                                     struct machine *machine __maybe_unused)
+> +{
+> +       int err = 0;
+> +       struct perf_irq *irq = container_of(tool, struct perf_irq, tool);
+> +
+> +       irq->irq_exit_pid = evsel__intval(evsel, sample, "pid");
+> +       irq->irq_exit_irq = evsel__intval(evsel, sample, "irq");
+> +       irq->irq_exit_time = sample->time;
+> +       irq->cpu = sample->cpu;
+> +
+> +       if (cpu_list && !test_bit(sample->cpu, cpu_bitmap))
+> +               return err;
+> +
+> +       output_report(irq);
+> +
+> +       return err;
+> +}
+> +
