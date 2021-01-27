@@ -2,245 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5259C305886
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9364330587D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhA0Kc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        id S235953AbhA0Kan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S314160AbhAZXAD (ORCPT
+        with ESMTP id S235746AbhA0K1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 18:00:03 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACD7C061756;
-        Tue, 26 Jan 2021 14:59:21 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d4so10622505plh.5;
-        Tue, 26 Jan 2021 14:59:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eqwHYgU2iGZD+ybt4xP+dWXvyCnIIv7E02QKZG2/cJ0=;
-        b=gIt3zYhf5IVme4+R3zL0WgYP/4OsnQK633hHDw7NJ13xKB+lx8A6X0VXB4Dh5wTFnq
-         qhCdz0gqct/G+dbLDnJ1T8oG3eqFv+isG6ZLEt5qJQEWFU3kVsXDMjM4Vqe8K6Y28y3H
-         UC3xcUYCXGaEjZPV+lwXC1takvnVJfPrt8zjhLYEBElVWOSadseRcTwPv6i0UFox4owq
-         szbbrDb6hshAf5MQZGsyoymEap0uqJOD56gGachboF1WlAAGvKFL8UTdLZeFxY3/LtFx
-         4wu/MmlcFS3XYu4B5oRzHUNPcsGCAQa/grhlcLCK4qswP13l7MtQlEOrV63nGpYZKZUi
-         HvxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=eqwHYgU2iGZD+ybt4xP+dWXvyCnIIv7E02QKZG2/cJ0=;
-        b=im/w7DVe/1fDtjbZfa4sq4Z9CFY3lWttdB0qD5Tow9oWD+8cyTK3oOQ3fza6Ug1aN8
-         NsnRr4htf38t1eaYKxCwmSSXcu/EIQIxJME8wOl2fO+YJePphakfTSYokmXl9GYPRvUa
-         X1Wpr/R3bI12utsm6v64o5yU7JBai/Cm70OjllvymMvCAiEEQx/16Oh4V3z7aBcnP0X8
-         0JR8XhE0kUVmAanHXLl6zxl/Q9XMJ0yH+OOqJA81K6hqRcMLqGSsuE2cvjkn51ovVR7p
-         4m8VdI46nkF8uzk9CDb0CXeLwIPoOnhQt6+BCYB6LjOU07f8dKej7FcxPs9ytie0MRrl
-         dqVw==
-X-Gm-Message-State: AOAM533flS+gKOgkv2zPKRvFvLO+55/nUNWB2WNG9V9hzKN7z5rC9Wh5
-        Z6B5ot3w5GjtyaVHFu2xKEk=
-X-Google-Smtp-Source: ABdhPJwx2l2p+TwwpYcdXWMcWWMRT4N62FjAhb1NKb15Pz7PMGmJk1DkwwqJ0jQbdVIum8HDeUMI6Q==
-X-Received: by 2002:a17:90b:a48:: with SMTP id gw8mr2047840pjb.113.1611701960493;
-        Tue, 26 Jan 2021 14:59:20 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:9dd5:b47b:bb84:dede])
-        by smtp.gmail.com with ESMTPSA id 145sm63241pge.88.2021.01.26.14.59.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 14:59:19 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 26 Jan 2021 14:59:17 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     viro@zeniv.linux.org.uk, Matthew Wilcox <willy@infradead.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Laura Abbott <lauraa@codeaurora.org>
-Subject: Re: [PATCH v4] fs/buffer.c: Revoke LRU when trying to drop buffers
-Message-ID: <YBCexclveGV2KH1G@google.com>
-References: <cover.1611642038.git.cgoldswo@codeaurora.org>
- <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
+        Wed, 27 Jan 2021 05:27:00 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA9AC06174A;
+        Wed, 27 Jan 2021 02:26:19 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQfrx33xvz9sW8;
+        Wed, 27 Jan 2021 21:26:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1611743176;
+        bh=zryxgSLQjWiTOLD0UNSsw16+SrNjwYCl/LrpeqtsbiY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DyrsykGhL7Xp3tlspIoxzVoyNszca4ctJbln+LsxEzARiBiP2f7oa45V0QTswDfoc
+         Cl5PRnAjD2cK63emo/Vlk7y7TVbZ96PKRzJR+YEOEso3cSKEJ6sMw1AVZ0TNPJtTiG
+         efL77s8j0uGdHOawkZ51ugE8To6++G7bAG06R3VqR5izgvxz9DDbbPpVPIcMJ2Vqmx
+         ICV6oIorPqbZ0+s8wzXSWX06bDGo2IRutQoRcfqUOhcWoi1WUlFKe97S3kG2l2OmVQ
+         oS3xdg+yplepHRFmZPj2/TgwqxzIjNtApPn5VXrBZfprp5TDyBnCCucNMXptgoEmRO
+         bdpnitg9VTrzQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>
+Subject: Re: [PATCH v11 13/13] powerpc/64s/radix: Enable huge vmalloc mappings
+In-Reply-To: <20210126044510.2491820-14-npiggin@gmail.com>
+References: <20210126044510.2491820-1-npiggin@gmail.com> <20210126044510.2491820-14-npiggin@gmail.com>
+Date:   Wed, 27 Jan 2021 21:26:08 +1100
+Message-ID: <87mtwuptfj.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:58:30PM -0800, Chris Goldsworthy wrote:
-> From: Laura Abbott <lauraa@codeaurora.org>
-> 
-> When a buffer is added to the LRU list, a reference is taken which is
-> not dropped until the buffer is evicted from the LRU list. This is the
-> correct behavior, however this LRU reference will prevent the buffer
-> from being dropped. This means that the buffer can't actually be dropped
-> until it is selected for eviction. There's no bound on the time spent
-> on the LRU list, which means that the buffer may be undroppable for
-> very long periods of time. Given that migration involves dropping
-> buffers, the associated page is now unmigratible for long periods of
-> time as well. CMA relies on being able to migrate a specific range
-> of pages, so these types of failures make CMA significantly
-> less reliable, especially under high filesystem usage.
-> 
-> Rather than waiting for the LRU algorithm to eventually kick out
-> the buffer, explicitly remove the buffer from the LRU list when trying
-> to drop it. There is still the possibility that the buffer
-> could be added back on the list, but that indicates the buffer is
-> still in use and would probably have other 'in use' indicates to
-> prevent dropping.
-> 
-> Note: a bug reported by "kernel test robot" lead to a switch from
-> using xas_for_each() to xa_for_each().
-> 
-> Signed-off-by: Laura Abbott <lauraa@codeaurora.org>
-> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-
-Hi Chris,
-
-The release buffer_head in LRU is great improvement for migration
-point of view.
-
-A question: 
-
-Can't we invalidate(e.g., invalidate_bh_lrus) bh_lru in migrate_prep or
-elsewhere when migration found the failure and is about to retry?
-
-Migration has done such a way for other per-cpu stuffs for a long time,
-which would be more consistent with others and might be faster sometimes
-with reducing IPI calls for page.
-
-
+Nicholas Piggin <npiggin@gmail.com> writes:
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 > ---
->  fs/buffer.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 74 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 96c7604..27516a0 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -48,6 +48,7 @@
->  #include <linux/sched/mm.h>
->  #include <trace/events/block.h>
->  #include <linux/fscrypt.h>
-> +#include <linux/xarray.h>
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+
+cheers
+
+>  .../admin-guide/kernel-parameters.txt         |  2 ++
+>  arch/powerpc/Kconfig                          |  1 +
+>  arch/powerpc/kernel/module.c                  | 21 +++++++++++++++----
+>  3 files changed, 20 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a10b545c2070..d62df53e5200 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3225,6 +3225,8 @@
 >  
->  #include "internal.h"
+>  	nohugeiomap	[KNL,X86,PPC,ARM64] Disable kernel huge I/O mappings.
 >  
-> @@ -1471,12 +1472,55 @@ static bool has_bh_in_lru(int cpu, void *dummy)
->  	return false;
+> +	nohugevmalloc	[PPC] Disable kernel huge vmalloc mappings.
+> +
+>  	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
+>  			Equivalent to smt=1.
+>  
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 107bb4319e0e..781da6829ab7 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -181,6 +181,7 @@ config PPC
+>  	select GENERIC_GETTIMEOFDAY
+>  	select HAVE_ARCH_AUDITSYSCALL
+>  	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+> +	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
+>  	select HAVE_ARCH_JUMP_LABEL
+>  	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+>  	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+> diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+> index a211b0253cdb..07026335d24d 100644
+> --- a/arch/powerpc/kernel/module.c
+> +++ b/arch/powerpc/kernel/module.c
+> @@ -87,13 +87,26 @@ int module_finalize(const Elf_Ehdr *hdr,
+>  	return 0;
 >  }
 >  
-> +static void __evict_bhs_lru(void *arg)
-> +{
-> +	struct bh_lru *b = &get_cpu_var(bh_lrus);
-> +	struct xarray *busy_bhs = arg;
-> +	struct buffer_head *bh;
-> +	unsigned long i, xarray_index;
-> +
-> +	xa_for_each(busy_bhs, xarray_index, bh) {
-> +		for (i = 0; i < BH_LRU_SIZE; i++) {
-> +			if (b->bhs[i] == bh) {
-> +				brelse(b->bhs[i]);
-> +				b->bhs[i] = NULL;
-> +				break;
-> +			}
-> +		}
-> +	}
-> +
-> +	put_cpu_var(bh_lrus);
-> +}
-> +
-> +static bool page_has_bhs_in_lru(int cpu, void *arg)
-> +{
-> +	struct bh_lru *b = per_cpu_ptr(&bh_lrus, cpu);
-> +	struct xarray *busy_bhs = arg;
-> +	struct buffer_head *bh;
-> +	unsigned long i, xarray_index;
-> +
-> +	xa_for_each(busy_bhs, xarray_index, bh) {
-> +		for (i = 0; i < BH_LRU_SIZE; i++) {
-> +			if (b->bhs[i] == bh)
-> +				return true;
-> +		}
-> +	}
-> +
-> +	return false;
-> +
-> +}
->  void invalidate_bh_lrus(void)
+> -#ifdef MODULES_VADDR
+>  void *module_alloc(unsigned long size)
 >  {
->  	on_each_cpu_cond(has_bh_in_lru, invalidate_bh_lru, NULL, 1);
+> +	unsigned long start = VMALLOC_START;
+> +	unsigned long end = VMALLOC_END;
+> +
+> +#ifdef MODULES_VADDR
+>  	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+> +	start = MODULES_VADDR;
+> +	end = MODULES_END;
+> +#endif
+> +
+> +	/*
+> +	 * Don't do huge page allocations for modules yet until more testing
+> +	 * is done. STRICT_MODULE_RWX may require extra work to support this
+> +	 * too.
+> +	 */
+>  
+> -	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END, GFP_KERNEL,
+> -				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+> +	return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
+> +				    PAGE_KERNEL_EXEC,
+> +				    VM_NO_HUGE_VMAP | VM_FLUSH_RESET_PERMS,
+> +				    NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
 >  }
->  EXPORT_SYMBOL_GPL(invalidate_bh_lrus);
->  
-> +static void evict_bh_lrus(struct xarray *busy_bhs)
-> +{
-> +	on_each_cpu_cond(page_has_bhs_in_lru, __evict_bhs_lru,
-> +			 busy_bhs, 1);
-> +}
-> +
->  void set_bh_page(struct buffer_head *bh,
->  		struct page *page, unsigned long offset)
->  {
-> @@ -3242,14 +3286,38 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
->  {
->  	struct buffer_head *head = page_buffers(page);
->  	struct buffer_head *bh;
-> +	struct xarray busy_bhs;
-> +	int bh_count = 0;
-> +	int xa_ret, ret = 0;
-> +
-> +	xa_init(&busy_bhs);
->  
->  	bh = head;
->  	do {
-> -		if (buffer_busy(bh))
-> -			goto failed;
-> +		if (buffer_busy(bh)) {
-> +			xa_ret = xa_err(xa_store(&busy_bhs, bh_count++,
-> +						 bh, GFP_ATOMIC));
-> +			if (xa_ret)
-> +				goto out;
-> +		}
->  		bh = bh->b_this_page;
->  	} while (bh != head);
->  
-> +	if (bh_count) {
-> +		/*
-> +		 * Check if the busy failure was due to an outstanding
-> +		 * LRU reference
-> +		 */
-> +		evict_bh_lrus(&busy_bhs);
-> +		do {
-> +			if (buffer_busy(bh))
-> +				goto out;
-> +
-> +			bh = bh->b_this_page;
-> +		} while (bh != head);
-> +	}
-> +
-> +	ret = 1;
->  	do {
->  		struct buffer_head *next = bh->b_this_page;
->  
-> @@ -3259,9 +3327,10 @@ drop_buffers(struct page *page, struct buffer_head **buffers_to_free)
->  	} while (bh != head);
->  	*buffers_to_free = head;
->  	detach_page_private(page);
-> -	return 1;
-> -failed:
-> -	return 0;
-> +out:
-> +	xa_destroy(&busy_bhs);
-> +
-> +	return ret;
->  }
->  
->  int try_to_free_buffers(struct page *page)
+> -#endif
 > -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
-> 
+> 2.23.0
