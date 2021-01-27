@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B133F3063F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0DA3063FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344413AbhA0TTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:19:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
+        id S231339AbhA0T2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344300AbhA0TTi (ORCPT
+        with ESMTP id S231186AbhA0T2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:19:38 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3B7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:18:58 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id u15so1600345plf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:18:58 -0800 (PST)
+        Wed, 27 Jan 2021 14:28:05 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA391C061573;
+        Wed, 27 Jan 2021 11:27:23 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id q12so4254427lfo.12;
+        Wed, 27 Jan 2021 11:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=93SynukuYeg709JYhF7Ulm4tPXAZSEgL9ZbUq1MNWPg=;
-        b=Vm7WFn/mtMq/xKPXg5onQUf7G4Oa5uUMg+ij1z8ZUcokyXxV1LMLwv774qzV0sn6Z8
-         kKbOT6WWrhauaidzoGf32VpY03ukC+c+TsF4XIxEPF1TgWUnuhkWo2klpg3zddkhRyfL
-         JAVHf+w6M1riQYLbHFjKnltu0JQhizSjmWMBcEUPTpx0FLHdtFBuPypb8VJkAh/VO6cW
-         Jk62QN3836T11wyY9hSAuM/wgtuL6dHP4il8arp9HLRcgACnvmBi5PFJhXZ2sLAtDnZ8
-         4LHGDdTIvMu9iFwxmTPBEXxohuS/ZnVvedQe8WG85BlHqu4c3BYwJps1AstkidzteKfQ
-         2dtQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eErsvLQOi70Fd3rG1vmBEBTaAjJEcb2LwVEepLIWATU=;
+        b=R3RU1QwwcEqZkTI62T9Zu+9akNzecHJo/rRpmlVMMVi75QfqdlcLh+T6YNGtwZSEpV
+         jriS1kM6s7uZQ3GMqCzCvRksku4Tffn/RZvSpVhlM8zDKeVQ5628A2cO/nR+7inzelm0
+         TeFkaEo0sHqZ6jy540qbfaXwSfP3Sbco53m+vJO1lciYahutroc6pe6HUCoXrXCUwcFf
+         1t2nNCj/z2mcpd0aqGhNPixH+eLrIqR1w1bO5Dvia4zhUz+xb84mB3jiKcz+SkICXE/a
+         XNpyHJ1UPfxkC0JuiucalFDXTeeGXuKuqUNc9IdGTIQKktJlR8IYU0++OGmaYPIkShWA
+         bCjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=93SynukuYeg709JYhF7Ulm4tPXAZSEgL9ZbUq1MNWPg=;
-        b=k2fqZcO8WnlVitCD5LQ//q5l9aMwWeBpb7ZieijMbL78/WWXZU2YU6Fuo3pL7hfnhm
-         FMVTQpTP/UTi0BziNs35SBIwtHxCmThZTeSB2MWEOTFnkI3d258tgj5bDkihG8WYyq5o
-         hx/Oacg5RAN+57azLbqFps/wxNut7R9xD5a32Podro7VhqGcMJ5ie7GD0u8nnKn3grwt
-         KFUIxR51dz2CEetKAJkUrf+bhiWf98Q1104CifkUBWvYm7BgTCxqSDhQwPv+Ay9U2IVF
-         gaB9ZqJ9GU5+6Y79UyY+XwlHkl+F9FBUEj2d/MpA8Eq6JniBCnzqiS+F/PDHMJx3OL4z
-         eR1Q==
-X-Gm-Message-State: AOAM531f42CLMlbpM/aSZLIFeGeiYmYEmKBe3W80geJ+oq1f/UAiRAUL
-        DoJr4kPn/rsuln46DQL1nxdYBw==
-X-Google-Smtp-Source: ABdhPJzPCEs7Fm91XUyHkwCy3jcz2AQo5nEL837xRx2JVkBm7bijnRR1T3NFn/eiTCXHdezOqZpRPQ==
-X-Received: by 2002:a17:90a:7e82:: with SMTP id j2mr7148214pjl.217.1611775137707;
-        Wed, 27 Jan 2021 11:18:57 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id p64sm3075517pfb.201.2021.01.27.11.18.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 11:18:56 -0800 (PST)
-Date:   Wed, 27 Jan 2021 11:18:56 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH] mm, slub: remove slub_memcg_sysfs boot param and
- CONFIG_SLUB_MEMCG_SYSFS_ON
-In-Reply-To: <20210127124745.7928-1-vbabka@suse.cz>
-Message-ID: <69d1e35a-7324-5e7e-6a7-cb3246c865b6@google.com>
-References: <20210127124745.7928-1-vbabka@suse.cz>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eErsvLQOi70Fd3rG1vmBEBTaAjJEcb2LwVEepLIWATU=;
+        b=CEE6g5LjwRwk6MXRvLNPJqFxZumm8V/CrnbSR/Egrp6zzmYPkwX8KT1iXk8KSO+J2M
+         Q2OToAgb9/Y/uoPwuthSQqDZoEIOiCFzUsAH6mjCdbPZKi9d0otjXjvbS41YoJimJv9G
+         TghyLtfOKyzGPj6WxPBszPibQIZZTc6s1qJxg+4kFUwzIo+hWy95/NSGizOTEDUonY6B
+         OwW8RAWE7M6UgjAls2uySiNogI1dzKZ8d0vTi5cvcis025uAp0P+Iwmdzrg8LWsPAHwY
+         HklG5M3KW8Jexn/OvUIvDl4HK+DhL9UQ7qnTNya5SbaYySHy+bMxdZM7Pt3NuvgSjSdk
+         8LuQ==
+X-Gm-Message-State: AOAM530j0lkl7u1Pu5fEgg8T37A2RRb648m48/8Tb/Ud/mgm+j77xbV9
+        m33WTsmw1GydC1m0fnUTEZemsLXl0yg=
+X-Google-Smtp-Source: ABdhPJzKwaHUxYryKtRRvgvSAFxMD9lHOCcbac8uoR2B9dEYSi+hKPtlCvODpMHeTl0qq0ePeVyppw==
+X-Received: by 2002:a05:6512:79:: with SMTP id i25mr5617302lfo.549.1611775642080;
+        Wed, 27 Jan 2021 11:27:22 -0800 (PST)
+Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6? ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id o14sm707048lfi.257.2021.01.27.11.27.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 11:27:21 -0800 (PST)
+Subject: Re: [PATCH] memory: tegra: Remove calls to dev_pm_opp_set_clkname()
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <0f22cc1791d8b88c50a9790c2dc19455b34ec7b0.1611742564.git.viresh.kumar@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7daaf77c-4ba0-0c69-1028-49518eb44d18@gmail.com>
+Date:   Wed, 27 Jan 2021 22:27:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <0f22cc1791d8b88c50a9790c2dc19455b34ec7b0.1611742564.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021, Vlastimil Babka wrote:
-
-> The boot param and config determine the value of memcg_sysfs_enabled, which is
-> unused since commit 10befea91b61 ("mm: memcg/slab: use a single set of
-> kmem_caches for all allocations") as there are no per-memcg kmem caches
-> anymore.
+27.01.2021 13:16, Viresh Kumar пишет:
+> There is no point calling dev_pm_opp_set_clkname() with the "name"
+> parameter set to NULL, this is already done by the OPP core at setup
+> time and should work as it is.
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> 
+> ---
+> V2: Update tegra124 as well.
+> 
+> Krzysztof, please take this through your tree, it doesn't have any
+> dependency in the OPP tree.
+> ---
+>  drivers/memory/tegra/tegra124-emc.c | 13 ++-----------
+>  drivers/memory/tegra/tegra20-emc.c  | 13 ++-----------
+>  drivers/memory/tegra/tegra30-emc.c  | 13 ++-----------
+>  3 files changed, 6 insertions(+), 33 deletions(-)
 
-Acked-by: David Rientjes <rientjes@google.com>
+Ideally drivers should be able to ensure that OPP table received the
+clk, IMO. But this is also almost fine with me since realistically
+clk_get() shouldn't fail if it already succeeded a moment ago.
+
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+
+Could we please fix the _allocate_opp_table() to not ignore clk_get()
+errors like -ENOMEM and etc?
