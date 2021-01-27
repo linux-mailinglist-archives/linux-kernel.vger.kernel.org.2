@@ -2,155 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A37305718
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40106305750
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235344AbhA0JiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:38:06 -0500
-Received: from mail-eopbgr60062.outbound.protection.outlook.com ([40.107.6.62]:5859
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234840AbhA0JDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:03:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AwXR8OQg9xJ8okqTqJHX67bZwUxGWXgp2koDihmQJP3eKOuGhl4gzbhjRXNyBUnMZ4qZDrD1o6QZw4vSubE7ap60A+1lWppknONkD/yaQYi9o2c6dIIGtf+nO23/hMlQvLHUx1fkIjUunLe9nqir52xv+qQ7zd4O2CShAjzB1exvhFvAJMxOU+k7Zjktr6WyLqkDqWBmZ1/Lazl501GlAbHgJTQjESNRiPffnvmfNtz7rzlbtsdlboqj9ItoQJWT3phqBzjRaY5i1bF6jkgLJCOeXS6ivtFwXu2AUqXiH9nDBlzbSr0pHEcQFx9E9OAMGAUVH40Ymxi2ig4tMFz4OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OwFOMuVKshgQDKiBAsFggICil7yw7RtDrxCYg25axfw=;
- b=etPbWKPCrNvJ30MW3FecbKSqnX5dI4lkA2utk2+D7Srtsef/1IEds3+1tIfN1neSXJe1vTzB3So+6eyVLj5nXxsjE7NFDCaDggM1ZcXq5WDFDLspKb8xaRZPrCZdNsfrR1eBJbc49W0mBroQHqwxKhcDTg72v6iXhr2yj8GQI25EQ/yLmJ1ElxQ4ym7mswfpUXz0MXin0Ou9d1Maq6KynhoOxSnUwmH1C46HfnCUZT3Ex9vu6COqOUuXGBEizUp5dOJR6yzmEclvsVT4Koi0W4dqtQF+6CEF8IMfqEmTzO8hDc/KWIJrBkzt1AWw1b6jviJdjs+ghZHCdy0vYbZEJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OwFOMuVKshgQDKiBAsFggICil7yw7RtDrxCYg25axfw=;
- b=B4Lar6J1am+ndUCYXCyNOiD6PmvhXSPEV+Dks612hBxJe8AtzZVFeupaxRbGFAAeLCZw1C3nwdt6Kwwly/ey9DuO7ZLx794q+pj6GEesTHwyOQWgWgKMKrzobSfOpV/5gBz3HnZkopU7oqL7EaQlFWp6xEXIdPV9yv2RQV0SZlg=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VE1PR04MB6559.eurprd04.prod.outlook.com (2603:10a6:803:126::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
- 2021 09:02:30 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3805.016; Wed, 27 Jan 2021
- 09:02:30 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: [PATCH v3 02/14] media: uapi: Add some RGB bus formats for i.MX8qm/qxp pixel combiner
-Date:   Wed, 27 Jan 2021 16:51:16 +0800
-Message-Id: <1611737488-2791-3-git-send-email-victor.liu@nxp.com>
+        id S235501AbhA0Jsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:48:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:32944 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233891AbhA0I7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 03:59:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45D1D1477;
+        Wed, 27 Jan 2021 00:55:39 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A0ED33F66B;
+        Wed, 27 Jan 2021 00:55:36 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 05/14] coresight: ete: Add support for ETE tracing
+Date:   Wed, 27 Jan 2021 14:25:29 +0530
+Message-Id: <1611737738-1493-6-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
-References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR02CA0049.apcprd02.prod.outlook.com
- (2603:1096:4:54::13) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0049.apcprd02.prod.outlook.com (2603:1096:4:54::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 09:02:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c733c30e-3333-4259-888f-08d8c2a2468b
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6559:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB65591649AA54F62CB222366098BB0@VE1PR04MB6559.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:326;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JUA09FL1/U2a+ji0lx0mh1tePnqpn5twtcOkftomRNLVf+s+D3aFAS29Nny6qPJufaxNWaWlWoBulM1iL1RkbAKWwPpN5GIL8MMRGvk96aR3b4uBKCxjAGbbEiq8ILyOLcmrwvST1JcCaHN9f0lktUqoFXLCSJzglfLT9ure7S6tK1OkmSylPvRvQspLRM9c+YK+YR9bQ2NtLbNz/YDyclnszTQik9EobwRUfey+mOitvUODAHJNUlwqwll2OJwrqLET5lnOWiiF9sW7Gcxv5/KFYD9aVi05FlEbk8dP8PgJoWl1GCec1r9TDOYpnj+42Pydv6yyZl6+w6DaPB/dEfde9PmuMZFQfUnadsWArb3EAVkYg6FlnpFopkxozYJssG67ZCfFrucL0iDlnq5DI+y9pIpVBjtQ/pa23BYLbohyU5L7AjHS1Lwf0jVoTkxxUgYpd4BI30F2itxxIMZ8QMLBFXJZiTU+AKhkzxfFzxZelXhmYkQHaGxtUfNhrtP7tjJ69pbh9dvrexBg1oRWfthakz9b2uGKVK7NxL4Zyuu/0bizvrJVK1OjY5tRdRiOX9NCjybaTiJwM7KVFiOymQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(39860400002)(136003)(86362001)(83380400001)(6512007)(478600001)(6486002)(316002)(5660300002)(7416002)(8676002)(8936002)(2906002)(26005)(69590400011)(4326008)(6666004)(52116002)(66946007)(6506007)(66476007)(66556008)(186003)(2616005)(956004)(16526019)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rIM1F9brxpa/LCh2+whEBVsKw+sez+qozxGUHpZ89kD2z4TC5mJyEJh6MbkK?=
- =?us-ascii?Q?gEal92Uj5ihmsuOVny64+l7GupzwM9FATw7BB8dau7pRnExR5JzMqvwSiB1X?=
- =?us-ascii?Q?mp4PN8iH7cBc/P+90sT2g/yfRqAywpCF5udDwOK9cjHzaHGcRbU9sEeKONIo?=
- =?us-ascii?Q?pn5MQAit2wZ730LgURw08KSJT1cUyDMDQueZK8TI3CTnsqpf4bnaD29lDhEl?=
- =?us-ascii?Q?o4Kn0mBPUlgtNgPemGfXcvS/mFOk6ULaElk4szoWgPJQX3EEWWJQbRhsuS8l?=
- =?us-ascii?Q?eD0LR7ZXXeDi9hTAnkpL/SEcPpKlIOuL+iTYFyLawZ42Sd6Vn3vDzAJChW4D?=
- =?us-ascii?Q?7UX+B5DFW4utEMw3Xr69US4/0OFh5dmWOMhu0QVVZKm7yf++0ymw9E68N3XU?=
- =?us-ascii?Q?HL0EIvEePAmCpztEtV1GWnw3yGRmhgF0Moyc3LVxmZnrybKmgoLmEOL4GN9o?=
- =?us-ascii?Q?hZi5e/1aYsqfNtzZjKALNj8Egq5TA6c34W9t0Wvs6Ag2xqxsqU7oJaworVn5?=
- =?us-ascii?Q?yNnBwi5Kj9LfbQm4kg7pZ68LvNEPv89Er3fXd0GZaBWy8TASkZdnDE8elhZd?=
- =?us-ascii?Q?J5rVT4jLQEwImLgXKMWg3Fc78qbAMT70h4b8r4JkvPOWkY12PmGWnxglRuQy?=
- =?us-ascii?Q?wL6BY9CG248CjmMtqpmkk4E4tNpugdU1lBTMIErK9rYG7EjUsSJZZOf6iRoM?=
- =?us-ascii?Q?ImXAwdbSTm5RTPczEjzxfpA//Q/lQnX7b7a/unKGczR9GW5dqCdeW62s+dz5?=
- =?us-ascii?Q?n8XzocW2scYlFXqO7BaYohCVRDNkLOGM3fGYX9FzbpoNK4iBmmZqLNdhnzoM?=
- =?us-ascii?Q?G93HZ9rgD65gpIqZqk4SyvogIU27nhNDFWttNqcUY1+MpGAuYcBDj7ZgH1BY?=
- =?us-ascii?Q?r5muaxsLxMf/yu5Qc+24TFOLw4V9NzWIGVvArDozgGBQKqtY6Y2Hj2Zi0EWU?=
- =?us-ascii?Q?blEM8sN2M6e5OE8j2K8tOsPcW8WPX+P2GSza0lIIgJel0b2tQlEgVajXR/NT?=
- =?us-ascii?Q?ySF6bo0rIa4M5SGx6cCGm1PFmKcgdFDgezuj6glvTz8BF1x/Ycznn/YdibNq?=
- =?us-ascii?Q?N2/4EfG0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c733c30e-3333-4259-888f-08d8c2a2468b
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 09:02:29.9403
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: adfg38S0lwYDvv78PnfOhTKVI/JXdhHkQTz35rxuj9ZZ+CTz8EguHoz/+wO0+M0Z8/+X98ny0KQHTmyZjCta0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6559
+In-Reply-To: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds RGB666_1X30_CPADLO, RGB888_1X30_CPADLO, RGB666_1X36_CPADLO
-and RGB888_1X36_CPADLO bus formats used by i.MX8qm/qxp pixel combiner.
-The RGB pixels with padding low per component are transmitted on a 30-bit
-input bus(10-bit per component) from a display controller or a 36-bit
-output bus(12-bit per component) to a pixel link.
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Add ETE as one of the supported device types we support
+with ETM4x driver. The devices are named following the
+existing convention as ete<N>.
+
+ETE mandates that the trace resource status register is programmed
+before the tracing is turned on. For the moment simply write to
+it indicating TraceActive.
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
-v2->v3:
-* No change.
+ drivers/hwtracing/coresight/Kconfig                | 10 ++--
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 56 +++++++++++++++++-----
+ .../hwtracing/coresight/coresight-etm4x-sysfs.c    | 19 ++++++--
+ drivers/hwtracing/coresight/coresight-etm4x.h      | 16 ++++++-
+ 4 files changed, 79 insertions(+), 22 deletions(-)
 
-v1->v2:
-* No change.
-
- include/uapi/linux/media-bus-format.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/media-bus-format.h b/include/uapi/linux/media-bus-format.h
-index 0dfc11e..ec3323d 100644
---- a/include/uapi/linux/media-bus-format.h
-+++ b/include/uapi/linux/media-bus-format.h
-@@ -34,7 +34,7 @@
+diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+index 7b44ba2..f154ae7 100644
+--- a/drivers/hwtracing/coresight/Kconfig
++++ b/drivers/hwtracing/coresight/Kconfig
+@@ -97,15 +97,15 @@ config CORESIGHT_SOURCE_ETM3X
+ 	  module will be called coresight-etm3x.
  
- #define MEDIA_BUS_FMT_FIXED			0x0001
+ config CORESIGHT_SOURCE_ETM4X
+-	tristate "CoreSight Embedded Trace Macrocell 4.x driver"
++	tristate "CoreSight ETMv4.x / ETE driver"
+ 	depends on ARM64
+ 	select CORESIGHT_LINKS_AND_SINKS
+ 	select PID_IN_CONTEXTIDR
+ 	help
+-	  This driver provides support for the ETM4.x tracer module, tracing the
+-	  instructions that a processor is executing. This is primarily useful
+-	  for instruction level tracing. Depending on the implemented version
+-	  data tracing may also be available.
++	  This driver provides support for the CoreSight Embedded Trace Macrocell
++	  version 4.x and the Embedded Trace Extensions (ETE). Both are CPU tracer
++	  modules, tracing the instructions that a processor is executing. This is
++	  primarily useful for instruction level tracing.
  
--/* RGB - next is	0x101e */
-+/* RGB - next is	0x1022 */
- #define MEDIA_BUS_FMT_RGB444_1X12		0x1016
- #define MEDIA_BUS_FMT_RGB444_2X8_PADHI_BE	0x1001
- #define MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE	0x1002
-@@ -59,9 +59,13 @@
- #define MEDIA_BUS_FMT_RGB888_3X8_DELTA		0x101d
- #define MEDIA_BUS_FMT_RGB888_1X7X4_SPWG		0x1011
- #define MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA	0x1012
-+#define MEDIA_BUS_FMT_RGB666_1X30_CPADLO	0x101e
-+#define MEDIA_BUS_FMT_RGB888_1X30_CPADLO	0x101f
- #define MEDIA_BUS_FMT_ARGB8888_1X32		0x100d
- #define MEDIA_BUS_FMT_RGB888_1X32_PADHI		0x100f
- #define MEDIA_BUS_FMT_RGB101010_1X30		0x1018
-+#define MEDIA_BUS_FMT_RGB666_1X36_CPADLO	0x1020
-+#define MEDIA_BUS_FMT_RGB888_1X36_CPADLO	0x1021
- #define MEDIA_BUS_FMT_RGB121212_1X36		0x1019
- #define MEDIA_BUS_FMT_RGB161616_1X48		0x101a
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called coresight-etm4x.
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 9e92d2a..b40e3c2 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -431,6 +431,13 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+ 		etm4x_relaxed_write32(csa, trcpdcr | TRCPDCR_PU, TRCPDCR);
+ 	}
  
++	/*
++	 * ETE mandates that the TRCRSR is written to before
++	 * enabling it.
++	 */
++	if (etm4x_is_ete(drvdata))
++		etm4x_relaxed_write32(csa, TRCRSR_TA, TRCRSR);
++
+ 	/* Enable the trace unit */
+ 	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
+ 
+@@ -864,13 +871,24 @@ static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
+ 	 * ETMs implementing sysreg access must implement TRCDEVARCH.
+ 	 */
+ 	devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
+-	if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
++	switch (devarch & ETM_DEVARCH_ID_MASK) {
++	case ETM_DEVARCH_ETMv4x_ARCH:
++		*csa = (struct csdev_access) {
++			.io_mem	= false,
++			.read	= etm4x_sysreg_read,
++			.write	= etm4x_sysreg_write,
++		};
++		break;
++	case ETM_DEVARCH_ETE_ARCH:
++		*csa = (struct csdev_access) {
++			.io_mem	= false,
++			.read	= ete_sysreg_read,
++			.write	= ete_sysreg_write,
++		};
++		break;
++	default:
+ 		return false;
+-	*csa = (struct csdev_access) {
+-		.io_mem	= false,
+-		.read	= etm4x_sysreg_read,
+-		.write	= etm4x_sysreg_write,
+-	};
++	}
+ 
+ 	drvdata->arch = etm_devarch_to_arch(devarch);
+ 	return true;
+@@ -1808,6 +1826,8 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+ 	struct etmv4_drvdata *drvdata;
+ 	struct coresight_desc desc = { 0 };
+ 	struct etm4_init_arg init_arg = { 0 };
++	u8 major, minor;
++	char *type_name;
+ 
+ 	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+ 	if (!drvdata)
+@@ -1834,10 +1854,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+ 	if (drvdata->cpu < 0)
+ 		return drvdata->cpu;
+ 
+-	desc.name = devm_kasprintf(dev, GFP_KERNEL, "etm%d", drvdata->cpu);
+-	if (!desc.name)
+-		return -ENOMEM;
+-
+ 	init_arg.drvdata = drvdata;
+ 	init_arg.csa = &desc.access;
+ 	init_arg.pid = etm_pid;
+@@ -1853,6 +1869,20 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+ 	if (!desc.access.io_mem ||
+ 	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+ 		drvdata->skip_power_up = true;
++	major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
++	minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);
++	if (etm4x_is_ete(drvdata)) {
++		type_name = "ete";
++		/* ETE v1 has major version == 5. Adjust this for logging.*/
++		major -= 4;
++	} else {
++		type_name = "etm";
++	}
++
++	desc.name = devm_kasprintf(dev, GFP_KERNEL,
++				   "%s%d", type_name, drvdata->cpu);
++	if (!desc.name)
++		return -ENOMEM;
+ 
+ 	etm4_init_trace_id(drvdata);
+ 	etm4_set_default(&drvdata->config);
+@@ -1881,9 +1911,8 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+ 
+ 	etmdrvdata[drvdata->cpu] = drvdata;
+ 
+-	dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
+-		 drvdata->cpu, ETM_ARCH_MAJOR_VERSION(drvdata->arch),
+-		 ETM_ARCH_MINOR_VERSION(drvdata->arch));
++	dev_info(&drvdata->csdev->dev, "CPU%d: %s v%d.%d initialized\n",
++		 drvdata->cpu, type_name, major, minor);
+ 
+ 	if (boot_enable) {
+ 		coresight_enable(drvdata->csdev);
+@@ -2027,6 +2056,7 @@ static struct amba_driver etm4x_amba_driver = {
+ 
+ static const struct of_device_id etm4_sysreg_match[] = {
+ 	{ .compatible	= "arm,coresight-etm4x-sysreg" },
++	{ .compatible	= "arm,embedded-trace-extension" },
+ 	{}
+ };
+ 
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+index b646d53..1c490bc 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+@@ -2374,12 +2374,20 @@ static inline bool
+ etm4x_register_implemented(struct etmv4_drvdata *drvdata, u32 offset)
+ {
+ 	switch (offset) {
+-	ETM4x_SYSREG_LIST_CASES
++	ETM_COMMON_SYSREG_LIST_CASES
+ 		/*
+-		 * Registers accessible via system instructions are always
+-		 * implemented.
++		 * Common registers to ETE & ETM4x accessible via system
++		 * instructions are always implemented.
+ 		 */
+ 		return true;
++
++	ETM4x_ONLY_SYSREG_LIST_CASES
++		/*
++		 * We only support etm4x and ete. So if the device is not
++		 * ETE, it must be ETMv4x.
++		 */
++		return !etm4x_is_ete(drvdata);
++
+ 	ETM4x_MMAP_LIST_CASES
+ 		/*
+ 		 * Registers accessible only via memory-mapped registers
+@@ -2389,8 +2397,13 @@ etm4x_register_implemented(struct etmv4_drvdata *drvdata, u32 offset)
+ 		 * coresight_register() and the csdev is not initialized
+ 		 * until that is done. So rely on the drvdata->base to
+ 		 * detect if we have a memory mapped access.
++		 * Also ETE doesn't implement memory mapped access, thus
++		 * it is sufficient to check that we are using mmio.
+ 		 */
+ 		return !!drvdata->base;
++
++	ETE_ONLY_SYSREG_LIST_CASES
++		return etm4x_is_ete(drvdata);
+ 	}
+ 
+ 	return false;
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index ca24ac5..8b90de5 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -128,6 +128,8 @@
+ #define TRCCIDR2			0xFF8
+ #define TRCCIDR3			0xFFC
+ 
++#define TRCRSR_TA			BIT(12)
++
+ /*
+  * System instructions to access ETM registers.
+  * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
+@@ -390,6 +392,9 @@
+ #define ETM_COMMON_SYSREG_LIST_CASES		\
+ 	ETM_COMMON_SYSREG_LIST(NOP, __unused)
+ 
++#define ETM4x_ONLY_SYSREG_LIST_CASES		\
++	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
++
+ #define ETM4x_SYSREG_LIST_CASES			\
+ 	ETM_COMMON_SYSREG_LIST_CASES		\
+ 	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
+@@ -406,7 +411,6 @@
+ 	ETE_ONLY_SYSREG_LIST(WRITE, (val))
+ 
+ #define ETE_ONLY_SYSREG_LIST_CASES		\
+-	ETM_COMMON_SYSREG_LIST_CASES		\
+ 	ETE_ONLY_SYSREG_LIST(NOP, __unused)
+ 
+ #define read_etm4x_sysreg_offset(offset, _64bit)				\
+@@ -589,11 +593,14 @@
+ 	((ETM_DEVARCH_MAKE_ARCHID_ARCH_VER(major)) | ETM_DEVARCH_ARCHID_ARCH_PART(0xA13))
+ 
+ #define ETM_DEVARCH_ARCHID_ETMv4x		ETM_DEVARCH_MAKE_ARCHID(0x4)
++#define ETM_DEVARCH_ARCHID_ETE			ETM_DEVARCH_MAKE_ARCHID(0x5)
+ 
+ #define ETM_DEVARCH_ID_MASK						\
+ 	(ETM_DEVARCH_ARCHITECT_MASK | ETM_DEVARCH_ARCHID_MASK | ETM_DEVARCH_PRESENT)
+ #define ETM_DEVARCH_ETMv4x_ARCH						\
+ 	(ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETMv4x | ETM_DEVARCH_PRESENT)
++#define ETM_DEVARCH_ETE_ARCH						\
++	(ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETE | ETM_DEVARCH_PRESENT)
+ 
+ #define TRCSTATR_IDLE_BIT		0
+ #define TRCSTATR_PMSTABLE_BIT		1
+@@ -683,6 +690,8 @@
+ #define ETM_ARCH_MINOR_VERSION(arch)	((arch) & 0xfU)
+ 
+ #define ETM_ARCH_V4	ETM_ARCH_VERSION(4, 0)
++#define ETM_ARCH_ETE	ETM_ARCH_VERSION(5, 0)
++
+ /* Interpretation of resource numbers change at ETM v4.3 architecture */
+ #define ETM_ARCH_V4_3	ETM_ARCH_VERSION(4, 3)
+ 
+@@ -989,4 +998,9 @@ void etm4_config_trace_mode(struct etmv4_config *config);
+ 
+ u64 etm4x_sysreg_read(u32 offset, bool _relaxed, bool _64bit);
+ void etm4x_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit);
++
++static inline bool etm4x_is_ete(struct etmv4_drvdata *drvdata)
++{
++	return drvdata->arch >= ETM_ARCH_ETE;
++}
+ #endif
 -- 
 2.7.4
 
