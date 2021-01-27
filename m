@@ -2,111 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483FE30608D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04C3306090
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343874AbhA0QFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:05:45 -0500
-Received: from mail-yb1-f171.google.com ([209.85.219.171]:33599 "EHLO
-        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236374AbhA0QCB (ORCPT
+        id S1343905AbhA0QHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:07:09 -0500
+Received: from mailbackend.panix.com ([166.84.1.89]:50095 "EHLO
+        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237174AbhA0QEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:02:01 -0500
-Received: by mail-yb1-f171.google.com with SMTP id i141so2510023yba.0;
-        Wed, 27 Jan 2021 08:01:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yepEAjXY6R6spMmhtoWe8WjXNXVezUuhMTMgdZv+bxY=;
-        b=Ab+6BerXgphwVaPZZKiT7IeYqSXYvDe4NV40EkUShsZoZo3hadfZ+1eng2WzscJiCS
-         eqbNkg8si0rCA6BdLCTHVfj4Ziy0Nf32vsDFAyvLeD8HETrpT+i8V4ghBW/1lPE0NRhf
-         IQXF9CvQ1SSJrovZF5XTb5D3VsZyWJKCCyOg+/ML/HZOI8x8jWKXBxWFmncQAUHdVf8h
-         ATQPWHIqIgUEiX/qnBIM9QBTtY570Uign1q2YtItDUWH88nHOCJO2zBcBVQzJ4BQHdPz
-         lZvt4nwCinKfzDUdAMksR+ww7en89UbGkt3KrIRMu0RyJ2LP7Ul0Vog5+pH2B15xKFiZ
-         7nwQ==
-X-Gm-Message-State: AOAM533CQveumLuNRsnh8We3D2XDDgF1OqTpbNyEqKfovPBwrUOTsaH1
-        tuoTh55vHSc97WHtIIIbTdXbrVzFicpptn8vHyU=
-X-Google-Smtp-Source: ABdhPJzg/HGDPUImAxYpyvDw+CFmq8I77SNxfyByZ6JGDcF7jwdlWSZG9M7iYncmpN6BcAFWQbVigJ0zAGn6Nuvt1Tg=
-X-Received: by 2002:a25:324b:: with SMTP id y72mr17025245yby.23.1611763280688;
- Wed, 27 Jan 2021 08:01:20 -0800 (PST)
+        Wed, 27 Jan 2021 11:04:33 -0500
+Received: from xps-7390.lan (mobile-166-172-191-81.mycingular.net [166.172.191.81])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 4DQpLN5FStz1NJF;
+        Wed, 27 Jan 2021 11:03:40 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+        t=1611763421; bh=WoxYksT779c0u5+fx6C9zWh5rRJepYdpiZLR/v25Xc0=;
+        h=Date:From:Reply-To:To:cc:Subject:In-Reply-To:References;
+        b=v+R/GDbmOBiOsUIuf+WqYjPYyXCmdatStecKsF+WaNqMFR07Mh2gj5E6/FAqUPzTB
+         PXEYWR1BSUsM/DFl8oYBlNnBQ6PvGsccq4l3QcO9pJR4liNt4LnmR4QGDnj42P33ag
+         vveYZ/jf0m0OXe0zatkE6GSi8dZyrGBqTLvjP4ZQ=
+Date:   Wed, 27 Jan 2021 08:03:39 -0800 (PST)
+From:   "Kenneth R. Crudup" <kenny@panix.com>
+Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     Vidya Sagar <vidyas@nvidia.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Commit 4257f7e0 ("PCI/ASPM: Save/restore L1SS Capability for
+ suspend/resume") causing hibernate resume failures
+In-Reply-To: <20210127155023.GA2988674@bjorn-Precision-5520>
+Message-ID: <8f5111f-3679-b4b6-f86f-71871424843@panix.com>
+References: <20210127155023.GA2988674@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210126171550.3066-1-kernel@esmil.dk> <CAF=yD-LGoVkf5ARHPsGAMbsruDq7iQ=X8c3cZRp5XaZC936EMw@mail.gmail.com>
- <87pn1q8l0t.fsf@codeaurora.org> <CANBLGcwmTt2bmpwST1qHzOFhVoYYPC_gEz3nARzR9mOOg6nOHA@mail.gmail.com>
- <87lfce8keh.fsf@codeaurora.org>
-In-Reply-To: <87lfce8keh.fsf@codeaurora.org>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 27 Jan 2021 17:01:08 +0100
-Message-ID: <CANBLGcwfK41+E9JzrU_Hym8VK5S4rGdsyKCHMRiABQvt2zL4kg@mail.gmail.com>
-Subject: Re: [PATCH] rtlwifi: use tasklet_setup to initialize rx_work_tasklet
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 at 16:33, Kalle Valo <kvalo@codeaurora.org> wrote:
-> ...
-> Forgot to mention that I can remove the Fixes tags during commit, so no
-> need to resend just because of those.
 
-Cool, thanks.
+On Wed, 27 Jan 2021, Bjorn Helgaas wrote:
 
-> > I can definitely see how you can reasonably disagree, but I would not
-> > be comfortable having code that only works because the calling
-> > conventions of all relevant architectures happen to put the first
-> > unsigned long argument and the first pointer argument in the same
-> > register.
+> > Any new news on this? Disabling "tlp" (which just shifts the problem around
+> > on my machine) shouldn't be a solution for this issue.
 >
-> If there's a bug this patch fixes please explain it clearly in the
-> commit log. But as I read it (though I admit very quickly) I understood
-> this is just cleanup.
+> Agreed; disabling "tlp" is a workaround but not a solution.
 
-Sorry, I'll try again.
+Actually, disabling "tlp" doesn't fix the issue; I'd tested this and if IIRC,
+if I don't use tlp it doesn't prevent this from happening, it just shifts it
+from breaking on hibernate cycles to suspend/resume cycles instead.
 
-So the tasklet_struct looks like this:
-struct tasklet_struct {
-  ..
-  bool use_callback;
-  union {
-    void (*func)(unsigned long);
-    void (*callback)(struct tasklet_struct *);
-  };
-  unsigned long data;
-};
+	-Kenny
 
-..and the use_callback flag is used like this:
-if (t->use_callback)
-  t->callback(t);
-else
-  t->func(t->data);
-
-Now commit d3ccc14dfe95 changed the _rtl_rx_work to be of the new
-callback, not func, type. But it didn't actually set the use_callback
-flag, and just typecast the _rtl_rx_work function pointer and assigned
-it to the func member. So _rtl_rx_work is still called as
-t->func(t->data) even though it was rewritten to be called as
-t->callback(t).
-Now 6b8c7574a5f8 set t->data = (unsigned long)t, so calling
-t->func(t->data) will probably work on most architectures because:
-
-a) "unsigned long" and "struct tasklet_struct *" has the same width on
-all Linux-capable architectures and
-b) calling t->func(t->data) will put the value from t->data into the
-same register as the function
-    void _rtl_rx_work(struct tasklet_struct *t)
-  expects to find the pointer t in the C calling conventions used by
-all relevant architectures.
-
-I guess it's debatable weather this is a bug or just ugly code.
-
-/Emil
+-- 
+Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Orange County CA
