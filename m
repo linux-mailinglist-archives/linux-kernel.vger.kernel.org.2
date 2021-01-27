@@ -2,275 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDA3305F1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45315305F38
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhA0PId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:08:33 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:47760 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235099AbhA0PCp (ORCPT
+        id S1343734AbhA0PNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:13:18 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:40047 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235751AbhA0PG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:02:45 -0500
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210127150158epoutp0347532f035a6636fcf8dc4f3f809549b6~eHuyhpzsJ1983919839epoutp035
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:01:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210127150158epoutp0347532f035a6636fcf8dc4f3f809549b6~eHuyhpzsJ1983919839epoutp035
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611759718;
-        bh=0gfCy33qDEILaikTsVpNdHgQG//hPVXr1zKS9lJ2+lM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mH3qrHltsUXxctt9TuMsM42UN+wXnA+9h/qL/yHikvzkhnL8V1kcqPIVDuj5dyP6A
-         eBZWhJ9k+Zi337tyFFCAaUzoZImI8AdOWvPCjJfD0/csvbTNM7y5TWM0dOZFCep+hV
-         bbyTrDaa++//c9unV1fThbvSRMamih5MLNBAPfig=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210127150157epcas5p10c74d59d5147c8ae69cd52d0ca1af048~eHux-ULYP1681116811epcas5p1h;
-        Wed, 27 Jan 2021 15:01:57 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4A.33.15682.56081106; Thu, 28 Jan 2021 00:01:57 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210127150156epcas5p26cdf368e4ff6bffb132fa1c7f9430653~eHuxC96l12309923099epcas5p2V;
-        Wed, 27 Jan 2021 15:01:56 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210127150156epsmtrp2b3e6a2ea496e87079ef8aae2d23b59fb~eHuxCMdYZ0982109821epsmtrp29;
-        Wed, 27 Jan 2021 15:01:56 +0000 (GMT)
-X-AuditID: b6c32a49-8bfff70000013d42-f3-60118065e8c6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.25.13470.46081106; Thu, 28 Jan 2021 00:01:56 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.110.206.5]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210127150154epsmtip236c48b897466958e02c98eba663efa3d~eHuu2rr2J1918419184epsmtip25;
-        Wed, 27 Jan 2021 15:01:54 +0000 (GMT)
-From:   Kanchan Joshi <joshi.k@samsung.com>
-To:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me
-Cc:     linux-nvme@lists.infradead.org, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        javier.gonz@samsung.com, nj.shetty@samsung.com,
-        selvakuma.s1@samsung.com, Kanchan Joshi <joshi.k@samsung.com>,
-        Anuj Gupta <anuj20.g@samsung.com>
-Subject: [RFC PATCH 4/4] io_uring: add async passthrough ioctl support
-Date:   Wed, 27 Jan 2021 20:30:29 +0530
-Message-Id: <20210127150029.13766-5-joshi.k@samsung.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210127150029.13766-1-joshi.k@samsung.com>
+        Wed, 27 Jan 2021 10:06:27 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 892995C00CF;
+        Wed, 27 Jan 2021 10:05:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 27 Jan 2021 10:05:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=NZ/BL+CX8ZrUPwXj4Uh/86z40F
+        CVpFJbpqPIuN9jSec=; b=atQgHX2qSgfP06U5kuFU7gTfr/kLpf5lCsCIareSSO
+        uNn+nnfsY/ohOStNFDVfX+lqvJmgj/5t1D81GtsJ72dYwVtwu6x8Y2ZJGXle29uw
+        NEQuGlaZz0ByWg7OQW+I5RMwnlDYaMedZlGQkxvoykWTBIpZfUS1LPxI/e8taCrD
+        g4pzSY/YPEoiMvpNPLpxVaEx72d1Xm5VPSxbGLUkNLEjTy41aNUIyIzgyUOMU8jN
+        VdvQVmrO6ajbPedslhd6LzSoMU8Bj30/pyamRPlfBxr2XIwzA6Gh5kd2b7h8Fcno
+        5IdCB2jFYqtZGcnAwv/fTNwjfNz/Z+8HaSapg6MfotUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NZ/BL+CX8ZrUPwXj4
+        Uh/86z40FCVpFJbpqPIuN9jSec=; b=o2b1WHHivF88bjoSUXLVS9NQGPOZzAEMN
+        DsA+lSWD1Lat7D2sA5TGROZadoWRBXNw+i3ObTPiD3JeaRgIa+50BVqFgrskL0qg
+        aJao/AANLn4pU1t9lkD3BSaPnPbpsLh1xWuaUiK9RNxhSzzlN3ktSalzRh/UvlIX
+        AptkpWvrkP0A1JLVxwjCx44oxSR6xc8OTm0+1wz2BacI2my17j00EVKA8+qYLLWl
+        xW4MzM7ipsppbomdN3KW8bYkDKp/1cDqO3c81/35nr1s+H0W3V/XG4SQls0LVhD2
+        orFE5lYZOaMF0iteBj4PpExXfNIMAM3z8NQ1NqUmq9oJC2Sb3p0Bg==
+X-ME-Sender: <xms:PYERYOPOtb6_NVTq2pkNxQ4IS0TWpKNXFr1j15WBT0wJ7q3TkN2VeQ>
+    <xme:PYERYEYAX9D32Tj-GYlCTnN6eeQXKTodQbvMHVSgJj9UEjHGZ9Hz4niTSxvV135k3
+    KZ3vKNCbY79ogFQ8Ds>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekgdejudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpefvohhmohihuhhkihcuofgrthhsuhhshhhithgruceogihorhhphhhi
+    thhushesfhgrshhtmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeetgeffuefghe
+    fftedvtefgjeejjeelhedtfeekveejtedtkedvhfelfedvieeugeenucfkphepuddtfedr
+    vddrvdegledrudduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpeigohhrphhhihhtuhhssehfrghsthhmrghilhdrtghomh
+X-ME-Proxy: <xmx:PYERYCoKuDuUnF2io7Zrml9W4cqA445jyBjQuNxAeNyzZLYNtj_EUA>
+    <xmx:PYERYIaTAHqVQvE5pd69GdF1nnYqyQX2gjkR0aCr9jwBck6x8fnWkA>
+    <xmx:PYERYKSvshS-IiTxT0tA_TLTO1FXxDRJvA4l8Q4I4AcVdyixqKl_YA>
+    <xmx:PoERYA78B2AX3kVB0CNgvghBlgYKxVBDSgPoCOfA4lahqw5OR7azag>
+Received: from xorphitus-arch.flets-east.jp (119.249.2.103.shared.user.transix.jp [103.2.249.119])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D308B1080067;
+        Wed, 27 Jan 2021 10:05:31 -0500 (EST)
+From:   Tomoyuki Matsushita <xorphitus@fastmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     Tomoyuki Matsushita <xorphitus@fastmail.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: af_bluetooth: checkpatch: fix indentation and alignment
+Date:   Thu, 28 Jan 2021 00:05:20 +0900
+Message-Id: <20210127150520.3459346-1-xorphitus@fastmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7bCmpm5qg2CCwaU2dYvf06ewWjRN+Mts
-        sfpuP5vFytVHmSzetZ5jsXh85zO7xdH/b9ksJh26xmixZ+9JFovLu+awWcxf9pTdYtvv+cwW
-        V6YsYrZY9/o9i8XrHyfZHPg9zt/byOJx+Wypx6ZVnWwem5fUe+y+2cDm0bdlFaPH501yAexR
-        XDYpqTmZZalF+nYJXBlfZs9jKtisXrFw0T3mBsZD8l2MnBwSAiYSjb0n2LsYuTiEBHYzSkz7
-        18wK4XxilPi3diczhPONUeLugutsMC2/n26HSuxllOjo64JyPjNKdF1Zw9TFyMHBJqApcWFy
-        KUiDiICLxIXfB8B2MAtMZJL49qKXCSQhLOAmcX/ucrCpLAKqEofWX2YHsXkFLCROrG9hgtgm
-        LzHz0newOKeApcSVbZtYIWoEJU7OfMICYjMD1TRvnQ12hITAFg6Jq4f+skM0u0ic/fwaapCw
-        xKvjW6DiUhKf3+2FeqdY4tedo1DNHYwS1xtmskAk7CUu7vkL9g0z0Dfrd+lDLOOT6P39BCws
-        IcAr0dEmBFGtKHFv0lNWCFtc4uGMJVC2h0TPu7XQAO4Bhum+nSwTGOVnIflhFpIfZiFsW8DI
-        vIpRMrWgODc9tdi0wDAvtVyvODG3uDQvXS85P3cTIzh5aXnuYLz74IPeIUYmDsZDjBIczEoi
-        vHYKgglCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeXcYPIgXEkhPLEnNTk0tSC2CyTJxcEo1MM3Y
-        Pm250c5jq7SkPXIYWBdz9M5ilcjmkuTaYF7L/qOKV3+HXuycvPdznrVZ9Xly3Vr1bE4Z939l
-        wcIrKy+cMX5Qtyay/PQu78VVix0c8kUXbti19lp8jKmhzgEVw/6UN6EpD95EntI3lW06W9Ej
-        Wnl42tk9ls2S8hN5K5xMF4rXLnj9tahaJYmVN/XjvLnrf86sVk9W1tKMmcTu17dql3GdChs7
-        d+WtTa+zHxw8esjsjJi+U3CN3CEdPa/M9HfhdXpyk+1UDFTkyxKt1s96eGl/6L//zLvOR7S9
-        eDr9eFTrlHi5qnuWRpqzp83f+HFPsgjv27+3lYs2Gdz7YjGP9cfiOmvZyvkXF+f7rWpXVWIp
-        zkg01GIuKk4EAJ8ENC3NAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKLMWRmVeSWpSXmKPExsWy7bCSvG5Kg2CCwfrPyha/p09htWia8JfZ
-        YvXdfjaLlauPMlm8az3HYvH4zmd2i6P/37JZTDp0jdFiz96TLBaXd81hs5i/7Cm7xbbf85kt
-        rkxZxGyx7vV7FovXP06yOfB7nL+3kcXj8tlSj02rOtk8Ni+p99h9s4HNo2/LKkaPz5vkAtij
-        uGxSUnMyy1KL9O0SuDK+zJ7HVLBZvWLhonvMDYyH5LsYOTkkBEwkfj/dztzFyMUhJLCbUeJw
-        zyVmiIS4RPO1H+wQtrDEyn/P2SGKPjJKTD12namLkYODTUBT4sLkUhBTRMBLYttSQ5ByZoHZ
-        TBKNvyJBbGEBN4n7c5ezgdgsAqoSh9ZfBhvJK2AhcWJ9CxPEeHmJmZe+g8U5BSwlrmzbxApi
-        CwHVvJ/wkA2iXlDi5MwnLBDz5SWat85mnsAoMAtJahaS1AJGplWMkqkFxbnpucWGBYZ5qeV6
-        xYm5xaV56XrJ+bmbGMExo6W5g3H7qg96hxiZOBgPMUpwMCuJ8NopCCYI8aYkVlalFuXHF5Xm
-        pBYfYpTmYFES573QdTJeSCA9sSQ1OzW1ILUIJsvEwSnVwHSCxffG2z1Jf54rb+GZ7DaHY62/
-        sc/+n7y1815ZPzA7KjbBzUg8evLcehYZpdy52in3rSuPNF5bydN5imvDqb1Cb52eJFeFWTtV
-        elw44iCx9gxn/pZXHmleDbK9N6f3X/vgwOb4fEvZyucdl00yROMKWe35Xjq8WcixTCfry1wJ
-        gSnbmU7VeT+8cbIn5aFoxsVN6Z0tbzd/vyq+KGf3b5mfCyq2T46L2310dlTJc9c1yZzO8oK7
-        fjkbVgbf2PvrmU/QpSe2HGcij69hmVZr0j5rt9esBU+vu95/01AUpaS77aZRU/391ugTO3m8
-        5rE2vN75lENqblHHkdQNt3ekczQ+e8nr3nsg5dq1lgXOpj+UWIozEg21mIuKEwGBbgBiCAMA
-        AA==
-X-CMS-MailID: 20210127150156epcas5p26cdf368e4ff6bffb132fa1c7f9430653
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210127150156epcas5p26cdf368e4ff6bffb132fa1c7f9430653
-References: <20210127150029.13766-1-joshi.k@samsung.com>
-        <CGME20210127150156epcas5p26cdf368e4ff6bffb132fa1c7f9430653@epcas5p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce IORING_OP_IOCTL_PT for async ioctl. It skips entering into
-block-layer and reaches to underlying block-driver managing the
-block-device. This is done by calling newly introduced "async_ioctl"
-block-device operation.
-The requested operation may be completed synchronously, and in that case
-CQE is updated on the fly. For asynchronous update, lower-layer calls
-the completion-callback supplied by io-uring.
-
-Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
+Signed-off-by: Tomoyuki Matsushita <xorphitus@fastmail.com>
 ---
- fs/io_uring.c                 | 77 +++++++++++++++++++++++++++++++++++
- include/uapi/linux/io_uring.h |  7 +++-
- 2 files changed, 83 insertions(+), 1 deletion(-)
+ net/bluetooth/af_bluetooth.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 985a9e3f976d..c15852dfb727 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -468,6 +468,19 @@ struct io_rw {
- 	u64				len;
- };
+diff --git a/net/bluetooth/af_bluetooth.c b/net/bluetooth/af_bluetooth.c
+index 4ef6a54403aa..968ea03d863f 100644
+--- a/net/bluetooth/af_bluetooth.c
++++ b/net/bluetooth/af_bluetooth.c
+@@ -72,8 +72,8 @@ void bt_sock_reclassify_lock(struct sock *sk, int proto)
+ 	BUG_ON(!sock_allow_reclassification(sk));
  
-+/*
-+ * passthru ioctl skips block-layer and reaches to block device driver via
-+ * async_ioctl() block-dev operation.
-+ */
-+struct io_pt_ioctl {
-+	struct file			*file;
-+	/* arg and cmd like regular ioctl */
-+	u64				arg;
-+	u32				cmd;
-+	/* defined by block layer */
-+	struct pt_ioctl_ctx		ioctx;
-+};
-+
- struct io_connect {
- 	struct file			*file;
- 	struct sockaddr __user		*addr;
-@@ -699,6 +712,7 @@ struct io_kiocb {
- 		struct io_shutdown	shutdown;
- 		struct io_rename	rename;
- 		struct io_unlink	unlink;
-+		struct io_pt_ioctl	ptioctl;
- 		/* use only after cleaning per-op data, see io_clean_op() */
- 		struct io_completion	compl;
- 	};
-@@ -824,6 +838,10 @@ static const struct io_op_def io_op_defs[] = {
- 		.needs_file		= 1,
- 		.work_flags		= IO_WQ_WORK_BLKCG,
- 	},
-+	[IORING_OP_IOCTL_PT] = {
-+		.needs_file		= 1,
-+		.work_flags		= IO_WQ_WORK_MM,
-+	},
- 	[IORING_OP_READ_FIXED] = {
- 		.needs_file		= 1,
- 		.unbound_nonreg_file	= 1,
-@@ -3704,6 +3722,60 @@ static int io_write(struct io_kiocb *req, bool force_nonblock,
- 	return ret;
+ 	sock_lock_init_class_and_name(sk,
+-			bt_slock_key_strings[proto], &bt_slock_key[proto],
+-				bt_key_strings[proto], &bt_lock_key[proto]);
++				      bt_slock_key_strings[proto], &bt_slock_key[proto],
++				      bt_key_strings[proto], &bt_lock_key[proto]);
+ }
+ EXPORT_SYMBOL(bt_sock_reclassify_lock);
+ 
+@@ -451,7 +451,7 @@ static inline __poll_t bt_accept_poll(struct sock *parent)
  }
  
-+static int io_pt_ioctl_prep(struct io_kiocb *req,
-+			    const struct io_uring_sqe *sqe)
-+{
-+	unsigned int cmd = READ_ONCE(sqe->ioctl_cmd);
-+	unsigned long arg = READ_ONCE(sqe->ioctl_arg);
-+	struct io_ring_ctx *ctx = req->ctx;
-+	struct block_device *bdev = I_BDEV(req->file->f_mapping->host);
-+	struct gendisk *disk = NULL;
-+
-+	disk = bdev->bd_disk;
-+	if (!disk || !disk->fops || !disk->fops->async_ioctl)
-+		return -EOPNOTSUPP;
-+	/* for sqpoll, use sqo_task */
-+	if (ctx->flags & IORING_SETUP_SQPOLL)
-+		req->ptioctl.ioctx.task = ctx->sqo_task;
-+	else
-+		req->ptioctl.ioctx.task = current;
-+
-+	req->ptioctl.arg = arg;
-+	req->ptioctl.cmd = cmd;
-+	return 0;
-+}
-+
-+void pt_complete(struct pt_ioctl_ctx *ptioc, long ret)
-+{
-+	struct io_kiocb *req = container_of(ptioc, struct io_kiocb, ptioctl.ioctx);
-+
-+	if (ret < 0)
-+		req_set_fail_links(req);
-+	io_req_complete(req, ret);
-+}
-+
-+static int io_pt_ioctl(struct io_kiocb *req, bool force_nonblock)
-+{
-+	long ret = 0;
-+	struct block_device *bdev = I_BDEV(req->file->f_mapping->host);
-+	fmode_t mode = req->file->f_mode;
-+	struct gendisk *disk = NULL;
-+
-+	disk = bdev->bd_disk;
-+	/* set up callback for async */
-+	req->ptioctl.ioctx.pt_complete = pt_complete;
-+
-+	ret = disk->fops->async_ioctl(bdev, mode, req->ptioctl.cmd,
-+				req->ptioctl.arg, &req->ptioctl.ioctx);
-+	if (ret == -EIOCBQUEUED) /*async completion */
-+		return 0;
-+	if (ret < 0)
-+		req_set_fail_links(req);
-+
-+	io_req_complete(req, ret);
-+	return 0;
-+}
-+
- static int io_renameat_prep(struct io_kiocb *req,
- 			    const struct io_uring_sqe *sqe)
+ __poll_t bt_sock_poll(struct file *file, struct socket *sock,
+-			  poll_table *wait)
++		      poll_table *wait)
  {
-@@ -6078,6 +6150,8 @@ static int io_req_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 		return io_renameat_prep(req, sqe);
- 	case IORING_OP_UNLINKAT:
- 		return io_unlinkat_prep(req, sqe);
-+	case IORING_OP_IOCTL_PT:
-+		return io_pt_ioctl_prep(req, sqe);
- 	}
+ 	struct sock *sk = sock->sk;
+ 	__poll_t mask = 0;
+@@ -478,7 +478,7 @@ __poll_t bt_sock_poll(struct file *file, struct socket *sock,
+ 		mask |= EPOLLHUP;
  
- 	printk_once(KERN_WARNING "io_uring: unhandled opcode %d\n",
-@@ -6337,6 +6411,9 @@ static int io_issue_sqe(struct io_kiocb *req, bool force_nonblock,
- 	case IORING_OP_UNLINKAT:
- 		ret = io_unlinkat(req, force_nonblock);
+ 	if (sk->sk_state == BT_CONNECT ||
+-			sk->sk_state == BT_CONNECT2 ||
++	    sk->sk_state == BT_CONNECT2 ||
+ 			sk->sk_state == BT_CONFIG)
+ 		return mask;
+ 
+@@ -508,7 +508,7 @@ int bt_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
+ 		amount = sk->sk_sndbuf - sk_wmem_alloc_get(sk);
+ 		if (amount < 0)
+ 			amount = 0;
+-		err = put_user(amount, (int __user *) arg);
++		err = put_user(amount, (int __user *)arg);
  		break;
-+	case IORING_OP_IOCTL_PT:
-+		ret = io_pt_ioctl(req, force_nonblock);
-+		break;
+ 
+ 	case TIOCINQ:
+@@ -519,7 +519,7 @@ int bt_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
+ 		skb = skb_peek(&sk->sk_receive_queue);
+ 		amount = skb ? skb->len : 0;
+ 		release_sock(sk);
+-		err = put_user(amount, (int __user *) arg);
++		err = put_user(amount, (int __user *)arg);
+ 		break;
+ 
  	default:
- 		ret = -EINVAL;
- 		break;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index d31a2a1e8ef9..60671e2b00ba 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -22,12 +22,16 @@ struct io_uring_sqe {
- 	union {
- 		__u64	off;	/* offset into file */
- 		__u64	addr2;
-+		__u64	ioctl_arg;
- 	};
- 	union {
- 		__u64	addr;	/* pointer to buffer or iovecs */
- 		__u64	splice_off_in;
- 	};
--	__u32	len;		/* buffer size or number of iovecs */
-+	union {
-+		__u32	len;	/* buffer size or number of iovecs */
-+		__u32	ioctl_cmd;
-+	};
- 	union {
- 		__kernel_rwf_t	rw_flags;
- 		__u32		fsync_flags;
-@@ -137,6 +141,7 @@ enum {
- 	IORING_OP_SHUTDOWN,
- 	IORING_OP_RENAMEAT,
- 	IORING_OP_UNLINKAT,
-+	IORING_OP_IOCTL_PT,
+@@ -637,7 +637,7 @@ static int bt_seq_show(struct seq_file *seq, void *v)
+ 	struct bt_sock_list *l = PDE_DATA(file_inode(seq->file));
  
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
+ 	if (v == SEQ_START_TOKEN) {
+-		seq_puts(seq ,"sk               RefCnt Rmem   Wmem   User   Inode  Parent");
++		seq_puts(seq, "sk               RefCnt Rmem   Wmem   User   Inode  Parent");
+ 
+ 		if (l->custom_seq_show) {
+ 			seq_putc(seq, ' ');
+@@ -657,7 +657,7 @@ static int bt_seq_show(struct seq_file *seq, void *v)
+ 			   sk_wmem_alloc_get(sk),
+ 			   from_kuid(seq_user_ns(seq), sock_i_uid(sk)),
+ 			   sock_i_ino(sk),
+-			   bt->parent? sock_i_ino(bt->parent): 0LU);
++			   bt->parent ? sock_i_ino(bt->parent) : 0LU);
+ 
+ 		if (l->custom_seq_show) {
+ 			seq_putc(seq, ' ');
+@@ -678,7 +678,7 @@ static const struct seq_operations bt_seq_ops = {
+ 
+ int bt_procfs_init(struct net *net, const char *name,
+ 		   struct bt_sock_list *sk_list,
+-		   int (* seq_show)(struct seq_file *, void *))
++		   int (*seq_show)(struct seq_file *, void *))
+ {
+ 	sk_list->custom_seq_show = seq_show;
+ 
+@@ -694,7 +694,7 @@ void bt_procfs_cleanup(struct net *net, const char *name)
+ #else
+ int bt_procfs_init(struct net *net, const char *name,
+ 		   struct bt_sock_list *sk_list,
+-		   int (* seq_show)(struct seq_file *, void *))
++		   int (*seq_show)(struct seq_file *, void *))
+ {
+ 	return 0;
+ }
 -- 
-2.25.1
+2.30.0
 
