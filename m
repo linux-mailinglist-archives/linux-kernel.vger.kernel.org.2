@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9533065D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F44D3065D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhA0VOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:14:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51282 "EHLO mail.kernel.org"
+        id S233902AbhA0VQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:16:34 -0500
+Received: from elvis.franken.de ([193.175.24.41]:60530 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233903AbhA0VOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:14:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A278E60C3E;
-        Wed, 27 Jan 2021 21:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611782035;
-        bh=MoCjYZO9i0aM338B6n8Rdn5oVPO+PReC4kzLCcVwUM8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LuMCrOgN6kC0p2ynTtu7PnNEQ4dep9Xa1KUEDcdLl5Wvs5MOxK4jI56WMML+fY5v9
-         vK0dcZFxNDAEEUHj5oyd0rTnz/LOlsculqg2YoHgztOkMmMobupaOsswjN1A1HTun0
-         TLdeg0DxB+C1m9NQWLn43XB7pohdqUIurQm1GD3KDv21BslDm94Zls4+z2Opo4HBoh
-         v+WdrFitKr7c4sCBwxfprbbLh0gAvBmFx+79Y07dYSpqX/5ch7o0YBDfk4idyP8lI9
-         F5UnITHY5bm9Jx3b7cDazItJVH8wSqGW1a3bWhNXxU7UagDfzOZ2vZ0wD9E+hzRRb6
-         z8VjSj91G0efA==
-Date:   Wed, 27 Jan 2021 13:13:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Raju Rangoju <rajur@chelsio.com>
-Cc:     Yang Li <abaci-bugfix@linux.alibaba.com>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] cxgb4: remove redundant NULL check
-Message-ID: <20210127131353.5fc141da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210127063426.GC21071@chelsio.com>
-References: <1611629413-81373-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-        <20210127063426.GC21071@chelsio.com>
+        id S231927AbhA0VQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:16:31 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l4s9k-0003fj-00; Wed, 27 Jan 2021 22:15:16 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id F222CC0AAF; Wed, 27 Jan 2021 22:15:06 +0100 (CET)
+Date:   Wed, 27 Jan 2021 22:15:06 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+Message-ID: <20210127211506.GA21163@alpha.franken.de>
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+ <20210104105904.GK3021@hirez.programming.kicks-ass.net>
+ <0712b131-715a-a83a-bc9e-61405824ff0e@flygoat.com>
+ <20210105101806.GG3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210105101806.GG3040@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 12:04:27 +0530 Raju Rangoju wrote:
-> On Tuesday, January 01/26/21, 2021 at 10:50:13 +0800, Yang Li wrote:
-> > Fix below warnings reported by coccicheck:
-> > ./drivers/net/ethernet/chelsio/cxgb4/clip_tbl.c:323:3-9: WARNING:
-> > NULL check before some freeing functions is not needed.
-> > ./drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c:3554:2-8: WARNING:
-> > NULL check before some freeing functions is not needed.
-> > ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c:157:2-7: WARNING:
-> > NULL check before some freeing functions is not needed.
-> > ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c:525:3-9: WARNING:
-> > NULL check before some freeing functions is not needed.
+On Tue, Jan 05, 2021 at 11:18:06AM +0100, Peter Zijlstra wrote:
+> On Tue, Jan 05, 2021 at 11:45:37AM +0800, Jiaxun Yang wrote:
+> > 在 2021/1/4 下午6:59, Peter Zijlstra 写道:
+> > > On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+> > > > +u64 perf_reg_abi(struct task_struct *tsk)
+> > > > +{
+> > > > +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
+> > > > +		return PERF_SAMPLE_REGS_ABI_32;
+> > > > +	else
+> > > > +		return PERF_SAMPLE_REGS_ABI_64;
+> > > > +}
+> > > So we recently changed this on x86 to not rely on TIF flags. IIRC the
+> > > problem is that on x86 you can change the mode of a task without the
+> > > kernel being aware of it. Is something like that possible on MIPS as
+> > > well?
 > > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
-
-> > diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-> > index 77648e4..dd66b24 100644
-> > --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-> > +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_cudbg.c
-> > @@ -157,8 +157,7 @@ static int cudbg_alloc_compress_buff(struct cudbg_init *pdbg_init)
-> >  
-> >  static void cudbg_free_compress_buff(struct cudbg_init *pdbg_init)
-> >  {
-> > -	if (pdbg_init->compress_buff)  
+> > Hi all,
+> > 
+> > In MIPS world it's impossible to raise a thread to 64bit without kernel
+> > aware.
+> > Without STATUS.UX set it will trigger reserved instruction exception when
+> > trying
+> > to run 64bit instructions.
 > 
-> NAK. The above check is necessary.
+> The other way around is the case on x86, a 64bit program can create and
+> execute 32bit code sections without the kernel being aware. But if
+> clearing STATUS.UX has the same issue as setting it, that should not be
+> a problem for you.
 > 
-> pdbg_init->compress_buff may be NULL when Zlib is unavailable or when
-> pdbg_init->compress_buff allocation fails, in which case we ignore error
-> and continue without compression. Check is necessary before calling
-> vfree().
+> > However it may be possible to run with 32bit ABI without
+> > TIF_32BIT_REGS if user program didn't get ELF ABI right. I think
+> > that's out of our current consideration.
+> 
+> Fair enough.
+> 
+> > > The thing x86 does today is look at it's pt_regs state to determine the
+> > > actual state.
+> > It is possible to look at pt_regs Status.UX bit on MIPS. But it seems
+> > unnecessary
+> > as user can't change it.
+> 
+> Ok, good. Then no objection, proceed! :-)
 
-Thanks taking a look! The point is that vfree() kfree() etc. all can be
-fed NULL in which case they are a nop. E.g.:
+this patch aims more to mips-next, while patch 2 and 3 are targeting
+tools/perf. Should I take them into mips-next, too ?
 
-/**
- * vfree - Release memory allocated by vmalloc()
- * @addr:  Memory base address
- *
- * Free the virtually continuous memory area starting at @addr, as obtained
- * from one of the vmalloc() family of APIs.  This will usually also free the
- * physical memory underlying the virtual allocation, but that memory is
- * reference counted, so it will not be freed until the last user goes away.
- *
-   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
->* If @addr is NULL, no operation is performed. <=
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- *
- * Context:
- * May sleep if called *not* from interrupt context.
- * Must not be called in NMI context (strictly speaking, it could be
- * if we have CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG, but making the calling
- * conventions for vfree() arch-depenedent would be a really bad idea).
- */
+Thomas.
 
-I don't think there is any advanced static analysis going on here if
-that's what you assumed.
-
-Yang, please respin, and explain in the patch message why removing
-those conditions is safe.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
