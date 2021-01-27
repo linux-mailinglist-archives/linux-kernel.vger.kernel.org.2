@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A2630585A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28841305861
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235865AbhA0K0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:26:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24730 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235714AbhA0KYQ (ORCPT
+        id S233852AbhA0K0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235746AbhA0KYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:24:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611742970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jr7D381srKp0j6rCe+jk22uZZDkym4sUt+94TC8WIVE=;
-        b=GCop8ywJ9SHLoEF8ZaSl9Lp/EACcifqiZThXxxS4jB2zvHDaPquvYA8SWpME1jxu19XKc3
-        1Ml38NjhdSaX4Hc5WTOwJruGWr1YJrlMu91Yq6RezMji6k+Eq1N2/wDTg3qO7uYqtetBYX
-        u7N8aiBqBHhlNdnSsKYe63xN7Znybmg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-X0xQ1S6GOFqo42lEBqBvvQ-1; Wed, 27 Jan 2021 05:22:49 -0500
-X-MC-Unique: X0xQ1S6GOFqo42lEBqBvvQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3EEE190B2A0;
-        Wed, 27 Jan 2021 10:22:47 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 90A066F92F;
-        Wed, 27 Jan 2021 10:22:47 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 5.11-rc6
-Date:   Wed, 27 Jan 2021 05:22:46 -0500
-Message-Id: <20210127102246.1599444-1-pbonzini@redhat.com>
+        Wed, 27 Jan 2021 05:24:43 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF403C061573;
+        Wed, 27 Jan 2021 02:24:02 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id jx18so1066922pjb.5;
+        Wed, 27 Jan 2021 02:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=xRcgTb91tK28anYqrlC++wtp+Am92iHcjy/4eSWbMUs=;
+        b=ZVd0VPHkqckjxZmYv4/v2cboiZSDr8qUPwHMzMlYHsy0Hu3sK1Sh2jfHizwSenYTig
+         AhejQOWtpeZ6dqXMdwqVaZLcgU4eRtnJIhzFAUjdHqTxQdJOLRaJM3nA+QMX5DBrFf0l
+         FEjo16QriDvnD/40PuuhCJfhDE37wGRKgRZgqGdh1w7ZQLl9zmuB+/UpKLSRkCkeKgbs
+         Qtk5QufgvK8Hdz7om32gkQZ8rOPszKZnTwGaPCHTaZEIe4VlQxkTHRQOdObfncNdfbww
+         lF8aItGo2wKUlFFRS9qH3RqjWY4t4aWl5oWjSJIMHSSUnpgu4Nyk5kTyPImZSSTwvPIk
+         129g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=xRcgTb91tK28anYqrlC++wtp+Am92iHcjy/4eSWbMUs=;
+        b=sHnyJIMr2LB26quLykEue5ScEauT/BaGBl78jj3lC5bRSPkDIu7Ycrj+MNjy2lAT+h
+         9oRv8hf7tkAFqCwcqR2+xvAJ/5HdKSbNTRyLK3409GLewquiisGHWtHiA/P7LmO1Nttx
+         qt23sa42EMLg5KerU10/tvWmqvb+7pmW2S5VNKX31FNsUv8XFJrDuEpCACgtnJGxqkG5
+         qX5X6WRnsrr3uX3TKhbAWhrhw1YUPZZ7qk+lWPoUxNkM2zdpVH7ajtjDQ1ZBEgloDswZ
+         Z9EpqNr3QTUl38Gr0a3YO8UsT0na/i5Cdulf7e+U8WXUxct8zDHtczTr1btGEJwxW7VY
+         ZHxg==
+X-Gm-Message-State: AOAM5326cRiCc08KsI9U0XCSpq3FaDY0LqdFgGAMXf6T7E917Gb5hcK7
+        UBafnJBbXBe75Ie2cicHHPU=
+X-Google-Smtp-Source: ABdhPJzTgP2xJ9TiEus/lM8X6G6P4az0ohaUTLuqRAbnoOTXq0i9h7FnZEwNwwYqWfTlv5yT/U1Epg==
+X-Received: by 2002:a17:90a:3f82:: with SMTP id m2mr4895955pjc.235.1611743042596;
+        Wed, 27 Jan 2021 02:24:02 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id d128sm2152572pga.87.2021.01.27.02.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 02:24:01 -0800 (PST)
+Date:   Wed, 27 Jan 2021 18:23:55 +0800
+From:   carlis <zhangxuezhi3@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
+        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
+        colin.king@canonical.com, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v6] fbtft: add tearing signal detect
+Message-ID: <20210127182355.00007300@gmail.com>
+In-Reply-To: <20210127085951.GE2696@kadam>
+References: <1611732502-99639-1-git-send-email-zhangxuezhi3@gmail.com>
+        <20210127085951.GE2696@kadam>
+Organization: Tyzmig-ryrjum-8kedto
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Wed, 27 Jan 2021 11:59:51 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-I sent this yesterday but I cannot find it in the archives (weird),
-so I am resending it.
-
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
-
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 9a78e15802a87de2b08dfd1bd88e855201d2c8fa:
-
-  KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX (2021-01-25 18:54:09 -0500)
-
-----------------------------------------------------------------
-* x86 bugfixes
-* Documentation fixes
-* Avoid performance regression due to SEV-ES patches
-
-ARM:
-- Don't allow tagged pointers to point to memslots
-- Filter out ARMv8.1+ PMU events on v8.0 hardware
-- Hide PMU registers from userspace when no PMU is configured
-- More PMU cleanups
-- Don't try to handle broken PSCI firmware
-- More sys_reg() to reg_to_encoding() conversions
-
-----------------------------------------------------------------
-Alexandru Elisei (1):
-      KVM: arm64: Use the reg_to_encoding() macro instead of sys_reg()
-
-David Brazdil (1):
-      KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-
-Jay Zhou (1):
-      KVM: x86: get smi pending status correctly
-
-Like Xu (2):
-      KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
-      KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
-
-Lorenzo Brescia (1):
-      kvm: tracing: Fix unmatched kvm_entry and kvm_exit events
-
-Marc Zyngier (4):
-      KVM: arm64: Hide PMU registers from userspace when not available
-      KVM: arm64: Simplify handling of absent PMU system registers
-      KVM: arm64: Filter out v8.1+ events on v8.0 HW
-      KVM: Forbid the use of tagged userspace addresses for memslots
-
-Maxim Levitsky (1):
-      KVM: nVMX: Sync unsync'd vmcs02 state to vmcs12 on migration
-
-Paolo Bonzini (2):
-      Merge tag 'kvmarm-fixes-5.11-2' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
-      KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX
-
-Quentin Perret (1):
-      KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
-
-Sean Christopherson (3):
-      KVM: x86: Add more protection against undefined behavior in rsvd_bits()
-      KVM: SVM: Unconditionally sync GPRs to GHCB on VMRUN of SEV-ES guest
-      KVM: x86: Revert "KVM: x86: Mark GPRs dirty when written"
-
-Steven Price (1):
-      KVM: arm64: Compute TPIDR_EL2 ignoring MTE tag
-
-Zenghui Yu (1):
-      KVM: Documentation: Update description of KVM_{GET,CLEAR}_DIRTY_LOG
-
- Documentation/virt/kvm/api.rst       | 21 ++++----
- arch/arm64/kvm/arm.c                 |  3 +-
- arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 ++---
- arch/arm64/kvm/pmu-emul.c            | 10 ++--
- arch/arm64/kvm/sys_regs.c            | 93 ++++++++++++++++++++++--------------
- arch/x86/kvm/kvm_cache_regs.h        | 51 ++++++++++----------
- arch/x86/kvm/mmu.h                   |  9 +++-
- arch/x86/kvm/svm/nested.c            |  3 ++
- arch/x86/kvm/svm/sev.c               | 15 +++---
- arch/x86/kvm/svm/svm.c               |  2 +
- arch/x86/kvm/vmx/nested.c            | 44 ++++++++++++-----
- arch/x86/kvm/vmx/pmu_intel.c         |  6 ++-
- arch/x86/kvm/vmx/vmx.c               |  2 +
- arch/x86/kvm/x86.c                   | 11 +++--
- virt/kvm/kvm_main.c                  |  1 +
- 15 files changed, 172 insertions(+), 112 deletions(-)
-
+> On Wed, Jan 27, 2021 at 03:28:22PM +0800, Carlis wrote:
+> >  static int init_display(struct fbtft_par *par)
+> >  {
+> > +	int rc;
+> > +	struct device *dev = par->info->device;
+> > +
+> > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> > GPIOD_IN);
+> > +	if (IS_ERR(par->gpio.te)) {
+> > +		rc = PTR_ERR(par->gpio.te);
+> > +		pr_err("Failed to request te gpio: %d\n", rc);
+> > +		par->gpio.te = NULL;
+> > +	}
+> > +	if (par->gpio.te) {
+> > +		init_completion(&spi_panel_te);
+> > +		mutex_init(&te_mutex);
+> > +		rc = devm_request_irq(dev,
+> > +				      gpiod_to_irq(par->gpio.te),
+> > +				     spi_panel_te_handler,
+> > IRQF_TRIGGER_RISING,
+> > +				     "TE_GPIO", par);
+> > +		if (rc) {
+> > +			pr_err("TE request_irq failed.\n");
+> > +			devm_gpiod_put(dev, par->gpio.te);
+> > +			par->gpio.te = NULL;
+> > +		} else {
+> > +
+> > disable_irq_nosync(gpiod_to_irq(par->gpio.te));
+> > +			pr_info("TE request_irq completion.\n");  
+> 
+> #SadFaceEmoji
+> 
+> > +		}
+> > +	} else {
+> > +		pr_info("%s:%d, TE gpio not specified\n",
+> > +			__func__, __LINE__);
+> > +	}  
+> 
+> regards,
+> dan carpenter
+> 
+Sorry,i will delete this log in patch v8
+regards
+zhangxuezhi
