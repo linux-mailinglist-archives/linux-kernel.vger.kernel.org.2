@@ -2,169 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EF0305957
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E13305955
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236489AbhA0LNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:13:19 -0500
-Received: from mail-dm6nam11on2059.outbound.protection.outlook.com ([40.107.223.59]:29021
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S236419AbhA0LM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:12:59 -0500
+Received: from mail-am6eur05on2136.outbound.protection.outlook.com ([40.107.22.136]:33537
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236284AbhA0LKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:10:16 -0500
+        id S236489AbhA0LKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:10:41 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OrLkXjl0c6SC/yLrCe68WmnM5wZSGcTTo6r3F+u2GqnGmdpMU1kNrUT71OraX0kMGN0UCyF6bcaQzxI9Sr7O2psG0TisexSChnIAvdZAAIAnchtHr0SPf+NYWRgWZWazDc83BvRcc35BWChBOVVN3SJzHc0SnrJdG7ABG52Z36LzSrzW2xesxAccIMEEFmJbyhNiC9oCOonXamVIvbJQJwwn5iR/fnjimZr4ntDtpi8osTceuWK4Ws4EM+p37oksDMdTGxMQqpNBVruUkSEaYAau2iP6i/GAFEm69rePbRh94fqZsdro0BieosEbcHfOONywheTrZ+BVrj02dOL5tg==
+ b=iom88+bJBledwR1JTo9+1Y9K1E817z4zI0sv7cNr4rgUqhcy6qG7ZktqYd8uTHCMF0MVCT/8n1SVnqbb1z9lRQMOIgp7CxhiaqHOM6eUqNIYAtBxnFzW15vtD42WOxA23d1mx9H3EE+i5VlhGczH+HbGmE3Ni3Jco8wMy6gPxSbf/A5CFCceMsHOUr0g3EKONuVAlOUwl2i6tIZ+TbhILskvVVz7LYTY5gK7jPplnuNs3f1pw8ez/GHkJwVg34MGQ+ax2cYDKZz9RmI02sfIiTeYPvhCXW+vFacU98xh2vG1yRm7glXTSR2+XmkH1J5HgQ79cbKRm8NGYsktPedZ8w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EBk7NBve3gI6w6oDOto8fvYB5dWJn7D7DYz9kpIt6m0=;
- b=jKpJKwhEusETQH2bruyr0S3D4KZcUzQn+CyH1y56ZAmU9ZM3101DixIa//O8iafCPIZP2k4q0oslysTN0Q1f3aEa5MQTpH/IkTGvWOx58Cc29Q3BXlE6z4UzK/XyQjtJCimbOuRdGLxir5UOrmyYJ/8bCXKmwJf7yU4z2pf0F6EvXcauUihDu+qU6lwNzqxO0yGZJsLMeP4siWZULpaMb3hKNNZEVfon3Kg5gwR1ddKy5RLDNftmOMJZNplWZMAALSxSgzOx/X+eisgwX77Tg50gG/7VZ2GK4ZF0U6YS3if/9Syfi7iW9EDHPAV2BQC7pVJj5Ifn9Rccw/Ao73kvjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=basErwpYEjV3/3fpSS0Rb9RL6aEF4JYu5pmp0PSjH/M=;
+ b=GK7ovUKAIUFRmoJtQAq8kfB5H7JHNEk4Ii5MTyPwOlSKgyHXXldNDeiwE7UwTk9/O12+xa6DL4KA5RlDYVvw7WCrkvIbQ9dLcja5IsyC4zKX3x8YZbZI1F4MYEar5aFtR0aC2TfIeqUNBqNXyRn1dm/qOdY/d07jFxv+1cREkc/oTbczcEbLc4qdavj0pMSYS990KCYmzUf/wi0m0N8RiPus3rjwrMDWYLUtrvYc2elqCdqZbXQR7ZT2x3fK2hB+mKu9TpbXsl6eg033TtmwsnRwHe5gvFB3VoaRXgJoUzuomkIe5ayBHFkyexErhMbbiTt/QyXCeTwTCdtm2nyOoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=linaro.org smtp.mailfrom=nokia.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=nokia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EBk7NBve3gI6w6oDOto8fvYB5dWJn7D7DYz9kpIt6m0=;
- b=eFdnPSBfPBkOuFL84/hoo+SbWEvjw0IRlEMuGAjVHHQY8dfd4OGkIRkqY25WuyC4JS2WREs081jLMK64BTHqDp3eKPQQfptibV1PaSUtA81sHuEi/RIyX+chg1Cpm0p2FlEpCy5jMBgNqfXY6GmsmasmgxXl/WsblWxBZrpCnRk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4061.namprd12.prod.outlook.com (2603:10b6:208:19a::18) with
+ bh=basErwpYEjV3/3fpSS0Rb9RL6aEF4JYu5pmp0PSjH/M=;
+ b=daTpdLEWNRG6XFWemaY1Kinier0s4jL/DIOhXp2yP+QIpiXARMyjod9l0Z1X0Dp+pyMgJe/W79USVSEnkIqU23sCHqNfpnN6gSplx2YeqYwwywsX4m5+lMDQzmxO+rgYbait6xZCDVchbJTod5LPKBAw50zm1fhiCAz5OJquWi8=
+Received: from DBBPR09CA0019.eurprd09.prod.outlook.com (2603:10a6:10:c0::31)
+ by VI1PR0701MB6845.eurprd07.prod.outlook.com (2603:10a6:800:17c::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Wed, 27 Jan
- 2021 11:08:58 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
- 11:08:58 +0000
-Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Kalesh Singh <kaleshsingh@google.com>, surenb@google.com,
-        minchan@kernel.org, gregkh@linuxfoundation.org, hridya@google.com,
-        jannh@google.com, kernel-team@android.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>, Hui Su <sh_def@163.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-api@vger.kernel.org
-References: <20210126225138.1823266-1-kaleshsingh@google.com>
- <20210127090526.GB827@dhcp22.suse.cz>
- <6b314cf2-99f0-8e63-acc7-edebe2ca97d7@amd.com>
- <YBFIMIR2FXoYDd+0@dhcp22.suse.cz>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <7dd33165-4fb9-a424-9b5e-08c69583c979@amd.com>
-Date:   Wed, 27 Jan 2021 12:08:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <YBFIMIR2FXoYDd+0@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM8P191CA0003.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::8) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM8P191CA0003.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:21a::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 11:08:54 +0000
-X-MS-PublicTrafficType: Email
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.11; Wed, 27 Jan
+ 2021 11:09:52 +0000
+Received: from DB5EUR03FT025.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:c0:cafe::20) by DBBPR09CA0019.outlook.office365.com
+ (2603:10a6:10:c0::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend
+ Transport; Wed, 27 Jan 2021 11:09:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ DB5EUR03FT025.mail.protection.outlook.com (10.152.20.104) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11 via Frontend Transport; Wed, 27 Jan 2021 11:09:52 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 10RB9nLp008895;
+        Wed, 27 Jan 2021 11:09:49 GMT
+From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: [PATCH v7 0/2] ARM: Implement MODULE_PLT support in FTRACE
+Date:   Wed, 27 Jan 2021 12:09:42 +0100
+Message-Id: <20210127110944.41813-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 45034901-9e1a-4d0a-2a8c-08d8c2b3f1aa
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4061:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB40611F979E6173516AF2009783BB9@MN2PR12MB4061.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-PublicTrafficType: Email
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 8a3e9675-7359-4b6b-f746-08d8c2b41229
+X-MS-TrafficTypeDiagnostic: VI1PR0701MB6845:
+X-Microsoft-Antispam-PRVS: <VI1PR0701MB684587EC248BD147E8728E6688BB0@VI1PR0701MB6845.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UaZ7LIaJFHOHBJ7pK0ohuJcEBC60ycrfDWTFd/OQnePbEMdYgTFiSaaaknrBQ29LKaOLIDSY1HVyr/3qoySMD19ZyKHSgitNIHKc+UHN05ZWypaEvP5EDQatIF8RK4vI0uewQNIk4rP9GRmojCnk75wS1zTLuUhAXSpK2JxHII2W1kWit1rZKoo0T8i6M/3bk0xybHeJ4pjkX3EHohXwVb+Na1tDNWGynhjTtpzvY2ONYee4t/YLxmbiyDzNY7ilgf97/bNZRwDDFVz4blmfsZjQnB9n1TM4RNcJdttyUvLdmmhkIENIGfNJ4G/IisGW0lBEPGaxSXq/D4wLvQK9yZgfEmTWH4HxMrDg72Q6qqsHw5hOyqafbOEm2jHm8IQoeL/fPINC7zeWTXaQNqWnq3HANTwnGek9/glwSjNNni+6oT+Vz1tvqvlAgQrTNhGitzHQIEsfnnLa7Z/Yc368YVlCrUSrFceVtnGyN8Salpx4/tQeQ4+uus0dHCBaULHjvmrT0ArdoiXbfM2pgIiSJsWm5+9cbYq87HKy497hXiQccgj3VbTL1R0or56j9DSri/iZjf8MkOYcfrCv/Xe6n5FvMKt7MhMTutqZdazkMDYiE9M6hagF6Oe6t7mX04hJXxZxWnAnOk2llLg8HyIj3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(366004)(346002)(478600001)(31696002)(6666004)(7416002)(66476007)(7406005)(66556008)(4326008)(34580700001)(83380400001)(6486002)(36756003)(52116002)(8936002)(2906002)(186003)(66574015)(6916009)(2616005)(316002)(54906003)(31686004)(8676002)(66946007)(5660300002)(86362001)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SHJ3VmVQUGlhUHJQQmhmS2Y1MTgxTmlOSXduQnFxVXlJaVg1dFYzdktaYm1L?=
- =?utf-8?B?eEtUdFd3RDFvam16UlJsdzF3NjZ5bjFYQ21SZ2dYSDRJc3lGK0daRGhCN1Jl?=
- =?utf-8?B?LzRmdTNWZmFyRm1aTldWZHRtbkhmeEptc09PVjZldGU3ZG9GYkx2YzJ2bmNZ?=
- =?utf-8?B?UUdyQXlHMlhlbUtZZlNsd1JlWEhMQ09iN0RkZ09veUQvOEpFb2hFNCtwc3ds?=
- =?utf-8?B?RlE3eWNxZnd6Q0FOUVFmaEtvUDlGclFwVDhzTmpMZHJJVHFPM3hFWXlURjVY?=
- =?utf-8?B?MmVjR0o1U0NEb0NzRHhxeHNzcmk5bi9IdXJudGVyYTFia2daU3ZUeU9rTVd4?=
- =?utf-8?B?aG9hK0pFemNlVW1xZTNFRHJBNlRkVGUvS0ZndUtpcnhTYlQzb1NaYjFhTHpn?=
- =?utf-8?B?d0kwSlNvcGpscU9zT001MlBlVFF1ZDhBa3VRZTQxY1N5cHFhNk5zbHJ1WG1H?=
- =?utf-8?B?Q05wd1lrejU0Qm82bVZSMzlNNDRkUUJMVW0wWCtEK3FXQy8xOFk1SHdzWlIz?=
- =?utf-8?B?NkNUYUYycEg1MExSV2UwWGp4aTZPdThlUmxDL3I1dkRGdm9vZFZCeWcvN3d5?=
- =?utf-8?B?SkRzR05IOVR5NVRRNHU5KzNIZWI5bFR2RElaQXpOT3lzZ1M1WW1ZY2xlWThv?=
- =?utf-8?B?T2tZK0pDaFozUGJVNmxpQ3NWR3hQUEgzajlKNmpXeEhGQmtheC8zYjVwNTlL?=
- =?utf-8?B?ZmNoSWl5bW04cDdvN3pIeEJ6aHRXSy9LU29qV3lDcnJxVHVWL3Z5WWE1dkpT?=
- =?utf-8?B?bnMraWYzb2JkMW1veEJmQ1orK0lZNi9mdld1YmVkNDVwNXMxQ3JMRWo5UnJD?=
- =?utf-8?B?bllWVURRTnJFVTJhY3ZXZ0RSNUdnMTIwV1grZHNxdlRSdG8rNlBvZExGdnRy?=
- =?utf-8?B?d0JiMW4wdGRNTUVyem9XMHVERDhUNVNFR0dXbVA4YjBnOGh3YVJiQ1ZsMnU5?=
- =?utf-8?B?eUlzWGVBYkFhSHF4Q1E1bGIzWnZDUHdSU0QxQ1MrQWVQSWpYajBtN2RINlI3?=
- =?utf-8?B?SGJ1WFo0cFdESitRdWJNbTFsWU5kWGx0cmRUcFBkZ1J3MUhNREthYkpZcTFQ?=
- =?utf-8?B?OEVPSVQ3WlhMdXJYdUFVLzFqV1V5NzRWMWlrOUkrOWtoY1JCRGxRR0hNS2E0?=
- =?utf-8?B?ZFNBenUwQmhOZ3pZTjRqbnBZQWJLdVcxcmpsTHg3QklaT2orMnRkUEt3ZFR6?=
- =?utf-8?B?UUg4eTQ2KzErcjZlSnQ0alhBQUZ2ZlA0Yi9IS0U5QjRZZURiTlJEZ1N2eElR?=
- =?utf-8?B?RGdZTlVQL1YyL3JNT2JFbDVTNThLdzRDanZhNWtkai9wSDF2N0xTcXB1RFdx?=
- =?utf-8?B?b1lXcngxRVJudDRkcE9FM2ZEMGxoRGdja0QwYndvYXRrNFZsa0JIY1NPRE1E?=
- =?utf-8?B?T0VJMzhxWnNiVjJFTzlwWmFWZC8xbVQrdmFqVVNBNXVRVk9ndG80cEJ6Zkgz?=
- =?utf-8?B?aVhoMVRXeDNoQTVUdzVGc0VmQWFJTUxsanRLMTh2dVdGWjhCZG1aMVNLL3BL?=
- =?utf-8?B?WjZzSlQ4RzRndmxLUzVrdE9vN3JtWnY1N05kY0NuRkVHNzYzSEl4Q25ZMktE?=
- =?utf-8?B?QjVlZz09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45034901-9e1a-4d0a-2a8c-08d8c2b3f1aa
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 11:08:58.6108
+X-Microsoft-Antispam-Message-Info: ZcWfHYXoepDIM2KpQV09aY4AfGB9pr3llyycaMS1CjQDb9eoiSE5kvrAju0cXknzIxEH69PxegtjOzzMZFTPgQ1Lx0wsoQPoo0c0cQCTrHukJ8coOcEY94XiVU30IviHw9SQ9eC47qsLL/VpTagzszyikVfMgAsjPOvd2bHF8AXIhkaO5z8va5uvD0Pzxo/y+l0TCqR3aUcIxcYehJXr9Cq80a/Kpvsr+NbhJOBzReI8asMOJFyc48ghyYn2TerunBREBauJVoQQVprK35PWLIfhed9hc3ox0QUR/eeWNG9E3fC4zzSGgzaPejKOlItyj4hKg7Om5LIrph+0hlz3cxxR5uzFLjxK7kKToGaGMJys9audt1Qn11NvpisxUAx28CQ7PGcHSQulLxDLGt/PwXMtmn/0OEHCi2L7bSTehbA6RL2YA5RpXa7kYuPhbv6AiYy0P+Xczjw6AQXftAFaT22TQYygzZCzo7eqSkSIZQ0agPqMBW+HVjgolHAk27iOo9EtgaRyrBcW1DgWVq/H77xrlU/OCREpkRuZkbBVfuv+G8tMzJHL/PtA8sZsXlstNUUAOk7gcx/9dtYenMtzq56hn/AH/pTRsRaZr6O36n7aGtbZSAAQxtLh0EHP4b8g
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(46966006)(83380400001)(8676002)(5660300002)(70206006)(110136005)(54906003)(2906002)(6666004)(81166007)(82740400003)(336012)(36756003)(186003)(47076005)(478600001)(4326008)(8936002)(70586007)(26005)(82310400003)(2616005)(1076003)(86362001)(356005)(316002)(36610700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 11:09:52.6597
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GS/D544h006ScwcBrUlBdMSgQXRdPCoMwoE0hdOulgHAvGFTm22PA/bUQd/o/M47
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4061
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a3e9675-7359-4b6b-f746-08d8c2b41229
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT025.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0701MB6845
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 27.01.21 um 12:02 schrieb Michal Hocko:
-> On Wed 27-01-21 11:53:55, Christian König wrote:
-> [...]
->> In general processes are currently not held accountable for memory they
->> reference through their file descriptors. DMA-buf is just one special case.
-> True
->
->> In other words you can currently do something like this
->>
->> fd = memfd_create("test", 0);
->> while (1)
->>      write(fd, buf, 1024);
->>
->> and the OOM killer will terminate random processes, but never the one
->> holding the memfd reference.
-> memfd is just shmem under cover, no? And that means that the memory gets
-> accounted to MM_SHMEMPAGES. But you are right that this in its own
-> doesn't help much if the fd is shared and the memory stays behind a
-> killed victim.
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-I think so, yes. But I just tested this and it doesn't seem to work 
-correctly.
+FTRACE's function tracer currently doesn't always work on ARM with
+MODULE_PLT option enabled. If the module is loaded too far, FTRACE's
+code modifier cannot cope with introduced veneers and turns the
+function tracer off globally.
 
-When I run the few lines above the OOM killer starts to terminate 
-processes, but since my small test program uses very very little memory 
-basically everything else gets terminated (including X, desktop, sshd 
-etc..) before it is terminated as well.
+ARM64 already has a solution for the problem, refer to the following
+patches:
 
-Regards,
-Christian.
+arm64: ftrace: emit ftrace-mod.o contents through code
+arm64: module-plts: factor out PLT generation code for ftrace
+arm64: ftrace: fix !CONFIG_ARM64_MODULE_PLTS kernels
+arm64: ftrace: fix building without CONFIG_MODULES
+arm64: ftrace: add support for far branches to dynamic ftrace
+arm64: ftrace: don't validate branch via PLT in ftrace_make_nop()
 
-> But I do agree with you that there are resources which are bound to a
-> process life time but the oom killer has no idea about those as they are
-> not accounted on a per process level and/or oom_badness doesn't take
-> them into consideration.
+But the presented ARM variant has just a half of the footprint in terms of
+the changed LoCs. It also retains the code validation-before-modification
+instead of switching it off.
+
+Changelog:
+v7:
+* rebased
+v6:
+* rebased
+v5:
+* BUILD_BUG_ON() ensures fixed_plts[] always fits one PLT block
+* use "for" loop instead of "while"
+* scripts/recordmcount is filtering reloc types
+v4:
+* Fixed build without CONFIG_FUNCTION_TRACER
+* Reorganized pre-allocated PLTs handling in get_module_plt(),
+  now compiler eliminates the whole FTRACE-related handling code
+    if ARRAY_SIZE(fixed_plts) == 0
+    v3:
+    * Only extend struct dyn_arch_ftrace when ARM_MODULE_PLTS is enabled
+    v2:
+    * As suggested by Steven Rostedt, refrain from tree-wide API modification,
+      save module pointer in struct dyn_arch_ftrace instead (PowerPC way)
+
+Alexander Sverdlin (2):
+  ARM: PLT: Move struct plt_entries definition to header
+  ARM: ftrace: Add MODULE_PLTS support
+
+ arch/arm/include/asm/ftrace.h |  3 +++
+ arch/arm/include/asm/module.h | 10 +++++++++
+ arch/arm/kernel/ftrace.c      | 46 ++++++++++++++++++++++++++++++++++++++--
+ arch/arm/kernel/module-plts.c | 49 +++++++++++++++++++++++++++++++++----------
+ 4 files changed, 95 insertions(+), 13 deletions(-)
+
+-- 
+2.10.2
 
