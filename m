@@ -2,67 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EE1305307
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3C73052B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhA0GAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:00:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32998 "EHLO mail.kernel.org"
+        id S233999AbhA0GAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:00:40 -0500
+Received: from ozlabs.org ([203.11.71.1]:33411 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235723AbhA0DXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:23:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48BC7205CA;
-        Wed, 27 Jan 2021 03:22:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611717745;
-        bh=NZVFUDdUWED82/tyO9oyzLgiLRuwpzIH+cQHX4ebBKk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=OcBU7u2DVjqPNCipdqJ0SEbNe+oLON5GbrQlD/uMJFHBWQ+bx1XPxV2DrEyouD7UL
-         iVFQ+jupCUNtCeIcNKTVDNuKLtPa56uLlQMtNV6BUpC547zHzd4UpGOpOqZjncmn05
-         iPHML94ByDWZ0VATAP5YkwuEVVPXQtLInlIx1EtLENH4If9J2suraqTSOYVZSdPgs1
-         72nYwz6aVeO1+oZlFbIyRwlPwYHom5t0lKTtBEHlOlJb/FGdGYSUTcnTr1EMkQBSei
-         RHTH9Pu/p1tmA1VdfqmjLdbQfTBSNR+Zc6QnkiVkh5xSRUDp5j0UcqUF7mIOI1x1A5
-         geWdKqcLYFbrw==
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
-        keescook@chromium.org, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-References: <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
- <20210119014725.GH2260413@casper.infradead.org>
- <YAa2oCNWjExWlQTu@jagdpanzerIV.localdomain>
- <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
- <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
- <083dd940-60c1-4cc8-fc89-8815b253d5c5@suse.cz>
- <a9b38fe7-8a22-71b7-1e84-0ebf1e864306@kernel.org>
- <20210126123912.23a5c3a1@gandalf.local.home>
- <20210126124032.0915f408@gandalf.local.home>
- <87mtwv8ptz.fsf@jogness.linutronix.de>
- <YBDLxddRw5u+IA6B@jagdpanzerIV.localdomain>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <e52b557d-c7e3-60ff-7c52-10479c297508@kernel.org>
-Date:   Tue, 26 Jan 2021 21:22:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235764AbhA0DZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:25:05 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQTVC5dnlz9sSs;
+        Wed, 27 Jan 2021 14:24:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611717861;
+        bh=jGXNNioRjxhhBdPPzy6DBCKYQDkMAd7+JXFGN0Jy8+8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Um70XnqDdWg93cTcjjo7lchBYRC3VaKtJjp6dct8AEV6YjEvk1KYVnhkfsUN2JqdZ
+         O14GQnMgec+ZiJPYiswap8B2R5lEHHl0rnEhVvkbw3SGEvj9u8IstabQk1viai2bzW
+         ir7I6gSv6haKqBR5jBOfbidfw9lQLnX/36bwmMyGkJYJDQlJfpfBMPI/WLbhyCXvZ8
+         sdB0oTVNeG7k6e3t4Sd6Zauy+I/T6NnVefjJ2c+Yng7XFNjuEAbf4Idwtf/3HXQPR5
+         Dh12f2JISoNVPdcEXX0iOAcLeyz7md2iEbHyYgRLzE3ZI4Fr0a4utVw5myjvJUsGYK
+         sTbhImx1LPH1A==
+Date:   Wed, 27 Jan 2021 14:24:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: linux-next: manual merge of the block tree with the vfs tree
+Message-ID: <20210127142418.460bcffc@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YBDLxddRw5u+IA6B@jagdpanzerIV.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/zQLd6BQQ_sfHy6ZkmD6hko7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 8:11 PM, Sergey Senozhatsky wrote:
-> +1 for boot param with a scary name and dmesg WARNING WARNING WARNING that
-> should look even scarier.
-> 
-> Timur, do you have time to take a look and submit a patch?
+--Sig_/zQLd6BQQ_sfHy6ZkmD6hko7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I'll submit a patch.
+Hi all,
+
+Today's linux-next merge of the block tree got a conflict in:
+
+  Documentation/filesystems/porting.rst
+
+between commit:
+
+  14e43bf43561 ("vfs: don't unnecessarily clone write access for writable f=
+ds")
+
+from the vfs tree and commits:
+
+  9b2e0016d04c ("bvec/iter: disallow zero-length segment bvecs")
+  c42bca92be92 ("bio: don't copy bvec for direct IO")
+
+from the block tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc Documentation/filesystems/porting.rst
+index c2161de0f4ef,1f8cf8e10b34..000000000000
+--- a/Documentation/filesystems/porting.rst
++++ b/Documentation/filesystems/porting.rst
+@@@ -872,5 -870,14 +872,21 @@@ its result is kern_unmount() or kern_un
+ =20
+  **mandatory**
+ =20
+ +mnt_want_write_file() can now only be paired with mnt_drop_write_file(),
+ +whereas previously it could be paired with mnt_drop_write() as well.
+++
+++---
+++
+++**mandatory**
+++
++ zero-length bvec segments are disallowed, they must be filtered out before
++ passed on to an iterator.
++=20
++ ---
++=20
++ **mandatory**
++=20
++ For bvec based itererators bio_iov_iter_get_pages() now doesn't copy bvec=
+s but
++ uses the one provided. Anyone issuing kiocb-I/O should ensure that the bv=
+ec and
++ page references stay until I/O has completed, i.e. until ->ki_complete() =
+has
++ been called or returned with non -EIOCBQUEUED code.
+
+--Sig_/zQLd6BQQ_sfHy6ZkmD6hko7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAQ3OIACgkQAVBC80lX
+0Gxmzwf/TWyTUbUq4GQld2ZlD2RCvZxWVBMjvwSpmnGtfRw5+g9MN7BDVSrB4JiA
+ghY3JzbK2x9rZ9H57K3rAyHrT74kUgyDIoUBj0WIEBg3KMOQHovJARJF29CSaNt8
+KmUDr1AhAY8mgNtiGEJHphGtMs0mUfOAx1BMMKqDBWw+86dBjnr/cANiDhqCCzi3
+dsoSkAToqUb3bD8hhLueAkObXoNVPINRnGYXoUPB+158HpjXMe9GFcaaVZ0EuRR4
+Qa9mivBoYeegXg1exy4o7EAzre8d7vA5NNl0Q4SubaKjsyxWCN+EI8KGbkLKYLub
+EN+BElVKLvkchIIsv7HGbnG2411WcA==
+=esFZ
+-----END PGP SIGNATURE-----
+
+--Sig_/zQLd6BQQ_sfHy6ZkmD6hko7--
