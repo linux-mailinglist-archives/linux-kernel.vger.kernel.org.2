@@ -2,83 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F1A3052B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 573B33052E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbhA0GCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:02:40 -0500
-Received: from mga18.intel.com ([134.134.136.126]:41740 "EHLO mga18.intel.com"
+        id S234877AbhA0GDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:03:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:46572 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236787AbhA0DmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:42:10 -0500
-IronPort-SDR: 06L6+8c5jo1mTPH/ZMq44UL2ygYRXej0cpXeeuOLa3K9dlZ3uo8wcnYGI5O/DtRP3MnEB8FFQR
- DrATW+y0kaQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="167683851"
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="167683851"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:41:26 -0800
-IronPort-SDR: MmQkc7n0mNTk2dJzE9NQiwP2KYB1eRqLlklGEtJ9eIny+oH9VtAcDAoPQPqhrVH7Fac5lo4o41
- U0ixskdqvTeA==
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="388133735"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.104]) ([10.239.13.104])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:41:24 -0800
-Subject: Re: [RESEND PATCH 1/2] KVM: X86: Add support for the emulation of
- DR6_BUS_LOCK bit
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210108064924.1677-1-chenyi.qiang@intel.com>
- <20210108064924.1677-2-chenyi.qiang@intel.com>
- <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <5f3089a2-5a5c-a839-9ed9-471c404738a3@intel.com>
-Date:   Wed, 27 Jan 2021 11:41:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S236802AbhA0Dmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:42:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FFCE1042;
+        Tue, 26 Jan 2021 19:41:43 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E46273F68F;
+        Tue, 26 Jan 2021 19:41:36 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH V4 4/4] virtio-mem: check against
+ mhp_get_pluggable_range() which memory we can hotplug
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hca@linux.ibm.com,
+        catalin.marinas@arm.com
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>
+References: <1611543532-18698-1-git-send-email-anshuman.khandual@arm.com>
+ <1611543532-18698-5-git-send-email-anshuman.khandual@arm.com>
+ <a62e9474-ada3-ab80-90a7-14db87c90aa6@redhat.com>
+Message-ID: <95e86a10-16db-f5ca-6aba-282ea4ead717@arm.com>
+Date:   Wed, 27 Jan 2021 09:12:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <a62e9474-ada3-ab80-90a7-14db87c90aa6@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/2021 12:31 AM, Paolo Bonzini wrote:
-> On 08/01/21 07:49, Chenyi Qiang wrote:
->> To avoid breaking the CPUs without bus lock detection, activate the
->> DR6_BUS_LOCK bit (bit 11) conditionally in DR6_FIXED_1 bits.
+
+
+On 1/25/21 5:31 PM, David Hildenbrand wrote:
+> On 25.01.21 03:58, Anshuman Khandual wrote:
+>> From: David Hildenbrand <david@redhat.com>
 >>
->> The set/clear of DR6_BUS_LOCK is similar to the DR6_RTM in DR6
->> register. The processor clears DR6_BUS_LOCK when bus lock debug
->> exception is generated. (For all other #DB the processor sets this bit
->> to 1.) Software #DB handler should set this bit before returning to the
->> interrupted task.
+>> Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
+>> are more restrictions of which memory we can actually hotplug, especially
+>> om arm64 or s390x once we support them: we might receive something like
+>> -E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
+>> operation.
 >>
->> For VM exit caused by debug exception, bit 11 of the exit qualification
->> is set to indicate that a bus lock debug exception condition was
->> detected. The VMM should emulate the exception by clearing bit 11 of the
->> guest DR6.
+>> So, check right when initializing the device which memory we can add,
+>> warning the user. Try only adding actually pluggable ranges: in the worst
+>> case, no memory provided by our device is pluggable.
+>>
+>> In the usual case, we expect all device memory to be pluggable, and in
+>> corner cases only some memory at the end of the device-managed memory
+>> region to not be pluggable.
+>>
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: catalin.marinas@arm.com
+>> Cc: teawater <teawaterz@linux.alibaba.com>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+>> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> Cc: hca@linux.ibm.com
+>> Cc: Vasily Gorbik <gor@linux.ibm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Heiko Carstens <hca@linux.ibm.com>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  drivers/virtio/virtio_mem.c | 40 +++++++++++++++++++++++++------------
+>>  1 file changed, 27 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>> index 9fc9ec4a25f5..14c17c5c1695 100644
+>> --- a/drivers/virtio/virtio_mem.c
+>> +++ b/drivers/virtio/virtio_mem.c
+>> @@ -2222,7 +2222,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
+>>   */
+>>  static void virtio_mem_refresh_config(struct virtio_mem *vm)
+>>  {
+>> -	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
+>> +	const struct range pluggable_range = mhp_get_pluggable_range(true);
+>>  	uint64_t new_plugged_size, usable_region_size, end_addr;
+>>  
+>>  	/* the plugged_size is just a reflection of what _we_ did previously */
+>> @@ -2234,15 +2234,25 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
+>>  	/* calculate the last usable memory block id */
+>>  	virtio_cread_le(vm->vdev, struct virtio_mem_config,
+>>  			usable_region_size, &usable_region_size);
+>> -	end_addr = vm->addr + usable_region_size;
+>> -	end_addr = min(end_addr, phys_limit);
+>> +	end_addr = min(vm->addr + usable_region_size - 1,
+>> +		       pluggable_range.end);
+>>  
+>> -	if (vm->in_sbm)
+>> -		vm->sbm.last_usable_mb_id =
+>> -					 virtio_mem_phys_to_mb_id(end_addr) - 1;
+>> -	else
+>> -		vm->bbm.last_usable_bb_id =
+>> -				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
+>> +	if (vm->in_sbm) {
+>> +		vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr);
+>> +		if (!IS_ALIGNED(end_addr + 1, memory_block_size_bytes()))
+>> +			vm->sbm.last_usable_mb_id--;
+>> +	} else {
+>> +		vm->bbm.last_usable_bb_id = virtio_mem_phys_to_bb_id(vm,
+>> +								     end_addr);
+>> +		if (!IS_ALIGNED(end_addr + 1, vm->bbm.bb_size))
+>> +			vm->bbm.last_usable_bb_id--;
+>> +	}
+>> +	/*
+>> +	 * If we cannot plug any of our device memory (e.g., nothing in the
+>> +	 * usable region is addressable), the last usable memory block id will
+>> +	 * be smaller than the first usable memory block id. We'll stop
+>> +	 * attempting to add memory with -ENOSPC from our main loop.
+>> +	 */
+>>  
+>>  	/* see if there is a request to change the size */
+>>  	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
+>> @@ -2364,6 +2374,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
+>>  
+>>  static int virtio_mem_init(struct virtio_mem *vm)
+>>  {
+>> +	const struct range pluggable_range = mhp_get_pluggable_range(true);
+>>  	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
 > 
-> Please rename DR6_INIT to DR6_ACTIVE_LOW, and then a lot of changes 
-> become simpler:
+> Sorry, forgot to drop ^ (phys_limit), otherwise ther is a friendly
+> warning from the compiler. We have to drop that line.
 
-Paolo,
+Okay sure, will drop.
 
-What do you want to convey with the new name DR6_ACTIVE_LOW? To be 
-honest, the new name is confusing to me.
-
->> -        dr6 |= DR6_BD | DR6_RTM;
->> +        dr6 |= DR6_BD | DR6_RTM | DR6_BUS_LOCK;
 > 
-> dr6 |= DR6_BD | DR6_ACTIVE_LOW;
+> 
+> 
+> Apart from that, at least on x86-64 it does what it's supposed to do. I
+> temporarily changed MAX_PHYSMEM_BITS to 35 bits and added a virtio-mem
+> device that crosses the 32 GiB address limit.
+> 
+> 
+> [    0.572084] virtio_mem virtio1: Some device memory is not
+> addressable/pluggable. This can make some memory unusable.
+> [    0.573013] virtio_mem virtio1: start address: 0x740000000
+> [    0.573497] virtio_mem virtio1: region size: 0x500000000
+> 
+> 
+> And virtio-mem won't add any memory exceeding that:
+> 
+> (qemu) qom-set vmem0 requested-size 20G
+> (qemu) info memory-devices
+> Memory device [virtio-mem]: "vmem0"
+> [...]
+> Memory device [virtio-mem]: "vmem1"
+>   memaddr: 0x740000000
+>   node: 1
+>   requested-size: 21474836480
+>   size: 3221225472
+>   max-size: 21474836480
+>   block-size: 2097152
+>   memdev: /objects/mem1
+> 
+> I adds all memory up to the 32GiB address limit (35 bits) and stops.
+> 
+> LGTM (arm64 to be tested in the future once supported).
 > 
 
-
+I will respin the series with the above minor change unless something
+else comes up in the meantime. But once this virtio-mem change gets
+some more reviews, I guess the series should be complete in itself.
