@@ -2,88 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8463063A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424253063A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344047AbhA0TBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:01:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343859AbhA0TBj (ORCPT
+        id S1343851AbhA0TBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231267AbhA0TB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:01:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611774013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=APajRwOUhB/DnHMvT5OqMUzlrRCmi9nx0c/ZETqKX9c=;
-        b=T+O/lxO/OS+i2V98LM6wwI5cTLHJWhqZPfaoYZgN+qk12C4oMzg9b2BmSVpootOXjut5Ve
-        k0PLkiJQf6lNFuW0aT4uGcDgxOW6LdpZHUahL/LieGRMCPYU9VRBBvGXE+tj77iWaeBRnH
-        6Da2dYjyDXvAG4oeYZfkFrx/EvmiwKg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-YaI5HWa7Ojecp2J6660MlA-1; Wed, 27 Jan 2021 14:00:09 -0500
-X-MC-Unique: YaI5HWa7Ojecp2J6660MlA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3318E802B45;
-        Wed, 27 Jan 2021 19:00:07 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFE1D6F929;
-        Wed, 27 Jan 2021 19:00:05 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 13:00:03 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        rostedt@goodmis.org, jbaron@akamai.com, ardb@kernel.org
-Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
- preempt_schedule[_notrace]() static calls
-Message-ID: <20210127190003.64rdwoxyjgnq2rtx@treble>
-References: <20210118141223.123667-1-frederic@kernel.org>
- <20210118141223.123667-7-frederic@kernel.org>
- <20210122165226.GD16371@worktop.programming.kicks-ass.net>
- <20210126235730.lgfa2uida5se5urn@treble>
- <YBEuy6zlBcV8gLvY@hirez.programming.kicks-ass.net>
- <YBFODfNZCjA9s0IP@hirez.programming.kicks-ass.net>
- <20210127155914.jfmr4jay47yck5h5@treble>
- <YBGSdtnKIL3kryos@hirez.programming.kicks-ass.net>
- <20210127163308.cgiq7jxx2uziuhcc@treble>
- <YBG0cSoJmu8NnoAT@hirez.programming.kicks-ass.net>
+        Wed, 27 Jan 2021 14:01:29 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD75DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:00:48 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id o16so2224578pgg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=COxofTr0kJgJ0XrTolT3iIHzQatztoojR6wHC+Fzy74=;
+        b=fAEyChm6iRnVQn8MSzpwlHcYJVpgFidFFtuGRvFiIMb4hbXkSaewAhYjNVWmVkSTDm
+         NE8p0RbxFsvC/DMHSSNM2F/CpybpBihBHF/aJnya5uuIEIEtJY7DDrBxmR0LHHkWj2Fa
+         SbrOzL71GL+X6gl4/k2SmPr+jQ/yoBn/l69Ed+UmZABqOfyEwuj9kRkg7fWPygO5I62j
+         CxQxw39JsWFyUJybP3ez6HVSVB2ZPVBx7Uzo8MYZ2zBCiX0Af43rHAm8kFIq+P3Orky9
+         Kjs2eeExdXLTMRD1ZbYoIJw1VbNUrJjjlZ/OCLIiCTWGTR5bxUl47FqQrpiKN//HqIiN
+         n/FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=COxofTr0kJgJ0XrTolT3iIHzQatztoojR6wHC+Fzy74=;
+        b=Bhwct+i4Ty3/nYiMcDXUylkkBl+clkksHRHdP5LO5ZjOXQczd4TZ0FdYFeaKvTFQcX
+         3ZLasMl4bVNl5K8KyqVAk8PZgG9PEqlyNmL95praBJumbfT95ELNmRwn6WjMnUlTGKEE
+         i3pTs/SqcdK0PfcKZq7wuXM38A5RnJZRjxcZFu9Bdq9QKeifVFbmLEcu7lOCqQORVYKv
+         q8OIqOqIzWn8otuFWuzhaymeoOn1gX6sUVuwzrOtxvoZsqhgr09oGSnIdPwEmCrWoWTf
+         YvtY0NSyQ7Xc4LwvTxvf00LQ//8cR0E0tt8Vk43j5jy34Apm/D9lXFutLmPvAPYm4ogd
+         Pxnw==
+X-Gm-Message-State: AOAM5305326pcTGJExUz0cWgyUk9//yc0HsxH0BmMVbkKKjW8RmFSSYB
+        1xm/6DXEkzAuA248u6RUP1ksvQ==
+X-Google-Smtp-Source: ABdhPJyYU5QypQEJbdegyIzU0caaY5lQIq1bBnjC5+47zOqziEX95F2dX+L8ujg6Ft/zHLgZGrPPgg==
+X-Received: by 2002:a63:2d3:: with SMTP id 202mr12522670pgc.438.1611774048289;
+        Wed, 27 Jan 2021 11:00:48 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id c5sm2738594pjo.4.2021.01.27.11.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 11:00:47 -0800 (PST)
+Date:   Wed, 27 Jan 2021 12:00:45 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, anshuman.khandual@arm.com,
+        stable@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+Subject: Re: [PATCH v3] coresight: etm4x: Handle accesses to TRCSTALLCTLR
+Message-ID: <20210127190045.GA1165637@xps15>
+References: <20210127184617.3684379-1-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBG0cSoJmu8NnoAT@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210127184617.3684379-1-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 07:44:01PM +0100, Peter Zijlstra wrote:
-> On Wed, Jan 27, 2021 at 10:33:08AM -0600, Josh Poimboeuf wrote:
+On Wed, Jan 27, 2021 at 06:46:17PM +0000, Suzuki K Poulose wrote:
+> TRCSTALLCTLR register is only implemented if
 > 
-> > What did you think about .static_call_tramp_key?  I could whip up a
-> > patch later unless you beat me to it.
+>    TRCIDR3.STALLCTL == 0b1
 > 
-> Yeah, I'm not sure.. why duplicate information already present in
-> kallsyms?
+> Make sure the driver touches the register only it is implemented.
+> 
+> Cc: stable@vger.kernel.org
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Changes since v2:
+>  - Ignore STALLCTL for sysfs mode
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c  | 9 ++++++---
+>  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 2 +-
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 473ab7480a36..5017d33ba4f5 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -306,7 +306,8 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>  	etm4x_relaxed_write32(csa, 0x0, TRCAUXCTLR);
+>  	etm4x_relaxed_write32(csa, config->eventctrl0, TRCEVENTCTL0R);
+>  	etm4x_relaxed_write32(csa, config->eventctrl1, TRCEVENTCTL1R);
+> -	etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
+> +	if (drvdata->stallctl)
+> +		etm4x_relaxed_write32(csa, config->stall_ctrl, TRCSTALLCTLR);
+>  	etm4x_relaxed_write32(csa, config->ts_ctrl, TRCTSCTLR);
+>  	etm4x_relaxed_write32(csa, config->syncfreq, TRCSYNCPR);
+>  	etm4x_relaxed_write32(csa, config->ccctlr, TRCCCCTLR);
+> @@ -1463,7 +1464,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	state->trcauxctlr = etm4x_read32(csa, TRCAUXCTLR);
+>  	state->trceventctl0r = etm4x_read32(csa, TRCEVENTCTL0R);
+>  	state->trceventctl1r = etm4x_read32(csa, TRCEVENTCTL1R);
+> -	state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
+> +	if (drvdata->stallctl)
+> +		state->trcstallctlr = etm4x_read32(csa, TRCSTALLCTLR);
+>  	state->trctsctlr = etm4x_read32(csa, TRCTSCTLR);
+>  	state->trcsyncpr = etm4x_read32(csa, TRCSYNCPR);
+>  	state->trcccctlr = etm4x_read32(csa, TRCCCCTLR);
+> @@ -1575,7 +1577,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  	etm4x_relaxed_write32(csa, state->trcauxctlr, TRCAUXCTLR);
+>  	etm4x_relaxed_write32(csa, state->trceventctl0r, TRCEVENTCTL0R);
+>  	etm4x_relaxed_write32(csa, state->trceventctl1r, TRCEVENTCTL1R);
+> -	etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
+> +	if (drvdata->stallctl)
+> +		etm4x_relaxed_write32(csa, state->trcstallctlr, TRCSTALLCTLR);
+>  	etm4x_relaxed_write32(csa, state->trctsctlr, TRCTSCTLR);
+>  	etm4x_relaxed_write32(csa, state->trcsyncpr, TRCSYNCPR);
+>  	etm4x_relaxed_write32(csa, state->trcccctlr, TRCCCCTLR);
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> index b646d53a3133..0995a10790f4 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> @@ -389,7 +389,7 @@ static ssize_t mode_store(struct device *dev,
+>  		config->eventctrl1 &= ~BIT(12);
+>  
+>  	/* bit[8], Instruction stall bit */
+> -	if (config->mode & ETM_MODE_ISTALL_EN)
+> +	if ((config->mode & ETM_MODE_ISTALL_EN) && (drvdata->stallctl == true))
 
-Well, but it's not exactly duplicating kallsyms.  No need to store
-symbol names, just the pointer relationships.  And kallsyms is
-presumably slow.
+I have applied this patch.
 
-> There's a fair number of features that already require KALLSYMS, I can't
-> really be bothered about adding one more (kprobes, function_tracer,
-> stack_tracer, ftrace_syscalls).
-
-Right, but I don't think they rely on KALLSYMS_ALL?
-
--- 
-Josh
-
+>  		config->stall_ctrl |= BIT(8);
+>  	else
+>  		config->stall_ctrl &= ~BIT(8);
+> -- 
+> 2.24.1
+> 
