@@ -2,129 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE4E306169
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F9B30617A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhA0Q7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:59:10 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:53896 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbhA0Q5D (ORCPT
+        id S232449AbhA0RCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:02:09 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:44814 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234430AbhA0Q5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:57:03 -0500
-Received: by mail-io1-f71.google.com with SMTP id s21so2044611ioe.20
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:56:47 -0800 (PST)
+        Wed, 27 Jan 2021 11:57:21 -0500
+Received: by mail-oi1-f178.google.com with SMTP id n7so2825069oic.11;
+        Wed, 27 Jan 2021 08:57:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=BAFZkHZVCqTETJOe/W7Z1KtkSwQo6pDsmbUH1AUEjKw=;
-        b=ah97KvDmpFT3CxSO1sXFmax8pCC0RbpnpmGNuiRFWrRuGa+FzuBu2tTe8kyIPXsnQa
-         Szfaf3Ef9K6vR3L1oIygy9Vh7XtIC4BVp6jojc9ViTWlIQH9erK5xkWncjY96ylsHyQw
-         rG8wpmlNjMlf/fCcsfDQqa5TOhxdRlIra+z11uZgBCs0IDBcgNEEstd/lSY5iUJzJUBi
-         W3wr4xpX0PL5rWquLTD/dTGGBXirT7eWSdg52ZSUEhTaI7oo0LlJDd4KU64BVr4L9q7M
-         oL5hpdnFQ2fCCsa8bHMakGrw7OdU+mKihs7YUstZVGPfyd0w19kHTk0LG131b3jThxpe
-         3K2A==
-X-Gm-Message-State: AOAM531wcm02HNzqHy+ruwLaLVQCgGyAalvJ6U6WNeEl5WZ1AjyQUjV1
-        MGNRximDx7TCtcQ99bZMVXyx5QtbV6wJFZTMMAvOvgVzA5O1
-X-Google-Smtp-Source: ABdhPJyEsafsti7/bFBg9EyG4UmcYQFwCrINFeZsq0H+Hg9xgTbZW8CBtyFnAqx2mOP8rchP8iz8LNWA6FDkCxA1QDl6Z0IGNsZ4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s3xf6Uj3TbfKhQEJk82fq5fqzQLpVMzJXmRWZDS7dvk=;
+        b=frcG7yHDg8zsAZ/HM42VeOkYgKdfQGDe8w9MCFZX8fDkftS6xkdk+1HOz6qErJmz66
+         xlmFUzkrtFL4CIbBDSvSy6xakFns+H/sG/X7lJeqZUcXaaYrtgRE/IsHrqAg7COSufZW
+         pyGkKguSc2LpQIa9A5zDXddnH7/WLxBIaeB/AbDvr8ySH5LT3ka7einhC+rBFhc6hEzN
+         gy6wguy1QENOtJ7JDgfqLhWf2Bf05SNaeXry+KCtIhac40ARaHcIX0QHYm3YjgrLsu4/
+         K5otYdIRsPWpqRIaKyhDGEbPDKqKpSu0I/YXILUvuo6BlwYXASn3JSRZ8C8sIxEVQYX3
+         kzrg==
+X-Gm-Message-State: AOAM530zWoG/V50mY0ffrGtvmj6Pgy/xMqTGA9v8jzUBjH9kgZA3uXHh
+        S3ecxRiki7yaqTqM1QAsjHWugEkVEPY1I1Lzb98=
+X-Google-Smtp-Source: ABdhPJzrftirO9q8y5qRSTJjzPt8PKf7o5QMJ5YRZIls94zP1/ZFWbzW7vKZsZi8Q26ezhYy6mhE78Bj+1LTwsp+OYI=
+X-Received: by 2002:aca:4d8d:: with SMTP id a135mr3681544oib.153.1611766600227;
+ Wed, 27 Jan 2021 08:56:40 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d244:: with SMTP id v4mr9272701ilg.191.1611766582457;
- Wed, 27 Jan 2021 08:56:22 -0800 (PST)
-Date:   Wed, 27 Jan 2021 08:56:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009bbb7905b9e4a624@google.com>
-Subject: WARNING in __do_kernel_fault
-From:   syzbot <syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com>
-To:     Dave.Martin@arm.com, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, syzkaller-bugs@googlegroups.com,
-        will@kernel.org
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+ <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
+ <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
+ <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
+ <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com> <CAGETcx8=woX_SVckG+gs68KMif-JGoy3a1PQGfonMNBH18Ak6A@mail.gmail.com>
+In-Reply-To: <CAGETcx8=woX_SVckG+gs68KMif-JGoy3a1PQGfonMNBH18Ak6A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 27 Jan 2021 17:56:28 +0100
+Message-ID: <CAMuHMdUpzaRutO+jKffXtGDoy5g2QoXkbO+-tzbEzibNYbhCuA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Michael Walle <michael@walle.cc>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Saravana,
 
-syzbot found the following issue on:
+On Wed, Jan 27, 2021 at 5:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Jan 26, 2021 at 11:43 PM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
+> > > <geert@linux-m68k.org> wrote:
+> > > > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
+> > > > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> > > > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
+> > > > > > > wrote:
+> > > > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
+> > > > > > >> wrote:
+> > > > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> > > > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> > > > > > >> > > wrote:
+> > > > > > >> > >>
+> > > > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> > > > > > >> > >> all CCs to BCCs :(]
+> > > > > > >> > >>
+> > > > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > > > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > > > > > >> > >> >>
+> > > > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > > > > > >> > >> >> wrote:
+> > > > > > >> > >> >> >
+> > > > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > > > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > > > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
+> > > > > > >> > >> >>
+> > > > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > > > > > >> > >> >> shouldn't it be fixed or removed?
+> > > > > > >> > >> >
+> > > > > > >> > >> > I was actually thinking about this too. The problem with fixing
+> > > > > > >> > >> > builtin_platform_driver_probe() to behave like
+> > > > > > >> > >> > builtin_platform_driver() is that these probe functions could be
+> > > > > > >> > >> > marked with __init. But there are also only 20 instances of
+> > > > > > >> > >> > builtin_platform_driver_probe() in the kernel:
+> > > > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> > > > > > >> > >> > 20
+> > > > > > >> > >> >
+> > > > > > >> > >> > So it might be easier to just fix them to not use
+> > > > > > >> > >> > builtin_platform_driver_probe().
+> > > > > > >> > >> >
+> > > > > > >> > >> > Michael,
+> > > > > > >> > >> >
+> > > > > > >> > >> > Any chance you'd be willing to help me by converting all these to
+> > > > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> > > > > > >> > >>
+> > > > > > >> > >> If it just moving the probe function to the _driver struct and
+> > > > > > >> > >> remove the __init annotations. I could look into that.
+> > > > > > >> > >
+> > > > > > >> > > Yup. That's pretty much it AFAICT.
+> > > > > > >> > >
+> > > > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> > > > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
+> > > > > > >> > > flags and still using builtin_platform_driver_probe().
+> > > > > > >> >
+> > > > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
+> > > > > > >> > are ~80 drivers which uses that.
+> > > > > > >>
+> > > > > > >> Yeah. The biggest problem with all of these is the __init markers.
+> > > > > > >> Maybe some familiar with coccinelle can help?
+> > > > > > >
+> > > > > > > And dropping them will increase memory usage.
+> > > > > >
+> > > > > > Although I do have the changes for the builtin_platform_driver_probe()
+> > > > > > ready, I don't think it makes much sense to send these unless we agree
+> > > > > > on the increased memory footprint. While there are just a few
+> > > > > > builtin_platform_driver_probe() and memory increase _might_ be
+> > > > > > negligible, there are many more module_platform_driver_probe().
+> > > > >
+> > > > > While it's good to drop code that'll not be used past kernel init, the
+> > > > > module_platform_driver_probe() is going even more extreme. It doesn't
+> > > > > even allow deferred probe (well before kernel init is done). I don't
+> > > > > think that behavior is right and that's why we should delete it. Also,
+> > > >
+> > > > This construct is typically used for builtin hardware for which the
+> > > > dependencies are registered very early, and thus known to probe at
+> > > > first try (if present).
+> > > >
+> > > > > I doubt if any of these probe functions even take up 4KB of memory.
+> > > >
+> > > > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
+> > > > How many can you afford to waste?
+> > >
+> > > There are only a few instances of this macro in the kernel. How many
+> >
+> > $ git grep -lw builtin_platform_driver_probe | wc -l
+> > 21
+> > $ git grep -lw module_platform_driver_probe | wc -l
+> > 86
+> >
+> > + the ones that haven't been converted to the above yet:
+> >
+> > $ git grep -lw platform_driver_probe | wc -l
+> > 58
+> >
+>
+> Yeah, this adds up in terms of the number of places we'd need to fix.
+> But thinking more about it, a couple of points:
+> 1. Not all builtin_platform_driver_probe() are problems for
+> fw_devlink. So we can just fix them as we go if we need to.
+>
+> 2. The problem with builtin_platform_driver_probe() isn't really with
+> the use of __init. It's the fact that it doesn't allow deferred
+> probes. builtin_platform_driver_probe()/platform_driver_probe() could
+> still be fixed up to allow deferred probe until we get to the point
+> where we free the __init section (so at least till late_initcall).
 
-HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a25264d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
-dashboard link: https://syzkaller.appspot.com/bug?extid=45b6fce29ff97069e2c5
-userspace arch: arm64
+That's intentional: it is used for cases that will (must) never be deferred.
+That's why it's safe to use __init.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Gr{oetje,eeting}s,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+45b6fce29ff97069e2c5@syzkaller.appspotmail.com
+                        Geert
 
-REISERFS (device loop0): Using rupasov hash to sort names
-------------[ cut here ]------------
-Ignoring spurious kernel translation fault at virtual address 0000000000000030
-WARNING: CPU: 1 PID: 5380 at arch/arm64/mm/fault.c:364 __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-Modules linked in:
-CPU: 1 PID: 5380 Comm: syz-executor.0 Not tainted 5.11.0-rc5-syzkaller-00037-g2ab38c17aac1 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-lr : __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
-sp : ffff800014933830
-x29: ffff800014933830 x28: f1ff00000c28bc00 
-x27: ffff80001231db80 x26: f0ff00002054a0b8 
-x25: 0000000000000000 x24: f1ff000004217680 
-x23: 0000000097c78006 x22: 0000000000000030 
-x21: 0000000000000025 x20: ffff800014933960 
-x19: 0000000097c78006 x18: 00000000fffffffb 
-x17: 0000000000000000 x16: 0000000000000000 
-x15: 0000000000000020 x14: 6c656e72656b2073 
-x13: 00000000000006f9 x12: ffff8000149334e0 
-x11: ffff80001313b450 x10: 00000000ffffe000 
-x9 : ffff80001313b450 x8 : ffff80001308b450 
-x7 : ffff80001313b450 x6 : 0000000000000000 
-x5 : ffff00007fbe1948 x4 : 0000000000015ff5 
-x3 : 0000000000000001 x2 : 0000000000000000 
-x1 : 0000000000000000 x0 : f1ff00000c28bc00 
-Call trace:
- __do_kernel_fault+0x198/0x1c0 arch/arm64/mm/fault.c:364
- do_page_fault+0x1c0/0x3a0 arch/arm64/mm/fault.c:649
- do_translation_fault+0xb4/0xc4 arch/arm64/mm/fault.c:660
- do_mem_abort+0x44/0xbc arch/arm64/mm/fault.c:793
- el1_abort+0x40/0x6c arch/arm64/kernel/entry-common.c:118
- el1_sync_handler+0xb0/0xcc arch/arm64/kernel/entry-common.c:209
- el1_sync+0x70/0x100 arch/arm64/kernel/entry.S:656
- reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:79 [inline]
- reiserfs_security_init+0x98/0x10c fs/reiserfs/xattr_security.c:70
- reiserfs_mkdir+0xf4/0x320 fs/reiserfs/namei.c:821
- xattr_mkdir.constprop.0+0x24/0x3c fs/reiserfs/xattr.c:76
- create_privroot fs/reiserfs/xattr.c:889 [inline]
- reiserfs_xattr_init+0x16c/0x320 fs/reiserfs/xattr.c:1011
- reiserfs_fill_super+0xa34/0xd20 fs/reiserfs/super.c:2177
- mount_bdev+0x1c4/0x1f0 fs/super.c:1366
- get_super_block+0x1c/0x30 fs/reiserfs/super.c:2606
- legacy_get_tree+0x34/0x64 fs/fs_context.c:592
- vfs_get_tree+0x2c/0xf0 fs/super.c:1496
- do_new_mount fs/namespace.c:2881 [inline]
- path_mount+0x3e8/0xaf0 fs/namespace.c:3211
- do_mount fs/namespace.c:3224 [inline]
- __do_sys_mount fs/namespace.c:3432 [inline]
- __se_sys_mount fs/namespace.c:3409 [inline]
- __arm64_sys_mount+0x1a8/0x2fc fs/namespace.c:3409
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
- el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:159
- do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:198
- el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
- el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
- el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
