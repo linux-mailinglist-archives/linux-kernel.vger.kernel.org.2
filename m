@@ -2,118 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0880F305E25
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2408D305E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbhA0OXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:23:07 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:39893 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbhA0OWl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:22:41 -0500
-Received: by mail-ot1-f47.google.com with SMTP id i30so1792576ota.6;
-        Wed, 27 Jan 2021 06:22:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=587D5sQwzOQpISnpuw/zLfl/khiQsRKiyrXe7742FuI=;
-        b=VXLB/yVSp5Lw5FXpgK3vsCrnsKuEgXVSbPAkDlJkLlq+CD/mjl9fq12PsEEQsfoJFi
-         MCtkUIJz+3uE2UZx749l80sMaLUlQymJmwNfvgT3mEWBgh0xs0zKD86OOND6Q33M2cnv
-         zgZTwtVIkYZxx4UWMcAfvivaxNXssgI+XMZ+0Yd8hYU0HgEXgAXJN8PCdrbrdRinzW/u
-         NOcgXo/weY+5D+UZAeErgSuncuq6+zNmhCn0yJT2rb1mf3RYuAuCsvEk4eEIh4InWM3h
-         SGDU2DyM/lZg1AF1ksPX7Y84n18W0IiaZk3sN2Tu1D+qBaXzF1W4AhO+nP6R+56LdfkA
-         XK9g==
-X-Gm-Message-State: AOAM533sRXeR5Kfbvkv8lbg4uUkUw+2PWhGGvto9YN8E2yYLf14wRD8L
-        e1j2z/9rCwSPIx3+K7HgIkKj2UxB47Zf2anxnjODNiy0
-X-Google-Smtp-Source: ABdhPJwldt+lZlYPhu/osH7yMBd55aPChuGJkaBrux0jWPyiIyO2mGqr+Ap0Sk51b3A5BrSya3weIUzfrYMlEzvbK80=
-X-Received: by 2002:a05:6830:15cc:: with SMTP id j12mr7855321otr.145.1611757320011;
- Wed, 27 Jan 2021 06:22:00 -0800 (PST)
+        id S232997AbhA0OWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:22:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229747AbhA0OWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 09:22:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0075F206C2;
+        Wed, 27 Jan 2021 14:21:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611757299;
+        bh=h4KlcOqVpt+f7NayTo74/7IODdEHC+WplK/87YEXFY4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t+BAR4Z2Pu7DB0HXkvxM8DQQPBVAvjYbjZNjN0spoa7Ztki/hQ424j+lXdArN+uEw
+         BhQ1CNUU3mfWmpwfcUOBE712yPuI85fwfJI5KKgsCtLkRS/e/b2egGbOGR/l2/mCyt
+         Z9SeVCTp7hhFFuFz0IEEbva52Udw6SZkDNeYB+pYsBXFUhaVbPsb3CbPcxTd1aOWJE
+         PKMPVG4hwpC0AI78K8KvRW5DL3WJwMNEykMtAY8Nx3WwpaGejWeQlsrHDJj8kCjGaK
+         C9yOw7ik0PeNrT18U0pg35wBODeNkkyCM2wDOr4x2NsJvNZxxj39MYZQPOXjvgaM3V
+         42+xI7VxayVEQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4lhe-0001py-TN; Wed, 27 Jan 2021 15:21:50 +0100
+Date:   Wed, 27 Jan 2021 15:21:50 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 03/12] usb: misc: cytherm: update to use
+ usb_control_msg_recv()
+Message-ID: <YBF2/qHqa7+s9+5d@hovoldconsulting.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126183403.911653-4-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-References: <1611756149-165287-1-git-send-email-zhangxuezhi3@gmail.com>
-In-Reply-To: <1611756149-165287-1-git-send-email-zhangxuezhi3@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Jan 2021 15:21:48 +0100
-Message-ID: <CAMuHMdV81xSOBkw9Rfeuc8U4g3vRcucXMvVv1_1hoMexX62s7A@mail.gmail.com>
-Subject: Re: [PATCH v11] staging: fbtft: add tearing signal detect
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Colin King <colin.king@canonical.com>,
-        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
-        mh12gx2825@gmail.com, Stefano Brivio <sbrivio@redhat.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126183403.911653-4-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Carlis,
-
-On Wed, Jan 27, 2021 at 3:07 PM Carlis <zhangxuezhi3@gmail.com> wrote:
-> From: zhangxuezhi <zhangxuezhi1@yulong.com>
->
-> For st7789v ic,when we need continuous full screen refresh, it is best to
-> wait for the TE signal arrive to avoid screen tearing
->
-> Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+On Wed, Jan 27, 2021 at 12:03:54AM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, the instance of usb_control_msg() has been replaced with
+> usb_control_msg_recv().
+> 
+> The return value checking enforced by callers of the updated function have
+> also been appropriately updated.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 > ---
-> v11: remove devm_gpio_put and change a dev_err to dev_info
-
-> --- a/drivers/staging/fbtft/fb_st7789v.c
-> +++ b/drivers/staging/fbtft/fb_st7789v.c
-
-> @@ -82,6 +111,32 @@ enum st7789v_command {
->   */
->  static int init_display(struct fbtft_par *par)
+>  drivers/usb/misc/cytherm.c | 128 +++++++++++++------------------------
+>  1 file changed, 43 insertions(+), 85 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/cytherm.c b/drivers/usb/misc/cytherm.c
+> index 3e3802aaefa3..2ca36ea5b76a 100644
+> --- a/drivers/usb/misc/cytherm.c
+> +++ b/drivers/usb/misc/cytherm.c
+> @@ -51,12 +51,12 @@ static int vendor_command(struct usb_device *dev, unsigned char request,
+>  			  unsigned char value, unsigned char index,
+>  			  void *buf, int size)
 >  {
-> +       int rc;
-> +       struct device *dev = par->info->device;
+> -	return usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+> -			       request, 
+> -			       USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+> -			       value, 
+> -			       index, buf, size,
+> -			       USB_CTRL_GET_TIMEOUT);
+> +	return usb_control_msg_recv(dev, 0,
+> +				    request,
+> +				    USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+> +				    value,
+> +				    index, buf, size,
+> +				    USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
+>  }
+>  
+>  
+> @@ -78,33 +78,27 @@ static ssize_t brightness_store(struct device *dev, struct device_attribute *att
+>  	struct usb_interface *intf = to_usb_interface(dev);
+>  	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+>  
+> -	unsigned char *buffer;
+> +	unsigned char buffer[8];
+>  	int retval;
+> -   
+> -	buffer = kmalloc(8, GFP_KERNEL);
+> -	if (!buffer)
+> -		return 0;
+>  
+>  	cytherm->brightness = simple_strtoul(buf, NULL, 10);
+> -   
 > +
-> +       par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-> +       if (IS_ERR(par->gpio.te)) {
-> +               rc = PTR_ERR(par->gpio.te);
-> +               dev_info(par->info->device, "Failed to request te gpio: %d\n", rc);
-
-Please slow down and read the feedback.
-I said "dev_err_probe()", not "dev_info()".
-
-> +               return rc;
-> +       }
-> +       if (par->gpio.te) {
-> +               init_completion(&spi_panel_te);
-> +               mutex_init(&te_mutex);
-> +               rc = devm_request_irq(dev,
-> +                                     gpiod_to_irq(par->gpio.te),
-> +                                    spi_panel_te_handler, IRQF_TRIGGER_RISING,
-> +                                    "TE_GPIO", par);
-> +               if (rc) {
-> +                       dev_err(par->info->device, "TE request_irq failed.\n");
-
-Same here.
-
-> +                       return rc;
-> +               }
+>  	if (cytherm->brightness > 0xFF)
+>  		cytherm->brightness = 0xFF;
+>  	else if (cytherm->brightness < 0)
+>  		cytherm->brightness = 0;
+> -   
 > +
-> +               disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> +       } else {
-> +               dev_info(par->info->device, "%s:%d, TE gpio not specified\n",
-> +                        __func__, __LINE__);
-> +       }
->         /* turn off sleep mode */
->         write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
->         mdelay(120);
+>  	/* Set brightness */
+>  	retval = vendor_command(cytherm->udev, WRITE_RAM, BRIGHTNESS, 
+> -				cytherm->brightness, buffer, 8);
+> -	if (retval)
+> -		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+> +				cytherm->brightness, &buffer, 8);
+> +	if (!retval)
+> +		dev_dbg(&cytherm->udev->dev, "brightness set correctly\n");
+>  	/* Inform µC that we have changed the brightness setting */
+>  	retval = vendor_command(cytherm->udev, WRITE_RAM, BRIGHTNESS_SEM,
+> -				0x01, buffer, 8);
+> -	if (retval)
+> -		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+> -   
+> -	kfree(buffer);
+> -   
+> +				0x01, &buffer, 8);
+> +	if (!retval)
+> +		dev_dbg(&cytherm->udev->dev, "µC informed of change in brightness setting\n");
+> +
+>  	return count;
+>  }
 
-Gr{oetje,eeting}s,
+This driver looks like it could have the same origin as the one touched
+by the previous patch, and likewise this patch suffers from a similar
+problem in that the driver always provides an 8-byte buffer but appears
+to expect short reads (which would no be treated as errors).
 
-                        Geert
+You could consider adding the missing short read sanity checks, but
+I'm afraid the new helpers are not a good fit here either.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Johan
