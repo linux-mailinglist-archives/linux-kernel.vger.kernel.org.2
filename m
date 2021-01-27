@@ -2,176 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E281E30629C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36A83062B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234612AbhA0RvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344193AbhA0Rtc (ORCPT
+        id S1344262AbhA0Rx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:53:27 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31068 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344236AbhA0Rw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:49:32 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D99C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:48:51 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id s24so3764448wmj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:48:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fA8V3wK/iXuNUDNxQGGXePONMGKipgMljYi7+GjKWGw=;
-        b=a8OhkeDNIrmKqsh/XjliHEErqfLR1649OYBoBGFEvLBOZ+ggHDLSWAX/n6j/z3w97I
-         O9tH41Smi3ymg1pzgGeLbzIMLsO1feji4tUOSibpYzaPjyI82MNd0eb9IWB7PxDjg0G0
-         oxyBWYBW+1tVrQZsIKJypSvyl4xSYL6BjScCBKZXOj15rIGNmx6Y2hxnOya6A+R0gFYw
-         nztYfgt+1rsHdsegI70WVsq2XlPBJoH0aNeyT1TF2D7loXZjMTjNyppoXG6dOigQsqHY
-         Yseux6Wu2pv1M40LIaXYKK+8w94rILX4hZXdN1tnWevAeuMKey6Q3DlEpnyb6rlTCzWk
-         vZxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fA8V3wK/iXuNUDNxQGGXePONMGKipgMljYi7+GjKWGw=;
-        b=ONpZCN4lKUZI8QEDblIrz9Z8J2CDz477rww5y2vtlWj2doDs+lXjMQNwbgUKg0cnJu
-         SotEI9Ek0xO624ic5pQU6yVtPhLWn76kBuceioHbm8gc0OTCN0HTAX93GTa+PueZNOlj
-         H7wLwViJEq3+X19Sqki9x66l9ryZQ7u4HaBfeNZG31LCUa3uL50FlaB6dDqzAceMJLai
-         TIGRVtiPnUe011UWl5bE4JFv3hM5S/ftiXYDP/XvO1CQA1iw/ucpKuOlKjBHn6RXyN6I
-         BX+sYLvhS/VTL2FZC9vxtaDPyNyXeprsVlRE0/fmtfMIQt15ZTH4iawajFH5HOFTEJPt
-         q0iw==
-X-Gm-Message-State: AOAM5337UXKFdOh0Qh6jfq8s3SJsgy1eZ07losAlDvt+0wUm+VKgBaAC
-        uwyLHTnYIEcMcTx1ieqO3q+lJM2xVW/CNA==
-X-Google-Smtp-Source: ABdhPJytQUIw/wSZmG+xRMZTNwB9UYiZ1gjegwsMACvZMcy5esdmS9dTfu0F9n4G/uSGin5bLFQNew==
-X-Received: by 2002:a1c:6486:: with SMTP id y128mr5397108wmb.12.1611769730244;
-        Wed, 27 Jan 2021 09:48:50 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id e12sm3680787wrs.67.2021.01.27.09.48.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 09:48:49 -0800 (PST)
-Subject: Re: [PATCH v2] ASoC: qcom: lpass-cpu: Remove bit clock state check
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210127151824.8929-1-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <752d2980-2c84-c03f-7960-b9de8027c4d6@linaro.org>
-Date:   Wed, 27 Jan 2021 17:48:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 27 Jan 2021 12:52:28 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RHTXJn005687
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:51:46 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=58ZT0JVD91Bka4oJD8AUawWGelkoDTZaGh/LPoBVWtE=;
+ b=Qdd4zdNzIzp4YzBb5Ar/HjJty1IVFBwPzBTcIIRGgVMmApxa6QF5CDKj3MpdsnXYMk73
+ 8Zxz3B3YFtKNshjrrKDTSaDfw3bUyYxz1zRjAoa9tZ5aCQJq6lEQx6nLjqzVvrvSIJeK
+ /hi0mJUR4DZ/xuiXcdYSrU7f1GNIWii+WuI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36b7vwhsks-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:51:45 -0800
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 27 Jan 2021 09:51:43 -0800
+Received: from devvm1945.atn0.facebook.com (localhost [127.0.0.1])
+        by devvm1945.atn0.facebook.com (Postfix) with ESMTP id 336572520585;
+        Wed, 27 Jan 2021 09:51:42 -0800 (PST)
+Received: (from saravanand@localhost)
+        by devvm1945.atn0.facebook.com (8.15.2/8.15.2/Submit) id 10RHpfLZ3290703;
+        Wed, 27 Jan 2021 09:51:41 -0800
+X-Authentication-Warning: devvm1945.atn0.facebook.com: saravanand set sender to saravanand@fb.com using -f
+From:   Saravanan D <saravanand@fb.com>
+To:     <x86@kernel.org>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
+        <peterz@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        Saravanan D <saravanand@fb.com>
+Subject: [PATCH V2] x86/mm: Tracking linear mapping split events
+Date:   Wed, 27 Jan 2021 09:51:24 -0800
+Message-ID: <20210127175124.3289879-1-saravanand@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <bd157a11-8e6b-5f44-4d91-d99adb9f8686@intel.com>
+References: <bd157a11-8e6b-5f44-4d91-d99adb9f8686@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127151824.8929-1-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_06:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1011
+ mlxlogscore=999 spamscore=0 priorityscore=1501 malwarescore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270088
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Numerous hugepage splits in the linear mapping would give
+admins the signal to narrow down the sluggishness caused by TLB
+miss/reload.
 
+To help with debugging, we introduce monotonic lifetime  hugepage
+split event counts since SYSTEM_RUNNING to be displayed as part of
+/proc/vmstat in x86 servers
 
-On 27/01/2021 15:18, Srinivasa Rao Mandadapu wrote:
-> No need of BCLK state maintenance from driver side as
-> clock_enable and clk_disable API's maintaing state counter.
-> 
-> One of the major issue was spotted when Headset jack inserted
-> while playback continues, due to same PCM device node opens twice
-> for playaback/capture and closes once for capture and playback continues.
-> 
-> It can resolve the errors in such scenarios.
-> 
-> Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+The lifetime split event information will be displayed at the bottom of
+/proc/vmstat
+....
+swap_ra 0
+swap_ra_hit 0
+direct_map_2M_splits 139
+direct_map_4M_splits 0
+direct_map_1G_splits 7
+nr_unstable 0
+....
 
+Ancillary debugfs split event counts exported to userspace via read-write
+endpoints : /sys/kernel/debug/x86/direct_map_[2M|4M|1G]_split
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+dmesg log when user resets the debugfs split event count for
+debugging
+....
+[  232.470531] debugfs 2M Pages split event count(128) reset to 0
+....
 
-> ---
-> Changes since v1:
->     -- Commit message changed
-> 
->   sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
->   sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
->   sound/soc/qcom/lpass.h           |  1 -
->   3 files changed, 8 insertions(+), 18 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index ae8efbc89af2..a669202e0001 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->   			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
->   				ret);
->   
-> -		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
-> -			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-> -			if (ret) {
-> -				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-> -				clk_disable(drvdata->mi2s_osr_clk[id]);
-> -				return ret;
-> -			}
-> -			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
-> +		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-> +		if (ret) {
-> +			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-> +			clk_disable(drvdata->mi2s_osr_clk[id]);
-> +			return ret;
->   		}
-> -
->   		break;
->   	case SNDRV_PCM_TRIGGER_STOP:
->   	case SNDRV_PCM_TRIGGER_SUSPEND:
-> @@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->   		if (ret)
->   			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
->   				ret);
-> -		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
-> -			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
-> -			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
-> -		}
-> +
-> +		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
-> +
->   		break;
->   	}
->   
-> @@ -861,7 +856,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->   				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
->   			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
->   		}
-> -		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
->   	}
->   
->   	/* Allocation for i2sctl regmap fields */
-> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-> index 405542832e99..c8e1d75340b2 100644
-> --- a/sound/soc/qcom/lpass-lpaif-reg.h
-> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
-> @@ -60,9 +60,6 @@
->   #define LPAIF_I2SCTL_BITWIDTH_24	1
->   #define LPAIF_I2SCTL_BITWIDTH_32	2
->   
-> -#define LPAIF_BIT_CLK_DISABLE		0
-> -#define LPAIF_BIT_CLK_ENABLE		1
-> -
->   #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
->   #define LPAIF_DMACTL_RESET_STATE	0x00200000
->   
-> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-> index 2d68af0da34d..83b2e08ade06 100644
-> --- a/sound/soc/qcom/lpass.h
-> +++ b/sound/soc/qcom/lpass.h
-> @@ -68,7 +68,6 @@ struct lpass_data {
->   	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
->   	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
->   	int hdmi_port_enable;
-> -	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
->   
->   	/* low-power audio interface (LPAIF) registers */
->   	void __iomem *lpaif;
-> 
+One of the many lasting (as we don't coalesce back) sources for huge page
+splits is tracing as the granular page attribute/permission changes would
+force the kernel to split code segments mapped to huge pages to smaller
+ones thereby increasing the probability of TLB miss/reload even after
+tracing has been stopped.
+
+Signed-off-by: Saravanan D <saravanand@fb.com>
+---
+ arch/x86/mm/pat/set_memory.c  | 117 ++++++++++++++++++++++++++++++++++
+ include/linux/vm_event_item.h |   8 +++
+ mm/vmstat.c                   |   8 +++
+ 3 files changed, 133 insertions(+)
+
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index 16f878c26667..97b6ef8dbd12 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -16,6 +16,8 @@
+ #include <linux/pci.h>
+ #include <linux/vmalloc.h>
+ #include <linux/libnvdimm.h>
++#include <linux/vmstat.h>
++#include <linux/kernel.h>
+=20
+ #include <asm/e820/api.h>
+ #include <asm/processor.h>
+@@ -76,6 +78,104 @@ static inline pgprot_t cachemode2pgprot(enum page_cac=
+he_mode pcm)
+=20
+ #ifdef CONFIG_PROC_FS
+ static unsigned long direct_pages_count[PG_LEVEL_NUM];
++static unsigned long split_page_event_count[PG_LEVEL_NUM];
++
++#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
++static int direct_map_2M_split_set(void *data, u64 val)
++{
++	switch (val) {
++	case 0:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	pr_info("debugfs 2M Pages split event count(%lu) reset to 0",
++		  split_page_event_count[PG_LEVEL_2M]);
++	split_page_event_count[PG_LEVEL_2M] =3D 0;
++
++	return 0;
++}
++
++static int direct_map_2M_split_get(void *data, u64 *val)
++{
++	*val =3D split_page_event_count[PG_LEVEL_2M];
++	return 0;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(fops_direct_map_2M_split, direct_map_2M_split_g=
+et,
++			 direct_map_2M_split_set, "%llu\n");
++#else
++static int direct_map_4M_split_set(void *data, u64 val)
++{
++	switch (val) {
++	case 0:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	pr_info("debugfs 4M Pages split event count(%lu) reset to 0",
++		  split_page_event_count[PG_LEVEL_2M]);
++	split_page_event_count[PG_LEVEL_2M] =3D 0;
++
++	return 0;
++}
++
++static int direct_map_4M_split_get(void *data, u64 *val)
++{
++	*val =3D split_page_event_count[PG_LEVEL_2M];
++	return 0;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(fops_direct_map_4M_split, direct_map_4M_split_g=
+et,
++			 direct_map_4M_split_set, "%llu\n");
++#endif
++
++static int direct_map_1G_split_set(void *data, u64 val)
++{
++	switch (val) {
++	case 0:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	pr_info("debugfs 1G Pages split event count(%lu) reset to 0",
++		  split_page_event_count[PG_LEVEL_1G]);
++	split_page_event_count[PG_LEVEL_1G] =3D 0;
++
++	return 0;
++}
++
++static int direct_map_1G_split_get(void *data, u64 *val)
++{
++	*val =3D split_page_event_count[PG_LEVEL_1G];
++	return 0;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(fops_direct_map_1G_split, direct_map_1G_split_g=
+et,
++			 direct_map_1G_split_set, "%llu\n");
++
++static __init int direct_map_split_debugfs_init(void)
++{
++#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
++	debugfs_create_file("direct_map_2M_split", 0600,
++			    arch_debugfs_dir, NULL,
++			    &fops_direct_map_2M_split);
++#else
++	debugfs_create_file("direct_map_4M_split", 0600,
++			    arch_debugfs_dir, NULL,
++			    &fops_direct_map_4M_split);
++#endif
++	if (direct_gbpages)
++		debugfs_create_file("direct_map_1G_split", 0600,
++				    arch_debugfs_dir, NULL,
++				    &fops_direct_map_1G_split);
++	return 0;
++}
++
++late_initcall(direct_map_split_debugfs_init);
+=20
+ void update_page_count(int level, unsigned long pages)
+ {
+@@ -85,12 +185,29 @@ void update_page_count(int level, unsigned long page=
+s)
+ 	spin_unlock(&pgd_lock);
+ }
+=20
++void update_split_page_event_count(int level)
++{
++	if (system_state =3D=3D SYSTEM_RUNNING) {
++		split_page_event_count[level]++;
++		if (level =3D=3D PG_LEVEL_2M) {
++#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
++			count_vm_event(DIRECT_MAP_2M_SPLIT);
++#else
++			count_vm_event(DIRECT_MAP_4M_SPLIT);
++#endif
++		} else if (level =3D=3D PG_LEVEL_1G) {
++			count_vm_event(DIRECT_MAP_1G_SPLIT);
++		}
++	}
++}
++
+ static void split_page_count(int level)
+ {
+ 	if (direct_pages_count[level] =3D=3D 0)
+ 		return;
+=20
+ 	direct_pages_count[level]--;
++	update_split_page_event_count(level);
+ 	direct_pages_count[level - 1] +=3D PTRS_PER_PTE;
+ }
+=20
+diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.=
+h
+index 18e75974d4e3..439742d2435e 100644
+--- a/include/linux/vm_event_item.h
++++ b/include/linux/vm_event_item.h
+@@ -120,6 +120,14 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOU=
+T,
+ #ifdef CONFIG_SWAP
+ 		SWAP_RA,
+ 		SWAP_RA_HIT,
++#endif
++#if defined(__x86_64__)
++#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
++		DIRECT_MAP_2M_SPLIT,
++#else
++		DIRECT_MAP_4M_SPLIT,
++#endif
++		DIRECT_MAP_1G_SPLIT,
+ #endif
+ 		NR_VM_EVENT_ITEMS
+ };
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index f8942160fc95..beaa2bb4f9dc 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1350,6 +1350,14 @@ const char * const vmstat_text[] =3D {
+ 	"swap_ra",
+ 	"swap_ra_hit",
+ #endif
++#if defined(__x86_64__)
++#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
++	"direct_map_2M_splits",
++#else
++	"direct_map_4M_splits",
++#endif
++	"direct_map_1G_splits",
++#endif
+ #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
+ };
+ #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG =
+*/
+--=20
+2.24.1
+
