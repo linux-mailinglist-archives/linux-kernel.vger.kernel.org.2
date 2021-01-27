@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6543305D4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5FB305D54
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238529AbhA0Ndn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:33:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
+        id S238398AbhA0Nfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:35:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238477AbhA0NbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:31:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04BA1207A0;
-        Wed, 27 Jan 2021 13:30:17 +0000 (UTC)
+        id S238502AbhA0NdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:33:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C12A5207B1;
+        Wed, 27 Jan 2021 13:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611754218;
-        bh=PRPfyBQ4qTkyM5ldK/G+fxEfNZ+SuyxPadtIZ8ggCS8=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=i/J0XSdmNCwo8OkCHOIeKDGqBQYncNk8FULsNG5fhh2wty7WMMKvbJcOdDCM2Pe3z
-         0bKsYWFYNIrIFh2MGx9cLVHlOSlVvfDEkLN/K6HONMD4ifSpzyeBd8KfBuBUSv4jJ/
-         /jIJ7Uh/N7hqLWJcs5bTiqQ1H7BVXySLd1BBKFzY=
-Date:   Wed, 27 Jan 2021 14:30:15 +0100
+        s=korg; t=1611754357;
+        bh=Hvdj/TnKmUGUDvd5D0ucCsJxgPxWAmML6NC1NFEiusw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u15m2WoKpaM2iRwFCDTC0Id9jWPw061bwZFZVpyaROia9HdMUZpooYN6buBoxdlwy
+         6NL+OCZ4TYv3aWLNwta4GI1HP+QQwqWP4lbYbH/HIzFjrmmoE268Uz7/dgLdi9COTS
+         Kz7z8I8j1c9WoCqZbzrhR5Psr3s97OHDrK6ehxlE=
+Date:   Wed, 27 Jan 2021 14:32:35 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
+To:     Mark Brown <broonie@kernel.org>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        Mayulong <mayulong1@huawei.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Orson Zhai <orson.zhai@unisoc.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] include: sysfs: Add macro to assign show for RO
- attributes
-Message-ID: <YBFq5yiHFJ2/jnGK@kroah.com>
-References: <1611721162-29982-1-git-send-email-orsonzhai@gmail.com>
- <YBEbRDOQhczI5/yC@kroah.com>
- <20210127125126.GA7813@lenovo>
+        linux-arm-msm@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 00/21] Move Hisilicon 6421v600 SPMI driver set out of
+ staging
+Message-ID: <YBFrc/yk7uvh9HX8@kroah.com>
+References: <cover.1611212783.git.mchehab+huawei@kernel.org>
+ <YBBXcdLbj92yMJhw@kroah.com>
+ <20210126175752.GF4839@sirena.org.uk>
+ <YBBZP9LjXPi/rzfP@kroah.com>
+ <20210126181124.GG4839@sirena.org.uk>
+ <YBErBByYD8lNIWAX@kroah.com>
+ <20210127120426.GB4387@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127125126.GA7813@lenovo>
+In-Reply-To: <20210127120426.GB4387@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 08:51:26PM +0800, Orson Zhai wrote:
-> On Wed, Jan 27, 2021 at 08:50:28AM +0100, Greg Kroah-Hartman wrote:
-> > On Wed, Jan 27, 2021 at 12:19:22PM +0800, Orson Zhai wrote:
-> > > In some circumstances, multiple __ATTR_RO attributes need to be assigned
-> > > with a single show function.
-> > > 
-> > > Add this macro to make life easier with simple code.
-> > > 
-> > > Signed-off-by: Orson Zhai <orsonzhai@gmail.com>
-> > > ---
-> > >  Documentation/filesystems/sysfs.rst | 2 ++
-> > >  include/linux/sysfs.h               | 5 +++++
-> > >  2 files changed, 7 insertions(+)
-> > > 
-> > > diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystems/sysfs.rst
-> > > index 004d490..0e2274a 100644
-> > > --- a/Documentation/filesystems/sysfs.rst
-> > > +++ b/Documentation/filesystems/sysfs.rst
-> > > @@ -141,6 +141,8 @@ __ATTR_RO_MODE(name, mode):
-> > >  	         fore more restrictive RO access currently
-> > >                   only use case is the EFI System Resource Table
-> > >                   (see drivers/firmware/efi/esrt.c)
-> > > +__ATTR_RO_SHOW(name, show):
-> > > +		 assumes default mode 0444 with specified show.
-> > >  __ATTR_RW(name):
-> > >  	         assumes default name_show, name_store and setting
-> > >                   mode to 0644.
-> > > diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
-> > > index 2caa34c..c851592 100644
-> > > --- a/include/linux/sysfs.h
-> > > +++ b/include/linux/sysfs.h
-> > > @@ -117,6 +117,11 @@ struct attribute_group {
-> > >  	.show	= _name##_show,						\
-> > >  }
-> > >  
-> > > +#define __ATTR_RO_SHOW(_name, _show) {					\
-> > > +	.attr	= { .name = __stringify(_name), .mode = 0444 },		\
-> > > +	.show	= _show,						\
-> > > +}
-> > 
-> > Do you have a real user for this?  Using "raw" kobject attributes is
+On Wed, Jan 27, 2021 at 12:04:26PM +0000, Mark Brown wrote:
+> On Wed, Jan 27, 2021 at 09:57:40AM +0100, Greg Kroah-Hartman wrote:
+> > On Tue, Jan 26, 2021 at 06:11:24PM +0000, Mark Brown wrote:
 > 
-> Yes, I have found at least one user in current kernel code.
+> > > > Do you need a tag to pull from?
 > 
-> Please refer to [1].
+> > > It'd be nice but not essential.
 > 
-> The author implemented a similar marcro __ATRR_MRO as mine, plus an
-> __ATRR_MWO with specified restore.
+> > Why do you want/need this?  Having these changes in your tree is good,
+> > but what about other coding style cleanups that I will end up applying
+> > over time before the 5.12-rc1 merge window opens?  Are you wanting to
+> > take the moved driver in your tree, or something else?
+> 
+> I want to apply the regulator driver so I stop being sent this patch
+> series which will help keep my backlog more manageable.
+> 
+> > Traditionally moving drivers out of staging can be done 2 ways:
+> > 	- all happens in the staging tree, I take an ack from the
+> > 	  subsystem maintainer that this is ok to do.
+> > 	- A new driver enters the "real" subsystem tree, and then I
+> > 	  delete the driver in the staging tree.  This doesn't preserve
+> > 	  history as well (not at all), but can be easier for trees that
+> > 	  move quickly (like networking.)
+> 
+> The whole reason the driver is in the staging tree is that Mauro has a
+> requirement to do things in a way that preserves history and so won't
+> send any non-incremental patches.
 
-Ick, no, that should be using DEVICE_ATTR_RO() as it is a struct device
-attribute, not a "raw" kobject attribute.  So that code should be fixed
-up anyway, no need for this macro :)
-
-> 
-> If this patch merged, I'd to replace his marcro with mine.
-> 
-> > rare and should not be used often, so who needs this?
-> 
-> Agree. But for some device drivers it might be useful without side effect.
-
-Drivers should NOT be ever using __ATTR* macros.  That is not what they
-are there for.
-
-> Another example is from Android increment-fs code out there.
-> That driver has 3 sysfs attributes which shared with same show function
-> which only prints "support" to userland.
-
-I can't take patches for out-of-tree code, sorry, you know this :)
+Ok, should we wait until after 5.12-rc1 is out then?
 
 thanks,
 
