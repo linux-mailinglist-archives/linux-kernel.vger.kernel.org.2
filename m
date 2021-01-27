@@ -2,155 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBC4305B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D5D305B1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237653AbhA0MV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:21:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhA0MQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:16:16 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B78C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:15:25 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id o7so1476056pgl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:15:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9gta6x0QNM0KEQiYKbjvUoee3fwpqJfT+h2l/JxVVIc=;
-        b=W7XHOat00nAOlB1D2IMZTvVe4bBPx9EWxubVPPCIhmQyM30LnZTZwHXXEvxX14JwkP
-         DOPwbZjA3seoE+CTfkZxXvHBDwShISVh298GDewbHa/Y47f57B3zb7bnRL4CDP9eBcQZ
-         NxuTkdfYqHksyDZEqzooCHT8I68+BIVvdoKHYlAUB2mDCUvYNH84ZyjHnkpWeOkIDvjc
-         krH0O2/drfQYs67iRqBB33Pk2bbyh5pnseyXcXooK/bUe/aibLOAunKkX1g40rZIDESQ
-         D91R9F/JqierJbnDWBgdfT7w+UtXdXz8uQwODV/uijmljurCAVZj4m+v7QBhGYb0bsFA
-         xbNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9gta6x0QNM0KEQiYKbjvUoee3fwpqJfT+h2l/JxVVIc=;
-        b=FpEaOYgFskwOlnMtdNuS3FuZctQES5RMa1VDresAKx7bYe1Txl9Ds8TUZ6wpzeDDFf
-         FCnQlil1zpwHwEDA1ph8NW16d6SmPGIDuxIFaRwmpWd50eUPwenaCrQe17ZBizNi/EVe
-         +g5WRzlPGDaTZgoWNAXCX6qcHn2z4jJcX8c8aGfhUmEGAoE8S69AjXsr0Vc5oUjFn2tV
-         AfP5/VaB7qrqofRihw1aXP+ZtL+lqcfDWHfYSeYC6i8Jt3YGgQ/7En2dRVvxSDkP4iiI
-         J5c8NfRDX4HTSEhO4cRLYhwN+rNQSADMOV12/V1+N0ub2oEmrkzAlRKZoT8/4oKsRDQm
-         LxDA==
-X-Gm-Message-State: AOAM530e3DYgccsmZIUdwt02JwOaMUEDabnwOTtMqFPfyDne371ZrEX+
-        Whfw7TXdUY5cp92/tTmmHKriI6Bw7seBZyGbzbvmiA==
-X-Google-Smtp-Source: ABdhPJzlp0xIxfYkX/lfLr9s78qS0ay/2zCRG/chpauCrQMMafTYf2sgGg6FT2+dLGTdzuTUoshNBhncCIh2TOA2jL0=
-X-Received: by 2002:a65:64da:: with SMTP id t26mr10814245pgv.145.1611749725065;
- Wed, 27 Jan 2021 04:15:25 -0800 (PST)
+        id S237841AbhA0MT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:19:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47022 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237694AbhA0MRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:17:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 501E8AC4F;
+        Wed, 27 Jan 2021 12:16:42 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 12:16:35 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Michal Rostecki <mrostecki@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: Avoid calling btrfs_get_chunk_map() twice
+Message-ID: <20210127121635.GA29301@wotan.suse.de>
+References: <20210127095131.22600-1-mrostecki@suse.de>
+ <CAL3q7H4Bs7DfK09bpRGFE00yNY7YbwkGvHBcR_2mJ3uSk2FTbg@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
- <20210127100454.GK196782@linux.ibm.com> <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
- <20210127111858.GA273567@linux.ibm.com>
-In-Reply-To: <20210127111858.GA273567@linux.ibm.com>
-From:   =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@semihalf.com>
-Date:   Wed, 27 Jan 2021 13:15:14 +0100
-Message-ID: <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
-Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
- holes in memory layout
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>,
-        Guenter Roeck <groeck@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H4Bs7DfK09bpRGFE00yNY7YbwkGvHBcR_2mJ3uSk2FTbg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unfortunately nothing :( my current kernel command line contains:
-console=3DttyS0,115200n8 debug earlyprintk=3Dserial loglevel=3D7
-
-I was thinking about using earlycon, but it seems to be blocked.
-(I think the lack of earlycon might be related to Chromebook HW
-security design. There is an EC controller which is a part of AP ->
-serial chain as kernel messages are considered sensitive from a
-security standpoint.)
-
-Best regards,
-Lukasz
-
-=C5=9Br., 27 sty 2021 o 12:19 Mike Rapoport <rppt@linux.ibm.com> napisa=C5=
-=82(a):
->
-> On Wed, Jan 27, 2021 at 11:08:17AM +0100, =C5=81ukasz Majczak wrote:
-> > Hi Mike,
+On Wed, Jan 27, 2021 at 11:20:55AM +0000, Filipe Manana wrote:
+> On Wed, Jan 27, 2021 at 9:59 AM Michal Rostecki <mrostecki@suse.de> wrote:
 > >
-> > Actually I have a serial console attached (via servo device), but
-> > there is no output :( and also the reboot/crash is very fast/immediate
-> > after power on.
->
-> If you boot with earlyprintk=3Dserial are there any messages?
->
-> > Best regards
-> > Lukasz
+> > From: Michal Rostecki <mrostecki@suse.com>
 > >
-> > =C5=9Br., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napisa=
-=C5=82(a):
-> > >
-> > > Hi Lukasz,
-> > >
-> > > On Wed, Jan 27, 2021 at 10:22:29AM +0100, =C5=81ukasz Majczak wrote:
-> > > > Crash after mm: fix initialization of struct page for holes in memo=
-ry layout
-> > > >
-> > > > Hi,
-> > > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Carolin=
-e),
-> > > > but I've noticed it has crashed - unfortunately it seems to happen =
-at
-> > > > a very early stage - No output to the console nor to the screen, so=
- I
-> > > > have started a bisect (between 5.11-rc4 - which works just find - a=
-nd
-> > > > 5.11-rc5),
-> > > > bisect results points to:
-> > > >
-> > > > d3921cb8be29 mm: fix initialization of struct page for holes in mem=
-ory layout
-> > > >
-> > > > Reproduction is just to build and load the kernel.
-> > > >
-> > > > If it will help any how I am attaching:
-> > > > - /proc/cpuinfo (from healthy system):
-> > > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1=
-a785b64a97066
-> > > > - my .config file (for a broken system):
-> > > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53e=
-fe8e18b5da33c
-> > > >
-> > > > If there is anything I could add/do/test to help fix this please le=
-t me know.
-> > >
-> > > Chris Wilson also reported boot failures on several Chromebooks:
-> > >
-> > > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@bu=
-ild.alporthouse.com
-> > >
-> > > I presume serial console is not an option, so if you could boot with
-> > > earlyprintk=3Dvga and see if there is anything useful printed on the =
-screen
-> > > it would be really helpful.
-> > >
-> > > > Best regards
-> > > > Lukasz
-> > >
-> > > --
-> > > Sincerely yours,
-> > > Mike.
->
-> --
-> Sincerely yours,
-> Mike.
+> > Before this change, the btrfs_get_io_geometry() function was calling
+> > btrfs_get_chunk_map() to get the extent mapping, necessary for
+> > calculating the I/O geometry. It was using that extent mapping only
+> > internally and freeing the pointer after its execution.
+> >
+> > That resulted in calling btrfs_get_chunk_map() de facto twice by the
+> > __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+> > first and then calling btrfs_get_chunk_map() directly to get the extent
+> > mapping, used by the rest of the function.
+> >
+> > This change fixes that by passing the extent mapping to the
+> > btrfs_get_io_geometry() function as an argument.
+> >
+> > Fixes: 89b798ad1b42 ("btrfs: Use btrfs_get_io_geometry appropriately")
+> 
+> Generally we only use the Fixes tag for bug fixes or serious
+> performance regressions.
+> Have you seen here a serious performance regression?
+> 
+
+No, I didn't see any big difference in terms of performance (at least in
+seq reads). I will remove the tag in v2.
+
+> > Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+> > ---
+> >  fs/btrfs/inode.c   | 37 ++++++++++++++++++++++++++++---------
+> >  fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
+> >  fs/btrfs/volumes.h |  5 +++--
+> >  3 files changed, 47 insertions(+), 34 deletions(-)
+> >
+> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > index 0dbe1aaa0b71..a4ce8501ed4d 100644
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+> >         struct inode *inode = page->mapping->host;
+> >         struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> >         u64 logical = bio->bi_iter.bi_sector << 9;
+> > +       struct extent_map *em;
+> >         u64 length = 0;
+> >         u64 map_length;
+> > -       int ret;
+> > +       int ret = 0;
+> >         struct btrfs_io_geometry geom;
+> >
+> >         if (bio_flags & EXTENT_BIO_COMPRESSED)
+> > @@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+> >
+> >         length = bio->bi_iter.bi_size;
+> >         map_length = length;
+> > -       ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
+> > -                                   &geom);
+> > +       em = btrfs_get_chunk_map(fs_info, logical, map_length);
+> > +       if (IS_ERR(em))
+> > +               return PTR_ERR(em);
+> > +       ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
+> > +                                   map_length, &geom);
+> >         if (ret < 0)
+> > -               return ret;
+> > +               goto out;
+> >
+> > -       if (geom.len < length + size)
+> > -               return 1;
+> > -       return 0;
+> > +       if (geom.len < length + size) {
+> > +               ret = 1;
+> > +               goto out;
+> > +       }
+> > +out:
+> > +       free_extent_map(em);
+> > +       return ret;
+> >  }
+> >
+> >  /*
+> > @@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+> >         u64 submit_len;
+> >         int clone_offset = 0;
+> >         int clone_len;
+> > +       int logical;
+> >         int ret;
+> >         blk_status_t status;
+> >         struct btrfs_io_geometry geom;
+> >         struct btrfs_dio_data *dio_data = iomap->private;
+> > +       struct extent_map *em;
+> >
+> >         dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
+> >         if (!dip) {
+> > @@ -7970,11 +7980,17 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+> >         }
+> >
+> >         start_sector = dio_bio->bi_iter.bi_sector;
+> > +       logical = start_sector << 9;
+> >         submit_len = dio_bio->bi_iter.bi_size;
+> >
+> >         do {
+> > -               ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
+> > -                                           start_sector << 9, submit_len,
+> > +               em = btrfs_get_chunk_map(fs_info, logical, submit_len);
+> > +               if (IS_ERR(em)) {
+> > +                       status = errno_to_blk_status(ret);
+> > +                       goto out_err;
+> 
+> em must be set to NULL before going to "out_err", otherwise we get a
+> crash due to an invalid memory access.
+> 
+> Also, status should be set to "errno_to_blk_status(PTR_ERR(em))". The
+> value of ret at this point is undefined.
+> 
+> Other than that, it looks good.
+> 
+> Thanks.
+> 
+
+Will fix in v2. Thanks!
+
+> > +               }
+> > +               ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
+> > +                                           logical, submit_len,
+> >                                             &geom);
+> >                 if (ret) {
+> >                         status = errno_to_blk_status(ret);
+> > @@ -8030,12 +8046,15 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+> >                 clone_offset += clone_len;
+> >                 start_sector += clone_len >> 9;
+> >                 file_offset += clone_len;
+> > +
+> > +               free_extent_map(em);
+> >         } while (submit_len > 0);
+> >         return BLK_QC_T_NONE;
+> >
+> >  out_err:
+> >         dip->dio_bio->bi_status = status;
+> >         btrfs_dio_private_put(dip);
+> > +       free_extent_map(em);
+> >         return BLK_QC_T_NONE;
+> >  }
+> >
+> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > index a8ec8539cd8d..4c753b17c0a2 100644
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op)
+> >  }
+> >
+> >  /*
+> > - * btrfs_get_io_geometry - calculates the geomery of a particular (address, len)
+> > + * btrfs_get_io_geometry - calculates the geometry of a particular (address, len)
+> >   *                    tuple. This information is used to calculate how big a
+> >   *                    particular bio can get before it straddles a stripe.
+> >   *
+> > - * @fs_info - the filesystem
+> > - * @logical - address that we want to figure out the geometry of
+> > - * @len            - the length of IO we are going to perform, starting at @logical
+> > - * @op      - type of operation - write or read
+> > - * @io_geom - pointer used to return values
+> > + * @fs_info: the filesystem
+> > + * @em:      mapping containing the logical extent
+> > + * @op:      type of operation - write or read
+> > + * @logical: address that we want to figure out the geometry of
+> > + * @len:     the length of IO we are going to perform, starting at @logical
+> > + * @io_geom: pointer used to return values
+> >   *
+> >   * Returns < 0 in case a chunk for the given logical address cannot be found,
+> >   * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
+> >   */
+> > -int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> > -                       u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
+> > +int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
+> > +                         enum btrfs_map_op op, u64 logical, u64 len,
+> > +                         struct btrfs_io_geometry *io_geom)
+> >  {
+> > -       struct extent_map *em;
+> >         struct map_lookup *map;
+> >         u64 offset;
+> >         u64 stripe_offset;
+> > @@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> >         u64 stripe_len;
+> >         u64 raid56_full_stripe_start = (u64)-1;
+> >         int data_stripes;
+> > -       int ret = 0;
+> >
+> >         ASSERT(op != BTRFS_MAP_DISCARD);
+> >
+> > -       em = btrfs_get_chunk_map(fs_info, logical, len);
+> > -       if (IS_ERR(em))
+> > -               return PTR_ERR(em);
+> > -
+> >         map = em->map_lookup;
+> >         /* Offset of this logical address in the chunk */
+> >         offset = logical - em->start;
+> > @@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> >                 btrfs_crit(fs_info,
+> >  "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
+> >                         stripe_offset, offset, em->start, logical, stripe_len);
+> > -               ret = -EINVAL;
+> > -               goto out;
+> > +               return -EINVAL;
+> >         }
+> >
+> >         /* stripe_offset is the offset of this block in its stripe */
+> > @@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> >         io_geom->stripe_offset = stripe_offset;
+> >         io_geom->raid56_stripe_offset = raid56_full_stripe_start;
+> >
+> > -out:
+> > -       /* once for us */
+> > -       free_extent_map(em);
+> > -       return ret;
+> > +       return 0;
+> >  }
+> >
+> >  static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+> > @@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+> >         ASSERT(bbio_ret);
+> >         ASSERT(op != BTRFS_MAP_DISCARD);
+> >
+> > -       ret = btrfs_get_io_geometry(fs_info, op, logical, *length, &geom);
+> > +       em = btrfs_get_chunk_map(fs_info, logical, *length);
+> > +       ASSERT(!IS_ERR(em));
+> > +
+> > +       ret = btrfs_get_io_geometry(fs_info, em, op, logical, *length, &geom);
+> >         if (ret < 0)
+> >                 return ret;
+> >
+> > -       em = btrfs_get_chunk_map(fs_info, logical, *length);
+> > -       ASSERT(!IS_ERR(em));
+> >         map = em->map_lookup;
+> >
+> >         *length = geom.len;
+> > diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> > index c43663d9c22e..04e2b26823c2 100644
+> > --- a/fs/btrfs/volumes.h
+> > +++ b/fs/btrfs/volumes.h
+> > @@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> >  int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> >                      u64 logical, u64 *length,
+> >                      struct btrfs_bio **bbio_ret);
+> > -int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> > -               u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
+> > +int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *map,
+> > +                         enum btrfs_map_op op, u64 logical, u64 len,
+> > +                         struct btrfs_io_geometry *io_geom);
+> >  int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
+> >  int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
+> >  int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
+> > --
+> > 2.30.0
+> >
+> 
+> 
+> -- 
+> Filipe David Manana,
+> 
+> “Whether you think you can, or you think you can't — you're right.”
