@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8EF30572A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A781330572C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235399AbhA0JmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:42:05 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:60825 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229722AbhA0JkE (ORCPT
+        id S235411AbhA0JmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:42:17 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:35879 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233593AbhA0JkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:40:04 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 5FD6B499;
-        Wed, 27 Jan 2021 04:38:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 27 Jan 2021 04:38:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=eG+zq7v+gLI7XOa4rrspPeY9nhn
-        cigoujY489dDssjQ=; b=QqCDrTDI9XLmxXe9sWa05HVO3QbjZDo1UnbL/VBh8XQ
-        lt5PyxGvj6YzmsqdomkNV/REdtrrp3xdug2d5LD9ZlYqA74OgagZo2MY3HbvdyJQ
-        Bgn2SkI6LCe2oXnMmm9Z9pVzFsEMwH2m9UJcu96XX/Y9V4bjO4A+nSKROPUUolLU
-        7WMoomoch1WhlBJYi8g2qWw4pBYe+p+R5WFmjzpvQTPz+7lGSTNsYsHobXbD4WRV
-        awtWfWacOiRDQ3OtulCko9WB7UGNz00lWWj0Uz2tlmVSdivzJ0e4dWDWyaz155Ra
-        FxS2AQ219xzvAetiPQ1s/5VPcULhgkYhl++DYsk5Clg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=eG+zq7
-        v+gLI7XOa4rrspPeY9nhncigoujY489dDssjQ=; b=jddtmPNEqtfN1H4QP5JZHl
-        F1q2gU3BiBd5iMmT60WTxjGH8+fEJHHRInGmdzAIS4En2wIut2CQGogaxF7McfSr
-        /59bivHaZWTcUOUK8ozr4EWwkpaRWyGh+Ai9/LL4bcvE/IFrKhdO/PqnyeVStQfY
-        x8+2/ffCnw0ajpoCb+4k9AHMSJ3AjIxZhksXnqdwA3RqPVb/yRljrY6iwiLxrU1e
-        aH/1FOzWw39z6Lrn2RjDrPl7e5AK/rCK2gO+5/YrtRZoEZ+zId/G3UNJCFKVooSt
-        fsD+8HeJ8QA2kKBA1p2muwRLdCbAcGsxSnsX8K6JHizpLroULvod0Z5+tTizFzmg
-        ==
-X-ME-Sender: <xms:sDQRYFvnpH106XbRKlnhrcyLLeZSEpnHUlINSRMdDVwmCM5QT0JVzQ>
-    <xme:sDQRYOdf7CD10cLW1WnapdnB-Ibok-9OBLTD3V_i28xWlqrIkAeottzm7whMeHP7Z
-    itEiQYQRbIayA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekgddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:sDQRYIy3IhW6iNpP8vlCRBrk8pz2o4GFLTVI6MQ0gX3sfS_JeQhx3w>
-    <xmx:sDQRYMNaoxLY27nrttK9oXMMoA8EZZpwQczm_1P5sL6nTPHNf4sopw>
-    <xmx:sDQRYF-bILWdx9TswFDTDwkuuNAJ-Vd3fF7RiPm8Pxf2O95qiyj7mw>
-    <xmx:sTQRYAaXFtQPjyL9lscV4aQgY9XozB3Lg9EvsfFYX1LmwcVGYiADTQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 29B4824005E;
-        Wed, 27 Jan 2021 04:38:56 -0500 (EST)
-Date:   Wed, 27 Jan 2021 10:38:53 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.11-rc5
-Message-ID: <YBE0rYEf6Uc6HbK8@kroah.com>
-References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
- <161160687463.28991.354987542182281928@build.alporthouse.com>
- <CAHk-=wh23BXwBwBgPmt9h2EJztnzKKf=qr5r=B0Hr6BGgZ-QDA@mail.gmail.com>
- <20210125213348.GB196782@linux.ibm.com>
- <161161117911.29150.13853544418926100149@build.alporthouse.com>
- <20210126162440.GC196782@linux.ibm.com>
- <CAHk-=wgKbFUUhkRKvh4SHQcsUyG_kraLOTBLHUhc4GQ58ANBEw@mail.gmail.com>
+        Wed, 27 Jan 2021 04:40:11 -0500
+X-UUID: 95a941a449a945569533e47030366fa5-20210127
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=OBxOSBPDbNRIc9EIOyaVw0/Acj/J50gJQln+TyAJ4w4=;
+        b=fKTey2UsD9ZWtXMjndTDzR8flYyWadWqD3c0di7De3krd96p/88RpeIDGsiigtf1d7pZrWTZGrqqZc4zwcJMXo36VHJTaZYbMLwlt+xy3lmI28KLMntvuUG8N4iZUXh/Pmi2FoqvhFacYiYdXTKM00S3hWiLDYCUwMiJeOk2PbU=;
+X-UUID: 95a941a449a945569533e47030366fa5-20210127
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 969588445; Wed, 27 Jan 2021 17:39:19 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Jan
+ 2021 17:39:17 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 27 Jan 2021 17:39:16 +0800
+Message-ID: <1611740356.5302.14.camel@mhfsdcap03>
+Subject: Re: [PATCH v6 07/33] iommu: Avoid reallocate default domain for a
+ group
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Will Deacon <will@kernel.org>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
+Date:   Wed, 27 Jan 2021 17:39:16 +0800
+In-Reply-To: <20210126222305.GB30460@willie-the-truck>
+References: <20210111111914.22211-1-yong.wu@mediatek.com>
+         <20210111111914.22211-8-yong.wu@mediatek.com>
+         <20210126222305.GB30460@willie-the-truck>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgKbFUUhkRKvh4SHQcsUyG_kraLOTBLHUhc4GQ58ANBEw@mail.gmail.com>
+X-TM-SNTS-SMTP: F36F529AFC96016349EB7092D40E98B771F9B02D82265433FE286BC98F51FFAC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:45:10AM -0800, Linus Torvalds wrote:
-> On Tue, Jan 26, 2021 at 8:25 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> >
-> > On Mon, Jan 25, 2021 at 09:46:19PM +0000, Chris Wilson wrote:
-> > >
-> > > CI does confirm that the revert of d3921cb8be29 brings the machines back
-> > > to life.
-> >
-> > I still cannot see what could possibly go wrong, so let's revert
-> > d3921cb8be29 for now and I'll continue to work with Chris to debug this.
-> 
-> Ok, reverted in my tree.
-> 
-> And added stable to the cc, so that they know not to pick up that
-> commit d3921cb8be29, despite it being marked for stable.
+T24gVHVlLCAyMDIxLTAxLTI2IGF0IDIyOjIzICswMDAwLCBXaWxsIERlYWNvbiB3cm90ZToNCj4g
+T24gTW9uLCBKYW4gMTEsIDIwMjEgYXQgMDc6MTg6NDhQTSArMDgwMCwgWW9uZyBXdSB3cm90ZToN
+Cj4gPiBJZiBncm91cC0+ZGVmYXVsdF9kb21haW4gZXhpc3RzLCBhdm9pZCByZWFsbG9jYXRlIGl0
+Lg0KPiA+IA0KPiA+IEluIHNvbWUgaW9tbXUgZHJpdmVycywgdGhlcmUgbWF5IGJlIHNldmVyYWwg
+ZGV2aWNlcyBzaGFyZSBhIGdyb3VwLiBBdm9pZA0KPiA+IHJlYWxsb2MgdGhlIGRlZmF1bHQgZG9t
+YWluIGZvciB0aGlzIGNhc2UuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9u
+Zy53dUBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvaW9tbXUvaW9tbXUuYyB8
+IDMgKystDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24o
+LSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9pb21tdS5jIGIvZHJpdmVy
+cy9pb21tdS9pb21tdS5jDQo+ID4gaW5kZXggM2QwOTlhMzFkZGNhLi5mNGI4N2U2YWJlODAgMTAw
+NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9pb21tdS9pb21tdS5jDQo+ID4gKysrIGIvZHJpdmVycy9p
+b21tdS9pb21tdS5jDQo+ID4gQEAgLTI2Niw3ICsyNjYsOCBAQCBpbnQgaW9tbXVfcHJvYmVfZGV2
+aWNlKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPiAgCSAqIHN1cHBvcnQgZGVmYXVsdCBkb21haW5z
+LCBzbyB0aGUgcmV0dXJuIHZhbHVlIGlzIG5vdCB5ZXQNCj4gPiAgCSAqIGNoZWNrZWQuDQo+ID4g
+IAkgKi8NCj4gPiAtCWlvbW11X2FsbG9jX2RlZmF1bHRfZG9tYWluKGdyb3VwLCBkZXYpOw0KPiA+
+ICsJaWYgKCFncm91cC0+ZGVmYXVsdF9kb21haW4pDQo+ID4gKwkJaW9tbXVfYWxsb2NfZGVmYXVs
+dF9kb21haW4oZ3JvdXAsIGRldik7DQo+IA0KPiBJIGRvbid0IHJlYWxseSBnZXQgd2hhdCB0aGlz
+IGFjaGlldmVzLCBzaW5jZSBpb21tdV9hbGxvY19kZWZhdWx0X2RvbWFpbigpDQo+IGxvb2tzIGxp
+a2UgdGhpczoNCj4gDQo+IHN0YXRpYyBpbnQgaW9tbXVfYWxsb2NfZGVmYXVsdF9kb21haW4oc3Ry
+dWN0IGlvbW11X2dyb3VwICpncm91cCwNCj4gCQkJCSAgICAgIHN0cnVjdCBkZXZpY2UgKmRldikN
+Cj4gew0KPiAJdW5zaWduZWQgaW50IHR5cGU7DQo+IA0KPiAJaWYgKGdyb3VwLT5kZWZhdWx0X2Rv
+bWFpbikNCj4gCQlyZXR1cm4gMDsNCj4gDQo+IAkuLi4NCj4gDQo+IGluIHdoaWNoIGNhc2UsIGl0
+IHNob3VsZCBiZSBmaW5lPw0KDQpvaC4gc29ycnksIEkgb3Zlcmxvb2tlZCB0aGlzLiB0aGUgY3Vy
+cmVudCBjb2RlIGlzIGVub3VnaC4NCkkgd2lsbCByZW1vdmUgdGhpcyBwYXRjaC4gYW5kIHNlbmQg
+dGhlIG5leHQgdmVyc2lvbiBpbiB0aGlzIHdlZWsuDQpUaGFua3MgdmVyeSBtdWNoLg0KDQo+IA0K
+PiBXaWxsDQoNCg==
 
-I've dropped it from the 5.10.y queue now, thanks for letting me know.
-
-greg k-h
