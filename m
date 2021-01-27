@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB58305B70
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DBA305BDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236791AbhA0McF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:32:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        id S237964AbhA0Mpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236779AbhA0M1h (ORCPT
+        with ESMTP id S237810AbhA0M14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:27:37 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ADDC06174A;
-        Wed, 27 Jan 2021 04:26:57 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id o18so1178541qtp.10;
-        Wed, 27 Jan 2021 04:26:57 -0800 (PST)
+        Wed, 27 Jan 2021 07:27:56 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A1DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:27:16 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id q131so1080823pfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:27:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=wNeqy1eeb9t2veXPrSrcgYkXO41oWKgjj1xWqs7fT1c=;
-        b=bT5qFKL/FMCfuSZAYwivgiYjFfSVtz9v6C2G9I17avfiVA1USlROhQ9ow4v/IPjjQr
-         fdUOHgNWc58lCXO3F+nBrQYadnztfHbKVGoPe2PdWfipenKUoyqo+f5TIE6/MTHK3SlI
-         nkPcmuPtJi/adw9QVwZeAZkrmkEjS8XsYPjDvjlPLI8WFuu34fewXxupIq8TmYruU4Pf
-         MuuURUxCC3tjTqTyWCuTeiYC6+iTqV627BOUcN7jbaakJwb0taPm+1uisk44hlkusveF
-         Mt4KtKit9Vs1oFhrJIiCakgGcu09M9e73r6CuIic3FSE739GxhVegKyFzZP1JOYCnjP8
-         UgTw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X8Y03bu49J/8z/b5VQ/tq5hDCio2gSq+A4AEUVaOxBA=;
+        b=ItSCf3HQRNHqDt++Opr117nlJknLUPYbHU0N29vC0QSnHpK2+WD4WhwcYmQamTvSx8
+         fM5dSOHGwjuiqRDu1IOwrTM/cZDh35FSaHLckf5jXtqyIxVyyX6aJourxzhLuQhKgOgq
+         AmWEVHIiguXyTvaGJMH3DKvsYiHnVJCK4Qk67FU1bQb/P5BgxVTWbN1ZaTC12uOTKh1Z
+         Do8BAxRCsCjvZ8TuBmsEMMZh76bcRxb5iWfX/dQo7Sth5SWiYwR6IhRc3yZqdFxnTYw2
+         oUDH1JCFATJv8iy4LBeMRzZP1wCKIW0ymfkxpgJ0LMWk/j9XLvEwEsfx5ha2kTJvnRQN
+         Agrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wNeqy1eeb9t2veXPrSrcgYkXO41oWKgjj1xWqs7fT1c=;
-        b=JcYSrbdNMXDgvjcRlFKhKBhbfzngLzBh2T7f1rH9zvCDVzq1i1sYJWQ93FZpjAYcFq
-         L30vgAW5qSLh0iYC6nEPw7sd5ZQnPsUuAXM1FNF9nx/YP+oUXuqO7jIRsyJb1Ampnls/
-         P5eWDi30WVE7J20ob3NPNqa1mP6a1LnnHxju9QCnHQBq+KcKQzjwre76CfkrKmTOCJYF
-         +MiDk7cRRm/OpDiG2brVz5+glMeMWRGMluEElqX/4rL4NnxwA3Gm489CuICJgu74+UZh
-         eikhiPMVV+K0O6QoyZqhI/15YdYR7FGckBRaJbLAhVfsjSJoe/H2vDjqF4VitKOhSIDY
-         bVSw==
-X-Gm-Message-State: AOAM5317EebQ4HZRVyvExBPnqvno7wyFBdl6FCYRafL/6z24dNDwk4Pb
-        uZ7kV+7aW3zKg5slk8/lcM7LPvsxOX0xNQ==
-X-Google-Smtp-Source: ABdhPJwAPfMgibzBdxGcMRRj2Jsc+Ks+647ibyMoMELCOt9nutHYAQJkyIoQbkjN9/kbQd1527885Q==
-X-Received: by 2002:ac8:5942:: with SMTP id 2mr9410165qtz.117.1611750416415;
-        Wed, 27 Jan 2021 04:26:56 -0800 (PST)
-Received: from ?IPv6:2804:14d:72b1:8920:b057:7dfc:eb51:9d42? ([2804:14d:72b1:8920:b057:7dfc:eb51:9d42])
-        by smtp.gmail.com with ESMTPSA id b72sm1038900qkc.60.2021.01.27.04.26.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 04:26:55 -0800 (PST)
-Subject: Re: [PATCH 3/3] media: vidtv: add initial debugfs interface
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.o,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X8Y03bu49J/8z/b5VQ/tq5hDCio2gSq+A4AEUVaOxBA=;
+        b=eVvBF24jaZ2ibsVNXYbFBm68FW8mWI7oe087FNsg6TC/bbDYxDneLUyzPMQjbqMKet
+         1SFrwMM0MT3/peYFxhlVlPjRcl2BOjZL8MT6h60YNCELSYcyiNkQ8rrfLiqJLdCOo4rF
+         Swhww6KYv09YuLOJVr4n1hFvJZ7F7gpX///97FxW/Uvz23vAf9efZjFDlW2MPD1Jows1
+         rfGXIDIZ7+8Aw1l5YHeboIlwDLhEesST+fDJ7KQkdBhPR7o/BRRTTC9Kxhdo7U3acX2S
+         jflpJCXL9T1m/SHVjp50+R4xj64gD/dHdrQvXsF0YsMS5AdTn3jaQ5Mmzn7NKItERoMt
+         cxkw==
+X-Gm-Message-State: AOAM530Ofk4/YmdNYIr0oKw36fv+178tYt0Mx0VQB34WfFJEA/SKd2u8
+        wTFuiUcP9HzMhZ0hq5+91O4=
+X-Google-Smtp-Source: ABdhPJx7b2WJqZNWKnmQrPGC0g+Oa+Dcml8KS5cDMPqzBe77bhaijCbu0AHRvk6SSijMJuKJCDYsSw==
+X-Received: by 2002:a62:2984:0:b029:1b4:72bd:f2bf with SMTP id p126-20020a6229840000b02901b472bdf2bfmr10316931pfp.59.1611750436146;
+        Wed, 27 Jan 2021 04:27:16 -0800 (PST)
+Received: from localhost (g54.222-224-210.ppp.wakwak.ne.jp. [222.224.210.54])
+        by smtp.gmail.com with ESMTPSA id s21sm2146513pjz.13.2021.01.27.04.27.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 04:27:15 -0800 (PST)
+Date:   Wed, 27 Jan 2021 21:27:12 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     David Gow <davidgow@google.com>
+Cc:     Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
         linux-kernel@vger.kernel.org
-References: <20201224150402.1945788-3-dwlsalmeida@gmail.com>
- <20210127120623.7f018471@coco.lan>
-From:   Daniel Almeida <dwlsalmeida@gmail.com>
-Message-ID: <ded2b580-be92-e309-28ca-fc6635a3af4f@gmail.com>
-Date:   Wed, 27 Jan 2021 09:26:52 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+Subject: Re: [PATCH] soc: litex: Properly depend on HAS_IOMEM
+Message-ID: <20210127122712.GU2002709@lianli.shorne-pla.net>
+References: <20210127033603.1519127-1-davidgow@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127120623.7f018471@coco.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127033603.1519127-1-davidgow@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro! Thanks for the review.
+On Tue, Jan 26, 2021 at 07:36:04PM -0800, David Gow wrote:
+> The LiteX SOC controller driver makes use of IOMEM functions like
+> devm_platform_ioremap_resource(), which are only available if
+> CONFIG_HAS_IOMEM is defined.
+> 
+> This causes the driver not to be enable under make ARCH=um allyesconfig,
+> even though it won't build.
 
+Is this wording correct?  I suspect it causes to driver TO BE enabled.
 
-Just one more thing though: what did you think about the way I chose to 
-inject the errors? (e.g. drop packet, shift bytes, create 
-discontinuity...etc etc)
+> 
+> By adding a dependency on HAS_IOMEM, the driver will not be enabled on
+> architectures which don't support it.
+> 
+> Fixes: 22447a99c97e ("drivers/soc/litex: add LiteX SoC Controller driver")
+> Signed-off-by: David Gow <davidgow@google.com>a
 
-I was just trying out a few ideas in this patch so if you also have any 
-input on this please let me know.
+This looks ok to me.  I can queue it for 5.11 fixes, if you can help with the
+wording above.
 
-As of now writing to any of these files will cause a myriad of errors on 
-dvbinspector.
+-Stafford
 
-
->> +
->> +#. dynamically inject errors at runtime by interacting with the files at /sys/kernel/debug/vidtv/*
->> +
->> +#. read some dvbv5 statistics from userspace more easily
->> +
->> +.. note::
->> +	This is entirely optional and the driver will work without this option selected.
-> Please keep lines <= 80 columns, except when there's a strong reason to
-> use longer lines. The same applies to other parts of this patch.
->
-I was under the assumption that this had been bumped to 100 recently.
-
-
--- thanks
-
--- Daniel
-
-
+> ---
+>  drivers/soc/litex/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
+> index 7c6b009b6f6c..7a7c38282e11 100644
+> --- a/drivers/soc/litex/Kconfig
+> +++ b/drivers/soc/litex/Kconfig
+> @@ -8,6 +8,7 @@ config LITEX
+>  config LITEX_SOC_CONTROLLER
+>  	tristate "Enable LiteX SoC Controller driver"
+>  	depends on OF || COMPILE_TEST
+> +	depends on HAS_IOMEM
+>  	select LITEX
+>  	help
+>  	  This option enables the SoC Controller Driver which verifies
+> -- 
+> 2.30.0.280.ga3ce27912f-goog
+> 
