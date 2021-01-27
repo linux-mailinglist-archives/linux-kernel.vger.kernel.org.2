@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5E530521A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C936E30521B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhA0FZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
+        id S234849AbhA0FZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:25:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhA0FKZ (ORCPT
+        with ESMTP id S232488AbhA0FNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:10:25 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D2AC06174A;
-        Tue, 26 Jan 2021 21:09:45 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id e9so391299plh.3;
-        Tue, 26 Jan 2021 21:09:45 -0800 (PST)
+        Wed, 27 Jan 2021 00:13:52 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F016C061756;
+        Tue, 26 Jan 2021 21:13:12 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id n7so910294oic.11;
+        Tue, 26 Jan 2021 21:13:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RmgqS7WyjiiRJi9z89KhXde85FYcLyN/Zij0A6xH6Vg=;
-        b=RnKa9K+3TRouGov1X7r8uImWnhCFlAivPGcaKhDgCwaW+BlBYVStKd9X2c+ERdkCqs
-         DiNwcROLJFNuIruXq4aredzwhJEi/BK9aj9OAhe6veI7SNgaZIZNEQ1y7X4x8cPyHy7T
-         gz7nlEbdjXWfKHoRY7QNvcRyBf3mVH98dVF0VZpmlVl02W75rF5JOgy7upQkDB7+R4qd
-         zUsrceiyKSUv/U0vWD/9JABS9rUe31D/KC/uuxiclIrBkDyv+3Hd4VK5lOzi7cllAWul
-         zC7aR11dEAU8YkrSeP7ml4XWuETVDBjyx9KQuZ8m83GGCr7BlqSEY3rOdvSA6f1tilq7
-         Tf/Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lkAOCkZLhiRhESPWaixN2MvbV1dLQbX6PialWqIYmA=;
+        b=ZPMOZu06eWQzjXjxWxIspBOLObioWCxRf2UHT5evPGVmB6tspZpqK52XRobaa/T3z3
+         sHpiMqKGJbGwc9mPZvX249P/D6x+ntP0NbRniwppBk4ox0UVcQ5BYBDENM7MuFlbxk1k
+         Prwfehj34Kq85DRkXe8JeYDWe9W5iJGoYm1ji5QMnjbYmhcputW9a3DrIxsPTb7htLVr
+         9hcZ005LIqP4WgP5ZkhgQ5hsZH0e2y+v0pDWvb4pK4N/rJzkWd84F6tOLDluVognENTV
+         vaS0eHTnjMYNoivyR7KeDFC41F35A0NNDPtTEue2pVD21qiDnuyN2qqpPH7MZyQiesIJ
+         umTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RmgqS7WyjiiRJi9z89KhXde85FYcLyN/Zij0A6xH6Vg=;
-        b=oTvBDzOzRbQoNglVh+dhoB+9+Nmsut+3ArGgvDD8j62d7G/aYxZ3RbwxoPvBL9UEuT
-         Ecs3Xri1GHhANUQ4KyndczwP3RK3U3HmDsX0zQDOyT4CtCDsSdoJPCKILxNXzstT/qdl
-         v4U4J647tfpBEETXYBI2bX4Rl5HxOxDBNbg/TeXMtuqZHUaE+i8ml9ndbS7Sw6Sy4qVn
-         Sv5Sep3qAVcpeH0sLK5pqkCUCgsdIt4uty4va5lvrrs7EpUlP355JS1E3Uo3iiiaG+Qy
-         8P771bUoGX3ETwEe/Q263X5tGBiirS9i6UZu+/aXdqs2gixjvYuMpcmoQyoJ12olTUVz
-         TwrQ==
-X-Gm-Message-State: AOAM531BuWanll6E80sv+4MhO1uI2ZJJY5DQdeqbxxjOfVR6/XS+/KHJ
-        A6emeGANbIdV5dm2ko+3hio=
-X-Google-Smtp-Source: ABdhPJz04w59ZhpuFPQyD2C3hPv7JH0+LDqS9Kp6T3W3gIrrQ023rry8zfPBH2RwQVWwj2TsOAfQBw==
-X-Received: by 2002:a17:90b:4c8e:: with SMTP id my14mr3637771pjb.30.1611724185071;
-        Tue, 26 Jan 2021 21:09:45 -0800 (PST)
-Received: from ubuntu ([1.53.255.147])
-        by smtp.gmail.com with ESMTPSA id t129sm746515pfc.16.2021.01.26.21.09.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Jan 2021 21:09:44 -0800 (PST)
-Date:   Wed, 27 Jan 2021 12:09:37 +0700
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
- bpf_map_area_alloc
-Message-ID: <20210127050937.GA5418@ubuntu>
-References: <20210126082606.3183-1-minhquangbui99@gmail.com>
- <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
- <20210127042341.GA4948@ubuntu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lkAOCkZLhiRhESPWaixN2MvbV1dLQbX6PialWqIYmA=;
+        b=puLkbYugTq4rHgLR+oHu7yAHrv6Rt8G3dUJiF4TevvR/bluNuemZBxjKIa7aLs7yZZ
+         W3TVB0X8XXcz10jrdbg/JJCKD2FqYfch4CmUBfyIyZG2cwUpAIVrRWnevEGWFHiFaFls
+         ARb9nD9fuZHb7wpt58T39edwnDd9DFWbTBc3pydHaXju2qd4USKuo+PjTyjDhIdG7C/o
+         aF9P4SyERPU6zyRN92IAm1D9NzJMqKb7Zaoj/dRY3njnQwqYg1oZFw1nFpDVx3IH2H5w
+         Hus91QWLpKrcSe2HNu82axsWb5ah552u6W4vZElow5dJ3ynbd59w+cr0EdfS6+SOATSt
+         CXiA==
+X-Gm-Message-State: AOAM533v8Gw23X5vcPdIkUiaYubxSglRnP90v9gdm8NRLxcgdXirbKQI
+        vxxr3iPjbF9bRJkm0VYqozRKVhKXUI9mCkAwVNE5GYigw5M=
+X-Google-Smtp-Source: ABdhPJzETN39ZAK23znCBTKdZnDVKcbA59PYENpiPJRUyk0cr4r1/OgZCgRO1uNKY4S5RwK6gZhRfo2S6MwJWiP8Nu8=
+X-Received: by 2002:aca:d5c5:: with SMTP id m188mr2133263oig.114.1611724392062;
+ Tue, 26 Jan 2021 21:13:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127042341.GA4948@ubuntu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CAE1WUT55QViS=XE9QUTDp1KQ1_5fwuddLY3+2XSrMdoOuCOyYg@mail.gmail.com>
+ <5d005259-feec-686d-dc32-e1b10cf74459@infradead.org> <df3e21ea-1626-ba3a-a009-6b3c5e33a260@infradead.org>
+In-Reply-To: <df3e21ea-1626-ba3a-a009-6b3c5e33a260@infradead.org>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Tue, 26 Jan 2021 21:13:01 -0800
+Message-ID: <CAE1WUT4qQ2=Qkz1xsTYCvxdr5NJp8wMKhV_AiXKdq_kwWw1mfg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fs/efs/inode.c: follow style guide
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 11:23:41AM +0700, Bui Quang Minh wrote:
-> > * Seems like there are quite a few similar calls scattered around
-> > (cpumap, etc.). Did you audit these as well?
-> 
-> I spotted another bug after re-auditting. In hashtab, there ares 2 places using
-> the same calls
-> 
-> 	static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
-> 	{
-> 		/* ... snip ... */
-> 		if (htab->n_buckets == 0 ||
-> 		    htab->n_buckets > U32_MAX / sizeof(struct bucket))
-> 			goto free_htab;
-> 
-> 		htab->buckets = bpf_map_area_alloc(htab->n_buckets *
-> 						   sizeof(struct bucket),
-> 						   htab->map.numa_node);
-> 	}
-> 
-> This is safe because of the above check.
-> 
-> 	static int prealloc_init(struct bpf_htab *htab)
-> 	{
-> 		u32 num_entries = htab->map.max_entries;
-> 		htab->elems = bpf_map_area_alloc(htab->elem_size * num_entries,
-> 						 htab->map.numa_node);
-> 	}
-> 
-> This is not safe since there is no limit check in elem_size.
+On Tue, Jan 26, 2021 at 7:59 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 1/26/21 7:46 PM, Randy Dunlap wrote:
+> > Hi Amy,
+> >
+> > What mail client did you use?
+> > It is breaking (splitting) long lines into shorter lines and that
+> > makes it not possible to apply the patch cleanly.
 
-So sorry but I rechecked and saw this bug in hashtab has been fixed with commit
-e1868b9e36d0ca
+Was worried about that, thought I had all my settings straightened out.
 
-Thank you,
-Quang Minh.
+> >
+> > You can see this problem below or on the web in an email archive.
+> >
+> > Possibly Documentation/process/email-clients.rst can help you.
+
+Yeah, read that. Thought I had everything fixed up.
+
+>
+> Also tabs in the source file have been converted to spaces.
+
+Was this inconsistent throughout the patch? I can't really seem to
+tell. If it's consistent, bet it's probably my mail client - if it's
+inconsistent it could be my editor, I had to switch out temporarily
+for a different editor today.
+
+>
+> It would be good if you could email a patch to yourself and then
+> see if you can apply cleanly it to your source tree (after removing
+> any conflicting patches, of course -- or use a different source
+> tree).
+
+Yeah, I'll make sure to double check with that in the future.
+
+>
+>
+> --
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> netiquette: https://people.kernel.org/tglx/notes-about-netiquette
+
+Should I send in a v2 of this patchset, or just attach the patch here?
+If I should just attach it here, then I'll do the same for patch 2/2.
