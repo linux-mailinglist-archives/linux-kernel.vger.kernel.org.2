@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6EF3066BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EC53066C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235285AbhA0VuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:50:17 -0500
-Received: from mga17.intel.com ([192.55.52.151]:44159 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhA0VsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:48:19 -0500
-IronPort-SDR: lcRO+nBbwlxD5OKQ9floYnPqvizXa/TpKNsXPOC2RGM3wZ0MgRHL4W5twcWIKDXDS+qBKmCR6V
- trTxUngA0I8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159912616"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="159912616"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:47:30 -0800
-IronPort-SDR: x8SX2Z/eZDC0uopz6q0GvPObDP9bsfjhVBCSv7w/mie7EoujaaoDFv19suwWd/v2MLVVLnlSIt
- K8UvsSEBqhkg==
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="573409951"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.212.44.59])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:47:28 -0800
-Date:   Wed, 27 Jan 2021 13:47:26 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 net-next 3/4] net: introduce common
- dev_page_is_reserved()
-Message-ID: <20210127134726.00003605@intel.com>
-In-Reply-To: <20210127201031.98544-4-alobakin@pm.me>
-References: <20210127201031.98544-1-alobakin@pm.me>
-        <20210127201031.98544-4-alobakin@pm.me>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S234438AbhA0Vux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:50:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231709AbhA0Vtr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:49:47 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D12C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:49:07 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id lw17so3658593pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZd0cLL8ZkUlig0+5sOea8FRbUknLAg/BHGcl5UT8Zo=;
+        b=V0jvldsgkAQ6p4niyE1KX+Xm7IHhqL4jpu0MX/D+zKeLACVujX9bdSRlz6ohuMYLVr
+         rRieejh+eLgW4pOSVM7ixznGU6FFaGevQwdeoeAKtNWgPeTDeAsQsN6RRmmHlIcZy4zz
+         r8Jy6tvObtXG//po8RxpMYEbSkZwaltYjLGPxkhU7YCT/0/aElCy97zDrIImXoU9iVWh
+         U2bcVBCuz4W7tdmEO3DnsowlTo6qr9GP5PeeUx1OuKKsQjpmi3Z3VxbQuQNTtXHRQ8rg
+         pbfAp8zfD4nxfhHHTWDIoOwOCu8tMNxQoEtpTRnvB9cjyxY9+ZsrjW9G5IzT6vY7hmbE
+         XsIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZd0cLL8ZkUlig0+5sOea8FRbUknLAg/BHGcl5UT8Zo=;
+        b=fSrxF5qm/MpbIz7P0aFcy7+m7D7MVTjQ6KVDvI2Z1XTWE49dRyG2VLKXrYGvz2Galu
+         njFjr2PwwGy//ZRDKnONaOAbzP8dvO+enD+qZxT/8H0y3bx352I8brTUvl963MYgWR/R
+         MroKUHRggohh0fpyu2mUbk57woscRgmwnGL9GUcpJQcMWsfO4CD2ZZDOFkBeGZ6pWKVW
+         OCFgygejziX0WkxMfMn3ct0N0BDPxMpknskuFvpGEU4+jkTapNjjMUXZKGiod4ibuVVd
+         mt6TGBqiiHxY88S2i7ku70LS1lJZsQJ8510j6fqEvK0VryUZ8L06v+DWlUDmJrnKinra
+         B6CA==
+X-Gm-Message-State: AOAM5319hLj6DE3KMRiEardQQ2Ts4yTIicfrwcTSJRI7YKFu6cUlNm+x
+        OW6iBJlBCE+SjNkw374AGXmcGhzzYHFk/z50w2gi6w==
+X-Google-Smtp-Source: ABdhPJzrtLOY3/bRGtWXoxV/r9UfogmltpxURK2K3Xajg+ROBnmuxofCLWYR15ZE3gomKtDCpXVFBiqenHLbikV6eD4=
+X-Received: by 2002:a17:902:ff06:b029:de:362c:bd0b with SMTP id
+ f6-20020a170902ff06b02900de362cbd0bmr12924105plj.13.1611784146896; Wed, 27
+ Jan 2021 13:49:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210125112831.2156212-1-arnd@kernel.org> <CAAeHK+yOTiUWqo1fUNm56ez6dAXfu_rEpxLvB1jDCupZNgYQWw@mail.gmail.com>
+In-Reply-To: <CAAeHK+yOTiUWqo1fUNm56ez6dAXfu_rEpxLvB1jDCupZNgYQWw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 27 Jan 2021 22:48:55 +0100
+Message-ID: <CAAeHK+w4vt6ZDH+Nxy0z4-FzgViDDCDY+jhAXXsUgQKh0bPi7w@mail.gmail.com>
+Subject: Re: [PATCH] kasan: export kasan_poison
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander Lobakin wrote:
+On Wed, Jan 27, 2021 at 10:25 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Mon, Jan 25, 2021 at 12:28 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The unit test module fails to build after adding a reference
+> > to kasan_poison:
+> >
+> > ERROR: modpost: "kasan_poison" [lib/test_kasan.ko] undefined!
+> >
+> > Export this symbol to make it available to loadable modules.
+>
+> Could you share the config you used to trigger this?
 
-> A bunch of drivers test the page before reusing/recycling for two
-> common conditions:
->  - if a page was allocated under memory pressure (pfmemalloc page);
->  - if a page was allocated at a distant memory node (to exclude
->    slowdowns).
-> 
-> Introduce and use a new common function for doing this and eliminate
-> all functions-duplicates from drivers.
-> 
-> Suggested-by: David Rientjes <rientjes@google.com>
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c   | 10 ++--------
->  drivers/net/ethernet/intel/fm10k/fm10k_main.c     |  9 ++-------
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c       | 15 +--------------
->  drivers/net/ethernet/intel/iavf/iavf_txrx.c       | 15 +--------------
->  drivers/net/ethernet/intel/ice/ice_txrx.c         | 11 +----------
->  drivers/net/ethernet/intel/igb/igb_main.c         |  7 +------
->  drivers/net/ethernet/intel/igc/igc_main.c         |  7 +------
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |  7 +------
->  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |  7 +------
->  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +------
->  include/linux/skbuff.h                            | 15 +++++++++++++++
->  11 files changed, 27 insertions(+), 83 deletions(-)
-
-For the patch, and esp. for the Intel drivers:
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Never mind, I realized I've been using a branch that already contains
+your fix :)
