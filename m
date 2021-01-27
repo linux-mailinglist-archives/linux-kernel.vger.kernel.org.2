@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B3E305759
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A7E305760
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbhA0Jtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:49:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:32950 "EHLO foss.arm.com"
+        id S233446AbhA0Jva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:51:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:32952 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231951AbhA0I7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232573AbhA0I7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 03:59:08 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FA911480;
-        Wed, 27 Jan 2021 00:55:46 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 888D514BF;
+        Wed, 27 Jan 2021 00:55:49 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7BF853F66B;
-        Wed, 27 Jan 2021 00:55:43 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DECB13F66B;
+        Wed, 27 Jan 2021 00:55:46 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
 Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
         mike.leach@linaro.org, lcherian@marvell.com,
         linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH V3 07/14] coresight: etm-perf: Handle stale output handles
-Date:   Wed, 27 Jan 2021 14:25:31 +0530
-Message-Id: <1611737738-1493-8-git-send-email-anshuman.khandual@arm.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V3 08/14] coresight: core: Add support for dedicated percpu sinks
+Date:   Wed, 27 Jan 2021 14:25:32 +0530
+Message-Id: <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
 References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
@@ -34,143 +33,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+Add support for dedicated sinks that are bound to individual CPUs. (e.g,
+TRBE). To allow quicker access to the sink for a given CPU bound source,
+keep a percpu array of the sink devices. Also, add support for building
+a path to the CPU local sink from the ETM.
 
-The context associated with an ETM for a given perf event
-includes :
-  - handle -> the perf output handle for the AUX buffer.
-  - the path for the trace components
-  - the buffer config for the sink.
+This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
+This new sink type is exclusively available and can only work with percpu
+source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
 
-The path and the buffer config are part of the "aux_priv" data
-(etm_event_data) setup by the setup_aux() callback, and made available
-via perf_get_aux(handle).
+This defines a percpu structure that accommodates a single coresight_device
+which can be used to store an initialized instance from a sink driver. As
+these sinks are exclusively linked and dependent on corresponding percpu
+sources devices, they should also be the default sink device during a perf
+session.
 
-Now with a sink supporting IRQ, the sink could "end" an output
-handle when the buffer reaches the programmed limit and would try
-to restart a handle. This could fail if there is not enough
-space left the AUX buffer (e.g, the userspace has not consumed
-the data). This leaves the "handle" disconnected from the "event"
-and also the "perf_get_aux()" cleared. This all happens within
-the sink driver, without the etm_perf driver being aware.
-Now when the event is actually stopped, etm_event_stop()
-will need to access the "event_data". But since the handle
-is not valid anymore, we loose the information to stop the
-"trace" path. So, we need a reliable way to access the etm_event_data
-even when the handle may not be active.
-
-This patch replaces the per_cpu handle array with a per_cpu context
-for the ETM, which tracks the "handle" as well as the "etm_event_data".
-The context notes the etm_event_data at etm_event_start() and clears
-it at etm_event_stop(). This makes sure that we don't access a
-stale "etm_event_data" as we are guaranteed that it is not
-freed by free_aux() as long as the event is active and tracing,
-also provides us with access to the critical information
-needed to wind up a session even in the absence of an active
-output_handle.
-
-This is not an issue for the legacy sinks as none of them supports
-an IRQ and is centrally handled by the etm-perf.
+Outwards device connections are scanned while establishing paths between a
+source and a sink device. But such connections are not present for certain
+percpu source and sink devices which are exclusively linked and dependent.
+Build the path directly and skip connection scanning for such devices.
 
 Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Leo Yan <leo.yan@linaro.org>
 Cc: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-etm-perf.c | 45 +++++++++++++++++++++---
- 1 file changed, 40 insertions(+), 5 deletions(-)
+Changes in V3:
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index eb9e7e9..a3977b0 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -24,7 +24,26 @@
- static struct pmu etm_pmu;
- static bool etm_perf_up;
+- Updated coresight_find_default_sink()
+
+ drivers/hwtracing/coresight/coresight-core.c | 16 ++++++++++++++--
+ include/linux/coresight.h                    | 12 ++++++++++++
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+index 0062c89..4795e28 100644
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -23,6 +23,7 @@
+ #include "coresight-priv.h"
  
--static DEFINE_PER_CPU(struct perf_output_handle, ctx_handle);
-+/*
-+ * An ETM context for a running event includes the perf aux handle
-+ * and aux_data. For ETM, the aux_data (etm_event_data), consists of
-+ * the trace path and the sink configuration. The event data is accessible
-+ * via perf_get_aux(handle). However, a sink could "end" a perf output
-+ * handle via the IRQ handler. And if the "sink" encounters a failure
-+ * to "begin" another session (e.g due to lack of space in the buffer),
-+ * the handle will be cleared. Thus, the event_data may not be accessible
-+ * from the handle when we get to the etm_event_stop(), which is required
-+ * for stopping the trace path. The event_data is guaranteed to stay alive
-+ * until "free_aux()", which cannot happen as long as the event is active on
-+ * the ETM. Thus the event_data for the session must be part of the ETM context
-+ * to make sure we can disable the trace path.
-+ */
-+struct etm_ctxt {
-+	struct perf_output_handle handle;
-+	struct etm_event_data *event_data;
-+};
+ static DEFINE_MUTEX(coresight_mutex);
++DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
+ 
+ /**
+  * struct coresight_node - elements of a path, from source to sink
+@@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
+ 	if (csdev == sink)
+ 		goto out;
+ 
++	if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
++	    sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
++		_coresight_build_path(sink, sink, path);
++		found = true;
++		goto out;
++	}
 +
-+static DEFINE_PER_CPU(struct etm_ctxt, etm_ctxt);
- static DEFINE_PER_CPU(struct coresight_device *, csdev_src);
+ 	/* Not a sink - recursively explore each port found on this element */
+ 	for (i = 0; i < csdev->pdata->nr_outport; i++) {
+ 		struct coresight_device *child_dev;
+@@ -999,8 +1007,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
+ 	int depth = 0;
  
- /* ETMv3.5/PTM's ETMCR is 'config' */
-@@ -332,7 +351,8 @@ static void etm_event_start(struct perf_event *event, int flags)
- {
- 	int cpu = smp_processor_id();
- 	struct etm_event_data *event_data;
--	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
-+	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
-+	struct perf_output_handle *handle = &ctxt->handle;
- 	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
- 	struct list_head *path;
+ 	/* look for a default sink if we have not found for this device */
+-	if (!csdev->def_sink)
+-		csdev->def_sink = coresight_find_sink(csdev, &depth);
++	if (!csdev->def_sink) {
++		if (coresight_is_percpu_source(csdev))
++			csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
++		if (!csdev->def_sink)
++			csdev->def_sink = coresight_find_sink(csdev, &depth);
++	}
+ 	return csdev->def_sink;
+ }
  
-@@ -374,6 +394,8 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
- 		goto fail_disable_path;
+diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+index 976ec26..bc3a5ca 100644
+--- a/include/linux/coresight.h
++++ b/include/linux/coresight.h
+@@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
+ 	CORESIGHT_DEV_SUBTYPE_SINK_PORT,
+ 	CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
+ 	CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
++	CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
+ };
  
-+	/* Save the event_data for this ETM */
-+	ctxt->event_data = event_data;
- out:
- 	return;
+ enum coresight_dev_subtype_link {
+@@ -428,6 +429,17 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
+ 		csa->write(val, offset, false, true);
+ }
  
-@@ -392,13 +414,20 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	int cpu = smp_processor_id();
- 	unsigned long size;
- 	struct coresight_device *sink, *csdev = per_cpu(csdev_src, cpu);
--	struct perf_output_handle *handle = this_cpu_ptr(&ctx_handle);
--	struct etm_event_data *event_data = perf_get_aux(handle);
-+	struct etm_ctxt *ctxt = this_cpu_ptr(&etm_ctxt);
-+	struct perf_output_handle *handle = &ctxt->handle;
-+	struct etm_event_data *event_data = ctxt->event_data;
- 	struct list_head *path;
- 
-+	/* Clear the event_data as this ETM is stopping the trace. */
-+	ctxt->event_data = NULL;
- 	if (event->hw.state == PERF_HES_STOPPED)
- 		return;
- 
-+	/* We must have a valid event_data for a running event */
-+	if (WARN_ON(!event_data))
-+		return;
++static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
++{
++	return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
++	       csdev->subtype.source_subtype == CORESIGHT_DEV_SUBTYPE_SOURCE_PROC;
++}
 +
- 	if (!csdev)
- 		return;
++static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
++{
++	return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
++	       csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
++}
+ #else	/* !CONFIG_64BIT */
  
-@@ -416,7 +445,13 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	/* tell the core */
- 	event->hw.state = PERF_HES_STOPPED;
- 
--	if (mode & PERF_EF_UPDATE) {
-+	/*
-+	 * If the handle is not bound to an event anymore
-+	 * (e.g, the sink driver was unable to restart the
-+	 * handle due to lack of buffer space), we don't
-+	 * have to do anything here.
-+	 */
-+	if (handle->event && (mode & PERF_EF_UPDATE)) {
- 		if (WARN_ON_ONCE(handle->event != event))
- 			return;
- 
+ static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
 -- 
 2.7.4
 
