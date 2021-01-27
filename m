@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B0F305462
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2300305440
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhA0HUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:20:17 -0500
-Received: from verein.lst.de ([213.95.11.211]:51659 "EHLO verein.lst.de"
+        id S231575AbhA0HRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:17:16 -0500
+Received: from verein.lst.de ([213.95.11.211]:51665 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233087AbhA0HLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:11:43 -0500
+        id S233278AbhA0HNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 02:13:10 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8FBA767373; Wed, 27 Jan 2021 08:10:59 +0100 (CET)
-Date:   Wed, 27 Jan 2021 08:10:59 +0100
+        id CEF9868AFE; Wed, 27 Jan 2021 08:12:25 +0100 (CET)
+Date:   Wed, 27 Jan 2021 08:12:25 +0100
 From:   Christoph Hellwig <hch@lst.de>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 2/5] kernel/dma: remove unnecessary unmap_kernel_range
-Message-ID: <20210127071059.GA21133@lst.de>
-References: <20210126045404.2492588-1-npiggin@gmail.com> <20210126045404.2492588-3-npiggin@gmail.com> <YBCS7toITTwP04aK@Konrads-MacBook-Pro.local>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pidfd tree
+Message-ID: <20210127071225.GB21133@lst.de>
+References: <20210127094101.2100177b@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBCS7toITTwP04aK@Konrads-MacBook-Pro.local>
+In-Reply-To: <20210127094101.2100177b@canb.auug.org.au>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 05:08:46PM -0500, Konrad Rzeszutek Wilk wrote:
-> On Tue, Jan 26, 2021 at 02:54:01PM +1000, Nicholas Piggin wrote:
-> > vunmap will remove ptes.
+On Wed, Jan 27, 2021 at 09:41:01AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Should there be some ASSERT after the vunmap to make sure that is the
-> case? 
+> After merging the pidfd tree, today's linux-next build (powerpc
+> ppc64_defconfig) produced this warning:
+> 
+> fs/xfs/xfs_ioctl32.c: In function 'xfs_file_compat_ioctl':
+> fs/xfs/xfs_ioctl32.c:441:20: warning: unused variable 'mp' [-Wunused-variable]
+>   441 |  struct xfs_mount *mp = ip->i_mount;
+>       |                    ^~
 
-Not really.  removing the PTEs is the whole point of vunmap.  Everything
-else is just house keeping.
-
+So this is only used in an x86-specific section of the function.
+Let me think what we can do about this.
