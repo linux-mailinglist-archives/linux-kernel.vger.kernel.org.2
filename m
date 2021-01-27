@@ -2,122 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161B030676E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AF43067DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbhA0XBq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Jan 2021 18:01:46 -0500
-Received: from mga03.intel.com ([134.134.136.65]:51950 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233180AbhA0W6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:58:36 -0500
-IronPort-SDR: o4vl8oV3+xkYJzeeabT2VAxLXJR9JJNKch3svPDyL4uk6TmMdjyNN7RXsE7Pd1BjxFUXNakjzg
- jBxgDE1wT+BQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180223146"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="180223146"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 14:40:00 -0800
-IronPort-SDR: UGA1dZN8wKbLyOMVSV8oG7V54a3T3baKRL9nzJr1vxYI5rB51CKkE0qcfRrQcEZ/5CgPieowmg
- AyKGNJrOffRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="353967511"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga003.jf.intel.com with ESMTP; 27 Jan 2021 14:40:00 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 27 Jan 2021 14:40:00 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 27 Jan 2021 14:39:59 -0800
-Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
- ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
- Wed, 27 Jan 2021 14:39:59 -0800
-From:   "Yu, Fenghua" <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: RE: [PATCH v4 1/4] x86/cpufeatures: Enumerate #DB for bus lock
- detection
-Thread-Topic: [PATCH v4 1/4] x86/cpufeatures: Enumerate #DB for bus lock
- detection
-Thread-Index: AQHW9PFAPoRJX+AnhkuFXC9BaOBb+qo7/kbA
-Date:   Wed, 27 Jan 2021 22:39:59 +0000
-Message-ID: <adf4082ffef7410c961cfe76acc93606@intel.com>
-References: <20201124205245.4164633-1-fenghua.yu@intel.com>
- <20201124205245.4164633-2-fenghua.yu@intel.com>
- <87wnvydqxi.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87wnvydqxi.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232312AbhA0XZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:25:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232339AbhA0W41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:56:27 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CF6C061794;
+        Wed, 27 Jan 2021 14:40:50 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id j13so4431478edp.2;
+        Wed, 27 Jan 2021 14:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iXTvbMuq3HhEnmBcA+i2YKqjm1qMVKD6f8nz7srtjj8=;
+        b=AvnsMhNL+EOCr85jmdmfvcTsPF5QLZVLiJwSxIqgSV1P6OOpq+HXCs5qCRps/bjrUY
+         BcqdEn2HMPmmTCnBMuo6SFwSIb4wDkj47DQSOKdsS9TyW69Tz0GgiIqqhOm6ZiA/TMy6
+         D1d8LNzF/DHjMf6bydAV8xyr2pwBWh6LXUW+DoqjnyF+4eVn47vBStld3/id9KpKXk9E
+         qGxm5uNqYyLV7DzEyRlvyoVXbae/GS9rSLIVtvZRR7v4KysRORK39ntUP7+gHlW4NUnt
+         R0yBYlSRj/gNoqHAGnHauYgjjEbQXmnfTffWh7j58GuWEf925b0s6aRiARZdEUmWTdXA
+         u24A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iXTvbMuq3HhEnmBcA+i2YKqjm1qMVKD6f8nz7srtjj8=;
+        b=X3TIRvHjMZERGkitbVgIwTCX45ClLUNu/ayEBAHsnfU4iEx8JG8CUcnq5cy0cx2bYV
+         Hmd2pSVp899krFxC8BLv25CuLXVQVbTA4fIEztIZ2Hm3nAwfLd88CAEZYbAgEHE9c82Q
+         gBTlZjMvAijSWyor2dOQMjHed6rb97X9WFc3s0T0QxCGNFsfU4IgVOA2cpjUnBY3pAsv
+         0pGL5ARiZi8OWtGk1SjmUZE6LReJmzOj24owmbyBlj2XtzqTbwflOC07Nd21i/BuWa/d
+         /kDYnNYUOoaftSSzFV7usZzL1eB/DWLSKVUvxQ/r3117fqcNfMJ9VdrDn/QSYOORLbki
+         qciQ==
+X-Gm-Message-State: AOAM533O3blNKUj3I++UvlSiaQgStfGq1TN2eBBEhI7VhkoA24rlzcDN
+        EoCVOchHWVl8npJvLc2788gU88KtkXLO4P44+jVTb042EjQdog==
+X-Google-Smtp-Source: ABdhPJxXz4v6MJrNWZHtF6mMlQ2cq3QOh/o42wPt10Hda0pk0esnXcar+N2ie3PBLsTH20/ni2bbSNfBUSJ94g27JOs=
+X-Received: by 2002:a05:6402:26d3:: with SMTP id x19mr11092718edd.0.1611787248203;
+ Wed, 27 Jan 2021 14:40:48 -0800 (PST)
 MIME-Version: 1.0
+References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
+ <20210125100540.55wbgdsem3htplx3@pali> <CAMcCCgTo87HmwexZS696ok16e9s_8gRgFd38uoLP34r7TbAzBg@mail.gmail.com>
+ <CAHzpm2hk4+0FyFrcGYN-JJfx5Ka8yoM8mTsYZA_4WHfWYGa4yQ@mail.gmail.com>
+ <CAHzpm2h2X8ZKEtRxnD-mwyEv=B8J+tH_spFGD2VzfwGdRAaHMw@mail.gmail.com>
+ <CAMcCCgQRDRi1LpxJBTvKcB+dALJJsn=n5Q=Wyvfcw9LGqqjq7Q@mail.gmail.com> <20210127091933.haq6nmbmx3cskh5t@pali>
+In-Reply-To: <20210127091933.haq6nmbmx3cskh5t@pali>
+From:   Bob Hepple <bob.hepple@gmail.com>
+Date:   Thu, 28 Jan 2021 08:40:36 +1000
+Message-ID: <CAHzpm2j9N3ywMy6HLruCt1VaQLmB1-xVusvXUb8wa2ores+KAQ@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control blacklist
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Tom Hebb <tommyhebb@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas,
+Hi Pali,
 
-> On Wed, Jan 27, 2021 2:16 PM, Thomas Gleixner wrote:
-> On Tue, Nov 24 2020 at 20:52, Fenghua Yu wrote:
-> 
-> > A bus lock is acquired though either split locked access to writeback
-> > (WB) memory or any locked access to non-WB memory. This is typically
-> > >1000 cycles slower than an atomic operation within a cache line. It
-> > also disrupts performance on other cores.
-> >
-> > Some CPUs have ability to notify the kernel by an #DB trap after a
-> > user instruction acquires a bus lock and is executed. This allows the
-> > kernel to enforce user application throttling or mitigations.
-> 
-> That's nice, but how does that interact with a data breakpoint on the same
-> location?
+No, I have not contacted Dell about this and I'm not sure that they
+would be terribly interested given that my machine is 12 years old -
+but I'll have a go if I can find the right place to do it.
 
-If both data breakpoint and bus lock happen on the same location, the bus lock
-is handled first and then the data breakpoint is handled in the same exception:
+Do you have a good email or other Dell target to report it? I don't
+have access to official Dell support as my warranty ran out about 10
+years ago. Perhaps there's an existing Dell bug report that references
+the original https://bugzilla.kernel.org/show_bug.cgi?id=3D195751 ??? I
+could add my report there if someone has already informed Dell about
+the other instances of the bug.
 
-1. If warn on bus lock, a rate limited warning is printed for the bus lock and then
-    a SIGTRAP is sent to the user process.
-2. If fatal on bus lock, a SIGBUS is sent to the user process for the bus lock and a
-    SIGTRAP is also sent to the user process. I think the SIGBUS will be delivered first
-    to the process and then SIGTRAP will be delivered to the process.
-3. If ratelimit on bus lock, first the tasks in the user sleep for specified time, then
-    SIGTRAP is sent to the user process.
+Thanks
 
-Is the interaction OK?
 
-> 
-> Also the information you pointed to in the cover letter
-> 
-> >  [1] Intel Instruction Set Extension Chapter 8:
-> > https://software.intel.com/sites/default/files/managed/c5/15/architect
-> > ure-instruction-set-extensions-programming-reference.pdf
-> 
-> does not contain anything which is even remotely related to this patch series.
-> That chapter describes another bit in TEST_CTRL_MSR ...
 
-I think either I gave an old link or the content in the link was changed to an older version of ISE doc after this series was released.
+Bob
 
-Here is the new ISE doc and the bus lock exception is described in Chapter 9.
-https://software.intel.com/content/dam/develop/public/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf
-
-I'll update the link in the next version.
-
-Thanks!
-
--Fenghua
+On Wed, 27 Jan 2021 at 19:19, Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Tuesday 26 January 2021 00:15:13 Tom Hebb wrote:
+> > Bob reports that blacklisting the fan type label is not sufficient.
+> > See his message to me below.
+>
+> Ok! Thank you for confirmation.
+>
+> And my second question which I have asked:
+> And have you reported this issue to Dell support?
+>
+> > On Mon, Jan 25, 2021 at 3:38 PM Bob Hepple <bob.hepple@gmail.com> wrote=
+:
+> > >
+> > > Hi Tom,
+> > >
+> > > Big nope this end with L502x in i8k_blacklist_fan_type_dmi_table:
+> > >
+> > > Jan 26 09:35:47 achar kernel: psmouse serio1: TouchPad at
+> > > isa0060/serio1/input0 lost synchronization, throwing 1 bytes>
+> > >
+> > > ... and lots of trackpad stall/stutters.
+> > >
+> > > Cheers
+> > >
+> > >
+> > > Bob
+> > >
+> > >
+> > >
+> > > On Tue, 26 Jan 2021 at 08:09, Bob Hepple <bob.hepple@gmail.com> wrote=
+:
+> > > >
+> > > > ... compiling now ... results in a coupla hours
+> > > >
+> > > > Cheers
+> > > >
+> > > >
+> > > > Bob
+> > > >
+> > > > On Tue, 26 Jan 2021 at 04:05, Tom Hebb <tommyhebb@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Jan 25, 2021 at 2:05 AM Pali Roh=C3=A1r <pali@kernel.org>=
+ wrote:
+> > > > > >
+> > > > > > On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
+> > > > > > > It has been reported[0] that the Dell XPS 15 L502X exhibits s=
+imilar
+> > > > > > > freezing behavior to the other systems[1] on this blacklist. =
+The issue
+> > > > > > > was exposed by a prior change of mine to automatically load
+> > > > > > > dell_smm_hwmon on a wider set of XPS models. To fix the regre=
+ssion, add
+> > > > > > > this model to the blacklist.
+> > > > > > >
+> > > > > > > [0] https://bugzilla.kernel.org/show_bug.cgi?id=3D211081
+> > > > > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D195751
+> > > > > > >
+> > > > > > > Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for=
+ all XPS models")
+> > > > > > > Cc: stable@vger.kernel.org
+> > > > > > > Reported-by: Bob Hepple <bob.hepple@gmail.com>
+> > > > > > > Tested-by: Bob Hepple <bob.hepple@gmail.com>
+> > > > > > > Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> > > > > > > ---
+> > > > > > >
+> > > > > > >  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
+> > > > > > >  1 file changed, 7 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/d=
+ell-smm-hwmon.c
+> > > > > > > index ec448f5f2dc3..73b9db9e3aab 100644
+> > > > > > > --- a/drivers/hwmon/dell-smm-hwmon.c
+> > > > > > > +++ b/drivers/hwmon/dell-smm-hwmon.c
+> > > > > > > @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blackl=
+ist_fan_support_dmi_table[] __initdata =3D {
+> > > > > > >                       DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS1=
+3 9333"),
+> > > > > > >               },
+> > > > > > >       },
+> > > > > > > +     {
+> > > > > > > +             .ident =3D "Dell XPS 15 L502X",
+> > > > > > > +             .matches =3D {
+> > > > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > > > > > +                     DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell=
+ System XPS L502X"),
+> > > > > >
+> > > > > > Hello! Are you sure that it is required to completely disable f=
+an
+> > > > > > support? And not only access to fan type label for which is dif=
+ferent
+> > > > > > blaclist i8k_blacklist_fan_type_dmi_table?
+> > > > >
+> > > > > This is a good question. We didn't try the other list. Bob is the=
+ one with the
+> > > > > affected system. Could you try moving the added block of code fro=
+m
+> > > > > i8k_blacklist_fan_support_dmi_table a few lines up to
+> > > > > i8k_blacklist_fan_type_dmi_table, Bob, to see if the issue reappe=
+ars or if it
+> > > > > remains fixed?
+> > > > >
+> > > > > >
+> > > > > > And have you reported this issue to Dell support?
+> > > > > >
+> > > > > > > +             },
+> > > > > > > +     },
+> > > > > > >       { }
+> > > > > > >  };
+> > > > > > >
+> > > > > > > --
+> > > > > > > 2.30.0
+> > > > > > >
+> > > > >
+> > > > > (Apologies for the previous HTML copy of this reply, to those dir=
+ectly CCed.)
+> > > > >
+> > > > > -Tom
