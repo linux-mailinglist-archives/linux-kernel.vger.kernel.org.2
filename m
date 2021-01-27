@@ -2,107 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126AE30618A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A3B30618C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhA0RFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S234165AbhA0RFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235223AbhA0RCq (ORCPT
+        with ESMTP id S235397AbhA0RDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:02:46 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F40AC061574;
-        Wed, 27 Jan 2021 09:01:57 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id a20so1609817pjs.1;
-        Wed, 27 Jan 2021 09:01:57 -0800 (PST)
+        Wed, 27 Jan 2021 12:03:10 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74053C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:02:24 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id u4so1410003ljh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:02:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vtepp4TZmVRvIbUVDYOarm58wBYnXPgnDjuNfeHxdtc=;
-        b=ZgCmQUbVt9Ht+2dI0uE93whJgeLCVOUmzWeIxNqpjxtqOaXNdmeEG9qipZ+10Zc/zb
-         2ybd+rCe/aNVN1vdCzKEWqFPK2rZqH5xbiiVqcPZBP1LJ64fthGKYk/aY28E8LMyNGa7
-         O/CdUhpXmnqjZRkAyuyI4GCyYTLffo5wZ/w+kAnBY6xn2Rl6Dfqks4BORPwcft5+30Df
-         ZPTtAqnDJk/jTl4v4qhc0YoKAtnw668EeAmVKTge0o+wlLxy4YKKJNwXgX5TsHCDIAC/
-         J0hj3JMCo5O7zkYwV2RRbZLdDWtMLcJdF/CmfkkvaWN4VgItvp9rSUFi5nLIwzemZFmM
-         WylA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cH2HNFoWtmWpnWYeEkgVq7KIaf7LBJ3O9RpwqmgIKSA=;
+        b=mz5PDFTJyoJh/pyXtv5YLKAkeJPvhgWZ4xIUUoAvtBLEVzYk9nyIDv+wGNoXKh4Img
+         t1mLGgGAMfiUZCeoJZIn1ohcgMrhO48vDuCErg8HEJOmehktLiU8sO8YS/5TiTspPc5j
+         m+OCKAXkv8bjFaBRU5MNZsxu92R/U3xIeHD0zZioRKHMCtAmcJESSKr3tMoDI25xKIoM
+         BdRXLVPeg06O4uYFFcoyMy6vIL+8dAN8sN0Y40ZvFObmvDVtKIYbG4ja6GiWua+GHCZL
+         7/NrVww2ym7LOXu0cuFEjW5WMrjDmlnUms8KKHsWYmVG9r2arbXQgVW6MqEbiHoad6DW
+         tKVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vtepp4TZmVRvIbUVDYOarm58wBYnXPgnDjuNfeHxdtc=;
-        b=XIyAeVwjVU4ZIazuY8otr5PZx3exIjnsP4QS7IBKaUfdAyr04bkNJ9XtWVjMplIAjx
-         MFV2s2lXyEAwasWktyoQGiWTbSA4OyUftlDCySFbZ528NtFphAmVV+vLNg6+jiB0TO6a
-         j3/XsHOROt1dLk/9bSftDT86tdX3y4vwiX+T3+HHVp0JyAAKRQ4uNZ10IEONce/WQjI8
-         qb3BQ8r8QH6PGhhiOj1X4grFqMsi35PtqqKyBq3Y9e0hg/yr7fNl80HoBYQfAumUGlcN
-         SN0n5TOaG7JCf8nZeEGh+26FQv6hOc1Xx5GdcZ6VfmF4MEQK/MemKK8jxShje6cinnRb
-         l6IA==
-X-Gm-Message-State: AOAM530VAkh2R5fQqKUjjT4Spt08hRX+OP/hUk0yoQG2NwSr/KqvnSNI
-        C/qxDIRqfVFzyDDwHZ95CLo=
-X-Google-Smtp-Source: ABdhPJzmHhfUFA/75Zv/UDnqfz6FCOjqg2rT0LuDRrn5TaPMOXPDx/ORUyPSivMQuwCqJtUASFgh8g==
-X-Received: by 2002:a17:902:b206:b029:dc:1f41:962d with SMTP id t6-20020a170902b206b02900dc1f41962dmr12522286plr.28.1611766916993;
-        Wed, 27 Jan 2021 09:01:56 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:9dd5:b47b:bb84:dede])
-        by smtp.gmail.com with ESMTPSA id q197sm2937750pfc.155.2021.01.27.09.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 09:01:55 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 27 Jan 2021 09:01:52 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        viro@zeniv.linux.org.uk, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laura Abbott <lauraa@codeaurora.org>
-Subject: Re: [PATCH v4] fs/buffer.c: Revoke LRU when trying to drop buffers
-Message-ID: <YBGcgGLcXhvLl9+/@google.com>
-References: <cover.1611642038.git.cgoldswo@codeaurora.org>
- <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
- <YBCexclveGV2KH1G@google.com>
- <20210127025922.GS308988@casper.infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cH2HNFoWtmWpnWYeEkgVq7KIaf7LBJ3O9RpwqmgIKSA=;
+        b=JnPHQZkhb0njWaSEkjhMnDSmIUjBHsFfnwPDQl6z3vQu8OLbQ8osi9UdoMcaatktrg
+         1VXPccUe+CKtvfm6OAGjDKMU0k0YWqaew2FDbbqr2HkhwjQ8MCyFrLw4mZbn4LFGUkje
+         iWHef1mjclCv58w5rxHz29HmeZnUBvzgQzGcHvVzfyjRWHagynV0VFRqWEg/Jmv0glzs
+         dthAznw5MiajNA1sWDTXUzUa/FBv4WpTUD1V7OfEJLAXw5SueMsXlBjvz07dC6mOlkBl
+         vqkEAVgZMh7ezO5pBzoPWzShZ8EcnRTua1FYNWv+8bojWSclLd7v1IyJTwQpShcWNmOb
+         tVvw==
+X-Gm-Message-State: AOAM532MJqf7VDe35rP+qlJmhvhimnCA6szKRPYbB2I7G5rgP5M6c9HB
+        v3remeU/67otzE0NakxBqUt63bP+RuJBqTgm6AGAZw==
+X-Google-Smtp-Source: ABdhPJzn3+brB6ijk7rnoncHsjbUhtCxiDrzyrub1UFfa0DwbZ0yKW/AEqV+N1JM57R5nuh2wtjRmyWYVYp2tkZOOho=
+X-Received: by 2002:a2e:9090:: with SMTP id l16mr6467976ljg.122.1611766942605;
+ Wed, 27 Jan 2021 09:02:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127025922.GS308988@casper.infradead.org>
+References: <20201224071111.11551-1-sjpark@amazon.com> <20210127165630.29904-1-sjpark@amazon.com>
+In-Reply-To: <20210127165630.29904-1-sjpark@amazon.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 27 Jan 2021 09:02:11 -0800
+Message-ID: <CALvZod61Dx4emiV5H73mQcFN6WvmD4A2Z=sRfmN2qpBh3R-_kQ@mail.gmail.com>
+Subject: Re: [PATCH v23 05/15] mm/damon: Implement primitives for the virtual
+ memory address spaces
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     Jonathan.Cameron@huawei.com,
+        Andrea Arcangeli <aarcange@redhat.com>, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        foersleo@amazon.de, Greg Thelen <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, jolsa@redhat.com,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, sblbir@amazon.com,
+        Shuah Khan <shuah@kernel.org>, sj38.park@gmail.com,
+        snu@amazon.de, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, zgf574564920@gmail.com,
+        linux-damon@amazon.com, Linux MM <linux-mm@kvack.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 02:59:22AM +0000, Matthew Wilcox wrote:
-> On Tue, Jan 26, 2021 at 02:59:17PM -0800, Minchan Kim wrote:
-> > The release buffer_head in LRU is great improvement for migration
-> > point of view.
-> > 
-> > A question: 
-> > 
-> > Can't we invalidate(e.g., invalidate_bh_lrus) bh_lru in migrate_prep or
-> > elsewhere when migration found the failure and is about to retry?
-> > 
-> > Migration has done such a way for other per-cpu stuffs for a long time,
-> > which would be more consistent with others and might be faster sometimes
-> > with reducing IPI calls for page.
-> 
-> Should lru_add_drain_all() also handle draining the buffer lru for all
-> callers?  A quick survey ...
-> 
-> invalidate_bdev() already calls invalidate_bh_lrus()
-> compact_nodes() would probably benefit from the BH LRU being invalidated
-> POSIX_FADV_DONTNEED would benefit if the underlying filesystem uses BHs
-> check_and_migrate_cma_pages() would benefit
-> khugepaged_do_scan() doesn't need it today
-> scan_get_next_rmap_item() looks like it only works on anon pages (?) so
-> 	doesn't need it
-> mem_cgroup_force_empty() probably needs it
-> mem_cgroup_move_charge() ditto
-> memfd_wait_for_pins() doesn't need it
-> shake_page() might benefit
-> offline_pages() would benefit
-> alloc_contig_range() would benefit
-> 
-> Seems like most would benefit and a few won't care.  I think I'd lean
-> towards having lru_add_drain_all() call invalidate_bh_lrus(), just to
-> simplify things.
+On Wed, Jan 27, 2021 at 8:57 AM SeongJae Park <sjpark@amazon.com> wrote:
+>
+> On Thu, 24 Dec 2020 08:11:11 +0100 SeongJae Park <sjpark@amazon.com> wrote:
+>
+> > On Wed, 23 Dec 2020 14:54:02 -0800 Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > > On Wed, Dec 23, 2020 at 8:47 AM SeongJae Park <sjpark@amazon.com> wrote:
+> > > >
+> > > [snip]
+> > > > > [snip]
+> > > > > > +
+> > > > > > +static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
+> > > > > > +                       unsigned long *page_sz)
+> > > > > > +{
+> > > > > > +       pte_t *pte = NULL;
+> > > > > > +       pmd_t *pmd = NULL;
+> > > > > > +       spinlock_t *ptl;
+> > > > > > +       bool young = false;
+> > > > > > +
+> > > > > > +       if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
+> > > > > > +               return false;
+> > > > > > +
+> > > > > > +       *page_sz = PAGE_SIZE;
+> > > > > > +       if (pte) {
+> > > > > > +               young = pte_young(*pte);
+> > > > > > +               if (!young)
+> > > > > > +                       young = !page_is_idle(pte_page(*pte));
+> > > > > > +               pte_unmap_unlock(pte, ptl);
+> > > > > > +               return young;
+> > > > > > +       }
+> > > > > > +
+> > > > > > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > > > > > +       young = pmd_young(*pmd);
+> > > > > > +       if (!young)
+> > > > > > +               young = !page_is_idle(pmd_page(*pmd));
+> > > > > > +       spin_unlock(ptl);
+> > > > > > +       *page_sz = ((1UL) << HPAGE_PMD_SHIFT);
+> > > > > > +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> > > > > > +
+> > > > > > +       return young;
+> > > > >
+> > > > > You need mmu_notifier_test_young() here. Hmm I remember mentioning
+> > > > > this in some previous version as well.
+> > > >
+> > > > Your question and my answer was as below:
+> > > >
+> > > >     > Don't you need mmu_notifier_clear_young() here?
+> > > >
+> > > >     I think we don't need it here because we only read the Accessed bit and PG_Idle
+> > > >     if Accessed bit was not set.
+> > > >
+> > > > I should notice that you mean 'test_young()' but didn't, sorry.  I will add it
+> > > > in the next version.
+> > > >
+> > >
+> > > I should have said mmu_notifier_test_young() instead of
+> > > mmu_notifier_clear_young().
+> > >
+> > > > >
+> > > > > BTW have you tested this on a VM?
+> > > >
+> > > > Yes.  Indeed, I'm testing this on a QEMU/KVM environment.  You can get more
+> > > > detail at: https://damonitor.github.io/doc/html/latest/vm/damon/eval.html#setup
+> > > >
+> > >
+> > > Hmm without mmu_notifier_test_young() you should be missing the kvm
+> > > mmu access updates. Can you please recheck if your eval is correctly
+> > > seeing the memory accesses from the VM?
+> >
+> > Seems I didn't clearly answered, sorry.  My test setup installs the
+> > DAMON-enabled kernel in a guest VM and run it for workloads in the guest,
+> > rather than running DAMON in host to monitor accesses of VMs.  The MMU notifier
+> > is for latter case, AFAIU, so my test setup didn't see the problem.
+>
+> Just FYI.  I confirmed the mmu_notifier_test_young() added version works for
+> the use case.  I tested it by running a program accessing 200MB memory in a
+> QEMU/KVM guest having 120GB memory and monitoring the qemu process' virtual
+> address space from the host using DAMON.  The 200MB memory region was clearly
+> identifiable.
+>
 
-Fair enough.
+Thanks for confirming. I am still going over the whole series and will
+send out the emails in a couple of days.
+
+Shakeel
