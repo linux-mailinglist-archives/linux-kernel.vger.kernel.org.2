@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D1A3051B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F229C3051B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237537AbhA0D5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:57:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405314AbhA0BpK (ORCPT
+        id S231134AbhA0FGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:06:42 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:40733 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237652AbhA0D5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:45:10 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB29C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:34:03 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id e9so147826plh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:34:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=65VNlJixq/1dzn5bOgjm//zPTu/98GsClCV3pSzlAtM=;
-        b=jEHjHP/cnFWaZFlBfcWchXUJjmWOa4pmx9NB2YknMeuj0fkJBShNm51mcmIAbX9C0+
-         yKLzDbiPNot9S35nJ+6iQqZPppKJyfM8qRMGoAMBZHNAVwZAkod2SG3wn4AH1oA8rQMn
-         NlBEZ+TEvlrJFmz/hfqxPsnAmXSxeyEyBtnKwI0WTG6+kvNSZXbGOuWtkXnnmIg0gTOv
-         HSBjnLclD3CCAIxeS44bdXqMOQbr+yNJQveGHQDBftx+1Sf+ZuRay1kkEaPetSLgPtQJ
-         WZfYaUYNh7+t+eZXYaPOHYHJ3bP/fzEy+4OP5gE7MDTffZXILIp5hnmWZE9Xzeu00rme
-         aeDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=65VNlJixq/1dzn5bOgjm//zPTu/98GsClCV3pSzlAtM=;
-        b=ZODtN4pFQZV2FTxNpyrHGuh2xRPg5Vm70zLnR8QAzfvl/Lrpmf4BHPiUoXJtNH1g/T
-         omJvsp2MRgeATI4ciutmLj5dX1GoX+dR0ylE6BxSG4q6cdwB977kkNsPeZ6HKVDi+QEO
-         L3XVLPG95uuM/hBh1Q9jp87lqgMohpE2yX5iFzRL2i6STWq50ODuQbuk7BZ29sDsUP7q
-         x03fOLlYxL9wDMV6SJlgX/28hZHFPMHI4eqQbgrJaDr8a2a6rwyn0qguym9JjnfKwZbY
-         zwQSSeORs8YEJdCueH4FIngRphn76I6NUi8npvimPEkyKtMuWZiFTUKC8kwwaOt56Zni
-         MGqg==
-X-Gm-Message-State: AOAM532y96xlkkBg8M2hX9pdED89Niy2vN48wu8lprXD+803SD7OhlZT
-        6t9PV7AJrsXCTtw0hHTcjSXaZg==
-X-Google-Smtp-Source: ABdhPJxAraDEvPrvAVg5AaLW/isBJ6GgrOh5JxiDLE7qej4rou7RGFfQr/5f1vX0btYhzEv1Y90xqw==
-X-Received: by 2002:a17:903:181:b029:df:c7e5:8e39 with SMTP id z1-20020a1709030181b02900dfc7e58e39mr9007839plg.25.1611711243144;
-        Tue, 26 Jan 2021 17:34:03 -0800 (PST)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id a7sm162069pju.28.2021.01.26.17.34.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Jan 2021 17:34:02 -0800 (PST)
-Date:   Wed, 27 Jan 2021 09:33:56 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, vkoul@kernel.org,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dma: qcom: bam_dma: Manage clocks when
- controlled_remotely is set
-Message-ID: <20210127013355.GF17701@dragon>
-References: <20210126211859.790892-1-thara.gopinath@linaro.org>
+        Tue, 26 Jan 2021 22:57:08 -0500
+Received: from localhost (kumbhalgarh.blr.asicdesigners.com [10.193.185.255])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 10R3u5WG000912;
+        Tue, 26 Jan 2021 19:56:06 -0800
+Date:   Wed, 27 Jan 2021 09:26:06 +0530
+From:   Raju Rangoju <rajur@chelsio.com>
+To:     Yang Li <abaci-bugfix@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] cxgb4: remove redundant NULL check
+Message-ID: <20210127035604.GA21071@chelsio.com>
+References: <1611568045-121839-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <1611568045-121839-4-git-send-email-abaci-bugfix@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126211859.790892-1-thara.gopinath@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1611568045-121839-4-git-send-email-abaci-bugfix@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 04:18:59PM -0500, Thara Gopinath wrote:
-> When bam dma is "controlled remotely", thus far clocks were not controlled
-> from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
-> driver and not doing any clock management in suspend/resume hooks.
+On Monday, January 01/25/21, 2021 at 17:47:25 +0800, Yang Li wrote:
+> Fix below warnings reported by coccicheck:
+>  ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c:533:2-8: WARNING:
+> NULL check before some freeing functions is not needed.
 > 
-> With introduction of crypto engine bam dma, the clock is a rpmh resource
-> that can be controlled from both Linux and TZ/remote side.  Now bam dma
-> clock is getting enabled during probe even though the bam dma can be
-> "controlled remotely". But due to clocks not being handled properly,
-> bam_suspend generates a unbalanced clk_unprepare warning during system
-> suspend.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
+> ---
+>  drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> To fix the above issue and to enable proper clock-management, this patch
-> enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
-> the clock node is present irrespective of controlled_remotely property.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
+> index dede025..97a811f 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
+> @@ -525,12 +525,10 @@ struct cxgb4_tc_u32_table *cxgb4_init_tc_u32(struct adapter *adap)
+>  	for (i = 0; i < t->size; i++) {
+>  		struct cxgb4_link *link = &t->table[i];
+>  
+> -		if (link->tid_map)
+> -			kvfree(link->tid_map);
 
-Reviewed-by: Shawn Guo <shawn.guo@linaro.org>
+This patch is wrong. NAK.
+
+What if the call to link->tid_map = kvcalloc() fails above? it still goes ahead
+and calls kvfree(link->tid_map), which is wrong.
+
+
+> +		kvfree(link->tid_map);
+>  	}
+>  
+> -	if (t)
+> -		kvfree(t);
+> +	kvfree(t);
+>  
+>  	return NULL;
+>  }
+> -- 
+> 1.8.3.1
+> 
