@@ -2,213 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADED13061A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F683061C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhA0ROU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhA0RML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:12:11 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7150EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:11:31 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id v200so2735519ybe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SCMC9c1Y3UdZlZUZ7gotdft22BvIa2n17Y+bk6uxrpU=;
-        b=buF+e6cQQikru+I+wPmZzNHqUP53S5gn9SMSJhpEVq/IXcbgB6FO65hbHfPo5g2lK5
-         tUusqRpXb7HvQiCBMvWBMVL5Oid4fmEwGQ/2fQo47okY61Ue2gIUeT/kfiIac7f/Hwyj
-         6FFRbPsxZnt7Sma6ev9KJH145i55FdneRppghjcezH8k7lsQBohDAsn1SSjCT2nBwLVL
-         eHJ3P7RvYKqs/+NCcq/RDW145cZKVpfugES4mbapMWIaTaMMwD21YwXD8+fYXkgMReNw
-         k3RHPl/7T3Z9hcN33LNPPMq/w+APPDTRZPmfjV7r5YSKnh7nEVYr+/9yphZuhauCX4zE
-         skMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SCMC9c1Y3UdZlZUZ7gotdft22BvIa2n17Y+bk6uxrpU=;
-        b=qbrUlqlJNKioDQzQk0gSILlxLOVYbovPhHOBsF+ctDkyNsU0e2FGkjsxnRmzvfxIwN
-         1WNEX1VSWUHiKeqDA6khrKnedX4dI31KkAx5Upf4SFjHDCQXnCguoaEAOdSVjNwAhdxT
-         NPC7dG4/rVtgpssDGnIOtwXHWLPgu/IepJvU4Xg4TlV2FQa2E5k5Hh7ZflL3qUtZn+nC
-         97lvLKwGtni2pMyAFoBNSiYb/ECkJZYcrHsneK4gft/kjflMQ+gB+OdlHppMRHx5ZFyf
-         kHxvIxPX0zOqOrMQZETasdB+mlX4pzFB8qccytldfeQxreIgdLxg9eXqqInMAGyks0BZ
-         OsEg==
-X-Gm-Message-State: AOAM531nPxqlHC3nyMlr/BSfXCq47G2WTgPOr+zrp4SD3STz0cLYcyYn
-        zA5wJJPLA6ZqxYE/wckUVae80z1Nq2Yq/DZYhJBpOA==
-X-Google-Smtp-Source: ABdhPJxrBQe4Av/shkBNQ8ehUaFA7s4Ekhjqa1UpGiP1H/CtNg0Du0ryBzR8ZDxVbe7g6lqnkfZP88faYZGZi40TLVg=
-X-Received: by 2002:a25:8b8b:: with SMTP id j11mr16073043ybl.310.1611767490478;
- Wed, 27 Jan 2021 09:11:30 -0800 (PST)
+        id S234878AbhA0RSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:18:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234807AbhA0RPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:15:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95F3364DA6;
+        Wed, 27 Jan 2021 17:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611767703;
+        bh=Jwcav97hQHhQBoXQqSHH19U0iri8g3r7wuWgGbnyEyc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Xbh0Cj2rU2kVgw/qGpWIGxF3c0FVaTzje28tPlfWz4whBd4p0ot1XBusTKRnbtPV8
+         hojCiP259Mt5Ix4G14IewiS/mNeqK0oF3C391uPlX8MGX2nAK43AUDcQgGxNQOrg+G
+         2cpSiA1i0uEPkv55fCKt3ovZXDEvUn3z1/sABS+8s5y5nMAXY72EamupR52l4G7zJ6
+         6HVd8trU+t4zEi0rUepYVbc6ewliAHaITEUBEZpl/7aUn1P55Bq2qw+MbkMzLi38U8
+         d1IT8ViAJTZyO6WAwMZTeS2h5gB6YpYXowVfnw68LE3g/veuu0tY9lBFoMBj1lbGxa
+         Q1etK/YOnN69g==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org, Judy Hsiao <judyhsiao@chromium.org>
+Cc:     dianders@chromium.org, Rob Herring <robh+dt@kernel.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Taniya Das <tdas@codeaurora.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        tzungbi@chromium.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Judy Hsiao <judyhsiao@google.com>, dgreid@chromium.org,
+        linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, cychiang@google.com,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20210127134847.1143535-1-judyhsiao@chromium.org>
+References: <20210127134847.1143535-1-judyhsiao@chromium.org>
+Subject: Re: [PATCH] ASoC: max98373: Fixes a typo max98373_feedback_get
+Message-Id: <161176762855.34530.12866385579369703713.b4-ty@kernel.org>
+Date:   Wed, 27 Jan 2021 17:13:48 +0000
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
- <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
- <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
- <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
- <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
- <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
- <CAGETcx8=woX_SVckG+gs68KMif-JGoy3a1PQGfonMNBH18Ak6A@mail.gmail.com> <CAMuHMdUpzaRutO+jKffXtGDoy5g2QoXkbO+-tzbEzibNYbhCuA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUpzaRutO+jKffXtGDoy5g2QoXkbO+-tzbEzibNYbhCuA@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 27 Jan 2021 09:10:54 -0800
-Message-ID: <CAGETcx_81qOe2LvX-J_PBZWdouykPoPYdf5=yMVhnjgDxAkgaw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 8:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Wed, Jan 27, 2021 at 5:42 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Tue, Jan 26, 2021 at 11:43 PM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> > > On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
-> > > > <geert@linux-m68k.org> wrote:
-> > > > > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
-> > > > > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
-> > > > > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
-> > > > > > > > wrote:
-> > > > > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
-> > > > > > > >> wrote:
-> > > > > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> > > > > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> > > > > > > >> > > wrote:
-> > > > > > > >> > >>
-> > > > > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
-> > > > > > > >> > >> all CCs to BCCs :(]
-> > > > > > > >> > >>
-> > > > > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> > > > > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> > > > > > > >> > >> >>
-> > > > > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> > > > > > > >> > >> >> wrote:
-> > > > > > > >> > >> >> >
-> > > > > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > > > > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > > > > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
-> > > > > > > >> > >> >>
-> > > > > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> > > > > > > >> > >> >> shouldn't it be fixed or removed?
-> > > > > > > >> > >> >
-> > > > > > > >> > >> > I was actually thinking about this too. The problem with fixing
-> > > > > > > >> > >> > builtin_platform_driver_probe() to behave like
-> > > > > > > >> > >> > builtin_platform_driver() is that these probe functions could be
-> > > > > > > >> > >> > marked with __init. But there are also only 20 instances of
-> > > > > > > >> > >> > builtin_platform_driver_probe() in the kernel:
-> > > > > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> > > > > > > >> > >> > 20
-> > > > > > > >> > >> >
-> > > > > > > >> > >> > So it might be easier to just fix them to not use
-> > > > > > > >> > >> > builtin_platform_driver_probe().
-> > > > > > > >> > >> >
-> > > > > > > >> > >> > Michael,
-> > > > > > > >> > >> >
-> > > > > > > >> > >> > Any chance you'd be willing to help me by converting all these to
-> > > > > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> > > > > > > >> > >>
-> > > > > > > >> > >> If it just moving the probe function to the _driver struct and
-> > > > > > > >> > >> remove the __init annotations. I could look into that.
-> > > > > > > >> > >
-> > > > > > > >> > > Yup. That's pretty much it AFAICT.
-> > > > > > > >> > >
-> > > > > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> > > > > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
-> > > > > > > >> > > flags and still using builtin_platform_driver_probe().
-> > > > > > > >> >
-> > > > > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
-> > > > > > > >> > are ~80 drivers which uses that.
-> > > > > > > >>
-> > > > > > > >> Yeah. The biggest problem with all of these is the __init markers.
-> > > > > > > >> Maybe some familiar with coccinelle can help?
-> > > > > > > >
-> > > > > > > > And dropping them will increase memory usage.
-> > > > > > >
-> > > > > > > Although I do have the changes for the builtin_platform_driver_probe()
-> > > > > > > ready, I don't think it makes much sense to send these unless we agree
-> > > > > > > on the increased memory footprint. While there are just a few
-> > > > > > > builtin_platform_driver_probe() and memory increase _might_ be
-> > > > > > > negligible, there are many more module_platform_driver_probe().
-> > > > > >
-> > > > > > While it's good to drop code that'll not be used past kernel init, the
-> > > > > > module_platform_driver_probe() is going even more extreme. It doesn't
-> > > > > > even allow deferred probe (well before kernel init is done). I don't
-> > > > > > think that behavior is right and that's why we should delete it. Also,
-> > > > >
-> > > > > This construct is typically used for builtin hardware for which the
-> > > > > dependencies are registered very early, and thus known to probe at
-> > > > > first try (if present).
-> > > > >
-> > > > > > I doubt if any of these probe functions even take up 4KB of memory.
-> > > > >
-> > > > > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
-> > > > > How many can you afford to waste?
-> > > >
-> > > > There are only a few instances of this macro in the kernel. How many
-> > >
-> > > $ git grep -lw builtin_platform_driver_probe | wc -l
-> > > 21
-> > > $ git grep -lw module_platform_driver_probe | wc -l
-> > > 86
-> > >
-> > > + the ones that haven't been converted to the above yet:
-> > >
-> > > $ git grep -lw platform_driver_probe | wc -l
-> > > 58
-> > >
-> >
-> > Yeah, this adds up in terms of the number of places we'd need to fix.
-> > But thinking more about it, a couple of points:
-> > 1. Not all builtin_platform_driver_probe() are problems for
-> > fw_devlink. So we can just fix them as we go if we need to.
-> >
-> > 2. The problem with builtin_platform_driver_probe() isn't really with
-> > the use of __init. It's the fact that it doesn't allow deferred
-> > probes. builtin_platform_driver_probe()/platform_driver_probe() could
-> > still be fixed up to allow deferred probe until we get to the point
-> > where we free the __init section (so at least till late_initcall).
->
-> That's intentional: it is used for cases that will (must) never be deferred.
-> That's why it's safe to use __init.
+On Wed, 27 Jan 2021 21:48:47 +0800, Judy Hsiao wrote:
+> The snd_soc_put_volsw in max98373_feedback_get is a typo, change it
+> to snd_soc_gut_volsw.
 
-So was the usage of builtin_platform_driver_probe() wrong in the
-driver Michael fixed? Because, deferring and probing again clearly
-works?
+Applied to
 
-Also, "must never be deferred" seems like a weird condition to
-enforce. I think the real "rule" is that if it defers, the platform is
-not expected to work. But disallowing a probe reattempt seems weird.
-What is it going to hurt if it's attempted again? At worst it fails
-one more time?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Also, I'd argue that all/most of the "can't defer, but I'm still a
-proper struct device" cases are all just patchwork to deal with the
-fact we were playing initcall chicken when there was no fw_devlink.
-I'm hoping we can move people away from that mindset. And the first
-step towards that would be to allow *platform_probe() to allow
-deferred probes until late_initcall().
+Thanks!
 
+[1/1] ASoC: max98373: Fixes a typo max98373_feedback_get
+      commit: ded055eea679139f11bd808795d9697b430d1c7d
 
--Saravana
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
