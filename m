@@ -2,166 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45315305F38
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE395305F30
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343734AbhA0PNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:13:18 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:40047 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235751AbhA0PG1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:06:27 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 892995C00CF;
-        Wed, 27 Jan 2021 10:05:34 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 27 Jan 2021 10:05:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=NZ/BL+CX8ZrUPwXj4Uh/86z40F
-        CVpFJbpqPIuN9jSec=; b=atQgHX2qSgfP06U5kuFU7gTfr/kLpf5lCsCIareSSO
-        uNn+nnfsY/ohOStNFDVfX+lqvJmgj/5t1D81GtsJ72dYwVtwu6x8Y2ZJGXle29uw
-        NEQuGlaZz0ByWg7OQW+I5RMwnlDYaMedZlGQkxvoykWTBIpZfUS1LPxI/e8taCrD
-        g4pzSY/YPEoiMvpNPLpxVaEx72d1Xm5VPSxbGLUkNLEjTy41aNUIyIzgyUOMU8jN
-        VdvQVmrO6ajbPedslhd6LzSoMU8Bj30/pyamRPlfBxr2XIwzA6Gh5kd2b7h8Fcno
-        5IdCB2jFYqtZGcnAwv/fTNwjfNz/Z+8HaSapg6MfotUg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NZ/BL+CX8ZrUPwXj4
-        Uh/86z40FCVpFJbpqPIuN9jSec=; b=o2b1WHHivF88bjoSUXLVS9NQGPOZzAEMN
-        DsA+lSWD1Lat7D2sA5TGROZadoWRBXNw+i3ObTPiD3JeaRgIa+50BVqFgrskL0qg
-        aJao/AANLn4pU1t9lkD3BSaPnPbpsLh1xWuaUiK9RNxhSzzlN3ktSalzRh/UvlIX
-        AptkpWvrkP0A1JLVxwjCx44oxSR6xc8OTm0+1wz2BacI2my17j00EVKA8+qYLLWl
-        xW4MzM7ipsppbomdN3KW8bYkDKp/1cDqO3c81/35nr1s+H0W3V/XG4SQls0LVhD2
-        orFE5lYZOaMF0iteBj4PpExXfNIMAM3z8NQ1NqUmq9oJC2Sb3p0Bg==
-X-ME-Sender: <xms:PYERYOPOtb6_NVTq2pkNxQ4IS0TWpKNXFr1j15WBT0wJ7q3TkN2VeQ>
-    <xme:PYERYEYAX9D32Tj-GYlCTnN6eeQXKTodQbvMHVSgJj9UEjHGZ9Hz4niTSxvV135k3
-    KZ3vKNCbY79ogFQ8Ds>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekgdejudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpefvohhmohihuhhkihcuofgrthhsuhhshhhithgruceogihorhhphhhi
-    thhushesfhgrshhtmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeetgeffuefghe
-    fftedvtefgjeejjeelhedtfeekveejtedtkedvhfelfedvieeugeenucfkphepuddtfedr
-    vddrvdegledrudduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpeigohhrphhhihhtuhhssehfrghsthhmrghilhdrtghomh
-X-ME-Proxy: <xmx:PYERYCoKuDuUnF2io7Zrml9W4cqA445jyBjQuNxAeNyzZLYNtj_EUA>
-    <xmx:PYERYIaTAHqVQvE5pd69GdF1nnYqyQX2gjkR0aCr9jwBck6x8fnWkA>
-    <xmx:PYERYKSvshS-IiTxT0tA_TLTO1FXxDRJvA4l8Q4I4AcVdyixqKl_YA>
-    <xmx:PoERYA78B2AX3kVB0CNgvghBlgYKxVBDSgPoCOfA4lahqw5OR7azag>
-Received: from xorphitus-arch.flets-east.jp (119.249.2.103.shared.user.transix.jp [103.2.249.119])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D308B1080067;
-        Wed, 27 Jan 2021 10:05:31 -0500 (EST)
-From:   Tomoyuki Matsushita <xorphitus@fastmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     Tomoyuki Matsushita <xorphitus@fastmail.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        id S234544AbhA0PMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:12:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235587AbhA0PH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:07:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57384207E2;
+        Wed, 27 Jan 2021 15:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611759991;
+        bh=TWIRJM6gVAm1vQZqku9qg1fMLOchvryOpdAYf8HGPDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aHXsweOIcpqgkuspQ3fcjfaTCA0kdWWEAK7WZ3nQZCBqhIXNC5bSXA+Y83TTOkjxv
+         H7enIR2piMgV/sMCuZyCih2ERruJOrH8t24mGD5h29UOaGuyFhPRez+fP60Ot2yS6t
+         j9NHwH2JXoyHvJm4aN5DzivxDDEVf/ZK3R0yIYXp4EA72CMJ3W98vIexPYNXOtMMm5
+         zEznLnjohJ15VFkq7+7nJ+XaIWA3uN/ZrPcd9fn9mbWsmBX9Syj7942CqVvnHqSl3p
+         rdYZCBKEC5SY+TnXzed9wxR8uwOOMjbtx4XogwATG2MHXkFS5SRWhu2U2PWMh9SFcq
+         qbEtJ5UP4idHQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4mP5-0001xv-H6; Wed, 27 Jan 2021 16:06:43 +0100
+Date:   Wed, 27 Jan 2021 16:06:43 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: af_bluetooth: checkpatch: fix indentation and alignment
-Date:   Thu, 28 Jan 2021 00:05:20 +0900
-Message-Id: <20210127150520.3459346-1-xorphitus@fastmail.com>
-X-Mailer: git-send-email 2.30.0
+Subject: Re: [PATCH v3 08/12] usb: misc: ldusb: update to use
+ usb_control_msg_send()
+Message-ID: <YBGBg5ofIzUHxoYn@hovoldconsulting.com>
+References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
+ <20210126183403.911653-9-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126183403.911653-9-anant.thazhemadam@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Tomoyuki Matsushita <xorphitus@fastmail.com>
----
- net/bluetooth/af_bluetooth.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+On Wed, Jan 27, 2021 at 12:03:59AM +0530, Anant Thazhemadam wrote:
+> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> existing usb_control_msg() as it ensures that a short read/write is treated
+> as an error, data can be used off the stack, and raw usb pipes need not be
+> created in the calling functions.
+> For this reason, the instance of usb_control_msg_send() has been replaced
+> with usb_control_msg_send() appropriately.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> ---
+>  drivers/usb/misc/ldusb.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/ldusb.c b/drivers/usb/misc/ldusb.c
+> index 670e4d91e9ca..259ead4edecb 100644
+> --- a/drivers/usb/misc/ldusb.c
+> +++ b/drivers/usb/misc/ldusb.c
+> @@ -573,15 +573,13 @@ static ssize_t ld_usb_write(struct file *file, const char __user *buffer,
+>  	}
+>  
+>  	if (dev->interrupt_out_endpoint == NULL) {
+> -		/* try HID_REQ_SET_REPORT=9 on control_endpoint instead of interrupt_out_endpoint */
+> -		retval = usb_control_msg(interface_to_usbdev(dev->intf),
+> -					 usb_sndctrlpipe(interface_to_usbdev(dev->intf), 0),
+> -					 9,
+> +		retval = usb_control_msg_send(interface_to_usbdev(dev->intf),
+> +					 0, 9,
+>  					 USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
+>  					 1 << 8, 0,
+>  					 dev->interrupt_out_buffer,
+>  					 bytes_to_write,
+> -					 USB_CTRL_SET_TIMEOUT);
+> +					 USB_CTRL_SET_TIMEOUT, GFP_KERNEL);
+>  		if (retval < 0)
+>  			dev_err(&dev->intf->dev,
+>  				"Couldn't submit HID_REQ_SET_REPORT %d\n",
 
-diff --git a/net/bluetooth/af_bluetooth.c b/net/bluetooth/af_bluetooth.c
-index 4ef6a54403aa..968ea03d863f 100644
---- a/net/bluetooth/af_bluetooth.c
-+++ b/net/bluetooth/af_bluetooth.c
-@@ -72,8 +72,8 @@ void bt_sock_reclassify_lock(struct sock *sk, int proto)
- 	BUG_ON(!sock_allow_reclassification(sk));
- 
- 	sock_lock_init_class_and_name(sk,
--			bt_slock_key_strings[proto], &bt_slock_key[proto],
--				bt_key_strings[proto], &bt_lock_key[proto]);
-+				      bt_slock_key_strings[proto], &bt_slock_key[proto],
-+				      bt_key_strings[proto], &bt_lock_key[proto]);
- }
- EXPORT_SYMBOL(bt_sock_reclassify_lock);
- 
-@@ -451,7 +451,7 @@ static inline __poll_t bt_accept_poll(struct sock *parent)
- }
- 
- __poll_t bt_sock_poll(struct file *file, struct socket *sock,
--			  poll_table *wait)
-+		      poll_table *wait)
- {
- 	struct sock *sk = sock->sk;
- 	__poll_t mask = 0;
-@@ -478,7 +478,7 @@ __poll_t bt_sock_poll(struct file *file, struct socket *sock,
- 		mask |= EPOLLHUP;
- 
- 	if (sk->sk_state == BT_CONNECT ||
--			sk->sk_state == BT_CONNECT2 ||
-+	    sk->sk_state == BT_CONNECT2 ||
- 			sk->sk_state == BT_CONFIG)
- 		return mask;
- 
-@@ -508,7 +508,7 @@ int bt_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
- 		amount = sk->sk_sndbuf - sk_wmem_alloc_get(sk);
- 		if (amount < 0)
- 			amount = 0;
--		err = put_user(amount, (int __user *) arg);
-+		err = put_user(amount, (int __user *)arg);
- 		break;
- 
- 	case TIOCINQ:
-@@ -519,7 +519,7 @@ int bt_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
- 		skb = skb_peek(&sk->sk_receive_queue);
- 		amount = skb ? skb->len : 0;
- 		release_sock(sk);
--		err = put_user(amount, (int __user *) arg);
-+		err = put_user(amount, (int __user *)arg);
- 		break;
- 
- 	default:
-@@ -637,7 +637,7 @@ static int bt_seq_show(struct seq_file *seq, void *v)
- 	struct bt_sock_list *l = PDE_DATA(file_inode(seq->file));
- 
- 	if (v == SEQ_START_TOKEN) {
--		seq_puts(seq ,"sk               RefCnt Rmem   Wmem   User   Inode  Parent");
-+		seq_puts(seq, "sk               RefCnt Rmem   Wmem   User   Inode  Parent");
- 
- 		if (l->custom_seq_show) {
- 			seq_putc(seq, ' ');
-@@ -657,7 +657,7 @@ static int bt_seq_show(struct seq_file *seq, void *v)
- 			   sk_wmem_alloc_get(sk),
- 			   from_kuid(seq_user_ns(seq), sock_i_uid(sk)),
- 			   sock_i_ino(sk),
--			   bt->parent? sock_i_ino(bt->parent): 0LU);
-+			   bt->parent ? sock_i_ino(bt->parent) : 0LU);
- 
- 		if (l->custom_seq_show) {
- 			seq_putc(seq, ' ');
-@@ -678,7 +678,7 @@ static const struct seq_operations bt_seq_ops = {
- 
- int bt_procfs_init(struct net *net, const char *name,
- 		   struct bt_sock_list *sk_list,
--		   int (* seq_show)(struct seq_file *, void *))
-+		   int (*seq_show)(struct seq_file *, void *))
- {
- 	sk_list->custom_seq_show = seq_show;
- 
-@@ -694,7 +694,7 @@ void bt_procfs_cleanup(struct net *net, const char *name)
- #else
- int bt_procfs_init(struct net *net, const char *name,
- 		   struct bt_sock_list *sk_list,
--		   int (* seq_show)(struct seq_file *, void *))
-+		   int (*seq_show)(struct seq_file *, void *))
- {
- 	return 0;
- }
--- 
-2.30.0
+This would also only introduce a redundant allocation and memcpy() as
+the buffer is already DMA-able and used for that purpose in other places
+as well.
 
+I suggest dropping this one too.
+
+Johan
