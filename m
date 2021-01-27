@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBAD3051CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680103051CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhA0FPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
+        id S232950AbhA0FQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:16:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238708AbhA0EzL (ORCPT
+        with ESMTP id S238706AbhA0EzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:55:11 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AD1C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:31 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id u4so577931pjn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:31 -0800 (PST)
+        Tue, 26 Jan 2021 23:55:14 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95660C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:34 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id c132so767912pga.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r9/iygGEsbCXV7twHQtjrSpr12PzDM9c+Fh0z8xYuMw=;
-        b=OztU7czy87n2d9gUaGyLG6kNOv+55ojXybNmqvW09YTEfhNZFSwkBidqBAcnqUBEHx
-         5ik+VJOtGheuqOho7F768S0CkhayUtcioUenKzwaeN8rwgq3aeWd7Kf56sL2UOH3sVaU
-         qjyMe9vw+Y/3V9tZF3dYSy1+IJQbfvfbZaR0o=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kmjtKFjHTUarfxu+lL0d5qeXmAGAmFw4kcflRE2ZaXY=;
+        b=XVJOs4QHR+H8Ih7yjKd1WM+pL+RphjK4kSpQF56nU1UIDdoY4eVpUJBR+38H/KTHxX
+         XOL9WxZXJ4wxzeZTNLjOSM8OHbxUX2yGW2jF36pKr07LRDZRMEtwZOFKRvZ6bxssZkyB
+         wlRYopNtHq5PMiRl1z7h9tBkOMavw2nH1ad1w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r9/iygGEsbCXV7twHQtjrSpr12PzDM9c+Fh0z8xYuMw=;
-        b=Z2O3CFo2xhcG8cRl14zKHMQ1sCs93ljd5UZkPpK4fv/4smhyte6tfREkrAp1NF4s6N
-         YHWWcWLbxuz6Xn4USzo6YSx0YT+7nZnjBQtYBR3XpXomYloT0DECP41FUhgZGKXUzfX0
-         crtd1ruBj3TrLDjPRjE1zlIqHGmi+bdNv/SI09ndntg57FpNJWWsB87L9mgXDgl9xLdi
-         3gh8kImr5M8rq6MwkPIyMsK9D/N5ON87bOdkKvBooJnY2gaNK0dbvlChgktCZY7XmPmh
-         X/o0OdQvjTMq5KWoXYUT6c4DgNNWuT8fN8qp+BoaMdmrhxBBYG294mEE+nPksoTTOmBZ
-         OOqA==
-X-Gm-Message-State: AOAM532Ba5YMllxcY1VBg2aKTwQbpcMvGtHPcKfin0hM7APXykkMxn/I
-        hbtlJTML2wR8h7PyHe1gm1+Ibw==
-X-Google-Smtp-Source: ABdhPJw1C1zpxPU5435J6VcpDvDLiXPINRvaNkHHQYv/g9eHyTnv61bvxwVHrMY7s3JauV7WzUR0Bw==
-X-Received: by 2002:a17:902:d4c3:b029:de:84a5:aaf2 with SMTP id o3-20020a170902d4c3b02900de84a5aaf2mr9326915plg.80.1611723270673;
-        Tue, 26 Jan 2021 20:54:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kmjtKFjHTUarfxu+lL0d5qeXmAGAmFw4kcflRE2ZaXY=;
+        b=IPrsiiXIn7k9sTNHeN6asTGJ7e7pYCg7oTlyIr1vSpbZlB9gKDlah0o2mA2W6Z+He+
+         3gsg9iCZUM2BKx9uSifseO3msbwZIeCnNR8UZs/9EIDAPxQ0rANnikRPTRvDD43TpvZa
+         TBefQS/3aiMCDHcj4H30Lb1CJepI6uVtuKNoHfzVCQoKXL2eb5xUHj28W0bCHg14UTCX
+         Ks0rRJz4FfKWjwKnY0b+lpW8Kaooshu7yg8a2w3dCReBnNg8CqbErDu+VJ/PHaUAfx0I
+         JN6gQF5ZQHsz8HIdcynVcvpBHNtuC+YxWlhLvWs7qJLH5G3beRivprmwbHJ8IsMlQPcg
+         pBwg==
+X-Gm-Message-State: AOAM533fZwFg5vmgEFPPZjeQqom+DLhNWkuFq10NYKZ6C3btUg83ir88
+        Cb29r+NWPCuQX9NQQK9aXQljVQ==
+X-Google-Smtp-Source: ABdhPJx4yF5Zj6KuoOFQLvTsPUKYfKrEzTHR49F4EG7T/rAXtxPo121Qzb4bSIV+4HFYyIAB7z9ATg==
+X-Received: by 2002:a65:64d6:: with SMTP id t22mr9164071pgv.42.1611723274151;
+        Tue, 26 Jan 2021 20:54:34 -0800 (PST)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:e0a5:d2fc:aaad:1e4a])
-        by smtp.gmail.com with ESMTPSA id a141sm684484pfa.189.2021.01.26.20.54.27
+        by smtp.gmail.com with ESMTPSA id a141sm684484pfa.189.2021.01.26.20.54.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 20:54:29 -0800 (PST)
+        Tue, 26 Jan 2021 20:54:33 -0800 (PST)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
         Matthias Brugger <matthias.bgg@gmail.com>
@@ -55,94 +55,51 @@ Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
         linux-mediatek@lists.infradead.org,
         Project_Global_Chrome_Upstream_Group@mediatek.com,
         Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v10 0/9] drm/mediatek: add support for mediatek SOC MT8183
-Date:   Wed, 27 Jan 2021 12:54:13 +0800
-Message-Id: <20210127045422.2418917-1-hsinyi@chromium.org>
+Subject: [PATCH v10 1/9] arm64: dts: mt8183: rename rdma fifo size
+Date:   Wed, 27 Jan 2021 12:54:14 +0800
+Message-Id: <20210127045422.2418917-2-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+In-Reply-To: <20210127045422.2418917-1-hsinyi@chromium.org>
+References: <20210127045422.2418917-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is based on kernel/git/chunkuang.hu/linux.git mediatek-drm-next
-The series is tested on a mt8183 krane device.
+From: Yongqiang Niu <yongqiang.niu@mediatek.com>
 
-Change since v9
-- change several function to rebase to mediatek-drm-next
+property name must include only lowercase and '-'
 
-Change since v8
-- fix some review comment in v8
-- separate gamma module for mt8183 has no dither function in gamma
-- enable dither function for 5 or 6 bpc panel display
-- separate ddp mutex patch from the whole Soc patch
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Change since v7
-- add dt-binding for mt8183 display
-- base mmsys patch
-https://patchwork.kernel.org/project/linux-mediatek/cover/1607506379-10998-1-git-send-email-yongqiang.niu@mediatek.com/
-- base dts patch
-https://patchwork.kernel.org/project/linux-mediatek/cover/20201127104930.1981497-1-enric.balletbo@collabora.com/
-- add mt8183 function call for setting the routing registers
-- add RDMA fifo size error handle
-
-Change since v6
-- move ddp component define into mtk_mmsys.h
-- add mmsys private data to support different ic path connection
-- add mt8183-mmsys.c to support 8183 path connection
-- fix reviewed issue in v6
-
-Change since v5
-- fix reviewed issue in v5
-base https://patchwork.kernel.org/project/linux-mediatek/list/?series=213219
-
-Change since v4
-- fix reviewed issue in v4
-
-Change since v3
-- fix reviewed issue in v3
-- fix type error in v3
-- fix conflict with iommu patch
-
-Change since v2
-- fix reviewed issue in v2
-- add mutex node into dts file
-
-Changes since v1:
-- fix reviewed issue in v1
-- add dts for mt8183 display nodes
-- adjust display clock control flow in patch 22
-- add vmap support for mediatek drm in patch 23
-- fix page offset issue for mmap function in patch 24
-- enable allow_fb_modifiers for mediatek drm in patch 25
-
-
-Hsin-Yi Wang (1):
-  drm/mediatek: generalize mtk_dither_set() function
-
-Yongqiang Niu (8):
-  arm64: dts: mt8183: rename rdma fifo size
-  arm64: dts: mt8183: refine gamma compatible name
-  drm/mediatek: add RDMA fifo size error handle
-  drm/mediatek: separate gamma module
-  drm/mediatek: add has_dither private data for gamma
-  drm/mediatek: enable dither function
-  drm/mediatek: add DDP support for MT8183
-  drm/mediatek: add support for mediatek SOC MT8183
-
- arch/arm64/boot/dts/mediatek/mt8183.dtsi    |   7 +-
- drivers/gpu/drm/mediatek/Makefile           |   1 +
- drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  14 ++
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 195 ++++++++++++++++++++
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c     |  18 ++
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c    |  10 +
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 131 +++++++------
- drivers/gpu/drm/mediatek/mtk_drm_drv.c      |  49 ++++-
- drivers/gpu/drm/mediatek/mtk_drm_drv.h      |   1 +
- drivers/soc/mediatek/mtk-mutex.c            |  50 +++++
- 10 files changed, 402 insertions(+), 74 deletions(-)
- create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 5b782a4769e7e..6c84ccb709af6 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1011,7 +1011,7 @@ rdma0: rdma@1400b000 {
+ 			clocks = <&mmsys CLK_MM_DISP_RDMA0>;
+ 			iommus = <&iommu M4U_PORT_DISP_RDMA0>;
+ 			mediatek,larb = <&larb0>;
+-			mediatek,rdma_fifo_size = <5120>;
++			mediatek,rdma-fifo-size = <5120>;
+ 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xb000 0x1000>;
+ 		};
+ 
+@@ -1023,7 +1023,7 @@ rdma1: rdma@1400c000 {
+ 			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+ 			iommus = <&iommu M4U_PORT_DISP_RDMA1>;
+ 			mediatek,larb = <&larb0>;
+-			mediatek,rdma_fifo_size = <2048>;
++			mediatek,rdma-fifo-size = <2048>;
+ 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
+ 		};
+ 
 -- 
 2.30.0.280.ga3ce27912f-goog
 
