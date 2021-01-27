@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EDC30505D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43069305065
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238026AbhA0EEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:04:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S233391AbhA0EFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:05:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbhA0DC5 (ORCPT
+        with ESMTP id S232525AbhA0DEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:02:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B2CC0617A9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 18:25:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=60WoA0haalgCAug6TGsXGutfGgc3qh6P4UHF0YYcunc=; b=mI2AtubiUQoYZfxsg0Q/vN6JmI
-        4CdZ092ntuvOBqOowp3+K+9wzzo/RP9CY2aTZj/zfnZuGlVixoIyUqnRS8/4FcBRaaVZTaeKHvLr5
-        Bfps/iMMOOiaBxbQA1hQTxFkSB5BfBFJl9UpSMFsC4dEA3Ha+K/AZttGdxivvzBjnmbhvHZ9KqDK5
-        91MjTe3DC2qFQBFUoVKDak8vOVET3IO5Wpmi4qk4rfKhrR5MPZhgZEXL5UnlPzsISsumGB1qjCkzO
-        mU30vp5xW4bDMp6uTqXR8cUgSvcHhmGsrkpUNBx20jPRA8hWIF3KyXbAHgS3An1SckSoTDQPcD0Cn
-        7RbjZwMQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4aVa-006WTR-Kv; Wed, 27 Jan 2021 02:24:41 +0000
-Date:   Wed, 27 Jan 2021 02:24:38 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
-Subject: Re: [PATCH 2/2] mm/hugetlb: refactor subpage recording
-Message-ID: <20210127022438.GQ308988@casper.infradead.org>
-References: <20210125205744.10203-1-joao.m.martins@oracle.com>
- <20210125205744.10203-3-joao.m.martins@oracle.com>
- <3d34111f-8365-ab95-af11-aaf4825204be@oracle.com>
- <1ae0313d-de9b-4553-1f68-04c4f5a3f7eb@oracle.com>
- <4d3914e9-f448-8a86-9fc6-e71cec581115@oracle.com>
- <20210127000730.GB4605@ziepe.ca>
+        Tue, 26 Jan 2021 22:04:22 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D3FC0617A7;
+        Tue, 26 Jan 2021 18:25:20 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id o20so229777pfu.0;
+        Tue, 26 Jan 2021 18:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=joDhYr4WwYIa6lTFlqLJ0z3vbyBAAz6QSsz7f9MoAT0=;
+        b=IQHJWZYVacOMsK096C8npqb57WhF9GsyIaKrsd2VR5on07xkS3mYrUm7ry3hHTyGzv
+         kslNVsQNyIvsTaXnEpvcqjT3I0LOf1fvW+YbF7eQrE24Ukpd9yvwsQBSS06BGRbnpzpS
+         3hHH/+yHrTpOKYsmdHmgacKwyxYHtnZ1qgP/5A0EQ80DDUt8lYtg3h7iVya/+gZobnEg
+         hoFiXnYo4FCsSH1J8qiNDIzHPjozqgaGT2Jp5UZNNqDQbpmvGk1jA1oyIauCvvy/J9kD
+         iJ8WEGfdX12W8p9LuuOq8AVT57fWZkfATrteTyNcC4yqp0Xv0uz4Yh0KV1+sr+crVQN3
+         8guw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=joDhYr4WwYIa6lTFlqLJ0z3vbyBAAz6QSsz7f9MoAT0=;
+        b=Ch+XYVk2WE5KCkTr4sPAgeU+mZ8kAjapFiElSWOJIS1uwe9NnZPLv6SOVQqWMbP3DN
+         GWLWQ8teEYOgWQjyDBR7BxNajVli1Ymv80n3kbmz7Dw6n+ztJzBks9qVtz1yPb0R4Dkk
+         MXCalG9ggWw2Gf7wThI5t4ykRPgiEMc3XrH1Rxi3Q2gfZDGr+JueM0dAhrDDxhw/RAMm
+         uDJfbpaPOqZY7uF0uNmjlEbP7TCtO4BuY4z4sfMxezsEZcSWOP1tMZkL1G+vi25IKnzq
+         hS0n8wnHqC11I2qkxn+cgVpIfNfwv46fPH2zmduKmlhu5NG6t9FIMoRiTkiFMRCinmaF
+         ew4w==
+X-Gm-Message-State: AOAM5334AnLEdkOQjDZ0TeUEXuWmVeymW52FGqNkFReMg4JHQEAPqmmu
+        2wojYJdUTw8Sk+nDY0pYWgs=
+X-Google-Smtp-Source: ABdhPJzDMD5pkEHDo4gipRdTGkjHcADKE3lHimALyEXvIwt/WyGdyMf+YeCjyYKXgbt2YaEYCVWEuQ==
+X-Received: by 2002:aa7:9ad3:0:b029:1b7:8afc:d9bd with SMTP id x19-20020aa79ad30000b02901b78afcd9bdmr7980137pfp.45.1611714319755;
+        Tue, 26 Jan 2021 18:25:19 -0800 (PST)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id b21sm390023pfb.45.2021.01.26.18.25.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 18:25:19 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jackmanb@google.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH bpf-next] bpf: change 'BPF_ADD' to 'BPF_AND' in print_bpf_insn()
+Date:   Tue, 26 Jan 2021 18:25:07 -0800
+Message-Id: <20210127022507.23674-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127000730.GB4605@ziepe.ca>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 08:07:30PM -0400, Jason Gunthorpe wrote:
-> I'm looking at Matt's folio patches and see:
-> 
-> +static inline struct folio *next_folio(struct folio *folio)
-> +{
-> +       return folio + folio_nr_pages(folio);
-> +}
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-This is a replacement for places that would do 'page++'.  eg it's
-used by the bio iterator where we already checked that the phys addr
-and the struct page are contiguous.
+This 'BPF_ADD' is duplicated, and I belive it should be 'BPF_AND'.
 
-> And checking page_trans_huge_mapcount():
-> 
-> 	for (i = 0; i < thp_nr_pages(page); i++) {
-> 		mapcount = atomic_read(&page[i]._mapcount) + 1;
+Fixes: 981f94c3e921 ("bpf: Add bitwise atomic instructions")
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ kernel/bpf/disasm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think we are guaranteed this for transparent huge pages.  At least
-for now.  Zi Yan may have some thoughts for his work on 1GB transhuge
-pages ...
+diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
+index 19ff8fed7f4b..3acc7e0b6916 100644
+--- a/kernel/bpf/disasm.c
++++ b/kernel/bpf/disasm.c
+@@ -161,7 +161,7 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
+ 				insn->dst_reg,
+ 				insn->off, insn->src_reg);
+ 		else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
+-			 (insn->imm == BPF_ADD || insn->imm == BPF_ADD ||
++			 (insn->imm == BPF_ADD || insn->imm == BPF_AND ||
+ 			  insn->imm == BPF_OR || insn->imm == BPF_XOR)) {
+ 			verbose(cbs->private_data, "(%02x) lock *(%s *)(r%d %+d) %s r%d\n",
+ 				insn->code,
+-- 
+2.25.1
 
-> And we have the same logic in hmm_vma_walk_pud():
-> 
-> 	if (pud_huge(pud) && pud_devmap(pud)) {
-> 		pfn = pud_pfn(pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-> 		for (i = 0; i < npages; ++i, ++pfn)
-> 			hmm_pfns[i] = pfn | cpu_flags;
-> 
-> So, if page[n] does not access the tail pages of a compound we have
-> many more people who are surprised by this than just GUP.
-> 
-> Where are these special rules for hugetlb compound tails documented?
-> Why does it need to be like this? 
-> 
-> Isn't it saner to forbid a compound and its tails from being
-> non-linear in the page array? That limits when compounds can be
-> created, but seems more likely to happen than a full mm audit to find
-> all the places that assume linearity.
-> 
-> Jason
