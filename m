@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87333052D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BD73052D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235643AbhA0GGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:06:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbhA0Fe1 (ORCPT
+        id S235652AbhA0GGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:06:46 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59205 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234371AbhA0FhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:34:27 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46CDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 21:33:42 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id a109so622555otc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 21:33:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UXTjp2O+kLbB9CTCJxJt0SD+zZK5wsiYg7svDRD619A=;
-        b=dOn1TON+07GhKGJIoyayMjmuy9BWh8V5ii5n4VTX82icYwL/TZwbySdeoTGe3zAzC7
-         oSuVT+QQQ33v+XleMivKtoG2pI8n2OuZ9WN0bVODaUZ1UVzMKaFDoNYW6SEGK0pCKGKQ
-         oWxYyv3zdNrU3Ep7X6AREUC29Rlo8lcyt4qvfUGVJ+VMNTx5UuJgcjV0rAxgRI/6Bk/K
-         0i+FrH5GAbdXLc9mePC17FZ9ip41xi53D0APB/iDZlFNapeDRcpz5BD2WXJpdKPZBOIJ
-         MnfwfXayWeimpxJ4hLheuNTqOC1Bq0ahgp4WJngILzzvK0tC/Jj3ClVY+bA4mPvdkw79
-         6Z2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UXTjp2O+kLbB9CTCJxJt0SD+zZK5wsiYg7svDRD619A=;
-        b=juyS9ZcroRJzA9BU3mMFQKVg896gefybyrtIDkr2CoSgy/9LbtT0+KlOFeVZKzSphN
-         fhqXw4IKwUAeZHWU3TIut0sFX1ZQq7CCfMQiJtq+pRExWTjfEFc2Dn4EykEeXLQmHhTh
-         8i3/R/DvQR53oiWSkkhSnp+vvIC+tJ8nOlCVerV+ChDffTWKgqWEWNtPe9e8WM4T9tX1
-         p/oew2AU3sx1RZUS3uJdsKpf+QAfvyDNh+ZVFJQw0N5/4wMr6/lhLreJcypkBzwFhWbh
-         1rIKDV3uwVKVFkULjmJKMOMfGpcbqdyJTmoYM9+kAVOm+XjhXentSmhmby07s620/2v2
-         NHig==
-X-Gm-Message-State: AOAM533g8/ZsXtlNBtUvE1IiNc3GUBb35G3dg19dC8HGMOtLPiZGVQ2x
-        WtekXiKrSmd0x2cE7S2lLXAVaw==
-X-Google-Smtp-Source: ABdhPJw+Yk3fYOO7ud+1dReFka/e+p0BzGgE33P9Oxdtl8BwVzczBeoJnHajCPDXBfylS3T2qXrRLA==
-X-Received: by 2002:a9d:37a6:: with SMTP id x35mr6665900otb.275.1611725621367;
-        Tue, 26 Jan 2021 21:33:41 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y66sm260747oia.20.2021.01.26.21.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 21:33:40 -0800 (PST)
-Date:   Tue, 26 Jan 2021 23:33:38 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, dan.j.williams@intel.com, vkoul@kernel.org,
-        shawn.guo@linaro.org, srinivas.kandagatla@linaro.org,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dma: qcom: bam_dma: Manage clocks when
- controlled_remotely is set
-Message-ID: <YBD7Mhh1MowRDMBF@builder.lan>
-References: <20210126211859.790892-1-thara.gopinath@linaro.org>
+        Wed, 27 Jan 2021 00:37:19 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10R5aR23030931
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 00:36:28 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id B445515C3709; Wed, 27 Jan 2021 00:36:27 -0500 (EST)
+Date:   Wed, 27 Jan 2021 00:36:27 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc:     Amy Parker <enbyamy@gmail.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Getting a new fs in the kernel
+Message-ID: <YBD72wlZC323yhqZ@mit.edu>
+References: <CAE1WUT7xJyx_gbxJu3r9DJGbqSkWZa-moieiDWC0bue2CxwAwg@mail.gmail.com>
+ <BYAPR04MB4965F2E2624369B34346CC5686BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126211859.790892-1-thara.gopinath@linaro.org>
+In-Reply-To: <BYAPR04MB4965F2E2624369B34346CC5686BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26 Jan 15:18 CST 2021, Thara Gopinath wrote:
-
-> When bam dma is "controlled remotely", thus far clocks were not controlled
-> from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
-> driver and not doing any clock management in suspend/resume hooks.
+On Tue, Jan 26, 2021 at 07:06:55PM +0000, Chaitanya Kulkarni wrote:
+> From what I've seen you can post the long patch-series as an RFC and get the
 > 
-> With introduction of crypto engine bam dma, the clock is a rpmh resource
-> that can be controlled from both Linux and TZ/remote side.  Now bam dma
-> clock is getting enabled during probe even though the bam dma can be
-> "controlled remotely". But due to clocks not being handled properly,
-> bam_suspend generates a unbalanced clk_unprepare warning during system
-> suspend.
+> discussion started.
 > 
-> To fix the above issue and to enable proper clock-management, this patch
-> enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
-> the clock node is present irrespective of controlled_remotely property.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> The priority should be ease of review and not the total patch-count.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+File systems are also complicated enough that it's useful to make the
+patches available via a git repo, and it's highly recommended that you
+are rebasing it against the latest kernel on a regular basis.
 
+I also strongly recommend that once you get something that mostly
+works, that you start doing regression testing of the file system.
+Most of the major file systems in Linux use xfstests for their
+testing.  One of the things that I've done is to package up xfstests
+as a test appliance, suitable for running under KVM or using Google
+Compute Engine, as a VM, to make it super easy for people to run
+regression tests.  (One of my original goals for packaging it up was
+to make it easy for graduate students who were creating research file
+systems to try running regression tests so they could find potential
+problems --- and understand how hard it is to make a robust,
+production-ready file system, by giving them a realtively well
+documented, turn-key system for running file system regression tests.)
 
-And from John on IRC:
+For more information, see:
 
-Tested-by: John Stultz <john.stultz@linaro.org>
+    https://thunk.org/gce-xfstests
+    https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+    https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
+    https://github.com/tytso/xfstests-bld/blob/master/Documentation/gce-xfstests.md
 
-Regards,
-Bjorn
+The final thing I'll point out is that file system development is a
+team sport.  Industry estimates are that it takes between 50 and 200
+person-years to create a production-ready, general purpose enterprise
+file system.  For example, ZFS took seven years to develop, starting
+with a core team of 4, and growing to over 14 developers by the time
+it was announced.  And that didn't include all of the QA, release
+engineering, testers, performance engineers, to get it integrated into
+the Solaris product.  Even after it was announced, it was a good four
+years before customers trusted it for production workloads.
 
-> ---
-> 
-> v1->v2:
-> 	- As per Shawn's suggestion, use devm_clk_get_optional to get the
-> 	  bam clock if the "controlled_remotely" property is set so that
-> 	  the clock code takes care of setting the bam clock to NULL if
-> 	  not specified by dt. 
-> 	- Remove the check for "controlled_remotely" property in
-> 	  bam_dma_resume now that clock enable / disable is based on
-> 	  whether bamclk is NULL or not.
-> 	- Rebased to v5.11-rc5
-> 
->  drivers/dma/qcom/bam_dma.c | 29 +++++++++++++++--------------
->  1 file changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-> index 88579857ca1d..c8a77b428b52 100644
-> --- a/drivers/dma/qcom/bam_dma.c
-> +++ b/drivers/dma/qcom/bam_dma.c
-> @@ -1270,13 +1270,13 @@ static int bam_dma_probe(struct platform_device *pdev)
->  			dev_err(bdev->dev, "num-ees unspecified in dt\n");
->  	}
->  
-> -	bdev->bamclk = devm_clk_get(bdev->dev, "bam_clk");
-> -	if (IS_ERR(bdev->bamclk)) {
-> -		if (!bdev->controlled_remotely)
-> -			return PTR_ERR(bdev->bamclk);
-> +	if (bdev->controlled_remotely)
-> +		bdev->bamclk = devm_clk_get_optional(bdev->dev, "bam_clk");
-> +	else
-> +		bdev->bamclk = devm_clk_get(bdev->dev, "bam_clk");
->  
-> -		bdev->bamclk = NULL;
-> -	}
-> +	if (IS_ERR(bdev->bamclk))
-> +		return PTR_ERR(bdev->bamclk);
->  
->  	ret = clk_prepare_enable(bdev->bamclk);
->  	if (ret) {
-> @@ -1350,7 +1350,7 @@ static int bam_dma_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_unregister_dma;
->  
-> -	if (bdev->controlled_remotely) {
-> +	if (!bdev->bamclk) {
->  		pm_runtime_disable(&pdev->dev);
->  		return 0;
->  	}
-> @@ -1438,10 +1438,10 @@ static int __maybe_unused bam_dma_suspend(struct device *dev)
->  {
->  	struct bam_device *bdev = dev_get_drvdata(dev);
->  
-> -	if (!bdev->controlled_remotely)
-> +	if (bdev->bamclk) {
->  		pm_runtime_force_suspend(dev);
-> -
-> -	clk_unprepare(bdev->bamclk);
-> +		clk_unprepare(bdev->bamclk);
-> +	}
->  
->  	return 0;
->  }
-> @@ -1451,12 +1451,13 @@ static int __maybe_unused bam_dma_resume(struct device *dev)
->  	struct bam_device *bdev = dev_get_drvdata(dev);
->  	int ret;
->  
-> -	ret = clk_prepare(bdev->bamclk);
-> -	if (ret)
-> -		return ret;
-> +	if (bdev->bamclk) {
-> +		ret = clk_prepare(bdev->bamclk);
-> +		if (ret)
-> +			return ret;
->  
-> -	if (!bdev->controlled_remotely)
->  		pm_runtime_force_resume(dev);
-> +	}
->  
->  	return 0;
->  }
-> -- 
-> 2.25.1
-> 
+If you look at the major file systems in Linux: ext4, xfs, btrfs,
+f2fs, etc., you'll find that none of them are solo endeavors, and all
+of them have multiple companies who are employing the developers who
+work on them.  Figuring out how to convince companies that there are
+good business reasons for them to support the developers of your file
+system is important, since in order to keep things going for the long
+haul, it really needs to be more than a single person's hobby.
+
+Good luck!
+
+					- Ted
