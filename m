@@ -2,685 +2,823 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA16F305939
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EC830594A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhA0LHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:07:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236489AbhA0LGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:06:22 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E183EC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:05:41 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id f16so1169075wmq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 03:05:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BlnuW33wcZ18mPXthit6DuOlKEWSQeDSxjB9TPtzQUI=;
-        b=bMJ6WLM7In8L9bQQfPsAPRbn/Vq346+/QjJ1gNQ7TcbyVVUYDdi7UQrnBsDfqdWoMF
-         VuU/1YIGfS63favkNKwL4SJQrPnTdnEvPrSaX4FNtSIT6dYZbGce0PlJKCQmngfCm1fM
-         tcYjeRNIkqb53w1fq7GdbdfD8OP31zOGYXv3viYKtkGE9P2+sc5XnN0qxxybr4Ixw26y
-         SwX7KFDwkNqc6F3K/O6N8JEj5w9DAtvuxjwm/rluuuKeegfqYGhMstl9fjfrptYG8mEl
-         P7AlGqveqWquNBd1bq6V/RqhFBK9rSAfGjph4ccxzLRvekJoz37bMOQRr2mNQ7AP+qfx
-         dmjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BlnuW33wcZ18mPXthit6DuOlKEWSQeDSxjB9TPtzQUI=;
-        b=FSrihD8zcOBk2kF/bRdfR0lUv79AizceyG5lngstFFugJvELPDMae/uVh/0um4VAh6
-         PNwc2MsxmX+oqzS8Lqs6E3zEnHBdM3HZ/a1DbH2qdELOoainKmjP94v4FsJsMSCfD3jL
-         JCGot9vCiNATQKLtFmob7VYVoICPxYPXRnTkgBkKaR3FG4lIN0RPJyZNL0+G+lWiLpQf
-         Rpsomlh49kGJtieT6sGbl1g9B1mO9VXIcFEihpXbsnhHwC2LAfbjWlZUdhvy2SNE9VnK
-         Sx3kxRVUAEnWVn+YVJBseaGK/sgHxrzo4R0WrUO7mxScnnRU+ncJlibU4fmDNqtzgnOp
-         x7eA==
-X-Gm-Message-State: AOAM532Jzu38eBGdKi4N0xsFjjP5a0C8x0FNKvrNPvkca6PqbqchfZY+
-        Hx6fEtI8SxNzi0+dwkCo/TKeaA==
-X-Google-Smtp-Source: ABdhPJyipEAIDJ0LMTB5VELdGgUO1pY3nD2R0UCqdZPdpjwvcwTjhoxgRbOPTVICfkr0QLxk7O4Oow==
-X-Received: by 2002:a05:600c:2110:: with SMTP id u16mr3775597wml.65.1611745540415;
-        Wed, 27 Jan 2021 03:05:40 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id e12sm2414829wrs.67.2021.01.27.03.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 03:05:39 -0800 (PST)
-Date:   Wed, 27 Jan 2021 11:05:37 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mayulong <mayulong1@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 18/21] mfd: hi6421-spmi-pmic: move driver from staging
-Message-ID: <20210127110537.GI4903@dell>
-References: <cover.1611072387.git.mchehab+huawei@kernel.org>
- <e79ffb200c52fc8c8926492cc82ac5dbcda3e3fb.1611072387.git.mchehab+huawei@kernel.org>
+        id S236393AbhA0LKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:10:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236246AbhA0LHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:07:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C8020729;
+        Wed, 27 Jan 2021 11:06:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611745588;
+        bh=3fN8JPHk+x/RyJQY9KhwRhUJDlPlpFnkg+0Nh7HoQJ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d7ZnWAbMzDduIgIi5iGdvb9OM0QFrF2gY8WE31NEORBKRH9gHZRZJV+HEEuFiQ1ne
+         JptfdV1q+30PEJMeSmvCopiGvOulU7d8g4MyUXH7Uk+bi4IcnWijX3K4D1RuMOeArr
+         2MLnpi+EpSwXEmfzisrBFxoRO2574ztktk1cYxJtYNoiFsdU38TanJcvRD5Kg0Eqrq
+         QAg8yV9YypQP5xTszXayCzDkQt1PD9dmErcRAjTDJw0sd3qs5dSTA5SWGstkk1hJDt
+         KwpgvJKV/m/XsHEFuBqMYmqvabhJPiZ/+tLiylNL9eUoGbG4ode+rkrC0OOO9KUhb5
+         8tpLl4Sck2wlg==
+Date:   Wed, 27 Jan 2021 12:06:23 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     linux-media@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.o,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] media: vidtv: add initial debugfs interface
+Message-ID: <20210127120623.7f018471@coco.lan>
+In-Reply-To: <20201224150402.1945788-3-dwlsalmeida@gmail.com>
+References: <20201224150402.1945788-3-dwlsalmeida@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e79ffb200c52fc8c8926492cc82ac5dbcda3e3fb.1611072387.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021, Mauro Carvalho Chehab wrote:
+Em Thu, 24 Dec 2020 12:04:02 -0300
+"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
 
-> This driver is ready for mainstream. So, move it out of staging.
+> From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Add a debugfs interface for testing purposes  that can be enabled
+> by selecting **DVB_VIDTV_DEBUGFS**. This makes it possible to:
+> 
+> dynamically inject errors at runtime by interacting with the files
+> at /sys/kernel/debug/vidtv/*
+> 
+> read some dvbv5 statistics from userspace more easily.
+> 
+> This is entirely optional and the driver will work without this option
+> selected.
+
+Patches 1 and 2 on this series seem OK. I'm applying them, after
+testing.
+
+Please see the notes below for this one.
+
+> 
+> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
 > ---
->  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 135 +++++++++
->  MAINTAINERS                                   |   7 +
->  drivers/mfd/Kconfig                           |  15 +
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/hi6421-spmi-pmic.c                | 281 ++++++++++++++++++
->  drivers/staging/hikey9xx/Kconfig              |  16 -
->  drivers/staging/hikey9xx/Makefile             |   1 -
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 281 ------------------
->  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 135 ---------
->  9 files changed, 439 insertions(+), 433 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+>  .../driver-api/media/drivers/vidtv.rst        |  80 +++---
+>  drivers/media/test-drivers/vidtv/Kconfig      |  13 +
+>  .../media/test-drivers/vidtv/vidtv_bridge.c   |  13 +
+>  .../media/test-drivers/vidtv/vidtv_bridge.h   |   2 +
+>  .../media/test-drivers/vidtv/vidtv_debugfs.h  |  42 +++
+>  drivers/media/test-drivers/vidtv/vidtv_mux.c  | 272 ++++++++++++++++++
+>  drivers/media/test-drivers/vidtv/vidtv_mux.h  |   7 +
+>  drivers/media/test-drivers/vidtv/vidtv_ts.c   |   8 +
+>  drivers/media/test-drivers/vidtv/vidtv_ts.h   |   8 +
+>  9 files changed, 412 insertions(+), 33 deletions(-)
+>  create mode 100644 drivers/media/test-drivers/vidtv/vidtv_debugfs.h
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> new file mode 100644
-> index 000000000000..3b23ad56b31a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> @@ -0,0 +1,135 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: HiSilicon 6421v600 SPMI PMIC
-> +
-> +maintainers:
-> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> +
-> +description: |
-> +  HiSilicon 6421v600 should be connected inside a MIPI System Power Management
-> +  (SPMI) bus. It provides interrupts and power supply.
-> +
-> +  The GPIO and interrupt settings are represented as part of the top-level PMIC
-> +  node.
-> +
-> +  The SPMI controller part is provided by
-> +  drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "pmic@[0-9a-f]"
-> +
-> +  compatible:
-> +    const: hisilicon,hi6421v600-spmi
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  interrupt-controller:
-> +    description:
-> +      Identify that the PMIC is capable of behaving as an interrupt controller.
-> +
-> +  gpios:
-> +    maxItems: 1
-> +
-> +  regulators:
-> +    type: object
-> +
-> +    properties:
-> +      '#address-cells':
-> +        const: 1
-> +
-> +      '#size-cells':
-> +        const: 0
-> +
-> +    patternProperties:
-> +      '^ldo[0-9]+@[0-9a-f]$':
-> +        type: object
-> +
-> +        $ref: "/schemas/regulator/regulator.yaml#"
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - regulators
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    /* pmic properties */
-> +
-> +    pmic: pmic@0 {
-> +      compatible = "hisilicon,hi6421-spmi";
-> +      reg = <0 0>;
-> +
-> +      #interrupt-cells = <2>;
-> +      interrupt-controller;
-> +      gpios = <&gpio28 0 0>;
-> +
-> +      regulators {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ldo3: LDO3 {
-> +          regulator-name = "ldo3";
-> +          regulator-min-microvolt = <1500000>;
-> +          regulator-max-microvolt = <2000000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo4: LDO4 {
-> +          regulator-name = "ldo4";
-> +          regulator-min-microvolt = <1725000>;
-> +          regulator-max-microvolt = <1900000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo9: LDO9 {
-> +          regulator-name = "ldo9";
-> +          regulator-min-microvolt = <1750000>;
-> +          regulator-max-microvolt = <3300000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo15: LDO15 {
-> +          regulator-name = "ldo15";
-> +          regulator-min-microvolt = <1800000>;
-> +          regulator-max-microvolt = <3000000>;
-> +          regulator-always-on;
-> +        };
-> +
-> +        ldo16: LDO16 {
-> +          regulator-name = "ldo16";
-> +          regulator-min-microvolt = <1800000>;
-> +          regulator-max-microvolt = <3000000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo17: LDO17 {
-> +          regulator-name = "ldo17";
-> +          regulator-min-microvolt = <2500000>;
-> +          regulator-max-microvolt = <3300000>;
-> +        };
-> +
-> +        ldo33: LDO33 {
-> +          regulator-name = "ldo33";
-> +          regulator-min-microvolt = <2500000>;
-> +          regulator-max-microvolt = <3300000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo34: LDO34 {
-> +          regulator-name = "ldo34";
-> +          regulator-min-microvolt = <2600000>;
-> +          regulator-max-microvolt = <3300000>;
-> +        };
-> +      };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 85e5b6ab57ca..c5b36a58ede5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8006,6 +8006,13 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
->  F:	drivers/spmi/hisi-spmi-controller.c
+> diff --git a/Documentation/driver-api/media/drivers/vidtv.rst b/Documentation/driver-api/media/drivers/vidtv.rst
+> index 673bdff919ea..e7c450289774 100644
+> --- a/Documentation/driver-api/media/drivers/vidtv.rst
+> +++ b/Documentation/driver-api/media/drivers/vidtv.rst
+> @@ -227,6 +227,9 @@ vidtv_mux.[ch]
+>  	#. Delivering the resulting TS packets to the bridge
+>  	   driver so it can pass them to the demux.
 >  
-> +HISILICON SPMI PMIC DRIVER FOR HIKEY 6421v600
-> +M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> +L:	linux-kernel@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> +F:	drivers/mfd/hi6421-spmi-pmic.c
+> +vidtv_debugfs.h
+> +	Exposes data structures used in vidtv's debugfs interface.
 > +
->  HISILICON STAGING DRIVERS FOR HIKEY 960/970
->  M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->  L:	devel@driverdev.osuosl.org
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 8b99a13669bf..c04c2f6be1d9 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -509,6 +509,21 @@ config MFD_HI6421_PMIC
->  	  menus in order to enable them.
->  	  We communicate with the Hi6421 via memory-mapped I/O.
+>  Testing vidtv with v4l-utils
+>  ----------------------------
 >  
-> +config MFD_HI6421_SPMI
-> +	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
-> +	depends on OF
-> +	depends on SPMI
-> +	select MFD_CORE
+> @@ -431,27 +434,53 @@ For more information on dvb-zap check its online documentation here:
+>  See also: `zap <https://www.linuxtv.org/wiki/index.php/Zap>`_.
+>  
+>  
+> -What can still be improved in vidtv
+> ------------------------------------
+> +Vidtv *debugfs* integration
+> +___________________________
+> +
+> +Vidtv now comes with a *debugfs* interface that can be enabled by selecting
+> +**DVB_VIDTV_DEBUGFS**. Using it, one can
+
+"now comes" -> "can be compiled"
+
+> +
+> +#. dynamically inject errors at runtime by interacting with the files at /sys/kernel/debug/vidtv/*
+> +
+> +#. read some dvbv5 statistics from userspace more easily
+> +
+> +.. note::
+> +	This is entirely optional and the driver will work without this option selected.
+
+
+Please keep lines <= 80 columns, except when there's a strong reason to
+use longer lines. The same applies to other parts of this patch.
+
+> +
+> +At boot, vidtv will set up a directory per simulated frontend. Here is a list of
+> +created files and their associated functionality once they are written to:
+> +
+> +noise
+> +	The probability of adding random noise in the packets (0 - 10000).
+> +drop
+> +	Drop n packets at random
+> +shl
+> +	Shift left n bytes at random
+> +shr
+> +	Shift right n bytes at random
+> +discontinuity
+> +	Create n discontinuities at random. This means artificially increasing
+> +	the continuity counters such that a discontinuity error is generated.
+> +
+> +Another option is to provide a probability of such events ocurring. Drop, shl,
+> +shr, and discontinuity have versions that take in a probability in the [0,
+> +10000] range.
+>  
+> -Add *debugfs* integration
+> -~~~~~~~~~~~~~~~~~~~~~~~~~
+> +Writing to the files at the frontend directory will target all packets in the
+> +mux buffer. Alternatively, vidtv will also create a directory per PID. Writing
+> +to these files will, in turn, only affect that particular PID.
+>  
+> -Although frontend drivers provide DVBv5 statistics via the .read_status
+> -call, a nice addition would be to make additional statistics available to
+> -userspace via debugfs, which is a simple-to-use, RAM-based filesystem
+> -specifically designed for debug purposes.
+>  
+> -The logic for this would be implemented on a separate file so as not to
+> -pollute the frontend driver.  These statistics are driver-specific and can
+> -be useful during tests.
+> +What can still be improved in vidtv
+> +-----------------------------------
+> +
+> +Improve debugfs support
+> +~~~~~~~~~~~~~~~~~~~~~~~
+>  
+> -The Siano driver is one example of a driver using
+> -debugfs to convey driver-specific statistics to userspace and it can be
+> -used as a reference.
+> +Vidtv offers support for dynamically injecting errors and retrieving some dvbv5
+> +stats via *debugfs*. This can be improved upon to add new ways of testing from
+> +userspace.
+>  
+> -This should be further enabled and disabled via a Kconfig
+> -option for convenience.
+>  
+>  Add a way to test video
+>  ~~~~~~~~~~~~~~~~~~~~~~~
+> @@ -468,23 +497,6 @@ which resides at::
+>  	drivers/media/common/v4l2-tpg/
+>  
+>  
+> -Add white noise simulation
+> -~~~~~~~~~~~~~~~~~~~~~~~~~~
+> -
+> -The vidtv tuner already has code to identify whether the chosen frequency
+> -is too far away from a table of valid frequencies. For now, this means that
+> -the demodulator can eventually lose the lock on the signal, since the tuner will
+> -report a bad signal quality.
+> -
+> -A nice addition is to simulate some noise when the signal quality is bad by:
+> -
+> -- Randomly dropping some TS packets. This will trigger a continuity error if the
+> -  continuity counter is updated but the packet is not passed on to the demux.
+> -
+> -- Updating the error statistics accordingly (e.g. BER, etc).
+> -
+> -- Simulating some noise in the encoded data.
+> -
+>  Functions and structs used within vidtv
+>  ---------------------------------------
+>  
+> @@ -511,3 +523,5 @@ Functions and structs used within vidtv
+>  .. kernel-doc:: drivers/media/test-drivers/vidtv/vidtv_common.c
+>  
+>  .. kernel-doc:: drivers/media/test-drivers/vidtv/vidtv_tuner.c
+> +
+> +.. kernel-doc:: drivers/media/test-drivers/vidtv/vidtv_debugfs.h
+> diff --git a/drivers/media/test-drivers/vidtv/Kconfig b/drivers/media/test-drivers/vidtv/Kconfig
+> index 22c4fd39461f..05513f1c67e1 100644
+> --- a/drivers/media/test-drivers/vidtv/Kconfig
+> +++ b/drivers/media/test-drivers/vidtv/Kconfig
+> @@ -8,4 +8,17 @@ config DVB_VIDTV
+>  	  working on userspace applications.
+>  
+>  
+> +	  When in doubt, say N.
+> +
+> +config DVB_VIDTV_DEBUGFS
+> +	bool "Enable debugfs for vidtv"
+> +	depends on DVB_VIDTV
+> +	depends on DEBUG_FS
+> +
 > +	help
-> +	  Add support for HiSilicon Hi6421v600 SPMI PMIC. Hi6421 includes
-> +	  multi-functions, such as regulators, RTC, codec, Coulomb counter,
-> +	  etc.
+> +	  Choose Y to enable the vidtv debugfs interface. Currently allows for
+> +	  dynamically introducing errors in the generated MPEG Transport Stream
+> +	  for testing purposes.
 > +
-> +	  This driver includes core APIs _only_. You have to select
-> +	  individual components like voltage regulators under corresponding
-> +	  menus in order to enable them.
-> +	  We communicate with the Hi6421v600 via a SPMI bus.
 > +
->  config MFD_HI655X_PMIC
->  	tristate "HiSilicon Hi655X series PMU/Codec IC"
->  	depends on ARCH_HISI || COMPILE_TEST
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 1780019d2474..7744993c42bc 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -233,6 +233,7 @@ obj-$(CONFIG_MFD_IPAQ_MICRO)	+= ipaq-micro.o
->  obj-$(CONFIG_MFD_IQS62X)	+= iqs62x.o
->  obj-$(CONFIG_MFD_MENF21BMC)	+= menf21bmc.o
->  obj-$(CONFIG_MFD_HI6421_PMIC)	+= hi6421-pmic-core.o
-> +obj-$(CONFIG_MFD_HI6421_SPMI)	+= hi6421-spmi-pmic.o
->  obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
->  obj-$(CONFIG_MFD_DLN2)		+= dln2.o
->  obj-$(CONFIG_MFD_RT5033)	+= rt5033.o
-> diff --git a/drivers/mfd/hi6421-spmi-pmic.c b/drivers/mfd/hi6421-spmi-pmic.c
+>  	  When in doubt, say N.
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+> index fc64d0c8492a..d5ebe680724f 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+> @@ -10,6 +10,7 @@
+>   * Copyright (C) 2020 Daniel W. S. Almeida
+>   */
+>  
+> +#include <linux/debugfs.h>
+>  #include <linux/dev_printk.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/mutex.h>
+> @@ -172,6 +173,7 @@ static int vidtv_start_streaming(struct vidtv_dvb *dvb)
+>  		.transport_stream_id         = VIDTV_DEFAULT_TS_ID,
+>  		.network_id                  = VIDTV_DEFAULT_NETWORK_ID,
+>  		.network_name                = VIDTV_DEFAULT_NETWORK_NAME,
+> +		.debugfs_root                = dvb->debugfs_root,
+>  		.priv                        = dvb,
+>  	};
+>  	struct device *dev = &dvb->pdev->dev;
+> @@ -485,6 +487,7 @@ static int vidtv_bridge_dvb_init(struct vidtv_dvb *dvb)
+>  static int vidtv_bridge_probe(struct platform_device *pdev)
+>  {
+>  	struct vidtv_dvb *dvb;
+> +	struct dentry *debugfs_root;
+>  	int ret;
+>  
+>  	dvb = kzalloc(sizeof(*dvb), GFP_KERNEL);
+> @@ -501,6 +504,12 @@ static int vidtv_bridge_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, dvb);
+>  
+> +#ifdef CONFIG_DVB_VIDTV_DEBUGFS
+> +	debugfs_root = debugfs_create_dir("vidtv", NULL);
+> +	if (!IS_ERR(debugfs_root))
+> +		dvb->debugfs_root = debugfs_root;
+> +#endif //CONFIG_DVB_VIDTV_DEBUGFS
+> +
+
+While C99 comments are now allowed, we still prefer to use C89 ones:
+
+
+#endif /* CONFIG_DVB_VIDTV_DEBUGFS */
+
+(also, please add a space after the comment tag, as it makes easier
+for read the comment)
+
+>  	dev_info(&pdev->dev, "Successfully initialized vidtv!\n");
+>  	return ret;
+>  
+> @@ -516,6 +525,10 @@ static int vidtv_bridge_remove(struct platform_device *pdev)
+>  
+>  	dvb = platform_get_drvdata(pdev);
+>  
+> +#ifdef CONFIG_DVB_VIDTV_DEBUGFS
+> +	debugfs_remove_recursive(dvb->debugfs_root);
+> +#endif //CONFIG_DVB_VIDTV_DEBUGFS
+> +
+>  	mutex_destroy(&dvb->feed_lock);
+>  
+>  	for (i = 0; i < NUM_FE; ++i) {
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.h b/drivers/media/test-drivers/vidtv/vidtv_bridge.h
+> index 2528adaee27d..9ef37d8ad2cc 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_bridge.h
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.h
+> @@ -42,6 +42,7 @@
+>   * @feed_lock: Protects access to the start/stop stream logic/data.
+>   * @streaming: Whether we are streaming now.
+>   * @mux: The abstraction responsible for delivering MPEG TS packets to the bridge.
+> + * @debugfs_root: A handle to vidtv's debugfs directory
+>   */
+>  struct vidtv_dvb {
+>  	struct platform_device *pdev;
+> @@ -60,6 +61,7 @@ struct vidtv_dvb {
+>  	bool streaming;
+>  
+>  	struct vidtv_mux *mux;
+> +	struct dentry *debugfs_root;
+>  };
+>  
+>  #endif // VIDTV_BRIDG_H
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_debugfs.h b/drivers/media/test-drivers/vidtv/vidtv_debugfs.h
 > new file mode 100644
-> index 000000000000..99c4f3359f71
+> index 000000000000..1743fe6d96cf
 > --- /dev/null
-> +++ b/drivers/mfd/hi6421-spmi-pmic.c
-> @@ -0,0 +1,281 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Device driver for regulators in HISI PMIC IC
-> +//
-> +// Copyright (c) 2013 Linaro Ltd.
-> +// Copyright (c) 2011 Hisilicon.
-> +//
-
-No need for this blank line.
-
-> +// Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
-
-Only the SPDX line as C++ comments please.
-
-'\n' here.
-
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/mfd/core.h>
-> +#include <linux/mfd/hi6421-spmi-pmic.h>
-> +#include <linux/module.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/spmi.h>
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_debugfs.h
+> @@ -0,0 +1,42 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Vidtv serves as a reference DVB driver and helps validate the existing APIs
+> + * in the media subsystem. It can also aid developers working on userspace
+> + * applications.
+> + *
+> + * Copyright (C) 2020 Daniel W. S. Almeida
+> + */
 > +
-> +/* 8-bit register offset in PMIC */
-> +#define HISI_MASK_STATE			0xff
+> +#ifndef VIDTV_DEBUGFS_H
+> +#define VIDTV_DEBUGFS_H
+> +#include <linux/debugfs.h>
 > +
-> +#define HISI_IRQ_ARRAY			2
-> +#define HISI_IRQ_NUM			(HISI_IRQ_ARRAY * 8)
-> +
-> +#define SOC_PMIC_IRQ_MASK_0_ADDR	0x0202
-> +#define SOC_PMIC_IRQ0_ADDR		0x0212
-> +
-> +#define HISI_IRQ_KEY_NUM		0
-> +#define HISI_IRQ_KEY_VALUE		0xc0
-> +#define HISI_IRQ_KEY_DOWN		7
-> +#define HISI_IRQ_KEY_UP			6
-> +
-> +#define HISI_MASK_FIELD			0xFF
-> +#define HISI_BITS			8
-> +
-> +/*define the first group interrupt register number*/
-
-I think the nomenclature is forthcoming enough for this to be omitted.
-
-It's also in the wrong format.
-
-> +#define HISI_PMIC_FIRST_GROUP_INT_NUM	2
-> +
-> +static const struct mfd_cell hi6421v600_devs[] = {
-> +	{ .name = "hi6421v600-regulator", },
+> +/**
+> + * struct vidtv_debugfs - Represents the vidtv debugfs interface
+> + *
+> + * @dir_dentry: A handle to the debugfs dentry
+> + * @noise: Probability of adding noise to a byte in a packet [0, 10000]
+> + * @drop: Drop n packets at random.
+> + * @drop_probability: Probability to randomly drop a packet [0, 10000]
+> + * @shl_probability: Probability to randomly shift left a byte in a packet [0, 10000]
+> + * @shr_probability: Probability to randomly shift right a byte in a packet [0, 10000]
+> + * @discontinuity_probability: Probability of artificially creating a
+> + * discontinuity error [0, 10000]
+> + * @shl: Shift n bytes left at random, i.e. byte[i] = byte[i] << 1;
+> + * @shr: Shift n bytes right at random, i.e. byte[i] = byte[i] >>1;
+> + * @discontinuity: Create n discontinuity errors
+> + */
+> +struct vidtv_debugfs {
+> +	struct dentry *dir_dentry;
+> +	u32 noise;
+> +	u32 drop_probability;
+> +	u32 shl_probability;
+> +	u32 shr_probability;
+> +	u32 discontinuity_probability;
+> +	u32 drop;
+> +	u32 shl;
+> +	u32 shr;
+> +	u32 discontinuity;
 > +};
-
-Where are the reset of the devices?
-
-> +static irqreturn_t hi6421_spmi_irq_handler(int irq, void *priv)
-> +{
-> +	struct hi6421_spmi_pmic *pmic = (struct hi6421_spmi_pmic *)priv;
-> +	unsigned long pending;
-> +	unsigned int data;
-> +	int i, offset;
 > +
-> +	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
-> +		regmap_read(pmic->map, offset, &data);
+> +#endif //VIDTV_DEBUGFS_H
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> index b51e6a3b8cbe..e6d69fe01908 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+> @@ -12,11 +12,14 @@
+>   * Copyright (C) 2020 Daniel W. S. Almeida
+>   */
+>  
+> +#include "vidtv_debugfs.h"
+> +#include <linux/debugfs.h>
+>  #include <linux/delay.h>
+>  #include <linux/dev_printk.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/kernel.h>
+>  #include <linux/math64.h>
+> +#include <linux/random.h>
+>  #include <linux/ratelimit.h>
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+> @@ -385,6 +388,204 @@ static void vidtv_mux_clear(struct vidtv_mux *m)
+>  	m->mux_buf_offset = 0;
+>  }
+>  
 
-"map" is ambiguous.  Please rename this to 'regamp'.
-
-What exactly is this reading?
-
-Offset looks decidedly unassigned to me.
-
-> +		data &= HISI_MASK_FIELD;
-> +		if (data != 0)
-> +			pr_debug("data[%d]=0x%d\n\r", i, data);
-
-How useful is this, really?
-
-> +		regmap_write(pmic->map, i + SOC_PMIC_IRQ0_ADDR, data);
-
-Nit: I can't help feeling this would read better as the address plus
-the offset.
-
-> +		/* for_each_set_bit() macro requires unsigned long */
-
-Not sure this requires a comment?
-
-> +		pending = data;
-
-Would a cast work better?
-
-> +		/* solve powerkey order */
-
-What does this mean?  Please elaborate.
-
-Please use English grammar in comments i.e. begin with a capital letter.
-
-> +		if ((i == HISI_IRQ_KEY_NUM) &&
-> +		    ((pending & HISI_IRQ_KEY_VALUE) == HISI_IRQ_KEY_VALUE)) {
-
-Excessive bracketing used here.
-
-> +			generic_handle_irq(pmic->irqs[HISI_IRQ_KEY_DOWN]);
-> +			generic_handle_irq(pmic->irqs[HISI_IRQ_KEY_UP]);
-> +			pending &= (~HISI_IRQ_KEY_VALUE);
+> +static void vidtv_mux_add_random_noise(struct vidtv_mux *m, u32 noise_prob, u32 pkt_start)
+> +{
+> +	u8 noise;
+> +	u8 *pkt = m->mux_buf + pkt_start;
+> +	u32 i;
+> +
+> +	for (i = 0; i < TS_PACKET_LEN; i++)
+> +		if (prandom_u32_max(10000) < noise_prob) {
+> +			noise = prandom_u32_max(0xff);
+> +			pkt[i] = pkt[i] + noise;
+> +		}
+> +}
+> +
+> +static void vidtv_mux_drop_random(struct vidtv_mux *m, u32 drop_prob, u32 pkt_start, u32 *nbytes)
+> +{
+> +	u8 *pkt = m->mux_buf + pkt_start;
+> +	u8 *last_pkt = m->mux_buf + m->mux_buf_offset - TS_PACKET_LEN;
+> +	u32 npkts = m->mux_buf_offset / 188;
+> +
+> +	if (!npkts)
+> +		return;
+> +
+> +	if (prandom_u32_max(10000) < drop_prob) {
+> +		if (npkts > 1 && pkt != last_pkt) {
+> +			//overwrite victim with last packet
+> +			memcpy(pkt, last_pkt, TS_PACKET_LEN);
+> +			//remove last packet from buffer
+> +			memset(last_pkt, 0, TS_PACKET_LEN);
+> +		} else {
+> +			//just erase it
+> +			memset(pkt, 0, TS_PACKET_LEN);
 > +		}
 > +
-> +		if (pending) {
-> +			for_each_set_bit(offset, &pending, HISI_BITS)
-> +				generic_handle_irq(pmic->irqs[offset + i * HISI_BITS]);
+> +		//keep track of the loss of this packet
+> +		m->mux_buf_offset -= TS_PACKET_LEN;
+> +		*nbytes -= TS_PACKET_LEN;
+> +	}
+> +}
+> +
+> +static void vidtv_mux_shl_random(struct vidtv_mux *m, u32 shl_prob, u32 pkt_start)
+> +{
+> +	u8 *pkt = m->mux_buf + pkt_start;
+> +	/* select one of the 188 bytes at random */
+> +	u8 *byte = pkt + prandom_u32_max(TS_PACKET_LEN);
+> +
+> +	if (prandom_u32_max(10000) < shl_prob)
+> +		*byte = *byte << 1;
+> +}
+> +
+> +static void vidtv_mux_shr_random(struct vidtv_mux *m, u32 shr_prob, u32 pkt_start)
+> +{
+> +	u8 *pkt = m->mux_buf + pkt_start;
+> +	/* select one of the 188 bytes at random */
+> +	u8 *byte = pkt + prandom_u32_max(TS_PACKET_LEN);
+> +
+> +	if (prandom_u32_max(10000) < shr_prob)
+> +		*byte = *byte >> 1;
+> +}
+> +
+> +static void vidtv_mux_discontinuity_random(struct vidtv_mux *m, u32 disc_prob, u16 pid)
+> +{
+> +	struct vidtv_mux_pid_ctx *ctx = vidtv_mux_get_pid_ctx(m, pid);
+> +
+> +	/* if the pkt was previously corrupted such that we cannot retrieve its pid context
+> +	 * anymore, then bail
+> +	 */
+> +	if (!ctx)
+> +		return;
+> +
+> +	if (prandom_u32_max(10000) < disc_prob)
+> +		vidtv_ts_inc_cc(&ctx->cc);
+> +}
+> +
+> +static u32 vidtv_mux_get_random_pkt_offset(struct vidtv_mux *m)
+> +{
+> +	u32 npkts = m->mux_buf_offset / TS_PACKET_LEN;
+> +	u32 pkt_offset = prandom_u32_max(npkts) * TS_PACKET_LEN;
+> +
+> +	return pkt_offset;
+> +}
+> +
+> +static u32 vidtv_mux_get_random_pkt_offset_for_pid(struct vidtv_mux *m, u16 pid, bool *found)
+> +{
+> +	u32 npkts_total = m->mux_buf_offset / TS_PACKET_LEN;
+> +	u8 *buf = kcalloc(npkts_total, sizeof(u32), GFP_KERNEL);
+> +	u32 npkt = 0;
+> +	u32 pkt_offset = 0;
+> +	u32 offset;
+> +	u16 pkt_pid;
+> +
+> +	for (offset = 0; offset < m->mux_buf_offset; offset += TS_PACKET_LEN) {
+> +		pkt_pid = vidtv_ts_get_pid(&m->mux_buf[offset]);
+> +		if (pkt_pid == pid) {
+> +			buf[npkt] = offset;
+> +			npkt++;
 > +		}
 > +	}
 > +
-> +	return IRQ_HANDLED;
+> +	*found = (npkt != 0);
+> +	pkt_offset = buf[prandom_u32_max(npkt)];
+> +	kfree(buf);
+> +	return pkt_offset;
 > +}
+
+Please create a drivers/media/test-drivers/vidtv/vidtv_debugfs.c file
+and place everything related to debugfs on it.
+
+At the header file, you would do:
+
+	#if CONFIG_DVB_VIDTV_DEBUGFS
+
+	u32 vidtv_mux_get_random_pkt_offset_for_pid(struct vidtv_mux *m, 
+						    u16 pid, bool *found);
+
+	#else
+	static inline u32 vidtv_mux_get_random_pkt_offset_for_pid(struct vidtv_mux *m, 
+							  	  u16 pid, bool *found)
+	{
+		return 0;
+	}
+#endif
+
+for all functions. This way, the C files will be cleaner, as there
+won't be any "#if" inside them, and the header files will declare
+function stubs that will do nothing, which causes the compiler to
+simply discard the entire function as a hole.
+
 > +
-> +static void hi6421_spmi_irq_mask(struct irq_data *d)
+> +static void vidtv_mux_handle_debugfs_input(struct vidtv_mux *m, u32 *nbytes)
 > +{
-> +	struct hi6421_spmi_pmic *pmic = irq_data_get_irq_chip_data(d);
-> +	unsigned long flags;
-> +	unsigned int data;
+> +	struct vidtv_mux_pid_ctx *ctx;
+> +	u32 pkt_offset;
+> +	u16 pid;
+> +	int bkt;
+> +	bool found;
 > +	u32 offset;
 > +
-> +	offset = (irqd_to_hwirq(d) >> 3);
+> +#ifndef CONFIG_DVB_VIDTV_DEBUGFS
+> +	return;
+> +#endif //CONFIG_DVB_VIDTV_DEBUGFS
 
-Why 3?  Probably better to define these shifts/masks rather than use
-magic numbers with no comments.
+Never do that! if compiled without CONFIG_DVB_VIDTV_DEBUGFS, there
+will be dead code at the function.
 
-> +	offset += SOC_PMIC_IRQ_MASK_0_ADDR;
 > +
-> +	spin_lock_irqsave(&pmic->lock, flags);
+> +	if (m->mux_buf_offset == 0)
+> +		return;
 > +
-
-Keep these symmetrical for ease of reading.
-
-Either add a '\n' before the unlock or remove this one.
-
-> +	regmap_read(pmic->map, offset, &data);
-> +	data |= (1 << (irqd_to_hwirq(d) & 0x07));
-
-What are you doing here?
-
-Maybe improved defines will be enough.  If not, please supply a
-suitable comment.
-
-> +	regmap_write(pmic->map, offset, data);
-> +	spin_unlock_irqrestore(&pmic->lock, flags);
-> +}
-> +
-> +static void hi6421_spmi_irq_unmask(struct irq_data *d)
-> +{
-> +	struct hi6421_spmi_pmic *pmic = irq_data_get_irq_chip_data(d);
-> +	u32 data, offset;
-> +	unsigned long flags;
-> +
-> +	offset = (irqd_to_hwirq(d) >> 3);
-> +	offset += SOC_PMIC_IRQ_MASK_0_ADDR;
-> +
-> +	spin_lock_irqsave(&pmic->lock, flags);
-> +	regmap_read(pmic->map, offset, &data);
-> +	data &= ~(1 << (irqd_to_hwirq(d) & 0x07));
-> +	regmap_write(pmic->map, offset, data);
-> +	spin_unlock_irqrestore(&pmic->lock, flags);
-> +}
-> +
-> +static struct irq_chip hi6421_spmi_pmu_irqchip = {
-> +	.name		= "hisi-irq",
-> +	.irq_mask	= hi6421_spmi_irq_mask,
-> +	.irq_unmask	= hi6421_spmi_irq_unmask,
-> +	.irq_disable	= hi6421_spmi_irq_mask,
-> +	.irq_enable	= hi6421_spmi_irq_unmask,
-> +};
-> +
-> +static int hi6421_spmi_irq_map(struct irq_domain *d, unsigned int virq,
-> +			       irq_hw_number_t hw)
-> +{
-> +	struct hi6421_spmi_pmic *pmic = d->host_data;
-> +
-> +	irq_set_chip_and_handler_name(virq, &hi6421_spmi_pmu_irqchip,
-> +				      handle_simple_irq, "hisi");
-> +	irq_set_chip_data(virq, pmic);
-> +	irq_set_irq_type(virq, IRQ_TYPE_NONE);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct irq_domain_ops hi6421_spmi_domain_ops = {
-> +	.map	= hi6421_spmi_irq_map,
-> +	.xlate	= irq_domain_xlate_twocell,
-> +};
-> +
-> +static void hi6421_spmi_pmic_irq_prc(struct hi6421_spmi_pmic *pmic)
-> +{
-> +	int i;
-> +	unsigned int pending;
-> +
-> +	for (i = 0 ; i < HISI_IRQ_ARRAY; i++)
-
-Misplaced ' '.
-
-> +		regmap_write(pmic->map, SOC_PMIC_IRQ_MASK_0_ADDR + i,
-> +				       HISI_MASK_STATE);
-> +
-> +	for (i = 0 ; i < HISI_IRQ_ARRAY; i++) {
-> +		regmap_read(pmic->map, SOC_PMIC_IRQ0_ADDR + i, &pending);
-> +
-> +		pr_debug("PMU IRQ address value:irq[0x%x] = 0x%x\n",
-> +			 SOC_PMIC_IRQ0_ADDR + i, pending);
-
-Again, is this actually useful to anyone now that the driver is nearly
-10 years old.  Particularly anyone who can't add a quick printk()
-during a debug session?
-
-> +		regmap_write(pmic->map, SOC_PMIC_IRQ0_ADDR + i,
-> +			     HISI_MASK_STATE);
-> +	}
-> +}
-> +
-> +static const struct regmap_config spmi_regmap_config = {
-> +	.reg_bits		= 16,
-> +	.val_bits		= 8,
-> +	.max_register		= 0xffff,
-> +	.fast_io		= true
-> +};
-> +
-> +static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev->of_node;
-> +	struct hi6421_spmi_pmic *pmic;
-> +	struct regmap *map;
-> +	unsigned int virq;
-> +	int ret, i;
-> +
-> +	pmic = devm_kzalloc(dev, sizeof(*pmic), GFP_KERNEL);
-
-Nit: My personal preference for local driver data is 'ddata'.
-
-> +	if (!pmic)
-> +		return -ENOMEM;
-> +
-> +	map = devm_regmap_init_spmi_ext(pdev, &spmi_regmap_config);
-
-We talk about IRQ maps above.  'regmap' would be better here.
-
-> +	if (IS_ERR(map))
-> +		return PTR_ERR(map);
-> +
-> +	spin_lock_init(&pmic->lock);
-> +
-> +	pmic->dev = dev;
-> +	pmic->map = map;
-> +
-> +	pmic->gpio = of_get_gpio(np, 0);
-
-Why do you use local variable 'map' above and just assign the ddata
-value directly here?  I think the latter would be better throughout.
-
-> +	if (pmic->gpio < 0)
-> +		return pmic->gpio;
-> +
-> +	if (!gpio_is_valid(pmic->gpio))
-> +		return -EINVAL;
-> +
-> +	ret = devm_gpio_request_one(dev, pmic->gpio, GPIOF_IN, "pmic");
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to request gpio%d\n", pmic->gpio);
-> +		return ret;
+> +	while (m->debugfs.discontinuity > 0) {
+> +		pkt_offset = vidtv_mux_get_random_pkt_offset(m);
+> +		pid = vidtv_ts_get_pid(&m->mux_buf[pkt_offset]);
+> +		vidtv_mux_discontinuity_random(m, 10000, pid);
+> +		m->debugfs.discontinuity--;
 > +	}
 > +
-> +	pmic->irq = gpio_to_irq(pmic->gpio);
-> +
-> +	hi6421_spmi_pmic_irq_prc(pmic);
-
-What does prc mean?
-
-> +	pmic->irqs = devm_kzalloc(dev, HISI_IRQ_NUM * sizeof(int), GFP_KERNEL);
-> +	if (!pmic->irqs)
-> +		goto irq_malloc;
-
-malloc?
-
-> +	pmic->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
-> +					     &hi6421_spmi_domain_ops, pmic);
-> +	if (!pmic->domain) {
-> +		dev_err(dev, "failed irq domain add simple!\n");
-
-Too specific in my opinion.  No need to mention the call.
-
-"Failed to create IRQ domain" would be better IMHO.
-
-> +		ret = -ENODEV;
-> +		goto irq_malloc;
+> +	while (m->debugfs.drop > 0) {
+> +		pkt_offset = vidtv_mux_get_random_pkt_offset(m);
+> +		vidtv_mux_drop_random(m, 10000, pkt_offset, nbytes);
+> +		m->debugfs.drop--;
 > +	}
 > +
-> +	for (i = 0; i < HISI_IRQ_NUM; i++) {
-> +		virq = irq_create_mapping(pmic->domain, i);
-> +		if (!virq) {
-> +			dev_err(dev, "Failed mapping hwirq\n");
-
-"Failed to map H/W IRQ"
-
-> +			ret = -ENOSPC;
-> +			goto irq_malloc;
+> +	while (m->debugfs.shl > 0) {
+> +		pkt_offset = vidtv_mux_get_random_pkt_offset(m);
+> +		vidtv_mux_shl_random(m, 10000, pkt_offset);
+> +		m->debugfs.shl--;
+> +	}
+> +
+> +	while (m->debugfs.shr > 0) {
+> +		pkt_offset = vidtv_mux_get_random_pkt_offset(m);
+> +		vidtv_mux_shr_random(m, 10000, pkt_offset);
+> +		m->debugfs.shr--;
+> +	}
+> +
+> +	for (offset = 0; offset < m->mux_buf_offset; offset += TS_PACKET_LEN) {
+> +		pid = vidtv_ts_get_pid(&m->mux_buf[offset]);
+> +		vidtv_mux_discontinuity_random(m, m->debugfs.discontinuity_probability, pid);
+> +		vidtv_mux_add_random_noise(m, m->debugfs.noise, offset);
+> +		vidtv_mux_drop_random(m, m->debugfs.drop_probability, offset, nbytes);
+> +		vidtv_mux_shl_random(m, m->debugfs.shl_probability, offset);
+> +		vidtv_mux_shr_random(m, m->debugfs.shr_probability, offset);
+> +	}
+> +
+> +	hash_for_each(m->pid_ctx, bkt, ctx, h) {
+> +		while (ctx->debugfs.discontinuity > 0) {
+> +			pkt_offset = vidtv_mux_get_random_pkt_offset_for_pid(m, ctx->pid, &found);
+> +			vidtv_mux_discontinuity_random(m, 10000, ctx->pid);
+> +			ctx->debugfs.discontinuity--;
 > +		}
-> +		pmic->irqs[i] = virq;
-> +		dev_dbg(dev, "%s: pmic->irqs[%d] = %d\n",
-> +			__func__, i, pmic->irqs[i]);
+> +
+> +		while (ctx->debugfs.drop > 0) {
+> +			pkt_offset = vidtv_mux_get_random_pkt_offset_for_pid(m, ctx->pid, &found);
+> +			if (found)
+> +				vidtv_mux_drop_random(m, 10000, pkt_offset, nbytes);
+> +			ctx->debugfs.drop--;
+> +		}
+> +
+> +		while (ctx->debugfs.shl > 0) {
+> +			pkt_offset = vidtv_mux_get_random_pkt_offset_for_pid(m, ctx->pid, &found);
+> +			if (found)
+> +				vidtv_mux_shl_random(m, 10000, pkt_offset);
+> +			ctx->debugfs.shl--;
+> +		}
+> +
+> +		while (ctx->debugfs.shr > 0) {
+> +			pkt_offset = vidtv_mux_get_random_pkt_offset_for_pid(m, ctx->pid, &found);
+> +			if (found)
+> +				vidtv_mux_shr_random(m, 10000, pkt_offset);
+> +			ctx->debugfs.shr--;
+> +		}
+> +
+> +		for (offset = 0; offset < m->mux_buf_offset; offset += TS_PACKET_LEN) {
+> +			pid = vidtv_ts_get_pid(&m->mux_buf[offset]);
+> +			if (ctx->pid == pid) {
+> +				vidtv_mux_discontinuity_random(m,
+> +							       m->debugfs.discontinuity_probability,
+> +							       pid);
+> +				vidtv_mux_add_random_noise(m, ctx->debugfs.noise, offset);
+> +				vidtv_mux_drop_random(m, ctx->debugfs.drop_probability,
+> +						      offset, nbytes);
+> +				vidtv_mux_shl_random(m, ctx->debugfs.shl_probability, offset);
+> +				vidtv_mux_shr_random(m, ctx->debugfs.shr_probability, offset);
+> +			}
+> +		}
+> +	}
+> +}
+> +
+>  #define ERR_RATE 10000000
+>  static void vidtv_mux_tick(struct work_struct *work)
+>  {
+> @@ -410,6 +611,7 @@ static void vidtv_mux_tick(struct work_struct *work)
+>  		nbytes += vidtv_mux_poll_encoders(m);
+>  		nbytes += vidtv_mux_pad_with_nulls(m, 256);
+>  
+> +		vidtv_mux_handle_debugfs_input(m, &nbytes);
+>  		npkts = nbytes / TS_PACKET_LEN;
+>  
+>  		/* if the buffer is not aligned there is a bug somewhere */
+> @@ -474,6 +676,71 @@ void vidtv_mux_stop_thread(struct vidtv_mux *m)
+>  	}
+>  }
+>  
+> +static void vidtv_mux_debugfs_init(struct vidtv_mux *m, struct dentry *parent)
+> +{
+> +	struct dentry *frontend_dir;
+> +	struct dentry *pid_dir;
+> +	struct vidtv_mux_pid_ctx *ctx;
+> +	int bkt;
+> +	char name[16];
+> +	struct dtv_frontend_properties *c;
+> +
+> +#ifndef CONFIG_DVB_VIDTV_DEBUGFS
+> +	return;
+> +#endif //CONFIG_DVB_VIDTV_DEBUGFS
 
-This is ugly.  Please remove it.
+Same above notes apply here: place it on a separate C file and don't
+keep dead code, using the inline void do-nothing functions at the header,
+if compiled without CONFIG_DVB_VIDTV_DEBUGFS.
 
+> +
+> +	c = &m->fe->dtv_property_cache;
+> +	//Change this if vidtv ever supports simulating more than one frontend
+> +	frontend_dir = debugfs_create_dir("frontend0", parent);
+> +	if (IS_ERR(frontend_dir))
+> +		return;
+> +
+> +	debugfs_create_u64("pre_bit_count", 0444, frontend_dir, &c->pre_bit_count.stat[0].uvalue);
+> +	debugfs_create_u64("post_bit_count", 0444, frontend_dir, &c->post_bit_count.stat[0].uvalue);
+> +	debugfs_create_u64("block_count", 0444, frontend_dir, &c->block_count.stat[0].uvalue);
+> +
+> +	/* these work at random for any PID in this mux */
+> +	debugfs_create_u32("noise", 0644, frontend_dir, &m->debugfs.noise);
+> +	debugfs_create_u32("drop_probability", 0644, frontend_dir, &m->debugfs.drop_probability);
+> +	debugfs_create_u32("shl_probability", 0644, frontend_dir, &m->debugfs.shl_probability);
+> +	debugfs_create_u32("shr_probability", 0644, frontend_dir, &m->debugfs.shr_probability);
+> +	debugfs_create_u32("discontinuity_probability", 0644, frontend_dir,
+> +			   &m->debugfs.discontinuity_probability);
+> +	debugfs_create_u32("drop", 0644, frontend_dir, &m->debugfs.drop);
+> +	debugfs_create_u32("shl", 0644, frontend_dir, &m->debugfs.shl);
+> +	debugfs_create_u32("shr", 0644, frontend_dir, &m->debugfs.shr);
+> +	debugfs_create_u32("discontinuity", 0644, frontend_dir, &m->debugfs.discontinuity);
+> +
+> +	hash_for_each(m->pid_ctx, bkt, ctx, h) {
+> +		memset(name, 0, ARRAY_SIZE(name));
+> +		snprintf(name, ARRAY_SIZE(name), "PID_%d", ctx->pid);
+> +
+> +		pid_dir = debugfs_create_dir(name, frontend_dir);
+> +		if (IS_ERR(pid_dir))
+> +			return;
+> +
+> +		/* these will affect the chosen PID only */
+> +		debugfs_create_u32("noise", 0644, pid_dir, &ctx->debugfs.noise);
+> +		debugfs_create_u32("drop_probability", 0644, pid_dir,
+> +				   &ctx->debugfs.drop_probability);
+> +		debugfs_create_u32("shl_probability", 0644, pid_dir,
+> +				   &ctx->debugfs.shl_probability);
+> +		debugfs_create_u32("shr_probability", 0644, pid_dir,
+> +				   &ctx->debugfs.shr_probability);
+> +		debugfs_create_u32("discontinuity_probability", 0644, pid_dir,
+> +				   &ctx->debugfs.discontinuity_probability);
+> +		debugfs_create_u32("drop", 0644, pid_dir, &ctx->debugfs.drop);
+> +		debugfs_create_u32("shl", 0644, pid_dir, &ctx->debugfs.shl);
+> +		debugfs_create_u32("shr", 0644, pid_dir, &ctx->debugfs.shr);
+> +		debugfs_create_u32("discontinuity", 0644, pid_dir,
+> +				   &ctx->debugfs.discontinuity);
+> +
+> +		ctx->debugfs.dir_dentry = pid_dir;
 > +	}
 > +
-> +	ret = request_threaded_irq(pmic->irq, hi6421_spmi_irq_handler, NULL,
-> +				   IRQF_TRIGGER_LOW | IRQF_SHARED | IRQF_NO_SUSPEND,
-> +				   "pmic", pmic);
-> +	if (ret < 0) {
-> +		dev_err(dev, "could not claim pmic IRQ: error %d\n", ret);
-
-This is inconsistent with other prints.  Better to start with a
-capital I think.  Also, it should be "PMIC", as it's an abbreviation.
-
-> +		goto irq_malloc;
-> +	}
+> +	m->debugfs.dir_dentry = frontend_dir;
+> +}
 > +
-> +	dev_set_drvdata(&pdev->dev, pmic);
+>  struct vidtv_mux *vidtv_mux_init(struct dvb_frontend *fe,
+>  				 struct device *dev,
+>  				 struct vidtv_mux_init_args *args)
+> @@ -521,6 +788,8 @@ struct vidtv_mux *vidtv_mux_init(struct dvb_frontend *fe,
+>  	if (vidtv_mux_pid_ctx_init(m) < 0)
+>  		goto free_channel_si;
+>  
+> +	vidtv_mux_debugfs_init(m, args->debugfs_root);
 > +
-> +	/*
-> +	 * The logic below will rely that the pmic is already stored at
-> +	 * drvdata.
-> +	 */
+>  	return m;
+>  
+>  free_channel_si:
+> @@ -542,5 +811,8 @@ void vidtv_mux_destroy(struct vidtv_mux *m)
+>  	vidtv_channels_destroy(m);
+>  	kfree(m->network_name);
+>  	vfree(m->mux_buf);
+> +#ifdef CONFIG_DVB_VIDTV_DEBUGFS
+> +	debugfs_remove_recursive(m->debugfs.dir_dentry);
+> +#endif //CONFIG_DVB_VIDTV_DEBUGFS
 
-Which logic?
+Instead, please do something like this at the .h file:
 
-> +	dev_dbg(&pdev->dev, "SPMI-PMIC: adding children for %pOF\n",
-> +		pdev->dev.of_node);
 
-Please remove this.
+#ifdef CONFIG_DVB_VIDTV_DEBUGFS
+...
+vidtv_mux_debugfs_remove(...)
+{
+	debugfs_remove_recursive(m->debugfs.dir_dentry);
+}
+...
+#else
+...
+static inline vidtv_mux_debugfs_remove(...) {}
+...
+#endif
 
-> +	ret = devm_mfd_add_devices(&pdev->dev, PLATFORM_DEVID_NONE,
-> +				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-> +				   NULL, 0, NULL);
-> +	if (!ret)
-> +		return 0;
+and just call it unconditionally here.
+
+
+>  	kfree(m);
+>  }
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.h b/drivers/media/test-drivers/vidtv/vidtv_mux.h
+> index ad82eb72b841..b6ca9f330afd 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_mux.h
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_mux.h
+> @@ -22,6 +22,7 @@
+>  #include <media/dvb_frontend.h>
+>  
+>  #include "vidtv_psi.h"
+> +#include "vidtv_debugfs.h"
+>  
+>  /**
+>   * struct vidtv_mux_timing - Timing related information
+> @@ -77,11 +78,13 @@ struct vidtv_mux_si {
+>   * @cc: The continuity counter for this PID. It is incremented on every TS
+>   * pack and it will wrap around at 0xf0. If the decoder notices a sudden jump in
+>   * this counter this will trigger a discontinuity state.
+> + * @debugfs: debugfs interface for this mpeg pid
+>   * @h: This is embedded in a hash table, mapping pid -> vidtv_mux_pid_ctx
+>   */
+>  struct vidtv_mux_pid_ctx {
+>  	u16 pid;
+>  	u8 cc; /* continuity counter */
+> +	struct vidtv_debugfs debugfs;
+>  	struct hlist_node h;
+>  };
+>  
+> @@ -108,6 +111,7 @@ struct vidtv_mux_pid_ctx {
+>   * @transport_stream_id: The transport stream ID
+>   * @network_id: The network ID
+>   * @network_name: The network name
+> + * @debugfs: The debugfs interface for the whole mux, if any.
+>   * @priv: Private data.
+>   */
+>  struct vidtv_mux {
+> @@ -139,6 +143,7 @@ struct vidtv_mux {
+>  	u16 transport_stream_id;
+>  	u16 network_id;
+>  	char *network_name;
+> +	struct vidtv_debugfs debugfs;
+>  	void *priv;
+>  };
+>  
+> @@ -155,6 +160,7 @@ struct vidtv_mux {
+>   * @channels: an optional list of channels to use
+>   * @network_id: The network ID
+>   * @network_name: The network name
+> + * @debugfs_root: the debugfs root directory, if any
+>   * @priv: Private data.
+>   */
+>  struct vidtv_mux_init_args {
+> @@ -168,6 +174,7 @@ struct vidtv_mux_init_args {
+>  	struct vidtv_channel *channels;
+>  	u16 network_id;
+>  	char *network_name;
+> +	struct dentry *debugfs_root;
+>  	void *priv;
+>  };
+>  
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_ts.c b/drivers/media/test-drivers/vidtv/vidtv_ts.c
+> index ca4bb9c40b78..dca6fa8afa57 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_ts.c
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_ts.c
+> @@ -134,3 +134,11 @@ u32 vidtv_ts_pcr_write_into(struct pcr_write_args args)
+>  
+>  	return nbytes;
+>  }
 > +
-> +	dev_err(dev, "Failed to add child devices: %d\n", ret);
-> +
-> +irq_malloc:
-> +	free_irq(pmic->irq, pmic);
-
-Does gpio_to_irq() need freeing?
-
+> +u16 vidtv_ts_get_pid(u8 *pkt)
+> +{
+> +	struct vidtv_mpeg_ts *ts_pkt = (struct vidtv_mpeg_ts *)pkt;
+> +	u16 bitfield = be16_to_cpu(ts_pkt->bitfield);
+> +	u16 ret = bitfield & GENMASK(12, 0);
 > +	return ret;
 > +}
+> diff --git a/drivers/media/test-drivers/vidtv/vidtv_ts.h b/drivers/media/test-drivers/vidtv/vidtv_ts.h
+> index 09b4ffd02829..f19824021966 100644
+> --- a/drivers/media/test-drivers/vidtv/vidtv_ts.h
+> +++ b/drivers/media/test-drivers/vidtv/vidtv_ts.h
+> @@ -103,4 +103,12 @@ u32 vidtv_ts_null_write_into(struct null_packet_write_args args);
+>   */
+>  u32 vidtv_ts_pcr_write_into(struct pcr_write_args args);
+>  
+> +/**
+> + * vidtv_ts_get_pid - Extract the MPEG PID value out of a mpeg ts packet
+> + * @pkt: pointer to packet
+> + *
+> + * Return: The mpeg ts pid in cpu endianness
+> + */
+> +u16 vidtv_ts_get_pid(u8 *pkt);
 > +
-> +static void hi6421_spmi_pmic_remove(struct spmi_device *pdev)
-> +{
-> +	struct hi6421_spmi_pmic *pmic = dev_get_drvdata(&pdev->dev);
-> +
-> +	free_irq(pmic->irq, pmic);
-> +}
-> +
-> +static const struct of_device_id pmic_spmi_id_table[] = {
-> +	{ .compatible = "hisilicon,hi6421-spmi" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, pmic_spmi_id_table);
-> +
-> +static struct spmi_driver hi6421_spmi_pmic_driver = {
-> +	.driver = {
-> +		.name	= "hi6421-spmi-pmic",
+>  #endif //VIDTV_TS_H
 
-Odd spacing.  Just use one ' ' please.
 
-> +		.of_match_table = pmic_spmi_id_table,
-> +	},
-> +	.probe	= hi6421_spmi_pmic_probe,
-> +	.remove	= hi6421_spmi_pmic_remove,
-> +};
-> +module_spmi_driver(hi6421_spmi_pmic_driver);
-> +
-> +MODULE_DESCRIPTION("HiSilicon Hi6421v600 SPMI PMIC driver");
-> +MODULE_LICENSE("GPL v2");
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Mauro
