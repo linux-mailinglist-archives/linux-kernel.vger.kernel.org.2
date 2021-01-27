@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811D93058C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230A43058D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236187AbhA0KsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:48:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236145AbhA0Kpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:45:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02C94ACBA;
-        Wed, 27 Jan 2021 10:45:02 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 11:45:01 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Mark Brown <broonie@kernel.org>
-cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH] stacktrace: Move documentation for arch_stack_walk_reliable()
- to header
-In-Reply-To: <20210118211021.42308-1-broonie@kernel.org>
-Message-ID: <alpine.LSU.2.21.2101271141460.27114@pobox.suse.cz>
-References: <20210118211021.42308-1-broonie@kernel.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S236228AbhA0KvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:51:05 -0500
+Received: from forward102o.mail.yandex.net ([37.140.190.182]:33627 "EHLO
+        forward102o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235846AbhA0KsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:48:12 -0500
+Received: from iva4-31e05f600ad9.qloud-c.yandex.net (iva4-31e05f600ad9.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:1493:0:640:31e0:5f60])
+        by forward102o.mail.yandex.net (Yandex) with ESMTP id 5E0BD66827A6;
+        Wed, 27 Jan 2021 13:46:26 +0300 (MSK)
+Received: from iva6-2d18925256a6.qloud-c.yandex.net (iva6-2d18925256a6.qloud-c.yandex.net [2a02:6b8:c0c:7594:0:640:2d18:9252])
+        by iva4-31e05f600ad9.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 2YM4roT5AX-kPGO1Wmq;
+        Wed, 27 Jan 2021 13:46:26 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1611744386;
+        bh=X6QfomTan/HH9I6uy632rlEwjgbCDUdghehKW286j0M=;
+        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
+        b=tUJe0YdcL3LXmPJcOqZz+jFCaDTRXUP+aUzza9v/366qV239riVcxZUlsi98sGsF9
+         vwQxgfGjfGdAXmanWq7RclQ/9QWLATXbGRegR2bJVBSD0PrgwMSqUaL5kS4pFBZoCP
+         ASH2DRsk1nqJZlfoHhp+G82X+Bnj1ra2rkYkV3HE=
+Authentication-Results: iva4-31e05f600ad9.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id AUuDuROonk-kPm8vInI;
+        Wed, 27 Jan 2021 13:46:25 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/9] gpio: ep93xx: fixes series patch
+Date:   Wed, 27 Jan 2021 13:46:08 +0300
+Message-Id: <20210127104617.1173-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021, Mark Brown wrote:
+Series of patches to fix ep93xx gpio driver to make IRQ's working.
 
-> Currently arch_stack_wallk_reliable() is documented with an identical
-> comment in both x86 and S/390 implementations which is a bit redundant.
-> Move this to the header and convert to kerneldoc while we're at it.
+The following are fix patches (these are enough to get gpio-ep93xx
+working with modern kernel):
 
-Makes sense.
- 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Miroslav Benes <mbenes@suse.cz>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> Cc: x86@kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: live-patching@vger.kernel.org
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+[PATCH v2 1/9] gpio: ep93xx: fix BUG_ON port F usage
+[PATCH v2 2/9] gpio: ep93xx: Fix single irqchip with multi
+ gpiochips
+[PATCH v2 3/9] gpio: ep93xx: Fix wrong irq numbers in port F
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+The following are cleanup and style patches:
 
-> diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
-> index 7f1266c24f6b..101477b3e263 100644
-> --- a/arch/s390/kernel/stacktrace.c
-> +++ b/arch/s390/kernel/stacktrace.c
-> @@ -24,12 +24,6 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  	}
->  }
->  
-> -/*
-> - * This function returns an error if it detects any unreliable features of the
-> - * stack.  Otherwise it guarantees that the stack trace is reliable.
-> - *
-> - * If the task is not 'current', the caller *must* ensure the task is inactive.
-> - */
->  int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
->  			     void *cookie, struct task_struct *task)
->  {
+[PATCH v2 4/9] gpio: ep93xx: drop to_irq binding
+[PATCH v2 5/9] gpio: ep93xx: Fix typo s/hierarchial/hierarchical
+[PATCH v2 6/9] gpio: ep93xx: refactor ep93xx_gpio_add_bank
+[PATCH v2 7/9] gpio: ep93xx: separate IRQ's setup
+[PATCH v2 8/9] gpio: ep93xx: refactor base IRQ number
+[PATCH v2 9/9] gpio: ep93xx: replace bools with idx for IRQ ports
 
-Just a note. arch/powerpc/kernel/stacktrace.c has the same for 
-__save_stack_trace_tsk_reliable(), but it would not be nice to pollute 
-include/linux/stacktrace.h with that in my opinion. It is an old 
-infrastructure after all.
-
-Miroslav
+The futher work can be done by removing ep93xx_gpio_port function
+and, maybe, ep93xx_gpio_update_int_params. But i think it's better 
+to be done in conjunction with converting ep93xx to DT support.
