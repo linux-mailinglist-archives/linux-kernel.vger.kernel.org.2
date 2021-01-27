@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C901A3065F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EF53065F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbhA0VZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S234369AbhA0VZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234150AbhA0VXm (ORCPT
+        with ESMTP id S234173AbhA0VYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:23:42 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:23:02 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611782580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=II6M8iM5PIuvLXe9aK/VVdDXafw1OqaL8gCEsAXcvnk=;
-        b=WUVHxkzpXwdrvLEovnJc+gLF3SjpK+ZsSAaANxaD1s+ZAdnweeZUmBGuv00CaP03chrsBU
-        V8tDGWi1PL59W4gjaOM2iXlUJAI8cbe8SylPmm+rt0EPerOrXeSt59vO/FJ2LGX2c2cAR1
-        3wYpizXSzpmaYiEEZ6hDd7ewOFUmYnMJ57m0QnpyF+dufAsGlLwzgUrnZxb6nQkKc98zzy
-        jYEL2Cx17p1bV5tirMqGj1kMX5hsr2WrjBXx8J3GU1z6nGWoSEz6Ot/3jkIuCmsHyOMqY4
-        +Ij4XNI+SB7ouVTsCo5cv/jqzKSBBHWY49cQj859KOD7jnQw92Xmg6A5QYZ5gw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611782580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=II6M8iM5PIuvLXe9aK/VVdDXafw1OqaL8gCEsAXcvnk=;
-        b=QmNp86P08ti1jhKYyBpBD5eh6ghaSxiRuwndOEa+4CWhGoZpUuDYAJ/FRKNdYRfqYlYWwx
-        cR1rn3Jp5CTQ5gDw==
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@linux.intel.com
-Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
-In-Reply-To: <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
-References: <20210122081311.GA12834@xsang-OptiPlex-9020> <YAr7d6A4CkMpgx+g@alley> <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
-Date:   Wed, 27 Jan 2021 22:28:59 +0106
-Message-ID: <87bldaaxcc.fsf@jogness.linutronix.de>
+        Wed, 27 Jan 2021 16:24:13 -0500
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31662C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:23:33 -0800 (PST)
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 78AFCAE0B56; Wed, 27 Jan 2021 22:23:30 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] vme: make remove callback return void
+Date:   Wed, 27 Jan 2021 22:23:29 +0100
+Message-Id: <20210127212329.98517-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
-> AFAIU this is just 'modprobe rcutorture'
+The driver core ignores the return value of struct bus_type::remove()
+because there is only little that can be done. To simplify the quest to
+make this function return void, let struct vme_driver::remove return void,
+too. There is only a single vme driver and it already returns 0
+unconditionally in .remove().
 
-I was finally able to trigger this by using my workstation:
+Also fix the bus remove function to always return 0.
 
-    Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz
-    Debian/buster
-    QEMU 3.1.0 (Debian 1:3.1+dfsg-8+deb10u8)
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+---
+ drivers/staging/vme/devices/vme_user.c | 4 +---
+ drivers/vme/vme.c                      | 4 ++--
+ include/linux/vme.h                    | 2 +-
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-instead of my build server:
+diff --git a/drivers/staging/vme/devices/vme_user.c b/drivers/staging/vme/devices/vme_user.c
+index fd0ea4dbcb91..35d7260e2271 100644
+--- a/drivers/staging/vme/devices/vme_user.c
++++ b/drivers/staging/vme/devices/vme_user.c
+@@ -689,7 +689,7 @@ static int vme_user_probe(struct vme_dev *vdev)
+ 	return err;
+ }
+ 
+-static int vme_user_remove(struct vme_dev *dev)
++static void vme_user_remove(struct vme_dev *dev)
+ {
+ 	int i;
+ 
+@@ -717,8 +717,6 @@ static int vme_user_remove(struct vme_dev *dev)
+ 
+ 	/* Unregister the major and minor device numbers */
+ 	unregister_chrdev_region(MKDEV(VME_MAJOR, 0), VME_DEVS);
+-
+-	return 0;
+ }
+ 
+ static struct vme_driver vme_user_driver = {
+diff --git a/drivers/vme/vme.c b/drivers/vme/vme.c
+index 54d7963c1078..1b15afea28ee 100644
+--- a/drivers/vme/vme.c
++++ b/drivers/vme/vme.c
+@@ -1997,9 +1997,9 @@ static int vme_bus_remove(struct device *dev)
+ 
+ 	driver = dev->platform_data;
+ 	if (driver->remove)
+-		return driver->remove(vdev);
++		driver->remove(vdev);
+ 
+-	return -ENODEV;
++	return 0;
+ }
+ 
+ struct bus_type vme_bus_type = {
+diff --git a/include/linux/vme.h b/include/linux/vme.h
+index 7e82bf500f01..b204a9b4be1b 100644
+--- a/include/linux/vme.h
++++ b/include/linux/vme.h
+@@ -122,7 +122,7 @@ struct vme_driver {
+ 	const char *name;
+ 	int (*match)(struct vme_dev *);
+ 	int (*probe)(struct vme_dev *);
+-	int (*remove)(struct vme_dev *);
++	void (*remove)(struct vme_dev *);
+ 	struct device_driver driver;
+ 	struct list_head devices;
+ };
+-- 
+2.29.2
 
-    Intel(R) Xeon(R) CPU E5-2697 v4 @ 2.30GHz
-    Debian/bullseye
-    QEMU 5.2.0 (Debian 1:5.2+dfsg-3)
-
-I don't know what factors contributed, but I wanted to share my success
-in reproducing the reported problem. Instead of using lkp, I am manually
-booting with:
-
-$ kvm -cpu host -smp 2 -m 8G -nographic \
-      -kernel bzImage -append "console=ttyS0,115200 loglevel=6" \
-      -initrd initrd
-
-My initrd is a minimal busybox rootfs that runs:
-
-# modprobe rcutorture onoff_interval=3 onoff_holdoff=30 torture_type=tasks
-
-(Those are the same modprobe parameters used by the lkp job.)
-
-After about a minute I see:
-
-[   47.268292] tasks-torture: rcu_torture_read_exit: Start of episode
-[   51.273365] tasks-torture: rcu_torture_read_exit: End of episode
-[   55.823306] smpboot: do_boot_cpu failed(-1) to wakeup CPU#0
-[   55.824350] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[   55.830661] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[   55.848524] tasks-torture:torture_onoff task: online 0 failed: errno -5
-
-I will start to debug this now.
-
-John Ogness
