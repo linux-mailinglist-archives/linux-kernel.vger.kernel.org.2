@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279D43052D8
+	by mail.lfdr.de (Postfix) with ESMTP id A4C813052D9
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbhA0GHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232547AbhA0Fpy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:45:54 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2CCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 21:45:13 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id o16so837911pgg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 21:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jhf/7eY+iUjXrBxdzvgD4JXoXhLha5DC8Z1kc7WekkU=;
-        b=oXkwZqE9ljdZ3CUlralaquZtKEpUPc+yjeuZgHO7DT8BI6FqRYLwlDlOOQxAYgMZvh
-         jwVhfP1zNiN62zgbePLkRL3oOmTH0dI0/p9wrob3ErD9bG33S9sv4fi0JKYghzIEWT1j
-         WGccIY9uJvsh+vELSq2VD5pfCdZY1ZP6ip1t+thuQAHFLop24atoMhqMb8JpMejBROae
-         JzduTxaTa47DainxwJxQFpd13Mpgnf66mOI3m5+YD0gUAEP0hllVWlYnAvbgPGucs8s3
-         Eu0hJRDqczaWPbSLJYvHCP7TdJfayg5vvItAdZj1drwRcxjqXt5Pn5A265DfaKV2LQKC
-         rm5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jhf/7eY+iUjXrBxdzvgD4JXoXhLha5DC8Z1kc7WekkU=;
-        b=XOiL/6qcqBOkPqEx2vVgDpfmYNqYFnbWsWbNeRM2ET4BtqlYBZkisNywpJ402Xqq8A
-         Aou1x2U3ldj3Zz8GxdkhPfEm4yB44/+UFBSGPsMMAlN//PfrsKVSoFt28QD6PMaohzyw
-         cjj3Dk3hjHVzoh0E471roEFzreYt3udJJaBuq3Kqdl24re3yetGrt3ikrUY6gTbRGCUS
-         UpiS69m8xLaQO6FTDmGXIQNq0vijCHKe/2+u/gy6RnER5vAbl0NeiiNmudRxK0QAnvfv
-         s3sVt6IW4UMMm6QaRrbZnrDb8OiULFfvC4J3f9SJ4qX0e+cEPulYq71jvehssh2Z7oCD
-         t4zA==
-X-Gm-Message-State: AOAM5301WVqnqYjYAhBlqWRBSQv3q0YDz1z+5oErKTvGFZjx5hYOfy+G
-        HuddgBc5Jum18m2ky5vwQATfmgLZP6o/lDOj
-X-Google-Smtp-Source: ABdhPJwViuSz1Aio3CaCQIALcETPd9tUd+ujZ43P1epmfIHLWoWx7y7iHLkEv5sowxFq8rO9KABCAQ==
-X-Received: by 2002:a63:5fcf:: with SMTP id t198mr9348426pgb.226.1611726313460;
-        Tue, 26 Jan 2021 21:45:13 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id t6sm867024pfe.177.2021.01.26.21.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 21:45:12 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     valentin.schneider@arm.com, thara.gopinath@linaro.org,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com,
-        zhangwen@yulong.com, zbestahu@163.com
-Subject: [PATCH] init/Kconfig: correct thermal pressure retrieve API
-Date:   Wed, 27 Jan 2021 13:44:51 +0800
-Message-Id: <20210127054451.1240-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S235692AbhA0GIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:08:22 -0500
+Received: from mga07.intel.com ([134.134.136.100]:6545 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232560AbhA0Fp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 00:45:56 -0500
+IronPort-SDR: tNlgcIO+UwJnPFPcA7C9xlxqq2bLeo8wPKs07rBwZERXi6DPw73zkfqg20uhunVKuLUSKPE53L
+ w48rlnARKzOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="244097037"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="244097037"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 21:45:13 -0800
+IronPort-SDR: XIPxgouR/xvDcnhn09nAFREz1xZm0rMDUeLj0JUtqN20YocOzme60eJfXkrP4K0I1MscG30Efs
+ twSlE75bRD/Q==
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="388170074"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 21:45:09 -0800
+Subject: Re: [RESEND v13 09/10] KVM: vmx/pmu: Expose LBR_FMT in the
+ MSR_IA32_PERF_CAPABILITIES
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, kan.liang@intel.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20210108013704.134985-1-like.xu@linux.intel.com>
+ <20210108013704.134985-10-like.xu@linux.intel.com>
+ <2ff8ca5a-32ec-ca5d-50c3-d1690e933f6d@redhat.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <fb4c3124-997b-5897-e38f-1b9aa782e5e2@intel.com>
+Date:   Wed, 27 Jan 2021 13:45:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <2ff8ca5a-32ec-ca5d-50c3-d1690e933f6d@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On 2021/1/26 17:30, Paolo Bonzini wrote:
+> On 08/01/21 02:37, Like Xu wrote:
+>> Userspace could enable guest LBR feature when the exactly supported
+>> LBR format value is initialized to the MSR_IA32_PERF_CAPABILITIES
+>> and the LBR is also compatible with vPMU version and host cpu model.
+>>
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
+>>   arch/x86/kvm/vmx/vmx.c          | 7 +++++++
+>>   2 files changed, 15 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/vmx/capabilities.h 
+>> b/arch/x86/kvm/vmx/capabilities.h
+>> index 57b940c613ab..a9a7c4d1b634 100644
+>> --- a/arch/x86/kvm/vmx/capabilities.h
+>> +++ b/arch/x86/kvm/vmx/capabilities.h
+>> @@ -378,7 +378,14 @@ static inline u64 vmx_get_perf_capabilities(void)
+>>        * Since counters are virtualized, KVM would support full
+>>        * width counting unconditionally, even if the host lacks it.
+>>        */
+>> -    return PMU_CAP_FW_WRITES;
+>> +    u64 perf_cap = PMU_CAP_FW_WRITES;
+>> +
+>> +    if (boot_cpu_has(X86_FEATURE_PDCM))
+>> +        rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
+>> +
+>> +    perf_cap |= perf_cap & PMU_CAP_LBR_FMT;
+>> +
+>> +    return perf_cap;
+>>   }
+>>     static inline u64 vmx_supported_debugctl(void)
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index ad3b079f6700..9cb5b1e4fc27 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -2229,6 +2229,13 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, 
+>> struct msr_data *msr_info)
+>>       case MSR_IA32_PERF_CAPABILITIES:
+>>           if (data && !vcpu_to_pmu(vcpu)->version)
+>>               return 1;
+>> +        if (data & PMU_CAP_LBR_FMT) {
+>> +            if ((data & PMU_CAP_LBR_FMT) !=
+>> +                (vmx_get_perf_capabilities() & PMU_CAP_LBR_FMT))
+>> +                return 1;
+>> +            if (!intel_pmu_lbr_is_compatible(vcpu))
+>> +                return 1;
+>> +        }
+>>           ret = kvm_set_msr_common(vcpu, msr_info);
+>>           break;
+>>
+>
+> Please move this hunk to patch 4.
+>
+> Paolo
+>
+Thanks, I'll do this part early in the next version.
 
-We're using arch_scale_thermal_pressure() to retrieve per CPU thermal
-pressure.
-
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- init/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index c4e0a7e..5b35e15 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -525,7 +525,7 @@ config SCHED_THERMAL_PRESSURE
- 	  i.e. put less load on throttled CPUs than on non/less throttled ones.
- 
- 	  This requires the architecture to implement
--	  arch_set_thermal_pressure() and arch_get_thermal_pressure().
-+	  arch_set_thermal_pressure() and arch_scale_thermal_pressure().
- 
- config BSD_PROCESS_ACCT
- 	bool "BSD Process Accounting"
--- 
-1.9.1
-
+I would have thought that we need to
+make the interface exposing as the last enabling step.
