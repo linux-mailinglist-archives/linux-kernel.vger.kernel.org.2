@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E756D30575B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BBE305703
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbhA0JuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:50:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:32966 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233985AbhA0I7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:59:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB41B152D;
-        Wed, 27 Jan 2021 00:56:13 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.91.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BC0003F66B;
-        Wed, 27 Jan 2021 00:56:10 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, lcherian@marvell.com,
-        linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH V3 14/14] coresight: etm-perf: Add support for trace buffer format
-Date:   Wed, 27 Jan 2021 14:25:38 +0530
-Message-Id: <1611737738-1493-15-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+        id S235328AbhA0JbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:31:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235329AbhA0J1e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:27:34 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3F5C0613D6;
+        Wed, 27 Jan 2021 01:26:37 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id z21so1175732pgj.4;
+        Wed, 27 Jan 2021 01:26:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=VlZoZLBDHB4T/YMJIRvfZ215W20PBGmlP7rUa/kbeTE=;
+        b=Rx6L/dzb+PTIyI7DqI/ktCHUMBm59DVOBMgR7YEtBRsitAiGP0B3mtvfCX5iqklZhq
+         VXzl1QYGhSzgyS3d1UER9u9RkDlvCMnyGb0Z5wJKnXiBqh4pTGhN/E28k/apx6Z9imhW
+         c95BvtjoreLkwhzwlCPSurK+3AVgYTsvqT7/24d6ProSzBX+FM4w3DhX5ni4/r9yKq44
+         4ONeHfdbfLjPvWivYr0EP8gKpMebu2NmDwHyYnnKCLrt1QJK3eSmtGr7OcdxwmIrPBKG
+         OtSaLuaUZxmyHalSyJEP/bn/Uuw4+pIdhdWyORK2s7NmPPRTqIa9NxVY02LrEX3jCrbS
+         5sIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=VlZoZLBDHB4T/YMJIRvfZ215W20PBGmlP7rUa/kbeTE=;
+        b=Vk/NwHEKPua9JsXE5ilRfDsMNbKBteCTbWJsAb5xDbHswwQ6XSmxaLZiOhnNp+TG5c
+         s9gxzwyLklh2tPowN+4+Gb+RuRyO/icLJvwhOyH5zVU8kkCxPspP5vKsD22+KFnTYcfY
+         sZSrTTDTmoP42jNXBKckNqkj2thljDayM47cFkw29UfHHNGMRE+bw/1NCpsHsoQdr2zu
+         +jZ65TPl0r2sJlpAhusYyoqgLOVpXs7XhyKC9Wam1BEFkas0ygKNngBenAadcWq8o+zh
+         rzQbGeNRcKvQUBde5I4xahhGG+OfjOc8FtQckRFUDHhNO+L8uVtJ3uy5HKNFuVc7q8Ak
+         TCeg==
+X-Gm-Message-State: AOAM533+1OB36gA4sThMfGdNz7waORUfunnY21RrcuLluCh6Uemz8JVe
+        bLqqWkhIAqb9YlPYJc19Vb4=
+X-Google-Smtp-Source: ABdhPJxk9kiZWo3vZgXC5SEmEnufwVt5fJXqLZTuie25SOyDno9HYRBGpqPOmD+gQGQ5rRynQeJcsw==
+X-Received: by 2002:a65:4385:: with SMTP id m5mr10413483pgp.296.1611739597098;
+        Wed, 27 Jan 2021 01:26:37 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id a21sm1829002pgd.57.2021.01.27.01.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 01:26:36 -0800 (PST)
+Date:   Wed, 27 Jan 2021 17:26:31 +0800
+From:   carlis <zhangxuezhi3@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Colin King <colin.king@canonical.com>,
+        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
+        mh12gx2825@gmail.com, Stefano Brivio <sbrivio@redhat.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6] fbtft: add tearing signal detect
+Message-ID: <20210127172631.00001846@gmail.com>
+In-Reply-To: <CAMuHMdV5VxNBNV-UMswKKZmQRFUvG+pnBbOOW8XJT8pbbvmp5Q@mail.gmail.com>
+References: <1611732502-99639-1-git-send-email-zhangxuezhi3@gmail.com>
+        <CAMuHMdV5VxNBNV-UMswKKZmQRFUvG+pnBbOOW8XJT8pbbvmp5Q@mail.gmail.com>
+Organization: Tyzmig-ryrjum-8kedto
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Wed, 27 Jan 2021 10:00:13 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-CoreSight PMU supports aux-buffer for the ETM tracing. The trace
-generated by the ETM (associated with individual CPUs, like Intel PT)
-is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
+> Hi Carlis,
+> 
+> On Wed, Jan 27, 2021 at 9:52 AM Carlis <zhangxuezhi3@gmail.com> wrote:
+> > From: zhangxuezhi <zhangxuezhi1@yulong.com>
+> >
+> > For st7789v ic,add tearing signal detect to avoid screen tearing
+> >
+> > Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>  
+> 
+> Thanks for your patch!
+> 
+> > --- a/drivers/staging/fbtft/fb_st7789v.c
+> > +++ b/drivers/staging/fbtft/fb_st7789v.c  
+> 
+> > @@ -82,6 +111,34 @@ enum st7789v_command {
+> >   */
+> >  static int init_display(struct fbtft_par *par)
+> >  {
+> > +       int rc;
+> > +       struct device *dev = par->info->device;
+> > +
+> > +       par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> > GPIOD_IN);
+> > +       if (IS_ERR(par->gpio.te)) {
+> > +               rc = PTR_ERR(par->gpio.te);
+> > +               pr_err("Failed to request te gpio: %d\n", rc);
+> > +               par->gpio.te = NULL;  
+> 
+> Errors (e.g. -EPROBE_DEFER) should be propagated upstream,
+> not ignored.
+> 
+> > +       }
+> > +       if (par->gpio.te) {
+> > +               init_completion(&spi_panel_te);
+> > +               mutex_init(&te_mutex);
+> > +               rc = devm_request_irq(dev,
+> > +                                     gpiod_to_irq(par->gpio.te),
+> > +                                    spi_panel_te_handler,
+> > IRQF_TRIGGER_RISING,
+> > +                                    "TE_GPIO", par);
+> > +               if (rc) {
+> > +                       pr_err("TE request_irq failed.\n");
+> > +                       devm_gpiod_put(dev, par->gpio.te);
+> > +                       par->gpio.te = NULL;  
+> 
+> Errors (e.g. -EPROBE_DEFER) should be propagated upstream,
+> not ignored.
+> 
+> > +               } else {
+> > +
+> > disable_irq_nosync(gpiod_to_irq(par->gpio.te));
+> > +                       pr_info("TE request_irq completion.\n");
+> > +               }
+> > +       } else {
+> > +               pr_info("%s:%d, TE gpio not specified\n",
+> > +                       __func__, __LINE__);
+> > +       }
+> >         /* turn off sleep mode */
+> >         write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
+> >         mdelay(120);  
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
 
-The TMC-ETR applies formatting of the raw ETM trace data, as it
-can collect traces from multiple ETMs, with the TraceID to indicate
-the source of a given trace packet.
-
-Arm Trace Buffer Extension is new "sink" IP, attached to individual
-CPUs and thus do not provide additional formatting, like TMC-ETR.
-
-Additionally, a system could have both TRBE *and* TMC-ETR for
-the trace collection. e.g, TMC-ETR could be used as a single
-trace buffer to collect data from multiple ETMs to correlate
-the traces from different CPUs. It is possible to have a
-perf session where some events end up collecting the trace
-in TMC-ETR while the others in TRBE. Thus we need a way
-to identify the type of the trace for each AUX record.
-
-Define the trace formats exported by the CoreSight PMU.
-We don't define the flags following the "ETM" as this
-information is available to the user when issuing
-the session. What is missing is the additional
-formatting applied by the "sink" which is decided
-at the runtime and the user may not have a control on.
-
-So we define :
- - CORESIGHT format (indicates the Frame format)
- - RAW format (indicates the format of the source)
-
-The default value is CORESIGHT format for all the records
-(i,e == 0). Add the RAW format for the TRBE sink driver.
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/hwtracing/coresight/coresight-trbe.c | 2 ++
- include/uapi/linux/perf_event.h              | 4 ++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 1464d8b..7c0e691 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -511,6 +511,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
- 	if (cpudata->mode != CS_MODE_PERF)
- 		return -EINVAL;
- 
-+	perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
- 	/*
- 	 * If the TRBE was disabled due to lack of space in the AUX buffer or a
- 	 * spurious fault, the driver leaves it disabled, truncating the buffer.
-@@ -606,6 +607,7 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
- 	size = offset - PERF_IDX2OFF(handle->head, buf);
- 	if (buf->snapshot)
- 		handle->head = offset;
-+	perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
- 	perf_aux_output_end(handle, size);
- 
- 	event_data = perf_aux_output_begin(handle, event);
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 9a5ca45..169e6b3 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -1111,6 +1111,10 @@ enum perf_callchain_context {
- #define PERF_AUX_FLAG_COLLISION			0x08	/* sample collided with another */
- #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00	/* PMU specific trace format type */
- 
-+/* CoreSight PMU AUX buffer formats */
-+#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000 /* Default for backward compatibility */
-+#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100 /* Raw format of the source */
-+
- #define PERF_FLAG_FD_NO_GROUP		(1UL << 0)
- #define PERF_FLAG_FD_OUTPUT		(1UL << 1)
- #define PERF_FLAG_PID_CGROUP		(1UL << 2) /* pid=cgroup id, per-cpu mode only */
--- 
-2.7.4
-
+hi,i will fix in the patch v7
