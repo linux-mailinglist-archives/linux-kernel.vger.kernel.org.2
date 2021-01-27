@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA870306572
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F59A306584
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhA0Uyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 15:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhA0Uyt (ORCPT
+        id S1344095AbhA0U51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:57:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52748 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233701AbhA0U4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 15:54:49 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0F1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:54:08 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id j11so1959899pjw.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=GkOvP5v/o3GajsI5MgubNi5t/flwcnqO6XOeJr4quWc=;
-        b=ByN1JbanGaIqjEPno/blmbB0rR/xp916N4CWocXaaoDrbT+eTt7ZRiI9WDE/lLA8F0
-         GJsZ6fmOa35TnKSvcrkpJ0YCqhgHEXKxiMJSuMxp6cCmAQ5YpDoDa3em/a3K0l4A8jx/
-         3vPSDHYa2MMChTt8sPFegZy0jPeaLc+ls6v68Vi4b3bqopujtHSkVG8L+8TkfjF+GemU
-         pS8oIXcvzS1R9j64LNa845LQA7qv/F7Z6KWlAq/GCMl2JLuS4w6LT3g2B1hDvXN4Qlm1
-         vZ4E07AmuTk9iLtD9RXeCa9dQkJ3TnRJPjK9Kez+nxkTy4ARkp+h0Ca+MurX1VihvJEq
-         LyEg==
+        Wed, 27 Jan 2021 15:56:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611780916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xmqnn8rbcg26NVO4vw3SRhcUP24nD170tfktCoPpjrs=;
+        b=ZPd/wQ9hnw95cS/MOPHuW0gUCHCZZ2inUE187aM7pECWGZzafCaEcFnjUPef/aIuquU2xn
+        JLbvw0YH0jmvkI2g4ZuEwnsOeI4rh+6C2uFfJcUEHScwnSU4gVXpVWkCFKrwiPIMKwChm9
+        JMN1AEpYRJNYTlyTGysLu22ffRzVS/Q=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-C7QUd0cvOCm5W3EigL93Lw-1; Wed, 27 Jan 2021 15:55:14 -0500
+X-MC-Unique: C7QUd0cvOCm5W3EigL93Lw-1
+Received: by mail-ed1-f70.google.com with SMTP id j12so2026285edq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 12:55:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=GkOvP5v/o3GajsI5MgubNi5t/flwcnqO6XOeJr4quWc=;
-        b=dzbTKrCW+INKpMbdmRc2dXo8DGpOl0I2OWor6synZeTtcxLB461mQOO7ft38KhduFP
-         YyPyVsXz4ZTwFw6nuA28YmRCJWBov0aUE/ndZ2KtGhcGqt/2uS6YqoI/KL8EQoJ8eWv2
-         KUVeZI0QW9cG7B4roZZ+flqcfSD8djJNq+i1gdnP/0h1Z4czT+6oUG7bLuULZR88YqOF
-         DOfOBg4onjh5czQs7fvYLQAMHuOUKvrtK2boi+yfWJopD3rLlNU4c0CihqWAInOy8e9J
-         8psKWNaiqOxfEL2kYV2Ke2kTcnxziQGSjchsvzOZ7IYJDxI6sN7YmzbQiWGRf6bhamos
-         LNHA==
-X-Gm-Message-State: AOAM533tTJ0Fo5SJC4GvjpA5DoasEgL1Nt41uZe31nsJo/J8zZqGc7Xp
-        2Y8HtfblczrsBe7OmmPYAo1DrUIcS83G8qOX4HhsR3af6dlYa7ThcLfY84sGyj8gRMNA+CvPfeK
-        vXfbEPKyz0jOgbq4WKZ0/7KhM+NvnBJRZZUHQGw6wUKH9t4ms7qdl0wX1uJISXFqMBMfzw+aJ8c
-        Q=
-X-Google-Smtp-Source: ABdhPJwo0G4Y8YKSiLIMyagZ9KSO4YTzftWwpcmlAA6xIhbCTkikU5ODYKDZYrLgqaj0tOztBgM059aFwOhbEA==
-Sender: "jmattson via sendgmr" <jmattson@turtle.sea.corp.google.com>
-X-Received: from turtle.sea.corp.google.com ([2620:15c:100:202:f1a0:c0ca:d724:8a8a])
- (user=jmattson job=sendgmr) by 2002:a17:90b:28d:: with SMTP id
- az13mr7844034pjb.55.1611780848096; Wed, 27 Jan 2021 12:54:08 -0800 (PST)
-Date:   Wed, 27 Jan 2021 12:53:58 -0800
-Message-Id: <20210127205358.3227383-1-jmattson@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH] perf/x86/kvm: Add Cascade Lake Xeon steppings to isolation_ucodes[]
-From:   Jim Mattson <jmattson@google.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Xmqnn8rbcg26NVO4vw3SRhcUP24nD170tfktCoPpjrs=;
+        b=YTPa6JdUcoFI86ZkLVtUOxXJhvVl+fCssHzbNDcphv0D6h7ZC5bdnKQs+GLAoc8Tzt
+         EAjAcVn4eVeuHjzI8pbh0jtOLNH4PNWdW3ChdZ+HRGtp6HdcNAliNymr9/2Rap90cuoZ
+         arP3vBwCyTCmSKxB5PZRyDyWYZpo+rijFXltnc16S/GO98b7rMd0LzyMExQWQTu7t3ze
+         4+ySKGnfB0mfSO+x+7nMfM79UshabXWGTVB6nZCA1xiuB/zEAA/aDN5Q+DKp6GTOJpA5
+         Jv2q+w8jAvm4Xome7WPPQ5w7FMypywVOLv3jbS5F8ZSuQ752n5Wk5O5AxR++kyFjigvT
+         u+Sw==
+X-Gm-Message-State: AOAM531U6Pi0zR183LSNGvd3hfWZDOznpIeNfyjgE9e65JquXS1FLWEn
+        vPq4ZaoO6x9SQYLAaZ9Dl3hliq79fkwcJ4FisO/FNsrCJ3EpceodeWmIzZ2I4cO2iUrjOCt1jKL
+        7Oqhj42lkjJPugPeVes87kAss
+X-Received: by 2002:a17:906:3e96:: with SMTP id a22mr6365584ejj.144.1611780913252;
+        Wed, 27 Jan 2021 12:55:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyqcwMloOiDIYYh5oyrCeUlD0mjUpjFJIikqBtvrKRgSHlSo5DKK/tY/ETaq8fcb7fS7bCNTA==
+X-Received: by 2002:a17:906:3e96:: with SMTP id a22mr6365574ejj.144.1611780913130;
+        Wed, 27 Jan 2021 12:55:13 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j25sm1960596edy.13.2021.01.27.12.55.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 12:55:12 -0800 (PST)
+Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-16-bgardon@google.com> <YAjIddUuw/SZ+7ut@google.com>
+ <460d38b9-d920-9339-1293-5900d242db37@redhat.com>
+ <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
+ <fae0e326-cfd4-bf5d-97b5-ae632fb2de34@redhat.com>
+ <CANgfPd_TOpc_cinPwAyH-0WajRM1nZvn9q6s70jno5LFf2vsdQ@mail.gmail.com>
+ <f1ef3118-2a8e-4bf2-b3b0-60ac4947e106@redhat.com>
+ <CANgfPd9FaPhQiEkJ=VHKiVWZ_5S3k2uWHU+ViCi4nEF=GU4qsw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4c0d4c30-a95b-7954-d344-fb991270f79a@redhat.com>
+Date:   Wed, 27 Jan 2021 21:55:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CANgfPd9FaPhQiEkJ=VHKiVWZ_5S3k2uWHU+ViCi4nEF=GU4qsw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cascade Lake Xeon parts have the same model number as Skylake Xeon
-parts, so they are tagged with the intel_pebs_isolation
-quirk. However, as with Skylake Xeon H0 stepping parts, the PEBS
-isolation issue is fixed in all microcode versions.
+On 27/01/21 21:08, Ben Gardon wrote:
+> I'm not entirely sure I understand this suggestion. Are you suggesting
+> we'd have the spinlock and rwlock in a union in struct kvm but then
+> use a static define to choose which one is used by other functions? It
+> seems like if we're using static defines the union doesn't add value.
 
-Add the Cascade Lake Xeon steppings (5, 6, and 7) to the
-isolation_ucodes[] table so that these parts benefit from Andi's
-optimization in commit 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary
-work in guest filtering").
+Of course you're right.  You'd just place the #ifdef in the struct kvm 
+definition.
 
-Signed-off-by: Jim Mattson <jmattson@google.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
----
- arch/x86/events/intel/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+You can place static inline functions for lock/unlock in 
+virt/kvm/mmu_lock.h, in order to avoid a proliferation of #ifdefs.
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index af457f8cb29d..af28b2f5f895 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4383,6 +4383,9 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
- 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
-+	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
-+	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 6, 0x00000000),
-+	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 7, 0x00000000),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_L,		 3, 0x0000007c),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE,		 3, 0x0000007c),
- 	INTEL_CPU_DESC(INTEL_FAM6_KABYLAKE,		 9, 0x0000004e),
--- 
-2.30.0.280.ga3ce27912f-goog
+Paolo
 
