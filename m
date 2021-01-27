@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9862930623D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45D130624C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344032AbhA0Rka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:40:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235779AbhA0RkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:40:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F84D64DAB;
-        Wed, 27 Jan 2021 17:39:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611769173;
-        bh=naK3iTaopBlSB+sQcWb3URmlNKN/78T0DoXJKZT6zEs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cGdFG5sSyV9I3ZPmUfho7hE7n57e7ubRHSm8sELpLpCf/aJO9pbDZectnjltiMw2X
-         6GAN0MRdmACKKb0faIJTokL6+OyeTVYn6FCjGSp3+KVPfJwGFuvT8rGJGweqTvFF/H
-         MBz9ZSFpC+Ne4+WJMMNK2npQ8nRgFAEXp14BgQYrpe2MdzoPwrcuoYDoY3pLyMgph0
-         o0YymPPIzeugG2REcRs2YNXo0ODhb+s0eHgtAqfOYDm5OSGFHndvCuubHMQRsAHCd3
-         48FxMSbkk1neoWkMnC9Len5pmZt2U3galFV42bjbw4n80hnkPibFh+EEeznxX0kmf5
-         CHJVbLeAQF0ow==
-Received: by mail-ed1-f50.google.com with SMTP id g1so3456195edu.4;
-        Wed, 27 Jan 2021 09:39:33 -0800 (PST)
-X-Gm-Message-State: AOAM530dX5XXXEk+gGp9nlhttUxEEO6TApyDGECef1z6rgMXAS5asQiS
-        FMSCJvQQc6lIFqCQMSxJ9HH/iVVv5W9Qk8tjKA==
-X-Google-Smtp-Source: ABdhPJyOJy/ISy9sUNIYM7qY9vaU0LtK21UimaHx8jwsbwiI3t8OAYVzzNo1v4d7u2nHG20WIynIxszuWWALF5HhZCc=
-X-Received: by 2002:a05:6402:2c5:: with SMTP id b5mr10489518edx.258.1611769171718;
- Wed, 27 Jan 2021 09:39:31 -0800 (PST)
+        id S1344055AbhA0RlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344050AbhA0Rky (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:40:54 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8030DC061573;
+        Wed, 27 Jan 2021 09:40:14 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id rv9so3798711ejb.13;
+        Wed, 27 Jan 2021 09:40:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0zqNzdWhocaSRrPUT/nMPELWMWvRw1OqyGa9bc+g8w=;
+        b=hZre1addgUyhMpi/q+57I8hO+oJ9dZzDH35DyXufB3J206XkoqJIsXKEhPFK8UjXrp
+         Qk3rG4k6s/l19nSdfZPE+W18BZTu63xbOnbrNM2nI0FIoHejuXV89nic5QE8i5Y8U/kC
+         /Llk0D/qA8UpBQs3AOVPYpj/T7MTq/ErwjzmywOehdwcSKKF64kiiNgSCVzFTKlAISJw
+         WIAjTggZl/cMV9oM18qH0xxcPMkI8Ny1Xh6qtvD2EeVBRypyxCu+p5Od/dcDdLdXWKOZ
+         E0n726mKRbrSon3L9mlxOT4ne6nv2OtaO1rnG98xL0kFAl18A+7sm1ARGEzjSzBOj7+e
+         T8iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0zqNzdWhocaSRrPUT/nMPELWMWvRw1OqyGa9bc+g8w=;
+        b=DXPEXRIGcfvXWINxOU8Eef9VQJCf3o2fgGPntrM34nyB1xzqqg6C4mOaqZqlnfci/M
+         uZEIE64uzGCmbS6NIlGWW8g8QHwgHruzAcDhgAd/k5/XXNH9OZiC1VlOc9Nx+zVr8M4F
+         hR1swO/614mit4seMg3FNksyVtYLy7J4STP51XLOaqnELRrjf2ED4E+jh6Pgc265Dr0k
+         nQpaQkVhIr+fDwQMcQMFx/YYeCaa59Dj3/EsbYhsR3iJoPxd8GdysrZy5G15otAKuh5X
+         ZCS28GruDSt8OocvPr/HDU69dUZOIoN31kUGJk0JDox62ERAd8hpLioVnvx6Hmxxzqfv
+         JnFA==
+X-Gm-Message-State: AOAM5333WCCpP6YKa1HaBdpL0YMsrrM/7NERgsrdyxxejafiB+c0Leqz
+        7E1+OujnHxmyjxyaTOFDUP490L/TKb8+t1UfJWU=
+X-Google-Smtp-Source: ABdhPJzB2Ho+oH8D36li7b3P9a9jXNWFVS0+37hGngKW75AFYoPtkvx/LhZpzL+ekjYf0YB0fZd8YYSPzct5pMte9yw=
+X-Received: by 2002:a17:906:44a:: with SMTP id e10mr7435445eja.265.1611769213327;
+ Wed, 27 Jan 2021 09:40:13 -0800 (PST)
 MIME-Version: 1.0
-References: <CGME20210106105019epcas5p377bdbff5cd9e14e5107ccbf2b87b5754@epcas5p3.samsung.com>
- <1609930210-19227-1-git-send-email-shradha.t@samsung.com>
-In-Reply-To: <1609930210-19227-1-git-send-email-shradha.t@samsung.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 27 Jan 2021 11:39:19 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKuvD1s0u5uphmc3o4d7vsNui6hC2b9Q3woE-nshfJi0g@mail.gmail.com>
-Message-ID: <CAL_JsqKuvD1s0u5uphmc3o4d7vsNui6hC2b9Q3woE-nshfJi0g@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: dwc: Add upper limit address for outbound iATU
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>,
-        sriram.dash@samsung.com, niyas.ahmed@samsung.com,
-        p.rajanbabu@samsung.com, l.mehra@samsung.com, hari.tv@samsung.com
+References: <1611747815-1934-1-git-send-email-stefanc@marvell.com> <1611747815-1934-12-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1611747815-1934-12-git-send-email-stefanc@marvell.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 27 Jan 2021 12:39:36 -0500
+Message-ID: <CAF=yD-JDGg2pxi_EQvuK5iRdVpTovswF6rZ8dvAAmV0xbeimkA@mail.gmail.com>
+Subject: Re: [PATCH v4 net-next 11/19] net: mvpp2: add spinlock for FW FCA
+ configuration path
+To:     stefanc@marvell.com
+Cc:     Network Development <netdev@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        David Miller <davem@davemloft.net>, nadavh@marvell.com,
+        ymarkman@marvell.com, LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux@armlinux.org.uk,
+        mw@semihalf.com, Andrew Lunn <andrew@lunn.ch>,
+        rmk+kernel@armlinux.org.uk, Antoine Tenart <atenart@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 4:52 AM Shradha Todi <shradha.t@samsung.com> wrote:
+On Wed, Jan 27, 2021 at 7:19 AM <stefanc@marvell.com> wrote:
 >
-> The size parameter is unsigned long type which can accept size > 4GB. In
-> that case, the upper limit address must be programmed. Add support to
-> program the upper limit address and set INCREASE_REGION_SIZE in case size >
-> 4GB.
+> From: Stefan Chulski <stefanc@marvell.com>
 >
-> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+> Spinlock added to MSS shared memory configuration space.
+>
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 > ---
-> v1: https://lkml.org/lkml/2020/12/20/187
-> v2:
->    Addressed Rob's review comment and added PCI version check condition to
->    avoid writing to reserved registers.
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 5 +++++
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 3 +++
+>  2 files changed, 8 insertions(+)
 >
->  drivers/pci/controller/dwc/pcie-designware.c | 9 +++++++--
->  drivers/pci/controller/dwc/pcie-designware.h | 1 +
->  2 files changed, 8 insertions(+), 2 deletions(-)
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> index 9d8993f..f34e260 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> @@ -1021,6 +1021,11 @@ struct mvpp2 {
+>
+>         /* CM3 SRAM pool */
+>         struct gen_pool *sram_pool;
+> +
+> +       bool custom_dma_mask;
+> +
+> +       /* Spinlocks for CM3 shared memory configuration */
+> +       spinlock_t mss_spinlock;
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Does this need to be a stand-alone patch? This introduces a spinlock,
+but does not use it.
+
+Also, is the introduction of custom_dma_mask in this commit on purpose?
