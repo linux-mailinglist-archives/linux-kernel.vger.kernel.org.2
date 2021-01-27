@@ -2,360 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAC6305D9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65F0305D9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 14:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhA0Nv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 08:51:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
+        id S232140AbhA0Nvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 08:51:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:47470 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231403AbhA0Nu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:50:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33261207A3;
-        Wed, 27 Jan 2021 13:49:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611755386;
-        bh=24kau5dRxNvNkOJxfzZ0cHryerwzFFv0aEway+hPzJg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oMEQhTvGgFb516J1ynVDH68s1bM6PW9bB7Crgw2gra4DFSIBeyHNfLsM227UBHxso
-         xvHiYDiqVqj838JGX7Kv3b25oLXqTSCBwKDu67BYwKWt8wuzBNflZMpHtFpST57z8x
-         YMF5SSMDoxf728i4nQgG4JhYFMdA3pZF4bVyEwMpGdY2564k3MZoIG8v1w0vYbjznr
-         k5ZWbJaff5rJOqpUfaFSzfHsc1Njb7Wp9W7Er49xImkmn2Um9cZ60JWRH7ROQlrjHO
-         FmEvZgvDBrp1P+gX7idKIN0DlOS+lf+gPe6BKEDWOZb4yFOCTUHvx6PPnkyXK5qfMS
-         vajLS/4k4ayWg==
-Date:   Wed, 27 Jan 2021 14:49:38 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 13/13] module: remove EXPORY_UNUSED_SYMBOL*
-Message-ID: <YBFvcmUiHRjkucbf@gunter>
-References: <20210121074959.313333-1-hch@lst.de>
- <20210121074959.313333-14-hch@lst.de>
+        id S231461AbhA0Nui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:50:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38BCE1FB;
+        Wed, 27 Jan 2021 05:49:52 -0800 (PST)
+Received: from [10.57.47.135] (unknown [10.57.47.135])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 435243F68F;
+        Wed, 27 Jan 2021 05:49:49 -0800 (PST)
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
+ CPUs
+To:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        sfr@canb.auug.org.au, stephen@networkplumber.org,
+        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
+        zhangshaokun@hisilicon.com
+References: <20200625223443.2684-1-nitesh@redhat.com>
+ <20200625223443.2684-2-nitesh@redhat.com>
+ <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+ <20210127121939.GA54725@fuller.cnet>
+ <c5cba5f3-287a-d087-c329-6e6613634370@arm.com>
+ <20210127130925.GA64740@fuller.cnet>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <87b81c08-878f-8394-be94-f5b99ee0be5b@arm.com>
+Date:   Wed, 27 Jan 2021 13:49:48 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210121074959.313333-14-hch@lst.de>
-X-OS:   Linux gunter 5.10.7-1-default x86_64
+In-Reply-To: <20210127130925.GA64740@fuller.cnet>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Christoph Hellwig [21/01/21 08:49 +0100]:
->EXPORT_UNUSED_SYMBOL* is not actually used anywhere.  Remove the
->unused functionality as we generally just remove unused code anyway.
->
->Signed-off-by: Christoph Hellwig <hch@lst.de>
->---
-> arch/arm/configs/bcm2835_defconfig          |  1 -
-> arch/arm/configs/mxs_defconfig              |  1 -
-> arch/mips/configs/nlm_xlp_defconfig         |  1 -
-> arch/mips/configs/nlm_xlr_defconfig         |  1 -
-> arch/parisc/configs/generic-32bit_defconfig |  1 -
-> arch/parisc/configs/generic-64bit_defconfig |  1 -
-> arch/powerpc/configs/ppc6xx_defconfig       |  1 -
-> arch/s390/configs/debug_defconfig           |  1 -
-> arch/s390/configs/defconfig                 |  1 -
-> arch/sh/configs/edosk7760_defconfig         |  1 -
-> arch/sh/configs/sdk7780_defconfig           |  1 -
-> arch/x86/configs/i386_defconfig             |  1 -
-> arch/x86/configs/x86_64_defconfig           |  1 -
-> arch/x86/tools/relocs.c                     |  4 +-
-> include/asm-generic/vmlinux.lds.h           | 28 ---------
-> include/linux/export.h                      |  8 ---
-> include/linux/module.h                      | 13 ----
-> init/Kconfig                                | 17 -----
-> kernel/module.c                             | 69 ++-------------------
-> scripts/checkpatch.pl                       |  6 +-
-> scripts/mod/modpost.c                       | 39 +-----------
-> scripts/mod/modpost.h                       |  2 -
-> scripts/module.lds.S                        |  4 --
-> tools/include/linux/export.h                |  2 -
-> 24 files changed, 13 insertions(+), 192 deletions(-)
->
->diff --git a/arch/arm/configs/bcm2835_defconfig b/arch/arm/configs/bcm2835_defconfig
->index 44ff9cd88d8161..d6c6c2e031c43a 100644
->--- a/arch/arm/configs/bcm2835_defconfig
->+++ b/arch/arm/configs/bcm2835_defconfig
->@@ -177,7 +177,6 @@ CONFIG_BOOT_PRINTK_DELAY=y
-> CONFIG_DYNAMIC_DEBUG=y
-> CONFIG_DEBUG_INFO=y
-> # CONFIG_ENABLE_MUST_CHECK is not set
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_DEBUG_MEMORY_INIT=y
-> CONFIG_LOCKUP_DETECTOR=y
-> CONFIG_SCHED_TRACER=y
->diff --git a/arch/arm/configs/mxs_defconfig b/arch/arm/configs/mxs_defconfig
->index a9c6f32a9b1c9d..ca32446b187f5d 100644
->--- a/arch/arm/configs/mxs_defconfig
->+++ b/arch/arm/configs/mxs_defconfig
->@@ -164,7 +164,6 @@ CONFIG_FONTS=y
-> CONFIG_PRINTK_TIME=y
-> CONFIG_DEBUG_INFO=y
-> CONFIG_FRAME_WARN=2048
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_MAGIC_SYSRQ=y
-> CONFIG_DEBUG_KERNEL=y
-> CONFIG_SOFTLOCKUP_DETECTOR=y
->diff --git a/arch/mips/configs/nlm_xlp_defconfig b/arch/mips/configs/nlm_xlp_defconfig
->index 72a211d2d556fd..32c29061172325 100644
->--- a/arch/mips/configs/nlm_xlp_defconfig
->+++ b/arch/mips/configs/nlm_xlp_defconfig
->@@ -549,7 +549,6 @@ CONFIG_PRINTK_TIME=y
-> CONFIG_DEBUG_INFO=y
-> # CONFIG_ENABLE_MUST_CHECK is not set
-> CONFIG_FRAME_WARN=1024
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_DEBUG_MEMORY_INIT=y
-> CONFIG_DETECT_HUNG_TASK=y
-> CONFIG_SCHEDSTATS=y
->diff --git a/arch/mips/configs/nlm_xlr_defconfig b/arch/mips/configs/nlm_xlr_defconfig
->index 4ecb157e56d427..bf9b9244929ecd 100644
->--- a/arch/mips/configs/nlm_xlr_defconfig
->+++ b/arch/mips/configs/nlm_xlr_defconfig
->@@ -500,7 +500,6 @@ CONFIG_CRC7=m
-> CONFIG_PRINTK_TIME=y
-> CONFIG_DEBUG_INFO=y
-> # CONFIG_ENABLE_MUST_CHECK is not set
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_DEBUG_MEMORY_INIT=y
-> CONFIG_DETECT_HUNG_TASK=y
-> CONFIG_SCHEDSTATS=y
->diff --git a/arch/parisc/configs/generic-32bit_defconfig b/arch/parisc/configs/generic-32bit_defconfig
->index 3cbcfad5f7249d..7611d48c599e01 100644
->--- a/arch/parisc/configs/generic-32bit_defconfig
->+++ b/arch/parisc/configs/generic-32bit_defconfig
->@@ -22,7 +22,6 @@ CONFIG_PCI_LBA=y
-> CONFIG_MODULES=y
-> CONFIG_MODULE_UNLOAD=y
-> CONFIG_MODULE_FORCE_UNLOAD=y
->-CONFIG_UNUSED_SYMBOLS=y
-> # CONFIG_BLK_DEV_BSG is not set
-> # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
-> CONFIG_BINFMT_MISC=m
->diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
->index 8f81fcbf04c413..53054b81461a10 100644
->--- a/arch/parisc/configs/generic-64bit_defconfig
->+++ b/arch/parisc/configs/generic-64bit_defconfig
->@@ -31,7 +31,6 @@ CONFIG_MODULE_FORCE_LOAD=y
-> CONFIG_MODULE_UNLOAD=y
-> CONFIG_MODULE_FORCE_UNLOAD=y
-> CONFIG_MODVERSIONS=y
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_BLK_DEV_INTEGRITY=y
-> CONFIG_BINFMT_MISC=m
-> # CONFIG_COMPACTION is not set
->diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
->index ef09f3cce1fa85..34c3859040f9f7 100644
->--- a/arch/powerpc/configs/ppc6xx_defconfig
->+++ b/arch/powerpc/configs/ppc6xx_defconfig
->@@ -1072,7 +1072,6 @@ CONFIG_NLS_ISO8859_15=m
-> CONFIG_NLS_KOI8_R=m
-> CONFIG_NLS_KOI8_U=m
-> CONFIG_DEBUG_INFO=y
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_HEADERS_INSTALL=y
-> CONFIG_MAGIC_SYSRQ=y
-> CONFIG_DEBUG_KERNEL=y
->diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
->index c4f6ff98a612cd..58e54d17e3154b 100644
->--- a/arch/s390/configs/debug_defconfig
->+++ b/arch/s390/configs/debug_defconfig
->@@ -71,7 +71,6 @@ CONFIG_MODULE_FORCE_UNLOAD=y
-> CONFIG_MODVERSIONS=y
-> CONFIG_MODULE_SRCVERSION_ALL=y
-> CONFIG_MODULE_SIG_SHA256=y
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_BLK_DEV_INTEGRITY=y
-> CONFIG_BLK_DEV_THROTTLING=y
-> CONFIG_BLK_WBT=y
->diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
->index 51135893cffe34..b5e62c0d3e23e0 100644
->--- a/arch/s390/configs/defconfig
->+++ b/arch/s390/configs/defconfig
->@@ -66,7 +66,6 @@ CONFIG_MODULE_FORCE_UNLOAD=y
-> CONFIG_MODVERSIONS=y
-> CONFIG_MODULE_SRCVERSION_ALL=y
-> CONFIG_MODULE_SIG_SHA256=y
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_BLK_DEV_THROTTLING=y
-> CONFIG_BLK_WBT=y
-> CONFIG_BLK_CGROUP_IOLATENCY=y
->diff --git a/arch/sh/configs/edosk7760_defconfig b/arch/sh/configs/edosk7760_defconfig
->index 02ba622985769d..d77f54e906fd04 100644
->--- a/arch/sh/configs/edosk7760_defconfig
->+++ b/arch/sh/configs/edosk7760_defconfig
->@@ -102,7 +102,6 @@ CONFIG_NLS_UTF8=y
-> CONFIG_PRINTK_TIME=y
-> # CONFIG_ENABLE_MUST_CHECK is not set
-> CONFIG_MAGIC_SYSRQ=y
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_DEBUG_KERNEL=y
-> CONFIG_DEBUG_SHIRQ=y
-> CONFIG_DETECT_HUNG_TASK=y
->diff --git a/arch/sh/configs/sdk7780_defconfig b/arch/sh/configs/sdk7780_defconfig
->index d10a0414123a51..d53c4595fb2e98 100644
->--- a/arch/sh/configs/sdk7780_defconfig
->+++ b/arch/sh/configs/sdk7780_defconfig
->@@ -130,7 +130,6 @@ CONFIG_NLS_ISO8859_15=y
-> CONFIG_NLS_UTF8=y
-> # CONFIG_ENABLE_MUST_CHECK is not set
-> CONFIG_MAGIC_SYSRQ=y
->-CONFIG_UNUSED_SYMBOLS=y
-> CONFIG_DEBUG_KERNEL=y
-> CONFIG_DETECT_HUNG_TASK=y
-> # CONFIG_SCHED_DEBUG is not set
->diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
->index 78210793d357cf..9c9c4a888b1dbf 100644
->--- a/arch/x86/configs/i386_defconfig
->+++ b/arch/x86/configs/i386_defconfig
->@@ -50,7 +50,6 @@ CONFIG_JUMP_LABEL=y
-> CONFIG_MODULES=y
-> CONFIG_MODULE_UNLOAD=y
-> CONFIG_MODULE_FORCE_UNLOAD=y
->-# CONFIG_UNUSED_SYMBOLS is not set
-> CONFIG_BINFMT_MISC=y
-> CONFIG_NET=y
-> CONFIG_PACKET=y
->diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
->index 9936528e19393a..b60bd2d8603499 100644
->--- a/arch/x86/configs/x86_64_defconfig
->+++ b/arch/x86/configs/x86_64_defconfig
->@@ -48,7 +48,6 @@ CONFIG_JUMP_LABEL=y
-> CONFIG_MODULES=y
-> CONFIG_MODULE_UNLOAD=y
-> CONFIG_MODULE_FORCE_UNLOAD=y
->-# CONFIG_UNUSED_SYMBOLS is not set
-> CONFIG_BINFMT_MISC=y
-> CONFIG_NET=y
-> CONFIG_PACKET=y
->diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
->index 0d210d0e83e241..b9c577a3cacca6 100644
->--- a/arch/x86/tools/relocs.c
->+++ b/arch/x86/tools/relocs.c
->@@ -61,8 +61,8 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
-> 	"(__iommu_table|__apicdrivers|__smp_locks)(|_end)|"
-> 	"__(start|end)_pci_.*|"
-> 	"__(start|end)_builtin_fw|"
->-	"__(start|stop)___ksymtab(|_gpl|_unused|_unused_gpl)|"
->-	"__(start|stop)___kcrctab(|_gpl|_unused|_unused_gpl)|"
->+	"__(start|stop)___ksymtab(|_gpl)|"
->+	"__(start|stop)___kcrctab(|_gpl)|"
-> 	"__(start|stop)___param|"
-> 	"__(start|stop)___modver|"
-> 	"__(start|stop)___bug_table|"
->diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
->index 83243506e68b00..1fa338ac6a5477 100644
->--- a/include/asm-generic/vmlinux.lds.h
->+++ b/include/asm-generic/vmlinux.lds.h
->@@ -481,20 +481,6 @@
-> 		__stop___ksymtab_gpl = .;				\
-> 	}								\
-> 									\
->-	/* Kernel symbol table: Normal unused symbols */		\
->-	__ksymtab_unused  : AT(ADDR(__ksymtab_unused) - LOAD_OFFSET) {	\
->-		__start___ksymtab_unused = .;				\
->-		KEEP(*(SORT(___ksymtab_unused+*)))			\
->-		__stop___ksymtab_unused = .;				\
->-	}								\
->-									\
->-	/* Kernel symbol table: GPL-only unused symbols */		\
->-	__ksymtab_unused_gpl : AT(ADDR(__ksymtab_unused_gpl) - LOAD_OFFSET) { \
->-		__start___ksymtab_unused_gpl = .;			\
->-		KEEP(*(SORT(___ksymtab_unused_gpl+*)))			\
->-		__stop___ksymtab_unused_gpl = .;			\
->-	}								\
->-									\
-> 	/* Kernel symbol table: Normal symbols */			\
-> 	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
-> 		__start___kcrctab = .;					\
->@@ -509,20 +495,6 @@
-> 		__stop___kcrctab_gpl = .;				\
-> 	}								\
-> 									\
->-	/* Kernel symbol table: Normal unused symbols */		\
->-	__kcrctab_unused  : AT(ADDR(__kcrctab_unused) - LOAD_OFFSET) {	\
->-		__start___kcrctab_unused = .;				\
->-		KEEP(*(SORT(___kcrctab_unused+*)))			\
->-		__stop___kcrctab_unused = .;				\
->-	}								\
->-									\
->-	/* Kernel symbol table: GPL-only unused symbols */		\
->-	__kcrctab_unused_gpl : AT(ADDR(__kcrctab_unused_gpl) - LOAD_OFFSET) { \
->-		__start___kcrctab_unused_gpl = .;			\
->-		KEEP(*(SORT(___kcrctab_unused_gpl+*)))			\
->-		__stop___kcrctab_unused_gpl = .;			\
->-	}								\
->-									\
-> 	/* Kernel symbol table: strings */				\
->         __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET) {	\
-> 		*(__ksymtab_strings)					\
->diff --git a/include/linux/export.h b/include/linux/export.h
->index 362b64f8d4a7c2..6271a5d9c988fa 100644
->--- a/include/linux/export.h
->+++ b/include/linux/export.h
->@@ -160,14 +160,6 @@ struct kernel_symbol {
-> #define EXPORT_SYMBOL_NS(sym, ns)	__EXPORT_SYMBOL(sym, "", #ns)
-> #define EXPORT_SYMBOL_NS_GPL(sym, ns)	__EXPORT_SYMBOL(sym, "_gpl", #ns)
->
->-#ifdef CONFIG_UNUSED_SYMBOLS
->-#define EXPORT_UNUSED_SYMBOL(sym)	_EXPORT_SYMBOL(sym, "_unused")
->-#define EXPORT_UNUSED_SYMBOL_GPL(sym)	_EXPORT_SYMBOL(sym, "_unused_gpl")
->-#else
->-#define EXPORT_UNUSED_SYMBOL(sym)
->-#define EXPORT_UNUSED_SYMBOL_GPL(sym)
->-#endif
->-
-> #endif /* !__ASSEMBLY__ */
->
-> #endif /* _LINUX_EXPORT_H */
->diff --git a/include/linux/module.h b/include/linux/module.h
->index 8f4d577d4707c2..0e70596c9a704a 100644
->--- a/include/linux/module.h
->+++ b/include/linux/module.h
->@@ -392,18 +392,6 @@ struct module {
-> 	const s32 *gpl_crcs;
-> 	bool using_gplonly_symbols;
->
->-#ifdef CONFIG_UNUSED_SYMBOLS
->-	/* unused exported symbols. */
->-	const struct kernel_symbol *unused_syms;
->-	const s32 *unused_crcs;
->-	unsigned int num_unused_syms;
->-
->-	/* GPL-only, unused exported symbols. */
->-	unsigned int num_unused_gpl_syms;
->-	const struct kernel_symbol *unused_gpl_syms;
->-	const s32 *unused_gpl_crcs;
->-#endif
->-
-> #ifdef CONFIG_MODULE_SIG
-> 	/* Signature was verified. */
-> 	bool sig_ok;
->@@ -592,7 +580,6 @@ struct symsearch {
-> 		GPL_ONLY,
-> 		WILL_BE_GPL_ONLY,
-> 	} license;
->-	bool unused;
-> };
+On 2021-01-27 13:09, Marcelo Tosatti wrote:
+> On Wed, Jan 27, 2021 at 12:36:30PM +0000, Robin Murphy wrote:
+>> On 2021-01-27 12:19, Marcelo Tosatti wrote:
+>>> On Wed, Jan 27, 2021 at 11:57:16AM +0000, Robin Murphy wrote:
+>>>> Hi,
+>>>>
+>>>> On 2020-06-25 23:34, Nitesh Narayan Lal wrote:
+>>>>> From: Alex Belits <abelits@marvell.com>
+>>>>>
+>>>>> The current implementation of cpumask_local_spread() does not respect the
+>>>>> isolated CPUs, i.e., even if a CPU has been isolated for Real-Time task,
+>>>>> it will return it to the caller for pinning of its IRQ threads. Having
+>>>>> these unwanted IRQ threads on an isolated CPU adds up to a latency
+>>>>> overhead.
+>>>>>
+>>>>> Restrict the CPUs that are returned for spreading IRQs only to the
+>>>>> available housekeeping CPUs.
+>>>>>
+>>>>> Signed-off-by: Alex Belits <abelits@marvell.com>
+>>>>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+>>>>> ---
+>>>>>     lib/cpumask.c | 16 +++++++++++-----
+>>>>>     1 file changed, 11 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/lib/cpumask.c b/lib/cpumask.c
+>>>>> index fb22fb266f93..85da6ab4fbb5 100644
+>>>>> --- a/lib/cpumask.c
+>>>>> +++ b/lib/cpumask.c
+>>>>> @@ -6,6 +6,7 @@
+>>>>>     #include <linux/export.h>
+>>>>>     #include <linux/memblock.h>
+>>>>>     #include <linux/numa.h>
+>>>>> +#include <linux/sched/isolation.h>
+>>>>>     /**
+>>>>>      * cpumask_next - get the next cpu in a cpumask
+>>>>> @@ -205,22 +206,27 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
+>>>>>      */
+>>>>>     unsigned int cpumask_local_spread(unsigned int i, int node)
+>>>>>     {
+>>>>> -	int cpu;
+>>>>> +	int cpu, hk_flags;
+>>>>> +	const struct cpumask *mask;
+>>>>> +	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
+>>>>> +	mask = housekeeping_cpumask(hk_flags);
+>>>>
+>>>> AFAICS, this generally resolves to something based on cpu_possible_mask
+>>>> rather than cpu_online_mask as before, so could now potentially return an
+>>>> offline CPU. Was that an intentional change?
+>>>
+>>> Robin,
+>>>
+>>> AFAICS online CPUs should be filtered.
+>>
+>> Apologies if I'm being thick, but can you explain how? In the case of
+>> isolation being disabled or compiled out, housekeeping_cpumask() is
+>> literally just "return cpu_possible_mask;". If we then iterate over that
+>> with for_each_cpu() and just return the i'th possible CPU (e.g. in the
+>> NUMA_NO_NODE case), what guarantees that CPU is actually online?
+>>
+>> Robin.
+> 
+> Nothing, but that was the situation before 1abdfe706a579a702799fce465bceb9fb01d407c
+> as well.
 
-Thanks for the cleanups. While we're here, I noticed that struct
-symsearch is only used internally in kernel/module.c, so I don't think
-it actually needs to be in include/linux/module.h. I don't see it used
-anywhere else. We could move maybe that to kernel/module-internal.h.
+True, if someone calls from a racy context then there's not much we can 
+do to ensure that any CPU *remains* online after we initially observed 
+it to be, but when it's called from somewhere safe like a cpuhp offline 
+handler, then picking from cpu_online_mask *did* always do the right 
+thing (by my interpretation), whereas picking from 
+housekeeping_cpumask() might not.
 
+This is why I decided to ask rather than just send a patch to fix what I 
+think might be a bug - I have no objection if this *is* intended 
+behaviour, other than suggesting we amend the "...selects an online 
+CPU..." comment if that aspect was never meant to be relied upon.
+
+Thanks,
+Robin.
+
+> 
+> cpumask_local_spread() should probably be disabling CPU hotplug.
+> 
+> Thomas?
+> 
+>>
+>>>> I was just looking at the current code since I had the rare presence of mind
+>>>> to check if something suitable already existed before I start open-coding
+>>>> "any online CPU, but local node preferred" logic for handling IRQ affinity
+>>>> in a driver - cpumask_local_spread() appears to be almost what I want (if a
+>>>> bit more heavyweight), if only it would actually guarantee an online CPU as
+>>>> the kerneldoc claims :(
+>>>>
+>>>> Robin.
+>>>>
+>>>>>     	/* Wrap: we always want a cpu. */
+>>>>> -	i %= num_online_cpus();
+>>>>> +	i %= cpumask_weight(mask);
+>>>>>     	if (node == NUMA_NO_NODE) {
+>>>>> -		for_each_cpu(cpu, cpu_online_mask)
+>>>>> +		for_each_cpu(cpu, mask) {
+>>>>>     			if (i-- == 0)
+>>>>>     				return cpu;
+>>>>> +		}
+>>>>>     	} else {
+>>>>>     		/* NUMA first. */
+>>>>> -		for_each_cpu_and(cpu, cpumask_of_node(node), cpu_online_mask)
+>>>>> +		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
+>>>>>     			if (i-- == 0)
+>>>>>     				return cpu;
+>>>>> +		}
+>>>>> -		for_each_cpu(cpu, cpu_online_mask) {
+>>>>> +		for_each_cpu(cpu, mask) {
+>>>>>     			/* Skip NUMA nodes, done above. */
+>>>>>     			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
+>>>>>     				continue;
+>>>>>
+>>>
+> 
