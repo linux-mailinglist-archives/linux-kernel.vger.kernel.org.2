@@ -2,113 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B62D30597B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669F8305978
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbhA0LVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235978AbhA0Khu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:37:50 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACC2C061573;
-        Wed, 27 Jan 2021 02:37:10 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1l4iBx-00CMrJ-Pj; Wed, 27 Jan 2021 11:36:54 +0100
-Message-ID: <64336aa2e21936095eb7e52ee32289b30b855863.camel@sipsolutions.net>
-Subject: Re: [PATCH] ath9k: fix build error with LEDS_CLASS=m
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kalle Valo <kvalo@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 27 Jan 2021 11:36:34 +0100
-In-Reply-To: <87bldaacqu.fsf@codeaurora.org>
-References: <20210125113654.2408057-1-arnd@kernel.org>
-         <CAJKOXPfteJ3Jia4Qd9DabjxcOtax3uDgi1fSbz4_+cHsJ1prQQ@mail.gmail.com>
-         <CAK8P3a0apBUbck9Z3UMKfwSJw8a-UbbXLTLUvSyOKEwTgPLjqg@mail.gmail.com>
-         <CAJKOXPc6LWnqiyO9WgxUZPo-vitNcQQr2oDoyD44P2YTSJ7j=g@mail.gmail.com>
-         <CAK8P3a1NEbZtXVA0Z4P3K97L9waBp7nkCWOkdYjR3+7FUF0P0Q@mail.gmail.com>
-         <CAJKOXPdWouEFtCp_iG+py1JcyrEU2Fj98jBAPTKZXQXCDQE54A@mail.gmail.com>
-         <CAK8P3a3ygYTEwjLbFuArdfNF1-yydVjtS2NZDAURKjOJGAxkAQ@mail.gmail.com>
-         <87bldaacqu.fsf@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S236425AbhA0LUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:20:48 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:42148 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235466AbhA0Klg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:41:36 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l4iFm-0000lT-8T; Wed, 27 Jan 2021 11:40:50 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     hminas@synopsys.com, gregkh@linuxfoundation.org
+Cc:     christoph.muellner@theobroma-systems.com, paulz@synopsys.com,
+        yousaf.kaukab@intel.com, balbi@ti.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc2: Fix endpoint direction check in ep_from_windex
+Date:   Wed, 27 Jan 2021 11:40:48 +0100
+Message-ID: <8309688.OUTRe80PYV@diego>
+In-Reply-To: <20210125191324.1981199-1-heiko@sntech.de>
+References: <20210125191324.1981199-1-heiko@sntech.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-27 at 12:35 +0200, Kalle Valo wrote:
-> Arnd Bergmann <arnd@kernel.org> writes:
+Am Montag, 25. Januar 2021, 20:13:24 CET schrieb Heiko Stuebner:
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 > 
-> > On Mon, Jan 25, 2021 at 4:04 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > On Mon, 25 Jan 2021 at 15:38, Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > On Mon, Jan 25, 2021 at 2:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > 
-> > > I meant that having MAC80211_LEDS selected causes the ath9k driver to
-> > > toggle on/off the WiFi LED. Every second, regardless whether it's
-> > > doing something or not. In my setup, I have problems with a WiFi
-> > > dongle somehow crashing (WiFi disappears, nothing comes from the
-> > > dongle... maybe it's Atheros FW, maybe some HW problem) and I found
-> > > this LED on/off slightly increases the chances of this dongle-crash.
-> > > That was the actual reason behind my commits.
-> > > 
-> > > Second reason is that I don't want to send USB commands every second
-> > > when the device is idle. It unnecessarily consumes power on my
-> > > low-power device.
-> > 
-> > Ok, I see.
-> > 
-> > > Of course another solution is to just disable the trigger via sysfs
-> > > LED API. It would also work but my patch allows entire code to be
-> > > compiled-out (which was conditional in ath9k already).
-> > > 
-> > > Therefore the patch I sent allows the ath9k LED option to be fully
-> > > choosable. Someone wants every-second-LED-blink, sure, enable
-> > > ATH9K_LEDS and you have it. Someone wants to reduce the kernel size,
-> > > don't enable ATH9K_LEDS.
-> > 
-> > Originally, I think this is what CONFIG_MAC80211_LEDS was meant
-> > for, but it seems that this is not actually practical, since this also
-> > gets selected by half of the drivers using it, while the other half have
-> > a dependency on it. Out of the ones that select it, some in turn
-> > select LEDS_CLASS, while some depend on it.
-> > 
-> > I think this needs a larger-scale cleanup for consistency between
-> > (at least) all the wireless drivers using LEDs.
+> dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
+> the endpoint for the index provided in the wIndex request param.
 > 
-> I agree, this needs cleanup.
+> In a test-case with a rndis gadget running and sending a malformed
+> packet to it like:
+>     dev.ctrl_transfer(
+>         0x82,      # bmRequestType
+>         0x00,       # bRequest
+>         0x0000,     # wValue
+>         0x0001,     # wIndex
+>         0x00       # wLength
+>     )
+> it is possible to cause a crash:
 > 
-> > Either your patch or mine should get applied in the meantime, and I
-> > don't care much which one in this case, as we still have the remaining
-> > inconsistency.
+> [  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
+> [  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
+> ...
+> [  218.313189] Call trace:
+> [  218.330217]  ep_from_windex+0x3c/0x54
+> [  218.348565]  usb_gadget_giveback_request+0x10/0x20
+> [  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
 > 
-> My problem with Krzysztof's patch[1] is that it adds a new Kconfig
-> option for ath9k, is that really necessary? Like Arnd said, we should
-> fix drivers to use CONFIG_MAC80211_LEDS instead of having driver
-> specific options.
+> This happens because ep_from_windex wants to compare the endpoint
+> direction even if index_to_ep() didn't return an endpoint due to
+> the direction not matching.
 > 
-> So I would prefer take this Arnd's patch instead and queue it for v5.11.
-> But as it modifies mac80211 I'll need an ack from Johannes, what do you
-> think?
+> The fix is easy insofar that the actual direction check is already
+> happening when calling index_to_ep() which will return NULL if there
+> is no endpoint for the targeted direction, so the offending check
+> can go away completely.
+> 
+> Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> Cc: stable@vger.kernel.org
 
-Sure, that seems fine.
+superseeded by v3, which includes an appropriate Reported-by tag
+and removes an now unused variable (in v2).
 
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
-
-johannes
 
