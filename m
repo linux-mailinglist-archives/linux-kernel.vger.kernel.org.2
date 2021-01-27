@@ -2,95 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19C63054B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 143F13054B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhA0Hc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:32:26 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:39799 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S316622AbhA0A1B (ORCPT
+        id S234108AbhA0HbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233066AbhA0H3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:27:01 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2F4A9580A86;
-        Tue, 26 Jan 2021 19:25:17 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Tue, 26 Jan 2021 19:25:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=PWoGEuMDDaDq0/pzXUUiU1EckS7iVUN
-        1oFV3i9oQBqU=; b=ijJP6ZrcT4CZpTc74xXzMI2pxevxBiB9raVSnMYyR3XEr9f
-        ZvTbpO/Cv3Ts9ZgESw+B2H7zHkMQ81/s1YPxw9Umyf/DOkYHpTMbv0rJcFzZN6sz
-        h6zLgANlm1G9OdyCsZhq4Xn0MbyT0szBEw0NDMC7qpbKb6ajKp+zZvPmxEF/Wa9h
-        x/tYkP34EglzHAwI/9Rekk0jUvHjMvb95wuFVp5W6XSFv65Pe1ltmc23v8c3aKyR
-        wsg+ed1PltmlLunEAQcaRBwiIRjhWa9QngDoCdl6v/QlxPArLxi8BfU0/0AskhJx
-        8aZgHqfxRzfFe07tr/X0jX6RQ7Oda+lxtT7WhsA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PWoGEu
-        MDDaDq0/pzXUUiU1EckS7iVUN1oFV3i9oQBqU=; b=juzHo2ERd2n3YX6adW2OnL
-        1N2Lcs+iMO3u0lHnRCNU+G0QiOiQ6Bxp88DZLVuycTPl2EZbp6pSvkAJuqbIiZVk
-        7hKv5/ECVpBa428xHcpHMYMTzup8Z2dufAnY3ea7drNrTx0VvoYir1BQUkOavdPN
-        h6EeFMfUXFb/5t1xqgg/DtJZUH+0Zkmz0OiNmvcw+gbaj7DaqbrdIwsG0sh1RxGz
-        VpljwS3yLEGoSXcKHidiY7Ji0a9l7qw3FFgbvOzQDBZtL1ulonAMYYtKs0N0IyhL
-        uvhfNPw2RWvneouixTI7Y2sNMdcG7uA5AWAkqQonnsVdnvM+0gcLxbmFX4UlRG/Q
-        ==
-X-ME-Sender: <xms:67IQYBn8zZXF8aV1RL_0StSGOYIqxaIZpgly8jt4COCgAgtGwllFeA>
-    <xme:67IQYM3oNDYWI-tCEy477uy5A8_jkyYEDz9iZAlq_ATf5fsL7z_mzbh0JBe78vlkX
-    HNdvqzoh6MJdz_HIQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:7LIQYHqlC_id2kk_RUPPOjvILObK-6rLPAF0rdMpgN-cO2dcN0PlBQ>
-    <xmx:7LIQYBl9_LBn5Q2kfDBVLjH2lfV5yEtoavFtu2HhrMuLx4apq7EmcA>
-    <xmx:7LIQYP19NXFgSEQW7lDZAmIcFU3kWOFppZ43ScCjIf_cWKOONFJySA>
-    <xmx:7bIQYIt6bnrgYF6qn5gSA3F0qVPgYqpnlefxekr4vtmCelQAJagDWw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E5484A0005D; Tue, 26 Jan 2021 19:25:15 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-84-gfc141fe8b8-fm-20210125.001-gfc141fe8
-Mime-Version: 1.0
-Message-Id: <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
-In-Reply-To: <20210114131622.8951-2-chiawei_wang@aspeedtech.com>
-References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
- <20210114131622.8951-2-chiawei_wang@aspeedtech.com>
-Date:   Wed, 27 Jan 2021 10:54:55 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Lee Jones" <lee.jones@linaro.org>
-Cc:     BMC-SW@aspeedtech.com, "Haiyue Wang" <haiyue.wang@linux.intel.com>,
-        "Robert Lippert" <rlippert@google.com>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Corey Minyard" <minyard@acm.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Content-Type: text/plain
+        Wed, 27 Jan 2021 02:29:00 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F0FC0613ED;
+        Tue, 26 Jan 2021 23:28:19 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id o16so994128pgg.5;
+        Tue, 26 Jan 2021 23:28:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KsuFJMJR1zSC15w8JQ1c49j8bxV1nmiWZNwaZ1VqZu4=;
+        b=tml80qBR1soeYIVTGfdvJtZUqxXf7q+xv4VxBnCHgSTnJbtCZsY3//7PIn54WYZZWq
+         cFoDNkU20Agj4frEi/qOMiMO3wQxtQxpaDdRvZLcTRwc5VAYffgQ9mvVVfGppHIBU09m
+         oMWV2CP8F3pq/i5fWO5J9enAs+qsvdP7YsO37F5OGZ9amyDlLWatZpYnJa892lvHKzUR
+         KDjwrMplVjmWhpMzZjnNdk2FIMHesJ0o7xc5havkCzjkIkKA8VQQiQxN6z7MsPPo2dlS
+         QAlfuN+bL1dSKU46niKrxooWyGxrRLWLZFVHOUXvQw0VVSGPfECuhd6+2U208WUJOAzS
+         Qk+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KsuFJMJR1zSC15w8JQ1c49j8bxV1nmiWZNwaZ1VqZu4=;
+        b=UaN23LiAckDCd/lXk/HUPRcCmxzLeIT2nJvUwVIYjSUvVBzZqaqY4oXFYMP+SZE2++
+         CCOh6KyfrdM+mUD4V5qD56LzZwS7NVVXkh+eiDuaeNSOcApvYYphMQ615QKY5N/aHrdE
+         Egj5QiKqyy70u3nutkiPTVLsF2fXK6UU7ufJWl3GEGOOfeeMA/3rjvBSM8w9bzH+x4Q/
+         QZ2J3ZRQjAuf1IUUDpBThv+BhXmhtEH4hEMzq3sxeia42GdiGsljJrmQ7xIcpdGv7a+x
+         O6HOXiSaQNdpLnxXARWtDhyFNDaEoL5Xau/1L7X6i2DL/kWhpWfwNNKL+n2WZ0ZSvyn6
+         34CA==
+X-Gm-Message-State: AOAM5327OtUFXnD1u3YtN9933CPTf0ozxm2ghHuUPajWRXzHesEPqGFR
+        arLPRbQqttWp9rP/EhPIVBY=
+X-Google-Smtp-Source: ABdhPJy57KlxoGsUb+PPuXQ0Jo45vAGWsTy0Shn4D3KrkFXOe+TIgZZz1XCplUUJq5QgQMbl7/Zimg==
+X-Received: by 2002:a63:a542:: with SMTP id r2mr9859868pgu.211.1611732499327;
+        Tue, 26 Jan 2021 23:28:19 -0800 (PST)
+Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id u12sm1182256pgi.91.2021.01.26.23.28.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Jan 2021 23:28:18 -0800 (PST)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
+        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6] fbtft: add tearing signal detect
+Date:   Wed, 27 Jan 2021 15:28:22 +0800
+Message-Id: <1611732502-99639-1-git-send-email-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: zhangxuezhi <zhangxuezhi1@yulong.com>
 
+For st7789v ic,add tearing signal detect to avoid screen tearing
 
-On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
-> The LPC controller has no concept of the BMC and the Host partitions.
-> This patch fixes the documentation by removing the description on LPC
-> partitions. The register offsets illustrated in the DTS node examples
-> are also fixed to adapt to the LPC DTS change.
-> 
-> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+---
+v6: add te gpio request fail deal logic
+---
+ drivers/staging/fbtft/fb_st7789v.c | 133 ++++++++++++++++++++++++++++++++++++-
+ drivers/staging/fbtft/fbtft.h      |   1 +
+ 2 files changed, 133 insertions(+), 1 deletion(-)
 
-Any thoughts Lee? If you ack it would you be happy for the patch to go through 
-the Aspeed tree?
+diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
+index 3a280cc..777391e 100644
+--- a/drivers/staging/fbtft/fb_st7789v.c
++++ b/drivers/staging/fbtft/fb_st7789v.c
+@@ -9,9 +9,12 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
++#include <linux/mutex.h>
++#include <linux/interrupt.h>
++#include <linux/completion.h>
+ #include <linux/module.h>
+ #include <video/mipi_display.h>
+-
++#include <linux/gpio/consumer.h>
+ #include "fbtft.h"
+ 
+ #define DRVNAME "fb_st7789v"
+@@ -66,6 +69,32 @@ enum st7789v_command {
+ #define MADCTL_MX BIT(6) /* bitmask for column address order */
+ #define MADCTL_MY BIT(7) /* bitmask for page address order */
+ 
++#define SPI_PANEL_TE_TIMEOUT	400
++static struct mutex te_mutex;/*mutex for tearing line*/
++static struct completion spi_panel_te;
++
++static irqreturn_t spi_panel_te_handler(int irq, void *data)
++{
++	complete(&spi_panel_te);
++	return IRQ_HANDLED;
++}
++
++static void set_spi_panel_te_irq_status(struct fbtft_par *par, bool enable)
++{
++	static int te_irq_count;
++
++	mutex_lock(&te_mutex);
++
++	if (enable) {
++		if (++te_irq_count == 1)
++			enable_irq(gpiod_to_irq(par->gpio.te));
++	} else {
++		if (--te_irq_count == 0)
++			disable_irq(gpiod_to_irq(par->gpio.te));
++	}
++	mutex_unlock(&te_mutex);
++}
++
+ /**
+  * init_display() - initialize the display controller
+  *
+@@ -82,6 +111,34 @@ enum st7789v_command {
+  */
+ static int init_display(struct fbtft_par *par)
+ {
++	int rc;
++	struct device *dev = par->info->device;
++
++	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
++	if (IS_ERR(par->gpio.te)) {
++		rc = PTR_ERR(par->gpio.te);
++		pr_err("Failed to request te gpio: %d\n", rc);
++		par->gpio.te = NULL;
++	}
++	if (par->gpio.te) {
++		init_completion(&spi_panel_te);
++		mutex_init(&te_mutex);
++		rc = devm_request_irq(dev,
++				      gpiod_to_irq(par->gpio.te),
++				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
++				     "TE_GPIO", par);
++		if (rc) {
++			pr_err("TE request_irq failed.\n");
++			devm_gpiod_put(dev, par->gpio.te);
++			par->gpio.te = NULL;
++		} else {
++			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
++			pr_info("TE request_irq completion.\n");
++		}
++	} else {
++		pr_info("%s:%d, TE gpio not specified\n",
++			__func__, __LINE__);
++	}
+ 	/* turn off sleep mode */
+ 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
+ 	mdelay(120);
+@@ -137,6 +194,9 @@ static int init_display(struct fbtft_par *par)
+ 	 */
+ 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
+ 
++    /*Tearing Effect Line On*/
++	if (par->gpio.te)
++		write_reg(par, 0x35, 0x00);
+ 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
+ 
+ 	if (HSD20_IPS)
+@@ -145,6 +205,76 @@ static int init_display(struct fbtft_par *par)
+ 	return 0;
+ }
+ 
++/*****************************************************************************
++ *
++ *   int (*write_vmem)(struct fbtft_par *par);
++ *
++ *****************************************************************************/
++
++/* 16 bit pixel over 8-bit databus */
++static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
++{
++	u16 *vmem16;
++	__be16 *txbuf16 = par->txbuf.buf;
++	size_t remain;
++	size_t to_copy;
++	size_t tx_array_size;
++	int i;
++	int ret = 0;
++	size_t startbyte_size = 0;
++
++	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
++		      __func__, offset, len);
++
++	remain = len / 2;
++	vmem16 = (u16 *)(par->info->screen_buffer + offset);
++
++	if (par->gpio.dc)
++		gpiod_set_value(par->gpio.dc, 1);
++
++	/* non buffered write */
++	if (!par->txbuf.buf)
++		return par->fbtftops.write(par, vmem16, len);
++
++	/* buffered write */
++	tx_array_size = par->txbuf.len / 2;
++
++	if (par->startbyte) {
++		txbuf16 = par->txbuf.buf + 1;
++		tx_array_size -= 2;
++		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
++		startbyte_size = 1;
++	}
++
++	while (remain) {
++		to_copy = min(tx_array_size, remain);
++		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
++			to_copy, remain - to_copy);
++
++		for (i = 0; i < to_copy; i++)
++			txbuf16[i] = cpu_to_be16(vmem16[i]);
++
++		vmem16 = vmem16 + to_copy;
++		if (par->gpio.te) {
++			set_spi_panel_te_irq_status(par, true);
++			reinit_completion(&spi_panel_te);
++			ret = wait_for_completion_timeout(&spi_panel_te,
++							  msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
++			if (ret == 0)
++				pr_err("wait panel TE time out\n");
++		}
++		ret = par->fbtftops.write(par, par->txbuf.buf,
++					 startbyte_size + to_copy * 2);
++		if (par->gpio.te)
++			set_spi_panel_te_irq_status(par, false);
++		if (ret < 0)
++			return ret;
++		remain -= to_copy;
++	}
++
++	return ret;
++}
++
+ /**
+  * set_var() - apply LCD properties like rotation and BGR mode
+  *
+@@ -259,6 +389,7 @@ static int blank(struct fbtft_par *par, bool on)
+ 	.gamma = HSD20_IPS_GAMMA,
+ 	.fbtftops = {
+ 		.init_display = init_display,
++		.write_vmem = st7789v_write_vmem16_bus8,
+ 		.set_var = set_var,
+ 		.set_gamma = set_gamma,
+ 		.blank = blank,
+diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
+index 76f8c09..93bac05 100644
+--- a/drivers/staging/fbtft/fbtft.h
++++ b/drivers/staging/fbtft/fbtft.h
+@@ -212,6 +212,7 @@ struct fbtft_par {
+ 		struct gpio_desc *wr;
+ 		struct gpio_desc *latch;
+ 		struct gpio_desc *cs;
++		struct gpio_desc *te;
+ 		struct gpio_desc *db[16];
+ 		struct gpio_desc *led[16];
+ 		struct gpio_desc *aux[16];
+-- 
+1.9.1
 
-Andrew
