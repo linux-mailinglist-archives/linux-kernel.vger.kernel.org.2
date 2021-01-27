@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0FF305034
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD12305039
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237298AbhA0DvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390066AbhA0AOj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:14:39 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F98C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:13:56 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id f63so17398pfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 16:13:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Eg1+IXQ+KG25hfpLfWECGEtHCa9ZmmkTs6X5ipIqXso=;
-        b=A3+wyR7Tw2RVfQ5N8CwLN9nmb2NGSUCXSUCy16AfW2YHvHVpbMca9k7+Uqg6BydcUP
-         CD8uyf6CKxoeIIpz9A3BcpPdPpJtVaosFsS7U0+SLb6+V9bH1jH/dBrH5Z0Ue41dGrUH
-         5kY6RcLOjt0LlXl2Yew8J1x4Tf6aUy+yfb+yGSJ+yw7OX5K2e0UkIzcp1vPwQsOwjMYG
-         qnzl4kORkTc51FIIR5EP0Pwz5it0Xgdi43WiS8Pc55RIw4FKim1ZMw8bl0bXbBmgf6b2
-         f/6SSEpJZbpEIMcA2LA6EBijbjGtXSGZBdkq1fN6oZbmQdhpMgS3sgzBCbBFIH/x1Ke5
-         G1Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Eg1+IXQ+KG25hfpLfWECGEtHCa9ZmmkTs6X5ipIqXso=;
-        b=glYLFBWCoTtHoytusS74iMikd5m4eOQ0ruVyYEZKRrbhxgbH2QRhWz5w+5NLZ+Ms8X
-         p1zXPsumqe6vm6TwhU6TH34zxwmaUJm5TlczUbDc/sNTj7Y5odndYt8c/nBT9gaupRR7
-         2vGi/0vrCRAJ6CjUr51i5mS4tepaerMBBSN5hmjAvc+2a+SC6R4rkGhhuMkRS4z0Jp8X
-         rPcJFI1XjcBxUg+FaV8afSB+y4bT4ywPiUfQMND18FxO9arCmeq9cFzjJHaMPsu2ZRM0
-         mSA7mCLZqD4p9Lt7Rowg0VcLOYkhJX2GWgqCdYR7tn5v/eGdLhaousTK16CK8uFiSM4V
-         6Y+A==
-X-Gm-Message-State: AOAM533MGPFhFnYQkvQRIDd6QtV9hnk0cW0onBJdilUfDWkhMDBsLRQ9
-        wwgjVdWPhGdyMQ85sWkmqniYgQ==
-X-Google-Smtp-Source: ABdhPJwi/cjpRNck5xySzt/sdXxpPflSZCwPr7heWqTtNlCahUQS3RnLmA1I2IW5y20J/WIYUexGKg==
-X-Received: by 2002:a62:1a50:0:b029:1c5:112a:f42f with SMTP id a77-20020a621a500000b02901c5112af42fmr4242651pfa.77.1611706435561;
-        Tue, 26 Jan 2021 16:13:55 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 21sm209985pfu.136.2021.01.26.16.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 16:13:54 -0800 (PST)
-Date:   Tue, 26 Jan 2021 16:13:48 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
-        wanpengli@tencent.com, kvm@vger.kernel.org,
-        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
-        x86@kernel.org, kyung.min.park@intel.com,
-        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
-        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
-        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
-Subject: Re: [PATCH v3 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
-Message-ID: <YBCwPHOXgVqnnMQ6@google.com>
-References: <161073115461.13848.18035972823733547803.stgit@bmoger-ubuntu>
- <161073130040.13848.4508590528993822806.stgit@bmoger-ubuntu>
- <YAclaWCL20at/0n+@google.com>
- <c3a81da0-4b6a-1854-1b67-31df5fbf30f6@amd.com>
- <YAdvGkwtJf3CDxo6@google.com>
- <ae97b4c2-6f19-f539-a7ab-f91385449e8f@amd.com>
+        id S237352AbhA0DwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:52:03 -0500
+Received: from mga12.intel.com ([192.55.52.136]:60544 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729880AbhA0A6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 19:58:42 -0500
+IronPort-SDR: nG5/7a1OqjAzl8HxXVqySvZV3e2492H2q5RvcRLN4Q0irq88jhmWslUReZo31EiibRwfmHgfjK
+ Ed7yncIhQE1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="159171320"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="159171320"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 16:58:00 -0800
+IronPort-SDR: HERo/2nPxJcwoL/hfz9pw9yFMx6/qooLiVBJOEBKP2YMX7Vy56oh2DaADE+W0i72SHmN/9dYx0
+ KIjwcHAbPzhg==
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="388076994"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 16:57:57 -0800
+Subject: Re: [RESEND PATCH 2/2] KVM: X86: Expose bus lock debug exception to
+ guest
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        kernel test robot <lkp@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kbuild-all@lists.01.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210108064924.1677-3-chenyi.qiang@intel.com>
+ <202101090218.oqYcWXa4-lkp@intel.com>
+ <cfc345ea-980d-821d-f3a6-cea1f8e7ba03@redhat.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+Message-ID: <3c38f1be-47c3-e8f8-ee72-9642e99ac93f@intel.com>
+Date:   Wed, 27 Jan 2021 08:57:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae97b4c2-6f19-f539-a7ab-f91385449e8f@amd.com>
+In-Reply-To: <cfc345ea-980d-821d-f3a6-cea1f8e7ba03@redhat.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021, Babu Moger wrote:
-> 
-> On 1/19/21 5:45 PM, Sean Christopherson wrote:
 
-> > Potentially harebrained alternative...
-> > 
-> > From an architectural SVM perspective, what are the rules for VMCB fields that
-> > don't exist (on the current hardware)?  E.g. are they reserved MBZ?  If not,
-> > does the SVM architecture guarantee that reserved fields will not be modified?
-> > I couldn't (quickly) find anything in the APM that explicitly states what
-> > happens with defined-but-not-existent fields.
-> 
-> I checked with our hardware design team about this. They dont want
-> software to make any assumptions about these fields.
 
-Drat, I should have begged for forgiveness instead of asking for permission :-D
+On 1/27/2021 12:33 AM, Paolo Bonzini wrote:
+> On 08/01/21 19:16, kernel test robot wrote:
+>> Hi Chenyi,
+>>
+>> Thank you for the patch! Yet something to improve:
+>>
+>> [auto build test ERROR on kvm/linux-next]
+>> [also build test ERROR on v5.11-rc2 next-20210108]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+> 
+> What is the status of the patch to introduce X86_FEATURE_BUS_LOCK_DETECT 
+> (I saw 
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2389369.html)?
+> 
+> Paolo
+
+Fenghua sent the v4 patch and pinged x86 maintainers, but still no feedback.
+https://lore.kernel.org/lkml/YA8bkmYjShKwmyXx@otcwcpicx3.sc.intel.com/
+
+> 
+
