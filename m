@@ -2,247 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B173C305437
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CFD305452
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbhA0HPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbhA0HJY (ORCPT
+        id S233719AbhA0HTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:19:55 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:33867 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232950AbhA0HK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:09:24 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA65C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 23:08:44 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b8so518098plh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 23:08:44 -0800 (PST)
+        Wed, 27 Jan 2021 02:10:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611731428; x=1643267428;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=uCa2GMUpKz+2S5SNgBMzR6fSnZ94mL+mmLlK+vjuzoU=;
+  b=has3bIYH/2TZdw18nHGBKcTGIFXJKIFeFOBWfrT/qd3NlLksdVTGWgW5
+   y7mvAcc6KPrCGeFdIoca4rtshQv4W5gY3TLB052DqWNlzWxsv1WQ3iU1s
+   VUwqzEGLxMBronzgpTWvZEuIA9cnLObdGTOq5rJ4dahPAf7r6cJkvTIte
+   a8oWNGed1Bd5Z/ZlL4ASpOI3B3Wa5ULhoLe6R2pe7CrZsCrAznwPMqqmI
+   IB/LOPK8nBAWAhCUTwVl+xn/zOTujq4Kh+WNiS9teC4P+b82TrqR9n9it
+   USBr7UgeadPxqPMAzGmzX+8ArWxklzHXQOob2LP9L/L+Xvs+zoXu5i7j5
+   A==;
+IronPort-SDR: /1a6EppGGM7pxwM3sWej5+Q8xiXtwywOyy12wrFJ4ssaBJVw2SO8jjLyNxeSvxrIUxzF9VChV2
+ S73vWuEt9LjdPdtFIzAOs2gH3GdtbfwXAXZwe0ad2VNV+QKdXVyUN6R6+05U2cuQSp0TEiSIcY
+ SD3PBHUG8c1nTHyG1/KbMiT9TgKJZwdCwA6aTJv8UvDysQ2qv+Z+86L/kAeyeTTXfXRyzQ+Ts9
+ l7jBcux8Q0BdyJTa0Kle/2M0crK/Hc1jQx3MAGwOK72YEa+4AA/4xjvzsTy1/GnekHM/v1kLWG
+ AxY=
+X-IronPort-AV: E=Sophos;i="5.79,378,1602518400"; 
+   d="scan'208";a="158424717"
+Received: from mail-dm6nam10lp2106.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.106])
+  by ob1.hgst.iphmx.com with ESMTP; 27 Jan 2021 15:09:18 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LYBLEYfEte6uTRqsmAlzzbZ2KE8M1dKHwSRO3DHNcmEjFcMTUhI9aQC3H5XKRV5pj01d7cacDt9NxKElb2zuiwtJeBBC56CQg88yJ4mcOwr0ahDF1ZDzqObep3yrH17Burwaq6K12IL+273KxvbtyPhArmFOuK03/qfPfaqbJXV8NlG06VOtpBmPyQdLOVO0nt9tQV9n5Ki1Kmkf12/36fyMISxr2IrrI9YEN8nEL3C06BZuC9+cLj0KMghM1qfeSie/gVVHWGykSUPwi7usYgwVwqp8t36GZ+T4LGBbq2O2QcSQAuLvMNoH3opDaPAe324pzQYsKN+xAPNs7fZ2dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uCa2GMUpKz+2S5SNgBMzR6fSnZ94mL+mmLlK+vjuzoU=;
+ b=Po3gyslE8io4ilXT2/aGjf4qi/T7cLVcfZBJYp/NlvtRlW8MHjX8crXFMb4Kj3qKF2CL1HjRtrpS13X47VaEJoEDN22yIIkGeoRLPhJYg/G79gZLDzpGzFm5j9fJDh8WyX0UGBccRly1OcRfb4g2OvLRWkSgHWZVuwMlT6uyfXXiwRLwPy2CF5FIvlj1J8sBbxoLvSTsvwKeJ1oSLMFgFwFDH5JMU39tn52JdXX50gPWQ4TkDvs+XCCFgsNdvk0Q94qo7kX7IsAbp9rbLqXNp243nTR0X3adHZdfQ39oVz/UMRrfr/pY+/DiSKm+d9JLTSRXZlXlBWtdkrUsfjE6Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KvJIrN7dpSbC4mUaeerHgUdiYjp0w1FZlCWyLCYz8BY=;
-        b=bPY8wty7wmMyTe/xjPgUdFU8kOd+VjestEJzdGhbLFZZnD3JFK3wQxL0jhwkEY/y9J
-         PHDJCRZ/CBgJuJvoT5CKO7vWZxRhIC7oDMyil3/FMfo1ZemGer7PmqEJVutgh6wnyWH8
-         tNYvZRfX4859X4FQKlB89ppMetSaWmDQCZMHJ1FlYyxNmyOy+CJp76JjFJg9P8i9h9Uo
-         JMK4Us6f+/55aICxlDrLflrNnowxLDsvQkyReyHAO19TmHWb1nIdP8AlwJ8H30+AJE+k
-         u9U+7oQaLXKHQf/Uk288FWnMKxaiLmuosnvpc+cmDzQjN5aNtQIDWLJMTOOE6M8ybguF
-         ctEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KvJIrN7dpSbC4mUaeerHgUdiYjp0w1FZlCWyLCYz8BY=;
-        b=T03nD3rdoc388ghemMBb+oOvvTGqExenGv6udhfQ9u9xHlyMUxbpAFDPRd66wX/bUs
-         imNL1+RmyeIvbcSM4rAhjTzKFIY3AmS2qs24F8P9rcNixi7xEYyz+uCyf+yHR26Re1oV
-         idcrznMQ2SBjz/yETnHpcb85w6bbqrTXnKBzoOYT/MLkokA74a3i2U0NlutQ8i2uJ1PK
-         iP9vT6dj/Ngi9S5o7249yB9aswaoSbXeFi4RQfAa2g+B5kwQqC5qZZToRX0oXaWlvZ/v
-         r9dWIqUJLjiZAhtytZcYBbhaNdXZzCW26SKVVzVLj4D4Eb8FcYzkynVkhfDnGmaNsbwf
-         WxPA==
-X-Gm-Message-State: AOAM530lwumJUT+y9zw8J1B1ZKCqHw1NC0vM30PnmiLwYE1HIpg+Kn2z
-        D4KgHx9FUi53LRGeMmcS1JLAWg==
-X-Google-Smtp-Source: ABdhPJxf7E8TMdjCREOKDfxVGq51H1oIeHNFvyDpg3tVz9oRQ/Q1abQVbWmKf+uEK9bFnkvTnQBGjw==
-X-Received: by 2002:a17:90a:4209:: with SMTP id o9mr4223181pjg.75.1611731323537;
-        Tue, 26 Jan 2021 23:08:43 -0800 (PST)
-Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
-        by smtp.gmail.com with UTF8SMTPSA id 21sm1134342pfh.56.2021.01.26.23.08.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 23:08:42 -0800 (PST)
-Subject: Re: [PATCH v2] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20201117211836.54acaef2@oasis.local.home>
- <CAADnVQJekaejHo0eTnnUp68tOhwUv8t47DpGoOgc9Y+_19PpeA@mail.gmail.com>
- <20201118074609.20fdf9c4@gandalf.local.home>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <5ca3fcc1-b8fb-546e-5e75-3684efb19a6f@ozlabs.ru>
-Date:   Wed, 27 Jan 2021 18:08:34 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
-MIME-Version: 1.0
-In-Reply-To: <20201118074609.20fdf9c4@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uCa2GMUpKz+2S5SNgBMzR6fSnZ94mL+mmLlK+vjuzoU=;
+ b=gqcIijBq1cHZD/C8UJWBnYK8es8kzwkJeMihrCM5y6Gv6OzbIT07XU/comDrNA1Tp6z8FZ3NpjKpjLrX8CHZevZWpbWQB9oogDleI4KxdXBb4LDGWzCt4LzC0BjKiWAc4y6GJkzR8yU2danAdvXUuZwP+sOKMmI//cPdITsdGuo=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB0410.namprd04.prod.outlook.com (2603:10b6:3:a9::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.15; Wed, 27 Jan 2021 07:09:17 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%9]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 07:09:17 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Asutosh Das <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+CC:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
+        Jens Axboe <axboe@kernel.dk>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH v1 1/2] block: bsg: resume scsi device before
+ accessing
+Thread-Topic: [RFC PATCH v1 1/2] block: bsg: resume scsi device before
+ accessing
+Thread-Index: AQHW9GS91lSjV2CWj0GEr0fs2ZDDFKo7DS1g
+Date:   Wed, 27 Jan 2021 07:09:16 +0000
+Message-ID: <DM6PR04MB6575D64869B24B4275D63503FCBB9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <cover.1611719814.git.asutoshd@codeaurora.org>
+ <c04a11a590628c2497cef113b0dfea781de90416.1611719814.git.asutoshd@codeaurora.org>
+In-Reply-To: <c04a11a590628c2497cef113b0dfea781de90416.1611719814.git.asutoshd@codeaurora.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0ade7e32-c65d-467f-e571-08d8c29275cb
+x-ms-traffictypediagnostic: DM5PR04MB0410:
+x-microsoft-antispam-prvs: <DM5PR04MB0410BAF648D04705D1ACCAF9FCBB9@DM5PR04MB0410.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:199;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tF/nc2nIaIeKN/uyPQY0uP5MxsWNG1c/PQ4VBhcbsyuxiQiIZeEdi13G7t46LHpLB0PqduPF/teKWSCabizJeX2mSbElA7Mscp6eLmWjlbwSpXWNb696jSd9XSqo9aQNwWFc0DhHDOgt3f/Ir2J7HneFVi5CxM8CED6sPl3tR9w0ziXCdXv8h9jHp9/nZsFj6NZqvFFkXITjZzdstifufVslXKWqRN0YW/W0NnKlpnDcnZwEe26kAEtaP9MtHJC3VxTjLnqH/Kjsh8fwQTOfwDoR4bMmpgmr6oL7Y+awPdg/UG31LMKNvrqYyfCxgfhYFdgtKa1U4uk3r6sRNl/+7/L8dbiII2UqwaLjWUcpmOaflITELCP4swlgt8aRdwswH6Le3z6LUX98N4KxfDHQAg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39860400002)(346002)(376002)(6506007)(316002)(86362001)(8936002)(66946007)(64756008)(2906002)(478600001)(186003)(26005)(4326008)(76116006)(66446008)(66476007)(66556008)(7416002)(8676002)(83380400001)(52536014)(9686003)(5660300002)(55016002)(71200400001)(54906003)(7696005)(558084003)(110136005)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?WqWjZnJiBN9Iht47imiHr0zqAbq3VTZqfXGYFPJCWvIgQu64VVgYq3t4f2Nw?=
+ =?us-ascii?Q?LCogH7T2rtUBvMXYUdQV/UjvgtjYQCICxmiD+ZGyI/VaFW4hT7fqAqpGaR0v?=
+ =?us-ascii?Q?Q4qZ/FuH60BcUWSLfUlhkOUu4cbqsNtFzzi2XI4Ygo9mgBpjg60ZMknUKaq2?=
+ =?us-ascii?Q?XiCq+oJ3N/Ks433RY+0FFAAY5nStJkbxEOeYMTZm9p+itNEdsHXjaEf3WmL9?=
+ =?us-ascii?Q?/7AFNMvuCLVTGrmJaPUd4zg7J4D8jRJuZvctrqxJjT+LcPuKWg2ARCu65nlS?=
+ =?us-ascii?Q?cJ7+1VmJRwCwL16bMWJtgr3nSQKJajo8oz87BD5CrZJnowyw81HDNAQrW2v1?=
+ =?us-ascii?Q?hvh+gtujMIUbR/LKw2IWB9E/zdcmRdkOQeNpcEOt73Zrk/VuQ89d+v4FqTO3?=
+ =?us-ascii?Q?bx43VqDYhmrimmmzCRtASxGmWtCtHn8wUDFc4EwgQO0cTT+Ds3xa1Zyj4EFr?=
+ =?us-ascii?Q?vEClvF24UxEAysFlkyuGZuDnacuB275m4iAruW4V/M0b4K/jCLeO+vjNz19+?=
+ =?us-ascii?Q?EgzzgQJy5WvOzPlzUq8SeHCAseHuj9HROv+pUjrFa07CMB6WDJqDc+gUYR/+?=
+ =?us-ascii?Q?4HTzJKWCXlzCQYBQjhPUZUMFlm0odJz9daY2uQZvjSGr+6ilhAYqAWvC5xXP?=
+ =?us-ascii?Q?2re+uTV7Ku/4IP0w+QoCLUM6nlHReyHgi9Q2wOa/Ey0ppuLWn6RE7ikqYjad?=
+ =?us-ascii?Q?FHSHkzVCVaNawir5PmlXBle6CVXm5D7ZUPwy0WCcYypweQcERNlG2UnRdOnF?=
+ =?us-ascii?Q?TIDbt2ehZWD2lt+N2Z5Ur3hETtAAIcEslgksZPrCwLNtiS8oBBaCfCwBoQci?=
+ =?us-ascii?Q?APsoOke6NTvikw+Q+k4QtywFfTqJc4AjhWENzsq7wxHbZwGOTYMG8iECXjcC?=
+ =?us-ascii?Q?0rJwdf6vZ+NAkNoaq7nHuepU8rZ+uyErQyouWBa5Sw9mnQDnasOJZ6ytS9AG?=
+ =?us-ascii?Q?cxfV3+3NUi2L8HcfC6SgVS+iEEPfufIiMpZDPdTR9/wGDwDsOKtbOt62SXtO?=
+ =?us-ascii?Q?V0bD4cwTHiCfgr/BH+uqyn9ZxTFMUZWAoBqpF0Brz19CQuqFlKDPZH8Y1ykf?=
+ =?us-ascii?Q?DU6Ti0xr?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ade7e32-c65d-467f-e571-08d8c29275cb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jan 2021 07:09:16.9384
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D939hl67ltLeqPTRphTG+0bOsKG8AeCQEhTnk+IHXesF1MLqPZ24hOG9DwNOxwZU3rHYXwelXaLObvxlachRcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0410
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>=20
+> Resumes the scsi device before accessing it.
+>=20
+> Change-Id: I2929af60f2a92c89704a582fcdb285d35b429fde
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+Following this patch, is it possible to revert commit 74e5e468b664d?
 
+Thanks,
+Avri
 
-On 18/11/2020 23:46, Steven Rostedt wrote:
-> On Tue, 17 Nov 2020 20:54:24 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
->>>   extern int
->>> @@ -310,7 +312,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->>>                  do {                                                    \
->>>                          it_func = (it_func_ptr)->func;                  \
->>>                          __data = (it_func_ptr)->data;                   \
->>> -                       ((void(*)(void *, proto))(it_func))(__data, args); \
->>> +                       /*                                              \
->>> +                        * Removed functions that couldn't be allocated \
->>> +                        * are replaced with TRACEPOINT_STUB.           \
->>> +                        */                                             \
->>> +                       if (likely(it_func != TRACEPOINT_STUB))         \
->>> +                               ((void(*)(void *, proto))(it_func))(__data, args); \
->>
->> I think you're overreacting to the problem.
-> 
-> I will disagree with that.
-> 
->> Adding run-time check to extremely unlikely problem seems wasteful.
-> 
-> Show me a real benchmark that you can notice a problem here. I bet that
-> check is even within the noise of calling an indirect function. Especially
-> on a machine with retpolines.
-> 
->> 99.9% of the time allocate_probes() will do kmalloc from slab of small
->> objects.
->> If that slab is out of memory it means it cannot allocate a single page.
->> In such case so many things will be failing to alloc that system
->> is unlikely operational. oom should have triggered long ago.
->> Imo Matt's approach to add __GFP_NOFAIL to allocate_probes()
-> 
-> Looking at the GFP_NOFAIL comment:
-> 
->   * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
->   * cannot handle allocation failures. The allocation could block
->   * indefinitely but will never return with failure. Testing for
->   * failure is pointless.
->   * New users should be evaluated carefully (and the flag should be
->   * used only when there is no reasonable failure policy) but it is
->   * definitely preferable to use the flag rather than opencode endless
->   * loop around allocator.
-> 
-> I realized I made a mistake in my patch for using it, as my patch is a
-> failure policy. It looks like something we want to avoid in general.
-> 
-> Thanks, I'll send a v3 that removes it.
-> 
->> when it's called from func_remove() is much better.
->> The error was reported by syzbot that was using
->> memory fault injections. ENOMEM in allocate_probes() was
->> never seen in real life and highly unlikely will ever be seen.
-> 
-> And the biggest thing you are missing here, is that if you are running on a
-> machine that has static calls, this code is never hit unless you have more
-> than one callback on a single tracepoint. That's because when there's only
-> one callback, it gets called directly, and this loop is not involved.
-
-
-I am running syzkaller and the kernel keeps crashing in 
-__traceiter_##_name. This patch makes these crashes happen lot less 
-often (and so did the v1) but the kernel still crashes (examples below 
-but the common thing is that they crash in tracepoints). Disasm points 
-to __DO_TRACE_CALL(name) and this fixes it:
-
-========================
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -313,6 +313,7 @@ static inline struct tracepoint 
-*tracepoint_ptr_deref(tracepoint_ptr_t *p)
-                                                                         \
-                 it_func_ptr =                                           \
- 
-rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-+               if (it_func_ptr)                                        \
-                 do {                                                    \
-                         it_func = (it_func_ptr)->func;                  \
-========================
-
-I am running on a powerpc box which does not have CONFIG_HAVE_STATIC_CALL.
-
-I wonder if it is still the same problem which mentioned v3 might fix or 
-it is something different? Thanks,
-
-
-
-[  285.072538] Kernel attempted to read user page (0) - exploit attempt? 
-(uid: 0)
-[  285.073657] BUG: Kernel NULL pointer dereference on read at 0x00000000
-[  285.075129] Faulting instruction address: 0xc0000000002edf48
-cpu 0xd: Vector: 300 (Data Access) at [c0000000115db530]
-     pc: c0000000002edf48: lock_acquire+0x2e8/0x5d0
-     lr: c0000000006ee450: step_into+0x940/0xc20
-     sp: c0000000115db7d0
-    msr: 8000000000009033
-    dar: 0
-  dsisr: 40000000
-   current = 0xc0000000115af280
-   paca    = 0xc00000005ff9fe00	 irqmask: 0x03	 irq_happened: 0x01
-     pid   = 182, comm = systemd-journal
-Linux version 5.11.0-rc5-le_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc 
-(Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, GNU ld (GNU Binutils for Ubuntu) 
-2.30) #65 SMP Wed Jan 27 16:46:46 AEDT 2021
-enter ? for help
-[c0000000115db8c0] c0000000006ee450 step_into+0x940/0xc20
-[c0000000115db950] c0000000006efddc walk_component+0xbc/0x340
-[c0000000115db9d0] c0000000006f0418 link_path_walk.part.29+0x3b8/0x5b0
-[c0000000115dbaa0] c0000000006f0b1c path_openat+0x11c/0x1190
-[c0000000115dbb40] c0000000006f4334 do_filp_open+0xb4/0x180
-[c0000000115dbc80] c0000000006c83cc do_sys_openat2+0x48c/0x610
-[c0000000115dbd20] c0000000006caf9c do_sys_open+0xcc/0x140
-[c0000000115dbdb0] c00000000004ba48 system_call_exception+0x178/0x2b0
-[c0000000115dbe10] c00000000000e060 system_call_common+0xf0/0x27c
---- Exception: c00 (System Call) at 00007fff7fb3e758
-SP (7ffff28e2900) is in userspace
-
-
-
-
-[   92.747130] FAT-fs (loop7): bogus number of reserved sectors
-[   92.747193] Kernel attempted to read user page (0) - exploit attempt? 
-(uid: 0)
-[   92.748393] FAT-fs (loop7): Can't find a valid FAT filesystem
-[   92.750579] BUG: Kernel NULL pointer dereference on read at 0x00000000
-[   92.751855] Faulting instruction address: 0xc0000000002ed928
-cpu 0xd: Vector: 300 (Data Access) at [c00000001138f5c0]
-     pc: c0000000002ed928: lock_release+0x138/0x470
-     lr: c0000000002e0084: up_write+0x34/0x1e0
-     sp: c00000001138f860
-    msr: 8000000000009033
-    dar: 0
-  dsisr: 40000000
-   current = 0xc00000004fe7b480
-   paca    = 0xc00000005ff9fe00	 irqmask: 0x03	 irq_happened: 0x01
-     pid   = 10670, comm = syz-executor.3
-Linux version 5.11.0-rc5-le_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc 
-(Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, GNU ld (GNU Binutils for Ubuntu) 
-2.30) #65 SMP Wed Jan 27 16:46:46 AEDT 2021
-enter ? for help
-[c00000001138f910] c0000000002e0084 up_write+0x34/0x1e0
-[c00000001138f980] c0000000006151fc anon_vma_clone+0x1ec/0x370
-[c00000001138f9f0] c00000000060180c __split_vma+0x11c/0x340
-[c00000001138fa40] c000000000601cb0 __do_munmap+0x1c0/0x920
-[c00000001138fad0] c000000000604d20 mmap_region+0x3b0/0xae0
-[c00000001138fbd0] c0000000006059d4 do_mmap+0x584/0x830
-[c00000001138fc60] c0000000005b0f90 vm_mmap_pgoff+0x170/0x260
-[c00000001138fcf0] c000000000600818 ksys_mmap_pgoff+0x198/0x3a0
-[c00000001138fd60] c0000000000155ec sys_mmap+0xcc/0x150
-[c00000001138fdb0] c00000000004ba48 system_call_exception+0x178/0x2b0
-[c00000001138fe10] c00000000000e060 system_call_common+0xf0/0x27c
---- Exception: c00 (System Call) at 0000000010058ad0
-SP (7fffae45e1c0) is in userspace
-
-
--- 
-Alexey
