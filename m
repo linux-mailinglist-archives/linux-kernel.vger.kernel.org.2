@@ -2,273 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68955306212
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE623062A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbhA0RcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:32:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:56886 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235865AbhA0R3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:29:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF25F1FB;
-        Wed, 27 Jan 2021 09:26:35 -0800 (PST)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E56993F66E;
-        Wed, 27 Jan 2021 09:26:33 -0800 (PST)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org
-Subject: [PATCH v5 20/20] arm64: dts: allwinner: Add OrangePi Zero 2 .dts
-Date:   Wed, 27 Jan 2021 17:25:00 +0000
-Message-Id: <20210127172500.13356-21-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210127172500.13356-1-andre.przywara@arm.com>
-References: <20210127172500.13356-1-andre.przywara@arm.com>
+        id S1344228AbhA0RwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:52:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343751AbhA0R1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:27:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611768378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WsGoAY8pVGqoZZBbJ/C6seN6vjaWljQXnMBoXIykYjQ=;
+        b=jRnASFcZDbSC2tvnV/yi2HWrqgdUZ38R5Kl5cBNuUd9dRRQvJfTcC0pocz4vvdeQH4zd5h
+        0YgF8ayMDk1Ot5CjbPwI2CQL6E5dWCSeq2eVIYem2ch7OleYjUfUrz8CEdaBk6Vu7YX1eg
+        DgYlb82SRf0gNVaNVFbhct1TP2QSFUI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-cv18cVrmMc6qG34Iq0utmw-1; Wed, 27 Jan 2021 12:26:16 -0500
+X-MC-Unique: cv18cVrmMc6qG34Iq0utmw-1
+Received: by mail-ej1-f70.google.com with SMTP id dc21so969672ejb.19
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:26:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WsGoAY8pVGqoZZBbJ/C6seN6vjaWljQXnMBoXIykYjQ=;
+        b=fbcUzUfIQEMAqNVcvm1jtPPiCtKRusICDMrNtNAVBltKRisi1Bj9xdor4YflEGlhnl
+         T7dvVG9tGTdeKuydc3J8/WKJRwy4PO+uVQg9+AhOxfOtL6uYox+WoHnf0kq6L62PAZaH
+         qzh30B8uv/bzGDflj2YYV/VChmyr9mIzYoZI9JdXo+/XVRqDpkp8gT1+AZamjDmmszp+
+         h1fFpdMp/FxZZycN6XDuTvuY5zIwtLenCU4VuCf89tN8JpyEmfav3W62rinXoylgvomi
+         9JUEsO5tK7xt6lC9N9lfc2LtsUtOunTiy4SDcpEXzmK/VWw4Ii7NhdEvjPnqWln9zkzd
+         uCTg==
+X-Gm-Message-State: AOAM530z1YKBTRKFNfIW8V9qaKwE+SYdAvl+rwlPlVx7QPeyv1BZBPHs
+        6BB1heNmaGbKDB7kJwwAiHWX/rHL+drlef2qSolgJT7Ns6wch2sgvn3/QYnUt0qiPse3yzJS+SS
+        GtoI9Gl7BgJT8Kgic9iiFTtlT
+X-Received: by 2002:a17:906:380c:: with SMTP id v12mr2017717ejc.65.1611768374862;
+        Wed, 27 Jan 2021 09:26:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2T/f/5/DAjBZR2Gan/w1d/Od/Ic6hzZanyHpw1hGWI56YFXumEXsPba1fF57WAmEHBXM1VA==
+X-Received: by 2002:a17:906:380c:: with SMTP id v12mr2017694ejc.65.1611768374611;
+        Wed, 27 Jan 2021 09:26:14 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k9sm1140356ejp.83.2021.01.27.09.26.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 09:26:13 -0800 (PST)
+Subject: Re: [PATCH 0/9] x86/virt: KVM: x86: Exception handling fixes/cleanups
+To:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David P . Reed" <dpreed@deepplum.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Uros Bizjak <ubizjak@gmail.com>
+References: <20201231002702.2223707-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8880fedc-14aa-1f14-b87b-118ebe0932a2@redhat.com>
+Date:   Wed, 27 Jan 2021 18:26:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20201231002702.2223707-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OrangePi Zero 2 is a development board with the new H616 SoC.
+On 31/12/20 01:26, Sean Christopherson wrote:
+> This series is a conglomeration of three previous series/patches and a bit
+> of new code.  None of the previous series are directly related, but they
+> are all needed to achieve the overarching goal of nuking
+> __kvm_handle_fault_on_reboot(), which is a rather ugly inline asm macro
+> that has the unfortunate side effect of inserting in-line JMP+CALL
+> sequences.
+> 
+> Patches 1-3 are resurrected from a series by David Reed[1] to fix VMXOFF
+> bugs in the reboot flows.
+> 
+> Patch 4 is a patch from Uros Bizjak to get rid of custom inline asm in
+> nested VMX.  This already received Paolo's "Queued, thanks." blessing,
+> but has not been pushed to kvm.git.  It's included here as there is an
+> indirect dependency in patch 8.
+> 
+> Patches 5-6 are minor tweaks to KVM's VMX{ON/OFF} paths to use the
+> kernel's now-fault-tolerant VMXOFF instead of KVM's custom asm.
+> 
+> Patch 7 replaces SVM's __ex()/__kvm_handle_fault_on_reboot() with more
+> tailored asm goto macros, similar to the existing VMX asm_vmx*() macros.
+> This is largely an excuse to get rid of __kvm_handle_fault_on_reboot();
+> the actual benefits of removing JMP+CALL are likely negligible as SVM only
+> has a few uses of the macro (versus VMX's bajillion VMREADs/VMWRITEs).
+> 
+> Patch 8 removes __ex()/__kvm_handle_fault_on_reboot().
+> 
+> Patch 9 is a very trimmed down version of a different patch from Uros[3],
+> which cleaned up the __ex()/__kvm_handle_fault_on_reboot() code, as
+> opposed to zapping them entirely.
+> 
+> [1] https://lkml.kernel.org/r/20200704203809.76391-1-dpreed@deepplum.com
+> [2] https://lkml.kernel.org/r/20201029134145.107560-1-ubizjak@gmail.com
+> [3] https://lkml.kernel.org/r/20201221194800.46962-1-ubizjak@gmail.com
+> 
+> David P. Reed (1):
+>    x86/virt: Mark flags and memory as clobbered by VMXOFF
+> 
+> Sean Christopherson (6):
+>    x86/virt: Eat faults on VMXOFF in reboot flows
+>    x86/reboot: Force all cpus to exit VMX root if VMX is supported
+>    KVM: VMX: Move Intel PT shenanigans out of VMXON/VMXOFF flows
+>    KVM: VMX: Use the kernel's version of VMXOFF
+>    KVM: SVM: Use asm goto to handle unexpected #UD on SVM instructions
+>    KVM: x86: Kill off __ex() and __kvm_handle_fault_on_reboot()
+> 
+> Uros Bizjak (2):
+>    KVM/nVMX: Use __vmx_vcpu_run in nested_vmx_check_vmentry_hw
+>    KVM: x86: Move declaration of kvm_spurious_fault() to x86.h
+> 
+>   arch/x86/include/asm/kvm_host.h | 25 --------------
+>   arch/x86/include/asm/virtext.h  | 25 ++++++++++----
+>   arch/x86/kernel/reboot.c        | 30 ++++++-----------
+>   arch/x86/kvm/svm/sev.c          |  5 ++-
+>   arch/x86/kvm/svm/svm.c          | 18 +---------
+>   arch/x86/kvm/svm/svm_ops.h      | 59 +++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/nested.c       | 32 ++----------------
+>   arch/x86/kvm/vmx/vmenter.S      |  2 +-
+>   arch/x86/kvm/vmx/vmx.c          | 28 ++++++----------
+>   arch/x86/kvm/vmx/vmx.h          |  1 +
+>   arch/x86/kvm/vmx/vmx_ops.h      |  4 +--
+>   arch/x86/kvm/x86.c              |  9 ++++-
+>   arch/x86/kvm/x86.h              |  2 ++
+>   13 files changed, 117 insertions(+), 123 deletions(-)
+>   create mode 100644 arch/x86/kvm/svm/svm_ops.h
+> 
 
-It features the usual connectors used on those small boards, and comes
-with the AXP305, which seems to be compatible with the AXP805.
+Queued, thanks.
 
-For more details see: http://linux-sunxi.org/Xunlong_Orange_Pi_Zero2
-
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
----
- arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../allwinner/sun50i-h616-orangepi-zero2.dts  | 203 ++++++++++++++++++
- 2 files changed, 204 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 41ce680e5f8d..9ba4b5d92657 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -36,3 +36,4 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-orangepi-one-plus.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-new file mode 100644
-index 000000000000..ca07cae698ce
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-+/*
-+ * Copyright (C) 2020 Arm Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "OrangePi Zero2";
-+	compatible = "xunlong,orangepi-zero2", "allwinner,sun50i-h616";
-+
-+	aliases {
-+		ethernet0 = &emac0;
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-0 {
-+			function = LED_FUNCTION_POWER;
-+			color = <LED_COLOR_ID_RED>;
-+			gpios = <&pio 2 12 GPIO_ACTIVE_HIGH>; /* PC12 */
-+			default-state = "on";
-+		};
-+
-+		led-1 {
-+			function = LED_FUNCTION_STATUS;
-+			color = <LED_COLOR_ID_GREEN>;
-+			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
-+		};
-+	};
-+
-+	reg_vcc5v: vcc5v {
-+		/* board wide 5V supply directly from the USB-C socket */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-5v";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+};
-+
-+&emac0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&ext_rgmii_pins>;
-+	phy-mode = "rgmii";
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-supply = <&reg_dcdce>;
-+	allwinner,rx-delay-ps = <3100>;
-+	allwinner,tx-delay-ps = <700>;
-+	status = "okay";
-+};
-+
-+&mdio0 {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+	};
-+};
-+
-+&mmc0 {
-+	vmmc-supply = <&reg_dcdce>;
-+	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&r_rsb {
-+	status = "okay";
-+
-+	axp305: pmic@745 {
-+		compatible = "x-powers,axp305", "x-powers,axp805",
-+			     "x-powers,axp806";
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+		reg = <0x745>;
-+
-+		x-powers,self-working-mode;
-+		vina-supply = <&reg_vcc5v>;
-+		vinb-supply = <&reg_vcc5v>;
-+		vinc-supply = <&reg_vcc5v>;
-+		vind-supply = <&reg_vcc5v>;
-+		vine-supply = <&reg_vcc5v>;
-+		aldoin-supply = <&reg_vcc5v>;
-+		bldoin-supply = <&reg_vcc5v>;
-+		cldoin-supply = <&reg_vcc5v>;
-+
-+		regulators {
-+			reg_aldo1: aldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc-sys";
-+			};
-+
-+			reg_aldo2: aldo2 {	/* 3.3V on headers */
-+				regulator-always-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc3v3-ext";
-+			};
-+
-+			reg_aldo3: aldo3 {	/* 3.3V on headers */
-+				regulator-always-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc3v3-ext2";
-+			};
-+
-+			reg_bldo1: bldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc1v8";
-+			};
-+
-+			bldo2 {
-+				/* unused */
-+			};
-+
-+			bldo3 {
-+				/* unused */
-+			};
-+
-+			bldo4 {
-+				/* unused */
-+			};
-+
-+			cldo1 {
-+				/* reserved */
-+			};
-+
-+			cldo2 {
-+				/* unused */
-+			};
-+
-+			cldo3 {
-+				/* unused */
-+			};
-+
-+			reg_dcdca: dcdca {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1080000>;
-+				regulator-name = "vdd-cpu";
-+			};
-+
-+			reg_dcdcc: dcdcc {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1080000>;
-+				regulator-name = "vdd-gpu-sys";
-+			};
-+
-+			reg_dcdcd: dcdcd {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1500000>;
-+				regulator-max-microvolt = <1500000>;
-+				regulator-name = "vdd-dram";
-+			};
-+
-+			reg_dcdce: dcdce {
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc-eth-mmc";
-+			};
-+
-+			sw {
-+				/* unused */
-+			};
-+		};
-+	};
-+};
-+
-+&spi0  {
-+	status = "okay";
-+
-+	flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <40000000>;
-+	};
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_ph_pins>;
-+	status = "okay";
-+};
--- 
-2.17.5
+Paolo
 
