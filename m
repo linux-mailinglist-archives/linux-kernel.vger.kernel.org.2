@@ -2,98 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1DC3067F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F623067F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbhA0Xbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S231679AbhA0Xcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:32:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbhA0XbR (ORCPT
+        with ESMTP id S234823AbhA0Xbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:31:17 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FD8C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:29:09 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611790146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ovKlPzpKCMynzgFtEXCUWBxt30oNgDe6PQkZXpXltUA=;
-        b=C/tBOjYGSKvMIq4ciJOkKiAxjDcyNQ+81R7SWA7tWAwRiKX0TGdmh/WVQiihEScPSNcXc+
-        C1cYSr9oAAGuTDX9K4VQtWoSwIAYYJABGO7IBcHFL+a0aTQjJ5uMgvlnfHZSQ1zcRsJKvG
-        X7a1IOxKQpM/exo1QP/N/AHDhot8ROujrqwyA1AdTMEiOaSQMEDXiyJ8GTGyqkpyvD/PwO
-        xV/36kZfOPBaQmXNecESa69z2ovJB4aZ5grm60n5uY5sbVeOeXu4r5NCjHWV4rwNv6qmLJ
-        TspgAK3key6s8A8KsWqzFdq/ix8f1nB9gQf8LYciO3aT8UD4Pvq9BDIvBq4h4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611790146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ovKlPzpKCMynzgFtEXCUWBxt30oNgDe6PQkZXpXltUA=;
-        b=JJFCLAa8lWBu1muEWqTMVrgiMNXfffjAYOQnL5m1DE3P0ielD0T3ncr+RZTA83IQXkZc2D
-        hF046Xs3itYu1ICA==
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@linux.intel.com
-Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
-In-Reply-To: <87bldaaxcc.fsf@jogness.linutronix.de>
-References: <20210122081311.GA12834@xsang-OptiPlex-9020> <YAr7d6A4CkMpgx+g@alley> <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain> <87bldaaxcc.fsf@jogness.linutronix.de>
-Date:   Thu, 28 Jan 2021 00:35:06 +0106
-Message-ID: <878s8eari5.fsf@jogness.linutronix.de>
+        Wed, 27 Jan 2021 18:31:44 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A774CC061573;
+        Wed, 27 Jan 2021 15:31:04 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id w24so3702586ybi.7;
+        Wed, 27 Jan 2021 15:31:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BUnlD5wLx21g0V7L3S3zNSYk2oxfbZxjzKguPsz3fzk=;
+        b=QzD0o0DaAUJyZ+Hv8cy1Kb4Dpaw1J+H3iLYk8s5De6qqZWfHYebPvYziAhkaa6VOkF
+         SlGgve0Kf5c6axVSJ8Op+D8PxG76Jxg6MQaYUJDD5dpok29lvS+2+twpT3AbC6hih1UL
+         enfS5nxZ8od2gXXcjMKpxWBGoAqsxBCJm4Rbv6Zh6BY4hWBxUXKbhh2xYqZOBA3NJjuc
+         HJ24WB98f8Fa52st+0Ryo167WUm5xQcfoRsvxJj4ccibeb2Vjg2xS704cZTpMxorbe1y
+         SDhFu4X8IuxEfEr6vDv1ZiSVmQeCIYwUAu0C9u+3DpTQFyMIN1q3gkUp0RAt/yZ/CdCp
+         4ylA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BUnlD5wLx21g0V7L3S3zNSYk2oxfbZxjzKguPsz3fzk=;
+        b=SFSLx97W2S579MA2tOXYorfjWi3hqI52sCh2oU3Bhp+s45pBg2UYMnCzYWSqsD47ui
+         tyemB5iM36w+y5qrYTDKygNaIXPAg67KDg0B8h01FbsbsYd0AzFBZM9VypmjwgPnCwaI
+         /C5Zp5FwFFf3v8zjsqe6ObeTX35cOSZbbLBKobFzk6XoBN3nxFQYKqBFvatboC1qsgvi
+         B2FCRPB9M7O1Z0Hxws7pv7yrEX3BBP56EDLum1582hPQ4qN6Tvb9VdHMtgQfxb3fo0jq
+         HrGDzxOKwMTcH0ud2p05f9HlTNYyBDQHhox9J3xNpoL1/F8d/E7Zvl8ko4pVv0+iNfBA
+         DMpA==
+X-Gm-Message-State: AOAM5322IHg+Wyk23p3+dByRsj3fkiMpxGpKVlZo1Pv/Y/10VpdYoS3c
+        IXmXl1ooOf8dYE1POVuP+Kzpp8/1aCMFe36FTnI=
+X-Google-Smtp-Source: ABdhPJzMUDWE+f3WA5Dqwt0rbQH0oKVi/AibFw5AA8XpC2vIZ5zSogVwTVqbrJVy3g43Yqymhyx8mnE5LhPJ1W2S+B8=
+X-Received: by 2002:a25:a183:: with SMTP id a3mr19339891ybi.459.1611790263856;
+ Wed, 27 Jan 2021 15:31:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210126085923.469759-1-songliubraving@fb.com>
+ <20210126085923.469759-3-songliubraving@fb.com> <CAEf4BzZLJc9=JgZBmvRazHsZg+VLihaRi-3Pt8wrsT9am-eBGg@mail.gmail.com>
+ <4A77E6CE-82FE-4578-BC13-05583E2EA17D@fb.com>
+In-Reply-To: <4A77E6CE-82FE-4578-BC13-05583E2EA17D@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Jan 2021 15:30:53 -0800
+Message-ID: <CAEf4Bza22ueyAB4tUo4YAz1L_8+RvNHdcfi75bOVJvROf62UMA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/4] selftests/bpf: add non-BPF_LSM test for
+ task local storage
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-27, John Ogness <john.ogness@linutronix.de> wrote:
-> I was finally able to trigger this by using my workstation
+On Wed, Jan 27, 2021 at 1:43 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Jan 27, 2021, at 1:21 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Jan 26, 2021 at 1:21 AM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >> Task local storage is enabled for tracing programs. Add two tests for
+> >> task local storage without CONFIG_BPF_LSM.
+> >>
+> >> The first test measures the duration of a syscall by storing sys_enter
+> >> time in task local storage.
+> >>
+> >> The second test checks whether the kernel allows allocating task local
+> >> storage in exit_creds() (which it should not).
+> >>
+> >> Signed-off-by: Song Liu <songliubraving@fb.com>
+> >> ---
+> >> .../bpf/prog_tests/task_local_storage.c       | 85 +++++++++++++++++++
+> >> .../selftests/bpf/progs/task_local_storage.c  | 56 ++++++++++++
+> >> .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++
+> >> 3 files changed, 173 insertions(+)
+> >> create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> >> create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.c
+> >> create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> >> new file mode 100644
+> >> index 0000000000000..a8e2d3a476145
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> >> @@ -0,0 +1,85 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/* Copyright (c) 2021 Facebook */
+> >> +
+> >> +#include <sys/types.h>
+> >> +#include <unistd.h>
+> >> +#include <test_progs.h>
+> >> +#include "task_local_storage.skel.h"
+> >> +#include "task_local_storage_exit_creds.skel.h"
+> >> +
+> >> +static unsigned int duration;
+> >> +
+> >> +static void check_usleep_duration(struct task_local_storage *skel,
+> >> +                                 __u64 time_us)
+> >> +{
+> >> +       __u64 syscall_duration;
+> >> +
+> >> +       usleep(time_us);
+> >> +
+> >> +       /* save syscall_duration measure in usleep() */
+> >> +       syscall_duration = skel->bss->syscall_duration;
+> >> +
+> >> +       /* time measured by the BPF program (in nanoseconds) should be
+> >> +        * within +/- 20% of time_us * 1000.
+> >> +        */
+> >> +       CHECK(syscall_duration < 800 * time_us, "syscall_duration",
+> >> +             "syscall_duration was too small\n");
+> >> +       CHECK(syscall_duration > 1200 * time_us, "syscall_duration",
+> >> +             "syscall_duration was too big\n");
+> >
+> > this is going to be very flaky, especially in Travis CI. Can you
+> > please use something more stable that doesn't rely on time?
+>
+> Let me try.
+>
+> >
+> >> +}
+> >> +
+> >> +static void test_syscall_duration(void)
+> >> +{
+> >> +       struct task_local_storage *skel;
+> >> +       int err;
+> >> +
+> >> +       skel = task_local_storage__open_and_load();
+> >> +       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> >> +               return;
+> >> +
+> >> +       skel->bss->target_pid = getpid();
+> >
+> > you are getting process ID, but comparing it with thread ID in BPF
+> > code. It will stop working properly if/when tests will be run in
+> > separate threads, so please use gettid() instead.
+>
+> Will fix.
+>
+> >
+> >> +
+> >> +       err = task_local_storage__attach(skel);
+> >> +       if (!ASSERT_OK(err, "skel_attach"))
+> >> +               goto out;
+> >> +
+> >> +       check_usleep_duration(skel, 2000);
+> >> +       check_usleep_duration(skel, 3000);
+> >> +       check_usleep_duration(skel, 4000);
+> >> +
+> >> +out:
+> >> +       task_local_storage__destroy(skel);
+> >> +}
+> >> +
+> >> +static void test_exit_creds(void)
+> >> +{
+> >> +       struct task_local_storage_exit_creds *skel;
+> >> +       int err;
+> >> +
+> >> +       skel = task_local_storage_exit_creds__open_and_load();
+> >> +       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> >> +               return;
+> >> +
+> >> +       err = task_local_storage_exit_creds__attach(skel);
+> >> +       if (!ASSERT_OK(err, "skel_attach"))
+> >> +               goto out;
+> >> +
+> >> +       /* trigger at least one exit_creds() */
+> >> +       if (CHECK_FAIL(system("ls > /dev/null")))
+> >> +               goto out;
+> >> +
+> >> +       /* sync rcu, so the following reads could get latest values */
+> >> +       kern_sync_rcu();
+> >
+> > what are we waiting for here? you don't detach anything... system() is
+> > definitely going to complete by now, so whatever counter was or was
+> > not updated will be reflected here. Seems like kern_sync_rcu() is not
+> > needed?
+>
+> IIUC, without sync_ruc(), even system() is finished, the kernel may not
+> have called exit_creds() for the "ls" task yet. Then the following check
+> for null_ptr_count != 0 would fail.
 
-Well, I don't know how reliably I can trigger this. I think my time will
-be better spent getting lkp to trigger, since that shows to be reliable.
+Oh, so waiting for exit_creds() invocation which can get delayed, I
+see. Would be good to make the above comment a bit more detailed,
+thanks!
 
-It took me an hour to trigger this one and I have the feeling I got
-lucky with it.
+>
+> >
+> >> +       ASSERT_EQ(skel->bss->valid_ptr_count, 0, "valid_ptr_count");
+> >> +       ASSERT_NEQ(skel->bss->null_ptr_count, 0, "null_ptr_count");
+> >> +out:
+> >> +       task_local_storage_exit_creds__destroy(skel);
+> >> +}
+> >> +
+> >> +void test_task_local_storage(void)
+> >> +{
+> >> +       if (test__start_subtest("syscall_duration"))
+> >> +               test_syscall_duration();
+> >> +       if (test__start_subtest("exit_creds"))
+> >> +               test_exit_creds();
+> >> +}
+> >
+> > [...]
+> >
+> >> +int valid_ptr_count = 0;
+> >> +int null_ptr_count = 0;
+> >> +
+> >> +SEC("fentry/exit_creds")
+> >> +int BPF_PROG(trace_exit_creds, struct task_struct *task)
+> >> +{
+> >> +       __u64 *ptr;
+> >> +
+> >> +       ptr = bpf_task_storage_get(&task_storage, task, 0,
+> >> +                                  BPF_LOCAL_STORAGE_GET_F_CREATE);
+> >> +       if (ptr)
+> >> +               valid_ptr_count++;
+> >> +       else
+> >> +               null_ptr_count++;
+> >
+> >
+> > use atomic increments?
+>
+> Do you mean __sync_fetch_and_add()?
 
-[ 1854.183816] INFO: rcu_tasks detected stalls on tasks:
-[ 1854.184502] 0000000036ce200f: .. nvcsw: 0/0 holdout: 1 idle_cpu: -1/1
-[ 1854.185234] task:dd              state:R  running task     stack:    0 pid:19891 ppid:   668 flags:0x00000000
-[ 1854.185273] Call Trace:
-[ 1854.185275]  __schedule+0xfa9/0x1056
-[ 1854.185283]  ? firmware_map_remove+0x172/0x172
-[ 1854.185300]  ? ksys_write+0x147/0x180
-[ 1854.185304]  schedule+0x170/0x1e3
-[ 1854.185307]  exit_to_user_mode_prepare+0x27/0xac
-[ 1854.185312]  syscall_exit_to_user_mode+0x41/0x4f
-[ 1854.185316]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 1854.185321] RIP: 0033:0x7f99bf52fc00
-[ 1854.185324] RSP: 002b:00007ffd75722bf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-[ 1854.185328] RAX: 0000000000000001 RBX: 00007f99bfa1b690 RCX: 00007f99bf52fc00
-[ 1854.185331] RDX: 0000000000000001 RSI: 0000560056ce3010 RDI: 0000000000000001
-[ 1854.185335] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-[ 1854.185338] R10: 00007ffd757229c0 R11: 0000000000000246 R12: 0000560056ce3010
-[ 1854.185341] R13: 0000000000000001 R14: 0000560056ce3010 R15: 0000560056ce3010
+yep
 
-To generate syscalls and interrupts, "dd" was doing:
-
-    dd if=/dev/zero bs=1 count=100000000 | nc 10.0.2.2 12345
-
-I'm not even sure how to go about debugging this. The only printk load I
-can really see are the:
-
-    "tasks-torture:torture_onoff task: online 0 failed: errno -5"
-
-error messages. But they are only occurring at a rate of 40-50 per
-second. They are coming from the pr_alert() in kernel/torture.c:174, so
-it should still be hitting spinlocks (either from the console driver or
-@console_owner_lock).
-
-I will re-focus on reproducing this with lkp.
-
-John Ogness
+>
+> >
+> >> +       return 0;
+> >> +}
+> >> --
+> >> 2.24.1
+>
