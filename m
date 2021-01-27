@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2084B30506C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 609B0305070
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbhA0EIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:08:09 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:47238 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236532AbhA0Dfx (ORCPT
+        id S233536AbhA0EJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236572AbhA0DhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:35:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611718530; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=TlLlxYx/6jyB4V4uLiJQpaxX4prK2yg62U7jBcs9aNI=; b=V8c1dRwtmFoTe0/vxxnRe1sscapOpHY0WtxVwLDyTnigzjOYtbHmzAEbpH/lNgNgMwCBPAf4
- o0WlAee2iwulHWDRBv60HMSbZYZKccCfwwpxCE1xhGxkRYiEEBq5hu/XEtn7NG+Tn5dVciYA
- upDj+5WmRiJN+kEcu36LXiP7PWI=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6010df642c36b2106d4e4dce (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 03:35:00
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B6D10C43464; Wed, 27 Jan 2021 03:34:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.78.65] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A00D7C433CA;
-        Wed, 27 Jan 2021 03:34:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A00D7C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: usb: dwc3: gadget: skip pullup and set_speed after suspend
-To:     eg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Daehwan Jung <dh10.jung@samsung.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        "open list:DESIGNWARE USB3 DRD IP DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <CGME20210122065248epcas2p19a972d3a385b91d6e05a16f2ef7b0dd6@epcas2p1.samsung.com>
- <20210122064125.GA121941@ubuntu> <20210122071540.GB121941@ubuntu>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <c658e20c-299f-c748-ca48-e3351dcfffd2@codeaurora.org>
-Date:   Tue, 26 Jan 2021 19:34:57 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210122071540.GB121941@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 26 Jan 2021 22:37:18 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8331EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:36:37 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id m21so294912qtp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 19:36:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=qECvV0vEOBtkzXawSawHLbAty2xo5aEM+k93CM/ziPA=;
+        b=NAOSQ9r8E6p/8OGQfOlbgD56yMIEC60Qbs/s+/17Ahfy22VHxTXEfCD2sC781QI2Gp
+         lbUvRJfzA5tM5xn03JeqR3rrsisrXdiA1MsYPSywI2J6NqpS4FEzdyBC8oB/BgZx/iEW
+         vvZGVwyWXTUKdN6j1fSgIR69qjq0GlKLfvSuDBL8s/hHUpkBLbh6QBE9sQ2DTfYlpM9/
+         oulQwjSGlogkQP039Kzt3SLPPlZ8bOOMN+IpgaIo5I5iueEUjmM+QkVgTFJ/ZSwp6+d+
+         MurFADrIsNpVUtdCsMubXi1wGCZBn5iBowPQoV5DEyFUhn+rHDh6+Lzw/1UDHn6ua3Kc
+         Csrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=qECvV0vEOBtkzXawSawHLbAty2xo5aEM+k93CM/ziPA=;
+        b=NBF7zcefdK3YMwCAMH11eJCioBCeYS9uswlUb8DufYQukwDcqAsanVV58mtf+gTPNW
+         Kk1L2szb9LVgylMTPtX8XIG5FU/KGjR5LZyrwyMrSnMK11vS8LziojWiRlf05rdhXtOe
+         BwBBG4QGzpWjn/AdUK/k+Xhiubciq5pMVIusSMy3yURi9UvFynHH84CkC/eWVnR3tPgv
+         48k5F9Gkv199pTpRrD0tcOwDvz3eCfI+nam64/VIJntODKIl55TYAzsWkxJi+uDmHNaT
+         4ECeOHXELpKIFdzpd5wb3RDlGvYeGMfccIa8LxpmEjJBJG8PQjh4Nrqq5p0NVujstS/e
+         nVEw==
+X-Gm-Message-State: AOAM532KuGJS6xMz6Hp+dAPmttT4UhTJd26E1W2FBimYBqzBaHtkcljG
+        CUXuvFzYa4h4kmX2wbXQDOa7u7ssQjhYuw==
+X-Google-Smtp-Source: ABdhPJwcnZEfgIWpJyjaIvY9ypSi2EtVessUlqUKFq1j7QfqAaXyU1EhZkf9M3JcEsWUFHFSD7lb0m8T+4zqpg==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7000:2f04:a262:7158])
+ (user=davidgow job=sendgmr) by 2002:a0c:b929:: with SMTP id
+ u41mr8874953qvf.30.1611718596681; Tue, 26 Jan 2021 19:36:36 -0800 (PST)
+Date:   Tue, 26 Jan 2021 19:36:04 -0800
+Message-Id: <20210127033603.1519127-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH] soc: litex: Properly depend on HAS_IOMEM
+From:   David Gow <davidgow@google.com>
+To:     Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Mateusz Holenko <mholenko@antmicro.com>
+Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The LiteX SOC controller driver makes use of IOMEM functions like
+devm_platform_ioremap_resource(), which are only available if
+CONFIG_HAS_IOMEM is defined.
 
+This causes the driver not to be enable under make ARCH=um allyesconfig,
+even though it won't build.
 
-On 1/21/2021 11:15 PM, Jung Daehwan wrote:
-> On Fri, Jan 22, 2021 03:32, Wesley cheng wrote:
->> Hi Daehwan,
->>
->> If this is an unexpected event where userspace initiates the UDC bind
->> sequence, then after the above sequence occurs, the DWC3 device should
->> still be able to re-enter runtime suspend after the autosuspend timer
->> expires.  Since the cable is disconnected, the dwc->connected flag would
->> still be false.  Is this not happening in your situation?
->>
->> I'm just trying to understand what issue you're seeing other than the
->> momentary transition from runtime suspend (due to cable disconnect)
->> -->runtime resume (due to unexpected UDC bind) --> runtime  suspend (due
->> to nothing connected).
->>
->> Thanks
->> Wesley cheng
-> 
-> Hi Wesley,
-> 
-> I don't know why but DWC3 device is not re-entering runtime-suspend in
-> my situation. I'm still debugging it.
-> Even if DWC3 re-enter runtime-suspend but it doesn't mean stopping gadget.
-> Are you stopping gadget manually in this case?
+By adding a dependency on HAS_IOMEM, the driver will not be enabled on
+architectures which don't support it.
 
-Hi Daehwan,
+Fixes: 22447a99c97e ("drivers/soc/litex: add LiteX SoC Controller driver")
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ drivers/soc/litex/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Sorry for the late response.  So during the DWC3 runtime suspend path,
-we will execute dwc3_gadget_suspend() which should disable the gadget
-events and disable ep0 then clear RS bit.  Then on runtime resume, the
-DWC3 will be re-enabled, and the RS bit set again.
-
-Thanks
-Wesley Cheng
-
-> 
-> Best Regards,
-> Jung Daehwan
-> 
-> 
-
+diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
+index 7c6b009b6f6c..7a7c38282e11 100644
+--- a/drivers/soc/litex/Kconfig
++++ b/drivers/soc/litex/Kconfig
+@@ -8,6 +8,7 @@ config LITEX
+ config LITEX_SOC_CONTROLLER
+ 	tristate "Enable LiteX SoC Controller driver"
+ 	depends on OF || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	select LITEX
+ 	help
+ 	  This option enables the SoC Controller Driver which verifies
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.30.0.280.ga3ce27912f-goog
+
