@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9AB305983
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B62D30597B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236508AbhA0LWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:22:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235298AbhA0KhW (ORCPT
+        id S236546AbhA0LVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:21:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235978AbhA0Khu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:37:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611743755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GvvpdQmaoclN7F+XWBVjYRaUXCYn0Re2cC+2fW1RDDc=;
-        b=W5j5qDxp9dBmMlwIixsbGARm3UIz1Nupk/FHQ5U7w4XmvRSbaNtcm0XOFih7vULX4U9yN3
-        MgT14eRhmqS2QliD1wVMja8z7gt6zShRO4PEeV9mtqyvD9HluxVhbJQ1B8JM8aFS4WGXLL
-        uJKp9PMgo7VaMJBEV3T6QD02aFsSYLA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-31Cfy8XTP7Wy1ZpyA5_j8Q-1; Wed, 27 Jan 2021 05:35:53 -0500
-X-MC-Unique: 31Cfy8XTP7Wy1ZpyA5_j8Q-1
-Received: by mail-ej1-f69.google.com with SMTP id dc21so483109ejb.19
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:35:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GvvpdQmaoclN7F+XWBVjYRaUXCYn0Re2cC+2fW1RDDc=;
-        b=khG91G5/BCFXMY7zzlyO+LkxvH7WauGYBneta256RVOzkIoarQWlllb5vrxApbpUPs
-         Meww300fb+NiCvbUD0wtA/+F4lIAo3jTRkxl96aZF43Z2QcpNX1rvC4SBSyLXaHGTEWl
-         37jXxSNUAKeUiGn6dZq4dDWg4zgMJNf2OvhYfM5vdtgibkbpzkDuzRwCifSg5st6uf2G
-         4go8yijWkSJR0J/303aCDbGoeh28OP+HwFL5K5yN7oGaOWHSaeANSc8F+XezFesUmqFP
-         AWaPdGcZ5CJEYZ/TddPGyTwkyDEzvEJwxxj584QEuP5eCMUwqMSX/3w42oFP++Nkcs+W
-         J5jQ==
-X-Gm-Message-State: AOAM5303RceaCqGJ/Qum8873wiYbrokbh3UAAOSBkfy0s5TgmEeU4h97
-        dLKuy5wMpppNb13ozDkKIeRx8cfs0LLg42akAwo9pPGld1Xu2A6cF/MO677V3gXvlpX+6AhAF7r
-        ugL50QQmCiq21tMA3Yfs19C2W
-X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr6631473eje.317.1611743752534;
-        Wed, 27 Jan 2021 02:35:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxS1LrXNx8IVq/PgQG53ZnNilYUBzQFa0IO7CuM218q0UU+ykV2WmllqhqyX7yM4HPt/WfXQQ==
-X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr6631454eje.317.1611743752316;
-        Wed, 27 Jan 2021 02:35:52 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s2sm1019933edx.77.2021.01.27.02.35.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 02:35:51 -0800 (PST)
-Subject: Re: Thoughts on sharing KVM tracepoints [was:Re: [PATCH 2/2] KVM:
- nVMX: trace nested vm entry]
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>
-References: <20210121171043.946761-1-mlevitsk@redhat.com>
- <20210121171043.946761-3-mlevitsk@redhat.com> <YAn/t7TWP0xmVEHs@google.com>
- <f1c90d8a44795bbdef549a5fcf375bcf1d52af93.camel@redhat.com>
- <YA8xpfPtonJdxU2D@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <61a387ca-ef02-2ba0-e48e-f25f7e62e6cf@redhat.com>
-Date:   Wed, 27 Jan 2021 11:35:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 27 Jan 2021 05:37:50 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACC2C061573;
+        Wed, 27 Jan 2021 02:37:10 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1l4iBx-00CMrJ-Pj; Wed, 27 Jan 2021 11:36:54 +0100
+Message-ID: <64336aa2e21936095eb7e52ee32289b30b855863.camel@sipsolutions.net>
+Subject: Re: [PATCH] ath9k: fix build error with LEDS_CLASS=m
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kalle Valo <kvalo@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 27 Jan 2021 11:36:34 +0100
+In-Reply-To: <87bldaacqu.fsf@codeaurora.org>
+References: <20210125113654.2408057-1-arnd@kernel.org>
+         <CAJKOXPfteJ3Jia4Qd9DabjxcOtax3uDgi1fSbz4_+cHsJ1prQQ@mail.gmail.com>
+         <CAK8P3a0apBUbck9Z3UMKfwSJw8a-UbbXLTLUvSyOKEwTgPLjqg@mail.gmail.com>
+         <CAJKOXPc6LWnqiyO9WgxUZPo-vitNcQQr2oDoyD44P2YTSJ7j=g@mail.gmail.com>
+         <CAK8P3a1NEbZtXVA0Z4P3K97L9waBp7nkCWOkdYjR3+7FUF0P0Q@mail.gmail.com>
+         <CAJKOXPdWouEFtCp_iG+py1JcyrEU2Fj98jBAPTKZXQXCDQE54A@mail.gmail.com>
+         <CAK8P3a3ygYTEwjLbFuArdfNF1-yydVjtS2NZDAURKjOJGAxkAQ@mail.gmail.com>
+         <87bldaacqu.fsf@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <YA8xpfPtonJdxU2D@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/21 22:01, Sean Christopherson wrote:
-> I 100% think that VMX and SVM should share the bulk of the
-> code.  Improvements to VMX almost always apply in some way to SVM, and vice
-> versa.
-
-I agree.
-
-> IMO, after debugging a few times, associating
-> error_code with the event being injected is second nature.  Prepending
-> intr_info_ would just add extra characters and slow down mental processing.
+On Wed, 2021-01-27 at 12:35 +0200, Kalle Valo wrote:
+> Arnd Bergmann <arnd@kernel.org> writes:
 > 
->> of course both it and intr_info are VMX specific).
+> > On Mon, Jan 25, 2021 at 4:04 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > On Mon, 25 Jan 2021 at 15:38, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > On Mon, Jan 25, 2021 at 2:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > 
+> > > I meant that having MAC80211_LEDS selected causes the ath9k driver to
+> > > toggle on/off the WiFi LED. Every second, regardless whether it's
+> > > doing something or not. In my setup, I have problems with a WiFi
+> > > dongle somehow crashing (WiFi disappears, nothing comes from the
+> > > dongle... maybe it's Atheros FW, maybe some HW problem) and I found
+> > > this LED on/off slightly increases the chances of this dongle-crash.
+> > > That was the actual reason behind my commits.
+> > > 
+> > > Second reason is that I don't want to send USB commands every second
+> > > when the device is idle. It unnecessarily consumes power on my
+> > > low-power device.
+> > 
+> > Ok, I see.
+> > 
+> > > Of course another solution is to just disable the trigger via sysfs
+> > > LED API. It would also work but my patch allows entire code to be
+> > > compiled-out (which was conditional in ath9k already).
+> > > 
+> > > Therefore the patch I sent allows the ath9k LED option to be fully
+> > > choosable. Someone wants every-second-LED-blink, sure, enable
+> > > ATH9K_LEDS and you have it. Someone wants to reduce the kernel size,
+> > > don't enable ATH9K_LEDS.
+> > 
+> > Originally, I think this is what CONFIG_MAC80211_LEDS was meant
+> > for, but it seems that this is not actually practical, since this also
+> > gets selected by half of the drivers using it, while the other half have
+> > a dependency on it. Out of the ones that select it, some in turn
+> > select LEDS_CLASS, while some depend on it.
+> > 
+> > I think this needs a larger-scale cleanup for consistency between
+> > (at least) all the wireless drivers using LEDs.
 > 
-> Not really, SVM has the exact same fields with slightly different names.
+> I agree, this needs cleanup.
 > 
+> > Either your patch or mine should get applied in the meantime, and I
+> > don't care much which one in this case, as we still have the remaining
+> > inconsistency.
+> 
+> My problem with Krzysztof's patch[1] is that it adds a new Kconfig
+> option for ath9k, is that really necessary? Like Arnd said, we should
+> fix drivers to use CONFIG_MAC80211_LEDS instead of having driver
+> specific options.
+> 
+> So I would prefer take this Arnd's patch instead and queue it for v5.11.
+> But as it modifies mac80211 I'll need an ack from Johannes, what do you
+> think?
 
-I slightly prefer the SVM names, using eventinj and eventinjerr in the 
-trace points wouldn't be bad.
+Sure, that seems fine.
 
-Having too many tracepoints are a problem.  Having a lot of info in a 
-single tracepoint is not a problem, though.
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
 
-Paolo
+johannes
 
