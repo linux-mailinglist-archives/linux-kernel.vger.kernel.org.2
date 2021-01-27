@@ -2,52 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC82306419
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B057306413
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344415AbhA0TcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:32:24 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58376 "EHLO
+        id S231773AbhA0TcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:32:01 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58380 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhA0Tbx (ORCPT
+        with ESMTP id S231341AbhA0Tbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 14:31:53 -0500
-Date:   Wed, 27 Jan 2021 19:31:09 -0000
+Date:   Wed, 27 Jan 2021 19:31:10 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1611775870;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bQUJUBMTo2oqqJf/tmLygDW54mgSKpoT7Ov00dk667A=;
-        b=IOD+tCsJYm7fojlw0ZBsr6G5x/FUX2DhiotQmk/U7p1LIqu0bsUPQgDg5O3K9FUB4TUHtA
-        h83LD91XPDxCi64r70BE1idaj4bowk3pVBhlV6Sli9VbXop+g05w0uGUbO3Z3kbTM8f08v
-        cFhRA5gOlDY9plBYQOqlGIqzZ/QSATWKq1GiF25RNAuCxiWCpKD+rGm6AEUC+X9P+YbRDv
-        APTaMla1lSV1yFujgqRL/82QeaiDPM4fhtuRp8HKLBn4rHymJeUudzHJ9LFzxh+wp3Re5V
-        7y3yzkvVO/wmE9upxNTh7d+SM4xHatFHIaOFWzshxTveJLOwsBuAI7eu23bzlw==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=oNdGPo91Z3Fd91nR4JeWxwcUUOF8Mj2Xm3liYZtW/ew=;
+        b=bsmlgqFBHsVfwWyphjFbPnd5FVeJKWoRsDIZ165677HLhtf30Y2/DYy4PBEQ8zyR3i4RO+
+        Lz+qq19QxPPpz5OVulkpyy7pA2N2cH+JoK6W43olqODNuihIKs6hCCVwxl5q/WKE26zJ9D
+        W5dTt58Roaqvw3FBjI87FahQfYM8kCLnehl0SlcvsVaLYK2yiaYGn+ZoulTMQ7aGzgdcjj
+        rRWfUCCMHCjWt6olwa9s+jRMoDbXdEI5ARuwEDazmMwJ4g4dBw5rb/vynMtdRSzoZeQxUG
+        r7CnNzCXNhGdSBK++36qsr+aQgFL9Mg7uBgeoKknpyIKu7EDuMP5U+88I4PxbQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1611775870;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bQUJUBMTo2oqqJf/tmLygDW54mgSKpoT7Ov00dk667A=;
-        b=g5zG1qZqhN1SE0vtDF9eFeMd1oXtEFeteyvwYv7WxCKqkWEjZ/zmuk4KjJI93Ul5NWsKw/
-        2B3FiHTEKXw3N3Dw==
-From:   "tip-bot2 for Mark Brown" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=oNdGPo91Z3Fd91nR4JeWxwcUUOF8Mj2Xm3liYZtW/ew=;
+        b=/bai/o5AZ8nEdu2rsKTXSC0RV7J/kI/M5FRhIgjVq2I6SciZUnflNocylSIKUNhw38FXrK
+        tONVuwBawHzsC+Dg==
+From:   "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi/arm64: Update debug prints to reflect other
- entropy sources
-Cc:     Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210120163810.14973-1-broonie@kernel.org>
-References: <20210120163810.14973-1-broonie@kernel.org>
+Subject: [tip: efi/core] efi: x86: clean up previous struct mm switching
+Cc:     Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161177586990.23325.5752801051222862535.tip-bot2@tip-bot2>
+Message-ID: <161177587021.23325.12823058002123361283.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,50 +51,152 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/core branch of tip:
 
-Commit-ID:     1c761ee9da1ac6ba7e40d14457fac94c87eaff35
-Gitweb:        https://git.kernel.org/tip/1c761ee9da1ac6ba7e40d14457fac94c87eaff35
-Author:        Mark Brown <broonie@kernel.org>
-AuthorDate:    Wed, 20 Jan 2021 16:38:10 
+Commit-ID:     514b1a8477d25a157f65bf52a443f8ffcc2eb54e
+Gitweb:        https://git.kernel.org/tip/514b1a8477d25a157f65bf52a443f8ffcc2eb54e
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Tue, 19 Jan 2021 15:05:40 +01:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Thu, 21 Jan 2021 10:54:08 +01:00
+CommitterDate: Tue, 19 Jan 2021 17:57:15 +01:00
 
-efi/arm64: Update debug prints to reflect other entropy sources
+efi: x86: clean up previous struct mm switching
 
-Currently the EFI stub prints a diagnostic on boot saying that KASLR will
-be disabled if it is unable to use the EFI RNG protocol to obtain a seed
-for KASLR.  With the addition of support for v8.5-RNG and the SMCCC RNG
-protocol it is now possible for KASLR to obtain entropy even if the EFI
-RNG protocol is unsupported in the system, and the main kernel now
-explicitly says if KASLR is active itself.  This can result in a boot
-log where the stub says KASLR has been disabled and the main kernel says
-that it is enabled which is confusing for users.
+EFI on x86_64 keeps track of the process's MM pointer by storing it
+in a global struct called 'efi_scratch', which also used to contain
+the mixed mode stack pointer. Let's clean this up a little bit, by
+getting rid of the struct, and pushing the mm handling into the
+callees entirely.
 
-Remove the explicit reference to KASLR from the diagnostics, the warnings
-are still useful as EFI is the only source of entropy the stub uses when
-randomizing the physical address of the kernel and the other sources may
-not be available.
-
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210120163810.14973-1-broonie@kernel.org
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/libstub/arm64-stub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/efi.h     | 17 +++++------------
+ arch/x86/platform/efi/efi_64.c | 27 +++++++++++++++------------
+ 2 files changed, 20 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/firmware/efi/libstub/arm64-stub.c b/drivers/firmware/efi/libstub/arm64-stub.c
-index 22ece1a..b69d631 100644
---- a/drivers/firmware/efi/libstub/arm64-stub.c
-+++ b/drivers/firmware/efi/libstub/arm64-stub.c
-@@ -61,10 +61,10 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
- 			status = efi_get_random_bytes(sizeof(phys_seed),
- 						      (u8 *)&phys_seed);
- 			if (status == EFI_NOT_FOUND) {
--				efi_info("EFI_RNG_PROTOCOL unavailable, KASLR will be disabled\n");
-+				efi_info("EFI_RNG_PROTOCOL unavailable\n");
- 				efi_nokaslr = true;
- 			} else if (status != EFI_SUCCESS) {
--				efi_err("efi_get_random_bytes() failed (0x%lx), KASLR will be disabled\n",
-+				efi_err("efi_get_random_bytes() failed (0x%lx)\n",
- 					status);
- 				efi_nokaslr = true;
- 			}
+diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+index 5e37e6d..1328b79 100644
+--- a/arch/x86/include/asm/efi.h
++++ b/arch/x86/include/asm/efi.h
+@@ -95,20 +95,12 @@ extern asmlinkage u64 __efi_call(void *fp, ...);
+ 	__efi_call(__VA_ARGS__);					\
+ })
+ 
+-/*
+- * struct efi_scratch - Scratch space used while switching to/from efi_mm
+- * @prev_mm:    store/restore stolen mm_struct while switching to/from efi_mm
+- */
+-struct efi_scratch {
+-	struct mm_struct	*prev_mm;
+-} __packed;
+-
+ #define arch_efi_call_virt_setup()					\
+ ({									\
+ 	efi_sync_low_kernel_mappings();					\
+ 	kernel_fpu_begin();						\
+ 	firmware_restrict_branch_speculation_start();			\
+-	efi_switch_mm(&efi_mm);						\
++	efi_enter_mm();							\
+ })
+ 
+ #define arch_efi_call_virt(p, f, args...)				\
+@@ -116,7 +108,7 @@ struct efi_scratch {
+ 
+ #define arch_efi_call_virt_teardown()					\
+ ({									\
+-	efi_switch_mm(efi_scratch.prev_mm);				\
++	efi_leave_mm();							\
+ 	firmware_restrict_branch_speculation_end();			\
+ 	kernel_fpu_end();						\
+ })
+@@ -135,7 +127,6 @@ struct efi_scratch {
+ 
+ #endif /* CONFIG_X86_32 */
+ 
+-extern struct efi_scratch efi_scratch;
+ extern int __init efi_memblock_x86_reserve_range(void);
+ extern void __init efi_print_memmap(void);
+ extern void __init efi_map_region(efi_memory_desc_t *md);
+@@ -148,10 +139,12 @@ extern void __init efi_dump_pagetable(void);
+ extern void __init efi_apply_memmap_quirks(void);
+ extern int __init efi_reuse_config(u64 tables, int nr_tables);
+ extern void efi_delete_dummy_variable(void);
+-extern void efi_switch_mm(struct mm_struct *mm);
+ extern void efi_recover_from_page_fault(unsigned long phys_addr);
+ extern void efi_free_boot_services(void);
+ 
++void efi_enter_mm(void);
++void efi_leave_mm(void);
++
+ /* kexec external ABI */
+ struct efi_setup_data {
+ 	u64 fw_vendor;
+diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+index 1d90418..62a6c86 100644
+--- a/arch/x86/platform/efi/efi_64.c
++++ b/arch/x86/platform/efi/efi_64.c
+@@ -54,10 +54,7 @@
+  * 0xffff_ffff_0000_0000 and limit EFI VA mapping space to 64G.
+  */
+ static u64 efi_va = EFI_VA_START;
+-
+-struct efi_scratch efi_scratch;
+-
+-EXPORT_SYMBOL_GPL(efi_mm);
++static struct mm_struct *efi_prev_mm;
+ 
+ /*
+  * We need our own copy of the higher levels of the page tables
+@@ -481,11 +478,17 @@ void __init efi_dump_pagetable(void)
+  * can not change under us.
+  * It should be ensured that there are no concurent calls to this function.
+  */
+-void efi_switch_mm(struct mm_struct *mm)
++void efi_enter_mm(void)
++{
++	efi_prev_mm = current->active_mm;
++	current->active_mm = &efi_mm;
++	switch_mm(efi_prev_mm, &efi_mm, NULL);
++}
++
++void efi_leave_mm(void)
+ {
+-	efi_scratch.prev_mm = current->active_mm;
+-	current->active_mm = mm;
+-	switch_mm(efi_scratch.prev_mm, mm, NULL);
++	current->active_mm = efi_prev_mm;
++	switch_mm(&efi_mm, efi_prev_mm, NULL);
+ }
+ 
+ static DEFINE_SPINLOCK(efi_runtime_lock);
+@@ -549,12 +552,12 @@ efi_thunk_set_virtual_address_map(unsigned long memory_map_size,
+ 	efi_sync_low_kernel_mappings();
+ 	local_irq_save(flags);
+ 
+-	efi_switch_mm(&efi_mm);
++	efi_enter_mm();
+ 
+ 	status = __efi_thunk(set_virtual_address_map, memory_map_size,
+ 			     descriptor_size, descriptor_version, virtual_map);
+ 
+-	efi_switch_mm(efi_scratch.prev_mm);
++	efi_leave_mm();
+ 	local_irq_restore(flags);
+ 
+ 	return status;
+@@ -848,7 +851,7 @@ efi_set_virtual_address_map(unsigned long memory_map_size,
+ 							 descriptor_size,
+ 							 descriptor_version,
+ 							 virtual_map);
+-	efi_switch_mm(&efi_mm);
++	efi_enter_mm();
+ 
+ 	kernel_fpu_begin();
+ 
+@@ -864,7 +867,7 @@ efi_set_virtual_address_map(unsigned long memory_map_size,
+ 	/* grab the virtually remapped EFI runtime services table pointer */
+ 	efi.runtime = READ_ONCE(systab->runtime);
+ 
+-	efi_switch_mm(efi_scratch.prev_mm);
++	efi_leave_mm();
+ 
+ 	return status;
+ }
