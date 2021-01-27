@@ -2,70 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45E9305705
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D2030570E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhA0Jep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:34:45 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11515 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhA0JcJ (ORCPT
+        id S235312AbhA0JgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:36:01 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:43153 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235240AbhA0JdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:32:09 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQdcQ25S0zjF11;
-        Wed, 27 Jan 2021 17:30:14 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Wed, 27 Jan 2021
- 17:31:19 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] hugetlbfs: Correct some obsolete comments about inode i_mutex
-Date:   Wed, 27 Jan 2021 04:31:11 -0500
-Message-ID: <20210127093111.36672-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        Wed, 27 Jan 2021 04:33:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UN2J2GL_1611739923;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN2J2GL_1611739923)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Jan 2021 17:32:10 +0800
+From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
+To:     axboe@kernel.dk
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Abaci Team <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] zram: remove redundant NULL check
+Date:   Wed, 27 Jan 2021 17:32:02 +0800
+Message-Id: <1611739922-3365-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 9902af79c01a ("parallel lookups: actual switch to rwsem"),
-i_mutex of inode is converted to i_rwsem. So replace i_mutex with i_rwsem
-to make comments up to date.
+Fix below warnings reported by coccicheck:
+./drivers/block/zram/zram_drv.c:534:2-8: WARNING: NULL check before some
+freeing functions is not needed.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Suggested-by: Yang Li <oswb@linux.alibaba.com>
+Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
 ---
- fs/hugetlbfs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/zram/zram_drv.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index c87894b221da..a3d077eb714c 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -604,7 +604,7 @@ static long hugetlbfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index e2933cb..92739b9 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -530,8 +530,7 @@ static ssize_t backing_dev_store(struct device *dev,
  
- 		inode_lock(inode);
+ 	return len;
+ out:
+-	if (bitmap)
+-		kvfree(bitmap);
++	kvfree(bitmap);
  
--		/* protected by i_mutex */
-+		/* protected by i_rwsem */
- 		if (info->seals & (F_SEAL_WRITE | F_SEAL_FUTURE_WRITE)) {
- 			inode_unlock(inode);
- 			return -EPERM;
-@@ -776,7 +776,7 @@ static int hugetlbfs_setattr(struct dentry *dentry, struct iattr *attr)
- 
- 		if (newsize & ~huge_page_mask(h))
- 			return -EINVAL;
--		/* protected by i_mutex */
-+		/* protected by i_rwsem */
- 		if ((newsize < oldsize && (info->seals & F_SEAL_SHRINK)) ||
- 		    (newsize > oldsize && (info->seals & F_SEAL_GROW)))
- 			return -EPERM;
+ 	if (bdev)
+ 		blkdev_put(bdev, FMODE_READ | FMODE_WRITE | FMODE_EXCL);
 -- 
-2.19.1
+1.8.3.1
 
