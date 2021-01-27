@@ -2,121 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7DE3058B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0883058B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236082AbhA0Kpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:45:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235436AbhA0KkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:40:16 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AACC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:39:36 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id p21so1943232lfu.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:39:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X4lOVt6ZKP6X65zmcQnK/fTCLUDcVKs75zqu4Rk/goo=;
-        b=EuR5hlL1WDbKVmfFqJ2XhAFRLSg4OxybvOarE3EXYcqPCMXlKYSu65UdJyrWRw4TNK
-         DkTKXLz1vImwdxiZ5KWdqhBJhZHi82Quxr3nsroNkub0QcOS/AVcm2OTxxTstFUUId4O
-         eiaGl6sny1clqiU6xhqXdWu8FUReXoNpTx4MxQpsCU+dETKGM9M9k3D9fCuYnb5vMpb4
-         tuB6uXv94s6RJD7JGY7SwTlsc1Y4qgev+v6JlUa8c0DMewkvH9fGosNrXb2kRu+vuQhv
-         vTvcGY8JNcte6xk7uYOr6xCoiOkuJmb3zZuzQcjRMlRkQMZDENsAYQYpPl0VGllzO4UX
-         Eweg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X4lOVt6ZKP6X65zmcQnK/fTCLUDcVKs75zqu4Rk/goo=;
-        b=q2hoS5R37Aqpd58EpmIGH9tPG4YfVI68h6pClW57ssiNbSqmnb85FTdPgcnrHVR///
-         0qgjMLu2Myz+CgRU+750ZKEqtgKTH0qOur00ZQzULNtP0e1X+3KBRJNdBrQVfS12acdG
-         OXH2nXohQrusJtNlR9sOJ2xk7B/qjrsQa9DlT8eUF/prQacW52wLKJrsM1pE7wwwYyC2
-         L4awkymQiIr2NBB/Iu3Rf7gaQwzKeI+kDhYGLivhYeESMoBKIKYHGHBVV8dmCSiPPd9r
-         lj/pBkfW3De0zFlh2N1vPig8maiLJ3VZPIlplUKpV8WyGD9WJcJQh8/kh1wGGRFEckqP
-         taOA==
-X-Gm-Message-State: AOAM533TVP0wDnypP++hnDv8kYoNng/+FPQIKrDS97NvZzPXsoDWjhrz
-        4nS5yey6DV+jZMUzldhhH1+a1EfTOpNZZw9a8Gdmbw==
-X-Google-Smtp-Source: ABdhPJwGMekstctKpOsuXjs8DjGFT2ro5YAYYi+FiaLL95LqLgf1Pt7ScBb4SY6NPcj7lNQgNhIKIXnjV47Hq3C6jKM=
-X-Received: by 2002:a19:ac45:: with SMTP id r5mr5192707lfc.305.1611743974915;
- Wed, 27 Jan 2021 02:39:34 -0800 (PST)
+        id S236140AbhA0KpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:45:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35850 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231570AbhA0KkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:40:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611743975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l6uF3roNeJhRHw5q8sy79omE8Ub4IQK2TXpHusNPPLw=;
+        b=hr1t+qt3MXNaAiulIwQsmIORaGyAw7LIhuaf1nNnPzfdPfezgJLxsslx7wLQWjiw5Vklua
+        HaIVG2Re2E5LSHUeYTZEqtBpGpv5ivZ/h+OUe4wdhF6eQTilnk6qGiM8/uy/vEzETOPqmf
+        SNmrLqVPjCf0b0TNeOpyKamp7T2jjcU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5FBC3AEAC;
+        Wed, 27 Jan 2021 10:39:35 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 11:39:34 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 4/5] hugetlb: convert PageHugeTemporary() to
+ HPageTemporary flag
+Message-ID: <20210127103934.GJ827@dhcp22.suse.cz>
+References: <20210122195231.324857-1-mike.kravetz@oracle.com>
+ <20210122195231.324857-5-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-References: <20210125085909.4600-1-mgorman@techsingularity.net> <20210125085909.4600-3-mgorman@techsingularity.net>
-In-Reply-To: <20210125085909.4600-3-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 27 Jan 2021 11:39:23 +0100
-Message-ID: <CAKfTPtCuUdr+Q++MbbVafEx9wEoJYQGm9maoJ4RCX7ny+=qA5w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under SIS_PROP
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122195231.324857-5-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 09:59, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> As noted by Vincent Guittot, avg_scan_costs are calculated for SIS_PROP
-> even if SIS_PROP is disabled. Move the time calculations under a SIS_PROP
-> check and while we are at it, exclude the cost of initialising the CPU
-> mask from the average scan cost.
->
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+On Fri 22-01-21 11:52:30, Mike Kravetz wrote:
+> Use new hugetlb specific HPageTemporary flag to replace the
+> PageHugeTemporary() interfaces.  PageHugeTemporary does contain
+> a PageHuge() check.  However, this interface is only used within
+> hugetlb code where we know we are dealing with a hugetlb page.
+> Therefore, the check can be eliminated.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+A dedicated flag is definitely something I would go for if that was
+available back then when I introduced it.
 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
 > ---
->  kernel/sched/fair.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 9f5682aeda2e..c8d8e185cf3b 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6153,6 +6153,8 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->         if (!this_sd)
->                 return -1;
->
-> +       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +
->         if (sched_feat(SIS_PROP)) {
->                 u64 avg_cost, avg_idle, span_avg;
->
-> @@ -6168,11 +6170,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->                         nr = div_u64(span_avg, avg_cost);
->                 else
->                         nr = 4;
-> -       }
-> -
-> -       time = cpu_clock(this);
->
-> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +               time = cpu_clock(this);
-> +       }
->
->         for_each_cpu_wrap(cpu, cpus, target) {
->                 if (!--nr)
-> @@ -6181,8 +6181,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->                         break;
->         }
->
-> -       time = cpu_clock(this) - time;
-> -       update_avg(&this_sd->avg_scan_cost, time);
-> +       if (sched_feat(SIS_PROP)) {
-> +               time = cpu_clock(this) - time;
-> +               update_avg(&this_sd->avg_scan_cost, time);
-> +       }
->
->         return cpu;
+>  include/linux/hugetlb.h |  6 ++++++
+>  mm/hugetlb.c            | 36 +++++++-----------------------------
+>  2 files changed, 13 insertions(+), 29 deletions(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index cd1960541f2a..3c86c3a0e144 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -483,10 +483,15 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+>   * HPG_migratable  - Set after a newly allocated page is added to the page
+>   *	cache and/or page tables.  Indicates the page is a candidate for
+>   *	migration.
+> + * HPG_temporary - - Set on a page that is temporarily allocated from the buddy
+> + *	allocator.  Typically used for migration target pages when no pages
+> + *	are available in the pool.  The hugetlb free page path will
+> + *	immediately free pages with this flag set to the buddy allocator.
+>   */
+>  enum hugetlb_page_flags {
+>  	HPG_restore_reserve = 0,
+>  	HPG_migratable,
+> +	HPG_temporary,
+>  	__NR_HPAGEFLAGS,
+>  };
+>  
+> @@ -530,6 +535,7 @@ static inline void ClearHPage##uname(struct page *page)		\
+>   */
+>  HPAGEFLAG(RestoreReserve, restore_reserve)
+>  HPAGEFLAG(Migratable, migratable)
+> +HPAGEFLAG(Temporary, temporary)
+>  
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 4da1a29ac5e2..70ffa1027988 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1353,28 +1353,6 @@ struct hstate *size_to_hstate(unsigned long size)
+>  	return NULL;
 >  }
-> --
-> 2.26.2
->
+>  
+> -/*
+> - * Internal hugetlb specific page flag. Do not use outside of the hugetlb
+> - * code
+> - */
+> -static inline bool PageHugeTemporary(struct page *page)
+> -{
+> -	if (!PageHuge(page))
+> -		return false;
+> -
+> -	return (unsigned long)page[2].mapping == -1U;
+> -}
+> -
+> -static inline void SetPageHugeTemporary(struct page *page)
+> -{
+> -	page[2].mapping = (void *)-1U;
+> -}
+> -
+> -static inline void ClearPageHugeTemporary(struct page *page)
+> -{
+> -	page[2].mapping = NULL;
+> -}
+> -
+>  static void __free_huge_page(struct page *page)
+>  {
+>  	/*
+> @@ -1422,9 +1400,9 @@ static void __free_huge_page(struct page *page)
+>  	if (restore_reserve)
+>  		h->resv_huge_pages++;
+>  
+> -	if (PageHugeTemporary(page)) {
+> +	if (HPageTemporary(page)) {
+>  		list_del(&page->lru);
+> -		ClearPageHugeTemporary(page);
+> +		ClearHPageTemporary(page);
+>  		update_and_free_page(h, page);
+>  	} else if (h->surplus_huge_pages_node[nid]) {
+>  		/* remove the page from active list */
+> @@ -1860,7 +1838,7 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
+>  	 * codeflow
+>  	 */
+>  	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages) {
+> -		SetPageHugeTemporary(page);
+> +		SetHPageTemporary(page);
+>  		spin_unlock(&hugetlb_lock);
+>  		put_page(page);
+>  		return NULL;
+> @@ -1891,7 +1869,7 @@ static struct page *alloc_migrate_huge_page(struct hstate *h, gfp_t gfp_mask,
+>  	 * We do not account these pages as surplus because they are only
+>  	 * temporary and will be released properly on the last reference
+>  	 */
+> -	SetPageHugeTemporary(page);
+> +	SetHPageTemporary(page);
+>  
+>  	return page;
+>  }
+> @@ -5612,12 +5590,12 @@ void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason)
+>  	 * here as well otherwise the global surplus count will not match
+>  	 * the per-node's.
+>  	 */
+> -	if (PageHugeTemporary(newpage)) {
+> +	if (HPageTemporary(newpage)) {
+>  		int old_nid = page_to_nid(oldpage);
+>  		int new_nid = page_to_nid(newpage);
+>  
+> -		SetPageHugeTemporary(oldpage);
+> -		ClearPageHugeTemporary(newpage);
+> +		SetHPageTemporary(oldpage);
+> +		ClearHPageTemporary(newpage);
+>  
+>  		spin_lock(&hugetlb_lock);
+>  		if (h->surplus_huge_pages_node[old_nid]) {
+> -- 
+> 2.29.2
+
+-- 
+Michal Hocko
+SUSE Labs
