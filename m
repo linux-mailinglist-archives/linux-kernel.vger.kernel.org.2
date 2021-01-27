@@ -2,219 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82671305974
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761EB305980
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbhA0LUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S236021AbhA0LVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:21:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8506 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236458AbhA0LUA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 06:20:00 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:57680 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236495AbhA0LRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:17:23 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 153D91A05B2;
-        Wed, 27 Jan 2021 12:16:32 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0724E1A05A0;
-        Wed, 27 Jan 2021 12:16:32 +0100 (CET)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id E6CB920364;
-        Wed, 27 Jan 2021 12:16:31 +0100 (CET)
-Date:   Wed, 27 Jan 2021 13:16:31 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Sascha Hauer <sha@pengutronix.de>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: Re: [RFC] clk: Mark HW enabled clocks as enabled in core
-Message-ID: <20210127111631.htiwaxvhqtm66ntn@fsr-ub1664-175>
-References: <1611660096-12381-1-git-send-email-abel.vesa@nxp.com>
- <20210126115105.GD28722@pengutronix.de>
- <20210126131239.uyolpawk2jfat7z4@fsr-ub1664-175>
- <20210126143017.GF28722@pengutronix.de>
- <20210127101220.wuzlodquo7ix4pga@fsr-ub1664-175>
- <20210127104720.GH28722@pengutronix.de>
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RB4xC6098979;
+        Wed, 27 Jan 2021 06:19:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=HvXyQ1nsl8T650lX2tqx/YmDVaCV1S3RYHWwvIx4vag=;
+ b=mTt0TxC0Qx2+EFAp6SCPItWFzs3w2/llK8mQtjIKztXfrsz0HVWFutL0UOBehWoPwRHW
+ VxozA+yYDN+w5GwaHnzRqBU5hi+mGsdRIcKGrRPBXqGzCEt+0FgiCNok4zbm61E2GJrD
+ lQZJL9om9sekxCleyz3VcqjQXQ0YaQl1odm32J2Mi+8F+oTLdaUXh3sXu9hgvoZqSXdE
+ Y4+iIfbLOfi9IslEEB+TGc7pARN7Ho7gu/D5VE6mniVrEOdKRIu2JCmOglvxfl0pnNr7
+ ZOEovWqbW3lD13INdt7qHZ7l7l/fh64sWR/1n7f7PwasI1xN5gbqAuSZmvxLnM3RP4ZX zQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36aweepa23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 06:19:07 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RB5Tdd102304;
+        Wed, 27 Jan 2021 06:19:07 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36aweepa1b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 06:19:07 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RBJ5pw032546;
+        Wed, 27 Jan 2021 11:19:05 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 368be7ur4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 11:19:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RBJ30h31392088
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 11:19:03 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6ED5811C04C;
+        Wed, 27 Jan 2021 11:19:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D837A11C04A;
+        Wed, 27 Jan 2021 11:19:00 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.191.214])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 27 Jan 2021 11:19:00 +0000 (GMT)
+Date:   Wed, 27 Jan 2021 13:18:58 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
+Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
+ holes in memory layout
+Message-ID: <20210127111858.GA273567@linux.ibm.com>
+References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
+ <20210127100454.GK196782@linux.ibm.com>
+ <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210127104720.GH28722@pengutronix.de>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_04:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 impostorscore=0 adultscore=0
+ clxscore=1015 suspectscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-27 11:47:20, Sascha Hauer wrote:
-> On Wed, Jan 27, 2021 at 12:12:20PM +0200, Abel Vesa wrote:
-> > On 21-01-26 15:30:17, Sascha Hauer wrote:
-> > > On Tue, Jan 26, 2021 at 03:12:39PM +0200, Abel Vesa wrote:
-> > > > On 21-01-26 12:51:05, Sascha Hauer wrote:
-> > > > > On Tue, Jan 26, 2021 at 01:21:36PM +0200, Abel Vesa wrote:
-> > > > > > Some clocks are already enabled in HW even before the kernel
-> > > > > > starts to boot. So, in order to make sure that these clocks do not
-> > > > > > get disabled when clk_disable_unused call is done or when
-> > > > > > reparenting clocks, we enable them in core on clock registration.
-> > > > > > Such a clock will have to be registered with CLK_IGNORE_UNUSED flag
-> > > > > > and also needs to have the is_enabled ops implemented.
-> > > > > > 
-> > > > > > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> > > > > > ---
-> > > > > >  drivers/clk/clk.c | 11 ++++++++++-
-> > > > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> > > > > > index 3d751ae5bc70..26d55851cfa5 100644
-> > > > > > --- a/drivers/clk/clk.c
-> > > > > > +++ b/drivers/clk/clk.c
-> > > > > > @@ -3416,6 +3416,7 @@ static int __clk_core_init(struct clk_core *core)
-> > > > > >  	int ret;
-> > > > > >  	struct clk_core *parent;
-> > > > > >  	unsigned long rate;
-> > > > > > +	bool is_hw_enabled = false;
-> > > > > >  	int phase;
-> > > > > >  
-> > > > > >  	if (!core)
-> > > > > > @@ -3558,12 +3559,20 @@ static int __clk_core_init(struct clk_core *core)
-> > > > > >  		rate = 0;
-> > > > > >  	core->rate = core->req_rate = rate;
-> > > > > >  
-> > > > > > +	/*
-> > > > > > +	 * If the clock has the CLK_IGNORE_UNUSED flag set and it is already
-> > > > > > +	 * enabled in HW, enable it in core too so it won't get accidentally
-> > > > > > +	 * disabled when walking the orphan tree and reparenting clocks
-> > > > > > +	 */
-> > > > > > +	if (core->flags & CLK_IGNORE_UNUSED && core->ops->is_enabled)
-> > > > > > +		is_hw_enabled = clk_core_is_enabled(core);
-> > > > > > +
-> > > > > >  	/*
-> > > > > >  	 * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
-> > > > > >  	 * don't get accidentally disabled when walking the orphan tree and
-> > > > > >  	 * reparenting clocks
-> > > > > >  	 */
-> > > > > > -	if (core->flags & CLK_IS_CRITICAL) {
-> > > > > > +	if (core->flags & CLK_IS_CRITICAL || is_hw_enabled) {
-> > > > > >  		unsigned long flags;
-> > > > > >  
-> > > > > >  		ret = clk_core_prepare(core);
-> > > > > 
-> > > > > This means that a bootloader enabled clock with CLK_IGNORE_UNUSED flag
-> > > > > can effectively never be disabled because the prepare/enable count is 1
-> > > > > without any user. This is the behaviour we want to have with critical
-> > > > > clocks, but I don't think this is desired for clocks with the
-> > > > > CLK_IGNORE_UNUSED flag.
-> > > > > 
-> > > > 
-> > > > Here is the way I see it. Critical clocks means the system can't work
-> > > > without, so do not ever disable/unprepare. The "ignore unused" flag
-> > > > tells the core to not do anything to this clock, even if it is unused.
-> > > > For now, it just leaves the clock alone, but the flag could be used for
-> > > > some other stuff in the future.
-> > > > 
-> > > > Now, the behavior is entirely different.
-> > > > 
-> > > > For the "critical" clock disable/unprepare, the core does nothing
-> > > > (returns without calling the disable/unprepare ops).
-> > > > 
-> > > > As for the "ignore unused", the clock can be disabled later on,
-> > > > which would decrement the prepare/enable counter.
-> > > > The imx earlycon serial driver could implement a late initcall,
-> > > > that takes the clocks from the devicetree uart node and disables
-> > > > them. The user doesn't even count in this situation.
-> > > > 
-> > > > Plus, there is no other reason someone would use the CLK_IGNORE_UNUSED,
-> > > > other than leaving a clock that is already enabled stay as is (at least,
-> > > > not with the current implementation). So why not mark it as enabled in 
-> > > > the core, if the HW says it is enabled ?
-> > > 
-> > > The CLK_IGNORE_UNUSED is there from the start of the clock framework, so
-> > > there is no commit message that tells what it shall be used for. AFAIR
-> > > the flag was thought for being used with clocks which should not be
-> > > disabled, but had no driver initially that used them.
-> > > Implementation of this flag was likely broken from the start as well,
-> > > because in this situation:
-> > > 
-> > >       a
-> > >      / \
-> > >     b   c (CLK_IGNORE_UNUSED)
-> > > 
-> > > When clk b is enabled/disabled then the parent of clock c is disabled as
-> > > well, so CLK_IGNORE_UNUSED doesn't help at all. In that sense your patch
-> > > really improves things, because the above example would be fixed.
-> > > 
-> > > Anyway, CLK_IGNORE_UNUSED is excessively used in the kernel, we have
-> > > over 1000 clocks that have this flag set. With your patch all of a
-> > > sudden all these clocks won't be disabled anymore and all these clocks
-> > > will require some fixup to finally disable them when desired. I don't
-> > > think this is a good idea.
-> > > 
-> > 
-> > OK, then, how about this ?
-> > 
-> > I can add a flag to the each imx gate clock type used for each of the
-> > uart clocks in every platform driver, flag that would say something like this:
-> > "Mark the clock as enabled in the core if the HW says it is already enabled."
-> > This would happen right after registration of the clock and the flag will be
-> > imx specific (not in the core).
+On Wed, Jan 27, 2021 at 11:08:17AM +0100, Łukasz Majczak wrote:
+> Hi Mike,
 > 
-> How do you want to implement the "Mark the clock as enabled in the core"
-> part without using the clk consumer API, which is the thing you want to
-> avoid?
-> 
+> Actually I have a serial console attached (via servo device), but
+> there is no output :( and also the reboot/crash is very fast/immediate
+> after power on.
+ 
+If you boot with earlyprintk=serial are there any messages?
 
-Hmm, this is actually a problem, there are no clk_hw enable/prepare API.
-You are right about this one.
-
-> > 
-> > There would be the following advantages:
-> > - only the uart clock that was left enabled by the bootloader will be left
-> > on after the clk_disable_unused call
+> Best regards
+> Lukasz
 > 
-> Actually this would be a regression compared to current upstream. Right
-> now the UART clock is kept on until the clk_disable_unused call and
-> disabled in that call. This is what we want, because at that time the
-> UART driver has taken over and takes care of the clocks itself.
-> When after clk_disable_unused() there is still a reference on the UART
-> clock we could never turn it off.
+> śr., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
+> >
+> > Hi Lukasz,
+> >
+> > On Wed, Jan 27, 2021 at 10:22:29AM +0100, Łukasz Majczak wrote:
+> > > Crash after mm: fix initialization of struct page for holes in memory layout
+> > >
+> > > Hi,
+> > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Caroline),
+> > > but I've noticed it has crashed - unfortunately it seems to happen at
+> > > a very early stage - No output to the console nor to the screen, so I
+> > > have started a bisect (between 5.11-rc4 - which works just find - and
+> > > 5.11-rc5),
+> > > bisect results points to:
+> > >
+> > > d3921cb8be29 mm: fix initialization of struct page for holes in memory layout
+> > >
+> > > Reproduction is just to build and load the kernel.
+> > >
+> > > If it will help any how I am attaching:
+> > > - /proc/cpuinfo (from healthy system):
+> > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1a785b64a97066
+> > > - my .config file (for a broken system):
+> > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53efe8e18b5da33c
+> > >
+> > > If there is anything I could add/do/test to help fix this please let me know.
+> >
+> > Chris Wilson also reported boot failures on several Chromebooks:
+> >
+> > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@build.alporthouse.com
+> >
+> > I presume serial console is not an option, so if you could boot with
+> > earlyprintk=vga and see if there is anything useful printed on the screen
+> > it would be really helpful.
+> >
+> > > Best regards
+> > > Lukasz
+> >
+> > --
+> > Sincerely yours,
+> > Mike.
 
-They could be turned off from the late initcall from imx serial.
-
-> 
-> > - fixing the situation where a common parent of the uart clocks is reparenting
-> > or disabled by some other child clock.
-> 
-> That's not an issue currently.
-
-Yes, as of now, it's not an issue because we're treating the uart clocks as a
-special case by controlling them straight from the platform driver. But I would
-like to get rid of this special case. Why ? Because, in the future, the clock
-drivers would only use the API from clk-provider header. The clk.h should move
-away for good from the clock drivers.
-
-> 
-> > - the platform drivers will not use the clk consumer API anymore
-> 
-> I'm not sure how you want to archieve this.
-> 
-
-Basically, all the clock drivers should move towards clk_hw APIi only.
-
-> > - any future imx platform could be using that flag for uart clocks
-> 
-> No flags are necessary currently.
-> 
-> What's so wrong with the way it's currently implemented? Currently with
-> the array of possible UART clocks it's really not nice, but with Adams
-> patch which parses the clocks directly from the device node providing
-> the stdout UART the arrays are gone and it looks ok to me.
-
-Again, the ultimate goal here is to remove every clock consumer API from
-all the imx clock drivers. The uart clocks are, at this point, that ugly
-special case we can't seem to get rid of. The future platforms will use
-the same approach if we don't deal with it. At this point, the imx6/7/8
-platforms are not entirely clk_hw based API due to this uart clocks thing.
-I intend to move the older imx to clk_hw API and that will leave us with
-the uart clocks being the only exception from the rule, using clock consumer
-API, in all the imx clock platform drivers.
+-- 
+Sincerely yours,
+Mike.
