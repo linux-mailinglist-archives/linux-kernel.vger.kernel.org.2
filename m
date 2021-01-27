@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99E13060A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2606330607D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhA0QJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:09:14 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55662 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbhA0P4c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:56:32 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RFsrok074839;
-        Wed, 27 Jan 2021 09:54:53 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611762893;
-        bh=EbyulWgdOzpSbH0R5FwToTnTyBzMsvgaupBpVFToCNY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=aL7N+6IZwQ6dDZX0tRUJk1jjzH4H0kcIiig6OyKTG0+P2QeNFUVzUaUNc8SY5dKCo
-         UzQ8sf7B5R3bh8q7NSInLz6qcSoClJoKJNxGkE0qhjbWRpiXPSPDvBVTpkok2cdhsO
-         5DQTsfl5xvRDbjcJQlq7Yo2GxvTmPcJ0HvdZbSdM=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RFsrF0011665
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Jan 2021 09:54:53 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
- Jan 2021 09:54:53 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 27 Jan 2021 09:54:53 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RFsqAJ022261;
-        Wed, 27 Jan 2021 09:54:52 -0600
-Date:   Wed, 27 Jan 2021 09:54:52 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] arm64: dts: ti: k3-j7200: Add support for higher
- speed modes in MMCSD subsystems
-Message-ID: <20210127155452.27unsnisenm42nb4@budding>
-References: <20210127150815.16991-1-a-govindraju@ti.com>
- <20210127150815.16991-3-a-govindraju@ti.com>
- <20210127151431.pzqpbtumqzpqiqop@delta>
- <6f9ddf85-e1e9-426a-2436-7f323314959a@ti.com>
+        id S234341AbhA0QC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:02:57 -0500
+Received: from verein.lst.de ([213.95.11.211]:53502 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236827AbhA0P4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:56:53 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5554C68AFE; Wed, 27 Jan 2021 16:56:08 +0100 (CET)
+Date:   Wed, 27 Jan 2021 16:56:08 +0100
+From:   ". Christoph Hellwig" <hch@lst.de>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     ". Christoph Hellwig" <hch@lst.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+Message-ID: <20210127155608.GA20272@lst.de>
+References: <20201201033658.GE3723071@google.com> <20201201144916.GA14682@lst.de> <CAAFQd5BBEbmENrrZ-vMK9cKOap19XWmfcxwrxKfjWx-wEew8rg@mail.gmail.com> <20201208071320.GA1667627@google.com> <20201209111639.GB22806@lst.de> <CANiDSCtsOdJUK3r_t8UNKhh7Px0ANNFJkuwM1fBgZ7wnVh0JFA@mail.gmail.com> <20210111083614.GA27589@lst.de> <CANiDSCvuvj47=nhoWhvzc5raMxM60w+JYRWjd0YepcbcbkrUjA@mail.gmail.com> <20210126170659.GA9104@lst.de> <CANiDSCsz+9DJesOTJ5C5HGEH-wwuTmEd3c8yLoHjnDz=2+ndJw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6f9ddf85-e1e9-426a-2436-7f323314959a@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CANiDSCsz+9DJesOTJ5C5HGEH-wwuTmEd3c8yLoHjnDz=2+ndJw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20:50-20210127, Aswath Govindraju wrote:
-> Hi Nishanth,
-> 
-> On 27/01/21 8:44 pm, Nishanth Menon wrote:
-> > On 20:38-20210127, Aswath Govindraju wrote:
-> >> The following speed modes are now supported in J7200 SoC,
-> >> - HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
-> >> - UHS-I speed modes in MMCSD1 subsystem [1].
-> >>
-> >> Add support for UHS-I modes by adding voltage regulator device tree nodes
-> >> and corresponding pinmux details, to power cycle and voltage switch cards.
-> >> Also set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1
-> >> device tree nodes.
-> >>
-> >> [1] - section 12.3.6.1.1 MMCSD Features, in
-> >>       https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf
-> >>
-> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> >> ---
-> >>
-> >> performance test logs using EXT4 filesystem for eMMC HS400 speed mode,
-> >> https://pastebin.ubuntu.com/p/KFphDYXj93/
-> >>
-> > 
-> > 5.11.0-rc3-next-20210118-00004 :
-> > 
-> > a) could you make sure to post patches when you test with latest next?
-> > b) I see 2 patches in this series, but delta seems to be 4 patches, is
-> > there a dependency I am not aware of?
-> > 
-> 
-> There are no dependencies. The other two commits are completely
-> unrelated. From next time I will make sure that I use the latest next
-> and the delta matches.
+On Wed, Jan 27, 2021 at 12:29:08AM +0100, Ricardo Ribalda wrote:
+> - Is there any platform where dma_alloc_noncontiguos can fail?
+> This is, !ops->alloc_noncontiguous and !dev->coherent_dma_mask
+> If yes then we need to add a function to let the driver know in
+> advance that it has to use the coherent allocator (usb_alloc_coherent
+> for uvc)
 
+dev->coherent_dma_mask is set by the driver.  So the only reason why
+dma_alloc_noncontiguos will fail is because is because it can't
+allocate any memory.
 
-Thanks.
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> - In dma_alloc_noncontiguos, on the dma_alloc_pages fallback. If we
+> have a device where the dma happens in only one direction, could not
+> get more performance with DMA_FROM/TO_DEVICE instead of
+> DMA_BIDIRECTIONAL ?
+
+Yes, we could probably do that.
+
+> 
+> 
+> Then I have tried to use the API, and I have encountered a problem: on
+> uvcvideo the device passed to the memory allocator is different for
+> DMA_PAGES and NON_CONTIGUOUS:
+> https://github.com/ribalda/linux/blob/042cd497739f71c8d4a83a67ee970369e2baca4a/drivers/media/usb/uvc/uvc_video.c#L1236
+> 
+> I need to dig a bit tomorrow to figure out why this is, I have
+> hardware to test both paths, so it should not be too difficult.
+
+I always found the USB dma alloc API a little weird, but we might have
+to follow the scheme of the usb coherent wrappers there.
