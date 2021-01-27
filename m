@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189053053F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B853053D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 08:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhA0HIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 02:08:38 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:14101 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhA0HFY (ORCPT
+        id S232285AbhA0HAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 02:00:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232417AbhA0G7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:05:24 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210127070441epoutp04f4f6c235cb0ec263f9e873ad079dc8e0~eBOD-uFi60400504005epoutp04X
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 07:04:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210127070441epoutp04f4f6c235cb0ec263f9e873ad079dc8e0~eBOD-uFi60400504005epoutp04X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611731081;
-        bh=/9GXwtk+Q8GHQwdg9UnSZMO0QoLlwz57chrmsVfWQNU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOAs4G62ZSFlIC3EHo86of9Tt1vckdYuquQEzQ375TR/7snjdPaVdhCtAdeqJofoY
-         gQ5MJD9MV0UbAdtRbM45uNP1DbfIkviKy9JivgII6lDj845yOY/XRJ8H1B3qiaYfV8
-         l3adg7Evd5BW0JvZuc38fp/Vyv2y2zpPya1meD7s=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210127070440epcas1p2ed4265e43fe14f38a48eaa4b77c82bbf~eBODKy6pX2500625006epcas1p21;
-        Wed, 27 Jan 2021 07:04:40 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DQZNR0pFJz4x9Q3; Wed, 27 Jan
-        2021 07:04:39 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.F4.09582.68011106; Wed, 27 Jan 2021 16:04:38 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22~eBOBhwOAd2976129761epcas1p4-;
-        Wed, 27 Jan 2021 07:04:38 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210127070438epsmtrp11b07975bee6c1e8030ab2cfd88a99d91~eBOBg4km90481904819epsmtrp1k;
-        Wed, 27 Jan 2021 07:04:38 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-d2-60111086bd67
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AD.D9.13470.68011106; Wed, 27 Jan 2021 16:04:38 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210127070438epsmtip2934a782075884d33a8cfa3cb852a3267~eBOBP7WJ52627226272epsmtip2C;
-        Wed, 27 Jan 2021 07:04:38 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     martin.petersen@oracle.com
-Cc:     Damien.LeMoal@wdc.com, arnd@arndb.de, hch@lst.de,
-        jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, michael.christie@oracle.com,
-        mj0123.lee@samsung.com, nanich.lee@samsung.com, oneukum@suse.com,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH 1/1] scsi: sd: use max_xfer_blocks for set rw_max if
- max_xfer_blocks is available
-Date:   Wed, 27 Jan 2021 15:49:08 +0900
-Message-Id: <20210127064908.13571-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <yq1tur3vzkz.fsf@ca-mkp.ca.oracle.com>
+        Wed, 27 Jan 2021 01:59:41 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935BDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 22:58:49 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id u4so749094pjn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 22:58:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hdH070fYQGRrVFXSs6VUzPA20L1MAMda+ejAucezRlo=;
+        b=bcxwQY9v7gG8/ZLRsynArRtdDbnVjaCQYtuVwVy4gAD09HJ0afvA9irJzEB9sle0aI
+         rOJweiDeWGPx5J1nbkpKcf22eLrwJ2GJu8oNzqJ8NFQdlrkcsFG9hMMaPgx7ZnNralqJ
+         bXiqaEZyrKKD9h9vOUiGT0e9cY0riXPAjo3ar9rJXXTr6rWQQGUnG+he/PyqPS0y9Mfd
+         Yvg4RvXCCeorEy3smliUnT/OrysHSP6tcCR6b+dRweRZFZMMEaSNJbNh+CgICb4xryRf
+         5PsnDzVJUqLlOHOjfIicTMFhn7pSqTUkxbScpKohKp3OB2avLlmBf0UsKnsITVnppNIw
+         4Qfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hdH070fYQGRrVFXSs6VUzPA20L1MAMda+ejAucezRlo=;
+        b=e7OVivGHmNg8sJ93a3tA8NUP2mk5G6MUxNIPy3vGD9IX++4bd9IJ1JXtdm0EopAUU2
+         mlHT9XAaCbVJ86jdLtfQ0KCYWDvn9oyq7BHd26R12P7JrCxw2xzVs4onFX1PqwBxaD7d
+         tO3DY3wmzobyeX1FI4f5hm92qxUa1vjR/l17nUZDirNKj2Qy3YRAMwmE7T0gRI0JuEAG
+         pP/Bt3QEOYj2Hd9NPV4t0z6CObZAsJkkmRTPERe+D5vDlO0fMWFCnG42aBlSd+KniucL
+         QviMJg3R5lmI9rvDzKyhSP+7DhkKOo4+OTeeLzvc5zLDGtfHYzuNwj1auWlXyCZZ6Fjk
+         K+gA==
+X-Gm-Message-State: AOAM531axSfShrOdm7mZ//uNL5uJ07sT0VHXh8kBXmTAWQFu/j5O4hBn
+        rKbW8dE5xKpvhR7gc8J68ONrbw==
+X-Google-Smtp-Source: ABdhPJyaTToGexohyPD3a1AnlyINM47VgWjzZWARW91p7Tk9RAH8ZSmplUpcdPIxJZ4yB7OyWIpFyA==
+X-Received: by 2002:a17:90a:de2:: with SMTP id 89mr4105815pjv.26.1611730729086;
+        Tue, 26 Jan 2021 22:58:49 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id j16sm947790pjj.18.2021.01.26.22.58.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Jan 2021 22:58:48 -0800 (PST)
+Date:   Wed, 27 Jan 2021 12:28:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 07/13] opp: Allow _generic_set_opp_clk_only() to work for
+ non-freq devices
+Message-ID: <20210127065846.c2usquegqrqib45r@vireshk-i7>
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <1585f6c21ea8aee64fe4da0bf72b36ea4d74a779.1611227342.git.viresh.kumar@linaro.org>
+ <9b2638e6-b842-8737-e5a0-aeeb84927fce@gmail.com>
+ <20210122043506.lm6yiefzlyubq5my@vireshk-i7>
+ <7d6573e3-7885-fb0b-2290-c181e2c557f9@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmrm67gGCCwWkji7+TjrFbtLZ/Y7JY
-        ufook8WiG9uYLHqeNLFafH1YbHF51xw2i+7rO9gslh//xwRUe4PVYvrmOcwW1+6fYbfoeryS
-        zeLcyU+sFvMeO1ic2jGZ2WL93p9sDoIev39NYvSYsOgAo8fumw1sHh+f3mLx6NuyitFj/Zar
-        LB6fN8l5tB/oZgrgiMqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVV
-        cvEJ0HXLzAF6QkmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQoFecmFtcmpeu
-        l5yfa2VoYGBkClSZkJNx++xbloJTfBXvnu1kbGC8wN3FyMkhIWAicWfdSvYuRi4OIYEdjBLT
-        e98yQzifGCVWnl4O5XxjlOi8vYQNpuX4vqOMEIm9jBJzmmeyQDifGSX2ztjHCFLFJqAj0ff2
-        FliHiICcxKTX35hAipgF2pglWtpfAzkcHMIC6RLffoPVswioSnxa/pAJxOYVsJb41f0Gapu8
-        xNNekDM4OTgFjCWObH0FVSMocXLmExYQmxmopnnrbLBTJQROcEhcvDWbGaLZReLygqWsELaw
-        xKvjW9ghbCmJl/1t7BAN3YwSzW3zGSGcCYwSS54vY4KoMpb49PkzI8ilzAKaEut36UOEFSV2
-        /p7LCLGZT+Ld1x5WkBIJAV6JjjYhiBIViTMt95lhdj1fuxNqoofEq+2XwG4QEmhjlLi22W8C
-        o8IsJP/MQvLPLITFCxiZVzGKpRYU56anFhsWGCPH8SZGcLrWMt/BOO3tB71DjEwcjIcYJTiY
-        lUR43ysLJAjxpiRWVqUW5ccXleakFh9iNAWG9kRmKdHkfGDGyCuJNzQ1MjY2tjAxMzczNVYS
-        500yeBAvJJCeWJKanZpakFoE08fEwSnVwPTYQGSTv1L0zZMfyjsqjP6ecTWeIv+x4qzWlSC9
-        omyH6R9vpy+2fy3DKrnl7ux28V8epkkdrd8kpl/Z5zs/orruqHEFW0Ts9Ru7r16Xd570OTdl
-        XaFqjr/Gvfx5z9gVk9KrN1gHTDyqIu94bNM36fU/F55Y46rQyv5/yVG/r64fDFw/eEo45WWF
-        BypsdK0s13qs7Ri0YtLFZf0+kixvnjoHhjRfk+M4uPrG/4MxytWLps5Jzo2tOvPml2X2uoPT
-        l0w4Fcm7fXXK9l/RGorrLthkr7q443Df97cxrFOaQte8OpWg9ShwhqbJ3ti1R1ewhmt3sJY0
-        ak3tubvjmpcVl2LgiscbFD94fTspNvXB5T4lluKMREMt5qLiRABXtSngYAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJXrdNQDDB4NU2fou/k46xW7S2f2Oy
-        WLn6KJPFohvbmCx6njSxWnx9WGxxedccNovu6zvYLJYf/8cEVHuD1WL65jnMFtfun2G36Hq8
-        ks3i3MlPrBbzHjtYnNoxmdli/d6fbA6CHr9/TWL0mLDoAKPH7psNbB4fn95i8ejbsorRY/2W
-        qywenzfJebQf6GYK4IjisklJzcksSy3St0vgyrh99i1LwSm+infPdjI2MF7g7mLk5JAQMJE4
-        vu8oYxcjF4eQwG5GianLNrJCJKQkjp94C2RzANnCEocPF0PUfGSUuPP5HjtIDZuAjkTf21ts
-        ILaIgJzEpNffmECKmAVmMUs8+3cOrFlYIFVi7yw7kBoWAVWJT8sfMoHYvALWEr+637BB7JKX
-        eNq7nBnE5hQwljiy9RVYjZCAkcSNrsNsEPWCEidnPmEBsZmB6pu3zmaewCgwC0lqFpLUAkam
-        VYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwTGlpbmDcfuqD3qHGJk4GA8xSnAwK4nw
-        vlcWSBDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qBaeoF
-        lsVakhXrFhy/2T1Ba81uz37HhTMnTdn+MSONdw1D06pzC9xXVHq7fmv8NXuJoe+vmq+susv0
-        XLa0sj1Srv30c853/Qzj9K6lpa0OnRON+nRt255Ef+tcM1Odc7veu7hX/UrbH+s1OT04kX5F
-        /cjm9IVlGwMCS/3757jeP7hzTY1j9RH95SwTplYHXHYynJ7jGbn6rJ2ZhqY304y/OrEXS0P+
-        T/YOnykkxTH7gdK+gJm/Zj35vv/VC41sNaOiiGC7O+7xrYWcz6s3LpzAIGzPmzE797iNX/M3
-        D+vtJ5Z97Z3Vtynz4uSLpyt2f3jEPOubQGXrI5NJKSt2c7T07ZN9/fM18+FLArY27tqK65RY
-        ijMSDbWYi4oTAQvoXPIYAwAA
-X-CMS-MailID: 20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22
-References: <yq1tur3vzkz.fsf@ca-mkp.ca.oracle.com>
-        <CGME20210127070438epcas1p417a8c9288df420b0af1ed9d185c87a22@epcas1p4.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d6573e3-7885-fb0b-2290-c181e2c557f9@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hello Changheun!
-> 
-> > I want to discuss using max_xfer_blocks instead of opt_xfer_blocks as
-> > a optional.  For example, device reports opt_xfer_blocks is 512KB and
-> > 1MB as a max_xfer_blocks too. Currently rw_max is set with 512KB only.
-> 
-> Because that's what the device asks for. If a device explicitly requests
-> us to use 512 KB I/Os we should not be sending it 1 MB requests.
-> 
-> The spec is very clear. It says that if you send a command *larger* than
-> opt_xfer_blocks, you should expect *slower* performance. That makes
-> max_xfer_blocks a particularly poor choice for setting the default I/O
-> size.
-> 
-> In addition to being slower, max_xfer_blocks could potentially also be
-> much, much larger than opt_xfer_blocks. I understand your 512 KB vs. 1
-> MB example. But if the max_xfer_blocks limit is reported as 1 GB, is
-> that then the right value to use instead of 512 KB? Probably not.
-> 
-> If a device does not report an opt_xfer_blocks value that suits your
-> workload, just override the resulting max_sectors_kb in sysfs. This is
-> intentionally a soft limit so it can be adjusted by the user without
-> having to change the kernel.
-> 
-> -- 
-> Martin K. Petersen	Oracle Linux Engineering
-> 
+On 26-01-21, 00:09, Dmitry Osipenko wrote:
+> Please remove unlikely() around IS_ERR(), it already has the unlikely().
 
-I understood what you said. I reviewed meaning of opt_xfer_blocks from
-SCSI spec again. I think below is what you saw in spec.
+Right.
 
-The OPTIMAL TRANSFER LENGTH field indicates the optimal transfer size in
-logical blocks for a single command shown in table 197. If a device server
-receives one of these commands with a transfer size greater than this value,
-then the device server may incur significant delays in processing the
-command. If the OPTIMAL TRANSFER LENGTH field is set to zero, then there
-is no reported optimal transfer size.
+> https://elixir.bootlin.com/linux/v5.11-rc4/source/include/linux/err.h#L22
+> 
+> I'd also recommend to remove all the unlikely() from OPP code since it
+> doesn't bring any value if not used in a very performance-critical code
+> path. OPP core doesn't have such code paths. The [un]likely() only make
+> code less readable and may result in a worse assembly.
 
-Thank you for kindly feedback. :)
+The likely/unlikely() stuff is to optimize code, not necessarily the stuff in
+the hot path alone, therwise stuff like IS_ERR() would never have it. It surely
+does bring value by optimizing the code, surely the result isn't significant
+enough but that is fine, every effort counts.
 
----
-Changheun Lee
-Samsung Electronics
+AFAIK, if we are sure of path the code will almost always take, then we should
+rather use these and so I am inclined towards keeping them. Though I understand
+that using them may result in bad behavior (performance) if they fail.
+
+-- 
+viresh
