@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CFC306232
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2697E30623A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344040AbhA0Rhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:37:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343847AbhA0ReO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:34:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F02D60187;
-        Wed, 27 Jan 2021 17:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611768807;
-        bh=DdKngb2YIcQrgemBY4ma9VuV+K3VnS5RUHlaX7aNcEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bezFeLkNWpbSOOiyGS1wKapfKLSrkt6sfzxYcgqh536qfPQfssRPOhHnoyqu8Nyy+
-         WmSO1/c6LU8Fcjysog3DCObQJLf/3zmBou/r7/50T5m0AWcmiQtn/S5c10KtErn/VB
-         OmLzdvJo/zULxbxaX6v56jE5Jg8/RR8cECzY2Gcmco1lejG/7+l0Qta91NUJTXMw+o
-         wTBTjUYW7NJn4TNlnpYXP+xbxHW+wAAO/KLnT6pNN/xejrwgnbraSZdboZzvn9+gqt
-         j6Q1EiZN1T3OpAJst5E/DC6cJvbe9bLN0u6PqFiwkYBsRTdmacF68oFvJJAWq3+N5H
-         Y3Ci8wnk6laBQ==
-Date:   Wed, 27 Jan 2021 17:32:44 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: core: avoid error messages for deferred
- probing
-Message-ID: <20210127173244.GG4387@sirena.org.uk>
-References: <20210125192736.17657-1-andreas@kemnade.info>
+        id S1344053AbhA0RiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343973AbhA0Rdv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:33:51 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E974C061756;
+        Wed, 27 Jan 2021 09:33:11 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id m13so2752578wro.12;
+        Wed, 27 Jan 2021 09:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fj4w5JVOvyYwozMqFrFqKmciej530dUq7pjLBYsvO6g=;
+        b=L4kV2uetbp1iN+hKJKMqjvx+UFqpmo9FHr/VWT9T30SvhUa3+/zHpp0gWc74abTjPe
+         ta8KLBjNj7NKbkRoesjhTRWY53SRDeRg7pLT7i17qjw64I/quguXRYtaF6GzzGSXXL6k
+         1SR83HvCRn6zwg/uLJ2cQv4nBDM/uz/60XMTQtzdQ+NjWxTGBWuGP50mEwGvls3AY6rH
+         oMFL74bDXCgKKKDJ+aB6hRN7ZhuEOy6g9vz4SbAhoa+6qn54JOei+JMT1nRhxsML8etb
+         zhFQDlZBUZ24iccXs9mBz6a6Xtt6TWFZELHcWqjnxC+1pw6YCziFhPOPGxhIIZocQQfa
+         Wg5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Fj4w5JVOvyYwozMqFrFqKmciej530dUq7pjLBYsvO6g=;
+        b=FpaVv0uYIw3uKWksV9m0azdVZ+RnyjsCZ7THVdyDRdKUQEZdX8mbrWs0wyS87lA6ac
+         lSa74bum2MGrs2BuY6TuSaF+5Ue4KoQvd9wXjOMxMhVaCSprTUTWEuVHUl0kjkdXdV4p
+         TEazdmRT0W7yxIxyKROTXUHJp8bB17+pOY3RbdFg+crpqzF4rwSD1NkJyBTCm7xe6ZlF
+         BgnObUrnbluL8EGNonOvALD2mxCuhzJ7P3NaxVm6Lh/v0hQP9X0lSWN5KIkE0c8IiQeH
+         DwfSYkIi1oLKxwX5vY4X+jRs7EwQ0lVXoqPL0EpXGdzqjQZPzxVToJmYDZ1+VKJq2r8q
+         aPVQ==
+X-Gm-Message-State: AOAM533J69pCI5d5qby/A/mu0DODbkOBGM69MbNz9BtJoMZ4boEX38im
+        yTi4ZVX6C5l0XPmehBwHFjfe9pANlh5s6Q==
+X-Google-Smtp-Source: ABdhPJxdRMDEuUfGdFPniSDYztxhsAVv8syE4yO8MGO+CgZhnPwF8npZhiaxuTMA3V8VMBrGh8o1dw==
+X-Received: by 2002:a5d:4389:: with SMTP id i9mr12164830wrq.272.1611768789081;
+        Wed, 27 Jan 2021 09:33:09 -0800 (PST)
+Received: from stitch.. ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id m8sm3768636wrv.37.2021.01.27.09.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 09:33:08 -0800 (PST)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     netdev@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Mitchell Blank Jr <mitch@sfgoth.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] net: atm: pppoatm: use tasklet_init to initialize wakeup tasklet
+Date:   Wed, 27 Jan 2021 18:32:55 +0100
+Message-Id: <20210127173256.13954-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7uYPyRQQ5N0D02nI"
-Content-Disposition: inline
-In-Reply-To: <20210125192736.17657-1-andreas@kemnade.info>
-X-Cookie: La-dee-dee, la-dee-dah.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Previously a temporary tasklet structure was initialized on the stack
+using DECLARE_TASKLET_OLD() and then copied over and modified. Nothing
+else in the kernel seems to use this pattern, so let's just call
+tasklet_init() like everyone else.
 
---7uYPyRQQ5N0D02nI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+---
+ net/atm/pppoatm.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-On Mon, Jan 25, 2021 at 08:27:36PM +0100, Andreas Kemnade wrote:
+diff --git a/net/atm/pppoatm.c b/net/atm/pppoatm.c
+index 579b66da1d95..5f06af098390 100644
+--- a/net/atm/pppoatm.c
++++ b/net/atm/pppoatm.c
+@@ -389,11 +389,7 @@ static int pppoatm_assign_vcc(struct atm_vcc *atmvcc, void __user *arg)
+ 	struct atm_backend_ppp be;
+ 	struct pppoatm_vcc *pvcc;
+ 	int err;
+-	/*
+-	 * Each PPPoATM instance has its own tasklet - this is just a
+-	 * prototypical one used to initialize them
+-	 */
+-	static const DECLARE_TASKLET_OLD(tasklet_proto, pppoatm_wakeup_sender);
++
+ 	if (copy_from_user(&be, arg, sizeof be))
+ 		return -EFAULT;
+ 	if (be.encaps != PPPOATM_ENCAPS_AUTODETECT &&
+@@ -415,8 +411,8 @@ static int pppoatm_assign_vcc(struct atm_vcc *atmvcc, void __user *arg)
+ 	pvcc->chan.ops = &pppoatm_ops;
+ 	pvcc->chan.mtu = atmvcc->qos.txtp.max_sdu - PPP_HDRLEN -
+ 	    (be.encaps == e_vc ? 0 : LLC_LEN);
+-	pvcc->wakeup_tasklet = tasklet_proto;
+-	pvcc->wakeup_tasklet.data = (unsigned long) &pvcc->chan;
++	tasklet_init(&pvcc->wakeup_tasklet, pppoatm_wakeup_sender,
++		     (unsigned long)&pvcc->chan);
+ 	err = ppp_register_channel(&pvcc->chan);
+ 	if (err != 0) {
+ 		kfree(pvcc);
+-- 
+2.30.0
 
-> Noise like this happens on boot with regulators which can be bypassed
-> when the supply is not probed. That looks too alarming and confusing.
-
-...
-
-> Handle such issues silently.
-
-This means that if something is failing to probe due to deferral the
-user has no diagnostics of any kind which would allow them to figure out
-why that's happening.  Reducing the severity of the diagnostics might
-make sense but completely removing them is going to frustrate people.
-
---7uYPyRQQ5N0D02nI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmARo7sACgkQJNaLcl1U
-h9C/zgf+M23E2uLySMQpf+A6iMEsNiTgpP7a/viNGD5sYniZQUKnaIAK5DxA9Wxg
-IxeLQmVrNJ/y9+2meCuGWt9OQZSTkxB79jJjHfvO35SNFtGF9aQx/2o4GS2Qs9Dy
-GBLOUOv4GJvkJjFcMEtaZ0GpknvWUE9c6O3lX5a+RYyl7r4ADF6xI1oCfoqeaYxC
-iqWjcuM0R0EY9V54WfY9pplpSdQ0vhpviMaS/TwZkg8+ReoIBUeBvZh4A5gEdUGk
-gy/nAa/nbm50quO60GmuDzvpEk5KzjW8dkKR24YYK1ksd/gTxwCMpSAzYMp8HCal
-4Fu3pD3sBZkMffb71pMFVgO1Wyv5zw==
-=8ALC
------END PGP SIGNATURE-----
-
---7uYPyRQQ5N0D02nI--
