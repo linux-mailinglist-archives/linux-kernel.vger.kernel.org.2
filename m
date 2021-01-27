@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1932A305841
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D11B30582C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbhA0KXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:23:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59800 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235688AbhA0KT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:19:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611742710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xjqz0z3B10MBMjRhyTzjYxNKEzPg2nutGw+BuiLIitY=;
-        b=OCEdIOXAAPSCnYv9GFWV3cbykt664ihtGgntZ26ipblwaxnoeCVPzxfC9j6YuHWHDIGLem
-        i0fAFTh9vU5FloPM+R8Wy03gnebii4yReNcs/Nj+Wjkmnh0vaI/J/ppRkuud5HHX0teTrN
-        zmngPQh7KrJfX+m/IQP+t/qpM2N0l8M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-nzpZ7BHTOPa1PH98o-_REw-1; Wed, 27 Jan 2021 05:18:25 -0500
-X-MC-Unique: nzpZ7BHTOPa1PH98o-_REw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4601D801AB8;
-        Wed, 27 Jan 2021 10:18:24 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-237.ams2.redhat.com [10.36.114.237])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 445086EF55;
-        Wed, 27 Jan 2021 10:18:22 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v1 2/2] mm/page_alloc: count CMA pages per zone and print them in /proc/zoneinfo
-Date:   Wed, 27 Jan 2021 11:18:13 +0100
-Message-Id: <20210127101813.6370-3-david@redhat.com>
-In-Reply-To: <20210127101813.6370-1-david@redhat.com>
-References: <20210127101813.6370-1-david@redhat.com>
+        id S235815AbhA0KUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:20:53 -0500
+Received: from www.zeus03.de ([194.117.254.33]:60242 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235684AbhA0KS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:18:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=PPiP/ibzC5qvpAjqZLJI3QP1DFP9
+        9sVIpItAR82zC04=; b=x9Sm89cskKvp0s3bJMCTBvIsFwiP0cv+D2lBJLcym/n9
+        Q8/EJYH+pozrJM8bsrdVesN89p+KeIPu9xhLEYcOJ+cBoUNOvNqAKYpQUxWH0b5P
+        R9uzzox1E+AndLeXIOmAquP8preQqMRgjB76rfF71YFZ/93Wv1HvpK65a6nNyk4=
+Received: (qmail 4019814 invoked from network); 27 Jan 2021 11:18:14 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Jan 2021 11:18:14 +0100
+X-UD-Smtp-Session: l3s3148p1@d7PBFt+5bL0gAwDPXyX1AEdA8SGgn5QT
+Date:   Wed, 27 Jan 2021 11:18:14 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] media: i2c: adv7511: remove open coded version of
+ SMBus block read
+Message-ID: <20210127101814.GB928@ninjato>
+References: <20210119093912.1838-1-wsa+renesas@sang-engineering.com>
+ <20210119093912.1838-3-wsa+renesas@sang-engineering.com>
+ <1b3f4451-20e5-4f73-acab-d0deaa7ba63d@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LyciRD1jyfeSSjG0"
+Content-Disposition: inline
+In-Reply-To: <1b3f4451-20e5-4f73-acab-d0deaa7ba63d@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's count the number of CMA pages per zone and print them in
-/proc/zoneinfo.
 
-Having access to the total number of CMA pages per zone is helpful for
-debugging purposes to know where exactly the CMA pages ended up, and to
-figure out how many pages of a zone might behave differently (e.g., like
-ZONE_MOVABLE) - even after some of these pages might already have been
-allocated.
+--LyciRD1jyfeSSjG0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For now, we are only able to get the global nr+free cma pages from
-/proc/meminfo and the free cma pages per zone from /proc/zoneinfo.
+Hi Hans,
 
-Note: Track/print that information even without CONFIG_CMA, similar to
-"nr_free_cma" in /proc/zoneinfo. This is different to /proc/meminfo -
-maybe we want to make that consistent in the future (however, changing
-/proc/zoneinfo output might uglify the code a bit).
+> > -		adv7511_edid_rd(sd, 256, &state->edid.data[segment * 256]);
+> > +		err =3D adv7511_edid_rd(sd, 256, &state->edid.data[segment * 256]);
+> >  		adv7511_dbg_dump_edid(2, debug, sd, segment, &state->edid.data[segme=
+nt * 256]);
+>=20
+> Only call adv7511_dbg_dump_edid if err >=3D 0.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/mmzone.h | 4 ++++
- mm/page_alloc.c        | 1 +
- mm/vmstat.c            | 6 ++++--
- 3 files changed, 9 insertions(+), 2 deletions(-)
+Yes.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index ae588b2f87ef..3bc18c9976fd 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -503,6 +503,9 @@ struct zone {
- 	 * bootmem allocator):
- 	 *	managed_pages = present_pages - reserved_pages;
- 	 *
-+	 * cma pages is present pages that are assigned for CMA use
-+	 * (MIGRATE_CMA).
-+	 *
- 	 * So present_pages may be used by memory hotplug or memory power
- 	 * management logic to figure out unmanaged pages by checking
- 	 * (present_pages - managed_pages). And managed_pages should be used
-@@ -527,6 +530,7 @@ struct zone {
- 	atomic_long_t		managed_pages;
- 	unsigned long		spanned_pages;
- 	unsigned long		present_pages;
-+	unsigned long		cma_pages;
- 
- 	const char		*name;
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b031a5ae0bd5..9a82375bbcb2 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2168,6 +2168,7 @@ void __init init_cma_reserved_pageblock(struct page *page)
- 	}
- 
- 	adjust_managed_page_count(page, pageblock_nr_pages);
-+	page_zone(page)->cma_pages += pageblock_nr_pages;
- }
- #endif
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 7758486097f9..97fc32a53320 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1642,14 +1642,16 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 		   "\n        high     %lu"
- 		   "\n        spanned  %lu"
- 		   "\n        present  %lu"
--		   "\n        managed  %lu",
-+		   "\n        managed  %lu"
-+		   "\n        cma      %lu",
- 		   zone_page_state(zone, NR_FREE_PAGES),
- 		   min_wmark_pages(zone),
- 		   low_wmark_pages(zone),
- 		   high_wmark_pages(zone),
- 		   zone->spanned_pages,
- 		   zone->present_pages,
--		   zone_managed_pages(zone));
-+		   zone_managed_pages(zone),
-+		   zone->cma_pages);
- 
- 	seq_printf(m,
- 		   "\n        protection: (%ld",
--- 
-2.29.2
+>=20
+> >  		if (segment =3D=3D 0) {
+>=20
+> Change condition to: err >=3D 0 && segment =3D=3D 0
 
+Yes.
+
+>=20
+> >  			state->edid.blocks =3D state->edid.data[0x7e] + 1;
+> >  			v4l2_dbg(1, debug, sd, "%s: %d blocks in total\n", __func__, state-=
+>edid.blocks);
+> >  		}
+
+So I guarded the above block with an 'if (!err)' clause.
+adv7511_edid_rd() returns either 0 or errno, so we can take the above
+simpler condition.
+
+
+
+> > -		if (!edid_verify_crc(sd, segment) ||
+> > -		    !edid_verify_header(sd, segment)) {
+> > +		if (err < 0 || !edid_verify_crc(sd, segment) || !edid_verify_header(=
+sd, segment)) {
+> >  			/* edid crc error, force reread of edid segment */
+>=20
+> Hmm, this comment is a bit out of date. Change to:
+>=20
+> 			/*
+> 			 * Couldn't read EDID or EDID has invalid content.
+> 			 * Force reread of EDID segment.
+> 			 */
+
+I updated the comment but kept it a oneliner.
+
+>=20
+> >  			v4l2_err(sd, "%s: edid crc or header error\n", __func__);
+>=20
+> Only show this message if err >=3D 0. For err < 0 the adv7511_edid_rd() a=
+lready
+> logs an error.
+
+Yes. I used 'if (!err)' again here.
+
+Will resend in a minute, thanks for the review!
+
+All the best,
+
+   Wolfram
+
+
+--LyciRD1jyfeSSjG0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmARPeUACgkQFA3kzBSg
+KbaU5RAAoHPCy8g/Hy0fafsjns1bhNX+atshAy42bkGoW8bcd55VZisvgAdk1fg3
+WKpPWVRDKxVJ9vTSEjB0TpYPQGm01kvi0l8britPcsRNkJ8VQ9uQGHqM6Jd9JY8P
+hMtJccF7RJDqKVXPRlGPH9k0BBr1jRhfa74pvCI9I3W4+TAqyPat/WbuLuhxHLGn
+xbFZjUSaJBwP/oyznL04HQ9aDV5YIOABzLmQHjLFraofn0HEtL3MpFZtuvs3nHuF
+D/rVjgs/6y//b4KUmaJweD3tbuVyUCruOwYLjljdJK1Se79FHukCHOcowNpbOnb+
+ow2Er7S+U05gjWiJOcMYjUJulryLGg23QLn7HfdvM6BJuuYi0qxQiU0O/cEtH1IB
+liKeGaWcDWWrmWcBinUx3Ldiyxh7wHSCL+22FyjNM8xxqTw5fslc+5CJR5lPMFHB
+WNOppwqO6cKnyql+lkaUijoWept+jDcOLjyKzVWxBaRpIH2z03P8EKt+a/DF2ysa
+cVOjaSfq5I/23pyeByh8yKud3N9tqS/go6j/79eQrhul3CNy7Urk3GraaAOcJUwL
+rodqyQ+upIVh1fNwzzwj/TwMZUPrxzD2Z+BodnSZ8DiNt0YImZtWuGys0XghWcIQ
+AzdL8U/W+0EIvpifOVNokVq3UpisBkVo2VA6ZpTeXl2f+XgIju0=
+=1s9r
+-----END PGP SIGNATURE-----
+
+--LyciRD1jyfeSSjG0--
