@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCE1306708
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7CB306704
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 23:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236892AbhA0WLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:11:09 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:49272 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236675AbhA0WLD (ORCPT
+        id S236659AbhA0WKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236589AbhA0WKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:11:03 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-144-olLfPvOBNhiMAsAWFz1jNg-1; Wed, 27 Jan 2021 22:09:25 +0000
-X-MC-Unique: olLfPvOBNhiMAsAWFz1jNg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 27 Jan 2021 22:09:23 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 27 Jan 2021 22:09:23 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     Kees Cook <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        Wed, 27 Jan 2021 17:10:20 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4878EC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:09:40 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611785378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRHi3vNzIfr8TCLFZ6ldJ5CafgzcNszokGa318PJPEk=;
+        b=4m3utNItU5lTkzKPDwpu6Ls28uBgchIegkVXHvHZmHpy7XJ3B86OXr5O4NICMLQdsx8dYG
+        EsCqOXQY4fxWUbsJ7FTYPJGK3QffKdgwPS/8RmYu6G/e8GC14u169liwvUtPvWxFkkwxe8
+        1/zl5iLa6U+qd4Gx5epmenev0dGWql84q2MjGwAosMzVGIB0EBnlxj2SJP9GHZBzkbqDK9
+        VmCzuynlMlAqlZknS9txUfuKPrg4jBVV2HOWCQtbIJu1zebO9HVL+6odSHw9Qm8+sBawtp
+        AmEeyfzkLlqH4Z2MWeDXoMzCilWT/wP7Zfbigd8y8WFDLPXI/QWF7RQy2fbbrA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611785378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRHi3vNzIfr8TCLFZ6ldJ5CafgzcNszokGa318PJPEk=;
+        b=K7y1cVn38ujc2CSQ/vRCbO/1Z+SLHEzcmRUGEhlEL3sxstdfMi74aKB5ujNk6jWgf6ZIBW
+        Iksf60JMloEO1NCQ==
+To:     Fenghua Yu <fenghua.yu@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Justin Forbes" <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Thread-Topic: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Thread-Index: AQHW9N1iS8d19DyYhUmaAJxxd6lVCKo8BhIg
-Date:   Wed, 27 Jan 2021 22:09:23 +0000
-Message-ID: <453ab26cafc247dbb1a019e6b8c24cf1@AcuMS.aculab.com>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210127180215.GA1745339@infradead.org>
- <20210127183856.moe3p5pxw6bbtunk@treble>
- <20210127184327.GA1755516@infradead.org>
- <20210127185113.c3est2vssf5tlyyq@treble>
-In-Reply-To: <20210127185113.c3est2vssf5tlyyq@treble>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Subject: Re: [PATCH v4 4/4] Documentation/admin-guide: Change doc for split_lock_detect parameter
+In-Reply-To: <20201124205245.4164633-5-fenghua.yu@intel.com>
+References: <20201124205245.4164633-1-fenghua.yu@intel.com> <20201124205245.4164633-5-fenghua.yu@intel.com>
+Date:   Wed, 27 Jan 2021 23:09:38 +0100
+Message-ID: <87o8hadobh.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMjcgSmFudWFyeSAyMDIxIDE4OjUxDQo+IA0K
-PiBPbiBXZWQsIEphbiAyNywgMjAyMSBhdCAwNjo0MzoyN1BNICswMDAwLCBDaHJpc3RvcGggSGVs
-bHdpZyB3cm90ZToNCj4gPiBPbiBXZWQsIEphbiAyNywgMjAyMSBhdCAxMjozODo1NlBNIC0wNjAw
-LCBKb3NoIFBvaW1ib2V1ZiB3cm90ZToNCj4gPiA+IE9uIFdlZCwgSmFuIDI3LCAyMDIxIGF0IDA2
-OjAyOjE1UE0gKzAwMDAsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOg0KPiA+ID4gPiBQbGVhc2Ug
-ZG9uJ3QgYWRkIGFsbCB0aGlzIGdhcmJhZ2UuICBXZSBvbmx5IGFkZCBpbmZyYXN0cnVjdHVyZSB0
-byB0aGUNCj4gPiA+ID4ga2VybmVsIGZvciB3aGF0IHRoZSBrZXJuZWwgaXRzZWxmIG5lZWRzLCBu
-b3QgZm9yIHdlaXJkIG91dCBvZiB0cmVlDQo+ID4gPiA+IGluZnJhc3RydWN0dXJlLg0KPiA+ID4N
-Cj4gPiA+IFRoaXMgaXNuJ3QgbmV3LCB0aGUga2VybmVsIGFscmVhZHkgaGFzIHRoZSBpbmZyYXN0
-cnVjdHVyZSBmb3IgYnVpbGRpbmcNCj4gPiA+IG91dC1vZi10cmVlIG1vZHVsZXMuICBJdCdzIHdp
-ZGVseSB1c2VkLiAgQXJlIHlvdSBzdWdnZXN0aW5nIHdlIHJlbW92ZQ0KPiA+ID4gaXQ/ICBHb29k
-IGx1Y2sgd2l0aCB0aGF0Li4uDQo+ID4gPg0KPiA+ID4gRWl0aGVyIGl0IHNob3VsZCBiZSBzdXBw
-b3J0ZWQsIG9yIG5vdC4gIE1ha2UgdGhlIGNhc2UgZWl0aGVyIHdheS4gIEJ1dCBJDQo+ID4gPiBj
-YW4ndCB1bmRlcnN0YW5kIHdoeSBwZW9wbGUgYXJlIGFkdm9jYXRpbmcgdG8gbGVhdmUgaXQgaGFs
-Zi1icm9rZW4uDQo+ID4NCj4gPg0KPiA+IEl0IGlzIG5vdCBzdXBwb3J0IGFzIGFueSBraW5kIG9m
-IGludGVyZmFjZS4gIEl0IGlzIGEgbGl0dGxlIGFpZCBmb3INCj4gPiBsb2NhbCBkZXZlbG9wbWVu
-dC4NCj4gDQo+IElzIHRoaXMgYSBqb2tlPyAgSSd2ZSBuZXZlciBtZXQgYW55Ym9keSB3aG8gYnVp
-bGRzIE9PVCBtb2R1bGVzIGFzIGENCj4gZGV2ZWxvcG1lbnQgYWlkLi4uDQo+IA0KPiBPbiB0aGUg
-b3RoZXIgaGFuZCBJIGtub3cgb2Ygc2V2ZXJhbCB2ZXJ5IHBvcHVsYXIgZGlzdHJvcyAoc29tZSBw
-YWlkLA0KPiBzb21lIG5vdCkgd2hvIHJlbHkgb24gYWxsb3dpbmcgdXNlcnMvcGFydG5lcnMgdG8g
-YnVpbGQgT09UIG1vZHVsZXMgYXMNCj4gcGFydCBvZiB0aGVpciBlY29zeXN0ZW0uICBUbyBzYXkg
-aXQncyBub3Qgc3VwcG9ydGVkIGlzIGEgZmFyY2UuDQoNCkluZGVlZCB0aGVyZSBhcmUgcGxlbnR5
-IG9mIGNvbXBhbmllcyB3aG8gcHJvdmlkZSBrZXJuZWwgbW9kdWxlcw0KKHdob2xseSBvciBwYXJ0
-bHkgaW4gc291cmNlIGZvcm0pIGZvciB0aGVpciBjdXN0b21lcnMgdG8gYnVpbGQgYXMgT09UDQpt
-b2R1bGVzIHRvIGluc3RhbGwgaW4gZGlzdHJvIGJ1aWx0IGtlcm5lbHMuDQoNClRoZXNlIG1vZHVs
-ZXMgaGF2ZSB0byBjb21waWxlIGFnYWluc3QgZXZlcnl0aGluZyBmcm9tIFJIRUw2ICgyLjYuMzIg
-YmFzZSkNCnRocm91Z2ggdG8gdGhlIGN1cnJlbnQgLXJjIHJlbGVhc2UuDQoNCglEYXZpZA0KDQot
-DQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwg
-TWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2Fs
-ZXMpDQo=
+On Tue, Nov 24 2020 at 20:52, Fenghua Yu wrote:
+> Since #DB for bus lock detect changes the split_lock_detect parameter,
+> update the documentation for the changes.
 
+Why is this seperate and an all in one thing? patch 2/4 changes the
+parameter first and 3/4 adds a new option....
+
+>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> ---
+> Change Log:
+> v4:
+> - Fix a ratelimit wording issue in the doc (Randy).
+> - Patch 4 is acked by Randy (Randy).
+>
+> v3:
+> - Enable Bus Lock Detection when fatal to handle bus lock from non-WB
+>   (PeterZ).
+>
+> v1:
+> - Fix a few wording issues (Randy).
+>
+> RFC v2:
+> - Simplify the documentation (Randy).
+>
+>  .../admin-guide/kernel-parameters.txt         | 30 +++++++++++++++----
+>  1 file changed, 24 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 44fde25bb221..28228539b02a 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5051,27 +5051,45 @@
+>  	spia_peddr=
+> +
+> +			ratelimit:N -
+> +				  Set rate limit to N bus locks per second
+> +				  for bus lock detection. 0 < N <= HZ/2.
+
+Oh well. So if I have ratelimit:500 on the kernel command line and then
+this works for CONFIG_HZ=1000, but after rebuilding the kernel with
+HZ=250 it fails. What?
+
+If I allow 500 hits per second then CONFIG_HZ has absolutely nothing to
+do with it. A second stays a second independent of CONFIG_HZ.
+
+So what's the purpose of this HZ business?
+
+Thanks,
+
+        tglx
