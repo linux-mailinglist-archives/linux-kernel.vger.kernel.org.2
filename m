@@ -2,287 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F8F3064A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2DA3064B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 21:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhA0T7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:59:21 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:38102 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhA0T6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:58:24 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10RJs32u111560;
-        Wed, 27 Jan 2021 19:57:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=sxZo9V9olp9ayVjpZCZBPvJMYBnlqgW68jXqslEpabc=;
- b=sU7MnltrCXm7pJkuLzXN+4RgibVKNZ+qkN1UDtDibXSVn1GPHU15Eh00UI2jTg9GrdpP
- 5B5p3yUfYSQEYuQfWc+k8xM9zuwUF5UJ422CVCISEOkC48TdJtUabykf8Tp6DiNC8q9F
- HQ0CtpRuu0SihxlTek68VwUy+iHbKl7XD4jdCb1EFZwymPknh96iI4E9XH7DOqk+cISD
- 6LCzOyyuwtD13cnW+wrSs1GYF0GN4Coj3vEKU4TTxGroYfYvxDeFwXoAXmhuaGNqAJe9
- zfHrcLmiLcHpDd18dTs4uFDcqZ4fEz9qlAY2un+EqIT9QA/KKqKzpY0/zWAxc0IvLldv ng== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 368b7r111j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 19:57:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10RJuaEm106690;
-        Wed, 27 Jan 2021 19:57:29 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
-        by aserp3020.oracle.com with ESMTP id 368wq0pk4b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 19:57:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MbbEXRCIklVXxnrN5aqe7O4uyGiI+qtfglIIHqBK7l9sWOwwjjT86rsXzhPcuQuKmcpFyLEitmF18ZV/dGQsYyes9Z1GEtOzrdifvcS67+FDg37TIc6CFDbr8nApedOzIt8JsVKvsJopAWWj3FX4ff1b11EBv6qr0BOsKXDAwqaP5WiBfhJhyIBKI73aLCILDbtBcJmydREJ6CtgpRCdGueAfXL82VJ4kLk8HXJhNmyuovHX4tMe6brBlMJAnVHrmqlGtI2Iwy9YG0jSsfdmDBOB9c5EgNmYIn+Zz4u+jTA8kw/6/S7kyktQi7Q24yZtv+JNicDHc8RKF6n1o4Q5Bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sxZo9V9olp9ayVjpZCZBPvJMYBnlqgW68jXqslEpabc=;
- b=WFkHRR+iDKFYLffjADZr0pSF6tCEWk2EF/cvxyp/xKjGc9nebr/0C179ULZ1d84VOguvLN2T3/Aa2cDYe9nAnZ0ZY4qWVz5TE5EE7x/kwKlbWfVG1P4IYFGRujWpb/KfcOfGlo3CE8cviYS10NBYkuxEtviROjrMYJ5dWSrJgu2Cj8ociXKBPzao5nb9tXdN208+CDPjbYOJGLhhZi8oprPG5+ibG1Ow7ejvYaMTNWwif+lS+cb4U66/n3WyfhoNwxxgVmpt1OYUeyjDm8x5U5ocl4D/+2ljVIG6MLAkh6uOaGDYMD8tWoBEiJ2LW8KtbR7IWUAAY66K2tdH7GsjSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sxZo9V9olp9ayVjpZCZBPvJMYBnlqgW68jXqslEpabc=;
- b=O5rXxXf+Fp2VLKmOm3y1wxYDU/9F46/b8ZUiK5aQfVMS4EwQI4YLlsK4mmumbVE0waATDp0pMn6+bmBh58B1qmNTTOf1KutOq/bdyx4XhzCkg47OFBE8GVAwODBtykbWmaMZxDFgWx1eOOEf4REqc0TLPEhzaKgg7tW+v7JAr7Y=
-Authentication-Results: kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by BYAPR10MB3255.namprd10.prod.outlook.com (2603:10b6:a03:156::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Wed, 27 Jan
- 2021 19:57:27 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::644d:92e4:7b5d:f8c1]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::644d:92e4:7b5d:f8c1%5]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
- 19:57:27 +0000
-Subject: Re: [PATCH] xen-blkback: fix compatibility bug with single page rings
-To:     Paul Durrant <paul@xen.org>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>
-References: <20210127103034.2559-1-paul@xen.org>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <18c3efc4-57b6-5a5d-cfa3-7820b7f5080c@oracle.com>
-Date:   Wed, 27 Jan 2021 11:57:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <20210127103034.2559-1-paul@xen.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [2601:646:c303:6700::a4a4]
-X-ClientProxiedBy: SJ0PR13CA0003.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::8) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        id S232227AbhA0UCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 15:02:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232053AbhA0T60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:58:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2414160C40;
+        Wed, 27 Jan 2021 19:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611777463;
+        bh=GYaPIkDNPsx52Kgl/Y9GedOqubR3oKeaH4wBWgMGwU4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UJlAviz6k8KREx92spLoZNZI2k+FYJFcLx8Q+m0Fcp31cmO01ddeUKJNYexNK64Ys
+         m0D31z89Ys6ouNnfF7bkrDPSEiUP6DghxVffqLGrjyiWaXbZwOdMh5orSZm6Q16n4Q
+         cV9DvLfzMT2XlyENumWWyDRqV/baSmBtlhw9em9dlbNIir8zHtkZ+PmCzZDoACa7BH
+         11xY6u8l14PN1pepdNP1+G/OsAc9K3dT1HW6A6W44qrkVvBoNJ+tIEMfoXlV3UJA67
+         EeKx71126oHYRPoVZGb/SMoPm7atyAaq//NlSh6v6mbsyA6aDpXQkaQ+v8coPt8vAe
+         3DD/oTVvVkVnw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id ECAEC40513; Wed, 27 Jan 2021 16:57:40 -0300 (-03)
+Date:   Wed, 27 Jan 2021 16:57:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, jolsa@redhat.com,
+        namhyung@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com
+Subject: Re: [PATCH] perf stat: Add Topdown metrics events as default events
+Message-ID: <20210127195740.GB758449@kernel.org>
+References: <20210121133752.118327-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2601:646:c303:6700::a4a4] (2601:646:c303:6700::a4a4) by SJ0PR13CA0003.namprd13.prod.outlook.com (2603:10b6:a03:2c0::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6 via Frontend Transport; Wed, 27 Jan 2021 19:57:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 682af169-f6ed-4837-0d50-08d8c2fdc57b
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3255:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB32552A2496CFB4260B2A4B68F0BB9@BYAPR10MB3255.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:98;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vOlez3VtjL0/S2SK44e4AKzK2owErep/S9SW3OvxV/msYERcT+xBK1Aup2J4gchJRenoQU/NnsLHYzal/eUDFOdGChz5sPA2Wo3pO5okjKJQs/2JQjEI/zsOmPJGkF8kmORLAusKRH/SYVrk1WA5XevRQXEg07/bkriC72R3lIxXKTWYBJczetEnpxiAparamJSPCCZRCIjAztGU4brqWNdDhrn1PbxcCDE8JHD8IQzTN1T9OTlRvB4tkHLWUY1DiBMVmp1kMfcDTDfTU9bD/i1y4iSvL/uvOAucf6pVnzLC2ME+PCeqCdxZmuKrzSU7xcaLUST0Ye2X30EMs+rlPx2SKGZTatSgA+yR4yC1A7ACZIXwvIBykdI/hRKObRLR22lVi9fnD4tfUDH+e9hpJYX2OL8JbURNG8E/qSHBeqBqnm0s4zp4HKaMI2PKUMxcmoUNbZeRYffzRw2DnZnr3/hCiPLkQh9DvdYErea6CTe7NJy8zHOkWiKo82f/69XQ64pcm0WpTolJwsNsGHmJWMkJ5354iVfvavpArTj5LO4hEy41wuRLhx4GObluh7BusOCDP7MEnQRnZGbkpwPJXHUNGBzCtgcy7R63nGlT9w4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(376002)(136003)(366004)(478600001)(2616005)(83380400001)(66476007)(4326008)(66556008)(5660300002)(44832011)(8676002)(31686004)(316002)(8936002)(2906002)(186003)(86362001)(53546011)(31696002)(6486002)(36756003)(16526019)(54906003)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VGRWNldnSWpSSmhwVEQ5MDFUd1M4OXo0c2diakFnL25HKzl1NE0zNEtFQ2ZY?=
- =?utf-8?B?WHlMbUEwYThKSTF5V2lOVzhLQnIxN1NrY3gyaHBNVjJKQlRtRG1qRTlVaGNC?=
- =?utf-8?B?U0tuVzB3LzVYMEZLQ2xoYlBaRTU0YlN1SldWWTFHbTB6STNqVFZUb0xVMnNy?=
- =?utf-8?B?blFXd000ZnVrdFFCQVpJSHladENxSndIMXdIVnZubUZ0VXVnam1TVDJBbkNZ?=
- =?utf-8?B?R29xUzNqYUhrcGZVc1pubENjcFpMV2Q0Y0J5THFvcllNL3VOMjZRYlRmcTc5?=
- =?utf-8?B?YWN4MkVsUElCaG9oZzc0eXdSNXdqYm0rSzNSaW1xMk91eVZjRmtucXpId09x?=
- =?utf-8?B?amtGRjd4TnZ0T2hBVTNrdDBxa2RNZTBiVkR2d1pqcy94cWtCdG55b0kwSXdE?=
- =?utf-8?B?V0c1Q3RldjdiN3kxN0ZkUzJMaWJoWVRoaEtzQU9qMDM0WHVlbzc4UWpyc24w?=
- =?utf-8?B?aWMzK3BjcjNzUno2NHhvSGhiVHQzdVVrcnBLNklrRTZYV3daZ3JvV3k4Yzd6?=
- =?utf-8?B?enBFcktnb0hraENPb2puN2grU1o1MkYweldJaWJFdFl4SVNnRnRGcXhYL1A0?=
- =?utf-8?B?S2JtTGpQemE0VDhxUmxocHlrcjJGZEJWVndyL3N4NUlHam9tVDZNb01xNUNC?=
- =?utf-8?B?QzMxaGpDaklHamJoZEE4SlV6cFRseWl4c1NyY1dPdTNURTQxMmpHSk52eWd0?=
- =?utf-8?B?aGI2d1NhV0gvd0pjVmtNNHp2dWFxVXlvVnRmUW1FSWFLZDJUaU5CaXVXdys1?=
- =?utf-8?B?RCtHck1CNC83MlJuYjdCSHpRRGJGV1RIMHFOUG1ULzduRDhpaEorZWN1RHdJ?=
- =?utf-8?B?MzMxWWl1Ym00dFlxTDlXRzVpUGhqVTl5YkNvSVd6ZHR6enk2cXdmNnVCdjQr?=
- =?utf-8?B?UWx5WS9UVkEyNDk3dnJhVkd2NlYzVENUK1hVNFpwNm9rdDFRNURkMVB1RmJx?=
- =?utf-8?B?dUgzeHZFUzYyajBtRmltUWpwcWtVSVpiQzhGRmtIWis4UG5Vb0pzVC9PZmJ3?=
- =?utf-8?B?Y2haeDhWVVdRZENBaXJpUjhoQWoyaWE4YzcreEN4TERIUGI1OEhaU0hXT0hl?=
- =?utf-8?B?VkNXU0NiNFFBdnltUml5VHRYTTluNE9Wd2ZWM0JTQkh1VnZRY0hKamhvd3Bw?=
- =?utf-8?B?ZVZNWUtuM0xxNXBQekoxaDF6VFFzYzRVL3pnd3BlWERrczB1bEdYYlVaUFR4?=
- =?utf-8?B?a3RjRUc4VDBSc213dE1wVXd2TFBDNEJUb3FVOVd4RUQ2R0xpM3lmRk5FZWpn?=
- =?utf-8?B?ZHRIM0pGbFlTU1E5SDVVT3VyaTQ1bG1SR2tSaW5HUGI3ZFFKZDh4MFJwZXBV?=
- =?utf-8?B?V3F4WVFybnNXdGYyTGlrbDRwcnZlbXBPem1jdjVhQ2QvZVNNVHV4THNSSldK?=
- =?utf-8?B?MXdPU25aTExmZnNnbFBFUHdCNG43SHJQdEhHNkFFaWFiTTRydnkyU2xDa1lx?=
- =?utf-8?B?bGRJTEUrTEl0ckoyR1h1NjVEVEYxR3lNL01TcThRPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 682af169-f6ed-4837-0d50-08d8c2fdc57b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 19:57:27.1004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PXUKUrg0TPDCiMe6aNIaxJBBBhClOtWgCOcxmXEZXDfB7nEsAqpNVFUCuxSHfhMYo1tgzmvFEjT4Ku2OBnRREg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3255
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
- adultscore=0 bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270099
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270099
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121133752.118327-1-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, Jan 21, 2021 at 05:37:52AM -0800, kan.liang@linux.intel.com escreveu:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> The Topdown Microarchitecture Analysis (TMA) Method is a structured
+> analysis methodology to identify critical performance bottlenecks in
+> out-of-order processors. From the Ice Lake and later platforms, the
+> Topdown information can be retrieved from the dedicated "metrics"
+> register, which isn't impacted by other events. Also, the Topdown
+> metrics support both per thread/process and per core measuring.
+> Adding Topdown metrics events as default events can enrich the default
+> measuring information, and would not cost any extra multiplexing.
+> 
+> Introduce arch_evlist__add_default_attrs() to allow architecture
+> specific default events. Add the Topdown metrics events in the X86
+> specific arch_evlist__add_default_attrs(). Other architectures can
+> add their own default events later separately.
+> 
+> With the patch,
 
+Thanks, applied.
 
-On 1/27/21 2:30 AM, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
+- Arnaldo
+ 
+>  $perf stat sleep 1
 > 
-> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
-> inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
-> behaviour of xen-blkback when connecting to a frontend was:
+>  Performance counter stats for 'sleep 1':
 > 
-> - read 'ring-page-order'
-> - if not present then expect a single page ring specified by 'ring-ref'
-> - else expect a ring specified by 'ring-refX' where X is between 0 and
->   1 << ring-page-order
+>            0.82 msec task-clock:u              #    0.001 CPUs utilized
+>               0      context-switches:u        #    0.000 K/sec
+>               0      cpu-migrations:u          #    0.000 K/sec
+>              61      page-faults:u             #    0.074 M/sec
+>         319,941      cycles:u                  #    0.388 GHz
+>         242,802      instructions:u            #    0.76  insn per cycle
+>          54,380      branches:u                #   66.028 M/sec
+>           4,043      branch-misses:u           #    7.43% of all branches
+>       1,585,555      slots:u                   # 1925.189 M/sec
+>         238,941      topdown-retiring:u        #     15.0% retiring
+>         410,378      topdown-bad-spec:u        #     25.8% bad speculation
+>         634,222      topdown-fe-bound:u        #     39.9% frontend bound
+>         304,675      topdown-be-bound:u        #     19.2% backend bound
 > 
-> This was correct behaviour, but was broken by the afforementioned commit to
-> become:
+>        1.001791625 seconds time elapsed
 > 
-> - read 'ring-page-order'
-> - if not present then expect a single page ring
-> - expect a ring specified by 'ring-refX' where X is between 0 and
->   1 << ring-page-order
-> - if that didn't work then see if there's a single page ring specified by
->   'ring-ref'
+>        0.000000000 seconds user
+>        0.001572000 seconds sys
 > 
-> This incorrect behaviour works most of the time but fails when a frontend
-> that sets 'ring-page-order' is unloaded and replaced by one that does not
-> because, instead of reading 'ring-ref', xen-blkback will read the stale
-> 'ring-ref0' left around by the previous frontend will try to map the wrong
-> grant reference.
-> 
-> This patch restores the original behaviour.
-> 
-> Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid inconsistent xenstore 'ring-page-order' set by malicious blkfront")
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 > ---
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: "Roger Pau Monné" <roger.pau@citrix.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
->  drivers/block/xen-blkback/common.h |  1 +
->  drivers/block/xen-blkback/xenbus.c | 36 +++++++++++++-----------------
->  2 files changed, 17 insertions(+), 20 deletions(-)
+>  tools/perf/arch/x86/util/Build    |  1 +
+>  tools/perf/arch/x86/util/evlist.c | 15 +++++++++++++++
+>  tools/perf/builtin-stat.c         |  3 +++
+>  tools/perf/util/evlist.c          |  5 +++++
+>  tools/perf/util/evlist.h          |  2 ++
+>  5 files changed, 26 insertions(+)
+>  create mode 100644 tools/perf/arch/x86/util/evlist.c
 > 
-> diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
-> index b0c71d3a81a0..524a79f10de6 100644
-> --- a/drivers/block/xen-blkback/common.h
-> +++ b/drivers/block/xen-blkback/common.h
-> @@ -313,6 +313,7 @@ struct xen_blkif {
+> diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
+> index 347c39b960eb..ce1ec92fecdc 100644
+> --- a/tools/perf/arch/x86/util/Build
+> +++ b/tools/perf/arch/x86/util/Build
+> @@ -6,6 +6,7 @@ perf-y += perf_regs.o
+>  perf-y += topdown.o
+>  perf-y += machine.o
+>  perf-y += event.o
+> +perf-y += evlist.o
 >  
->  	struct work_struct	free_work;
->  	unsigned int 		nr_ring_pages;
-> +	bool                    multi_ref;
->  	/* All rings for this device. */
->  	struct xen_blkif_ring	*rings;
->  	unsigned int		nr_rings;
-> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> index 9860d4842f36..4c1541cde68c 100644
-> --- a/drivers/block/xen-blkback/xenbus.c
-> +++ b/drivers/block/xen-blkback/xenbus.c
-> @@ -998,10 +998,15 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
->  	for (i = 0; i < nr_grefs; i++) {
->  		char ring_ref_name[RINGREF_NAME_LEN];
->  
-> -		snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-> +		if (blkif->multi_ref)
-> +			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-> +		else {
-> +			WARN_ON(i != 0);
-> +			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref");
-> +		}
+>  perf-$(CONFIG_DWARF) += dwarf-regs.o
+>  perf-$(CONFIG_BPF_PROLOGUE) += dwarf-regs.o
+> diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util/evlist.c
+> new file mode 100644
+> index 000000000000..8c6732cc7794
+> --- /dev/null
+> +++ b/tools/perf/arch/x86/util/evlist.c
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stdio.h>
+> +#include "util/pmu.h"
+> +#include "util/evlist.h"
+> +#include "util/parse-events.h"
 > +
->  		err = xenbus_scanf(XBT_NIL, dir, ring_ref_name,
->  				   "%u", &ring_ref[i]);
-> -
->  		if (err != 1) {
->  			if (nr_grefs == 1)
->  				break;
-
-I think we should not simply break here because the failure can be due to when
-(nr_grefs == 1) and reading from legacy "ring-ref".
-
-Should we do something as below?
-
-err = -EINVAL;
-xenbus_dev_fatal(dev, err, "reading %s/ring-ref", dir);
-return err;
-
-Dongli Zhang
-
-
-> @@ -1013,18 +1018,6 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
+> +#define TOPDOWN_L1_EVENTS	"{slots,topdown-retiring,topdown-bad-spec,topdown-fe-bound,topdown-be-bound}"
+> +
+> +int arch_evlist__add_default_attrs(struct evlist *evlist)
+> +{
+> +	if (!pmu_have_event("cpu", "slots"))
+> +		return 0;
+> +
+> +	return parse_events(evlist, TOPDOWN_L1_EVENTS, NULL);
+> +}
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 3c054b8d4677..abcdabaf1701 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1827,6 +1827,9 @@ static int add_default_attributes(void)
 >  		}
+>  		if (evlist__add_default_attrs(evsel_list, default_attrs1) < 0)
+>  			return -1;
+> +
+> +		if (arch_evlist__add_default_attrs(evsel_list) < 0)
+> +			return -1;
 >  	}
 >  
-> -	if (err != 1) {
-> -		WARN_ON(nr_grefs != 1);
-> -
-> -		err = xenbus_scanf(XBT_NIL, dir, "ring-ref", "%u",
-> -				   &ring_ref[0]);
-> -		if (err != 1) {
-> -			err = -EINVAL;
-> -			xenbus_dev_fatal(dev, err, "reading %s/ring-ref", dir);
-> -			return err;
-> -		}
-> -	}
-> -
->  	err = -ENOMEM;
->  	for (i = 0; i < nr_grefs * XEN_BLKIF_REQS_PER_PAGE; i++) {
->  		req = kzalloc(sizeof(*req), GFP_KERNEL);
-> @@ -1129,10 +1122,15 @@ static int connect_ring(struct backend_info *be)
->  		 blkif->nr_rings, blkif->blk_protocol, protocol,
->  		 blkif->vbd.feature_gnt_persistent ? "persistent grants" : "");
+>  	/* Detailed events get appended to the event list: */
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 05363a7247c4..b38589d8c027 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -303,6 +303,11 @@ int __evlist__add_default_attrs(struct evlist *evlist, struct perf_event_attr *a
+>  	return evlist__add_attrs(evlist, attrs, nr_attrs);
+>  }
 >  
-> -	ring_page_order = xenbus_read_unsigned(dev->otherend,
-> -					       "ring-page-order", 0);
-> -
-> -	if (ring_page_order > xen_blkif_max_ring_order) {
-> +	err = xenbus_scanf(XBT_NIL, dev->otherend, "ring-page-order", "%u",
-> +			   &ring_page_order);
-> +	if (err != 1) {
-> +		blkif->nr_ring_pages = 1;
-> +		blkif->multi_ref = false;
-> +	} else if (ring_page_order <= xen_blkif_max_ring_order) {
-> +		blkif->nr_ring_pages = 1 << ring_page_order;
-> +		blkif->multi_ref = true;
-> +	} else {
->  		err = -EINVAL;
->  		xenbus_dev_fatal(dev, err,
->  				 "requested ring page order %d exceed max:%d",
-> @@ -1141,8 +1139,6 @@ static int connect_ring(struct backend_info *be)
->  		return err;
->  	}
+> +__weak int arch_evlist__add_default_attrs(struct evlist *evlist __maybe_unused)
+> +{
+> +	return 0;
+> +}
+> +
+>  struct evsel *evlist__find_tracepoint_by_id(struct evlist *evlist, int id)
+>  {
+>  	struct evsel *evsel;
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 1aae75895dea..9eba4958a1e9 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -110,6 +110,8 @@ int __evlist__add_default_attrs(struct evlist *evlist,
+>  #define evlist__add_default_attrs(evlist, array) \
+>  	__evlist__add_default_attrs(evlist, array, ARRAY_SIZE(array))
 >  
-> -	blkif->nr_ring_pages = 1 << ring_page_order;
-> -
->  	if (blkif->nr_rings == 1)
->  		return read_per_ring_refs(&blkif->rings[0], dev->otherend);
->  	else {
+> +int arch_evlist__add_default_attrs(struct evlist *evlist);
+> +
+>  int evlist__add_dummy(struct evlist *evlist);
+>  
+>  int evlist__add_sb_event(struct evlist *evlist, struct perf_event_attr *attr,
+> -- 
+> 2.25.1
 > 
+
+-- 
+
+- Arnaldo
