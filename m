@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F7E30661D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B383F306611
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhA0V3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:29:39 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48887 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343655AbhA0V1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:27:20 -0500
-IronPort-SDR: 3uRUtmiZFdgjgdleiaaN+B5LziRDV9SYpIcw6SLjSobgDqzwO4PzPZYEd6hAbB/gUOiW6z+jpQ
- WeOpyvfmhXCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="177573128"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="177573128"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:25:55 -0800
-IronPort-SDR: 7yHIyk0Z1jvNcgVjt+CtgrEAlpH5CIKRRkHlbTyqShiSuIOIiK1NOQXRqjbG1+wdOdpg3rS2Iw
- p50s28Gb4qcA==
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="353948222"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:25:54 -0800
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v18 11/25] x86/mm: Update ptep_set_wrprotect() and pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
-Date:   Wed, 27 Jan 2021 13:25:10 -0800
-Message-Id: <20210127212524.10188-12-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210127212524.10188-1-yu-cheng.yu@intel.com>
-References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+        id S234881AbhA0V3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:29:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234612AbhA0V1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:27:15 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4842AC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:26:08 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id q131so2148510pfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:26:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H4wYdYZxwdbWGzK2JDLYdiHMKyIE6uo335eyGMtSLco=;
+        b=pVvARrOgazAx47oDVr+JRrz3THFq6XZdUlV/9hocdgX6rmuAoOUbnhNma9j5cf2qq9
+         HExK2XtTjt9AOgnHY8n0Qn9QvTUnJcA2/SYPBJg1hiPKZ56sbs8MnPAQv09rDk/XQSdK
+         /RtYc8ClMUFRPQOONGh8q/rTjY8nf6+N1fnNWwDbWRsSK1M6fY1MqQRUpxieuX9YiCbZ
+         wiaYOkKn9InRJYdHlt80E17MqvH5K7g5KJDMVw4V4JhRHknnHF+Sm6Km/qxJyoxi+kwc
+         AAJYk6Hc+92YI3tl13bNmoM5OfHt7+7+VwDN502Hf28vWOJtWWjmoEyPaUsJEFUbrR+u
+         msUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H4wYdYZxwdbWGzK2JDLYdiHMKyIE6uo335eyGMtSLco=;
+        b=KGMXCgSYgMHnRKZANQ3IJ37+bchGTJi2O0499UtXKQEr1kNjP3n85dVZd/OP+VIn1L
+         Eix3hwM7p+C29jm/G+oFnxW2hv2Y/BYpy6HMDctY1U+dBUhbayxT9sh9LyGBhIzFQI73
+         7foDMhT5WsY5pyEwZtgCaqeAWBk8ziRYTB8Evv6KKNPhXYQ1LEtEOB4DB4KV7o3Djml4
+         GHNUW55nfcvu2AIwkpStRh9O4lQda6LA6bZ92VAWJpdZpLt5sYmlvndG8xYQ03RrVCAh
+         ga5JI6mfyeLfkgUMIe06Kq4pwcyaflDyvP7gt4AljezcN4UbQXIyV5CTTCxjEJbWzP8l
+         rr1g==
+X-Gm-Message-State: AOAM5312VekpYc1OBkHlDvB+AnlT65PgtchdN/2dYYS3htzG+FB+1Sp8
+        ZbcTg9XUrNrCKX1xFEBiR6IugLMpaIjpN8KWZy+HNQ==
+X-Google-Smtp-Source: ABdhPJwqCNPlPDpaL1i90PWLetMonQPmkN+B816BhKFxVw2dI+707/Lr0UAOHEgTEbKHZPdYieTwKogk1rPqlXc4qsc=
+X-Received: by 2002:a62:18d6:0:b029:1bf:1c5f:bfa4 with SMTP id
+ 205-20020a6218d60000b02901bf1c5fbfa4mr12428501pfy.24.1611782767499; Wed, 27
+ Jan 2021 13:26:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210125112831.2156212-1-arnd@kernel.org>
+In-Reply-To: <20210125112831.2156212-1-arnd@kernel.org>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 27 Jan 2021 22:25:56 +0100
+Message-ID: <CAAeHK+yOTiUWqo1fUNm56ez6dAXfu_rEpxLvB1jDCupZNgYQWw@mail.gmail.com>
+Subject: Re: [PATCH] kasan: export kasan_poison
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When Shadow Stack is introduced, [R/O + _PAGE_DIRTY] PTE is reserved for
-shadow stack.  Copy-on-write PTEs have [R/O + _PAGE_COW].
+On Mon, Jan 25, 2021 at 12:28 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The unit test module fails to build after adding a reference
+> to kasan_poison:
+>
+> ERROR: modpost: "kasan_poison" [lib/test_kasan.ko] undefined!
+>
+> Export this symbol to make it available to loadable modules.
 
-When a PTE goes from [R/W + _PAGE_DIRTY] to [R/O + _PAGE_COW], it could
-become a transient shadow stack PTE in two cases:
+Could you share the config you used to trigger this?
 
-The first case is that some processors can start a write but end up seeing
-a read-only PTE by the time they get to the Dirty bit, creating a transient
-shadow stack PTE.  However, this will not occur on processors supporting
-Shadow Stack, and a TLB flush is not necessary.
+> Fixes: b9b322c2bba9 ("kasan: add match-all tag tests")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  mm/kasan/shadow.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index de6b3f074742..32e7a5c148e6 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -94,6 +94,7 @@ void kasan_poison(const void *address, size_t size, u8 value)
+>
+>         __memset(shadow_start, value, shadow_end - shadow_start);
+>  }
+> +EXPORT_SYMBOL_GPL(kasan_poison);
 
-The second case is that when _PAGE_DIRTY is replaced with _PAGE_COW non-
-atomically, a transient shadow stack PTE can be created as a result.
-Thus, prevent that with cmpxchg.
+Should this be _GPL? All of the other EXPORT_SYMBOL() we use in KASAN
+are without the GPL suffix.
 
-Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
-insights to the issue.  Jann Horn provided the cmpxchg solution.
-
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
----
- arch/x86/include/asm/pgtable.h | 36 ++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
-
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 4a7fd3e5b7df..2144a25ca2a3 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -1229,6 +1229,24 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
- static inline void ptep_set_wrprotect(struct mm_struct *mm,
- 				      unsigned long addr, pte_t *ptep)
- {
-+	/*
-+	 * If Shadow Stack is enabled, pte_wrprotect() moves _PAGE_DIRTY
-+	 * to _PAGE_COW (see comments at pte_wrprotect()).
-+	 * When a thread reads a RW=1, Dirty=0 PTE and before changing it
-+	 * to RW=0, Dirty=0, another thread could have written to the page
-+	 * and the PTE is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
-+	 * PTE changes and update old_pte, then try again.
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-+		pte_t old_pte, new_pte;
-+
-+		old_pte = READ_ONCE(*ptep);
-+		do {
-+			new_pte = pte_wrprotect(old_pte);
-+		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
-+
-+		return;
-+	}
- 	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
- }
- 
-@@ -1286,6 +1304,24 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
- static inline void pmdp_set_wrprotect(struct mm_struct *mm,
- 				      unsigned long addr, pmd_t *pmdp)
- {
-+	/*
-+	 * If Shadow Stack is enabled, pmd_wrprotect() moves _PAGE_DIRTY
-+	 * to _PAGE_COW (see comments at pmd_wrprotect()).
-+	 * When a thread reads a RW=1, Dirty=0 PMD and before changing it
-+	 * to RW=0, Dirty=0, another thread could have written to the page
-+	 * and the PMD is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
-+	 * PMD changes and update old_pmd, then try again.
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-+		pmd_t old_pmd, new_pmd;
-+
-+		old_pmd = READ_ONCE(*pmdp);
-+		do {
-+			new_pmd = pmd_wrprotect(old_pmd);
-+		} while (!try_cmpxchg((pmdval_t *)pmdp, (pmdval_t *)&old_pmd, pmd_val(new_pmd)));
-+
-+		return;
-+	}
- 	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
- }
- 
--- 
-2.21.0
-
+>
+>  void kasan_unpoison(const void *address, size_t size)
+>  {
+> --
+> 2.29.2
+>
