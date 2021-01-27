@@ -2,173 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC81305055
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55854305054
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237878AbhA0EAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:00:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbhA0CzN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 21:55:13 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2062c.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B20BC06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 18:18:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bI+KxOYWIG0hlyuFZ+X2K8YIHBBTzn+ylEXz2hSCn5NaYDEU8rAzL/GABMGMTdti5NrV/gFQ/icEmgefne6SZeB8K8/GSpqpwp3S1zGt19edXF1wbv4l4pT6JawoLVUUekYFYbZcaiUkUPHpFu9srcWnOWl5JCZntJygZL3/h1kPiDiODx3vKm3cQmGj495M1oExeJkYFcy6XpWJOqmYWELjTGkiE+X4ZA9bZkMSeGJLlxmnzF/RjfDnpalV7U4xfTspqkLR1Dfzba6js78BN+tcJw+OqINsZZSFooDL+4mM79b/MiMPkxCVKs4MT5ePylifMfuWvTB+r6eVY/3oGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+yyoOcw0OkgWeyk92137qjlgfOZqH8BaEQbCsQrh+s=;
- b=HD7hqKgHQ9dut1zNDRS/b2dypwKOBgxUKYOe6uqDlGJi22WkCz/6EKOHqQadOHULR14adwTBKu7UIpsz2fA7NEdkNjvwzvjibh2AvG2I/rdZy31pu2zIBXwtoTb4SaMA2Qpaas7nVxiKfcE03cHbXIBaKWVgnn2vjXPm8Yk8lgGtPEZ/M+uQBXmVcuGPEgiMssiKa/OIRpulGU29WTJFnqKmQo33Bk1kb0TPo5SBCYT6JdzDK4KiecUnuYTHD+0nJpnXAGaWfnId5KUk70BjuyxJw+M1QfIllY1FX7dLL+nnDu/DXKb+forg9MI0CM/m9eCkHvMi6M0mkvmJhsS/xQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+yyoOcw0OkgWeyk92137qjlgfOZqH8BaEQbCsQrh+s=;
- b=OcEE0ocDvMrJ0zhPIBMC8Huw5F3fFk9Y8PUTYPhE4JEKAVUUDVnGu9qcLITeJQN9DobfQCXDOLbox8W7XaL8Z0GL0T2Z4K5T4xntHYV9sqhWvHyu8m3NADoOc8YtcrOhjqNmIPkO3S7YUjriVTHOcID0NqiRTkgtOv2LJJmdLTI=
-Received: from BLAPR03CA0158.namprd03.prod.outlook.com (2603:10b6:208:32c::13)
- by MW2PR02MB3737.namprd02.prod.outlook.com (2603:10b6:907:3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 27 Jan
- 2021 02:18:20 +0000
-Received: from BL2NAM02FT057.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:32c:cafe::d0) by BLAPR03CA0158.outlook.office365.com
- (2603:10b6:208:32c::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend
- Transport; Wed, 27 Jan 2021 02:18:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; ideasonboard.com; dkim=none (message not signed)
- header.d=none;ideasonboard.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT057.mail.protection.outlook.com (10.152.77.36) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3784.12 via Frontend Transport; Wed, 27 Jan 2021 02:18:19 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 26 Jan 2021 18:18:18 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 26 Jan 2021 18:18:18 -0800
-Envelope-to: hyunk@xilinx.com,
- hyun.kwon@xilinx.com,
- michals@xilinx.com,
- laurent.pinchart@ideasonboard.com,
- linux-kernel@vger.kernel.org
-Received: from [172.19.2.244] (port=42462 helo=xsjhyunkubuntu)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <hyun.kwon@xilinx.com>)
-        id 1l4aPS-00088K-I4; Tue, 26 Jan 2021 18:18:18 -0800
-Received: by xsjhyunkubuntu (Postfix, from userid 13638)
-        id 895452C7AA5; Tue, 26 Jan 2021 18:18:55 -0800 (PST)
-Date:   Tue, 26 Jan 2021 18:18:55 -0800
-From:   Hyun Kwon <hyun.kwon@xilinx.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Hyun Kwon <hyunk@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: remove myself from the list
-Message-ID: <20210127021855.GA706721@xilinx.com>
-References: <20210127011312.697159-1-hyun.kwon@xilinx.com>
- <YBDDvmLHrYpuTBkn@pendragon.ideasonboard.com>
+        id S233020AbhA0D7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:59:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231761AbhA0CzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 21:55:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E77C6206CA;
+        Wed, 27 Jan 2021 02:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611715382;
+        bh=W9tlT0efskTAUPKZ2HeTLOQ7jcJgCM815PUeixWj7lc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=beO0RZN+vYk+ctrD6mqWpHBGirSHQOF+G3QxtoMkM5mbOjO2FUyUmoCUXvU1RIcxr
+         x19lbatbeqOgSAbMi6yVfHOzCD7r5OMO6F3rbIL6LgO0JOz5zEZ6yajO4j4KhWJUEn
+         v5z0NKBllwXAghDG5qf+JguVHv0YVt2lXBbdwC4eaxh0UbSBstLL+7A3yTPrapJIpE
+         +8nzVLWb3UzUHkn6vplTbzV71YVpWfZ9lPqdK/7ITXy2pZNuQJM0qZMFc9GkCDos3R
+         DX/NHXjfxHkTtb4q3daUNF8pdcWuEjSTLEUTnjeWiVT0+J4yP1VRTtau96lh7zMBy2
+         DSFWt2DKhxpFQ==
+Date:   Tue, 26 Jan 2021 18:43:00 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Ahern <dsahern@gmail.com>,
+        Praveen Chaudhary <praveen5582@gmail.com>
+Cc:     davem@davemloft.net, corbet@lwn.net, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenggen Xu <zxu@linkedin.com>,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH v4 net-next 1/1] Allow user to set metric on default
+ route learned via Router Advertisement.
+Message-ID: <20210126184301.525297cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <21884a37-ee26-3c8c-690e-9ea29d77d8b9@gmail.com>
+References: <20210125214430.24079-1-pchaudhary@linkedin.com>
+        <21884a37-ee26-3c8c-690e-9ea29d77d8b9@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YBDDvmLHrYpuTBkn@pendragon.ideasonboard.com>
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f99fa10a-b64a-4894-3f2a-08d8c269d07a
-X-MS-TrafficTypeDiagnostic: MW2PR02MB3737:
-X-Microsoft-Antispam-PRVS: <MW2PR02MB3737BBEFED82205C8596A2A6D6BB9@MW2PR02MB3737.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q5Gba+9NPzsD7XxxGytsIKfFG0yIKLuiHQZoeYNnqT0E4BYRoQLeBdiUHbN0AtOp+c6OFj+c6iTaR/BfRP181Ol8wLcnf+5NoD6DunCp6AxO3ZSREEwJzoNRfSGP4p+yffsKuvz9KWOC4D/9FGVhi8cufci+EYrObCDnraBeDll3XH+6YU5XhukMDgWmVbRunMgYI/DA40KYRqUc5ObKusWdmWlGseeo7qYlUFjwFwPe9ak8n1H4MjJcM5jIQ1ztMYF1K1PXRpQdk3v57Y44HZLdBbuwYfP1W85nwLPEZG5hWxiK2HOIENGfFrfDs+YEuXCan74dYOXi26F8VstLRaDkcIfUkuTKNicHnJK8yuX7m+5B0FSbbNoshHTXrPlyD6Y/Jv40wawRud5wNjDYFzUQVxoKUrD5UC5whsQoivAP7YRxao99M1ERPiN99G2QZiUJn1NxnRc7+sp1iJOvbi83soQzWzKp1VWSrn9GsQ8=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(39860400002)(46966006)(6266002)(107886003)(2906002)(2616005)(186003)(70586007)(8676002)(5660300002)(4326008)(70206006)(8936002)(33656002)(336012)(478600001)(82310400003)(36906005)(426003)(44832011)(83380400001)(54906003)(42186006)(316002)(26005)(82740400003)(7636003)(356005)(47076005)(1076003)(6916009)(36756003)(27376004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 02:18:19.6542
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f99fa10a-b64a-4894-3f2a-08d8c269d07a
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT057.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR02MB3737
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On Tue, Jan 26, 2021 at 05:37:02PM -0800, Laurent Pinchart wrote:
-> Hi Hyun,
-> 
-> Thank you for the patch.
-> 
-> On Tue, Jan 26, 2021 at 05:13:12PM -0800, Hyun Kwon wrote:
-> > The email will become invalid soon.
-> 
-> Is there, by any chance, anyone at Xilinx would could help maintaining
-> these drivers ?
-> 
-
-Yes, there will be. I gave my recommendations, but it's still under discussion.
-I'll ensure it's decided sooner than later.
-
-Thank you!
-
--hyun
-
-> > Signed-off-by: Hyun Kwon <hyun.kwon@xilinx.com>
-> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Cc: Michal Simek <michal.simek@xilinx.com>
+On Mon, 25 Jan 2021 20:34:56 -0700 David Ahern wrote:
+> On 1/25/21 2:44 PM, Praveen Chaudhary wrote:
+> > For IPv4, default route is learned via DHCPv4 and user is allowed to ch=
+ange
+> > metric using config etc/network/interfaces. But for IPv6, default route=
+ can
+> > be learned via RA, for which, currently a fixed metric value 1024 is us=
+ed.
+> >=20
+> > Ideally, user should be able to configure metric on default route for I=
+Pv6
+> > similar to IPv4. This fix adds sysctl for the same.
+> >=20
+> > Signed-off-by: Praveen Chaudhary <pchaudhary@linkedin.com>
+> > Signed-off-by: Zhenggen Xu <zxu@linkedin.com>
+> >=20
+> > Reviewed-by: David Ahern <dsahern@kernel.org>
+> >=20
+> > Changes in v1.
+> > 1.) Correct the call to rt6_add_dflt_router.
+> >=20
+> > Changes in v2.
+> > 1.) Replace accept_ra_defrtr_metric to ra_defrtr_metric.
+> > 2.) Change Type to __u32 instead of __s32.
+> > 3.) Change description in Documentation/networking/ip-sysctl.rst.
+> > 4.) Use proc_douintvec instead of proc_dointvec.
+> > 5.) Code style in ndisc_router_discovery().
+> > 6.) Change Type to u32 instead of unsigned int.
+> >=20
+> > Changes in v3:
+> > 1.) Removed '---' and '```' from description.
+> > 2.) Remove stray ' after accept_ra_defrtr.
+> > 3.) Fix tab in net/ipv6/addrconf.c.
+> >=20
+> > Changes in v4:
+> > 1.) Remove special case of 0 and use IP6_RT_PRIO_USER as default.
+> > 2.) Do not allow 0.
+> > 3.) Change Documentation accordingly.
+> > 4.) Remove extra brackets and compare with zero in ndisc_router_discove=
+ry().
+> > 5.) Remove compare with zero in rt6_add_dflt_router().
+> >=20
+> > Logs:
+> >=20
+> > For IPv4:
+> >=20
+> > Config in etc/network/interfaces:
+> > auto eth0
+> > iface eth0 inet dhcp
+> >     metric 4261413864
+> >=20
+> > IPv4 Kernel Route Table:
+> > $ ip route list
+> > default via 172.21.47.1 dev eth0 metric 4261413864
+> >=20
+> > FRR Table, if a static route is configured:
+> > [In real scenario, it is useful to prefer BGP learned default route ove=
+r DHCPv4 default route.]
+> > Codes: K - kernel route, C - connected, S - static, R - RIP,
+> >        O - OSPF, I - IS-IS, B - BGP, P - PIM, E - EIGRP, N - NHRP,
+> >        T - Table, v - VNC, V - VNC-Direct, A - Babel, D - SHARP, =20
+> >        > - selected route, * - FIB route =20
+> >  =20
+> > S>* 0.0.0.0/0 [20/0] is directly connected, eth0, 00:00:03 =20
+> > K   0.0.0.0/0 [254/1000] via 172.21.47.1, eth0, 6d08h51m
+> >=20
+> > i.e. User can prefer Default Router learned via Routing Protocol in IPv=
+4.
+> > Similar behavior is not possible for IPv6, without this fix.
+> >=20
+> > After fix [for IPv6]:
+> > sudo sysctl -w net.ipv6.conf.eth0.net.ipv6.conf.eth0.ra_defrtr_metric=
+=3D1996489705
+> >=20
+> > IP monitor: [When IPv6 RA is received]
+> > default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 19964897=
+05  pref high
+> >=20
+> > Kernel IPv6 routing table
+> > $ ip -6 route list
+> > default via fe80::be16:65ff:feb3:ce8e dev eth0 proto ra metric 19964897=
+05 expires 21sec hoplimit 64 pref high
+> >=20
+> > FRR Table, if a static route is configured:
+> > [In real scenario, it is useful to prefer BGP learned default route ove=
+r IPv6 RA default route.]
+> > Codes: K - kernel route, C - connected, S - static, R - RIPng,
+> >        O - OSPFv3, I - IS-IS, B - BGP, N - NHRP, T - Table,
+> >        v - VNC, V - VNC-Direct, A - Babel, D - SHARP, =20
+> >        > - selected route, * - FIB route =20
+> >  =20
+> > S>* ::/0 [20/0] is directly connected, eth0, 00:00:06 =20
+> > K   ::/0 [119/1001] via fe80::xx16:xxxx:feb3:ce8e, eth0, 6d07h43m
+> >=20
+> > If the metric is changed later, the effect will be seen only when next =
+IPv6
+> > RA is received, because the default route must be fully controlled by R=
+A msg.
+> > Below metric is changed from 1996489705 to 1996489704.
+> >=20
+> > $ sudo sysctl -w net.ipv6.conf.eth0.ra_defrtr_metric=3D1996489704
+> > net.ipv6.conf.eth0.ra_defrtr_metric =3D 1996489704
+> >=20
+> > IP monitor:
+> > [On next IPv6 RA msg, Kernel deletes prev route and installs new route =
+with updated metric]
+> >=20
+> > Deleted default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric =
+1996489705=C2=A0=C2=A0expires 3sec hoplimit 64 pref high
+> > default via fe80::xx16:xxxx:feb3:ce8e dev eth0 proto ra metric 19964897=
+04=C2=A0=C2=A0pref high
 > > ---
-> >  MAINTAINERS | 3 ---
-> >  1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 992fe3b0900a..4fc00c2da56d 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -6048,7 +6048,6 @@ F:	Documentation/gpu/xen-front.rst
-> >  F:	drivers/gpu/drm/xen/
-> >  
-> >  DRM DRIVERS FOR XILINX
-> > -M:	Hyun Kwon <hyun.kwon@xilinx.com>
-> >  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >  L:	dri-devel@lists.freedesktop.org
-> >  S:	Maintained
-> > @@ -19577,7 +19576,6 @@ S:	Maintained
-> >  F:	drivers/tty/serial/uartlite.c
-> >  
-> >  XILINX VIDEO IP CORES
-> > -M:	Hyun Kwon <hyun.kwon@xilinx.com>
-> >  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >  L:	linux-media@vger.kernel.org
-> >  S:	Supported
-> > @@ -19587,7 +19585,6 @@ F:	drivers/media/platform/xilinx/
-> >  F:	include/uapi/linux/xilinx-v4l2-controls.h
-> >  
-> >  XILINX ZYNQMP DPDMA DRIVER
-> > -M:	Hyun Kwon <hyun.kwon@xilinx.com>
-> >  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >  L:	dmaengine@vger.kernel.org
-> >  S:	Supported
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+> >  Documentation/networking/ip-sysctl.rst | 10 ++++++++++
+> >  include/linux/ipv6.h                   |  1 +
+> >  include/net/ip6_route.h                |  3 ++-
+> >  include/uapi/linux/ipv6.h              |  1 +
+> >  include/uapi/linux/sysctl.h            |  1 +
+> >  net/ipv6/addrconf.c                    | 11 +++++++++++
+> >  net/ipv6/ndisc.c                       | 12 ++++++++----
+> >  net/ipv6/route.c                       |  5 +++--
+> >  8 files changed, 37 insertions(+), 7 deletions(-)
+> >  =20
+>=20
+> Reviewed-by: David Ahern <dsahern@kernel.org>
+
+Did my best to untangle the commit message and applied.
+
+Thanks!
