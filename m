@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A243067DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56F93067E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhA0X0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:26:35 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59520 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbhA0XYW (ORCPT
+        id S233277AbhA0X3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:29:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22068 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233575AbhA0X21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:24:22 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611789819;
+        Wed, 27 Jan 2021 18:28:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611790021;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dqL5P/tp7Bu87XBE/lq9hDjs4DqDS6GB3IF5aK6fTUs=;
-        b=sWImd51V43lQizcuq4iSSb0Y5XzA+eeXb9ODhcGv3ox9gCCwP+UwM4Mwe4YylmkMwXNl9U
-        fUMGvj8Iyk7Ej6woS0Cf5ZlsmqJ17/AUTf3VexpR6YPTE/8I7tijEFuCPaYWYzZ9smwTpq
-        4zhNZ8DffjNwzaWJyDYHdStquVqA4bb+CBVQn1zDX3p2fmVZn6ZK53LGMkmNCam9va/Pr3
-        AaUUmW9LZLN7xUdFJokBe6C5dI4utwMV1ifixlt6kxqfOSDIyI8pyrG1eKGNu998Dfoea/
-        iwqEhdTWKb955M0y3BP7nku8XctvdtVu9uTPbthNWkBzsjUSDLPHdZ795w4aDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611789819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dqL5P/tp7Bu87XBE/lq9hDjs4DqDS6GB3IF5aK6fTUs=;
-        b=87nlFkmZhChpJu0ZBjE5GnhnVbZxlo3NJcLOWMrSJV5w4ExtgUX3yqN0MXmscACTFurV7T
-        FqKJDl58pUPuU9CQ==
-To:     "Yu\, Fenghua" <fenghua.yu@intel.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Li\, Xiaoyao" <xiaoyao.li@intel.com>,
-        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: RE: [PATCH v4 1/4] x86/cpufeatures: Enumerate #DB for bus lock detection
-In-Reply-To: <adf4082ffef7410c961cfe76acc93606@intel.com>
-References: <20201124205245.4164633-1-fenghua.yu@intel.com> <20201124205245.4164633-2-fenghua.yu@intel.com> <87wnvydqxi.fsf@nanos.tec.linutronix.de> <adf4082ffef7410c961cfe76acc93606@intel.com>
-Date:   Thu, 28 Jan 2021 00:23:37 +0100
-Message-ID: <87k0rydkw6.fsf@nanos.tec.linutronix.de>
+        bh=UmZtO9S6cUQ2CC3kIdExR5VZtUZQ7YeAA3zNA2d3Y68=;
+        b=O8J/zUNB/fjzK3kd4MdCE2T3SVeWcCiOE8HQtkuVJYZzlAwAFNOw3wbrnlNlPYBk7yB/97
+        kxr3UndrflIJSDiIa8+2CtG22dWzUGrMgJCtmwxinRuMtgitFNTe9RqZ/PnsTwAuM8aUcY
+        iB3QZj2ONRrZnQpXm+HWM6PTL98RjzE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-yX2crCwSMlywEzTRrvJlVw-1; Wed, 27 Jan 2021 18:27:00 -0500
+X-MC-Unique: yX2crCwSMlywEzTRrvJlVw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25DAC911E3;
+        Wed, 27 Jan 2021 23:26:57 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6681D10016FA;
+        Wed, 27 Jan 2021 23:26:53 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 17:26:51 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     jthierry@redhat.com, ardb@kernel.org, broonie@kernel.org,
+        catalin.marinas@arm.com, keescook@chromium.org,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, peterz@infradead.org,
+        raphael.gault@arm.com, will@kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
+ switch table on arm64
+Message-ID: <20210127232651.rj3mo7c2oqh4ytsr@treble>
+References: <20210120173800.1660730-13-jthierry@redhat.com>
+ <20210127221557.1119744-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210127221557.1119744-1-ndesaulniers@google.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fenghua,
+On Wed, Jan 27, 2021 at 02:15:57PM -0800, Nick Desaulniers wrote:
+> > From: Raphael Gault <raphael.gault@arm.com>
+> > 
+> > This plugins comes into play before the final 2 RTL passes of GCC and
+> > detects switch-tables that are to be outputed in the ELF and writes
+> > information in an ".discard.switch_table_info" section which will be
+> > used by objtool.
+> > 
+> > Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+> > [J.T.: Change section name to store switch table information,
+> >        Make plugin Kconfig be selected rather than opt-in by user,
+> >        Add a relocation in the switch_table_info that points to
+> >        the jump operation itself]
+> > Signed-off-by: Julien Thierry <jthierry@redhat.com>
+> 
+> Rather than tightly couple this feature to a particular toolchain via
+> plugin, it might be nice to consider what features could be spec'ed out
+> for toolchains to implement (perhaps via a -f flag).
 
-On Wed, Jan 27 2021 at 22:39, Fenghua Yu wrote:
->> On Wed, Jan 27, 2021 2:16 PM, Thomas Gleixner wrote:
->> On Tue, Nov 24 2020 at 20:52, Fenghua Yu wrote:
->> 
->> > A bus lock is acquired though either split locked access to writeback
->> > (WB) memory or any locked access to non-WB memory. This is typically
->> > >1000 cycles slower than an atomic operation within a cache line. It
->> > also disrupts performance on other cores.
->> >
->> > Some CPUs have ability to notify the kernel by an #DB trap after a
->> > user instruction acquires a bus lock and is executed. This allows the
->> > kernel to enforce user application throttling or mitigations.
->> 
->> That's nice, but how does that interact with a data breakpoint on the same
->> location?
->
-> If both data breakpoint and bus lock happen on the same location, the bus lock
-> is handled first and then the data breakpoint is handled in the same exception:
->
-> 1. If warn on bus lock, a rate limited warning is printed for the bus lock and then
->     a SIGTRAP is sent to the user process.
-> 2. If fatal on bus lock, a SIGBUS is sent to the user process for the bus lock and a
->     SIGTRAP is also sent to the user process. I think the SIGBUS will be delivered first
->     to the process and then SIGTRAP will be delivered to the process.
-> 3. If ratelimit on bus lock, first the tasks in the user sleep for specified time, then
->     SIGTRAP is sent to the user process.
->
-> Is the interaction OK?
+The problem is being able to detect switch statement jump table vectors.
 
-The ordering is a software choice and fine with me as long as the
-hardware actually delivers both.
+For a given indirect branch (due to a switch statement), what are all
+the corresponding jump targets?
 
-All of this information needs to be in the changelog of the relevant
-patches.
+We would need the compiler to annotate that information somehow.
 
-Thanks,
+> Distributions (like Android, CrOS) wont be able to use such a feature as
+> is.
 
-        tglx
+Would a Clang plugin be out of the question?
+
+-- 
+Josh
 
