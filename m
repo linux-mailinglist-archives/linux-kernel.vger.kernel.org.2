@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA3B3063EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E50B3063E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhA0TRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhA0TRS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:17:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC47C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:16:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/56oh1F5D8pHMsQ0pvbjfvOA2FpHD772+NHhO0EYal0=; b=SjqCGe7TakG0OQ8dRUg2OVDXhr
-        ZPOZub3Ah2hW43iZxxkh3YnFG7GtCGt+s6tx/5WcMXULMNUBpl3J2MT54/GI/uiR1olEbPDgznY5f
-        DIc04WPneQqEnY7k/qklmYlPNRe6MnjKSaDFj0TcUdOGcoBjF4RNVr+XpckNfAbTqjz6nyW2nZqS9
-        SVLzlPCFCP+P3a7w8JhZ/LbSKZfIv5U5RgJhU2sb7EIv7d7o9KeLBiWKRE/NyMJC0qCNePBL/bsn/
-        E1o1BJBT51wMBokdhC7dh7gwgvHrqavU3Er3wSnDB6DL6lzgzmvZ+2C+UBEXCc0PRQpSDF9mHgatJ
-        OFPpeKAA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4qIa-007OmJ-Ql; Wed, 27 Jan 2021 19:16:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S231853AbhA0TRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:17:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231367AbhA0TRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:17:03 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3EB9C300DAE;
-        Wed, 27 Jan 2021 20:16:16 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2547C207D3C43; Wed, 27 Jan 2021 20:16:16 +0100 (CET)
-Date:   Wed, 27 Jan 2021 20:16:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com
-Subject: Re: [PATCH 03/12] perf/x86/intel: Add perf core PMU support for
- Sapphire Rapids
-Message-ID: <YBG8ACJBCvZsSbW5@hirez.programming.kicks-ass.net>
-References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
- <1611088711-17177-4-git-send-email-kan.liang@linux.intel.com>
- <YBAq11TjpYj2rAot@hirez.programming.kicks-ass.net>
- <4ce07775-1076-0a2d-55be-bea3c7dc63f9@linux.intel.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B6AE64DC1;
+        Wed, 27 Jan 2021 19:16:19 +0000 (UTC)
+Date:   Wed, 27 Jan 2021 14:16:17 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     paulmck <paulmck@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH v4] tracepoint: Do not fail unregistering a probe due to
+ memory failure
+Message-ID: <20210127141617.047d5b78@gandalf.local.home>
+In-Reply-To: <119550773.160.1611771202224.JavaMail.zimbra@efficios.com>
+References: <20210127123951.14f8d321@gandalf.local.home>
+        <2075610164.123.1611770446483.JavaMail.zimbra@efficios.com>
+        <20210127130714.4ec189d5@gandalf.local.home>
+        <119550773.160.1611771202224.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ce07775-1076-0a2d-55be-bea3c7dc63f9@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:44:17AM -0500, Liang, Kan wrote:
-> 
-> 
-> On 1/26/2021 9:44 AM, Peter Zijlstra wrote:
-> > On Tue, Jan 19, 2021 at 12:38:22PM -0800, kan.liang@linux.intel.com wrote:
-> > > @@ -3671,6 +3853,31 @@ static int intel_pmu_hw_config(struct perf_event *event)
-> > >   		}
-> > >   	}
-> > > +	/*
-> > > +	 * To retrieve complete Memory Info of the load latency event, an
-> > > +	 * auxiliary event has to be enabled simultaneously. Add a check for
-> > > +	 * the load latency event.
-> > > +	 *
-> > > +	 * In a group, the auxiliary event must be in front of the load latency
-> > > +	 * event. The rule is to simplify the implementation of the check.
-> > > +	 * That's because perf cannot have a complete group at the moment.
-> > > +	 */
-> > > +	if (x86_pmu.flags & PMU_FL_MEM_LOADS_AUX &&
-> > > +	    (event->attr.sample_type & PERF_SAMPLE_DATA_SRC) &&
-> > > +	    is_mem_loads_event(event)) {
-> > > +		struct perf_event *leader = event->group_leader;
-> > > +		struct perf_event *sibling = NULL;
-> > > +
-> > > +		if (!is_mem_loads_aux_event(leader)) {
-> > > +			for_each_sibling_event(sibling, leader) {
-> > > +				if (is_mem_loads_aux_event(sibling))
-> > > +					break;
-> > > +			}
-> > > +			if (list_entry_is_head(sibling, &leader->sibling_list, sibling_list))
-> > > +				return -ENODATA;
-> > > +		}
-> > > +	}
-> > > +
-> > >   	if (!(event->attr.config & ARCH_PERFMON_EVENTSEL_ANY))
-> > >   		return 0;
-> > 
-> > I have vague memories of this getting mentioned in a call at some point.
-> > Pretend I don't know anything and tell me more.
-> > 
-> 
-> Adding the auxiliary event is for the new data source fields, data block &
-> address block. If perf only samples the load latency event, the value of the
-> data block & address block fields in a sample is not correct. To get the
-> correct value, we have to sample both the auxiliary event and the load
-> latency together on SPR. So I add the check in the kernel. I also modify the
-> perf mem in the perf tool accordingly.
+On Wed, 27 Jan 2021 13:13:22 -0500 (EST)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-This is an active work around for a chip defect right? Something we're
-normally have an errata for. Can we call it that?
+> > Thanks for bringing that up.  
+> 
+> Requiring an RCU synchronize on element removal is quite intrusive, and can
+> be problematic if tracepoint removal is called from e.g. preempt-off context.
+
+But how often do you remove more than one callback from the same
+tracepoint? Or should I say, from a lot of tracepoints?
+
+This will only synchronize for the following case:
+
+ Add three callbacks to a single tracepoint.
+ Remove the first one.
+    <rcu callback to update the counters>
+ Remove the second one
+   <triggers a synchronization if the counters have not been finished
+    updating>
+ Remove the third one.
+   <no synchronization needed, because it's being freed>
+
+And we may be able to make this work in batch too.
+
+More to come, but I really like this approach over the others because it
+does not increase the size of the kernel for a failure that should never
+happen in practice.
+
+-- Steve
