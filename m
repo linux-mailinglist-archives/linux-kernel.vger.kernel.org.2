@@ -2,89 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6155D306D2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA56306D8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhA1F7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 00:59:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229739AbhA1F7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 00:59:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA56461492;
-        Thu, 28 Jan 2021 05:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611813523;
-        bh=GEdC11JIthNvWqLvLzGyO7/UjMyrlohhCwoIECOZYK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QpDETxCIN+gp8KLLQWdOiKR1G2qIxOZaAm65VIhO0araXgUPy4ccRR/oMcjQtzhs9
-         4vuyL1yjQv5F9czvKHLsxTN684WUr4fwM2eyInKstHL72YpmW7y0mOdtQscbNs1eCu
-         iZcgsnL8T5iBYgn3r5pyTiQX5Rs8wt/zsSY1lm1OURwW7x9OguL+R02T4h6NeDguX8
-         bdWZ7S9D8B6bb37kkporkSmyMvKbhLDqfsWIyfpZjWbSP3jwjFwix1Ikw/Gc7q3Q75
-         AiDdPlY1m2YMNobwhG5KEiN3uhFDoOq8KbiOWa1uSocpaqe4xVSV2GJhxbPv4A0F8E
-         I2L4nNLxR1sAw==
-Date:   Thu, 28 Jan 2021 07:58:38 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "Tj (Elloe Linux)" <ml.linux@elloe.vision>,
-        Dirk Gouders <dirk@gouders.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
-Message-ID: <YBJSju6RX4LZx08N@kernel.org>
-References: <20210123014247.989368-1-lma@semihalf.com>
- <20210125171846.GA31929@roeck-us.net>
- <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
- <a0249ad7b498e6f1cc065814350e145a07e92d37.camel@HansenPartnership.com>
+        id S231243AbhA1GTT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 01:19:19 -0500
+Received: from [103.140.22.26] ([103.140.22.26]:37944 "EHLO
+        zimbra.syekhnurjati.ac.id" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S229847AbhA1GTS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 01:19:18 -0500
+X-Greylist: delayed 32297 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 01:19:16 EST
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.syekhnurjati.ac.id (Postfix) with ESMTP id 7ADC253BC04;
+        Thu, 28 Jan 2021 01:10:40 +0700 (WIB)
+Received: from zimbra.syekhnurjati.ac.id ([127.0.0.1])
+        by localhost (zimbra.syekhnurjati.ac.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9xwdYmC0avaz; Thu, 28 Jan 2021 01:10:40 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.syekhnurjati.ac.id (Postfix) with ESMTP id 9AF4B534502;
+        Wed, 27 Jan 2021 23:54:15 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at zimbra.syekhnurjati.ac.id
+Received: from zimbra.syekhnurjati.ac.id ([127.0.0.1])
+        by localhost (zimbra.syekhnurjati.ac.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tnRSfrs0El3H; Wed, 27 Jan 2021 23:54:15 +0700 (WIB)
+Received: from [100.127.255.249] (ip168.ip-91-134-219.eu [91.134.219.168])
+        by zimbra.syekhnurjati.ac.id (Postfix) with ESMTPSA id 0CE73446AD2;
+        Wed, 27 Jan 2021 22:41:45 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0249ad7b498e6f1cc065814350e145a07e92d37.camel@HansenPartnership.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Sie_haben_eine_Spende_in_H=C3=B6he_von_1=2C000=2E000_Euro_erhal?=
+ =?utf-8?q?ten?=
+To:     Recipients <mail.syekhnurjati.ac.id@zimbra.syekhnurjati.ac.id>
+From:   mail.syekhnurjati.ac.id@zimbra.syekhnurjati.ac.id
+Date:   Wed, 27 Jan 2021 16:51:55 +0100
+Reply-To: mariaelizabethdonation567@gmail.com
+Message-Id: <20210127154146.0CE73446AD2@zimbra.syekhnurjati.ac.id>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 08:46:48AM -0800, James Bottomley wrote:
-> On Tue, 2021-01-26 at 16:46 +0100, Åukasz Majczak wrote:
-> > Hi Jarkko, Guenter
-> > 
-> > Yes, here are the logs when failure occurs -
-> > https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
-> > Look for a phrase "TPM returned invalid status"
-> 
-> We've had other reports of this:
-> 
-> https://lore.kernel.org/linux-integrity/ghsgagsnag.fsf@gouders.net/
-> https://lore.kernel.org/linux-integrity/374e918c-f167-9308-2bea-ae6bc6a3d2e3@elloe.vision/
-> 
-> The problem is some TIS TPMs don't begin in the correct locality so we
-> have to set it.  When I proposed the check, I also proposed a fix for
-> this problem:
-> 
-> https://lore.kernel.org/linux-integrity/20201001180925.13808-5-James.Bottomley@HansenPartnership.com/
-> 
-> But it's part of a series that never went upstream.  Part of the reason
-> was Jarkko proposed the get/put patch to fix this instead, but that
-> never went upstream either.  We need to decide an approach and apply
-> one or other fixes.
-
-Can you remind me what I proposed? I remember only proposing removing
-interrupt code.
-
-Can you pick up just 1/5 and 2/5 from that serieis and send them as a
-mini series?
-
-I had one remark for 1/5, which can be found here:
-
-https://lore.kernel.org/linux-integrity/20201024120744.GA32607@kernel.org/
-
-I don't think there was never argument on locality changes.
-
-/Jarkko
+Olen Maria Elisabeth Schaeffler, saksalainen liikenainen, sijoittaja ja Schaeffler-konsernin toimitusjohtaja. Olen yksi Schaeffler-ryhmän omistajista. Annoin 25 prosenttia henkilökohtaisesta omaisuudestani hyväntekeväisyyteen ja köyhille vuosittain. Ja suostuin myös antamaan loput 25% yksityishenkilöille tänä vuonna 2021 yritykseni voitoksi. Olen päättänyt lahjoittaa sinulle 1 000 000,00 euroa. Jos olet kiinnostunut lahjoituksestani, ota yhteyttä minuun saadaksesi lisätietoja, ota meihin yhteyttä: mariaelizabethdonation567@gmail.com
+Voit myös lukea lisää minusta alla olevan linkin avulla
+    https://fi.wikipedia.org/wiki/Maria-Elisabeth_Schaeffler
