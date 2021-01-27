@@ -2,172 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680233066DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059A23066E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236482AbhA0VzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:55:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234402AbhA0VzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:55:20 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DBEC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:54:39 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id gx1so2384590pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:54:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QhoJaXcBLO+tF0usfswt07f3dqsQi5Fzviu82scMC4E=;
-        b=Rc37eSOr2aNYJTUX0COdY4fMePBOXDX6j5spA7p2EF6kxytSBvfl53Ev63GQsuD9jy
-         l3mo3Qtn9Ir8tAB6rHXWh3MXYO10/wVHmekmCjF5oarpaPqwoI/LkcSqZlpJEZZR929e
-         TZatZqjvzDmDQmcpatwCwmZ5dyA/jhL8vREJBKV3VE0v7jeoAtt2Ufz4d5vzyKxEU/pX
-         NKMQKXA25b6WVsk7oI4+UVt4ijkTSiLR7oo6U/3cvnE6TzYaCoePXLKcCjiJLe+8e5kz
-         kc0MLqp/f6ZgCPB+VdPZQA0gQRGJM+F08hKL77eYoqvhuQrn4MH3xR0oSBs2GWoIX+On
-         HVrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QhoJaXcBLO+tF0usfswt07f3dqsQi5Fzviu82scMC4E=;
-        b=GGhtIbbnQ/G9E6/ShhsDsdj3YHImC6TKEp2It94YoiRkpiFP+6RFPtLlehBuwYEn4S
-         EmRET5muv4UZq/TVjxAX/pzZ5d9ydqSwO+SK4e4o3QKFEQckuJ/VHaP1gFSHBY60PNjZ
-         zu3YK+UaSSdCgq/xt8MG9BnhL/QsKIxq5axYbZFSGy/RwCDi0N33JLy/p6vsgsreMuOK
-         DOQyhuWfqeXHacGWeZzJhRVuc9HcmRTDtwSIOoHSb8Y1CkTp80zAArhmibhE2kK7f84t
-         GwZlFowu+mu25JmwAKKid1aTzM8JKcWUvamN+U8at0D3VVbRzV13K4O7lHf0rhj4Vw8I
-         OZSA==
-X-Gm-Message-State: AOAM530GndU/KQhZgouvFPrG4MZJVk1EqTgTdD9c/efm8qHkdAhQnPWf
-        69ZzJWmllMUx9HYtz1uPZf409A==
-X-Google-Smtp-Source: ABdhPJwLgzAVkx35Svk8ZRpuTj/a+g+Xoe2lGgzYVsUXm+iPuGDqiM9lglEoZGceFzE9yUs285TPzA==
-X-Received: by 2002:a17:90a:a483:: with SMTP id z3mr8085808pjp.140.1611784479079;
-        Wed, 27 Jan 2021 13:54:39 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id q12sm3431952pgj.24.2021.01.27.13.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 13:54:38 -0800 (PST)
-Date:   Wed, 27 Jan 2021 13:54:31 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] Fix unsynchronized access to sev members through
- svm_register_enc_region
-Message-ID: <YBHhF8ktuMfivQEP@google.com>
-References: <20210127161524.2832400-1-pgonda@google.com>
+        id S236093AbhA0V6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:58:09 -0500
+Received: from mga12.intel.com ([192.55.52.136]:13062 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232221AbhA0V6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:58:04 -0500
+IronPort-SDR: w+r22T7vHqyk4n2BDJgW1QvId/kEBi+JsOh7az8q/f7USqqEiE58dt/L6H9zqbf7qOQ9UDEa5H
+ J/TWECtFjDkg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159311789"
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="159311789"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:54:40 -0800
+IronPort-SDR: YL+xoGecSr73XFMCkkETkA/IIqPw2iXLnJH6sr/UWk3+FbipPu2U+pQUHrEaHIqtolbCmG8Gin
+ prsIqJruETsA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="357204495"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 27 Jan 2021 13:54:39 -0800
+Received: from [10.251.8.120] (kliang2-MOBL.ccr.corp.intel.com [10.251.8.120])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 07FD6580342;
+        Wed, 27 Jan 2021 13:54:37 -0800 (PST)
+Subject: Re: [PATCH V2 1/5] perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
+        maddy@linux.vnet.ibm.com
+References: <1611761925-159055-1-git-send-email-kan.liang@linux.intel.com>
+ <1611761925-159055-2-git-send-email-kan.liang@linux.intel.com>
+ <YBG5F2rCbsto+Y9F@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <f0aedd45-d03c-789c-bcfa-727f4ff452ef@linux.intel.com>
+Date:   Wed, 27 Jan 2021 16:54:36 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127161524.2832400-1-pgonda@google.com>
+In-Reply-To: <YBG5F2rCbsto+Y9F@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021, Peter Gonda wrote:
-> Grab kvm->lock before pinning memory when registering an encrypted
-> region; sev_pin_memory() relies on kvm->lock being held to ensure
-> correctness when checking and updating the number of pinned pages.
-> 
-> Add a lockdep assertion to help prevent future regressions.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Fixes: 1e80fdc09d12 ("KVM: SVM: Pin guest memory when SEV is active")
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> 
-> V2
->  - Fix up patch description
->  - Correct file paths svm.c -> sev.c
->  - Add unlock of kvm->lock on sev_pin_memory error
-> 
-> V1
->  - https://lore.kernel.org/kvm/20210126185431.1824530-1-pgonda@google.com/
 
-Put version info, and anything else that shouldn't be in the final commit, below
-the three dashes.  AFAIK that requires manually editing the patch file before
-sending it.
+
+On 1/27/2021 2:03 PM, Peter Zijlstra wrote:
+> On Wed, Jan 27, 2021 at 07:38:41AM -0800, kan.liang@linux.intel.com wrote:
+>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+>> index b15e344..13b4019 100644
+>> --- a/include/uapi/linux/perf_event.h
+>> +++ b/include/uapi/linux/perf_event.h
+>> @@ -145,12 +145,14 @@ enum perf_event_sample_format {
+>>   	PERF_SAMPLE_CGROUP			= 1U << 21,
+>>   	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
+>>   	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
+>> +	PERF_SAMPLE_WEIGHT_STRUCT		= 1U << 24,
+>>   
+>> -	PERF_SAMPLE_MAX = 1U << 24,		/* non-ABI */
+>> +	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
+>>   
+>>   	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
+>>   };
+>>   
+>> +#define PERF_SAMPLE_WEIGHT_TYPE	(PERF_SAMPLE_WEIGHT | PERF_SAMPLE_WEIGHT_STRUCT)
+>>   /*
+>>    * values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
+>>    *
+>> @@ -890,7 +892,16 @@ enum perf_event_type {
+>>   	 * 	  char			data[size];
+>>   	 * 	  u64			dyn_size; } && PERF_SAMPLE_STACK_USER
+>>   	 *
+>> -	 *	{ u64			weight;   } && PERF_SAMPLE_WEIGHT
+>> +	 *	{ union perf_sample_weight
+>> +	 *	 {
+>> +	 *		u64		full; && PERF_SAMPLE_WEIGHT
+>> +	 *		struct {
+>> +	 *			u32	low_dword;
+>> +	 *			u16	high_word;
+>> +	 *			u16	higher_word;
+>> +	 *		} && PERF_SAMPLE_WEIGHT_STRUCT
+>> +	 *	 }
+>> +	 *	}
+>>   	 *	{ u64			data_src; } && PERF_SAMPLE_DATA_SRC
+>>   	 *	{ u64			transaction; } && PERF_SAMPLE_TRANSACTION
+>>   	 *	{ u64			abi; # enum perf_sample_regs_abi
+>> @@ -1248,4 +1259,13 @@ struct perf_branch_entry {
+>>   		reserved:40;
+>>   };
+>>   
+>> +union perf_sample_weight {
+>> +	__u64		full;
+>> +	struct {
+>> +		__u32	low_dword;
+>> +		__u16	high_word;
+>> +		__u16	higher_word;
+>> +	};
+>> +};
+> 
+> *urgh*, my naming lives ... anybody got a better suggestion?
+
+I think we need a generic name here, but the problem is that the 
+'weight' field has different meanings among architectures.
+
+The 'weight' fields are to store all kinds of latency on X86.
+On PowerPC, it stores MMCRA[TECX/TECM], which doesn't look like a latency.
+
+I don't think I can use the name, 'cache_lat' or 'instruction_lat', 
+here. Right?
+If so, how about 'var'?
+
+u32 var_1_dw;
+u16 var_2_w;
+u16 var_3_w;
+
 
 > 
-> ---
+> Also, do we want to care about byte order?
 
-Version info goes here.
+Sure. I will add the big-endian and little-endian support.
 
->  arch/x86/kvm/svm/sev.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index c8ffdbc81709..b80e9bf0a31b 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -342,6 +342,8 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
->  	unsigned long first, last;
->  	int ret;
->  
-> +	lockdep_assert_held(&kvm->lock);
-> +
->  	if (ulen == 0 || uaddr + ulen < uaddr)
->  		return ERR_PTR(-EINVAL);
->  
-> @@ -1119,12 +1121,20 @@ int svm_register_enc_region(struct kvm *kvm,
->  	if (!region)
->  		return -ENOMEM;
->  
-> +	mutex_lock(&kvm->lock);
->  	region->pages = sev_pin_memory(kvm, range->addr, range->size, &region->npages, 1);
->  	if (IS_ERR(region->pages)) {
->  		ret = PTR_ERR(region->pages);
-> +		mutex_unlock(&kvm->lock);
->  		goto e_free;
->  	}
->  
-> +	region->uaddr = range->addr;
-> +	region->size = range->size;
-> +
-> +	list_add_tail(&region->list, &sev->regions_list);
-> +	mutex_unlock(&kvm->lock);
-> +
->  	/*
->  	 * The guest may change the memory encryption attribute from C=0 -> C=1
->  	 * or vice versa for this memory range. Lets make sure caches are
-> @@ -1133,13 +1143,6 @@ int svm_register_enc_region(struct kvm *kvm,
->  	 */
->  	sev_clflush_pages(region->pages, region->npages);
 
-I don't think it actually matters, but it feels like the flush should be done
-before adding the region to the list.  That would also make this sequence
-consistent with the other flows.
-
-Tom, any thoughts?
-
->  
-> -	region->uaddr = range->addr;
-> -	region->size = range->size;
-> -
-> -	mutex_lock(&kvm->lock);
-> -	list_add_tail(&region->list, &sev->regions_list);
-> -	mutex_unlock(&kvm->lock);
-> -
->  	return ret;
->  
->  e_free:
-> -- 
-> 2.30.0.280.ga3ce27912f-goog
-> 
+Thanks,
+Kan
