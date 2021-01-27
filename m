@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D85E3060F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713FE306101
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236988AbhA0QZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:25:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237141AbhA0QYq (ORCPT
+        id S1343972AbhA0Q2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:28:55 -0500
+Received: from mout.kundenserver.de ([212.227.126.130]:45651 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343760AbhA0Q2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:24:46 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5011C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:24:05 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id h192so2751277oib.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:24:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GG0TpbUNYlPSbaljbB2iMXCGWpl1mkIqLneVjeynSxI=;
-        b=npClNprtbGHfrypkEZsUQ3PuSwXQh/fi4c9lfxGBu8Qlf+BnFeh9oIQvmaP8+8tbzg
-         OrJYeUVHzkqZyImR8NflmYa+Nf/2SdI+04KTcORok44TGC8U7hWuCUOqAnULmmC+bm3g
-         BDLTVwmayP5Udz9KShPPO+COQcGKnWFs2do7trrl4gyeWwakPc/ptYhAEhfOYopdewzO
-         6jxINa3vHCn8lzo1cpnHuZB5Wj1lOQcZannAvGVnHMbnR23NBsU6qbpwkWxzSG+vc7hw
-         Ft37CYTOrgCk5VaqjPiq5S5Nnp8QFfESwq971Zd5052JPOhEmAlvgnXgrzJAqssrsJlE
-         zDcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GG0TpbUNYlPSbaljbB2iMXCGWpl1mkIqLneVjeynSxI=;
-        b=ee42hfbJSiFH2SrTXV06ztPsUzndh3yQ1GuaVDACFGETO4YpE3Bt7/9McXrow4LpLh
-         0QqOG3uaYatQcQCLkdf7ARot+NS0MGPe8moGpazxeCcoBu35/8RcUQMAT684IYciUgfB
-         66R3W6yusP06K+LDfFxz4HD1SKdjpf81zjP2nfeejt61MJiMJk6YlqwIqp4Vex947bJ5
-         kb6uc9SNqMmm5Wfj4eMg5VqSZn/xNkwWKCHGmAyAI65CRXwJir4/1Eek1z0GXzugjVmj
-         HLCdeFFSRL68KLHL9hv1BKVpRRuBDcgmLKrssU9CekLeSE1Ok2NygLHFfesdz7lkTbD2
-         jeuw==
-X-Gm-Message-State: AOAM533ZBwVAqHTg22mQaLG0LJx9ClMM7aWmsANtJedKZC+rkZ/pMZp1
-        w1hne3ggz7Un64ZLm2oedns1EQ==
-X-Google-Smtp-Source: ABdhPJxyRZTOu8oTpmszoVzALsoM139tiy9mfNWSYd34E76lJAP8S0iZ6e/JG3ZrP968DirOqzJ0Jw==
-X-Received: by 2002:aca:4c03:: with SMTP id z3mr3710617oia.21.1611764645161;
-        Wed, 27 Jan 2021 08:24:05 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w194sm503278oiw.39.2021.01.27.08.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 08:24:04 -0800 (PST)
-Date:   Wed, 27 Jan 2021 10:24:02 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-Message-ID: <YBGTooJ5tVgf1u/R@builder.lan>
-References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
- <20210113152625.GB30246@work>
- <YBGDng3VhE1Yw6zt@kroah.com>
+        Wed, 27 Jan 2021 11:28:43 -0500
+Received: from envy.fritz.box ([82.207.222.125]) by mrelayeu.kundenserver.de
+ (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MT9zD-1lYsr601ct-00UdtE; Wed, 27 Jan 2021 17:26:03 +0100
+From:   mail@richard-neumann.de
+To:     nehal-bakulchandra.shah@amd.com, sandeep.singh@amd.com,
+        mail@richard-neumann.de, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH v2 0/3] Add quirks to AMD Sensor Fusion Hub driver
+Date:   Wed, 27 Jan 2021 17:25:57 +0100
+Message-Id: <20210127162600.35927-1-mail@richard-neumann.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBGDng3VhE1Yw6zt@kroah.com>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:wqQICO0iEHYWMgo49KioXh6iVCPcIX44P8QhzZS1+sHOr0mQAfR
+ j9KvfL0C1SUK2MriXLlrgvp33dttyDN5wwo/3yFVmLAilT3PqLSUsJ7i/CHQ5urEzZwWRn8
+ 1O9WqqF67BWxhRenuvSBcSIYmdFmb4csc4OPP6eTlMxU0Kq8itRVU+I+3bYI12tPCd49e4W
+ 6vidVRncYDDxbtCREl1IA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fzExLOhzMaQ=:URYh/JD0zJso0i/z5YHbuo
+ cxSYdX0U9W+vnI0hFtoUC8H6hmEd+V9yQRPRArZdeptQs6PVQ0m1Jq4eahyBBz3KiCClCNSwx
+ yZJ9h8CLlkluKgOvpRvYRehQwYp5GvIhWMcypkuA0xtAxo06wWkymvUWLmJUe/FY5a5zsghBE
+ VMO50CqosN9+9dUiysmk3gQXzfdutvX970s78UfA3fREatd9JaX2EMo1EUh9ZH7kRenT9H3gg
+ Pq92os8zXjjyTaG7oJ58mWs+0tQPQwU7IYUbH4gVVm/FKXJ6B27S504U+WmFiIGphtZzLjSOc
+ jQk5uKuC10ral52C5qrhA3xPMZkuV/icSUd+KKDRMqfrKGWK7VHHwJeKgtd/jIFFD4mLk2aUk
+ ypqniYnFMoC/TrEeFnZ9VC0HxOiT5xuc+rzICzgoUDXfzBTKakOWz+eOEQ8Wl6nAdDs/euryu
+ v4YGP+uyPA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27 Jan 09:15 CST 2021, Greg KH wrote:
+From: Richard Neumann <mail@richard-neumann.de>
 
-> On Wed, Jan 13, 2021 at 08:56:25PM +0530, Manivannan Sadhasivam wrote:
-> > Hi Greg,
-> > 
-> > On Wed, Jan 06, 2021 at 10:44:13AM -0800, Hemant Kumar wrote:
-> > > This patch series adds support for UCI driver. UCI driver enables userspace
-> > > clients to communicate to external MHI devices like modem. UCI driver probe
-> > > creates standard character device file nodes for userspace clients to
-> > > perform open, read, write, poll and release file operations. These file
-> > > operations call MHI core layer APIs to perform data transfer using MHI bus
-> > > to communicate with MHI device. 
-> > > 
-> > > This interface allows exposing modem control channel(s) such as QMI, MBIM,
-> > > or AT commands to userspace which can be used to configure the modem using
-> > > tools such as libqmi, ModemManager, minicom (for AT), etc over MHI. This is
-> > > required as there are no kernel APIs to access modem control path for device
-> > > configuration. Data path transporting the network payload (IP), however, is
-> > > routed to the Linux network via the mhi-net driver. Currently driver supports
-> > > QMI channel. libqmi is userspace MHI client which communicates to a QMI
-> > > service using QMI channel. Please refer to
-> > > https://www.freedesktop.org/wiki/Software/libqmi/ for additional information
-> > > on libqmi.
-> > > 
-> > > Patch is tested using arm64 and x86 based platform.
-> > > 
-> > 
-> > This series looks good to me and I'd like to merge it into mhi-next. You
-> > shared your reviews on the previous revisions, so I'd like to get your
-> > opinion first.
-> 
-> If you get the networking people to give you an ack on this, it's fine
-> with me.
-> 
+This patch adds quirks to the upstream (v8) version of the
+AMD Sensor Fusion Hub driver.
+The quirks provide a function to detect the sensor mask for systems
+that do not have it stored in the AMD_P2C_MSG3 register.
+The information about the systems IDs and available sensors was
+taken from: https://bugzilla.kernel.org/show_bug.cgi?id=199715
 
-Why? As concluded in previous iterations of this series this does not
-relate to networking.
+Changes since v1:
+* Added missing object amd_sfh_quirks.o to amd_sfh-objs
+* changed type of "system" in "amd_sfh_quirks_get_sensor_mask"
+  - struct dmi_system_id -> const struct dmi_system_id
 
-Regards,
-Bjorn
+Richard Neumann (3):
+  Outsourced sensor masks to PCI driver header.
+  Added quirks to detect sensor masks.
+  Updated MAINTAINERS
+
+ MAINTAINERS                              |  1 +
+ drivers/hid/amd-sfh-hid/Makefile         |  1 +
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.c   | 16 +++----
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.h   | 15 +++++++
+ drivers/hid/amd-sfh-hid/amd_sfh_quirks.c | 55 ++++++++++++++++++++++++
+ 5 files changed, 79 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_sfh_quirks.c
+
+-- 
+2.30.0
+
