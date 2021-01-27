@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AEF3060ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F57F3060EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbhA0QXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:23:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
+        id S1343542AbhA0QXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:23:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237074AbhA0QWf (ORCPT
+        with ESMTP id S237090AbhA0QWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:22:35 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DE2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:21:50 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id i25so2691541oie.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:21:50 -0800 (PST)
+        Wed, 27 Jan 2021 11:22:50 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3F2C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:22:09 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id e18so2749419lja.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:22:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
@@ -33,17 +33,17 @@ X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
         bh=wIMsOth/CNpqJDbBf0Jp68HsUWmj5aTlTiQ/jITKbjA=;
-        b=r0FXA1x9nc81YZWnPeafTmXug8naotdbJmj3iUthmpEeuCpIolxJmGeLM9EWUe4hij
-         T5r1zpEI7JL3v2MryO1F9s0ggR0lM+HrJs3TbnWyo+SB7llgA8QPULxNqUQ1vNbuKULP
-         Y7E1KQXAFEa39+y4q4vOWxDwTLwS6+X3XqwfAFSi6ZzbyjmCxeu/hLEIB4RHGSs/S9BN
-         iJrK9pMaqtMx9w2ilF2qxr3oWzJJ7cki9++L7Qyr6/v8P6LVf/1jW56J9W+wHiXPFVTW
-         qv7HppJdVwZNpJDe6hnlQ8TYrbPqFD99hSiuEB3mPG8A0wxv4TpESI0Rd83ObWemEMQ1
-         RR/Q==
-X-Gm-Message-State: AOAM531lBPVAFKTXntaTSq7TpzOCRjZrXDKe2WVUmXWREIdBubs7yXc8
-        CP7jOQA/zIQDr4N90mbFB2/kx7lHbwVjE/K2vKCpHw==
-X-Google-Smtp-Source: ABdhPJwizoED4YYnXfw2WhdYH9Di6DU+JIowjUughpLE8nBjzr6e3dK5ni+7zEusddUy2PphROoB1ULn0Y7f9PKewA8=
-X-Received: by 2002:aca:b4d5:: with SMTP id d204mr3593832oif.165.1611764509753;
- Wed, 27 Jan 2021 08:21:49 -0800 (PST)
+        b=KLAXn3IUrYE21cET2n0UukgEVkQRoU8U7gIrn17IlUJKJcTgoV+gW627jJ5YKFZfOW
+         HGUNV1+GJ6fJxUuYXpEVi3kGAghGBj/KnLFBSlu5iJC/ydbmIFzIb54qaTMwR5USRf02
+         AGlnCqhujMi8wOcMeop2b/KgV0RWDHD9y01ME1Tij9Hh267pM9VM+Nvv74C6JRbp3yYR
+         yiySz96G8X13AyQt4/nTC+xM71LYXnjEeKIBl9legvkCrCRe7Z+VlAaqE+VnB8m5k6w2
+         RD9P+LCCo6vXeHnLTFtQFEnKTzowPl7rt2c2aLuUdufIQANw0z0/ODTuAhVQhc+CIxgJ
+         KwCw==
+X-Gm-Message-State: AOAM531MCzDdlC0Fcynt9jbJJONVJqhD5oVBE+H3Ej809MJvG9ZpMjaD
+        cjT4+LnU5Tm51O+1ESstj01GxCzfuTn5u+CU2+9k0Q==
+X-Google-Smtp-Source: ABdhPJzatFYmgdhyf3wEmFNwxmKD9k5zdlbv09eFNLFq0k6LI8NM/T5jgDVOHIIGi2zX2mOH+2d+10B/80YLcjFTvYs=
+X-Received: by 2002:a2e:9548:: with SMTP id t8mr5412614ljh.284.1611764527690;
+ Wed, 27 Jan 2021 08:22:07 -0800 (PST)
 MIME-Version: 1.0
 References: <20210112192018.34994-1-cristian.marussi@arm.com>
 In-Reply-To: <20210112192018.34994-1-cristian.marussi@arm.com>
