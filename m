@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AE1305C4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8273A305C03
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343640AbhA0M7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:59:47 -0500
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:36228 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238116AbhA0M5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:57:52 -0500
-Received: by mail-lj1-f175.google.com with SMTP id l12so1964393ljc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:57:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=hkkEQ5LxAIAG697moZ6W1KLytp5WEJ6lVkLYP4iGbjY=;
-        b=jHUf2f5Vx0g52BZO9G8PM8/DKtCWId+2wQhbEIqizeaoLp1Uvhb7CYCifm+h7tjn6l
-         3U2T1yioP9l4GpvtGkKy8THwVB+x1d4WO3VYu9ynhXzG8aEFF3+3zx6juydLmcXwBGA3
-         KuXHJf2msiq61eaf3zdoSrV9IBUWBrWWcxm7xKTPpXdkxHehEMWJW2twLiS1qTBcvUQg
-         W7Z2MWpk58lEtmfW0nMWkE96Q3nyw0vJ/kBZDoqewpYhfp8CzXN4DDRKxXEU/xGLBY27
-         t5SbTnonbQUHKZYkcHkQZdA+Dk4FkcxJjMKhoR8E/1rUHHZV+WalC3J4zncGUiFgK4JQ
-         TZgw==
-X-Gm-Message-State: AOAM533PCt7DyOqsQwt1IRn8QTQbjnEb7fQtJbDBu7uz/ozHBv4UdLNj
-        KgsaNPXKt79mSxm0fiMO7DE=
-X-Google-Smtp-Source: ABdhPJxw2y8RtzAqRXP2urfRcgpmvZfgaYE3x/Tt8XXZjEesN30YIuqP4/KXCCcuROlT7p59jaJaTw==
-X-Received: by 2002:a2e:9594:: with SMTP id w20mr4482316ljh.417.1611752227718;
-        Wed, 27 Jan 2021 04:57:07 -0800 (PST)
-Received: from localhost.localdomain ([62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id 192sm469576lfn.232.2021.01.27.04.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 04:57:06 -0800 (PST)
-Message-ID: <6d60af3516161bd04332cd60b50aa4becf92e17a.camel@fi.rohmeurope.com>
-Subject: Re: short-circuit and over-current IRQs
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "angelogioacchino.delregno@somainline.org" 
-        <angelogioacchino.delregno@somainline.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <20210127122733.GC4387@sirena.org.uk>
-References: <6046836e22b8252983f08d5621c35ececb97820d.camel@fi.rohmeurope.com>
-         <20210127122733.GC4387@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        id S238029AbhA0MtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:49:08 -0500
+Received: from mga03.intel.com ([134.134.136.65]:1762 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234782AbhA0Mqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:46:43 -0500
+IronPort-SDR: UdQZReNievoMq2Ay0O8tvqMOr8ALMf4c1Q3iu2C4KxhSOyzSoFcC131KO6jo5BcrSRtj5l8fK4
+ GuHwqui3wJFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180140525"
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
+   d="scan'208";a="180140525"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 04:44:56 -0800
+IronPort-SDR: UY66y7hlTgMWE7SAKaZ+FYqbWxrF5r0DuNU7oPyCc5tNnyCW+SQ6Jpfo8f6GMEIKa8I7+o9nXb
+ nqItxCBoilBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
+   d="scan'208";a="357054026"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by orsmga006.jf.intel.com with ESMTP; 27 Jan 2021 04:44:55 -0800
+Subject: Re: [PATCHv3 1/6] firmware: stratix10-svc: add
+ COMMAND_AUTHENTICATE_BITSTREAM flag
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mdf@kernel.org, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>
+References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
+ <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
+ <YBFW50LPP/yEbvEW@kroah.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <2f9d082b-9970-8f41-0351-324f1bad6cbf@linux.intel.com>
+Date:   Wed, 27 Jan 2021 07:05:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Wed, 27 Jan 2021 14:56:47 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+In-Reply-To: <YBFW50LPP/yEbvEW@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
 
-Nice to hear from you. :)
+Hi Greg,
 
-On Wed, 2021-01-27 at 12:27 +0000, Mark Brown wrote:
-> On Wed, Jan 27, 2021 at 12:01:55PM +0000, Vaittinen, Matti wrote:
+Thanks for review!
+
+On 1/27/21 6:04 AM, Greg KH wrote:
+> On Mon, Jan 25, 2021 at 02:56:23PM -0600, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Add COMMAND_AUTHENTICATE_BITSTREAM command flag for new added bitstream
+>> authentication feature. Authenticating a bitstream is to make sure a signed
+>> bitstream has the valid signatures.
+>>
+>> Except for the actual configuration of the device, the bitstream
+>> authentication works the same way as FPGA configuration does. If the
+>> authentication passes, the signed bitstream will be programmed into QSPI
+>> flash memory and will be expected to boot without issues.
+>>
+>> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
+>> aligns with the firmware settings.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>> v3: no change
+>> v2: new added
+>> ---
+>>   include/linux/firmware/intel/stratix10-svc-client.h | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+>> index ebc2956..7ada1f2 100644
+>> --- a/include/linux/firmware/intel/stratix10-svc-client.h
+>> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
+>> @@ -51,12 +51,17 @@
+>>   #define SVC_STATUS_NO_SUPPORT		6
+>>   
+>>   /*
+>> - * Flag bit for COMMAND_RECONFIG
+>> + * Flag for COMMAND_RECONFIG, in bit number
+>>    *
+>>    * COMMAND_RECONFIG_FLAG_PARTIAL:
+>> - * Set to FPGA configuration type (full or partial).
+>> + * Set for partial FPGA configuration.
+>> + *
+>> + * COMMAND_AUTHENTICATE_BITSTREAM:
+>> + * Set for bitstream authentication, which makes sure a signed bitstream
+>> + * has valid signatures before committing it to QSPI flash memory.
+>>    */
+>> -#define COMMAND_RECONFIG_FLAG_PARTIAL	1
+>> +#define COMMAND_RECONFIG_FLAG_PARTIAL	0
 > 
-> > Anyways - I was wondering if this is common thing amongst many
-> > PMICs?
-> > If yes - then, perhaps some generally useful regulator helper could
-> > be
-> > added to help implementing the IRQ disabling + scheduling worker to
-> > check status and re-enable IRQs? I think it *might* save some time
-> > in
-> > the future - and help making same mistakes many times :]
+> So is this a bugfix, changing this value to the correct one?
+
+Yes, it is a bug fix.
 > 
-> If we've got two that's enough for a helper.  TBH I'm a bit surprised
-> that people are implementing hardware that leaves the outputs enabled
-> when it detects this sort of error, it's something that's usually an
-> emergency that needs shutting off quickly to prevent hardware damage.
+> If so, shouldn't this be a stand-alone patch and get backported to
+> stable kernel releases?
 
-I can only speak for BD9576MUF - which has two limits for monitored
-entity (temperature/voltage). One limit being 'warning' limit (or
-'detection' as data-sheet says), the other being 'protection' limit.
+Sure, I will make change and submit again as a standalone patch.
 
-I don't know guys who designed HW - I am located to a remote spot on
-the other side of the world and on top of that I am the odd "SW guy" so
-it's better to keep me out of the HW R&D decisions and especially the
-customers ;) - but I *guess* the idea has been that consumer driver(s)
-could do some 'recovery action' at 'warning' limit (which might make
-sense for example when temperature is increased to 'high' but not yet
-'damaging' - I guess there is something that can be done with
-over/under voltages too...) and only kill the power if that doesn't
-help and situation (with temperature/voltage) gets worse.
-
-What I don't like is the fact that HW keeps IRQ asserted instead of
-having a state machine which would only generate IRQ when condition
-changes + status register to read current condition.
-
-I will see if I can cook-up something decent - but as I said, I would
-appreciate any/all testing if I get patch crafted :)
-
-Best Regards
-	Matti
-
+> 
+> If not, then no one uses this flag today?
+> 
+> thanks,
+> 
+> greg k-h
+> 
+Regards,
+Richard
