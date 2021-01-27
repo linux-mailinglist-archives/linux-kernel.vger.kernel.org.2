@@ -2,144 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B11D3052CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EF23052D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbhA0GEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:04:09 -0500
-Received: from mga18.intel.com ([134.134.136.126]:42570 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237608AbhA0Dzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:55:35 -0500
-IronPort-SDR: 4neyQmTp2DOKMZJuGVDs3fR8/QFsQotwmgwOREQAU85OiK5MfOIwuV+XwR5JHcDTr2yG/6QB5s
- H0aSLWKfJvhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="167684743"
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="167684743"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:54:54 -0800
-IronPort-SDR: zUQpenv7S1YPTdoCBnbHAiu/wM0L/F0BKuoVZbQJ78z1FKrzRPZThfc/ZEYvVgPHqjCfKsTLBO
- yWxpBD5vmXPg==
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="362253675"
-Received: from yuankuns-mobl.ccr.corp.intel.com ([10.249.169.180])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:54:53 -0800
-Message-ID: <e1fcf35b21e7e4af67621bd4f037e3f07af756e1.camel@intel.com>
-Subject: Re: linux-next: build warning after merge of the pm tree
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Date:   Wed, 27 Jan 2021 11:54:50 +0800
-In-Reply-To: <20210127124324.29b7c4d4@canb.auug.org.au>
-References: <20210127124324.29b7c4d4@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S235659AbhA0GHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:07:00 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:12262 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235738AbhA0FjP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 00:39:15 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210127053830epoutp0349b275015b44a9bb069dc40aa21a6d31~eAC0_SbPf3149731497epoutp03d
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 05:38:30 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210127053830epoutp0349b275015b44a9bb069dc40aa21a6d31~eAC0_SbPf3149731497epoutp03d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611725911;
+        bh=Q7c7nswS1ltBmlscGeDNtGS45xJh4M+Aq8tqkniFyBw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IaJDptNxgup57YiGCoewW7/af+tOtfWG7wfi7XzsSyB1EknfgjdN/2njTvlpRmuWT
+         OJIDE0prHlWfmetzHZ3lZMZB/8plS7/vudEh/EsFO9a8rsBEm1rpj7cmEAywJiR8nS
+         42K6wBuGe3Yva9BOaqxLXmtNuTbApfreG0aKgMG8=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210127053829epcas1p40724852a01d56dbbd4bbeeb887a4c617~eAC0CO8z30725007250epcas1p42;
+        Wed, 27 Jan 2021 05:38:29 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DQXT03KPBz4x9Ps; Wed, 27 Jan
+        2021 05:38:28 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6C.1B.09582.45CF0106; Wed, 27 Jan 2021 14:38:28 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210127053827epcas1p1e0cda00cdbfdacd5a3ede69c788d6710~eACxs5L7e2375923759epcas1p1B;
+        Wed, 27 Jan 2021 05:38:27 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210127053827epsmtrp1a89f6c7f0f1c3f1c7e1f21e5a30a81d6~eACxqxLcr2906229062epsmtrp1L;
+        Wed, 27 Jan 2021 05:38:27 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-c4-6010fc54a7a2
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        33.5E.08745.35CF0106; Wed, 27 Jan 2021 14:38:27 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210127053827epsmtip191803422311aa3bd75635387cece71c1~eACxbG4Bb0590505905epsmtip1d;
+        Wed, 27 Jan 2021 05:38:27 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     damien.lemoal@wdc.com
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, mj0123.lee@samsung.com,
+        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+Subject: Re: [PATCH v3 1/2] bio: limit bio max size
+Date:   Wed, 27 Jan 2021 14:22:57 +0900
+Message-Id: <20210127052257.13186-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <BL0PR04MB6514D7392DB2F6B9069A4B7FE7BB9@BL0PR04MB6514.namprd04.prod.outlook.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf1CTdRzH+z7P9uwZNXtiJF8pYw2wWIKbY+ybQmdk3HOHdtzKu5IZm/Ac
+        I8e29mz047zLYwg2FOG4dMxpZgTdLEFAgxWcB5YiVCiQyB0IIRpcQI1AoqQ2Hij+e3++n9f7
+        +77P9weJh94kIshck42xmvRGKRHCu9geK4977W9KJ/eViZHHexGgs4NHCXSweA5Dh+8U8NED
+        5xCGZkdY1DLwHOrxeQjUVuHA0PEGD45+ut0lQO1DfTw0UlWOox86/Hx0anQbWqj5FqDp+ZsC
+        dK2pAke1LX8S28R0uWNKQDe7BwV0z/d2ut77IUFPt/YRdGmjF9Az9U/RxZdKsHRytzHJwOiz
+        GauEMWWZs3NNOcnStFczX8pUJcoVcYrnkVoqMenzmGTp9h3pcam5xsA0Ukm+3mgPLKXrWVa6
+        6YUkq9luYyQGM2tLljKWbKNFIbfEs/o81m7Kic8y521RyOWbVQFSZzRU9kVZGte8O3XrPH4A
+        9D3sBEISUglwsKpb4AQhZCjVBKCroGi58APYPHIa44oZABfLy/grlp7qQT7X8AFYebUE/Ee5
+        G6aWKILaCEsnB4igDqPWwWvjfxBBCKdacehvvLsEiSkl/LHEwQtqHhUDHb87QVCLqK3w8vgp
+        nIuLhGNHapa0kNoDhzwNBMc8Bjsq7yx58QDjuHACDwZAqpeEC/PdPM68HfqLnBinxXDiSqOA
+        0xFw/Cg3KaRKAHQUfQy4ogzAqnvVyw4l9M/MBBpkICIW1vo2cctPw+a/TgIueQ2cmj3MDyKQ
+        EsFDRaEcEg27Cm/jK1n3vmxe3pGG1YvdBHdcdQD6is8RZUDiXjWQe9VA7v+TTwPcC9YyFjYv
+        h2EVFuXqS64HSy9cpm4CxyZ/i28DGAnaACRxaZhoOorShYqy9e+9z1jNmVa7kWHbgCpw3OV4
+        xONZ5sAXMdkyFarNSqUSJSSqE1VKabhor3w4M5TK0duYfQxjYawrPowURhzAUrBU9cu/hiXd
+        KHz9rQZx7/zYrjdNrt4CIqxr16Pa8z8L8+kjss4G6kzqfbPPwLp/cXwjE9zt1Ah2fprnSqzr
+        wDUa7X2an/FQWniKX906XzEs2GCMecKj7NHODXUuOntSHplc913tBwlpvq7YYd0exdlpXboT
+        jr7TGJkfGT5346Pq6ZYoht0qcrW3CUykXC7xf6a9pXlmIGu9a/ezD7z9Q5F9GSGTlw+GX9CW
+        Cpvr+v958ureL6LRxLGKz2uOn/tkobKm9GR0xiv7Y1yzwokTO972JBdqrvjGStZ3jW6QXfr6
+        jZ1fKbdMumd6y5xet+T6oX01Z3QxMlX/8NhGz9rr+7EXpTzWoFfIcCur/xdvVwtyagQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42LZdlhJTjf4j0CCwf0/QhZzVm1jtFh9t5/N
+        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
+        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
+        bB7v911l8+jbsorR4/MmOY/2A91MARxRXDYpqTmZZalF+nYJXBkzryoXbOGreHdzI3MD41Xu
+        LkZODgkBE4nLy+6ydjFycQgJ7GCU+LHxJxtEQkri+Im3QAkOIFtY4vDhYpCwkMBHRolN151A
+        bDYBHYm+t7fAykUEJCVOvfzCBjKHWeAKs8TmjzMZQRLCAsYS57ubWUBsFgFVieaPXWBxXgFr
+        iSMv5zFD7JKXeNq7HMzmFIiVuDdnMxvEshiJdRcb2CHqBSVOznwCNocZqL5562zmCYwCs5Ck
+        ZiFJLWBkWsUomVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERxhWlo7GPes+qB3iJGJg/EQ
+        owQHs5II73tlgQQh3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4
+        OKUamFZfiZCJ/ibqX7Jjx4uphcpTz3SwMUat+K/Omsv5NTkjJbPoS4XVPrf5NVYCvd+s1/1w
+        NjW9dmbLiz/Wv5besXw6/8v92vSQQxkWvce9k897x+p8r/c8M3Fm1ZnS2C9bOON6nu0Xvlgh
+        9+rN5CMr7xrPCMo4Osnz0sMkReHFbJ93NGxwucb/xHET1/xJL8Km987vfs5/5sNLmXrXNdOi
+        rX703r7x1PmJxArtkA9BXnxTbm61ruTf/OrxjM+3UgRc0/5W5UXEHWo/KBx24bXkq5+rV5dc
+        /9TYpmnr8/j0xgxer+8vOVkuvn8w++iehl9zb+wIrnzKFngiLPj70UkZp9J3O3zYF+R/Y6nD
+        369rDsyUVWIpzkg01GIuKk4EACvMYxsfAwAA
+X-CMS-MailID: 20210127053827epcas1p1e0cda00cdbfdacd5a3ede69c788d6710
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210127053827epcas1p1e0cda00cdbfdacd5a3ede69c788d6710
+References: <BL0PR04MB6514D7392DB2F6B9069A4B7FE7BB9@BL0PR04MB6514.namprd04.prod.outlook.com>
+        <CGME20210127053827epcas1p1e0cda00cdbfdacd5a3ede69c788d6710@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Stephen,
+> On 2021/01/27 9:36, Changheun Lee wrote:
+> >>> +
+> >>>  /**
+> >>>   * bio_reset - reinitialize a bio
+> >>>   * @bio:	bio to reset
+> >>> @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+> >>>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+> >>>  
+> >>>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> >>> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> >>> +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+> >>>  				*same_page = false;
+> >>>  				return false;
+> >>>  			}
+> >>> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> >>> index 1edda614f7ce..cdb134ca7bf5 100644
+> >>> --- a/include/linux/bio.h
+> >>> +++ b/include/linux/bio.h
+> >>> @@ -100,6 +100,8 @@ static inline void *bio_data(struct bio *bio)
+> >>>  	return NULL;
+> >>>  }
+> >>>  
+> >>> +extern unsigned int bio_max_size(struct bio *);
+> >>
+> >> No need for extern.
+> > 
+> > It's just for compile warning in my test environment.
+> > I'll remove it too. But I think compile warning could be in the other
+> > .c file which includes bio.h. Is it OK?
+> 
+> Hmmm... not having extern should not generate a compilation warning. There are
+> tons of functions declared without extern in header files in the kernel. What
+> compiler are you using ?
+> 
 
-Sorry that I missed this build warning in the first place, thanks for
-reporting.
-The patch below fixes it.
+Compiler imformation is below.
 
-BTW, Rafael, I think acpi_fpdt_init() also needs to be fixed to have
-proper return value.
-Do you prefer an incremental patch or a V2 of 208757d71098 ("ACPI:
-tables: introduce support for FPDT table"), which includes all these
-fixes?
+CROSS_COMPILE: android/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+CC: android/prebuilts/clang/host/linux-x86/clang-r383902/bin/clang
+CLANG_TRIPLE: android/prebuilts/clang/host/linux-x86/clang-r383902/bin/aarch64-linux-gnu-
+CROSS_COMPILE_COMPAT: android/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-
 
-thanks,
-rui
 
-From 2b8ed148351875b4bf227602a97edba12d08af7e Mon Sep 17 00:00:00 2001
-From: Zhang Rui <rui.zhang@intel.com>
-Date: Wed, 27 Jan 2021 11:33:33 +0800
-Subject: [PATCH] ACPI: FPDT: fix build warning
+> 
+> -- 
+> Damien Le Moal
+> Western Digital Research
+> 
 
-Fix a build warning,
-In file included from ./include/linux/printk.h:7:0,
-                 from ./include/linux/kernel.h:16,
-                 from ./include/linux/list.h:9,
-                 from ./include/linux/kobject.h:19,
-                 from ./include/linux/of.h:17,
-                 from ./include/linux/irqdomain.h:35,
-                 from ./include/linux/acpi.h:13,
-                 from drivers/acpi/acpi_fpdt.c:11:
-drivers/acpi/acpi_fpdt.c: In function ‘acpi_init_fpdt’:
-./include/linux/kern_levels.h:5:18: warning: too many arguments for format [-Wformat-extra-args]
- #define KERN_SOH "\001"  /* ASCII Start Of Header */
-                  ^
-./include/linux/kern_levels.h:14:19: note: in expansion of macro ‘KERN_SOH’
- #define KERN_INFO KERN_SOH "6" /* informational */
-                   ^~~~~~~~
-./include/linux/printk.h:373:9: note: in expansion of macro ‘KERN_INFO’
-  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
-         ^~~~~~~~~
-drivers/acpi/acpi_fpdt.c:255:4: note: in expansion of macro ‘pr_info’
-    pr_info(FW_BUG, "Invalid subtable type %d found.\n",
-    ^~~~~~~
-
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 ---
- drivers/acpi/acpi_fpdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
-index b8108117262a..64d5733dca0b 100644
---- a/drivers/acpi/acpi_fpdt.c
-+++ b/drivers/acpi/acpi_fpdt.c
-@@ -252,7 +252,7 @@ void acpi_init_fpdt(void)
- 					      subtable->type);
- 			break;
- 		default:
--			pr_info(FW_BUG, "Invalid subtable type %d found.\n",
-+			pr_info(FW_BUG "Invalid subtable type %d found.\n",
- 			       subtable->type);
- 			return;
- 		}
--- 
-2.17.1
-
-
-On Wed, 2021-01-27 at 12:43 +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the pm tree, today's linux-next build (x86_64
-> allmodconfig)
-> produced this warning:
-> 
-> In file included from include/linux/printk.h:7,
->                  from include/linux/kernel.h:16,
->                  from include/linux/list.h:9,
->                  from include/linux/kobject.h:19,
->                  from include/linux/of.h:17,
->                  from include/linux/irqdomain.h:35,
->                  from include/linux/acpi.h:13,
->                  from drivers/acpi/acpi_fpdt.c:11:
-> drivers/acpi/acpi_fpdt.c: In function 'acpi_init_fpdt':
-> include/linux/kern_levels.h:5:18: warning: too many arguments for
-> format [-Wformat-extra-args]
->     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->       |                  ^~~~~~
-> include/linux/kern_levels.h:14:19: note: in expansion of macro
-> 'KERN_SOH'
->    14 | #define KERN_INFO KERN_SOH "6" /* informational */
->       |                   ^~~~~~~~
-> include/linux/printk.h:373:9: note: in expansion of macro 'KERN_INFO'
->   373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
->       |         ^~~~~~~~~
-> drivers/acpi/acpi_fpdt.c:255:4: note: in expansion of macro 'pr_info'
->   255 |    pr_info(FW_BUG, "Invalid subtable type %d found.\n",
->       |    ^~~~~~~
-> 
-> Introduced by commit
-> 
->   208757d71098 ("ACPI: tables: introduce support for FPDT table")
-> 
-
+Changheun Lee
+Samsung Electronics
