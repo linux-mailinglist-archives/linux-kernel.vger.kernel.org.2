@@ -2,175 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EB7305972
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE3D30596E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhA0LTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236002AbhA0KmS (ORCPT
+        id S236083AbhA0LSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:18:14 -0500
+Received: from forward101p.mail.yandex.net ([77.88.28.101]:56095 "EHLO
+        forward101p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235048AbhA0KsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:42:18 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3714BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:41:38 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id i25so1635871oie.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:41:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dHW98jBz5obeVQyvHLsFnkG/U40o7OkkRgzs1XfXLq4=;
-        b=NGa9TFyhwu/0tsY14nVroXHv/Lik2dCNomsmMrPsQhCBuxhiJ8ADNEwd7qG/ibuqDj
-         NvbOptHDmSg9KNZe7GOh9ZeC8yra2COp0NkBYaOwU29h9Po2uWIRbVSrwnP7ftQS3iXF
-         kqn7tWWamFYe0Gjm4sqbsIH6C3Cd9yGVqZchmjI/+gnNTnLrFxgwFUKarQ7ILms6H5cm
-         fSvyLixQclDSnRoanIyW/BXFW8DfQuccbZ3ko+0JnBjPXu/Tc4B4zJ/nc8Istdgu0Y8I
-         Xx+7LAZFn4LvqM6bIysJ2jma6TejcPSSXYcvivGDvIzZ8p04bzvWnn0hT9MP+aj9EsNZ
-         SAkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dHW98jBz5obeVQyvHLsFnkG/U40o7OkkRgzs1XfXLq4=;
-        b=dRcg5bOnnIZJzrOlN2N9jClpxS8gsL61RUkkyMWBrwg//gFyRuN/gg843ox/JAc9C5
-         BYh4rkwGzM6Deu2YJahvDWnNrL9qvpvcXLTXaoKzMfyKsMoKiY5L2SMRq8xOE1Xq+wkY
-         UPh7VOrUrNoV+gRCqCNuln+vR4dNKE9r9lNKaKvMF7iohRDBxSQvNzCRks7B2u65iM0I
-         0QRxXqN+4fKwmmgE38W7llfjnenYQDS3AS73+eZELLwfzBIHPROQur7VMFchl4IorysL
-         sFSQjTMbFtYgjwfWBE/FXRaZynDYaXdqkXWFNxUhgS/35GeVOi+1aQjrESXOmHT9L6/o
-         PEdg==
-X-Gm-Message-State: AOAM533+vqBY4PT8cR1Ehxiqxjkz7I/q7s3cN9ZlhI2Vqts+Xntztg0g
-        i5R8vD6zr64du+tJ4crMFwrQE+9m4H+QDU1Dr+Wijw==
-X-Google-Smtp-Source: ABdhPJzQWKzftPcKSYQ8bsoIXdPSqAkccHW0BsmWU/8/YgGEKgiRQ/gKGC24QiG2rtEJTH45eKA7j/cuolsJBEZ+fvE=
-X-Received: by 2002:aca:6702:: with SMTP id z2mr2635279oix.149.1611744097584;
- Wed, 27 Jan 2021 02:41:37 -0800 (PST)
+        Wed, 27 Jan 2021 05:48:10 -0500
+Received: from iva3-4874dd324817.qloud-c.yandex.net (iva3-4874dd324817.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:49a4:0:640:4874:dd32])
+        by forward101p.mail.yandex.net (Yandex) with ESMTP id 9050C32830F7;
+        Wed, 27 Jan 2021 13:46:29 +0300 (MSK)
+Received: from iva6-2d18925256a6.qloud-c.yandex.net (iva6-2d18925256a6.qloud-c.yandex.net [2a02:6b8:c0c:7594:0:640:2d18:9252])
+        by iva3-4874dd324817.qloud-c.yandex.net (mxback/Yandex) with ESMTP id k8eJcl5Y2y-kTGCIS3p;
+        Wed, 27 Jan 2021 13:46:29 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1611744389;
+        bh=MjRDgxGTiCbkvysV4oEPs6x8SIGM1B5dcgTPZ1aY3Hg=;
+        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
+        b=DxJtolUZBvHzxGkJokYKrlzSmVHC0e6oR0Re2a/Dp7m4FD/qX9HFZwlmRBj1BQTiH
+         Lj9G39msGPaq4uIl4ecXJtZZOKLlAFRrN9M6qn9QLCLS2wHy6Bm2lQB4z2yXg3g1vr
+         +HBnOHtekr+DcAEnuiHO5Y/f+9ow0TPCtoRHZ5eo=
+Authentication-Results: iva3-4874dd324817.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id AUuDuROonk-kSm8U3AH;
+        Wed, 27 Jan 2021 13:46:28 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/9] gpio: ep93xx: Fix single irqchip with multi gpiochips
+Date:   Wed, 27 Jan 2021 13:46:10 +0300
+Message-Id: <20210127104617.1173-3-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210127104617.1173-1-nikita.shubin@maquefel.me>
+References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+ <20210127104617.1173-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-References: <20210125113758.2430680-1-arnd@kernel.org>
-In-Reply-To: <20210125113758.2430680-1-arnd@kernel.org>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 27 Jan 2021 11:41:26 +0100
-Message-ID: <CAHUa44GwSRB=7tFpXi2ZW-SXGipp7ErDkB2_4iGQfyH_ECAU8A@mail.gmail.com>
-Subject: Re: [PATCH] optee: simplify i2c access
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>,
-        Arnd Bergmann <arnd@arndb.de>,
-        op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Fixes the following warnings which results in interrupts disabled on 
+port B/F:
 
-On Mon, Jan 25, 2021 at 12:38 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Storing a bogus i2c_client structure on the stack adds overhead and
-> causes a compile-time warning:
->
-> drivers/tee/optee/rpc.c:493:6: error: stack frame size of 1056 bytes in function 'optee_handle_rpc' [-Werror,-Wframe-larger-than=]
-> void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
->
-> Change the implementation of handle_rpc_func_cmd_i2c_transfer() to
-> open-code the i2c_transfer() call, which makes it easier to read
-> and avoids the warning.
->
-> Fixes: c05210ab9757 ("drivers: optee: allow op-tee to access devices on the i2c bus")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/tee/optee/rpc.c | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
+gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
+gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
 
-Looks good to me.
-Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+- added separate irqchip for each interrupt capable gpiochip
+- provided unique names for each irqchip
+- reworked ep93xx_gpio_port to make it usable before chip_add_data 
+  in ep93xx_init_irq_chips
 
-Do you want to take it up directly yourself or do you want a pull
-request from me?
+Fixes: a8173820f441 ("gpio: gpiolib: Allow GPIO IRQs to lazy disable")
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/gpio/gpio-ep93xx.c | 45 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 36 insertions(+), 9 deletions(-)
 
-Thanks,
-Jens
+diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+index 0d0435c07a5a..2eea02c906e0 100644
+--- a/drivers/gpio/gpio-ep93xx.c
++++ b/drivers/gpio/gpio-ep93xx.c
+@@ -34,9 +34,12 @@
+  */
+ #define EP93XX_GPIO_F_IRQ_BASE 80
+ 
++#define EP93XX_GPIO_IRQ_CHIPS_NUM 3
++
+ struct ep93xx_gpio {
+ 	void __iomem		*base;
+ 	struct gpio_chip	gc[8];
++	struct irq_chip		ic[EP93XX_GPIO_IRQ_CHIPS_NUM];
+ };
+ 
+ /*
+@@ -55,6 +58,11 @@ static unsigned char gpio_int_type2[3];
+ static unsigned char gpio_int_debounce[3];
+ 
+ /* Port ordering is: A B F */
++static const char * const irq_chip_names[] = {
++	"gpio-irq-a",
++	"gpio-irq-b",
++	"gpio-irq-f"
++};
+ static const u8 int_type1_register_offset[3]	= { 0x90, 0xac, 0x4c };
+ static const u8 int_type2_register_offset[3]	= { 0x94, 0xb0, 0x50 };
+ static const u8 eoi_register_offset[3]		= { 0x98, 0xb4, 0x54 };
+@@ -77,9 +85,8 @@ static void ep93xx_gpio_update_int_params(struct ep93xx_gpio *epg, unsigned port
+ 	       epg->base + int_en_register_offset[port]);
+ }
+ 
+-static int ep93xx_gpio_port(struct gpio_chip *gc)
++static int ep93xx_gpio_port(struct ep93xx_gpio *epg, struct gpio_chip *gc)
+ {
+-	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+ 	int port = 0;
+ 
+ 	while (port < ARRAY_SIZE(epg->gc) && gc != &epg->gc[port])
+@@ -101,7 +108,7 @@ static void ep93xx_gpio_int_debounce(struct gpio_chip *gc,
+ 				     unsigned int offset, bool enable)
+ {
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	int port = ep93xx_gpio_port(epg, gc);
+ 	int port_mask = BIT(offset);
+ 
+ 	if (enable)
+@@ -163,7 +170,7 @@ static void ep93xx_gpio_irq_ack(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	int port = ep93xx_gpio_port(epg, gc);
+ 	int port_mask = BIT(d->irq & 7);
+ 
+ 	if (irqd_get_trigger_type(d) == IRQ_TYPE_EDGE_BOTH) {
+@@ -178,7 +185,7 @@ static void ep93xx_gpio_irq_mask_ack(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	int port = ep93xx_gpio_port(epg, gc);
+ 	int port_mask = BIT(d->irq & 7);
+ 
+ 	if (irqd_get_trigger_type(d) == IRQ_TYPE_EDGE_BOTH)
+@@ -194,7 +201,7 @@ static void ep93xx_gpio_irq_mask(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	int port = ep93xx_gpio_port(epg, gc);
+ 
+ 	gpio_int_unmasked[port] &= ~BIT(d->irq & 7);
+ 	ep93xx_gpio_update_int_params(epg, port);
+@@ -204,7 +211,7 @@ static void ep93xx_gpio_irq_unmask(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	int port = ep93xx_gpio_port(epg, gc);
+ 
+ 	gpio_int_unmasked[port] |= BIT(d->irq & 7);
+ 	ep93xx_gpio_update_int_params(epg, port);
+@@ -219,7 +226,7 @@ static int ep93xx_gpio_irq_type(struct irq_data *d, unsigned int type)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	int port = ep93xx_gpio_port(epg, gc);
+ 	int offset = d->irq & 7;
+ 	int port_mask = BIT(offset);
+ 	irq_flow_handler_t handler;
+@@ -335,6 +342,22 @@ static int ep93xx_gpio_f_to_irq(struct gpio_chip *gc, unsigned offset)
+ 	return EP93XX_GPIO_F_IRQ_BASE + offset;
+ }
+ 
++static void ep93xx_init_irq_chips(struct ep93xx_gpio *epg)
++{
++	int i;
++
++	for (i = 0; i < EP93XX_GPIO_IRQ_CHIPS_NUM; i++) {
++		struct irq_chip *ic = &epg->ic[i];
++
++		ic->name = irq_chip_names[i];
++		ic->irq_ack = ep93xx_gpio_irq_ack;
++		ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
++		ic->irq_mask = ep93xx_gpio_irq_mask;
++		ic->irq_unmask = ep93xx_gpio_irq_unmask;
++		ic->irq_set_type = ep93xx_gpio_irq_type;
++	}
++}
++
+ static int ep93xx_gpio_add_bank(struct gpio_chip *gc,
+ 				struct platform_device *pdev,
+ 				struct ep93xx_gpio *epg,
+@@ -345,6 +368,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip *gc,
+ 	struct device *dev = &pdev->dev;
+ 	struct gpio_irq_chip *girq;
+ 	int err;
++	int port;
+ 
+ 	err = bgpio_init(gc, dev, 1, data, NULL, NULL, dir, NULL, 0);
+ 	if (err)
+@@ -356,7 +380,8 @@ static int ep93xx_gpio_add_bank(struct gpio_chip *gc,
+ 	girq = &gc->irq;
+ 	if (bank->has_irq || bank->has_hierarchical_irq) {
+ 		gc->set_config = ep93xx_gpio_set_config;
+-		girq->chip = &ep93xx_gpio_irq_chip;
++		port = ep93xx_gpio_port(epg, gc);
++		girq->chip = &epg->ic[port];
+ 	}
+ 
+ 	if (bank->has_irq) {
+@@ -423,6 +448,8 @@ static int ep93xx_gpio_probe(struct platform_device *pdev)
+ 	if (IS_ERR(epg->base))
+ 		return PTR_ERR(epg->base);
+ 
++	ep93xx_init_irq_chips(epg);
++
+ 	for (i = 0; i < ARRAY_SIZE(ep93xx_gpio_banks); i++) {
+ 		struct gpio_chip *gc = &epg->gc[i];
+ 		struct ep93xx_gpio_bank *bank = &ep93xx_gpio_banks[i];
+-- 
+2.29.2
 
->
-> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> index 1e3614e4798f..6cbb3643c6c4 100644
-> --- a/drivers/tee/optee/rpc.c
-> +++ b/drivers/tee/optee/rpc.c
-> @@ -54,8 +54,9 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
->  static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->                                              struct optee_msg_arg *arg)
->  {
-> -       struct i2c_client client = { 0 };
->         struct tee_param *params;
-> +       struct i2c_adapter *adapter;
-> +       struct i2c_msg msg = { };
->         size_t i;
->         int ret = -EOPNOTSUPP;
->         u8 attr[] = {
-> @@ -85,48 +86,48 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->                         goto bad;
->         }
->
-> -       client.adapter = i2c_get_adapter(params[0].u.value.b);
-> -       if (!client.adapter)
-> +       adapter = i2c_get_adapter(params[0].u.value.b);
-> +       if (!adapter)
->                 goto bad;
->
->         if (params[1].u.value.a & OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT) {
-> -               if (!i2c_check_functionality(client.adapter,
-> +               if (!i2c_check_functionality(adapter,
->                                              I2C_FUNC_10BIT_ADDR)) {
-> -                       i2c_put_adapter(client.adapter);
-> +                       i2c_put_adapter(adapter);
->                         goto bad;
->                 }
->
-> -               client.flags = I2C_CLIENT_TEN;
-> +               msg.flags = I2C_M_TEN;
->         }
->
-> -       client.addr = params[0].u.value.c;
-> -       snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-> +       msg.addr = params[0].u.value.c;
-> +       msg.buf  = params[2].u.memref.shm->kaddr;
-> +       msg.len  = params[2].u.memref.size;
->
->         switch (params[0].u.value.a) {
->         case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> -               ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
-> -                                     params[2].u.memref.size);
-> +               msg.flags |= I2C_M_RD;
->                 break;
->         case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
-> -               ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
-> -                                     params[2].u.memref.size);
->                 break;
->         default:
-> -               i2c_put_adapter(client.adapter);
-> +               i2c_put_adapter(adapter);
->                 goto bad;
->         }
->
-> +       ret = i2c_transfer(adapter, &msg, 1);
-> +
->         if (ret < 0) {
->                 arg->ret = TEEC_ERROR_COMMUNICATION;
->         } else {
-> -               params[3].u.value.a = ret;
-> +               params[3].u.value.a = msg.len;
->                 if (optee_to_msg_param(arg->params, arg->num_params, params))
->                         arg->ret = TEEC_ERROR_BAD_PARAMETERS;
->                 else
->                         arg->ret = TEEC_SUCCESS;
->         }
->
-> -       i2c_put_adapter(client.adapter);
-> +       i2c_put_adapter(adapter);
->         kfree(params);
->         return;
->  bad:
-> --
-> 2.29.2
->
