@@ -2,98 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45823051CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A803051C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbhA0FOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:14:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239518AbhA0EpJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:45:09 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E6FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:36:34 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id f63so369471pfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:36:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=49fIMM1Lt68y+MNq1Fw+uOVTWwfJDNod7jA43K/soC4=;
-        b=d5+W4Rq25QQ5lbgZxfyMueTHo+2W2Mhtmefb1NQeKJi8d4wbt4DnUDzEGY3PpGDxRm
-         pgmst3zTL9sok3rDU4/bUAG2ktKxt/yf59usg0i8IA8K3BKoQb8Nm3U4IYjx5wh2UY4A
-         Lsl6zrPT7ue4ReUATS6csGZmlwYabF3o5vKvJD/dJH+buoPPLM2b+r4QMvpgAwDZBMXk
-         Sr98cz/TctPrardkzwL7hhNNVUyVJ7YftYcZb44N8h4ZpaYeUKQU77B6Fyz9HT2TlT3g
-         9Fa13LxZNavkJz5PvcdkH2GpteIXI5wPkIL9B4HgolQ76GZbsHiHy22nA6wROJRPKzaS
-         DxIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=49fIMM1Lt68y+MNq1Fw+uOVTWwfJDNod7jA43K/soC4=;
-        b=rCoSfTnLvcTcitteOsTjj6QS7Em84S8vJTCTCqhoZfyqRgIeUl0ZzE4L/7MX5oRY0P
-         MJxajqtztTOlZXP2azXsRW2oQQzciHlqDu9nmW6tPotrS7LODQMiqHij2fTRsUunc7Lz
-         fZfPPJu6XX9ns2YZb2cntQ570ERCqegJNe7A8VXFL13WZgPq2rLjP7JVFaRDNAxLJgoo
-         yI2DSHE8m/M4P4Ah3sZKT5K2rOwe3sDVeuSp7G4c+s1FkAS1+YvubKBZ76TX1U1XsOfH
-         bs90Zpu1ihxdSo/B+bX6Zhr9+bW9LAC0xmZBU1Q4UiQkLtAkzbLp8GOFSe/gXtt1+P14
-         68eg==
-X-Gm-Message-State: AOAM533wc2rFbJZrO9Sys7LUhEMA6jMPZVN6zxvg04ZmElsAmOajGdZa
-        KErxMhDDd/wtdVTfO4iqM7VBQQ==
-X-Google-Smtp-Source: ABdhPJwYi4pUQYbnphhGu7hk813JFWOeHnfh/xXxYFNCzCaBaAFCc8L4sUBFE1bwu9Mng8gx4Fh7gQ==
-X-Received: by 2002:a62:2c50:0:b029:1b9:1846:b490 with SMTP id s77-20020a622c500000b02901b91846b490mr8613411pfs.76.1611722193690;
-        Tue, 26 Jan 2021 20:36:33 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id s21sm439693pjz.13.2021.01.26.20.36.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Jan 2021 20:36:32 -0800 (PST)
-Date:   Wed, 27 Jan 2021 10:06:31 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 19/21] clk: spear: Move prototype to accessible header
-Message-ID: <20210127043631.4qqduj4cxwqmoq3m@vireshk-i7>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
- <20210126124540.3320214-20-lee.jones@linaro.org>
+        id S232340AbhA0FNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:13:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239326AbhA0ElI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 23:41:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82B1F2064B;
+        Wed, 27 Jan 2021 04:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611722424;
+        bh=8ndZoWJTjpyZbP8UuHARbSuZs28105HA4SoRHVz0eEc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Qv2q2jE3rLE1scpAbCQqg7TBxgpNb/ong9B0BQU3CqIRkUcP4M9XlHp09GHFsETdm
+         NDHFjC0deK9WXbj18g4OiSj6pmKhnf3YalimR5QuqRjm/tr2vOlOU09BHwTH4AtEPd
+         AuFTMDQidy8Z+NM4yi3eVCg3IbjZYXOe7zLj0n09d3Us2HYJIc/IvJfrGceOYXrUhe
+         Dlt32qw6+VYLtDuSEMbyc4Seqboef7iJiYYCkcYhbhzHXWCNYRicGTQ3z90dxSWRe4
+         t+rh75XUrwsEaKU88lc2HJw7uT++TKwq1v+v339A1BaahtHzjVzWb2VT+bQrEOShcS
+         snGQZZYaU912g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1B6AC35227B9; Tue, 26 Jan 2021 20:40:24 -0800 (PST)
+Date:   Tue, 26 Jan 2021 20:40:24 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Scott Wood <swood@redhat.com>
+Subject: Re: [PATCH tip/core/rcu 1/4] rcu: Expedite deboost in case of
+ deferred quiescent state
+Message-ID: <20210127044024.GI2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210120043144.GA7045@paulmck-ThinkPad-P72>
+ <20210120043236.7254-1-paulmck@kernel.org>
+ <YBDTG5HEC6OLV8OQ@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210126124540.3320214-20-lee.jones@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YBDTG5HEC6OLV8OQ@boqun-archlinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-01-21, 12:45, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Wed, Jan 27, 2021 at 10:42:35AM +0800, Boqun Feng wrote:
+> Hi Paul,
 > 
->  drivers/clk/spear/spear1310_clock.c:385:13: warning: no previous prototype for ‘spear1310_clk_init’ [-Wmissing-prototypes]
->  drivers/clk/spear/spear1340_clock.c:442:13: warning: no previous prototype for ‘spear1340_clk_init’ [-Wmissing-prototypes]
+> On Tue, Jan 19, 2021 at 08:32:33PM -0800, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > Historically, a task that has been subjected to RCU priority boosting is
+> > deboosted at rcu_read_unlock() time.  However, with the advent of deferred
+> > quiescent states, if the outermost rcu_read_unlock() was invoked with
+> > either bottom halves, interrupts, or preemption disabled, the deboosting
+> > will be delayed for some time.  During this time, a low-priority process
+> > might be incorrectly running at a high real-time priority level.
+> > 
+> > Fortunately, rcu_read_unlock_special() already provides mechanisms for
+> > forcing a minimal deferral of quiescent states, at least for kernels
+> > built with CONFIG_IRQ_WORK=y.  These mechanisms are currently used
+> > when expedited grace periods are pending that might be blocked by the
+> > current task.  This commit therefore causes those mechanisms to also be
+> > used in cases where the current task has been or might soon be subjected
+> > to RCU priority boosting.  Note that this applies to all kernels built
+> > with CONFIG_RCU_BOOST=y, regardless of whether or not they are also
+> > built with CONFIG_PREEMPT_RT=y.
+> > 
+> > This approach assumes that kernels build for use with aggressive real-time
+> > applications are built with CONFIG_IRQ_WORK=y.  It is likely to be far
+> > simpler to enable CONFIG_IRQ_WORK=y than to implement a fast-deboosting
+> > scheme that works correctly in its absence.
+> > 
+> > While in the area, alphabetize the rcu_preempt_deferred_qs_handler()
+> > function's local variables.
+> > 
+> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Cc: Scott Wood <swood@redhat.com>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tree_plugin.h | 26 ++++++++++++++------------
+> >  1 file changed, 14 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index 8b0feb2..fca31c6 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -660,9 +660,9 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+> >  static void rcu_read_unlock_special(struct task_struct *t)
+> >  {
+> >  	unsigned long flags;
+> > +	bool irqs_were_disabled;
+> >  	bool preempt_bh_were_disabled =
+> >  			!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+> > -	bool irqs_were_disabled;
+> >  
+> >  	/* NMI handlers cannot block and cannot safely manipulate state. */
+> >  	if (in_nmi())
+> > @@ -671,30 +671,32 @@ static void rcu_read_unlock_special(struct task_struct *t)
+> >  	local_irq_save(flags);
+> >  	irqs_were_disabled = irqs_disabled_flags(flags);
+> >  	if (preempt_bh_were_disabled || irqs_were_disabled) {
+> > -		bool exp;
+> > +		bool expboost; // Expedited GP in flight or possible boosting.
+> >  		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> >  		struct rcu_node *rnp = rdp->mynode;
+> >  
+> > -		exp = (t->rcu_blocked_node &&
+> > -		       READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+> > -		      (rdp->grpmask & READ_ONCE(rnp->expmask));
+> > +		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+> > +			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+> > +			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+> > +			    t->rcu_blocked_node);
 > 
-> Cc: Viresh Kumar <vireshk@kernel.org>
-> Cc: Shiraz Hashim <shiraz.linux.kernel@gmail.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  arch/arm/mach-spear/generic.h       | 12 ------------
->  arch/arm/mach-spear/spear13xx.c     |  1 +
->  drivers/clk/spear/spear1310_clock.c |  1 +
->  drivers/clk/spear/spear1340_clock.c |  1 +
->  include/linux/clk/spear.h           | 23 +++++++++++++++++++++++
->  5 files changed, 26 insertions(+), 12 deletions(-)
->  create mode 100644 include/linux/clk/spear.h
+> I take it that you check whether possible boosting is in progress via
+> the last expression of "||", ie:
+> 
+> 	(IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+> 	t->rcu_blocked_node)
+> 
+> if so, I don't see the point of using the new "expboost" in the
+> raise_softirq_irqoff() branch, because if in_irq() is false, we only
+> raise softirq if irqs_were_disabled is false (otherwise, we may take the
+> risk of doing a wakeup with a pi or rq lock held, IIRC), and the
+> boosting part of the "expboost" above is only true if irqs_were_disabled
+> is true, so using expboost makes no different here.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+I started out with two local variables, one for each side of the ||,
+but this looked nicer.
 
--- 
-viresh
+> >  		// Need to defer quiescent state until everything is enabled.
+> > -		if (use_softirq && (in_irq() || (exp && !irqs_were_disabled))) {
+> > +		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
+> >  			// Using softirq, safe to awaken, and either the
+> > -			// wakeup is free or there is an expedited GP.
+> > +			// wakeup is free or there is either an expedited
+> > +			// GP in flight or a potential need to deboost.
+> 
+> and this comment will be incorrect, we won't enter here solely because
+> there is a potential need to deboost.
+
+You are quite right, given the !irqs_were_disabled.
+
+> That said, why the boosting condition has a "irqs_were_disabled" in it?
+> What if a task gets boosted because of RCU boosting, and exit the RCU
+> read-side c.s. with irq enabled and there is no expedited GP in flight,
+> will the task get deboosted quickly enough?
+
+Because if !irqs_were_disabled, there will be a local_bh_enable() or
+a preempt_enable(), give or take preempt_enable_no_resched(), and those
+will both get the scheduler involved because of the set_tsk_need_resched()
+and set_preempt_need_resched().  There is thus no need for the irq_work
+unless irqs_were_disabled.
+
+I am not all that worried about preempt_enable_no_resched() because
+it is a problem for RT even in the absence of RCU priority boosting.
+And the current uses appear to be in things that one would not use while
+running an RT workload.
+
+> Maybe I'm missing some subtle?
+
+Or maybe I am.  Thoughts?
+
+							Thanx, Paul
+
+> Regards,
+> Boqun
+> 
+> >  			raise_softirq_irqoff(RCU_SOFTIRQ);
+> >  		} else {
+> >  			// Enabling BH or preempt does reschedule, so...
+> > -			// Also if no expediting, slow is OK.
+> > -			// Plus nohz_full CPUs eventually get tick enabled.
+> > +			// Also if no expediting and no possible deboosting,
+> > +			// slow is OK.  Plus nohz_full CPUs eventually get
+> > +			// tick enabled.
+> >  			set_tsk_need_resched(current);
+> >  			set_preempt_need_resched();
+> >  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> > -			    !rdp->defer_qs_iw_pending && exp && cpu_online(rdp->cpu)) {
+> > +			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+> >  				// Get scheduler to re-evaluate and call hooks.
+> >  				// If !IRQ_WORK, FQS scan will eventually IPI.
+> > -				init_irq_work(&rdp->defer_qs_iw,
+> > -					      rcu_preempt_deferred_qs_handler);
+> > +				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
+> >  				rdp->defer_qs_iw_pending = true;
+> >  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+> >  			}
+> > -- 
+> > 2.9.5
+> > 
