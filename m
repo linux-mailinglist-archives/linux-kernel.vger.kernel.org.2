@@ -2,106 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5FD30642B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6F9306432
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344482AbhA0Td6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:33:58 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58444 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344241AbhA0TcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:32:17 -0500
-Date:   Wed, 27 Jan 2021 19:31:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611775895;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZWd9zuAKnbFdypCI+AMFWb/xOlm+1GwlYKXpziv/GsE=;
-        b=hAHhUcvTB1/LQakNOuKdwbiV1e4occ20MEPp0ol+89XamcR0VMR0vaAk8Ixz75sCmmc0HG
-        VvdjfOWKJtftobtCEWVsE2SgP+zZIUR1KrkFDzSua9o2SixLyEzKkPY5WaOxJ4CgEH6lMY
-        zp4PRdAGKgG48Z6lEgZLXA7p1LrQyXNPCYB/6GFIP9a/4E/S+lwHIgoKpIXnTgQJHtvqu3
-        z9W+xKiSxw/mGpvqm1ZkFrpoDN0e6kp3ReQ1z2I1qCh78UtP52FnM4Rl+QIyE8107hfPUc
-        kW3aOBpnJJJDkKVbdOrHuJ9rU62dclcrRJsqH+6uohFmsw3wAtltEcYraX1wMg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611775895;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZWd9zuAKnbFdypCI+AMFWb/xOlm+1GwlYKXpziv/GsE=;
-        b=cdZzZjK0+2kOfepF4lCvv17jAGIVXtZ1gYHPDnEZhpfy8qEo1AtW7vW5p7b79nVsv7aNWD
-        9RkGpEqqEomWHQAw==
-From:   "tip-bot2 for Misono Tomohiro" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] x86/MSR: Filter MSR writes through X86_IOC_WRMSR_REGS
- ioctl too
-Cc:     Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com>
-References: <20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com>
+        id S1344519AbhA0TfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:35:12 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:49316 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344440AbhA0Tc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:32:57 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l4qXh-0001Dq-4Z; Thu, 28 Jan 2021 06:31:54 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Jan 2021 06:31:53 +1100
+Date:   Thu, 28 Jan 2021 06:31:52 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, patrick@puiterwijk.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v3 2/3] x509: Add support for parsing x509 certs with
+ NIST p256 keys
+Message-ID: <20210127193152.GA27505@gondor.apana.org.au>
+References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+ <20210127123350.817593-3-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Message-ID: <161177589483.23325.9744949016620095034.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127123350.817593-3-stefanb@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+On Wed, Jan 27, 2021 at 07:33:49AM -0500, Stefan Berger wrote:
+>
+> +static struct akcipher_alg ecc_nist_p256 = {
+> +	.verify = ecdsa_verify,
+> +	.set_pub_key = ecc_set_pub_key,
+> +	.max_size = ecc_nist_p256_max_size,
+> +	.init = ecc_nist_p256_init_tfm,
+> +	.exit = ecc_exit_tfm,
+> +	.base = {
+> +		.cra_name = "nist_p256",
+> +		.cra_driver_name = "ecc-nist-p256",
+> +		.cra_priority = 100,
+> +		.cra_module = THIS_MODULE,
+> +		.cra_ctxsize = sizeof(struct ecc_ctx),
+> +	},
+> +};
 
-Commit-ID:     02a16aa13574c8526beadfc9ae8cc9b66315fa2d
-Gitweb:        https://git.kernel.org/tip/02a16aa13574c8526beadfc9ae8cc9b66315fa2d
-Author:        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-AuthorDate:    Wed, 27 Jan 2021 21:24:56 +09:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 27 Jan 2021 19:06:47 +01:00
+This is not how we name generic algorithms.
 
-x86/MSR: Filter MSR writes through X86_IOC_WRMSR_REGS ioctl too
+Please split this out and submit them through the crypto tree
+instead.
 
-Commit
-
-  a7e1f67ed29f ("x86/msr: Filter MSR writes")
-
-introduced a module parameter to disable writing to the MSR device file
-and tainted the kernel upon writing. As MSR registers can be written by
-the X86_IOC_WRMSR_REGS ioctl too, the same filtering and tainting should
-be applied to the ioctl as well.
-
- [ bp: Massage commit message and space out statements. ]
-
-Fixes: a7e1f67ed29f ("x86/msr: Filter MSR writes")
-Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com
----
- arch/x86/kernel/msr.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 8a67d1f..ed8ac6b 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -182,6 +182,13 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
- 		err = security_locked_down(LOCKDOWN_MSR);
- 		if (err)
- 			break;
-+
-+		err = filter_write(regs[1]);
-+		if (err)
-+			return err;
-+
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+
- 		err = wrmsr_safe_regs_on_cpu(cpu, regs);
- 		if (err)
- 			break;
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
