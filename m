@@ -2,249 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B0430568B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39786305695
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbhA0JJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234925AbhA0JG0 (ORCPT
+        id S235125AbhA0JNu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Jan 2021 04:13:50 -0500
+Received: from smtp2200-217.mail.aliyun.com ([121.197.200.217]:48506 "EHLO
+        smtp2200-217.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234958AbhA0JG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:06:26 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D40C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:05:45 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id o16so1142005pgg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:05:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OjpOd/Y/FK/H2NSbndAgqWfjTMnUxw5T0tdE3/+WPu0=;
-        b=pYQE0IgwXy1Zs6ba72Xjz1to1eQPd8M7H8sIYE/kP/kcbVple/AFEQAxw4t0DjPerZ
-         MkICrsPw8/tZZFc1dHkWLISMPvl7ev/U0M+KiIj1dzPAJjxF3O2V22CVkPxkgWc/ZZCO
-         AnlWWwVBcYgiVepHvz3zeTgRYaq9jlk/eeijnV8/pK1LDYbh9GCfUSVIECqkYYobxdk9
-         OYh8I16fo3dnvDxmd0qZh3QKvkVEIJiaPWQ+O+Menf/UNJ2I6RmwTkdywamI9HoaIhxh
-         3DUl9zkBvePZRgCNEbjLX/y/26oYhyQatEo7vNo9yL4jiS5RiKeD24LBmuKoUSkX8P68
-         o87Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OjpOd/Y/FK/H2NSbndAgqWfjTMnUxw5T0tdE3/+WPu0=;
-        b=M2OphG1MelieqQJStk1TUgnjW+ipnaZD0vwZES/XR67/79RGsC6+VEOSydvH1yFbYr
-         4TnYXG5jzklG7+mB/rtJdqam3ymCtcs2yFsMGs2QPPANVRzsqMpAegBBS4EGFeAHRSaj
-         cA9lLmhvYJ/WxjEvYvJwcsiEvu8JwXNK6mqMyRtWCwnKFqvjRbjT4ANfFoqzo6arE5Kj
-         MXGkZk/b7P7dY6onQN8Jx2RJ16ahDublt8QH5zoX1tj7jA00L3iZSXuurTjSW8byjNSp
-         hcWcrcUTRyONo14xpSoY1mxuK991HOab+Y8EFvLmUPJ/Gh1lHp4O52EPG6eT81VCvFQ3
-         8a8Q==
-X-Gm-Message-State: AOAM533aa0evtbMymnT2ph43y30ka9XAiH1hMNCAndjPzEUhLNANW2az
-        fdaZY2ZgEc5zPl08/sbMUlimVg==
-X-Google-Smtp-Source: ABdhPJyBrz5MB8GLOduf99kDZiBhdFOxOflGnaPCfPOkvrrjG4mAmVkOknkzlG1FAxLn5b8GWChFvg==
-X-Received: by 2002:a63:c70c:: with SMTP id n12mr10338049pgg.347.1611738344665;
-        Wed, 27 Jan 2021 01:05:44 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id i7sm1732164pfc.50.2021.01.27.01.05.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 01:05:44 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] opp: Add dev_pm_opp_of_add_table_noclk()
-Date:   Wed, 27 Jan 2021 14:35:27 +0530
-Message-Id: <26de96f200805b43634bcc2b4d9824b2e38b0f6b.1611738228.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <6c2160ff30a8f421563793020264cf9f533f293c.1611738228.git.viresh.kumar@linaro.org>
-References: <6c2160ff30a8f421563793020264cf9f533f293c.1611738228.git.viresh.kumar@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 27 Jan 2021 04:06:59 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07828137|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00286547-0.0055064-0.991628;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=ren_guo@c-sky.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.JR1zvmq_1611738375;
+Received: from 30.225.212.56(mailfrom:ren_guo@c-sky.com fp:SMTPD_---.JR1zvmq_1611738375)
+          by smtp.aliyun-inc.com(10.147.43.230);
+          Wed, 27 Jan 2021 17:06:15 +0800
+Content-Type: text/plain;
+        charset=gb2312
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v1] csky: use free_initmem_default() in free_initmem()
+From:   Guo Ren <ren_guo@c-sky.com>
+In-Reply-To: <fb51bf47-a6ab-1a5a-60cf-0ec375a9511a@redhat.com>
+Date:   Wed, 27 Jan 2021 17:06:15 +0800
+Cc:     Guo Ren <guoren@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-csky@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <9EBAE2A9-F06F-4198-BEF2-30A1A24F3796@c-sky.com>
+References: <20210126181420.19223-1-david@redhat.com>
+ <20210126182648.GR6332@kernel.org>
+ <CAJF2gTRsqZ4DTvZm2V9VRKP_f6u-p5aupCjrvuGy_7m8tiQQVQ@mail.gmail.com>
+ <fb51bf47-a6ab-1a5a-60cf-0ec375a9511a@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few drivers have device's clk but they don't want the OPP core to
-handle that. Add a new helper for them, dev_pm_opp_of_add_table_noclk().
+Hi David,
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c     | 28 +++++++++++++++++-----------
- drivers/opp/of.c       | 26 ++++++++++++++++++++++----
- drivers/opp/opp.h      |  2 +-
- include/linux/pm_opp.h |  6 ++++++
- 4 files changed, 46 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 9f6cf93cef3e..31abf460cd69 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -1129,7 +1129,8 @@ struct opp_device *_add_opp_dev(const struct device *dev,
- 	return opp_dev;
- }
- 
--static struct opp_table *_allocate_opp_table(struct device *dev, int index)
-+static struct opp_table *_allocate_opp_table(struct device *dev, int index,
-+					     bool getclk)
- {
- 	struct opp_table *opp_table;
- 	struct opp_device *opp_dev;
-@@ -1158,14 +1159,18 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
- 
- 	_of_init_opp_table(opp_table, dev, index);
- 
--	/* Find clk for the device */
--	opp_table->clk = clk_get(dev, NULL);
--	if (IS_ERR(opp_table->clk)) {
--		ret = PTR_ERR(opp_table->clk);
--		if (ret == -EPROBE_DEFER)
--			goto remove_opp_dev;
-+	if (getclk) {
-+		/* Find clk for the device */
-+		opp_table->clk = clk_get(dev, NULL);
-+		if (IS_ERR(opp_table->clk)) {
-+			ret = PTR_ERR(opp_table->clk);
-+			if (ret == -EPROBE_DEFER)
-+				goto remove_opp_dev;
- 
--		dev_dbg(dev, "%s: Couldn't find clock: %d\n", __func__, ret);
-+			dev_dbg(dev, "%s: Couldn't find clock: %d\n", __func__, ret);
-+		}
-+	} else {
-+		opp_table->clk = ERR_PTR(-ENODEV);
- 	}
- 
- 	/* Find interconnect path(s) for the device */
-@@ -1214,7 +1219,8 @@ void _get_opp_table_kref(struct opp_table *opp_table)
-  * uses the opp_tables_busy flag to indicate if another creator is in the middle
-  * of adding an OPP table and others should wait for it to finish.
-  */
--struct opp_table *_add_opp_table_indexed(struct device *dev, int index)
-+struct opp_table *_add_opp_table_indexed(struct device *dev, int index,
-+					 bool getclk)
- {
- 	struct opp_table *opp_table;
- 
-@@ -1249,7 +1255,7 @@ struct opp_table *_add_opp_table_indexed(struct device *dev, int index)
- 
- 		mutex_lock(&opp_table_lock);
- 	} else {
--		opp_table = _allocate_opp_table(dev, index);
-+		opp_table = _allocate_opp_table(dev, index, getclk);
- 
- 		mutex_lock(&opp_table_lock);
- 		if (!IS_ERR(opp_table))
-@@ -1266,7 +1272,7 @@ struct opp_table *_add_opp_table_indexed(struct device *dev, int index)
- 
- struct opp_table *_add_opp_table(struct device *dev)
- {
--	return _add_opp_table_indexed(dev, 0);
-+	return _add_opp_table_indexed(dev, 0, true);
- }
- 
- struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index c6856dcf4c34..a905497c75f8 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -956,7 +956,7 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
- 	return ret;
- }
- 
--static int _of_add_table_indexed(struct device *dev, int index)
-+static int _of_add_table_indexed(struct device *dev, int index, bool getclk)
- {
- 	struct opp_table *opp_table;
- 	int ret, count;
-@@ -972,7 +972,7 @@ static int _of_add_table_indexed(struct device *dev, int index)
- 			index = 0;
- 	}
- 
--	opp_table = _add_opp_table_indexed(dev, index);
-+	opp_table = _add_opp_table_indexed(dev, index, getclk);
- 	if (IS_ERR(opp_table))
- 		return PTR_ERR(opp_table);
- 
-@@ -1010,7 +1010,7 @@ static int _of_add_table_indexed(struct device *dev, int index)
-  */
- int dev_pm_opp_of_add_table(struct device *dev)
- {
--	return _of_add_table_indexed(dev, 0);
-+	return _of_add_table_indexed(dev, 0, true);
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table);
- 
-@@ -1026,10 +1026,28 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table);
-  */
- int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
- {
--	return _of_add_table_indexed(dev, index);
-+	return _of_add_table_indexed(dev, index, true);
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table_indexed);
- 
-+/**
-+ * dev_pm_opp_of_add_table_noclk() - Initialize indexed opp table from device
-+ *		tree without getting clk for device.
-+ * @dev:	device pointer used to lookup OPP table.
-+ * @index:	Index number.
-+ *
-+ * Register the initial OPP table with the OPP library for given device only
-+ * using the "operating-points-v2" property. Do not try to get the clk for the
-+ * device.
-+ *
-+ * Return: Refer to dev_pm_opp_of_add_table() for return values.
-+ */
-+int dev_pm_opp_of_add_table_noclk(struct device *dev, int index)
-+{
-+	return _of_add_table_indexed(dev, index, false);
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table_noclk);
-+
- /* CPU device specific helpers */
- 
- /**
-diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-index 4ced7ffa8158..edbf05df8b82 100644
---- a/drivers/opp/opp.h
-+++ b/drivers/opp/opp.h
-@@ -224,7 +224,7 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp, struct opp_table *o
- int _opp_add_v1(struct opp_table *opp_table, struct device *dev, unsigned long freq, long u_volt, bool dynamic);
- void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cpu);
- struct opp_table *_add_opp_table(struct device *dev);
--struct opp_table *_add_opp_table_indexed(struct device *dev, int index);
-+struct opp_table *_add_opp_table_indexed(struct device *dev, int index, bool getclk);
- void _put_opp_list_kref(struct opp_table *opp_table);
- 
- #ifdef CONFIG_OF
-diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index 979b208bc4a8..158158620dde 100644
---- a/include/linux/pm_opp.h
-+++ b/include/linux/pm_opp.h
-@@ -395,6 +395,7 @@ static inline int dev_pm_opp_sync_regulators(struct device *dev)
- #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
- int dev_pm_opp_of_add_table(struct device *dev);
- int dev_pm_opp_of_add_table_indexed(struct device *dev, int index);
-+int dev_pm_opp_of_add_table_noclk(struct device *dev, int index);
- void dev_pm_opp_of_remove_table(struct device *dev);
- int dev_pm_opp_of_cpumask_add_table(const struct cpumask *cpumask);
- void dev_pm_opp_of_cpumask_remove_table(const struct cpumask *cpumask);
-@@ -419,6 +420,11 @@ static inline int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
- 	return -ENOTSUPP;
- }
- 
-+static inline int dev_pm_opp_of_add_table_noclk(struct device *dev, int index)
-+{
-+	return -ENOTSUPP;
-+}
-+
- static inline void dev_pm_opp_of_remove_table(struct device *dev)
- {
- }
--- 
-2.25.0.rc1.19.g042ed3e048af
+> 在 2021年1月27日，下午4:49，David Hildenbrand <david@redhat.com> 写道：
+> 
+> On 27.01.21 08:52, Guo Ren wrote:
+>> Thx Mike,
+> 
+> Thanks for triggering a build/test! I'd be curious if there is an easy way to trigger this myself (I assume, fork csky buildroot on gitlab, reroute CSKY kernel repo, adjust CSKY_LINUX_NEXT_VERSION); if so, it would be worth documenting - thanks!
+> 
 
+1. You can just simple fork our project, and enable your gitlab share-runner.
+2. Modify https://gitlab.com/c-sky/buildroot/-/blob/master/package/csky-arch/csky-arch.mk
+Line 28: CSKY_ARCH_SITE = $(call github,c-sky,csky-linux,$(CSKY_ARCH_VERSION)) to your own forked our kernel repo
+Line 49: CSKY_LINUX_NEXT_VERSION	= f0bbf052ae463b3802f1c7ba36b36da2f54945f2 change the version as you want
+
+You also need to remove some unused entries in .gitlab.yml.
+
+
+> Thanks Mike for the valuable links :) For now I was only relying on cross-compilers as shipped by Fedora, now I can upgrade my cross-build environment :)
+> 
+>> It's under test:
+>> https://gitlab.com/c-sky/buildroot/-/pipelines/247353584
+>> kernel:
+>> https://github.com/c-sky/csky-linux/commit/9d986b01feb991ded3fb8c1f8153a0c80ea84b9c
+> 
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+
+
+
+Best Regards
+  Guo Ren
