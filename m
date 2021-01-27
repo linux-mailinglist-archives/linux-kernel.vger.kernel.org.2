@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086F2305391
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3074B305397
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhA0GwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhA0GtT (ORCPT
+        id S231229AbhA0GxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:53:18 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:48730 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231718AbhA0Guq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 01:49:19 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FDAC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 22:48:37 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id d6so788462ilo.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 22:48:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=J2/ysAQ1CA7Y4zWr9mMw+fT9bYLcUQtcZt+Uu48Rw9Q=;
-        b=a7QyW50sBxVF5wcsK/qUdKaCKyJ8sz95DHmqZKFlbF1toIrO8pyqn3KwnzwapuSuS0
-         k+6QtgvFphfOpC9SRILCV+D695zQBgdUyWAQmG0Ypg10Vd5hUPObjEef+2JxNuwLQbfo
-         5GkMaixD3YEyIPR3+I5JJqSaF4h9FQ8yGZPeRhf+LO0E0wrReOjI/p9a0kPY9maftz6W
-         J2lLF2Zrbos4uJ2u6LTmYqCwgMt/SCGUsycyzI0M19sluhA8L/slyxbTr4uSRmP9qArb
-         lF9QMyqZLwpjsVDx8P9PqfUhHf3hjOo+ymgSC+10aCeNEpKntqN5NPoiQqlpCjY6kcg2
-         +5bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=J2/ysAQ1CA7Y4zWr9mMw+fT9bYLcUQtcZt+Uu48Rw9Q=;
-        b=brzv4kQw0xFTVBI8mB8wmCMjoU/e88TCLnZdnG4X0C/ABTxAO+KhHZwsX68rmr8WYQ
-         h+c1W0yjcmqZdNtvGiuMHNpPxh4t7DfdWOvO7qMOciYLvoCI+AhImUQBdksHrP5iNiRi
-         uAmRVF7xZglzQVODYqA0N+MS1zrnFVFb6J/U71W7SnDBA5OKUGtPpJICoUrtjGB3QJLs
-         fsYRsPVm0Z0sUDL++N8n1Stwp3xRiUovnAfoHLWGj2AMTpyXDixeq3T7JT/unq0E3XM+
-         a1FCWFF6PqaGjR3EX9FawV27VEXFjHeQ+vjTkHLItEpV+0JVdi0L9emVLBpOeyX0Wp+R
-         dU4w==
-X-Gm-Message-State: AOAM530I+sx3Wa7p1hHjSmQYupe2WYHCV50CsD4UPQ1pyudGY8tq0ID5
-        lWEH/XokwYkAG2LPD0sOvFuDGPsX6sg3jkl2Rf8=
-X-Google-Smtp-Source: ABdhPJwOT5qYC2Sj6qhw0AMw4OqJni0OnHoXxVtkdqKOtBSqHdi020sBm8OwjO2rtDkep8StKevhdaGe8w2Heo1rX9Q=
-X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr7521211ilq.112.1611730117258;
- Tue, 26 Jan 2021 22:48:37 -0800 (PST)
+        Wed, 27 Jan 2021 01:50:46 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R6YkXW057541;
+        Wed, 27 Jan 2021 06:49:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=CqKgGiA31ji91JUfrA7K3WTvBvHQ8ukOtwEdhs1EEDw=;
+ b=FRJllVEcgIeqK8IzvXV0Zyx1WAscgHQdYzfmIxOi7hF8n2wHMiWU7m0itnt2bfVtwED8
+ c1KE/NPGCgCyMtXTmAdlKwSmyJa6QbJDS3xfNBxk1DM46Rg50PZErobGDj3MDqjs/N+3
+ L5c4FK18i13s28KUwKi56p9+VJmzfTiSFV0UX8DeAaAEv5+bKzrE61BLDYNV8LvzDUeH
+ T+bq6ymxU2X9z3s7vJjeWFFxfRf3SDP+OPpgpgtQt1gWz/JSw62xuvzFz7Wf0IUrn42Q
+ zr/L1FD0K8m77AZ2NWQOcqzjqMu+l5qWTnO7r2TjENzBZtyrBYzssSndJiP8TUUgp3Hk 0Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 368brkndkq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 06:49:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R6Z6EP099786;
+        Wed, 27 Jan 2021 06:49:35 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 368wcnvup1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 06:49:35 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10R6nP7f003592;
+        Wed, 27 Jan 2021 06:49:25 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 26 Jan 2021 22:49:24 -0800
+Date:   Wed, 27 Jan 2021 09:49:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     carlis <zhangxuezhi3@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
+        mh12gx2825@gmail.com, gregkh@linuxfoundation.org,
+        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
+        colin.king@canonical.com, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v5] fbtft: add tearing signal detect
+Message-ID: <20210127064916.GD2696@kadam>
+References: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
+ <20210127054523.GA2696@kadam>
+ <20210127141927.00004472@gmail.com>
 MIME-Version: 1.0
-References: <20210126212730.2097108-1-nathan@kernel.org> <CAKXUXMwErhv-vt1LC6a79yJ2oukDkPa1BnijDXpdwYu1RK3z=A@mail.gmail.com>
-In-Reply-To: <CAKXUXMwErhv-vt1LC6a79yJ2oukDkPa1BnijDXpdwYu1RK3z=A@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 27 Jan 2021 07:48:26 +0100
-Message-ID: <CA+icZUXeVYFJx_McagTz433GjgnvuLKOdtx1Nkit9huWevP-Rw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS/.mailmap: Use my @kernel.org address
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127141927.00004472@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270037
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:07 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Tue, Jan 26, 2021 at 10:27 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > Use my @kernel.org for all points of contact so that I am always
-> > accessible.
-> >
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->
-> Congrats, Nathan. You deserve it for all the warning fixes, reports,
-> maintenance, CI, reviews and much more stuff you are doing.
->
+On Wed, Jan 27, 2021 at 02:19:27PM +0800, carlis wrote:
+> hi,i will fix it like below:
+> 	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> GPIOD_IN); if (IS_ERR(par->gpio.te)) {
+> 		rc = PTR_ERR(par->gpio.te);
+> 		pr_err("Failed to request  te gpio: %d\n", rc);
+> 		par->gpio.te = NULL;
+> 	}
 
-+1
+I wish you would just copy and paste the code that I sent you instead,
+but this also fixes the crash...
 
-Congrats Nathan.
+regards,
+dan carpenter
 
-- Sedat -
+
