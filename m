@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0E9305FB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3F230605B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbhA0PFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
+        id S236857AbhA0P5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbhA0PBj (ORCPT
+        with ESMTP id S235436AbhA0PCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:01:39 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6D4C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:58:14 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id x81so1957241qkb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=51D0mFh5cEUFoHBTma2moWOOpyGpgJMYnt01r9UG3AY=;
-        b=fDhQVtUcG0J8/5WfYqbmZFYqcf4Pw06oIjfivyJ+a5f5IZ5SbZyPdt7dfBNTRyxKP7
-         8DuCzY0zrNkE/vYpXQVyX4uvyPs6aZ1rBs87CtJX8s7TTVISG/5TdNX223pZfXF7iITq
-         DiiV3CjzVJ7T80KvED1ENgkEhcdKKwu9Etgc3XOZmUUq1Cz+z3FgfUabV3a9PzbDxi5a
-         cXsBXz5o8dXY7psvRkZkzDCZBPt+ONoU4D+v63z9N6bJXkiFE8GNYQm+z8Uf8pHZeQMR
-         1igaCmShwoEGvALb1kwenSpV7dIUA1VbtLT43jZja5uu3u83KOkSL1iXih24iDFHA1Fg
-         ST2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=51D0mFh5cEUFoHBTma2moWOOpyGpgJMYnt01r9UG3AY=;
-        b=LZKhWC/7ynvntxNi1s9gvpqNsgwNrLX0VNMU73o/pD9gZqVbmu1lzVGcvq/2dNINUy
-         WYDbrgwUSRjffBdym58X0d1EVwmDxtgJMVmykshpk7FFwSDB+gAx7gpnnPDZTYJRg0lr
-         caXOchT8t2TATsY+x4IaM9+9QHRKUnhTFsaPPgMTfx7leT3vrn35nHuAtQfwWtJm/Hhl
-         oDi79/GfdOL7mXZUaQwXcdTUbj0Gz2vr9/yQdZlP+yPeyi+GLdCr/pvm8PnaHuaJaSQC
-         Gvj37Xozaup34p+pZ2vd9CcWPumOXU9s09xJddcHP8Txa6MDpAvAakm0dcnGSvyW6Q1O
-         vlfA==
-X-Gm-Message-State: AOAM530+evsdlwIEt0I+R4QT30+Pd98N4e6DdYOX80ieuNKtYC1o8S8Y
-        HU2MHK/fWC4QqQvVL1WKQhqwDu5Zoj040VND
-X-Google-Smtp-Source: ABdhPJxnfRNJ3D3nyR/+n6fvzBKmcB/lPFG7KQkLJni/R3vuZQ5wmbeqAHBRAkbPHdaeyCpgf7Pzaw==
-X-Received: by 2002:a05:620a:55d:: with SMTP id o29mr10738357qko.454.1611759493270;
-        Wed, 27 Jan 2021 06:58:13 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 138sm1346583qkd.80.2021.01.27.06.58.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 06:58:12 -0800 (PST)
-Subject: Re: [PATCH] btrfs: Simplify the calculation of variables
-To:     Abaci Team <abaci-bugfix@linux.alibaba.com>, clm@fb.com
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1611735097-101599-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <de8a96f9-e9e1-81ef-9c98-7894ba4dfb9a@toxicpanda.com>
-Date:   Wed, 27 Jan 2021 09:58:11 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Wed, 27 Jan 2021 10:02:40 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCA9C0617AB;
+        Wed, 27 Jan 2021 06:59:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jRhQaZPsLOKrKD1rU43zmYCCpg4a8Ss3YvA3XyYhkMQ=; b=XX2M0suGmN3UwpJiD1QGQ24i0
+        SdXmANK40Zv9e+i8bMs811ewm3FJop02t8EYq3wlY8Xm/WVyAL0C7j9iuuGP11PUc38qe4tfuUObL
+        DGUtYeubh+EjsiHnPRk0qD/UnYeUm6HrIdtFqqLpWZvrLAaBTgdAtmW7V6vrYRhSPRZzJKlLpto55
+        cVCDr091JFdh9Q6I8vWWQWOXPe8O8Zz5z0EtCgDZPl3I9+kuLrSqTS/Fg6nXaRhuk6MyouPSs1RM7
+        YHBj1dUtUZh5GEK6WU/YkNI8Z26R4kWsaLztEx/UlTf/nK7AnURxrtzRnj1kqePi2LMDxh6IB3n15
+        EvkxQO4jA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53420)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l4mIW-0005aN-TR; Wed, 27 Jan 2021 14:59:56 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l4mIV-0004uO-MV; Wed, 27 Jan 2021 14:59:55 +0000
+Date:   Wed, 27 Jan 2021 14:59:55 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "atenart@kernel.org" <atenart@kernel.org>
+Subject: Re: [EXT] Re: [PATCH v4 net-next 19/19] net: mvpp2: add TX FC
+ firmware check
+Message-ID: <20210127145955.GN1551@shell.armlinux.org.uk>
+References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+ <1611747815-1934-20-git-send-email-stefanc@marvell.com>
+ <20210127140552.GM1551@shell.armlinux.org.uk>
+ <CO6PR18MB3873034EAC12E956E6879967B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <1611735097-101599-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO6PR18MB3873034EAC12E956E6879967B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 3:11 AM, Abaci Team wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./fs/btrfs/delayed-inode.c:1157:39-41: WARNING !A || A && B is
-> equivalent to !A || B.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
-> Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+On Wed, Jan 27, 2021 at 02:37:34PM +0000, Stefan Chulski wrote:
+> Your mcbin-ss is A8K AX or A8K B0? On AX revisions we do not have FC support in firmware.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+How do I tell? I don't want to remove the heatsink, and I don't see
+anything in MV-S111188-00E. I didn't grab a copy of the Errata before
+I accidentally let me extranet access expire.
 
-Thanks,
-
-Josef
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
