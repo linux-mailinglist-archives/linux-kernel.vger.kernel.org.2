@@ -2,203 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AF43067DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE663067BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhA0XZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:25:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbhA0W41 (ORCPT
+        id S232562AbhA0XUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:20:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31544 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235492AbhA0XQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:56:27 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CF6C061794;
-        Wed, 27 Jan 2021 14:40:50 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id j13so4431478edp.2;
-        Wed, 27 Jan 2021 14:40:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iXTvbMuq3HhEnmBcA+i2YKqjm1qMVKD6f8nz7srtjj8=;
-        b=AvnsMhNL+EOCr85jmdmfvcTsPF5QLZVLiJwSxIqgSV1P6OOpq+HXCs5qCRps/bjrUY
-         BcqdEn2HMPmmTCnBMuo6SFwSIb4wDkj47DQSOKdsS9TyW69Tz0GgiIqqhOm6ZiA/TMy6
-         D1d8LNzF/DHjMf6bydAV8xyr2pwBWh6LXUW+DoqjnyF+4eVn47vBStld3/id9KpKXk9E
-         qGxm5uNqYyLV7DzEyRlvyoVXbae/GS9rSLIVtvZRR7v4KysRORK39ntUP7+gHlW4NUnt
-         R0yBYlSRj/gNoqHAGnHauYgjjEbQXmnfTffWh7j58GuWEf925b0s6aRiARZdEUmWTdXA
-         u24A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iXTvbMuq3HhEnmBcA+i2YKqjm1qMVKD6f8nz7srtjj8=;
-        b=X3TIRvHjMZERGkitbVgIwTCX45ClLUNu/ayEBAHsnfU4iEx8JG8CUcnq5cy0cx2bYV
-         Hmd2pSVp899krFxC8BLv25CuLXVQVbTA4fIEztIZ2Hm3nAwfLd88CAEZYbAgEHE9c82Q
-         gBTlZjMvAijSWyor2dOQMjHed6rb97X9WFc3s0T0QxCGNFsfU4IgVOA2cpjUnBY3pAsv
-         0pGL5ARiZi8OWtGk1SjmUZE6LReJmzOj24owmbyBlj2XtzqTbwflOC07Nd21i/BuWa/d
-         /kDYnNYUOoaftSSzFV7usZzL1eB/DWLSKVUvxQ/r3117fqcNfMJ9VdrDn/QSYOORLbki
-         qciQ==
-X-Gm-Message-State: AOAM533O3blNKUj3I++UvlSiaQgStfGq1TN2eBBEhI7VhkoA24rlzcDN
-        EoCVOchHWVl8npJvLc2788gU88KtkXLO4P44+jVTb042EjQdog==
-X-Google-Smtp-Source: ABdhPJxXz4v6MJrNWZHtF6mMlQ2cq3QOh/o42wPt10Hda0pk0esnXcar+N2ie3PBLsTH20/ni2bbSNfBUSJ94g27JOs=
-X-Received: by 2002:a05:6402:26d3:: with SMTP id x19mr11092718edd.0.1611787248203;
- Wed, 27 Jan 2021 14:40:48 -0800 (PST)
+        Wed, 27 Jan 2021 18:16:55 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RMYjmt138517;
+        Wed, 27 Jan 2021 17:42:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=njFP7oqBoviyf5bi+AHjoz5cMlCGKKGRIQFxuHRNe/U=;
+ b=eMSjqMpksqhgJ7oqJCxSJJS1JPBgBhemp89a+VNR8m/8W6zQVltgf9OvqgDZ3KykCBdh
+ yyWqtrFsDPF1lojJ4ONFli5FpkLPezflfQeWv7W8GTXC2TyFgaulQlbXfI/UjdZnRG4U
+ hScoB8KyzS2fmauPhVOEaXzJBKbRbTIdy/uYQ/vNL+hQMH6S2ggx1uGD2/WUCGSO75tN
+ kvUlinhkJWMkH30o7k6ZOlaYCn7V320mwjCln57UKyVArM9F7A6UfAbg2+Z0zIHy+vub
+ 3xVaRnRdqKAXnkoPbGm4AOaeHV1iBvxHIwbXuxVR+NINpjhNnFJ4FjrnwlEN6jFywGIy rA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5awjmn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 17:42:23 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RMYpge139217;
+        Wed, 27 Jan 2021 17:42:22 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b5awjmn0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 17:42:22 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RMavb0030082;
+        Wed, 27 Jan 2021 22:42:21 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01dal.us.ibm.com with ESMTP id 36adtu00m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 22:42:21 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RMgLI528180932
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 22:42:21 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1BC69AC067;
+        Wed, 27 Jan 2021 22:42:21 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AE49AC069;
+        Wed, 27 Jan 2021 22:42:21 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 27 Jan 2021 22:42:20 +0000 (GMT)
+Subject: Re: [PATCH v3 0/3] Add support for x509 certs with NIST p256 and p192
+ keys
+To:     Nym Seddon <unseddd@protonmail.com>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     "dhowells@redhat.com" <dhowells@redhat.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "patrick@puiterwijk.org" <patrick@puiterwijk.org>
+References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+ <yOgLSllWWtGlr6OYcQxe8CeFwK4H9cWzWbalszgSv4xN_DxK6AGG_vNRyuVX6aKHzesDaj0LK9pB0q8SIQWXQETX26J6KXe428OPMHJYvus=@protonmail.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <fa061535-4870-215f-aacb-710cc086e8a9@linux.ibm.com>
+Date:   Wed, 27 Jan 2021 17:42:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
- <20210125100540.55wbgdsem3htplx3@pali> <CAMcCCgTo87HmwexZS696ok16e9s_8gRgFd38uoLP34r7TbAzBg@mail.gmail.com>
- <CAHzpm2hk4+0FyFrcGYN-JJfx5Ka8yoM8mTsYZA_4WHfWYGa4yQ@mail.gmail.com>
- <CAHzpm2h2X8ZKEtRxnD-mwyEv=B8J+tH_spFGD2VzfwGdRAaHMw@mail.gmail.com>
- <CAMcCCgQRDRi1LpxJBTvKcB+dALJJsn=n5Q=Wyvfcw9LGqqjq7Q@mail.gmail.com> <20210127091933.haq6nmbmx3cskh5t@pali>
-In-Reply-To: <20210127091933.haq6nmbmx3cskh5t@pali>
-From:   Bob Hepple <bob.hepple@gmail.com>
-Date:   Thu, 28 Jan 2021 08:40:36 +1000
-Message-ID: <CAHzpm2j9N3ywMy6HLruCt1VaQLmB1-xVusvXUb8wa2ores+KAQ@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control blacklist
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Tom Hebb <tommyhebb@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <yOgLSllWWtGlr6OYcQxe8CeFwK4H9cWzWbalszgSv4xN_DxK6AGG_vNRyuVX6aKHzesDaj0LK9pB0q8SIQWXQETX26J6KXe428OPMHJYvus=@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_09:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
-
-No, I have not contacted Dell about this and I'm not sure that they
-would be terribly interested given that my machine is 12 years old -
-but I'll have a go if I can find the right place to do it.
-
-Do you have a good email or other Dell target to report it? I don't
-have access to official Dell support as my warranty ran out about 10
-years ago. Perhaps there's an existing Dell bug report that references
-the original https://bugzilla.kernel.org/show_bug.cgi?id=3D195751 ??? I
-could add my report there if someone has already informed Dell about
-the other instances of the bug.
-
-Thanks
-
-
-
-Bob
-
-On Wed, 27 Jan 2021 at 19:19, Pali Roh=C3=A1r <pali@kernel.org> wrote:
+On 1/27/21 11:12 AM, Nym Seddon wrote:
+> Hi Stefan,
 >
-> On Tuesday 26 January 2021 00:15:13 Tom Hebb wrote:
-> > Bob reports that blacklisting the fan type label is not sufficient.
-> > See his message to me below.
+> In the recommendations from SafeCurves (https://safecurves.cr.yp.to/twist.html) there are a number of attacks against ECC twists. Two of those attacks are relevant against NIST P192: invalid-curve attacks and invalid-curve attacks against ladders.
 >
-> Ok! Thank you for confirmation.
+> Both attacks can be mitigated by checking the supplied public key is on the correct curve, before performing curve operations.
 >
-> And my second question which I have asked:
-> And have you reported this issue to Dell support?
+> Not sure if the right place for those checks are in the signature verification code provided in these patches, or when reading public keys from the certificates. Does the kernel provide functions for checking curve points satisfy their respective curve equations?
 >
-> > On Mon, Jan 25, 2021 at 3:38 PM Bob Hepple <bob.hepple@gmail.com> wrote=
-:
-> > >
-> > > Hi Tom,
-> > >
-> > > Big nope this end with L502x in i8k_blacklist_fan_type_dmi_table:
-> > >
-> > > Jan 26 09:35:47 achar kernel: psmouse serio1: TouchPad at
-> > > isa0060/serio1/input0 lost synchronization, throwing 1 bytes>
-> > >
-> > > ... and lots of trackpad stall/stutters.
-> > >
-> > > Cheers
-> > >
-> > >
-> > > Bob
-> > >
-> > >
-> > >
-> > > On Tue, 26 Jan 2021 at 08:09, Bob Hepple <bob.hepple@gmail.com> wrote=
-:
-> > > >
-> > > > ... compiling now ... results in a coupla hours
-> > > >
-> > > > Cheers
-> > > >
-> > > >
-> > > > Bob
-> > > >
-> > > > On Tue, 26 Jan 2021 at 04:05, Tom Hebb <tommyhebb@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Jan 25, 2021 at 2:05 AM Pali Roh=C3=A1r <pali@kernel.org>=
- wrote:
-> > > > > >
-> > > > > > On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
-> > > > > > > It has been reported[0] that the Dell XPS 15 L502X exhibits s=
-imilar
-> > > > > > > freezing behavior to the other systems[1] on this blacklist. =
-The issue
-> > > > > > > was exposed by a prior change of mine to automatically load
-> > > > > > > dell_smm_hwmon on a wider set of XPS models. To fix the regre=
-ssion, add
-> > > > > > > this model to the blacklist.
-> > > > > > >
-> > > > > > > [0] https://bugzilla.kernel.org/show_bug.cgi?id=3D211081
-> > > > > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D195751
-> > > > > > >
-> > > > > > > Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for=
- all XPS models")
-> > > > > > > Cc: stable@vger.kernel.org
-> > > > > > > Reported-by: Bob Hepple <bob.hepple@gmail.com>
-> > > > > > > Tested-by: Bob Hepple <bob.hepple@gmail.com>
-> > > > > > > Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-> > > > > > > ---
-> > > > > > >
-> > > > > > >  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
-> > > > > > >  1 file changed, 7 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/d=
-ell-smm-hwmon.c
-> > > > > > > index ec448f5f2dc3..73b9db9e3aab 100644
-> > > > > > > --- a/drivers/hwmon/dell-smm-hwmon.c
-> > > > > > > +++ b/drivers/hwmon/dell-smm-hwmon.c
-> > > > > > > @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blackl=
-ist_fan_support_dmi_table[] __initdata =3D {
-> > > > > > >                       DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS1=
-3 9333"),
-> > > > > > >               },
-> > > > > > >       },
-> > > > > > > +     {
-> > > > > > > +             .ident =3D "Dell XPS 15 L502X",
-> > > > > > > +             .matches =3D {
-> > > > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> > > > > > > +                     DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell=
- System XPS L502X"),
-> > > > > >
-> > > > > > Hello! Are you sure that it is required to completely disable f=
-an
-> > > > > > support? And not only access to fan type label for which is dif=
-ferent
-> > > > > > blaclist i8k_blacklist_fan_type_dmi_table?
-> > > > >
-> > > > > This is a good question. We didn't try the other list. Bob is the=
- one with the
-> > > > > affected system. Could you try moving the added block of code fro=
-m
-> > > > > i8k_blacklist_fan_support_dmi_table a few lines up to
-> > > > > i8k_blacklist_fan_type_dmi_table, Bob, to see if the issue reappe=
-ars or if it
-> > > > > remains fixed?
-> > > > >
-> > > > > >
-> > > > > > And have you reported this issue to Dell support?
-> > > > > >
-> > > > > > > +             },
-> > > > > > > +     },
-> > > > > > >       { }
-> > > > > > >  };
-> > > > > > >
-> > > > > > > --
-> > > > > > > 2.30.0
-> > > > > > >
-> > > > >
-> > > > > (Apologies for the previous HTML copy of this reply, to those dir=
-ectly CCed.)
-> > > > >
-> > > > > -Tom
+> There are also tables describing the cost of combined attacks on various curves, where NIST P224 already falls below the safe threshold. Because of that, I would recommend not implementing support for NIST P192 (since it would fair even worse).
+>
+> What are your thoughts?
+
+
+I am calling into a function performing such a test at the end of the 
+function parsing the public key:
+
+  return ecc_is_pubkey_valid_full(ctx->curve, ctx->pub_key)
+
+https://elixir.bootlin.com/linux/latest/source/crypto/ecc.c#L1458
+
+Is that good 'enough' ?
+
+    Stefan
+
