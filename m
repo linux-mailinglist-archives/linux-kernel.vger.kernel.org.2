@@ -2,196 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89FB305067
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13289305056
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238116AbhA0EG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S237901AbhA0EAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhA0DEW (ORCPT
+        with ESMTP id S231732AbhA0C4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:04:22 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B6C061353
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 18:34:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=fgdumxwAnCVF5cAIS0s3q9j4VaU1jzEi6kSNzEIX6Bc=; b=BDJIZIF985E18xtpmRHRzCp8nB
-        JD1WN0pZJQRkNzUOLgRwOyVErGu3+aWaz03uHEHhsns35/zhk47cAWM4CsVtdxYmCZDzkTVOyMRn4
-        +XnusSsWVX8TWrnzGt5W6QxBwvHcRj6XAQPGSzmEhtyEM27BFuNHBceZGSOl4Qxw5/YWk11s9kOya
-        N1L+bP0FtFokpD0579Jjjq+zvmgfBtk8wT+fTCpYO2lDVs1ZE7687lUQtj910udSBxfBLPnUjgPz1
-        P9btDjzSHp6C7QNmq+a7NT7+wCx3CtMDtRUeU9n8H8LcQ8XfCOY8vCaDgrE9vTPVhsG6pBVhowAzk
-        ujurFB/Q==;
-Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4aey-00038Z-A7; Wed, 27 Jan 2021 02:34:21 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v3 RESEND] kernel: delete repeated words in comments
-Date:   Tue, 26 Jan 2021 18:34:12 -0800
-Message-Id: <20210127023412.26292-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 26 Jan 2021 21:56:07 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74161C061356;
+        Tue, 26 Jan 2021 18:38:57 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id u4so410363pjn.4;
+        Tue, 26 Jan 2021 18:38:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vklqd1CpSD6MzJLSP3R3zsuOOkfooEPp/iNgXN0T0fo=;
+        b=c5RO3dEx0VxceY8JbhIgRQ/xXMdDVCmThzK2kX8xMsQV2hQzkAuCDGStm3l3mKKZqp
+         NQRfgfBI0Ny71HDkFwn7AMLYPJASdfB7lAkcTq2pRgyaEMBHFIDFvaSJF22mNaX8hasY
+         4pXonnSJRudWfOALOB1C1QLx9ZU6+aJhqBw6olQFZpFWrz8kN6jVwD2tssa16C9jNLps
+         pBRcfFFfOowBMW4pt4hwokzFUiNNoA6sJxokCCxTqQ7EJkDei61PFXKiC/2nF2MJsaD8
+         XRLr4pkITvoejI4Duhg8YFOaFR9lt+vhIKgLti6IuBHgDP4kD0lawhjaAEubTiZSb4ch
+         XAPw==
+X-Gm-Message-State: AOAM5321DbBE6z7BAMYa9k8fh3YdbS2jMr5RMzqu3yWvGhf52f4NfXS4
+        bwOBdIgDsJWUBvotdK/DY5o=
+X-Google-Smtp-Source: ABdhPJzDMFPavXxrd/pehJ8vKuy9+lAOm2D9rjspN+qou+kgmoZiHv+UcypGCMJcjC2bMLbacmaIHA==
+X-Received: by 2002:a17:90a:17c6:: with SMTP id q64mr2992388pja.65.1611715135226;
+        Tue, 26 Jan 2021 18:38:55 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id n15sm218388pjk.57.2021.01.26.18.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 18:38:54 -0800 (PST)
+Date:   Tue, 26 Jan 2021 18:38:53 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org, lars@metafoo.de,
+        linux-fpga@vger.kernel.org, mdf@kernel.org,
+        Dragos Bogdan <dragos.bogdan@analog.com>
+Subject: Re: [PATCH v2 1/3] clk: axi-clkgen: remove ARCH dependency in Kconfig
+Message-ID: <YBDSPVgmqD2JvPbk@epycbox.lan>
+References: <20210126110826.24221-1-alexandru.ardelean@analog.com>
+ <20210126110826.24221-2-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126110826.24221-2-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop repeated words in kernel/events/.
-{if, the, that, with, time}
+Alexandru,
 
-Drop repeated words in kernel/locking/.
-{it, no, the}
+On Tue, Jan 26, 2021 at 01:08:24PM +0200, Alexandru Ardelean wrote:
+> The intent is to be able to run this driver to access the IP core in setups
+> where FPGA board is also connected via a PCIe bus. In such cases the number
+> of combinations explodes, where the host system can be an x86 with Xilinx
+> Zynq/ZynqMP/Microblaze board connected via PCIe.
+> Or even a ZynqMP board with a ZynqMP/Zynq/Microblaze connected via PCIe.
+> 
+> To accommodate for these cases, this change removes the limitation for this
+> driver to be compilable only on Zynq/Microblaze architectures.
+> 
+> Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/clk/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+> index 85856cff506c..d8c2d4593926 100644
+> --- a/drivers/clk/Kconfig
+> +++ b/drivers/clk/Kconfig
+> @@ -247,7 +247,6 @@ config CLK_TWL6040
+>  
+>  config COMMON_CLK_AXI_CLKGEN
+>  	tristate "AXI clkgen driver"
+> -	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+Umhhh ... no dependencies? How are you accessing your registers? You
+seem to be using device tree, probably:
 
-Drop repeated words in kernel/sched/.
-{in, not}
+	depends on HAS_IOMEM || COMPILE_TEST
+	depends on OF
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Acked-by: Will Deacon <will@kernel.org> # for kernel/locking/
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
----
-v3: combine 3 small patches into one patch; rebase & resend to Andrew
+at least? Please double check your dependencies.
+>  	help
+>  	  Support for the Analog Devices axi-clkgen pcore clock generator for Xilinx
+>  	  FPGAs. It is commonly used in Analog Devices' reference designs.
+> -- 
+> 2.17.1
+> 
 
- kernel/events/core.c       |    8 ++++----
- kernel/events/uprobes.c    |    2 +-
- kernel/locking/rtmutex.c   |    4 ++--
- kernel/locking/rwsem.c     |    2 +-
- kernel/locking/semaphore.c |    2 +-
- kernel/sched/fair.c        |    2 +-
- kernel/sched/membarrier.c  |    2 +-
- 7 files changed, 11 insertions(+), 11 deletions(-)
-
---- linux-next-20210125.orig/kernel/events/core.c
-+++ linux-next-20210125/kernel/events/core.c
-@@ -269,7 +269,7 @@ static void event_function_call(struct p
- 	if (!event->parent) {
- 		/*
- 		 * If this is a !child event, we must hold ctx::mutex to
--		 * stabilize the the event->ctx relation. See
-+		 * stabilize the event->ctx relation. See
- 		 * perf_event_ctx_lock().
- 		 */
- 		lockdep_assert_held(&ctx->mutex);
-@@ -1303,7 +1303,7 @@ static void put_ctx(struct perf_event_co
-  * life-time rules separate them. That is an exiting task cannot fork, and a
-  * spawning task cannot (yet) exit.
-  *
-- * But remember that that these are parent<->child context relations, and
-+ * But remember that these are parent<->child context relations, and
-  * migration does not affect children, therefore these two orderings should not
-  * interact.
-  *
-@@ -1442,7 +1442,7 @@ static u64 primary_event_id(struct perf_
- /*
-  * Get the perf_event_context for a task and lock it.
-  *
-- * This has to cope with with the fact that until it is locked,
-+ * This has to cope with the fact that until it is locked,
-  * the context could get moved to another task.
-  */
- static struct perf_event_context *
-@@ -2501,7 +2501,7 @@ static void perf_set_shadow_time(struct
- 	 * But this is a bit hairy.
- 	 *
- 	 * So instead, we have an explicit cgroup call to remain
--	 * within the time time source all along. We believe it
-+	 * within the time source all along. We believe it
- 	 * is cleaner and simpler to understand.
- 	 */
- 	if (is_cgroup_event(event))
---- linux-next-20210125.orig/kernel/events/uprobes.c
-+++ linux-next-20210125/kernel/events/uprobes.c
-@@ -1735,7 +1735,7 @@ void uprobe_free_utask(struct task_struc
- }
- 
- /*
-- * Allocate a uprobe_task object for the task if if necessary.
-+ * Allocate a uprobe_task object for the task if necessary.
-  * Called when the thread hits a breakpoint.
-  *
-  * Returns:
---- linux-next-20210125.orig/kernel/locking/rtmutex.c
-+++ linux-next-20210125/kernel/locking/rtmutex.c
-@@ -1438,7 +1438,7 @@ rt_mutex_fasttrylock(struct rt_mutex *lo
- }
- 
- /*
-- * Performs the wakeup of the the top-waiter and re-enables preemption.
-+ * Performs the wakeup of the top-waiter and re-enables preemption.
-  */
- void rt_mutex_postunlock(struct wake_q_head *wake_q)
- {
-@@ -1833,7 +1833,7 @@ struct task_struct *rt_mutex_next_owner(
-  *			been started.
-  * @waiter:		the pre-initialized rt_mutex_waiter
-  *
-- * Wait for the the lock acquisition started on our behalf by
-+ * Wait for the lock acquisition started on our behalf by
-  * rt_mutex_start_proxy_lock(). Upon failure, the caller must call
-  * rt_mutex_cleanup_proxy_lock().
-  *
---- linux-next-20210125.orig/kernel/locking/rwsem.c
-+++ linux-next-20210125/kernel/locking/rwsem.c
-@@ -1048,7 +1048,7 @@ rwsem_down_write_slowpath(struct rw_sema
- 
- 		/*
- 		 * If there were already threads queued before us and:
--		 *  1) there are no no active locks, wake the front
-+		 *  1) there are no active locks, wake the front
- 		 *     queued process(es) as the handoff bit might be set.
- 		 *  2) there are no active writers and some readers, the lock
- 		 *     must be read owned; so we try to wake any read lock
---- linux-next-20210125.orig/kernel/locking/semaphore.c
-+++ linux-next-20210125/kernel/locking/semaphore.c
-@@ -119,7 +119,7 @@ EXPORT_SYMBOL(down_killable);
-  * @sem: the semaphore to be acquired
-  *
-  * Try to acquire the semaphore atomically.  Returns 0 if the semaphore has
-- * been acquired successfully or 1 if it it cannot be acquired.
-+ * been acquired successfully or 1 if it cannot be acquired.
-  *
-  * NOTE: This return value is inverted from both spin_trylock and
-  * mutex_trylock!  Be careful about this when converting code.
---- linux-next-20210125.orig/kernel/sched/fair.c
-+++ linux-next-20210125/kernel/sched/fair.c
-@@ -5144,7 +5144,7 @@ static void do_sched_cfs_slack_timer(str
- /*
-  * When a group wakes up we want to make sure that its quota is not already
-  * expired/exceeded, otherwise it may be allowed to steal additional ticks of
-- * runtime as update_curr() throttling can not not trigger until it's on-rq.
-+ * runtime as update_curr() throttling can not trigger until it's on-rq.
-  */
- static void check_enqueue_throttle(struct cfs_rq *cfs_rq)
- {
---- linux-next-20210125.orig/kernel/sched/membarrier.c
-+++ linux-next-20210125/kernel/sched/membarrier.c
-@@ -454,7 +454,7 @@ static int sync_runqueues_membarrier_sta
- 
- 	/*
- 	 * For each cpu runqueue, if the task's mm match @mm, ensure that all
--	 * @mm's membarrier state set bits are also set in in the runqueue's
-+	 * @mm's membarrier state set bits are also set in the runqueue's
- 	 * membarrier state. This ensures that a runqueue scheduling
- 	 * between threads which are users of @mm has its membarrier state
- 	 * updated.
+- Moritz
