@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EF53065F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60F330660E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhA0VZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:25:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234173AbhA0VYN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:24:13 -0500
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31662C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:23:33 -0800 (PST)
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id 78AFCAE0B56; Wed, 27 Jan 2021 22:23:30 +0100 (CET)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] vme: make remove callback return void
-Date:   Wed, 27 Jan 2021 22:23:29 +0100
-Message-Id: <20210127212329.98517-1-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.29.2
+        id S234261AbhA0V2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:28:17 -0500
+Received: from mga04.intel.com ([192.55.52.120]:48884 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234462AbhA0V0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:26:50 -0500
+IronPort-SDR: 1Zd46pBw+eziIx0cYW1wxHOMPNqKo2Y8AKBd/JJn5KWoQi/CrCZ030NxxnUWOSkW+uha0mIw6e
+ gSZof/rlK5YA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="177573098"
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="177573098"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:25:49 -0800
+IronPort-SDR: D4aDZfyvo1J+7UBhOQ49iNv7JhMiCuGG+vToy+qRFwayXLng2xzMnNfgwlbNXvFOqgPMTk+lub
+ v9NRQYJZNB5g==
+X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
+   d="scan'208";a="353948187"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 13:25:48 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v18 02/25] x86/cet/shstk: Add Kconfig option for user-mode control-flow protection
+Date:   Wed, 27 Jan 2021 13:25:01 -0800
+Message-Id: <20210127212524.10188-3-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of struct bus_type::remove()
-because there is only little that can be done. To simplify the quest to
-make this function return void, let struct vme_driver::remove return void,
-too. There is only a single vme driver and it already returns 0
-unconditionally in .remove().
+Shadow Stack provides protection against function return address
+corruption.  It is active when the processor supports it, the kernel has
+CONFIG_X86_CET enabled, and the application is built for the feature.
+This is only implemented for the 64-bit kernel.  When it is enabled, legacy
+non-Shadow Stack applications continue to work, but without protection.
 
-Also fix the bus remove function to always return 0.
-
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 ---
- drivers/staging/vme/devices/vme_user.c | 4 +---
- drivers/vme/vme.c                      | 4 ++--
- include/linux/vme.h                    | 2 +-
- 3 files changed, 4 insertions(+), 6 deletions(-)
+ arch/x86/Kconfig           | 22 ++++++++++++++++++++++
+ arch/x86/Kconfig.assembler |  5 +++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/drivers/staging/vme/devices/vme_user.c b/drivers/staging/vme/devices/vme_user.c
-index fd0ea4dbcb91..35d7260e2271 100644
---- a/drivers/staging/vme/devices/vme_user.c
-+++ b/drivers/staging/vme/devices/vme_user.c
-@@ -689,7 +689,7 @@ static int vme_user_probe(struct vme_dev *vdev)
- 	return err;
- }
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..2d080a2335df 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1951,6 +1951,28 @@ config X86_SGX
  
--static int vme_user_remove(struct vme_dev *dev)
-+static void vme_user_remove(struct vme_dev *dev)
- {
- 	int i;
+ 	  If unsure, say N.
  
-@@ -717,8 +717,6 @@ static int vme_user_remove(struct vme_dev *dev)
- 
- 	/* Unregister the major and minor device numbers */
- 	unregister_chrdev_region(MKDEV(VME_MAJOR, 0), VME_DEVS);
--
--	return 0;
- }
- 
- static struct vme_driver vme_user_driver = {
-diff --git a/drivers/vme/vme.c b/drivers/vme/vme.c
-index 54d7963c1078..1b15afea28ee 100644
---- a/drivers/vme/vme.c
-+++ b/drivers/vme/vme.c
-@@ -1997,9 +1997,9 @@ static int vme_bus_remove(struct device *dev)
- 
- 	driver = dev->platform_data;
- 	if (driver->remove)
--		return driver->remove(vdev);
-+		driver->remove(vdev);
- 
--	return -ENODEV;
-+	return 0;
- }
- 
- struct bus_type vme_bus_type = {
-diff --git a/include/linux/vme.h b/include/linux/vme.h
-index 7e82bf500f01..b204a9b4be1b 100644
---- a/include/linux/vme.h
-+++ b/include/linux/vme.h
-@@ -122,7 +122,7 @@ struct vme_driver {
- 	const char *name;
- 	int (*match)(struct vme_dev *);
- 	int (*probe)(struct vme_dev *);
--	int (*remove)(struct vme_dev *);
-+	void (*remove)(struct vme_dev *);
- 	struct device_driver driver;
- 	struct list_head devices;
- };
++config ARCH_HAS_SHADOW_STACK
++	def_bool n
++
++config X86_CET
++	prompt "Intel Control-flow protection for user-mode"
++	def_bool n
++	depends on CPU_SUP_INTEL && X86_64
++	depends on AS_WRUSS
++	select ARCH_USES_HIGH_VMA_FLAGS
++	select ARCH_HAS_SHADOW_STACK
++	help
++	  Control-flow protection is a hardware security hardening feature
++	  that detects function-return address or jump target changes by
++	  malicious code.  Applications must be enabled to use it, and old
++	  userspace does not get protection "for free".
++	  Support for this feature is present on processors released in
++	  2020 or later.  Enabling this feature increases kernel text size
++	  by 3.7 KB.
++	  See Documentation/x86/intel_cet.rst for more information.
++
++	  If unsure, say N.
++
+ config EFI
+ 	bool "EFI runtime service support"
+ 	depends on ACPI
+diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
+index 26b8c08e2fc4..00c79dd93651 100644
+--- a/arch/x86/Kconfig.assembler
++++ b/arch/x86/Kconfig.assembler
+@@ -19,3 +19,8 @@ config AS_TPAUSE
+ 	def_bool $(as-instr,tpause %ecx)
+ 	help
+ 	  Supported by binutils >= 2.31.1 and LLVM integrated assembler >= V7
++
++config AS_WRUSS
++	def_bool $(as-instr,wrussq %rax$(comma)(%rbx))
++	help
++	  Supported by binutils >= 2.31 and LLVM integrated assembler
 -- 
-2.29.2
+2.21.0
 
