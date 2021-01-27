@@ -2,175 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34399306848
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D87A30684A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhA0XsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:48:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53953 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231265AbhA0XsT (ORCPT
+        id S231536AbhA0XvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231959AbhA0Xu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:48:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611791211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xJ/gs4iMushfcp0d07qS8uhcoreW6Bo1+Q0lKFHyKMM=;
-        b=K5q5sx0F9JmAI66uRYMLVsuL2ASVd1C1MBvfcLdioqyRaISG82gNBKRXCOrZROvGZUtiZ9
-        y8zLocIlesXDIlwnh/KO/rQHKSzyd2x9YFRztxl1jASYcsw02vT4spmDS7FUni8+tDC6VS
-        4GxYoVfQdLf09Xl43EWhR+DbtvOVo2k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-WQ5wUpHQOfu8sZ2HJIUVTg-1; Wed, 27 Jan 2021 18:46:47 -0500
-X-MC-Unique: WQ5wUpHQOfu8sZ2HJIUVTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C137E8030A0;
-        Wed, 27 Jan 2021 23:46:43 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E50C25C1BB;
-        Wed, 27 Jan 2021 23:46:41 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 16:46:41 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Cornelia Huck" <cohuck@redhat.com>, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "James Morse" <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH v3 2/2] vfio/iommu_type1: Fix some sanity checks in
- detach group
-Message-ID: <20210127164641.36e17bf5@omen.home.shazbot.org>
-In-Reply-To: <20210122092635.19900-3-zhukeqian1@huawei.com>
-References: <20210122092635.19900-1-zhukeqian1@huawei.com>
-        <20210122092635.19900-3-zhukeqian1@huawei.com>
+        Wed, 27 Jan 2021 18:50:59 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7FAC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:50:19 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id j2so1232806pgl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 15:50:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=XsErl/cimO7wftOceCRiamL1P72e2kHrMeV9MFjW27g=;
+        b=fGLqz9UsgK9Cr9me5mJkGUUHZ/ke2usuBxuSHXBCSgMAeh8tHZ4FMurwWB5rlSQeDo
+         bemL1e/oAsER36IcSonYKQfzwXrATmHWRNnVyLXNVunMnwmQ/6UkWKx24BjgWPbcs+Sz
+         PRCJ5rJ8HRVTkKeKmnYynuL7P0Z9wyQg0yKdq4ezgecbXb5C18uMVENT0iSAOVQ8DT5e
+         7sZTGp9nvfjpfwxGqQZbfXbzQLm68F0h7BpVi1d4byqSVDCCP9ahAQXe/AJ7YibeAlkz
+         fhmRVpGnoTfaFtXnX3r7ZaMuY2o56WzZTKzZ3XZOvcNFf1MP+q4xLghbJpi5QIHQfGvS
+         uzZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=XsErl/cimO7wftOceCRiamL1P72e2kHrMeV9MFjW27g=;
+        b=BFuesJ863OOAKUXLkdOZ3afQXQqZG+lKkYJdhQGZs8ozFm0bAmGdW6K/JmVSzZCVO7
+         jAVbnqQ8VkMDh6Qd6QTzKdL5Dyp17AkBlvRus15TKjfADuv/6ZlV8MgEMNyAUTy8+HXG
+         TpLey9P1nOk0YndcXupPaLzl7KScd3bXm+DFTH+LDSKqF9KtS8JLMvG0HUIG5s1OsqRi
+         9i/xKxrM5Q8EUjZKgX1LZQmqHoA5YUxAFXaS68Jh8asA0OEVMkW5h/fSLC86mGKKI+fz
+         eKektNHf+4d5e9kb5JbG3y0Noa0tQgyn7vqqD4Azuo5EtAPgZ/r9MrIFVNJg3JSbZQS8
+         FGkQ==
+X-Gm-Message-State: AOAM530uwdfSOhjnydCnjhgm0tsZJpNwiUforV2RjS3Lb7U58YCn92uO
+        mjb+81LJOzq5avUqlvz1Kx+7ryrHr1Q=
+X-Google-Smtp-Source: ABdhPJzPxvfNcOGRxVoxGRJhNJzeeR6LVj1ni1YjcQZl5ymQxjDeLCfX6QUO6JSQd/lT4PTM1qPt3g==
+X-Received: by 2002:a63:4764:: with SMTP id w36mr13533232pgk.127.1611791419066;
+        Wed, 27 Jan 2021 15:50:19 -0800 (PST)
+Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
+        by smtp.gmail.com with ESMTPSA id g22sm3455973pfu.200.2021.01.27.15.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 15:50:18 -0800 (PST)
+Date:   Thu, 28 Jan 2021 09:50:12 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: RE: [PATCH v4 11/23] powerpc/syscall: Rename syscall_64.c into
+ syscall.c
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "msuchanek@suse.de" <msuchanek@suse.de>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+        <ff9dd4accdc897013594768833d54444e4823bf9.1611585031.git.christophe.leroy@csgroup.eu>
+        <1611656343.yaxha7r2q4.astroid@bobo.none>
+        <d9993f034db848d1afeffa322373b811@AcuMS.aculab.com>
+In-Reply-To: <d9993f034db848d1afeffa322373b811@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Message-Id: <1611791083.sqnnh21vv0.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 17:26:35 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
+Excerpts from David Laight's message of January 26, 2021 8:28 pm:
+> From: Nicholas Piggin
+>> Sent: 26 January 2021 10:21
+>>=20
+>> Excerpts from Christophe Leroy's message of January 26, 2021 12:48 am:
+>> > syscall_64.c will be reused almost as is for PPC32.
+>> >
+>> > Rename it syscall.c
+>>=20
+>> Could you rename it to interrupt.c instead? A system call is an
+>> interrupt, and the file now also has code to return from other
+>> interrupts as well, and it matches the new asm/interrupt.h from
+>> the interrupts series.
+>=20
+> Hmmm....
+>=20
+> That might make it harder for someone looking for the system call
+> entry code to find it.
 
-> vfio_sanity_check_pfn_list() is used to check whether pfn_list and
-> notifier are empty when remove the external domain, so it makes a
-> wrong assumption that only external domain will use the pinning
-> interface.
-> 
-> Now we apply the pfn_list check when a vfio_dma is removed and apply
-> the notifier check when all domains are removed.
-> 
-> Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++-----------------------
->  1 file changed, 10 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 161725395f2f..d8c10f508321 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -957,6 +957,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
->  
->  static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
->  {
-> +	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
->  	vfio_unmap_unpin(iommu, dma, true);
->  	vfio_unlink_dma(iommu, dma);
->  	put_task_struct(dma->task);
-> @@ -2250,23 +2251,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
->  	}
->  }
->  
-> -static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
-> -{
-> -	struct rb_node *n;
-> -
-> -	n = rb_first(&iommu->dma_list);
-> -	for (; n; n = rb_next(n)) {
-> -		struct vfio_dma *dma;
-> -
-> -		dma = rb_entry(n, struct vfio_dma, node);
-> -
-> -		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
-> -			break;
-> -	}
-> -	/* mdev vendor driver must unregister notifier */
-> -	WARN_ON(iommu->notifier.head);
-> -}
-> -
->  /*
->   * Called when a domain is removed in detach. It is possible that
->   * the removed domain decided the iova aperture window. Modify the
-> @@ -2366,10 +2350,10 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  			kfree(group);
->  
->  			if (list_empty(&iommu->external_domain->group_list)) {
-> -				vfio_sanity_check_pfn_list(iommu);
-> -
-> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
-> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)) {
-> +					WARN_ON(iommu->notifier.head);
->  					vfio_iommu_unmap_unpin_all(iommu);
-> +				}
->  
->  				kfree(iommu->external_domain);
->  				iommu->external_domain = NULL;
-> @@ -2403,10 +2387,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  		 */
->  		if (list_empty(&domain->group_list)) {
->  			if (list_is_singular(&iommu->domain_list)) {
-> -				if (!iommu->external_domain)
-> +				if (!iommu->external_domain) {
-> +					WARN_ON(iommu->notifier.head);
->  					vfio_iommu_unmap_unpin_all(iommu);
-> -				else
-> +				} else {
->  					vfio_iommu_unmap_unpin_reaccount(iommu);
-> +				}
->  			}
->  			iommu_domain_free(domain->domain);
->  			list_del(&domain->next);
-> @@ -2488,9 +2474,10 @@ static void vfio_iommu_type1_release(void *iommu_data)
->  	struct vfio_iommu *iommu = iommu_data;
->  	struct vfio_domain *domain, *domain_tmp;
->  
-> +	WARN_ON(iommu->notifier.head);
+It's very grep'able.
 
-I don't see that this does any harm, but isn't it actually redundant?
-It seems vfio-core only calls the iommu backend release function after
-removing all the groups, so the tests in _detach_group should catch all
-cases.  We're expecting the vfio bus/mdev driver to remove the notifier
-when a device is closed, which necessarily occurs before detaching the
-group.  Thanks,
+> In some sense interrupts are the simpler case.
+>=20
+> Especially when comparing with other architectures which have
+> special instructions for syscall entry.
 
-Alex
+powerpc does have a special instruction for syscall, and it causes a
+system call interrupt.
 
-> +
->  	if (iommu->external_domain) {
->  		vfio_release_domain(iommu->external_domain, true);
-> -		vfio_sanity_check_pfn_list(iommu);
->  		kfree(iommu->external_domain);
->  	}
->  
+I'm not sure about other architectures, but for powerpc its more=20
+sensible to call it interrupt.c than syscall.c.
 
+Thanks,
+Nick
