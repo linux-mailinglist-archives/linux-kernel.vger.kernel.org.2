@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBE43052D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3B73052AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhA0GGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:06:19 -0500
-Received: from mail.nicetu.spb.ru ([185.67.92.8]:57342 "EHLO
-        mail.nicetu.spb.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235140AbhA0F3f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:29:35 -0500
-X-Greylist: delayed 4426 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 00:29:34 EST
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.nicetu.spb.ru (Postfix) with ESMTP id 26F03B10FE16;
-        Wed, 27 Jan 2021 05:16:01 +0300 (MSK)
-Received: from mail.nicetu.spb.ru ([127.0.0.1])
-        by localhost (mail.nicetu.spb.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id QdA4VT28mbOj; Wed, 27 Jan 2021 05:16:01 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.nicetu.spb.ru (Postfix) with ESMTP id 78163B10FE25;
-        Wed, 27 Jan 2021 05:15:53 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.nicetu.spb.ru 78163B10FE25
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nicetu.spb.ru;
-        s=7B2F87C4-0E04-11EB-8A28-64139CD60C3C; t=1611713753;
-        bh=+xtf1RTWphUdm+F0nvh8Xt1xJ2xmJ8YbMdrhPFGnUhY=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=QmV29uFPv71bBjDr6BmC+r55Shag+9g17VteNJ5qDBRHMtwBXKAEpkpJwaIUhFzB4
-         0sUVDFVqWyQh25+/BF8WzlvdMreeGyUCe2rZG6Appkog1SwqOQxwTiXDMmTSNXDxiH
-         nGmBijU71/Ayooly78fPUOzvCRELyDHoGvlWdWiVkoAvkIRNVKCdByrDvWtyL3C0DK
-         3NqSckkE+I38649g6N2wtI0DBtZNgcDiuiS9Izc7ynj60sItSnWXeedShlSbuCIP9N
-         vjVEPPsbpzsaW7e5aEcITYcXIhTJa2Ww0zau1k5TWay+05o1PowXoIKtv50Vyjouh+
-         vHJirC15M9Peg==
-X-Virus-Scanned: amavisd-new at nicetu.spb.ru
-Received: from mail.nicetu.spb.ru ([127.0.0.1])
-        by localhost (mail.nicetu.spb.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qMp7TfYVo_h3; Wed, 27 Jan 2021 05:15:53 +0300 (MSK)
-Received: from [100.87.16.76] (unknown [106.223.46.15])
-        by mail.nicetu.spb.ru (Postfix) with ESMTPSA id 2B983B10FE18;
-        Wed, 27 Jan 2021 05:15:25 +0300 (MSK)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S233588AbhA0F7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:59:31 -0500
+Received: from m12-18.163.com ([220.181.12.18]:55652 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235663AbhA0DWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:22:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Qhvx+
+        Knp26+i+QuDp7Oc/cuqMXt2WbaoYJqljrF9deI=; b=RMoQMdtrdAuHeBPenVMwj
+        k7MDbbL1I4360F/4MfSAfto8+kqHUaVFXUEjAXkPaTdONPvHDnGZd119DaY9xx8k
+        /OI2X3eXMRSOV9klnTDnLK1wl1q6MASLEOPfHsRUTU40RfaBCEYQHD/B/lBc09Gd
+        MzXWtCM8a7zm1EQ4KvwCTM=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp14 (Coremail) with SMTP id EsCowAA3PgJ01xBg1QreRA--.28066S2;
+        Wed, 27 Jan 2021 11:01:09 +0800 (CST)
+From:   dingsenjie@163.com
+To:     akpm@linux-foundation.org, colin.king@canonical.com,
+        naoki.hayama@lineo.co.jp, xndchn@gmail.com, sjpark@amazon.de,
+        ebiggers@google.com, joe@perches.com
+Cc:     linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] scripts/spelling.txt: increase error-prone spell checking
+Date:   Wed, 27 Jan 2021 11:01:05 +0800
+Message-Id: <20210127030105.7244-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?b?QVRFTkNJw5NO?=
-To:     Recipients <baltr@nicetu.spb.ru>
-From:   baltr@nicetu.spb.ru
-Date:   Wed, 27 Jan 2021 07:45:14 +0530
-Reply-To: mailupgrade@mail2engineer.com
-Message-Id: <20210127021526.2B983B10FE18@mail.nicetu.spb.ru>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowAA3PgJ01xBg1QreRA--.28066S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUhSdyUUUUU
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRUnyFUMcFIUcwAAsD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATENCI=D3N;
+From: dingsenjie <dingsenjie@yulong.com>
 
-Su buz=F3n ha superado el l=EDmite de almacenamiento, que es de 5 GB defini=
-dos por el administrador, quien actualmente est=E1 ejecutando en 10.9GB, no=
- puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a valida=
-r su buz=F3n de correo electr=F3nico. Para revalidar su buz=F3n de correo, =
-env=EDe la siguiente informaci=F3n a continuaci=F3n:
+Increase allocted spelling error check.
 
-nombre:
-Nombre de usuario:
-contrase=F1a:
-Confirmar contrase=F1a:
-E-mail:
-tel=E9fono:
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ scripts/spelling.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Si usted no puede revalidar su buz=F3n, el buz=F3n se deshabilitar=E1!
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 953f4a2..5fa8ec2 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -103,6 +103,7 @@ alloated||allocated
+ allocatote||allocate
+ allocatrd||allocated
+ allocte||allocate
++allocted||allocated
+ allpication||application
+ alocate||allocate
+ alogirhtms||algorithms
+-- 
+1.9.1
 
-Disculpa las molestias.
-C=F3digo de verificaci=F3n:666690opp4r56 es: 006524
-Correo Soporte T=E9cnico =A9 2021
 
-=A1gracias
-Sistemas administrador
