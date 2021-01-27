@@ -2,103 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328A23051CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBAD3051CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhA0FPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S232888AbhA0FPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239652AbhA0EtR (ORCPT
+        with ESMTP id S238708AbhA0EzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:49:17 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAD1C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:49:02 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id my11so2383405pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:49:02 -0800 (PST)
+        Tue, 26 Jan 2021 23:55:11 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AD1C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:31 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id u4so577931pjn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:54:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5YTr1EEhs+jj2WHQwkT89TcFm/em4DGnwVspZEpL97A=;
-        b=RlLrEPaq5WpFGniD2x8b04wZFQ6PtfcV2qsGrNoi1qfh6eBQE+GAQFAxu4wXcNH3jD
-         O0gKXOwNrC8Q7iqaG+YwxsXQTTL7PANVlJy6X23kKSiHNQ9rBV/Y8YDL76/hMCZ9KlrE
-         eHYoLN16D+b6c5mDbMGYPAMpvwvY3KCbwtIsN+lwn34U9riodVR7ORaatm0oq4htzO0w
-         U8U4JgHIVfy1mF9i3UHdmKTcf61YGpVl9+QXsXdTJAWltBXgTjwxUMfoGKoC/It1qEEQ
-         jxhWhIbkOuk07jlvUkX3WuCzLzcR7vmEmNJXyHDoFTQK7lEk5SVfpS6VjE4pbRHnRhJT
-         L51w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r9/iygGEsbCXV7twHQtjrSpr12PzDM9c+Fh0z8xYuMw=;
+        b=OztU7czy87n2d9gUaGyLG6kNOv+55ojXybNmqvW09YTEfhNZFSwkBidqBAcnqUBEHx
+         5ik+VJOtGheuqOho7F768S0CkhayUtcioUenKzwaeN8rwgq3aeWd7Kf56sL2UOH3sVaU
+         qjyMe9vw+Y/3V9tZF3dYSy1+IJQbfvfbZaR0o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5YTr1EEhs+jj2WHQwkT89TcFm/em4DGnwVspZEpL97A=;
-        b=G1fF3U2UQlvxaHWOb+B2Md3dZTSaAUlmpL180znk+Ef5lhO5+HgAWPU0YC/Llxr+HN
-         6GLByUXqQ1ryZeL1CkSqvLIO7Ki0f+iClYYP5CGOEJBxLPFbbbctoNWzgfp48XO4le2h
-         QFyH4w14ZHe5sqCIH6H7yChuyBrE73kKBwQiW66cgfYhzLWMFYJIc/d3H/c+aeWn/OFQ
-         cq2BT+NgWiGnBWpiHF3Dhk6ntnnRIkTtG07BIFCQpjDR/7j9d1xUB1lXG+5BanufZSSR
-         v+LZ9iqwp2qf5G4hx2qET9f0hlBkIV7uiX06RvZe4fLGu4bkEGxMIGzMpvaFFRpiTMdG
-         YnwQ==
-X-Gm-Message-State: AOAM532wp5zxmGI1ircrtDKJFusjHqm06yCtvBuyTl2WXZLSpMrODVAV
-        kr9/kHLdjB/9qhuoo3iXPZI=
-X-Google-Smtp-Source: ABdhPJwT86NlXbeo0tUZ22FIJEoKi5Nahex9P11UaR6y9t6c3u8nbvbOXIKz0NF7Q8Y3SBzA/wn9Lw==
-X-Received: by 2002:a17:90a:3e81:: with SMTP id k1mr3661737pjc.13.1611722941942;
-        Tue, 26 Jan 2021 20:49:01 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e12sm610360pga.13.2021.01.26.20.49.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 20:49:01 -0800 (PST)
-Subject: Re: [PATCH v6 0/2] ARM: Implement MODULE_PLT support in FTRACE
-To:     Alexander X Sverdlin <alexander.sverdlin@nokia.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20200217140955.211661-1-alexander.sverdlin@nokia.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <48289cbf-9108-2807-7143-c3ae625bd940@gmail.com>
-Date:   Tue, 26 Jan 2021 20:48:59 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        bh=r9/iygGEsbCXV7twHQtjrSpr12PzDM9c+Fh0z8xYuMw=;
+        b=Z2O3CFo2xhcG8cRl14zKHMQ1sCs93ljd5UZkPpK4fv/4smhyte6tfREkrAp1NF4s6N
+         YHWWcWLbxuz6Xn4USzo6YSx0YT+7nZnjBQtYBR3XpXomYloT0DECP41FUhgZGKXUzfX0
+         crtd1ruBj3TrLDjPRjE1zlIqHGmi+bdNv/SI09ndntg57FpNJWWsB87L9mgXDgl9xLdi
+         3gh8kImr5M8rq6MwkPIyMsK9D/N5ON87bOdkKvBooJnY2gaNK0dbvlChgktCZY7XmPmh
+         X/o0OdQvjTMq5KWoXYUT6c4DgNNWuT8fN8qp+BoaMdmrhxBBYG294mEE+nPksoTTOmBZ
+         OOqA==
+X-Gm-Message-State: AOAM532Ba5YMllxcY1VBg2aKTwQbpcMvGtHPcKfin0hM7APXykkMxn/I
+        hbtlJTML2wR8h7PyHe1gm1+Ibw==
+X-Google-Smtp-Source: ABdhPJw1C1zpxPU5435J6VcpDvDLiXPINRvaNkHHQYv/g9eHyTnv61bvxwVHrMY7s3JauV7WzUR0Bw==
+X-Received: by 2002:a17:902:d4c3:b029:de:84a5:aaf2 with SMTP id o3-20020a170902d4c3b02900de84a5aaf2mr9326915plg.80.1611723270673;
+        Tue, 26 Jan 2021 20:54:30 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:e0a5:d2fc:aaad:1e4a])
+        by smtp.gmail.com with ESMTPSA id a141sm684484pfa.189.2021.01.26.20.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 20:54:29 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v10 0/9] drm/mediatek: add support for mediatek SOC MT8183
+Date:   Wed, 27 Jan 2021 12:54:13 +0800
+Message-Id: <20210127045422.2418917-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-In-Reply-To: <20200217140955.211661-1-alexander.sverdlin@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+This series is based on kernel/git/chunkuang.hu/linux.git mediatek-drm-next
+The series is tested on a mt8183 krane device.
 
-On 2/17/2020 6:09 AM, Alexander X Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> 
-> FTRACE's function tracer currently doesn't always work on ARM with
-> MODULE_PLT option enabled. If the module is loaded too far, FTRACE's
-> code modifier cannot cope with introduced veneers and turns the
-> function tracer off globally.
-> 
-> ARM64 already has a solution for the problem, refer to the following
-> patches:
-> 
-> arm64: ftrace: emit ftrace-mod.o contents through code
-> arm64: module-plts: factor out PLT generation code for ftrace
-> arm64: ftrace: fix !CONFIG_ARM64_MODULE_PLTS kernels
-> arm64: ftrace: fix building without CONFIG_MODULES
-> arm64: ftrace: add support for far branches to dynamic ftrace
-> arm64: ftrace: don't validate branch via PLT in ftrace_make_nop()
-> 
-> But the presented ARM variant has just a half of the footprint in terms of
-> the changed LoCs. It also retains the code validation-before-modification
-> instead of switching it off.
+Change since v9
+- change several function to rebase to mediatek-drm-next
 
-We have been using those patches and I was wondering what happened after
-this version since they did not show up upstream nor in Russell's patch
-tracker? Would you be willing to resubmit them?
+Change since v8
+- fix some review comment in v8
+- separate gamma module for mt8183 has no dither function in gamma
+- enable dither function for 5 or 6 bpc panel display
+- separate ddp mutex patch from the whole Soc patch
 
-Thanks!
+Change since v7
+- add dt-binding for mt8183 display
+- base mmsys patch
+https://patchwork.kernel.org/project/linux-mediatek/cover/1607506379-10998-1-git-send-email-yongqiang.niu@mediatek.com/
+- base dts patch
+https://patchwork.kernel.org/project/linux-mediatek/cover/20201127104930.1981497-1-enric.balletbo@collabora.com/
+- add mt8183 function call for setting the routing registers
+- add RDMA fifo size error handle
+
+Change since v6
+- move ddp component define into mtk_mmsys.h
+- add mmsys private data to support different ic path connection
+- add mt8183-mmsys.c to support 8183 path connection
+- fix reviewed issue in v6
+
+Change since v5
+- fix reviewed issue in v5
+base https://patchwork.kernel.org/project/linux-mediatek/list/?series=213219
+
+Change since v4
+- fix reviewed issue in v4
+
+Change since v3
+- fix reviewed issue in v3
+- fix type error in v3
+- fix conflict with iommu patch
+
+Change since v2
+- fix reviewed issue in v2
+- add mutex node into dts file
+
+Changes since v1:
+- fix reviewed issue in v1
+- add dts for mt8183 display nodes
+- adjust display clock control flow in patch 22
+- add vmap support for mediatek drm in patch 23
+- fix page offset issue for mmap function in patch 24
+- enable allow_fb_modifiers for mediatek drm in patch 25
+
+
+Hsin-Yi Wang (1):
+  drm/mediatek: generalize mtk_dither_set() function
+
+Yongqiang Niu (8):
+  arm64: dts: mt8183: rename rdma fifo size
+  arm64: dts: mt8183: refine gamma compatible name
+  drm/mediatek: add RDMA fifo size error handle
+  drm/mediatek: separate gamma module
+  drm/mediatek: add has_dither private data for gamma
+  drm/mediatek: enable dither function
+  drm/mediatek: add DDP support for MT8183
+  drm/mediatek: add support for mediatek SOC MT8183
+
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi    |   7 +-
+ drivers/gpu/drm/mediatek/Makefile           |   1 +
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  14 ++
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 195 ++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c     |  18 ++
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c    |  10 +
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 131 +++++++------
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c      |  49 ++++-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h      |   1 +
+ drivers/soc/mediatek/mtk-mutex.c            |  50 +++++
+ 10 files changed, 402 insertions(+), 74 deletions(-)
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+
 -- 
-Florian
+2.30.0.280.ga3ce27912f-goog
+
