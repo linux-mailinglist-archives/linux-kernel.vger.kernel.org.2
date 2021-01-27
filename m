@@ -2,117 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E1B3061A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADED13061A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhA0RNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:13:49 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:47850 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235456AbhA0RL0 (ORCPT
+        id S235240AbhA0ROU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232310AbhA0RML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:11:26 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 16AD32EA526;
-        Wed, 27 Jan 2021 12:10:40 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id BL49C9vmT2qc; Wed, 27 Jan 2021 11:56:28 -0500 (EST)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 63FDD2EA1B5;
-        Wed, 27 Jan 2021 12:10:39 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-References: <20210125151310.20e71400@canb.auug.org.au>
- <17ccd90b-8616-1f20-ad5d-e250834c02fe@interlog.com>
- <20210127180145.5b955898@canb.auug.org.au>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <551e1ed2-74f6-315d-1000-fe03aa601bec@interlog.com>
-Date:   Wed, 27 Jan 2021 12:10:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 27 Jan 2021 12:12:11 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7150EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:11:31 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id v200so2735519ybe.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:11:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SCMC9c1Y3UdZlZUZ7gotdft22BvIa2n17Y+bk6uxrpU=;
+        b=buF+e6cQQikru+I+wPmZzNHqUP53S5gn9SMSJhpEVq/IXcbgB6FO65hbHfPo5g2lK5
+         tUusqRpXb7HvQiCBMvWBMVL5Oid4fmEwGQ/2fQo47okY61Ue2gIUeT/kfiIac7f/Hwyj
+         6FFRbPsxZnt7Sma6ev9KJH145i55FdneRppghjcezH8k7lsQBohDAsn1SSjCT2nBwLVL
+         eHJ3P7RvYKqs/+NCcq/RDW145cZKVpfugES4mbapMWIaTaMMwD21YwXD8+fYXkgMReNw
+         k3RHPl/7T3Z9hcN33LNPPMq/w+APPDTRZPmfjV7r5YSKnh7nEVYr+/9yphZuhauCX4zE
+         skMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SCMC9c1Y3UdZlZUZ7gotdft22BvIa2n17Y+bk6uxrpU=;
+        b=qbrUlqlJNKioDQzQk0gSILlxLOVYbovPhHOBsF+ctDkyNsU0e2FGkjsxnRmzvfxIwN
+         1WNEX1VSWUHiKeqDA6khrKnedX4dI31KkAx5Upf4SFjHDCQXnCguoaEAOdSVjNwAhdxT
+         NPC7dG4/rVtgpssDGnIOtwXHWLPgu/IepJvU4Xg4TlV2FQa2E5k5Hh7ZflL3qUtZn+nC
+         97lvLKwGtni2pMyAFoBNSiYb/ECkJZYcrHsneK4gft/kjflMQ+gB+OdlHppMRHx5ZFyf
+         kHxvIxPX0zOqOrMQZETasdB+mlX4pzFB8qccytldfeQxreIgdLxg9eXqqInMAGyks0BZ
+         OsEg==
+X-Gm-Message-State: AOAM531nPxqlHC3nyMlr/BSfXCq47G2WTgPOr+zrp4SD3STz0cLYcyYn
+        zA5wJJPLA6ZqxYE/wckUVae80z1Nq2Yq/DZYhJBpOA==
+X-Google-Smtp-Source: ABdhPJxrBQe4Av/shkBNQ8ehUaFA7s4Ekhjqa1UpGiP1H/CtNg0Du0ryBzR8ZDxVbe7g6lqnkfZP88faYZGZi40TLVg=
+X-Received: by 2002:a25:8b8b:: with SMTP id j11mr16073043ybl.310.1611767490478;
+ Wed, 27 Jan 2021 09:11:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210127180145.5b955898@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+ <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
+ <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
+ <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
+ <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
+ <CAGETcx8=woX_SVckG+gs68KMif-JGoy3a1PQGfonMNBH18Ak6A@mail.gmail.com> <CAMuHMdUpzaRutO+jKffXtGDoy5g2QoXkbO+-tzbEzibNYbhCuA@mail.gmail.com>
+In-Reply-To: <CAMuHMdUpzaRutO+jKffXtGDoy5g2QoXkbO+-tzbEzibNYbhCuA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 27 Jan 2021 09:10:54 -0800
+Message-ID: <CAGETcx_81qOe2LvX-J_PBZWdouykPoPYdf5=yMVhnjgDxAkgaw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-27 2:01 a.m., Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 25 Jan 2021 00:53:59 -0500 Douglas Gilbert <dgilbert@interlog.com> wrote:
->>
->> On 2021-01-24 11:13 p.m., Stephen Rothwell wrote:
->>>
->>> After merging the scsi-mkp tree, today's linux-next build (powerpc
->>> ppc64_defconfig) failed like this:
->>>
->>> drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
->>> drivers/scsi/sg.c:2908:4: error: expected '}' before 'else'
->>>    2908 |    else
->>>         |    ^~~~
->>> drivers/scsi/sg.c:2902:16: warning: unused variable 'cptp' [-Wunused-variable]
->>>    2902 |    const char *cptp = "pack_id=";
->>>         |                ^~~~
->>> drivers/scsi/sg.c:2896:5: error: label 'good' used but not defined
->>>    2896 |     goto good;
->>>         |     ^~~~
->>> drivers/scsi/sg.c: At top level:
->>> drivers/scsi/sg.c:2913:2: error: expected identifier or '(' before 'return'
->>>    2913 |  return NULL;
->>>         |  ^~~~~~
->>> drivers/scsi/sg.c:2914:5: error: expected '=', ',', ';', 'asm' or '__attribute__' before ':' token
->>>    2914 | good:
->>>         |     ^
->>> drivers/scsi/sg.c:2917:2: error: expected identifier or '(' before 'return'
->>>    2917 |  return srp;
->>>         |  ^~~~~~
->>> drivers/scsi/sg.c:2918:1: error: expected identifier or '(' before '}' token
->>>    2918 | }
->>>         | ^
->>> drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
->>> drivers/scsi/sg.c:2912:2: error: control reaches end of non-void function [-Werror=return-type]
->>>    2912 |  }
->>>         |  ^
->>>
->>> Caused by commit
->>>
->>>     7323ad3618b6 ("scsi: sg: Replace rq array with xarray")
->>>
->>> SG_LOG() degenerates to "{}" in some configs ...
->>>
->>> I have used the scsi-mkp tree from next-20210122 for today.
->>
->> I sent a new patchset to the linux-scsi list about 4 hours ago to
->> fix that.
->>
->> Doug Gilbert
-> 
-> I am still getting this build failure.
+On Wed, Jan 27, 2021 at 8:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Wed, Jan 27, 2021 at 5:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> > On Tue, Jan 26, 2021 at 11:43 PM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> > > On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
+> > > > <geert@linux-m68k.org> wrote:
+> > > > > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
+> > > > > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> > > > > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
+> > > > > > > > wrote:
+> > > > > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
+> > > > > > > >> wrote:
+> > > > > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> > > > > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> > > > > > > >> > > wrote:
+> > > > > > > >> > >>
+> > > > > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> > > > > > > >> > >> all CCs to BCCs :(]
+> > > > > > > >> > >>
+> > > > > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > > > > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > > > > > > >> > >> >>
+> > > > > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > > > > > > >> > >> >> wrote:
+> > > > > > > >> > >> >> >
+> > > > > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > > > > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > > > > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
+> > > > > > > >> > >> >>
+> > > > > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > > > > > > >> > >> >> shouldn't it be fixed or removed?
+> > > > > > > >> > >> >
+> > > > > > > >> > >> > I was actually thinking about this too. The problem with fixing
+> > > > > > > >> > >> > builtin_platform_driver_probe() to behave like
+> > > > > > > >> > >> > builtin_platform_driver() is that these probe functions could be
+> > > > > > > >> > >> > marked with __init. But there are also only 20 instances of
+> > > > > > > >> > >> > builtin_platform_driver_probe() in the kernel:
+> > > > > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> > > > > > > >> > >> > 20
+> > > > > > > >> > >> >
+> > > > > > > >> > >> > So it might be easier to just fix them to not use
+> > > > > > > >> > >> > builtin_platform_driver_probe().
+> > > > > > > >> > >> >
+> > > > > > > >> > >> > Michael,
+> > > > > > > >> > >> >
+> > > > > > > >> > >> > Any chance you'd be willing to help me by converting all these to
+> > > > > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> > > > > > > >> > >>
+> > > > > > > >> > >> If it just moving the probe function to the _driver struct and
+> > > > > > > >> > >> remove the __init annotations. I could look into that.
+> > > > > > > >> > >
+> > > > > > > >> > > Yup. That's pretty much it AFAICT.
+> > > > > > > >> > >
+> > > > > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> > > > > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
+> > > > > > > >> > > flags and still using builtin_platform_driver_probe().
+> > > > > > > >> >
+> > > > > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
+> > > > > > > >> > are ~80 drivers which uses that.
+> > > > > > > >>
+> > > > > > > >> Yeah. The biggest problem with all of these is the __init markers.
+> > > > > > > >> Maybe some familiar with coccinelle can help?
+> > > > > > > >
+> > > > > > > > And dropping them will increase memory usage.
+> > > > > > >
+> > > > > > > Although I do have the changes for the builtin_platform_driver_probe()
+> > > > > > > ready, I don't think it makes much sense to send these unless we agree
+> > > > > > > on the increased memory footprint. While there are just a few
+> > > > > > > builtin_platform_driver_probe() and memory increase _might_ be
+> > > > > > > negligible, there are many more module_platform_driver_probe().
+> > > > > >
+> > > > > > While it's good to drop code that'll not be used past kernel init, the
+> > > > > > module_platform_driver_probe() is going even more extreme. It doesn't
+> > > > > > even allow deferred probe (well before kernel init is done). I don't
+> > > > > > think that behavior is right and that's why we should delete it. Also,
+> > > > >
+> > > > > This construct is typically used for builtin hardware for which the
+> > > > > dependencies are registered very early, and thus known to probe at
+> > > > > first try (if present).
+> > > > >
+> > > > > > I doubt if any of these probe functions even take up 4KB of memory.
+> > > > >
+> > > > > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
+> > > > > How many can you afford to waste?
+> > > >
+> > > > There are only a few instances of this macro in the kernel. How many
+> > >
+> > > $ git grep -lw builtin_platform_driver_probe | wc -l
+> > > 21
+> > > $ git grep -lw module_platform_driver_probe | wc -l
+> > > 86
+> > >
+> > > + the ones that haven't been converted to the above yet:
+> > >
+> > > $ git grep -lw platform_driver_probe | wc -l
+> > > 58
+> > >
+> >
+> > Yeah, this adds up in terms of the number of places we'd need to fix.
+> > But thinking more about it, a couple of points:
+> > 1. Not all builtin_platform_driver_probe() are problems for
+> > fw_devlink. So we can just fix them as we go if we need to.
+> >
+> > 2. The problem with builtin_platform_driver_probe() isn't really with
+> > the use of __init. It's the fact that it doesn't allow deferred
+> > probes. builtin_platform_driver_probe()/platform_driver_probe() could
+> > still be fixed up to allow deferred probe until we get to the point
+> > where we free the __init section (so at least till late_initcall).
+>
+> That's intentional: it is used for cases that will (must) never be deferred.
+> That's why it's safe to use __init.
 
-Hi,
-I resent the original patch set, with fixes, against the linux-scsi
-list yesterday but that was not the form that Martin Petersen needs
-it in. That was against his 5.12/scsi-queue branch which is roughly
-lk 5.11.0-rc2. He has referred me to his 5.12/scsi-staging branch
-which looks half applied from the 45 patch set that I have been
-sending to the linux-scsi list. Trying to find out if that was the
-intention or a mistake.
+So was the usage of builtin_platform_driver_probe() wrong in the
+driver Michael fixed? Because, deferring and probing again clearly
+works?
 
-The other issue is a large patchset that removes the first function
-argument from blk_execute_rq_nowait() which is used by the sg driver.
+Also, "must never be deferred" seems like a weird condition to
+enforce. I think the real "rule" is that if it defers, the platform is
+not expected to work. But disallowing a probe reattempt seems weird.
+What is it going to hurt if it's attempted again? At worst it fails
+one more time?
 
-Doug Gilbert
+Also, I'd argue that all/most of the "can't defer, but I'm still a
+proper struct device" cases are all just patchwork to deal with the
+fact we were playing initcall chicken when there was no fw_devlink.
+I'm hoping we can move people away from that mindset. And the first
+step towards that would be to allow *platform_probe() to allow
+deferred probes until late_initcall().
 
 
+-Saravana
