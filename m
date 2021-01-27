@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EBD3063DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A253063E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344430AbhA0TL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:11:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344381AbhA0TKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:10:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C984A64DCA;
-        Wed, 27 Jan 2021 19:09:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611774579;
-        bh=CxVDcZVJbTgcZjdsMfJhxJ/yjKbh0SkOEhIy1FhN6KI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dMLi9XGhBP7sr8rYS8BJ6RsXQgysILPqv1nJNJw5qZ2DyBAUhNdQHjQzvgV8VDl5V
-         i9ALC6nJBeYrDal6V0wxRS4Oj1rRdlQYA2H+6vx80Ni8//ZnxbR84eJSWfwHwrfZ+m
-         huSnvJCgYsqg1ZdsYmI36XpPssTAyzZXC+4+K+R4HGTQDEa3D+1wQRcxlMx60l4siq
-         AfiYedGDWYh3rdmwOf3EskK8mgLe27CYkM02ik5LmlsDCtLrT6rKv/7dbdltGG8jZf
-         /EYeZUc7HMTHGMwYIun5xzt1qfY9eHYEiUSksWtwoi1uycXl8bbKrxFsjyJ+0QBHbZ
-         W+EkVBD/JX9uw==
-Received: by mail-ed1-f46.google.com with SMTP id f1so3751203edr.12;
-        Wed, 27 Jan 2021 11:09:38 -0800 (PST)
-X-Gm-Message-State: AOAM533ee0bvwVtjxOHRSPUstARXrusgjWfaHvh6j6X6pI80TFi5R4Qg
-        iTnnoL1iHMyfl+PBj8afjaftyZbpImDXpHPFPw==
-X-Google-Smtp-Source: ABdhPJxDhEsE7SeDYEXoCEJP81XWI54Z2K7fxKs16oNcCLHvf630uv8EyH4cluj/eac/SPi55kJ7fCq1wMrnsmcwKMs=
-X-Received: by 2002:a05:6402:1751:: with SMTP id v17mr10650676edx.289.1611774577245;
- Wed, 27 Jan 2021 11:09:37 -0800 (PST)
+        id S232870AbhA0TOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231367AbhA0TOb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 14:14:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EC2C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:13:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+MDgdoUrWzI/DQUcv9LF2ByGyh+pDALIpKBjDIM6DNI=; b=xMQXpj8jToEcbeERsf40GfbdIz
+        53BP6Cg6PG42ZG9RYJu4c6erfYRjmBe25jxrj1jTwYSXOFC8iykLJQt4cG6yp4d4EgHTCqCk3VQ/D
+        fa3GrowEq1sOKuWal5Wvibqy/f+9aNlnaTFnLYxmz5VVo5HVVX2ZQw/HViQKkXHMw8SjL6gyfLrXG
+        9ZOZE/+lX1QQoKSTzxj/yj8G0R8cbBK97v3gPfTMXscsi1BV6ft69sOWpZd5xV3zSKvGyC2D5L9Gh
+        FN0X8vrxlsEmYKylr+xv1mcZKNZjd+rZ/S6l2EpcsyAV9VtoKh03e8fj9xqB0pChzAq9IHGPsk/Jq
+        mO5Zyo+Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4qG7-0000TW-7i; Wed, 27 Jan 2021 19:13:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7A8F73003D8;
+        Wed, 27 Jan 2021 20:13:41 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 059D42D2DAB27; Wed, 27 Jan 2021 20:13:40 +0100 (CET)
+Date:   Wed, 27 Jan 2021 20:13:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
+        maddy@linux.vnet.ibm.com
+Subject: Re: [PATCH V2 3/5] perf/x86/intel: Filter unsupported Topdown
+ metrics event
+Message-ID: <YBG7ZJUBQsUmoXlY@hirez.programming.kicks-ass.net>
+References: <1611761925-159055-1-git-send-email-kan.liang@linux.intel.com>
+ <1611761925-159055-4-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <20210119105203.15530-1-yong.wu@mediatek.com> <YBFj9whLvqlV2erm@aptenodytes>
- <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
-In-Reply-To: <159d4486-bb7e-249d-2bad-f5bba839041d@arm.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 27 Jan 2021 13:09:25 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
-Message-ID: <CAL_JsqKgGOAe-ZSw9qJ7POVv5nJuX+UoJE-MS3drKrM119pw-w@mail.gmail.com>
-Subject: Re: [PATCH v2] of/device: Update dma_range_map only when dev has
- valid dma-ranges
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611761925-159055-4-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 7:13 AM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> [ + Christoph, Marek ]
->
-> On 2021-01-27 13:00, Paul Kocialkowski wrote:
-> > Hi,
-> >
-> > On Tue 19 Jan 21, 18:52, Yong Wu wrote:
-> >> The commit e0d072782c73 ("dma-mapping: introduce DMA range map,
-> >> supplanting dma_pfn_offset") always update dma_range_map even though it was
-> >> already set, like in the sunxi_mbus driver. the issue is reported at [1].
-> >> This patch avoid this(Updating it only when dev has valid dma-ranges).
-> >>
-> >> Meanwhile, dma_range_map contains the devices' dma_ranges information,
-> >> This patch moves dma_range_map before of_iommu_configure. The iommu
-> >> driver may need to know the dma_address requirements of its iommu
-> >> consumer devices.
-> >
-> > Just a gentle ping on this issue, it would be nice to have this fix merged
-> > ASAP, in the next RC :)
->
-> Ack to that - Rob, Frank, do you want to take this through the OF tree,
-> or shall we take it through the DMA-mapping tree like the original culprit?
+On Wed, Jan 27, 2021 at 07:38:43AM -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> Current perf doesn't check the index of a Topdown metrics event before
+> updating the event. A perf tool user may get a value from an unsupported
+> Topdown metrics event.
+> 
+> For example, the L2 topdown event, cpu/event=0x00,umask=0x84/, is not
+> supported on Ice Lake. A perf tool user may mistakenly use the
+> unsupported events via RAW format. In this case, the scheduler follows
+> the unknown event handling and assigns a GP counter to the event. The
+> icl_get_topdown_value() returns the value of the slots to the event.
+> The perf tool user will get the value for the unsupported
+> Topdown metrics event.
+> 
+> Add a check in the __icl_update_topdown_event() and avoid updating
+> unsupported events.
 
-I've already got some fixes queued up and can take it.
+I was struggling trying to understand how we end up here. Because
+userspace can add whatever crap it wants, and why is only this thing a
+problem..
 
-Suggested-by doesn't mean you are happy with the implementation. So
-Acked-by or Reviewed-by?
+But the actual problem is the next patch changing INTEL_TD_METRIC_NUM,
+which then means is_metric_idx() will change, and that means that for
+ICL we'll accept these raw events as metric events on creation and then
+at runtime we get into trouble.
 
-Rob
+This isn't spelled out.
+
+I do think this is entirely the wrong fix for that though. You're now
+adding cycles to the relative hot path, instead of fixing the problem at
+event creation, which is the slow path.
+
+Why can't we either refuse the event on ICL or otherwise wreck it on
+construction to avoid getting into trouble here?
+
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  arch/x86/events/intel/core.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 8eba41b..b02d482 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -2319,6 +2319,17 @@ static void __icl_update_topdown_event(struct perf_event *event,
+>  {
+>  	u64 delta, last = 0;
+>  
+> +	/*
+> +	 * Although the unsupported topdown events are not exposed to users,
+> +	 * users may mistakenly use the unsupported events via RAW format.
+> +	 * For example, using L2 topdown event, cpu/event=0x00,umask=0x84/,
+> +	 * on Ice Lake. In this case, the scheduler follows the unknown
+> +	 * event handling and assigns a GP counter to the event.
+> +	 * Check the case, and avoid updating unsupported events.
+> +	 */
+> +	if (event->hw.idx < INTEL_PMC_IDX_FIXED)
+> +		return;
+> +
+>  	delta = icl_get_topdown_value(event, slots, metrics);
+>  	if (last_slots)
+>  		last = icl_get_topdown_value(event, last_slots, last_metrics);
+> -- 
+> 2.7.4
+> 
