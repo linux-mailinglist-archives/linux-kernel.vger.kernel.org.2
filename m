@@ -2,146 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C551305093
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39FA305089
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238381AbhA0ENv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:13:51 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:31467 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238229AbhA0EJX (ORCPT
+        id S238321AbhA0EMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:12:34 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:48858 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238005AbhA0EDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:09:23 -0500
-IronPort-SDR: A0VjZ20FM29nhAGpEObYJz9jL8kyjchB1BIXJhZ+T2zi7ZVSXOLLtMmVN6MU0HPWGxZmCRYLX3
- z/APdQ+x4Ok8nogysGjy0CFxbi45ypqEPqXwiUXcrLqHf9QGAszvf58wtIF8BgY070l3PBvjpc
- O6F/eM3/8zVwn6fHqJf0byNtfQIKZ//1dw61RJudE3+TnrcR6iA/Dx4gsGMCezEFLNwWVbn+to
- nVm7B4IvDD6UMulXzku9arxqdb1GsfuK979oO7pEV0xB96lxX1KR5WzJm1ILtWK0kTWjtx5w0D
- lrA=
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="47711300"
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by labrats.qualcomm.com with ESMTP; 26 Jan 2021 20:00:32 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 26 Jan 2021 20:00:31 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
-        id A76D721903; Tue, 26 Jan 2021 20:00:31 -0800 (PST)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, stern@rowland.harvard.edu,
-        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC PATCH v1 2/2] scsi: ufs: Fix deadlock while suspending ufs host
-Date:   Tue, 26 Jan 2021 20:00:23 -0800
-Message-Id: <7929cc67311133f8dbdfe5e627cf6a2f1daa486e.1611719814.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1611719814.git.asutoshd@codeaurora.org>
-References: <cover.1611719814.git.asutoshd@codeaurora.org>
-In-Reply-To: <cover.1611719814.git.asutoshd@codeaurora.org>
-References: <cover.1611719814.git.asutoshd@codeaurora.org>
+        Tue, 26 Jan 2021 23:03:35 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R3tIpv144695;
+        Wed, 27 Jan 2021 04:02:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=n9o2WcWeYSDOH8+G80VFWqf4/HyFcqdb8nyDU7l3QlE=;
+ b=Bif8ndLkGpDCPZF6veB70Dq49plTy9VLMFDlVMquet2XFxs5ujySgjCf8SiteHPWZDko
+ 37CqLFi0lzbf2qlngjeTN0MBs2nBXLsr8wRi6Bq3JB7XlfxlMzEfdFyygodNzgp61cPC
+ bwZKsfKH39VtsQGOnBF7yDBQIp8PCIbCYjDi5ehDZUfAlaWMM3D1HBkF8kPA0ptpm0Zt
+ lNWcFICwySiQmKzosdz5JaDBEZ582rjq3SJZp0N/fP6m3yiwXrT66VLm+9vWESS5/40J
+ 3GFPnx1POIszOToHtv8lLEwMBduJb2/E/UfuIv782cBHwcNtxarNRlmzE1vPBydPnQ5u tg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 368brkn103-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 04:02:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R3t5c6039773;
+        Wed, 27 Jan 2021 04:02:37 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
+        by aserp3030.oracle.com with ESMTP id 368wcnrcg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 04:02:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kl7yoZs72unLB2bqUC4Ej7vM0jLPfmErZ4uCrStdsk9zHatU85dhbVaXJNuBEF8iK1MIlqLJXoGX9zf8E+uyfbQFlhn6rslt4DvTl6l4qubQSIb5KOBLAbB8Bh5tHSfcmOz/scK/HRT8+F2pdX9YQUgafgTvsuvlrRQpjVo2DtV3n98HTgeFNnr1uQJZiyj4R/r7dft5j3htc3duZoP3epPpCiTfakO8atURAaDXPVHcHLvfnjaqWf2QXrM/ziZ9I8ZEmjdnkVmiuwy7NpkMjXJzF2oIckqDs2rIz5MohxrdmAsjO0nsJHRreJS72AhuzueYZeUXRvyOQxW9fHCP/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n9o2WcWeYSDOH8+G80VFWqf4/HyFcqdb8nyDU7l3QlE=;
+ b=oJ8dGH3c0l8pk33O/EwRR+YHTkEfI0wI0DT3oz5Po2ceC2w46Dg2Gnhp6nfw2k/R+W6PfBTM5DjLmXy/46kHJudecja1dOevzZvuz6kw65G8Ft6XZ4gpNQxBqOO3hnLUDMtJ/FBBFqP+hZLhKWmf07c8juvK2DCydShGpiIi/wD89gVOTQTWChZPEluAevInuFeUM/gfGmJUTmG50R40MJsvnVroOtGhNdoiNv8Nm67cWNqHtAkIyZbfba/ShXmL3GcL0KyeX88lGafYYNZ1V3fJGovMpwmlaOnB7CTjZON4BgekU1Eq4+hjitKAqfUQniiqA/jsPEMyEWVRnV+K8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n9o2WcWeYSDOH8+G80VFWqf4/HyFcqdb8nyDU7l3QlE=;
+ b=B1iEIGm9EpKgR8v6AslM3bu8OG+kH2ja17vg03M5+Ae70afC9XUFxk5v0dKpIY554SzSnYWFfpLV5SLn07wTsXPe7JhaG94r/HyYSB+Fgr5Ve81qYb3Q2+OYz/4oHTwMtB9GcD/FZOpaov7tG4rsduzKAUr36qE2EJvh+MeSpPI=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4791.namprd10.prod.outlook.com (2603:10b6:510:3a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
+ 2021 04:02:35 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 04:02:35 +0000
+To:     John Garry <john.garry@huawei.com>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+Subject: Re: [PATCH 0/5] hisi_sas: More misc patches
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1h7n3rprn.fsf@ca-mkp.ca.oracle.com>
+References: <1611659068-131975-1-git-send-email-john.garry@huawei.com>
+Date:   Tue, 26 Jan 2021 23:02:32 -0500
+In-Reply-To: <1611659068-131975-1-git-send-email-john.garry@huawei.com> (John
+        Garry's message of "Tue, 26 Jan 2021 19:04:23 +0800")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: MWHPR12CA0061.namprd12.prod.outlook.com
+ (2603:10b6:300:103::23) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by MWHPR12CA0061.namprd12.prod.outlook.com (2603:10b6:300:103::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.14 via Frontend Transport; Wed, 27 Jan 2021 04:02:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4fc1f584-9dc9-4461-fa19-08d8c2786140
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4791:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4791AC9C0EF7DDC477F6C3BD8EBB9@PH0PR10MB4791.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J6kZHy849mNsIXJMUExOA6eQhbHyJJckiUjnQKxUT/jVBfs+UqInsVQb4nqdjv26g+OcTqzF6irvcX/qv0Nk14ziz/d1yiBdOKCcBwwba1pJlAH9HMIY01sV248GGVNtrYJ8zmPdVzTg9RqYC4alOuHZFcXowNe+1qLNKhck7j0gte3/iDUTyA7Be8w/6shopG4M8d+hkgupVHfjeTZZlEUzhv9rc2hM9OQmHs6acZQ1W9VT4321WABtreD7UKCWCZ/onpjXHaIQdvFlR6Bd7F17twrWbzFmXvvK3YlKk2wTdyw0NOPUIHxvGx/jYSNAxsgyQ7lGEsbtu9lqzz/Aka2strCJ7Uu3L/grm4b5vH6UI6vfIwFbTCfc0GeLRUOO04jyQ+7JaZYppyZ2av86Zxn61AL+pyLURAuK5HDY9yfgj0TJMjkATDs9mL14ZBVpE8IhRe+ndhyJmKXTCemnqeTlphGZP8IVSx/rcqwK2axuC4j6P9xwKAH6TGlHomUzf9KztxL8CdOHgZC5c07KLA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(346002)(136003)(376002)(186003)(16526019)(7696005)(5660300002)(36916002)(956004)(52116002)(86362001)(66946007)(478600001)(54906003)(66556008)(4326008)(6916009)(6666004)(8676002)(4744005)(55016002)(2906002)(26005)(8936002)(66476007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7BrThg5qUUcg7zRgYtMQrXS7G+7wDgEumMILHD9p3afJiR7feMqyr1n6F7Fz?=
+ =?us-ascii?Q?SaqgOw3XIgfxREUjEgBhD8GqSiv5691oCMBdZSaqsCPh2YSaRZQY5l5oMMIA?=
+ =?us-ascii?Q?0qkcQ2hPzkw+g54T+FDyV6enIU66bkZMBcz8Y5oLQ8oBZzrduNhDpAMQdrd0?=
+ =?us-ascii?Q?eRuuIfucTMXAChRvvn4oRgmbKdo4pujOZVdL7FN6SVi40X+Im7XLFIxni/UY?=
+ =?us-ascii?Q?MZaNAkmf9J2tWOAgMxivk+fo5jpZ2E9kZbbNeLRB82D+vpSxNklT5UstSWUO?=
+ =?us-ascii?Q?bYS7yuYRrH/PemLUkd4kgyfSTLbS35sOlAATIWOc/HtcgcX8Ma8y1u5LPkaW?=
+ =?us-ascii?Q?i/kpRt4DGhhRCGyTdwkzLDWBkT7pQcUgiAVEC0E2gDqArSyn5z+NXSmHDOY4?=
+ =?us-ascii?Q?rLF+dW/+WFw0XOFae7moE8U/KuDyTaxPFEslI3YhqSF7Gm3ugSogzi2PK8vP?=
+ =?us-ascii?Q?iGDMp9+3eLUl6Y9jncpqaNij2FfA69G1VgUuRdZmoif0RqQI8Q3CPNzd2giD?=
+ =?us-ascii?Q?Eh5FG8LfPRee34pZNJLDZVh9Pq6hd0XA5xlCtvUjf0lLxProjvl4fHMEO/ga?=
+ =?us-ascii?Q?RIibEB4N5QP8yhkfKWBMQJu7sIGfg3uN6EbWH+3TNdpRqV4kxHygDjCCLliC?=
+ =?us-ascii?Q?CZ2RbuodJ3465SoZO79+1OEC5xaZ2xS09xMAe9AO7wCS9C/Juxb7Oz63HazK?=
+ =?us-ascii?Q?hM2V1QO3QhyKhAoybKAX7Oa4Qa+50ljtDY0lf2hcxRbZcwPDtOnLZBVo/JvG?=
+ =?us-ascii?Q?IKUT7fwBhwydHCFCMxzpSilkTdL4pSvpSeMi9wXMxdD8CVyP7yUdSoz7mlZQ?=
+ =?us-ascii?Q?R9QTdiROscKrLKWSq7E8x8JEsfKRIeRFNQFHR2bLRRbTlhjKs4TtQEiYi7EQ?=
+ =?us-ascii?Q?Mg1hIiFWIGVBW9goM2KuJw0GF3onVkmbw8GHoZ46+pJdPGh0IHyW6+QA0fe2?=
+ =?us-ascii?Q?Dr5cIMPXfOZNz1wCu8BcDqYt9mEM2zc0UBKGxcIht2EXw4qN2ibSKu0Innr2?=
+ =?us-ascii?Q?SrzCk5WORBk62dBgQfn4yBE1dcL0r+12py0oADlO8yYPPyQhtXp+jwtZmbnC?=
+ =?us-ascii?Q?gKAvvb8n?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fc1f584-9dc9-4461-fa19-08d8c2786140
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 04:02:35.7632
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hs5XaceCiwa3mtypZQl05ogyY4Iyu72UxonGMbNKp4dhyfrzGFUjUQoheebCQUchDBSh1pk7tg29uOqm/1hQPSPFfe47SC+afbg7sz+G8R8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4791
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270020
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During runtime-suspend of ufs host, the scsi devices are
-already suspended and so are the queues associated with them.
-But the ufs host sends SSU to wlun during its runtime-suspend.
-During the process blk_queue_enter checks if the queue is not in
-suspended state. If so, it waits for the queue to resume, and never
-comes out of it.
-The commit
-(d55d15a33: scsi: block: Do not accept any requests while suspended)
-adds the check if the queue is in suspended state in blk_queue_enter().
 
-Fix this, by decoupling wlun scsi devices from block layer pm.
-The runtime-pm for these devices would be managed by bsg and sg drivers.
+John,
 
-Call trace:
- __switch_to+0x174/0x2c4
- __schedule+0x478/0x764
- schedule+0x9c/0xe0
- blk_queue_enter+0x158/0x228
- blk_mq_alloc_request+0x40/0xa4
- blk_get_request+0x2c/0x70
- __scsi_execute+0x60/0x1c4
- ufshcd_set_dev_pwr_mode+0x124/0x1e4
- ufshcd_suspend+0x208/0x83c
- ufshcd_runtime_suspend+0x40/0x154
- ufshcd_pltfrm_runtime_suspend+0x14/0x20
- pm_generic_runtime_suspend+0x28/0x3c
- __rpm_callback+0x80/0x2a4
- rpm_suspend+0x308/0x614
- rpm_idle+0x158/0x228
- pm_runtime_work+0x84/0xac
- process_one_work+0x1f0/0x470
- worker_thread+0x26c/0x4c8
- kthread+0x13c/0x320
- ret_from_fork+0x10/0x18
+> Features include:
+> - Some tidy-up from after recent change to expose HW queues on v2 HW
+> - Add trace FIFO DFX debugfs support
+> - Flush wq for driver removal
+> - Add ability to enable debugfs support as a kernel config option
 
-Change-Id: Id777fd52493c8b5522d1ebcad73cd30dac33e8a4
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+Applied to 5.12/scsi-staging, thanks!
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 9c691e4..b7e7f81 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7217,16 +7217,6 @@ static void ufshcd_set_active_icc_lvl(struct ufs_hba *hba)
- 	kfree(desc_buf);
- }
- 
--static inline void ufshcd_blk_pm_runtime_init(struct scsi_device *sdev)
--{
--	scsi_autopm_get_device(sdev);
--	blk_pm_runtime_init(sdev->request_queue, &sdev->sdev_gendev);
--	if (sdev->rpm_autosuspend)
--		pm_runtime_set_autosuspend_delay(&sdev->sdev_gendev,
--						 RPM_AUTOSUSPEND_DELAY_MS);
--	scsi_autopm_put_device(sdev);
--}
--
- /**
-  * ufshcd_scsi_add_wlus - Adds required W-LUs
-  * @hba: per-adapter instance
-@@ -7265,7 +7255,6 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
- 		hba->sdev_ufs_device = NULL;
- 		goto out;
- 	}
--	ufshcd_blk_pm_runtime_init(hba->sdev_ufs_device);
- 	scsi_device_put(hba->sdev_ufs_device);
- 
- 	hba->sdev_rpmb = __scsi_add_device(hba->host, 0, 0,
-@@ -7274,17 +7263,14 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
- 		ret = PTR_ERR(hba->sdev_rpmb);
- 		goto remove_sdev_ufs_device;
- 	}
--	ufshcd_blk_pm_runtime_init(hba->sdev_rpmb);
- 	scsi_device_put(hba->sdev_rpmb);
- 
- 	sdev_boot = __scsi_add_device(hba->host, 0, 0,
- 		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_BOOT_WLUN), NULL);
--	if (IS_ERR(sdev_boot)) {
-+	if (IS_ERR(sdev_boot))
- 		dev_err(hba->dev, "%s: BOOT WLUN not found\n", __func__);
--	} else {
--		ufshcd_blk_pm_runtime_init(sdev_boot);
-+	else
- 		scsi_device_put(sdev_boot);
--	}
- 	goto out;
- 
- remove_sdev_ufs_device:
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Martin K. Petersen	Oracle Linux Engineering
