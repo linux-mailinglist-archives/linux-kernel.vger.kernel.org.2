@@ -2,194 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947623058D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8303058D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235616AbhA0Kvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:51:43 -0500
-Received: from forward106p.mail.yandex.net ([77.88.28.109]:41015 "EHLO
-        forward106p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236122AbhA0KsM (ORCPT
+        id S235932AbhA0Kwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:52:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236226AbhA0Ksi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:48:12 -0500
-Received: from iva1-cda173853631.qloud-c.yandex.net (iva1-cda173853631.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:9295:0:640:cda1:7385])
-        by forward106p.mail.yandex.net (Yandex) with ESMTP id F3C851C80257;
-        Wed, 27 Jan 2021 13:46:35 +0300 (MSK)
-Received: from iva6-2d18925256a6.qloud-c.yandex.net (iva6-2d18925256a6.qloud-c.yandex.net [2a02:6b8:c0c:7594:0:640:2d18:9252])
-        by iva1-cda173853631.qloud-c.yandex.net (mxback/Yandex) with ESMTP id ZqjnhxIYpW-kZGKfvVS;
-        Wed, 27 Jan 2021 13:46:35 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1611744395;
-        bh=FiicsN/zzDBdhkm0oMT0jjcfCfrDa8oBEJ8mo65rn54=;
-        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
-        b=oem9tIOm5Rh94ppFX1Bl+bD1PSNA23Slnz03HWbAdj4auRPeFXvoVNlibVyR7G/jg
-         50Ts2d/Hg0yv9iOS6qb9ooHvT6P3cgyPSy8bHZ0HMgCDZyzbpfJe5ePbOyYLZduB69
-         NJdNqD+By6/0O7pfV7PdmGFG9ZUVFgowgNeYce0Y=
-Authentication-Results: iva1-cda173853631.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id AUuDuROonk-kZm8M6nb;
-        Wed, 27 Jan 2021 13:46:35 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 9/9] gpio: ep93xx: replace bools with idx for IRQ ports
-Date:   Wed, 27 Jan 2021 13:46:17 +0300
-Message-Id: <20210127104617.1173-10-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210127104617.1173-1-nikita.shubin@maquefel.me>
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
- <20210127104617.1173-1-nikita.shubin@maquefel.me>
+        Wed, 27 Jan 2021 05:48:38 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392B8C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:47:58 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id s18so1515743ljg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:47:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nt9pdiLty5VAzHiVzQ9Z0VE2Bkzi2Zy4BkFRJGQTy+s=;
+        b=RkI69ax2YOOuKLnURhraOk6rkuVkZAdIrcLC8ROzb78X3XKcsHv7ZkY1MlD4SJgGMv
+         mvSeWdPu6cvDFRvCbp1iTBbLA1Zl8F7eXpM479ayN+NeCBRjUZ9u4HUy3EzFV1sYTJcy
+         PYB/fNUbJlr64E477+47TxBf7b4ryCO7tAewLY6czi6NhEMjHxiI15j/4hIaqSUmrqvt
+         hnkovTZkaCRWB504JvBAbJB02VSyoiNAOfs8HPotmXVpd8A4rbeS6mMZhro1+rQDyfcn
+         ljPWQoMwPkLz6Wc1OU0ppRL02EqrNXZCGQXG1ygbkLlN+Jif1Tk4RsoVvqn8fhhDYg0j
+         bsvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nt9pdiLty5VAzHiVzQ9Z0VE2Bkzi2Zy4BkFRJGQTy+s=;
+        b=cz9skJQBQGigiGF836+mnHWAHBqKckd185tl7qNUhoKrCcowzIgWbe3CjPgZk9ew2M
+         tq4LZfEcfDMCQD0WK34Nr58CEZODaPFeIROeF6dmxkZhT8n3rgY/e6Ohdsb9oRqUmpDH
+         C9nq+a0eoHsfePNjXs9n1kwfV1tSzuU/7s0wYFpeDry15TVmtYMaXYIpBx2fYBs844gO
+         Vv7u8M4y6vg5qz/3BGNluXWzYwCOospbzRqcT3eczQm/p6F+xKtrn4fJYUkL0A+6yHC/
+         7AIUpzHeVpOkDlluNHYMW9m5R3ehZCX76QDqXFPBv+60vLWTPeBF3NZ+HdHq3UMKcvs7
+         028w==
+X-Gm-Message-State: AOAM533sJJmork4k7NhgGJ/GPwT+BVAapPVmcbE3PCZXT61EyQk8SX8Q
+        NotP2wxAm8HAJLWMErEBp7bbe11TM38tdxNz/C/pSg==
+X-Google-Smtp-Source: ABdhPJwad4Dbjby0b67biXG1UmzBFT032qoQOR80f/hQK6P7qLf8Q2hmv4TTfsdOlkWpWnRX5IIbsSeyI8gxECdjNcI=
+X-Received: by 2002:a2e:908e:: with SMTP id l14mr5465324ljg.226.1611744476438;
+ Wed, 27 Jan 2021 02:47:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210126225138.1823266-1-kaleshsingh@google.com>
+In-Reply-To: <20210126225138.1823266-1-kaleshsingh@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 27 Jan 2021 11:47:29 +0100
+Message-ID: <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
+Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        kernel-team <kernel-team@android.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>, Hui Su <sh_def@163.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace boolean values used for determining if gpiochip is IRQ capable
-or not with index.
++jeffv from Android
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- drivers/gpio/gpio-ep93xx.c | 47 ++++++++++++++++++++------------------
- 1 file changed, 25 insertions(+), 22 deletions(-)
+On Tue, Jan 26, 2021 at 11:51 PM Kalesh Singh <kaleshsingh@google.com> wrot=
+e:
+> In order to measure how much memory a process actually consumes, it is
+> necessary to include the DMA buffer sizes for that process in the memory
+> accounting. Since the handle to DMA buffers are raw FDs, it is important
+> to be able to identify which processes have FD references to a DMA buffer=
+.
 
-diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-index 2aee13b5067d..f75a33b79504 100644
---- a/drivers/gpio/gpio-ep93xx.c
-+++ b/drivers/gpio/gpio-ep93xx.c
-@@ -44,6 +44,8 @@ struct ep93xx_gpio {
- 	struct irq_chip		ic[EP93XX_GPIO_IRQ_CHIPS_NUM];
- };
- 
-+#define EP93XX_GPIO_A_PORT_INDEX 0
-+#define EP93XX_GPIO_B_PORT_INDEX 1
- /*
-  * F Port index in GPIOCHIP'S array is 5
-  * but we use index 2 for stored values and offsets
-@@ -291,38 +293,36 @@ static struct irq_chip ep93xx_gpio_irq_chip = {
-  * gpiolib interface for EP93xx on-chip GPIOs
-  *************************************************************************/
- struct ep93xx_gpio_bank {
-+	u8		idx;
- 	const char	*label;
- 	int		data;
- 	int		dir;
- 	int		base;
--	bool		has_irq;
--	bool		has_hierarchical_irq;
- 	unsigned int	irq_base;
- };
- 
--#define EP93XX_GPIO_BANK(_label, _data, _dir, _base, _has_irq, _has_hier, _irq_base) \
-+#define EP93XX_GPIO_BANK(_index, _label, _data, _dir, _base, _irq_base) \
- 	{							\
-+		.idx		= _index,			\
- 		.label		= _label,			\
- 		.data		= _data,			\
- 		.dir		= _dir,				\
- 		.base		= _base,			\
--		.has_irq	= _has_irq,			\
--		.has_hierarchical_irq = _has_hier,		\
- 		.irq_base	= _irq_base,			\
- 	}
- 
- static struct ep93xx_gpio_bank ep93xx_gpio_banks[] = {
- 	/* Bank A has 8 IRQs */
--	EP93XX_GPIO_BANK("A", 0x00, 0x10, 0, true, false, EP93XX_GPIO_A_IRQ_BASE),
-+	EP93XX_GPIO_BANK(0, "A", 0x00, 0x10, 0, EP93XX_GPIO_A_IRQ_BASE),
- 	/* Bank B has 8 IRQs */
--	EP93XX_GPIO_BANK("B", 0x04, 0x14, 8, true, false, EP93XX_GPIO_B_IRQ_BASE),
--	EP93XX_GPIO_BANK("C", 0x08, 0x18, 40, false, false, 0),
--	EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 24, false, false, 0),
--	EP93XX_GPIO_BANK("E", 0x20, 0x24, 32, false, false, 0),
-+	EP93XX_GPIO_BANK(1, "B", 0x04, 0x14, 8, EP93XX_GPIO_B_IRQ_BASE),
-+	EP93XX_GPIO_BANK(2, "C", 0x08, 0x18, 40, 0),
-+	EP93XX_GPIO_BANK(3, "D", 0x0c, 0x1c, 24, 0),
-+	EP93XX_GPIO_BANK(4, "E", 0x20, 0x24, 32, 0),
- 	/* Bank F has 8 IRQs */
--	EP93XX_GPIO_BANK("F", 0x30, 0x34, 16, false, true, EP93XX_GPIO_F_IRQ_BASE),
--	EP93XX_GPIO_BANK("G", 0x38, 0x3c, 48, false, false, 0),
--	EP93XX_GPIO_BANK("H", 0x40, 0x44, 56, false, false, 0),
-+	EP93XX_GPIO_BANK(5, "F", 0x30, 0x34, 16, EP93XX_GPIO_F_IRQ_BASE),
-+	EP93XX_GPIO_BANK(6, "G", 0x38, 0x3c, 48, 0),
-+	EP93XX_GPIO_BANK(7, "H", 0x40, 0x44, 56, 0),
- };
- 
- static int ep93xx_gpio_set_config(struct gpio_chip *gc, unsigned offset,
-@@ -356,10 +356,11 @@ static void ep93xx_init_irq_chips(struct ep93xx_gpio *epg)
- }
- 
- static int ep93xx_gpio_add_ab_irq_chip(struct platform_device *pdev,
--					struct gpio_irq_chip *girq,
-+					struct gpio_chip *gc,
- 					unsigned int irq_base)
- {
- 	struct device *dev = &pdev->dev;
-+	struct gpio_irq_chip *girq = &gc->irq;
- 	int ab_parent_irq = platform_get_irq(pdev, 0);
- 
- 	girq->parent_handler = ep93xx_gpio_ab_irq_handler;
-@@ -378,12 +379,13 @@ static int ep93xx_gpio_add_ab_irq_chip(struct platform_device *pdev,
- }
- 
- static int ep93xx_gpio_add_f_irq_chip(struct platform_device *pdev,
--					struct gpio_irq_chip *girq,
-+					struct gpio_chip *gc,
- 					unsigned int irq_base)
- {
- 	int gpio_irq;
- 	int i;
- 	struct device *dev = &pdev->dev;
-+	struct gpio_irq_chip *girq = &gc->irq;
- 
- 	/*
- 	 * FIXME: convert this to use hierarchical IRQ support!
-@@ -397,10 +399,10 @@ static int ep93xx_gpio_add_f_irq_chip(struct platform_device *pdev,
- 	if (!girq->parents)
- 		return -ENOMEM;
- 	/* Pick resources 1..8 for these IRQs */
--	for (i = 0; i < ARRAY_SIZE(girq->parents); i++) {
-+	for (i = 0; i < girq->num_parents; i++) {
- 		girq->parents[i] = platform_get_irq(pdev, i + 1);
- 		gpio_irq = irq_base + i;
--		irq_set_chip_data(gpio_irq, &epg->gc[5]);
-+		irq_set_chip_data(gpio_irq, gc);
- 		irq_set_chip_and_handler(gpio_irq,
- 					 &ep93xx_gpio_irq_chip,
- 					 handle_level_irq);
-@@ -433,21 +435,22 @@ static int ep93xx_gpio_add_bank(struct gpio_chip *gc,
- 	gc->base = bank->base;
- 
- 	girq = &gc->irq;
--	if (bank->has_irq || bank->has_hierarchical_irq) {
-+	if (bank->irq_base != 0) {
- 		gc->set_config = ep93xx_gpio_set_config;
- 		port = ep93xx_gpio_port(epg, gc);
- 		girq->chip = &epg->ic[port];
- 	}
- 
--	if (bank->has_irq) {
--		err = ep93xx_gpio_add_ab_irq_chip(pdev, girq, bank->irq_base);
-+	if (bank->idx == EP93XX_GPIO_A_PORT_INDEX ||
-+		bank->idx == EP93XX_GPIO_B_PORT_INDEX) {
-+		err = ep93xx_gpio_add_ab_irq_chip(pdev, gc, bank->irq_base);
- 		if (err)
- 			return err;
- 	}
- 
- 	/* Only bank F has especially funky IRQ handling */
--	if (bank->has_hierarchical_irq) {
--		err = ep93xx_gpio_add_f_irq_chip(pdev, girq, bank->irq_base);
-+	if (bank->idx == EP93XX_GPIO_F_PORT_INDEX) {
-+		err = ep93xx_gpio_add_f_irq_chip(pdev, gc, bank->irq_base);
- 		if (err)
- 			return err;
- 	}
--- 
-2.29.2
+Or you could try to let the DMA buffer take a reference on the
+mm_struct and account its size into the mm_struct? That would probably
+be nicer to work with than having to poke around in procfs separately
+for DMA buffers.
 
+> Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
+> /proc/<pid>/fdinfo -- both of which are only root readable, as follows:
+
+That's not quite right. They can both also be accessed by the user
+owning the process. Also, fdinfo is a standard interface for
+inspecting process state that doesn't permit reading process memory or
+manipulating process state - so I think it would be fine to permit
+access to fdinfo under a PTRACE_MODE_READ_FSCRED check, just like the
+interface you're suggesting.
+
+>   1. Do a readlink on each FD.
+>   2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD=
+.
+>   3. stat the file to get the dmabuf inode number.
+>   4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
+>
+> Android captures per-process system memory state when certain low memory
+> events (e.g a foreground app kill) occur, to identify potential memory
+> hoggers. To include a process=E2=80=99s dmabuf usage as part of its memor=
+y state,
+> the data collection needs to be fast enough to reflect the memory state a=
+t
+> the time of such events.
+>
+> Since reading /proc/<pid>/fd/ and /proc/<pid>/fdinfo/ requires root
+> privileges, this approach is not suitable for production builds.
+
+It should be easy to add enough information to /proc/<pid>/fdinfo/ so
+that you don't need to look at /proc/<pid>/fd/ anymore.
+
+> Granting
+> root privileges even to a system process increases the attack surface and
+> is highly undesirable. Additionally this is slow as it requires many
+> context switches for searching and getting the dma-buf info.
+
+What do you mean by "context switches"? Task switches or kernel/user
+transitions (e.g. via syscall)?
+
+> With the addition of per-buffer dmabuf stats in sysfs [1], the DMA buffer
+> details can be queried using their unique inode numbers.
+>
+> This patch proposes adding a /proc/<pid>/task/<tid>/dmabuf_fds interface.
+>
+> /proc/<pid>/task/<tid>/dmabuf_fds contains a list of inode numbers for
+> every DMA buffer FD that the task has. Entries with the same inode
+> number can appear more than once, indicating the total FD references
+> for the associated DMA buffer.
+>
+> If a thread shares the same files as the group leader then its
+> dmabuf_fds file will be empty, as these dmabufs are reported by the
+> group leader.
+>
+> The interface requires PTRACE_MODE_READ_FSCRED (same as /proc/<pid>/maps)
+> and allows the efficient accounting of per-process DMA buffer usage witho=
+ut
+> requiring root privileges. (See data below)
+
+I'm not convinced that introducing a new procfs file for this is the
+right way to go. And the idea of having to poke into multiple
+different files in procfs and in sysfs just to be able to compute a
+proper memory usage score for a process seems weird to me. "How much
+memory is this process using" seems like the kind of question the
+kernel ought to be able to answer (and the kernel needs to be able to
+answer somewhat accurately so that its own OOM killer can do its job
+properly)?
