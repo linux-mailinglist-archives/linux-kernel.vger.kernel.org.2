@@ -2,144 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263B6305F82
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2449305F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235891AbhA0PZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:25:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49290 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343837AbhA0PUU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:20:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611760734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y8CI0qhLiRTzgvTJnz39fBqQX6rleE9goWMGoeQDUHM=;
-        b=a7tsz9TTubscatFWvEvc/rQiaezS3f5SMmxhQy3n+UqH33/4+bMWEtuM3HP91uM7P9g1fm
-        M6ncizZwR+eSjeRMP3SQVL3AnXid7US1+zafq/LuB5RnQBiy5oSGZyrqZZ3Qyw07iK2V88
-        K2Cj1tAdYjWoZZIeFgXlQQcfq3o04ss=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-Q_p0DMDDOLWzMbA0s1tO-Q-1; Wed, 27 Jan 2021 10:18:50 -0500
-X-MC-Unique: Q_p0DMDDOLWzMbA0s1tO-Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 826648797E7;
-        Wed, 27 Jan 2021 15:18:48 +0000 (UTC)
-Received: from T590 (ovpn-12-152.pek2.redhat.com [10.72.12.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 634A45D9CA;
-        Wed, 27 Jan 2021 15:18:44 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 23:18:38 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "block: simplify set_init_blocksize" to regain
- lost performance
-Message-ID: <20210127151838.GA1325688@T590>
-References: <20210126195907.2273494-1-maxtram95@gmail.com>
- <d3effbdc-12c2-c6aa-98ba-7bde006fc4e1@acm.org>
- <CAKErNvpCdTvg-Bx-U+k3jYiazoz-Pr0LwruaSh+LszH9yP5c8A@mail.gmail.com>
+        id S235874AbhA0PYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:24:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343804AbhA0PUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:20:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15E77207DE;
+        Wed, 27 Jan 2021 15:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611760777;
+        bh=RA9rQ2xvdGOXteA6WC38jMW+W5EiTIher3eJGUoXFGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eww1VXmficGkOu+NTZPjeWxDouV9+uM9TJD/LHYCXyDE6v2YkA9cle4ruggIWAI7A
+         Gr2i0PfLPm3ISme1vpjnkoCLqKMq8O0ri5dHz2mHwrorHiMufGMU0V2fw6wgteYfX9
+         +R9O+mo8wNUSBWhuq0UPx8SDQeAmrhnaPnxc9+/o=
+Date:   Wed, 27 Jan 2021 16:19:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com
+Subject: Re: [PATCH 1/8] scsi: ufshpb: Cache HPB Control mode on init
+Message-ID: <YBGEh4cfPldXoQxI@kroah.com>
+References: <20210127151217.24760-1-avri.altman@wdc.com>
+ <20210127151217.24760-2-avri.altman@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKErNvpCdTvg-Bx-U+k3jYiazoz-Pr0LwruaSh+LszH9yP5c8A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210127151217.24760-2-avri.altman@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:44:50AM +0200, Maxim Mikityanskiy wrote:
-> On Wed, Jan 27, 2021 at 6:23 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> >
-> > On 1/26/21 11:59 AM, Maxim Mikityanskiy wrote:
-> > > The cited commit introduced a serious regression with SATA write speed,
-> > > as found by bisecting. This patch reverts this commit, which restores
-> > > write speed back to the values observed before this commit.
-> > >
-> > > The performance tests were done on a Helios4 NAS (2nd batch) with 4 HDDs
-> > > (WD8003FFBX) using dd (bs=1M count=2000). "Direct" is a test with a
-> > > single HDD, the rest are different RAID levels built over the first
-> > > partitions of 4 HDDs. Test results are in MB/s, R is read, W is write.
-> > >
-> > >                 | Direct | RAID0 | RAID10 f2 | RAID10 n2 | RAID6
-> > > ----------------+--------+-------+-----------+-----------+--------
-> > > 9011495c9466    | R:256  | R:313 | R:276     | R:313     | R:323
-> > > (before faulty) | W:254  | W:253 | W:195     | W:204     | W:117
-> > > ----------------+--------+-------+-----------+-----------+--------
-> > > 5ff9f19231a0    | R:257  | R:398 | R:312     | R:344     | R:391
-> > > (faulty commit) | W:154  | W:122 | W:67.7    | W:66.6    | W:67.2
-> > > ----------------+--------+-------+-----------+-----------+--------
-> > > 5.10.10         | R:256  | R:401 | R:312     | R:356     | R:375
-> > > unpatched       | W:149  | W:123 | W:64      | W:64.1    | W:61.5
-> > > ----------------+--------+-------+-----------+-----------+--------
-> > > 5.10.10         | R:255  | R:396 | R:312     | R:340     | R:393
-> > > patched         | W:247  | W:274 | W:220     | W:225     | W:121
-> > >
-> > > Applying this patch doesn't hurt read performance, while improves the
-> > > write speed by 1.5x - 3.5x (more impact on RAID tests). The write speed
-> > > is restored back to the state before the faulty commit, and even a bit
-> > > higher in RAID tests (which aren't HDD-bound on this device) - that is
-> > > likely related to other optimizations done between the faulty commit and
-> > > 5.10.10 which also improved the read speed.
-> > >
-> > > Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-> > > Fixes: 5ff9f19231a0 ("block: simplify set_init_blocksize")
-> > > Cc: Christoph Hellwig <hch@lst.de>
-> > > Cc: Jens Axboe <axboe@kernel.dk>
-> > > ---
-> > >  fs/block_dev.c | 10 +++++++++-
-> > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/block_dev.c b/fs/block_dev.c
-> > > index 3b8963e228a1..235b5042672e 100644
-> > > --- a/fs/block_dev.c
-> > > +++ b/fs/block_dev.c
-> > > @@ -130,7 +130,15 @@ EXPORT_SYMBOL(truncate_bdev_range);
-> > >
-> > >  static void set_init_blocksize(struct block_device *bdev)
-> > >  {
-> > > -     bdev->bd_inode->i_blkbits = blksize_bits(bdev_logical_block_size(bdev));
-> > > +     unsigned int bsize = bdev_logical_block_size(bdev);
-> > > +     loff_t size = i_size_read(bdev->bd_inode);
-> > > +
-> > > +     while (bsize < PAGE_SIZE) {
-> > > +             if (size & bsize)
-> > > +                     break;
-> > > +             bsize <<= 1;
-> > > +     }
-> > > +     bdev->bd_inode->i_blkbits = blksize_bits(bsize);
-> > >  }
-> > >
-> > >  int set_blocksize(struct block_device *bdev, int size)
-> >
-> > How can this patch affect write speed? I haven't found any calls of
-> > set_init_blocksize() in the I/O path. Did I perhaps overlook something?
+On Wed, Jan 27, 2021 at 05:12:10PM +0200, Avri Altman wrote:
+> We will use it later, when we'll need to differentiate between device
+> and host control modes.
 > 
-> I don't know the exact mechanism how this change affects the speed,
-> I'm not an expert in the block device subsystem (I'm a networking
-> guy). This commit was found by git bisect, and my performance test
-> confirmed that reverting it fixes the bug.
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> It looks to me as this function sets the block size as part of control
-> flow, and this size is used later in the fast path, and the commit
-> that removed the loop decreased this block size.
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index d3e6c5b32328..183bdf35f2d0 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -26,6 +26,8 @@ static int tot_active_srgn_pages;
+>  
+>  static struct workqueue_struct *ufshpb_wq;
+>  
+> +static enum UFSHPB_MODE ufshpb_mode;
 
-Right, the issue is stupid __block_write_full_page() which submits single bio
-for each buffer head. And I have tried to improve the situation by merging
-BHs into single bio, see below patch:
+How are you allowed to have a single variable for a device-specific
+thing?  What happens when you have two controllers or disks or whatever
+you are binding to here?  How does this work at all?
 
-	https://lore.kernel.org/linux-block/20201230000815.3448707-1-ming.lei@redhat.com/
+This should be per-device, right?
 
-The above patch should improve perf for your test case.
+thanks,
 
--- 
-Ming
-
+greg k-h
