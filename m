@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6FB3052A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D314E3052A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhA0F6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:58:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50322 "EHLO mail.kernel.org"
+        id S231992AbhA0F6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:58:24 -0500
+Received: from mga09.intel.com ([134.134.136.24]:55827 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235251AbhA0DQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:16:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4271564D74;
-        Wed, 27 Jan 2021 02:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611712810;
-        bh=6zro1thD6AZ+sJT5zncKt1nybQ/TDlIaxZy1rMM46Ps=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cAY0btbTZQQ+jB3r6oTNo+Vqf5EeQmN7B9AjtUh6WwJAHsXGVEGB4IfMoagj8K0ss
-         iLuwJezG3GsXguOBUEK6oZ1nmAeCruTN6F2UjjRHMcmFOAK6HjZHvJCJMDreI9l7V/
-         8QvcwjyKqty3HZd/D2l4T4jXd3514XybAuBhDuJJMhYttywTlSDgv6uM1g7/QtnwAk
-         nCKw28kvDHab65su/CvtkRNDF32HDEIaXXMW8cg9R6qvZHEroUGzb+HlQ83seCE6/q
-         mC3gc7m1sShRYR9Z1QXbNArFuVJIGXaITGcAfl/igTLzgrJrgUapRKRogvrUKr7ybo
-         bH8ei7cLxbFqw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3057E652DA;
-        Wed, 27 Jan 2021 02:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234838AbhA0DOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:14:47 -0500
+IronPort-SDR: l/qT0CVbFlFlXb59AMQTPfgamfsoO0YpRyUFwbPls1Y/czUG9YCe5S8R5tFgl45E/4GXMLpRp4
+ GdxwVAkBvWbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180154600"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="180154600"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:14:05 -0800
+IronPort-SDR: nBXMqG4mKqCgtT7YN641IjBw0KdW3UoTl5gYpbThMYS+sw6Ybj9V/DHgBvPQEpsmAVK7vfznHx
+ sfuTSvFwl8tA==
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="388126129"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:14:02 -0800
+Subject: Re: [RFC 4/7] KVM: MMU: Refactor pkr_mask to cache condition
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-5-chenyi.qiang@intel.com>
+ <f4e5dd40-f721-049f-de0f-3af59d48a003@redhat.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+Message-ID: <9eeb5ebc-d9e8-a6b7-d659-7ab05ebfcb6f@intel.com>
+Date:   Wed, 27 Jan 2021 11:14:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <f4e5dd40-f721-049f-de0f-3af59d48a003@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v6] net: lapb: Add locking to the lapb module
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161171281019.17694.7986629700943704472.git-patchwork-notify@kernel.org>
-Date:   Wed, 27 Jan 2021 02:00:10 +0000
-References: <20210126040939.69995-1-xie.he.0141@gmail.com>
-In-Reply-To: <20210126040939.69995-1-xie.he.0141@gmail.com>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ms@dev.tdt.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
 
-On Mon, 25 Jan 2021 20:09:39 -0800 you wrote:
-> In the lapb module, the timers may run concurrently with other code in
-> this module, and there is currently no locking to prevent the code from
-> racing on "struct lapb_cb". This patch adds locking to prevent racing.
+On 1/27/2021 2:16 AM, Paolo Bonzini wrote:
+> On 07/08/20 10:48, Chenyi Qiang wrote:
+>>
+>>          * index of the protection domain, so pte_pkey * 2 is
+>>          * is the index of the first bit for the domain.
+>>          */
+>> -        pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
+>> +        if (pte_access & PT_USER_MASK)
+>> +            pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
+>> +        else
+>> +            pkr_bits = 0;
+>>
+>> -        /* clear present bit, replace PFEC.RSVD with ACC_USER_MASK. */
+>> -        offset = (pfec & ~1) +
+>> -            ((pte_access & PT_USER_MASK) << (PFERR_RSVD_BIT - 
+>> PT_USER_SHIFT));
+>> +        /* clear present bit */
+>> +        offset = (pfec & ~1);
+>>
+>>          pkr_bits &= mmu->pkr_mask >> offset;
+>>          errcode |= -pkr_bits & PFERR_PK_MASK;
 > 
-> 1. Add "spinlock_t lock" to "struct lapb_cb"; Add "spin_lock_bh" and
-> "spin_unlock_bh" to APIs, timer functions and notifier functions.
+> I think this is incorrect.  mmu->pkr_mask must cover both clear and set 
+> ACC_USER_MASK, in to cover all combinations of CR4.PKE and CR4.PKS. 
+> Right now, check_pkey is !ff && pte_user, but you need to make it 
+> something like
 > 
-> [...]
+>      check_pkey = !ff && (pte_user ? cr4_pke : cr4_pks);
+> 
+> Paolo
 
-Here is the summary with links:
-  - [net,v6] net: lapb: Add locking to the lapb module
-    https://git.kernel.org/netdev/net/c/b491e6a7391e
+Oh, I didn't distinguish the cr4_pke/cr4_pks check. Will fix this issue.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> 
