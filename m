@@ -2,93 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713AF30508E
+	by mail.lfdr.de (Postfix) with ESMTP id E249630508F
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238398AbhA0EN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:13:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        id S1343498AbhA0EOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238243AbhA0EJo (ORCPT
+        with ESMTP id S238246AbhA0EJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:09:44 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66F8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:03 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id c13so1064985ybg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:03 -0800 (PST)
+        Tue, 26 Jan 2021 23:09:47 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91513C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:06 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id l9so761867ejx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=/NFozpI8ZbWwzRiGUBVcpbxoLur7ok4y0yyNaLYcumw=;
-        b=Li+8q1/gaF5amm8CoyhzDjvW/Pl5jRGy8lpG5kJ0u6HESxuskQOSzgOi+sbdB4GwIA
-         fqSyll1awe+3ZNfon1cXinDQNWFygpzRq6QmChIy4kkaUwvIXGqYhFKo//wiPe+oNBA9
-         49em6YWQK2v0Bb7pZCfPzP6ZNyq5N/x+1ncL7GLYOR9MZpUsUazfvaIZxfGKC8IpTx4F
-         TGjNQqyRVWO9gv5q2v44opfbfNy6dbhfpi6+AWuxeRJTZMB5dxHsJRpGj5TKU96+ffeT
-         3/haVcouLdC4VU0seOF4gVXFZrz1sSjFXSSjgvEKy41x3Em1peIVKXE1fpJkpesW0Gp3
-         lLAw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=U3acTrLM8xhKwHMhHEO6cd99IHssqXQmEaqLeVUAk4E=;
+        b=v2fG/+XTw9fClXast2hda5/X5t4jjjuzS9D7u1nqgdslrqa2VMdN9xLjATgqu2M8dX
+         Sz27PCYsZ3Q0v2NawwSkf7W9NlF+s8tzlkiH9YppKRr94WbTcALcJqzmP44FHqvgjV5m
+         6baDllxgvalyh6W5onoCBy68+cgaXfPC45A1kkjxMpOPZXH4ZoCvv+whTAxIOIovdd+U
+         n9AStSTQn6uamRXQZZdHfCZiyFsxnUjI6cAw9b+QteTJQXHIJM1faTSTKQVWmGsd826+
+         dH10OBsQxvCXShX3b94a6IqCfsxZ/QK/POYlmfNp1/KyDLvD6/eD6qVju1SB993NclZZ
+         ohZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=/NFozpI8ZbWwzRiGUBVcpbxoLur7ok4y0yyNaLYcumw=;
-        b=Sz5HwqIii0FpLDqiwERJc/ewKZgWoFggT3n9An9D0WC7hJM8d81kphPb1JSKmW5vTj
-         DCBcbRhtOSbLN7m5djpln69EJvVZ9IFYLAAZjwo/UQfywrmMgykcsRoOqwajyQB3f38F
-         WZl8W4A9qw5BjWtCqvEgVLL2jzEmWFkQtG0IHGHkT/vgpF8JO/xHbMo47KE6SxoPjxPy
-         jXE06rxijmYsJze2WmCFUR3EvieV0Lb9oexJWPyLkpLqt4rhQP0HfoLMLnte7o2WlGn4
-         /Zx9Qq0nCBs5FeUxXCCmJ+FmFt7yfIfbQk3jG3UDy+DatwfMCk9A484fHAbOvjqc/8xn
-         14Cg==
-X-Gm-Message-State: AOAM530TZMVWZwR7nsDw8vxa+GZjHoh+rXo9jufjIvGj74ryqDOdCJ2x
-        mEF8LyTpXRx6HqS124GEMDqzeZrHmdi1Aw==
-X-Google-Smtp-Source: ABdhPJyrgWDt/A/kkQL9NBTPoU3UjkmaFq1Tbo0yECsvcrcuafexRiuwO9ZJfstVallP4bGH8Ka7E2FzQoqlNQ==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7000:2f04:a262:7158])
- (user=davidgow job=sendgmr) by 2002:a25:6ed7:: with SMTP id
- j206mr12923711ybc.312.1611720542946; Tue, 26 Jan 2021 20:09:02 -0800 (PST)
-Date:   Tue, 26 Jan 2021 20:06:37 -0800
-Message-Id: <20210127040636.1535722-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH] i3c/master/mipi-i3c-hci: Specify HAS_IOMEM dependency
-From:   David Gow <davidgow@google.com>
-To:     Nicolas Pitre <npitre@baylibre.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Gow <davidgow@google.com>, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=U3acTrLM8xhKwHMhHEO6cd99IHssqXQmEaqLeVUAk4E=;
+        b=jmBJblfEBB2YWacHrPt/tWITI7YwS7UPw8s8NBVmdHprJzPwK1ok0mcjctUb0wylap
+         M3yem1YCh/BCr6zfE1UEvC9ZqORZSfA1ivTlCzvW1bSg6LI6X8j77NuvNncvtismApS4
+         cfN2GlUydSY1IqmjO3HMHCUtZ9XXLiyyfpqrVxam5YprTL6XkGba6V8ulWmRZhUNt0ad
+         ubZLZGimJG8frjB5oACBCtroN5O6FfYxX10H7Jxyout0CmL5FkKhyuYmqR4P61mYltD2
+         eDMDW8LCw4tjI5FmVO6Kfbg63a1XmOoepstoYSDp9RtYRRTmzkxUcS4o6m8uIld2LAus
+         YWcg==
+X-Gm-Message-State: AOAM5328TVXGET7c34ngWeXOvH6bAzB5Kd/ACNmSoJV7F6niWjqyGm3T
+        Ta69HjbWGBmc0fyobgGDPDAvl6QGBS5TtmUpNG9/4rX27565hvb2
+X-Google-Smtp-Source: ABdhPJy7ORBzCB+ACol4OVGUc5UJSHzzY3lSUFEKjCmXjxxeLPsRvsnIdklZSijhufmXWtvOpE6vILE1MdhNAcrQM7k=
+X-Received: by 2002:a17:906:dc95:: with SMTP id cs21mr5712877ejc.287.1611720545180;
+ Tue, 26 Jan 2021 20:09:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20210126111748.320806573@linuxfoundation.org>
+In-Reply-To: <20210126111748.320806573@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 27 Jan 2021 09:38:53 +0530
+Message-ID: <CA+G9fYvgJxG8YWyE7JVWkPOPqBFvOve6xEWF5i++pjXf=KbrfQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/87] 5.4.93-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MIPI i3c HCI driver makes use of IOMEM functions like
-devm_platform_ioremap_resource(), which are only available if
-CONFIG_HAS_IOMEM is defined.
+On Tue, 26 Jan 2021 at 16:52, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.93 release.
+> There are 87 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 28 Jan 2021 11:17:31 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.93-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This causes the driver to be enabled under make ARCH=um allyesconfig,
-even though it won't build.
 
-By adding a dependency on HAS_IOMEM, the driver will not be enabled on
-architectures which don't support it.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Fixes: 9ad9a52cce28 ("i3c/master: introduce the mipi-i3c-hci driver")
-Signed-off-by: David Gow <davidgow@google.com>
----
- drivers/i3c/master/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/drivers/i3c/master/Kconfig b/drivers/i3c/master/Kconfig
-index e68f15f4b4d0..afff0e2320f7 100644
---- a/drivers/i3c/master/Kconfig
-+++ b/drivers/i3c/master/Kconfig
-@@ -25,6 +25,7 @@ config DW_I3C_MASTER
- config MIPI_I3C_HCI
- 	tristate "MIPI I3C Host Controller Interface driver (EXPERIMENTAL)"
- 	depends on I3C
-+	depends on HAS_IOMEM
- 	help
- 	  Support for hardware following the MIPI Aliance's I3C Host Controller
- 	  Interface specification.
--- 
-2.30.0.280.ga3ce27912f-goog
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.4.93-rc3
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: a2ea77508efe6948f831b5f5bb3a86e014cc4163
+git describe: v5.4.92-88-ga2ea77508efe
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.92-88-ga2ea77508efe
+
+No regressions (compared to build v5.4.92)
+
+
+No fixes (compared to build v5.4.92)
+
+
+Ran 52601 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* perf
+* v4l2-compliance
+* fwts
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
