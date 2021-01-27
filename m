@@ -2,196 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E249630508F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D1A3051B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343498AbhA0EOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
+        id S237537AbhA0D5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238246AbhA0EJr (ORCPT
+        with ESMTP id S2405314AbhA0BpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:09:47 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91513C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:06 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id l9so761867ejx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:06 -0800 (PST)
+        Tue, 26 Jan 2021 20:45:10 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB29C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:34:03 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id e9so147826plh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:34:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=U3acTrLM8xhKwHMhHEO6cd99IHssqXQmEaqLeVUAk4E=;
-        b=v2fG/+XTw9fClXast2hda5/X5t4jjjuzS9D7u1nqgdslrqa2VMdN9xLjATgqu2M8dX
-         Sz27PCYsZ3Q0v2NawwSkf7W9NlF+s8tzlkiH9YppKRr94WbTcALcJqzmP44FHqvgjV5m
-         6baDllxgvalyh6W5onoCBy68+cgaXfPC45A1kkjxMpOPZXH4ZoCvv+whTAxIOIovdd+U
-         n9AStSTQn6uamRXQZZdHfCZiyFsxnUjI6cAw9b+QteTJQXHIJM1faTSTKQVWmGsd826+
-         dH10OBsQxvCXShX3b94a6IqCfsxZ/QK/POYlmfNp1/KyDLvD6/eD6qVju1SB993NclZZ
-         ohZg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=65VNlJixq/1dzn5bOgjm//zPTu/98GsClCV3pSzlAtM=;
+        b=jEHjHP/cnFWaZFlBfcWchXUJjmWOa4pmx9NB2YknMeuj0fkJBShNm51mcmIAbX9C0+
+         yKLzDbiPNot9S35nJ+6iQqZPppKJyfM8qRMGoAMBZHNAVwZAkod2SG3wn4AH1oA8rQMn
+         NlBEZ+TEvlrJFmz/hfqxPsnAmXSxeyEyBtnKwI0WTG6+kvNSZXbGOuWtkXnnmIg0gTOv
+         HSBjnLclD3CCAIxeS44bdXqMOQbr+yNJQveGHQDBftx+1Sf+ZuRay1kkEaPetSLgPtQJ
+         WZfYaUYNh7+t+eZXYaPOHYHJ3bP/fzEy+4OP5gE7MDTffZXILIp5hnmWZE9Xzeu00rme
+         aeDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=U3acTrLM8xhKwHMhHEO6cd99IHssqXQmEaqLeVUAk4E=;
-        b=jmBJblfEBB2YWacHrPt/tWITI7YwS7UPw8s8NBVmdHprJzPwK1ok0mcjctUb0wylap
-         M3yem1YCh/BCr6zfE1UEvC9ZqORZSfA1ivTlCzvW1bSg6LI6X8j77NuvNncvtismApS4
-         cfN2GlUydSY1IqmjO3HMHCUtZ9XXLiyyfpqrVxam5YprTL6XkGba6V8ulWmRZhUNt0ad
-         ubZLZGimJG8frjB5oACBCtroN5O6FfYxX10H7Jxyout0CmL5FkKhyuYmqR4P61mYltD2
-         eDMDW8LCw4tjI5FmVO6Kfbg63a1XmOoepstoYSDp9RtYRRTmzkxUcS4o6m8uIld2LAus
-         YWcg==
-X-Gm-Message-State: AOAM5328TVXGET7c34ngWeXOvH6bAzB5Kd/ACNmSoJV7F6niWjqyGm3T
-        Ta69HjbWGBmc0fyobgGDPDAvl6QGBS5TtmUpNG9/4rX27565hvb2
-X-Google-Smtp-Source: ABdhPJy7ORBzCB+ACol4OVGUc5UJSHzzY3lSUFEKjCmXjxxeLPsRvsnIdklZSijhufmXWtvOpE6vILE1MdhNAcrQM7k=
-X-Received: by 2002:a17:906:dc95:: with SMTP id cs21mr5712877ejc.287.1611720545180;
- Tue, 26 Jan 2021 20:09:05 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=65VNlJixq/1dzn5bOgjm//zPTu/98GsClCV3pSzlAtM=;
+        b=ZODtN4pFQZV2FTxNpyrHGuh2xRPg5Vm70zLnR8QAzfvl/Lrpmf4BHPiUoXJtNH1g/T
+         omJvsp2MRgeATI4ciutmLj5dX1GoX+dR0ylE6BxSG4q6cdwB977kkNsPeZ6HKVDi+QEO
+         L3XVLPG95uuM/hBh1Q9jp87lqgMohpE2yX5iFzRL2i6STWq50ODuQbuk7BZ29sDsUP7q
+         x03fOLlYxL9wDMV6SJlgX/28hZHFPMHI4eqQbgrJaDr8a2a6rwyn0qguym9JjnfKwZbY
+         zwQSSeORs8YEJdCueH4FIngRphn76I6NUi8npvimPEkyKtMuWZiFTUKC8kwwaOt56Zni
+         MGqg==
+X-Gm-Message-State: AOAM532y96xlkkBg8M2hX9pdED89Niy2vN48wu8lprXD+803SD7OhlZT
+        6t9PV7AJrsXCTtw0hHTcjSXaZg==
+X-Google-Smtp-Source: ABdhPJxAraDEvPrvAVg5AaLW/isBJ6GgrOh5JxiDLE7qej4rou7RGFfQr/5f1vX0btYhzEv1Y90xqw==
+X-Received: by 2002:a17:903:181:b029:df:c7e5:8e39 with SMTP id z1-20020a1709030181b02900dfc7e58e39mr9007839plg.25.1611711243144;
+        Tue, 26 Jan 2021 17:34:03 -0800 (PST)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id a7sm162069pju.28.2021.01.26.17.34.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 26 Jan 2021 17:34:02 -0800 (PST)
+Date:   Wed, 27 Jan 2021 09:33:56 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        dan.j.williams@intel.com, vkoul@kernel.org,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dma: qcom: bam_dma: Manage clocks when
+ controlled_remotely is set
+Message-ID: <20210127013355.GF17701@dragon>
+References: <20210126211859.790892-1-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <20210126111748.320806573@linuxfoundation.org>
-In-Reply-To: <20210126111748.320806573@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 27 Jan 2021 09:38:53 +0530
-Message-ID: <CA+G9fYvgJxG8YWyE7JVWkPOPqBFvOve6xEWF5i++pjXf=KbrfQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/87] 5.4.93-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126211859.790892-1-thara.gopinath@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 at 16:52, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.93 release.
-> There are 87 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 28 Jan 2021 11:17:31 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.93-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Jan 26, 2021 at 04:18:59PM -0500, Thara Gopinath wrote:
+> When bam dma is "controlled remotely", thus far clocks were not controlled
+> from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
+> driver and not doing any clock management in suspend/resume hooks.
+> 
+> With introduction of crypto engine bam dma, the clock is a rpmh resource
+> that can be controlled from both Linux and TZ/remote side.  Now bam dma
+> clock is getting enabled during probe even though the bam dma can be
+> "controlled remotely". But due to clocks not being handled properly,
+> bam_suspend generates a unbalanced clk_unprepare warning during system
+> suspend.
+> 
+> To fix the above issue and to enable proper clock-management, this patch
+> enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
+> the clock node is present irrespective of controlled_remotely property.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.93-rc3
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: a2ea77508efe6948f831b5f5bb3a86e014cc4163
-git describe: v5.4.92-88-ga2ea77508efe
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.92-88-ga2ea77508efe
-
-No regressions (compared to build v5.4.92)
-
-
-No fixes (compared to build v5.4.92)
-
-
-Ran 52601 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* perf
-* v4l2-compliance
-* fwts
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Reviewed-by: Shawn Guo <shawn.guo@linaro.org>
