@@ -2,222 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607CD305560
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D24305567
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 09:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhA0IPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 03:15:46 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:40521 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234460AbhA0IMo (ORCPT
+        id S234755AbhA0IQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 03:16:41 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:24901 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233981AbhA0IMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Jan 2021 03:12:44 -0500
-Received: by mail-ot1-f54.google.com with SMTP id i20so878532otl.7;
-        Wed, 27 Jan 2021 00:11:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f/iQz33kgh6xnvFreqr2JBmntO4WEFL9xyCLy3xIbC0=;
-        b=lQU3TTzCvmXOd5XXe8arsoH7nSZ2eJDyaFxuTqtkBamLgmWGEIClVHJXSzpyV/ejML
-         36+7aL5aNzt+5HufGEixm2cKgHGM17fVV4O4LpYBBODWfges9TiB9A4f/lyeXaoGszHL
-         R16kTUqBYLEGoOubmvtCLrrI7J2SmIYMHMuWMNzwlomB/vSkyVBXd2+yw+s27DsQb5wD
-         h783tc9wyDceAIyaZtJbQq1ST6i/Acdzd5rhBGdOGTUMdt9DKGgAXrUL2pIdQ9TCx5YN
-         nMxzq81DLZl3xENbEdW7qmCw/RfbmbaUDtRUVT/dB2lG9+CeIcXRcsRRbv9fhr71Dzid
-         LOTw==
-X-Gm-Message-State: AOAM530VdHb0sXUlSRZyNGHQe4ddUdnYajwaezpTj6h7O760blryJDfK
-        DH65fEZ7aw8dy+VCTXSc3a/hB5wpHyJF6fW6OXA=
-X-Google-Smtp-Source: ABdhPJwVJ5QU5cyczh35eHMkHRGaSDc7rqd/vvSHWfq2Q98yCiYxVmsxiAo478eNiF+zbFazNblMbwe+/6t4Iz2fDp0=
-X-Received: by 2002:a05:6830:1489:: with SMTP id s9mr6101130otq.250.1611735051520;
- Wed, 27 Jan 2021 00:10:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125142431.1049668-1-geert+renesas@glider.be>
- <20210125142431.1049668-5-geert+renesas@glider.be> <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
-In-Reply-To: <YBCREUMJ0/LgxDlJ@pendragon.ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Jan 2021 09:10:40 +0100
-Message-ID: <CAMuHMdUqCTvCQUmL-m7C=W0id+Oh5OqPxySutOs9DEdWnzKYEg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UN1h2f8_1611735103;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN1h2f8_1611735103)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Jan 2021 16:11:47 +0800
+From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Team <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] btrfs: Simplify the calculation of variables
+Date:   Wed, 27 Jan 2021 16:11:37 +0800
+Message-Id: <1611735097-101599-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Fix the following coccicheck warnings:
 
-On Tue, Jan 26, 2021 at 11:01 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Mon, Jan 25, 2021 at 03:24:31PM +0100, Geert Uytterhoeven wrote:
-> > The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
-> > the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
-> >   1. The per-channel registers are located in a second register block.
-> >      Add support for mapping the second block, using the appropriate
-> >      offsets and stride.
-> >   2. The common Channel Clear Register (DMACHCLR) was replaced by a
-> >      per-channel register.
-> >      Update rcar_dmac_chan_clear{,_all}() to handle this.
-> >      As rcar_dmac_init() needs to clear the status before the individual
-> >      channels are probed, channel index and base address initialization
-> >      are moved forward.
-> >
-> > Inspired by a patch in the BSP by Phong Hoang
-> > <phong.hoang.wz@renesas.com>.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+./fs/btrfs/delayed-inode.c:1157:39-41: WARNING !A || A && B is
+equivalent to !A || B.
 
-> > --- a/drivers/dma/sh/rcar-dmac.c
-> > +++ b/drivers/dma/sh/rcar-dmac.c
-> > @@ -189,7 +189,8 @@ struct rcar_dmac_chan {
-> >   * struct rcar_dmac - R-Car Gen2 DMA Controller
-> >   * @engine: base DMA engine object
-> >   * @dev: the hardware device
-> > - * @iomem: remapped I/O memory base
-> > + * @dmac_base: remapped base register block
-> > + * @chan_base: remapped channel register block (optional)
-> >   * @n_channels: number of available channels
-> >   * @channels: array of DMAC channels
-> >   * @channels_mask: bitfield of which DMA channels are managed by this driver
-> > @@ -198,7 +199,8 @@ struct rcar_dmac_chan {
-> >  struct rcar_dmac {
-> >       struct dma_device engine;
-> >       struct device *dev;
-> > -     void __iomem *iomem;
-> > +     void __iomem *dmac_base;
-> > +     void __iomem *chan_base;
-> >
-> >       unsigned int n_channels;
-> >       struct rcar_dmac_chan *channels;
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
+Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+---
+ fs/btrfs/delayed-inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > @@ -339,12 +344,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
-> >  static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
-> >                                struct rcar_dmac_chan *chan)
-> >  {
-> > -     rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
-> > +     if (dmac->chan_base)
->
-> Using dmac->chan_base to check if the device is a V3U seems a bit of a
-> hack (especially given that the field is otherwise unused). I'd prefer
-> adding a model field to struct rcar_dmac_of_data and struct rcar_dmac.
-
-The check is not a check for R-Car V3U in particular, but a check for
-the presence of a separate register block for channel registers.
-I expect to see more SoCs having this, so IMHO checking for this feature,
-instead of checking a model field, makes sense.
-
-It's indeed unused otherwise, as beyond probe(), where per-channel bases
-are calculated, no access to this pointer is needed anymore, (you can
-blame devm_*() for not needing the pointer ;-)
-Note that a model field would be "otherwise unused", too ;-)
-
-> > +             rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-> > +     else
-> > +             rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
-> >  }
-> >
-> >  static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
-> >  {
-> > -     rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-> > +     struct rcar_dmac_chan *chan;
-> > +     unsigned int i;
-> > +
-> > +     if (dmac->chan_base) {
-> > +             for_each_rcar_dmac_chan(i, chan, dmac)
-> > +                     rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-> > +     } else {
-> > +             rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-> > +     }
-> >  }
-> >
-> >  /* -----------------------------------------------------------------------------
-> > @@ -1744,7 +1760,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
-> >
-> >  static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
-> >                               struct rcar_dmac_chan *rchan,
-> > -                             const struct rcar_dmac_of_data *data,
-> >                               unsigned int index)
-> >  {
-> >       struct platform_device *pdev = to_platform_device(dmac->dev);
-> > @@ -1753,9 +1768,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
-> >       char *irqname;
-> >       int ret;
-> >
-> > -     rchan->index = index;
-> > -     rchan->iomem = dmac->iomem + data->chan_offset_base +
-> > -                    data->chan_offset_stride * index;
-> >       rchan->mid_rid = -EINVAL;
-> >
-> >       spin_lock_init(&rchan->lock);
-> > @@ -1842,6 +1854,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
-> >       const struct rcar_dmac_of_data *data;
-> >       struct rcar_dmac_chan *chan;
-> >       struct dma_device *engine;
-> > +     void __iomem *chan_base;
-> >       struct rcar_dmac *dmac;
-> >       unsigned int i;
-> >       int ret;
-> > @@ -1880,9 +1893,24 @@ static int rcar_dmac_probe(struct platform_device *pdev)
-> >               return -ENOMEM;
-> >
-> >       /* Request resources. */
-> > -     dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
-> > -     if (IS_ERR(dmac->iomem))
-> > -             return PTR_ERR(dmac->iomem);
-> > +     dmac->dmac_base = devm_platform_ioremap_resource(pdev, 0);
-> > +     if (IS_ERR(dmac->dmac_base))
-> > +             return PTR_ERR(dmac->dmac_base);
-> > +
-> > +     if (!data->chan_offset_base) {
-> > +             dmac->chan_base = devm_platform_ioremap_resource(pdev, 1);
-> > +             if (IS_ERR(dmac->chan_base))
-> > +                     return PTR_ERR(dmac->chan_base);
-> > +
-> > +             chan_base = dmac->chan_base;
-> > +     } else {
-> > +             chan_base = dmac->dmac_base + data->chan_offset_base;
-> > +     }
-> > +
-> > +     for_each_rcar_dmac_chan(i, chan, dmac) {
-> > +             chan->index = i;
->
-> Now that chan->indew is set before calling rcar_dmac_chan_probe(), you
-> don't have to pass the index to rcar_dmac_chan_probe() anymore.
-
-Right, will fix.
-
-> > +             chan->iomem = chan_base + i * data->chan_offset_stride;
-> > +     }
-> >
-> >       /* Enable runtime PM and initialize the device. */
-> >       pm_runtime_enable(&pdev->dev);
-> > @@ -1929,7 +1957,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
-> >       INIT_LIST_HEAD(&engine->channels);
-> >
-> >       for_each_rcar_dmac_chan(i, chan, dmac) {
-> > -             ret = rcar_dmac_chan_probe(dmac, chan, data, i);
-> > +             ret = rcar_dmac_chan_probe(dmac, chan, i);
-> >               if (ret < 0)
-> >                       goto error;
-> >       }
-
-Thanks for your comments!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 70c0340..ec0b50b8 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1154,7 +1154,7 @@ static int __btrfs_run_delayed_items(struct btrfs_trans_handle *trans, int nr)
+ 	delayed_root = fs_info->delayed_root;
+ 
+ 	curr_node = btrfs_first_delayed_node(delayed_root);
+-	while (curr_node && (!count || (count && nr--))) {
++	while (curr_node && (!count || nr--)) {
+ 		ret = __btrfs_commit_inode_delayed_items(trans, path,
+ 							 curr_node);
+ 		if (ret) {
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.8.3.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
