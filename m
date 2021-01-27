@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0DF305062
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB91305063
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238059AbhA0EFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:05:19 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:42340 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232160AbhA0DDC (ORCPT
+        id S238068AbhA0EFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:05:21 -0500
+Received: from smtprelay0086.hostedemail.com ([216.40.44.86]:45386 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232166AbhA0DDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:03:02 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10R31uiA6028033, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10R31uiA6028033
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 27 Jan 2021 11:01:56 +0800
-Received: from localhost.localdomain (172.21.132.186) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 27 Jan 2021 11:01:56 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
-        <kidman@realtek.com>, <max.chou@realtek.com>,
-        <abhishekpandit@chromium.org>, <josephsih@chromium.org>
-Subject: [PATCH v6] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
-Date:   Wed, 27 Jan 2021 11:01:52 +0800
-Message-ID: <20210127030152.3940-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 26 Jan 2021 22:03:08 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BDA5318224D68;
+        Wed, 27 Jan 2021 03:02:23 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3871:3873:4321:4362:5007:7652:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12740:12895:13069:13255:13311:13357:13439:13894:14181:14659:14721:21080:21221:21451:21627:21889:30054:30062:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: arch06_0e14db527593
+X-Filterd-Recvd-Size: 1821
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 27 Jan 2021 03:02:22 +0000 (UTC)
+Message-ID: <c973355e545bcdc52b619f2d13bfa41915074307.camel@perches.com>
+Subject: Re: [PATCH] Revert "checkpatch: add check for keyword 'boolean' in
+ Kconfig definitions"
+From:   Joe Perches <joe@perches.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Christoph Jaeger <cj@linux.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 26 Jan 2021 19:02:20 -0800
+In-Reply-To: <20210126191541.210168-1-masahiroy@kernel.org>
+References: <20210126191541.210168-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.186]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
+On Wed, 2021-01-27 at 04:15 +0900, Masahiro Yamada wrote:
+> This reverts commit 327953e9af6c59ad111b28359e59e3ec0cbd71b6.
+> 
+> You cannot use 'boolean' since commit b92d804a5179 ("kconfig: drop
+> 'boolean' keyword").
+> 
+> This check is no longer needed.
 
-By this change, it will enable WBS supported on the specific Realtek BT
-devices, such as RTL8822C and RTL8852A.
-In the future, it's able to maintain what the Realtek devices support WBS
-here.
+Thanks.
 
-Tested-by: Hilda Wu <hildawu@realtek.com>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Signed-off-by: Max Chou <max.chou@realtek.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
----
-change in v6
- -remove lable 'done' in btrtl_setup_realtek()
----
- drivers/bluetooth/btrtl.c | 30 +++++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 7 deletions(-)
+Acked-by: Joe Perches <joe@perches.com>
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 24f03a1f8d57..e7fe5fb22753 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -38,6 +38,19 @@
- 	.hci_ver = (hciv), \
- 	.hci_bus = (bus)
- 
-+enum btrtl_chip_id {
-+	CHIP_ID_8723A,
-+	CHIP_ID_8723B,
-+	CHIP_ID_8821A,
-+	CHIP_ID_8761A,
-+	CHIP_ID_8822B = 8,
-+	CHIP_ID_8723D,
-+	CHIP_ID_8821C,
-+	CHIP_ID_8822C = 13,
-+	CHIP_ID_8761B,
-+	CHIP_ID_8852A = 18,
-+};
-+
- struct id_table {
- 	__u16 match_flags;
- 	__u16 lmp_subver;
-@@ -58,6 +71,7 @@ struct btrtl_device_info {
- 	u8 *cfg_data;
- 	int cfg_len;
- 	bool drop_fw;
-+	int project_id;
- };
- 
- static const struct id_table ic_id_table[] = {
-@@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
- 
- 	/* Find project_id in table */
- 	for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
--		if (project_id == project_id_to_lmp_subver[i].id)
-+		if (project_id == project_id_to_lmp_subver[i].id) {
-+			btrtl_dev->project_id = project_id;
- 			break;
-+		}
- 	}
- 
- 	if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
-@@ -719,22 +735,22 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
- 	 */
- 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
- 
--	if (!btrtl_dev->ic_info)
--		goto done;
--
- 	/* Enable central-peripheral role (able to create new connections with
- 	 * an existing connection in slave role).
- 	 */
--	switch (btrtl_dev->ic_info->lmp_subver) {
--	case RTL_ROM_LMP_8822B:
-+	/* Enable WBS supported for the specific Realtek devices. */
-+	switch (btrtl_dev->project_id) {
-+	case CHIP_ID_8822C:
-+	case CHIP_ID_8852A:
- 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
-+		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
- 		break;
- 	default:
- 		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
-+		rtl_dev_dbg(hdev, "WBS supported not enabled.");
- 		break;
- 	}
- 
--done:
- 	btrtl_free(btrtl_dev);
- 	return ret;
- }
--- 
-2.17.1
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3390,13 +3390,6 @@ sub process {
+>  			}
+>  		}
+>  
+> -# discourage the use of boolean for type definition attributes of Kconfig options
+> -		if ($realfile =~ /Kconfig/ &&
+> -		    $line =~ /^\+\s*\bboolean\b/) {
+> -			WARN("CONFIG_TYPE_BOOLEAN",
+> -			     "Use of boolean is deprecated, please use bool instead.\n" . $herecurr);
+> -		}
+> -
+>  		if (($realfile =~ /Makefile.*/ || $realfile =~ /Kbuild.*/) &&
+>  		    ($line =~ /\+(EXTRA_[A-Z]+FLAGS).*/)) {
+>  			my $flag = $1;
+
 
