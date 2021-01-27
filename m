@@ -2,261 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A44F3051E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E993051DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 06:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhA0FWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:22:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239739AbhA0FAL (ORCPT
+        id S233546AbhA0FSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:18:55 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37734 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238743AbhA0E53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:00:11 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5C1C061352
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:55:00 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id l18so582237pji.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:55:00 -0800 (PST)
+        Tue, 26 Jan 2021 23:57:29 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R4tANi099274;
+        Wed, 27 Jan 2021 04:56:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=o6F4aGmWu5aOaeCtpsLuwiZOJ5ZaDy9R0ljH/eYyVC0=;
+ b=UeYfqS3gxVi4xYLuzUdgnGZxRlSbaZlha8NpkiHHIthXnpaMEFXgqU6sPWoo616CPwoZ
+ HgWCMLw1qBC0dGRVKfNj5A+UTvR6nipT1SF2s84KezxdgUdAt12Aobenj+8V7AlPB5Pt
+ C//Beu/aYqKm+gw4OwztddtCQWdVhJSpw2weAkKhwiJrzYcIPpzO1/3W5iSn0TaNGfPY
+ b03a6LCPIsh1mrUu/Aj8AbftZrar/beUpnT0Di8AaHgIJKaM6HzMx8A4QkmSuzvQmeMd
+ DFoX+tq117q/+AE7dq+IVbk6ntt2pq76gw8MlPCsZ/EJEHqEUACq4oIUFa2Kpmuq/RjZ Ew== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 3689aanbfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 04:56:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R4p56W188801;
+        Wed, 27 Jan 2021 04:54:44 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
+        by aserp3030.oracle.com with ESMTP id 368wcnsk5h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jan 2021 04:54:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hJnsV6Ia3q4gN1/w5+YaZ9CADrqHBwP0sof5qU1tl345Lux4NVqzD+uEQGu059LB6QszTakdvAtMA7QmIqPft+bY+Pq9HqJ1Gfmrm3W0E7HdnZ0n3RV7xEYNkIEPq7yLxPNV8JNCobXs6DW8TXQ0OBURYbyi+a9ByEL6QK3qgUZ+4BkgTMkX0qKqzsXxUksSDhcs/57PYmMBcBq8jaghzq8kxImAudcCmVsJs9UcuV0oQhx4lf98vxebnDnvhkZlhBlU62Q9uU88Blb1k7Dpk04RA6vdwrHui3hM8eVDlsVDOnHEQgkLGnPTwcpUrpLtslEJvG0qpdKWXKE3EB+85Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o6F4aGmWu5aOaeCtpsLuwiZOJ5ZaDy9R0ljH/eYyVC0=;
+ b=NHjGUKliEiDZmp4GLUq6WgQ2uBiABdo2QI26Mwip1p9mSk3tqA1IdoSzT3UC3xDIufvAFemFPyMvP+VZaxdcNpkVOJV22V5xJsTphQY2YXiRI7UeReFD4p81tBfGHTyY/EMAa03Blxso4g/uTeG9OuVIEdW3I4kC1P6ag/UClv2HTlx2y+1aT4zUKRm4fDuOjiG0o6wc7Uz0fNrwqmj847T5Q/YcLVoeNP3OP4XhNDpcS9e6jHFoZtspblNLyrziSK++eDbmbnpOfYuewTfPDfLyz49kZF8nnrmXJNUs9MBnusJ6CNdJSvICgscBVne0GQ/0uMQ8f/ZdpiE+qK5SpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DGMTrTOGQEYV5xTMfWIYbTwhpuINQlQoNCaxTL3+JO4=;
-        b=XXC28j/9qLWor2oWoScmvbZEbLgVvkNWMweZeyFa6/uNLJzYLvWNLCPcY1ua69gvrZ
-         EKQeGuLeaqykosNeilFjk9h9yv3OfuPMIfGABGMk41Q+NdMP5YjmGSEKENoXP/5/lPEB
-         +UCAfbMuj+7RKnNg0e1FvfRF3NDo0vH6hDPGQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DGMTrTOGQEYV5xTMfWIYbTwhpuINQlQoNCaxTL3+JO4=;
-        b=azp5h9tlbEPY/ywgNlOmtNhpRON3bGy/I4bq664DBI7VaZ8wW5MUT4y8FT7JnSB/Ke
-         iCVdFcp3YJEmlLWDqo4FLp3NJ72+OErVGh5e8lKo7t8xZr5TQxTHGron4Ia8ffVUIUDz
-         r+RHqEgyzbSM3sjXTdjg4fZjWgs2xgqN4qMBdTt9G04ttARbh7swqrYpKmSTbnc4ZmrS
-         6kt5C7DjuDBrBG43uIks9lQu0KV+H662Qfc0laN9fMuo2uQWpCciWQDz8p3ZDJblCRbY
-         MlE//2CFD+4/V9CEIWjSrkgIYjHRm+jcp30oeMXp/RfEekcaIxtjlkvr2u0yp0Go0++v
-         ihYw==
-X-Gm-Message-State: AOAM531kw5r7CJ/uSRSLR6p6PMNur5i6tk5J86mliS6vHf0f70tf5QTr
-        +JaiR0nxJoc031yhVUdC8u/Btw==
-X-Google-Smtp-Source: ABdhPJxnMkZtsGht95hSRADTJHdbHTMKteKsZrlDXbBE2rXGTug0n1DOeDhd85LSyPwF+tTr4DwBqg==
-X-Received: by 2002:a17:90a:588d:: with SMTP id j13mr3675338pji.50.1611723299679;
-        Tue, 26 Jan 2021 20:54:59 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:e0a5:d2fc:aaad:1e4a])
-        by smtp.gmail.com with ESMTPSA id a141sm684484pfa.189.2021.01.26.20.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 20:54:59 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v10 9/9] drm/mediatek: add support for mediatek SOC MT8183
-Date:   Wed, 27 Jan 2021 12:54:22 +0800
-Message-Id: <20210127045422.2418917-10-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-In-Reply-To: <20210127045422.2418917-1-hsinyi@chromium.org>
-References: <20210127045422.2418917-1-hsinyi@chromium.org>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o6F4aGmWu5aOaeCtpsLuwiZOJ5ZaDy9R0ljH/eYyVC0=;
+ b=szUE7pl6R9heRtGHkxyX9L7hS/QpWpHQCuZjC/8ySDiavzMKpDawT/de4jlfzfZ61w34lVMQxD9echidJKXum16HlnTupm9lzixHWJiWuFkltv4Kk7VitCnCH6u3Wa60diT9lUrtTgR92Zo9SXgiO/sivHyQp3vr8qakcEPsXMw=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4584.namprd10.prod.outlook.com (2603:10b6:510:37::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Wed, 27 Jan
+ 2021 04:54:42 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 04:54:42 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Eric Curtin <ericcurtin17@gmail.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "open list:EMULEX/BROADCOM LPFC FC/FCOE SCSI DRIVER" 
+        <linux-scsi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>
+Subject: Re: [PATCH] rename lpfc_sli4_dump_page_a0 to lpfc_sli4_dump_sfp_pagea0
+Date:   Tue, 26 Jan 2021 23:54:23 -0500
+Message-Id: <161172309262.28139.7504973262791914699.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210119205022.40000-1-ericcurtin17@gmail.com>
+References: <20210119205022.40000-1-ericcurtin17@gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [138.3.200.9]
+X-ClientProxiedBy: MWHPR10CA0018.namprd10.prod.outlook.com (2603:10b6:301::28)
+ To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.mkp.ca.oracle.com (138.3.200.9) by MWHPR10CA0018.namprd10.prod.outlook.com (2603:10b6:301::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 04:54:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0fff9bd5-02ee-40c9-4187-08d8c27fa908
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4584:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB45847D255BC518A37D66E3988EBB9@PH0PR10MB4584.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MrWR2tA4336yushos+eq48uxXM+lSkqSwo53x2HpKKub0HDAteLvMHP8WBT4fauIp95gVRIiwhi3a5E6uBlDy4VB+610COQoS3YRVC8y/7XudUpb5xegU3LZkdnr+0BQtldz7ienKZWu4Jz/v3Iooa9A3dUUqVJoeOypVqLUBJE1CrIzCJ2uCq7Ykw7qbROlI7zHMrP9RVvwRCXYIzmMxWfMIfq1r+fFOeeVSewefHt6GZbRzoYQMs9qzpgYz8EfJll3/sKjE5NePGWvrMcbUiilra954Pz6EhT/hRcNwQ8uDmw6PKOJGgx7GyIrWWNi4L2ayZ9C2gtRCBscBR1d5ukJz4BAP3EUKLCQ5zSOPd5iIwmWEq5moHT3PuLjbYQxI5YCIySDwVK5wYOYk2kirQRZjRurNgIX/fIlChxUs/kzpy6j1DvoijYI5wOZrxrLHZuFiQhcOHU6XeUExqGmQQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(136003)(39860400002)(376002)(8676002)(66946007)(103116003)(6666004)(16526019)(26005)(86362001)(186003)(36756003)(2906002)(6916009)(558084003)(2616005)(8936002)(5660300002)(4326008)(66556008)(54906003)(66476007)(52116002)(7696005)(478600001)(956004)(966005)(6486002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Z0IySHpoa3ZENm12bGxOa0hld0VKUU9CWEVUWUo5VWYvN3hOVFpqNk1pa0Vu?=
+ =?utf-8?B?YXp0MUR4N2VRL2J3Wi9CVUVXdjlYbjBrSm5aOG53dUF5TmhnVXd3b04yK1p4?=
+ =?utf-8?B?Sjl4K1ZXcW1lZ0htK0VNa25BWWwyaU10bmM5YXpYWCt6SEMrQ0dPdnM4SGlt?=
+ =?utf-8?B?dCsxR3RScEZwaXErVVRqNC94OHVWMVV2TEhyRXRVVFVtaGdXb2JJVmJCZ0Ra?=
+ =?utf-8?B?dXczdlJJUklqTDJRSTAwYjJZNFhNMVlZY1Z4TzNtNWNVS3VZMENpMWZhaHho?=
+ =?utf-8?B?RXliL2lZeGowRjFrUUlLR2h3MWVsam04M2dGTWhYZHR6OEhnd0J1ZjZ5c2k4?=
+ =?utf-8?B?VjVBdDdpMndueDBoWFoxdEh3ZkhqZGZEN2loVENNVUFtSVdod3ZpZ051c0pS?=
+ =?utf-8?B?NGtCWHBXK3BLT3djNjVxbDZFQVlWN3poS29zY2ZZMTljUzU3UTR3TndwWG91?=
+ =?utf-8?B?MGVaTnlDQlM4ZVQ3ME1vRVp6UVlmVnBnME1mWnhIRHI4dndsVnFNRW1xWUts?=
+ =?utf-8?B?YjlnOUVBRDRYWkJPMmFMZlZQY3gxNHlkczYrNzYxVUd5OE11bVc2ZU1ZL1dN?=
+ =?utf-8?B?SGxaS2VuSTlIckhvUW9pVCs1bGtRWlBRYjZmT05wOUFnU09idzhkWVpQZzNM?=
+ =?utf-8?B?K0VZa29HaC90dVJIaCtIUmVNSWxYWWtLdzRaanJJR3FBVnJhUDkwQStyRDdx?=
+ =?utf-8?B?WXlzL1lhajVqTjl2ZFc5ckNvMUZFMXpreElBUEszQ3h3TmRQS0xjcm1tV2lt?=
+ =?utf-8?B?dVZIMEdqbmVIekxmbzMzSXllek42UUhxNndFNXU3SWxtdm8rTEZHYjErdGhp?=
+ =?utf-8?B?L2gwcnhnR0w2dVJrcjlyNXBYRHdGYU9CS3lhM3RZdDZVdkdLcEVRS3dPbmZ1?=
+ =?utf-8?B?TUZFbG1JeDAvdklpSHZWSDU1bVZUT2U1MFZXNDhyOStkTFJIMW1DdEV6OGRz?=
+ =?utf-8?B?ZVhYNDNLaG5oMkFWOWtWQThHaGpYbC9sQllKdUsvR0NEcWNCYytJaStQOVVI?=
+ =?utf-8?B?S0FjVStEenRMZ3NIU3MyUVBlVmtVNHRtb2xadkowWklqUFlleld5cUhWdU9M?=
+ =?utf-8?B?U0xOQlFDOEx1YlV3d2NZa2xIWWxsT3V6YkZqV2RlRTcySmUzQklzeEdWUW1z?=
+ =?utf-8?B?cENJaUFoOGZjbXpzSWNVTFlRN3N4MStMTDB5eGJFSEt4Y29TbFFtOFBaNlEv?=
+ =?utf-8?B?M0ZIQ25BOVFnSXdTVk5OSTdZZEU1WldiK2xSN2x0SzlQU29RSHJBY1FCeUNQ?=
+ =?utf-8?B?WkV2MldGaXFFK1Y0VnA4M3crdGRxSXVGbXRkdGlzc2JRTjJKMW5YZi90S1Fx?=
+ =?utf-8?B?UWJkZ3pzN3JlQ1N4azRZSUpiQUdXbUZJN3E4VEFFQWZTdnkrcGVnR0tWRWE4?=
+ =?utf-8?B?Mm92V2hnYng1Ni9ObXJ6Ly9wdTlTYlBHeDVqL3VqOFBVMHgybzJKRGJkNUVN?=
+ =?utf-8?Q?tWjFD7Vs?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fff9bd5-02ee-40c9-4187-08d8c27fa908
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 04:54:42.7691
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2bw5bsl7QQ5ZiHWp+1sX4fivsQi8RELLaNa/oesLp/PAH5w4Q3n0YCbNm0pfz3xZqaLY5zLQKWnErrHoUgqXHBbScG30WJTKBLNHxefLYH8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4584
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270027
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1011 phishscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101270027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+On Tue, 19 Jan 2021 20:50:22 +0000, Eric Curtin wrote:
 
-1. add ovl private data
-2. add rdma private data
-3. add gamma privte data
-4. add main and external path module for crtc create
+> Comment did not match function signature.
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c |  1 +
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c   | 18 +++++++++
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c  |  6 +++
- drivers/gpu/drm/mediatek/mtk_drm_drv.c    | 45 +++++++++++++++++++++++
- 4 files changed, 70 insertions(+)
+Applied to 5.12/scsi-queue, thanks!
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-index c98fe284265d0..93ad76a2dda5e 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-@@ -179,6 +179,7 @@ static const struct mtk_disp_gamma_data mt8173_gamma_driver_data = {
- static const struct of_device_id mtk_disp_gamma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = &mt8173_gamma_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-gamma"},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_gamma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 1c295c58a5e82..da7e38a28759b 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -424,11 +424,29 @@ static const struct mtk_disp_ovl_data mt8173_ovl_driver_data = {
- 	.fmt_rgb565_is_0 = true,
- };
- 
-+static const struct mtk_disp_ovl_data mt8183_ovl_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 4,
-+	.fmt_rgb565_is_0 = true,
-+};
-+
-+static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 2,
-+	.fmt_rgb565_is_0 = true,
-+};
-+
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-ovl",
- 	  .data = &mt2701_ovl_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-ovl",
- 	  .data = &mt8173_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-ovl",
-+	  .data = &mt8183_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
-+	  .data = &mt8183_ovl_2l_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 04b9542010b00..29fa5f3a05c30 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -355,11 +355,17 @@ static const struct mtk_disp_rdma_data mt8173_rdma_driver_data = {
- 	.fifo_size = SZ_8K,
- };
- 
-+static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
-+	.fifo_size = 5 * SZ_1K,
-+};
-+
- static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = &mt2701_rdma_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = &mt8173_rdma_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-rdma",
-+	  .data = &mt8183_rdma_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 279d3e6f11563..486e73e675ad5 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -129,6 +129,24 @@ static const enum mtk_ddp_comp_id mt8173_mtk_ddp_ext[] = {
- 	DDP_COMPONENT_DPI0,
- };
- 
-+static const enum mtk_ddp_comp_id mt8183_mtk_ddp_main[] = {
-+	DDP_COMPONENT_OVL0,
-+	DDP_COMPONENT_OVL_2L0,
-+	DDP_COMPONENT_RDMA0,
-+	DDP_COMPONENT_COLOR0,
-+	DDP_COMPONENT_CCORR,
-+	DDP_COMPONENT_AAL0,
-+	DDP_COMPONENT_GAMMA,
-+	DDP_COMPONENT_DITHER,
-+	DDP_COMPONENT_DSI0,
-+};
-+
-+static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
-+	DDP_COMPONENT_OVL_2L1,
-+	DDP_COMPONENT_RDMA1,
-+	DDP_COMPONENT_DPI0,
-+};
-+
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.main_path = mt2701_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
-@@ -161,6 +179,13 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
- 	.ext_len = ARRAY_SIZE(mt8173_mtk_ddp_ext),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
-+	.main_path = mt8183_mtk_ddp_main,
-+	.main_len = ARRAY_SIZE(mt8183_mtk_ddp_main),
-+	.ext_path = mt8183_mtk_ddp_ext,
-+	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
-+};
-+
- static int mtk_drm_kms_init(struct drm_device *drm)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
-@@ -375,12 +400,20 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8173-disp-ovl",
- 	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8183-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
-+	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
-+	{ .compatible = "mediatek,mt8183-disp-rdma",
-+	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-wdma",
- 	  .data = (void *)MTK_DISP_WDMA },
-+	{ .compatible = "mediatek,mt8183-disp-ccorr",
-+	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt2701-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-color",
-@@ -389,22 +422,32 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = (void *)MTK_DISP_GAMMA, },
-+	{ .compatible = "mediatek,mt8183-disp-gamma",
-+	  .data = (void *)MTK_DISP_GAMMA, },
-+	{ .compatible = "mediatek,mt8183-disp-dither",
-+	  .data = (void *)MTK_DISP_DITHER },
- 	{ .compatible = "mediatek,mt8173-disp-ufoe",
- 	  .data = (void *)MTK_DISP_UFOE },
- 	{ .compatible = "mediatek,mt2701-dsi",
- 	  .data = (void *)MTK_DSI },
- 	{ .compatible = "mediatek,mt8173-dsi",
- 	  .data = (void *)MTK_DSI },
-+	{ .compatible = "mediatek,mt8183-dsi",
-+	  .data = (void *)MTK_DSI },
- 	{ .compatible = "mediatek,mt2701-dpi",
- 	  .data = (void *)MTK_DPI },
- 	{ .compatible = "mediatek,mt8173-dpi",
- 	  .data = (void *)MTK_DPI },
-+	{ .compatible = "mediatek,mt8183-dpi",
-+	  .data = (void *)MTK_DPI },
- 	{ .compatible = "mediatek,mt2701-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2712-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt8173-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
-+	{ .compatible = "mediatek,mt8183-disp-mutex",
-+	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2701-disp-pwm",
- 	  .data = (void *)MTK_DISP_BLS },
- 	{ .compatible = "mediatek,mt8173-disp-pwm",
-@@ -423,6 +466,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt2712_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8173-mmsys",
- 	  .data = &mt8173_mmsys_driver_data},
-+	{ .compatible = "mediatek,mt8183-mmsys",
-+	  .data = &mt8183_mmsys_driver_data},
- 	{ }
- };
- 
+[1/1] rename lpfc_sli4_dump_page_a0 to lpfc_sli4_dump_sfp_pagea0
+      https://git.kernel.org/mkp/scsi/c/0196e379095e
+
 -- 
-2.30.0.280.ga3ce27912f-goog
-
+Martin K. Petersen	Oracle Linux Engineering
