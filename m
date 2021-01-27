@@ -2,93 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFB6306060
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 16:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE19306068
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236888AbhA0P6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 10:58:40 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35672 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236812AbhA0P4V (ORCPT
+        id S236879AbhA0P7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 10:59:53 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9679 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343499AbhA0P6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:56:21 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10RFsgYK070432;
-        Wed, 27 Jan 2021 09:54:42 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611762882;
-        bh=G3P+78on/TWqACdAlhbVu3n0xTxWbsdD8Nbgcyzprxs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=J8oalWYbJx9HMRhdW0atd4N1mbqwsMYDek9eeN5jHC+uILLGMsfANCAGXXw90R4q5
-         8uBuwtghIL7CA6CQX0h5RZ9YvIDF8dIEg8dRqOx0JrA+ICR55KqkFRE2F8msQHI72N
-         O3aU8e1AN2RJjcoBb0r6T3OeNT6WfXg6U4ijcvWU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10RFsgbe011498
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Jan 2021 09:54:42 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 27
- Jan 2021 09:54:41 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 27 Jan 2021 09:54:41 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10RFsfVM130156;
-        Wed, 27 Jan 2021 09:54:41 -0600
-Date:   Wed, 27 Jan 2021 09:54:41 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] dts: ti: k3-j7200-main: Add support for zeroth
- instance of GPIO subsystem
-Message-ID: <20210127155441.e2oho7m4aeovkafw@absinthe>
-References: <20210127150815.16991-1-a-govindraju@ti.com>
- <20210127150815.16991-2-a-govindraju@ti.com>
- <20210127151256.tgbhpngy6fi43edj@create>
- <9308ad5d-48bd-ebd2-2ea3-9775b8c11163@ti.com>
+        Wed, 27 Jan 2021 10:58:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60118d930000>; Wed, 27 Jan 2021 07:58:11 -0800
+Received: from [10.2.60.78] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
+ 2021 15:58:09 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1 1/2] mm/cma: expose all pages to the buddy if
+ activation of an area fails
+Date:   Wed, 27 Jan 2021 10:58:07 -0500
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <F48ADDA3-7860-4F30-A3E8-B778359D10AA@nvidia.com>
+In-Reply-To: <20210127101813.6370-2-david@redhat.com>
+References: <20210127101813.6370-1-david@redhat.com>
+ <20210127101813.6370-2-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9308ad5d-48bd-ebd2-2ea3-9775b8c11163@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed;
+        boundary="=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611763091; bh=9f29pbSqkFcdd7oAkk+SxFMIq+bbPbn8eq0ySyEkrP8=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=ah2XlkaWBFiiZS0L9idrb9CF+xCVfPvoK3ioAPJQ4Uhc0WVBrrMJPJA8RUI/PRWmp
+         Nn7Cf34Ip2pyzXs8ESvPdjyJtPMIsttP58MurpzmtYX0QOc7WjzFCh+f6Yccole0wO
+         gkTZUW5ZMcR7kT55+8CYBNJNpMMI13q+3+dW6ER7YBe+cadDphDNWIfU4/bJ8Cxx//
+         X+Yzx1AdQiBb66jOWBZ9Zmi+Qw+WJ0sOvSjhawUlMBNrVktOfwcuPtwaE3LuYPlfnW
+         H5k8LQMj3hDXeXXbHjBK2kB71uHI+/Qd+quW1j+XJxspawmdXYb5KLyfdssuxAa8aY
+         4rkT6re6/mE6g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20:56-20210127, Aswath Govindraju wrote:
-> Hi Nishanth,
-> 
-> On 27/01/21 8:42 pm, Nishanth Menon wrote:
-> > On 20:38-20210127, Aswath Govindraju wrote:
-> >> Add support for the zeroth instance of GPIO subsystem in the main domain.
-> >>
-> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> > 
-> > 
-> > I really dont want to pick up one patch per node instance. It is hard
-> > to scale and just creates a lot of noise.
-> > 
-> 
-> As the main goal of the patch series was to add support for higher speed
-> modes in MMC, I added only the required ones. If required I will send a
-> follow up patch to add the remaining GPIO nodes.
+--=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On 27 Jan 2021, at 5:18, David Hildenbrand wrote:
 
-I dont plan on picking this patch up in it's current form. please send a
-patch with all the gpio nodes added in as it makes no sense to split
-these out.
+> Right now, if activation fails, we might already have exposed some page=
+s to
+> the buddy for CMA use (although they will never get actually used by CM=
+A),
+> and some pages won't be exposed to the buddy at all.
+>
+> Let's check for "single zone" early and on error, don't expose any page=
+s
+> for CMA use - instead, expose them to the buddy available for any use.
+> Simply call free_reserved_page() on every single page - easier than
+> going via free_reserved_area(), converting back and forth between pfns
+> and virt addresses.
+>
+> In addition, make sure to fixup totalcma_pages properly.
+>
+> Example: 6 GiB QEMU VM with "... hugetlb_cma=3D2G movablecore=3D20% ...=
+":
+>   [    0.006891] hugetlb_cma: reserve 2048 MiB, up to 2048 MiB per node=
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+>   [    0.006893] cma: Reserved 2048 MiB at 0x0000000100000000
+>   [    0.006893] hugetlb_cma: reserved 2048 MiB on node 0
+>   ...
+>   [    0.175433] cma: CMA area hugetlb0 could not be activated
+>
+> Before this patch:
+>   # cat /proc/meminfo
+>   MemTotal:        5867348 kB
+>   MemFree:         5692808 kB
+>   MemAvailable:    5542516 kB
+>   ...
+>   CmaTotal:        2097152 kB
+>   CmaFree:         1884160 kB
+>
+> After this patch:
+>   # cat /proc/meminfo
+>   MemTotal:        6077308 kB
+>   MemFree:         5904208 kB
+>   MemAvailable:    5747968 kB
+>   ...
+>   CmaTotal:              0 kB
+>   CmaFree:               0 kB
+>
+> Note: cma_init_reserved_mem() makes sure that we always cover full
+> pageblocks / MAX_ORDER - 1 pages.
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/cma.c | 43 +++++++++++++++++++++----------------------
+>  1 file changed, 21 insertions(+), 22 deletions(-)
+
+LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmARjY8PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKyU4P/22fuj51aHN6OYJfCdJFXadykeJMaDU8w57E
+P7k1tXv7vtcg7TWJBZLNLLVNU8myIzGs2Buj948GqSv0eiRzIElRx/5XWIjA6zz2
+JJw8uY8NfoQcma0ooVxO7rf7TYU0sqwVXMy55yKvnP0jmMqnvcxgh4w47tWJHgno
+8PiC49x00WmS6V/LO4/ve2qe65un0u7moyaf+7Ev1h9n2Dk9t8yR6jTAoq0nUIUo
+uRyuX0Rhc3o/1aic9vbN1aT/CF9b23utOdiwjGo2cWn0lIL8CLZKJ1Cu6UXsjV80
+upibyL6hfsy8oXfH81BbLcuCCbslLKyxm+MPaAk81HgVdg9S0Joho6PGR82tpkmO
+3vlIkhrNQ0USB9XaqJr2eYs8t2Zu0kABmonuJbbArBwDmRrDc5E5XKNgTA1XztiD
+Gxr2W85AJBexWySTc68YQEWJUhL+LJ5cqCsQg/C835ZLXGEMgirBiXeKzybTwwhh
+FbBiFzHFb5sN0aVC9RfM3IPQJ/dSWK3kIBe4l3EVS6Z0mWKzBAtJ54JOiTQSU5Ke
+MUBrvYUeFJdpaghds4G8iTfovDDyuG6UbZnK8v+/HdA2Z2RCvLTsDeMCziqvDtrh
+6iT5Uu4GbXb62iAFtAtU5Ll+5K1s5YXa8I1vCWPGcKM3bqH/IFTBLzz4R+OR2Wkl
+F4+Y+kxh
+=drxX
+-----END PGP SIGNATURE-----
+
+--=_MailMate_C33B7D64-5C83-4FBC-BA12-F7A9307092F5_=--
