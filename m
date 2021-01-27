@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD12305039
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4741F30503A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237352AbhA0DwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:52:03 -0500
-Received: from mga12.intel.com ([192.55.52.136]:60544 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729880AbhA0A6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 19:58:42 -0500
-IronPort-SDR: nG5/7a1OqjAzl8HxXVqySvZV3e2492H2q5RvcRLN4Q0irq88jhmWslUReZo31EiibRwfmHgfjK
- Ed7yncIhQE1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="159171320"
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="159171320"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 16:58:00 -0800
-IronPort-SDR: HERo/2nPxJcwoL/hfz9pw9yFMx6/qooLiVBJOEBKP2YMX7Vy56oh2DaADE+W0i72SHmN/9dYx0
- KIjwcHAbPzhg==
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="388076994"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 16:57:57 -0800
-Subject: Re: [RESEND PATCH 2/2] KVM: X86: Expose bus lock debug exception to
- guest
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kbuild-all@lists.01.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210108064924.1677-3-chenyi.qiang@intel.com>
- <202101090218.oqYcWXa4-lkp@intel.com>
- <cfc345ea-980d-821d-f3a6-cea1f8e7ba03@redhat.com>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-Message-ID: <3c38f1be-47c3-e8f8-ee72-9642e99ac93f@intel.com>
-Date:   Wed, 27 Jan 2021 08:57:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <cfc345ea-980d-821d-f3a6-cea1f8e7ba03@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S237362AbhA0DwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S317604AbhA0BHx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 20:07:53 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27E8C061573;
+        Tue, 26 Jan 2021 17:07:06 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id a9so266162wrt.5;
+        Tue, 26 Jan 2021 17:07:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=B5R3QKdstmOElf5fyDxWW24vlZ4mw418UdwCjmrTNw8=;
+        b=Z4YB+eoj4dpO8IXUSmdZ7YShVtI3aIRk4c+5ZYNuMydczpwlhasu/mQT8yKLlZykP9
+         TlgFk1pzn3UecTjVqrzRHuxAxfk4uOYdquxXcP0lqhqbbswB2Qf7JTNFo8RGm4HV35YF
+         mDnel8nvv3GAQG12eEsjsEF6i5xn+W2Ivr6Vg9jA6iAYu4N8dM7zY+LacXCPVROVFVtx
+         LJabYOvWu27SexyVbmqDtidXtfxg9cqsYT/0MSGVTSMHbvb7Ggv1M2kDbV++AFnPDj0q
+         FQ+r3YdVt+vNcxGdGwNOEyWyUFBfeKgk4dJq6q0m/8HdkLD1tNE7+BFPRNa6kyDkACYC
+         PM2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=B5R3QKdstmOElf5fyDxWW24vlZ4mw418UdwCjmrTNw8=;
+        b=b3bCC4G63Vjo3hduR/JjhFhOjUaIgo94RBCdk9LTLIK0okjGZkoTDtsozs9byE8rR3
+         emJJbE8eANTGlrFcayU6VXFZKC9Lpeoh/b9VerpvrJ0dxo00vy2rPSG5mexf9HjO5Ydd
+         5mE87Dfu08zheDFdylhLU40NvkFFwkFDANREHeEQNaB5QGeHaZztS793UAWJiCA4DFAm
+         Lt0x6khskHH5e9vxYKajA0MQicxuxNOHKt9vr94mbwNEEPJj2rdPKBgsV4MG0Q9CQUP4
+         Los5Ew5s6b6Rw9JulMURsYUNF+ZfBHSXLuHJBll6xtAulD6j0p8MVQXlUhTTh0rRtnL1
+         baRw==
+X-Gm-Message-State: AOAM530mCkjMlOTUeRWbfXeRYFV9wCFfBuYC1vJOgxn3XDhj7dHr335t
+        XHjHDzae7vNR70t5faK+bwY=
+X-Google-Smtp-Source: ABdhPJz3clA3gFRXJd1XiDHtqB8JzibeH9n0ObM9qv7LZiL53dynUjYfroydzjEstpnHj93VuvrFfg==
+X-Received: by 2002:a5d:4e47:: with SMTP id r7mr8715704wrt.312.1611709625644;
+        Tue, 26 Jan 2021 17:07:05 -0800 (PST)
+Received: from localhost.localdomain (host-82-61-142-146.retail.telecomitalia.it. [82.61.142.146])
+        by smtp.gmail.com with ESMTPSA id w126sm394289wma.43.2021.01.26.17.07.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 17:07:05 -0800 (PST)
+From:   Lorenzo Carletti <lorenzo.carletti98@gmail.com>
+To:     linus.walleij@linaro.org
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Carletti <lorenzo.carletti98@gmail.com>
+Subject: [PATCH V2 0/1] net: dsa: rtl8366rb: change type of jam tables
+Date:   Wed, 27 Jan 2021 02:06:31 +0100
+Message-Id: <20210127010632.23790-1-lorenzo.carletti98@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I was trying to see if there were some Intel 8051 instructions in the
+jam tables with Linus Walleij, when I noticed some oddities.
+This patch's aim is to make the code more consistent and more similar
+to the vendor's original source.
+Link to the Realtek code the actual patch is based on:
+https://svn.dd-wrt.com/browser/src/linux/universal/linux-3.2/drivers/net/ethernet/raeth/rb/rtl8366rb_api.c
 
+Changes V1 -> V2:
+ - Used struct array for jam tables instead of u16 matrixes
+   (Thanks to Vladimir Oltean <olteanv@gmail.com> for the suggestion
 
-On 1/27/2021 12:33 AM, Paolo Bonzini wrote:
-> On 08/01/21 19:16, kernel test robot wrote:
->> Hi Chenyi,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on kvm/linux-next]
->> [also build test ERROR on v5.11-rc2 next-20210108]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
-> 
-> What is the status of the patch to introduce X86_FEATURE_BUS_LOCK_DETECT 
-> (I saw 
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2389369.html)?
-> 
-> Paolo
+Lorenzo Carletti (1):
+  net: dsa: rtl8366rb: standardize init jam tables
 
-Fenghua sent the v4 patch and pinged x86 maintainers, but still no feedback.
-https://lore.kernel.org/lkml/YA8bkmYjShKwmyXx@otcwcpicx3.sc.intel.com/
+ drivers/net/dsa/rtl8366rb.c | 273 ++++++++++++++++++------------------
+ 1 file changed, 139 insertions(+), 134 deletions(-)
 
-> 
+-- 
+2.17.1
 
