@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CB330505F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA436305087
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237976AbhA0EDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:03:24 -0500
-Received: from mga06.intel.com ([134.134.136.31]:32835 "EHLO mga06.intel.com"
+        id S238307AbhA0EMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:12:01 -0500
+Received: from m12-18.163.com ([220.181.12.18]:36849 "EHLO m12-18.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231770AbhA0DBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:01:09 -0500
-IronPort-SDR: HLqF/EHNpJxUu54CHhMbpCN4nRBW3RF0rjOvOhQ2Cx+Fl08B+LnKjkxO0u6ivZJzUhjDR+87op
- tMtokHaamNtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="241537305"
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="241537305"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:00:13 -0800
-IronPort-SDR: OITLmqZjyxGW3O0pqbKS97pjZeqixSZg3Fvao4C507ABS0Vuho2kUInNmOWHzVSsX9VRlcKtEE
- EUDPRXFOAvDQ==
-X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
-   d="scan'208";a="388122985"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 19:00:09 -0800
-Subject: Re: [RFC 5/7] KVM: MMU: Add support for PKS emulation
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200807084841.7112-1-chenyi.qiang@intel.com>
- <20200807084841.7112-6-chenyi.qiang@intel.com>
- <0689bda9-e91a-2b06-3dd6-f78572879296@redhat.com>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-Message-ID: <3e38051e-b341-66b9-5e2e-2c3f26d3ff70@intel.com>
-Date:   Wed, 27 Jan 2021 11:00:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S237597AbhA0DzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:55:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Qhvx+
+        Knp26+i+QuDp7Oc/cuqMXt2WbaoYJqljrF9deI=; b=RMoQMdtrdAuHeBPenVMwj
+        k7MDbbL1I4360F/4MfSAfto8+kqHUaVFXUEjAXkPaTdONPvHDnGZd119DaY9xx8k
+        /OI2X3eXMRSOV9klnTDnLK1wl1q6MASLEOPfHsRUTU40RfaBCEYQHD/B/lBc09Gd
+        MzXWtCM8a7zm1EQ4KvwCTM=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp14 (Coremail) with SMTP id EsCowAA3PgJ01xBg1QreRA--.28066S2;
+        Wed, 27 Jan 2021 11:01:09 +0800 (CST)
+From:   dingsenjie@163.com
+To:     akpm@linux-foundation.org, colin.king@canonical.com,
+        naoki.hayama@lineo.co.jp, xndchn@gmail.com, sjpark@amazon.de,
+        ebiggers@google.com, joe@perches.com
+Cc:     linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] scripts/spelling.txt: increase error-prone spell checking
+Date:   Wed, 27 Jan 2021 11:01:05 +0800
+Message-Id: <20210127030105.7244-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <0689bda9-e91a-2b06-3dd6-f78572879296@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowAA3PgJ01xBg1QreRA--.28066S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUhSdyUUUUU
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRUnyFUMcFIUcwAAsD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: dingsenjie <dingsenjie@yulong.com>
+
+Increase allocted spelling error check.
+
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ scripts/spelling.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 953f4a2..5fa8ec2 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -103,6 +103,7 @@ alloated||allocated
+ allocatote||allocate
+ allocatrd||allocated
+ allocte||allocate
++allocted||allocated
+ allpication||application
+ alocate||allocate
+ alogirhtms||algorithms
+-- 
+1.9.1
 
 
-On 1/27/2021 2:23 AM, Paolo Bonzini wrote:
-> On 07/08/20 10:48, Chenyi Qiang wrote:
->>
->>          if (pte_access & PT_USER_MASK)
->>              pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
->> +        else if (!kvm_get_msr(vcpu, MSR_IA32_PKRS, &pkrs))
->> +            pkr_bits = (pkrs >> (pte_pkey * 2)) & 3;
-> 
-> You should be able to always use vcpu->arch.pkrs here.  So
-> 
-> pkr = pte_access & PT_USER_MASK ? vcpu->arch.pkru : vcpu->arch.pkrs;
-> pkr_bits = (pkr >> pte_pkey * 2) & 3;
-> 
-> Paolo
-
-Concerning vcpu->arch.pkrs would be the only use case in current 
-submitted patches, is it still necessary to shadow it?
-
-> 
