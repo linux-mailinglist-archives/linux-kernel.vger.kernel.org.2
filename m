@@ -2,93 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642C13060C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC35E3060C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 17:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343915AbhA0QPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 11:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S1343959AbhA0QPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 11:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235078AbhA0QNz (ORCPT
+        with ESMTP id S1343837AbhA0QOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:13:55 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AB1C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:13:11 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id z22so3095002edb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:13:11 -0800 (PST)
+        Wed, 27 Jan 2021 11:14:04 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BF6C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:13:24 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id e15so2170022wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 08:13:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yCJr5LaWhWMU0GEv1VBLBRwE+7yrkKij+9EAYt1Xy1Y=;
-        b=bPf2zHTV4+wJn2TwThn/ciUqtN5J+OBKLsllaBgPD9jYr7oo+SFzuqeWtlZyojcvxx
-         0Z3iEq8J+5enD78FQ4TqXtZen+55GTxa2Eg9espAPPmehigHIEbAnPLLan09hbTWaUYk
-         zMs9FosvenRGKAXIdYMno2Fi8MfUjLuxPedQX0yXrdv/a4Mvi0acS81fB5jTtbPOv3Bg
-         A9hdVjuOnlbd1ykNcWiZNKI2DivE2fxjHkE62bZJBMgcxsZITg6wz6zqfLT4AYyzH+pS
-         o7OUrr4JZYb4U4h0DXZsWAZOtzStcCwsX6SCTrx3a//Mm0cJD7Npa1ZeOgJe27NVCpUL
-         JEEQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Eb7sLjN+Y9Ss6oMnkExpYMqyva1tVQLoNcD1qYBJPYk=;
+        b=N6ub1XjAtQx7WmiG4vrpAQirtSWSUAMcjbeqPVR0QUemZKeLHTSnd/q3txovfURo7K
+         Yd+rQV9Ya9qo3jAEDYnh6LPckR+wg+iOFPHO1u0Vnxa/enIttLVAdbv8oNHbbbhOm2Ho
+         +qycK05etzRVLlDBT4zPdhd4fmmWPjcB+uDVhTpN+AtKJu7XRY4kpbgTVi1iHW2AIkn6
+         tpj3iTM8fUTBupWHyh/lRS53aJxXJUfCL3wlDKheaZ21Sce9wGEbrM7WPSy2e03FmYzH
+         LkjuPBPFucObSzkHOVMPAaUEGHtd3cK5FM4Wm4VWNVzQlhAV6OFHqngCe0sQxWeD6ndw
+         Ta6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yCJr5LaWhWMU0GEv1VBLBRwE+7yrkKij+9EAYt1Xy1Y=;
-        b=WisK+vu+fPsoBuDOXSznHd3MnERpIXTu/BBuW40LmqRBdBP2n7QYaUyVz4EkDGd86X
-         zyQgVYXMHvfAJMd1I3TKFwkjWjwc5a0VJS4/+lGQ5zgMnh6ggNL/dBXLicryXt2kVNyK
-         RkofVWGBeoSvH3kBxM1aUYMG2TNE0D+OGyAHkRx+7zrC6fmYRAmpGxR/pHjjDTpy3SV4
-         I1HILZeZFgzNYyQTLW6y0ETA07ZIHrQr9Hkms+XgHXFTL3rwXoUMd0gSmxjd0HAvLxdj
-         lWZao4A82yIt9F+Ss8HLxXv9A9tLApMuz+xDS6urvkBdWwBmUON3a/Ytjga/VyuUd+P2
-         QAUw==
-X-Gm-Message-State: AOAM530Ga4IoI1DlswTIkyAEqIvaLNViZgbuKSyZUdhaat7s6ivAZezV
-        oAJCcmtZxLbRjsqABzfAJ7K5TDn+3ELYJX7A46MirA==
-X-Google-Smtp-Source: ABdhPJxx5owWBx3b1CUl8+dsHwfcv0N4UFWJBm3EBtbpVbarbqqVzqrRDi4HH2oGoHcMmLrl2KO11jdURI5j8PiP/5c=
-X-Received: by 2002:aa7:d803:: with SMTP id v3mr9489359edq.153.1611763990574;
- Wed, 27 Jan 2021 08:13:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Eb7sLjN+Y9Ss6oMnkExpYMqyva1tVQLoNcD1qYBJPYk=;
+        b=MGcOY73wDEm4NineaA5wQ8ZeFvqE9Xr3u0AQ3nZcJC4oSEZQU9P/E1PA5vOmPPZzP6
+         oS0oa0P8Fie6REIHxYwYySI9wb7Z/rR3RSuroFYnzx2CD+o7MoviaLSEIQlZMigbY30J
+         PCtFbF6bAIUutFxFBhtBY3PFpIQNEwlVSUCYy0Uk6h+Isf7GUyFqfcNinEFfDd4LjC21
+         JAbRLEz+K6SLeA6Iy110DSV5gpaxogObjOQVh8IuKAznzliLLAw42wEQsdnFQz4JfHUN
+         6AG8v8g2O4oT33WycnH4biIyts78+AYs6XneV1gMmPzNg5JHFV0KD+OsHK5G7Uv+llvY
+         4KkA==
+X-Gm-Message-State: AOAM533+sOPMpOf20NVTUq20K0iMzZA1bGKOEzuBNs2uRpW6Qz1x351L
+        rp8RKfrHemRuRtBf4gSzvByoJA==
+X-Google-Smtp-Source: ABdhPJzbMMGbN5e0ZaCk6x3GmeJosmPXN5IJRaPjZdcCOUI+L431yoTD4b8/uWDViNe853x5jjGI5Q==
+X-Received: by 2002:a1c:7914:: with SMTP id l20mr4993637wme.85.1611764003161;
+        Wed, 27 Jan 2021 08:13:23 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id h16sm3495413wrq.29.2021.01.27.08.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 08:13:22 -0800 (PST)
+Date:   Wed, 27 Jan 2021 16:13:20 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH 05/12] thunderbolt: pa: Demote non-conformant kernel-doc
+ headers
+Message-ID: <20210127161320.GK4903@dell>
+References: <20210127112554.3770172-1-lee.jones@linaro.org>
+ <20210127112554.3770172-6-lee.jones@linaro.org>
+ <CAHp75VcFSQqDqjKCiCxdWyRpDDeMo4H6ELMHX15JSPfpt7nGHQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210126144630.230714-1-pasha.tatashin@soleen.com>
- <20210126144630.230714-2-pasha.tatashin@soleen.com> <daf21294-f51e-3f03-8a46-d0181104d9e3@kernel.dk>
-In-Reply-To: <daf21294-f51e-3f03-8a46-d0181104d9e3@kernel.dk>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 27 Jan 2021 11:12:34 -0500
-Message-ID: <CA+CK2bBvKpWFtPz+OmjX5SJuAfL4hAaLbHmfRok4Ueo2toeTiA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] loop: scale loop device by introducing per device lock
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        James Morris <jmorris@namei.org>, lukas.bulwahn@gmail.com,
-        hch@lst.de, Petr Vorel <pvorel@suse.cz>, ming.lei@redhat.com,
-        mzxreary@0pointer.de, mcgrof@kernel.org, zhengbin13@huawei.com,
-        maco@android.com, Colin King <colin.king@canonical.com>,
-        evgreen@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VcFSQqDqjKCiCxdWyRpDDeMo4H6ELMHX15JSPfpt7nGHQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 3:09 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 1/26/21 7:46 AM, Pavel Tatashin wrote:
-> > Currently, loop device has only one global lock: loop_ctl_mutex.
-> >
-> > This becomes hot in scenarios where many loop devices are used.
-> >
-> > Scale it by introducing per-device lock: lo_mutex that protects
-> > modifications of all fields in struct loop_device.
-> >
-> > Keep loop_ctl_mutex to protect global data: loop_index_idr, loop_lookup,
-> > loop_add.
-> >
-> > The new lock ordering requirement is that loop_ctl_mutex must be taken
-> > before lo_mutex.
->
-> Applied, thanks.
+On Wed, 27 Jan 2021, Andy Shevchenko wrote:
 
-Great, thank you!
+> On Wednesday, January 27, 2021, Lee Jones <lee.jones@linaro.org> wrote:
+> 
+> > Fixes the following W=1 kernel build warning(s):
+> >
+> >  drivers/thunderbolt/path.c:476: warning: Function parameter or member
+> > 'path' not described in 'tb_path_activate'
+> >  drivers/thunderbolt/path.c:568: warning: Function parameter or member
+> > 'path' not described in 'tb_path_is_invalid'
+> >
+> >
+> I think the intention was to describe them in kernel doc format, perhaps
+> you need to add descriptions of the fields?
 
-Pasha
+For changes like this, I've been working to the following rule:
 
->
-> --
-> Jens Axboe
->
+ - I'll provide fix-ups; if and only if the author has had a
+ reasonable attempt at providing a conformant kernel-doc header.
+
+So if the headers are just suffering from a little doc-rot i.e. the
+API has changed, but the doc update was omitted, or most of the
+parameters/members are documented, but some were forgotten about etc,
+or if there are formatting issues, I'll happily take up the slack and
+polish those up a bit.
+
+However, if no attempt was made, then they get demoted.
+
+I don't want to get into a situation where authors delicately provide
+weak documentation with the expectation that someone else will come
+along and turn them into conformant docs.
+
+If authors wish to come back, provide proper descriptions &
+formatting and subsequently re-promote them again, then all power to
+them.
+
+> > Cc: Andreas Noever <andreas.noever@gmail.com>
+> > Cc: Michael Jamet <michael.jamet@intel.com>
+> > Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > Cc: Yehezkel Bernat <YehezkelShB@gmail.com>
+> > Cc: linux-usb@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/thunderbolt/path.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/thunderbolt/path.c b/drivers/thunderbolt/path.c
+> > index ca7d738d66dea..758b5fa0060c6 100644
+> > --- a/drivers/thunderbolt/path.c
+> > +++ b/drivers/thunderbolt/path.c
+> > @@ -464,7 +464,7 @@ void tb_path_deactivate(struct tb_path *path)
+> >         path->activated = false;
+> >  }
+> >
+> > -/**
+> > +/*
+> >   * tb_path_activate() - activate a path
+> >   *
+> >   * Activate a path starting with the last hop and iterating backwards. Thee
+> > @@ -559,7 +559,7 @@ int tb_path_activate(struct tb_path *path)
+> >         return res;
+> >  }
+> >
+> > -/**
+> > +/*
+> >   * tb_path_is_invalid() - check whether any ports on the path are invalid
+> >   *
+> >   * Return: Returns true if the path is invalid, false otherwise.
+> >
+> >
+> 
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
