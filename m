@@ -2,163 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A043F305B4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA72B305B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237719AbhA0M0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:26:12 -0500
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:44460 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237723AbhA0MYg (ORCPT
+        id S237932AbhA0M2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:28:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46608 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236152AbhA0MZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:24:36 -0500
-Received: by mail-wr1-f44.google.com with SMTP id d16so1663987wro.11;
-        Wed, 27 Jan 2021 04:24:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ShB3cnXbxrmD9a+bdXYQdwTEtb4JqHT3bdcJ08qiOYM=;
-        b=K4N3DUw1JbX2KkHEBhRTAmorhclvTBMN8JFu0pIWIAu9QQ0aH9qd3Rppn8HCFsFlv9
-         1LvZuYMCsHDsN/5MQ3Vn+ifvIw4O7LJwXVGdNQThM1wa3ZPsjnXnQJJ10auYh/McayEz
-         4Nwdg9lgjmgpVYF/59RfwmcJyl0x2sdhoEv863GXYO237ke252EpMbqWzN/UvGBKBgJi
-         Cus6S4EWge1zbBea1ud/0zUdRg9SVmA3Ze/Eafvx1a5fGGJupLpyFWVPoTZ9xfii2z7E
-         fTX06gxafRWxqPC/NcbtYjZCV7wLsG2eqpnDQ++gm7+qohpqzCm95+EY166NTZIsSSuI
-         gDGg==
-X-Gm-Message-State: AOAM532d6O0XE6bH0ks2pvMhIepiv17PtxL2wEt4cg3MfL4Ew8J3W397
-        bzHIF15JoSlBytt3BUh95Mo=
-X-Google-Smtp-Source: ABdhPJzhDxEpDBEc1vtDjMlmipHrb96zdgWsWtS3oEMrAA/05Zb3TzAV22yLxNp4CFki4xmeOC8Zvg==
-X-Received: by 2002:a5d:66ce:: with SMTP id k14mr10947071wrw.397.1611750234180;
-        Wed, 27 Jan 2021 04:23:54 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g12sm2325875wmh.14.2021.01.27.04.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 04:23:53 -0800 (PST)
-Date:   Wed, 27 Jan 2021 13:23:51 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 1/4] dt-bindings: media: imx258: add bindings for
- IMX258 sensor
-Message-ID: <20210127122351.nokesldtzq4wchiq@kozik-lap>
-References: <20201118202715.6692-1-krzk@kernel.org>
- <20210122091822.GB27155@paasikivi.fi.intel.com>
+        Wed, 27 Jan 2021 07:25:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611750264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ESk4erADjhVygeBOZ67K4CNLftTWe14rVACW2LGonko=;
+        b=bMTZXhTTCfoIRCgd/jdHAbKvEusNn7IuZqxdC9v4CL+Qa4JFHbH4y8J6b/yg113Caly5QO
+        IUlKqNDZHUmhYZa1NHIZgcBcuRg4Tfe8/miVHDd/sNSpuaeRHutZ5DFg3ICdzhA6mjWhb3
+        5HlMfgSazYWrhrHNXDQL/5eQ0DfelfM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-qzwcez55O3y-wZw4QM2TmA-1; Wed, 27 Jan 2021 07:24:20 -0500
+X-MC-Unique: qzwcez55O3y-wZw4QM2TmA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 754479CDA2;
+        Wed, 27 Jan 2021 12:24:18 +0000 (UTC)
+Received: from [10.36.114.237] (ovpn-114-237.ams2.redhat.com [10.36.114.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AC0A60854;
+        Wed, 27 Jan 2021 12:24:15 +0000 (UTC)
+Subject: Re: [PATCH v1 2/2] mm: simplify free_highmem_page() and
+ free_reserved_page()
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20210126182113.19892-1-david@redhat.com>
+ <20210126182113.19892-3-david@redhat.com> <20210127115122.GA28728@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4cbbb828-016b-db98-485b-60239041cc07@redhat.com>
+Date:   Wed, 27 Jan 2021 13:24:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210122091822.GB27155@paasikivi.fi.intel.com>
+In-Reply-To: <20210127115122.GA28728@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 11:18:22AM +0200, Sakari Ailus wrote:
-> Hi Krysztof,
+On 27.01.21 12:51, Oscar Salvador wrote:
+> On Tue, Jan 26, 2021 at 07:21:13PM +0100, David Hildenbrand wrote:
+>> adjust_managed_page_count() as called by free_reserved_page() properly
+>> handles pages in a highmem zone, so we can reuse it for
+>> free_highmem_page().
+>>
+>> We can now get rid of totalhigh_pages_inc() and simplify
+>> free_reserved_page().
+>>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+>> Cc: Mike Rapoport <rppt@kernel.org>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
 > 
-> On Wed, Nov 18, 2020 at 09:27:12PM +0100, Krzysztof Kozlowski wrote:
-> > Add bindings for the IMX258 camera sensor.  The bindings, just like the
-> > driver, are quite limited, e.g. do not support regulator supplies.
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > 
-> > ---
-> > 
-> > Changes since v4:
-> > 1. Add clock-lanes,
-> > 2. Add Rob's review,
-> > 3. Add one more example and extend existing one,
-> > 4. Add common clock properties (assigned-*).
-> > 
-> > Changes since v3:
-> > 1. Document also two lane setup.
-> > 
-> > Changes since v2:
-> > 1. Remove clock-frequency, add reset GPIOs, add supplies.
-> > 2. Use additionalProperties.
-> > 
-> > Changes since v1:
-> > 1. None
-> > ---
-> >  .../devicetree/bindings/media/i2c/imx258.yaml | 140 ++++++++++++++++++
-> >  MAINTAINERS                                   |   1 +
-> >  2 files changed, 141 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> > new file mode 100644
-> > index 000000000000..4a3471fb88a1
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> > @@ -0,0 +1,140 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
-> > +
-> > +maintainers:
-> > +  - Krzysztof Kozlowski <krzk@kernel.org>
-> > +
-> > +description: |-
-> > +  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
-> > +  type stacked image sensor with a square pixel array of size 4208 x 3120. It
-> > +  is programmable through I2C interface.  Image data is sent through MIPI
-> > +  CSI-2.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: sony,imx258
-> > +
-> > +  assigned-clocks: true
-> > +  assigned-clock-parents: true
-> > +  assigned-clock-rates: true
-> > +
-> > +  clocks:
-> > +    description:
-> > +      Clock frequency from 6 to 27 MHz.
-> > +    maxItems: 1
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  reset-gpios:
-> > +    description: |-
-> > +      Reference to the GPIO connected to the XCLR pin, if any.
-> > +
-> > +  vana-supply:
-> > +    description:
-> > +      Analog voltage (VANA) supply, 2.7 V
-> > +
-> > +  vdig-supply:
-> > +    description:
-> > +      Digital I/O voltage (VDIG) supply, 1.2 V
-> > +
-> > +  vif-supply:
-> > +    description:
-> > +      Interface voltage (VIF) supply, 1.8 V
-> > +
-> > +  # See ../video-interfaces.txt for more details
-> > +  port:
-> > +    type: object
-> > +    properties:
-> > +      endpoint:
-> > +        type: object
-> > +        properties:
-> > +          clock-lanes:
-> > +            const: 0
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
 > 
-> This is redundant. Please remove, same for the examples. Can be a separate
-> patch, too.
+>> +#define free_highmem_page(page) free_reserved_page(page)
 > 
-> With this change the set seems good to me.
+> Should we place that under #ifdef CONFIG_HIGHMEM to make clear
+> that it is only used on that config?
+> Maybe the #ifdefery ugliness does not pay off.
 
-OK, I'll remove it and send a v7.
+Yeah, most probably not worth it.
 
-Best regards,
-Krzysztof
+-- 
+Thanks,
+
+David / dhildenb
 
