@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8F0305E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDA9305E80
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 15:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhA0Okn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 09:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S233950AbhA0Olf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 09:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbhA0Oi3 (ORCPT
+        with ESMTP id S229950AbhA0Oj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:38:29 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2CBC06174A;
-        Wed, 27 Jan 2021 06:37:49 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id o18so1474960qtp.10;
-        Wed, 27 Jan 2021 06:37:49 -0800 (PST)
+        Wed, 27 Jan 2021 09:39:58 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AADC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:39:17 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id f1so2687228edr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 06:39:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RAjQSGWWGLdiLLcdLbe3VngHBT6cZLdVl1RZlBUtV9Y=;
-        b=A8ZmzDYNExX2+4/EkVTAG8V8v88i62t0xqSgY8RGP7xW9jzlCLRiAsbhy+UB8xkDxG
-         RFBWXxlM0ad/OuCDSiCN7/3R0d/aqQTgBnrPVdIZEAGV8HpcuZm7Th0hURZT+VfcgVYM
-         2g/vr/vYsBdRDq7QfZFkkwjTFZ7omKsM2f6kICs4Iy+VNa37xaXA8k7Ie8pC3bP3YQIb
-         gJ0nEGZc1iH4WZLsOBnv8OB1FbjUYkQUtUCRz+Ts2R4+m9Gq+WwDpK0fh7yuMAeIuEB8
-         wRRCA3+iT1E3DMhNRCrPggdWwV+1QRNo2KcZJoU23h/8yiK1+8YMfMCP4FOu55YCbuut
-         PECQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eEyKW0OOeD4bMUfDmmY4ocDleZrgI9OkhPdKV5qoR9Q=;
+        b=NpkcQrhNC4YHc9tjgqzG7DBQsgSQqM+chQ4UTHFp+TY/c7PVyiUpubswyJzTAL1yaN
+         FPat2TWT/YofF982tghVVSNvEu0sfx/bDwbrUdZoQEjq0pZkcheI5UP+vi65N0hIWPVd
+         VifIeF5iOuQvWvw3ze/3rvHxzLRiKcT9JydM8UGDc0ENAJ4bLPRw0l0R0nIY2v1Z/1Ao
+         zt06xy34R8cuLJfdczhgeM0Lyd4l1teb4vCe1UoCPz6yr2gwqOlkH9WJWIagSD5CMH9v
+         YVEKM8xhDJa6x5Cqf6C2zHE2AJx4IjB/UgkJ2/OS4dBtECctzEY9Uetkk1q4Rvglk3wG
+         jSZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=RAjQSGWWGLdiLLcdLbe3VngHBT6cZLdVl1RZlBUtV9Y=;
-        b=Tu55zOU2ptdEl2Td3AQy2ckRgZr11pMREgcV4s2+Uu9ez4WbPLinLKFLwtK0w2eV5W
-         DDgC0FZQp0ufPgr4q/UPYj9LJwH9n9wlqbVGH8l21WI7exNzYGTYugiosGyDaXpyAwlL
-         wAbno/T93Fos04w3GeMvILP436gAfoUmUePrKW1MT8FEF3JF8LYfgK2PvoDICAfETtQ2
-         spvttTEEF8RAlr7dikQDUThjWZ0i0xaYiKJThWUDnzMg6ie1Wb5xBrWJ4OcIX/a2HfOm
-         oalnCy/aegcvMCjSlq16Kf7t+vWp3leY5DR+BGhNqWBGXA0ph+mMlgbZDu37T1Fc9UjM
-         sqMA==
-X-Gm-Message-State: AOAM532nFcYtZQF8FbuRx9+olwzoft7DYR8XyuLQu3LrMkRgj5nHhEfJ
-        pACMK9Jy9JXxAkm7acO9EOA=
-X-Google-Smtp-Source: ABdhPJy1+pDHmqIQO+0hmCBkhU/0pSMsdKmOEuzYoaPLn+5BNbsrKCu3SBWYAWJuhnJ21gU79bckUQ==
-X-Received: by 2002:ac8:16f2:: with SMTP id y47mr10023957qtk.96.1611758268304;
-        Wed, 27 Jan 2021 06:37:48 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id c12sm240672qkm.69.2021.01.27.06.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 06:37:47 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 27 Jan 2021 09:37:46 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     axboe@kernel.dk, joseph.qi@linux.alibaba.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-cgroup: Use cond_resched() when destroy blkgs
-Message-ID: <YBF6uiFcU8k4u0Da@slm.duckdns.org>
-References: <8f4fb91ced02e58ef425189c83214086f1154a0c.1611664710.git.baolin.wang@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eEyKW0OOeD4bMUfDmmY4ocDleZrgI9OkhPdKV5qoR9Q=;
+        b=jdKA4kg9RYrWaarOrg8arwZydvqQI0EYUeKtHSP1+dprcGyTJyaqLopkPepuu1cosY
+         HOoPhql5rBFzarOp5rEwC1bKeD1mVKe8zt9d6vT0oCYukzQwKLijA34ea8apQ1edFGZ/
+         hdxigE614JL5MR6F6mGgdFj68CP0RPUHwzTLc1qBf/pTvasWdogwbguSj1v/M+fBUA9h
+         gexPw6IjF0pp0wE3bt0rVnils5wuO8yu3BGwGZDjGtmyb53VxJdT0/ble6rU57UPO6Z9
+         XeEkjNi4OshmOyVgZCAAWLHUkFkHoLvkCsk9YXkc1tG+D8mMxgJwVxJlBRS6EbVOxrZY
+         frQQ==
+X-Gm-Message-State: AOAM532Zfn70nnJbpdhkPDcCbhoKm4WWlXWuNENzLbudbr7Ft+cSIlnr
+        z9pUlj8LwtV7RaHq7wHq8jCXQPniXRP6UPAxOXfrSCv+ns0=
+X-Google-Smtp-Source: ABdhPJxwP7vlLvBkETSQDDl3Zo3nlrn5s4PVm8Xh/te4H7ksBYhxc09YD60i7DSnCBOBaUnzlCM58jr0O8r6Su8dRHI=
+X-Received: by 2002:a05:6402:134b:: with SMTP id y11mr9213196edw.88.1611758356543;
+ Wed, 27 Jan 2021 06:39:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8f4fb91ced02e58ef425189c83214086f1154a0c.1611664710.git.baolin.wang@linux.alibaba.com>
+References: <20210122195959.4197-1-digetx@gmail.com>
+In-Reply-To: <20210122195959.4197-1-digetx@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 27 Jan 2021 15:39:05 +0100
+Message-ID: <CAMpxmJVYnxnrq87hmHKnEbCh7pqYUDSCgzWSjvVx4TP0YvKrDA@mail.gmail.com>
+Subject: Re: [PATCH v1] gpio: tegra: Improve formatting of the code
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Baolin.
+On Fri, Jan 22, 2021 at 9:00 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Don't cross 80 chars of line length in order to keep formatting of the
+> code consistent.
+>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
-On Tue, Jan 26, 2021 at 09:33:25PM +0800, Baolin Wang wrote:
-> On !PREEMPT kernel, we can get below softlockup when doing stress
-> testing with creating and destroying block cgroup repeatly. The
-> reason is it may take a long time to acquire the queue's lock in
-> the loop of blkcg_destroy_blkgs(), thus we can use cond_resched()
-> instead of cpu_relax() to avoid this issue, since the
-> blkcg_destroy_blkgs() is not called from atomic contexts.
-> 
-> [ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
-> [ 4757.010698] Call trace:
-> [ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
-> [ 4757.010701]  cgwb_release_workfn+0x104/0x158
-> [ 4757.010702]  process_one_work+0x1bc/0x3f0
-> [ 4757.010704]  worker_thread+0x164/0x468
-> [ 4757.010705]  kthread+0x108/0x138
-> 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Patch applied, thanks!
 
-* Can you please add might_sleep() at the top of the function?
-
-* Given that the system can accumulate a huge number of blkgs in
-  pathological cases, I wonder whether a better way to go about it is
-  explicitly testing need_resched() on each loop and release locks and do
-  cond_resched() if true?
-
-Thanks.
-
--- 
-tejun
+Bartosz
