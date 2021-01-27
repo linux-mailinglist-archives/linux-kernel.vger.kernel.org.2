@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC893065EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C901A3065F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 22:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234151AbhA0VXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 16:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S234125AbhA0VZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 16:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbhA0VXf (ORCPT
+        with ESMTP id S234150AbhA0VXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:23:35 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F20C061573;
-        Wed, 27 Jan 2021 13:22:55 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id e206so3402161ybh.13;
-        Wed, 27 Jan 2021 13:22:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xywJGgIcTxVvkZqtRxr3IHcoZ/CsjmP0+9gMWTEp1ss=;
-        b=qkIGz0z4s8W1yAlglSlVW5Wf9AcYrGbrId2zsbWQuIFE15O4ID1t2iJ5IpT0G+UStb
-         1rGK/eYmNQb89aXH0wMS6GHIxwYAGeijl+ffXCu/eSpiBVstK9dfuHBV7Ghw3bh/CCWC
-         3IDuvCeTZ3aA4wEU9PKoj0D88eV1OLshk3K+93x9+au1AsLucXZO9khSMeM5BD+J4fiq
-         mF3RHQ6NIncGQS8T0l3d/22XTFU97lKSxN4MxutPYHky7NrR2G8U7J9eDBAc1iT4KYfK
-         hACFCCZJoqNrtZZiwX63q0xBl94WzBxov31w3f0a4Yy0QoXb8XvuKSP934vahqEoDayD
-         p8/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xywJGgIcTxVvkZqtRxr3IHcoZ/CsjmP0+9gMWTEp1ss=;
-        b=bqyCqa4C6fTtrlL7T1EsjxeSvqxpBi7OvAufeexHFrxX22jVk+CEBtfP20i4MsraVK
-         zDTyP9+6tkl9WCJmZ0TSxPYEVxyjM2NHJ1G9Z+E5Y9Pqy5Ta65oEaWOTi6kBrgmKjiDa
-         6SdU2eojHxBwlVjyCRycq9l+VEMpfm8lRMY0AeNxeN11JDE3QJlwq7igPJ+xGLbKgt8D
-         7ZQwLRJPRVzMS6cmJOJt05UEkCnlWZvd/fyxlcM4ydFI5LilgPL9aT4G2pPHcS4rw8Hk
-         mTq7aAkjFx9vpJApRtOswL1hCLawQPyrmpgK6Co6U3c3T4QIkfOjjwZ8WdQ7rBhQ3f3y
-         8Y0Q==
-X-Gm-Message-State: AOAM5334ZIV0QA/rTCXk3aSSwVnQubbr0NTNDRJO3kLz1qoGEd03+QYZ
-        SrduPCNOFEecjDp4WvwGG5y9Pr/2jvSAtfE/HTc=
-X-Google-Smtp-Source: ABdhPJzQr7gmXf0Yc6+bZmv6GEGsqchOR9l8EpglGdDc5IAwHjjIzxSFAia0eYJTZ8NGmScO44MbWCbgGj9ME7OgrYo=
-X-Received: by 2002:a25:1287:: with SMTP id 129mr18349652ybs.27.1611782574731;
- Wed, 27 Jan 2021 13:22:54 -0800 (PST)
+        Wed, 27 Jan 2021 16:23:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 13:23:02 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611782580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=II6M8iM5PIuvLXe9aK/VVdDXafw1OqaL8gCEsAXcvnk=;
+        b=WUVHxkzpXwdrvLEovnJc+gLF3SjpK+ZsSAaANxaD1s+ZAdnweeZUmBGuv00CaP03chrsBU
+        V8tDGWi1PL59W4gjaOM2iXlUJAI8cbe8SylPmm+rt0EPerOrXeSt59vO/FJ2LGX2c2cAR1
+        3wYpizXSzpmaYiEEZ6hDd7ewOFUmYnMJ57m0QnpyF+dufAsGlLwzgUrnZxb6nQkKc98zzy
+        jYEL2Cx17p1bV5tirMqGj1kMX5hsr2WrjBXx8J3GU1z6nGWoSEz6Ot/3jkIuCmsHyOMqY4
+        +Ij4XNI+SB7ouVTsCo5cv/jqzKSBBHWY49cQj859KOD7jnQw92Xmg6A5QYZ5gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611782580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=II6M8iM5PIuvLXe9aK/VVdDXafw1OqaL8gCEsAXcvnk=;
+        b=QmNp86P08ti1jhKYyBpBD5eh6ghaSxiRuwndOEa+4CWhGoZpUuDYAJ/FRKNdYRfqYlYWwx
+        cR1rn3Jp5CTQ5gDw==
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@linux.intel.com
+Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
+In-Reply-To: <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
+References: <20210122081311.GA12834@xsang-OptiPlex-9020> <YAr7d6A4CkMpgx+g@alley> <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
+Date:   Wed, 27 Jan 2021 22:28:59 +0106
+Message-ID: <87bldaaxcc.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20210126085923.469759-1-songliubraving@fb.com> <20210126085923.469759-4-songliubraving@fb.com>
-In-Reply-To: <20210126085923.469759-4-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Jan 2021 13:22:44 -0800
-Message-ID: <CAEf4BzYgs3bYxdQT724k8a9daP+tKoyf63EgNRwH5cgtvzKwUA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] bpf: runqslower: prefer use local
- KBUILD_OUTPUT/vmlinux or vmlinux
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 1:11 AM Song Liu <songliubraving@fb.com> wrote:
->
-> Update the Makefile to prefer using KBUILD_OUTPUT/vmlinux (for selftests)
-> or ../../../vmlinux. These two files should have latest definitions for
-> vmlinux.h.
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  tools/bpf/runqslower/Makefile | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-> index 4d5ca54fcd4c8..1f75c95d4d023 100644
-> --- a/tools/bpf/runqslower/Makefile
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -19,7 +19,9 @@ CFLAGS := -g -Wall
->
->  # Try to detect best kernel BTF source
->  KERNEL_REL := $(shell uname -r)
-> -VMLINUX_BTF_PATHS := /sys/kernel/btf/vmlinux /boot/vmlinux-$(KERNEL_REL)
-> +VMLINUX_BTF_PATHS := $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux) \
+On 2021-01-26, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
+> AFAIU this is just 'modprobe rcutorture'
 
-O= overrides KBUILD_OUTPUT=, so please handle it first. See
-selftests/bpf/Makefile.
+I was finally able to trigger this by using my workstation:
 
-> +       ../../../vmlinux /sys/kernel/btf/vmlinux \
-> +       /boot/vmlinux-$(KERNEL_REL)
->  VMLINUX_BTF_PATH := $(or $(VMLINUX_BTF),$(firstword                           \
->                                           $(wildcard $(VMLINUX_BTF_PATHS))))
->
-> --
-> 2.24.1
->
+    Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz
+    Debian/buster
+    QEMU 3.1.0 (Debian 1:3.1+dfsg-8+deb10u8)
+
+instead of my build server:
+
+    Intel(R) Xeon(R) CPU E5-2697 v4 @ 2.30GHz
+    Debian/bullseye
+    QEMU 5.2.0 (Debian 1:5.2+dfsg-3)
+
+I don't know what factors contributed, but I wanted to share my success
+in reproducing the reported problem. Instead of using lkp, I am manually
+booting with:
+
+$ kvm -cpu host -smp 2 -m 8G -nographic \
+      -kernel bzImage -append "console=ttyS0,115200 loglevel=6" \
+      -initrd initrd
+
+My initrd is a minimal busybox rootfs that runs:
+
+# modprobe rcutorture onoff_interval=3 onoff_holdoff=30 torture_type=tasks
+
+(Those are the same modprobe parameters used by the lkp job.)
+
+After about a minute I see:
+
+[   47.268292] tasks-torture: rcu_torture_read_exit: Start of episode
+[   51.273365] tasks-torture: rcu_torture_read_exit: End of episode
+[   55.823306] smpboot: do_boot_cpu failed(-1) to wakeup CPU#0
+[   55.824350] tasks-torture:torture_onoff task: online 0 failed: errno -5
+[   55.830661] tasks-torture:torture_onoff task: online 0 failed: errno -5
+[   55.848524] tasks-torture:torture_onoff task: online 0 failed: errno -5
+
+I will start to debug this now.
+
+John Ogness
