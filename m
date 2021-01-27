@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE1B3057DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6383057E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235616AbhA0KIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:08:23 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48370 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235572AbhA0KFy (ORCPT
+        id S234816AbhA0KLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:11:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234866AbhA0KJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:05:54 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10RA2uWt064715;
-        Wed, 27 Jan 2021 05:05:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=ZbyhUIIa6b/q5x+lD1FboRzmgCjgx7QUQ+N1eISoezM=;
- b=Tew4nsOLTlLR9zsPScAKuBOGOw1RUuk6OgdnZsQJmkA2H0FxLuBjG6gDz9QGDsXuP5Xg
- +sVouO1lk6ZP84Xx840zWK16ZHzVvNcGnV8Ya97Lrnz7eS8U9RqeSoI7LS9sf09wvIh0
- xmuRiFeDGpXiBMrD2dpDPzZt8m4T1S14rmKyYEKZi5ZZcHct9p6eMeY7wea44uvLTS29
- jsgB/ZI4ZMwTHEUbd1Zn2NdRRu5vOh9QlssMs/zW7Ky9xUVarH2DamoNdaGsNM9kHQcJ
- Y9xDY/5ZNQGxyVdWYgpMjzzS6w4+lWyEU8BfgY3d/7g6uUO/SrQJPV0W6j8HQ7ikepEd IA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36b410umtq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 05:05:03 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10RA36eh065860;
-        Wed, 27 Jan 2021 05:05:03 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36b410umsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 05:05:03 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10RA31Td003257;
-        Wed, 27 Jan 2021 10:05:01 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 368be7up8h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 10:05:01 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10RA4x1c42205520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 10:04:59 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66B8652051;
-        Wed, 27 Jan 2021 10:04:59 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.68.25])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id C4F1552050;
-        Wed, 27 Jan 2021 10:04:57 +0000 (GMT)
-Date:   Wed, 27 Jan 2021 12:04:54 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>,
-        Guenter Roeck <groeck@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
-Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
- holes in memory layout
-Message-ID: <20210127100454.GK196782@linux.ibm.com>
-References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
+        Wed, 27 Jan 2021 05:09:00 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D52FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:08:20 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id e15so1099360wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:08:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=2WndoVJoechlesOP2uW9G5Dn7tzK4MkFx2WMsweb0HA=;
+        b=UpH17eq02fjfb4twcUSs1kzVLGwnfViW+xXxsIpep3kj4mMwpmbQwEd3udpeUvscAJ
+         Bg7m1KlikJ7nYe5NuPDDLi54HdO6mAbCbhQ/pdxtSIyAywSu6U/bPrihOD4hrHLSyd+P
+         89ly7Y0yHSE/Ial1sv+bDkoilOd4MF8/RKh+tSZrCCMcn3iQPBf5JwsOqC6ZDpAP/Wa+
+         4TDpW6E6EVFbbTdnei+0+oqjY/VKJs/A/+/xEXzN2yXgfVmuOwl9jvMTYGUqXhvolaoA
+         jWuTqGAT44a4of40CpPq48iJ+jpbsX7b+3x8WlzoJTSGuIaxKsbvlDZh1k3MF9X3gyv2
+         1xjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2WndoVJoechlesOP2uW9G5Dn7tzK4MkFx2WMsweb0HA=;
+        b=W4TstRyh2EqZlW/5fTn0rysGGE61vXGMOXrToBEzVXMEZviI8DjyTvAsEESyQ+UW4I
+         4tXJ/x5kvzxMcVKAjNx9A73vN6x0Tf/fDFGFQiEjQhDowicGFRMiR1pqN6thGZ6Z9Qdq
+         Wr4rxnoySOZAxxgXcMeMl3g18cOi7UaHudsO4Os79y70JJICrTOaxqmHGc3Sd/puGtRV
+         0RMKXHecvaA7ZTAyXc5L1zX+cJAI6K8LsAhRdt2ccT99tqBNPdbNbxG8CnnmR+mlvui5
+         L6ArUj9Pp+1J9meZ2g4wE7pf6+xcLm31TkGetl1sDKuOoN4p5AuIis2Q4a5wI7S/gN8H
+         qvGQ==
+X-Gm-Message-State: AOAM531BUzh/cTQwbiJkugcDF7ThDCAhHlrvqSmRikQbOhihrGLYw2Jy
+        5udouQA8WOQ0lRxxKA4Zz0j2pw==
+X-Google-Smtp-Source: ABdhPJzKk7QEfIsVAuxkRlFKl+4OqrXBwYa149X8CairnOU8B6TmtO66T64zZBYBt2QVi/VcyNwmyQ==
+X-Received: by 2002:a1c:4e05:: with SMTP id g5mr3552331wmh.105.1611742099265;
+        Wed, 27 Jan 2021 02:08:19 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id g192sm2137417wmg.18.2021.01.27.02.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 02:08:18 -0800 (PST)
+Date:   Wed, 27 Jan 2021 10:08:16 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, Mayulong <mayulong1@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-arm-msm@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 00/21] Move Hisilicon 6421v600 SPMI driver set out of
+ staging
+Message-ID: <20210127100816.GH4903@dell>
+References: <cover.1611212783.git.mchehab+huawei@kernel.org>
+ <YBBXcdLbj92yMJhw@kroah.com>
+ <20210126175752.GF4839@sirena.org.uk>
+ <YBBZP9LjXPi/rzfP@kroah.com>
+ <20210126181124.GG4839@sirena.org.uk>
+ <YBErBByYD8lNIWAX@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_04:2021-01-26,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- mlxlogscore=999 adultscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270053
+In-Reply-To: <YBErBByYD8lNIWAX@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+On Wed, 27 Jan 2021, Greg Kroah-Hartman wrote:
 
-On Wed, Jan 27, 2021 at 10:22:29AM +0100, Łukasz Majczak wrote:
-> Crash after mm: fix initialization of struct page for holes in memory layout
+> On Tue, Jan 26, 2021 at 06:11:24PM +0000, Mark Brown wrote:
+> > On Tue, Jan 26, 2021 at 07:02:39PM +0100, Greg Kroah-Hartman wrote:
+> > > On Tue, Jan 26, 2021 at 05:57:52PM +0000, Mark Brown wrote:
+> > 
+> > > > Is there a branch we can pull from?
+> > 
+> > > Once 0-day passes, you can pull from my staging-testing branch from
+> > > staging.git on git.kernel.org if you want.  Give it 24 hours to pass
+> > > before it hits that location.
+> > 
+> > Thanks.
 > 
-> Hi,
-> I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Caroline),
-> but I've noticed it has crashed - unfortunately it seems to happen at
-> a very early stage - No output to the console nor to the screen, so I
-> have started a bisect (between 5.11-rc4 - which works just find - and
-> 5.11-rc5),
-> bisect results points to:
+> Should be out there now if you want to pull.
 > 
-> d3921cb8be29 mm: fix initialization of struct page for holes in memory layout
+> > > Do you need a tag to pull from?
+> > 
+> > It'd be nice but not essential.
 > 
-> Reproduction is just to build and load the kernel.
+> Why do you want/need this?  Having these changes in your tree is good,
+> but what about other coding style cleanups that I will end up applying
+> over time before the 5.12-rc1 merge window opens?  Are you wanting to
+> take the moved driver in your tree, or something else?
 > 
-> If it will help any how I am attaching:
-> - /proc/cpuinfo (from healthy system):
-> https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1a785b64a97066
-> - my .config file (for a broken system):
-> https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53efe8e18b5da33c
+> Traditionally moving drivers out of staging can be done 2 ways:
+> 	- all happens in the staging tree, I take an ack from the
+> 	  subsystem maintainer that this is ok to do.
+> 	- A new driver enters the "real" subsystem tree, and then I
+> 	  delete the driver in the staging tree.  This doesn't preserve
+> 	  history as well (not at all), but can be easier for trees that
+> 	  move quickly (like networking.)
 > 
-> If there is anything I could add/do/test to help fix this please let me know.
+> Which ever works for you is fine with me, but relying on the code to
+> stay "not touched" in my tree after you pull it almost never happens due
+> to the number of drive-by coding style cleanups that end up in the
+> staging tree every week.
 
-Chris Wilson also reported boot failures on several Chromebooks:
+I would have expected the whole set to be merged as a set into a
+single tree, placed on an immutable branch and a pull-request to be
+sent out for the other maintainers to pull from (if they so wished).
 
-https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@build.alporthouse.com
+This would ensure development could continue on any/all of the
+affected drivers/files.
 
-I presume serial console is not an option, so if you could boot with
-earlyprintk=vga and see if there is anything useful printed on the screen
-it would be really helpful.
-
-> Best regards
-> Lukasz
+If it's not too late, I'd be more than happy to facilitate.
 
 -- 
-Sincerely yours,
-Mike.
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
