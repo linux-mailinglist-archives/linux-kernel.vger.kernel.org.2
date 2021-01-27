@@ -2,172 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D958630504F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59979305047
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237647AbhA0D4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S237571AbhA0Dyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405312AbhA0BpK (ORCPT
+        with ESMTP id S317127AbhA0Bjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:45:10 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A36C0613ED;
-        Tue, 26 Jan 2021 17:36:22 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQR5b2ZCjz9sBy;
-        Wed, 27 Jan 2021 12:36:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611711379;
-        bh=ctNf9ukIvFwLv4opdXxhui5bZlsS3oKjSMWrXNOtW7M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VJjyUMu18y43dj8nU9r09x1HGztXubtnd9TslRefbVMihe36ZxSUivuauyvCYVsYs
-         pRQlWqe1QexgtsUw0TG9NLJsKfv1CBtB5gik+Va5qgBvKF/VkL9ZWbIaVOVHlEHImu
-         tQeiPrBujNKulftVkVLksP1aXrCUSZWiBsYpHKL8ot+cjUwgxnB1/qKP6MJlVVici2
-         gyRxT8y8YT5KSjVky7Nbd+bRFySBPkMJMdbLXqrT0kZzbbyiNz5yRfpFlOn4qvHf9M
-         az4Ve6FhvsL2bxCxYeOOJlY8Zjhy8UOe1amw+UaGDqlcqhiEnICIfNS3kWDKiHkskF
-         wsmLZF1kfWgKA==
-Date:   Wed, 27 Jan 2021 12:36:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the btrfs tree
-Message-ID: <20210127123618.3d2c6469@canb.auug.org.au>
+        Tue, 26 Jan 2021 20:39:54 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DC8C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 17:39:05 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C146F240;
+        Wed, 27 Jan 2021 02:37:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611711442;
+        bh=V9vA/sNlPmooK07pq3bXsoG2K/kwhxOi3TDZS5PulQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MokMB9WzOH0S16kD9nKJ478Pcdi0P6RqMAthVg6Z5QOV411+Sa39Zq5GnhPXopkCZ
+         8M+G7DEYrH/vh/dhgrfqo1y72lN13VHXh3r1rZjy7OFXpAOqLUIUZDukJeNwrMFXQF
+         5ifxQbLajiBR0PBW+SQ1IOcV705NuU/kJXxmuYUE=
+Date:   Wed, 27 Jan 2021 03:37:02 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hyun Kwon <hyun.kwon@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH 1/1] MAINTAINERS: remove myself from the list
+Message-ID: <YBDDvmLHrYpuTBkn@pendragon.ideasonboard.com>
+References: <20210127011312.697159-1-hyun.kwon@xilinx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nfHCSSGLo9BWrp5rQ9kWbhi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210127011312.697159-1-hyun.kwon@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nfHCSSGLo9BWrp5rQ9kWbhi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Hyun,
 
-Hi all,
+Thank you for the patch.
 
-After merging the btrfs tree, today's linux-next build (powerpc
-ppc64_defconfig) produced these warnings:
+On Tue, Jan 26, 2021 at 05:13:12PM -0800, Hyun Kwon wrote:
+> The email will become invalid soon.
 
-fs/btrfs/file-item.c:44: warning: expecting prototype for s size according =
-to filesystem options(). Prototype was for btrfs_inode_safe_disk_i_size_wri=
-te() instead
-fs/btrfs/file-item.c:82: warning: expecting prototype for Mark range within=
- a file as having a new extent inserted(). Prototype was for btrfs_inode_se=
-t_file_extent_range() instead
-fs/btrfs/file-item.c:110: warning: expecting prototype for Marks an inode r=
-ange as not having a backing extent(). Prototype was for btrfs_inode_clear_=
-file_extent_range() instead
-fs/btrfs/file-item.c:354: warning: wrong kernel-doc identifier on line:
- * Lookup the checksum for the read bio in csum tree.
-fs/btrfs/extent_map.c:402: warning: expecting prototype for Add new extent =
-map to the extent tree(). Prototype was for add_extent_mapping() instead
-fs/btrfs/extent_map.c:603: warning: expecting prototype for Add extent mapp=
-ing into em_tree(). Prototype was for btrfs_add_extent_mapping() instead
-fs/btrfs/extent_io.c:415: warning: expecting prototype for Such entry would=
- have(). Prototype was for __etree_search() instead
-fs/btrfs/extent_io.c:1609: warning: expecting prototype for Find a contiguo=
-us area of bits(). Prototype was for find_contiguous_extent_bit() instead
-fs/btrfs/extent_io.c:1646: warning: expecting prototype for This range coul=
-d start before(). Prototype was for find_first_clear_extent_bit() instead
-fs/btrfs/extent_io.c:4260: warning: wrong kernel-doc identifier on line:
- * Walk the list of dirty pages of the given address space and write all of=
- them.
-fs/btrfs/delayed-ref.c:81: warning: expecting prototype for s reservation()=
-. Prototype was for btrfs_delayed_refs_rsv_release() instead
-fs/btrfs/delayed-ref.c:130: warning: expecting prototype for Transfer bytes=
- to our delayed refs rsv(). Prototype was for btrfs_migrate_to_delayed_refs=
-_rsv() instead
-fs/btrfs/delayed-ref.c:177: warning: expecting prototype for Refill based o=
-n our delayed refs usage(). Prototype was for btrfs_delayed_refs_rsv_refill=
-() instead
-fs/btrfs/free-space-cache.c:1329: warning: expecting prototype for Write ou=
-t cached info to an inode(). Prototype was for __btrfs_write_out_cache() in=
-stead
-fs/btrfs/inode.c:3110: warning: expecting prototype for Wait for flushing a=
-ll delayed iputs(). Prototype was for btrfs_wait_on_delayed_iputs() instead
-fs/btrfs/backref.c:1525: warning: expecting prototype for Check if an exten=
-t is shared or not(). Prototype was for btrfs_check_shared() instead
-fs/btrfs/discard.c:205: warning: expecting prototype for Wrap find_next_blo=
-ck_group(). Prototype was for peek_discard_list() instead
-fs/btrfs/delalloc-space.c:207: warning: expecting prototype for Release any=
- excessive reservation(). Prototype was for btrfs_inode_rsv_release() inste=
-ad
-fs/btrfs/delalloc-space.c:378: warning: expecting prototype for Release a m=
-etadata reservation for an inode(). Prototype was for btrfs_delalloc_releas=
-e_metadata() instead
-fs/btrfs/delalloc-space.c:477: warning: expecting prototype for Release dat=
-a and metadata space for delalloc(). Prototype was for btrfs_delalloc_relea=
-se_space() instead
-fs/btrfs/space-info.c:572: warning: expecting prototype for Possibly commit=
- the transaction if its ok to(). Prototype was for may_commit_transaction()=
- instead
-fs/btrfs/space-info.c:1373: warning: Function parameter or member 'start_ns=
-' not described in 'handle_reserve_ticket'
-fs/btrfs/space-info.c:1373: warning: Function parameter or member 'orig_byt=
-es' not described in 'handle_reserve_ticket'
-fs/btrfs/space-info.c:1373: warning: expecting prototype for Do the appropr=
-iate flushing and waiting for a ticket(). Prototype was for handle_reserve_=
-ticket() instead
-fs/btrfs/space-info.c:1478: warning: expecting prototype for s space(). Pro=
-totype was for __reserve_bytes() instead
-fs/btrfs/space-info.c:1604: warning: expecting prototype for s space(). Pro=
-totype was for btrfs_reserve_metadata_bytes() instead
-fs/btrfs/space-info.c:1640: warning: expecting prototype for Try to reserve=
- data bytes for an allocation(). Prototype was for btrfs_reserve_data_bytes=
-() instead
-fs/btrfs/block-group.c:1583: warning: expecting prototype for Map a physica=
-l disk address to a list of logical addresses(). Prototype was for btrfs_rm=
-ap_block() instead
+Is there, by any chance, anyone at Xilinx would could help maintaining
+these drivers ?
 
-Introduced by commits
+> Signed-off-by: Hyun Kwon <hyun.kwon@xilinx.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> ---
+>  MAINTAINERS | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 992fe3b0900a..4fc00c2da56d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6048,7 +6048,6 @@ F:	Documentation/gpu/xen-front.rst
+>  F:	drivers/gpu/drm/xen/
+>  
+>  DRM DRIVERS FOR XILINX
+> -M:	Hyun Kwon <hyun.kwon@xilinx.com>
+>  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Maintained
+> @@ -19577,7 +19576,6 @@ S:	Maintained
+>  F:	drivers/tty/serial/uartlite.c
+>  
+>  XILINX VIDEO IP CORES
+> -M:	Hyun Kwon <hyun.kwon@xilinx.com>
+>  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Supported
+> @@ -19587,7 +19585,6 @@ F:	drivers/media/platform/xilinx/
+>  F:	include/uapi/linux/xilinx-v4l2-controls.h
+>  
+>  XILINX ZYNQMP DPDMA DRIVER
+> -M:	Hyun Kwon <hyun.kwon@xilinx.com>
+>  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>  L:	dmaengine@vger.kernel.org
+>  S:	Supported
 
-  5001aa0708b9 ("btrfs: fix function description formats in file-item.c")
-  1cf15d8d422e ("btrfs: document modified parameter of add_extent_mapping")
-  d0295ba341a8 ("btrfs: fix parameter description of btrfs_add_extent_mappi=
-ng")
-  b4a01a9a613b ("btrfs: fix parameter description for functions in extent_i=
-o.c")
-  28eef9969992 ("btrfs: fix parameter description in delayed-ref.c function=
-s")
-  d89752bbf791 ("btrfs: improve parameter description for __btrfs_write_out=
-_cache")
+-- 
+Regards,
 
-and so on ...
-
-Presumably exposed by commit
-
-  52042e2db452 ("scripts: kernel-doc: validate kernel-doc markup with the a=
-ctual names")
-
-from the jc_docs tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nfHCSSGLo9BWrp5rQ9kWbhi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAQw5IACgkQAVBC80lX
-0GzYAAgAhUkYI9noLwqdJoxNDgw3PYfPS/UWqvMvumWGorISUpaL2hnu+WjIVUoL
-fv88egELLj6YV1JJmymIP38SyN/drL3nTlfdGII47KroOsPJqHOD6WiE9Tj7fsf8
-ifcI/4guvlHmQ4AIYL5fL01sD9xaKsW/In4DyXh8yxfvMrtqAJyo/j3CHCtbE66E
-/nAntG9afDACQnRNDA+R4nSCUb0dIfaK7ErTmlITn0FQCsNauWwXBCqRLMZw4ZZs
-3xWwwf6TVUSN80Kap0dQ+dC8kAIvAe1K7/1k5/wrhQLmNSVEl5MSdlfZi4izd72k
-uXbbrlwLaRuvGFNP+OE+484Qcrk/Pg==
-=X88e
------END PGP SIGNATURE-----
-
---Sig_/nfHCSSGLo9BWrp5rQ9kWbhi--
+Laurent Pinchart
