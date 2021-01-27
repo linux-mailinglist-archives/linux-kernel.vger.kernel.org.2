@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A13305C2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4392E305C41
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343624AbhA0MzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238087AbhA0Mwr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:52:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191AFC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mtZDQkTPXEcPqbCtS8sQg4qaWBseS8L4LfI1WUkPzDM=; b=b7/25XWblfwizAzTTb+sAOOpDs
-        9IWQ/fbUOGYlAjM0+xhCNrPRzPRs/DRp71RqeFo7cmJsHur2taVXlNsHKTgn+vdkC8fFnA9216YIi
-        JuwY2P7At8AYYY0PjB7ALiohlhOq5G8Te2xFYS83boIWy7jIx6gS29/tHamvcsio7L2oiAAbocgCb
-        KWe/3oohn5Mx+xynqKO+t/20tjZ1WJOPMvDQwzJr1GjV254KlSaMoMdx09OFG+gRmqLnePAaSWk1m
-        1yBf4ypReolsEi39mKPYLwYIfmQ/rNprnTDpubeCW75fdUGWbQOzXEnQ3egG6SEsHVHg5OnFrZnhO
-        M4JUUeSQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4kIb-0002ax-Tw; Wed, 27 Jan 2021 12:51:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2ABAF3010C8;
-        Wed, 27 Jan 2021 13:51:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EAEDD2C539FEC; Wed, 27 Jan 2021 13:51:47 +0100 (CET)
-Date:   Wed, 27 Jan 2021 13:51:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, lcherian@marvell.com,
-        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com,
-        mingo@redhat.com, will@kernel.org, mark.rutland@arm.com,
-        acme@kernel.org, jolsa@redhat.com,
-        Mathieu Poirier <mathieu.poirer@linaro.org>
-Subject: Re: [PATCH V3 13/14] perf: aux: Add flags for the buffer format
-Message-ID: <YBFh46OMgFW7FW2I@hirez.programming.kicks-ass.net>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-14-git-send-email-anshuman.khandual@arm.com>
+        id S238107AbhA0M5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:57:31 -0500
+Received: from mga02.intel.com ([134.134.136.20]:12258 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343568AbhA0MzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 07:55:00 -0500
+IronPort-SDR: 55rxYQ9yPQ7HosBR2wjBXraUeYRiAMpZfJmbVJduSvsvmyPfS1UrLpAhvDKu2sAFy5ru+9bIFV
+ 1pLNgYqZ9s5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="167158593"
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
+   d="scan'208";a="167158593"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 04:53:11 -0800
+IronPort-SDR: +i2HBJGefcGdDW+EOEFWb77dhcquM48zyyIVYH/t2GLZ1wO/34Qmu8PatSj386vXSBQvTCZ4Uy
+ PLD8kAXT/IoQ==
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
+   d="scan'208";a="430090394"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 04:53:07 -0800
+Received: by lahna (sSMTP sendmail emulation); Wed, 27 Jan 2021 14:53:04 +0200
+Date:   Wed, 27 Jan 2021 14:53:04 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        Andreas Noever <andreas.noever@gmail.com>,
+        linux-usb@vger.kernel.org
+Subject: Re: [RFC 3/3] thunderbolt: build kunit tests without structleak
+ plugin
+Message-ID: <20210127125304.GD2542@lahna.fi.intel.com>
+References: <20210125124533.101339-1-arnd@kernel.org>
+ <20210125124533.101339-4-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611737738-1493-14-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20210125124533.101339-4-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 02:25:37PM +0530, Anshuman Khandual wrote:
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> Allocate a byte for advertising the PMU specific format type
-> of the given AUX record. A PMU could end up providing hardware
-> trace data in multiple format in a single session.
-> 
-> e.g, The format of hardware buffer produced by CoreSight ETM
-> PMU depends on the type of the "sink" device used for collection
-> for an event (Traditional TMC-ETR/Bs with formatting or
-> TRBEs without any formatting).
+Hi Arnd,
 
-Acked-by: Peter Ziljstra <peterz@infradead.org>
+On Mon, Jan 25, 2021 at 01:45:28PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The structleak plugin causes the stack frame size to grow immensely:
+> 
+> drivers/thunderbolt/test.c:1529:1: error: the frame size of 1176 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> 
+> Turn it off in this file.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  include/uapi/linux/perf_event.h | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index b15e344..9a5ca45 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -1105,10 +1105,11 @@ enum perf_callchain_context {
->  /**
->   * PERF_RECORD_AUX::flags bits
->   */
-> -#define PERF_AUX_FLAG_TRUNCATED		0x01	/* record was truncated to fit */
-> -#define PERF_AUX_FLAG_OVERWRITE		0x02	/* snapshot from overwrite mode */
-> -#define PERF_AUX_FLAG_PARTIAL		0x04	/* record contains gaps */
-> -#define PERF_AUX_FLAG_COLLISION		0x08	/* sample collided with another */
-> +#define PERF_AUX_FLAG_TRUNCATED			0x01	/* record was truncated to fit */
-> +#define PERF_AUX_FLAG_OVERWRITE			0x02	/* snapshot from overwrite mode */
-> +#define PERF_AUX_FLAG_PARTIAL			0x04	/* record contains gaps */
-> +#define PERF_AUX_FLAG_COLLISION			0x08	/* sample collided with another */
-> +#define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00	/* PMU specific trace format type */
->  
->  #define PERF_FLAG_FD_NO_GROUP		(1UL << 0)
->  #define PERF_FLAG_FD_OUTPUT		(1UL << 1)
-> -- 
-> 2.7.4
-> 
+To me this is a reasonable work around so I can pick this up to
+Thunderbolt tree if no objections.
+
+Thanks BTW, for doing this. I got a report from buildbot some time ago
+about the this but did not have time to figure out how to fix it :)
