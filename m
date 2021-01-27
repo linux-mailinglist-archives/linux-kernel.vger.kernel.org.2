@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3B73052AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8102305313
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhA0F7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 00:59:31 -0500
-Received: from m12-18.163.com ([220.181.12.18]:55652 "EHLO m12-18.163.com"
+        id S232112AbhA0F6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 00:58:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235663AbhA0DWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:22:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Qhvx+
-        Knp26+i+QuDp7Oc/cuqMXt2WbaoYJqljrF9deI=; b=RMoQMdtrdAuHeBPenVMwj
-        k7MDbbL1I4360F/4MfSAfto8+kqHUaVFXUEjAXkPaTdONPvHDnGZd119DaY9xx8k
-        /OI2X3eXMRSOV9klnTDnLK1wl1q6MASLEOPfHsRUTU40RfaBCEYQHD/B/lBc09Gd
-        MzXWtCM8a7zm1EQ4KvwCTM=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowAA3PgJ01xBg1QreRA--.28066S2;
-        Wed, 27 Jan 2021 11:01:09 +0800 (CST)
-From:   dingsenjie@163.com
-To:     akpm@linux-foundation.org, colin.king@canonical.com,
-        naoki.hayama@lineo.co.jp, xndchn@gmail.com, sjpark@amazon.de,
-        ebiggers@google.com, joe@perches.com
-Cc:     linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] scripts/spelling.txt: increase error-prone spell checking
-Date:   Wed, 27 Jan 2021 11:01:05 +0800
-Message-Id: <20210127030105.7244-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S235008AbhA0DPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:15:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7F0205CA;
+        Wed, 27 Jan 2021 03:14:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611717276;
+        bh=D0Qq+Fw7Ddpu0yizF3n5QBzokiqxWrewo5KH/Easwik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fYWt+0D25u7m4Iq1090WJSF102xxsHTBSVde3fj9qpWZTIFJNRCq2YJIMyX8sPprW
+         pUCd7qr/nvaZRES0gBYmtLm5Qx4GIKOelnPMlNH5EjgkAndsfH/8qEdgZSbtXRs6U/
+         9eItQFngZuPySenDulB9lX+ZhcDRMnKxW9Z6bZzAXlPHMgsF6sMmOnkEdB8/66qoNQ
+         FVt9rhhyVrXvbPNZX7/+0k0Inl2MAyDzoQOu7U9UsyYZHktIE35SYCBAboT2xNIqgS
+         SJNq4zClby/GkEeWJ0YyYo113vyObZG8w26okc3VhHJd/X0T1iXH/Z/rVAcoUvHo+j
+         8Vl4pUp/eDKfQ==
+Date:   Tue, 26 Jan 2021 19:14:35 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the xfs tree
+Message-ID: <20210127031435.GB7695@magnolia>
+References: <20210125095532.64288d47@canb.auug.org.au>
+ <20210125132616.GB2047559@bfoster>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAA3PgJ01xBg1QreRA--.28066S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUhSdyUUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRUnyFUMcFIUcwAAsD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125132616.GB2047559@bfoster>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+On Mon, Jan 25, 2021 at 08:26:16AM -0500, Brian Foster wrote:
+> On Mon, Jan 25, 2021 at 09:55:32AM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the xfs tree, today's linux-next build (powerpc
+> > ppc64_defconfig) produced this warning:
+> > 
+> > fs/xfs/xfs_log.c: In function 'xfs_log_cover':
+> > fs/xfs/xfs_log.c:1111:16: warning: unused variable 'log' [-Wunused-variable]
+> >  1111 |  struct xlog  *log = mp->m_log;
+> >       |                ^~~
+> > 
+> > Introduced by commit
+> > 
+> >   303591a0a947 ("xfs: cover the log during log quiesce")
+> > 
+> 
+> Oops, patch below. Feel free to apply or squash into the original
+> commit.
+> 
+> Brian
+> 
+> --- 8< ---
+> 
+> From 6078f06e2bd4c82111a85a2032c39a56654b0be6 Mon Sep 17 00:00:00 2001
+> From: Brian Foster <bfoster@redhat.com>
+> Date: Mon, 25 Jan 2021 08:22:56 -0500
+> Subject: [PATCH] xfs: fix unused log variable in xfs_log_cover()
+> 
+> The log variable is only used in kernels with asserts enabled.
+> Remove it and open code the dereference to avoid unused variable
+> warnings.
+> 
+> Signed-off-by: Brian Foster <bfoster@redhat.com>
 
-Increase allocted spelling error check.
+Looks ok to me...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- scripts/spelling.txt | 1 +
- 1 file changed, 1 insertion(+)
+--D
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 953f4a2..5fa8ec2 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -103,6 +103,7 @@ alloated||allocated
- allocatote||allocate
- allocatrd||allocated
- allocte||allocate
-+allocted||allocated
- allpication||application
- alocate||allocate
- alogirhtms||algorithms
--- 
-1.9.1
-
-
+> ---
+>  fs/xfs/xfs_log.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
+> index 58699881c100..d8b814227734 100644
+> --- a/fs/xfs/xfs_log.c
+> +++ b/fs/xfs/xfs_log.c
+> @@ -1108,12 +1108,11 @@ static int
+>  xfs_log_cover(
+>  	struct xfs_mount	*mp)
+>  {
+> -	struct xlog		*log = mp->m_log;
+>  	int			error = 0;
+>  	bool			need_covered;
+>  
+> -	ASSERT((xlog_cil_empty(log) && xlog_iclogs_empty(log) &&
+> -	        !xfs_ail_min_lsn(log->l_ailp)) ||
+> +	ASSERT((xlog_cil_empty(mp->m_log) && xlog_iclogs_empty(mp->m_log) &&
+> +	        !xfs_ail_min_lsn(mp->m_log->l_ailp)) ||
+>  	       XFS_FORCED_SHUTDOWN(mp));
+>  
+>  	if (!xfs_log_writable(mp))
+> -- 
+> 2.26.2
+> 
