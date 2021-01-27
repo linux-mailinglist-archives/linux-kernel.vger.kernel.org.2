@@ -2,36 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10225305A60
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D186305A67
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 12:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237404AbhA0Lwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 06:52:38 -0500
-Received: from 8bytes.org ([81.169.241.247]:53114 "EHLO theia.8bytes.org"
+        id S237253AbhA0Lyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 06:54:35 -0500
+Received: from ozlabs.org ([203.11.71.1]:51565 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234383AbhA0Ltu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:49:50 -0500
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 0E5ED303; Wed, 27 Jan 2021 12:49:08 +0100 (CET)
-Date:   Wed, 27 Jan 2021 12:49:06 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     trix@redhat.com
-Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/amd: remove h from printk format specifier
-Message-ID: <20210127114906.GE32671@8bytes.org>
-References: <20201215213021.2090698-1-trix@redhat.com>
+        id S237388AbhA0Lu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:50:29 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQhjN3mtXz9sS8;
+        Wed, 27 Jan 2021 22:49:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611748184;
+        bh=g2q/HZguZ1ZnDiCFKZnmDOfmIZPxicnT9F3kFhQh6/U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vGeN01SJRFi3oa6W1dtEWxaivfUJWTwZ7TcAslTSKX9Ytt8LWa5mm4zw7dpr7VVq+
+         QmcRqwm9M4AH1H/7EVf5gBCGGBs9WideTVlpFOtmgTYvVRpqnXhej6IB2tVYD9jhql
+         jwuHiik51yaymnrALmADfeKK4Qpo7lPLFKlecsEOzw4efBpXDPzQjRe7lOVgprW7Pc
+         yg6gbq1MUAbYkAUIxhRNdD4ikN7hHe3plJkTAoWy0TVxZlbMQBiaCrWn5j7nENSS5s
+         RU2gNH+2eBQIuj/NImzxDkzFkmQVSWjruCEye4kvAymT4iqwJAgl79nvNs8W1htCzK
+         o7IENrbK1ABsg==
+Date:   Wed, 27 Jan 2021 22:49:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: linux-next: manual merge of the akpm-current tree with the fscache
+ tree
+Message-ID: <20210127224943.34b087ef@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215213021.2090698-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/Hr.Q4ImlBSuL2U6G_8T8iwT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 01:30:21PM -0800, trix@redhat.com wrote:
->  drivers/iommu/amd/init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+--Sig_/Hr.Q4ImlBSuL2U6G_8T8iwT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks.
+Hi all,
+
+Today's linux-next merge of the akpm-current tree got a conflict in:
+
+  include/linux/pagemap.h
+
+between commits:
+
+  fa4910177245 ("vm: Add wait/unlock functions for PG_fscache")
+  13aecd8259dc ("mm: Implement readahead_control pageset expansion")
+
+from the fscache tree and commits:
+
+  f5614fc4780c ("mm/filemap: pass a sleep state to put_and_wait_on_page_loc=
+ked")
+  7335e3449f74 ("mm/filemap: add mapping_seek_hole_data")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/pagemap.h
+index 4935ad6171c1,20225b067583..000000000000
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@@ -682,21 -681,7 +682,20 @@@ static inline int wait_on_page_locked_k
+  	return wait_on_page_bit_killable(compound_head(page), PG_locked);
+  }
+ =20
+ +/**
+ + * wait_on_page_fscache - Wait for PG_fscache to be cleared on a page
+ + * @page: The page
+ + *
+ + * Wait for the fscache mark to be removed from a page, usually signifyin=
+g the
+ + * completion of a write from that page to the cache.
+ + */
+ +static inline void wait_on_page_fscache(struct page *page)
+ +{
+ +	if (PagePrivate2(page))
+ +		wait_on_page_bit(compound_head(page), PG_fscache);
+ +}
+ +
+- extern void put_and_wait_on_page_locked(struct page *page);
+-=20
++ int put_and_wait_on_page_locked(struct page *page, int state);
+  void wait_on_page_writeback(struct page *page);
+  extern void end_page_writeback(struct page *page);
+  void wait_for_stable_page(struct page *page);
+@@@ -771,11 -756,11 +770,13 @@@ int add_to_page_cache_lru(struct page *
+  				pgoff_t index, gfp_t gfp_mask);
+  extern void delete_from_page_cache(struct page *page);
+  extern void __delete_from_page_cache(struct page *page, void *shadow);
+- int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp=
+_mask);
++ void replace_page_cache_page(struct page *old, struct page *new);
+  void delete_from_page_cache_batch(struct address_space *mapping,
+  				  struct pagevec *pvec);
+ +void readahead_expand(struct readahead_control *ractl,
+ +		      loff_t new_start, size_t new_len);
++ loff_t mapping_seek_hole_data(struct address_space *, loff_t start, loff_=
+t end,
++ 		int whence);
+ =20
+  /*
+   * Like add_to_page_cache_locked, but used to add newly allocated pages:
+
+--Sig_/Hr.Q4ImlBSuL2U6G_8T8iwT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmARU1cACgkQAVBC80lX
+0Gw/2wf/Yi3SJ7hLGwzQ4duzqkhsIDk/h8g6QgXmUbPJtkqAu9v1VbOXyXND+nNx
+vZwcRQjU7hl4rqwnyCgUMP8lursyIcGyuxVsCGQx4aherCCgVU8aEOxKCzLKWg5a
+qNVspP6U+h15Uy87PMaF3I/IlRDKL+X/VTqzMVCN/vEig3332iw19+5osjmvN4Od
+g29Q/JZIK4Y0l1lzRxnBmxw5txChBmbKYeMl2rtMRtJyFkXw6PDzj7qPMA4LqImK
+85s/xcjut/9qRRDkuTH/bapXv/AEDWA35jxViutPOEjvA1Wm0+E3IlY1DREMI5of
+h0LJZ8CGVJF6svB2XmpYAgwXC2iIaw==
+=6iN8
+-----END PGP SIGNATURE-----
+
+--Sig_/Hr.Q4ImlBSuL2U6G_8T8iwT--
