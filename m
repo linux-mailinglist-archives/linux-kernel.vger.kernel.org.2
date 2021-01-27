@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A2E306755
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001AC306759
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhA0W4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 17:56:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        id S232593AbhA0W5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 17:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhA0W4I (ORCPT
+        with ESMTP id S232132AbhA0W4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:56:08 -0500
-X-Greylist: delayed 474 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 27 Jan 2021 14:32:47 PST
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA43C06174A;
-        Wed, 27 Jan 2021 14:32:47 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 708311C0B8E; Wed, 27 Jan 2021 23:24:08 +0100 (CET)
-Date:   Wed, 27 Jan 2021 23:24:07 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Add initial support for BQ Aquaris X5
-Message-ID: <20210127222407.GD24799@amd>
-References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
- <20210124210119.GA27676@amd>
- <YA3rTAx2vfOXPCMq@gerhold.net>
+        Wed, 27 Jan 2021 17:56:13 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4D9C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:26:58 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id i63so2333660pfg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 14:26:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MMFtAtZNI0COZaqF8mB8/06frm5QBEITJpap0cTagq8=;
+        b=CRXdKGJOGXXsOQpHtELIKR8umZ5rhCnWLRE36xgaT6dDVwCPEZjCeBR2Qsk7DeBK8t
+         GWwKHGqh6cb6Fo5dOCjrFchI4QQ89+oaW5HAjc5xx3YuDcqPEcf6kdF6T98nxDSLUnkx
+         fBgBERt0O3M9585mXFDborfe6U0cHo57JYy6hVW81eqgZGPWKR1An2L2yv9+paOg3CXH
+         tCVrdAtbgv444EeewcZ6ba0aJYVoQ9S09DHAXWwLR1VEJ7UndfBlBjQT+Dcb1uaNW+wF
+         TJmXQlSft7xyE1BlHvgn+w3v/p5eFlE74xEJHfRfIwJfNEGxjRThenG+fIFn+j0kj6qs
+         dW+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MMFtAtZNI0COZaqF8mB8/06frm5QBEITJpap0cTagq8=;
+        b=TMGuvIjgl1HnneeF0N2U5Ozw2bZCENZBAzZ8ZMGijd/FJD2ySZ3ospwacluETqpuUo
+         OnuSB+xiEgqGKkAiNUj3d6s97hh8F2z3BuMn6f1/Q9ad3E8R+loGH36euniq9Vop35qH
+         EPZBFSWk0F7/aqXnuPuWexE9JlhlnhwG80Vuuc+c7eLB3eXXAv8ghJxOJYfU1UnxLUkF
+         yGSCpoPUzXZ4J3xIi6+EFcr6FzMAM+9XwUnVvHFDwB89rwMHdEsqQ8QiR943jTYK1NEP
+         ng1QBdb+9H+haoWgI0nfpgzg+fjKR9bwSRL6V25rDZk0wOP2YgyhsUjlKKDWEt0rGJP1
+         GJ3A==
+X-Gm-Message-State: AOAM533t+l6iJ6keh/4RBJsYtuDo+ZSYdytCm475LfHEmOXmARRamqfR
+        ibskFMekmHPM+GS/04xD0yCrJ1JpnzR43a784/M8Uw==
+X-Google-Smtp-Source: ABdhPJzOWe2d9GCIKgOrAtd2j0dugg5j43ntl0uPF21manG+gGVrrjiRx873lNw4xwTd8k/hi0vONdzecQhgyBv8vSs=
+X-Received: by 2002:a63:7e10:: with SMTP id z16mr13557544pgc.263.1611786417749;
+ Wed, 27 Jan 2021 14:26:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="BI5RvnYi6R4T2M87"
-Content-Disposition: inline
-In-Reply-To: <YA3rTAx2vfOXPCMq@gerhold.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20210112205542.1375847-1-natechancellor@gmail.com>
+ <202101130859.JSORPQUn-lkp@intel.com> <20210113013130.GA3446359@ubuntu-m3-large-x86>
+ <CAKwvOdnx99YTGhP-mH-9E6YTLLUfauuteFtqZSeXLv5Vy+XowA@mail.gmail.com>
+In-Reply-To: <CAKwvOdnx99YTGhP-mH-9E6YTLLUfauuteFtqZSeXLv5Vy+XowA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 27 Jan 2021 14:26:45 -0800
+Message-ID: <CAKwvOd=WpK52Y4HpqoeaukmfOAWqTg-+NV1wdBjokwRuumdtSw@mail.gmail.com>
+Subject: Re: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 5:39 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 5:31 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > On Wed, Jan 13, 2021 at 08:39:52AM +0800, kernel test robot wrote:
+> > > Hi Nathan,
+> > >
+> > > I love your patch! Perhaps something to improve:
+> > >
+> > > [auto build test WARNING on 7c53f6b671f4aba70ff15e1b05148b10d58c2837]
+> > >
+> > > url:    https://github.com/0day-ci/linux/commits/Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
+> > > base:    7c53f6b671f4aba70ff15e1b05148b10d58c2837
+> > > config: arm64-randconfig-r031-20210112 (attached as .config)
+> > > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 32bcfcda4e28375e5a85268d2acfabcfcc011abf)
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # install arm64 cross compiling tool for clang build
+> > >         # apt-get install binutils-aarch64-linux-gnu
+> > >         # https://github.com/0day-ci/linux/commit/775adad26a60878926c0ee6cd460a1375bbe51e6
+> > >         git remote add linux-review https://github.com/0day-ci/linux
+> > >         git fetch --no-tags linux-review Nathan-Chancellor/ubsan-Implement-__ubsan_handle_alignment_assumption/20210113-055714
+> > >         git checkout 775adad26a60878926c0ee6cd460a1375bbe51e6
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > All warnings (new ones prefixed by >>):
+> > >
+> > >    lib/ubsan.c:192:6: warning: no previous prototype for function '__ubsan_handle_add_overflow' [-Wmissing-prototypes]
+> > >    void __ubsan_handle_add_overflow(void *data,
+> > >         ^
+> > >    lib/ubsan.c:192:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> > >    void __ubsan_handle_add_overflow(void *data,
+> > >    ^
+> > >    static
+> > >    lib/ubsan.c:200:6: warning: no previous prototype for function '__ubsan_handle_sub_overflow' [-Wmissing-prototypes]
+> > >    void __ubsan_handle_sub_overflow(void *data,
+> > >         ^
+> > >    lib/ubsan.c:200:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> > >    void __ubsan_handle_sub_overflow(void *data,
+> > >    ^
+> >
+> > Given that these are compiler inserted functions, there is not much of a
+> > point to having prototypes to them. If people feel shutting these
+> > warnings up is worthwhile, we can just add the prototypes right above
+> > the function definition in a follow up patch.
+>
+> Same as stpcpy; it would be nice though. ;)
 
---BI5RvnYi6R4T2M87
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If you would be so kind, I'd be happy to sign off on such a v3.
 
-Hi!
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-> > > Aquaris X5 (Longcheer L8910) is a smartphone released by BQ in 2015.
-> > >=20
-> > > As part of msm8916-mainline project, this series aims to bring initial
-> > > mainline support for it.
-> >=20
-> > Good to see another phone being supported. Can I ask you to cc:
-> > phone-devel@vger.kernel.org with phone stuff?
-> >=20
-> > > Features added:
-> > >  - SDHCI (internal and external storage)
-> > >  - USB Device Mode
-> > >  - UART
-> > >  - Regulators
-> > >  - WiFi/BT
-> > >  - Volume buttons
-> > >  - Vibrator
-> > >  - Touchkeys backlight
-> > >  - Accelerometer and gyroscope sensor
-> > >  - Magnetometer sensor
-> >=20
-> > How close are you to having useful phone calls?
->=20
-> You can do phone calls (with audio) and you can use mobile data, if you
-> have the patches for that. :) I'm trying to find time to finish up the
-> drivers needed for that, but I've been a bit short on time lately.
 
-:-).=20
 
-> Actually we have come pretty far with MSM8916-based smartphones.
-> Most functionality is (somewhat) working at this point, the primary
-> open task is optimizing suspend/power consumption. Battery/charging
-> and camera is also tricky but works somewhat on some of the devices.
-
-Yes, power consumption is a lot of fun :-(.
-
-> Most of the functionality is packaged in postmarketOS [1] and you can
-> find a list of the devices in the postmarketOS wiki [2]. Especially
-> the ones in the "community" category are quite similar in terms of
-> working functionality.
-
-I know about postmarketOS (I even contributed a bit some time ago),
-and watch it from time to time. Currently I'm using old Nokia 6151 for
-phone calls, but would not mind switching. Work is ongoing in Droid 4
-land -- phone calls are also "almost there". But the almost seems to
-be a lot of work :-(.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---BI5RvnYi6R4T2M87
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAR6AcACgkQMOfwapXb+vJIwwCcDASqiP104rhpm8QJgQ160Qda
-GUgAn3bYBt4Yh25JM6rh0GIsEKcoCrH9
-=trfK
------END PGP SIGNATURE-----
-
---BI5RvnYi6R4T2M87--
+-- 
+Thanks,
+~Nick Desaulniers
