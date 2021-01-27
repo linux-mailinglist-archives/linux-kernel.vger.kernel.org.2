@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DD730508B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713AF30508E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 05:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238346AbhA0ENC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 23:13:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:47828 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238124AbhA0EGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 23:06:53 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3586C1042;
-        Tue, 26 Jan 2021 20:06:07 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 999403F66B;
-        Tue, 26 Jan 2021 20:06:03 -0800 (PST)
-Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-To:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
- <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
- <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
- <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4c7a92f3-4c5a-c3c6-7fed-befed2f3d3cb@arm.com>
-Date:   Wed, 27 Jan 2021 09:36:20 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S238398AbhA0EN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 23:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238243AbhA0EJo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 23:09:44 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66F8C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:03 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id c13so1064985ybg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 20:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/NFozpI8ZbWwzRiGUBVcpbxoLur7ok4y0yyNaLYcumw=;
+        b=Li+8q1/gaF5amm8CoyhzDjvW/Pl5jRGy8lpG5kJ0u6HESxuskQOSzgOi+sbdB4GwIA
+         fqSyll1awe+3ZNfon1cXinDQNWFygpzRq6QmChIy4kkaUwvIXGqYhFKo//wiPe+oNBA9
+         49em6YWQK2v0Bb7pZCfPzP6ZNyq5N/x+1ncL7GLYOR9MZpUsUazfvaIZxfGKC8IpTx4F
+         TGjNQqyRVWO9gv5q2v44opfbfNy6dbhfpi6+AWuxeRJTZMB5dxHsJRpGj5TKU96+ffeT
+         3/haVcouLdC4VU0seOF4gVXFZrz1sSjFXSSjgvEKy41x3Em1peIVKXE1fpJkpesW0Gp3
+         lLAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/NFozpI8ZbWwzRiGUBVcpbxoLur7ok4y0yyNaLYcumw=;
+        b=Sz5HwqIii0FpLDqiwERJc/ewKZgWoFggT3n9An9D0WC7hJM8d81kphPb1JSKmW5vTj
+         DCBcbRhtOSbLN7m5djpln69EJvVZ9IFYLAAZjwo/UQfywrmMgykcsRoOqwajyQB3f38F
+         WZl8W4A9qw5BjWtCqvEgVLL2jzEmWFkQtG0IHGHkT/vgpF8JO/xHbMo47KE6SxoPjxPy
+         jXE06rxijmYsJze2WmCFUR3EvieV0Lb9oexJWPyLkpLqt4rhQP0HfoLMLnte7o2WlGn4
+         /Zx9Qq0nCBs5FeUxXCCmJ+FmFt7yfIfbQk3jG3UDy+DatwfMCk9A484fHAbOvjqc/8xn
+         14Cg==
+X-Gm-Message-State: AOAM530TZMVWZwR7nsDw8vxa+GZjHoh+rXo9jufjIvGj74ryqDOdCJ2x
+        mEF8LyTpXRx6HqS124GEMDqzeZrHmdi1Aw==
+X-Google-Smtp-Source: ABdhPJyrgWDt/A/kkQL9NBTPoU3UjkmaFq1Tbo0yECsvcrcuafexRiuwO9ZJfstVallP4bGH8Ka7E2FzQoqlNQ==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7000:2f04:a262:7158])
+ (user=davidgow job=sendgmr) by 2002:a25:6ed7:: with SMTP id
+ j206mr12923711ybc.312.1611720542946; Tue, 26 Jan 2021 20:09:02 -0800 (PST)
+Date:   Tue, 26 Jan 2021 20:06:37 -0800
+Message-Id: <20210127040636.1535722-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH] i3c/master/mipi-i3c-hci: Specify HAS_IOMEM dependency
+From:   David Gow <davidgow@google.com>
+To:     Nicolas Pitre <npitre@baylibre.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Gow <davidgow@google.com>, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The MIPI i3c HCI driver makes use of IOMEM functions like
+devm_platform_ioremap_resource(), which are only available if
+CONFIG_HAS_IOMEM is defined.
 
+This causes the driver to be enabled under make ARCH=um allyesconfig,
+even though it won't build.
 
-On 1/25/21 2:43 PM, David Hildenbrand wrote:
-> On 25.01.21 07:22, Anshuman Khandual wrote:
->>
->> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
->>> pfn_valid() asserts that there is a memblock entry for a given pfn without
->>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->>> that they do not have memblock entries. Hence memblock_is_map_memory() will
->>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->>> into the system via memremap_pages() called from a driver, their respective
->>> memory sections will not have SECTION_IS_EARLY set.
->>>
->>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->>> for firmware reserved memory regions. memblock_is_map_memory() can just be
->>> skipped as its always going to be positive and that will be an optimization
->>> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
->>> normal memory too will not have SECTION_IS_EARLY set for their sections.
->>>
->>> Skipping memblock_is_map_memory() for all non early memory sections would
->>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->>> performance for normal hotplug memory as well.
->>>
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Ard Biesheuvel <ardb@kernel.org>
->>> Cc: Robin Murphy <robin.murphy@arm.com>
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>
->> Hello David/Mike,
->>
->> Given that we would need to rework early sections, memblock semantics via a
->> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
->> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
->> which fixes a problem (and improves performance) can be merged first. After
->> that, I could start working on the proposed rework. Could you please let me
->> know your thoughts on this. Thank you.
-> 
-> As I said, we might have to throw in an pfn_section_valid() check, to
-> catch not-section-aligned ZONE_DEVICE ranges (I assume this is possible
-> on arm64 as well, no?).
+By adding a dependency on HAS_IOMEM, the driver will not be enabled on
+architectures which don't support it.
 
-pfn_section_valid() should be called only for !early_section() i.e normal
-hotplug and ZONE_DEVICE memory ? Because early boot memory should always
-be section aligned.
+Fixes: 9ad9a52cce28 ("i3c/master: introduce the mipi-i3c-hci driver")
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ drivers/i3c/master/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Apart from that, I'm fine with a simple fix upfront, that can be more
-> easily backported if needed. (Q: do we? is this stable material?)
-> 
+diff --git a/drivers/i3c/master/Kconfig b/drivers/i3c/master/Kconfig
+index e68f15f4b4d0..afff0e2320f7 100644
+--- a/drivers/i3c/master/Kconfig
++++ b/drivers/i3c/master/Kconfig
+@@ -25,6 +25,7 @@ config DW_I3C_MASTER
+ config MIPI_I3C_HCI
+ 	tristate "MIPI I3C Host Controller Interface driver (EXPERIMENTAL)"
+ 	depends on I3C
++	depends on HAS_IOMEM
+ 	help
+ 	  Support for hardware following the MIPI Aliance's I3C Host Controller
+ 	  Interface specification.
+-- 
+2.30.0.280.ga3ce27912f-goog
 
-Right, an upfront fix here would help in backporting. AFAICS it should be
-backported to the stable as pte_devmap and ZONE_DEVICE have been around
-for some time now. Do you have a particular stable version which needs to
-be tagged in the patch ?
