@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7B53052E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2777A3052DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 07:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhA0GIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 01:08:50 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:48336 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbhA0Fqj (ORCPT
+        id S235789AbhA0GJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 01:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232953AbhA0Fsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:46:39 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R5Yuwf195850;
-        Wed, 27 Jan 2021 05:45:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Lxj8bEelE23lP5Yarr1kv02daEJS+HwhDWx2YUgzflE=;
- b=AZ6KZX/zZLPFJpqpb5Sz+JZt1Ekr8g8fcokY5ZpNf0+DkMlJ1Zd+vuQ3+ZglzKn5risD
- qXc2YbDEUY56YlbyHL+i8U2W8bdgT/db+uClZqCVSx1qStUvmaE46SqCOmWUsv3Zu9OK
- MfU3G7b4SR5dVF38O6ngZ7hmfoDFaGQhFbkcAkRKYpBHBHE5D4UOkX4tFTjOs8Q37CPf
- 4mqbVUGdgXpN0IqLHsWPTEJc3jUrfENacWiMFq5h4+4JA9G6dYy6ndETp06a56YD+Npb
- oaW2d2A4yMYdsiydDYLNOz7R95tSPM0one7JFDWLIBVHKMQIQGIc+XOG6AH2kScAdXut mw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 368b7qw9rh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 05:45:45 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10R5UaNg018456;
-        Wed, 27 Jan 2021 05:45:42 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 368wpytx1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jan 2021 05:45:42 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10R5jV6J004430;
-        Wed, 27 Jan 2021 05:45:32 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 26 Jan 2021 21:45:31 -0800
-Date:   Wed, 27 Jan 2021 08:45:23 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
-        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
-        colin.king@canonical.com, zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v5] fbtft: add tearing signal detect
-Message-ID: <20210127054523.GA2696@kadam>
-References: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611711140-68260-1-git-send-email-zhangxuezhi3@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
- adultscore=0 bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270032
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101270032
+        Wed, 27 Jan 2021 00:48:31 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461BAC06178C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 21:46:20 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id e9so656858pjj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 21:46:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGwLX141izLDvx1hQTGiiwKO086AeFCYCtYAmNWi9wI=;
+        b=AmTdH3IG4UQzJndI1D27UQJWy8ntwz3x96fLaGYHHI8DDA6H+Y68FXg1U5+ek6ovCn
+         BQskNvflja4Kqe4HWtn3w42joJ9YUlN577FkgtA2wn8h4A+gee/IgXId+fkal+R9QLJn
+         Na2PxVzgvj5x+O52bGPuCVBbamCyvJdweyNcbR3LECVkeySnNjL82VUJ/YR5uOBQj289
+         qijz8MXoF7zeIeGbr1pzM0INdKa2u6ikLS6t9DFsADUNGVZIqVyByhitCvhByTi3r9Cb
+         GFO8v3dk3dOPI8NCgIEvoLfRAsoSe8tDBOqTLpl21rRUuC+KF1FC+PjiJRruBMdfA3J+
+         e4PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=pGwLX141izLDvx1hQTGiiwKO086AeFCYCtYAmNWi9wI=;
+        b=GdwEYg3qNBSCtghghHW37cSFH2l2upR6n5R+yYWynttxxWhR1GlZ0bBarzApE/Bul2
+         VGKq0srCq4GwTC1oHxkUNXRD8vzBkT/bBPffaFWJ4b+vSl4TWRd3DoHTw97x9Vf50Z9k
+         HM4CQJ4BzYBU1gR0Brq/+h0scRQK78K05vM0JhEcZ6pl27ONI7oxXyFS1Gyvpf0F1KhU
+         e1Ux2iA43adheIGwjuT/eeUVj6Za0WRM7GQbZFb10y+0zveLq2ChC6QrkqGr8MX/TJTJ
+         lOMZx5uwIsEMqr21xPwOd5oxWkXLJoly3+71LAkMFPKQrH6pNRGO9Sk0K6hVsH8mbnuA
+         uK0A==
+X-Gm-Message-State: AOAM533ZQl6y4V71HFZ3En0nCgUahzAVqSjOfWRQKsV8QxLQuYoVcxup
+        cyFYLZY30CDuNwzt9FYViGAPBw==
+X-Google-Smtp-Source: ABdhPJzlYhGFSdTqcPKE8K2PIdYf+VA6n3sx73gQUwIFBNusPJfAV5LCpnY0tYvL1n4CZqElayMtXA==
+X-Received: by 2002:a17:902:e8c9:b029:de:a2c7:e661 with SMTP id v9-20020a170902e8c9b02900dea2c7e661mr9611617plg.76.1611726379718;
+        Tue, 26 Jan 2021 21:46:19 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 145sm840907pge.88.2021.01.26.21.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 21:46:18 -0800 (PST)
+Date:   Tue, 26 Jan 2021 21:46:18 -0800 (PST)
+X-Google-Original-Date: Tue, 26 Jan 2021 21:46:11 PST (-0800)
+Subject:     Re: [PATCH v15 03/11] riscv/Kconfig: make direct map manipulation options depend on MMU
+In-Reply-To: <20210123110041.GE6332@kernel.org>
+CC:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        luto@kernel.org, Arnd Bergmann <arnd@arndb.de>, bp@alien8.de,
+        catalin.marinas@arm.com, cl@linux.com, dan.j.williams@intel.com,
+        dave.hansen@linux.intel.com, david@redhat.com,
+        elena.reshetova@intel.com, hpa@zytor.com, mingo@redhat.com,
+        jejb@linux.ibm.com, kirill@shutemov.name, willy@infradead.org,
+        mark.rutland@arm.com, rppt@linux.ibm.com, mtk.manpages@gmail.com,
+        Paul Walmsley <paul.walmsley@sifive.com>, peterz@infradead.org,
+        rick.p.edgecombe@intel.com, guro@fb.com, shakeelb@google.com,
+        shuah@kernel.org, tglx@linutronix.de, tycho@tycho.ws,
+        will@kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, lkp@intel.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     rppt@kernel.org
+Message-ID: <mhng-0c84abc1-8ac8-4142-be1c-a269d8b345f8@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:32:20AM +0800, Carlis wrote:
-> @@ -82,6 +111,29 @@ enum st7789v_command {
->   */
->  static int init_display(struct fbtft_par *par)
->  {
-> +	int rc;
-> +	struct device *dev = par->info->device;
-> +
-> +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-> +	if (par->gpio.te) {
-> +		init_completion(&spi_panel_te);
-> +		mutex_init(&te_mutex);
-> +		rc = devm_request_irq(dev,
-> +				      gpiod_to_irq(par->gpio.te),
-> +				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
-> +				     "TE_GPIO", par);
-> +		if (rc) {
-> +			pr_err("TE request_irq failed.\n");
-> +			devm_gpiod_put(dev, par->gpio.te);
-> +			par->gpio.te = NULL;
-> +		} else {
-> +			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> +			pr_info("TE request_irq completion.\n");
-> +		}
-> +	} else {
-> +		pr_info("%s:%d, TE gpio not specified\n",
-> +			__func__, __LINE__);
-> +	}
+On Sat, 23 Jan 2021 03:00:41 PST (-0800), rppt@kernel.org wrote:
+> On Fri, Jan 22, 2021 at 08:12:30PM -0800, Palmer Dabbelt wrote:
+>> On Wed, 20 Jan 2021 10:06:04 PST (-0800), rppt@kernel.org wrote:
+>> > From: Mike Rapoport <rppt@linux.ibm.com>
+>> >
+>> > ARCH_HAS_SET_DIRECT_MAP and ARCH_HAS_SET_MEMORY configuration options have
+>> > no meaning when CONFIG_MMU is disabled and there is no point to enable them
+>> > for the nommu case.
+>> >
+>> > Add an explicit dependency on MMU for these options.
+>> >
+>> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>> > Reported-by: kernel test robot <lkp@intel.com>
+>> > ---
+>> >  arch/riscv/Kconfig | 4 ++--
+>> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> > index d82303dcc6b6..d35ce19ab1fa 100644
+>> > --- a/arch/riscv/Kconfig
+>> > +++ b/arch/riscv/Kconfig
+>> > @@ -25,8 +25,8 @@ config RISCV
+>> >  	select ARCH_HAS_KCOV
+>> >  	select ARCH_HAS_MMIOWB
+>> >  	select ARCH_HAS_PTE_SPECIAL
+>> > -	select ARCH_HAS_SET_DIRECT_MAP
+>> > -	select ARCH_HAS_SET_MEMORY
+>> > +	select ARCH_HAS_SET_DIRECT_MAP if MMU
+>> > +	select ARCH_HAS_SET_MEMORY if MMU
+>> >  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
+>> >  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+>> >  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+>>
+>> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>>
+>> LMK if you want this to go in via the RISC-V tree, otherwise I'm going to
+>> assume it's going in along with the rest of these.  FWIW I see these in other
+>> architectures without the MMU guard.
+>
+> Except arm, they all always have MMU=y and arm selects only
+> ARCH_HAS_SET_MEMORY and has empty stubs for those when MMU=n.
 
-I'm sorry that I was not clear before.  This code will crash if
-devm_gpiod_get_index_optional() returns an error.  You *NEED* to check
-for error pointers and return the error code.  Write it exactly like
-this:
+OK, maybe I just checked ARM, then.  I was just making sure.
 
-	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-	if (IS_ERR(par->gpio.te))
-		return PTR_ERR(par->gpio.te);
+> Indeed I might have been over zealous adding ARCH_HAS_SET_MEMORY dependency
+> on MMU, as riscv also has these stubs, but I thought that making this
+> explicit is a nice thing.
 
-	if (par->gpio.te) {
-		init_completion(&spi_panel_te);
+It seems reasonable to me.
 
-
-regards,
-dan carpenter
-
+Thanks!
