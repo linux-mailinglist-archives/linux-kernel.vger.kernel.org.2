@@ -2,219 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94E8306304
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A39306341
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 19:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344394AbhA0SIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 13:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343941AbhA0SIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:08:44 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111BEC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 10:08:04 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id q5so2710466ilc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 10:08:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VJZP8MOLyoKM/GkUK5rpElN/cwuUFmfUf42GSpkbWeQ=;
-        b=G6K4nAYUowzQBptAwFLHdUeTSXDxQ54VE64+B+o9EdF/N5hAzv+6VdaAacC5LrLzb+
-         1p4I+J1M/Q237uxVzWEVqbLdTkuGkqsSIrrq2fUZmO5VF1TV0/0FwS5l8+Q6BI24YMXZ
-         IB4eQ4Y6RAE74hDHDgP6G32hhr7Z9FwsAAQ+UrGp17wZcO0mIo/1JFOx4utQz5ej7B3U
-         o6cgbOyVy5urVnvQ6jdrgqnfPMslVoUIGCskY2o1dTTWvg435vsn27i78SRQv5g7sIs+
-         P4ikxGlSxL/Abi47SRFOHxu7OtF2NzdotAjMNCStlIWnvgvFk6NpUbgXn+ecbrWDjZ6q
-         siWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VJZP8MOLyoKM/GkUK5rpElN/cwuUFmfUf42GSpkbWeQ=;
-        b=SZzL9wU0LEg/e/B2QgEmZ5i9FEMTEbRUvN4Zvay9DujIEUSGpITGaDZSESnQYPTRxb
-         6V9eq0+jkkUcYJ8eR6csPQAe/69Ren2l2Y7EYAt41lMImNVbhlgzWOVJWscj7v4k+qSV
-         6N2nSjIQRXbd0k+E8gYwkHQg9VeUdqysN6vLJKdc2VcNa/Z6IB8XpchAg3NfIj9niCqx
-         arSp5JvwR6C+uUZ3Auohjkt1M47bYa3uvfimHe1+oQaeTEEmoIkW/MyUVjbDNP3+dtzK
-         Mkq4SMFrs3E7vdDGRVNofai/ehhcjPJnz4NUsfkWpGZKUxoQmrtWVFJUqATIUfgQRKgC
-         YBYQ==
-X-Gm-Message-State: AOAM533P24LsJb0hyQo60enVgxMyUUJvFq0pgazn/jBw8aAsS8uLhm/t
-        aiLKcJUqTyPIws8bWRhMmPXm3dOmo7KKYLOZ84+Rgg==
-X-Google-Smtp-Source: ABdhPJzC9lYPz+Lqd8LcNrgNBl2oGP/wu1nAmMTtnYN30J2sfLPhZZjv/sVt7DtK0HyIBNL8eEWW2tmRrKj+HgQsdyQ=
-X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr9422982ila.69.1611770883172;
- Wed, 27 Jan 2021 10:08:03 -0800 (PST)
-MIME-Version: 1.0
-References: <CANn89iKE0GFK1UzQvqYxKKy8E4Qcc57=JFFWCGmtpfgWRhpOpA@mail.gmail.com>
- <20210127175611.62871-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20210127175611.62871-1-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 27 Jan 2021 19:07:51 +0100
-Message-ID: <CANn89iJbtbMJ1gC2e8P7v+rB+EON=Y-i0B2mQ5kGQOqJMk=G=A@mail.gmail.com>
-Subject: Re: [PATCH net] net: Remove redundant calls of sk_tx_queue_clear().
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     Amit Shah <aams@amazon.de>, Boris Pismenny <borisp@mellanox.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Tariq Toukan <tariqt@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235776AbhA0S0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 13:26:23 -0500
+Received: from mx.exactcode.de ([144.76.154.42]:55778 "EHLO mx.exactcode.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235521AbhA0S0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 13:26:08 -0500
+X-Greylist: delayed 1015 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 13:26:08 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
+        h=Content-Transfer-Encoding:Content-Type:Mime-Version:From:Subject:Cc:To:Message-Id:Date; bh=1B33gqolHp2zCPWtvUn7Q4HzJ8uPUWWP0F8LP347TdM=;
+        b=D9Gv0UI2PfDQBcDkNsAnP3qRGstfykDWeHXdvfSSK0134HmInowd3tzYlx54xRjqTwY7vhylAN1xogynPQDVMDW4G2qxULgXOiamfj6UiLduSa4iy/X1wwiTjb73sAn93h+8eVR6rqWR73tdsByf61weSwQM3feP6mVfvPBupQI=;
+Received: from exactco.de ([90.187.5.221])
+        by mx.exactcode.de with esmtp (Exim 4.82)
+        (envelope-from <rene@exactcode.com>)
+        id 1l4pFY-0002D7-Bg; Wed, 27 Jan 2021 18:09:04 +0000
+Received: from [192.168.2.130] (helo=localhost)
+        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.86_2)
+        (envelope-from <rene@exactcode.com>)
+        id 1l4p6m-0005Lz-Fo; Wed, 27 Jan 2021 18:00:01 +0000
+Date:   Wed, 27 Jan 2021 19:08:23 +0100 (CET)
+Message-Id: <20210127.190823.1013816968702108983.rene@exactcode.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] add missing MPSC to X86_INTEL_USERCOPY and
+ _USE_PPRO_CHECKSUM
+From:   Rene Rebe <rene@exactcode.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Score: -3.1 (---)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:56 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
->
-> From:   Eric Dumazet <edumazet@google.com>
-> Date:   Wed, 27 Jan 2021 18:34:35 +0100
-> > On Wed, Jan 27, 2021 at 6:32 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > >
-> > > From:   Eric Dumazet <edumazet@google.com>
-> > > Date:   Wed, 27 Jan 2021 18:05:24 +0100
-> > > > On Wed, Jan 27, 2021 at 5:52 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > > > >
-> > > > > From:   Eric Dumazet <edumazet@google.com>
-> > > > > Date:   Wed, 27 Jan 2021 15:54:32 +0100
-> > > > > > On Wed, Jan 27, 2021 at 1:50 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > > > > > >
-> > > > > > > The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> > > > > > > sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> > > > > > > it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> > > > > > > the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). However,
-> > > > > > > the original commit had already put sk_tx_queue_clear() in sk_prot_alloc():
-> > > > > > > the callee of sk_alloc() and sk_clone_lock(). Thus sk_tx_queue_clear() is
-> > > > > > > called twice in each path currently.
-> > > > > >
-> > > > > > Are you sure ?
-> > > > > >
-> > > > > > I do not clearly see the sk_tx_queue_clear() call from the cloning part.
-> > > > > >
-> > > > > > Please elaborate.
-> > > > >
-> > > > > If sk is not NULL in sk_prot_alloc(), sk_tx_queue_clear() is called [1].
-> > > > > Also the callers of sk_prot_alloc() are only sk_alloc() and sk_clone_lock().
-> > > > > If they finally return not NULL pointer, sk_tx_queue_clear() is called in
-> > > > > each function [2][3].
-> > > > >
-> > > > > In the cloning part, sock_copy() is called after sk_prot_alloc(), but
-> > > > > skc_tx_queue_mapping is defined between skc_dontcopy_begin and
-> > > > > skc_dontcopy_end in struct sock_common [4]. So, sock_copy() does not
-> > > > > overwrite skc_tx_queue_mapping, and thus we can initialize it in
-> > > > > sk_prot_alloc().
-> > > >
-> > > > That is a lot of assumptions.
-> > > >
-> > > > What guarantees do we have that skc_tx_queue_mapping will never be
-> > > > moved out of this section ?
-> > > > AFAIK it was there by accident, for cache locality reasons, that might
-> > > > change in the future as we add more stuff in socket.
-> > > >
-> > > > I feel this optimization is risky for future changes, for a code path
-> > > > that is spending thousands of cycles anyway.
-> > >
-> > > If someone try to move skc_tx_queue_mapping out of the section, should
-> > > they take care about where it is used ?
->
-> I'm sorry if it might be misleading, I would like to mean someone/they is
-> the author of a patch to move skc_tx_queue_mapping.
->
->
-> > Certainly not. You hide some knowledge, without a comment or some runtime check.
->
-> It was my bad, I should have written about sock_copy() in the changelog.
+Debugging some bizare memory corruption in certain kernel configs on
+some machines, I noticed MPSC (1st gen Intel X64 Nocona) is missing in
+selecting X86_INTEL_USERCOPY and X86_USE_PPRO_CHECKSUM. Unless someone
+has a good reason not to, I think MPSC should select the two, and
+maybe MATOM should also made select X86_INTEL_USERCOPY?
 
-I think you also want to add some compile time check.
+Signed-of-by: Ren=E9 Rebe <rene@exactcode.de>
 
-BUILD_BUG_ON( skc_tx_queue_mapping is in the no copy area)
+--- linux-5.10/arch/x86/Kconfig.cpu.vanilla	2021-01-27 16:09:20.1639300=
+78 +0100
++++ linux-5.10/arch/x86/Kconfig.cpu	2021-01-27 16:36:35.064014421 +0100=
 
-Because maintainers do not remember changelogs in their mind.
+@@ -336,11 +336,11 @@
+ =
+
+ config X86_INTEL_USERCOPY
+ 	def_bool y
+-	depends on MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M58=
+6MMX || X86_GENERIC || MK8 || MK7 || MEFFICEON || MCORE2
++	depends on MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M58=
+6MMX || X86_GENERIC || MK8 || MK7 || MEFFICEON || MCORE2 || MPSC
+ =
+
+ config X86_USE_PPRO_CHECKSUM
+ 	def_bool y
+-	depends on MWINCHIP3D || MWINCHIPC6 || MCYRIXIII || MK7 || MK6 || MPE=
+NTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MK8 || MVIA=
+C3_2 || MVIAC7 || MEFFICEON || MGEODE_LX || MCORE2 || MATOM
++	depends on MWINCHIP3D || MWINCHIPC6 || MCYRIXIII || MK7 || MK6 || MPE=
+NTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MK8 || MVIA=
+C3_2 || MVIAC7 || MEFFICEON || MGEODE_LX || MCORE2 || MATOM || MPSC
+ =
+
+ config X86_USE_3DNOW
+ 	def_bool y
 
 
->
->
-> > You can not ask us (maintainers) to remember thousands of tricks.
->
-> I'll keep this in mind.
->
->
-> > >
-> > > But I agree that we should not write error-prone code.
-> > >
-> > > Currently, sk_tx_queue_clear() is the only initialization code in
-> > > sk_prot_alloc(). So, does it make sense to remove sk_tx_queue_clear() in
-> > > sk_prot_alloc() so that it does only allocation and other fields are
-> > > initialized in each caller ?
->
-> Can I ask what you think about this ?
+-- =
 
-Yes, this would be fine.
-
->
->
-> > > > >
-> > > > > [1] sk_prot_alloc
-> > > > > https://github.com/torvalds/linux/blob/master/net/core/sock.c#L1693
-> > > > >
-> > > > > [2] sk_alloc
-> > > > > https://github.com/torvalds/linux/blob/master/net/core/sock.c#L1762
-> > > > >
-> > > > > [3] sk_clone_lock
-> > > > > https://github.com/torvalds/linux/blob/master/net/core/sock.c#L1986
-> > > > >
-> > > > > [4] struct sock_common
-> > > > > https://github.com/torvalds/linux/blob/master/include/net/sock.h#L218-L240
-> > > > >
-> > > > >
-> > > > > > In any case, this seems to be a candidate for net-next, this is not
-> > > > > > fixing a bug,
-> > > > > > this would be an optimization at most, and potentially adding a bug.
-> > > > > >
-> > > > > > So if you resend this patch, you can mention the old commit in the changelog,
-> > > > > > but do not add a dubious Fixes: tag
-> > > > >
-> > > > > I see.
-> > > > >
-> > > > > I will remove the tag and resend this as a net-next candidate.
-> > > > >
-> > > > > Thank you,
-> > > > > Kuniyuki
-> > > > >
-> > > > >
-> > > > > > >
-> > > > > > > This patch removes the redundant calls of sk_tx_queue_clear() in sk_alloc()
-> > > > > > > and sk_clone_lock().
-> > > > > > >
-> > > > > > > Fixes: 41b14fb8724d ("net: Do not clear the sock TX queue in sk_set_socket()")
-> > > > > > > CC: Tariq Toukan <tariqt@mellanox.com>
-> > > > > > > CC: Boris Pismenny <borisp@mellanox.com>
-> > > > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > > > > Reviewed-by: Amit Shah <aams@amazon.de>
-> > > > > > > ---
-> > > > > > >  net/core/sock.c | 2 --
-> > > > > > >  1 file changed, 2 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/net/core/sock.c b/net/core/sock.c
-> > > > > > > index bbcd4b97eddd..5c665ee14159 100644
-> > > > > > > --- a/net/core/sock.c
-> > > > > > > +++ b/net/core/sock.c
-> > > > > > > @@ -1759,7 +1759,6 @@ struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
-> > > > > > >                 cgroup_sk_alloc(&sk->sk_cgrp_data);
-> > > > > > >                 sock_update_classid(&sk->sk_cgrp_data);
-> > > > > > >                 sock_update_netprioidx(&sk->sk_cgrp_data);
-> > > > > > > -               sk_tx_queue_clear(sk);
-> > > > > > >         }
-> > > > > > >
-> > > > > > >         return sk;
-> > > > > > > @@ -1983,7 +1982,6 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
-> > > > > > >                  */
-> > > > > > >                 sk_refcnt_debug_inc(newsk);
-> > > > > > >                 sk_set_socket(newsk, NULL);
-> > > > > > > -               sk_tx_queue_clear(newsk);
-> > > > > > >                 RCU_INIT_POINTER(newsk->sk_wq, NULL);
-> > > > > > >
-> > > > > > >                 if (newsk->sk_prot->sockets_allocated)
-> > > > > > > --
-> > > > > > > 2.17.2 (Apple Git-113)
-> > > > > > >
+  Ren=E9 Rebe, ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+  https://exactcode.com | https://t2sde.org | https://rene.rebe.de
