@@ -2,144 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE27F305044
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D476330503C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237491AbhA0Dxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:53:38 -0500
-Received: from mail-eopbgr760070.outbound.protection.outlook.com ([40.107.76.70]:23533
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404911AbhA0BaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:30:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LamAIpd4olct6ZULcrfx56ZJYF4hTajbl8YuMN9ham+ZO8OVhuo3oqME7f/r7CsBx0EtHjmGFC/fRmwQvPdlxOPv9d2qjmuHtXjTQwKK+mkC+NNb249mxa8BX1ZAL5h3DjYAA39JwQPykzvPCmsCPZFv3BQ5s3m9UE4Uw3uOcyWhJ+sr/dXHpce/IhBvbqTIiTkvByLMjgrX21DAR4Yggt6c8grmllf9gka39TOUV6FUTIUaxSdrNnQzHOPsLaxk3pTS75T0PxEOtKXiPqv9BqBEh8xJEQ9mdE0kljq7bgeyML6cB6jw3YTPI3PTc8Tqglbsr/QBMFTqZSEgUz0kqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I87kc3mj7645BgE8M0ifoVgcLy0IIT22jbUC6q1gYyM=;
- b=YXr8FzPPrDz0RgDpLCjQWuCL49ljqRtcL3hos3eck1gwQlwU2VAH2XjJESyoyJssqp4SskRDoCggqIWK+wHUdanSBVPunmzpMvgsI1DBZrZUIFMGe3e9xeglWLWZGffa8THMWs1yWgwomjvX/YwAUwu8XLbqvw9JXbQzmZ+a4TwHctgHk36PTdlsv8deaYz8sglLy3WrwYS7Bgpx1oaTRgrfldCEVvFFm9L/YMDR5m1rprCtsZ3pdjuoBcaTu8QL2nBul8cS26X212Hnr4px+WBUN6QgUHVFyOFv5QfIn+kaBiSbA/UfE0rJRQPxLJJBWxd9O91ZoosnlVjxEJcICg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S237385AbhA0Dwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S317762AbhA0BQi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 20:16:38 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E50C061574;
+        Tue, 26 Jan 2021 17:15:56 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id l18so304649pji.3;
+        Tue, 26 Jan 2021 17:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I87kc3mj7645BgE8M0ifoVgcLy0IIT22jbUC6q1gYyM=;
- b=s65svsD8DLEg2u9XAdoXhAdDCCrFrrOpTf98K9wGAsxGnTnyWEAdCBx1NeTTyPF7r/aFWfOJfjTOndtmVV1w4mOScJH7c0EKUYt7MU8JzYOW4RwpMajsEowid0VfydxUeGB8AwTO5U4fO1HQnncoBOmRuznC6oULObEwV62vH4A=
-Received: from DM6PR08CA0007.namprd08.prod.outlook.com (2603:10b6:5:80::20) by
- SA2PR02MB7546.namprd02.prod.outlook.com (2603:10b6:806:144::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3784.16; Wed, 27 Jan 2021 01:12:42 +0000
-Received: from CY1NAM02FT027.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:80:cafe::c1) by DM6PR08CA0007.outlook.office365.com
- (2603:10b6:5:80::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend
- Transport; Wed, 27 Jan 2021 01:12:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; ideasonboard.com; dkim=none (message not signed)
- header.d=none;ideasonboard.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT027.mail.protection.outlook.com (10.152.75.159) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3784.12 via Frontend Transport; Wed, 27 Jan 2021 01:12:40 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 26 Jan 2021 17:12:38 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 26 Jan 2021 17:12:38 -0800
-Envelope-to: hyun.kwon@xilinx.com,
- michal.simek@xilinx.com,
- laurent.pinchart@ideasonboard.com,
- linux-kernel@vger.kernel.org
-Received: from [172.19.2.244] (port=42446 helo=xsjhyunkubuntu)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <hyun.kwon@xilinx.com>)
-        id 1l4ZNu-0003Ny-Lw; Tue, 26 Jan 2021 17:12:38 -0800
-Received: by xsjhyunkubuntu (Postfix, from userid 13638)
-        id A7A2C2C7AA5; Tue, 26 Jan 2021 17:13:15 -0800 (PST)
-From:   Hyun Kwon <hyun.kwon@xilinx.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Hyun Kwon <hyun.kwon@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH 1/1] MAINTAINERS: remove myself from the list
-Date:   Tue, 26 Jan 2021 17:13:12 -0800
-Message-ID: <20210127011312.697159-1-hyun.kwon@xilinx.com>
-X-Mailer: git-send-email 2.25.1
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=KJ+yQ5bWaZ2enwzjx+4GHtaZjxc83d9TFtN5y4k2HgI=;
+        b=i/yuys92Y5AzJRo1OemPBFbioTJmSuQ33639+tZ6prHwvFx51LOyZrVSO1E33i+8wh
+         dEJHgrQ8sxZTiELoPu/HB5idN1Xr1ngd23fU7Q5qWKVITJs29r5uNEgiLJ+UF3eew7oh
+         Te/siDN/xEQeEQxDBwRHsCc0asJLTkm6YLdAmJzmN6G5BtxF5PPok0bVMoyLAZ3KdEOI
+         Iq/KGqEfFxJ8EHCQGitG/cuxLRRvin9iwNT0mDvewcCr0Gf/gUQc+rg3v6bY/LX+Q7bw
+         v09GqAMKSqwIVfOdSE9AZRLH5lptxD2UA4smZNauFMOwPs6tZbLVbnqHk4lzlHnzj5FL
+         mYJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=KJ+yQ5bWaZ2enwzjx+4GHtaZjxc83d9TFtN5y4k2HgI=;
+        b=iPrIpZmJtnm4A/lBgvof7Ex0WrhPavph9v0axcfVChpD+iNYrEJsS3JbN7EQ1CN2DF
+         N0/GkUURjM+MjEqrQw7WI3FI6YqOCFYhSN/4WnKv+l03vRM/tQnEkJyLQO6kRsmub0wl
+         XJ80gJ6ky5s6xlcoqAyw/m/YsDKcovkwxAaVptP5NI9vHMAQQrnRBgGodIrsxbgGWwvk
+         22RdouzIkNwCJLCkKXmCtZP59C4mgQ5m/+Z1qxnNEU3UpbYrWkJknBy/lzSivX4YZPvN
+         SiuQqR3b096OFr1XqiYKXpBMLoEVHDRja70KdeNqJA468zNy3uUGvKYPzWiU2OoI/+FO
+         k5qw==
+X-Gm-Message-State: AOAM532dgHhLySFwjGe5FgXM0zIVWjftv/Fn27IdQDAiXNQnUvxkZckM
+        xOHbB7AJhkfeMsqjPmI+OHI=
+X-Google-Smtp-Source: ABdhPJwh8l3R0l+5Z0cCZw5Tw01gyH/2L5iZDeU27N+EyiLMmddVKlQ+fKoZdTxT07XrfYEndiiX9A==
+X-Received: by 2002:a17:902:d64e:b029:df:e5b1:b7f7 with SMTP id y14-20020a170902d64eb02900dfe5b1b7f7mr8586928plh.10.1611710156278;
+        Tue, 26 Jan 2021 17:15:56 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id d128sm218943pga.87.2021.01.26.17.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 17:15:55 -0800 (PST)
+Date:   Wed, 27 Jan 2021 09:15:49 +0800
+From:   carlis <zhangxuezhi3@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
+        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
+        colin.king@canonical.com, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v4] fbtft: add tearing signal detect
+Message-ID: <20210127091549.00005933@gmail.com>
+In-Reply-To: <20210126175141.GZ2696@kadam>
+References: <1611664835-150687-1-git-send-email-zhangxuezhi3@gmail.com>
+        <20210126175141.GZ2696@kadam>
+Organization: Tyzmig-ryrjum-8kedto
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20aa56b2-91de-466e-61c1-08d8c260a47c
-X-MS-TrafficTypeDiagnostic: SA2PR02MB7546:
-X-Microsoft-Antispam-PRVS: <SA2PR02MB7546D5AB6EE64FF5C362EE61D6BB9@SA2PR02MB7546.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:363;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q9v02zf0GXc+7Yt42p54seodLuYBqlw29ScezG2+tvh51wzLOWm4ehwZby2RLq2IXz70F1Zd2UP9Trd6Xi9N8dnJU+vPrd4Jjh5mWynhBzxc96Cvb7zH3jHUUHKcfnWYIc1s081in6/quVmv3ImJdfcsmf4Zu9of5sPgne/Pa8wL8rnS2q2i6wVzIvOqls3b2vN7q6oD8GxpX7YKlfausp2V7RaMePTE3gO59Zx/F5hFM/nkYk6ghk56rW0owic01J3AwcGlV41wpW87paMc7mYhDE2pcTGA8IOOT+vndFO6jbLvEBWqC6pcJY6r5IO+wp0N1NTMynZm9CkYu4WThAkv5mX7ewCaiPMTpDX8qYiMKbhbx/je/Fozv7caiFAkwoiTiSC/cvmqQ9JD2Mjpp+O5i5U5cKuNlLUm4Izo0/ixy5i/eTtAwb6jvISX0rZeYDkwncHJ0herM6p8GttNRg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(42186006)(4326008)(8936002)(5660300002)(2616005)(82310400003)(44832011)(36756003)(70206006)(8676002)(6266002)(47076005)(2906002)(1076003)(83380400001)(186003)(107886003)(6916009)(356005)(6666004)(82740400003)(26005)(426003)(336012)(70586007)(36906005)(316002)(7636003)(54906003)(478600001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 01:12:40.4550
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20aa56b2-91de-466e-61c1-08d8c260a47c
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT027.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7546
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The email will become invalid soon.
+On Tue, 26 Jan 2021 20:51:41 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-Signed-off-by: Hyun Kwon <hyun.kwon@xilinx.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
----
- MAINTAINERS | 3 ---
- 1 file changed, 3 deletions(-)
+> On Tue, Jan 26, 2021 at 08:40:35PM +0800, Carlis wrote:
+> > @@ -82,6 +111,29 @@ enum st7789v_command {
+> >   */
+> >  static int init_display(struct fbtft_par *par)
+> >  {
+> > +	int rc;
+> > +	struct device *dev = par->info->device;
+> > +
+> > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> > GPIOD_IN);
+> > +	if (par->gpio.te) {  
+> 
+> I explained in my earlier review that devm_gpiod_get_index_optional()
+> can return error pointers...  There was quite a bit of detail about
+> how to handle this correctly in my earlier review, but I think you
+> might not have noticed it.  Please read it again.
+> 
+> > +		init_completion(&spi_panel_te);
+> > +		mutex_init(&te_mutex);
+> > +		rc = devm_request_irq(dev,
+> > +				      gpiod_to_irq(par->gpio.te),
+> > +				     spi_panel_te_handler,
+> > IRQF_TRIGGER_RISING,
+> > +				     "TE_GPIO", par);
+> > +		if (rc) {
+> > +			pr_err("TE request_irq failed.\n");
+> > +			devm_gpiod_put(dev, par->gpio.te);
+> > +			par->gpio.te = NULL;
+> > +		} else {
+> > +
+> > disable_irq_nosync(gpiod_to_irq(par->gpio.te));
+> > +			pr_info("TE request_irq completion.\n");
+> > +		}
+> > +	} else {
+> > +		pr_err("%s:%d, TE gpio not specified\n",
+> > +		       __func__, __LINE__);
+> > +	}  
+> 
+> regards,
+> dan carpenter
+> 
+Thank you for your correction,i will change pr_err to pr_info in next
+patch v5
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 992fe3b0900a..4fc00c2da56d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6048,7 +6048,6 @@ F:	Documentation/gpu/xen-front.rst
- F:	drivers/gpu/drm/xen/
- 
- DRM DRIVERS FOR XILINX
--M:	Hyun Kwon <hyun.kwon@xilinx.com>
- M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
- L:	dri-devel@lists.freedesktop.org
- S:	Maintained
-@@ -19577,7 +19576,6 @@ S:	Maintained
- F:	drivers/tty/serial/uartlite.c
- 
- XILINX VIDEO IP CORES
--M:	Hyun Kwon <hyun.kwon@xilinx.com>
- M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
- L:	linux-media@vger.kernel.org
- S:	Supported
-@@ -19587,7 +19585,6 @@ F:	drivers/media/platform/xilinx/
- F:	include/uapi/linux/xilinx-v4l2-controls.h
- 
- XILINX ZYNQMP DPDMA DRIVER
--M:	Hyun Kwon <hyun.kwon@xilinx.com>
- M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
- L:	dmaengine@vger.kernel.org
- S:	Supported
--- 
-2.25.1
-
+regards,
+dan carpenter
