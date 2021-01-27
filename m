@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0C630626F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FDD306279
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 18:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344067AbhA0Rp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 12:45:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
+        id S236371AbhA0RrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 12:47:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344135AbhA0RpM (ORCPT
+        with ESMTP id S1344156AbhA0Rqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:45:12 -0500
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A690C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:44:31 -0800 (PST)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4DQrZC1sm4zQlPB;
-        Wed, 27 Jan 2021 18:44:03 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
-        s=MBO0001; t=1611769441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BbL3vUcELfbaOwBw/4tXD2Y99BB4p9qaJZnpHQ13JIo=;
-        b=k/omoxNgYrI3A/SBtOePZZUjnQu8bqO3U863H8NsLVsiTyQpi32x8jhaiHS2CxyYjtLcWT
-        WrIzAru2KWc6tWGAIoHxuZfzjvdbchDCu8mjucaJ/EtKZWEz3Hz8TSEGqr9i3qHwSCRn+D
-        SMMM/d8t/Ofje1wCNt3Y4zXDDENdG6ISIFjgvQw4anDRo7gdskTK9a92a4qlf8q+AgA/uJ
-        4C1ZLu/JUMbDe4FLc8+2zIfopzlm3uOCEhSro77Q0ulqGzo0qUaHpBb4TVZmNbmQQC0Kzd
-        iuFqoiLdoxfilb9/kbv9xxHzYRdnq6dHokch5mRu5UXdOLzOjFuprmlNHbsaqA==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id 3_33cucYWK21; Wed, 27 Jan 2021 18:43:58 +0100 (CET)
-From:   Dylan Van Assche <me@dylanvanassche.be>
-To:     gregkh@linuxfoundation.org, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, nsaenzjulienne@suse.de,
-        vkor@vkten.in, devel@driverdev.osuosl.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Dylan Van Assche <me@dylanvanassche.be>
-Subject: [PATCH] staging: vc4_services: bcm2835-audio: Add SNDRV_PCM_INFO_BATCH flag
-Date:   Wed, 27 Jan 2021 18:43:48 +0100
-Message-Id: <20210127174348.10192-1-me@dylanvanassche.be>
+        Wed, 27 Jan 2021 12:46:34 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F99C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:45:53 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id c2so3446664edr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 09:45:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc
+         :content-transfer-encoding;
+        bh=x2CXSxSq2enuM8qJRJ4/hN373ovcf2FkfR8Rw2oWvKQ=;
+        b=VqkUilBvr2UIs7DDfnpftOdumw9SlRIbCSdTGs0bfrUZaf5Ew59l/Bg7b7873LKIjC
+         xN8nSxSTm6sCzhnfjMsqMHr9eK1gheb2c6qCVO8urfJTzRzMOcETOHTL494h5yuT3yWk
+         tWiFJ4WM13AmfE8BVw8w3CfcsQECKDvo8s5896HJfWVXGfMapzr5xU7K7G92lZIVo3W6
+         oI+jSGSXlKHOYIpDsKBGTZSB6mI0eam9yNCoNZt2CSrzdAoG/njy+e++YUAv6OHwKGWF
+         Kl0cEMqdkhbM7g0g4Wt7D4eBWmPXF7FnOVFDCpRWFBw13iLx8o9H7cXNbk7k4mQLij92
+         G6Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc:content-transfer-encoding;
+        bh=x2CXSxSq2enuM8qJRJ4/hN373ovcf2FkfR8Rw2oWvKQ=;
+        b=etTiOyyzNH4hwbxawfFle6knUyCUgfNLy4tHsGxg55nSCcocACYZdb83rYvgWw9med
+         sHXFXMsNvwtstqHuyCuC1JpFrFGEhKa12+sRlEbhprRbGTpkslQQrIOdiS2fcEza8ImB
+         2HM+nqJ6t5+/LdWx/hobhMgfnN4QDkCia3i/LUXj0VY684J6pQxnMCJzzAI9QvBQs/VI
+         1ceTqo6UMFgg0mtgH17j25UheOpoJgUX6x6iEIJnGALh1FLWLmrCi+m3bEdJy0NC4B8j
+         ZmunM2eqslI40TQzWEsbEp4e/vPwsqpkeHDfQ1syc4Vj+nhZU7bVEa1nvp5dvE8/ggin
+         z0lA==
+X-Gm-Message-State: AOAM5304AetKO7C7HyWl6ca6eWDvQaeIoN+Mh9+/XAuWr0PgFQUwvZiq
+        Ivg6ikGkNP/TxR49AeOr0JRxcdgLR8ykjc7HUzQ=
+X-Received: by 2002:a05:6402:306a:: with SMTP id bs10mt9459884edb.209.1611769552624;
+ Wed, 27 Jan 2021 09:45:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -0.06 / 15.00 / 15.00
-X-Rspamd-Queue-Id: D8A251848
-X-Rspamd-UID: c4a93a
+References: <20210118111531.903154-1-adrien.grassein@gmail.com>
+In-Reply-To: <20210118111531.903154-1-adrien.grassein@gmail.com>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Wed, 27 Jan 2021 18:45:41 +0100
+Message-ID: <CABkfQAG70BWULqrDqyhL84v1XuPZRQ3NQT88V+2eFrbVaEzWig@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] Add support for Boundary Nitrogen8M Mini SBC
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Playing audio with PulseAudio and the bcm2835-pcm driver results
-in distorted sound. Timer-based scheduling does not properly work
-with bcm2835-pcm since configuring PulseAudio with tsched=0
-avoids this problem.
+Hello Shawn,
 
-Setting the SNDRV_PCM_INFO_BATCH flag prevents PulseAudio to use
-timer-based scheduling by default. Settings this flag makes audio
-works out of the box.
+Could you please have a look at the new patch set made after your commentar=
+ies?
+Thank a lot for your time,
 
-Based on: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7f2430cda819a9ecb1df5a0f3ef4f1c20db3f811
+Thanks,
 
-Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
----
-Tested on my Raspberry Pi 3B+ with Kodi and postmarketOS.
-
- drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
-index f783b632141b..1c200b923dfd 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
-+++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
-@@ -12,7 +12,7 @@
- static const struct snd_pcm_hardware snd_bcm2835_playback_hw = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
--		 SNDRV_PCM_INFO_SYNC_APPLPTR),
-+		 SNDRV_PCM_INFO_SYNC_APPLPTR | SNDRV_PCM_INFO_BATCH),
- 	.formats = SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE,
- 	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_48000,
- 	.rate_min = 8000,
-@@ -29,7 +29,7 @@ static const struct snd_pcm_hardware snd_bcm2835_playback_hw = {
- static const struct snd_pcm_hardware snd_bcm2835_playback_spdif_hw = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
--		 SNDRV_PCM_INFO_SYNC_APPLPTR),
-+		 SNDRV_PCM_INFO_SYNC_APPLPTR | SNDRV_PCM_INFO_BATCH),
- 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	.rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_44100 |
- 	SNDRV_PCM_RATE_48000,
--- 
-2.30.0
-
+Le lun. 18 janv. 2021 =C3=A0 12:15, Adrien Grassein
+<adrien.grassein@gmail.com> a =C3=A9crit :
+>
+> Hello,
+>
+> This patch set aims is to add the support of the Nitrogen8M Mini SBC
+> from Boundary Devices.
+>
+> Thanks,
+>
+> Update in v2:
+>   - Rewrite the dts (Remove the unused wlan and audio);
+>   - Remove useless definition;
+>   - Take in account review.
+>
+> Update in v3:
+>   - Take in account review.
+>
+> Update in v4:
+>   - Reorder definition in pmic
+>
+> Update in v5:
+>   - Take in account review.
+>   - Remove useless i2c groups
+>
+> Adrien Grassein (3):
+>   dt-bindings: arm: imx: add imx8mm nitrogen support
+>   arm64: dts: imx: Add i.mx8mm nitrogen8mm basic dts support
+>   arm64: defconfig: Enable PF8x00 as builtin
+>
+>  .../devicetree/bindings/arm/fsl.yaml          |   1 +
+>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>  .../dts/freescale/imx8mm-nitrogen8mm_rev2.dts | 395 ++++++++++++++++++
+>  arch/arm64/configs/defconfig                  |   1 +
+>  4 files changed, 398 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-nitrogen8mm_rev2=
+.dts
+>
+> --
+> 2.25.1
+>
