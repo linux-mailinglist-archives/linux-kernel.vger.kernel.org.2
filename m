@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C14305762
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF38C30576C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 10:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235615AbhA0JwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 04:52:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231415AbhA0JsZ (ORCPT
+        id S235360AbhA0JxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 04:53:00 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:58743 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235585AbhA0Jt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:48:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611740818;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p2ZgdeE8emMvrTo+qZdhtSbV4TLt//BKUXr6Nkuxz8M=;
-        b=PmdguyM2/pMShwqQkKUzs1pNeKizei7kZNKfVl9g2uszD/WFIN8r8Sb6d2ykBWm38oei88
-        8U++DqIrJkcp2d52Uvr0RaV2P9cKXjY6UEYxHlXO/1TB2VpAQAF/uvWKwyMNsyKpgSymiv
-        PU7bxGAIHu9j9MJ7q2hK++35BLWLf7M=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-rJNxswWBNIqDqb-zo_5odA-1; Wed, 27 Jan 2021 04:46:57 -0500
-X-MC-Unique: rJNxswWBNIqDqb-zo_5odA-1
-Received: by mail-ed1-f70.google.com with SMTP id o8so1052306edh.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 01:46:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p2ZgdeE8emMvrTo+qZdhtSbV4TLt//BKUXr6Nkuxz8M=;
-        b=LZPf2ncKFMZu2SojhmMo7JbfOaLMQBUKXJ1y3qYEcACU0BNlQhCbIayWMvwZ9/+0b0
-         Q1BDWaC+bM1dgxeqPXHDoL4DU43OFYkEfcMgwDb5c1gxLe7/9yZN2wKH9B8TGt5dtFZy
-         guwm/qpmcuqYE5NJOvWjXfaNkMSiGA6EVLye5KC8TlFXFAhmlFoetlnk9t0tuga+B475
-         0dlHZOkEyTIArvpL7Y4Ge5VKKs6+FSRRAZ4zHdCwkxm62c8UlVcwZVOH1zROofNhW6/P
-         mQEo+JYho43sZXhbOvUkOzk4F7Rj7M7AjWpOO5zDI1P5FuEW9wAzlnnwKlkY0Pq9dhOZ
-         /7yA==
-X-Gm-Message-State: AOAM530KgVKIpbQlJ873VFP5jKtrRZiuQKQrnX3PBwb5Oh50U10H8cQO
-        XNnILJtgEVsQURxZOBU5AM3H3fyoVGIL5N/W2ish8rZbBYVQL1gNPkIEpB5ldSNSzCHUZd0aWdW
-        g79BeZYmj2BvhT4O0fKNAoIk3D4P3dvGQ5ROqn2LfSGXkM8j3mCVle+CeHQneE3V2uxbneALEd4
-        sl
-X-Received: by 2002:a17:906:9342:: with SMTP id p2mr6328424ejw.300.1611740815665;
-        Wed, 27 Jan 2021 01:46:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzqxTjCXlGq65ZXJizGzN/1wJ3EKGImAEp1e+xOhoLzSLVqiLN4lEgiB1lVZKT0JTaXxWmqzw==
-X-Received: by 2002:a17:906:9342:: with SMTP id p2mr6328403ejw.300.1611740815349;
-        Wed, 27 Jan 2021 01:46:55 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id lh26sm554051ejb.119.2021.01.27.01.46.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 01:46:54 -0800 (PST)
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201105081805.5674-1-chenyi.qiang@intel.com>
- <20201105081805.5674-9-chenyi.qiang@intel.com>
- <6174185b-25e0-f2a2-3f71-d8bbe6ca889d@redhat.com>
- <7aa67008-a72f-f6e3-2de4-4b9b9e62cd86@redhat.com>
- <e1ba2803-877c-e7d5-0a16-f356d5c2b571@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [kvm-unit-tests PATCH] x86: Add tests for PKS
-Message-ID: <ce0fad10-ddca-2102-0331-86ddcba9e808@redhat.com>
-Date:   Wed, 27 Jan 2021 10:46:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 27 Jan 2021 04:49:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611740996; x=1643276996;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+3i+bsPM/grhoAZtDpyUhjFVOODZ7Fc6Eq84gg2f818=;
+  b=JAxjt3M5KA3kJapUnVehhhYxkVl+vY9GJXFQ9NG4N6Hm6+DvPb0oTj07
+   qepgs1yPKj3KLfBliWcL7cHYlNdpcxks/FStT30g9GGqFwfrIniHr99l0
+   jwg6c/olmSllOVPKGBJMPOTDIQ6S7e2h3pLZBA6ZVYMYInvL5bo6muTot
+   /KSYVg5i/oWwQsqDLBMgUYtnkEb/flwSQphIpmMl86bZWR7gO4JT+AwcK
+   lCQSpZJVTPqHkH/w+6+C3ZGFexVavO8usPQbkC6i0mKgdfPnMOA4pTnO3
+   Md9Lx6KFlEA+SF+YbgyE2hVZ6RXdexpkrTh5MoHspx+aLq83bRZ+R41+8
+   A==;
+IronPort-SDR: dFPHY0sCCTNNwPne0kBOloW2EeIse7t/zz+h+MNximRmMgEYikXlR4mu5raGqGuDas0NdvqZ5E
+ nZXqVJPLK6BBFBpvrLV0DRlsroaJgdUfYVaz+n8PiAi/aSf4CeWOJmTUH45d7J7PEjUdoQB4d0
+ r3NQwcGOTDo2SH6N914fukbtpxL+n0NrsecMEZxYJ/i+hqrZcYLoKZ3KJOaW5ZDMtlDaXb0S9L
+ zgnUMyZgf+OacryWxzKtNch+aVKhDhv7GdXzIAaz/zQD40YiOzthcFEeHV0zrDTenHkMrsc3Kt
+ 2pE=
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="106951920"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jan 2021 02:48:37 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 27 Jan 2021 02:48:37 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 27 Jan 2021 02:48:37 -0700
+Date:   Wed, 27 Jan 2021 10:48:36 +0100
+From:   Ludovic Desroches <ludovic.desroches@microchip.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+CC:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: pinctrl: at91-pio4: add slew-rate
+Message-ID: <20210127094836.xwmhl7dd4oalykzz@sekiro>
+References: <1611569954-23279-1-git-send-email-claudiu.beznea@microchip.com>
+ <1611569954-23279-2-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <e1ba2803-877c-e7d5-0a16-f356d5c2b571@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1611569954-23279-2-git-send-email-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/01/21 08:41, Chenyi Qiang wrote:
->>
+On Mon, Jan 25, 2021 at 12:19:12PM +0200, Claudiu Beznea wrote:
+> Document slew-rate DT binding for SAMA7G5.
 > 
-> Hi Paolo,
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+
+Thanks
+
+> ---
+>  .../devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt       | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> Thank you for your time. I was just thinking about resending this patch 
-> series to ping you although no changes will be added. I really hope to 
-> get the comments from you.
+> diff --git a/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt
+> index 265015bc0603..e2b861ce16d8 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt
+> +++ b/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt
+> @@ -35,9 +35,11 @@ ioset settings. Use the macros from boot/dts/<soc>-pinfunc.h file to get the
+>  right representation of the pin.
+>  
+>  Optional properties:
+> -- GENERIC_PINCONFIG: generic pinconfig options to use, bias-disable,
+> -bias-pull-down, bias-pull-up, drive-open-drain, input-schmitt-enable,
+> -input-debounce, output-low, output-high.
+> +- GENERIC_PINCONFIG: generic pinconfig options to use:
+> +	- bias-disable, bias-pull-down, bias-pull-up, drive-open-drain,
+> +	  input-schmitt-enable, input-debounce, output-low, output-high.
+> +	- for microchip,sama7g5-pinctrl only:
+> +		- slew-rate: 0 - disabled, 1 - enabled (default)
+>  - atmel,drive-strength: 0 or 1 for low drive, 2 for medium drive and 3 for
+>  high drive. The default value is low drive.
+>  
+> -- 
+> 2.7.4
 > 
-> Do you want me to resend a new non-RFC version as well as the QEMU 
-> implementation? or you review this RFC series first?
-> 
-> Thanks
-> Chenyi
-
-Hi,
-
-I have reviewed the KVM implementation and actually I have also 
-implemented PKRS in QEMU's binary translation.  I'll send a patch and 
-commit this one too, since it can be tested.
-
-For QEMU you'll still have to post the KVM parts (getting/setting the 
-PKRS MSR) since I don't have a way to test those.
-
-Paolo
-
