@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A009305848
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A2630585A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235664AbhA0KXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:23:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52140 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235531AbhA0KV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:21:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611742840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ASjQD3e6RwZwXm35tKuOYLz+UbqyeCf/0FdsdUp4d+A=;
-        b=MjrJgZgmwyXZqp1xptBq6z5ghgTvIWtUOucoeIznfMKkYBt4Cbp7NremW1haOkSjAEtpEA
-        ImR7qQh0gorEhaLTPxJ7RVPhUmnkLeDMghbOp8gfCvWduOsCpzayUijBufCS+KU7HKlilA
-        UUxnjTurMC45y43jJ2Nt7B+Egp2yUSE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 793F0AD2B;
-        Wed, 27 Jan 2021 10:20:40 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 11:20:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 1/5] hugetlb: use page.private for hugetlb specific
- page flags
-Message-ID: <20210127102035.GF827@dhcp22.suse.cz>
-References: <20210122195231.324857-1-mike.kravetz@oracle.com>
- <20210122195231.324857-2-mike.kravetz@oracle.com>
+        id S235865AbhA0K0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:26:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24730 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235714AbhA0KYQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:24:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611742970;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jr7D381srKp0j6rCe+jk22uZZDkym4sUt+94TC8WIVE=;
+        b=GCop8ywJ9SHLoEF8ZaSl9Lp/EACcifqiZThXxxS4jB2zvHDaPquvYA8SWpME1jxu19XKc3
+        1Ml38NjhdSaX4Hc5WTOwJruGWr1YJrlMu91Yq6RezMji6k+Eq1N2/wDTg3qO7uYqtetBYX
+        u7N8aiBqBHhlNdnSsKYe63xN7Znybmg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-X0xQ1S6GOFqo42lEBqBvvQ-1; Wed, 27 Jan 2021 05:22:49 -0500
+X-MC-Unique: X0xQ1S6GOFqo42lEBqBvvQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3EEE190B2A0;
+        Wed, 27 Jan 2021 10:22:47 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 90A066F92F;
+        Wed, 27 Jan 2021 10:22:47 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 5.11-rc6
+Date:   Wed, 27 Jan 2021 05:22:46 -0500
+Message-Id: <20210127102246.1599444-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122195231.324857-2-mike.kravetz@oracle.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[sorry for jumping in late]
+Linus,
 
-On Fri 22-01-21 11:52:27, Mike Kravetz wrote:
-> As hugetlbfs evolved, state information about hugetlb pages was added.
-> One 'convenient' way of doing this was to use available fields in tail
-> pages.  Over time, it has become difficult to know the meaning or contents
-> of fields simply by looking at a small bit of code.  Sometimes, the
-> naming is just confusing.  For example: The PagePrivate flag indicates
-> a huge page reservation was consumed and needs to be restored if an error
-> is encountered and the page is freed before it is instantiated.  The
-> page.private field contains the pointer to a subpool if the page is
-> associated with one.
+I sent this yesterday but I cannot find it in the archives (weird),
+so I am resending it.
 
-OK, I thought the page.private was abused more than for this very
-specific case.
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
 
-> In an effort to make the code more readable, use page.private to contain
-> hugetlb specific page flags.  These flags will have test, set and clear
-> functions similar to those used for 'normal' page flags.  More importantly,
-> an enum of flag values will be created with names that actually reflect
-> their purpose.
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
 
-This is definitely a step into the right direction!
+are available in the Git repository at:
 
-> In this patch,
-> - Create infrastructure for hugetlb specific page flag functions
-> - Move subpool pointer to page[1].private to make way for flags
->   Create routines with meaningful names to modify subpool field
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-This makes some sense as well. It is really important that the primary
-state is stored in the head page. The respective data can be in tail
-pages.
+for you to fetch changes up to 9a78e15802a87de2b08dfd1bd88e855201d2c8fa:
 
-> - Use new HPageRestoreReserve flag instead of PagePrivate
+  KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX (2021-01-25 18:54:09 -0500)
 
-Much better! Although wouldn't HPageReserve be sufficient? The flag name
-doesn't really need to tell explicitly what to do with the reserve,
-right? Or would that be too confusing?
+----------------------------------------------------------------
+* x86 bugfixes
+* Documentation fixes
+* Avoid performance regression due to SEV-ES patches
 
-> Conversion of other state information will happen in subsequent patches.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+ARM:
+- Don't allow tagged pointers to point to memslots
+- Filter out ARMv8.1+ PMU events on v8.0 hardware
+- Hide PMU registers from userspace when no PMU is configured
+- More PMU cleanups
+- Don't try to handle broken PSCI firmware
+- More sys_reg() to reg_to_encoding() conversions
 
-I do not see any problems with the patch. I hope I haven't overlooked
-anything...
+----------------------------------------------------------------
+Alexandru Elisei (1):
+      KVM: arm64: Use the reg_to_encoding() macro instead of sys_reg()
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
->  fs/hugetlbfs/inode.c    | 12 ++------
->  include/linux/hugetlb.h | 68 +++++++++++++++++++++++++++++++++++++++++
->  mm/hugetlb.c            | 48 +++++++++++++++--------------
->  3 files changed, 96 insertions(+), 32 deletions(-)
--- 
-Michal Hocko
-SUSE Labs
+David Brazdil (1):
+      KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
+
+Jay Zhou (1):
+      KVM: x86: get smi pending status correctly
+
+Like Xu (2):
+      KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
+      KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
+
+Lorenzo Brescia (1):
+      kvm: tracing: Fix unmatched kvm_entry and kvm_exit events
+
+Marc Zyngier (4):
+      KVM: arm64: Hide PMU registers from userspace when not available
+      KVM: arm64: Simplify handling of absent PMU system registers
+      KVM: arm64: Filter out v8.1+ events on v8.0 HW
+      KVM: Forbid the use of tagged userspace addresses for memslots
+
+Maxim Levitsky (1):
+      KVM: nVMX: Sync unsync'd vmcs02 state to vmcs12 on migration
+
+Paolo Bonzini (2):
+      Merge tag 'kvmarm-fixes-5.11-2' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
+      KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX
+
+Quentin Perret (1):
+      KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
+
+Sean Christopherson (3):
+      KVM: x86: Add more protection against undefined behavior in rsvd_bits()
+      KVM: SVM: Unconditionally sync GPRs to GHCB on VMRUN of SEV-ES guest
+      KVM: x86: Revert "KVM: x86: Mark GPRs dirty when written"
+
+Steven Price (1):
+      KVM: arm64: Compute TPIDR_EL2 ignoring MTE tag
+
+Zenghui Yu (1):
+      KVM: Documentation: Update description of KVM_{GET,CLEAR}_DIRTY_LOG
+
+ Documentation/virt/kvm/api.rst       | 21 ++++----
+ arch/arm64/kvm/arm.c                 |  3 +-
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 ++---
+ arch/arm64/kvm/pmu-emul.c            | 10 ++--
+ arch/arm64/kvm/sys_regs.c            | 93 ++++++++++++++++++++++--------------
+ arch/x86/kvm/kvm_cache_regs.h        | 51 ++++++++++----------
+ arch/x86/kvm/mmu.h                   |  9 +++-
+ arch/x86/kvm/svm/nested.c            |  3 ++
+ arch/x86/kvm/svm/sev.c               | 15 +++---
+ arch/x86/kvm/svm/svm.c               |  2 +
+ arch/x86/kvm/vmx/nested.c            | 44 ++++++++++++-----
+ arch/x86/kvm/vmx/pmu_intel.c         |  6 ++-
+ arch/x86/kvm/vmx/vmx.c               |  2 +
+ arch/x86/kvm/x86.c                   | 11 +++--
+ virt/kvm/kvm_main.c                  |  1 +
+ 15 files changed, 172 insertions(+), 112 deletions(-)
+
