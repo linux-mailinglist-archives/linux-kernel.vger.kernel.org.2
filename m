@@ -2,92 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239B6305B13
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBC4305B1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 13:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237740AbhA0MSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 07:18:15 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11903 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235835AbhA0MPC (ORCPT
+        id S237653AbhA0MV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 07:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231913AbhA0MQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:15:02 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DQjDL5nQDz7bnS;
-        Wed, 27 Jan 2021 20:13:06 +0800 (CST)
-Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.186.182) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 27 Jan 2021 20:14:09 +0800
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        <lushenming@huawei.com>
-Subject: [PATCH v3 4/4] KVM: arm64: GICv4.1: Give a chance to save VLPI's pending state
-Date:   Wed, 27 Jan 2021 20:13:37 +0800
-Message-ID: <20210127121337.1092-5-lushenming@huawei.com>
-X-Mailer: git-send-email 2.27.0.windows.1
-In-Reply-To: <20210127121337.1092-1-lushenming@huawei.com>
-References: <20210127121337.1092-1-lushenming@huawei.com>
+        Wed, 27 Jan 2021 07:16:16 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B78C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:15:25 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id o7so1476056pgl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 04:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9gta6x0QNM0KEQiYKbjvUoee3fwpqJfT+h2l/JxVVIc=;
+        b=W7XHOat00nAOlB1D2IMZTvVe4bBPx9EWxubVPPCIhmQyM30LnZTZwHXXEvxX14JwkP
+         DOPwbZjA3seoE+CTfkZxXvHBDwShISVh298GDewbHa/Y47f57B3zb7bnRL4CDP9eBcQZ
+         NxuTkdfYqHksyDZEqzooCHT8I68+BIVvdoKHYlAUB2mDCUvYNH84ZyjHnkpWeOkIDvjc
+         krH0O2/drfQYs67iRqBB33Pk2bbyh5pnseyXcXooK/bUe/aibLOAunKkX1g40rZIDESQ
+         D91R9F/JqierJbnDWBgdfT7w+UtXdXz8uQwODV/uijmljurCAVZj4m+v7QBhGYb0bsFA
+         xbNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9gta6x0QNM0KEQiYKbjvUoee3fwpqJfT+h2l/JxVVIc=;
+        b=FpEaOYgFskwOlnMtdNuS3FuZctQES5RMa1VDresAKx7bYe1Txl9Ds8TUZ6wpzeDDFf
+         FCnQlil1zpwHwEDA1ph8NW16d6SmPGIDuxIFaRwmpWd50eUPwenaCrQe17ZBizNi/EVe
+         +g5WRzlPGDaTZgoWNAXCX6qcHn2z4jJcX8c8aGfhUmEGAoE8S69AjXsr0Vc5oUjFn2tV
+         AfP5/VaB7qrqofRihw1aXP+ZtL+lqcfDWHfYSeYC6i8Jt3YGgQ/7En2dRVvxSDkP4iiI
+         J5c8NfRDX4HTSEhO4cRLYhwN+rNQSADMOV12/V1+N0ub2oEmrkzAlRKZoT8/4oKsRDQm
+         LxDA==
+X-Gm-Message-State: AOAM530e3DYgccsmZIUdwt02JwOaMUEDabnwOTtMqFPfyDne371ZrEX+
+        Whfw7TXdUY5cp92/tTmmHKriI6Bw7seBZyGbzbvmiA==
+X-Google-Smtp-Source: ABdhPJzlp0xIxfYkX/lfLr9s78qS0ay/2zCRG/chpauCrQMMafTYf2sgGg6FT2+dLGTdzuTUoshNBhncCIh2TOA2jL0=
+X-Received: by 2002:a65:64da:: with SMTP id t26mr10814245pgv.145.1611749725065;
+ Wed, 27 Jan 2021 04:15:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.186.182]
-X-CFilter-Loop: Reflected
+References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
+ <20210127100454.GK196782@linux.ibm.com> <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
+ <20210127111858.GA273567@linux.ibm.com>
+In-Reply-To: <20210127111858.GA273567@linux.ibm.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@semihalf.com>
+Date:   Wed, 27 Jan 2021 13:15:14 +0100
+Message-ID: <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
+Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
+ holes in memory layout
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before GICv4.1, we don't have direct access to the VLPI's pending
-state. So we simply let it fail early when encountering any VLPI.
+Unfortunately nothing :( my current kernel command line contains:
+console=3DttyS0,115200n8 debug earlyprintk=3Dserial loglevel=3D7
 
-But now we don't have to return -EACCES directly if on GICv4.1. So
-let’s change the hard code and give a chance to save the VLPI's pending
-state (and preserve the UAPI).
+I was thinking about using earlycon, but it seems to be blocked.
+(I think the lack of earlycon might be related to Chromebook HW
+security design. There is an EC controller which is a part of AP ->
+serial chain as kernel messages are considered sensitive from a
+security standpoint.)
 
-Signed-off-by: Shenming Lu <lushenming@huawei.com>
----
- Documentation/virt/kvm/devices/arm-vgic-its.rst | 2 +-
- arch/arm64/kvm/vgic/vgic-its.c                  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Best regards,
+Lukasz
 
-diff --git a/Documentation/virt/kvm/devices/arm-vgic-its.rst b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-index 6c304fd2b1b4..d257eddbae29 100644
---- a/Documentation/virt/kvm/devices/arm-vgic-its.rst
-+++ b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-@@ -80,7 +80,7 @@ KVM_DEV_ARM_VGIC_GRP_CTRL
-     -EFAULT  Invalid guest ram access
-     -EBUSY   One or more VCPUS are running
-     -EACCES  The virtual ITS is backed by a physical GICv4 ITS, and the
--	     state is not available
-+	     state is not available without GICv4.1
-     =======  ==========================================================
- 
- KVM_DEV_ARM_VGIC_GRP_ITS_REGS
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 40cbaca81333..ec7543a9617c 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -2218,10 +2218,10 @@ static int vgic_its_save_itt(struct vgic_its *its, struct its_device *device)
- 		/*
- 		 * If an LPI carries the HW bit, this means that this
- 		 * interrupt is controlled by GICv4, and we do not
--		 * have direct access to that state. Let's simply fail
--		 * the save operation...
-+		 * have direct access to that state without GICv4.1.
-+		 * Let's simply fail the save operation...
- 		 */
--		if (ite->irq->hw)
-+		if (ite->irq->hw && !kvm_vgic_global_state.has_gicv4_1)
- 			return -EACCES;
- 
- 		ret = vgic_its_save_ite(its, device, ite, gpa, ite_esz);
--- 
-2.19.1
-
+=C5=9Br., 27 sty 2021 o 12:19 Mike Rapoport <rppt@linux.ibm.com> napisa=C5=
+=82(a):
+>
+> On Wed, Jan 27, 2021 at 11:08:17AM +0100, =C5=81ukasz Majczak wrote:
+> > Hi Mike,
+> >
+> > Actually I have a serial console attached (via servo device), but
+> > there is no output :( and also the reboot/crash is very fast/immediate
+> > after power on.
+>
+> If you boot with earlyprintk=3Dserial are there any messages?
+>
+> > Best regards
+> > Lukasz
+> >
+> > =C5=9Br., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napisa=
+=C5=82(a):
+> > >
+> > > Hi Lukasz,
+> > >
+> > > On Wed, Jan 27, 2021 at 10:22:29AM +0100, =C5=81ukasz Majczak wrote:
+> > > > Crash after mm: fix initialization of struct page for holes in memo=
+ry layout
+> > > >
+> > > > Hi,
+> > > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Carolin=
+e),
+> > > > but I've noticed it has crashed - unfortunately it seems to happen =
+at
+> > > > a very early stage - No output to the console nor to the screen, so=
+ I
+> > > > have started a bisect (between 5.11-rc4 - which works just find - a=
+nd
+> > > > 5.11-rc5),
+> > > > bisect results points to:
+> > > >
+> > > > d3921cb8be29 mm: fix initialization of struct page for holes in mem=
+ory layout
+> > > >
+> > > > Reproduction is just to build and load the kernel.
+> > > >
+> > > > If it will help any how I am attaching:
+> > > > - /proc/cpuinfo (from healthy system):
+> > > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1=
+a785b64a97066
+> > > > - my .config file (for a broken system):
+> > > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53e=
+fe8e18b5da33c
+> > > >
+> > > > If there is anything I could add/do/test to help fix this please le=
+t me know.
+> > >
+> > > Chris Wilson also reported boot failures on several Chromebooks:
+> > >
+> > > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@bu=
+ild.alporthouse.com
+> > >
+> > > I presume serial console is not an option, so if you could boot with
+> > > earlyprintk=3Dvga and see if there is anything useful printed on the =
+screen
+> > > it would be really helpful.
+> > >
+> > > > Best regards
+> > > > Lukasz
+> > >
+> > > --
+> > > Sincerely yours,
+> > > Mike.
+>
+> --
+> Sincerely yours,
+> Mike.
