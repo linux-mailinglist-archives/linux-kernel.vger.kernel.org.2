@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD233063B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E352A3063B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 20:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344418AbhA0TEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 14:04:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28110 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344382AbhA0TDx (ORCPT
+        id S1344468AbhA0TEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 14:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344347AbhA0TEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 14:03:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611774147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WizI47Xyqf1zm2sS3CIOE1WP48Ua/+LDqcbLFZV+d6M=;
-        b=DoL3rMVFFl2LHtLV6eitZLN+vZlxG4GDTS81+wHiUtj5imt7uMKAUCGUmqcHa7z5kEc5Mo
-        bTUyesup3k7l1Jphul9BFbC8DHGsset4+N8Yd+/V9WYjlhhVRZOaWI3EHFNMMju/QE/okt
-        cjFXw/BfP2hpEmov8z/zADqMxnbBXmE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-KTXk0u4YPqWqWDJorZYdYg-1; Wed, 27 Jan 2021 14:02:23 -0500
-X-MC-Unique: KTXk0u4YPqWqWDJorZYdYg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06F5F107ACE4;
-        Wed, 27 Jan 2021 19:02:22 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF45B60BF3;
-        Wed, 27 Jan 2021 19:02:20 +0000 (UTC)
-Date:   Wed, 27 Jan 2021 13:02:18 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        rostedt@goodmis.org, jbaron@akamai.com, ardb@kernel.org
-Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
- preempt_schedule[_notrace]() static calls
-Message-ID: <20210127190218.hoztl7eidujqarkt@treble>
-References: <20210118141223.123667-7-frederic@kernel.org>
- <20210122165226.GD16371@worktop.programming.kicks-ass.net>
- <20210126235730.lgfa2uida5se5urn@treble>
- <YBEuy6zlBcV8gLvY@hirez.programming.kicks-ass.net>
- <YBFODfNZCjA9s0IP@hirez.programming.kicks-ass.net>
- <20210127155914.jfmr4jay47yck5h5@treble>
- <YBGSdtnKIL3kryos@hirez.programming.kicks-ass.net>
- <20210127163308.cgiq7jxx2uziuhcc@treble>
- <YBG0cSoJmu8NnoAT@hirez.programming.kicks-ass.net>
- <20210127190003.64rdwoxyjgnq2rtx@treble>
+        Wed, 27 Jan 2021 14:04:48 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD71DC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 11:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UtSSckf2PZmsT5AzLuwb0CrCU8LOlhxRp19DyvxdD8A=; b=01jCaOj+T6gS4TLcauADjXNZ0F
+        GFJMAsiOuubt/OIuUTLQJuzmSOzpJAPnl6nIPRiREZtXnX5R4KjVJKw1vfIhGsyg3FdZ1+6+lbzpD
+        8y9xWyWHgIaniVAMe3iBJe6zMqvTRnQsgus/Lp+G3k1nzzYOJTDC7vn2NfajTj08A1sG8N4kCRsZ+
+        fZQH6xIuHHf1D5TarZ8xm4DzQ0OjmiD7BCwoaf4j2R5cZRFFIb5BjDt2hQtwLas3ZrT6y37W/6Ra1
+        NhGkMntWGVeoHsUmwcXx8Nyg7rCcYcBYBPgGRiFNklWUAhcT98z8gQ4CpWpz/J9iT78ewXCyM6QfE
+        odDmv8oA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4q6b-0007kV-Eh; Wed, 27 Jan 2021 19:03:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68A26300455;
+        Wed, 27 Jan 2021 20:03:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 460EF2D2DAB25; Wed, 27 Jan 2021 20:03:51 +0100 (CET)
+Date:   Wed, 27 Jan 2021 20:03:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
+        maddy@linux.vnet.ibm.com
+Subject: Re: [PATCH V2 1/5] perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
+Message-ID: <YBG5F2rCbsto+Y9F@hirez.programming.kicks-ass.net>
+References: <1611761925-159055-1-git-send-email-kan.liang@linux.intel.com>
+ <1611761925-159055-2-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127190003.64rdwoxyjgnq2rtx@treble>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <1611761925-159055-2-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 01:00:07PM -0600, Josh Poimboeuf wrote:
-> On Wed, Jan 27, 2021 at 07:44:01PM +0100, Peter Zijlstra wrote:
-> > On Wed, Jan 27, 2021 at 10:33:08AM -0600, Josh Poimboeuf wrote:
-> > 
-> > > What did you think about .static_call_tramp_key?  I could whip up a
-> > > patch later unless you beat me to it.
-> > 
-> > Yeah, I'm not sure.. why duplicate information already present in
-> > kallsyms?
-> 
-> Well, but it's not exactly duplicating kallsyms.  No need to store
-> symbol names, just the pointer relationships.  And kallsyms is
-> presumably slow.
-> 
-> > There's a fair number of features that already require KALLSYMS, I can't
-> > really be bothered about adding one more (kprobes, function_tracer,
-> > stack_tracer, ftrace_syscalls).
-> 
-> Right, but I don't think they rely on KALLSYMS_ALL?
+On Wed, Jan 27, 2021 at 07:38:41AM -0800, kan.liang@linux.intel.com wrote:
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index b15e344..13b4019 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -145,12 +145,14 @@ enum perf_event_sample_format {
+>  	PERF_SAMPLE_CGROUP			= 1U << 21,
+>  	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
+>  	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
+> +	PERF_SAMPLE_WEIGHT_STRUCT		= 1U << 24,
+>  
+> -	PERF_SAMPLE_MAX = 1U << 24,		/* non-ABI */
+> +	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
+>  
+>  	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
+>  };
+>  
+> +#define PERF_SAMPLE_WEIGHT_TYPE	(PERF_SAMPLE_WEIGHT | PERF_SAMPLE_WEIGHT_STRUCT)
+>  /*
+>   * values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
+>   *
+> @@ -890,7 +892,16 @@ enum perf_event_type {
+>  	 * 	  char			data[size];
+>  	 * 	  u64			dyn_size; } && PERF_SAMPLE_STACK_USER
+>  	 *
+> -	 *	{ u64			weight;   } && PERF_SAMPLE_WEIGHT
+> +	 *	{ union perf_sample_weight
+> +	 *	 {
+> +	 *		u64		full; && PERF_SAMPLE_WEIGHT
+> +	 *		struct {
+> +	 *			u32	low_dword;
+> +	 *			u16	high_word;
+> +	 *			u16	higher_word;
+> +	 *		} && PERF_SAMPLE_WEIGHT_STRUCT
+> +	 *	 }
+> +	 *	}
+>  	 *	{ u64			data_src; } && PERF_SAMPLE_DATA_SRC
+>  	 *	{ u64			transaction; } && PERF_SAMPLE_TRANSACTION
+>  	 *	{ u64			abi; # enum perf_sample_regs_abi
+> @@ -1248,4 +1259,13 @@ struct perf_branch_entry {
+>  		reserved:40;
+>  };
+>  
+> +union perf_sample_weight {
+> +	__u64		full;
+> +	struct {
+> +		__u32	low_dword;
+> +		__u16	high_word;
+> +		__u16	higher_word;
+> +	};
+> +};
 
-Scratch that, I forgot about your last hack.  (That's what I get for
-emailing during meetings.)
+*urgh*, my naming lives ... anybody got a better suggestion?
 
-I mean - your patch is fine... let me just whip up the alternative and
-we can compare.
-
--- 
-Josh
-
+Also, do we want to care about byte order?
