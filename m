@@ -2,113 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D843057A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054E13057CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 11:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhA0KBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 05:01:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235599AbhA0J67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:58:59 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 751AB20734;
-        Wed, 27 Jan 2021 09:58:18 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l4haa-00AL1M-5f; Wed, 27 Jan 2021 09:58:16 +0000
+        id S235547AbhA0KFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 05:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235354AbhA0KDZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:03:25 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D109C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:02:38 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id cq1so947814pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 02:02:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=il+kK31I8ias7ly7K5qOOufoBmh6u4lYQGwfOmvXgok=;
+        b=umpaeJivTUc70rUr7oissDRdrd/NSPpIhzh+PzHhKbS1foIrTSpKsod+T8fwLF76Iz
+         f69EfcMpINZhd3O81tqlo4Tpn+b5chdPRtrh+GV+jK3Bebs3S4i/eyAPRMMAJUKuKRw3
+         VrsXTwbgqyLBfsYqxiFhAtRGgzvh3QUcZaDvOg50gDtwXRrhUwU/VtCAiejnZqu4Z4nF
+         NP/Huu7uiHrHdzYDfuPUxa4WxFD7HmfvqJfcAyb2/QU8IkqdahlYOGwj3NJHWgOiOT8e
+         RBTQH2tuP7jrHIez+K0hIVCP+8ncMQSCWCae+LFn5DWNmTtz0aF9uhjzz90wJA/sOTCH
+         mbog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=il+kK31I8ias7ly7K5qOOufoBmh6u4lYQGwfOmvXgok=;
+        b=SQLUsbxTbytGanIXP/JZPDjucNAF2s6AXweE+F6aNdEUxt562+T56ZKgJscrxt80j6
+         Nqw2sQGbUdPI10axb3AdVJs0L+5OzmzrFzDAAEihdh/N7ixttqGm6gmspgyNdGWmxttx
+         4KwYVkk2dbvtazwsR9Oa3f5SO8eYhyHgZP5YRZCmghu6cJXW08UL3/S6/qgbJod3XUFd
+         MA7/63olOtx3T5whPOvziohjfgpQafwEg6fpFxXn0wfIJKcywyzGYVR5sRrpa4ErPoc1
+         nEugV0ZlLk5/X0Oxx4gCmxNPt6WrwN6mJZKO9AnAFQNx6f+F/ZQRlNR22JO7lRY6ZcJh
+         stsA==
+X-Gm-Message-State: AOAM532PGxTaM6LCKDDSpKwiEEmhdqxvNFbSsyXiFTdw1jVCe3rspX67
+        YXTDP4A8V2ObOhCc2sHWxqC/SA==
+X-Google-Smtp-Source: ABdhPJzkvUySvZLn2EAxK9+DgBWy4yFjNe77BjjPxrFYXjaE3UdsYOaIrfwTFZCpMvBSxOMLFsam5Q==
+X-Received: by 2002:a17:902:bb8c:b029:dc:2e5e:2b2 with SMTP id m12-20020a170902bb8cb02900dc2e5e02b2mr10762965pls.10.1611741757318;
+        Wed, 27 Jan 2021 02:02:37 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id gv22sm1601853pjb.56.2021.01.27.02.02.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 02:02:36 -0800 (PST)
+Date:   Wed, 27 Jan 2021 15:32:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 11/13] devfreq: tegra30: Migrate to
+ dev_pm_opp_set_opp()
+Message-ID: <20210127100234.vl2wwe7rjrrz4btz@vireshk-i7>
+References: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
+ <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Jan 2021 09:58:15 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, lcherian@marvell.com,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH V3 10/14] arm64: nvhe: Allow TRBE access at EL1
-In-Reply-To: <1611737738-1493-11-git-send-email-anshuman.khandual@arm.com>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-11-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <12b1572e2568d4936f0458649065fe64@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org, mathieu.poirier@linaro.org, suzuki.poulose@arm.com, mike.leach@linaro.org, lcherian@marvell.com, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-27 08:55, Anshuman Khandual wrote:
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+On 27-01-21, 14:40, Viresh Kumar wrote:
+> dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
+> be used instead. Migrate to the new API.
 > 
-> When the kernel is booted at EL2 in a nvhe configuration,
-> enable the TRBE access to the EL1. The EL1 still can't trace
-> EL2, unless EL2 permits explicitly via TRFCR_EL2.E2TRE.
+> We don't want the OPP core to manage the clk for this driver, migrate to
+> dev_pm_opp_of_add_table_noclk() to make sure dev_pm_opp_set_opp()
+> doesn't have any side effects.
 > 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-Acked-by: Marc Zyngier <maz@kernel.org>
-
-One comment below, though:
-
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  arch/arm64/include/asm/el2_setup.h | 19 +++++++++++++++++++
->  arch/arm64/include/asm/kvm_arm.h   |  2 ++
->  2 files changed, 21 insertions(+)
+> Dmitry,
 > 
-> diff --git a/arch/arm64/include/asm/el2_setup.h
-> b/arch/arm64/include/asm/el2_setup.h
-> index a7f5a1b..05ecce9 100644
-> --- a/arch/arm64/include/asm/el2_setup.h
-> +++ b/arch/arm64/include/asm/el2_setup.h
-> @@ -72,6 +72,25 @@
->  .endif
+> This is based over the patches sent here:
 > 
->  3:
-> +
-> +.ifeqs	"\mode", "nvhe"
-> +	/*
-> +	 * If the Trace Buffer is available, allow
-> +	 * the EL1 to own it. Note that EL1 cannot
-> +	 * trace the EL2, as it is prevented by
-> +	 * TRFCR_EL2.E2TRE == 0.
-> +	 */
-> +	ubfx	x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #4
-> +	cbz	x0, 1f
-> +
-> +	mrs_s	x0, SYS_TRBIDR_EL1
-> +	and	x0, x0, TRBIDR_PROG
-> +	cbnz	x0, 1f
-> +	mov	x0, #(MDCR_EL2_E2TB_EL1_OWN << MDCR_EL2_E2TB_SHIFT)
-> +	orr	x2, x2, x0
-> +.endif
-> +
-> +1:
+> https://lore.kernel.org/lkml/6c2160ff30a8f421563793020264cf9f533f293c.1611738228.git.viresh.kumar@linaro.org/
+> 
+> This should fix the problem you mentioned earlier. Will push this for
+> linux-next unless you have any issues with it.
+> 
+>  drivers/devfreq/tegra30-devfreq.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+> index 117cad7968ab..31f7dec5990b 100644
+> --- a/drivers/devfreq/tegra30-devfreq.c
+> +++ b/drivers/devfreq/tegra30-devfreq.c
+> @@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+>  		return PTR_ERR(opp);
+>  	}
+>  
+> -	ret = dev_pm_opp_set_bw(dev, opp);
+> +	ret = dev_pm_opp_set_opp(dev, opp);
+>  	dev_pm_opp_put(opp);
+>  
+>  	return ret;
+> @@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  		return err;
+>  	}
+>  
+> -	err = dev_pm_opp_of_add_table(&pdev->dev);
+> +	err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
 
-Note that this will (badly) conflict with the late-VHE patches[1],
-where this code path has been reworked.
+Plus this, somehow was left uncommited in my tree :(
 
-Thanks,
+diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+index 31f7dec5990b..ce83f883ca65 100644
+--- a/drivers/devfreq/tegra30-devfreq.c
++++ b/drivers/devfreq/tegra30-devfreq.c
+@@ -849,7 +849,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+                return err;
+        }
+ 
+-       err = dev_pm_opp_of_add_table_noclk(&pdev->dev);
++       err = dev_pm_opp_of_add_table_noclk(&pdev->dev, 0);
+        if (err) {
+                dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
+                goto put_hw;
 
-         M.
-
-[1] https://lore.kernel.org/r/20210125105019.2946057-1-maz@kernel.org
 -- 
-Jazz is not dead. It just smells funny...
+viresh
