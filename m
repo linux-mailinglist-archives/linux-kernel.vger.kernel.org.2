@@ -2,285 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC1E30679C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D2D30676C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 00:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbhA0XOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 18:14:43 -0500
-Received: from mga12.intel.com ([192.55.52.136]:17432 "EHLO mga12.intel.com"
+        id S233514AbhA0XBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 18:01:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234513AbhA0XGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:06:44 -0500
-IronPort-SDR: a0zou0wCblGdVxnXwfv3fWxwLVo83SUenHhaIh7jVM5vAN7ajcZh0UhZ+bsoPyoHF2ZYm3p1OE
- 5l1QvToCNRzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159319112"
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="159319112"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 14:56:55 -0800
-IronPort-SDR: zErmjwGLVgFutD4Eylqf1QcXPYrQ6MHw6VQd4GpYakirPl+IANC5ZMa12i4sMImh43vZZtk5Mv
- moUKXobuSMWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,380,1602572400"; 
-   d="scan'208";a="388494362"
-Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
-  by orsmga008.jf.intel.com with ESMTP; 27 Jan 2021 14:56:54 -0800
-From:   Mike Ximing Chen <mike.ximing.chen@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        dan.j.williams@intel.com, pierre-louis.bossart@linux.intel.com,
-        Gage Eads <gage.eads@intel.com>
-Subject: [PATCH v10 20/20] dlb: queue map/unmap workqueue
-Date:   Wed, 27 Jan 2021 16:56:41 -0600
-Message-Id: <20210127225641.1342-21-mike.ximing.chen@intel.com>
-X-Mailer: git-send-email 2.13.6
-In-Reply-To: <20210127225641.1342-1-mike.ximing.chen@intel.com>
-References: <20210127225641.1342-1-mike.ximing.chen@intel.com>
+        id S233248AbhA0W6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:58:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB9E64DD6;
+        Wed, 27 Jan 2021 22:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611788285;
+        bh=nGzFcZ6/AbcsatBSuFjcKCrzAXMUHOxxmvxhOjY/iT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tv0GjGU7pmjR4ba+DDAGwLL+KYOtKP/YlQ9gWRr0imyLO0rvWy/GB6YzO/JLNM1UK
+         ZIyM1oaUpmX5tkV/qp1Z45vBeR9bOKvvNqdv4ot0m3F5UiteUDjpFG4fv+2j9bRcQv
+         EG/tHabd8kSEukFtS0L2mcUtKIbPPXNtG/hw1dHZ6VcrG0nvi30LQKDxKQg7F+0Ux0
+         eejzfg4vQmiUddqRbs/bhYvtc/jSeBprx4Qs0sSZolHfjC83I34zkkqyvcFV/yWKBp
+         VO7A31PSVgmk8Qq2oS8oOVmfwJDDHHCvSuR432AHVGBpv7YPA7Toih8KKTPsf1Bj/9
+         0UYyMHnPZr8EA==
+Received: by pali.im (Postfix)
+        id C9478768; Wed, 27 Jan 2021 23:58:02 +0100 (CET)
+Date:   Wed, 27 Jan 2021 23:58:02 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bob Hepple <bob.hepple@gmail.com>
+Cc:     Tom Hebb <tommyhebb@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control
+ blacklist
+Message-ID: <20210127225802.wcnr6mw7dp7nnk2e@pali>
+References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
+ <20210125100540.55wbgdsem3htplx3@pali>
+ <CAMcCCgTo87HmwexZS696ok16e9s_8gRgFd38uoLP34r7TbAzBg@mail.gmail.com>
+ <CAHzpm2hk4+0FyFrcGYN-JJfx5Ka8yoM8mTsYZA_4WHfWYGa4yQ@mail.gmail.com>
+ <CAHzpm2h2X8ZKEtRxnD-mwyEv=B8J+tH_spFGD2VzfwGdRAaHMw@mail.gmail.com>
+ <CAMcCCgQRDRi1LpxJBTvKcB+dALJJsn=n5Q=Wyvfcw9LGqqjq7Q@mail.gmail.com>
+ <20210127091933.haq6nmbmx3cskh5t@pali>
+ <CAHzpm2j9N3ywMy6HLruCt1VaQLmB1-xVusvXUb8wa2ores+KAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHzpm2j9N3ywMy6HLruCt1VaQLmB1-xVusvXUb8wa2ores+KAQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add workqueue support for asynchronous queue map/unmap operations.
+Hello Bob!
 
-When mapping or unmapped a queue, it's possible that the thread that
-requires the map/unmap is the same one which is responsible for doing the
-processing that would quiesce the queue/port, thus the driver may have to
-complete the operation asynchronously.
+On Thursday 28 January 2021 08:40:36 Bob Hepple wrote:
+> Hi Pali,
+> 
+> No, I have not contacted Dell about this and I'm not sure that they
+> would be terribly interested given that my machine is 12 years old -
+> but I'll have a go if I can find the right place to do it.
 
-To that end, the driver uses a workqueue that periodically checks whether
-any outstanding operations can be completed. This workqueue function is
-only scheduled when there is at least one outstanding map/unmap operation.
+If it is 12 years old machine then I doubt that anybody would do any
+support for it...
 
-Signed-off-by: Gage Eads <gage.eads@intel.com>
-Signed-off-by: Mike Ximing Chen <mike.ximing.chen@intel.com>
-Reviewed-by: Björn Töpel <bjorn.topel@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/misc/dlb/dlb_main.c     |   5 ++
- drivers/misc/dlb/dlb_main.h     |   2 +
- drivers/misc/dlb/dlb_resource.c | 110 +++++++++++++++++++++++++++++++-
- drivers/misc/dlb/dlb_resource.h |   2 +
- 4 files changed, 117 insertions(+), 2 deletions(-)
+> Do you have a good email or other Dell target to report it?
 
-diff --git a/drivers/misc/dlb/dlb_main.c b/drivers/misc/dlb/dlb_main.c
-index 69ab9b532ed4..678be16d103d 100644
---- a/drivers/misc/dlb/dlb_main.c
-+++ b/drivers/misc/dlb/dlb_main.c
-@@ -440,6 +440,9 @@ static int dlb_probe(struct pci_dev *pdev, const struct pci_device_id *pdev_id)
- 
- 	dlb->ops->init_hardware(dlb);
- 
-+	/* Initialize a workqueue for queue-port linking. */
-+	dlb_init_work(dlb);
-+
- 	/*
- 	 * Undo the 'get' operation by the PCI layer during probe and
- 	 * (if PF) immediately suspend the device. Since the device is only
-@@ -596,6 +599,8 @@ static int __init dlb_init_module(void)
- 
- static void __exit dlb_exit_module(void)
- {
-+	flush_scheduled_work();
-+
- 	pci_unregister_driver(&dlb_pci_driver);
- 
- 	cdev_del(&dlb_cdev);
-diff --git a/drivers/misc/dlb/dlb_main.h b/drivers/misc/dlb/dlb_main.h
-index 5942fbf22cbb..097b070b98fa 100644
---- a/drivers/misc/dlb/dlb_main.h
-+++ b/drivers/misc/dlb/dlb_main.h
-@@ -140,11 +140,13 @@ struct dlb {
- 	 * hardware registers.
- 	 */
- 	struct mutex resource_mutex;
-+	struct work_struct work;
- 	enum dlb_device_type type;
- 	int id;
- 	u32 inode_cnt;
- 	dev_t dev_number;
- 	u8 domain_reset_failed;
-+	u8 worker_launched;
- };
- 
- /* Prototypes for dlb_ioctl.c */
-diff --git a/drivers/misc/dlb/dlb_resource.c b/drivers/misc/dlb/dlb_resource.c
-index f4bd2049557a..084ff6857f15 100644
---- a/drivers/misc/dlb/dlb_resource.c
-+++ b/drivers/misc/dlb/dlb_resource.c
-@@ -2509,6 +2509,61 @@ static int dlb_ldb_port_finish_map_qid_dynamic(struct dlb_hw *hw,
- 	return 0;
- }
- 
-+static unsigned int dlb_finish_unmap_qid_procedures(struct dlb_hw *hw);
-+static unsigned int dlb_finish_map_qid_procedures(struct dlb_hw *hw);
-+
-+/*
-+ * The workqueue callback runs until it completes all outstanding QID->CQ
-+ * map and unmap requests. To prevent deadlock, this function gives other
-+ * threads a chance to grab the resource mutex and configure hardware.
-+ */
-+static void dlb_complete_queue_map_unmap(struct work_struct *work)
-+{
-+	struct dlb *dlb = container_of(work, struct dlb, work);
-+	int ret;
-+
-+	mutex_lock(&dlb->resource_mutex);
-+
-+	ret = dlb_finish_unmap_qid_procedures(&dlb->hw);
-+	ret += dlb_finish_map_qid_procedures(&dlb->hw);
-+
-+	if (ret != 0)
-+		/*
-+		 * Relinquish the CPU so the application can process its CQs,
-+		 * so this function doesn't deadlock.
-+		 */
-+		schedule_work(&dlb->work);
-+	else
-+		dlb->worker_launched = false;
-+
-+	mutex_unlock(&dlb->resource_mutex);
-+}
-+
-+void dlb_init_work(struct dlb *dlb)
-+{
-+	INIT_WORK(&dlb->work, dlb_complete_queue_map_unmap);
-+}
-+
-+/**
-+ * dlb_schedule_work() - launch a thread to process pending map and unmap work
-+ * @hw: dlb_hw handle for a particular device.
-+ *
-+ * This function launches a kernel thread that will run until all pending
-+ * map and unmap procedures are complete.
-+ */
-+static void dlb_schedule_work(struct dlb_hw *hw)
-+{
-+	struct dlb *dlb = container_of(hw, struct dlb, hw);
-+
-+	/* Nothing to do if the worker is already running */
-+	if (dlb->worker_launched)
-+		return;
-+
-+	schedule_work(&dlb->work);
-+
-+	dlb->worker_launched = true;
-+}
-+
- /**
-  * dlb_ldb_port_map_qid_dynamic() - perform a "dynamic" QID->CQ mapping
-  * @hw: dlb_hw handle for a particular device.
-@@ -2561,8 +2616,16 @@ static int dlb_ldb_port_map_qid_dynamic(struct dlb_hw *hw,
- 
- 	infl_cnt = DLB_CSR_RD(hw, LSP_QID_LDB_INFL_CNT(queue->id.phys_id));
- 
--	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT))
-+	if (BITS_GET(infl_cnt, LSP_QID_LDB_INFL_CNT_COUNT)) {
-+		/*
-+		 * The queue is owed completions so it's not safe to map it
-+		 * yet. Schedule a kernel thread to complete the mapping later,
-+		 * once software has completed all the queue's inflight events.
-+		 */
-+		dlb_schedule_work(hw);
-+
- 		return 1;
-+	}
- 
- 	/*
- 	 * Disable the affected CQ, and the CQs already mapped to the QID,
-@@ -2585,6 +2648,13 @@ static int dlb_ldb_port_map_qid_dynamic(struct dlb_hw *hw,
- 
- 		dlb_ldb_queue_enable_mapped_cqs(hw, domain, queue);
- 
-+		/*
-+		 * The queue is owed completions so it's not safe to map it
-+		 * yet. Schedule a kernel thread to complete the mapping later,
-+		 * once software has completed all the queue's inflight events.
-+		 */
-+		dlb_schedule_work(hw);
-+
- 		return 1;
- 	}
- 
-@@ -3236,6 +3306,20 @@ dlb_domain_finish_unmap_qid_procedures(struct dlb_hw *hw,
- 	return domain->num_pending_removals;
- }
- 
-+static unsigned int dlb_finish_unmap_qid_procedures(struct dlb_hw *hw)
-+{
-+	int i, num = 0;
-+
-+	/* Finish queue unmap jobs for any domain that needs it */
-+	for (i = 0; i < DLB_MAX_NUM_DOMAINS; i++) {
-+		struct dlb_hw_domain *domain = &hw->domains[i];
-+
-+		num += dlb_domain_finish_unmap_qid_procedures(hw, domain);
-+	}
-+
-+	return num;
-+}
-+
- static void dlb_domain_finish_map_port(struct dlb_hw *hw,
- 				       struct dlb_hw_domain *domain,
- 				       struct dlb_ldb_port *port)
-@@ -3312,6 +3396,20 @@ dlb_domain_finish_map_qid_procedures(struct dlb_hw *hw,
- 	return domain->num_pending_additions;
- }
- 
-+static unsigned int dlb_finish_map_qid_procedures(struct dlb_hw *hw)
-+{
-+	int i, num = 0;
-+
-+	/* Finish queue map jobs for any domain that needs it */
-+	for (i = 0; i < DLB_MAX_NUM_DOMAINS; i++) {
-+		struct dlb_hw_domain *domain = &hw->domains[i];
-+
-+		num += dlb_domain_finish_map_qid_procedures(hw, domain);
-+	}
-+
-+	return num;
-+}
-+
- static void dlb_log_map_qid(struct dlb_hw *hw, u32 domain_id,
- 			    struct dlb_map_qid_args *args,
- 			    bool vdev_req, unsigned int vdev_id)
-@@ -3577,6 +3675,7 @@ int dlb_hw_unmap_qid(struct dlb_hw *hw, u32 domain_id,
- 	struct dlb_ldb_queue *queue;
- 	enum dlb_qid_map_state st;
- 	struct dlb_ldb_port *port;
-+	bool unmap_complete;
- 	int i, ret;
- 
- 	dlb_log_unmap_qid(hw, domain_id, args, vdev_req, vdev_id);
-@@ -3651,7 +3750,14 @@ int dlb_hw_unmap_qid(struct dlb_hw *hw, u32 domain_id,
- 	 * outstanding inflights. If that's not the case, this will fail and
- 	 * the unmapping will be completed at a later time.
- 	 */
--	dlb_domain_finish_unmap_port(hw, domain, port);
-+	unmap_complete = dlb_domain_finish_unmap_port(hw, domain, port);
-+
-+	/*
-+	 * If the unmapping couldn't complete immediately, launch the worker
-+	 * thread (if it isn't already launched) to finish it later.
-+	 */
-+	if (!unmap_complete)
-+		dlb_schedule_work(hw);
- 
- unmap_qid_done:
- 	resp->status = 0;
-diff --git a/drivers/misc/dlb/dlb_resource.h b/drivers/misc/dlb/dlb_resource.h
-index e3de9eb94d5d..82f14388581b 100644
---- a/drivers/misc/dlb/dlb_resource.h
-+++ b/drivers/misc/dlb/dlb_resource.h
-@@ -89,4 +89,6 @@ void dlb_hw_enable_sparse_ldb_cq_mode(struct dlb_hw *hw);
- 
- void dlb_hw_enable_sparse_dir_cq_mode(struct dlb_hw *hw);
- 
-+void dlb_init_work(struct dlb *dlb);
-+
- #endif /* __DLB_RESOURCE_H */
--- 
-2.17.1
+In this post is information how to contact Dell Linux support team which
+can open (internal) BIOS issue:
 
+https://github.com/dell/libsmbios/issues/48#issuecomment-391328501
+
+But it is possible that still only available for USA.
+
+Mario (superm1 on github) is active also in kernel and can help with
+firmware issues on new machines.
+
+But for this your 12 years old machine is proposed blacklist quirk the
+only option.
+
+I just do not know if this issue was already fixed in new BIOS which is
+available on new machines. And therefore I'm worried if these issues
+would continue to appear also on other machines, or we are just
+collecting list of old machines.
+
+Just I do not want to see situation when manufacture says "it is
+working, nothing needed to fix" and it would work just because of
+blacklist... As such scenario would lead only to increasing blacklist
+without ability to start fixing issues.
+
+> I don't
+> have access to official Dell support as my warranty ran out about 10
+> years ago. Perhaps there's an existing Dell bug report that references
+> the original https://bugzilla.kernel.org/show_bug.cgi?id=195751 ??? I
+> could add my report there if someone has already informed Dell about
+> the other instances of the bug.
+> 
+> Thanks
+> 
+> 
+> 
+> Bob
+> 
+> On Wed, 27 Jan 2021 at 19:19, Pali Rohár <pali@kernel.org> wrote:
+> >
+> > On Tuesday 26 January 2021 00:15:13 Tom Hebb wrote:
+> > > Bob reports that blacklisting the fan type label is not sufficient.
+> > > See his message to me below.
+> >
+> > Ok! Thank you for confirmation.
+> >
+> > And my second question which I have asked:
+> > And have you reported this issue to Dell support?
+> >
+> > > On Mon, Jan 25, 2021 at 3:38 PM Bob Hepple <bob.hepple@gmail.com> wrote:
+> > > >
+> > > > Hi Tom,
+> > > >
+> > > > Big nope this end with L502x in i8k_blacklist_fan_type_dmi_table:
+> > > >
+> > > > Jan 26 09:35:47 achar kernel: psmouse serio1: TouchPad at
+> > > > isa0060/serio1/input0 lost synchronization, throwing 1 bytes>
+> > > >
+> > > > ... and lots of trackpad stall/stutters.
+> > > >
+> > > > Cheers
+> > > >
+> > > >
+> > > > Bob
+> > > >
+> > > >
+> > > >
+> > > > On Tue, 26 Jan 2021 at 08:09, Bob Hepple <bob.hepple@gmail.com> wrote:
+> > > > >
+> > > > > ... compiling now ... results in a coupla hours
+> > > > >
+> > > > > Cheers
+> > > > >
+> > > > >
+> > > > > Bob
+> > > > >
+> > > > > On Tue, 26 Jan 2021 at 04:05, Tom Hebb <tommyhebb@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jan 25, 2021 at 2:05 AM Pali Rohár <pali@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
+> > > > > > > > It has been reported[0] that the Dell XPS 15 L502X exhibits similar
+> > > > > > > > freezing behavior to the other systems[1] on this blacklist. The issue
+> > > > > > > > was exposed by a prior change of mine to automatically load
+> > > > > > > > dell_smm_hwmon on a wider set of XPS models. To fix the regression, add
+> > > > > > > > this model to the blacklist.
+> > > > > > > >
+> > > > > > > > [0] https://bugzilla.kernel.org/show_bug.cgi?id=211081
+> > > > > > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=195751
+> > > > > > > >
+> > > > > > > > Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all XPS models")
+> > > > > > > > Cc: stable@vger.kernel.org
+> > > > > > > > Reported-by: Bob Hepple <bob.hepple@gmail.com>
+> > > > > > > > Tested-by: Bob Hepple <bob.hepple@gmail.com>
+> > > > > > > > Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> > > > > > > > ---
+> > > > > > > >
+> > > > > > > >  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
+> > > > > > > >  1 file changed, 7 insertions(+)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> > > > > > > > index ec448f5f2dc3..73b9db9e3aab 100644
+> > > > > > > > --- a/drivers/hwmon/dell-smm-hwmon.c
+> > > > > > > > +++ b/drivers/hwmon/dell-smm-hwmon.c
+> > > > > > > > @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_fan_support_dmi_table[] __initdata = {
+> > > > > > > >                       DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 9333"),
+> > > > > > > >               },
+> > > > > > > >       },
+> > > > > > > > +     {
+> > > > > > > > +             .ident = "Dell XPS 15 L502X",
+> > > > > > > > +             .matches = {
+> > > > > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > > > > > > +                     DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell System XPS L502X"),
+> > > > > > >
+> > > > > > > Hello! Are you sure that it is required to completely disable fan
+> > > > > > > support? And not only access to fan type label for which is different
+> > > > > > > blaclist i8k_blacklist_fan_type_dmi_table?
+> > > > > >
+> > > > > > This is a good question. We didn't try the other list. Bob is the one with the
+> > > > > > affected system. Could you try moving the added block of code from
+> > > > > > i8k_blacklist_fan_support_dmi_table a few lines up to
+> > > > > > i8k_blacklist_fan_type_dmi_table, Bob, to see if the issue reappears or if it
+> > > > > > remains fixed?
+> > > > > >
+> > > > > > >
+> > > > > > > And have you reported this issue to Dell support?
+> > > > > > >
+> > > > > > > > +             },
+> > > > > > > > +     },
+> > > > > > > >       { }
+> > > > > > > >  };
+> > > > > > > >
+> > > > > > > > --
+> > > > > > > > 2.30.0
+> > > > > > > >
+> > > > > >
+> > > > > > (Apologies for the previous HTML copy of this reply, to those directly CCed.)
+> > > > > >
+> > > > > > -Tom
