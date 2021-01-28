@@ -2,123 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CF9307173
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0113070BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhA1I3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:29:33 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:49654 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhA1I3b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:29:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611822548; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=MbkdEBTiLbx2Jy1T3KIYQ0dnm89j4PVd4XxznmeHnOs=;
- b=hpqmx0bhhIJ8Gnlg+LNp3BG7c/1qiMt9Sr8CFF/AGjz7mpVFOSHVZhiwG8MKnaWGkkg9bHss
- td/aFnscAPuysfLN4peSjGAGB4DwCv6yLQ+XKyzOZyB9XTsSwHZlqGvkxnUY3cIzRTj7FTON
- 0NfgNujQVGsmNOqRj/WklPR/Evs=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 601275b7e325600642851a43 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 08:28:39
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 76A01C43465; Thu, 28 Jan 2021 08:28:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B5AFC433C6;
-        Thu, 28 Jan 2021 08:28:37 +0000 (UTC)
+        id S231394AbhA1IJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:09:54 -0500
+Received: from mga04.intel.com ([192.55.52.120]:16602 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231744AbhA1IIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 03:08:37 -0500
+IronPort-SDR: pk1OdI9ITonkx2UwJ1X5Le5lSh4E37oVNax9bSoG1nGaq4sKVtUpcXvs3Ow9j8mnOM+ZUO9qsc
+ SXL46mq1osgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="177632199"
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="177632199"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 00:06:34 -0800
+IronPort-SDR: gwiJP6YaMxuscNhGYPs0q08Q4i/JkVYx3t24FPKwU8pngfnoy909ERwqCSOOScAVkG9IYu04mC
+ PrqVQUjmjn8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="362770166"
+Received: from zhangyu-optiplex-7040.bj.intel.com ([10.238.154.148])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jan 2021 00:06:33 -0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     pbonzini@redhat.com, kvm@vger.kernel.org
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: Documentation: Fix documentation for nested.
+Date:   Thu, 28 Jan 2021 23:47:47 +0800
+Message-Id: <20210128154747.4242-1-yu.c.zhang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Jan 2021 00:28:37 -0800
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Minchan Kim <minchan@kernel.org>, viro@zeniv.linux.org.uk,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Laura Abbott <lauraa@codeaurora.org>
-Subject: Re: [PATCH v4] fs/buffer.c: Revoke LRU when trying to drop buffers
-In-Reply-To: <20210127025922.GS308988@casper.infradead.org>
-References: <cover.1611642038.git.cgoldswo@codeaurora.org>
- <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
- <YBCexclveGV2KH1G@google.com> <20210127025922.GS308988@casper.infradead.org>
-Message-ID: <4d034ea4228be568db62243bfe238e0d@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 18:59, Matthew Wilcox wrote:
-> On Tue, Jan 26, 2021 at 02:59:17PM -0800, Minchan Kim wrote:
->> The release buffer_head in LRU is great improvement for migration
->> point of view.
->> 
->> A question:
+Nested VMX was enabled by default in commit <1e58e5e59148> ("KVM:
+VMX: enable nested virtualization by default"), which was merged
+in Linux 4.20. This patch is to fix the documentation accordingly.
 
-Hey guys,
+Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+---
+ Documentation/virt/kvm/nested-vmx.rst            | 6 ++++--
+ Documentation/virt/kvm/running-nested-guests.rst | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
->> Can't we invalidate(e.g., invalidate_bh_lrus) bh_lru in migrate_prep 
->> or
->> elsewhere when migration found the failure and is about to retry?
->> 
->> Migration has done such a way for other per-cpu stuffs for a long 
->> time,
->> which would be more consistent with others and might be faster 
->> sometimes
->> with reducing IPI calls for page.
-> Should lru_add_drain_all() also handle draining the buffer lru for all
-> callers?  A quick survey ...
-> 
-> invalidate_bdev() already calls invalidate_bh_lrus()
-> compact_nodes() would probably benefit from the BH LRU being 
-> invalidated
-> POSIX_FADV_DONTNEED would benefit if the underlying filesystem uses BHs
-> check_and_migrate_cma_pages() would benefit
-> khugepaged_do_scan() doesn't need it today
-> scan_get_next_rmap_item() looks like it only works on anon pages (?) so
-> 	doesn't need it
-> mem_cgroup_force_empty() probably needs it
-> mem_cgroup_move_charge() ditto
-> memfd_wait_for_pins() doesn't need it
-> shake_page() might benefit
-> offline_pages() would benefit
-> alloc_contig_range() would benefit
-> 
-> Seems like most would benefit and a few won't care.  I think I'd lean
-> towards having lru_add_drain_all() call invalidate_bh_lrus(), just to
-> simplify things.
-
-
-Doing this sounds like a good idea.  We would still need a call to
-invalidate_bh_lrus() inside of drop_buffers() in the event that we find
-busy buffers, since they can be re-added back into the BH LRU - I 
-believe
-it isn't until this point that a BH can't be added back into the BH LRU,
-when we acquire the private_lock for the mapping:
-
-https://elixir.bootlin.com/linux/v5.10.10/source/fs/buffer.c#L3240
-
-Thanks,
-
-Chris.
-
+diff --git a/Documentation/virt/kvm/nested-vmx.rst b/Documentation/virt/kvm/nested-vmx.rst
+index 6ab4e35..ac2095d 100644
+--- a/Documentation/virt/kvm/nested-vmx.rst
++++ b/Documentation/virt/kvm/nested-vmx.rst
+@@ -37,8 +37,10 @@ call L2.
+ Running nested VMX
+ ------------------
+ 
+-The nested VMX feature is disabled by default. It can be enabled by giving
+-the "nested=1" option to the kvm-intel module.
++The nested VMX feature is enabled by default since Linux kernel v4.20. For
++older Linux kernel, it can be enabled by giving the "nested=1" option to the
++kvm-intel module.
++
+ 
+ No modifications are required to user space (qemu). However, qemu's default
+ emulated CPU type (qemu64) does not list the "VMX" CPU feature, so it must be
+diff --git a/Documentation/virt/kvm/running-nested-guests.rst b/Documentation/virt/kvm/running-nested-guests.rst
+index d0a1fc7..bd70c69 100644
+--- a/Documentation/virt/kvm/running-nested-guests.rst
++++ b/Documentation/virt/kvm/running-nested-guests.rst
+@@ -74,7 +74,7 @@ few:
+ Enabling "nested" (x86)
+ -----------------------
+ 
+-From Linux kernel v4.19 onwards, the ``nested`` KVM parameter is enabled
++From Linux kernel v4.20 onwards, the ``nested`` KVM parameter is enabled
+ by default for Intel and AMD.  (Though your Linux distribution might
+ override this default.)
+ 
 -- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+1.9.1
+
