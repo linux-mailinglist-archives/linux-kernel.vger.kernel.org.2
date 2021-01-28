@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D028A307D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13A4307D4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhA1SB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:01:29 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47992 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbhA1SAK (ORCPT
+        id S231372AbhA1SCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231201AbhA1SBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:00:10 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l5BZj-0000Zw-LC; Thu, 28 Jan 2021 17:59:23 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
+        Thu, 28 Jan 2021 13:01:15 -0500
+Received: from smtp-bc0f.mail.infomaniak.ch (smtp-bc0f.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc0f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0282AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:00:29 -0800 (PST)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DRSth2VGKzMqm0V;
+        Thu, 28 Jan 2021 19:00:28 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DRStg1w48zlh8TK;
+        Thu, 28 Jan 2021 19:00:27 +0100 (CET)
+Subject: Re: [PATCH v4 00/10] Enable root to update the blacklist keyring
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To:     David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
         "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] netfilter: nf_tables: remove redundant assignment of variable err
-Date:   Thu, 28 Jan 2021 17:59:23 +0000
-Message-Id: <20210128175923.645865-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20210121155513.539519-1-mic@digikod.net>
+ <3613306.1611852751@warthog.procyon.org.uk>
+ <03ddd243-db25-a054-489d-e64ead4d6f59@digikod.net>
+Message-ID: <09376843-a55f-476a-7073-91aacc9ebdc8@digikod.net>
+Date:   Thu, 28 Jan 2021 19:00:33 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <03ddd243-db25-a054-489d-e64ead4d6f59@digikod.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+I noticed that commits in your branch are not up to date with latest
+Jarkoo reviews on my patches (see changes since v2). There is no
+conflict if you replace conflicting patches from your branch by patches
+from this series. Could you replace your duplicate commits with this
+patch series?
 
-The variable err is being assigned a value that is never read,
-the same error number is being returned at the error return
-path via label err1.  Clean up the code by removing the assignment.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/netfilter/nft_cmp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/net/netfilter/nft_cmp.c b/net/netfilter/nft_cmp.c
-index 00e563a72d3d..acbabffefebb 100644
---- a/net/netfilter/nft_cmp.c
-+++ b/net/netfilter/nft_cmp.c
-@@ -268,10 +268,8 @@ nft_cmp_select_ops(const struct nft_ctx *ctx, const struct nlattr * const tb[])
- 	if (err < 0)
- 		return ERR_PTR(err);
- 
--	if (desc.type != NFT_DATA_VALUE) {
--		err = -EINVAL;
-+	if (desc.type != NFT_DATA_VALUE)
- 		goto err1;
--	}
- 
- 	if (desc.len <= sizeof(u32) && (op == NFT_CMP_EQ || op == NFT_CMP_NEQ))
- 		return &nft_cmp_fast_ops;
--- 
-2.29.2
-
+On 28/01/2021 18:38, Mickaël Salaün wrote:
+> 
+> 
+> On 28/01/2021 17:52, David Howells wrote:
+>>
+>> Hi Mickaël,
+> Hi David,
+> 
+>>
+>> I could pull your patches (unless Jarkko wants to), but can you please drop
+>> the patches that are also in my keys-misc branch lest one or other (or both)
+>> of our branches get dropped in the next merge window due to conflicts?
+>>
+>> Ideally, can you base your branch on my keys-misc branch?
+> 
+> Sure, I'm rebasing and testing a new patch series.
+> 
+>>
+>> Thanks,
+>> David
+>>
