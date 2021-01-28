@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993B8307DFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E80F307E02
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhA1S37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:29:59 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:43016 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhA1S1i (ORCPT
+        id S231460AbhA1SaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:30:19 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:45364 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231718AbhA1S1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:27:38 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SI3vW2062763;
-        Thu, 28 Jan 2021 18:26:50 GMT
+        Thu, 28 Jan 2021 13:27:39 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SI4ifU103005;
+        Thu, 28 Jan 2021 18:26:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : content-type :
  mime-version; s=corp-2020-01-29;
- bh=Hub1Nv0zKeWt8gzEggjV6eYlRfOld2E6fyEdOhT1tic=;
- b=rn/qV1FhfdxRW3JmGinNwpRRrY2fE/0XXPb0xC+SgSuUIDi+R+3rdTPsf+F0sk3DF8rX
- 7P/h2+8ez7G9P84nkGL4I0m2HjTUWpSc0wKaSWf2oB0s6/NYZBrLPtuTOIDau8bMz2Nn
- x9dDU1p7o8E05yhcnotb7rPTPJjJvwRTuf8ARNoOtsW/PvXYrMayebBOY0O6A6d1dHSx
- p//QcuiUBBd0ZkboUIdXZeRjP2LbsQN4GnVV38VeUPtIriySKT1YAzUF2bdp/aOQQFu/
- tpwYdykvsM+kHP5fGHOWLDiIRsMkDmQ+UeaNR8yecZO473qJwdvgijoJan24O324UeNP tw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 368b7r5m2d-1
+ bh=tqJhKT76NLqh/eyaF2AncboIxMMfNa560RPJSZu10kw=;
+ b=MqCn2okMLXDdsmwF4heCq3rMAjFVje50eLogGzk0T0txGJjsYuo1AlDfDSxYVtZ7EawF
+ CHB+p5sbEX7FXKCk4Wv1t77rToBQYfnFKGzsPRr6N+9RB7deRTGilveh2w1PNX2u4Okq
+ WQXm/tW7pdb573OsQP1PnxakNtjrSxqS1iiwrb+Wi3l1ozV3Tx3womVg4HXzk5Amz6j4
+ H6a8/1Vr1H5rbVj20zIbKV91+qHzy8buar7v2S6eKaAJq7mSgrry53ygEz9kTh/DVURa
+ QfOjA1f+hQep08JmfpwaI66cXi0Ulptf3B7O/sxKKBDUKZDUG4+dM1gJnu0RrEJiTUtA Dg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 368brkwh9a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 18:26:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SI6G7K053858;
-        Thu, 28 Jan 2021 18:26:50 GMT
+        Thu, 28 Jan 2021 18:26:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SI5CcY003666;
+        Thu, 28 Jan 2021 18:26:51 GMT
 Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2059.outbound.protection.outlook.com [104.47.46.59])
-        by userp3030.oracle.com with ESMTP id 368wr0qhf4-1
+        by aserp3030.oracle.com with ESMTP id 368wcr2g19-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 18:26:49 +0000
+        Thu, 28 Jan 2021 18:26:51 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xg/zFMcPOlkTFtw+iFvVHPXkAiQS5kC8QBSAuAh2sbkf+jSlimEkCnsFWOziMULKfaOdhZWIx/zsOeHcW6q9XEjFXvR15SzJe3y8RsoToUQYCIGvijBCUpl5WfsaMXINeuvGJQvA3AUGSaXYRj+OVeRGGegTTedOuZ9CYEb7d2cMOY980n2Xu8QsjtqKIHP4uzukvELmYWrdlbMf7CB6SiccwHs3xcGiND80XFz6VbtSGKqQM1llVeFHqA5o2Q5nV2sHWZ9GbL8ZrE3exdSV+ah0njDWWZ0EYLTczSWwfQ7isgLkGbsVnTRj/LhN+dGsWHlsSXEOdKsbeq5tgWr9JQ==
+ b=lR+v5kze92pfcSlId1K6sYyhmgNop1qD8RVyXbvHLd867UR1i4nLHJ762nDFHIZjL3qqd2PjxfbQ9ghYuLnqVGEeaYzg6vBos+7+mEB5PLNuhEINgprNgazgVM4QsZ3cj2UehqTmVTc1mlCcavskjFCzlosowMgm3TfRSQOJer0ScwEP/ANrKDQ5u4HaP5yjLHWdL+RMPxi5EbghPidjKmMzTFG/etibO5BCP24lvtP9v8I1Ecd+h9Vysdv8He1LZ1BkY4GlUQICyR4A93gidoIzbK0G0/Gw6O4q7nf2F6AC/ngFd9k/CFPwRqBzPxYFsad0OgOKoLuO5qz10enSjw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hub1Nv0zKeWt8gzEggjV6eYlRfOld2E6fyEdOhT1tic=;
- b=n65B8ci+dCpFo+SDIEW74VUeurWOdnjHIshjoVjEIIDrXzIZiJqBWfzXVbLGpN8v2xx4Y4EJUUWjrKYs0cneAYLjYh4tyW65ljWEUEnyYyRrvJ/m7SFnRb4/mckuPFgMnijQ0F5hTMFO38/BWtA2WzMnEl6qyA/8t4zk8UUGxMWJIhXgXamx14XImv7vLxU5xoqyUli/4nn/g0MPmNSCJipA/7y/mUYrojy/i64ZrgBd6FOMccP3PGOsdzF9ABxaLSdAUW8Dw3ZLCPEMyqyflqBRCyHIJ3M1u6ESclrJOkWvpnFtK90YKUyClS/qRqKTQze+a9WwMOz2oO49ai6QhQ==
+ bh=tqJhKT76NLqh/eyaF2AncboIxMMfNa560RPJSZu10kw=;
+ b=ItTcgliRsjIdbECyM97uaKN9lEfPNhctS6amB4JMprvjCvOIB2U/FkSEjRfhY3FowH++wkuZtQNg8GW0EWv1IDYYwt1tAvhUWJuTCcJuhY17iDio4pE6/2Dl5ZwEAmof5t9Z1EP8AFqPYz+fJncp4E1J3T3sUqB2vNyi+K3L72FQihaeBYrsCFZ3f5QDZEUyC2lztEdftN/8zg/57YTrWdM64TVSxfIeJUWtr5e2YMyWKlb84qCbDis/Q97RGj/L6JibuJx6K6E4BPQsP8Warqexh9G2j2OATsS9zEWvUpA4JadWwexlU/kfwt5Ru5GFor7xMO4n7spCbrFjiCNnEQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hub1Nv0zKeWt8gzEggjV6eYlRfOld2E6fyEdOhT1tic=;
- b=tZfkC+rDy/LRkyRJ/MSdSQFgdyFm1LfmOKMe2TYb75iMuB8fz79BFdAyidM0k/k0SqSUIeWSznr94yakafq8r8PNrfxkbjzzFxWccszikzWPU1s0j0rN/fk/6ulIaJyyCmVEuOHHE48ZG+7M+sS1Hgn7Cs/dC2ZRrQNJ80V+dFY=
+ bh=tqJhKT76NLqh/eyaF2AncboIxMMfNa560RPJSZu10kw=;
+ b=ucckn1lC+9wQl45xuvincRkxCeIMeQcm+w390mc0rVrj0pySVauXCKuR66bPmjRouc+Jxi+6hTS9yTJCMY5/1F3Q1roZehH2jggvzc4aCKJkPDFY6SALePueS+jkzwqkAy8esD+Md7lJpCOoIFMOgC9VjTZX+gLORsrdCYpnzLE=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
  by BYAPR10MB2822.namprd10.prod.outlook.com (2603:10b6:a03:90::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.19; Thu, 28 Jan
- 2021 18:26:47 +0000
+ 2021 18:26:49 +0000
 Received: from BYAPR10MB3077.namprd10.prod.outlook.com
  ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
  ([fe80::74a8:8649:e20b:d571%6]) with mapi id 15.20.3784.019; Thu, 28 Jan 2021
- 18:26:47 +0000
+ 18:26:49 +0000
 From:   Joao Martins <joao.m.martins@oracle.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Joao Martins <joao.m.martins@oracle.com>
-Subject: [PATCH v2 1/2] mm/hugetlb: grab head page refcount once for group of subpages
-Date:   Thu, 28 Jan 2021 18:26:31 +0000
-Message-Id: <20210128182632.24562-2-joao.m.martins@oracle.com>
+Subject: [PATCH v2 2/2] mm/hugetlb: refactor subpage recording
+Date:   Thu, 28 Jan 2021 18:26:32 +0000
+Message-Id: <20210128182632.24562-3-joao.m.martins@oracle.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210128182632.24562-1-joao.m.martins@oracle.com>
 References: <20210128182632.24562-1-joao.m.martins@oracle.com>
@@ -80,191 +80,174 @@ X-ClientProxiedBy: LO2P265CA0422.GBRP265.PROD.OUTLOOK.COM
  (2603:10b6:a03:8c::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from paddy.uk.oracle.com (94.61.1.144) by LO2P265CA0422.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 18:26:45 +0000
+Received: from paddy.uk.oracle.com (94.61.1.144) by LO2P265CA0422.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 18:26:47 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 33260b67-91ba-4b30-9482-08d8c3ba4565
+X-MS-Office365-Filtering-Correlation-Id: 3865b39c-1a2c-4b30-e1b1-08d8c3ba46dc
 X-MS-TrafficTypeDiagnostic: BYAPR10MB2822:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB282214C67BBC6B1B0EA23FEDBBBA9@BYAPR10MB2822.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-Microsoft-Antispam-PRVS: <BYAPR10MB28229F5264F292F0F42A2A42BBBA9@BYAPR10MB2822.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KrC8ZfyvHhWd/NU0FWMZFlTRUpPYEQoo9T7nk5hw299LNOWWKFp61upWclrcrnPbAbNhRxDVblTiZp9E7otH5DtW5wgERM4StnlUV7F1eV3h70lbL6MwdzgYEOfk1HilsNAg+skBCvBFa9Y24a7GI7/XoLVsorjlQnTIH8MPMQf8/mFDiC3AOIQzlvNwJzQDTRtOGLz/Kyl0tZ9TjYK1zmK8TZ47x6EBwekEMrDL5ySJsa21wbOX4XxzX+e/6k+riOw2sA/s6erll0xkEKDt12nDFCmkkWyPYbBXc/BQzrKMDqKfxG9cn4Q91m62742PQTNfPXsbm51SL97MDhdjvrdM1QFfoLoUDfDgNRklPtzOzIkUhY2pwpwBQCRbmE0hNXj7HJZUt+EFxrTfNJPJoD0pPyVZgDzmslgP2lb0lY38OEo6hg+GVbmzSOI1VD2Tt66Z2o/f0fKzyam2msDx/1qCyEgCkp5NpbLborBfD9B/517PHf4TiOvh9hwkG3CN0OoVJvq0IPhpABU27Ef2tQ==
+X-Microsoft-Antispam-Message-Info: 7l0Brt8qfwGGTiDFwlm7k/QTLCdwpLxvIaxzq8TkFxOx1dyBP0Z0RmPC6mNpAvuObXnv6DhqXPgJqa9JKqsinOcZ1FcEKH2ybPdN6qkoJFbBlDinQ8KhDzRe43Iet2PKj96cWosPgP5tepVkz1E3FBEYBgteUbhJinDyAXtqutEg791kBgfL8TtCLMbZ3zkaQxauMALjAYpqWToQitFtWkUgyViP4PEApZYdynm7ej3pAFVoPpZm56xKzG6HOipbP64l+1StY6Z/WDITIj8bA9EjNJW57CY4GHt1i6HoZzfo3/BW1cQgEjQsWeWEdAOwgsoWNAsqZsZkk10+si4je6v2bTGwdjkufLu2ew78/z7UQ96RaPuGYmZvQJ4WwT9xBKb2lXUFEz7lmKgyqzoxAjJONEB96dJp//bFycdx4Y0OjdovTw4uzygAjhCIy8bdnBdXfMy6zeVxqik560Wzr8iydqVhYrtcJMlp98QNKWMjgsBcWiAOl/93kKhWoEOFvVhe2OjZ3U/+IiWQzF8FUA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(376002)(366004)(346002)(66476007)(6666004)(316002)(66946007)(6486002)(6916009)(956004)(478600001)(8936002)(8676002)(66556008)(52116002)(2616005)(1076003)(7696005)(103116003)(107886003)(86362001)(2906002)(36756003)(186003)(54906003)(4326008)(16526019)(83380400001)(5660300002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ACmJ3Dy5catAR8dZhoEvIzYo4HZQvdM1Ue0uf2WG4NGIEPGjXie1FPvRan8m?=
- =?us-ascii?Q?uxYhQQbpsLQO6CbtFQAakD+JZZSb+3cjMORdqzsVnXNWdxcFlWXovoRk8ov2?=
- =?us-ascii?Q?3bL+yVo96Wx9wpz4rJQj8oWnAG8qh4fnSu5p/dp4IynjZ45EPAQ8u2ALCkvs?=
- =?us-ascii?Q?JTfPkp/1jLhA73wrMMvjLDDgrgeKR/gAklvwmk1nNG42tXrk/3/UMOzqc1fT?=
- =?us-ascii?Q?kTPHRSBTI0q9d1Jo2leRjS0kOP916dUiDC8154vsa5nZ9THi96aWLFLFM7nt?=
- =?us-ascii?Q?jiW53H2qcI1+b9Ny+cSb/sQJQTojsHwttfX5Z3Lx1I04J+DpAjb2kVNcF0FS?=
- =?us-ascii?Q?xgTBXZaMp3ns6eUxg/gxiC0XcfP1c3ump4cNyVrwhdWmUT+btcVyN2Z9LOvJ?=
- =?us-ascii?Q?fStJymARq3++0FvrAFyMBCGW+l/fFWEumhkgUkZHPF/+zx9QrRG4lFLY0Xjm?=
- =?us-ascii?Q?l69DjnAatbjJk2TeEwQvJQLviWwHlFNIDkYDEzEWLhgRbFeXzpmMTLxGdbqW?=
- =?us-ascii?Q?GLeS+lOTDNYxmU4IMZI9+vmOd1n+moRjx3OkN9IMWDxWbf8bbMdYgt8DYln/?=
- =?us-ascii?Q?0U25AIhQZAE6x5Zbaq5Rb2YVRs9pknqnsr/+na+gXN1RkrMbCJ5Q+Ekp3z8X?=
- =?us-ascii?Q?a0HbbZNZYMnh0V7jFLUKzff3DkqGMYKU9t5gjMFMv98oOWSipgs1jrgOHCpJ?=
- =?us-ascii?Q?2c8Z6axU2Tk7ggeCAcNFPZWrwyG49TEA4npCdlgkP6wFkRrY86yN0aP6B/U5?=
- =?us-ascii?Q?YIfhuR4Ydla2KhRsLp4SCTdcOKTdkdoY2O+r6p3Kqd2hjcMX5Vf1cN+twISE?=
- =?us-ascii?Q?4nHOiuYZUWm1qha114lP/aHfRYdmhs/KG2eqPsIA/tKEatHn5aXJlD4msF5w?=
- =?us-ascii?Q?v7Kdlat4je/A9jXk5mkPTGPc/L+/BPHZYnPznC7VmcpPJUiWF1sS/lAXf0MR?=
- =?us-ascii?Q?GYnGdqsXypu1VT5jNo6St4l0f5NSJJy2uJY2vEN8APJr7wt+ctV8WKt+2IhF?=
- =?us-ascii?Q?1qax905IHdWCmfqk9Lxxz3wO9PW6qLKD485r42RnD2KOjTVnFPUupqH5nvOW?=
- =?us-ascii?Q?Qgh8MXvd?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jGxSnsK0ED3ZpK3gY0NA+i8jpwe04hPt+kCvu2VuKayhtp31HskHbveudJPe?=
+ =?us-ascii?Q?vxsWYQ7L6X7IE6m7wfPsuHMrvVnSnQCkDzlbx4SU1EU18WJf/GbfTQTEdZ+l?=
+ =?us-ascii?Q?eZDQ+kQdzpiuuH8tFWX0WofvXBjjAezed23EFlajQfa9abKOe8oSWCKWcmCQ?=
+ =?us-ascii?Q?Xg3Q4i2/GOn55f6/WSMNpYGZ9mSggELYxmQzAV45eoPZODBcxeIcZB3qNq9u?=
+ =?us-ascii?Q?ar0qAGF/Rxozwi/T1Jr/1NrttQbow7LmsD/RvmA1eRmHdYwz8i3R7ssYsTZ6?=
+ =?us-ascii?Q?O76tCkQ9c58qEQEGry5Ew2FuKVfBA7/BokscNUiZ4X4UIn8yoh6DlM/udEQH?=
+ =?us-ascii?Q?xqO8AOjy0qnLUBekqjJtn7/OLyROrpUYREhA07L6Ol7ybQWMdTxFonG5pTff?=
+ =?us-ascii?Q?zs7b+MTQXhGy+K15bQeE1pwNTB5RxqjM4iACYNa+HF0UJS/IyYTgCZ/dXks8?=
+ =?us-ascii?Q?XcI1px5vxTcEFEjdrkYWSuhTLT1cGT83VO7Mww0sXGGsSSbk7noOpDy/Jtqd?=
+ =?us-ascii?Q?YWpTa4MQVxcsY+H5ys/SwdPxZh8+Wd2NrzZwVi0QyZT+ySL5m2uJm8XksbA3?=
+ =?us-ascii?Q?p/3fvv3eQ4Ogq2/1Kr/J9INfZz/wFgB4Du4Tr8wPfTp77DAfHlJTzcGb34zR?=
+ =?us-ascii?Q?X+ES4vjocnV88UdIhfYUrvzyFq8DM571YPXrFJhwrk42m6WGe4rl+sTC9+5U?=
+ =?us-ascii?Q?1uWcPkVfAcqyOmw6BkJQRPjrVVl0gT8eGyPYTRwn7vB36gRAE+dsG6mR4QoO?=
+ =?us-ascii?Q?hO/+5TBt0m2H2A/YrBzo3weWRL6kmAl7VTTF4mML5wnW5SYjYlD3bO6zerdh?=
+ =?us-ascii?Q?irPjucyLGwswloeZfgDiXlP3DhZsO4qGYAsK2mTARtubNZWzv8Ix9KmoFEJ5?=
+ =?us-ascii?Q?gbxUDTrPwY1lmbiXmKD1jfdl4LqANXqf8CNM7/X/FbsIh8c8xZCEz90LNZ5u?=
+ =?us-ascii?Q?ImVJsJXU7hlOrj9PXLYNfBEiIPJDiOhSbeorNJdeJWr5J7YtY3Fyjsj/MmGL?=
+ =?us-ascii?Q?Rv8MqicdwE9aUHldCUc8++15s9uxdHVqrirrC/Smx1dyZhUsMCBQPxaC+s4M?=
+ =?us-ascii?Q?3REqkGiw?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33260b67-91ba-4b30-9482-08d8c3ba4565
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3865b39c-1a2c-4b30-e1b1-08d8c3ba46dc
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 18:26:47.2661
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 18:26:49.5048
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gbrx1YQGHAxs1G9PR3TO/o0aFYBwycLZp6TbpZq0/xGFC6z2sTP64kOMawnbW97gbHCmKVi5O3ekXqRC5w5Pqj27djTSlQEng3RCry9QwDg=
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bffi/uvGG/BP4aPeXzAv2ZGNXtiD52xSYBUeIgOako9L+/Vb7RjIphU0/MbQL3pZpNtLvOMPTw7kK6LglAhO/RDaWFvqCI9tyMGDkWUnleg=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2822
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2101280087
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101280087
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-follow_hugetlb_page() once it locks the pmd/pud, checks all its
-N subpages in a huge page and grabs a reference for each one.
-Similar to gup-fast, have follow_hugetlb_page() grab the head
-page refcount only after counting all its subpages that are part
-of the just faulted huge page.
+For a given hugepage backing a VA, there's a rather ineficient
+loop which is solely responsible for storing subpages in GUP
+@pages/@vmas array. For each subpage we check whether it's within
+range or size of @pages and keep increment @pfn_offset and a couple
+other variables per subpage iteration.
 
-Consequently we reduce the number of atomics necessary to pin
-said huge page, which improves non-fast gup() considerably:
+Simplify this logic and minimize the cost of each iteration to just
+store the output page/vma. Instead of incrementing number of @refs
+iteratively, we do it through pre-calculation of @refs and only
+with a tight loop for storing pinned subpages/vmas.
+
+Additionally, retain existing behaviour with using mem_map_offset()
+when recording the subpages for configurations that don't have a
+contiguous mem_map.
+
+pinning consequently improves bringing us close to
+{pin,get}_user_pages_fast:
 
   - 16G with 1G huge page size
-  gup_test -f /mnt/huge/file -m 16384 -r 10 -L -S -n 512 -w
+  gup_test -f /mnt/huge/file -m 16384 -r 30 -L -S -n 512 -w
 
-PIN_LONGTERM_BENCHMARK: ~87.6k us -> ~12.8k us
+PIN_LONGTERM_BENCHMARK: ~12.8k us -> ~5.8k us
+PIN_FAST_BENCHMARK: ~3.7k us
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
 ---
- include/linux/mm.h |  3 +++
- mm/gup.c           |  5 ++---
- mm/hugetlb.c       | 43 ++++++++++++++++++++++++-------------------
- 3 files changed, 29 insertions(+), 22 deletions(-)
+ mm/hugetlb.c | 49 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 28 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index a5d618d08506..0d793486822b 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1182,6 +1182,9 @@ static inline void get_page(struct page *page)
- }
- 
- bool __must_check try_grab_page(struct page *page, unsigned int flags);
-+__maybe_unused struct page *try_grab_compound_head(struct page *page, int refs,
-+						   unsigned int flags);
-+
- 
- static inline __must_check bool try_get_page(struct page *page)
- {
-diff --git a/mm/gup.c b/mm/gup.c
-index 3e086b073624..ecadc80934b2 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -79,9 +79,8 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
-  * considered failure, and furthermore, a likely bug in the caller, so a warning
-  * is also emitted.
-  */
--static __maybe_unused struct page *try_grab_compound_head(struct page *page,
--							  int refs,
--							  unsigned int flags)
-+__maybe_unused struct page *try_grab_compound_head(struct page *page,
-+						   int refs, unsigned int flags)
- {
- 	if (flags & FOLL_GET)
- 		return try_get_compound_head(page, refs);
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a6bad1f686c5..becef936ec21 100644
+index becef936ec21..f3baabbda432 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -4798,7 +4798,7 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
- 	unsigned long vaddr = *position;
- 	unsigned long remainder = *nr_pages;
- 	struct hstate *h = hstate_vma(vma);
--	int err = -EFAULT;
-+	int err = -EFAULT, refs;
+@@ -4789,6 +4789,20 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 	goto out;
+ }
  
- 	while (vaddr < vma->vm_end && remainder) {
- 		pte_t *pte;
-@@ -4918,26 +4918,11 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
++static void record_subpages_vmas(struct page *page, struct vm_area_struct *vma,
++				 int refs, struct page **pages,
++				 struct vm_area_struct **vmas)
++{
++	int nr;
++
++	for (nr = 0; nr < refs; nr++) {
++		if (likely(pages))
++			pages[nr] = mem_map_offset(page, nr);
++		if (vmas)
++			vmas[nr] = vma;
++	}
++}
++
+ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			 struct page **pages, struct vm_area_struct **vmas,
+ 			 unsigned long *position, unsigned long *nr_pages,
+@@ -4918,28 +4932,16 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
  			continue;
  		}
  
-+		refs = 0;
-+
- same_page:
--		if (pages) {
-+		if (pages)
- 			pages[i] = mem_map_offset(page, pfn_offset);
--			/*
--			 * try_grab_page() should always succeed here, because:
--			 * a) we hold the ptl lock, and b) we've just checked
--			 * that the huge page is present in the page tables. If
--			 * the huge page is present, then the tail pages must
--			 * also be present. The ptl prevents the head page and
--			 * tail pages from being rearranged in any way. So this
--			 * page must be available at this point, unless the page
--			 * refcount overflowed:
--			 */
--			if (WARN_ON_ONCE(!try_grab_page(pages[i], flags))) {
--				spin_unlock(ptl);
--				remainder = 0;
--				err = -ENOMEM;
--				break;
--			}
--		}
+-		refs = 0;
++		refs = min3(pages_per_huge_page(h) - pfn_offset,
++			    (vma->vm_end - vaddr) >> PAGE_SHIFT, remainder);
  
- 		if (vmas)
- 			vmas[i] = vma;
-@@ -4946,6 +4931,7 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
- 		++pfn_offset;
- 		--remainder;
- 		++i;
-+		++refs;
- 		if (vaddr < vma->vm_end && remainder &&
- 				pfn_offset < pages_per_huge_page(h)) {
+-same_page:
+-		if (pages)
+-			pages[i] = mem_map_offset(page, pfn_offset);
++		if (pages || vmas)
++			record_subpages_vmas(mem_map_offset(page, pfn_offset),
++					     vma, refs,
++					     likely(pages) ? pages + i : NULL,
++					     vmas ? vmas + i : NULL);
+ 
+-		if (vmas)
+-			vmas[i] = vma;
+-
+-		vaddr += PAGE_SIZE;
+-		++pfn_offset;
+-		--remainder;
+-		++i;
+-		++refs;
+-		if (vaddr < vma->vm_end && remainder &&
+-				pfn_offset < pages_per_huge_page(h)) {
+-			/*
+-			 * We use pfn_offset to avoid touching the pageframes
+-			 * of this compound page.
+-			 */
+-			goto same_page;
+-		} else if (pages) {
++		if (pages) {
  			/*
-@@ -4953,6 +4939,25 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
- 			 * of this compound page.
+ 			 * try_grab_compound_head() should always succeed here,
+ 			 * because: a) we hold the ptl lock, and b) we've just
+@@ -4950,7 +4952,7 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			 * any way. So this page must be available at this
+ 			 * point, unless the page refcount overflowed:
  			 */
- 			goto same_page;
-+		} else if (pages) {
-+			/*
-+			 * try_grab_compound_head() should always succeed here,
-+			 * because: a) we hold the ptl lock, and b) we've just
-+			 * checked that the huge page is present in the page
-+			 * tables. If the huge page is present, then the tail
-+			 * pages must also be present. The ptl prevents the
-+			 * head page and tail pages from being rearranged in
-+			 * any way. So this page must be available at this
-+			 * point, unless the page refcount overflowed:
-+			 */
-+			if (WARN_ON_ONCE(!try_grab_compound_head(pages[i-1],
-+								 refs,
-+								 flags))) {
-+				spin_unlock(ptl);
-+				remainder = 0;
-+				err = -ENOMEM;
-+				break;
-+			}
+-			if (WARN_ON_ONCE(!try_grab_compound_head(pages[i-1],
++			if (WARN_ON_ONCE(!try_grab_compound_head(pages[i],
+ 								 refs,
+ 								 flags))) {
+ 				spin_unlock(ptl);
+@@ -4959,6 +4961,11 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 				break;
+ 			}
  		}
++
++		vaddr += (refs << PAGE_SHIFT);
++		remainder -= refs;
++		i += refs;
++
  		spin_unlock(ptl);
  	}
+ 	*nr_pages = remainder;
 -- 
 2.17.1
 
