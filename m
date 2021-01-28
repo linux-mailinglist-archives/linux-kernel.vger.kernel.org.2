@@ -2,116 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65E1306C95
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42410306C99
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhA1FGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 00:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
+        id S229728AbhA1FIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 00:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhA1FGK (ORCPT
+        with ESMTP id S229448AbhA1FIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 00:06:10 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B90C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:05:29 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id 16so4345589ioz.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:05:29 -0800 (PST)
+        Thu, 28 Jan 2021 00:08:54 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE200C061573;
+        Wed, 27 Jan 2021 21:08:13 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id ke15so5876832ejc.12;
+        Wed, 27 Jan 2021 21:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KD4tLcNiy4HDrNzSGD8idjPG6xTsOou7ZvcPQ2ez8CM=;
-        b=TifuJpGfQ7QtFN4bFHbdHHfGowQ6U7GIMHEry/x3fvhgeZbLFRYf4vrRfQqHOaTtrZ
-         eCszRiZhu3+nL8/ZfDIdEL+r0fApbE/n143eaR/RCh0w7j7GRD398mwMGjWDLSFk0zGM
-         Z6cJOQ8JW1OfTub+T2OPb1n02EjOYBw/eQwuc=
+         :cc:content-transfer-encoding;
+        bh=fdsoQ6aqbCvZf0PWuN79SpgzgiUeOULiFlVAD49MHZQ=;
+        b=MJOYhrl3fE7B5fqUzUbkBRfz7LFlkZqHestvIb5iCIcLQxBCHa8MAmzn25FCIPpgJU
+         7Oww+VaSX4v+CeItvMCfgCyUs4MvZi4Qo+Lj7hgiUWXPw+rSzUhmXvPa76vDwOfTY0Mw
+         epEs3Kgqd0SneEU9Hb/KZOgamZvp1OVOVkiDQivGzLIatqA1ZDWm/s2UPZdzAb45UI/1
+         buxh4lhqLetmupuZdUrfzAS9crwlQsIZT1Mo0X0TcCWf16wzl94LkiGF7UiJPhEuxb1D
+         8qKhW/WnJ8OL/Qr1a4zbr4WArajNkr+uOAU2/fhC8+AgrwUQQvbHzwWsvdlACwYCjeeP
+         08hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KD4tLcNiy4HDrNzSGD8idjPG6xTsOou7ZvcPQ2ez8CM=;
-        b=t9lfB8xAo0hK5pE+Swi/EvTSvxKL1Cqk/5gQsPEChlQC22pkUHRLJFYvDJrx1DJc5Q
-         Z5Ap4ah23TALw0buB1hryqwZkVizdbl27IhgNKdA3f8pugxYMj2IoSY/5zAimltvclT0
-         EgZfjq3P59pf7N1Z6yz7PMpbKVrTVkNjp8spQ2t4Xot0KU4/N67+PXZHHE2wuAfu5hnL
-         KkyPHBqluAIpTa7hkh3IVHPdKryGVEXo4yAhVtUSwhXoyzIC9buze51bFzwYJSCBnh+L
-         7v9AZDMS88HLI74+Zs9Ib4ihf/DZe/7wqGYtIua6TXHmKLL3/UbOSBKmCjQ/ctcgYL+f
-         w9Ow==
-X-Gm-Message-State: AOAM531THyl3raCifk78O/QK57nSP3hHSeQcAAd6P8NCkTJ1AASLikoR
-        5lR+PUmt+jYD0mlN7YQl9KsW+f0dsaKGSdpxUvjH/A==
-X-Google-Smtp-Source: ABdhPJwuSTPahAgGAw+cKvGKb8TBfZr01yuh3jcOCIdO5QCznjylSsK5+v58VVUIpuRX3/ECyMmBFiBuxCZc4RRVrr0=
-X-Received: by 2002:a6b:2d4:: with SMTP id 203mr9812074ioc.0.1611810328608;
- Wed, 27 Jan 2021 21:05:28 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fdsoQ6aqbCvZf0PWuN79SpgzgiUeOULiFlVAD49MHZQ=;
+        b=KYUk3UbqunY4zkFPVwP28HGsEvoJoedPDCiAAe//VK0yToY42xd7vHh9urJK4P4aiB
+         2SuQsVRGrT6J7qKiHXwD0dj9vX0WSPpGHg08F/ItpX0nCDDsouTRK08Hrl52LppfEAd9
+         9+g5ESWxtRt3r/1Fiu6zCYqPnbfN8TQJo7BQGlYXOdAqeCGnqFj2OzbJbwAlyr+Gi8Tz
+         5NBig8PNNteZkTQsFIk+5CCHUsN5rfZNZbz4ge8IQyr75KxcCdGeNwRaSLg1nZxQDJXp
+         AKnJmREsvgusede6g0QXvXG3gX6oe0FlksmSZ5EMDUHJmIh18tU+AWfbbISt9lpjMFwF
+         BcmQ==
+X-Gm-Message-State: AOAM532vCtJi75DpdDUZqqAAJ3FIBp7za6JE+Rvu8qrCNlJ3jvMEWced
+        DI+ngAseaMQcXRkgoICLL/lfj7vzxuSsnnOm/AE=
+X-Google-Smtp-Source: ABdhPJz4dD8JjSQiV7vDT8TkDrvQdCi57sJHQzZD95/ulLOlrEpUuGT2zcUp0u7Kuh3knjWTWudW9K7sYT3Y9wVPQgg=
+X-Received: by 2002:a17:906:5ad0:: with SMTP id x16mr9495925ejs.135.1611810492671;
+ Wed, 27 Jan 2021 21:08:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20190717222340.137578-4-saravanak@google.com> <20191125112812.26jk5hsdwqfnofc2@vireshk-i7>
- <20200127061118.5bxei6nghowlmf53@vireshk-i7> <b0be1275-c5cb-8171-58fa-64d65f60eaf8@codeaurora.org>
- <20200130042126.ahkik6ffb5vnzdim@vireshk-i7> <CAJMQK-gmO-tLZkRRxRdgU9eyfo95omw_RnffFVdhv2A6_9T-nQ@mail.gmail.com>
- <20210118073430.a6lr3ynkd2duv34l@vireshk-i7> <CAJMQK-j6EYjU1z_SUY4MFEJO6qTtOH7mQ_QWj2iUMewBKAghng@mail.gmail.com>
- <20210127115415.7zjpf6uaybwswno3@vireshk-i7> <CAJMQK-hgeOv9XDasmmWGguxyC62SCsSoX5_enEb46whE8_Emew@mail.gmail.com>
- <20210128041342.owkjl4voodw4dcmf@vireshk-i7>
-In-Reply-To: <20210128041342.owkjl4voodw4dcmf@vireshk-i7>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 28 Jan 2021 13:05:02 +0800
-Message-ID: <CAJMQK-ihjnTWXVuKZXE=cX2TpVaFMTreZ7fdieWm7PRbB8byxg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] OPP: Improve require-opps linking
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>
+References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
+ <20210125100540.55wbgdsem3htplx3@pali> <20210125201938.GB78651@roeck-us.net>
+ <20210125202130.afwhcuznietmqo5s@pali> <20210127230001.7zeeczkfj33zj5sw@pali> <aef96a2a-9e27-32a2-62a5-92b8d87b9136@roeck-us.net>
+In-Reply-To: <aef96a2a-9e27-32a2-62a5-92b8d87b9136@roeck-us.net>
+From:   Bob Hepple <bob.hepple@gmail.com>
+Date:   Thu, 28 Jan 2021 15:08:01 +1000
+Message-ID: <CAHzpm2jOi1VnQR_kun-Y15jXskExYF7dV-o0-T0-pvLy+J8jsQ@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control blacklist
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:13 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 27-01-21, 22:40, Hsin-Yi Wang wrote:
-> > Hi Viresh,
-> >
-> > I tested this patch with devfreq passive governor[1] and mt8183
-> > cci[2]. It's also working as expected.
->
-> I hope I can add your Tested-by for the patch then, right ?
->
-Yes, thanks!
+I've posted something on the Dell Community site as I can't get to the
+proper support pages (expired warranty).
 
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+https://www.dell.com/community/XPS/Linux-kernel-regression-in-fan-control-d=
+ell-smm-hwmon-c-on-XPS/m-p/7794672#M77826
 
-> > [1] https://patchwork.kernel.org/project/linux-pm/cover/20190724014222.110767-1-saravanak@google.com/
-> > (patch 2,4,5)
-> > [2] https://patchwork.kernel.org/project/linux-mediatek/cover/1594348284-14199-1-git-send-email-andrew-sh.cheng@mediatek.com/
-> >
-> > In my testing case, required_opp_table is not genpd case (mt8183 cci
-> > is not genpd), so I remove the following constraint. Does that make
-> > sense to you?
-> >
-> > @@ -377,13 +377,6 @@ static void lazy_link_required_opp_table(struct
-> > opp_table *new_table)
-> >         struct dev_pm_opp *opp;
-> >         int i, ret;
-> >
-> > -       /*
-> > -        * We only support genpd's OPPs in the "required-opps" for now,
-> > -        * as we don't know much about other cases.
-> > -        */
-> > -       if (!new_table->is_genpd)
-> > -               return;
-> > -
-> >         mutex_lock(&opp_table_lock);
+I have read that the Dell Social Networks people forward this sort of
+stuff to the Dell Developers ...
+
+Cheers
+
+Bob
+
+On Thu, 28 Jan 2021 at 11:46, Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> We will perhaps need more changes than that, but those should be done
-> separately when you try to add a user for the same.
+> On 1/27/21 3:00 PM, Pali Roh=C3=A1r wrote:
+> > On Monday 25 January 2021 21:21:30 Pali Roh=C3=A1r wrote:
+> >> On Monday 25 January 2021 12:19:38 Guenter Roeck wrote:
+> >>> On Mon, Jan 25, 2021 at 11:05:40AM +0100, Pali Roh=C3=A1r wrote:
+> >>>> On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
+> >>>>> It has been reported[0] that the Dell XPS 15 L502X exhibits similar
+> >>>>> freezing behavior to the other systems[1] on this blacklist. The is=
+sue
+> >>>>> was exposed by a prior change of mine to automatically load
+> >>>>> dell_smm_hwmon on a wider set of XPS models. To fix the regression,=
+ add
+> >>>>> this model to the blacklist.
+> >>>>>
+> >>>>> [0] https://bugzilla.kernel.org/show_bug.cgi?id=3D211081
+> >>>>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D195751
+> >>>>>
+> >>>>> Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all X=
+PS models")
+> >>>>> Cc: stable@vger.kernel.org
+> >>>>> Reported-by: Bob Hepple <bob.hepple@gmail.com>
+> >>>>> Tested-by: Bob Hepple <bob.hepple@gmail.com>
+> >>>>> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> >>>>> ---
+> >>>>>
+> >>>>>  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
+> >>>>>  1 file changed, 7 insertions(+)
+> >>>>>
+> >>>>> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-sm=
+m-hwmon.c
+> >>>>> index ec448f5f2dc3..73b9db9e3aab 100644
+> >>>>> --- a/drivers/hwmon/dell-smm-hwmon.c
+> >>>>> +++ b/drivers/hwmon/dell-smm-hwmon.c
+> >>>>> @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_fa=
+n_support_dmi_table[] __initdata =3D {
+> >>>>>                   DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 9333"),
+> >>>>>           },
+> >>>>>   },
+> >>>>> + {
+> >>>>> +         .ident =3D "Dell XPS 15 L502X",
+> >>>>> +         .matches =3D {
+> >>>>> +                 DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> >>>>> +                 DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell System XP=
+S L502X"),
+> >>>>
+> >>>> Hello! Are you sure that it is required to completely disable fan
+> >>>> support? And not only access to fan type label for which is differen=
+t
+> >>>> blaclist i8k_blacklist_fan_type_dmi_table?
+> >>>>
+> >>>
+> >>> I'll drop this patch from my branch. Please send a Reviewed-by: or Ac=
+ked-by: tag
+> >>> if/when I should apply it.
+> >>
+> >> Of course! We will just wait for Bob test results.
+> >
+> > Guenter, now we have all needed information, fix is really needed in
+> > this form. So you can add my:
+> >
+> > Reviewed-by: Pali Roh=C3=A1r <pali@kernel.org>
+> >
 >
-
-Ack.
-
-> --
-> viresh
+> Applied (again)
+>
+> Thanks,
+> Guenter
