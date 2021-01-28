@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6D1307573
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07C0307578
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhA1MC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        id S231151AbhA1MEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhA1MBx (ORCPT
+        with ESMTP id S229569AbhA1MDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:01:53 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE81C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:01:12 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id f11so5975463ljm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:01:12 -0800 (PST)
+        Thu, 28 Jan 2021 07:03:31 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EFDC06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:02:05 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id w18so3840924pfu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:02:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n9EOKkeTY2+d1Fa4iHB/4cHa37Z0fzFo4OzOK4oM6Q4=;
-        b=F/CmSMOuSr5zNpyIz8oDpfs0uxO2NhcU5b2INzxjrItESHLsnvvNX/yf1410eKA9ve
-         VQpoXLUK241FEkj9ofwBDSWNFjyOlJ1/B0w503sD1RjI/Sv8Mpy9AuKTl4v9unPAbVpt
-         o2NhCHR1kO8BzF2uLKVtJlY/eb6hmEA6dxkoKIZIDA//svyJxEpWliH0+/KoPRpX6yuQ
-         xOaOhiqgJROQ4qzL4Ai4Vu8QEK7vHTmjcR+D0QSzio07rhzy0JmaMHDNZNHoYvUzzBdq
-         PIk0qSMqBACkwRrT1oeqoueNhsZKSRQyiROFe5pXaQq2lZ0IVc3HI0/lPCj4ym1EPKe0
-         BuLg==
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZmaZv/BWIehFfP6lA3rx4Nelqr7DgDNARDpwDoj4YWw=;
+        b=AiMiZ9iXwmrxk4P95b9U8GekaBKB/o1gdsMjk4YnWqgah2oA2eV7zHAPBAKyhhdUzY
+         e8WSBKe1vIWd9+DeOmeELypV1DhTAVPphBNWSZtLWA0gixZHRBvMBdAkLuU3ktNYRKJU
+         cRN1gcE1CsTWPaG72WNwIMpCDLisO+lPvu/T/fmoGNQV7St+u0w3HSFK24qipX5SKobu
+         RDKxMsYWfTqiFmW+SdNah3Q79xBYu8q4Nw6tApqSAcROjO1RSmlwnnaEO33VmnAzzB7A
+         EjRJQvBDyByJNQC6UzHtOr8yjImtkyODwSRmWz/62LCRhbdpKpnpW6+BbpjQU8dvh9pz
+         IsiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n9EOKkeTY2+d1Fa4iHB/4cHa37Z0fzFo4OzOK4oM6Q4=;
-        b=j1kZj9h1vSxABGy7V+ZWoGKgr6yo2z7pGk4Pwws31qU79sZDUwGBWjGKqs0fKukBrq
-         +xYXQR6tCZ5ASBfSbPnjcNNJyOSGhbJkpUjqFU0GBm2k1XCBPjc/dsm2Vohozz9xuSGA
-         FBf4JJQvAnLJfk8cU4cUlDSyxZWW6RMqQtql1bHL0zhfOAWK/ZangoXcvl4v/s0PACL6
-         5GzoReGb0QLrFxITJHpdDJC2LE/IPnjLQ2k7UFgteameYZmn2vhuxUuxoC1JLNGnTKza
-         vhD7NcIAOd+qeIZUYuOiufMDkoxjeFn/6vvTrkcgk7vfclvm2ImUYBsHusRHnNIR/c4Q
-         o+pw==
-X-Gm-Message-State: AOAM531UeDq1Rg6RozVFAKzCOKcZI08DLzHU2xZ/FO1S8Iyywkimx0Ki
-        zqs/RCuXdGbmHf08/dR+oUBdBbAioTlcw2W9SwbUXw==
-X-Google-Smtp-Source: ABdhPJypbRkZO7oNmfkvuCEOFNhZkoDt3uSClsJKrU2bBbdo1JdlUWBieGzbeMl4eG6ef0bI+oE4Ri5xIQqzgGc6PuE=
-X-Received: by 2002:a2e:8ec3:: with SMTP id e3mr7938969ljl.467.1611835271030;
- Thu, 28 Jan 2021 04:01:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZmaZv/BWIehFfP6lA3rx4Nelqr7DgDNARDpwDoj4YWw=;
+        b=kVLBg0mph2Cgy8oGNYsYlZKD+sMpQ/rxEgVOL/TLWEHcEEnld6RYzf336GJlzUWumk
+         4M8AZrx7FNNFr9fRlANQDaR09eUtLLyp3f7tJCPctnzW9t6BDBuAtzOCPHxdGhTGCdBS
+         M+VBUEXV2cVMTfR60Obr1/XpesBo3n21Jht0BRymxBKyttxkgw2qiOgLgGHoMswoTP2+
+         r3fVPY9XE6EcSmaC9dYRQ3Ljuh7G5HVG1lMSLrm7Yteq+nwHNpQgHTdLeclrZCy01nQw
+         nkB22j+y5PJapUCtbwUP1TvnCbr6L6/ZZRVrG0k72vYuAwLCPgQLzUSZ5XJDtRoloLRl
+         zTiA==
+X-Gm-Message-State: AOAM532/ru+Z6mosn8G3ltz5dJqymRWLYI1h46Op4W9zLecaFkAinzr9
+        K+d5vP8tYn3hPZOxQDv6QhEe+g==
+X-Google-Smtp-Source: ABdhPJzw5+RBbFqHjrw7OiVFzB/SdO270BhGevAOOUoslyfiJ9zvIrHc/gNsOsTPYMaJiqDQqCSffQ==
+X-Received: by 2002:a63:db0d:: with SMTP id e13mr16077752pgg.343.1611835325021;
+        Thu, 28 Jan 2021 04:02:05 -0800 (PST)
+Received: from localhost.localdomain (118-171-131-72.dynamic-ip.hinet.net. [118.171.131.72])
+        by smtp.gmail.com with ESMTPSA id y22sm5605782pfb.132.2021.01.28.04.02.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 04:02:03 -0800 (PST)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: pf8x00: Fix typo for PF8200 chip name
+Date:   Thu, 28 Jan 2021 20:01:51 +0800
+Message-Id: <20210128120151.554411-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210127000303.436595-1-drew@beagleboard.org>
-In-Reply-To: <20210127000303.436595-1-drew@beagleboard.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 Jan 2021 13:01:00 +0100
-Message-ID: <CACRpkdam4gY3iU1DBtczgdnxQ-t0OkrRMZ-Y9e1W0FQOrYnndw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ARM: dts: am335x-pocketbeagle: unique gpio-line-names
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 1:04 AM Drew Fustini <drew@beagleboard.org> wrote:
+Trivial typo fix.
 
-> Based on linux-gpio discussion [1], it is best practice to make the
-> gpio-line-names unique. Generic names like "[ethernet]" are replaced
-> with the name of the unique signal on the AM3358 SoC ball corresponding
-> to the gpio line. "[NC]" is also renamed to the standard "NC" name to
-> represent "not connected".
->
-> [1] https://lore.kernel.org/linux-gpio/20201216195357.GA2583366@x1/
->
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/pf8x00-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This certainly looks better!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
+index 827da25466cc..9b28bd63208d 100644
+--- a/drivers/regulator/pf8x00-regulator.c
++++ b/drivers/regulator/pf8x00-regulator.c
+@@ -529,7 +529,7 @@ static int pf8x00_identify(struct pf8x00_chip *chip)
+ 		name = "PF8121A";
+ 		break;
+ 	case PF8200:
+-		name = "PF8100";
++		name = "PF8200";
+ 		break;
+ 	default:
+ 		dev_err(chip->dev, "Unknown pf8x00 device id 0x%x\n", dev_id);
+-- 
+2.25.1
 
-Yours,
-Linus Walleij
