@@ -2,151 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA97306C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE368306C10
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhA1EN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:13:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:51028 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231173AbhA1ENT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:13:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A9F81042;
-        Wed, 27 Jan 2021 20:12:33 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 754453F66B;
-        Wed, 27 Jan 2021 20:12:29 -0800 (PST)
-Subject: Re: [PATCH v1 2/2] mm: simplify free_highmem_page() and
- free_reserved_page()
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20210126182113.19892-1-david@redhat.com>
- <20210126182113.19892-3-david@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <6e3b29cd-fbf8-2b58-e61e-9d378b095263@arm.com>
-Date:   Thu, 28 Jan 2021 09:42:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231321AbhA1EOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:14:40 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53312 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231247AbhA1EO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 23:14:27 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10S42g3c153480;
+        Wed, 27 Jan 2021 23:13:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=yuVzlj1KaxSV483KKx6/iP8+B9liUYCdNpO7hs9E9yY=;
+ b=I+DXyX1RuBn8aN5ukT7hxEl3AX0MhyTA5GoiZp9DeJxHyjM99abR7lM01Y2bGvB/Fr9h
+ MNplPBdiNU2CLDemgBwhg+tY1XOqPbmNNjEcAy1/LTmxAp6wklsETWv6IhXzM06fuOkF
+ ondvimUxUeCxF30gujOh7TdPdk3pX4PMT6tVW9levvCk5y7enmEzz9017sf2lALHWBXc
+ Ttbx8vKm53wluFpfwgA1zKJuc9OMyB8bJYWVkYHIDbeBvnwscEmCfhicZ6eqGJUcHw9/
+ MlBVdWs8wHxHOKAR8mSm13N9gS0TY5e+nNU+gpMy3WhiHF5NN+RV2cHbL2iiQSgAFuZh Zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b4g9b193-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 23:13:23 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10S43P9L157071;
+        Wed, 27 Jan 2021 23:13:22 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36b4g9b18u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jan 2021 23:13:22 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10S3vAvU024647;
+        Thu, 28 Jan 2021 04:13:21 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 36agvf0wx7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 04:13:21 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10S4DKht35651936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 04:13:20 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C48F3124053;
+        Thu, 28 Jan 2021 04:13:20 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 33E0A124052;
+        Thu, 28 Jan 2021 04:13:19 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.65.198.104])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 28 Jan 2021 04:13:19 +0000 (GMT)
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
+        nayna@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@hansenpartnership.com
+References: <YAjMm9Gq/FFOzQYG@kernel.org>
+ <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
+ <20200916004927.64276-1-eric.snowberg@oracle.com>
+ <1360578.1607593748@warthog.procyon.org.uk>
+ <2442460.1610463459@warthog.procyon.org.uk>
+ <X/9a8naM8p4tT5sO@linux.intel.com>
+ <A05E3573-B1AF-474B-94A5-779E69E5880A@oracle.com>
+ <YAFdNiYZSWpB9vOw@kernel.org>
+ <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
+ <YAgTawk3EENF/P6j@kernel.org>
+ <D9F5E0BD-E2FC-428F-91B3-35D2750493A0@oracle.com>
+ <3063834.1611747971@warthog.procyon.org.uk>
+ <61a0420790250807837b5a701bb52f3d63ff0c84.camel@linux.ibm.com>
+ <86CE3924-E36F-44FD-A259-3CC7E69D3EAC@oracle.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <e18675cc-26d2-bfc3-2043-30e4f01b56ce@linux.vnet.ibm.com>
+Date:   Wed, 27 Jan 2021 23:13:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210126182113.19892-3-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <86CE3924-E36F-44FD-A259-3CC7E69D3EAC@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_01:2021-01-27,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 adultscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0
+ clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 1/27/21 10:41 AM, Eric Snowberg wrote:
+>> On Jan 27, 2021, at 7:03 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+>>
+>> [Cc'ing linux-integrity]
+>>
+>> On Wed, 2021-01-27 at 11:46 +0000, David Howells wrote:
+>>> Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>>>
+>>>>> I suppose a user space tool could be created. But wouldn’t what is
+>>>>> currently done in the kernel in this area need to be removed?
+>>>> Right. I don't think this was a great idea in the first place to
+>>>> do to the kernel but since it exists, I guess the patch does make
+>>>> sense.
+>>> This information needs to be loaded from the UEFI tables before the system
+>>> starts loading any kernel modules or running any programs (if we do
+>>> verification of such, which I think IMA can do).
+>> There needs to a clear distinction between the pre-boot and post-boot
+>> keys.  UEFI has its own trust model, which should be limited to UEFI.
+>> The .platform keyring was upstreamed and limited to verifying the kexec
+>> kernel image.   Any other usage of the .platform keyring keys is
+>> abusing its intended purpose.
+>>
+>> The cover letter says,   "Anytime the .platform keyring is used, the
+>> keys in the .blacklist keyring are referenced, if a matching key is
+>> found, the key will be rejected."   I don't have a problem with loading
+>> the UEFI X509 dbx entries as long as its usage is limited to verifying
+>> the kexec kernel image.
+> Correct, with my patch, when EFI_CERT_X509_GUID entries are found in the
+> dbx, they will only be used during kexec.  I believe the latest dbx file on
+> uefi.org contains three of these entires.
+>
+> Based on my understanding of why the platform keyring was introduced,
+> I intentionally only used these for kexec.  I do question the current
+> upstream mainline code though.  Currently, when EFI_CERT_X509_SHA256_GUID
+> or EFI_CERT_SHA256_GUID entries are found in the dbx, they are applied
+> everywhere.  It seems like there should be a dbx revocation keyring
+> equivalent to the current platform keyring that is only used for pre-boot.
+>
+> If that is a direction you would like to see this go in the future, let
+> me know, I’d be happy to work on it.
+>
+Yes, as you said, currently blacklist entries from dbx for 
+EFI_CERT_X509_SHA256_GUID or EFI_CERT_SHA256_GUID are applied 
+everywhere, and does not satisfy the trust model for .platform keyring. 
+We should fix this, but changing now might break some existing systems. 
+Probably it should be discussed as separate thread from this patchset.
 
-On 1/26/21 11:51 PM, David Hildenbrand wrote:
-> adjust_managed_page_count() as called by free_reserved_page() properly
-> handles pages in a highmem zone, so we can reuse it for
-> free_highmem_page().
-> 
-> We can now get rid of totalhigh_pages_inc() and simplify
-> free_reserved_page().
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Thanks & Regards,
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+       - Nayna
 
-> ---
->  include/linux/highmem-internal.h |  5 -----
->  include/linux/mm.h               | 16 ++--------------
->  mm/page_alloc.c                  | 11 -----------
->  3 files changed, 2 insertions(+), 30 deletions(-)
-> 
-> diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
-> index 1bbe96dc8be6..7902c7d8b55f 100644
-> --- a/include/linux/highmem-internal.h
-> +++ b/include/linux/highmem-internal.h
-> @@ -127,11 +127,6 @@ static inline unsigned long totalhigh_pages(void)
->  	return (unsigned long)atomic_long_read(&_totalhigh_pages);
->  }
->  
-> -static inline void totalhigh_pages_inc(void)
-> -{
-> -	atomic_long_inc(&_totalhigh_pages);
-> -}
-> -
->  static inline void totalhigh_pages_add(long count)
->  {
->  	atomic_long_add(count, &_totalhigh_pages);
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a5d618d08506..494c69433a34 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2303,32 +2303,20 @@ extern void free_initmem(void);
->  extern unsigned long free_reserved_area(void *start, void *end,
->  					int poison, const char *s);
->  
-> -#ifdef	CONFIG_HIGHMEM
-> -/*
-> - * Free a highmem page into the buddy system, adjusting totalhigh_pages
-> - * and totalram_pages.
-> - */
-> -extern void free_highmem_page(struct page *page);
-> -#endif
-> -
->  extern void adjust_managed_page_count(struct page *page, long count);
->  extern void mem_init_print_info(const char *str);
->  
->  extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
->  
->  /* Free the reserved page into the buddy system, so it gets managed. */
-> -static inline void __free_reserved_page(struct page *page)
-> +static inline void free_reserved_page(struct page *page)
->  {
->  	ClearPageReserved(page);
->  	init_page_count(page);
->  	__free_page(page);
-> -}
-> -
-> -static inline void free_reserved_page(struct page *page)
-> -{
-> -	__free_reserved_page(page);
->  	adjust_managed_page_count(page, 1);
->  }
-> +#define free_highmem_page(page) free_reserved_page(page)
->  
->  static inline void mark_page_reserved(struct page *page)
->  {
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b031a5ae0bd5..b2e42f10d4d4 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -7711,17 +7711,6 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
->  	return pages;
->  }
->  
-> -#ifdef	CONFIG_HIGHMEM
-> -void free_highmem_page(struct page *page)
-> -{
-> -	__free_reserved_page(page);
-> -	totalram_pages_inc();
-> -	atomic_long_inc(&page_zone(page)->managed_pages);
-> -	totalhigh_pages_inc();
-> -}
-> -#endif
-> -
-> -
->  void __init mem_init_print_info(const char *str)
->  {
->  	unsigned long physpages, codesize, datasize, rosize, bss_size;
-> 
