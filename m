@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B798B30809E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51FE3080A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhA1ViQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:38:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229677AbhA1ViP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:38:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C20F064DD8;
-        Thu, 28 Jan 2021 21:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611869854;
-        bh=PduBNW8cMfaTTP3RvrDhtDpwFami5KR30wb6tkJcODI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p7GDh/fK8k5tGcOJocJr1cWChrHNE8GeXPhRP6prTO+tLEBZviBoh4SEpKEu0lOeM
-         cH4RFgVrc8J/fD7ukA+pDnIwi45bLagoKoeP72V7ldoACFGnX+cML3tD6l2+yGqIVQ
-         FChBUSsQnf2c+bA8amD1up7bWwCK77zcweeOXDMU=
-Date:   Thu, 28 Jan 2021 13:37:33 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: Re: [PATCH v3 3/5] hugetlb: only set HPageMigratable for migratable
- hstates
-Message-Id: <20210128133733.ce1fb2eac98ab5696c08f288@linux-foundation.org>
-In-Reply-To: <20210128055221.GA3166@localhost.localdomain>
-References: <20210122195231.324857-1-mike.kravetz@oracle.com>
-        <20210122195231.324857-4-mike.kravetz@oracle.com>
-        <20210127103523.GI827@dhcp22.suse.cz>
-        <2196d93e-f573-7163-183e-0ad2cec7555e@oracle.com>
-        <20210128055221.GA3166@localhost.localdomain>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231520AbhA1VjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:39:21 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37504 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhA1VjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 16:39:06 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611869903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IIzehXtZGVhpB1yHQMfVfz2P5f3f41/m1wLdY+MrNmM=;
+        b=qcvkyvR6VnVEjI1jv4KEwpmNS4636JQ+mwxNTSRMcue7o/s7JMWveSFLNlVCoFFAf8Jtt3
+        3xO6lzAoWXwGasRwUSHC+0IP7G4pMAHr+LQECEmllfHBaIvclmf8ahREBDIwKSvrSwqgKQ
+        cSfbqdioGnKlAfzMd72R2/toWRRvC1YAX/LfLLIkB2bqrI8AD6DvuR2bYAeqMh3t1WLWGw
+        //GDJNSqtfp3VlTKQTUN/YPOCbcQ+EK8ygoJ652qwniJAzWJctkXQYbnLZeIYdcTCOs/9W
+        +YiC5FOEoa0Xm7d9CFCNnG9l/OhZmy5PqdHFx5UEurgQLy5W5Ri4EiMROsuzgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611869903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IIzehXtZGVhpB1yHQMfVfz2P5f3f41/m1wLdY+MrNmM=;
+        b=DkxrxorF8qRUTwTJrxxkNkdnEiqEO8c8IGVntc1RgdF1Sbv4erynjXpMfaDBIXsB5hUzxh
+        vUFJ/LiXae9RWGDw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@linux.intel.com
+Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
+In-Reply-To: <871re5m0a2.fsf@jogness.linutronix.de>
+References: <20210122081311.GA12834@xsang-OptiPlex-9020> <YAr7d6A4CkMpgx+g@alley> <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain> <87bldaaxcc.fsf@jogness.linutronix.de> <YBJ2CjN2YntC1o3j@jagdpanzerIV.localdomain> <87czxpmhe1.fsf@jogness.linutronix.de> <YBLPhkHQ8cXFiY1X@alley> <877dnxm5ju.fsf@jogness.linutronix.de> <YBLoGNQNMkFivh34@alley> <871re5m0a2.fsf@jogness.linutronix.de>
+Date:   Thu, 28 Jan 2021 22:44:22 +0106
+Message-ID: <87v9bglp2p.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 06:52:21 +0100 Oscar Salvador <osalvador@suse.de> wrote:
+On 2021-01-28, John Ogness <john.ogness@linutronix.de> wrote:
+> [  903.189448][  T356] [  778.825864] [  655.250559] [  531.607066] [  407.120936] tasks-torture:torture_onoff task: online 0 failed: errno -5
 
-> On Wed, Jan 27, 2021 at 03:36:41PM -0800, Mike Kravetz wrote:
-> > Yes, this patch is somewhat optional.  It should be a minor improvement
-> > in cases where we are dealing with hpages in a non-migratable hstate.
-> > Although, I do not believe this is the common case.
-> > 
-> > The real reason for even looking into this was a comment by Oscar.  With
-> > the name change to HPageMigratable, it implies that the page is migratable.
-> > However, this is not the case if the page's hstate does not support migration.
-> > So, if we check the hstate when setting the flag we can eliminate those
-> > cases where the page is certainly not migratable.
-> > 
-> > I don't really love this patch.  It has minimal functional value.
-> > 
-> > Oscar, what do you think about dropping this?
-> 
-> Yeah, I remember this topic arose during a discussion of patch#2 in the
-> early versions, about whether the renaming to HPageMigratable made
-> sense.
-> 
-> Back then I thought that we could have this in one place at fault-path [1],
-> which should have made this prettier, but it is not the case.
-> True is that the optimization is little, so I am fine with dropping this
-> patch.
+So I at least found out what these multi-timestamp messages are (thanks
+to reading /dev/kmsg). lkp is directing all its test output to
+/dev/kmsg. This is why we see messages like:
 
-I've dropped it.
+  2021-01-28 21:15:15 rmmod rcutorture
 
-> unmap_and_move_huge_page() fences off pages belonging to non-migratable
-> hstates.
-> 
-> [1] https://patchwork.kernel.org/project/linux-mm/patch/20210120013049.311822-3-mike.kravetz@oracle.com/#23914033
+The final line of its test is "dmesg | grep torture:". So it is dumping
+dmesg output into /dev/kmsg! This causes the timestamp to be included in
+the text of the new messages so we later see 2 timestamps. After 2
+minutes it has reached the messages it fed into /dev/kmsg and feeds them
+in again (thus a 3rd timestamp).
 
+Here is a snippet from /dev/kmsg when it starts feeding dmesg into
+/dev/kmsg. If the first number is >= 8, it is coming from userspace.
+
+1,24066,323390711,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+1,24067,323444452,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+1,24068,323461363,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+13,24069,323469754,-;2021-01-28 21:15:15 rmmod rcutorture
+12,24070,323469775,-;
+1,24071,323481652,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+1,24072,323495879,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+1,24073,323503276,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+1,24074,323510766,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+1,24075,323519658,-;tasks-torture:torture_onoff task: online 0 failed: errno -5
+13,24076,323522146,-;[  158.513122] tasks-torture:torture_onoff task: online 0 failed: errno -5
+12,24077,323522157,-;
+13,24078,323526545,-;[  158.519672] tasks-torture:torture_onoff task: online 0 failed: errno -5
+12,24079,323526556,-;
+13,24080,323529365,-;[  158.534695] tasks-torture:torture_onoff task: online 0 failed: errno -5
+12,24081,323529374,-;
+13,24082,323531951,-;[  158.549755] tasks-torture:torture_onoff task: online 0 failed: errno -5
+12,24083,323531961,-;
+
+I don't know why it is doing the message text with loglevel 5 (NOTICE)
+followed by a blank line with loglevel 4 (WARNING), but they are
+definitely coming from userspace.
+
+Anyway, enough with that madness. I now will return my focus to the rcu
+stall, and see how printk could be responsible.
+
+John Ogness
