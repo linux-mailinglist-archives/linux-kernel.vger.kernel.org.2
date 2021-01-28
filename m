@@ -2,147 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDC3307B59
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66143307B64
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhA1Qvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:51:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232681AbhA1Qvs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:51:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611852622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r33CpG98rw/mr6rLy4ACeQ8mouSsHQS8jL40ZLPrdjc=;
-        b=g27SPpKE/+wTW2rpESoILqL3bGSa+EsSI9pPHsM9PAEea7z/9/I9G595E6GLSYw76MBq2s
-        EJJRCRaWS6fuIuTWW7Bv/E0BrVdn277T+DtLIOC0DGKjT1r+mFKluXO3WtPCaoPhTbVAR5
-        1MjtoTLUvf06NyU0x6cQAtkSwrbab1o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-H4bP6a7rNJaQIZhk8G-ODA-1; Thu, 28 Jan 2021 11:50:20 -0500
-X-MC-Unique: H4bP6a7rNJaQIZhk8G-ODA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D4DF1081B38;
-        Thu, 28 Jan 2021 16:50:18 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 967C95C1BB;
-        Thu, 28 Jan 2021 16:50:16 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 10:50:14 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210128165014.xc77qtun6fl2qfun@treble>
-References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
- <20210128001353.66e7171b395473ef992d6991@kernel.org>
- <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
- <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        id S232642AbhA1QxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:53:00 -0500
+Received: from mail.v3.sk ([167.172.186.51]:37166 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231373AbhA1Qw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:52:57 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 67CD3E0B17;
+        Thu, 28 Jan 2021 16:48:08 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id tb_MY8o7gQd8; Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 6090EE0B2A;
+        Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id a2rOAFCqqtQ1; Thu, 28 Jan 2021 16:48:06 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id C4F67E0B17;
+        Thu, 28 Jan 2021 16:48:06 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/2] Add a Himax HX8837 display controller driver
+Date:   Thu, 28 Jan 2021 17:52:07 +0100
+Message-Id: <20210128165209.59903-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 06:45:56PM +0200, Nikolay Borisov wrote:
-> On 28.01.21 г. 18:12 ч., Nikolay Borisov wrote:
-> > On 28.01.21 г. 5:38 ч., Masami Hiramatsu wrote:
-> >> Hi,
-> > 
-> > <snip>
-> >>
-> >> Alexei, could you tell me what is the concerning situation for bpf?
-> > 
-> > Another data point masami is that this affects bpf kprobes which are
-> > entered via int3, alternatively if the kprobe is entered via
-> > kprobe_ftrace_handler it works as expected. I haven't been able to
-> > determine why a particular bpf probe won't use ftrace's infrastructure
-> > if it's put at the beginning of the function.  An alternative call chain
-> > is :
-> > 
-> >  => __ftrace_trace_stack
-> >  => trace_call_bpf
-> >  => kprobe_perf_func
-> >  => kprobe_ftrace_handler
-> >  => 0xffffffffc095d0c8
-> >  => btrfs_validate_metadata_buffer
-> >  => end_bio_extent_readpage
-> >  => end_workqueue_fn
-> >  => btrfs_work_helper
-> >  => process_one_work
-> >  => worker_thread
-> >  => kthread
-> >  => ret_from_fork
-> > 
-> >>
-> 
-> I have a working theory why I'm seeing this. My kernel (broken) was
-> compiled with retpolines off and with the gcc that comes with ubuntu
-> (both 9 and 10:
-> gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> gcc-10 (Ubuntu 10.2.0-5ubuntu1~20.04) 10.2.0
-> )
-> 
-> this results in CFI being enabled so functions look like:
-> 0xffffffff81493890 <+0>: endbr64
-> 0xffffffff81493894 <+4>: callq  0xffffffff8104d820 <__fentry__>
-> 
-> i.e fentry's thunk is not the first instruction on the function hence
-> it's not going through the optimized ftrace handler. Instead it's using
-> int3 which is broken as ascertained.
-> 
-> After testing with my testcase I confirm that with cfi off and
-> __fentry__ being the first entry bpf starts working. And indeed, even
-> with CFI turned on if I use a probe like :
-> 
-> bpftrace -e 'kprobe:btrfs_sync_file+4 {printf("kprobe: %s\n",
-> kstack());}' &>bpf-output &
-> 
-> 
-> it would be placed on the __fentry__ (and not endbr64) hence it works.
-> So perhaps a workaround outside of bpf could essentially detect this
-> scenario and adjust the probe to be on the __fentry__ and not preceding
-> instruction if it's detected to be endbr64 ?
+Hi,
 
-For now (and the foreseeable future), CET isn't enabled in the kernel.
-So that endbr64 shouldn't be there in the first place.  I can make a
-proper patch in a bit.
+please take a look at the patches chained to this messages and consider
+applying them. They add support for the controller that drives the panel
+on the OLPC XO laptops.
 
-diff --git a/Makefile b/Makefile
-index e0af7a4a5598..5ccc4cdf1fb5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -948,11 +948,8 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
- # change __FILE__ to the relative path from the srctree
- KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
- 
--# ensure -fcf-protection is disabled when using retpoline as it is
--# incompatible with -mindirect-branch=thunk-extern
--ifdef CONFIG_RETPOLINE
-+# Intel CET isn't enabled in the kernel
- KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
--endif
- 
- # include additional Makefiles when needed
- include-y			:= scripts/Makefile.extrawarn
+Compared to v7, points risen in review by Laurent Pinchart have been
+addressed. Details in change log of patch 1/2.
+
+Tested on an OLPC XO-1.75 laptop.
+
+Thank you
+Lubo
+
 
