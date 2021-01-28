@@ -2,114 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F6A3078EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1853B307900
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhA1O7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:59:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232298AbhA1O6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:58:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7FAE64DE8;
-        Thu, 28 Jan 2021 14:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611845893;
-        bh=70skHL26c2uu6S1xdkaZjxMf+ykcMABGtYclFtKAfcg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OguBSFVkSHqI1jyK8IOJ9tmmFkeG1MMSkHM0jk/O9eV6uMTB799yFf3Ck73uLHEyj
-         laVerO1xPgp3QSNZWAyOHQUnVXPWo9rsuRxuEov/KoMixq+T7WTF1XK208Xoj+zG+j
-         /Wkb77qyiKjalBH6RDzuLIPMXUCuD5aTdTxAEBGy4goJ4b9nedbXj7kOUubpF8TC2j
-         uvOTgbrvrwq3xUpwQsZTyjGW8oaRJmlvncMOjvtthOLGXiPMnjkHXtzU64sPVUQMx7
-         7lGkAP8UtbHsl6Balo/4JxkZsrcSj8HVrFm9FivltvU3Jd4PuUmEhi0nj5PRO5UbAe
-         CNkdk9hObQWOw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 61CD03522748; Thu, 28 Jan 2021 06:58:13 -0800 (PST)
-Date:   Thu, 28 Jan 2021 06:58:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
-Message-ID: <20210128145813.GO2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
- <20201126154630.GR1437@paulmck-ThinkPad-P72>
- <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
- <20201126214226.GS1437@paulmck-ThinkPad-P72>
- <MW2PR2101MB18011DA2FCF66D03BF8BB0CCBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
- <20201126235440.GT1437@paulmck-ThinkPad-P72>
- <MW2PR2101MB1787FF5912C90FC4FFEF3993BFBA9@MW2PR2101MB1787.namprd21.prod.outlook.com>
+        id S232207AbhA1PBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:01:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhA1PBo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:01:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24EBC061574;
+        Thu, 28 Jan 2021 07:01:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=MuQ55b6lQL0I5ueFfXsRaK8O5AcvEo+mmGNhqsq60gQ=; b=jkYUSm/Yl0s99oYdm2MBlnRPAI
+        lagIosX5PANZ3deQL5v4LMDMKT3UMoOm+aTiACikMRmoxifXT41M5Y/0ShZxFrvvSzstoAJnErTHK
+        sxNg6SQH+oqGmJpU3lfzDmo+XVYEIY0MYUEMZyWnhpVQQFgtH+c7ihkHuoptUM3I2Wgkcyu/41gEa
+        IHZ0SZckorrXIgrxh3nIYif6YcIX/mGnRB1KAVdTOCNLMUwFUUmLoauj5Qqi3kl4OZDJ8lAt28LvV
+        KaGDSc5P0AcQQfkhO7vHx/0U4thIwIlCbZFvyiuKcGRLoMbpYzx7nHXwc04Obj1pFaitsdln3g6hr
+        UquB1PxQ==;
+Received: from 213-225-36-89.nat.highway.a1.net ([213.225.36.89] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l58mv-008bD0-Sl; Thu, 28 Jan 2021 15:00:50 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        iommu@lists.linux-foundation.org
+Cc:     Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: add a new dma_alloc_noncontiguous API
+Date:   Thu, 28 Jan 2021 15:58:31 +0100
+Message-Id: <20210128145837.2250561-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1787FF5912C90FC4FFEF3993BFBA9@MW2PR2101MB1787.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 07:28:20AM +0000, Dexuan Cui wrote:
-> > From: Paul E. McKenney <paulmck@kernel.org>
-> > Sent: Thursday, November 26, 2020 3:55 PM
-> > To: Dexuan Cui <decui@microsoft.com>
-> > Cc: boqun.feng@gmail.com; Ingo Molnar <mingo@redhat.com>;
-> > rcu@vger.kernel.org; vkuznets <vkuznets@redhat.com>; Michael Kelley
-> > <mikelley@microsoft.com>; linux-kernel@vger.kernel.org
-> > Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
-> > 
-> > On Thu, Nov 26, 2020 at 10:59:19PM +0000, Dexuan Cui wrote:
-> > > > From: Paul E. McKenney <paulmck@kernel.org>
-> > > > Sent: Thursday, November 26, 2020 1:42 PM
-> > > >
-> > > > > > Another possibility is that rcu_state.gp_kthread is non-NULL, but that
-> > > > > > something else is preventing RCU grace periods from completing, but in
-> > > > >
-> > > > > It looks like somehow the scheduling is not working here: in rcu_barrier()
-> > > > > , if I replace the wait_for_completion() with
-> > > > > wait_for_completion_timeout(&rcu_state.barrier_completion, 30*HZ),
-> > the
-> > > > > issue persists.
-> > > >
-> > > > Have you tried using sysreq-t to see what the various tasks are doing?
-> > >
-> > > Will try it.
-> > >
-> > > BTW, this is a "Generation 2" VM on Hyper-V, meaning sysrq only starts to
-> > > work after the Hyper-V para-virtualized keyboard driver loads... So, at this
-> > > early point, sysrq is not working. :-( I'll have to hack the code and use a
-> > > virtual NMI interrupt to force the sysrq handler to be called.
-> > 
-> > Whatever works!
-> > 
-> > > > Having interrupts disabled on all CPUs would have the effect of disabling
-> > > > the RCU CPU stall warnings.
-> > > > 							Thanx, Paul
-> > >
-> > > I'm sure the interrupts are not disabled. Here the VM only has 1 virtual CPU,
-> > > and when the hang issue happens the virtual serial console is still responding
-> > > when I press Enter (it prints a new line) or Ctrl+C (it prints ^C).
-> > >
-> > > Here the VM does not use the "legacy timers" (PIT, Local APIC timer, etc.) at
-> > all.
-> > > Instead, the VM uses the Hyper-V para-virtualized timers. It looks the
-> > Hyper-V
-> > > timer never fires in the kdump kernel when the hang issue happens. I'm
-> > > looking into this... I suspect this hang issue may only be specific to Hyper-V.
-> > 
-> > Fair enough, given that timers not working can also suppress RCU CPU
-> > stall warnings.  ;-)
-> > 
-> > 							Thanx, Paul
-> 
-> FYI: the issue has been fixed by this fix:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fff7b5e6ee63c5d20406a131b260c619cdd24fd1
+Hi all,
 
-Thank you for the update!
-
-							Thanx, Paul
+this series adds the new noncontiguous DMA allocation API requested by
+various media driver maintainers.
