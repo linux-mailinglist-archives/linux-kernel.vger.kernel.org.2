@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDBB306BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645D3306BEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhA1EFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:05:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:50862 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231146AbhA1EEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:04:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FFD11042;
-        Wed, 27 Jan 2021 19:54:01 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 271A43F66E;
-        Wed, 27 Jan 2021 19:53:55 -0800 (PST)
-Subject: Re: [PATCH v1 1/2] video: fbdev: acornfb: remove free_unused_pages()
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20210126182113.19892-1-david@redhat.com>
- <20210126182113.19892-2-david@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <292c749e-427e-0a8d-c163-9f739af873a8@arm.com>
-Date:   Thu, 28 Jan 2021 09:24:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231414AbhA1EH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231339AbhA1EGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 23:06:36 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C675FC061351
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:55:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=qvk4AgnXCmj12XxrrvtAiERhPKsHZ9TYHC+e/qoNEdg=; b=xDja0sL3uytwsMyncVkVw4ukog
+        M4Bi+6Sp9tFmI0N6m8JtzFZk+hgoDfvDmqjiesGpWqMCPlEgOykMeu9RxD9wKsUKZ0ALbgpCXKAQz
+        C+zlfvkWC+1Ygcsb0AWxhGfUKpf1Ti936z87rjEigrIQxjgxph9ucRJ1baJ6/D+CGlBBi/eA4fXrn
+        +ZcPj5WPhODX/C30UyIYKJ7oLBsiI/euBmbvsFyE240SoyTLWrQrOTYCINnNSFp8TmZA9ct8pFQJM
+        qnCxn2Z2lT0xfoTa8McS/W4STlG1QEKgC4VD7bKMCZSljtA7pyI4jhjGv4gbmB5z3ZfhGHvIk2yoj
+        /NiqEI2w==;
+Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4yPD-0006xU-84; Thu, 28 Jan 2021 03:55:39 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH] arch_numa: fix common code printing of phys_addr_t
+Date:   Wed, 27 Jan 2021 19:55:33 -0800
+Message-Id: <20210128035533.23722-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210126182113.19892-2-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix build warnings in the arch_numa common code:
 
+../include/linux/kern_levels.h:5:18: warning: format '%Lx' expects argument of type 'long long unsigned int', but argument 3 has type 'phys_addr_t' {aka 'unsigned int'} [-Wformat=]
+../drivers/base/arch_numa.c:360:56: note: format string is defined here
+  360 |    pr_warn("Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
+../drivers/base/arch_numa.c:435:39: note: format string is defined here
+  435 |  pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
 
-On 1/26/21 11:51 PM, David Hildenbrand wrote:
-> This function is never used and it is one of the last remaining user of
-> __free_reserved_page(). Let's just drop it.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Fixes: ae3c107cd8be ("numa: Move numa implementation to common code")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Atish Patra <atish.patra@wdc.com>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ drivers/base/arch_numa.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-There is no other reference for free_unused_pages() in the tree.
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-> ---
->  drivers/video/fbdev/acornfb.c | 34 ----------------------------------
->  1 file changed, 34 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/acornfb.c b/drivers/video/fbdev/acornfb.c
-> index bcc92aecf666..1b72edc01cfb 100644
-> --- a/drivers/video/fbdev/acornfb.c
-> +++ b/drivers/video/fbdev/acornfb.c
-> @@ -921,40 +921,6 @@ static int acornfb_detect_monitortype(void)
->  	return 4;
->  }
->  
-> -/*
-> - * This enables the unused memory to be freed on older Acorn machines.
-> - * We are freeing memory on behalf of the architecture initialisation
-> - * code here.
-> - */
-> -static inline void
-> -free_unused_pages(unsigned int virtual_start, unsigned int virtual_end)
-> -{
-> -	int mb_freed = 0;
-> -
-> -	/*
-> -	 * Align addresses
-> -	 */
-> -	virtual_start = PAGE_ALIGN(virtual_start);
-> -	virtual_end = PAGE_ALIGN(virtual_end);
-> -
-> -	while (virtual_start < virtual_end) {
-> -		struct page *page;
-> -
-> -		/*
-> -		 * Clear page reserved bit,
-> -		 * set count to 1, and free
-> -		 * the page.
-> -		 */
-> -		page = virt_to_page(virtual_start);
-> -		__free_reserved_page(page);
-> -
-> -		virtual_start += PAGE_SIZE;
-> -		mb_freed += PAGE_SIZE / 1024;
-> -	}
-> -
-> -	printk("acornfb: freed %dK memory\n", mb_freed);
-> -}
-> -
->  static int acornfb_probe(struct platform_device *dev)
->  {
->  	unsigned long size;
-> 
+--- linux-next-20210125.orig/drivers/base/arch_numa.c
++++ linux-next-20210125/drivers/base/arch_numa.c
+@@ -355,11 +355,12 @@ static int __init numa_register_nodes(vo
+ 	/* Check that valid nid is set to memblks */
+ 	for_each_mem_region(mblk) {
+ 		int mblk_nid = memblock_get_region_node(mblk);
++		phys_addr_t start = mblk->base;
++		phys_addr_t end = mblk->base + mblk->size - 1;
+ 
+ 		if (mblk_nid == NUMA_NO_NODE || mblk_nid >= MAX_NUMNODES) {
+-			pr_warn("Warning: invalid memblk node %d [mem %#010Lx-%#010Lx]\n",
+-				mblk_nid, mblk->base,
+-				mblk->base + mblk->size - 1);
++			pr_warn("Warning: invalid memblk node %d [mem %pap-%pap]\n",
++				mblk_nid, &start, &end);
+ 			return -EINVAL;
+ 		}
+ 	}
+@@ -427,14 +428,14 @@ out_free_distance:
+ static int __init dummy_numa_init(void)
+ {
+ 	phys_addr_t start = memblock_start_of_DRAM();
+-	phys_addr_t end = memblock_end_of_DRAM();
++	phys_addr_t end = memblock_end_of_DRAM() - 1;
+ 	int ret;
+ 
+ 	if (numa_off)
+ 		pr_info("NUMA disabled\n"); /* Forced off on command line. */
+-	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
++	pr_info("Faking a node at [mem %pap-%pap]\n", &start, &end);
+ 
+-	ret = numa_add_memblk(0, start, end);
++	ret = numa_add_memblk(0, start, end + 1);
+ 	if (ret) {
+ 		pr_err("NUMA init failed\n");
+ 		return ret;
