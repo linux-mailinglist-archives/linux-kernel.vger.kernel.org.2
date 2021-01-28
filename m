@@ -2,68 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18C8306E3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2F6306DFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhA1HMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:12:17 -0500
-Received: from m12-17.163.com ([220.181.12.17]:33050 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhA1HLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:11:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5uj5T
-        zSleCBZ/TugZJWogk55CoyHkSjJ+h5FB0uMOjw=; b=bPX9a7PQ0PD2Hk3dCBM9r
-        G4sftHw8+PCOj5C8lUFFsARhmswsimUe5/DkPRn6FH0SGz/9ekyzPtf+k3I5Fw9T
-        jOCi1nq01eSLEB3RTSXUTUQTlNriiECmVhYLkaKdgsNIfoSeaneX3cCW39r6VFyD
-        KJ8qgZp5Ru0YXDdK8U+dfE=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp13 (Coremail) with SMTP id EcCowADnrVVsXxJgoRuLiA--.14315S2;
-        Thu, 28 Jan 2021 14:53:33 +0800 (CST)
-From:   dingsenjie@163.com
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] media/pci: fix spelling typo of frimware
-Date:   Thu, 28 Jan 2021 14:53:29 +0800
-Message-Id: <20210128065329.16160-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S231286AbhA1HBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhA1HA7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:00:59 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017D5C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:00:19 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id j2so2018038pgl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:00:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5/az9vJJKvmVOYVTxpGhyp9BVL4fKFn3/tkkqVwm4EE=;
+        b=OYHLeJvJ79zb8hTo6KJmqeevrBj7uphPKvhzq5FcHZoQNm/yUs99TH8fvKXJuEQnhl
+         xDIYpgf5EQAo8ikr34NJqRRwPygEFqtEgs68qy0dgtj8freOMSijibFKuxGOpmN3RXS6
+         5yEV2EJOyeAAQq1nfKuJJTdWmePkgE7uUeBOJmi9hhueLVIAzjg5K9F0C2FzqOKL1Kgl
+         MzjFfkV97PH8vrmCSN7e6FZvT8+iFx2nZrLJ5bqf1qYwflZrml+i1Zmm0hdku47VrGnl
+         hKk412NM2vWcQLX846T6ZUjRoc2Kd2SGSfCrh858MstLf6JF+Oet9jzGWKJrDsQUSD5p
+         r03g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5/az9vJJKvmVOYVTxpGhyp9BVL4fKFn3/tkkqVwm4EE=;
+        b=s2sjiV8pXuA3VhWJzOT+6hnqPj0UIED6EeaTmJsNpRe1eeuGDD7NgFOu4dn3WRYlnE
+         hJlYnH+GlmO+o6vTlnpcdAqJzh44Mm9ahsK5qyvzQYxqp5rwA3njE44DN2BRQtMHlNbw
+         A2A8jMkIeVeVH1CYJyIVkf1saebmDElP2eSQTUtv66fYdFtW68GIkrtqfbjYvrjVgeP5
+         LaNh3nUBOE2jwbiWhGmnNfKINGssKWZJqctPm3iMKa6qS3rnOwRC0Oc4Bz+HeTHFd/We
+         NSPOdbdOyteAHiCg7tjpTWoxYI1Ecld3oLwyQT9AEEzB6da5Rp4TSQcO4DYu0PDPWw1B
+         ZHvA==
+X-Gm-Message-State: AOAM532r1riILbahIqioLfuklwUgEC8Oks9Y0qV94t3c8n1f/go+P81y
+        k+NTxMygScgT/bW021BSHqoZgg==
+X-Google-Smtp-Source: ABdhPJzMiM3YJKRToSRR29s9MRrC70lmHwUZhVNvqWsBxW6GWCHIoDdZVSITYQ3L250EF9/LfVEGzQ==
+X-Received: by 2002:a63:464a:: with SMTP id v10mr15401609pgk.393.1611817218478;
+        Wed, 27 Jan 2021 23:00:18 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id s21sm3967791pjz.13.2021.01.27.23.00.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 23:00:17 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 1/3] opp: Create _of_add_table_indexed() to reduce code duplication
+Date:   Thu, 28 Jan 2021 12:30:07 +0530
+Message-Id: <1b58a72fa4d6aadc9542a66f8150150534752d81.1611817096.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowADnrVVsXxJgoRuLiA--.14315S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZw4fCw1rCFWxGFWrtr4Dtwb_yoW3GFg_WF
-        ykXa17XryxtrW5AF45tr1xZry0kayUuFW8G3Z3trWrGw13ur1DJryqkrWUX3WDXF4jyr1U
-        Ar1fWa1UZr1UtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5873PUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiZQ0oyF8ZMgY3TQAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+The implementation of dev_pm_opp_of_add_table() and
+dev_pm_opp_of_add_table_indexed() are almost identical. Create
+_of_add_table_indexed() to reduce code redundancy.
 
-frimware -> firmware
+Also remove the duplication of the doc style comments by referring to
+dev_pm_opp_of_add_table() from dev_pm_opp_of_add_table_indexed().
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/media/pci/saa7164/saa7164.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V2:
+- No change
 
-diff --git a/drivers/media/pci/saa7164/saa7164.h b/drivers/media/pci/saa7164/saa7164.h
-index 2801a2b..4b4eb15 100644
---- a/drivers/media/pci/saa7164/saa7164.h
-+++ b/drivers/media/pci/saa7164/saa7164.h
-@@ -24,7 +24,7 @@
- 	saa7164_bus..() : Manage a read/write memory ring buffer in the
- 		|	: PCIe Address space.
- 		|
--		|		saa7164_fw...()	: Load any frimware
-+		|		saa7164_fw...()	: Load any firmware
- 		|			|	: direct into the device
- 		V			V
- 	<- ----------------- PCIe address space -------------------- ->
+ drivers/opp/of.c | 81 ++++++++++++++++++++----------------------------
+ 1 file changed, 33 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index d0c0336be39b..c6856dcf4c34 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -956,29 +956,23 @@ static int _of_add_opp_table_v1(struct device *dev, struct opp_table *opp_table)
+ 	return ret;
+ }
+ 
+-/**
+- * dev_pm_opp_of_add_table() - Initialize opp table from device tree
+- * @dev:	device pointer used to lookup OPP table.
+- *
+- * Register the initial OPP table with the OPP library for given device.
+- *
+- * Return:
+- * 0		On success OR
+- *		Duplicate OPPs (both freq and volt are same) and opp->available
+- * -EEXIST	Freq are same and volt are different OR
+- *		Duplicate OPPs (both freq and volt are same) and !opp->available
+- * -ENOMEM	Memory allocation failure
+- * -ENODEV	when 'operating-points' property is not found or is invalid data
+- *		in device node.
+- * -ENODATA	when empty 'operating-points' property is found
+- * -EINVAL	when invalid entries are found in opp-v2 table
+- */
+-int dev_pm_opp_of_add_table(struct device *dev)
++static int _of_add_table_indexed(struct device *dev, int index)
+ {
+ 	struct opp_table *opp_table;
+-	int ret;
++	int ret, count;
+ 
+-	opp_table = _add_opp_table_indexed(dev, 0);
++	if (index) {
++		/*
++		 * If only one phandle is present, then the same OPP table
++		 * applies for all index requests.
++		 */
++		count = of_count_phandle_with_args(dev->of_node,
++						   "operating-points-v2", NULL);
++		if (count == 1)
++			index = 0;
++	}
++
++	opp_table = _add_opp_table_indexed(dev, index);
+ 	if (IS_ERR(opp_table))
+ 		return PTR_ERR(opp_table);
+ 
+@@ -996,15 +990,12 @@ int dev_pm_opp_of_add_table(struct device *dev)
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table);
+ 
+ /**
+- * dev_pm_opp_of_add_table_indexed() - Initialize indexed opp table from device tree
++ * dev_pm_opp_of_add_table() - Initialize opp table from device tree
+  * @dev:	device pointer used to lookup OPP table.
+- * @index:	Index number.
+  *
+- * Register the initial OPP table with the OPP library for given device only
+- * using the "operating-points-v2" property.
++ * Register the initial OPP table with the OPP library for given device.
+  *
+  * Return:
+  * 0		On success OR
+@@ -1017,31 +1008,25 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table);
+  * -ENODATA	when empty 'operating-points' property is found
+  * -EINVAL	when invalid entries are found in opp-v2 table
+  */
+-int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
++int dev_pm_opp_of_add_table(struct device *dev)
+ {
+-	struct opp_table *opp_table;
+-	int ret, count;
+-
+-	if (index) {
+-		/*
+-		 * If only one phandle is present, then the same OPP table
+-		 * applies for all index requests.
+-		 */
+-		count = of_count_phandle_with_args(dev->of_node,
+-						   "operating-points-v2", NULL);
+-		if (count == 1)
+-			index = 0;
+-	}
+-
+-	opp_table = _add_opp_table_indexed(dev, index);
+-	if (IS_ERR(opp_table))
+-		return PTR_ERR(opp_table);
+-
+-	ret = _of_add_opp_table_v2(dev, opp_table);
+-	if (ret)
+-		dev_pm_opp_put_opp_table(opp_table);
++	return _of_add_table_indexed(dev, 0);
++}
++EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table);
+ 
+-	return ret;
++/**
++ * dev_pm_opp_of_add_table_indexed() - Initialize indexed opp table from device tree
++ * @dev:	device pointer used to lookup OPP table.
++ * @index:	Index number.
++ *
++ * Register the initial OPP table with the OPP library for given device only
++ * using the "operating-points-v2" property.
++ *
++ * Return: Refer to dev_pm_opp_of_add_table() for return values.
++ */
++int dev_pm_opp_of_add_table_indexed(struct device *dev, int index)
++{
++	return _of_add_table_indexed(dev, index);
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_opp_of_add_table_indexed);
+ 
 -- 
-1.9.1
-
+2.25.0.rc1.19.g042ed3e048af
 
