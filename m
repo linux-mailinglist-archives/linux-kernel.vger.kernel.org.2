@@ -2,262 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60C23081A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B0D3081AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhA1XAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhA1XAc (ORCPT
+        id S231478AbhA1XH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:07:58 -0500
+Received: from hmm.wantstofly.org ([213.239.204.108]:50856 "EHLO
+        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA1XHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:00:32 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD17C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:59:52 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id q9so6864484ilo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:59:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dFJK6skzuv7WXL1ehM9px+SpSijJRgTs+lbhkcv3Vog=;
-        b=NzFG7U82hXos2rAvu/Y6qtDnklian0fVaMNUWqOxbUz0oM08ttRJicraUpiQwHspeu
-         s45uzx8MWE5yNCVJYoQ+yUSyet3/0PISXQlHGBPVNPT/zryqT9dX4ttjMFO8kCH64xQg
-         9YOtuO9rVRB4PJPJNuZhX6MSFZGNUuHz2svBm8MR+nii/k5O+XhNU9vghAD6D9T030lN
-         bVTWpTmXP7ZTCZJH8ESoxDF1L1mnhAPNFxX2zvowIcg7qphSLCJ8oyGhC7v0tEXn9CXy
-         MEe5bhqWk+5xbuU+SZYG5zcNjUFY8vv5ClR1ButcvLUhGQLlJ1Tw5V1s40+w2yzKMom0
-         F4Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dFJK6skzuv7WXL1ehM9px+SpSijJRgTs+lbhkcv3Vog=;
-        b=tfhHdzkL12cdzXmwkK3X61DmzMP6GzWdSDyvRXifa3PhbuESnPfvN5QVRs7GZe+bx/
-         icWPwX7/Hor3sgm2z7w7IJhd6Vd4raddb5WXS8Oy8RjA4DSeoYjhS9blX4yAZ+2El4Rn
-         27EZ6Xsb7UWg5GYOpZl0nINYn+fwzad4iJLkBoljzcC5mOnZsg/umpv7bAyIgGNavX4Y
-         TOZxgTw5Fx3MXpO7xk0SGXswGUhBMZYygKxQ47O6+pdU5TXh1Yq6XH42QrsSxQrCKotC
-         TvNuksIspz1Mh4Zu4wfj9aXhEpcOa7m6FbDvgleoQfumv1zpMBstloMuGlW5gL/gHcad
-         iDzg==
-X-Gm-Message-State: AOAM5337/eI/Bkoxt8g8fuwPxMPkeW0a9Lezqn75BzS91+gKnryQRpXE
-        HQCCd9NgCvIutg4VHqXkUYED0hiG4R3R0kkpmZ+IQA==
-X-Google-Smtp-Source: ABdhPJwg9DhcaTdssPKIzqgWNSLTg025jyZtrXvlChKpmMe6YmfcJXMZpz3WCx7Fz/m5RSIu7O0An9aTHLLDurlyH5E=
-X-Received: by 2002:a92:358a:: with SMTP id c10mr1085037ilf.258.1611874791399;
- Thu, 28 Jan 2021 14:59:51 -0800 (PST)
+        Thu, 28 Jan 2021 18:07:55 -0500
+Received: by mail.wantstofly.org (Postfix, from userid 1000)
+        id EB62C7F45D; Fri, 29 Jan 2021 01:07:10 +0200 (EET)
+Date:   Fri, 29 Jan 2021 01:07:10 +0200
+From:   Lennert Buytenhek <buytenh@wantstofly.org>
+To:     David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
+Message-ID: <20210128230710.GA190469@wantstofly.org>
+References: <20210123114152.GA120281@wantstofly.org>
+ <a99467bab6d64a7f9057181d979ec563@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20210115170907.24498-1-peterx@redhat.com> <20210115170907.24498-22-peterx@redhat.com>
-In-Reply-To: <20210115170907.24498-22-peterx@redhat.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 28 Jan 2021 14:59:13 -0800
-Message-ID: <CAJHvVcg4tjgRis=WF77phGC6Xm=DBo1W5pDa_d0ZP-Df1VXRxw@mail.gmail.com>
-Subject: Re: [PATCH RFC 21/30] hugetlb: Pass vma into huge_pte_alloc()
-To:     Peter Xu <peterx@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a99467bab6d64a7f9057181d979ec563@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 9:09 AM Peter Xu <peterx@redhat.com> wrote:
->
-> It is a preparation work to be able to behave differently in the per
-> architecture huge_pte_alloc() according to different VMA attributes.
->
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  arch/arm64/mm/hugetlbpage.c   | 2 +-
->  arch/ia64/mm/hugetlbpage.c    | 3 ++-
->  arch/mips/mm/hugetlbpage.c    | 4 ++--
->  arch/parisc/mm/hugetlbpage.c  | 2 +-
->  arch/powerpc/mm/hugetlbpage.c | 3 ++-
->  arch/s390/mm/hugetlbpage.c    | 2 +-
->  arch/sh/mm/hugetlbpage.c      | 2 +-
->  arch/sparc/mm/hugetlbpage.c   | 2 +-
->  include/linux/hugetlb.h       | 2 +-
->  mm/hugetlb.c                  | 6 +++---
->  mm/userfaultfd.c              | 2 +-
->  11 files changed, 16 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-> index 55ecf6de9ff7..5b32ec888698 100644
-> --- a/arch/arm64/mm/hugetlbpage.c
-> +++ b/arch/arm64/mm/hugetlbpage.c
-> @@ -252,7 +252,7 @@ void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr,
->                 set_pte(ptep, pte);
->  }
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                       unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgdp;
-> diff --git a/arch/ia64/mm/hugetlbpage.c b/arch/ia64/mm/hugetlbpage.c
-> index b331f94d20ac..f993cb36c062 100644
-> --- a/arch/ia64/mm/hugetlbpage.c
-> +++ b/arch/ia64/mm/hugetlbpage.c
-> @@ -25,7 +25,8 @@ unsigned int hpage_shift = HPAGE_SHIFT_DEFAULT;
->  EXPORT_SYMBOL(hpage_shift);
->
->  pte_t *
-> -huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz)
-> +huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
-> +              unsigned long addr, unsigned long sz)
->  {
->         unsigned long taddr = htlbpage_to_page(addr);
->         pgd_t *pgd;
-> diff --git a/arch/mips/mm/hugetlbpage.c b/arch/mips/mm/hugetlbpage.c
-> index 77ffece9c270..c1d8f51c5255 100644
-> --- a/arch/mips/mm/hugetlbpage.c
-> +++ b/arch/mips/mm/hugetlbpage.c
-> @@ -21,8 +21,8 @@
->  #include <asm/tlb.h>
->  #include <asm/tlbflush.h>
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr,
-> -                     unsigned long sz)
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, structt vm_area_struct *vma,
+On Sun, Jan 24, 2021 at 10:21:38PM +0000, David Laight wrote:
 
-This was pointed out to me just after I sent v3 of my series today
-(which includes this patch):
+> > One open question is whether IORING_OP_GETDENTS64 should be more like
+> > pread(2) and allow passing in a starting offset to read from the
+> > directory from.  (This would require some more surgery in fs/readdir.c.)
+> 
+> Since directories are seekable this ought to work.
+> Modulo horrid issues with 32bit file offsets.
 
-Typo, s/structt/struct/.
+The incremental patch below does this.  (It doesn't apply cleanly on
+top of v1 of the IORING_OP_GETDENTS patch as I have other changes in
+my tree -- I'm including it just to illustrate the changes that would
+make this work.)
 
-> +                     unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgd;
->         p4d_t *p4d;
-> diff --git a/arch/parisc/mm/hugetlbpage.c b/arch/parisc/mm/hugetlbpage.c
-> index d7ba014a7fbb..e141441bfa64 100644
-> --- a/arch/parisc/mm/hugetlbpage.c
-> +++ b/arch/parisc/mm/hugetlbpage.c
-> @@ -44,7 +44,7 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
->  }
->
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                         unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgd;
-> diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-> index 36c3800769fb..2514884c0d20 100644
-> --- a/arch/powerpc/mm/hugetlbpage.c
-> +++ b/arch/powerpc/mm/hugetlbpage.c
-> @@ -106,7 +106,8 @@ static int __hugepte_alloc(struct mm_struct *mm, hugepd_t *hpdp,
->   * At this point we do the placement change only for BOOK3S 64. This would
->   * possibly work on other subarchs.
->   */
-> -pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz)
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
-> +                     unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pg;
->         p4d_t *p4;
-> diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
-> index 3b5a4d25ca9b..da36d13ffc16 100644
-> --- a/arch/s390/mm/hugetlbpage.c
-> +++ b/arch/s390/mm/hugetlbpage.c
-> @@ -189,7 +189,7 @@ pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
->         return pte;
->  }
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                         unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgdp;
-> diff --git a/arch/sh/mm/hugetlbpage.c b/arch/sh/mm/hugetlbpage.c
-> index 220d7bc43d2b..999ab5916e69 100644
-> --- a/arch/sh/mm/hugetlbpage.c
-> +++ b/arch/sh/mm/hugetlbpage.c
-> @@ -21,7 +21,7 @@
->  #include <asm/tlbflush.h>
->  #include <asm/cacheflush.h>
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                         unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgd;
-> diff --git a/arch/sparc/mm/hugetlbpage.c b/arch/sparc/mm/hugetlbpage.c
-> index ec423b5f17dd..ae06f7df9750 100644
-> --- a/arch/sparc/mm/hugetlbpage.c
-> +++ b/arch/sparc/mm/hugetlbpage.c
-> @@ -272,7 +272,7 @@ static unsigned long huge_tte_to_size(pte_t pte)
->         return size;
->  }
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                         unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgd;
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index fe1dde0afbaf..7d4c5669e118 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -162,7 +162,7 @@ extern struct list_head huge_boot_pages;
->
->  /* arch callbacks */
->
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                         unsigned long addr, unsigned long sz);
->  pte_t *huge_pte_offset(struct mm_struct *mm,
->                        unsigned long addr, unsigned long sz);
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 18b236bac6cd..eb7cd0c7d6d2 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3767,7 +3767,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
->                 src_pte = huge_pte_offset(src, addr, sz);
->                 if (!src_pte)
->                         continue;
-> -               dst_pte = huge_pte_alloc(dst, addr, sz);
-> +               dst_pte = huge_pte_alloc(dst, vma, addr, sz);
->                 if (!dst_pte) {
->                         ret = -ENOMEM;
->                         break;
-> @@ -4484,7 +4484,7 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
->          */
->         mapping = vma->vm_file->f_mapping;
->         i_mmap_lock_read(mapping);
-> -       ptep = huge_pte_alloc(mm, haddr, huge_page_size(h));
-> +       ptep = huge_pte_alloc(mm, vma, haddr, huge_page_size(h));
->         if (!ptep) {
->                 i_mmap_unlock_read(mapping);
->                 return VM_FAULT_OOM;
-> @@ -5407,7 +5407,7 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
->  #endif /* CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
->
->  #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
-> -pte_t *huge_pte_alloc(struct mm_struct *mm,
-> +pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
->                         unsigned long addr, unsigned long sz)
->  {
->         pgd_t *pgd;
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index 480d91b783d4..3d49b888e3e8 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -291,7 +291,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->                 mutex_lock(&hugetlb_fault_mutex_table[hash]);
->
->                 err = -ENOMEM;
-> -               dst_pte = huge_pte_alloc(dst_mm, dst_addr, vma_hpagesize);
-> +               dst_pte = huge_pte_alloc(dst_mm, dst_vma, dst_addr, vma_hpagesize);
->                 if (!dst_pte) {
->                         mutex_unlock(&hugetlb_fault_mutex_table[hash]);
->                         i_mmap_unlock_read(mapping);
-> --
-> 2.26.2
->
+This change seems to work, and makes IORING_OP_GETDENTS take an
+explicitly specified directory offset (instead of using the file's
+->f_pos), making it more like pread(2), and I like the change from
+a conceptual point of view, but it's a bit ugly around
+iterate_dir_use_ctx_pos().  Any thoughts on how to do this more
+cleanly (without breaking iterate_dir() semantics)?
+
+
+> You'd need to return the final offset to allow another
+> read to continue from the end position.
+
+We can use the ->d_off value as returned in the last struct
+linux_dirent64 as the directory offset to continue reading from
+with the next IORING_OP_GETDENTS call, illustrated by the patch
+to uringfind.c at the bottom.
+
+
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 13dd29f8ebb3..0f9707ed9294 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -576,6 +576,7 @@ struct io_getdents {
+ 	struct file			*file;
+ 	struct linux_dirent64 __user	*dirent;
+ 	unsigned int			count;
++	loff_t				pos;
+ };
+ 
+ struct io_completion {
+@@ -4584,9 +4585,10 @@ static int io_getdents_prep(struct io_kiocb *req,
+ 
+ 	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
+ 		return -EINVAL;
+-	if (sqe->ioprio || sqe->off || sqe->rw_flags || sqe->buf_index)
++	if (sqe->ioprio || sqe->rw_flags || sqe->buf_index)
+ 		return -EINVAL;
+ 
++	getdents->pos = READ_ONCE(sqe->off);
+ 	getdents->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
+ 	getdents->count = READ_ONCE(sqe->len);
+ 	return 0;
+@@ -4601,7 +4603,8 @@ static int io_getdents(struct io_kiocb *req, bool force_nonblock)
+ 	if (force_nonblock)
+ 		return -EAGAIN;
+ 
+-	ret = vfs_getdents(req->file, getdents->dirent, getdents->count);
++	ret = vfs_getdents(req->file, getdents->dirent, getdents->count,
++			   &getdents->pos);
+ 	if (ret < 0) {
+ 		if (ret == -ERESTARTSYS)
+ 			ret = -EINTR;
+diff --git a/fs/readdir.c b/fs/readdir.c
+index f52167c1eb61..d6bd78f6350a 100644
+--- a/fs/readdir.c
++++ b/fs/readdir.c
+@@ -37,7 +37,7 @@
+ } while (0)
+ 
+ 
+-int iterate_dir(struct file *file, struct dir_context *ctx)
++int iterate_dir_use_ctx_pos(struct file *file, struct dir_context *ctx)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	bool shared = false;
+@@ -60,12 +60,10 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
+ 
+ 	res = -ENOENT;
+ 	if (!IS_DEADDIR(inode)) {
+-		ctx->pos = file->f_pos;
+ 		if (shared)
+ 			res = file->f_op->iterate_shared(file, ctx);
+ 		else
+ 			res = file->f_op->iterate(file, ctx);
+-		file->f_pos = ctx->pos;
+ 		fsnotify_access(file);
+ 		file_accessed(file);
+ 	}
+@@ -76,6 +74,17 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
+ out:
+ 	return res;
+ }
++
++int iterate_dir(struct file *file, struct dir_context *ctx)
++{
++	int res;
++
++	ctx->pos = file->f_pos;
++	res = iterate_dir_use_ctx_pos(file, ctx);
++	file->f_pos = ctx->pos;
++
++	return res;
++}
+ EXPORT_SYMBOL(iterate_dir);
+ 
+ /*
+@@ -349,16 +358,18 @@ static int filldir64(struct dir_context *ctx, const char *name, int namlen,
+ }
+ 
+ int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
+-		 unsigned int count)
++		 unsigned int count, loff_t *pos)
+ {
+ 	struct getdents_callback64 buf = {
+ 		.ctx.actor = filldir64,
++		.ctx.pos = *pos,
+ 		.count = count,
+ 		.current_dir = dirent
+ 	};
+ 	int error;
+ 
+-	error = iterate_dir(file, &buf.ctx);
++	error = iterate_dir_use_ctx_pos(file, &buf.ctx);
++	*pos = buf.ctx.pos;
+ 	if (error >= 0)
+ 		error = buf.error;
+ 	if (buf.prev_reclen) {
+@@ -384,7 +395,7 @@ SYSCALL_DEFINE3(getdents64, unsigned int, fd,
+ 	if (!f.file)
+ 		return -EBADF;
+ 
+-	error = vfs_getdents(f.file, dirent, count);
++	error = vfs_getdents(f.file, dirent, count, &f.file->f_pos);
+ 	fdput_pos(f);
+ 	return error;
+ }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 114885d3f6c4..4d9d96163f92 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3107,11 +3107,12 @@ const char *simple_get_link(struct dentry *, struct inode *,
+ 			    struct delayed_call *);
+ extern const struct inode_operations simple_symlink_inode_operations;
+ 
++extern int iterate_dir_use_ctx_pos(struct file *, struct dir_context *);
+ extern int iterate_dir(struct file *, struct dir_context *);
+ 
+ struct linux_dirent64;
+ int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
+-		 unsigned int count);
++		 unsigned int count, loff_t *pos);
+ 
+ int vfs_fstatat(int dfd, const char __user *filename, struct kstat *stat,
+ 		int flags);
+
+
+
+Corresponding uringfind.c change:
+
+diff --git a/uringfind.c b/uringfind.c
+index 4282296..e140388 100644
+--- a/uringfind.c
++++ b/uringfind.c
+@@ -22,9 +22,10 @@ struct linux_dirent64 {
+ };
+ 
+ static inline void io_uring_prep_getdents(struct io_uring_sqe *sqe, int fd,
+-					  void *buf, unsigned int count)
++					  void *buf, unsigned int count,
++					  uint64_t off)
+ {
+-	io_uring_prep_rw(IORING_OP_GETDENTS, sqe, fd, buf, count, 0);
++	io_uring_prep_rw(IORING_OP_GETDENTS, sqe, fd, buf, count, off);
+ }
+ 
+ 
+@@ -38,6 +39,7 @@ struct dir {
+ 
+ 	struct dir	*parent;
+ 	int		fd;
++	uint64_t	off;
+ 	uint8_t		buf[16384];
+ 	char		name[0];
+ };
+@@ -131,7 +133,8 @@ static void schedule_readdir(struct dir *dir)
+ 	struct io_uring_sqe *sqe;
+ 
+ 	sqe = get_sqe();
+-	io_uring_prep_getdents(sqe, dir->fd, dir->buf, sizeof(dir->buf));
++	io_uring_prep_getdents(sqe, dir->fd, dir->buf, sizeof(dir->buf),
++			       dir->off);
+ 	io_uring_sqe_set_data(sqe, dir);
+ }
+ 
+@@ -145,6 +148,7 @@ static void opendir_completion(struct dir *dir, int ret)
+ 	}
+ 
+ 	dir->fd = ret;
++	dir->off = 0;
+ 	schedule_readdir(dir);
+ }
+ 
+@@ -179,6 +183,7 @@ static void readdir_completion(struct dir *dir, int ret)
+ 				schedule_opendir(dir, dent->d_name);
+ 		}
+ 
++		dir->off = dent->d_off;
+ 		bufp += dent->d_reclen;
+ 	}
+ 
