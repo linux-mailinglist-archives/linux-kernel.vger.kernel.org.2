@@ -2,86 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CE2307577
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7480307583
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhA1MD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S231364AbhA1MFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:05:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhA1MDH (ORCPT
+        with ESMTP id S231584AbhA1MEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:03:07 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDA0C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:02:04 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id h7so7238314lfc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:02:04 -0800 (PST)
+        Thu, 28 Jan 2021 07:04:13 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41BEC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:03:32 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id r14so6011778ljc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:03:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=usfc03r7bo+9iWnGhn3YJY+bfRfQpQsiPPvtGVZjTJo=;
-        b=npthAUeo3rWK36iMclfXUXlzdH0VQDifjmso0bBCFVXOyQtra7DzyHgEmzJCt30dt/
-         SJ9fMz6E+ZXbymrWtxziw9opC0BGbilGWBJXbYZg/g+BYXgWz07+qrex1EOMXMqIpzpE
-         6jYfIeX/eLZOEM3VQR+NV2YEMCt5h3yT2zkYs2fBjC+YshcbiveecNrV2CoAJtG6ZVel
-         ii8PNYw1BYp2K+WyqndwkTLNHTfxmpxwnUysv03/L8DCd9xBIWL+Ex04T8ZFQN2SR4Jv
-         XJrieSOBP7Hg+fXfNeCpqIezF0N6+ilCD2nUbDQYYsRnM51XurcjK/Q5y7e31SHMaiG8
-         0S7A==
+         :cc:content-transfer-encoding;
+        bh=zf1ySPanLvetljOt9qgQxmsEilLBns8xPwybgR85ftI=;
+        b=aVSS9NeRyairw1rT+cVF7qopMxVBmNdPXma/Zlt8iNnlAJctcN76hRUHSEGD0idQb2
+         zYw8DehMHX0EuyLu3bi69YJSpvfjwtAm9MYShHhu9mEbJPEJuzGe49qwnoXKOF2jcVZe
+         ln5X07khbAhAXNwJU+flYEz9iAguyMcwrfcHy9mjRZESZY644mUUW/P7d74egjjzcMPc
+         71uQKIMZFDoBbbnrLwST/ULL7r00XKa7oJFBx/y/TRGIGhR5vQUfPgTQyXJF9JzJvfJX
+         jxAhvGcTMV06Uw6ENiuHuTf/tAOorwgScKj/MkMXOm4CEc8Q3L9oabBOXi2pfwEk4ga1
+         MB3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=usfc03r7bo+9iWnGhn3YJY+bfRfQpQsiPPvtGVZjTJo=;
-        b=WnZPdPwhlO/zBnp3gZDN2mcpR2KKVsNNFGjknb3AeCLzqznk3B1jhq3ePRzhECd2I5
-         xoM2YyQNYDTA4o954XaFUuXnPPABRbsdEardMc9NFm59TyLPU6R8ZJRXgu3ErzFNnKaK
-         NzcdCOl7Rs97FzPZuvuFw47QJgAXXsBZ9aJuBifteoYeGgLQ/qJGA2TKhx0AjdYp41u8
-         9E5lPMmKt/xPvrm7dy1+ho+XwCIuNzkFMH6xPHHXMst5pezbIY1XPs5WH7EKQB3f3i3r
-         iUjS7LVdB+aeq71aWvpcZ8rgtx8DSQwhwV58dtFvNepBZ86UkMiAc5u8dmMxtPuCBele
-         tShw==
-X-Gm-Message-State: AOAM5304TAcRkUcC8RbGo8MOJ1Nn+oRTEt4grPxB1rq/J+CUt8oPRivl
-        DwaKCGY9Rrz6hGmECgCvK2HCax/8CD29yOWbwYQO6Q==
-X-Google-Smtp-Source: ABdhPJza5WEqdY64nMdJh4p+Ysom/A+I1BzOUDl9O6I2P4XzvnsQTS6dm+guTw4PUOLC3FEaVrkSaMBAp3FtmqHRCno=
-X-Received: by 2002:a19:b8e:: with SMTP id 136mr7679656lfl.29.1611835321876;
- Thu, 28 Jan 2021 04:02:01 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zf1ySPanLvetljOt9qgQxmsEilLBns8xPwybgR85ftI=;
+        b=LbXzFU6iHHk+1W6jS7gIXiYIPu0QBAw6zskZBgSZGj8fTvuKF+6NxafWG0uChOYz50
+         ZqDPJxs67CfwXBPLlAOnQMa1rucIBgKAKwUp34y4KnKzknenS2aSQFj6YH+2oBadbZok
+         5ROGyNHKlL2+rXciH/ILCga08UiumN38S9hAFi739GAtcQPHh0SFjLCmdIubYpIva6wH
+         GumajApD3rC4KT6G/vALFqoHlZQNm3c+ryRJ4j2yEvtXSvYf1zPG7tvTYottzrRytVwQ
+         rSQH1izgWO3e6ufu1fN0kRS5ehY8ELo3BXWOn2G2DBL69OAEcR7xzB/hRhaMaMIPsW+P
+         53EA==
+X-Gm-Message-State: AOAM531E8OyNRIRHxUp+oQnyRyFfhTI2qYMPvrqTSTDk5NpvPDk3fdUB
+        yW5emK8RoZ+hyiP6ca5eKV7H/u6FRolv7rhuwQZVGQ==
+X-Google-Smtp-Source: ABdhPJxZNcQdkhhgFkJaqKcGjApXZD/eUnD40mn2WynsvZNNkDCNK3O+xqLpZOdoSj9eIRiYhKFhkCUSmPZUim3reVs=
+X-Received: by 2002:a2e:3507:: with SMTP id z7mr7792289ljz.32.1611835411071;
+ Thu, 28 Jan 2021 04:03:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127000303.436595-1-drew@beagleboard.org> <20210127000303.436595-2-drew@beagleboard.org>
-In-Reply-To: <20210127000303.436595-2-drew@beagleboard.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 Jan 2021 13:01:51 +0100
-Message-ID: <CACRpkdYkyxXmxhikvnpxc07MmWPweFAphRPCMd02Ye4EyuOVNQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: am335x-boneblack.dts: unique gpio-line-names
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20210126204240.418297-1-hridya@google.com> <YBFXPbePURupbe+y@kroah.com>
+ <CAO_48GHrpi9XxPhP2evwH_ZJmbVSWqxCvsYg6S2Syh-mrWBHzA@mail.gmail.com> <c0684400-c1e2-0ebd-ad09-cb7b24db5764@gmail.com>
+In-Reply-To: <c0684400-c1e2-0ebd-ad09-cb7b24db5764@gmail.com>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Thu, 28 Jan 2021 17:33:19 +0530
+Message-ID: <CAO_48GGsOTLdqAQMO9vrLtWAKG6spByMC-GXwDv_f3ENvpemfA@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH v3] dmabuf: Add the capability to expose
+ DMA-BUF stats in sysfs
+To:     Christian Koenig <christian.koenig@amd.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
+        hyesoo.yu@samsung.com, John Stultz <john.stultz@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 1:05 AM Drew Fustini <drew@beagleboard.org> wrote:
-
-> Based on linux-gpio discussion [1], it is best practice to make the
-> gpio-line-names unique. Generic names like "[ethernet]" are replaced
-> with the name of the unique signal on the AM3358 SoC ball corresponding
-> to the gpio line. "[NC]" is also renamed to the standard "NC" name to
-> represent "not connected".
+On Thu, 28 Jan 2021 at 17:23, Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
 >
-> [1] https://lore.kernel.org/linux-gpio/20201216195357.GA2583366@x1/
+> Am 28.01.21 um 12:00 schrieb Sumit Semwal:
+> > Hi Hridya,
+> >
+> > On Wed, 27 Jan 2021 at 17:36, Greg KH <gregkh@linuxfoundation.org> wrot=
+e:
+> >> On Tue, Jan 26, 2021 at 12:42:36PM -0800, Hridya Valsaraju wrote:
+> >>> This patch allows statistics to be enabled for each DMA-BUF in
+> >>> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
+> >>>
+> >>> The following stats will be exposed by the interface:
+> >>>
+> >>> /sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
+> >>> /sys/kernel/dmabuf/buffers/<inode_number>/size
+> >>> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/de=
+vice
+> >>> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/ma=
+p_counter
+> >>>
+> >>> The inode_number is unique for each DMA-BUF and was added earlier [1]
+> >>> in order to allow userspace to track DMA-BUF usage across different
+> >>> processes.
+> >>>
+> >>> Currently, this information is exposed in
+> >>> /sys/kernel/debug/dma_buf/bufinfo.
+> >>> However, since debugfs is considered unsafe to be mounted in producti=
+on,
+> >>> it is being duplicated in sysfs.
+> >>>
+> >>> This information will be used to derive DMA-BUF
+> >>> per-exporter stats and per-device usage stats for Android Bug reports=
+.
+> >>> The corresponding userspace changes can be found at [2].
+> >>> Telemetry tools will also capture this information(along with other
+> >>> memory metrics) periodically as well as on important events like a
+> >>> foreground app kill (which might have been triggered by Low Memory
+> >>> Killer). It will also contribute to provide a snapshot of the system
+> >>> memory usage on other events such as OOM kills and Application Not
+> >>> Responding events.
+> >>>
+> >>> A shell script that can be run on a classic Linux environment to read
+> >>> out the DMA-BUF statistics can be found at [3](suggested by John
+> >>> Stultz).
+> >>>
+> >>> The patch contains the following improvements over the previous versi=
+on:
+> >>> 1) Each attachment is represented by its own directory to allow creat=
+ing
+> >>> a symlink to the importing device and to also provide room for future
+> >>> expansion.
+> >>> 2) The number of distinct mappings of each attachment is exposed in a
+> >>> separate file.
+> >>> 3) The per-buffer statistics are now in /sys/kernel/dmabuf/buffers
+> >>> inorder to make the interface expandable in future.
+> >>>
+> >>> All of the improvements above are based on suggestions/feedback from
+> >>> Daniel Vetter and Christian K=C3=B6nig.
+> >>>
+> >>> [1]: https://lore.kernel.org/patchwork/patch/1088791/
+> >>> [2]: https://android-review.googlesource.com/q/topic:%22dmabuf-sysfs%=
+22+(status:open%20OR%20status:merged)
+> >>> [3]: https://android-review.googlesource.com/c/platform/system/memory=
+/libmeminfo/+/1549734
+> >>>
+> >>> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> >>> Reported-by: kernel test robot <lkp@intel.com>
+> > Thanks for the patch!
+> >
+> > Christian: If you're satisfied with the explanation around not
+> > directly embedding kobjects into the dma_buf and dma_buf_attachment
+> > structs, then with Greg's r-b from sysfs PoV, I think we can merge it.
+> > Please let me know if you feel otherwise!
 >
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+>  From the technical side it looks clean to me, feel free to add my
+> acked-by while pushing.
+>
+> But I would at least try to convince Daniel on the design. At least some
+> of his concerns seems to be valid and keep in mind that we need to
+> support this interface forever.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Naturally.
 
-Yours,
-Linus Walleij
+Since he didn't comment over Hridya's last clarification about the
+tracepoints to track total GPU memory allocations being orthogonal to
+this series, I assumed he agreed with it.
+
+Daniel, do you still have objections around adding this patch in?
+
+>
+> Regards,
+> Christian.
+
+Best,
+Sumit.
+>
+> >
+> >>> ---
+> >>> Changes in v3:
+> >>> Fix a warning reported by the kernel test robot.
+> >>>
+> >>> Changes in v2:
+> >>> -Move statistics to /sys/kernel/dmabuf/buffers in oder to allow addit=
+ion
+> >>> of other DMA-BUF-related sysfs stats in future. Based on feedback fro=
+m
+> >>> Daniel Vetter.
+> >>> -Each attachment has its own directory to represent attaching devices=
+ as
+> >>> symlinks and to introduce map_count as a separate file. Based on
+> >>> feedback from Daniel Vetter and Christian K=C3=B6nig. Thank you both!
+> >>> -Commit messages updated to point to userspace code in AOSP that will
+> >>> read the DMA-BUF sysfs stats.
+> >>>
+> >>>
+> >>>   .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  52 ++++
+> >>>   drivers/dma-buf/Kconfig                       |  11 +
+> >>>   drivers/dma-buf/Makefile                      |   1 +
+> >>>   drivers/dma-buf/dma-buf-sysfs-stats.c         | 285 +++++++++++++++=
++++
+> >>>   drivers/dma-buf/dma-buf-sysfs-stats.h         |  62 ++++
+> >>>   drivers/dma-buf/dma-buf.c                     |  37 +++
+> >>>   include/linux/dma-buf.h                       |  20 ++
+> >>>   7 files changed, 468 insertions(+)
+> >>>   create mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabuf-bu=
+ffers
+> >>>   create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
+> >>>   create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
+> >> I don't know the dma-buf code at all, but from a sysfs/kobject point o=
+f
+> >> view, this patch looks good to me:
+> >>
+> >> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Best,
+> > Sumit.
+> > _______________________________________________
+> > Linaro-mm-sig mailing list
+> > Linaro-mm-sig@lists.linaro.org
+> > https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
+>
+
+
+--
+Thanks and regards,
+
+Sumit Semwal
+Linaro Consumer Group - Tech Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
