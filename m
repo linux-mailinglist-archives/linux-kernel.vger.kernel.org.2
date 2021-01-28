@@ -2,69 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97A4306C42
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F309C306C4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhA1Eaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:30:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhA1Eaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:30:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D99ED64DD9;
-        Thu, 28 Jan 2021 04:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611808211;
-        bh=JNryH6PdNFkPPVm9LDLy2dvohHlknmSH5mEH1PxEfdY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=SmnY/48n3fEJFfPtQOYB7ROKVTMK5gL9I7RyTPXg8oIjnF7TrBOOHMtlcpfVbIW4I
-         FcpRSHjdGt/tHQsB+TmeP02uMD6c9LybKZuG2c86PDM2QRCJOMEwx+xVMo7O0ZSLnR
-         zd/U74TYk7EBMEmTf7YiMLuIZn7V02wQJx/nqSLsmsph+2RLDxj1CGhYZfFrRPO9Dm
-         4c/FUMY7rnbV1k/Q8NYArGr5RRlS69xGOVwD4GSALEr/81yvpRY9Kv4faMGMm4JNbM
-         QBSt9musPtHt99EaBIRmkVXecDf5Q9MGFTITTkR2ketm4BFjCz94Mev5Jkz1+zcsc5
-         M+MFLYYWAMDZg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CC4DC61E3B;
-        Thu, 28 Jan 2021 04:30:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231281AbhA1Eea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:34:30 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:44294 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229830AbhA1EeQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 23:34:16 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7924C20B7192;
+        Wed, 27 Jan 2021 20:33:34 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7924C20B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611808415;
+        bh=o9E1iJqGLbYMxA8FJITsDmvQHrxKyY+EzNtf2a6uCPY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=M9XgATxD92xReOyFPHQjM04uqW/VlHZbqb0u6rkujK69b9fiKe6MMcTtfluhQGH2v
+         TMDXfEoQ0TBdoJ7h9tP5IIY0Kvr4rW4nrPRoPGUnNFe2Bd0+c3dkmL2nvN/kteUv/7
+         0kzkif65D1Mng0Orown7Pa/JrqcYDTqZiimzwibM=
+Subject: Re: [PATCH v15 09/10] arm64: Call kmalloc() to allocate DTB buffer
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     Will Deacon <will@kernel.org>, zohar@linux.ibm.com,
+        robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210115173017.30617-1-nramas@linux.microsoft.com>
+ <20210115173017.30617-10-nramas@linux.microsoft.com>
+ <20210127165208.GA358@willie-the-truck>
+ <d3330793-6054-6e59-b727-44bf8e5653cd@linux.microsoft.com>
+ <20210127184319.GA676@willie-the-truck>
+ <871re5soof.fsf@manicouagan.localdomain>
+ <58d3ffbf-4d80-c893-34d6-366ebfac55bd@linux.microsoft.com>
+ <87y2gdr93p.fsf@manicouagan.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <a751409d-aa1c-68ea-f397-ee3bcf2f393d@linux.microsoft.com>
+Date:   Wed, 27 Jan 2021 20:33:34 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 0/1] net: dsa: rtl8366rb: change type of jam tables
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161180821183.32652.1072996748549501874.git-patchwork-notify@kernel.org>
-Date:   Thu, 28 Jan 2021 04:30:11 +0000
-References: <20210127010632.23790-1-lorenzo.carletti98@gmail.com>
-In-Reply-To: <20210127010632.23790-1-lorenzo.carletti98@gmail.com>
-To:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>
-Cc:     linus.walleij@linaro.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <87y2gdr93p.fsf@manicouagan.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 27 Jan 2021 02:06:31 +0100 you wrote:
-> I was trying to see if there were some Intel 8051 instructions in the
-> jam tables with Linus Walleij, when I noticed some oddities.
-> This patch's aim is to make the code more consistent and more similar
-> to the vendor's original source.
-> Link to the Realtek code the actual patch is based on:
-> https://svn.dd-wrt.com/browser/src/linux/universal/linux-3.2/drivers/net/ethernet/raeth/rb/rtl8366rb_api.c
+On 1/27/21 8:14 PM, Thiago Jung Bauermann wrote:
 > 
-> [...]
+> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+> 
+>> On 1/27/21 7:52 PM, Thiago Jung Bauermann wrote:
+>>> Will Deacon <will@kernel.org> writes:
+>>>
+>>>> On Wed, Jan 27, 2021 at 09:59:38AM -0800, Lakshmi Ramasubramanian wrote:
+>>>>> On 1/27/21 8:52 AM, Will Deacon wrote:
+>>>>>
+>>>>> Hi Will,
+>>>>>
+>>>>>> On Fri, Jan 15, 2021 at 09:30:16AM -0800, Lakshmi Ramasubramanian wrote:
+>>>>>>> create_dtb() function allocates kernel virtual memory for
+>>>>>>> the device tree blob (DTB).  This is not consistent with other
+>>>>>>> architectures, such as powerpc, which calls kmalloc() for allocating
+>>>>>>> memory for the DTB.
+>>>>>>>
+>>>>>>> Call kmalloc() to allocate memory for the DTB, and kfree() to free
+>>>>>>> the allocated memory.
+>>>>>>>
+>>>>>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>>>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>>>>> ---
+>>>>>>>     arch/arm64/kernel/machine_kexec_file.c | 12 +++++++-----
+>>>>>>>     1 file changed, 7 insertions(+), 5 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
+>>>>>>> index 7de9c47dee7c..51c40143d6fa 100644
+>>>>>>> --- a/arch/arm64/kernel/machine_kexec_file.c
+>>>>>>> +++ b/arch/arm64/kernel/machine_kexec_file.c
+>>>>>>> @@ -29,7 +29,7 @@ const struct kexec_file_ops * const kexec_file_loaders[] = {
+>>>>>>>     int arch_kimage_file_post_load_cleanup(struct kimage *image)
+>>>>>>>     {
+>>>>>>> -	vfree(image->arch.dtb);
+>>>>>>> +	kfree(image->arch.dtb);
+>>>>>>>     	image->arch.dtb = NULL;
+>>>>>>>     	vfree(image->arch.elf_headers);
+>>>>>>> @@ -59,19 +59,21 @@ static int create_dtb(struct kimage *image,
+>>>>>>>     			+ cmdline_len + DTB_EXTRA_SPACE;
+>>>>>>>     	for (;;) {
+>>>>>>> -		buf = vmalloc(buf_size);
+>>>>>>> +		buf = kmalloc(buf_size, GFP_KERNEL);
+>>>>>>
+>>>>>> Is there a functional need for this patch? I build the 'dtbs' target just
+>>>>>> now and sdm845-db845c.dtb is approaching 100K, which feels quite large
+>>>>>> for kmalloc().
+>>>>>
+>>>>> Changing the allocation from vmalloc() to kmalloc() would help us further
+>>>>> consolidate the DTB setup code for powerpc and arm64.
+>>>>
+>>>> Ok, but at the risk of allocation failure. Can powerpc use vmalloc()
+>>>> instead?
+>>> I believe this patch stems from this suggestion by Rob Herring:
+>>>
+>>>> This could be taken a step further and do the allocation of the new
+>>>> FDT. The difference is arm64 uses vmalloc and powerpc uses kmalloc. The
+>>>> arm64 version also retries with a bigger allocation. That seems
+>>>> unnecessary.
+>>> in
+>>> https://lore.kernel.org/linux-integrity/20201211221006.1052453-3-robh@kernel.org/
+>>> The problem is that this patch implements only part of the suggestion,
+>>> which isn't useful in itself. So the patch series should either drop
+>>> this patch or consolidate the FDT allocation between the arches.
+>>> I just tested on powernv and pseries platforms and powerpc can use
+>>> vmalloc for the FDT buffer.
+>>>
+>>
+>> Thanks for verifying on powerpc platform Thiago.
+>>
+>> I'll update the patch to do the following:
+>>
+>> => Use vmalloc for FDT buffer allocation on powerpc
+>> => Keep vmalloc for arm64, but remove the retry on allocation.
+>> => Also, there was a memory leak of FDT buffer in the error code path on arm64,
+>> which I'll fix as well.
+>>
+>> Did I miss anything?
+> 
+> Yes, you missed the second part of Rob's suggestion I was mentioning,
+> which is factoring out the code which allocates the new FDT from both
+> arm64 and powerpc.
+> 
 
-Here is the summary with links:
-  - [V2,1/1] net: dsa: rtl8366rb: standardize init jam tables
-    https://git.kernel.org/netdev/net-next/c/d1f3bdd4eaae
+Sure - I'll address that.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+thanks,
+  -lakshmi
 
