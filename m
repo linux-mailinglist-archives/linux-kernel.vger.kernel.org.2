@@ -2,153 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7C3307DFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE3F307E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhA1S3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbhA1SZb (ORCPT
+        id S232135AbhA1Sbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:31:55 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46956 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232139AbhA1S3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:25:31 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6670C0617AA
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:24:50 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id v65so1741763qtd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:24:50 -0800 (PST)
+        Thu, 28 Jan 2021 13:29:33 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SI4oaA103039;
+        Thu, 28 Jan 2021 18:28:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=pYzydHr2+BwJlvIqnZ7iliz/r/uJxRzgqJCm9FWYIME=;
+ b=cPHw+1zvdNNSrSWqz3/gKBtvpGuXobEmw7snTnCwdgi2+H1DpfS+1AcZL7tjPYTRXUKz
+ mFsud1VxZim/nnv1Z2fH8A9TZgr9kM7yvos7xRAv+X2GiW3cTo8pHXvPJYEH0R9egG7x
+ xj+AHsldoRM1wIiQgWoinV0YphZAW7jCwDgCSrk/5J3MeBJnIQCIGAqW0en5Q3WuRXHL
+ GM6+Jbc8GyK0hpd6NDo9tPO4Ub6XuOgAZt4YMNMitR9la1YS2DkIGBymebo8XAB39rYK
+ CAs909i2OTbgMUWgff6kHwZqmirc7RMMsLqYEWzFdWmo2PqCARh3jk7j9bJDE/71IdGO FA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 368brkwhk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 18:28:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SI5Bs7003546;
+        Thu, 28 Jan 2021 18:26:48 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2052.outbound.protection.outlook.com [104.47.46.52])
+        by aserp3030.oracle.com with ESMTP id 368wcr2fyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 18:26:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FKSYmfmNya+B6/pY3+c5HBoTC/vQ33ZyMqd0HzvGnOEJY+3Rv33bwlqPf9aQCcw4gu0wzJImq6+4P3Uv8hnbKpxOF6AYVfB2qIq+LOhxWBpcnweNBrwLD6GAleCDaSlZ+fsEt/SJl6HkVEVWVWl7QNQc+WXYBS2See4F5qEZxljhLgIrWEIEGNPWg6PNv+rFIijGiNQvK2ptjnWyNiKiURowc4roUn8XXR+aLAGNW9SyckFeFSlAfan2fCcjy1zEIzevcbayFrpnwuf+2iBuYA54dszWFxNR5NU0/r72Z4TI25x0oDttm7+gwHQNNwD9uKcDgmo5noCTiQUFqyoV8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pYzydHr2+BwJlvIqnZ7iliz/r/uJxRzgqJCm9FWYIME=;
+ b=OHWgzoRyAhibutd9XN1VRO12A9tXVlMlqVn5FACbhLlHFv8oOdo6eSWo8fiWbSKyEFyjvKpVMLc9TPU1fIG3lZ+kUHbJ1gOvm68gVfRLUJNTQZXzAgDGElooW8tT+Gy8XyhGQMFw7Y1mzrYYYIHbGI1GWQ46W6MgizU02VR+mIlmuT/J8uaYl86dNNhtd8vZQetc9g95Nrw77HHd7PneLti/cHDVJLCT4ts0tKMRweaDcLcnPaOxPkDIvlGbewp8Gqj1MBhJGIi6jGlh66Eanl6prrbyez2I8KbqmjUZci8BuUp0uF3y4LZ59IxaRo+l3t1YxWPhzQSQ3OZyN3hlmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=yOsjKHLvnoq+T0cRgk6WnsccWWwkkwI2XrElOZ44a4s=;
-        b=porQePtnzfaEEOFsSWi2N2ISTIxiVLsHWVuQ63fqGEGA+01eiKaMdEzeylpiGe4p6i
-         AK3w2P3xD/FyRZGEot7fbNIrSpjVoIYH8b6DGUS0q2sXMYtiHpfiX7Pp/08PJKrjqCmG
-         ZuTbXEOQKpvH1AYzZ10NrY35qtXfgoznu0TWUuYxV2+qZOHNX/rwuqxCHtS8BhEPZov0
-         fDuNT3zQ6V+wou8nA6YpLc8w21UAFv+uS8yxv0eggIuX6oldWtEdX4Sj+cneVY9vTNBt
-         GKzWjhJlsC9KiqYvBQZ0/YVEbF1zU8W3miC+jzZh6vvqB8pb8BNAjCtcnf4fODvNNvvp
-         oMFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=yOsjKHLvnoq+T0cRgk6WnsccWWwkkwI2XrElOZ44a4s=;
-        b=HAf9KLjLj6P9Cn3PGB4x9T6GxprfRLrgGayDRl2Q1xzGTt1pVIcHlruO358SJpnCct
-         a7tC3zw9VvKADSfbE+DzMbBmc6VajaJjOBKTNFMxGTsTYrVJ6yWbKXeX19WlSmdz9Rbf
-         Bazq4gWZ6znW+fqGqMdZ9zN6B9a2Mnn6eRT+0kPjPxzgpvf8NoEXMsZCwUHr+xvITJXq
-         UclH1SH2eKfe3T8E7HCu3Z1R5a1+JZXrC8ddsKIoxnPyCrtqlOnbE0hkRvKJk/1XG7zD
-         3sE++IITny/st6Jvjsr0gjr2rguAGQGdHcRmG8B9zRuC6CbM941o4+CYraubnukdH+U5
-         4j1g==
-X-Gm-Message-State: AOAM532fntwspSs/Il0+0aJK6jbO4jEmiM4muDi44NduLq/ppz26PNpI
-        0NA3XryubTENTMDqLAKq2TgqRFX2DpDzCepVJA==
-X-Google-Smtp-Source: ABdhPJyWZJlwQXbPHDLiZiexFTqBEceum9TQ0H1iunv+gpZ9nIAVm92XvQEfS5zvz227RluicIR7BvhjdAmt74+0uw==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a05:6214:148a:: with SMTP id
- bn10mr826173qvb.52.1611858289928; Thu, 28 Jan 2021 10:24:49 -0800 (PST)
-Date:   Thu, 28 Jan 2021 18:24:30 +0000
-In-Reply-To: <20210128182432.2216573-1-kaleshsingh@google.com>
-Message-Id: <20210128182432.2216573-2-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20210128182432.2216573-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH 1/2] procfs: Allow reading fdinfo with PTRACE_MODE_READ
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pYzydHr2+BwJlvIqnZ7iliz/r/uJxRzgqJCm9FWYIME=;
+ b=uDgy4XoCl5s5gpQ9xhPjgu5MftpRz/zfyDEvSG3ljubFoEDql5uwH6ERV1Tx3Ry6DA+z8eAlD9dq7rNZ2SZeNH93WTTJHNZMCWzBJ+Qfv+UyeWJRh1Ou/O4Tn/suuUOFC0fDOZFhIVOJxy6X5j2rgckuAhLwXoL2pZ7XY0AFXy4=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
+ by BYAPR10MB2822.namprd10.prod.outlook.com (2603:10b6:a03:90::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.19; Thu, 28 Jan
+ 2021 18:26:45 +0000
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571%6]) with mapi id 15.20.3784.019; Thu, 28 Jan 2021
+ 18:26:44 +0000
+From:   Joao Martins <joao.m.martins@oracle.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: [PATCH v2 0/2] mm/hugetlb: follow_hugetlb_page() improvements
+Date:   Thu, 28 Jan 2021 18:26:30 +0000
+Message-Id: <20210128182632.24562-1-joao.m.martins@oracle.com>
+X-Mailer: git-send-email 2.11.0
+Content-Type: text/plain
+X-Originating-IP: [94.61.1.144]
+X-ClientProxiedBy: LO2P265CA0422.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a0::26) To BYAPR10MB3077.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from paddy.uk.oracle.com (94.61.1.144) by LO2P265CA0422.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 18:26:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e6e71a20-272d-4cf9-8d1b-08d8c3ba43ac
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2822:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB2822F7707440EF7909C43BD5BBBA9@BYAPR10MB2822.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6brfqIEE5+lE4nwDa3x5OCNd2L6YXtAs40gYK7JtTPO24fetvYn7N0WWtZ44HOoEOtbcPT6PfZ1ebISiMXCaHsUGkGLYSq6nBe591z3ocUQ15Ek9M+2yP/YXDGLUXXsyryG2ZG+uFvfluAWAfKARLK+XzYK5tLp9nkw21uFSwjkg0J+Zvo9UuRkQeFSUkdHcE3pu/QW7dWZoqnhFtYM7iPjnhKhCmH2kQcmLZjv0J4wRWooM696EFYR3g9ZN1TS0yp2TM/ppUcsTKb5ljpxsMrreWSnRDpk+qDhGwiETx+a9XE81S/1WVz7AcQS2WoC/BYwHdn016lFtwK1HMoFTZgqTarYeK/r0xl5fAgkUs/IUiTEJ+qBVHZ68DD0ZHHva236cxvBRhSQdNVbwS1v+fpgbZc4NQ9G0dXqjbXPm1LACJhW38bQ6vZ6FNjHcjtlvqfbbWbo+ZtAvru4VrBT4nhG0tN7+98QuVd6EviO6HHBfCWFccO/4E2Ck+WIbfI4a9xLZHQpDkuFjmi4kSa7GqxWLXoujgnZVZzaM+kteWWku+aSbpivnwLSi6ORnOHTI0CiAFyt7t//ZXI8FEqng4a+5anpXS3dnZaK/KBwtLLA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(376002)(366004)(346002)(66476007)(6666004)(316002)(66946007)(6486002)(6916009)(956004)(478600001)(8936002)(8676002)(66556008)(4744005)(52116002)(2616005)(1076003)(7696005)(103116003)(107886003)(86362001)(2906002)(36756003)(186003)(966005)(54906003)(4326008)(16526019)(83380400001)(5660300002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?N/gOpDCJP5gTFg8/pC61Vbcau0kW+IvsiXpEGIK4VcrsJgF/ViHCXLQtHW60?=
+ =?us-ascii?Q?FJj311VwYYgnb7PqUA/m50V6MDCe5gS8d/9YKmBwEaYtPENy8Tkd2jrxh+Mr?=
+ =?us-ascii?Q?LnKonUhB+v9/bmrrbRD1ztlSAuzVuQQRaWdYJSFq16xdcUe4y0adnohx4sDx?=
+ =?us-ascii?Q?I9Ad8sYcf41jnpoDvr1mpMlNy7wZ9PxECthQKN4gnbjJpabpSmFK615DirHJ?=
+ =?us-ascii?Q?Rwcp78ewwnhtgVXxk16j3tmJgZetLiARaxqPTWQCZs3glfzpNCBohlAJHd1D?=
+ =?us-ascii?Q?baiQFVZewERUqg1Rg9B31MatwQ36N8zM375YCoSGsvodhxpCuz6+GgCAIjeo?=
+ =?us-ascii?Q?XtFxTC9YUKOi7J6b0obENxPjeIXZsdcchhkc923JiJ1tPQvDaYy7NFzX6gk2?=
+ =?us-ascii?Q?YlskdQVmrTmIxuUBFzzPpvuV+g+MTbQpq/kJJn2z35Wjtms7ojNeijFdvAAc?=
+ =?us-ascii?Q?SYCNS9OdMwxoQm4D0KolKhV5bWKGrz9xO/EeAT378MRpIkVgqiD2Noj5glS0?=
+ =?us-ascii?Q?cPrxaK7v8jQwRH+eSDEnSnBH4zPWJ8cP1xSupS5EbRfVdQY3St7aIFhrHc0o?=
+ =?us-ascii?Q?cPpBIYeB4oSq+GulBRw+d5wbNmpXvv3MIwU//TtRyI5SB8ClzAJ4Dg2iTRUu?=
+ =?us-ascii?Q?JF5A72cTHddgo53yWPYILKhRtREj0xy4Cr13LgtfpNCDZZmd+ELoAjiNOqq6?=
+ =?us-ascii?Q?d2Tj1LZGI6gP2w1LmlFdn1vsYHN1X2Vz0Fn9vyG3RhMigaygdCWSsLZeXhjf?=
+ =?us-ascii?Q?zEwuVz1HkV+ZLawbtZ/Exd+dEySiR5sDM5zgOouR+Ho46RfuQ36EqGvAsvuS?=
+ =?us-ascii?Q?9MemUd0eB3QMqITOjBBQsnlHePkx1IuxTinksCYol1uN/1FUrQgD2B/ALkym?=
+ =?us-ascii?Q?1vXZ4N0lVl5g4oWlHUpyCvFR0i/mXfzcm8bjlphNmZrz9irv9unsgr7dTyE4?=
+ =?us-ascii?Q?UfadxzL7MkMi0ydfP2UOakhYzs4GvP9ldFxMSW3JsYI/Bo4qbfEKYfOqgJnW?=
+ =?us-ascii?Q?7+o9cmtxl46l7kzxvrkwlJu+w+7oxoj3gooPXSagL+uyrkPJFbt39muFmlgh?=
+ =?us-ascii?Q?npo/EnPF?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6e71a20-272d-4cf9-8d1b-08d8c3ba43ac
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 18:26:44.3478
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i7e/TLOovTDRurOSQojDkQJKfujXv3fzDt9Cus+0/tt9JgpEtUz92a5xd6WeDGmxMC62RO9hWlcGE4ViAr+OWpOXMtkzYvdAG6RBiIk5fxM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2822
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101280087
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since fdinfo doesn't permit reading process memory and manipulating
-process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
+Hey,
 
-Suggested-by: Jann Horn <jannh@google.com>
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- fs/proc/base.c |  4 ++--
- fs/proc/fd.c   | 15 ++++++++++++++-
- 2 files changed, 16 insertions(+), 3 deletions(-)
+While looking at ZONE_DEVICE struct page reuse particularly the last
+patch[0], I found two possible improvements for follow_hugetlb_page()
+which is solely used for get_user_pages()/pin_user_pages().
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index b3422cda2a91..a37f9de7103f 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3160,7 +3160,7 @@ static const struct pid_entry tgid_base_stuff[] = {
- 	DIR("task",       S_IRUGO|S_IXUGO, proc_task_inode_operations, proc_task_operations),
- 	DIR("fd",         S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_operations),
- 	DIR("map_files",  S_IRUSR|S_IXUSR, proc_map_files_inode_operations, proc_map_files_operations),
--	DIR("fdinfo",     S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdinfo_operations),
-+	DIR("fdinfo",     S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdinfo_operations),
- 	DIR("ns",	  S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_operations),
- #ifdef CONFIG_NET
- 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_operations),
-@@ -3504,7 +3504,7 @@ static const struct inode_operations proc_tid_comm_inode_operations = {
-  */
- static const struct pid_entry tid_base_stuff[] = {
- 	DIR("fd",        S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_operations),
--	DIR("fdinfo",    S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdinfo_operations),
-+	DIR("fdinfo",    S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdinfo_operations),
- 	DIR("ns",	 S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_operations),
- #ifdef CONFIG_NET
- 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_operations),
-diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index cb51763ed554..585e213301f9 100644
---- a/fs/proc/fd.c
-+++ b/fs/proc/fd.c
-@@ -6,6 +6,7 @@
- #include <linux/fdtable.h>
- #include <linux/namei.h>
- #include <linux/pid.h>
-+#include <linux/ptrace.h>
- #include <linux/security.h>
- #include <linux/file.h>
- #include <linux/seq_file.h>
-@@ -72,6 +73,18 @@ static int seq_show(struct seq_file *m, void *v)
- 
- static int seq_fdinfo_open(struct inode *inode, struct file *file)
- {
-+	bool allowed = false;
-+	struct task_struct *task = get_proc_task(inode);
-+
-+	if (!task)
-+		return -ESRCH;
-+
-+	allowed = ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS);
-+	put_task_struct(task);
-+
-+	if (!allowed)
-+		return -EACCES;
-+
- 	return single_open(file, seq_show, inode);
- }
- 
-@@ -307,7 +320,7 @@ static struct dentry *proc_fdinfo_instantiate(struct dentry *dentry,
- 	struct proc_inode *ei;
- 	struct inode *inode;
- 
--	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUSR);
-+	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUGO);
- 	if (!inode)
- 		return ERR_PTR(-ENOENT);
- 
+The first patch batches page refcount updates while the second tidies
+up storing the subpages/vmas. Both together bring the cost of slow
+variant of gup() cost from ~87.6k usecs to ~5.8k usecs.
+
+libhugetlbfs tests seem to pass as well gup_test benchmarks
+with hugetlbfs vmas.
+
+v2:
+  * switch from refs++ to ++refs;
+  * add Mike's Rb on patch 1;
+  * switch from page++ to mem_map_offset() on the second patch;
+  
+[0] https://lore.kernel.org/linux-mm/20201208172901.17384-11-joao.m.martins@oracle.com/
+
+Joao Martins (2):
+  mm/hugetlb: grab head page refcount once for group of subpages
+  mm/hugetlb: refactor subpage recording
+
+ include/linux/mm.h |  3 +++
+ mm/gup.c           |  5 ++--
+ mm/hugetlb.c       | 66 +++++++++++++++++++++++++++-------------------
+ 3 files changed, 44 insertions(+), 30 deletions(-)
+
 -- 
-2.30.0.365.g02bc693789-goog
+2.17.1
 
