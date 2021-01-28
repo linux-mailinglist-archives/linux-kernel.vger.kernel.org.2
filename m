@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E34630714A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C48530710E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhA1IS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:18:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42464 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231725AbhA1ISE (ORCPT
+        id S231799AbhA1IRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhA1IRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:18:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611821799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pQjhFF8PA9KgrrHABCtOSMHOQHZwwUG/J8Os5OD+Pxg=;
-        b=EhUJsx3UYfjnMP6vAE6OxQQC9eMnjd9mcwFMXh54VPJ0af1YEDB0h5pbYGyRFhhRwIKrdL
-        aBBLe//v0C9WFM8ezx0vQ/L6YEXDOOzQ6sXxfWUaLUNhybQ1XW/DJFI3th2yVXv2FSmF5S
-        o0FK6+AOI/4U4KnBkuS+o5vQEIF20rk=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-1_fRnnoJPMKnLzFb6zk1BQ-1; Thu, 28 Jan 2021 03:16:37 -0500
-X-MC-Unique: 1_fRnnoJPMKnLzFb6zk1BQ-1
-Received: by mail-ej1-f70.google.com with SMTP id ar27so709207ejc.22
+        Thu, 28 Jan 2021 03:17:17 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B727FC061574
         for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:16:36 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id a1so4466253wrq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:16:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UeimYJSD/BbdilP/QsnJ5hxblqoSqeJXssbZW1GuA/E=;
+        b=HLDco07WIOI0eRFrC4jndd4L8LCMXW0F+aUl9EIn2JpFOtTztYSUhXSqu9mjB1ioMJ
+         2sMiLjA0fs5EjoOfH+6ae16pwEgx0Vz/GaRY03tRa59UCnqaSJGMERAVLi92/G1LPO7y
+         /2q4IBj6bHwKIii0su+YEfEDRtAVYtJJorqFU7WM40gL3nxqURSOXN6123lu3p03ZkGD
+         1xdATKryVyMbwSBPrLiSxu6FOXvoFfDYg1vCUW4a3wVomTQH4VUx++wSlvHf+O8dcdEG
+         g11wNZZnagd45iHVfLFiJYSbAhNFWtCRwXCez7z7D1ec7q1GsbBf0aEmLgTWmnSf4rwe
+         WvNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pQjhFF8PA9KgrrHABCtOSMHOQHZwwUG/J8Os5OD+Pxg=;
-        b=BQbIujgMGWOdQc498tbIDp6+tsg34F2DDZ2ub0POu4Pl2uWmo8Cs/4LRdxtuhCKGe1
-         +hjW/jw7+tXTkS2vuVeocZztL/5hro2q+x9UnzBRgwo3reb+B2U4HMBGnNfWXiABF+Kr
-         W2JtN59Y9wPS2prE6tE+wxMluR/PWWJ+UcbCGHQlhz9g8OBbH9/WRMA4CiX/1GUCKBC5
-         PQOz2+A8ssBUCgJ2sRJLMyqG1gADZipbVxPvvoBYS9Wgpai5B3rFANRcCTCBDGHb1R0/
-         8MFxIDS0Z7BZVbNcj7QaZQqrt/3kNaw4M+QkHXkeVS8RLHf5piG3oamaulvYHpfvXbQ0
-         0Hhg==
-X-Gm-Message-State: AOAM533I72qK7lJls40owIqWbNSCvfzmzf5H3KUaLFCqZLNsUwf/ttI+
-        0TQW5VbTmkHKPpDw+5Scw5XnAA2jFVT2XWCmJ6QeLEpeSHRI3I0WQB3TMQPqv70DfATKr8rMzZu
-        Dq8H11Zpe4LgCmqv47+E9KQRarLRpPbVDnK9gAua72Cx2dDBGWXBOAqCOQmSfYNKK4D9Tcky2Pb
-        SV
-X-Received: by 2002:a17:906:e106:: with SMTP id gj6mr9622386ejb.337.1611821794856;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UeimYJSD/BbdilP/QsnJ5hxblqoSqeJXssbZW1GuA/E=;
+        b=TURlD0hHjBY+QVW5fM4sFDrv/2cRTs/PSwvKGf07GF6p1Lh2l9sogSiHLw67XGno//
+         2vJQDNpT9dpte0nA5Gpk2Ao+jGSeTtZm6PNO7tQX5qIcdZuGQghayKa+qFKKkNhsQA8t
+         E6sEZjLPqV+w+45c49+yBtR2cpx/Vk+icCGpfoKL6K8F9lmYmU7i0KcfVb0SfSobs4yO
+         eJERBkI9iKLsVQCxeN8FV76H2NMvir7Y+4cqcRkyGVKvxCF6vgGU0qCPPuG+m+H3HjS7
+         sSxkp/VmujjKnkHEAJw/4fHsZu9pYsIT4iud5Goh4mTMY+xlLWtsWvjKVaLIGRkyIhwC
+         mclA==
+X-Gm-Message-State: AOAM530Wg5clC6LnHiHFVuU+WrcuWKYsW9tgfVFJVot/bxc77pm1rj4q
+        qNOF2h2HXMPjGLSDNHL9OnalRQ==
+X-Google-Smtp-Source: ABdhPJwk4pcrmzfuCbnjS9kjUUrQd6dcq75GhqojTwB1b/FrDLAyrcZHVKoo6nED2QAu8b6oqCCoLg==
+X-Received: by 2002:adf:b78d:: with SMTP id s13mr15032680wre.344.1611821795387;
+        Thu, 28 Jan 2021 00:16:35 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id f4sm5952787wrs.34.2021.01.28.00.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 28 Jan 2021 00:16:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwLuNIFyC7TLo0nrn4d8vGNT4D7BktAvk9O6gTR9IZCzuzI9c/ieVRS9b86mNYO///7R1HwVw==
-X-Received: by 2002:a17:906:e106:: with SMTP id gj6mr9622375ejb.337.1611821794649;
-        Thu, 28 Jan 2021 00:16:34 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h16sm2722046edw.34.2021.01.28.00.16.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 00:16:33 -0800 (PST)
-Subject: Re: [PATCH] KVM: Documentation: Fix documentation for nested.
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>, kvm@vger.kernel.org
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210128154747.4242-1-yu.c.zhang@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1b5cf1ea-0ae9-acc2-d92f-c2f2da75f82f@redhat.com>
-Date:   Thu, 28 Jan 2021 09:16:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Date:   Thu, 28 Jan 2021 08:16:33 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Mayulong <mayulong1@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wang Hai <wanghai38@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 5/7] mfd: hi6421-spmi-pmic: move driver from staging
+Message-ID: <20210128081633.GB4774@dell>
+References: <cover.1611773727.git.mchehab+huawei@kernel.org>
+ <2b0e6f6cef0aaa914956792088c554c57f5ec644.1611773727.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210128154747.4242-1-yu.c.zhang@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2b0e6f6cef0aaa914956792088c554c57f5ec644.1611773727.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/21 16:47, Yu Zhang wrote:
-> Nested VMX was enabled by default in commit <1e58e5e59148> ("KVM:
-> VMX: enable nested virtualization by default"), which was merged
-> in Linux 4.20. This patch is to fix the documentation accordingly.
+On Wed, 27 Jan 2021, Mauro Carvalho Chehab wrote:
+
+> This driver is ready for mainstream. So, move it out of staging.
 > 
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->   Documentation/virt/kvm/nested-vmx.rst            | 6 ++++--
->   Documentation/virt/kvm/running-nested-guests.rst | 2 +-
->   2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/nested-vmx.rst b/Documentation/virt/kvm/nested-vmx.rst
-> index 6ab4e35..ac2095d 100644
-> --- a/Documentation/virt/kvm/nested-vmx.rst
-> +++ b/Documentation/virt/kvm/nested-vmx.rst
-> @@ -37,8 +37,10 @@ call L2.
->   Running nested VMX
->   ------------------
->   
-> -The nested VMX feature is disabled by default. It can be enabled by giving
-> -the "nested=1" option to the kvm-intel module.
-> +The nested VMX feature is enabled by default since Linux kernel v4.20. For
-> +older Linux kernel, it can be enabled by giving the "nested=1" option to the
-> +kvm-intel module.
-> +
->   
->   No modifications are required to user space (qemu). However, qemu's default
->   emulated CPU type (qemu64) does not list the "VMX" CPU feature, so it must be
-> diff --git a/Documentation/virt/kvm/running-nested-guests.rst b/Documentation/virt/kvm/running-nested-guests.rst
-> index d0a1fc7..bd70c69 100644
-> --- a/Documentation/virt/kvm/running-nested-guests.rst
-> +++ b/Documentation/virt/kvm/running-nested-guests.rst
-> @@ -74,7 +74,7 @@ few:
->   Enabling "nested" (x86)
->   -----------------------
->   
-> -From Linux kernel v4.19 onwards, the ``nested`` KVM parameter is enabled
-> +From Linux kernel v4.20 onwards, the ``nested`` KVM parameter is enabled
->   by default for Intel and AMD.  (Though your Linux distribution might
->   override this default.)
->   
-> 
+>  .../mfd}/hisilicon,hi6421-spmi-pmic.yaml        |  0
+>  MAINTAINERS                                     |  7 +++++++
+>  drivers/mfd/Kconfig                             | 15 +++++++++++++++
+>  drivers/mfd/Makefile                            |  1 +
+>  .../hikey9xx => mfd}/hi6421-spmi-pmic.c         |  0
+>  drivers/staging/hikey9xx/Kconfig                | 17 -----------------
+>  drivers/staging/hikey9xx/Makefile               |  1 -
+>  7 files changed, 23 insertions(+), 18 deletions(-)
+>  rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/mfd}/hisilicon,hi6421-spmi-pmic.yaml (100%)
+>  rename drivers/{staging/hikey9xx => mfd}/hi6421-spmi-pmic.c (100%)
 
-Queued, thanks.
+I've already reviewed this:
 
-Paolo
+  https://lore.kernel.org/driverdev-devel/20210127110537.GI4903@dell/
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
