@@ -2,158 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5943E307940
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5DE307951
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhA1PM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhA1PMi (ORCPT
+        id S231576AbhA1PQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:16:37 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:46752 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhA1PQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:12:38 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8775FC061573;
-        Thu, 28 Jan 2021 07:11:57 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id b2so8071474lfq.0;
-        Thu, 28 Jan 2021 07:11:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jYUwfR//UNM7rH1VOEkn/K+30W18z8yGULkJIiL5QLc=;
-        b=l2nO/0WO6oAnUY51rYxsB80i8T+XJ1gLQiINbegvpfOtC6kmQjay/cnYY4IuSUNMUP
-         98iplaDKdkkr/kUAhU0fOs+7KJ90XM10QkoW/+12cbf4L8U1/tpHGTh5sJw4TCW63tD+
-         Yny9zus3jnEzGzobQj2N8jm2iUM9rpeY7ncdGsDrGS7Bjl/9A3r3TmIpCuYw1P0izAdR
-         wBO3ZbxMMEyxQePSZ3O4tmgdqQLypLSQn65vSxZfq/bR0pLbKZ2UbbIDG53XfmbQqtL0
-         Mw4B7vSS84cXDmx6D00cNu0TWtLx4JrQbLGOFhKA37atT/puMLJlKJjRgz+DQvWTYAN/
-         A3Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jYUwfR//UNM7rH1VOEkn/K+30W18z8yGULkJIiL5QLc=;
-        b=pCx3CK080MOtlTl9bm84s3RabPQ1Ui+EFRG3N/szVEWUfwDCdBQIaC68G6qBv0e5f+
-         kaFbdqXGFR537pXS9Xshqi3nJegFdfIzP+5LYx1I0PKyAQYL6rbEtIkg4bZJzSus9QJo
-         4BljgxB2nnK9BlNQHYSOUv1lVbnS28R0D50gq696W1PixPjuLcTee/1HugnZjERlK/zw
-         nYp6L3qQk/o2EuwXYC5fLRAnf4WK4rHSlsiNnM3v2EKuyraagwYsZYfRm0ZzUPExj8I5
-         52pNyeL4PN+KxKrxGDf1PRnd2W7wsVv31g+pMfqUKmejktScjufXTOPPaN38pRNhadVZ
-         3mVw==
-X-Gm-Message-State: AOAM532pS6g5Z3KERsOJNN7rkT9MNCRGAc/kyhTt9iuf/r4e7VxvfHnP
-        voGIcJyTu9QZ4VEoOhi5BWc=
-X-Google-Smtp-Source: ABdhPJwwTqEF9wklNavo3L5y9Lt1QHNJzWUHVrPrxHKvLTIpS8M1c2jhRmWPLrV/DjXEe9IItQyP3w==
-X-Received: by 2002:a05:6512:49b:: with SMTP id v27mr8223299lfq.220.1611846716011;
-        Thu, 28 Jan 2021 07:11:56 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id r26sm1708382lfe.137.2021.01.28.07.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 07:11:55 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 28 Jan 2021 16:11:52 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210128151152.GA1867@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210125132236.GJ827@dhcp22.suse.cz>
- <20210125143150.GA2282@pc638.lan>
- <20210125153943.GN827@dhcp22.suse.cz>
- <20210125162559.GA52712@pc638.lan>
+        Thu, 28 Jan 2021 10:16:30 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SFDxIW112824;
+        Thu, 28 Jan 2021 15:15:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=MsQ7ftbtbqZUBrl4lNec+ukn/EWP/aTSC+PR3mkKyBU=;
+ b=ufETMjRyMAtLep4DOPQp1rceJOeUf+MwUriOaPq+DuR8tsjCnIaziXDpxZmd7e99N+s6
+ kHBxm2ahxr01rrQIVbNWsu3Xepz/RL0m5x2SPUfnVqCd33JXba0ctusYdwOmxXVWgBj8
+ 4IZlgDUI09A2GNCGau00nsUsIkaDdHQCPxUCKPl512ZF8F9upS+vXF5tCex49TGmK5vj
+ 4jCEwqzH6zWideO69MbAzOf7UxDyqgFYMeML1sDbhnPC6VN9yVXd/r22EScLOCSEUaVR
+ Nw1K/gZVyc7BFuSGrxyJYj5w5R1PFm3Pz59HeHhMiq0jcKWp38vY0CyKpCX4rKmcArbF HQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 368b7r4mn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 15:15:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SFAESf071867;
+        Thu, 28 Jan 2021 15:13:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 368wr0ey6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 15:13:31 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10SFDGvg024584;
+        Thu, 28 Jan 2021 15:13:17 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 Jan 2021 07:13:15 -0800
+Date:   Thu, 28 Jan 2021 18:13:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Carlis <zhangxuezhi3@gmail.com>, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
+        gregkh@linuxfoundation.org, oliver.graute@kococonnector.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        sbrivio@redhat.com, colin.king@canonical.com,
+        zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
+Message-ID: <20210128151306.GG2696@kadam>
+References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
+ <20210127223222.3lavtl3roc4cabso@kari-VirtualBox>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125162559.GA52712@pc638.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210127223222.3lavtl3roc4cabso@kari-VirtualBox>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101280078
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101280078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 05:25:59PM +0100, Uladzislau Rezki wrote:
-> On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
-> > On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
-> > > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
-> > > > > For a single argument we can directly request a page from a caller
-> > > > > context when a "carry page block" is run out of free spots. Instead
-> > > > > of hitting a slow path we can request an extra page by demand and
-> > > > > proceed with a fast path.
-> > > > > 
-> > > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> > > > > and that its fallback is the relatively high latency synchronize_rcu().
-> > > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> > > > > to allow limited sleeping within the memory allocator.
-> > > > 
-> > > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
-> > > > way to allocate without triggering the OOM killer. Is this really what
-> > > > you need/want? Is __GFP_NORETRY too weak?
-> > > > 
-> > > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
-> > > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
-> > > point: https://www.spinics.net/lists/rcu/msg02856.html
-> > > 
-> > > <snip>
-> > >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
-> > >     further decisions based on instrumentation of the success rates of
-> > >     these opportunistic allocations.
-> > > <snip>
-> > 
-> > I completely agree with Johannes here.
-> > 
-> > > but for some reason, i can't find a tail or head of it, we introduced
-> > > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
-> > > What we would like to avoid.
-> > 
-> > Not that I object to this use but I think it would be much better to use
-> > it based on actual data. Going along with it right away might become a
-> > future burden to make any changes in this aspect later on due to lack of 
-> > exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
-> > try as hard as it can get without being really disruptive (like OOM
-> > killing something). And your wording didn't really give me that
-> > impression.
-> > 
-> Initially i proposed just to go with GFP_NOWAIT flag. But later on there
-> was a discussion about a fallback path, that uses synchronize_rcu() can be
-> slow, thus minimizing its hitting would be great. So, here we go with a
-> trade off.
+On Thu, Jan 28, 2021 at 12:32:22AM +0200, Kari Argillander wrote:
+> On Wed, Jan 27, 2021 at 09:42:52PM +0800, Carlis wrote:
+> > @@ -82,6 +111,33 @@ enum st7789v_command {
+> >   */
+> >  static int init_display(struct fbtft_par *par)
+> >  {
+> > +	int rc;
+> > +	struct device *dev = par->info->device;
+> > +
+> > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
+> > +	if (IS_ERR(par->gpio.te)) {
+> > +		rc = PTR_ERR(par->gpio.te);
+> > +		dev_err(par->info->device, "Failed to request te gpio: %d\n", rc);
+> > +		return rc;
+> > +	}
 > 
-> Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
-> light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
+> You request with optinal and you still want to error out? We could just
+> continue and not care about that error. User will be happier if device
+> still works somehow.
 > 
-> There were simple criterias we discussed which we would like to achieve:
-> 
-> a) minimize a fallback hitting;
-> b) avoid of OOM involving;
-> c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
-> 
-One question here. Since the code that triggers a page request can be
-directly invoked from reclaim context as well as outside of it. We had
-a concern about if any recursion is possible, but what i see it is safe.
-The context that does it can not enter it twice:
 
-<snip>
-    /* Avoid recursion of direct reclaim */
-    if (current->flags & PF_MEMALLOC)
-        goto nopage;
-<snip>
+Carlis tried that approach in previous versions.  See the discussion
+about -EPROBEi_DEFER.
 
-What about any deadlocking in regards to below following flags?
+That's not the right way to think about it anyway.  It's optional but
+the user *chose* to enable it so if an error occurs then it's still an
+error and should be treated like an error.  The user should fix the
+error or disable the feature if they want to continue.
 
-GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
+There are lots of places in the kernel where the error handling could
+be written to try continue but in a crippled state.  It's not the right
+approach.  Over engineering like that just leads to bugs.
 
-Thanks!
+regards,
+dan carpenter
 
---
-Vlad Rezki
