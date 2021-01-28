@@ -2,140 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A49307B77
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599B8307B80
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbhA1Q4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:56:37 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:62233 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbhA1Q4e (ORCPT
+        id S232762AbhA1Q44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:56:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232614AbhA1Q4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:56:34 -0500
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 28 Jan 2021 08:55:31 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Jan 2021 08:55:30 -0800
-X-QCInternal: smtphost
-Received: from nitirawa-linux.qualcomm.com ([10.206.25.176])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Jan 2021 22:25:08 +0530
-Received: by nitirawa-linux.qualcomm.com (Postfix, from userid 2342877)
-        id 05A052A73; Thu, 28 Jan 2021 22:25:07 +0530 (IST)
-From:   Nitin Rawat <nitirawa@codeaurora.org>
-To:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com
-Cc:     bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        "Bao D . Nguyen" <nguyenb@codeaurora.org>
-Subject: [PATCH V1 3/3] scsi: ufs-qcom: configure VCC voltage level in vendor file
-Date:   Thu, 28 Jan 2021 22:24:59 +0530
-Message-Id: <1611852899-2171-4-git-send-email-nitirawa@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611852899-2171-1-git-send-email-nitirawa@codeaurora.org>
-References: <1611852899-2171-1-git-send-email-nitirawa@codeaurora.org>
+        Thu, 28 Jan 2021 11:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611852925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HgtxAPALtY+nCny47e18Ou0vNrOzLT1OduAQqQAsR8o=;
+        b=dEF+xAKD3c90Ckg9ajmBEyYf4esEiK8KqqWcUEFXdKyMg1WTnavLwtr03Doug6PuwFkXwk
+        hBbI5hXXCKibR2DHOc4aptOV+Y0EToCgePzqXWWRZE/C+q6+mQbR0HAa4EdnzA1ESykkBT
+        I18uazIpo3+OKiCVFaF0jN8Mwy1TQwU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-tTAKUMOkNVmjkjq3uBT2lw-1; Thu, 28 Jan 2021 11:55:23 -0500
+X-MC-Unique: tTAKUMOkNVmjkjq3uBT2lw-1
+Received: by mail-wr1-f71.google.com with SMTP id c1so3431376wrx.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:55:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HgtxAPALtY+nCny47e18Ou0vNrOzLT1OduAQqQAsR8o=;
+        b=OwNCufthinAQEQiUH7DPKBCOSGj3B1zV3SdXo+rez7BHLy36Nffmfrl1Du2wuhTEkV
+         6QAohPSpE9kqW7ZnM3RbgvraHWxljJvOhxKLLdnokfeuCw6+9VdALceNX2/JcbjV+yfb
+         9FqJCHaLPI8nbS4UEU6LM20SshqCDAQFrHVbiP1SafdqYKYihW97EArP8IURuePCK2Jg
+         Hog5dnyz89kIoSVC/kXO8X8nYkaeV+FLeUoHk7juoKJKD1Hbof8ho0j4w31zO4VQCPHL
+         kvxkXSWG6b/cWThGU/PTFPMinr0J5wygGh6MR2SzJOh19B6V72qEQZIHdLOhsdYs4FlE
+         agtw==
+X-Gm-Message-State: AOAM533JGKiALJ6oiFTA901n5ZxD+mSWCBJtKbd8PE43oEBRLguc+lnG
+        7E7JIfB7WEhPqLaSwM60uuI4pP9JQePeXO+ZLGSXVeVR1UzJCbUhSyfG2p7pIZmqZ0Vl6wHsp8+
+        PJ0XKGKajVnAKQExwHfjvJ27O
+X-Received: by 2002:a1c:a549:: with SMTP id o70mr135301wme.71.1611852922174;
+        Thu, 28 Jan 2021 08:55:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyb6UPtRnhkfUKRNkSJfjFxJ3q1MvMrhDM7KtpKfLvcGV1YzLJVQtRahOZNlCd6vpRf46h8cQ==
+X-Received: by 2002:a1c:a549:: with SMTP id o70mr135279wme.71.1611852921999;
+        Thu, 28 Jan 2021 08:55:21 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id q6sm6320451wmj.32.2021.01.28.08.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 08:55:21 -0800 (PST)
+Date:   Thu, 28 Jan 2021 17:55:18 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v3 03/13] af_vsock: implement SEQPACKET rx loop
+Message-ID: <20210128165518.ho3csm5u7v5pnwnd@steredhat>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+ <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a part of vops handler, VCC voltage is updated
-as per the ufs device probed after reading the device
-descriptor. We follow below steps to configure voltage
-level.
+On Mon, Jan 25, 2021 at 02:12:36PM +0300, Arseny Krasnov wrote:
+>This adds receive loop for SEQPACKET. It looks like receive loop for
+>SEQPACKET, but there is a little bit difference:
+>1) It doesn't call notify callbacks.
+>2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
+>   there is no sense for these values in SEQPACKET case.
+>3) It waits until whole record is received or error is found during
+>   receiving.
+>4) It processes and sets 'MSG_TRUNC' flag.
+>
+>So to avoid extra conditions for two types of socket inside one loop, two
+>independent functions were created.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> include/net/af_vsock.h   |   5 ++
+> net/vmw_vsock/af_vsock.c | 102 ++++++++++++++++++++++++++++++++++++++-
+> 2 files changed, 106 insertions(+), 1 deletion(-)
+>
+>diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>index b1c717286993..46073842d489 100644
+>--- a/include/net/af_vsock.h
+>+++ b/include/net/af_vsock.h
+>@@ -135,6 +135,11 @@ struct vsock_transport {
+> 	bool (*stream_is_active)(struct vsock_sock *);
+> 	bool (*stream_allow)(u32 cid, u32 port);
+>
+>+	/* SEQ_PACKET. */
+>+	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
+>+	ssize_t (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
+>+				     size_t len, int flags);
+>+
+> 	/* Notification. */
+> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 524df8fc84cd..3b266880b7c8 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -2006,7 +2006,107 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+> static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
+> 				     size_t len, int flags)
+> {
+>-	return -1;
+>+	const struct vsock_transport *transport;
+>+	const struct iovec *orig_iov;
+>+	unsigned long orig_nr_segs;
+>+	ssize_t dequeued_total = 0;
+>+	struct vsock_sock *vsk;
+>+	size_t record_len;
+>+	long timeout;
+>+	int err = 0;
+>+	DEFINE_WAIT(wait);
+>+
+>+	vsk = vsock_sk(sk);
+>+	transport = vsk->transport;
+>+
+>+	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
+>+	msg->msg_flags &= ~MSG_EOR;
 
-1. Set the device to SLEEP state.
-2. Disable the Vcc Regulator.
-3. Set the vcc voltage according to the device type and reenable
-   the regulator.
-4. Set the device mode back to ACTIVE.
+Maybe add a comment about why we need to clear MSG_EOR.
 
-Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
-Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
----
- drivers/scsi/ufs/ufs-qcom.c | 51 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+>+	orig_nr_segs = msg->msg_iter.nr_segs;
+>+	orig_iov = msg->msg_iter.iov;
+>+
+>+	while (1) {
+>+		ssize_t dequeued;
+>+		s64 ready;
+>+
+>+		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+>+		ready = vsock_stream_has_data(vsk);
+>+
+>+		if (ready == 0) {
+>+			if (vsock_wait_data(sk, &wait, timeout, NULL, 0)) {
+>+				/* In case of any loop break(timeout, signal
+>+				 * interrupt or shutdown), we report user that
+>+				 * nothing was copied.
+>+				 */
+>+				dequeued_total = 0;
+>+				break;
+>+			}
+>+			continue;
+>+		}
+>+
+>+		finish_wait(sk_sleep(sk), &wait);
+>+
+>+		if (ready < 0) {
+>+			err = -ENOMEM;
+>+			goto out;
+>+		}
+>+
+>+		if (dequeued_total == 0) {
+>+			record_len =
+>+				transport->seqpacket_seq_get_len(vsk);
+>+
+>+			if (record_len == 0)
+>+				continue;
+>+		}
+>+
+>+		/* 'msg_iter.count' is number of unused bytes in iov.
+>+		 * On every copy to iov iterator it is decremented at
+>+		 * size of data.
+>+		 */
+>+		dequeued = transport->seqpacket_dequeue(vsk, msg,
+>+					msg->msg_iter.count, flags);
+                                         ^
+                                         Is this needed or 'msg' can be 
+                                         used in the transport?
+>+
+>+		if (dequeued < 0) {
+>+			dequeued_total = 0;
+>+
+>+			if (dequeued == -EAGAIN) {
+>+				iov_iter_init(&msg->msg_iter, READ,
+>+					      orig_iov, orig_nr_segs,
+>+					      len);
+>+				msg->msg_flags &= ~MSG_EOR;
+>+				continue;
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index f97d7b0..ca35f5c 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -21,6 +21,17 @@
- #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
- 	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
+Why we need to reset MSG_EOR here?
 
-+#define	ANDROID_BOOT_DEV_MAX	30
-+static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
-+
-+/* Min and Max VCC voltage values for ufs 2.x and
-+ * ufs 3.x devices
-+ */
-+#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
-+#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
-+#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
-+#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
-+
- enum {
- 	TSTBUS_UAWM,
- 	TSTBUS_UARM,
-@@ -1293,6 +1304,45 @@ static void ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
- 	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
- }
+>+			}
+>+
+>+			err = -ENOMEM;
+>+			break;
+>+		}
+>+
+>+		dequeued_total += dequeued;
+>+
+>+		if (dequeued_total >= record_len)
+>+			break;
+>+	}
 
-+  /**
-+   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
-+   * @hba: host controller instance
-+   * Update VCC voltage based on UFS device(ufs 2.x or
-+   * ufs 3.x probed)
-+   */
-+static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
-+{
-+	struct ufs_dev_info *dev_info = &hba->dev_info;
-+	struct ufs_vreg *vreg = hba->vreg_info.vcc;
-+	int ret;
-+
-+	/* Put the device in sleep before lowering VCC level */
-+	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
-+
-+	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
-+	ret = ufshcd_disable_vreg(hba->dev, vreg);
-+
-+	/* add ~2ms delay before renabling VCC at lower voltage */
-+	usleep_range(2000, 2100);
-+
-+	/* set VCC min and max voltage according to ufs device type */
-+	if (dev_info->wspecversion >= 0x300) {
-+		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
-+		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
-+	}
-+
-+	else {
-+		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
-+		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
-+	}
-+
-+	ret = ufshcd_enable_vreg(hba->dev, vreg);
-+
-+	/* Bring the device in active now */
-+	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
-+	return ret;
-+}
-+
- static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
- {
- 	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
-@@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.device_reset		= ufs_qcom_device_reset,
- 	.config_scaling_param = ufs_qcom_config_scaling_param,
- 	.program_key		= ufs_qcom_ice_program_key,
-+	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
- };
+Maybe a new line here.
 
- /**
---
-2.7.4
+>+	if (sk->sk_err)
+>+		err = -sk->sk_err;
+>+	else if (sk->sk_shutdown & RCV_SHUTDOWN)
+>+		err = 0;
+>+
+>+	if (dequeued_total > 0) {
+>+		/* User sets MSG_TRUNC, so return real length of
+>+		 * packet.
+>+		 */
+>+		if (flags & MSG_TRUNC)
+>+			err = record_len;
+>+		else
+>+			err = len - msg->msg_iter.count;
+>+
+>+		/* Always set MSG_TRUNC if real length of packet is
+>+		 * bigger that user buffer.
+
+s/that/than
+
+>+		 */
+>+		if (record_len > len)
+>+			msg->msg_flags |= MSG_TRUNC;
+>+	}
+>+out:
+>+	return err;
+> }
+>
+> static int
+>-- 
+>2.25.1
+>
 
