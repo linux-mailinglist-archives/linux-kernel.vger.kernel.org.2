@@ -2,72 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8508D30810F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD8F308113
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhA1WZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:25:28 -0500
-Received: from ms.lwn.net ([45.79.88.28]:47318 "EHLO ms.lwn.net"
+        id S231263AbhA1W0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:26:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhA1WZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:25:27 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 604186173;
-        Thu, 28 Jan 2021 22:24:46 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 604186173
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1611872686; bh=qQbtP2Dn03VQjBluckzrepkv+tQCQzx5n99qCMWXWfQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qwc4/A9UtlSJz2lO2RrPNyO1yVZ8epYaYAgg7ex2y0/na13TyTSGMqL6swwTWfyaq
-         qTJXctnMpDJ101yIyKz+8BAcUMMLTL302yXr2X2QIr5ORMcmMArPTbgm30UaTv9TWb
-         1Xvj0rTpVL5YN2fnd/Fkp5PyCnKre71/Q7cETLGRLv9v5Tez5BKRourwnZrOoG4wtM
-         G7DgE4EVa6wqP6dkoHaR5kFrRkaK6SVkDPv68H4aFKUQZJXwEvZq7qCIzYvK4zrQyP
-         tAN8s0mIcJr5fUrIitd3wLhyWpQNrP4kPp3+iApKs07g2KtPmNAwPkS/bcbfIIm13p
-         nl3tJl3v7JeNQ==
-Date:   Thu, 28 Jan 2021 15:24:45 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-doc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] Documentation: kernel-parameters: add missing
- '<'
-Message-ID: <20210128152445.62402f73@lwn.net>
-In-Reply-To: <20210127104343.5647-1-wsa+renesas@sang-engineering.com>
-References: <20210127104343.5647-1-wsa+renesas@sang-engineering.com>
-Organization: LWN.net
+        id S229658AbhA1W0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 17:26:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50DF864D9E;
+        Thu, 28 Jan 2021 22:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611872733;
+        bh=yIp4518MesE0eu8I0SzfH+lGgzYY6ifruPM0Rphch6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QbFFBgobeUDIy4P8FqD/iiwqW/5y0/8Fclphjaa1cIp7BFkceSMxMe9hzjafF3jXd
+         wb97yTgK0iPwUzLKhSFbEIM+3HgdLhvwfJvKnAx9Sx8s2AdECOZPVXHwT/jTutNg1h
+         MClvGDcV0eakYDJwGn+CRlkb3M/I/MqKws3MfYACbGfQ9sPFhuVKbSgXPuw0ZktgLT
+         YzaxJwEw+fy55SJCxjAhbUaavPAcqC9+gByMzW+7XegdL6I0OIuKx5V01TsfS92j3d
+         ybgg5HYIfA70FbPKgBUsCbhMsowPEUg1CkSTIrN8INjLlBJQvzVu8KnNVAomXD4BhT
+         c90fRpzXv03+A==
+Date:   Thu, 28 Jan 2021 23:25:31 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 05/16] rcu/nocb: Disable bypass when CPU isn't completely
+ offloaded
+Message-ID: <20210128222531.GD122776@lothringen>
+References: <20210128171222.131380-1-frederic@kernel.org>
+ <20210128171222.131380-6-frederic@kernel.org>
+ <20210128213133.GT2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128213133.GT2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 11:43:43 +0100
-Wolfram Sang <wsa+renesas@sang-engineering.com> wrote:
-
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Jan 28, 2021 at 01:31:33PM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 28, 2021 at 06:12:11PM +0100, Frederic Weisbecker wrote:
+> > ---
+> >  include/linux/rcu_segcblist.h |  7 ++++---
+> >  kernel/rcu/tree_plugin.h      | 31 +++++++++++++++++++++++--------
+> >  2 files changed, 27 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+> > index 8afe886e85f1..5a2d6dadd720 100644
+> > --- a/include/linux/rcu_segcblist.h
+> > +++ b/include/linux/rcu_segcblist.h
+> > @@ -109,7 +109,7 @@ struct rcu_cblist {
+> >   *  |                           SEGCBLIST_KTHREAD_GP                           |
+> >   *  |                                                                          |
+> >   *  |   Kthreads handle callbacks holding nocb_lock, local rcu_core() stops    |
+> > - *  |   handling callbacks.                                                    |
+> > + *  |   handling callbacks. Allow bypass enqueue.                              |
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 06fb1b4aa849..202fac80ea0c 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -60,7 +60,7 @@ Note that for the special case of a range one can split the range into equal
->  sized groups and for each group use some amount from the beginning of that
->  group:
->  
-> -	<cpu number>-cpu number>:<used size>/<group size>
-> +	<cpu number>-<cpu number>:<used size>/<group size>
+> "Allow bypass enqueue" as in bypass was disabled and entering this
+> state causes it to be enabled, correct?
 
-Applied, thanks.
+Right.
 
-(FWIW it looks like the original wasn't sent to me, so I didn't apply it
-then...)
+> If so, "Enable bypass
+> queueing" would be less ambiguous and would match the change below.
 
-jon
+Ok I'll fix that.
+
+> > @@ -2412,6 +2423,7 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+> >  
+> >  	rcu_nocb_lock_irqsave(rdp, flags);
+> >  
+> > +	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+> 
+> This flush suffices because we are running on the target CPU
+> holding ->nocb_lock (thus having interrupts disabled), and
+> because rdp_offload_toggle() invokes rcu_segcblist_offload(),
+> which clears SEGCBLIST_OFFLOADED.  Thus future calls to
+> rcu_segcblist_completely_offloaded() will return false,
+> which means that future calls to rcu_nocb_try_bypass() will
+> refuse to put anything into the bypass.
+
+Exactly!
+
+> I believe that this deserves a comment, particularly if I am
+> confused about what is really happening here.  ;-)
+
+Yes indeed I've been greedy there, will comment this :o)
+
+> 
+> On another topic, since I saw it along the way...
+> 
+> The header comment for rcu_segcblist_offload() says that the
+> structure must be empty, but that isn't really the case, is it?
+
+Ah strange indeed, must be a leftover. I'll remove it.
+
+> 
+> >  	ret = rdp_offload_toggle(rdp, false, flags);
+> >  	swait_event_exclusive(rdp->nocb_state_wq,
+> >  			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
+> > @@ -2422,19 +2434,22 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+> >  	rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  	del_timer_sync(&rdp->nocb_timer);
+> >  
+> > +	/* Sanity check */
+> > +	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+> > +
+> >  	/*
+> > -	 * Flush bypass. While IRQs are disabled and once we set
+> > -	 * SEGCBLIST_SOFTIRQ_ONLY, no callback is supposed to be
+> > -	 * enqueued on bypass.
+> > +	 * Lock one last time so we see latest updates from kthreads and timer
+> 
+> You lost me here.  What updates are we seeing from kthreads and timers?
+
+We want to make sure that, whatever change has been made on the segcblist by
+kthreads such as length or callbacks dequeue, this is visible on the current
+CPU. The swait_event_exclusive() doesn't guarantee that everything from the
+kthreads is visible here as the flags are checked lockless and I haven't added
+specific barriers.
+
+That said right after the swait_event there is a nocb_lock LOCK/UNLOCK cycle to
+disable the timer, so that's enough for the local CPU to see those updates. What
+remains is the updates made by pending timers flushed in del_timer_sync(). There
+is nothing special there to be visible here but out of paranoia...
+
+In fact this matters later in the series as the above timer disablement and
+flush will disappear and the LOCK/UNLOCK cycle that comes along.
+
+> 
+> > +	 * so that we can later run callbacks locally without the lock.
+> >  	 */
+> >  	rcu_nocb_lock_irqsave(rdp, flags);
+> > -	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
+> > +	/*
+> > +	 * Theoretically we could set SEGCBLIST_SOFTIRQ_ONLY after the nocb
+> > +	 * LOCK/UNLOCK but let's be paranoid.
+> > +	 */
+> >  	rcu_segcblist_set_flags(cblist, SEGCBLIST_SOFTIRQ_ONLY);
+> 
+> As long as we are being paranoid, should we also check that the
+> bypass remains empty?
+
+You missed it, check above for sanity check :-)
+
+Thanks.
+
+> 
+> >  	/*
+> >  	 * With SEGCBLIST_SOFTIRQ_ONLY, we can't use
+> > -	 * rcu_nocb_unlock_irqrestore() anymore. Theoretically we
+> > -	 * could set SEGCBLIST_SOFTIRQ_ONLY with cb unlocked and IRQs
+> > -	 * disabled now, but let's be paranoid.
+> > +	 * rcu_nocb_unlock_irqrestore() anymore.
+> >  	 */
+> >  	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+> >  
+> > -- 
+> > 2.25.1
+> > 
