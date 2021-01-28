@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00B7306B95
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD04306B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhA1DZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:25:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42416 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231124AbhA1DZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:25:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B70A5ABDA;
-        Thu, 28 Jan 2021 03:24:37 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de
-Date:   Thu, 28 Jan 2021 14:24:31 +1100
-Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/12] docs: path-lookup: update path_to_nameidata() parth
-In-Reply-To: <20210126072443.33066-3-foxhlchen@gmail.com>
-References: <20210126072443.33066-1-foxhlchen@gmail.com>
- <20210126072443.33066-3-foxhlchen@gmail.com>
-Message-ID: <87eei5hhg0.fsf@notabene.neil.brown.name>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S231201AbhA1D1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:27:30 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:10613 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhA1D13 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:27:29 -0500
+IronPort-SDR: m5c5356bsjqz7qwNEQmVHgwIAo/5ayBk9kDgf2NHe8IJOgDCykV0jSPelwqwfDGBcKwiw54dfy
+ smyf+oFKgOk8lC3gz2D//5AvVtNeuTxSbA3Yx0X2CtVYTVR3HanreNFfzBEIDmp+NdWP2oQ50j
+ kiTWanCPMLkESwVCeROow4jEz+qStXBon6PUi5wmOkEB41qRDKokQvpK8gYU4LaREON7g7LJ9k
+ l/SO1AezUiDQMgImqSoM9ARnesJZdERYpnIKJsk3MUHOBvL+VRHVj+TFLgXmAn9h8MuRl6EkKA
+ f24=
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="47715510"
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by labrats.qualcomm.com with ESMTP; 27 Jan 2021 19:26:48 -0800
+X-QCInternal: smtphost
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 27 Jan 2021 19:26:42 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
+        id A0597219A2; Wed, 27 Jan 2021 19:26:42 -0800 (PST)
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     cang@codeaurora.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org
+Cc:     Asutosh Das <asutoshd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, stern@rowland.harvard.edu,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC PATCH v2 1/2] block: bsg: resume platform device before accessing
+Date:   Wed, 27 Jan 2021 19:26:37 -0800
+Message-Id: <b1db5394aa3f6cf44cd9adb9c8d569caa0c9e4f5.1611803264.git.asutoshd@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1611719814.git.asutoshd@codeaurora.org>
+References: <cover.1611719814.git.asutoshd@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+It may happen that the underlying device's runtime-pm is
+not controlled by block-pm. So it's possible that when
+commands are sent to the device, it's suspended and may not
+be resumed by blk-pm. Hence explicitly resume the parent
+which is the platform device.
 
-On Tue, Jan 26 2021, Fox Chen wrote:
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+---
+ block/bsg.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> No path_to_namei() anymore, step_into() will be called.
-> Related commit: c99687a03a78775f77d57fe9b07af4c8ec3dd03c
->
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/filesystems/path-lookup.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index e778db767120..2ad96e1e3c49 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -455,7 +455,7 @@ In the absence of symbolic links, ``walk_component()`=
-` creates a new
->  ``struct path`` containing a counted reference to the new dentry and a
->  reference to the new ``vfsmount`` which is only counted if it is
->  different from the previous ``vfsmount``.  It then calls
-> -``path_to_nameidata()`` to install the new ``struct path`` in the
-> +``step_into()`` to install the new ``struct path`` in the
->  ``struct nameidata`` and drop the unneeded references.
+diff --git a/block/bsg.c b/block/bsg.c
+index d7bae94..e9fc896 100644
+--- a/block/bsg.c
++++ b/block/bsg.c
+@@ -12,6 +12,7 @@
+ #include <linux/idr.h>
+ #include <linux/bsg.h>
+ #include <linux/slab.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <scsi/scsi.h>
+ #include <scsi/scsi_ioctl.h>
+@@ -306,12 +307,15 @@ static struct bsg_device *bsg_get_device(struct inode *inode, struct file *file)
+ static int bsg_open(struct inode *inode, struct file *file)
+ {
+ 	struct bsg_device *bd;
++	struct bsg_class_device *bcd;
+ 
+ 	bd = bsg_get_device(inode, file);
+ 
+ 	if (IS_ERR(bd))
+ 		return PTR_ERR(bd);
+ 
++	bcd = &bd->queue->bsg_dev;
++	pm_runtime_get_sync(bcd->class_dev->parent);
+ 	file->private_data = bd;
+ 	return 0;
+ }
+@@ -319,8 +323,12 @@ static int bsg_open(struct inode *inode, struct file *file)
+ static int bsg_release(struct inode *inode, struct file *file)
+ {
+ 	struct bsg_device *bd = file->private_data;
++	struct bsg_class_device *bcd;
+ 
+ 	file->private_data = NULL;
++
++	bcd = &bd->queue->bsg_dev;
++	pm_runtime_put_sync(bcd->class_dev->parent);
+ 	return bsg_put_device(bd);
+ }
+ 
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-The logic describe here is now embodied by the code in step_into(), so
-the change doesn't make the description any more correct.
-
-Possibly you need to change the hero of the story from walk_component()
-to step_into(), but that is just a guess.
-
-NeilBrown
-
-
->=20=20
->  This "hand-over-hand" sequencing of getting a reference to the new
-> --=20
-> 2.30.0
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmASLm8OHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbnKphAAxI/39qkWqxQ0roEbx1nsbuSkTpV4xHN7DVjV
-GkODqSc4tE4P1ZEaereO2qeNf+d8mcZNBXZiBHxAD0nRYbsqeFYmETonmvhNJf8t
-hIjvwizHK1rDGt8W3S1lCyUlulUgGNIkOOVN6rYcOPHYOcBi2+IXdAGBIwlNyR7C
-c+y+kX9VRIQPoeDI58x4C8z3jomU6xXycHryiMrrQjuK9dJBpZ639EyfXfzeMlZe
-hdi97PYAO9a2peVmMM7wlrthscHON2Q1L3gWCMeHeUunlxL1lYqdAbeoTotS7HQi
-PphdCOT+1NWtekn5ab4iQbM9OBW+ha/52JRlqPTCTByxYC9zhUIHoBTWoP5tvTpN
-ENPVC9yxe4uIHYbiDACB5OBv3n4/Tk906M/EVmpxkN/no3QRBO+e4yWJ1DJMF0yR
-cQXW3jagaSILuOaF9PXI36gFQ0SUPKhmhRtW9TOcUl5MdIRJa/b4f2Q4tzKv5ELR
-s66kYW6gsHFaUsBspHJM12MErESKavhDcv8eHjZ4kz3cB9XiP+1eLcQnIXzrMo7d
-ORAKBBQqhHtSfL++wEfsjWwGwRKwJnhprNnzdvxVnqAVu8Bllcprcst/dorOwW3f
-+7keauLWaeRjz3HHcPPDxWQxCJCpYR1N8akmLf75ExQ3Xy4hKMw51zvKJ8mYBVW8
-qVMhjIg=
-=xU/E
------END PGP SIGNATURE-----
---=-=-=--
