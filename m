@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CD23076EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C933076F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhA1NRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
+        id S231666AbhA1NTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232045AbhA1NRE (ORCPT
+        with ESMTP id S229885AbhA1NTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:17:04 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE3AC061788
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:16:04 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id s24so5141675wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:16:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=a7Kay7oniLiASWWlX9LUAiXElA2SneepAxnVvZ1j9Bg=;
-        b=wm0m6q9c7pI2ykqugyIea0bijD0AIdx00BSXxbwNf9QgYWvNFw8u7g0iVVYt98tN+R
-         rjUkKmn08QsrSjMYYgeB/BE1Z1aUcapp6QCqdf7hvy5gUsofxEMHByci4Zfw9lL29/yX
-         oERUPPJs1zliyHYpPI9tgDdQ0U+aR/L6LMdXAFCyGjUEwkh375xDDu0Y0Bv4A4fL7iLF
-         WKss8uZbIloYg2uibFiXWPDP07PR9t8pLYs6U7cPey3J49wkb2Z0K5VlUIsjNVzOJEjJ
-         ODqonk+oM9Rgkn7zZM8koJsQ5l0anC8Mqu4tvy1VyRhac92NyvLy31OJvRvDCWk1V+ok
-         /jUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=a7Kay7oniLiASWWlX9LUAiXElA2SneepAxnVvZ1j9Bg=;
-        b=Na58E+wEjrWsrGj4A2BpgXushHWYiHsWkePFzGr3v2yuo+R2wX09+YFGXh6rjIckk6
-         93LBJNB60g6EC7xRXVb4vGLQzrLb+0RHGPdchTC+YpHHCIJYOhzgoMt62HaQ2jYbObPe
-         yoPuxYE8WYoYsboo/DRav3cR5PxK4uuahlglV0BGW1aAezUCTM5b6bWvFfMXQsRSLXNT
-         S5TGIwMo0S0TYY2OnwvJ7OjMzGx6aiYZEP03Q4Bc/mPCmMEG+YrlD5mXdmUJeiQyyKvx
-         CQap1q1FGoL2ptLIJfR5JTFGZydnwQbDAk/+3rVhGseCXXO0ubmFSFDtF5X2ESGM9q4a
-         19ng==
-X-Gm-Message-State: AOAM532SBJS+XgUP7zAGRH+a0PttsdCwXBY5GeNp9DFZlzu4VmRuucw5
-        6/iGdmkD5KJQgoG0F+KCmXqIthlgdlNdcd0w
-X-Google-Smtp-Source: ABdhPJy/2U8YYV4YNHpz7d82RHXpW6/38q6C4Nxk6SHw0fG6egfg8QiynFbs+Y23UmRWLv4Pm6w1rw==
-X-Received: by 2002:a05:600c:19cc:: with SMTP id u12mr8573435wmq.26.1611839763291;
-        Thu, 28 Jan 2021 05:16:03 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id s25sm5861961wmj.24.2021.01.28.05.16.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 05:16:02 -0800 (PST)
-Date:   Thu, 28 Jan 2021 13:16:00 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-usb@vger.kernel.org, Michael Jamet <michael.jamet@intel.com>,
-        netdev@vger.kernel.org, Yehezkel Bernat <YehezkelShB@gmail.com>
-Subject: Re: [PATCH 00/12] Rid W=1 warnings from Thunderbolt
-Message-ID: <20210128131600.GK4774@dell>
-References: <20210127112554.3770172-1-lee.jones@linaro.org>
- <20210128110904.GR2542@lahna.fi.intel.com>
+        Thu, 28 Jan 2021 08:19:02 -0500
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8ECC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:18:21 -0800 (PST)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 8407751D; Thu, 28 Jan 2021 14:18:19 +0100 (CET)
+Date:   Thu, 28 Jan 2021 14:18:18 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v7 45/72] x86/entry/64: Add entry code for #VC handler
+Message-ID: <20210128131817.GP32671@8bytes.org>
+References: <20200907131613.12703-1-joro@8bytes.org>
+ <20200907131613.12703-46-joro@8bytes.org>
+ <CAJhGHyCMMCY9bZauzrSeQr_62SpJgZQEQy9P7Rh28HXJtF5O5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210128110904.GR2542@lahna.fi.intel.com>
+In-Reply-To: <CAJhGHyCMMCY9bZauzrSeQr_62SpJgZQEQy9P7Rh28HXJtF5O5A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021, Mika Westerberg wrote:
+Hello Lai,
 
-> Hi Lee,
+On Sun, Jan 24, 2021 at 10:11:14PM +0800, Lai Jiangshan wrote:
+> > +
+> > +       /*
+> > +        * No need to switch back to the IST stack. The current stack is either
+> > +        * identical to the stack in the IRET frame or the VC fall-back stack,
+> > +        * so it is definitly mapped even with PTI enabled.
+> > +        */
+> > +       jmp     paranoid_exit
+> > +
+> >
 > 
-> On Wed, Jan 27, 2021 at 11:25:42AM +0000, Lee Jones wrote:
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> > 
-> > Only 1 small set required for Thunderbolt.  Pretty good!
-> > 
-> > Lee Jones (12):
-> >   thunderbolt: dma_port: Remove unused variable 'ret'
-> >   thunderbolt: cap: Fix kernel-doc formatting issue
-> >   thunderbolt: ctl: Demote non-conformant kernel-doc headers
-> >   thunderbolt: eeprom: Demote non-conformant kernel-doc headers to
-> >     standard comment blocks
-> >   thunderbolt: pa: Demote non-conformant kernel-doc headers
-> >   thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv'
-> >     param
-> >   thunderbolt: nhi: Demote some non-conformant kernel-doc headers
-> >   thunderbolt: tb: Kernel-doc function headers should document their
-> >     parameters
-> >   thunderbolt: swit: Demote a bunch of non-conformant kernel-doc headers
-> >   thunderbolt: icm: Fix a couple of formatting issues
-> >   thunderbolt: tunnel: Fix misspelling of 'receive_path'
-> >   thunderbolt: swit: Fix function name in the header
+> Hello
 > 
-> I applied all of the changes that touch static functions. For non-static
-> functions I will send a patch set shortly that adds the missing bits for
-> the kernel-doc descriptions. I also fixed $subject lines of few patches
-> ("switch:" instead of "swit:").
-
-Oh, that's odd.  This must be a bug in my script.
-
-As I strip [ch], as in *.c and *.h.
-
-Thanks for noticing.
-
-> Please check that I got everything correct in
+> I know we don't enable PTI on AMD, but the above comment doesn't align to the
+> next code.
 > 
->   git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git next
+> We assume PTI is enabled as the comments said "even with PTI enabled".
 > 
-> Thanks!
+> When #VC happens after entry_SYSCALL_64 but before it switches to the
+> kernel CR3.  vc_switch_off_ist() will switch the stack to the kernel stack
+> and paranoid_exit can't work when it switches to user CR3 on the kernel stack.
+> 
+> The comment above lost information that the current stack is possible to be
+> the kernel stack which is mapped not user CR3.
+> 
+> Maybe I missed something.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+You are right, the scenario above would cause problems for the current
+#VC entry code. With SEV-ES an #VC exception can't happen in the early
+syscall entry code, so I think its the best to update the comment
+reflecting this.
+
+In the future this might change and then the #VC entry code needs to
+take care of this case too. Thanks for pointing it out.
+
+Regards,
+
+	Joerg
