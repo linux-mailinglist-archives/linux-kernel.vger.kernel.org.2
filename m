@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC27D306DAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDFA306DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhA1GgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:36:21 -0500
-Received: from muru.com ([72.249.23.125]:53788 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231251AbhA1GgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:36:19 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 2C6A680A9;
-        Thu, 28 Jan 2021 06:35:39 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 08:35:30 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, broonie@kernel.org,
-        aaro.koskinen@iki.fi, spinal.by@gmail.com,
-        jarkko.nikula@bitmer.com, merlijn@wizzup.org, sre@kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        phone-devel@vger.kernel.org, kuninori.morimoto.gx@renesas.com,
-        Carl Philipp Klemm <philipp@uvos.xyz>
-Subject: Re: [PATCH] ASoC: ti: Allocate dais dynamically for TDM and audio
- graph card
-Message-ID: <YBJbMqt4PbeU/fD4@atomide.com>
-References: <20210124092713.GA22195@amd>
- <2a9e7655-3d32-feb5-080c-8928a96f417e@gmail.com>
+        id S229893AbhA1Gjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:39:37 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:16693 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhA1Gj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 01:39:27 -0500
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 10S6cVto026509;
+        Thu, 28 Jan 2021 15:38:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10S6cVto026509
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611815912;
+        bh=EE6oo7GF4ijvvjJyoAxlXeyJ1ZPQQAQ64OLvBXG81Qo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zvsk1AU4PAwbQKMYzfw5a0Ra2RFqdukNUvKczCDcPMJaGjUvBeYY6kTsU2dRFE0/S
+         7/RrsmurA99AN0f723zIbbJoLORO8n1Wkq6Jm9lEGlSw0xNQSLb10CUj2KJy1ZNHb9
+         2b8mIJEO6EEaDa/4rD6VTXLt0zSjWulRF0CEDSTMERviFCmeQBny//6OBFHxQiudHt
+         M+hsqi4SVK22CD3KnHm8pJlQOw81g6BCJ3/dFiCtGCQmy7/+QPG1NzVhHT6g9SNK6m
+         bIgDuStOibW8gkHr5EBUz8tGZ3DbU1epHPOxCuqYwwOrRkbd1Q5usaJXC++jJnXCMY
+         IW+mh7lZ58r/A==
+X-Nifty-SrcIP: [209.85.210.169]
+Received: by mail-pf1-f169.google.com with SMTP id q131so3354654pfq.10;
+        Wed, 27 Jan 2021 22:38:32 -0800 (PST)
+X-Gm-Message-State: AOAM5303QR6v3/cJ6oW8ee/GWQrEv6ExM1OxoIL8QLpmbtT6hCSC03fN
+        VcocgOXsv4IKH/qv6Kr4eS3e2AuqQqpSdV0uhuQ=
+X-Google-Smtp-Source: ABdhPJwYoK7zkT9RUEpOdut1O6wbz7EgzzQPAJEClu1M0y3kYlcXnvf+k6BNtRBrRrSNSQ7BjsT/B8AYiTABfP0ya1w=
+X-Received: by 2002:a63:1f1d:: with SMTP id f29mr15124521pgf.47.1611815911327;
+ Wed, 27 Jan 2021 22:38:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2a9e7655-3d32-feb5-080c-8928a96f417e@gmail.com>
+References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35>
+ <3394639.6NgGvCfkNl@devpool47> <3207945.kN7qQvqmsI@devpool47>
+In-Reply-To: <3207945.kN7qQvqmsI@devpool47>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 28 Jan 2021 15:37:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATMFicsV3Lz3RfrqjzKOOpcyEomVJOPqM29X6y4pXiFDA@mail.gmail.com>
+Message-ID: <CAK7LNATMFicsV3Lz3RfrqjzKOOpcyEomVJOPqM29X6y4pXiFDA@mail.gmail.com>
+Subject: Re: [PATCH v6] scripts: use pkg-config to locate libcrypto
+To:     Rolf Eike Beer <eb@emlix.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Péter Ujfalusi <peter.ujfalusi@gmail.com> [210126 06:00]:
-> On 1/24/21 11:27 AM, Pavel Machek wrote:
-> > From: Tony Lindgren <tony@atomide.com>
-> > +	for (i = 0; i < mcbsp->dai_count; i++) {
-> > +		struct snd_soc_dai_driver *dai = &mcbsp->dais[i];
-> > +
-> > +		dai->name = devm_kasprintf(mcbsp->dev, GFP_KERNEL, "%s-dai%i",
-> > +					   dev_name(mcbsp->dev), i);
-> > +
-> > +		if (i == 0) {
-> > +			dai->probe = omap_mcbsp_probe;
-> > +			dai->remove = omap_mcbsp_remove;
-> > +			dai->ops = &mcbsp_dai_ops;
-> > +		}
-> 
-> You are effectively creating extra dummy-dais (no ops), but naming them as
-> McBSP.
-> The dummy-dais will only work if the real dai is in use and the dai link
-> which contains the real dai must be configured (TDM slots, format, channels)
-> to accomodate the link which contains the dummy-dai.
-> 
-> The idea did not aged well for me ;)
-> It still looks and sounds like a hack to model the TDM slots on a single DAI
-> as multiple DAIs just to satisfy a generic binding which is not aimed to
-> satisfy the droid4 setup (which is far from anything simple).
+On Wed, Jan 27, 2021 at 5:06 PM Rolf Eike Beer <eb@emlix.com> wrote:
+>
+> From f467f251e44cd406c9556ea7d68d131f56e0d832 Mon Sep 17 00:00:00 2001
+> From: Rolf Eike Beer <eb@emlix.com>
+> Date: Thu, 22 Nov 2018 16:40:49 +0100
+> Subject: [PATCH] scripts: use pkg-config to locate libcrypto
+>
+> Otherwise build fails if the headers are not in the default location. Whi=
+le at
+> it also ask pkg-config for the libs, with fallback to the existing value.
+>
+> Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+> Cc: stable@vger.kernel.org # 5.6.x
+> ---
+>  scripts/Makefile | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> Changes in v6:
+>  - hardcode pkg-config
+>
+> diff --git a/scripts/Makefile b/scripts/Makefile
+> index b5418ec587fb..9de3c03b94aa 100644
+> --- a/scripts/Makefile
+> +++ b/scripts/Makefile
+> @@ -3,6 +3,9 @@
+>  # scripts contains sources for various helper programs used throughout
+>  # the kernel for the build process.
+>
+> +CRYPTO_LIBS =3D $(shell pkg-config --libs libcrypto 2> /dev/null || echo=
+ -lcrypto)
+> +CRYPTO_CFLAGS =3D $(shell pkg-config --cflags libcrypto 2> /dev/null)
+> +
+>  hostprogs-always-$(CONFIG_BUILD_BIN2C)                 +=3D bin2c
+>  hostprogs-always-$(CONFIG_KALLSYMS)                    +=3D kallsyms
+>  hostprogs-always-$(BUILD_C_RECORDMCOUNT)               +=3D recordmcount
+> @@ -14,8 +17,9 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)   +=
+=3D insert-sys-cert
+>
+>  HOSTCFLAGS_sorttable.o =3D -I$(srctree)/tools/include
+>  HOSTCFLAGS_asn1_compiler.o =3D -I$(srctree)/include
+> -HOSTLDLIBS_sign-file =3D -lcrypto
+> -HOSTLDLIBS_extract-cert =3D -lcrypto
+> +HOSTLDLIBS_sign-file =3D $(CRYPTO_LIBS)
+> +HOSTCFLAGS_extract-cert.o =3D $(CRYPTO_CFLAGS)
+> +HOSTLDLIBS_extract-cert =3D $(CRYPTO_LIBS)
+>
+>  ifdef CONFIG_UNWINDER_ORC
+>  ifeq ($(ARCH),x86_64)
+> --
+> 2.30.0
+>
+> --
+> Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+> Fon +49 551 30664-0, Fax +49 551 30664-11
+> Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
+> Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 31=
+60
+> Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-Id=
+Nr.: DE 205 198 055
+>
+> emlix - smart embedded open source
+>
+>
+>
 
-After thinking about this a bit more, I think the voice call dai should be
-created by the voice dai. When we have an active voice call, the data
-transfer is completely out of control of the kernel mcbsp driver. It needs
-to be only configured on the pmic.
+Applied to linux-kbuild. Thanks.
 
-So I'm suggesting tha we create the modem voice call dai as a child for
-sound/soc/codecs/cpcap.c, does that sound OK to you guys?
-
-I think from snd-soc-audio-graph-card binding point of view, we'd just move
-the cpu_dai_mdm endpoint out of the mcbsp in the device tree and drop the
-$subject patch. Then the dts for the pmic voice codec becomes something
-like this (untested):
-
-cpcap_audio: audio-codec {
-	#sound-dai-cells = <1>;
-	#address-cells = <1>;
-	#size-cells = <0>;
-
-	port@0 {
-		reg = <0>;
-		cpcap_audio_codec0: endpoint {
-		};
-	};
-	port@1 {
-		reg = <1>;
-		cpcap_audio_codec1: endpoint@0 {
-		};
-		cpu_dai_mdm: endpoint@1 {
-			reg = <1>;
-			dai-format = "dsp_a";
-			frame-master = <&cpcap_audio_codec1>;
-			bitclock-master = <&cpcap_audio_codec1>;
-			remote-endpoint = <&mot_mdm6600_audio_codec0>;
-		};
-        };
-};
-
-For things like recording a voice call, I think mcbsp could be configured
-to also listen on the traffic and dump it out. I guess that could also
-happen directly with calls from the sound/soc/codecs/cpcap.c driver to
-the mcbsp driver since we havethe audio graph mapping. Anyways, that's a
-separate series of patches, still something to consider.
-
-Regards,
-
-Tony
+--=20
+Best Regards
+Masahiro Yamada
