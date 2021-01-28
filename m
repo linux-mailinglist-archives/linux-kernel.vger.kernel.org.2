@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A80D307B1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD4E307B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhA1Qgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:36:46 -0500
-Received: from mga05.intel.com ([192.55.52.43]:12672 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232593AbhA1Qff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:35:35 -0500
-IronPort-SDR: RJD7fxS39npS7iEX/ZdeFA+Q9vbj9zCWQ7No69yM1D+C9dv4jacO6TP10LB3Z9pNZiKcn3magP
- E9dzgoYbMrgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="265096989"
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="265096989"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 08:34:47 -0800
-IronPort-SDR: y9pYDtN/Q58nS8laohgvzdHcatF0IUU4lKAXlan7AJNEfQMW4xksU2HSEnmXh8GqZISdaCqNs7
- If5a2VkfWYlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="430577314"
-Received: from host.sh.intel.com (HELO host) ([10.239.154.115])
-  by orsmga001.jf.intel.com with ESMTP; 28 Jan 2021 08:34:44 -0800
-Date:   Fri, 29 Jan 2021 00:35:49 +0800
-From:   "Ye, Xiang" <xiang.ye@intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     jikos@kernel.org, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] hid-sensor-common: Add relative sensitivity check
-Message-ID: <20210128163549.GA12432@host>
-References: <20210120074706.23199-1-xiang.ye@intel.com>
- <20210120074706.23199-3-xiang.ye@intel.com>
- <20210124131442.0fc2577e@archlinux>
- <7e136ebb914f71da3fcb90b8048f9f7dd8cdf0bf.camel@linux.intel.com>
+        id S232647AbhA1QhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:37:23 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36060 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232626AbhA1Qgm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:36:42 -0500
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611851760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cCkXezytlMBpgbEI/se8mQWEbQF6yu/Obce7Uy+IZAc=;
+        b=IMt3H/Jq6RFwi01nYxx4boCTTNirgavcUSfVedqyftHhJSfSMo3BjCWFMf8tzetvZQg6ED
+        WP8rK+x4V+OviULJmsAFSmLQVBkie5qBYKATVjZ4eZaognvvTMFoy6DR5uqlvHASCVc+Tn
+        /ASSuOSD8dJ/sKtgCkI3kM1/LFn1ro6FKS3L0FlHxBz7+gqjSRZ5e+XaZGykeSl8vzDIN/
+        yfrPZwj/a/oU/+IdxPYRMsif97rPIXs6kYOf1pxVATTgRicNpm/yFx6a1B+8EGvncnzopf
+        QYinDVljrqHkOGNZ6QdOTw/c5qozLTymJihCgRi3MMpzBIMt+GWBczSkyFvkUQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611851760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cCkXezytlMBpgbEI/se8mQWEbQF6yu/Obce7Uy+IZAc=;
+        b=3FxwvRCGTRbt9kfmoYHMTHhtWsMA/r/di4Cw4Tqz1vDbXL83JHAeiojdTkELPut4Umq9bg
+        GasMrRvf6DkoPNDg==
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: linux-next: Tree for Jan 28 [drivers/net/dsa/hirschmann/hellcreek_sw]
+In-Reply-To: <677e11e9-573e-6459-8323-65fc32f213e7@infradead.org>
+References: <20210128201131.608c16ee@canb.auug.org.au> <677e11e9-573e-6459-8323-65fc32f213e7@infradead.org>
+Date:   Thu, 28 Jan 2021 17:35:58 +0100
+Message-ID: <87o8h9qas1.fsf@kurt>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e136ebb914f71da3fcb90b8048f9f7dd8cdf0bf.camel@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas andd Jonathan
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the review.
+On Thu Jan 28 2021, Randy Dunlap wrote:
+> On 1/28/21 1:11 AM, Stephen Rothwell wrote:
+>> Hi all,
+>>=20
+>> Changes since 20210127:
+>>=20
+>
+>
+> on i386:
+>
+> ERROR: modpost: "taprio_offload_get" [drivers/net/dsa/hirschmann/hellcree=
+k_sw.ko] undefined!
+> ERROR: modpost: "taprio_offload_free" [drivers/net/dsa/hirschmann/hellcre=
+ek_sw.ko] undefined!
+>
+> Full randconfig file is attached.
 
-On Sun, Jan 24, 2021 at 08:20:12AM -0800, Srinivas Pandruvada wrote:
-> On Sun, 2021-01-24 at 13:14 +0000, Jonathan Cameron wrote:
-> > On Wed, 20 Jan 2021 15:47:05 +0800
-> > Ye Xiang <xiang.ye@intel.com> wrote:
-> > 
-> > > Some hid sensors may use relative sensitivity such as als sensor.
-> > > This patch add relative sensitivity check for all hid-sensors.
-> > > 
-> > > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> > > ---
-> > >  .../iio/common/hid-sensors/hid-sensor-attributes.c    | 11
-> > > ++++++++++-
-> > >  include/linux/hid-sensor-ids.h                        |  1 +
-> > >  2 files changed, 11 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c 
-> > > b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> > > index d349ace2e33f..b685c292a179 100644
-> > > --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> > > +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> > > @@ -480,7 +480,7 @@ int hid_sensor_parse_common_attributes(struct
-> > > hid_sensor_hub_device *hsdev,
-> > >  
-> > >  	/*
-> > >  	 * Set Sensitivity field ids, when there is no individual
-> > > modifier, will
-> > > -	 * check absolute sensitivity of data field
-> > > +	 * check absolute sensitivity and relative sensitivity of data
-> > > field
-> > >  	 */
-> > >  	for (i = 0; i < sensitivity_addresses_len && st-
-> > > >sensitivity.index < 0; i++) {
-> > >  		sensor_hub_input_get_attribute_info(hsdev,
-> > > @@ -488,6 +488,15 @@ int hid_sensor_parse_common_attributes(struct
-> > > hid_sensor_hub_device *hsdev,
-> > >  				HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSIT
-> > > IVITY_ABS |
-> > >  					sensitivity_addresses[i],
-> > >  				&st->sensitivity);
-> > > +
-> > > +		if (st->sensitivity.index >= 0)
-> > > +			break;
-> > > +
-> > > +		sensor_hub_input_get_attribute_info(hsdev,
-> > > +				HID_FEATURE_REPORT, usage_id,
-> > > +				HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSIT
-> > > IVITY_REL_PCT |
-> > > +					sensitivity_addresses[i],
-> > > +				&st->sensitivity);
-> > 
-> > We can't provide the value to userspace without reflecting the
-> > difference between
-> > the two ways of expressing it.
-> > 
-> > It seems there are 3 ways sensitivity is expressed.
-> > 1. Raw value in same units as the measurement (easy one and what is
-> > currently reported)
-> > 2. Percentage of range - also relatively easy to transform into the
-> > same as 1.
-> > 3. Percentage of prior reading..  This one doesn't fit in any
-> > existing ABI, so
-> >    unfortunately we'll have to invent something new along the lines
-> > of
-> >    *_hysteresis_relative 
+Thanks for the config file. I've submitted a patch to fix it.
 
-yes, the 3th version sensitivity (Percentage of prior reading) is what we 
-are using for als sensor now. the 1th version sensitivity is common used 
-by other hid sensors. Do you have suggestion or reference about 
-how to add *_hysteresis_relative field to iio model?
+Thanks,
+Kurt
 
-> 
-> This is why it was not added before when I developed.  But later few
-> years back there was a patch to add this by one of our developer. There
-> was some discussion, I thought it was decided it is OK to add.
-> 
-> But I agree, we should add new ABI as you suggested. Now almost every
-> laptop has HID sensors, better to address this. 
-> 
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I think the add relative hystersis patch should be separated into a independent
-patch series, for it's a independent function and need more effort for coding and 
-testing. And I can submit the other two patch in this patch series first.
+-----BEGIN PGP SIGNATURE-----
 
-> > 
-> > 
-> > 
-> > >  	}
-> > >  
-> > >  	st->raw_hystersis = -1;
-> > > diff --git a/include/linux/hid-sensor-ids.h b/include/linux/hid-
-> > > sensor-ids.h
-> > > index 3bbdbccc5805..ac631159403a 100644
-> > > --- a/include/linux/hid-sensor-ids.h
-> > > +++ b/include/linux/hid-sensor-ids.h
-> > > @@ -149,6 +149,7 @@
-> > >  /* Per data field properties */
-> > >  #define HID_USAGE_SENSOR_DATA_MOD_NONE				
-> > > 	0x00
-> > >  #define HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_ABS		
-> > > 0x1000
-> > > +#define
-> > > HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_REL_PCT            0xE
-> > > 000
-> > >  
-> > >  /* Power state enumerations */
-> > >  #define HID_USAGE_SENSOR_PROP_POWER_STATE_UNDEFINED_ENUM	0x20085
-> > > 0
-> 
+iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmAS5+4ACgkQeSpbgcuY
+8KZ5ShAAxcb9zdGrDElfmjSPsfBTQ9+yU96nez/uz1t8rkGGwhKvecs50j2hMEf5
+X76jf+4gjXlZ2LXWlNsbTSGq1ay9X7U8ey4dauGF6O4utTnID5A93bAQgKcPBUN9
+tijhXxCFWjmrn2SbOEDcS+OjjViapQSaOeojkSfxyN5O+jXLUPNbP6BDvOP+PoIc
+Jniej8B03GBf3T9DcE2g9UwtIXfrR/DkMg/+57IjVIQT0vAxVs5nVH4Hs31MRLkS
+DepRihC74QosuR3bw/w5SRduL3+K8bkC+BFdfudsDwVQxuXTlhVDuFa3LdPAQXg0
+tw6ix5kljEgf8rBE3zEIHRIju/FMqogf01R24tyvbdL7GQQUoeHwZP4S1QlKKGh/
+vKaE/ZQy4XJ9MvB5XrQdztUciElQ0swvi0SViGodcm4VuwWESWz2oo2ULQ0l7GX/
+9AowpLsR1Lv0XIkc7+dLuF/+Ym4kk/4GlYiF+r8kb9F5c4ldtzyMP2Lo1hlYxlWw
+x5vTn6vWnw9AKliZ7BKRhJa2SzO/hncKhgE5bhqe+SLgkc1jnvuq5OyIFXGX8eNY
+RCNlV+pLE3hxd7lwHrN42l4VSrPplgASdHUYuq8a5nRYr1RApkkOG27deQ9k56s6
+Ay1/1CKlQvPPNGvon/3uWPnY70PDQGswscWXbr8VaCDTsDk0MgI=
+=brOp
+-----END PGP SIGNATURE-----
+--=-=-=--
