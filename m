@@ -2,60 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C060830749D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AE030752D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhA1LVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:21:13 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11526 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA1LVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:21:09 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DRHzj3Sg9zjFSQ;
-        Thu, 28 Jan 2021 19:19:13 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 28 Jan 2021 19:20:19 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
-CC:     <rui.zhang@intel.com>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] ACPI: tables: Mark acpi_init_fpdt with static keyword
-Date:   Thu, 28 Jan 2021 19:31:19 +0800
-Message-ID: <1611833479-87653-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S229728AbhA1LtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:49:20 -0500
+Received: from m12-14.163.com ([220.181.12.14]:55201 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229531AbhA1LtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:49:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=u572u
+        RJOAm3kNOY9kS7OvdsbJ0boIJxgCpqT07Onf2k=; b=LHOoLY13HCGKNOo0D3qiL
+        XdZJnWyHz92xKWw4rXtY6orqheMhfe/z7l5ikOLBc6Ri2aGTaeDjoPkXMRfxF/B6
+        2/7E57OhZ5vnVBKMrVptm9afIn1RHA1Nj3ds9J1XrG13tklYUUTVn6bIRNdH2fVH
+        AGEXrHCngXzMk1OuBuRSTY=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp10 (Coremail) with SMTP id DsCowAAHwbY8NRJgxjLNiA--.49842S2;
+        Thu, 28 Jan 2021 11:53:35 +0800 (CST)
+From:   dingsenjie@163.com
+To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        leon@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] net/ethernet: convert to use module_platform_driver in octeon_mgmt.c
+Date:   Thu, 28 Jan 2021 11:53:30 +0800
+Message-Id: <20210128035330.17676-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowAAHwbY8NRJgxjLNiA--.49842S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZw47KFW3KFW7Kr1DCrWDtwb_yoWkKrbE9r
+        1xX3WfXF4UCr1Fka1qgw1a93ySka4kZrn3GF4IgrZ0qa13Wwn0v34DArW7Xw1kWr4xJFyD
+        CrsrGFy7C3y2yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU58Ma5UUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRUnyFUMcFIUcwAGsF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+From: dingsenjie <dingsenjie@yulong.com>
 
-drivers/acpi/acpi_fpdt.c:230:6: warning: symbol 'acpi_init_fpdt' was not declared. Should it be static?
+Simplify the code by using module_platform_driver macro
+for octeon_mgmt.
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
 ---
- drivers/acpi/acpi_fpdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/cavium/octeon/octeon_mgmt.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
-index b810811..968f9cc 100644
---- a/drivers/acpi/acpi_fpdt.c
-+++ b/drivers/acpi/acpi_fpdt.c
-@@ -227,7 +227,7 @@ static int fpdt_process_subtable(u64 address, u32 subtable_type)
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c b/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
+index 5e50bb1..ecffebd 100644
+--- a/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
++++ b/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
+@@ -1556,18 +1556,7 @@ static int octeon_mgmt_remove(struct platform_device *pdev)
+ 	.remove		= octeon_mgmt_remove,
+ };
  
--void acpi_init_fpdt(void)
-+static void acpi_init_fpdt(void)
- {
- 	acpi_status status;
- 	struct acpi_table_header *header;
+-static int __init octeon_mgmt_mod_init(void)
+-{
+-	return platform_driver_register(&octeon_mgmt_driver);
+-}
+-
+-static void __exit octeon_mgmt_mod_exit(void)
+-{
+-	platform_driver_unregister(&octeon_mgmt_driver);
+-}
+-
+-module_init(octeon_mgmt_mod_init);
+-module_exit(octeon_mgmt_mod_exit);
++module_platform_driver(octeon_mgmt_driver);
+ 
+ MODULE_SOFTDEP("pre: mdio-cavium");
+ MODULE_DESCRIPTION(DRV_DESCRIPTION);
 -- 
-2.6.2
+1.9.1
+
 
