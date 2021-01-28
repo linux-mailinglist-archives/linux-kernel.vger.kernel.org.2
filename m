@@ -2,60 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12A9306D78
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C047A306D7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhA1GLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:11:22 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11454 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhA1GLV (ORCPT
+        id S229970AbhA1GOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:14:42 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:17040 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229652AbhA1GOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:11:21 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DR96V4H7vzjDNG;
-        Thu, 28 Jan 2021 14:09:38 +0800 (CST)
-Received: from [10.174.184.214] (10.174.184.214) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 28 Jan 2021 14:10:28 +0800
-Subject: Re: [RFC PATCH v1 2/4] vfio: Add a page fault handler
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        Thu, 28 Jan 2021 01:14:37 -0500
+X-UUID: 660443e4bd5a4868a182df3e66c90ade-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=M+1NmVcqJddvPrPZfZxMzwZFz8yoMpRe6BggTkWmWIc=;
+        b=TRrdXlLkcyIU/w2qKiqyzorq8Vqj3uzGcdPdu4Jig+hmjG4bQ66Cfgoz4GRIA1WgFfH/GAcCv7gwVtMnPzd3XRMW3cEYhy9OHnI4BGXCA5M/0cJo7VWLYc5CxlDsHTYajgyVnaJzeqA4CPCMamA+sjUzgGPbEdUOdWr3k14FZoU=;
+X-UUID: 660443e4bd5a4868a182df3e66c90ade-20210128
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 647912754; Thu, 28 Jan 2021 14:13:48 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 28 Jan 2021 14:13:41 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 14:13:42 +0800
+Message-ID: <1611814421.28312.9.camel@mtksdaap41>
+Subject: Re: [PATCH v10 8/9] drm/mediatek: add DDP support for MT8183
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
- <20210125090402.1429-3-lushenming@huawei.com>
- <20210127174223.GB1738577@infradead.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <d4c51504-24ed-2592-37b4-f390b97fdd00@huawei.com>
-Date:   Thu, 28 Jan 2021 14:10:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Date:   Thu, 28 Jan 2021 14:13:41 +0800
+In-Reply-To: <20210127045422.2418917-9-hsinyi@chromium.org>
+References: <20210127045422.2418917-1-hsinyi@chromium.org>
+         <20210127045422.2418917-9-hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210127174223.GB1738577@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.214]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: E1725DCAAD6A55064C0D3F208A3FC7FCF756C73E594FB201E869F3F741AF8DC22000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/28 1:42, Christoph Hellwig wrote:
-> On Mon, Jan 25, 2021 at 05:04:00PM +0800, Shenming Lu wrote:
->> +EXPORT_SYMBOL_GPL(vfio_iommu_dev_fault_handler);
-> 
-> This function is only used in vfio.c itself, so it should not be
-> exported, but rather marked static.
-> .
-> 
+SGksIEhzaW4tWWk6DQoNCk1vZGlmeSB0aGUgdGl0bGUncyBwcmVmaXggdG8gJ3NvYzogbWVkaWF0
+ZWs6Jw0KDQpPbiBXZWQsIDIwMjEtMDEtMjcgYXQgMTI6NTQgKzA4MDAsIEhzaW4tWWkgV2FuZyB3
+cm90ZToNCj4gRnJvbTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+
+DQo+IA0KPiBBZGQgRERQIHN1cHBvcnQgZm9yIE1UODE4MyBTb0MuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbT4NCj4gU2lnbmVk
+LW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxoc2lueWlAY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4gIGRy
+aXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jIHwgNTAgKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA1MCBpbnNlcnRpb25zKCspDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLW11dGV4LmMgYi9kcml2ZXJzL3Nv
+Yy9tZWRpYXRlay9tdGstbXV0ZXguYw0KPiBpbmRleCBmNTMxYjExOWRhN2E5Li5mNjRlOWMzM2U4
+NWFkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYw0KPiAr
+KysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYw0KPiBAQCAtMTQsNiArMTQsOCBA
+QA0KPiAgDQo+ICAjZGVmaW5lIE1UMjcwMV9NVVRFWDBfTU9EMAkJCTB4MmMNCj4gICNkZWZpbmUg
+TVQyNzAxX01VVEVYMF9TT0YwCQkJMHgzMA0KPiArI2RlZmluZSBNVDgxODNfRElTUF9NVVRFWDBf
+TU9EMAkJCTB4MzANCj4gKyNkZWZpbmUgTVQ4MTgzX0RJU1BfTVVURVgwX1NPRjAJCQkweDJjDQoN
+Ck1vZGlmeSAnRElTUF9NVVRFWCcgdG8gJ01VVEVYJw0KDQo+ICANCj4gICNkZWZpbmUgRElTUF9S
+RUdfTVVURVhfRU4obikJCQkoMHgyMCArIDB4MjAgKiAobikpDQo+ICAjZGVmaW5lIERJU1BfUkVH
+X01VVEVYKG4pCQkJKDB4MjQgKyAweDIwICogKG4pKQ0KPiBAQCAtMzcsNiArMzksMTggQEANCj4g
+ICNkZWZpbmUgTVQ4MTY3X01VVEVYX01PRF9ESVNQX0RJVEhFUgkJMTUNCj4gICNkZWZpbmUgTVQ4
+MTY3X01VVEVYX01PRF9ESVNQX1VGT0UJCTE2DQo+ICANCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVY
+X01PRF9ESVNQX1JETUEwCQkwDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1B
+MQkJMQ0KPiArI2RlZmluZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMAkJOQ0KPiArI2RlZmlu
+ZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8yTAkJMTANCj4gKyNkZWZpbmUgTVQ4MTgzX01V
+VEVYX01PRF9ESVNQX09WTDFfMkwJCTExDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElT
+UF9XRE1BMAkJMTINCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0NPTE9SMAkJMTMN
+Cj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0NDT1JSMAkJMTQNCj4gKyNkZWZpbmUg
+TVQ4MTgzX01VVEVYX01PRF9ESVNQX0FBTDAJCTE1DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9N
+T0RfRElTUF9HQU1NQTAJCTE2DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9ESVRI
+RVIwCQkxNw0KPiArDQo+ICAjZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9PVkwwCQkxMQ0K
+PiAgI2RlZmluZSBNVDgxNzNfTVVURVhfTU9EX0RJU1BfT1ZMMQkJMTINCj4gICNkZWZpbmUgTVQ4
+MTczX01VVEVYX01PRF9ESVNQX1JETUEwCQkxMw0KPiBAQCAtODcsNiArMTAxLDEyIEBADQo+ICAj
+ZGVmaW5lIE1UMjcxMl9NVVRFWF9TT0ZfRFNJMwkJCTYNCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVY
+X1NPRl9EUEkwCQkJMg0KPiAgI2RlZmluZSBNVDgxNjdfTVVURVhfU09GX0RQSTEJCQkzDQo+ICsj
+ZGVmaW5lIE1UODE4M19NVVRFWF9TT0ZfRFNJMAkJCTENCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVY
+X1NPRl9EUEkwCQkJMg0KPiArDQo+ICsvKiBBZGQgRU9GIHNldHRpbmcgc28gb3ZlcmxheSBoYXJk
+d2FyZSBjYW4gcmVjZWl2ZSBmcmFtZSBkb25lIGlycSAqLw0KPiArI2RlZmluZSBNVDgxODNfTVVU
+RVhfRU9GX0RTSTAJCQkoTVQ4MTgzX01VVEVYX1NPRl9EU0kwIDw8IDYpDQo+ICsjZGVmaW5lIE1U
+ODE4M19NVVRFWF9FT0ZfRFBJMAkJCShNVDgxODNfTVVURVhfU09GX0RQSTAgPDwgNikNCj4gIA0K
+PiAgc3RydWN0IG10a19tdXRleCB7DQo+ICAJaW50IGlkOw0KPiBAQCAtMTgxLDYgKzIwMSwyMCBA
+QCBzdGF0aWMgY29uc3QgdW5zaWduZWQgaW50IG10ODE3M19tdXRleF9tb2RbRERQX0NPTVBPTkVO
+VF9JRF9NQVhdID0gew0KPiAgCVtERFBfQ09NUE9ORU5UX1dETUExXSA9IE1UODE3M19NVVRFWF9N
+T0RfRElTUF9XRE1BMSwNCj4gIH07DQo+ICANCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQg
+bXQ4MTgzX211dGV4X21vZFtERFBfQ09NUE9ORU5UX0lEX01BWF0gPSB7DQo+ICsJW0REUF9DT01Q
+T05FTlRfQUFMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQUFMMCwNCj4gKwlbRERQX0NPTVBP
+TkVOVF9DQ09SUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ0NPUlIwLA0KPiArCVtERFBfQ09N
+UE9ORU5UX0NPTE9SMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ09MT1IwLA0KPiArCVtERFBf
+Q09NUE9ORU5UX0RJVEhFUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfRElUSEVSMCwNCj4gKwlb
+RERQX0NPTVBPTkVOVF9HQU1NQV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfR0FNTUEwLA0KPiAr
+CVtERFBfQ09NUE9ORU5UX09WTDBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAsDQo+ICsJ
+W0REUF9DT01QT05FTlRfT1ZMXzJMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8yTCwN
+Cj4gKwlbRERQX0NPTVBPTkVOVF9PVkxfMkwxXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwx
+XzJMLA0KPiArCVtERFBfQ09NUE9ORU5UX1JETUEwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9S
+RE1BMCwNCj4gKwlbRERQX0NPTVBPTkVOVF9SRE1BMV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1Bf
+UkRNQTEsDQo+ICsJW0REUF9DT01QT05FTlRfV0RNQTBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQ
+X1dETUEwLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDI3MTJf
+bXV0ZXhfc29mW01VVEVYX1NPRl9EU0kzICsgMV0gPSB7DQo+ICAJW01VVEVYX1NPRl9TSU5HTEVf
+TU9ERV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01PREUsDQo+ICAJW01VVEVYX1NPRl9EU0kwXSA9IE1V
+VEVYX1NPRl9EU0kwLA0KPiBAQCAtMTk4LDYgKzIzMiwxMiBAQCBzdGF0aWMgY29uc3QgdW5zaWdu
+ZWQgaW50IG10ODE2N19tdXRleF9zb2ZbTVVURVhfU09GX0RTSTMgKyAxXSA9IHsNCj4gIAlbTVVU
+RVhfU09GX0RQSTFdID0gTVQ4MTY3X01VVEVYX1NPRl9EUEkxLA0KPiAgfTsNCj4gIA0KPiArc3Rh
+dGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDgxODNfbXV0ZXhfc29mW01VVEVYX1NPRl9EU0kzICsg
+MV0gPSB7DQo+ICsJW01VVEVYX1NPRl9TSU5HTEVfTU9ERV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01P
+REUsDQo+ICsJW01VVEVYX1NPRl9EU0kwXSA9IE1VVEVYX1NPRl9EU0kwIHwgTVQ4MTgzX01VVEVY
+X0VPRl9EU0kwLA0KPiArCVtNVVRFWF9TT0ZfRFBJMF0gPSBNVDgxODNfTVVURVhfU09GX0RQSTAg
+fCBNVDgxODNfTVVURVhfRU9GX0RQSTAsDQoNCkFjY29yZGluZyB0byBkaXNjdXNzaW9uIGluIFsx
+XSwgYWRkIGNvbW1lbnQgZm9yIHRoZSBvZGQgRU9GIHNldHRpbmcuDQoNClsxXQ0KaHR0cHM6Ly9w
+YXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlhdGVrL3BhdGNoLzE1OTU0Njk3
+OTgtMzgyNC04LWdpdC1zZW5kLWVtYWlsLXlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29tLw0KDQpS
+ZWdhcmRzLA0KQ0suDQoNCg0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtf
+bXV0ZXhfZGF0YSBtdDI3MDFfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7DQo+ICAJLm11dGV4X21vZCA9
+IG10MjcwMV9tdXRleF9tb2QsDQo+ICAJLm11dGV4X3NvZiA9IG10MjcxMl9tdXRleF9zb2YsDQo+
+IEBAIC0yMjcsNiArMjY3LDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX211dGV4X2RhdGEg
+bXQ4MTczX211dGV4X2RyaXZlcl9kYXRhID0gew0KPiAgCS5tdXRleF9zb2ZfcmVnID0gTVQyNzAx
+X01VVEVYMF9TT0YwLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfbXV0
+ZXhfZGF0YSBtdDgxODNfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7DQo+ICsJLm11dGV4X21vZCA9IG10
+ODE4M19tdXRleF9tb2QsDQo+ICsJLm11dGV4X3NvZiA9IG10ODE4M19tdXRleF9zb2YsDQo+ICsJ
+Lm11dGV4X21vZF9yZWcgPSBNVDgxODNfRElTUF9NVVRFWDBfTU9EMCwNCj4gKwkubXV0ZXhfc29m
+X3JlZyA9IE1UODE4M19ESVNQX01VVEVYMF9TT0YwLA0KPiArCS5ub19jbGsgPSB0cnVlLA0KPiAr
+fTsNCj4gKw0KPiAgc3RydWN0IG10a19tdXRleCAqbXRrX211dGV4X2dldChzdHJ1Y3QgZGV2aWNl
+ICpkZXYpDQo+ICB7DQo+ICAJc3RydWN0IG10a19tdXRleF9jdHggKm10eCA9IGRldl9nZXRfZHJ2
+ZGF0YShkZXYpOw0KPiBAQCAtNDU3LDYgKzUwNSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2Zf
+ZGV2aWNlX2lkIG11dGV4X2RyaXZlcl9kdF9tYXRjaFtdID0gew0KPiAgCSAgLmRhdGEgPSAmbXQ4
+MTY3X211dGV4X2RyaXZlcl9kYXRhfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
+ODE3My1kaXNwLW11dGV4IiwNCj4gIAkgIC5kYXRhID0gJm10ODE3M19tdXRleF9kcml2ZXJfZGF0
+YX0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1tdXRleCIsDQo+
+ICsJICAuZGF0YSA9ICZtdDgxODNfbXV0ZXhfZHJpdmVyX2RhdGF9LA0KPiAgCXt9LA0KPiAgfTsN
+Cj4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIG11dGV4X2RyaXZlcl9kdF9tYXRjaCk7DQoNCg==
 
-Yeah, it makes sense. Thanks,
-
-Shenming
