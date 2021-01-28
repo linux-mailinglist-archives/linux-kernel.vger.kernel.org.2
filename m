@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B97A307D04
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE43307D0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhA1Ru4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:50:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58874 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232130AbhA1RsJ (ORCPT
+        id S231143AbhA1RxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:53:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhA1RxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:48:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611856003;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LC0E1GpRXLDOlCRnDuGLRoZ/gZ1WsR+3WhMw6k9lWck=;
-        b=BdYvzoUTOSn0qhDohoY0x8/Tt6CVZBKBIE1D7IyVo32WEiTorKWUAV8PpgdO9fs7DbsKeP
-        50KswuQV34/JU4I+lKFFYdIDN20NQ0NBlxO8dzect2P7RYUonnAyhUvS56oeyMcymoa/F5
-        ZqxY/kRaV7NXmOG1zQOUuEh/EygFdM0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-Uq0GbW3bOiWC9CR41NwNAg-1; Thu, 28 Jan 2021 12:46:41 -0500
-X-MC-Unique: Uq0GbW3bOiWC9CR41NwNAg-1
-Received: by mail-ej1-f70.google.com with SMTP id x22so2522670ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:46:41 -0800 (PST)
+        Thu, 28 Jan 2021 12:53:12 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC50CC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:31 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id h7so8762445lfc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NbK71zkHFE6KyfVBTn33eAqZ7sZK9c/eEF1/aOohtXs=;
+        b=z6XGXtbj5Lik//wIcDpxAkabUgKmtO1PJApFI7TuIgR5skxYw+lQm89sFiNwCfWdki
+         gmtife6i9YrmTYdtxmQJJ3qvTQ9jtDeHpZny1gxvDwfTO423Nc5Yvhjh3n+Ss6H86HO0
+         0XXoTnOShJX0cJBtffL12BYegVE05kxRjW/zsE1kUSEBjIG4brnAxKvA69jdKpC/U2+f
+         EEtGVVykeJuPeLMZlfcAPaDr07XCZI3ApPjiCVGA9jE9NOOrEvk0BmpkdvN50Ziei55i
+         p8OuwvKrjAEvcRd2WcJM+8EqYPIG+eECmeKFxOODgqBqF43zcF5uPiZ2wNV06AgfQO5i
+         TF7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=LC0E1GpRXLDOlCRnDuGLRoZ/gZ1WsR+3WhMw6k9lWck=;
-        b=oVDFQ4zqaxD1qxKbOsJD9OCzj8Ej4B7vhT2qjhCm2wvzOTg4LDkswIkj5qOFnTAyuM
-         snLSGsw8W9RIbB+vfPhYSqG1Cy7POXePJcXo1RGf6uWLXuer3viQWeGzu9I1Bz2aPdJo
-         Zx/cwQ+lCnkYEiuWpF87WqvLzhtFvgcEM2p3cG5BqkUsErpbUlJFnAIODFNSiJkwl2LA
-         ezdpk0bb8T3ncPq3wZQNXIvI6S5/FF0t4F8O3ZJZlUHtXrKwCKyjylAp20NZVhz8An5N
-         0fXGpcV3jF+VnEBzUsoPPRyFDTZatNX+jzt3cTirZxkQ+mQqkHgQrVV71gpqbwnwhenj
-         bvdQ==
-X-Gm-Message-State: AOAM533XjAMJmgm+mMwAblPjyYlJ/XT4l60GpYwroib01PTW1jIMOm/W
-        VoQTP/T0NKTXPpE8596Te5KB+tw+bGh75INdNb3d2nKiw94EgkAnfpgyhsb7cZCshupJ8+z2kuB
-        Qjo5w2RB+cZVQjRnYL5vePFtN
-X-Received: by 2002:a17:906:828a:: with SMTP id h10mr561811ejx.274.1611856000011;
-        Thu, 28 Jan 2021 09:46:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx24S50DQWrrL/lhjofPmbZeVFy27BpQwBeKPaYtvSBcFcfEwdtL6gv9LpQbFpeocwr5Fnq5g==
-X-Received: by 2002:a17:906:828a:: with SMTP id h10mr561795ejx.274.1611855999798;
-        Thu, 28 Jan 2021 09:46:39 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z13sm3322394edc.73.2021.01.28.09.46.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 09:46:38 -0800 (PST)
-Subject: Re: [PATCH v14 09/13] KVM: x86: Report CET MSRs as to-be-saved if CET
- is supported
-To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com
-References: <20201106011637.14289-1-weijiang.yang@intel.com>
- <20201106011637.14289-10-weijiang.yang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <732d1da2-70d7-1f8a-b41d-136e068516d7@redhat.com>
-Date:   Thu, 28 Jan 2021 18:46:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=NbK71zkHFE6KyfVBTn33eAqZ7sZK9c/eEF1/aOohtXs=;
+        b=rk+8jkNXScnmZm3RNP7OC9apBMC4u/kGkr2f6xfW7XQXKYlyv8jAZHX6plh8PyCcYp
+         mhlwOzBltorHYzJsnSUgFOxJwpbq8WEHcaq8xtqbgnIaq4FjC3pQ0g/J65TQviFmyWBq
+         eWN16feMf5YXbh/yatr3aotZnfF1u+Fgetabw6CKgrmlYSmtAvyDZQp8GH7psu4yj/o1
+         J/QQyvR1BDGY2qQJEJ4v8g1Jpd/ngCBfcfVeCK6Fy2X8fMnfy6aZmIdFy2GsE1SXZqdL
+         G4M7g1JkzZMVPIDuThu1Dd2ouOucz0mPVTxcjPl2JM9oZ4qlFSuHmAH6DZvawaTMuSIm
+         gvyQ==
+X-Gm-Message-State: AOAM5301HG6Kuk4tKnnkWdxwie9WLIJUWJ9/bDWephRuVQAmSoDrwAtw
+        VR1gURD3jP5q52J5BEedMpf+Eg==
+X-Google-Smtp-Source: ABdhPJw0TxpNgpcAn0O3X8/1z1fRsQfD1q21HK7RY7dPssNYpcPsyivXvE5Naui+R5qtmI6PWESz2A==
+X-Received: by 2002:a19:7ed2:: with SMTP id z201mr126736lfc.310.1611856350370;
+        Thu, 28 Jan 2021 09:52:30 -0800 (PST)
+Received: from eriador.lan ([94.25.229.83])
+        by smtp.gmail.com with ESMTPSA id w10sm2216119ljj.37.2021.01.28.09.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 09:52:29 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH v2 0/5] Add support for Qualcomm QCA639x chips family
+Date:   Thu, 28 Jan 2021 20:52:20 +0300
+Message-Id: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201106011637.14289-10-weijiang.yang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/20 02:16, Yang Weijiang wrote:
-> Report all CET MSRs, including the synthetic GUEST_SSP MSR, as
-> to-be-saved, e.g. for migration, if CET is supported by KVM.
-> 
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->   arch/x86/kvm/x86.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 751b62e871e5..d573cadf5baf 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1248,6 +1248,8 @@ static const u32 msrs_to_save_all[] = {
->   	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
->   
->   	MSR_IA32_XSS,
-> +	MSR_IA32_U_CET, MSR_IA32_S_CET, MSR_IA32_INT_SSP_TAB, MSR_KVM_GUEST_SSP,
-> +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP, MSR_IA32_PL3_SSP,
->   };
->   
->   static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
-> @@ -5761,6 +5763,13 @@ static void kvm_init_msr_list(void)
->   			if (!supported_xss)
->   				continue;
->   			break;
-> +		case MSR_IA32_U_CET:
-> +		case MSR_IA32_S_CET:
-> +		case MSR_IA32_INT_SSP_TAB:
-> +		case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> +			if (!kvm_cet_supported())
-> +				continue;
-> +			break;
->   		default:
->   			break;
->   		}
-> 
+Qualcomm QCA639x is a family of WiFi + Bluetooth chips, with BT part
+being controlled through the UART and WiFi being present on PCIe
+bus. Both blocks share common power sources wich should be turned on
+before either of devices can be probed. Declare common 'qca639x' driver
+providing a power domain to be used by both BT and WiFi parts.
 
-Missing "case MSR_KVM_GUEST_SSP".
+Changes since v1:
+ - Stopped using wildcard in the dts binding, stick to qcom,qca6390.
+ - Stopped using pcie0_phy for qca639x power domain.
+ - Describe root PCIe bridge in the dts and bind power domain to the
+   bridge.
+ - Add pci quirk to power up power domains connected to this bridge.
 
-Paolo
+----------------------------------------------------------------
+Dmitry Baryshkov (4):
+      misc: qca639x: add support for QCA639x powerup sequence
+      arm64: qcom: dts: qrb5165-rb5: add qca6391 power device
+      pcie-qcom: provide a way to power up qca6390 chip on RB5 platform
+      arm64: dtb: qcom: qrb5165-rb5: add bridge@0,0 to power up qca6391 chip
+
+Manivannan Sadhasivam (1):
+      arm64: dts: qcom: Add Bluetooth support on RB5
+
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 102 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/misc/Kconfig                     |  12 ++++++++++++
+ drivers/misc/Makefile                    |   1 +
+ drivers/misc/qcom-qca639x.c              | 164 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c   |  21 ++++++++++++++++++++
+ 5 files changed, 300 insertions(+)
+ create mode 100644 drivers/misc/qcom-qca639x.c
+
+
+
+
+
 
