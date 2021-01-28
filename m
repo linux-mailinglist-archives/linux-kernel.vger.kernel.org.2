@@ -2,91 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F60307955
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742C9307973
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhA1PQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbhA1PQf (ORCPT
+        id S229835AbhA1PSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:18:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231171AbhA1PSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:16:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7069C061574;
-        Thu, 28 Jan 2021 07:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vdz2uLFVvEe0lGBz/swsb4ZdsSS7Ujlldtrdac+osrU=; b=vhmgOk52SZEcAoLuUE2jqc0MTE
-        N4NkQnJTOrTaKvj5EHF1CvZEyjCr4/K+fk2RfrhHIG6Kev/aPydD5W+TOy+kFArvkHemdoOjkVwI8
-        5OsogBc0GuEssMzNTeEmiiNSqsqb8kmM59BWzLNH0fpXa3O/sphAUxBuy0II/P8+4ONr5mwacGUm4
-        L1WBS8fnnZroc1JVkbZ1q2wCXm+zAXsjVPOUP41eIULVeydEl9kvqQ6HLRXMOHh7y4eZpJguiTiLL
-        kfK+4T5chWxdaI/L86zxNDibjUa2TniEmzcXEO4e/qxUbx4BjnPlS+DjFB91Az5bJD3y0PJsVsdaw
-        cyBPqakQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l591D-008cCz-Kw; Thu, 28 Jan 2021 15:15:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48ED2301A27;
-        Thu, 28 Jan 2021 16:15:35 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3242C21405347; Thu, 28 Jan 2021 16:15:35 +0100 (CET)
-Date:   Thu, 28 Jan 2021 16:15:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] MIPS: Octeon: Implement __smp_store_release()
-Message-ID: <YBLVF0tliXY2G0XZ@hirez.programming.kicks-ass.net>
-References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
- <20210127203627.47510-2-alexander.sverdlin@nokia.com>
- <YBHp4139X+p+4IZ+@hirez.programming.kicks-ass.net>
- <aace6ff1-9ddf-15af-3c0a-378c53c59acb@nokia.com>
- <YBKhBQQ97f/J6L+u@hirez.programming.kicks-ass.net>
- <b00f945a-1278-5fd2-321c-6ea5f07be128@nokia.com>
- <YBLQ9hbj8Zafjz+c@hirez.programming.kicks-ass.net>
+        Thu, 28 Jan 2021 10:18:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611847008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Fg7udZXlvfLLHzwve4X1QMdCahnQwMs0ZSOV+O7j8M=;
+        b=g2OhDa6CS4gMgPBJw/zeTh07t3EkKcDWEI8/Qu+8r0DLi7Y2pOXL0ErlNuzDwDFbl2L+Fa
+        XexI6t/QGylMiv6VXN2oY9aUb5Kv98kQdjTgOovTYmL/Zip3Is7DyP9IO9+55mDgFTWPXm
+        mh9sF19cX+lYSsXl35/YjJMc/RtV29c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-5RdBc43ROIK6zvjrJxsEGw-1; Thu, 28 Jan 2021 10:16:46 -0500
+X-MC-Unique: 5RdBc43ROIK6zvjrJxsEGw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6D4B80A5C6;
+        Thu, 28 Jan 2021 15:16:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 038FD1DB;
+        Thu, 28 Jan 2021 15:16:37 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210122181054.32635-1-eric.snowberg@oracle.com>
+References: <20210122181054.32635-1-eric.snowberg@oracle.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org, jarkko@kernel.org,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, zohar@linux.ibm.com, lszubowi@redhat.com,
+        javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] Add EFI_CERT_X509_GUID support for dbx/mokx entries
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBLQ9hbj8Zafjz+c@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3568164.1611846997.1@warthog.procyon.org.uk>
+Date:   Thu, 28 Jan 2021 15:16:37 +0000
+Message-ID: <3568165.1611846997@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 03:57:58PM +0100, Peter Zijlstra wrote:
-> On Thu, Jan 28, 2021 at 12:52:22PM +0100, Alexander Sverdlin wrote:
-> > Hello Peter,
-> > 
-> > On 28/01/2021 12:33, Peter Zijlstra wrote:
-> > > This, from commit 6b07d38aaa52 ("MIPS: Octeon: Use optimized memory
-> > > barrier primitives."):
-> > > 
-> > > 	#define smp_mb__before_llsc() smp_wmb()
-> > > 	#define __smp_mb__before_llsc() __smp_wmb()
-> > > 
-> > > is also dodgy as hell and really wants a comment too. I'm not buying the
-> > > Changelog of that commit either, __smp_mb__before_llsc should also
-> > > ensure the LL cannot happen earlier, but SYNCW has no effect on loads.
-> > > So what stops the load from being speculated?
-> > 
-> > hmm, the commit message you point to above, says:
-> > 
-> > "Since Octeon does not do speculative reads, this functions as a full barrier."
-> 
-> So then the only difference between SYNC and SYNCW is a pipeline drain?
-> 
-> I still worry about the transitivity thing.. ISTR that being a sticky
-> point back then too.
+Which tree do you envision this going through?  EFI or keyrings - or are you
+going to ask Linus to pull it directly?  I can pull it if it should go through
+the keyrings tree.
 
-Ah, there we are, it's called multi-copy-atomic these days:
+David
 
-  f1ab25a30ce8 ("memory-barriers: Replace uses of "transitive"")
-
-Do those SYNCW / write-completion barriers guarantee this?
