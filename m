@@ -2,172 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB79306C9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09830306C9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhA1FKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 00:10:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
+        id S229808AbhA1FLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 00:11:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhA1FKd (ORCPT
+        with ESMTP id S229658AbhA1FLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 00:10:33 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C32C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:09:53 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id q129so4366708iod.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:09:53 -0800 (PST)
+        Thu, 28 Jan 2021 00:11:10 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973EBC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:10:29 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id v15so1834293ljk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:10:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wm/YQVXUMhIB/BMDJogyUbmGWPEi6vcYSKKfpvve88M=;
-        b=XfARxNdjxfvwbLx87S4vCHGZ+hfoFXMjUJwaPdnI3B5svpibAJe2bxnEiivIvlareH
-         nLMmddqGzyG0sSKdPR6iM7yvKfFBSzPSZ/UdDvm6ZTbORRtrQ52843Z4tTH4K/cmZhBr
-         HouPPShhc/heV0RPWVfOFxAJ3hTmLn0UViKMk=
+        bh=sbySH8XGPeHypTQ5quW2/0H5BDl8PiMEsgfEVwoeeI4=;
+        b=v0WZgt/3pzp9gQrGDilRFIBE1VUrEj5i/gJgcppmH3N0+htGlb9glkmXh3fwsYmhuP
+         R6ECXFmWEz2+t1PvqYqX/zbAXF8r4adCx76XaHJ58SkfJBZv1a37Opmw51U3trAcpIVa
+         lieq/+F1l/t+XzOMWdb4kHGdt5Zb9iNi1y5n6hypaEiM4Xg6SBpEWhfMbjaazGgPAsep
+         QxaQmDK+zITPVJazdV73+6W/LKHoL0yqrYMQFOM5kO0dWKCMatbPTDyu7tztCEyGu1it
+         Zb4/Tx7o02upoGqTw3eVhy0wLaOnB/J6f3dENS44UJtFqQnTtCt2tnNREYGnxahSLvBe
+         e26A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wm/YQVXUMhIB/BMDJogyUbmGWPEi6vcYSKKfpvve88M=;
-        b=CCGeKo92s4FxEqG8cFksrh0bxx/i5toO/ey5JRnriHWnRWpQm3RsqQRVLZWvELkW5T
-         UKcMiinJLMMMMKLS7TxiaUzilreS2KIVvRDRB2LcmjYg+CLbZr8hLDh9bNRYl0+qop9n
-         cGpmczfIIOF8wmnXAKSFjyiW1++cIn7K61fThs+8jgm486D5/uEdH55H78Y/72L8tUOv
-         +khlxG0nxQtTUKLpVjUvnSaY9YPl/Y8oAeAQmUYnvR8tkHrh8WSvp4LScrwzbfA/OR9Q
-         Mklij9rGViBmC+Sztk9yt0D3btrVUYE0qVJ5TQQMYo09p1zynrwIVFeNfWI7vmSeeq8x
-         Tu8g==
-X-Gm-Message-State: AOAM533imgdGeaul5bxYUzrdRWrsTIKAUzQGwTsA55ZmyvF9JOm4dMzf
-        DCMUAlBU0rq02c7gGC9KzPOTOq/0+XyXvJPWunSVYQ==
-X-Google-Smtp-Source: ABdhPJw9RDW4YOgrrY0K/Zhny0x/8TzsFk5NQqU8SfevdJcvgReB/EkAPUFQ4VOQjiKOfFg40N4g+dqfJBA6RuMZM68=
-X-Received: by 2002:a05:6638:138e:: with SMTP id w14mr11568954jad.98.1611810592540;
- Wed, 27 Jan 2021 21:09:52 -0800 (PST)
+        bh=sbySH8XGPeHypTQ5quW2/0H5BDl8PiMEsgfEVwoeeI4=;
+        b=GdVn4mitBpZvOkBR5Bo8utoN29J3aCaC39JB2KFLoqDVe0fDWHG37tJW2PA3SVMe+X
+         F9X1S4jC5Z/5tpvk7MBKXQGBgeABSyYna0QjK/DCH52/dBMuB+EaNhvGDjMQronxCE+m
+         I4HicZCl0GcSPc5BoinRUAGHHjdHfnWosd4wtjmuwIbkU+jjhCIgVf82lvPglGeEQ5Zg
+         o/QVTSX4A/Wzq6nS0XSX8v32Z/iWhZ3/nEVQRLy3eUMtZYov77fFaIhiERjVso/Lz5ir
+         n+u4/4EoT0NPVl8bw+gKzjI2YIagNPijIw3hqAwmUN0TLb0/WDJAu1ZExw29c02lvuEl
+         uwGQ==
+X-Gm-Message-State: AOAM533JGdP6/zLF6BgLw0flSkZkcq4kP9HlvVCZ1wkd35qJFdUEmCIA
+        UVF2WU7AEPFClHVGtraMK58GmnUMvANAXzfKGTITjQ==
+X-Google-Smtp-Source: ABdhPJznnuALUFQ1RiOUQHbEpehWn9tdXxnoDjOzm3PmzFN7h8qtoK4IQ8LF9kFVl7tGyMalI6DJbeyAdOeLxNsPcCI=
+X-Received: by 2002:a2e:3018:: with SMTP id w24mr7835128ljw.333.1611810627528;
+ Wed, 27 Jan 2021 21:10:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127045422.2418917-1-hsinyi@chromium.org> <20210127045422.2418917-5-hsinyi@chromium.org>
- <1611808753.19104.2.camel@mtksdaap41>
-In-Reply-To: <1611808753.19104.2.camel@mtksdaap41>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 28 Jan 2021 13:09:26 +0800
-Message-ID: <CAJMQK-jeBBsxZ1RnFJfT5ouNJsBwEkLbZ_+6T+VUFZ_xDQ7rpQ@mail.gmail.com>
-Subject: Re: [PATCH v10 4/9] drm/mediatek: generalize mtk_dither_set() function
-To:     CK Hu <ck.hu@mediatek.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
+References: <20210123034655.102813-1-john.stultz@linaro.org>
+ <20210123034655.102813-2-john.stultz@linaro.org> <CAE2F3rA3a-MWBHPZhGP9dMhEUqMkkvm6wXYYh6LDZ1zF9CAyUg@mail.gmail.com>
+In-Reply-To: <CAE2F3rA3a-MWBHPZhGP9dMhEUqMkkvm6wXYYh6LDZ1zF9CAyUg@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 27 Jan 2021 21:10:15 -0800
+Message-ID: <CALAqxLWkTQwQ8Xqnc+PAMWUO_C84jaGzOLqKFqkuk3=AFNHD6g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dma-buf: system_heap: Add pagepool support to
+ system heap
+To:     Daniel Mentz <danielmentz@google.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:39 PM CK Hu <ck.hu@mediatek.com> wrote:
+On Wed, Jan 27, 2021 at 12:21 PM Daniel Mentz <danielmentz@google.com> wrote:
 >
-> Hi, Hsin-Yi:
->
-> On Wed, 2021-01-27 at 12:54 +0800, Hsin-Yi Wang wrote:
-> > There may be data structure other than mtk_ddp_comp_dev that would call
-> > mtk_dither_set(), so use regs as parameter instead of device.
->
-> You does not change the interface of mtk_dither_set(). You move the
-> common part in mtk_dither_set() to a new function which could be called
-> by another caller.
->
-> Regards,
-> CK.
->
-Current mtk_dither_set() cast dev data to struct mtk_ddp_comp_dev. But
-mtk_disp_gamma in next patch would also call this function. But it's
-dev data is struct mtk_disp_gamma, which is different, so we can't
-cast to mtk_ddp_comp_dev. I separate the necessary parameters (regs,
-cmdq_reg) out, so both component dither and gamma can both call this
-separated function.
-
-This is similar to the mtk_gamma_set_common() in the next patch, which
-gamma and aal both used.
-
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> >  drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  4 ++++
-> >  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 25 +++++++++++++--------
-> >  2 files changed, 20 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> > index 46d199b7b4a29..c50d5fc9fd349 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> > +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> > @@ -17,6 +17,10 @@ void mtk_color_config(struct device *dev, unsigned int w,
-> >                     unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
-> >  void mtk_color_start(struct device *dev);
-> >
-> > +void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
-> > +                        unsigned int bpc, unsigned int CFG,
-> > +                        struct cmdq_pkt *cmdq_pkt);
-> > +
-> >  void mtk_dpi_start(struct device *dev);
-> >  void mtk_dpi_stop(struct device *dev);
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> > index 7b5293429426d..53d25823a37cc 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> > @@ -151,33 +151,40 @@ static void mtk_ddp_clk_disable(struct device *dev)
-> >       clk_disable_unprepare(priv->clk);
-> >  }
-> >
-> > -static void mtk_dither_set(struct device *dev, unsigned int bpc,
-> > -                 unsigned int CFG, struct cmdq_pkt *cmdq_pkt)
-> > -{
-> > -     struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
-> >
-> > +void mtk_dither_set_common(void __iomem *regs, struct cmdq_client_reg *cmdq_reg,
-> > +                        unsigned int bpc, unsigned int CFG, struct cmdq_pkt *cmdq_pkt)
+> On Fri, Jan 22, 2021 at 7:47 PM John Stultz <john.stultz@linaro.org> wrote:
+> > +static int system_heap_clear_pages(struct page **pages, int num, pgprot_t pgprot)
 > > +{
-> >       /* If bpc equal to 0, the dithering function didn't be enabled */
-> >       if (bpc == 0)
-> >               return;
-> >
-> >       if (bpc >= MTK_MIN_BPC) {
-> > -             mtk_ddp_write(cmdq_pkt, 0, &priv->cmdq_reg, priv->regs, DISP_DITHER_5);
-> > -             mtk_ddp_write(cmdq_pkt, 0, &priv->cmdq_reg, priv->regs, DISP_DITHER_7);
-> > +             mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_5);
-> > +             mtk_ddp_write(cmdq_pkt, 0, cmdq_reg, regs, DISP_DITHER_7);
-> >               mtk_ddp_write(cmdq_pkt,
-> >                             DITHER_LSB_ERR_SHIFT_R(MTK_MAX_BPC - bpc) |
-> >                             DITHER_ADD_LSHIFT_R(MTK_MAX_BPC - bpc) |
-> >                             DITHER_NEW_BIT_MODE,
-> > -                           &priv->cmdq_reg, priv->regs, DISP_DITHER_15);
-> > +                           cmdq_reg, regs, DISP_DITHER_15);
-> >               mtk_ddp_write(cmdq_pkt,
-> >                             DITHER_LSB_ERR_SHIFT_B(MTK_MAX_BPC - bpc) |
-> >                             DITHER_ADD_LSHIFT_B(MTK_MAX_BPC - bpc) |
-> >                             DITHER_LSB_ERR_SHIFT_G(MTK_MAX_BPC - bpc) |
-> >                             DITHER_ADD_LSHIFT_G(MTK_MAX_BPC - bpc),
-> > -                           &priv->cmdq_reg, priv->regs, DISP_DITHER_16);
-> > -             mtk_ddp_write(cmdq_pkt, DISP_DITHERING, &priv->cmdq_reg, priv->regs, CFG);
-> > +                           cmdq_reg, regs, DISP_DITHER_16);
-> > +             mtk_ddp_write(cmdq_pkt, DISP_DITHERING, cmdq_reg, regs, CFG);
-> >       }
-> >  }
-> >
-> > +static void mtk_dither_set(struct device *dev, unsigned int bpc,
-> > +                 unsigned int CFG, struct cmdq_pkt *cmdq_pkt)
-> > +{
-> > +     struct mtk_ddp_comp_dev *priv = dev_get_drvdata(dev);
+> > +       void *addr = vmap(pages, num, VM_MAP, pgprot);
 > > +
-> > +     mtk_dither_set_common(priv->regs, &priv->cmdq_reg, bpc, CFG, cmdq_pkt);
+> > +       if (!addr)
+> > +               return -ENOMEM;
+> > +       memset(addr, 0, PAGE_SIZE * num);
+> > +       vunmap(addr);
+> > +       return 0;
 > > +}
-> > +
-> >  static void mtk_od_config(struct device *dev, unsigned int w,
-> >                         unsigned int h, unsigned int vrefresh,
-> >                         unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
 >
+> I thought that vmap/vunmap are expensive, and I am wondering if
+> there's a faster way that avoids vmap.
+>
+> How about lifting this code from lib/iov_iter.c
+> static void memzero_page(struct page *page, size_t offset, size_t len)
+> {
+>         char *addr = kmap_atomic(page);
+>         memset(addr + offset, 0, len);
+>         kunmap_atomic(addr);
+> }
+>
+> Or what about lifting that code from the old ion_cma_heap.c
+>
+> if (PageHighMem(pages)) {
+>         unsigned long nr_clear_pages = nr_pages;
+>         struct page *page = pages;
+>
+>         while (nr_clear_pages > 0) {
+>                 void *vaddr = kmap_atomic(page);
+>
+>                 memset(vaddr, 0, PAGE_SIZE);
+>                 kunmap_atomic(vaddr);
+>                 page++;
+>                 nr_clear_pages--;
+>         }
+> } else {
+>         memset(page_address(pages), 0, size);
+> }
+
+Though, this last memset only works since CMA is contiguous, so it
+probably needs to always do the kmap_atomic for each page, right?
+
+I'm still a little worried if this is right, as the current
+implementation with the vmap comes from the old ion_heap_sglist_zero
+logic, which similarly tries to batch the vmaps  32 pages at at time,
+but I'll give it a try.
+
+thanks
+-john
