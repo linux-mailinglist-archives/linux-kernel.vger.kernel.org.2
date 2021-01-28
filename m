@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2385B307839
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAFB30783B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhA1Og3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:36:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        id S231674AbhA1Ogm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:36:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhA1OgZ (ORCPT
+        with ESMTP id S231406AbhA1Ogk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:36:25 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA58C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:35:44 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id q8so7845745lfm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:35:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4HZ6vN2eEe9xlgJg6Acm1pXtbaRzCfTxTjwFlP4TFpU=;
-        b=Dh6TtiOQldz7ctr2Vjc++l9sPFfbz1uIReK71LDhdAY7CMAfgSiOEAqExkoDQ4raee
-         yiBKxu4aZyluG12epsDcVxU1V39k8CXSIeMG/3bOPvOWIoLFk8h0swTVl/glwTbkpjmk
-         y56Bs8b22Ho+WA8dKqByZ9YpfuqOno7Df/De+xGLZEw6jy4cAjXsHChNzqt//SrwbPv/
-         MFHIA7jAk/+jRjq2aXWCXav5v0/3LTauDbWHHZq5QthKDu2DlkOk0hEKjvSEHG23GPwW
-         gggykyjVJ2IFuEciGMa8k0nx5G7Ug4zbvGdN9ksTDPu6JgRXIwl+ERrbHJbY6IRIJlWM
-         IF0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4HZ6vN2eEe9xlgJg6Acm1pXtbaRzCfTxTjwFlP4TFpU=;
-        b=mVUJl+pj0pRK2udLSU9RAmNaY9/JrhG7KNP7GxBwjLw69W834cv5aF4qZ443pB+T89
-         /cLi7ViFdmD0xlJ1oe9Gx8mI2zwUhKjK+xPyMIyy4GbpXO0SKUk5u6rOBJEqYYWGLK6B
-         wr2fAh31+bHU/jVLCYdmnCbZjK3KXuPA68acLB5tO4zcbx01Ts0fmHXW1uY5mVq5yt7H
-         hsi938q6CqlLC/iq7is/dgSZkR0XvhPW2u5rk1DsMErejeSev4jB1WBfUozSOHVZem4H
-         7ayXUywW5PW4bO9n9cSvOln0Kxe31xeymDZh2s5taUDH/ualXZvcgt+uQwnjFDCA5Auo
-         t9JQ==
-X-Gm-Message-State: AOAM530/nOC7xC/3Pxbgn/QLRukUd3gs1iaWDHx8zYY7m8EO77HxUP8H
-        hB/GJoepp1NguvGp7cbRFY7GBOy/0IhQjYdbqsxm2g==
-X-Google-Smtp-Source: ABdhPJwqwI0JXhluBVDgebMB/GJcLtoIuHaluDFZq7+Xj1RNJkY2OfC2kWQ4Clsu3GEZqQhCkC1nm3F37DJn50NMaO8=
-X-Received: by 2002:ac2:5d51:: with SMTP id w17mr5544918lfd.343.1611844543382;
- Thu, 28 Jan 2021 06:35:43 -0800 (PST)
+        Thu, 28 Jan 2021 09:36:40 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFC9C061574;
+        Thu, 28 Jan 2021 06:36:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eMiQNUP0n0G3ycNQCqSn5IKupnPYtgpP83gkRapKZ50=; b=PMiKegf7nFbAFT7A/yr6S9Of3X
+        l/Tk50wVtTWJIGj4Q0IZ4rjAIV73GsoECACwNWr7h+YhkNRSbvUDq4F/bJfnzHrhk3nb+qcnXNebO
+        VGNP8wNtHM3gxw1q7/fwbpEVTUAobA4QCthEcpZMN1r8WVhyw78OmaOiAgUzI3pBeo++t+hGOdeij
+        S29uWoYTnNSWbrAK6BFR+Jvln3HWZH4BQa6UgyrFErixYBrarbew1NlgBgMH3xSGDf266CO9Rt/xU
+        Vr0k35uDqf3Z80jANglxmxSlQIqrKLg3snXIYipVpU4d87PF54WogWf2ZA733U//kjiRJjjrLAiKo
+        96Cg1ipg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l58Om-008ZaH-KK; Thu, 28 Jan 2021 14:35:54 +0000
+Date:   Thu, 28 Jan 2021 14:35:52 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
+        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/2] quota: Add mountpath based quota support
+Message-ID: <20210128143552.GA2042235@infradead.org>
+References: <20210128141713.25223-1-s.hauer@pengutronix.de>
+ <20210128141713.25223-2-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-References: <20210126204240.418297-1-hridya@google.com> <YBFXPbePURupbe+y@kroah.com>
- <CAO_48GHrpi9XxPhP2evwH_ZJmbVSWqxCvsYg6S2Syh-mrWBHzA@mail.gmail.com>
- <c0684400-c1e2-0ebd-ad09-cb7b24db5764@gmail.com> <CAO_48GGsOTLdqAQMO9vrLtWAKG6spByMC-GXwDv_f3ENvpemfA@mail.gmail.com>
- <Fu3J-fHQvkd_umZraMnhxQhFJR_JCDmgUssMBA4GJgRwo4UpIPKvVSh51Os9FQkABkhSL6tmEAV4vwBZa7hFWFTgujmjaBmrgqJJ75KM8ZU=@emersion.fr>
-In-Reply-To: <Fu3J-fHQvkd_umZraMnhxQhFJR_JCDmgUssMBA4GJgRwo4UpIPKvVSh51Os9FQkABkhSL6tmEAV4vwBZa7hFWFTgujmjaBmrgqJJ75KM8ZU=@emersion.fr>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Thu, 28 Jan 2021 20:05:32 +0530
-Message-ID: <CAO_48GEzi2b5M8Gv2E2L1s76VcPksA812ZqY1ihbpxkDkwb5_A@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v3] dmabuf: Add the capability to expose
- DMA-BUF stats in sysfs
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Christian Koenig <christian.koenig@amd.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        kernel test robot <lkp@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
-        hyesoo.yu@samsung.com, Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128141713.25223-2-s.hauer@pengutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
+> +	uint cmds, type;
+> +	struct super_block *sb = NULL;
 
-On Thu, 28 Jan 2021 at 20:01, Simon Ser <contact@emersion.fr> wrote:
->
-> On Thursday, January 28th, 2021 at 1:03 PM, Sumit Semwal <sumit.semwal@linaro.org> wrote:
->
-> > Since he didn't comment over Hridya's last clarification about the
-> > tracepoints to track total GPU memory allocations being orthogonal to
-> > this series, I assumed he agreed with it.
->
-> IIRC he's away this week. (I don't remember when he comes back.)
->
-> > Daniel, do you still have objections around adding this patch in?
->
-> (Adding him explicitly in CC)
-Thanks for doing this!
+I don't think sb needs the NULL initialization.
 
-Best,
-Sumit.
+> +	struct path path, *pathp = NULL;
+> +	struct path mountpath;
+> +	bool excl = false, thawed = false;
+> +	int ret;
+> +
+> +	cmds = cmd >> SUBCMDSHIFT;
+> +	type = cmd & SUBCMDMASK;
+
+Personal pet peeve: it would be nice to just initialize cmds and
+type on their declaration line, or while we're at it declutter
+this a bit and remove the separate cmds variable:
+
+	unsigned int type = cmd & SUBCMDMASK;
+
+
+	cmd >>= SUBCMDSHIFT;
+
+> +	/*
+> +	 * Path for quotaon has to be resolved before grabbing superblock
+> +	 * because that gets s_umount sem which is also possibly needed by path
+> +	 * resolution (think about autofs) and thus deadlocks could arise.
+> +	 */
+> +	if (cmds == Q_QUOTAON) {
+> +		ret = user_path_at(AT_FDCWD, addr,
+> +				   LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT, &path);
+> +		if (ret)
+> +			pathp = ERR_PTR(ret);
+> +		else
+> +			pathp = &path;
+> +	}
+> +
+> +	ret = user_path_at(AT_FDCWD, mountpoint,
+> +			     LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT, &mountpath);
+> +	if (ret)
+> +		goto out;
+
+I don't think we need two path lookups here, we can path the same path
+to the command for quotaon.
+
+
+> +	if (quotactl_cmd_onoff(cmds)) {
+> +		excl = true;
+> +		thawed = true;
+> +	} else if (quotactl_cmd_write(cmds)) {
+> +		thawed = true;
+> +	}
+> +
+> +	if (thawed) {
+> +		ret = mnt_want_write(mountpath.mnt);
+> +		if (ret)
+> +			goto out1;
+> +	}
+> +
+> +	sb = mountpath.dentry->d_inode->i_sb;
+> +
+> +	if (excl)
+> +		down_write(&sb->s_umount);
+> +	else
+> +		down_read(&sb->s_umount);
+
+Given how cheap quotactl_cmd_onoff and quotactl_cmd_write are we
+could probably simplify this down do:
+
+	if (quotactl_cmd_write(cmd)) {
+		ret = mnt_want_write(path.mnt);
+		if (ret)
+			goto out1;
+	}
+	if (quotactl_cmd_onoff(cmd))
+		down_write(&sb->s_umount);
+	else
+		down_read(&sb->s_umount);
+
+and duplicate the checks after the do_quotactl call.
