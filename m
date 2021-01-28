@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70BD30738F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10A5307391
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhA1KUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S232285AbhA1KVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbhA1KU3 (ORCPT
+        with ESMTP id S231846AbhA1KVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:20:29 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6712FC061573;
-        Thu, 28 Jan 2021 02:19:47 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 190so3847385wmz.0;
-        Thu, 28 Jan 2021 02:19:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=RCvbfOIW3W6+aeDvZc0GOFXEO64imNVS6UzVUBooVvA=;
-        b=gDH+qqevZvp+YOTzuVNfH/WWzmLLtKA02Ef0OixWBJS9dL8ZayTkiDoP5o2D9f2EP6
-         cCPLwlEc7wJZmlWzuc3XUxB8WXh5Tyv2IxBPDbWY1mzr8bCJU3VEweBkLnmyX4oN0J9E
-         77szUfS9PU51+nZlO/74WZBGMtxogZAsG/oY+Lo4uHcqV9QOAWOs/Zve+L2jY6/CQAcd
-         gyMxKtw402tBi3+vbnaF3BqeobtyK2dHfnyzApou2RAbzSBmulmM8pqpyJ9uxwD0lfxa
-         iHaI3sdKDycgkHYebIXRCnt/W5ACJmHCfEVm34AQ/nqyYEjKzfCQgoCSEhr5q8KdviR8
-         gcMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=RCvbfOIW3W6+aeDvZc0GOFXEO64imNVS6UzVUBooVvA=;
-        b=gX+3cItMRFUV30RP6M2JDAf7G/iXyRl+jAoHlH7vni5DRkTrB1z4fOQ4+DDpLe90xf
-         IbDTGLrmZcK6ZFCR2QmP1kD7kjwLh+kppG9qmRsh4ubZ7FjN1IBTUPW0SuSWWIkmo/5K
-         2BYCkpYHJ3W9UgT3bRzaS/t4gUy+C6yybMX27SQdPSQ4qNlGeZNYkXFFmpbVXzfdtKzE
-         TQGa79G18Btw9TGw2tFufA7PZqfu2dfHXqjiAEohATcTJpbqvhGmM4paZL6TRCO1uguW
-         ugJoHA411VzXdXdk3+ICYY1eS/5BOa60QkpIquieWH79cO2WM5TMtUWXZXfYiCPRKGLU
-         NNVQ==
-X-Gm-Message-State: AOAM533VqT2Ir5WEnBGk4UevnxeH7gs3O6bC8ZwaEGHC+N+HrsdtI+/N
-        W9y99jnF3HS4km+8nAozznyTa+6CRCg=
-X-Google-Smtp-Source: ABdhPJya78+1iHpwjhDOcKpysAKfE75nsJFoAa7lIRekMjsv0tA0yHfR22bgt11xuP25wrph+IQz/Q==
-X-Received: by 2002:a05:600c:21c1:: with SMTP id x1mr8365797wmj.48.1611829186171;
-        Thu, 28 Jan 2021 02:19:46 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id e11sm6275009wrx.14.2021.01.28.02.19.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 02:19:45 -0800 (PST)
-Message-ID: <7b932babfe5ad5756eed70effe32bdc03b901d84.camel@gmail.com>
-Subject: Re: [PATCH v2 0/9] gpio: ep93xx: fixes series patch
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 Jan 2021 11:19:44 +0100
-In-Reply-To: <CACRpkdYPYua-NuxVC7aBxJtLYFEECL-60jr4pYgK4=fd5Mb-6g@mail.gmail.com>
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
-         <20210127104617.1173-1-nikita.shubin@maquefel.me>
-         <CACRpkdYPYua-NuxVC7aBxJtLYFEECL-60jr4pYgK4=fd5Mb-6g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Thu, 28 Jan 2021 05:21:07 -0500
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D37C061574;
+        Thu, 28 Jan 2021 02:20:26 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4DRGgM42CczQlXk;
+        Thu, 28 Jan 2021 11:19:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:message-id:from:from:date:date:received; s=
+        mail20150812; t=1611829196; bh=TIyoCrhlhokOiMepVtkuSZ0ldVFGFR3T+
+        LN6c67DmIA=; b=aNyJUYfdbBX4f4I5kP8TjVn8vN4FTXIiWcMtaEXLn+04DkSUo
+        JuaBnJ+fFWjUvcAYc/pgPn1LYvV901x0IihYK3wX+XMqHDcSZASOwGRFEb5BFr3i
+        v4fi04xfApk9tOSMsxzov3qis6opWvV5OI/+zEuklSUHPPkS7LtOWtbZOQ0e98Px
+        T6SiPR+sOa9qyC4mTYOne7GjU/NCr6zp147fX33ZxKaxAXMopzaSiQ4i+ZTj2Qj8
+        RUCEgxYZZRQjWFbm1JCA935yXHbFhs+IEB4yEfiD05gs+zCVcP6L6o4UEVrxqosz
+        LJ/8ix1YlCpsHs7P/WWb044Ak189VsG5oWaOw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1611829197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TIyoCrhlhokOiMepVtkuSZ0ldVFGFR3T+LN6c67DmIA=;
+        b=aEchQkDenNiCI6gNxFmdAV/niV/9z13mSzTgA3+8CEi8vrd5DRPvbDqsnOO5OBNVSIxSKi
+        w03xBmbdGqM8ZtflYgGKutb5d6b5Vu3UDhMpqVW0awslFe5KHakoYL2Q/dGemUnxjXX405
+        thoFRpK7zSLzEzwM9Vx1wltkV49YKO0nNz45l0Z2yWZRfXEzz4ntYjAfSSgJJsMWgWalT/
+        R3rq3i4vexxB5Rh28Fdbf0OiF+b/IUEA7ebVWYOgjRH/xJvn0HesGVq+VjPHTqxX6dgYmX
+        SC1jm8bc7ER7196bn7/1b22S3tlclE8btxg6ZUEe2uL+bJ5yyWc1ewb4QyBsjg==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id GhJyJ65iZTU8; Thu, 28 Jan 2021 11:19:56 +0100 (CET)
+Date:   Thu, 28 Jan 2021 11:19:54 +0100 (CET)
+From:   torvic9@mailbox.org
+To:     "chris2553@googlemail.com" <chris2553@googlemail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Message-ID: <916742573.14775.1611829195075@office.mailbox.org>
+Subject: Re: linux-5.10.11 build failure
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -3.11 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 4A30917CC
+X-Rspamd-UID: 57d376
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Maybe you need something like this: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/entry&id=5e6dca82bcaa49348f9e5fcb48df4881f6d6c4ae
 
-On Wed, 2021-01-27 at 22:54 +0100, Linus Walleij wrote:
-> > Series of patches to fix ep93xx gpio driver to make IRQ's working.
-> > 
-> > The following are fix patches (these are enough to get gpio-ep93xx
-> > working with modern kernel):
-> 
-> I see that there is a strange level of attention to patches to this
-> platform!
-> 
-> Since you fix all my mistakes made in converting this driver
-> in the past I will just say:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> For all of them.
-> 
-> There are some nitpicks from the reviewers to fix up but
-> overall this looks very very good.
-
-as we don't have a dedicated EP93xx tree, would you like to take
-the series in one of your trees?
-
--- 
-Alexander Sverdlin.
-
-
+Greetings,
+Tor
