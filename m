@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6277230732C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C802F30732F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhA1Juk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:50:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:55570 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231468AbhA1Jtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:49:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 482CC1042;
-        Thu, 28 Jan 2021 01:48:50 -0800 (PST)
-Received: from [10.57.45.249] (unknown [10.57.45.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E73AC3F766;
-        Thu, 28 Jan 2021 01:48:47 -0800 (PST)
-Subject: Re: [PATCH V3 10/14] arm64: nvhe: Allow TRBE access at EL1
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        lcherian@marvell.com, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-11-git-send-email-anshuman.khandual@arm.com>
- <12b1572e2568d4936f0458649065fe64@kernel.org>
- <d0daf831-3340-87f2-a021-0b775ce7af2a@arm.com>
- <05c4cde3da791e7effd6196a197f5c98@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <7a3252ae-8b8e-1d60-9ce5-5291e33ae8c8@arm.com>
-Date:   Thu, 28 Jan 2021 09:48:42 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232179AbhA1Jux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:50:53 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:58577 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231674AbhA1JuH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:50:07 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CC34B580777;
+        Thu, 28 Jan 2021 04:48:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 28 Jan 2021 04:48:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=TV859JvWohvleWj2mlFpPgmtkri
+        A19iCS+DM5VX5zO4=; b=fA7G8+msT4KYcqnHIgLxQP+PqklcjUp1JZ+v1tH8kqI
+        bfcRaN8oQIGt8feTaYgoQ797EGT4peyAf0gzWMd1ognhfVbmYQgBmhgw60DKKwyF
+        OkCr7MzW/hkSHxjIGOjhi3L4+CQIUvZJMCv1ClRvZk1ejkP+0D978Y1mC77LWaDR
+        2Qv8RqW46xThBokYMhl4Yl41IQKtMc3cBQDW+qUa7K+knCKcRhd25b4DxnyEE5t8
+        AIKB0H3hBJmhaO4BCdg+bMMJyym8WZO3ys5RNKNbU9VU93sxoN3eGAliw8DcVBVx
+        JH4ElzvJB47Sm3xtSSMHKG/jLO4fGowAXci8hEdVKyA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TV859J
+        vWohvleWj2mlFpPgmtkriA19iCS+DM5VX5zO4=; b=GhODBhboPsDZZcXYC4C7Fd
+        GFtz/Nerkl/LyDWteUwO2WVRURMcZxsQI0bjETRzoTCgrm98a5xmbZ5rz4aWcPAb
+        37/I6AevS2omsNi94Dg9Iuv3BkbAgDdthef/2hVImSL/KMUjm8bCZouiSKutu2Z8
+        OkfFwvjnnFGQXr89HTfrIE/jdbfudB6aqaiw2H2JkmkzmwwgZhopwXLeFfHgJvSj
+        hR6t43g22N9fMI2DVNp46biqC8hYjHbDXioBnwU0HSokS/RIg2HsquQKUErjHAf6
+        rZxT0HDTScO+FLCBgAu9u8fYNTa2r+fdU64CTm+8MljxCKaWRXFJsz6f+2/8pPHg
+        ==
+X-ME-Sender: <xms:g4gSYIpPEYZg8W6QasCiNpwsxO1K-SEnjT7vF-e1MbYr55R98toN8A>
+    <xme:g4gSYOr1AupiGrRkxJrRal_nRoEO_AbaZBNnJ3kipsX0Tw33xWhOdNeYYaXbpePIQ
+    G_5rlnsk7RPVvvhKMI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgddtiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:hIgSYNNIS-Nmwee4hfp0b5Qp-_i8qySVH2DpNB95c9EPMkKTxfk8Og>
+    <xmx:hIgSYP7_4ssmloHnIfI11jndKRxEOFAwppQu-ik5BnIFnz91qSUxqA>
+    <xmx:hIgSYH73EECJsEFmHEaqT4sNbcaS0WmWjG9WYdw9QTnZaRDLjO9daA>
+    <xmx:hYgSYPw-gWN3drIkmH5-4V--xcluONBqCQoJdFkYBzfFU06BT9yMfw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B2A7D24005A;
+        Thu, 28 Jan 2021 04:48:51 -0500 (EST)
+Date:   Thu, 28 Jan 2021 10:48:49 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v2 00/15] drm/vc4: hdmi: Add CEC support for the BCM2711
+Message-ID: <20210128094849.5hxx6ui3tgkmu5p5@gilmour>
+References: <20210111142309.193441-1-maxime@cerno.tech>
+ <acd2ba9f35732ba3fb7c31ba05132434ec99fd66.camel@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <05c4cde3da791e7effd6196a197f5c98@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="puhomd6fgdwr2xp5"
+Content-Disposition: inline
+In-Reply-To: <acd2ba9f35732ba3fb7c31ba05132434ec99fd66.camel@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 9:46 AM, Marc Zyngier wrote:
-> On 2021-01-28 09:34, Suzuki K Poulose wrote:
->> On 1/27/21 9:58 AM, Marc Zyngier wrote:
->>> On 2021-01-27 08:55, Anshuman Khandual wrote:
->>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>
->>>> When the kernel is booted at EL2 in a nvhe configuration,
->>>> enable the TRBE access to the EL1. The EL1 still can't trace
->>>> EL2, unless EL2 permits explicitly via TRFCR_EL2.E2TRE.
->>>>
->>>> Cc: Will Deacon <will@kernel.org>
->>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>> Cc: Marc Zyngier <maz@kernel.org>
->>>> Cc: Mark Rutland <mark.rutland@arm.com>
->>>> cc: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>
->>> Acked-by: Marc Zyngier <maz@kernel.org>
->>>
->>> One comment below, though:
->>>
->>>> ---
->>>>  arch/arm64/include/asm/el2_setup.h | 19 +++++++++++++++++++
->>>>  arch/arm64/include/asm/kvm_arm.h   |  2 ++
->>>>  2 files changed, 21 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/include/asm/el2_setup.h
->>>> b/arch/arm64/include/asm/el2_setup.h
->>>> index a7f5a1b..05ecce9 100644
->>>> --- a/arch/arm64/include/asm/el2_setup.h
->>>> +++ b/arch/arm64/include/asm/el2_setup.h
->>>> @@ -72,6 +72,25 @@
->>>>  .endif
->>>>
->>>>  3:
->>>> +
->>>> +.ifeqs    "\mode", "nvhe"
->>>> +    /*
->>>> +     * If the Trace Buffer is available, allow
->>>> +     * the EL1 to own it. Note that EL1 cannot
->>>> +     * trace the EL2, as it is prevented by
->>>> +     * TRFCR_EL2.E2TRE == 0.
->>>> +     */
->>>> +    ubfx    x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #4
->>>> +    cbz    x0, 1f
->>>> +
->>>> +    mrs_s    x0, SYS_TRBIDR_EL1
->>>> +    and    x0, x0, TRBIDR_PROG
->>>> +    cbnz    x0, 1f
->>>> +    mov    x0, #(MDCR_EL2_E2TB_EL1_OWN << MDCR_EL2_E2TB_SHIFT)
->>>> +    orr    x2, x2, x0
->>>> +.endif
->>>> +
->>>> +1:
->>>
->>> Note that this will (badly) conflict with the late-VHE patches[1],
->>> where this code path has been reworked.
->>
->> Thanks for the heads up. We will need to see how things get merged.
->> Ideally this patch and the previous one (TRBE definitions could go
->> via the arm64 tree / kvm tree), in which case we could rebase these
->> two patches on the respective tree.
-> 
-> I think the current plan of action is to go via the arm64 tree,
-> given that there is nothing really KVM specific there. I'll respin
-> the series one last (hopefully!) time on Monday. Let me know if
-> you need a hand with the rebasing.
 
-Sounds good, will rebase it on top of that then.
+--puhomd6fgdwr2xp5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers
-Suzuki
+Hi!
+
+On Mon, Jan 25, 2021 at 10:03:44PM +0100, Nicolas Saenz Julienne wrote:
+> Hi,
+>=20
+> On Mon, 2021-01-11 at 15:22 +0100, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > Here's a series introducing the CEC support for the BCM2711 found on the
+> > RaspberryPi4.
+> >=20
+> > The BCM2711 HDMI controller uses a similar layout for the CEC registers=
+, the
+> > main difference being that the interrupt handling part is now shared be=
+tween
+> > both HDMI controllers.
+> >=20
+> > This series is mainly about fixing a couple of bugs, reworking the driv=
+er to
+> > support having two different interrupts, one for each direction, provid=
+ed by an
+> > external irqchip, and enables the irqchip driver for the controller we =
+have.
+> >=20
+> > This has been tested on an RPi3 and RPi4, but requires the latest firmw=
+are.
+> > It's is based on the 10 and 12 bpc series.
+>=20
+> I applied patches #1 and #14 for-next. I'm waiting on Hans' testing for #=
+15.
+
+I've applied to drm-misc-next the patches 2 to 13
+
+Maxime
+
+--puhomd6fgdwr2xp5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBKIgQAKCRDj7w1vZxhR
+xcFjAQDyhilWiZOnBtF/6Ds6w1BfcUQewBo/s/AMDRirS7HODgD/RWnajJxfaPQ/
+BJAVsfoxNFRZbgY7Cl/919hBHx8nfA8=
+=F65t
+-----END PGP SIGNATURE-----
+
+--puhomd6fgdwr2xp5--
