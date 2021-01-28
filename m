@@ -2,72 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E58C307B46
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2606307B48
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbhA1Qrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhA1QoC (ORCPT
+        id S232725AbhA1Qsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:48:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33243 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232706AbhA1QrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:44:02 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3C3C061756;
-        Thu, 28 Jan 2021 08:43:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jr4vFfg++SnMXfOeSfc+6KemdjdKPH7hTDK3XX4rC9M=; b=KM3uQh4JFyuNplHnKH/rJXVnx
-        J+cgzF8Z/PYEp3QUsF6JKWFkp4CZ/Vy71vvMoEjJbZheADzt5Bk1F8DvHVHK38s2DQR2VStlyAngC
-        INbcXo9MYDcrLq8F49R8MN7rXdoeRQe0mxPYai0vQVO21rjwrnaj5Ea3YQVpN58B2yz019BxczEeU
-        qEJS+ev1Qd2KDPMtL2qgVj1Wvq6lvar7kuzib0bmuyPnouM5tH/ZUIpY/iXjQKpf8MGj0EcxcQBZb
-        fXIVOxtR8jN4hvymof8CDHVlLgkyYFA17y+Wb2pgQHZXaX3gkNVXdrcdNXx/FM6pw549uIKez+2Jj
-        u4QJsk4dw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53860)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l5AO6-0006sN-Nf; Thu, 28 Jan 2021 16:43:18 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l5AO6-0005ye-02; Thu, 28 Jan 2021 16:43:18 +0000
-Date:   Thu, 28 Jan 2021 16:43:17 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        andrew@lunn.ch, atenart@kernel.org
-Subject: Re: [PATCH v4 net-next 00/19] net: mvpp2: Add TX Flow Control support
-Message-ID: <20210128164317.GS1551@shell.armlinux.org.uk>
-References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+        Thu, 28 Jan 2021 11:47:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611852346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LrbBbrZjgAv/B1wjq2Km74Xb+2VP5Qkal75C1Cc+NeE=;
+        b=XPCOGggRAQ45nd85vXiM+rdBrNJtxO8toUq1Dm0/ZZ/y5JTqY5oJ4vPZdWGSUvxol0gkWI
+        vYD9v9E0l943eSzVtNlti2G4DeH2ZvGMZubrMPIhB/Yta2ReFCR3r+JWXgvsacsnbWKdzl
+        aPNrCzyep0cRFJcfQM9//VvCZk+2uaQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-Sc0k_4bSOiuTVbO9hkQWLQ-1; Thu, 28 Jan 2021 11:45:42 -0500
+X-MC-Unique: Sc0k_4bSOiuTVbO9hkQWLQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FAC459;
+        Thu, 28 Jan 2021 16:45:40 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-207.ams2.redhat.com [10.36.113.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E5C910027A5;
+        Thu, 28 Jan 2021 16:45:34 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-api@vger.kernel.org
+Subject: [PATCH v2] mm/page_alloc: count CMA pages per zone and print them in /proc/zoneinfo
+Date:   Thu, 28 Jan 2021 17:45:33 +0100
+Message-Id: <20210128164533.18566-1-david@redhat.com>
+In-Reply-To: <20210127101813.6370-3-david@redhat.com>
+References: <20210127101813.6370-3-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 01:43:16PM +0200, stefanc@marvell.com wrote:
-> Armada hardware has a pause generation mechanism in GOP (MAC).
-> The GOP generate flow control frames based on an indication programmed in Ports Control 0 Register. There is a bit per port.
-> However assertion of the PortX Pause bits in the ports control 0 register only sends a one time pause.
-> To complement the function the GOP has a mechanism to periodically send pause control messages based on periodic counters.
-> This mechanism ensures that the pause is effective as long as the Appropriate PortX Pause is asserted.
+Let's count the number of CMA pages per zone and print them in
+/proc/zoneinfo.
 
-I've tested this on my Macchiatobin SingleShot, which seems to be Ax
-silicon (and I've checked a couple of my other Armada 8040 platforms
-which are also Ax silicon too) and networking remains functional
-without flow control with the gigabit port achieving wire speed. I
-have not yet tested the 10G ports.
+Having access to the total number of CMA pages per zone is helpful for
+debugging purposes to know where exactly the CMA pages ended up, and to
+figure out how many pages of a zone might behave differently, even after
+some of these pages might already have been allocated.
 
+As one example, CMA pages part of a kernel zone cannot be used for
+ordinary kernel allocations but instead behave more like ZONE_MOVABLE.
+
+For now, we are only able to get the global nr+free cma pages from
+/proc/meminfo and the free cma pages per zone from /proc/zoneinfo.
+
+Example after this patch when booting a 6 GiB QEMU VM with
+"hugetlb_cma=2G":
+  # cat /proc/zoneinfo | grep cma
+          cma      0
+        nr_free_cma  0
+          cma      0
+        nr_free_cma  0
+          cma      524288
+        nr_free_cma  493016
+          cma      0
+          cma      0
+  # cat /proc/meminfo | grep Cma
+  CmaTotal:        2097152 kB
+  CmaFree:         1972064 kB
+
+Note: We track/print only with CONFIG_CMA; "nr_free_cma" in /proc/zoneinfo
+is currently also printed without CONFIG_CMA.
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: linux-api@vger.kernel.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+
+v1 -> v2:
+- Print/track only with CONFIG_CMA
+- Extend patch description
+
+---
+ include/linux/mmzone.h | 6 ++++++
+ mm/page_alloc.c        | 1 +
+ mm/vmstat.c            | 5 +++++
+ 3 files changed, 12 insertions(+)
+
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index ae588b2f87ef..27d22fb22e05 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -503,6 +503,9 @@ struct zone {
+ 	 * bootmem allocator):
+ 	 *	managed_pages = present_pages - reserved_pages;
+ 	 *
++	 * cma pages is present pages that are assigned for CMA use
++	 * (MIGRATE_CMA).
++	 *
+ 	 * So present_pages may be used by memory hotplug or memory power
+ 	 * management logic to figure out unmanaged pages by checking
+ 	 * (present_pages - managed_pages). And managed_pages should be used
+@@ -527,6 +530,9 @@ struct zone {
+ 	atomic_long_t		managed_pages;
+ 	unsigned long		spanned_pages;
+ 	unsigned long		present_pages;
++#ifdef CONFIG_CMA
++	unsigned long		cma_pages;
++#endif
+ 
+ 	const char		*name;
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b031a5ae0bd5..9a82375bbcb2 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2168,6 +2168,7 @@ void __init init_cma_reserved_pageblock(struct page *page)
+ 	}
+ 
+ 	adjust_managed_page_count(page, pageblock_nr_pages);
++	page_zone(page)->cma_pages += pageblock_nr_pages;
+ }
+ #endif
+ 
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 7758486097f9..957680db41fa 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1650,6 +1650,11 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		   zone->spanned_pages,
+ 		   zone->present_pages,
+ 		   zone_managed_pages(zone));
++#ifdef CONFIG_CMA
++	seq_printf(m,
++		   "\n        cma      %lu",
++		   zone->cma_pages);
++#endif
+ 
+ 	seq_printf(m,
+ 		   "\n        protection: (%ld",
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.29.2
+
