@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21C7308078
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2699A30807B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhA1VY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:24:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhA1VYP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:24:15 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C2FC06174A;
-        Thu, 28 Jan 2021 13:23:19 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E880F3ED94;
-        Thu, 28 Jan 2021 22:23:15 +0100 (CET)
-Subject: Re: [PATCH v3 3/3] dt-bindings: i2c: qcom,i2c-qup: Document noise
- rejection properties
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        phone-devel@vger.kernel.org
-References: <20210114180415.404418-1-angelogioacchino.delregno@somainline.org>
- <20210114180415.404418-4-angelogioacchino.delregno@somainline.org>
- <20210128091302.GG963@ninjato>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <8091e7fb-5530-10c2-c66c-ac76940ef1ad@somainline.org>
-Date:   Thu, 28 Jan 2021 22:23:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S231514AbhA1VYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:24:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231522AbhA1VY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 16:24:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED6D764DD8;
+        Thu, 28 Jan 2021 21:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611869021;
+        bh=iH6suGr3hIscxS1m9Qt5V6ljMSHvYQ88VlLXlbk5DE8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f7Rg5FZmKu0gKfkDG4xWZd1kRacrb0eNOVBuPA+UWZSiXsRqfk4GJlT1iGKcetXKK
+         eLuDHzBRcKurkVZDmbSexN9HowOGeiyqj5663qDUCCb52El2f0E0ZlZcbLualnDTxK
+         TAK0qz2+VHvZBCFsEbWnJ1cg6Ucl0KiqkGKC1BTANsuReN/zvbVD0jDKuaCZIom7Jx
+         SL30Wz8Y5Rdf+ab6D2nDeximq6qVlyFEmBulFVDS9TD9TlNeVk03IBoYvz5ZXrQ8Ex
+         f/pgqEgVo3q+Zb0tHAG3hA5kFrgWrsnxd7BSAaqyKgRnalmHGx0y9Vfx1EM7JO623c
+         bitR8/8hBpWLA==
+Date:   Thu, 28 Jan 2021 22:23:38 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 01/16] rcu/nocb: Fix potential missed nocb_timer rearm
+Message-ID: <20210128212338.GB122776@lothringen>
+References: <20210128171222.131380-1-frederic@kernel.org>
+ <20210128171222.131380-2-frederic@kernel.org>
+ <20210128184834.GP2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20210128091302.GG963@ninjato>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128184834.GP2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 28/01/21 10:13, Wolfram Sang ha scritto:
+On Thu, Jan 28, 2021 at 10:48:34AM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 28, 2021 at 06:12:07PM +0100, Frederic Weisbecker wrote:
+> > The "nocb_bypass_timer" ends up calling wake_nocb_gp() which deletes
+> > the pending "nocb_timer" (note they are not the same timers) for the
+> > given rdp without resetting the matching state stored in nocb_defer
+> > wakeup.
+> > 
+> > As a result, a future call_rcu() on that rdp may be fooled and think the
+> > timer is armed when it's not, missing a deferred nocb_gp wakeup.
+> > 
+> > Fix this with resetting rdp->nocb_defer_wakeup when we disarm the timer.
+> > 
+> > Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
+> > Cc: Stable <stable@vger.kernel.org>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  kernel/rcu/tree_plugin.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index 7e33dae0e6ee..a44f80d7661b 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -1705,6 +1705,8 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force,
+> >  		rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  		return false;
+> >  	}
+> > +
+> > +	rdp->nocb_defer_wakeup = RCU_NOCB_WAKE_NOT;
 > 
->> +  qcom,noise-reject-sda:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: Noise rejection level for the SDA line.
->> +    minimum: 0
->> +    maximum: 3
->> +    default: 0
-> 
-> What does this u32 describe? I wonder if we can introduce a generic
-> property instead of a vendor-specific one.
-> 
+> Given this change, does it make sense to remove the
+> setting of ->nocb_defer_wakeup to RCU_NOCB_WAKE_NOT from the
+> do_nocb_deferred_wakeup_common() function?
 
-Describes a "noise rejection level"... zero is disabled, 1-2-3 are
-min-med-high. That's what the hardware accepts.
+I do it later in "[PATCH 09/16] rcu/nocb: Merge nocb_timer to the rdp leader"
 
-Also, there's no "real" documentation on this, so it wasn't possible
-to map it to any real measurement unit as well...
+> Does the above assignment need
+> to be WRITE_ONCE(), in other words, are all reads of ->nocb_defer_wakeup
+> done with either ->nocb_lock or ->nocb_gp_lock held?  (I do not believe
+> that this is the case.)
+
+Ah indeed it should probably be done with WRITE_ONCE() because it's read
+locklessly on many places.
+
+Thanks.
+
+> 
+> 							Thanx, Paul
+> 
+> >  	del_timer(&rdp->nocb_timer);
+> >  	rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+> > -- 
+> > 2.25.1
+> > 
