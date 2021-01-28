@@ -2,136 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED47C307904
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F269307921
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhA1PDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:03:33 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:47240 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbhA1PDX (ORCPT
+        id S232270AbhA1PH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:07:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34114 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231793AbhA1PEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:03:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1611846203; x=1643382203;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=9/VdyTFb8NHluY/IjaW1kRd1KpXx4zAWoo8u1a5kQC4=;
-  b=YYdhKgjL3XmSgnHjooxKIv/NZzGpl0m8sv2S1HpplNzurlV/m/Wqsm/F
-   9JqBaJptDW3IYqEhcNu50SXkwDGZb+16HLYPixPrtJs6yp1aXg1QIsdKl
-   WS14YMos2WHt6txHt5jlWQsYGtYSoJdUJzcAwqkvvq1XwSIngyDmrhg8w
-   8=;
-X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
-   d="scan'208";a="80752060"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 28 Jan 2021 15:02:42 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id D9BC1A2134;
-        Thu, 28 Jan 2021 15:02:40 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 Jan 2021 15:02:40 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.253) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 Jan 2021 15:02:36 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-CC:     Tariq Toukan <tariqt@nvidia.com>,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Amit Shah <aams@amazon.de>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "Kuniyuki Iwashima" <kuni1840@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Tariq Toukan <tariqt@mellanox.com>,
-        "Boris Pismenny" <borisp@mellanox.com>
-Subject: [PATCH v5 net-next] net: Remove redundant calls of sk_tx_queue_clear().
-Date:   Fri, 29 Jan 2021 00:02:17 +0900
-Message-ID: <20210128150217.6060-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+        Thu, 28 Jan 2021 10:04:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611846201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ChbOkEgbATFM37SwTaCF7y0/gcttE6lmGqqCimF4GA8=;
+        b=NakydoJ9h1ceN5CE7BYMNXJyGgNZ2zTJUZU2q07QU+GQYwZH6geO6/Dl5MOOlUdcjXbzQ/
+        wAkz3zxVpyu5VfbsFrw8xBRGr/IdxqadoSIcgxNJemO4wTMY4Q2kTKhn6HGKx7NvYYUnLW
+        PHaIwAerF7vdWJFev7rQtzelOf7i52c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-h47oyd7PPFO5_XSp3oVzYw-1; Thu, 28 Jan 2021 10:03:16 -0500
+X-MC-Unique: h47oyd7PPFO5_XSp3oVzYw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21BC210052FE;
+        Thu, 28 Jan 2021 15:03:13 +0000 (UTC)
+Received: from [10.36.113.207] (ovpn-113-207.ams2.redhat.com [10.36.113.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A1845D720;
+        Thu, 28 Jan 2021 15:03:08 +0000 (UTC)
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        James Morris <jmorris@namei.org>
+References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
+ <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com>
+ <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
+ <94797c92-cd90-8a65-b879-0bb5f12b9fc5@redhat.com>
+ <CA+CK2bCjD7PujEwWMT32p4e6x6hZ-f5QOKXir10mT8RfijvnUA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: dax alignment problem on arm64 (and other achitectures)
+Message-ID: <db692fcd-40e8-9c2b-d63b-9803f4bf9d5e@redhat.com>
+Date:   Thu, 28 Jan 2021 16:03:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.253]
-X-ClientProxiedBy: EX13D23UWC001.ant.amazon.com (10.43.162.196) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <CA+CK2bCjD7PujEwWMT32p4e6x6hZ-f5QOKXir10mT8RfijvnUA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
-other hand, the original commit had already put sk_tx_queue_clear() in
-sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
-sk_tx_queue_clear() is called twice in each path.
+>> One issue usually is that often firmware can allocate from available
+>> system RAM and/or modify/initialize it. I assume you're running some
+>> custom firmware :)
+> 
+> We have a special firmware that does not touch the last 2G of physical
+> memory for its allocations :)
+> 
 
-If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
-currently works well because (i) sk_tx_queue_mapping is defined between
-sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
-sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
-However, if we move sk_tx_queue_mapping out of the no copy area, it
-introduces a bug unintentionally.
+Fancy :)
 
-Therefore, this patch adds a compile-time check to take care of the order
-of sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
-sk_prot_alloc() so that it does the only allocation and its callers
-initialize fields.
+[...]
 
-CC: Tariq Toukan <tariqt@mellanox.com>
-CC: Boris Pismenny <borisp@mellanox.com>
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
----
-v5:
-* Move the changelog after the --- separator
+>> Personally, I think the future is 4k, especially for smaller machines.
+>> (also, imagine right now how many 512MB THP you can actually use in your
+>> 8GB VM ..., simply not suitable for small machines).
+> 
+> Um, this is not really about 512THP. Yes, this is smaller machine, but
+> performance is very important to us. Boot budget for the kernel is
+> under half a second. With 64K we save 0.2s  0.35s vs 0.55s. This is
+> because fewer struct pages need to be initialized. Also, fewer TLB
+> misses, and 3-level page tables add up as performance benefits. >
+> For larger servers 64K pages make total sense: Less memory is wasted as metdata.
 
-v4: https://lore.kernel.org/netdev/20210128124229.78315-1-kuniyu@amazon.co.jp/
-* Fix typo in the changelog (runtime -> compile-time)
+Yes, indeed, for very large servers it might make sense in that regard. 
+However, once we can eventually free vmemmap of hugetlbfs things could 
+change; assuming user space will be consuming huge pages (which large 
+machines better be doing ... databases, hypervisors ... ).
 
-v3: https://lore.kernel.org/netdev/20210128021905.57471-1-kuniyu@amazon.co.jp/
-* Remove Fixes: tag
-* Add BUILD_BUG_ON
-* Remove sk_tx_queue_clear() from sk_prot_alloc()
-  instead of sk_alloc() and sk_clone_lock()
+Also, some hypervisors try allocating the memmap completely ... but I 
+consider that rather a special case.
 
-v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
-* Remove Reviewed-by: tag
+Personally, I consider being able to use THP/huge pages more important 
+than having 64k base pages and saving some TLB space there. Also, with 
+64k you have other drawbacks: for example, each stack, each TLS for 
+threads in applications suddenly consumes 16 times more memory as "minimum".
 
-v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
+Optimizing boot time/memmap initialization further is certainly an 
+interesting topic.
 
- net/core/sock.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Anyhow, you know your use case best, just sharing my thoughts :)
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index bbcd4b97eddd..cfbd62a5e079 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
- #ifdef CONFIG_SECURITY_NETWORK
- 	void *sptr = nsk->sk_security;
- #endif
-+
-+	/* If we move sk_tx_queue_mapping out of the private section,
-+	 * we must check if sk_tx_queue_clear() is called after
-+	 * sock_copy() in sk_clone_lock().
-+	 */
-+	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
-+		     offsetof(struct sock, sk_dontcopy_begin) ||
-+		     offsetof(struct sock, sk_tx_queue_mapping) >=
-+		     offsetof(struct sock, sk_dontcopy_end));
-+
- 	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
- 
- 	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
-@@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
- 
- 		if (!try_module_get(prot->owner))
- 			goto out_free_sec;
--		sk_tx_queue_clear(sk);
- 	}
- 
- 	return sk;
+[...]
+
+>>>
+>>> Right, but I do not think it is possible to do for dax devices (as of
+>>> right now). I assume, it contains information about what kind of
+>>> device it is: devdax, fsdax, sector, uuid etc.
+>>> See [1] namespaces tabel. It contains summary of pmem devices types,
+>>> and which of them have label (all except for raw).
+>>
+>> Interesting, I wonder if the label is really required to get this
+>> special use case running. I mean, all you want is to have dax/kmem
+>> expose the whole thing as system RAM. You don't want to lose even 2MB if
+>> it's just for the sake of unnecessary metadata - this is not a real
+>> device, it's "fake" already.
+> 
+> Hm, would not it essentially  mean allowing memory hot-plug for raw
+> pmem devices? Something like create mmap, and hot-add raw pmem?
+
+Theoretically yes, but I have no idea if that would make sense for real 
+"raw pmem" as well. Hope some of the pmem/nvdimm experts can clarify 
+what's possible and what's not :)
+
+
 -- 
-2.17.2 (Apple Git-113)
+Thanks,
+
+David / dhildenb
 
