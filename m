@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AC4307CDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743C1307CE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhA1RoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:44:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233072AbhA1RoE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:44:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611855758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xJS+3GFCtCfmN69c0BzqEjKIwA/fcAY9rImqkPB5gBQ=;
-        b=B/2CCgFkmyeAJj7mGIlu26zdYxdh4cpuk4/oc6/xG79u9p4YxZLpw+sA+52h6Pjv00A0r6
-        VXVMkYGHH6P7njTlGSE2eL/ChLMM8eFnsBNyuOtZcT0PcURs5u/AfB8/nDuq9GDz0zlX4e
-        W0bajWWd6MJv+OJB59BzyOkKkJTmL70=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-NmFiAxUhM6a82EySumj8Xw-1; Thu, 28 Jan 2021 12:42:36 -0500
-X-MC-Unique: NmFiAxUhM6a82EySumj8Xw-1
-Received: by mail-ej1-f72.google.com with SMTP id jg11so2541141ejc.23
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:42:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xJS+3GFCtCfmN69c0BzqEjKIwA/fcAY9rImqkPB5gBQ=;
-        b=uiUp3kkTSJcLyug4rXCz2o4WY22YtTKpDuY7KhY80MXv4wOOgNxtdcXNI3IZZBI5aS
-         uQ4GX9k0jqDt/Fc6i5lbxhCb3kW3Elhh3zsXlrJ20eHqlcuEuwwobmGkHgKwfLF2Cbab
-         F/Wv8unguByV+lxSXJroRQPjCfddDxIjwleu/ii80kQbXNoi0fpjiGDlNtMUJJOPyHBv
-         cfoxo2ucMAfpkeSAYWWhxUW7bn7NrGLz2qAD8GFQuyjbi0oyEi69tbiYROgHDX7rd1Ge
-         0H0hMK9yXDcoIxI85H+EERcPTpV6ZgVYcH6YwSk7KsvTZwjP5lLbVz9sBr96bbgumxwS
-         O3qQ==
-X-Gm-Message-State: AOAM531dzCFDknFH6JPHjEJf9D1vly9Rx6IggNo++7+OTM1AhWZ2wqc9
-        8IwnVJ1DzvpYPQnrwJOsbUy0GReJlJglBtc0sJZdOdJFXU/34fRxgVUf5kgHAbG/3WtYlj+IPF0
-        4iCBDgYEqH3twxXEbpmy3MpcW
-X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr814649edc.68.1611855754985;
-        Thu, 28 Jan 2021 09:42:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzrN8Ed0JfsjIGJTjYBE38cLR12dA3PUS54cDu+Mv1wdeKrexLUMtwsnv/jahIBOMJlz8hpYw==
-X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr814625edc.68.1611855754788;
-        Thu, 28 Jan 2021 09:42:34 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p12sm3437911edr.82.2021.01.28.09.42.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 09:42:33 -0800 (PST)
-Subject: Re: [PATCH v14 08/13] KVM: VMX: Add a synthetic MSR to allow
- userspace VMM to access GUEST_SSP
-To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com
-References: <20201106011637.14289-1-weijiang.yang@intel.com>
- <20201106011637.14289-9-weijiang.yang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f94b472f-086e-ea0c-5ff0-848d5a9689dc@redhat.com>
-Date:   Thu, 28 Jan 2021 18:42:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232756AbhA1RpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:45:02 -0500
+Received: from mga01.intel.com ([192.55.52.88]:16768 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233210AbhA1Roi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:44:38 -0500
+IronPort-SDR: dy4myhAHGRzpyFfYhz38AlXOkO/YQ1lNbC+bzwuJWAw35lEc5MKQ1FIqgHj3eDR7kKexfKqFh6
+ TFXgi9NihMgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="199115195"
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="199115195"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 09:43:53 -0800
+IronPort-SDR: bHzDr4KVfojn+jzni5nYFplQaM5auMhTIKsKDG6rUoV1f94Wuphi1lCXpWg4TuU5G3j6oO34S7
+ xN16GtSC8QnA==
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="363886580"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 09:43:53 -0800
+Date:   Thu, 28 Jan 2021 09:43:52 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+Cc:     x86@kernel.org, naoya.horiguchi@nec.com,
+        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com
+Subject: Re: [PATCH] x86/fault: Send SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210128174352.GA33283@agluck-desk2.amr.corp.intel.com>
+References: <20210128194326.71895e92.yaoaili@kingsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20201106011637.14289-9-weijiang.yang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128194326.71895e92.yaoaili@kingsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/20 02:16, Yang Weijiang wrote:
-> Introduce a host-only synthetic MSR, MSR_KVM_GUEST_SSP so that the VMM
-> can read/write the guest's SSP, e.g. to migrate CET state.  Use a
-> synthetic MSR, e.g. as opposed to a VCPU_REG_, as GUEST_SSP is subject
-> to the same consistency checks as the PL*_SSP MSRs, i.e. can share code.
+On Thu, Jan 28, 2021 at 07:43:26PM +0800, Aili Yao wrote:
+> when one page is already hwpoisoned by AO action, process may not be
+> killed, the process mapping this page may make a syscall include this
+> page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
+> mode it may be fixed by fixup_exception, current code will just return
+> error code to user process.
+
+Shouldn't the AO action that poisoned the page have also unmapped it?
 > 
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> This is not suffient, we should send a SIGBUS to the process and log the
+> info to console, as we can't trust the process will handle the error
+> correctly.
+
+I agree with this part ... few apps check for -EFAULT and do the right
+thing.  But I'm not sure how this happens. Can you provide a bit more
+detail on the steps
+
+-Tony
+
+P.S. Typo: s/suffient/sufficient/
+
+> 
+> Suggested-by: Feng Yang <yangfeng1@kingsoft.com>
+> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
 > ---
->   arch/x86/include/uapi/asm/kvm_para.h |  1 +
->   arch/x86/kvm/vmx/vmx.c               | 14 ++++++++++++--
->   2 files changed, 13 insertions(+), 2 deletions(-)
+>  arch/x86/mm/fault.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 812e9b4c1114..5203dc084125 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -53,6 +53,7 @@
->   #define MSR_KVM_POLL_CONTROL	0x4b564d05
->   #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
->   #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
-> +#define MSR_KVM_GUEST_SSP	0x4b564d08
->   
->   struct kvm_steal_time {
->   	__u64 steal;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index dd78d3a79e79..28ba8414a7a3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1817,7 +1817,8 @@ static bool cet_is_ssp_msr_accessible(struct kvm_vcpu *vcpu,
->   	if (msr->host_initiated)
->   		return true;
->   
-> -	if (!guest_cpuid_has(vcpu, X86_FEATURE_SHSTK))
-> +	if (!guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> +	    msr->index == MSR_KVM_GUEST_SSP)
->   		return false;
->   
->   	if (msr->index == MSR_IA32_INT_SSP_TAB)
-> @@ -1995,6 +1996,11 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   			return 1;
->   		msr_info->data = vmcs_readl(GUEST_INTR_SSP_TABLE);
->   		break;
-> +	case MSR_KVM_GUEST_SSP:
-> +		if (!cet_is_ssp_msr_accessible(vcpu, msr_info))
-> +			return 1;
-> +		msr_info->data = vmcs_readl(GUEST_SSP);
-> +		break;
->   	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
->   		if (!cet_is_ssp_msr_accessible(vcpu, msr_info))
->   			return 1;
-> @@ -2287,12 +2293,16 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   			return 1;
->   		vmcs_writel(GUEST_INTR_SSP_TABLE, data);
->   		break;
-> +	case MSR_KVM_GUEST_SSP:
->   	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
->   		if (!cet_is_ssp_msr_accessible(vcpu, msr_info))
->   			return 1;
->   		if ((data & GENMASK(2, 0)) || is_noncanonical_address(data, vcpu))
->   			return 1;
-> -		vmx_set_xsave_msr(msr_info);
-> +		if (msr_index == MSR_KVM_GUEST_SSP)
-> +			vmcs_writel(GUEST_SSP, data);
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index f1f1b5a0956a..36d1e385512b 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -662,7 +662,16 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+>  		 * In this case we need to make sure we're not recursively
+>  		 * faulting through the emulate_vsyscall() logic.
+>  		 */
+> +#ifdef CONFIG_MEMORY_FAILURE
+> +		if (si_code == BUS_MCEERR_AR && signal == SIGBUS)
+> +			pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
+> +				current->comm, current->pid, address);
+> +
+> +		if ((current->thread.sig_on_uaccess_err && signal) ||
+> +			(si_code == BUS_MCEERR_AR && signal == SIGBUS)) {
+> +#else
+>  		if (current->thread.sig_on_uaccess_err && signal) {
+> +#endif
+>  			sanitize_error_code(address, &error_code);
+>  
+>  			set_signal_archinfo(address, error_code);
+> @@ -927,7 +936,14 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+>  {
+>  	/* Kernel mode? Handle exceptions or die: */
+>  	if (!(error_code & X86_PF_USER)) {
+> +#ifdef CONFIG_MEMORY_FAILURE
+> +		if (fault & (VM_FAULT_HWPOISON|VM_FAULT_HWPOISON_LARGE))
+> +			no_context(regs, error_code, address, SIGBUS, BUS_MCEERR_AR);
 > +		else
-> +			vmx_set_xsave_msr(msr_info);
->   		break;
->   	case MSR_TSC_AUX:
->   		if (!msr_info->host_initiated &&
+> +			no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
+> +#else
+>  		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
+> +#endif
+>  		return;
+>  	}
+>  
+> -- 
+> 2.25.1
 > 
-
-Doh, I misread the change in cet_is_ssp_msr_accessible, sorry.  */
-
