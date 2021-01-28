@@ -2,65 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683FC307806
+	by mail.lfdr.de (Postfix) with ESMTP id D99D2307807
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhA1O1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:27:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231160AbhA1O0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231615AbhA1O1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231631AbhA1O0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Jan 2021 09:26:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2896964DE1;
-        Thu, 28 Jan 2021 14:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611843966;
-        bh=fyKCFaUjrkKt3tuQEHUgceIKUtLyui94M61Ti9D1ACE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VJUTBovXzS5xEmpNWdGeYGY2XVKZSU6/R0oLKzpgRa36UTLOYxpQuvbi/ZHJibBF3
-         XsRLLNUXallngKgN+Ue3WdIVyh21+FzaicOW8S91XtBzV6Kq3jUaylcWIDxJ3e3jJm
-         GRyZUEOHUwXBYgOW6l2L4gAJyHzAgEStmeSu+laAtJlMetHa8ruhjJDTfneZHVfbrV
-         mG89A8+X7xee03R0G5t2+5PzI1hZ2nmiHeTmwGUUiDXH3/A/fFev9icr7lq7QVgBRc
-         yTFlqX1m3fLYPvSjtgOV42jbgw/Nus2+0nGrQMg8NIqOsKNOFjEhWPNCtrZu9X8ssV
-         53g3ZlB97xKyQ==
-Received: by mail-oi1-f170.google.com with SMTP id k25so6140448oik.13;
-        Thu, 28 Jan 2021 06:26:06 -0800 (PST)
-X-Gm-Message-State: AOAM531BzBYVFLap6fMGHGpeXoCuY4ghXpyxj7ESA2V9HD2SFqhbdGk2
-        Fwdbh80WDc973nAlb2cj4r+zrfcLTj4SvHsDdac=
-X-Google-Smtp-Source: ABdhPJxvnfveUy++Y7kX4uFuQXMK3LtVVeJd/wxkjEd+lOiQntYMmFQd7oPP/QdjcTzZg/QgBmsn0noGTKqsJQg8P50=
-X-Received: by 2002:aca:eb0a:: with SMTP id j10mr6777833oih.4.1611843965368;
- Thu, 28 Jan 2021 06:26:05 -0800 (PST)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94393C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:26:06 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id h15so3405296pli.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:26:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z7kqvyeMLdKmefmrsRuOiNzWs95rHzmAWApehWIZvbU=;
+        b=kUXcyEUll4Sos7hXPsc4WW3FtQRlfqJTQ46JUCN7+Z8kfZmWvPZ/V1eXI8wszpXTAD
+         FdRPlqnCCTzsCMcJoeY4Z1dj+VL/CJX0vhuzAIlCYbXCGzJolmzJ8yKAYr0Ywg/FifXx
+         inTvJ1K5yVAjeNHUgo6u57u7AE6cn176WrEPSYlSdpqsTf0OUuSXVX38g3lndD2BLmpS
+         R1eD+G3PL+IWzDleJk2PEcZ3R/9GEuRCe8aukWy+CCjMS47mmpCguLR0UjV6CfsJOBOP
+         fg1WT0yfBCSQdCod4vwcftGKrusWjGaDtwG1qGCXLcEw7Kd+YWv43xL4Brnh1eETjkQZ
+         YrpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z7kqvyeMLdKmefmrsRuOiNzWs95rHzmAWApehWIZvbU=;
+        b=jNmgt6FC8pOhYN06AKOnpF+ATsaVPiiH45F33Lnmbp9zw7YpWNkERXTNQILPaoPnQl
+         rnL8kj8YlXBrJxMi/P2BSWLg8tP6kUq4Js0fYFcMsEoKoE2AFfp2pljbUxQDvM8tWUbe
+         g/DaGh2qhIpVs6ldISqL7/db79ezhapAV3qmgrPUBQ8rqczkw6zpr9DDDqMheHhc+0x+
+         IHURCymXlK5+JS4tD1gbsLReePvj0YMugmWv355+BV1ZsEqkP5FgW+1es3Lg7mHr51gF
+         +uy9NIeh6Mp485CJry+UkIUYpbbDe+kzdCVDxn8Zksb9YJv5g5Bnrf5d+rzMZG/IO5w+
+         cszw==
+X-Gm-Message-State: AOAM533OqfA5ys4/N8LBuRwX5pGaNgY5PEHnUBUE5/MRY6wqeP/9X/48
+        GWPGXqfOCq9epnCJN/6wUziHVXR2rCaNVsky1EHicliILfc=
+X-Google-Smtp-Source: ABdhPJx+eqeR3gAs6wxz78K3LKIpQfzJbcd1pJ1H1dJmKLg8lttFsBNi4ViSEi6wnCCISU2VBYv3TVhzzsy1bmdB8v0=
+X-Received: by 2002:a17:90a:d913:: with SMTP id c19mr11614350pjv.19.1611843966025;
+ Thu, 28 Jan 2021 06:26:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116032740.873-1-thunder.leizhen@huawei.com> <20210116032740.873-4-thunder.leizhen@huawei.com>
-In-Reply-To: <20210116032740.873-4-thunder.leizhen@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 28 Jan 2021 15:25:49 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a30Pbrfr4GTodq829T59kCAZ0GWV2WvRKNBSbvTTNbmsA@mail.gmail.com>
-Message-ID: <CAK8P3a30Pbrfr4GTodq829T59kCAZ0GWV2WvRKNBSbvTTNbmsA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/4] dt-bindings: arm: hisilicon: Add binding for
- Kunpeng L3 cache controller
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210120120847.1505143-1-robert.foss@linaro.org>
+In-Reply-To: <20210120120847.1505143-1-robert.foss@linaro.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 28 Jan 2021 15:25:54 +0100
+Message-ID: <CAG3jFytO5N7u6URVVC_AHG9C9PAcFAX=8mv1SVRdi0SCoXz5Xw@mail.gmail.com>
+Subject: Re: [PATCH v5] media: ov8856: Configure sensor for GRBG Bayer for all modes
+To:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Tomasz Figa <tfiga@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 4:34 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> Add devicetree binding for Hisilicon Kunpeng L3 cache controller.
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../arm/hisilicon/kunpeng-l3cache.yaml        | 40 +++++++++++++++++++
+Ping. I think this patch is ready to be merged.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, 20 Jan 2021 at 13:09, Robert Foss <robert.foss@linaro.org> wrote:
+>
+> The previously added modes 3264x2448 & 1632x1224 are actually
+> configuring the sensor for BGGR mode, this is an issue since
+> the mode that is exposed through V4L incorrectly is set as GRBG.
+>
+> This patch fixes the issue by moving the output crop window of
+> internal sensor ISP uses by one row, which means that the Bayer
+> pattern of the output is changed.
+>
+> From:
+> row 1: B G B G B G ...
+> row 2: G R G R G R ...
+> row 3: B G B G B G ...
+> ...
+>
+> To:
+> row 2: G R G R G R ...
+> row 3: B G B G B G ...
+> ...
+>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Suggested-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> ---
+>
+> Changes since v1:
+>  - Sakari: Added mode information to ov8856_mode struct
+>  - Sakari: enum_mbus_code updated
+>
+> Changes since v2:
+>  - Andrey: Switched approach to changing the sensor configuration
+>    to yield identical Bayer modes for all modes
+>
+> Changes since v3:
+>  - Andrey: Improve commit msg to explain Bayer shift better
+>
+> Changes since v4:
+>  - Andrey: Fix typ-o
+>  - Andrey: Add r-b
+>
+>
+>  drivers/media/i2c/ov8856.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> index 2f4ceaa80593..8a355135c7db 100644
+> --- a/drivers/media/i2c/ov8856.c
+> +++ b/drivers/media/i2c/ov8856.c
+> @@ -428,7 +428,7 @@ static const struct ov8856_reg mode_3264x2448_regs[] = {
+>         {0x3810, 0x00},
+>         {0x3811, 0x04},
+>         {0x3812, 0x00},
+> -       {0x3813, 0x02},
+> +       {0x3813, 0x01},
+>         {0x3814, 0x01},
+>         {0x3815, 0x01},
+>         {0x3816, 0x00},
+> @@ -821,7 +821,7 @@ static const struct ov8856_reg mode_1632x1224_regs[] = {
+>         {0x3810, 0x00},
+>         {0x3811, 0x02},
+>         {0x3812, 0x00},
+> -       {0x3813, 0x02},
+> +       {0x3813, 0x01},
+>         {0x3814, 0x03},
+>         {0x3815, 0x01},
+>         {0x3816, 0x00},
+> --
+> 2.27.0
+>
