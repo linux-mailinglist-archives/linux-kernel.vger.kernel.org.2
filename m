@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20497306BDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9E0306BE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhA1EGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhA1EFI (ORCPT
+        id S231376AbhA1EHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:07:32 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:40888 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231328AbhA1EGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:05:08 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9521EC0612F2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:04:28 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id f6so3961073ots.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:04:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cbTyrwsOUFeBKx/wZBbc/RTueffgUmDZNCpk3OrcQUc=;
-        b=ChVoei/DhScC9Gpja9dK8cCUFgP0rOt5TK8HXznv4PXif/JHazoXu1SRciZogaw6P+
-         8Blg9wNWM945EsmAS9O6UKkFs+gK60+8YUo5VlXoLZXgdBYZe5S4XWFGWhekl4T1+C5g
-         ORJJr6EJjq8bU5i/uLm5MZPjnFTKBTgYAytEtl4xt470vwZSiU/Npmc39sCHwqm6/D1l
-         ZFXLtuMGqXxEiFf0ZGIsncdF61rMzsruJAS8OV0eUYwScC3taNYDguJAn/rGoJsOFzMS
-         MRo0cAw5FAdBKUgFCVxQX4hy1hO1Rd2l6Q31HPmu3IVVvZlGGble7L6Lc90OqOq+1a0y
-         3kbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cbTyrwsOUFeBKx/wZBbc/RTueffgUmDZNCpk3OrcQUc=;
-        b=PPUWiY7vYnH/xGVnzRrQq7DYrmihxqS6uxVwHVFXe0nd4xnyRsXGNw33zY0wpzBsbX
-         dqOYI3jY+DRKrpMlsXqjHeM2qwdB5cIrUDk3ZxkBY0tvvhOPehvAdoviMKnn2GMsfb1I
-         MwKbtcfBKCACXcfcBG4kIawHmV+A5ntZfRhxDXVQbLkTK+LksIeL3uR81JYlbLqzZbn7
-         LjzFnDgFRTg5Pkz+t/D8Oxkt3nkuWLn/4qbnEkWpR6K2QHpZHJGlN6Cg6SzCRsTzG/C9
-         7uH6jG2IcZPDKmHjmgDYK7IugwpCH5+mgfmAz32Vs0Qe6aftQs5dugXFvUBXgyu9TSkG
-         0PZw==
-X-Gm-Message-State: AOAM532eBMQXqO8vrnuoWykZi0PCD0BFKa8h1c0mR/M8zGXG73i7BWj5
-        3ZmDtuHT+hTUXhlNs7hm6NeuNw==
-X-Google-Smtp-Source: ABdhPJxGfqVHUm+2Z5bAjtM7pk9jPcdyIL6KBmg3RYFwdLJHvzNMFduWntEiPNXss68vK/KeFyE03w==
-X-Received: by 2002:a05:6830:1d73:: with SMTP id l19mr9893373oti.245.1611806667872;
-        Wed, 27 Jan 2021 20:04:27 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g23sm810745otk.72.2021.01.27.20.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 20:04:27 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] opp: Allow dev_pm_opp_set_opp() to be called without opp
-Date:   Wed, 27 Jan 2021 20:04:26 -0800
-Message-Id: <20210128040426.953529-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 27 Jan 2021 23:06:04 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7B19F20B7192;
+        Wed, 27 Jan 2021 20:05:22 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7B19F20B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611806723;
+        bh=dzl2P44Yb+cNWgQrSsQPdvhI/zPDp51SLN+n5BsmTYw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=EdovfA0Ie2vSW3q9X330ya4blxqJxmCNR8pb6jyTPfsAtUyZmv/J5Ert8cRTPsnjJ
+         xhJBn/olUclZEvwaYdy3filR9a9BL3xmmmuC47b6RgwFGBYY+1lryf2SdYcSU6o5Tf
+         +7NNRQWMwng/+UYSQ6g3DbAmnqbMMK2XACp6PUgo=
+Subject: Re: [PATCH v15 10/10] arm64: Add IMA log information in kimage used
+ for kexec
+To:     Will Deacon <will@kernel.org>, Mimi Zohar <zohar@linux.ibm.com>
+Cc:     bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210115173017.30617-1-nramas@linux.microsoft.com>
+ <20210115173017.30617-11-nramas@linux.microsoft.com>
+ <20210127165424.GB358@willie-the-truck>
+ <dec23eb8-0b27-3227-d1ef-f759338a7f9f@linux.microsoft.com>
+ <20210127180230.GA593@willie-the-truck>
+ <8a573f84-732a-3591-8751-f7b08edaa01d@linux.microsoft.com>
+ <6343ab2eec390ab7582beea04f8006af095850c8.camel@linux.ibm.com>
+ <20210127231334.GB1016@willie-the-truck>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <681a4410-8a96-bce1-fcd4-d45d56625b39@linux.microsoft.com>
+Date:   Wed, 27 Jan 2021 20:05:21 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210127231334.GB1016@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-a6xx_gmu_stop() calls dev_pm_opp_set_opp() with NULL as opp in order to
-drop its bandwidth request, which was valid with dev_pm_opp_set_bw().
-But after the transition to dev_pm_opp_set_opp() this leads to a NULL
-dereference before jumping into _set_opp(), which does disable the
-vote as expected.
+On 1/27/21 3:13 PM, Will Deacon wrote:
+> On Wed, Jan 27, 2021 at 01:31:02PM -0500, Mimi Zohar wrote:
+>> On Wed, 2021-01-27 at 10:24 -0800, Lakshmi Ramasubramanian wrote:
+>>> On 1/27/21 10:02 AM, Will Deacon wrote:
+>>>> On Wed, Jan 27, 2021 at 09:56:53AM -0800, Lakshmi Ramasubramanian wrote:
+>>>>> On 1/27/21 8:54 AM, Will Deacon wrote:
+>>>>>> On Fri, Jan 15, 2021 at 09:30:17AM -0800, Lakshmi Ramasubramanian wrote:
+>>>>>>> Address and size of the buffer containing the IMA measurement log need
+>>>>>>> to be passed from the current kernel to the next kernel on kexec.
+>>>>>>>
+>>>>>>> Add address and size fields to "struct kimage_arch" for ARM64 platform
+>>>>>>> to hold the address and size of the IMA measurement log buffer.
+>>>>>>>
+>>>>>>> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC, if CONFIG_IMA
+>>>>>>> is enabled, to indicate that the IMA measurement log information is
+>>>>>>> present in the device tree for ARM64.
+>>>>>>>
+>>>>>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>>>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>>>>> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+>>>>>>> ---
+>>>>>>>     arch/arm64/Kconfig             | 1 +
+>>>>>>>     arch/arm64/include/asm/kexec.h | 5 +++++
+>>>>>>>     2 files changed, 6 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>>>>>> index 1d466addb078..ea7f7fe3dccd 100644
+>>>>>>> --- a/arch/arm64/Kconfig
+>>>>>>> +++ b/arch/arm64/Kconfig
+>>>>>>> @@ -1094,6 +1094,7 @@ config KEXEC
+>>>>>>>     config KEXEC_FILE
+>>>>>>>     	bool "kexec file based system call"
+>>>>>>>     	select KEXEC_CORE
+>>>>>>> +	select HAVE_IMA_KEXEC if IMA
+>>>>>>>     	help
+>>>>>>>     	  This is new version of kexec system call. This system call is
+>>>>>>>     	  file based and takes file descriptors as system call argument
+>>>>>>> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+>>>>>>> index d24b527e8c00..2bd19ccb6c43 100644
+>>>>>>> --- a/arch/arm64/include/asm/kexec.h
+>>>>>>> +++ b/arch/arm64/include/asm/kexec.h
+>>>>>>> @@ -100,6 +100,11 @@ struct kimage_arch {
+>>>>>>>     	void *elf_headers;
+>>>>>>>     	unsigned long elf_headers_mem;
+>>>>>>>     	unsigned long elf_headers_sz;
+>>>>>>> +
+>>>>>>> +#ifdef CONFIG_IMA_KEXEC
+>>>>>>> +	phys_addr_t ima_buffer_addr;
+>>>>>>> +	size_t ima_buffer_size;
+>>>>>>> +#endif
+>>>>>>
+>>>>>> Why do these need to be in the arch structure instead of 'struct kimage'?
+>>>>>>
+>>>>>
+>>>>> Currently, only powerpc and, with this patch set, arm64 have support for
+>>>>> carrying forward IMA measurement list across kexec system call. The above
+>>>>> fields are used for tracking IMA measurement list.
+>>>>>
+>>>>> Do you see a reason to move these fields to "struct kimage"?
+>>>>
+>>>> If they're gated on CONFIG_IMA_KEXEC, then it seems harmless for them to
+>>>> be added to the shared structure. Or are you saying that there are
+>>>> architectures which have CONFIG_IMA_KEXEC but do not want these fields?
+>>>>
+>>>
+>>> As far as I know, there are no other architectures that define
+>>> CONFIG_IMA_KEXEC, but do not use these fields.
+>>
+>> Yes, CONFIG_IMA_KEXEC enables "carrying the IMA measurement list across
+>> a soft boot".   The only arch that currently carries the IMA
+>> measurement across kexec is powerpc.
+> 
+> Ok, in which case this sounds like it should be in the shared structure, no?
+> 
 
-Fixes: a0d67b94e2ef ("opp: Implement dev_pm_opp_set_opp()")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/opp/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ok - I'll move the IMA kexec buffer fields from "struct kimage_arch" to 
+"struct kimage" for both powerpc and arm64.
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 583bb1274df9..3ff05f40e443 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -1157,7 +1157,7 @@ int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp)
- 		return PTR_ERR(opp_table);
- 	}
- 
--	ret = _set_opp(dev, opp_table, opp, opp->rate);
-+	ret = _set_opp(dev, opp_table, opp, opp ? opp->rate : 0);
- 	dev_pm_opp_put_opp_table(opp_table);
- 
- 	return ret;
--- 
-2.29.2
+thanks,
+  -lakshmi
+
 
