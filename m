@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2D1307BC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F825307BA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhA1RGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:06:52 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:52691 "EHLO
+        id S232240AbhA1RBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:01:17 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:53374 "EHLO
         mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232792AbhA1RAH (ORCPT
+        with ESMTP id S232796AbhA1RAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Jan 2021 12:00:07 -0500
-Received: by mail-il1-f197.google.com with SMTP id s67so5223314ili.19
+Received: by mail-il1-f197.google.com with SMTP id s74so4991946ilb.20
         for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:59:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gQFohrmbf+cd0YVpsCNOhBWiIWwJx9a6ZCiwkwVvh8Y=;
-        b=s0cQBrEnIOiQ9ywrV7/EAKl0vkFe9tXNtLvIq9dFUITi5XQXdsK32Nt671jaUP8LLG
-         5rROPFG4bT2omCbpJzKHer6YvJIfjlshy1+8DSEkERDbcDY/6ZmgEHw0NSEd0F3UHHVP
-         qlrm1igCcwtETWspZMn+nK1Vr+eHGRhzKF+eqK6GrKMBMJXiQokzKXtG/jbr0v8eRRo1
-         lAQSVMYfM7BLgUBePgh4bWmaOZyBvVEaUwNQ3svjF/DPOQgEtiTQlQ9vVWsAz+5fQakI
-         MLiBfr2i/XOhb1Sn25146SE9PMJNwMX3Mgq59kO/kbU2k6rTuDw5n/bW4MsD+W6Fr1TD
-         2hxQ==
-X-Gm-Message-State: AOAM53075xLlQQj2GiRQKYlwb9juDFyl7EJqSzBLUiM6qfome94PCMIh
-        qCuXoX/oTchPNCRyVWggKW+Qo0zueaoSypk2dZpt84B35HIZ
-X-Google-Smtp-Source: ABdhPJxMRMYhF4gC5o3nvyulFZ6GHNErteB7j8tLv50pS7pZvIbbn0xI4qZ9smkYlQYHqD2gtavpw02Jla+Qir5Hpr63RuZvWHIV
+        bh=KCxuXpW8R77Zz40AefQtdqEAsY8KYOrUeobt3QS3Auk=;
+        b=eDFRyGKdR0eqr/FTrPC2i8eThhTaop8Eoxuh2buHosFMTIZK7mU4lamfT5CFjVIGhu
+         oO1gamQ0JUaG9qCr+jop9Tv7fRVsQw2+EML4hTgpPJ9nSiFeQpqhVMQbVufxCflRQ9gp
+         keTM2YMhPBX+ucS73McDdS497DYv8w4MI+3/43Z2AdIP3/bxxGCUKY7rX+KuvRrC1A8R
+         cyF8x7PPDTDcTAfdiJrClMcHZ/bdwZqDg0DhUx1wg/lZX0hRXJ/FMPLbkchhdjzuJhEA
+         0iPpmUMXSIGLvNeUEV8d6KWh96q5ZRzHRG20+Gd6TSU10V0sBsElzsYHFA2t2oIl+czp
+         j7uQ==
+X-Gm-Message-State: AOAM531WFNUMp6yefiURLHlTlJzpuBosfTTC3EbU3/BYABPr8lCAHE4u
+        r3+sb6GX0UibH3umBS82drMQNbqK9hsdN17lg5Y0Sw/TqLTL
+X-Google-Smtp-Source: ABdhPJwPuJGFwW9q1TkEHg3vEnYlx77j4KXqhorm7ZVBjw4xHGo7ShMw65AELWp+9Op3iTJCGE29h444p6NSycZCgnWbQiUCBL2A
 MIME-Version: 1.0
-X-Received: by 2002:a6b:6e0c:: with SMTP id d12mr437951ioh.74.1611853165860;
- Thu, 28 Jan 2021 08:59:25 -0800 (PST)
-Date:   Thu, 28 Jan 2021 08:59:25 -0800
+X-Received: by 2002:a05:6638:164c:: with SMTP id a12mr180854jat.128.1611853166198;
+ Thu, 28 Jan 2021 08:59:26 -0800 (PST)
+Date:   Thu, 28 Jan 2021 08:59:26 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000619ae405b9f8cf6e@google.com>
-Subject: WARNING in io_uring_cancel_task_requests
-From:   syzbot <syzbot+3e3d9bd0c6ce9efbc3ef@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000066c54105b9f8cf2b@google.com>
+Subject: WARNING in cfg80211_change_iface
+From:   syzbot <syzbot+d2d412349f88521938aa@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,61 +48,59 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    d03154e8 Add linux-next specific files for 20210128
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=159d08a0d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6953ffb584722a1
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e3d9bd0c6ce9efbc3ef
+HEAD commit:    d1f3bdd4 net: dsa: rtl8366rb: standardize init jam tables
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14977d10d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b5f48fca2e44a9a2
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2d412349f88521938aa
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3e3d9bd0c6ce9efbc3ef@syzkaller.appspotmail.com
+Reported-by: syzbot+d2d412349f88521938aa@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 21359 at fs/io_uring.c:9042 io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9042
+WARNING: CPU: 1 PID: 28772 at net/wireless/util.c:1013 cfg80211_change_iface+0xa10/0xf30 net/wireless/util.c:1013
 Modules linked in:
-CPU: 0 PID: 21359 Comm: syz-executor.0 Not tainted 5.11.0-rc5-next-20210128-syzkaller #0
+CPU: 1 PID: 28772 Comm: syz-executor.2 Not tainted 5.11.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9042
-Code: 00 00 e9 1c fe ff ff 48 8b 7c 24 18 e8 f4 b4 da ff e9 f2 fc ff ff 48 8b 7c 24 18 e8 e5 b4 da ff e9 64 f2 ff ff e8 eb 16 97 ff <0f> 0b e9 ed f2 ff ff e8 df b4 da ff e9 c8 f5 ff ff 4c 89 ef e8 52
-RSP: 0018:ffffc9000c5a7950 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88806e79f000 RCX: 0000000000000000
-RDX: ffff88806c9d5400 RSI: ffffffff81dbfe65 RDI: ffff88806e79f0d0
-RBP: ffff88806e79f0e8 R08: 0000000000000000 R09: ffff88806c9d5407
-R10: ffffffff81dbf0df R11: 0000000000000000 R12: ffff88806e79f000
-R13: ffff88806c9d5400 R14: ffff88801cdbb800 R15: ffff88802a151018
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+RIP: 0010:cfg80211_change_iface+0xa10/0xf30 net/wireless/util.c:1013
+Code: 8d bd e8 05 00 00 be ff ff ff ff e8 2a b4 c5 00 31 ff 41 89 c6 89 c6 e8 2e 72 3d f9 45 85 f6 0f 85 b4 f6 ff ff e8 a0 6a 3d f9 <0f> 0b e9 a8 f6 ff ff e8 94 6a 3d f9 65 ff 05 7d 8e cc 77 48 c7 c0
+RSP: 0018:ffffc9000116fbb8 EFLAGS: 00010216
+RAX: 0000000000008319 RBX: ffff888017128000 RCX: ffffc9000d850000
+RDX: 0000000000040000 RSI: ffffffff88356130 RDI: 0000000000000003
+RBP: ffff888054c40000 R08: 0000000000000000 R09: ffffc9000116fc30
+R10: ffffffff88356122 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007fa7b69e0700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000749138 CR3: 0000000011ffd000 CR4: 00000000001506e0
+CR2: 000000000050d1b0 CR3: 0000000063569000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- io_uring_flush+0x47b/0x6e0 fs/io_uring.c:9227
- filp_close+0xb4/0x170 fs/open.c:1295
- close_files fs/file.c:403 [inline]
- put_files_struct fs/file.c:418 [inline]
- put_files_struct+0x1cc/0x350 fs/file.c:415
- exit_files+0x7e/0xa0 fs/file.c:435
- do_exit+0xc22/0x2ae0 kernel/exit.c:820
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x427/0x20f0 kernel/signal.c:2773
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ cfg80211_wext_siwmode net/wireless/wext-compat.c:64 [inline]
+ __cfg80211_wext_siwmode+0x1bb/0x200 net/wireless/wext-compat.c:1559
+ ioctl_standard_call+0xcd/0x1f0 net/wireless/wext-core.c:1016
+ wireless_process_ioctl+0xc8/0x4c0 net/wireless/wext-core.c:954
+ wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
+ wext_ioctl_dispatch net/wireless/wext-core.c:975 [inline]
+ wext_handle_ioctl+0x26b/0x280 net/wireless/wext-core.c:1048
+ sock_ioctl+0x410/0x6a0 net/socket.c:1109
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 RIP: 0033:0x45e219
-Code: Unable to access opcode bytes at RIP 0x45e1ef.
-RSP: 002b:00007f33ed289be8 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
-RAX: 0000000000000004 RBX: 0000000020000200 RCX: 000000000045e219
-RDX: 0000000020ff8000 RSI: 0000000020000200 RDI: 0000000000002d38
-RBP: 000000000119c080 R08: 00000000200002c0 R09: 00000000200002c0
-R10: 0000000020000280 R11: 0000000000000206 R12: 0000000020ff8000
-R13: 0000000020ff1000 R14: 00000000200002c0 R15: 0000000020000280
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fa7b69dfc68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
+RDX: 0000000020000040 RSI: 0000000000008b06 RDI: 0000000000000003
+RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007fff91257a9f R14: 00007fa7b69e09c0 R15: 000000000119bf8c
 
 
 ---
