@@ -2,127 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C385307E55
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEF9307E79
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhA1SoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhA1SjH (ORCPT
+        id S232617AbhA1SwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:52:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21319 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232334AbhA1SqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:39:07 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD86C061573;
-        Thu, 28 Jan 2021 10:38:27 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 190so5108789wmz.0;
-        Thu, 28 Jan 2021 10:38:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=hLVGTP0Ha6enebkkKVnGDfTs/eGyRm5kEtWtYGrOVgU=;
-        b=suWx9loP2k55VGqeGwl8kEMnzzdz/rnHne43tBi5fQcd8XNFvfbL6lvn+S2r330AGe
-         YvBW1WsZ8vvpSJ0g7ivlUGSBQ7JiLikvIrWlFq3Bn+OI/iMRWQD0fzwYmK24hfeO/1e9
-         miCl94fx6hfzUy7WXtcceJNGcJcxp8CWyJDP9JBVyoUW+kcA1caos/YUVxl4hjCYMOW5
-         DzEwibhzr21u1l5lQ+0NCCBBHDCQdueTFgQsQOqNkihhmyP2W2mzTv0IaI7aiRR93ZXy
-         NkSY67Yt4ATSrx7nTuhyggH/++kh8uAXduCVZM3q4erUUiL8DabCJEOX+or02QYv4R5V
-         2zHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=hLVGTP0Ha6enebkkKVnGDfTs/eGyRm5kEtWtYGrOVgU=;
-        b=UUtqoTvj/bTG2krJ10dm1jAg3dgGncjlMzoIIgVy1R/Yc6brxIcFV/GkZpOUhDUOv2
-         OcqbjFhKHXvtlVsZkebS7oSKKuXHb+xqYflQlw47RMspGFNERHWCp3kAmu4U32Io50Ta
-         /PYDbJIlkwiZAXNtAwQQmYD9igO10wJz8W3d4szkWhpIl5HQspZDQEFT2KdtX9+8GHNC
-         4TnfAz6zN4KdK3/fRSsZaLaIcz+KVKkPmF7u5LfBIwStANvzt7obWeTUqCFVjXT2cLEY
-         1B7DJksOt0+t1dhCRAoL++hb2RaW8YXUbrt7DF5LIhFh5OKpXYpK0hfgkphCau2e/izs
-         C9hQ==
-X-Gm-Message-State: AOAM530P0/bIfkYi7rpF0YHmREquQ2RC2Dg0pwFhurONhXo0JL/0xfKr
-        xUCdQnMon88HsR9qdSlNrZQ=
-X-Google-Smtp-Source: ABdhPJyJbc8lHj6O+0R6jguv+MUQilJb4PRS6Ch3Eo1uyQvpbCnGnJy20Mc1tpDyqFWQhxQqLSIqKw==
-X-Received: by 2002:a1c:7312:: with SMTP id d18mr522694wmb.155.1611859106332;
-        Thu, 28 Jan 2021 10:38:26 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id w4sm6662101wmc.13.2021.01.28.10.38.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:38:25 -0800 (PST)
-Message-ID: <c97f80669dc7188d134498c367a4ee34810ba29d.camel@gmail.com>
-Subject: Re: [PATCH v3 6/7] gpio: ep93xx: refactor ep93xx_gpio_add_bank
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 28 Jan 2021 19:38:24 +0100
-In-Reply-To: <20210128122123.25341-7-nikita.shubin@maquefel.me>
-References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
-         <20210128122123.25341-7-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Jan 2021 13:46:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611859487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=d9DCyUiqhGMRjufRtGd0K7buDIsKCn12kYp0ACHugHk=;
+        b=AnoCcZZOer0klEkXLaMo2Uh1Z2ECrFSRbLEITso+UzG8e+b+aYJIL3qR4UaNzGpDnb6vkY
+        LOTHeRwKOu+TOQi1rY15Jj6WFNmZz0ogzebLd4IJEKnK983fWbPf+EpQTV2eUqeO+NNaX/
+        dBTuwWsU/UZjZKyvniIdXB85LIk/WFs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-B7Pqbyu0NQK69H4Y2ndRqg-1; Thu, 28 Jan 2021 13:44:44 -0500
+X-MC-Unique: B7Pqbyu0NQK69H4Y2ndRqg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB13A803622;
+        Thu, 28 Jan 2021 18:44:42 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B07EE5D9F4;
+        Thu, 28 Jan 2021 18:44:42 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id E1141416D87F; Thu, 28 Jan 2021 15:44:20 -0300 (-03)
+Message-ID: <20210128184048.287626221@fuller.cnet>
+User-Agent: quilt/0.66
+Date:   Thu, 28 Jan 2021 15:40:48 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [patch 0/3] nohz_full: only wakeup target CPUs when notifying new tick dependency (v4)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 15:21 +0300, Nikita Shubin wrote:
-> - replace plain numbers with girq->num_parents in devm_kcalloc
-> - replace plain numbers with girq->num_parents for port F
-> - refactor i - 1 to i + 1 to make loop more readable
-> - combine getting IRQ's loop and setting handler's into single loop
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+When enabling per-CPU posix timers, an IPI to nohz_full CPUs might be
+performed (to re-read the dependencies and possibly not re-enter
+nohz_full on a given CPU).
 
-Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+A common case is for applications that run on nohz_full= CPUs
+to not use POSIX timers (eg DPDK). This patch changes the notification
+to only IPI the target CPUs where the task(s) whose tick dependencies
+are being updated are executing.
 
-> ---
-> v2->v3
-> - use ->num_parents instead of ARRAY_SIZE()
-> ---
->  drivers/gpio/gpio-ep93xx.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-> index d69ec09cd618..df55aa13bd9a 100644
-> --- a/drivers/gpio/gpio-ep93xx.c
-> +++ b/drivers/gpio/gpio-ep93xx.c
-> @@ -384,7 +384,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
-> *gc,
->  
->                 girq->parent_handler = ep93xx_gpio_ab_irq_handler;
->                 girq->num_parents = 1;
-> -               girq->parents = devm_kcalloc(dev, 1,
-> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
->                                              sizeof(*girq->parents),
->                                              GFP_KERNEL);
->                 if (!girq->parents)
-> @@ -406,15 +406,14 @@ static int ep93xx_gpio_add_bank(struct
-> gpio_chip *gc,
->                  */
->                 girq->parent_handler = ep93xx_gpio_f_irq_handler;
->                 girq->num_parents = 8;
-> -               girq->parents = devm_kcalloc(dev, 8,
-> +               girq->parents = devm_kcalloc(dev, girq->num_parents,
->                                              sizeof(*girq->parents),
->                                              GFP_KERNEL);
->                 if (!girq->parents)
->                         return -ENOMEM;
->                 /* Pick resources 1..8 for these IRQs */
-> -               for (i = 1; i <= 8; i++)
-> -                       girq->parents[i - 1] = platform_get_irq(pdev,
-> i);
-> -               for (i = 0; i < 8; i++) {
-> +               for (i = 0; i < girq->num_parents; i++) {
-> +                       girq->parents[i] = platform_get_irq(pdev, i +
-> 1);
->                         gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
->                         irq_set_chip_data(gpio_irq, &epg->gc[5]);
->                         irq_set_chip_and_handler(gpio_irq,
+This reduces interruptions to nohz_full= CPUs.
 
--- 
-Alexander Sverdlin.
+v4: only IPI if the remote task is on the remote runqueue (PeterZ/Frederic)
+v3: replace superfluous rcu_read_lock with lockdep_assert (PeterZ)
 
 
