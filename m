@@ -2,139 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E46306DC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF74306DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhA1GpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:45:09 -0500
-Received: from mail-bn7nam10on2084.outbound.protection.outlook.com ([40.107.92.84]:48128
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231211AbhA1GpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:45:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=azfRie/FIs+ckO9yV5MK0QliTEby/gw6X3TwYto98mF4t1lYqJ1FsZ+DPf4ZbYEC8QCT8g87bEmGJYNomeGlChyylbByoz8jLZTjM8JMonPwSrc16aFjSMdMjl1hCjOd5AibP3vqJmGSDwmIzMQDmnEmLW+ClyjJtGsAY6p9SvVpIUGB4FVbkmXTw5iklapb5Tnhbnbdr5Kp/lHD9rT+GRCHvCUSTft55nViA8qfQYQ4Gv6DrdUv6+6dfworOurf73OhEBOww1V+nx94OK2esKGb8x6hFP/Q9aucMiUzxAr7PH0h/VTgyr3JT24dWuc/Lua4A7/ovBuSr45e9wigrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6guOfkqRXwrZnb9jdTIWPkgocpd4yaeBDVVEWnltpkc=;
- b=Cp6lHULiugfS2J/Kd0gB4quEfy8TNTN4Bju0yFALBl5bV6aIjEKADTH+szdsFHn3C/BPB7lezMKABQhGGllBNXez8MqQ/iuxrHuurSa6NV9qgZiMK4CCwM8KGPWCK1W62Bz1do9jzaSQyXwgoSBvaJE8Roqf3z7hqd9OUd0n63k2gGGmiTCPaxdiZJtwGgqXjEFRE6w5+2tTaD2F9dH42kV0yqJqN2qhC6j1Jrt8wOh9ZO1Da6mRu3w6bp1E0ZQ5yx2F3bUVLW6OEA/h/G16jlw5vlC4u8MrdE9yNFD4U5m2bX70mqUELRQXLHXJReR0JgkTBdj902O3iMxGpruyQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S231508AbhA1Gss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhA1Grp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 01:47:45 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F166CC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:47:04 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id w24so4469723ybi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:47:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6guOfkqRXwrZnb9jdTIWPkgocpd4yaeBDVVEWnltpkc=;
- b=aFNbfqqf4dQCV/+HwkHO+zgeAW7VXso+7U9KurKrGS+qHT+Nuzn/hclPFof8QSVbOtH6EHA/3ZV82ZzFEGBVfnylaxa0JkqALtTmGMEt4yESc/yE2HXAXacvz1jvgbE3gupUR2w0tYZrqWXUIKUquHbx1NBnZwLMoUsS57IFYS0=
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN8PR03MB4724.namprd03.prod.outlook.com (2603:10b6:408:96::21)
- by BN6PR03MB2563.namprd03.prod.outlook.com (2603:10b6:404:5a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Thu, 28 Jan
- 2021 06:44:00 +0000
-Received: from BN8PR03MB4724.namprd03.prod.outlook.com
- ([fe80::f80a:407e:46ca:e6ce]) by BN8PR03MB4724.namprd03.prod.outlook.com
- ([fe80::f80a:407e:46ca:e6ce%5]) with mapi id 15.20.3784.017; Thu, 28 Jan 2021
- 06:44:00 +0000
-Date:   Thu, 28 Jan 2021 14:43:24 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jonathan Chocron <jonnyc@amazon.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] PCI: dwc: al: Remove useless dw_pcie_ops
-Message-ID: <20210128144324.2fa8577c@xhacker.debian>
-In-Reply-To: <20210128144208.343052f7@xhacker.debian>
-References: <20210128144208.343052f7@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR08CA0033.namprd08.prod.outlook.com
- (2603:10b6:a03:100::46) To BN8PR03MB4724.namprd03.prod.outlook.com
- (2603:10b6:408:96::21)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qigc4Q2zk4kidcc5fEGaK1ackCv7ueDldw+kGCII7Bw=;
+        b=hgoerTFgqNvDpLMPuMzlDkC+IuNj/hB86RUKJAWckBtM75bFjZhqdiqg9/FqsECrsc
+         rNw/AFqRO2MGcIcpAosrYvSOY4jEg0lffZp6BO1MFGAVUGiPRoF0czDRDSgWrX/Lt5Jt
+         URJszFQoQ4Dj2T99LuByD18ivtQa8Oh4EGntDwZJa8FvP+3chJIIPIoUoNKLRPd7GwTp
+         MxYleGons4w1O89FdTKTMJYY/UmA5Rpz/lyhmFgx23gbmlPIltZgfSLCef3OOLHtN/kM
+         tHPg4npdzidpUPyzdH2NtwEaFCPyFlaK4yJ4hyognKLJe9N8swraSAilXpNEOgdjLt1s
+         IHjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qigc4Q2zk4kidcc5fEGaK1ackCv7ueDldw+kGCII7Bw=;
+        b=fwlchH33doYw1bMsHQjD+mEetK6+XD4idi7UKOlEOC3kzb0nybTDsS+zfDlIrq3U9Y
+         7Vfbal8ObacJ6TUFDbhOpq9kmnu+j+qjddXMl3G6hjInhF+H67Iuu2AEtfdpaz+VGNxC
+         bNm+LZUToLslmS+iwu2Cf42S2jEq5WgVoBK5gJ6MIrRTRTCECnYTNpgQVvInE8d7g2k2
+         c7vTdrO5riLtRmKBz9zPbGwDm8Uv9URG0QYH311jdTg2nmONBelWxoWVXLTOmldYgrRt
+         Kaw1c2kVmQmWqhjqsfpqtatkeZKAw6enk9fie+87jkHxG8eF1vzFpmFkoTLzcevuObNl
+         L91A==
+X-Gm-Message-State: AOAM530PLSBzXVPndhojmZQzDliHbPsvVN8Hs49IbzKXaMWHUQlCNaUT
+        heMMdIxealfzzfQNKsYVOfg9FJr/97GxgnE1EUY=
+X-Google-Smtp-Source: ABdhPJytiUOd9V3L5u4KUvlAzxRbcw+pCVek5LBOTYfa4EicfpLXGlNVPkUGVtq55oAu6rxFsWk08qJIA3io+f5z9C0=
+X-Received: by 2002:a25:3bc5:: with SMTP id i188mr21663855yba.332.1611816424260;
+ Wed, 27 Jan 2021 22:47:04 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR08CA0033.namprd08.prod.outlook.com (2603:10b6:a03:100::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 06:43:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d330cb6-623d-44e2-d377-08d8c358180b
-X-MS-TrafficTypeDiagnostic: BN6PR03MB2563:
-X-Microsoft-Antispam-PRVS: <BN6PR03MB25635D35142C747562FD3A06EDBA9@BN6PR03MB2563.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:639;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: apVslLzrI2c2LDLjSbKLpgCQEK1AgNU4tKyOSMp+FNtsIPP01wC/K+XSLfF+LrG6b2kIY2GXlXwK2xbIHVPwTC+/0MDOUDd9rQJaZIRgZ3Q/3cOVJbbzLn5BEyIJeL9XciXQkJH1CBllx9f+UESWso1pdI61WBMr7wUBBZSjiTUQQ2GQvQRVOy++Sz/GzIzRoPLFjF4jGLpz/w+UmqjJDSVLmedFHBHzTFtuoPsv8/41zMvhaC0E4VMyj5i4B9WehFlSsi7fMJ5acUCkUPqTtcDML5UEq3aPvjfscTHwKo0g8mpzeydLBVP+9ktFBuQuV1NErTpyDAl9xuvWGZuopiwkVZY797glB9X9GSHPmumHtHAP6c0aKMWd2adxaDg1uDxEfYhgSGq7zmQVIwE6qtcOvw+vOzihgGGMfyAgJ5+ZwJodsFo4ISfadKh/qCrRz784QtHkueT+24oGKcPZtDIMjMC/Luux294LVnNb6IzFw98ETN+WZ1SfRPOezsd3fDOoHzAHYgzaBSTWz0LeiA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR03MB4724.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(136003)(396003)(39860400002)(8936002)(956004)(110136005)(83380400001)(66946007)(4326008)(9686003)(66556008)(55016002)(7696005)(66476007)(5660300002)(316002)(8676002)(16526019)(1076003)(6506007)(86362001)(2906002)(478600001)(4744005)(26005)(52116002)(186003)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bvqrJ+0yXlkGjly1DTMQAns0/1MFSjuurwBTGW6u1FR23cvnYYVt/cJeMQFv?=
- =?us-ascii?Q?I/kAq5Myyb3pCq/+2wPeim+Z2mFCEwlRVjGhuHrwp3czUR8HQRgAlBz7i/T4?=
- =?us-ascii?Q?+WUiI4+zC3uUEAINktLDMs2Pd+heX0d3Xl6DIVrsJzTFaO5aK2hE+Hdx6DEJ?=
- =?us-ascii?Q?WCZ2zkiODmtPR40UVk1p0fxlE0S7cZ9pLJEZY82xZv1fyZkuxPmPg4L/fPew?=
- =?us-ascii?Q?lUVbVNvWOfLXJ4EXNGfStDJhSltwTf2chfECoiXqSit1cSBsf+E3vdH0G0oL?=
- =?us-ascii?Q?czEJvQEEQFYIoBJgz6CsAdgZgZqUkM5acqzs15rInprOBJZVEzYKM5hyKPNa?=
- =?us-ascii?Q?p+SIUB+nAj9ku9qi8GJH899zvpcK8Z00R/o0aQ8OVoE8gviL5Tlovvz0zJ2G?=
- =?us-ascii?Q?VRUMylv93H5tZbUQLVlDAgTRphOrKtWIYiw5spA/dQG0vDp76xdlldSFq+FP?=
- =?us-ascii?Q?5rWabXEzoRYE8Dewiq72wt4LDrXEvHMRAqDfigytYJ14D3fsbOsqZMYn1pJb?=
- =?us-ascii?Q?VdqEq5ZtkJFc8y1nfPpVxMugRMl3grhgZ1V/gzUpKRqw+LzRXJPi25Qb8sZF?=
- =?us-ascii?Q?qoSMs2VaOSxqYNoH9cWWXuSIucxB4QqzbLi3IPZE0Z34O+ljTNEn/m4q3HKd?=
- =?us-ascii?Q?nJozCXes4vDPPvik6toFMM0a8HHAzeFweaw0mHfSf4FVx1mHrI0R7FKy8ENx?=
- =?us-ascii?Q?uELzsQOnGUcMelyl246QQhUM2oSWFz6hjwD6MWaNDwLxw6MF4BjtasSkpgB1?=
- =?us-ascii?Q?LtOwrhhN94VUbwsCI0mb7t577+0Ap2AwEpgNbdU27Q7VuZZeRKXJqkbJ8E3i?=
- =?us-ascii?Q?jlfUEUbN944xYSRuOAnTfruZqllzqRE4XjO8cuGWWEVIQbGsinCLumW5Trca?=
- =?us-ascii?Q?BFgJehwTCL59+xIynQi4MjOeabJaC+CQksohmPICmWRCqe/od5hTToqs2F9q?=
- =?us-ascii?Q?R0YW5h7Kd+icZhMhzORnkUy5ha/W3j9ony0TfccCYbD2XWePdOznXOmlLdpm?=
- =?us-ascii?Q?eldhesulbc/hgC+Of1Ya12Rrt2o9wlJAjd3dSd81mUnYfPczEhp1R6i+qyQr?=
- =?us-ascii?Q?HEYP90DL?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d330cb6-623d-44e2-d377-08d8c358180b
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR03MB4724.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 06:44:00.2440
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sMytBXPITxLkCZfFYi96LtXFPgE06wKWqYjzJU8d+B/3haXyOuXfzvmRZn5IfVMyKCmqqh+y6r6LUvjDTbECIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB2563
+References: <20210127110510.24492-1-candlesea@gmail.com> <CAKwvOdm4XaoW+yrtj=7C7ct5dvNuxT81zs1Wp=X0MBFceukd9g@mail.gmail.com>
+In-Reply-To: <CAKwvOdm4XaoW+yrtj=7C7ct5dvNuxT81zs1Wp=X0MBFceukd9g@mail.gmail.com>
+From:   Candle Sun <candlesea@gmail.com>
+Date:   Thu, 28 Jan 2021 14:46:52 +0800
+Message-ID: <CAPnx3XMEtVQVYUD5aLAC3Adp+Y0fz13nbBTHg75f6W1q1g9Usg@mail.gmail.com>
+Subject: Re: [PATCH v2] lkdtm: fix memory copy size for WRITE_KERN
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Candle Sun <candle.sun@unisoc.com>,
+        David Laight <David.Laight@aculab.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have removed the dw_pcie_ops always exists assumption in dwc
-core driver, we can remove the useless dw_pcie_ops now.
+On Thu, Jan 28, 2021 at 1:40 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Wed, Jan 27, 2021 at 3:05 AM Candle Sun <candlesea@gmail.com> wrote:
+> >
+> > From: Candle Sun <candle.sun@unisoc.com>
+> >
+> > Though do_overwritten() follows do_nothing() in source code, the final
+> > memory address order is determined by compiler. We can't always assume
+>
+> ^ "by the compiler."
+>
+> > address of do_overwritten() is bigger than do_nothing(). At least the
+> > Clang we are using places do_overwritten() before do_nothing() in the
+> > object. This causes the copy size in lkdtm_WRITE_KERN() is *really*
+>
+> Hopefully nothing else gets placed in between the two, otherwise we're
+> going to overwrite that, too.
+>
+> > big and WRITE_KERN test on ARM32 arch will fail.
+> >
+> > Get absolute value of the address substraction for memcpy() size.
+>
+> ^ typo: subtraction
+>
+> >
+> > Signed-off-by: Candle Sun <candle.sun@unisoc.com>
+> > ---
+> > Changes in v2:
+> > - Use abs() in place of address comparison.
+> > ---
+> >  drivers/misc/lkdtm/perms.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+> > index 2dede2ef658f..fbb7f4554054 100644
+> > --- a/drivers/misc/lkdtm/perms.c
+> > +++ b/drivers/misc/lkdtm/perms.c
+> > @@ -31,13 +31,13 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
+> >   * This just returns to the caller. It is designed to be copied into
+> >   * non-executable memory regions.
+> >   */
+> > -static void do_nothing(void)
+> > +static noinline void do_nothing(void)
+> >  {
+> >         return;
+> >  }
+> >
+> >  /* Must immediately follow do_nothing for size calculuations to work out. */
+>
+> ^ This comment is now obsolete and should be removed together with
+> this patch.  That will also fix the typo in it.
+>
+> > -static void do_overwritten(void)
+> > +static noinline void do_overwritten(void)
+> >  {
+> >         pr_info("do_overwritten wasn't overwritten!\n");
+> >         return;
+> > @@ -113,7 +113,7 @@ void lkdtm_WRITE_KERN(void)
+> >         size_t size;
+> >         volatile unsigned char *ptr;
+> >
+> > -       size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
+> > +       size = (size_t)abs((uintptr_t)do_overwritten - (uintptr_t)do_nothing);
+> >         ptr = (unsigned char *)do_overwritten;
+> >
+> >         pr_info("attempting bad %zu byte write at %px\n", size, ptr);
+> > --
+> > 2.17.0
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Acked-by: Jonathan Chocron <jonnyc@amazon.com>
----
- drivers/pci/controller/dwc/pcie-al.c | 4 ----
- 1 file changed, 4 deletions(-)
+Thanks Nick. I will clean the typo and the comment line in the next patch.
 
-diff --git a/drivers/pci/controller/dwc/pcie-al.c b/drivers/pci/controller/dwc/pcie-al.c
-index abf37aa68e51..e8afa50129a8 100644
---- a/drivers/pci/controller/dwc/pcie-al.c
-+++ b/drivers/pci/controller/dwc/pcie-al.c
-@@ -314,9 +314,6 @@ static const struct dw_pcie_host_ops al_pcie_host_ops = {
- 	.host_init = al_pcie_host_init,
- };
- 
--static const struct dw_pcie_ops dw_pcie_ops = {
--};
--
- static int al_pcie_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -334,7 +331,6 @@ static int al_pcie_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	pci->dev = dev;
--	pci->ops = &dw_pcie_ops;
- 	pci->pp.ops = &al_pcie_host_ops;
- 
- 	al_pcie->pci = pci;
--- 
-2.30.0
-
+Regards,
+Candle
