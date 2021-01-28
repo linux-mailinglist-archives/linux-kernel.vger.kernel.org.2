@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B75F307A93
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A4B307AA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhA1QUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:20:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232331AbhA1QU2 (ORCPT
+        id S232421AbhA1QXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:23:20 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48954 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232541AbhA1QXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:20:28 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B952AC061573;
-        Thu, 28 Jan 2021 08:19:47 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id o10so5452367wmc.1;
-        Thu, 28 Jan 2021 08:19:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=vnF/8n1joNx7ZvClg7mI0UIu1XccpzjX5uAACDp4lRU=;
-        b=sdCAOEFG4JHJZBMrUHhd3c9eVxJBPDjMe5gk0ezOJGkbrh9swpDyW6VO6/PQkBkv1E
-         KHeIEVwutZLuuBerq0xXP6x2QZRDRjuAW60a4OIe2ujBVbjteXwHu5ID3ssTf3oSSnWK
-         YnGIwCeSZWK2E8lgl5hWCsb/RYgZ8R+RjnxDPzOxFuEr7Ib6rLXYrRI+rZtw3hGoOugl
-         A8DVhpDp7kgyzKpVMP8dytOQchHBpAXWzqJX7P8IXgRFqqwxAhMJFiAZcsEcZicKtxpD
-         obuzBMk2ddb4nL23a6eqdTDzsNBIJuvNR1fPBrhX/aG9v9KqFngONHq6WZTHD+I9Nawn
-         5Ikg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=vnF/8n1joNx7ZvClg7mI0UIu1XccpzjX5uAACDp4lRU=;
-        b=AFEXkukwO0GLn54zbAj6LH/MYgEdBsKGjzewdEXeHwlFN1gu4ZslpvuvXWTPeJsN2m
-         RIhN76K9ckjTO6EgBrl5dsz24pmBh0WB8fjfBsNuqDTMH/xBU+owb3GIm3F9LwVWC0+A
-         PyLtEFjocxF0cDZIwIn2vtN6NFG/J+3xfe1mt4F3ZF0e3j+Tzz/xY45EsSjwty9N1nuP
-         DAaGvOLsMmWqF8pEiINBuaToEe37ZXliiQ7cgGghsplPpGllvCGI2e+Z1zZyyP0YZdnN
-         8KhwW9zenjHo+2bjZBaKhD8SHWLa0POTVw9im0/eAEw8H/seW6WfZvB+sVb631UmhYMl
-         F2Gg==
-X-Gm-Message-State: AOAM531TwlWq/pp1STS6Bd6kJIkaSSaMi/B96tQ7I/dB9tNbe/mWyObG
-        EvR6rKNQC5qhwiTiV/YOSVo=
-X-Google-Smtp-Source: ABdhPJyO2/k4X024ZvXWDo1LFXX2pbu2yvZzgWV0d2SMNi8MpjCw0ZTODMvlwBsvDhgi/jEJoCLwkg==
-X-Received: by 2002:a05:600c:154f:: with SMTP id f15mr48443wmg.46.1611850786555;
-        Thu, 28 Jan 2021 08:19:46 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id i6sm7552163wrs.71.2021.01.28.08.19.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 08:19:45 -0800 (PST)
-Message-ID: <a0c121fdfb2893ec89425534387212524e4ff7cf.camel@gmail.com>
-Subject: Re: [PATCH v3 1/7] gpio: gpio-ep93xx: fix BUG_ON port F usage
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 Jan 2021 17:19:45 +0100
-In-Reply-To: <CAHp75VfBb5+K9cSAzj9EBD+KtswkHSNMZWoCaU=bKvOO3fXRjw@mail.gmail.com>
-References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
-         <20210128122123.25341-2-nikita.shubin@maquefel.me>
-         <CAHp75VfBb5+K9cSAzj9EBD+KtswkHSNMZWoCaU=bKvOO3fXRjw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Thu, 28 Jan 2021 11:23:05 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10SGLQPf096821;
+        Thu, 28 Jan 2021 10:21:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611850886;
+        bh=WNPd19A6ZtEmXx99rm146phP+kamA89IVTD2nlMa+3o=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=a6F0mkCyCRv177V5XkYGbbl4T94yEqk903KIxBy0cQX4TVpLdgIeL/cvX96SD+0xb
+         yCXSiucblmvM742ScDIaaKH3Z3CfKGjq1QFcmrt5C5lJT3ee+yKLhRNLd4TXTLxIC1
+         invW25XhtJRPgKvrkdbqK8HLapXlB4E486Yz94yA=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10SGLQRE028573
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 Jan 2021 10:21:26 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
+ Jan 2021 10:21:26 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 28 Jan 2021 10:21:26 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10SGLL8S064659;
+        Thu, 28 Jan 2021 10:21:22 -0600
+Subject: Re: [PATCH v3 1/2] dts: ti: k3-j7200-main: Add support for zeroth
+ instance of GPIO subsystem
+To:     Nishanth Menon <nm@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210127150815.16991-1-a-govindraju@ti.com>
+ <20210127150815.16991-2-a-govindraju@ti.com>
+ <20210127151256.tgbhpngy6fi43edj@create>
+ <9308ad5d-48bd-ebd2-2ea3-9775b8c11163@ti.com>
+ <20210127155441.e2oho7m4aeovkafw@absinthe>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <9959fc6b-1f3f-53b4-91fd-a8dc46a871b6@ti.com>
+Date:   Thu, 28 Jan 2021 21:51:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210127155441.e2oho7m4aeovkafw@absinthe>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita,
+Hi Nishanth,
 
-On Thu, 2021-01-28 at 18:11 +0200, Andy Shevchenko wrote:
-> > +/*
-> > + * F Port index in GPIOCHIP'S array is 5
-> > + * but we use index 2 for stored values and offsets
-> > + */
-> > +#define EP93XX_GPIO_F_PORT_INDEX 5
+On 27/01/21 9:24 pm, Nishanth Menon wrote:
+> On 20:56-20210127, Aswath Govindraju wrote:
+>> Hi Nishanth,
+>>
+>> On 27/01/21 8:42 pm, Nishanth Menon wrote:
+>>> On 20:38-20210127, Aswath Govindraju wrote:
+>>>> Add support for the zeroth instance of GPIO subsystem in the main domain.
+>>>>
+>>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>>>
+>>>
+>>> I really dont want to pick up one patch per node instance. It is hard
+>>> to scale and just creates a lot of noise.
+>>>
+>>
+>> As the main goal of the patch series was to add support for higher speed
+>> modes in MMC, I added only the required ones. If required I will send a
+>> follow up patch to add the remaining GPIO nodes.
 > 
-> Hmm... Why not to use an array with holes instead.
 > 
-> ...
+> I dont plan on picking this patch up in it's current form. please send a
+> patch with all the gpio nodes added in as it makes no sense to split
+> these out.
 > 
-> > +       if (port == EP93XX_GPIO_F_PORT_INDEX)
-> > +               port = 2;
-> 
-> Sorry, but I'm not in favour of this as it adds confusion.
-> See above for the potential way to solve.
 
-well, I was thinking the same yesterday. It just adds another
-level on confusion into the code, which even the author got
-wrong :)
+I have sent a respin for this patch series(v4) which adds all the GPIO
+nodes in the device tree files.
 
-Array with holes would be more obvious, but one can also embedd
-the necessary values into struct ep93xx_gpio_bank.
-
--- 
-Alexander Sverdlin.
-
-
+Thanks,
+Aswath
