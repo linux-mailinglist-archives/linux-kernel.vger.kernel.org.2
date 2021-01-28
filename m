@@ -2,180 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D75307027
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97AA30704A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbhA1Htx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:49:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbhA1HpV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:45:21 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67960C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:44:41 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id c20so4390229ilj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ztUYIztZJjhj5tFTgkC2lU/YF4nMMpQ1Z9nSKOugLuE=;
-        b=BnIWltQ+ltM4LRkMogP4dKfVIO7xiPORVwxQ0nsXxhWa1OMmPQ4GucpEe2IKlqyiyO
-         qPu2N5q9y/dQLjkdqAXqjloZXd7nOGxnHMSx9ZTjaTjrN+kon2+/7TPOHF+honm8KB1S
-         psmdStrdSQGYK5ABjeFcm9+bscp6aYtbQ7YjNAIVnm1DaXlN4RSpTsckF14PXrnFPorU
-         J0znJ2RG4GQMSOagUDSu1ksZ3bx8wpiO8fwY+H7K9aP/N/oek7kKdsvppEsCiZHF9f/Y
-         3DkjaGdBemoKcJ+wl6dZrzvQNz3EjiQkG/KiJB6vXLuc3BnUv8b9gCmkaADf6llDpv0N
-         wBeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ztUYIztZJjhj5tFTgkC2lU/YF4nMMpQ1Z9nSKOugLuE=;
-        b=kooNL+DWM71o1SQqYWuQNkZjCO5UtcZpiTausOAJKigcvvex/di+Z0E1SxVsXuyUce
-         Vhk8xPjJMQIzMP9SMuELTOM9CLq1qrnacLRNA22+5dVQPEJE4VAx2telmnZb5oUbrPtC
-         LVpcwjb2F8EMxBRBmVY0n47EeT7Pupcl8BFt2z01y5KYUv7gahkNyN+sX+XN1B4L8Apm
-         UagP8HKDD5MS+xRu2Fvw/CXq70bTG1qkBoKB/UIhJaMSz8O4FQzSQEu7hvpLJ6QLMfsz
-         gE5TonO6GQxqr9+/os8UEnX+RLLUhOnJ3lAvXs4oS/35E8kyEsxCR7467AjLHvLrIyrU
-         QONg==
-X-Gm-Message-State: AOAM530BemeXf32vhG+9YynzKPeHG2vZsUfVQXHvE3PUK66RE2MVVCIR
-        xiBxhIbcQ3IsUBbi485yizPmlS5AJEFTOlIZALo=
-X-Google-Smtp-Source: ABdhPJzULsm865g/naY1bEEhYBuGR1pd0EN42gD0wgvfHu/xIbSXDX7Yp5vnipe1yrPYgKoMcYpzkBcEKziuVwuEmYM=
-X-Received: by 2002:a92:5bc2:: with SMTP id c63mr11992705ilg.142.1611819880901;
- Wed, 27 Jan 2021 23:44:40 -0800 (PST)
+        id S232170AbhA1HyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:54:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232178AbhA1HqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:46:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5B5B64DD1;
+        Thu, 28 Jan 2021 07:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611819938;
+        bh=epBZyxkfXi4OKFC9L33caaS5qsnoDxPXf2XG9Lg/ziM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wd14qfDw7OD1HeK/t5lf5iJN7KtYADT8uy8biCXKBalBRjqoxl9t2jcqhU+epsUof
+         2oy+bVID2X4gtrG7HGBEQ8nF57VmMffjnMEZQ9KnW1/6CSGM6wMAMOv5G+GXw1ZIk+
+         EeEgIBFNkNIgubFLtv7xWIeMWL6VQknYlGJ+l0VMmOMYU8DIadx+a9bsKF0IvUxUfo
+         LZG1U9FBSTWdsDGYamIsyroWaMgBn+XTE6lPCYsQDiXr7r+8IzKq8hP2/yzU9FvK/E
+         MOfWXrpQhzTYRHDTjcC37GySZPKBO/obm0Aq4UPZ5Xja8PjoT9mAySrP8HkjNHz5cv
+         h5YtVBy+fAi9g==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l51zy-0004BC-3h; Thu, 28 Jan 2021 08:45:50 +0100
+Date:   Thu, 28 Jan 2021 08:45:50 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Christoph Schemmel <christoph.schemmel@gmail.com>
+Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hans-christoph.schemmel@thalesgroup.com
+Subject: Re: [PATCH] USB: serial: option: Adding support for Cinterion MV31
+Message-ID: <YBJrrin9NwF3j296@hovoldconsulting.com>
+References: <20210127195846.3663-1-christoph.schemmel@gmail.com>
 MIME-Version: 1.0
-References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-4-laoar.shao@gmail.com>
- <27e53062-7b0e-42e8-6f44-4eba44832805@huawei.com>
-In-Reply-To: <27e53062-7b0e-42e8-6f44-4eba44832805@huawei.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 28 Jan 2021 15:44:04 +0800
-Message-ID: <CALOAHbC-mMgu9s521_KcHFPbBRcFcCFXeniXVqTqT2WW9YmXCQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] printk: dump full information of page flags in pGp
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        andriy.shevchenko@linux.intel.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127195846.3663-1-christoph.schemmel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:52 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> Hi:
-> On 2021/1/28 10:19, Yafang Shao wrote:
-> > Currently the pGp only shows the names of page flags, rather than
-> > the full information including section, node, zone, last cpupid and
-> > kasan tag. While it is not easy to parse these information manually
-> > because there're so many flavors. Let's interpret them in pGp as well.
-> >
-> > - Before the patch,
-> > [ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
-> >
-> > - After the patch,
-> > [ 6315.235783] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(Node 0x0,Zone 0x2,Lastcpupid 0x1fffff,slab|head)
-> >
->
-> Thanks. This really helps!
->
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  lib/vsprintf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 41 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> > index 3b53c73580c5..bd809f4f1b82 100644
-> > --- a/lib/vsprintf.c
-> > +++ b/lib/vsprintf.c
-> > @@ -1916,6 +1916,46 @@ char *format_flags(char *buf, char *end, unsigned long flags,
-> >       return buf;
-> >  }
-> >
-> > +struct page_flags_layout {
-> > +     int width;
-> > +     int shift;
-> > +     int mask;
-> > +     char *name;
->
-> Should we add const for name ?
->
+On Wed, Jan 27, 2021 at 08:58:46PM +0100, Christoph Schemmel wrote:
+> Adding support for Cinterion device MV31 for enumeration with
+> PID 0x00B3 and 0x00B7.
+> 
+> usb-devices output for 0x00B3
+> T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  6 Spd=5000 MxCh= 0
+> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+> P:  Vendor=1e2d ProdID=00b3 Rev=04.14
+> S:  Manufacturer=Cinterion
+> S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
+> S:  SerialNumber=b3246eed
+> C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
+> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+> I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=cdc_wdm
+> I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> I:  If#=0x5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+> 
+> usb-devices output for 0x00B7
+> T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  5 Spd=5000 MxCh= 0
+> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+> P:  Vendor=1e2d ProdID=00b7 Rev=04.14
+> S:  Manufacturer=Cinterion
+> S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
+> S:  SerialNumber=b3246eed
+> C:  #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=896mA
+> I:  If#=0x0 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+> I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+> 
+> Signed-off-by: Christoph Schemmel <christoph.schemmel@gmail.com>
 
-Good suggestion.
+Perfect, thanks for resending. Now applied.
 
-> > +};
-> > +
-> > +struct page_flags_layout pfl[] = {
->
-> Should we add static const for pfl[] as we won't change its value and use it outside this file ?
->
-
-Sure.
-
-> > +     {SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK, "Section "},
-> > +     {NODES_WIDTH, NODES_PGSHIFT, NODES_MASK, "Node "},
-> > +     {ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK, "Zone "},
-> > +     {LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK, "Lastcpupid "},
-> > +     {KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK, "Kasantag "},
-> > +};
-> > +
-> > +static
-> > +char *format_layout(char *buf, char *end, unsigned long flags)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
->
-> I think we can use ARRAY_SIZE here.
->
-
-Sure.
-
-> > +             if (pfl[i].width == 0)
-> > +                     continue;
-> > +
-> > +             buf = string(buf, end, pfl[i].name, default_str_spec);
-> > +
-> > +             if (buf >= end)
-> > +                     break;
-> > +             buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
-> > +                          default_flag_spec);
-> > +
-> > +             if (buf >= end)
-> > +                     break;
-> > +             *buf = ',';
-> > +             buf++;
-> > +     }
-> > +
-> > +     return buf;
-> > +}
-> > +
-> >  static noinline_for_stack
-> >  char *flags_string(char *buf, char *end, void *flags_ptr,
-> >                  struct printf_spec spec, const char *fmt)
-> > @@ -1929,7 +1969,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
-> >       switch (fmt[1]) {
-> >       case 'p':
-> >               flags = *(unsigned long *)flags_ptr;
-> > -             /* Remove zone id */
-> > +             buf = format_layout(buf, end, flags & ~((1UL << NR_PAGEFLAGS) - 1));
-> >               flags &= (1UL << NR_PAGEFLAGS) - 1;
-> >               names = pageflag_names;
-> >               break;
-> >
-> Many thanks.
-
-
-
--- 
-Thanks
-Yafang
+Johan
