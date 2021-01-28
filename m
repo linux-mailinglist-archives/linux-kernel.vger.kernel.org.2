@@ -2,206 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AA5307C3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9A6307C44
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhA1RXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:23:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42880 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233083AbhA1RU6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:20:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611854369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C3eK8ADi3ZeyPV4PVYDApesK2wmgAogV+vFpEBdBI34=;
-        b=CAtd+js9CWodlUPuJWsWLEuPaL8j6f8WnxHTYmAPvV+YsmYl1tSbThMwsE8+ArO0+Sn0Q3
-        n9MQa+LBrsfKa8TFOyst2u108bIxqDL8hI30YC+3FyIeVXUukG/ejqILeURJmhv93eEeO4
-        V76ZYmFcZTrlPVsJ0b0i1OpdxiLQ51s=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-4ATh89xnOdOIgHrkzY1YVA-1; Thu, 28 Jan 2021 12:19:28 -0500
-X-MC-Unique: 4ATh89xnOdOIgHrkzY1YVA-1
-Received: by mail-wm1-f69.google.com with SMTP id u1so2692895wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:19:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C3eK8ADi3ZeyPV4PVYDApesK2wmgAogV+vFpEBdBI34=;
-        b=mMgDDNxCWOywGjZaeDj1Fx2T5bEiMtI2tAE1yl8frLaS9w0O7E4cwnlQItWwxq+yrV
-         CcfqII2QlMrHscJRluLJK2zJIa32CgTd8ZGD0NK7Vt+HXZblZWfFWj+hnq8li4XxImBU
-         mte7i7eeQQPYA3rTOd8xir5Hi88S/CtsVco/T3v22UebjYQlHqu8v5RgkilDinXWdm1t
-         Pq+NsjjNJUFGVdyyKm2ShOs/zDpuCPmy4HyuvkUcj+Xe5CGf7MSDwu4CWdWrlE7xnqxO
-         EmcapGBAQlmFJZZHpGmQWQqAuR7/DzRFXeu6O8q5fqzL68vKnB1OBnGV5RzeJo2gWQ4N
-         5ABw==
-X-Gm-Message-State: AOAM5311bcdNFi2hH5WkvCNrH+/g5r7i27dqs7TO5sRmWLj+73shBvIV
-        /jEVp8zB0U/3sHFvd53j5ei5jlMQUARamNbWj+VhvfntqH4bxc4oYl7HfixIFFmarRYFzF7iG65
-        i0HIIE4KoKq9YUxCLFmBhGoSv
-X-Received: by 2002:adf:ee43:: with SMTP id w3mr132418wro.200.1611854366591;
-        Thu, 28 Jan 2021 09:19:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy/v8ANcRwlI8G7EsFYD8nauxfmP7TArGJygNoYeVZtqgy5WGQaFyFb7Is20oZGBeCQYNOxTA==
-X-Received: by 2002:adf:ee43:: with SMTP id w3mr132383wro.200.1611854366394;
-        Thu, 28 Jan 2021 09:19:26 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id y18sm7666251wrt.19.2021.01.28.09.19.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 09:19:25 -0800 (PST)
-Date:   Thu, 28 Jan 2021 18:19:23 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210128171923.esyna5ccv5s27jyu@steredhat>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+        id S233057AbhA1RYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:24:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233003AbhA1RWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:22:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C458764DED;
+        Thu, 28 Jan 2021 17:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611854492;
+        bh=wN/vYbjN9dGjcLcGdnyPwaVCaPorwnyIWndgrJa+c0Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h4Jj9WXKrn+6FaWHbaqLTTirarAYDVXXbmjKm43Pwyv9CvWF/FCcMNgRPgrx3ByMo
+         28fxrNXlVVTo5g3juSTT+7sNpMpJgqbGb4DuHZ8KF3an7+1BY6+nbU2z1+n7iGhwih
+         wkXCxISTeJgnl/ygSyJKGjvjcoECGRGnzVlWu3E9jKtn6wt5VP3JuKjRalNmzU1hCy
+         4OORtBiU8sk9BK43/E82eZ6NyUeC5IBPMIffBmVCBQkowGnqLXw2BEreMWAztT9vas
+         UyeabZv1xy0SE+hBOV4TAGEolTup4mRCss8y10V/Fh7qEXQ2ropSARSls0wsWRnCVn
+         9DTzlrlwSUtJA==
+Date:   Thu, 28 Jan 2021 09:21:32 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org, axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
+        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
+        jaegeuk@kernel.org, ebiggers@kernel.org, shaggy@kernel.org,
+        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
+        joseph.qi@linux.alibaba.com, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
+        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
+        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
+        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
+        bvanassche@acm.org, jefflexu@linux.alibaba.com
+Subject: Re: [RFC PATCH 26/34] xfs: use bio_new in xfs_rw_bdev
+Message-ID: <20210128172132.GM7698@magnolia>
+References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
+ <20210128071133.60335-27-chaitanya.kulkarni@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210128071133.60335-27-chaitanya.kulkarni@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseny,
-I reviewed a part, tomorrow I hope to finish the other patches.
+On Wed, Jan 27, 2021 at 11:11:25PM -0800, Chaitanya Kulkarni wrote:
+> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-Just a couple of comments in the TODOs below.
+Seems fine to me...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
->	This patchset impelements support of SOCK_SEQPACKET for virtio
->transport.
->	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->do it, new packet operation was added: it marks start of record (with
->record length in header), such packet doesn't carry any data.  To send
->record, packet with start marker is sent first, then all data is sent
->as usual 'RW' packets. On receiver's side, length of record is known
->from packet with start record marker. Now as  packets of one socket
->are not reordered neither on vsock nor on vhost transport layers, such
->marker allows to restore original record on receiver's side. If user's
->buffer is smaller that record length, when all out of size data is
->dropped.
->	Maximum length of datagram is not limited as in stream socket,
->because same credit logic is used. Difference with stream socket is
->that user is not woken up until whole record is received or error
->occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->	Tests also implemented.
->
-> Arseny Krasnov (13):
->  af_vsock: prepare for SOCK_SEQPACKET support
->  af_vsock: prepare 'vsock_connectible_recvmsg()'
->  af_vsock: implement SEQPACKET rx loop
->  af_vsock: implement send logic for SOCK_SEQPACKET
->  af_vsock: rest of SEQPACKET support
->  af_vsock: update comments for stream sockets
->  virtio/vsock: dequeue callback for SOCK_SEQPACKET
->  virtio/vsock: fetch length for SEQPACKET record
->  virtio/vsock: add SEQPACKET receive logic
->  virtio/vsock: rest of SOCK_SEQPACKET support
->  virtio/vsock: setup SEQPACKET ops for transport
->  vhost/vsock: setup SEQPACKET ops for transport
->  vsock_test: add SOCK_SEQPACKET tests
->
-> drivers/vhost/vsock.c                   |   7 +-
-> include/linux/virtio_vsock.h            |  12 +
-> include/net/af_vsock.h                  |   6 +
-> include/uapi/linux/virtio_vsock.h       |   9 +
-> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
-> net/vmw_vsock/virtio_transport.c        |   4 +
-> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
-> tools/testing/vsock/util.c              |  32 +-
-> tools/testing/vsock/util.h              |   3 +
-> tools/testing/vsock/vsock_test.c        | 126 +++++
-> 10 files changed, 862 insertions(+), 175 deletions(-)
->
-> TODO:
-> - Support for record integrity control. As transport could drop some
->   packets, something like "record-id" and record end marker need to
->   be implemented. Idea is that SEQ_BEGIN packet carries both record
->   length and record id, end marker(let it be SEQ_END) carries only
->   record id. To be sure that no one packet was lost, receiver checks
->   length of data between SEQ_BEGIN and SEQ_END(it must be same with
->   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
->   means that both markers were not dropped. I think that easiest way
->   to implement record id for SEQ_BEGIN is to reuse another field of
->   packet header(SEQ_BEGIN already uses 'flags' as record length).For
->   SEQ_END record id could be stored in 'flags'.
+--D
 
-I don't really like the idea of reusing the 'flags' field for this 
-purpose.
-
->     Another way to implement it, is to move metadata of both SEQ_END
->   and SEQ_BEGIN to payload. But this approach has problem, because
->   if we move something to payload, such payload is accounted by
->   credit logic, which fragments payload, while payload with record
->   length and id couldn't be fragmented. One way to overcome it is to
->   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
->   is to update 'stream_has_space()' function: current implementation
->   return non-zero when at least 1 byte is allowed to use,but updated
->   version will have extra argument, which is needed length. For 'RW'
->   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
->   record id) and for SEQ_END it is sizeof(record id).
-
-Is the payload accounted by credit logic also if hdr.op is not 
-VIRTIO_VSOCK_OP_RW?
-
-I think that we can define a specific header to put after the 
-virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header 
-we can store the id and the length of the message.
-
->
-> - What to do, when server doesn't support SOCK_SEQPACKET. In current
->   implementation RST is replied in the same way when listening port
->   is not found. I think that current RST is enough,because case when
->   server doesn't support SEQ_PACKET is same when listener missed(e.g.
->   no listener in both cases).
-
-I think so, but I'll check better if we can have some issues.
-
-Thanks,
-Stefano
-
->
-> v2 -> v3:
-> - patches reorganized: split for prepare and implementation patches
-> - local variables are declared in "Reverse Christmas tree" manner
-> - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
->   fields access
-> - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
->   between stream and seqpacket sockets.
-> - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
-> - af_vsock.c: 'vsock_wait_data()' refactored.
->
-> v1 -> v2:
-> - patches reordered: af_vsock.c related changes now before virtio vsock
-> - patches reorganized: more small patches, where +/- are not mixed
-> - tests for SOCK_SEQPACKET added
-> - all commit messages updated
-> - af_vsock.c: 'vsock_pre_recv_check()' inlined to
->   'vsock_connectible_recvmsg()'
-> - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
->   was not found
-> - virtio_transport_common.c: transport callback for seqpacket dequeue
-> - virtio_transport_common.c: simplified
->   'virtio_transport_recv_connected()'
-> - virtio_transport_common.c: send reset on socket and packet type
->			      mismatch.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->
->-- 
->2.25.1
->
-
+> ---
+>  fs/xfs/xfs_bio_io.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_bio_io.c b/fs/xfs/xfs_bio_io.c
+> index e2148f2d5d6b..e4644f22ebe6 100644
+> --- a/fs/xfs/xfs_bio_io.c
+> +++ b/fs/xfs/xfs_bio_io.c
+> @@ -26,11 +26,8 @@ xfs_rw_bdev(
+>  	if (is_vmalloc && op == REQ_OP_WRITE)
+>  		flush_kernel_vmap_range(data, count);
+>  
+> -	bio = bio_alloc(GFP_KERNEL, bio_max_vecs(left));
+> -	bio_set_dev(bio, bdev);
+> -	bio->bi_iter.bi_sector = sector;
+> -	bio->bi_opf = op | REQ_META | REQ_SYNC;
+> -
+> +	bio = bio_new(bdev, sector, op, REQ_META | REQ_SYNC, bio_max_vecs(left),
+> +		      GFP_KERNEL);
+>  	do {
+>  		struct page	*page = kmem_to_page(data);
+>  		unsigned int	off = offset_in_page(data);
+> -- 
+> 2.22.1
+> 
