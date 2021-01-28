@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C075307819
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F41930781A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhA1ObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:31:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
+        id S231725AbhA1Obm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:31:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhA1Oak (ORCPT
+        with ESMTP id S231349AbhA1Obc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:30:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CBDC061573;
-        Thu, 28 Jan 2021 06:30:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z72LpoxZZhEjQSjvA+zDb9r+inOH6Yghk71zYmjuIfM=; b=mW54jTGnHMJZipQZTAjofQ/Zd9
-        RWx8RWtJXHJxneBzMyhqI0uDM6MilsL+YrvUEHbMofDMIP9ZrhJ2xbNtukEuuJVo18pjMAn7101H6
-        +EZkogGbBcFgwgywJ7UR/kJwu2geeh7ovTpSLqpJgzXsSllZ6xu7iM8jP64H6UVUY8nVoSBYNeYl7
-        MZhQoQWveSd1+d4a/5fbnSLwam+YvYPcN8kLRIWCjk6Dl8NE3dsf2UFlXx3aruqlNRBxOeePQ0kWx
-        /EHZY0mn1jRO+4mq5eCsGHm6B52HKS8xoz7EMXIPH+g2uYZzzwio5rvU4UCQYBvB8gGHnAcSxHyUa
-        WRTWurOQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l58Iy-008ZAB-1r; Thu, 28 Jan 2021 14:29:52 +0000
-Date:   Thu, 28 Jan 2021 14:29:52 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210128142952.GA2041496@infradead.org>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210127180215.GA1745339@infradead.org>
- <20210127183856.moe3p5pxw6bbtunk@treble>
- <20210127184327.GA1755516@infradead.org>
- <20210127185113.c3est2vssf5tlyyq@treble>
+        Thu, 28 Jan 2021 09:31:32 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB15FC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:30:51 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id gx5so8048444ejb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:30:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pA0soYrYS1TQkScfo2XAckkNCMRnRnhqZW0XyLUH1Bw=;
+        b=OGfEBuAL7zaR0yEQiFhG5C4OBcSm5DZXUjiE1Z/VdodAxQtlWWulYnsNb19ALHSdb2
+         o9sdeGU31ITxdAMLzT5NIaKYIWBtWgpNsHFaSc5csKqaUROC6yMDvQpwCUcpT4HiXWuS
+         MAadG3y/O1I7Wd+cV9suvOzkt3wWW36LjDyMSuy+Y88QegJ+U8paB3vzB3Zm9m7rw4Vj
+         xgDXEhhWoppUKnuTOZaLfcBbWladzjOxpIWdQuUbf/fdYqvyrrLzHUC9urZgLiRhnbvq
+         6UQYhKm2h8VED6V3YdAAO5tfVk2roaRaxvAB1zbiY4fmmYaSh/AmZbZCenQfSOmmKw0Z
+         tObA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pA0soYrYS1TQkScfo2XAckkNCMRnRnhqZW0XyLUH1Bw=;
+        b=llS3pM+Q/77oMg9kml3YYNezkL3Hl6ULnbts3bHdObBIgIOzj1cyuXUNxEn4scHCt9
+         ieFL6VHZC19BpXpjgRrEBtNo3J1bXsDeqWQLVCz+pxGPwxmjy/6UAOxQUcVIxVXWxGVD
+         X4nNoJHKASKTIwhAt6vSFjL2kCueO0kHXv9kIhrULCMRogcPsATvwYMAHjzUJWIeZRdn
+         9Ta1t8trj4/xI51E1dBj1Kb0pLmU1RlYxf3d7WEDMFHRN8jNw9a7acEK51qAbdOoXe0J
+         BeYoAclsbe8fMbGqBxwYwjfE8z63rLPpaeHJQIsBQN8y1PzDmlymOef1kuMIN0IsJShB
+         t6+A==
+X-Gm-Message-State: AOAM5323MoghahLICNksiehK10i6oezVz4PfwS7plnvxthT+tG+eUkWx
+        ZOOOAj7ljh5TcNFN7sxaKnKBIRuIJB14CaGpQ5c=
+X-Google-Smtp-Source: ABdhPJy5xNhVej00+j1zUrQ9aan55waK3RTWYA0a4fltbgbcvHyz7cUUpGTql59w1Hp2fCB2J9D3p2lZPfSr87z/7S8=
+X-Received: by 2002:a17:906:c1c1:: with SMTP id bw1mr11695569ejb.86.1611844250535;
+ Thu, 28 Jan 2021 06:30:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127185113.c3est2vssf5tlyyq@treble>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210128120151.554411-1-axel.lin@ingics.com>
+In-Reply-To: <20210128120151.554411-1-axel.lin@ingics.com>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Thu, 28 Jan 2021 15:30:39 +0100
+Message-ID: <CABkfQAEK3+54-=YWW34HBf0QUpv_DuREZfvXpPGtyXB+v72y2A@mail.gmail.com>
+Subject: Re: [PATCH] regulator: pf8x00: Fix typo for PF8200 chip name
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:51:13PM -0600, Josh Poimboeuf wrote:
-> Is this a joke?  I've never met anybody who builds OOT modules as a
-> development aid...
+Le jeu. 28 janv. 2021 =C3=A0 13:02, Axel Lin <axel.lin@ingics.com> a =C3=A9=
+crit :
+>
+> Trivial typo fix.
+>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  drivers/regulator/pf8x00-regulator.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8=
+x00-regulator.c
+> index 827da25466cc..9b28bd63208d 100644
+> --- a/drivers/regulator/pf8x00-regulator.c
+> +++ b/drivers/regulator/pf8x00-regulator.c
+> @@ -529,7 +529,7 @@ static int pf8x00_identify(struct pf8x00_chip *chip)
+>                 name =3D "PF8121A";
+>                 break;
+>         case PF8200:
+> -               name =3D "PF8100";
+> +               name =3D "PF8200";
+>                 break;
+>         default:
+>                 dev_err(chip->dev, "Unknown pf8x00 device id 0x%x\n", dev=
+_id);
+> --
+> 2.25.1
+>
 
-I'm pretty sure you've met me before.
-
-> On the other hand I know of several very popular distros (some paid,
-> some not) who rely on allowing users/partners to build OOT modules as
-> part of their ecosystem.  To say it's not supported is a farce.
-
-This is not a farce.  The kernel only supports infrastructure for the
-kernel itself, not for any external consumers.  If you have a business
-model that relies on something else you should think hard if you are in
-the right business.
+Reviewed-by: Adrien Grassein <adrien.grassein@gmail.com>
