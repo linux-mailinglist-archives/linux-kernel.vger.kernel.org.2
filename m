@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E80308165
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C66330815D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhA1Wrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhA1WqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:46:11 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C149AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:45:25 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id j12so4959148pfj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:45:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=cbREDcYUxdGPWuZgrjmxI5lJSyINoM6pZuP8VJQYcBo=;
-        b=ewjgG2AitYQp4pR9LLq/tqMYwnkFQZMJwHV8dd5+P0lSWU/WAGkDWJkNSkhhHO1LhD
-         yWduDr7ASEWl6p1Gh5LXct/KLCVZRbh1Vz7VPKX6RvOQzaN7p70IOUlTuf5IXKs4Yh87
-         5BgRM1DILAYPL4ZGok0do/GOURwRmcb22SyrNd5SfM/gixVkT8qoX+cyJpEv8fa5m9Ib
-         jprArihDrGfUsIobODolmJ0tGUvqPW98PLhRZX1SdPYWKnUb0eMHVkotno395LYey9rq
-         0v//KPAC4zpmFUMGUIcHUt7amWMNjxhruYpGecyr1o4snnqTuvdYBgDKi75JeHKcplS1
-         lLAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=cbREDcYUxdGPWuZgrjmxI5lJSyINoM6pZuP8VJQYcBo=;
-        b=Bp86MtV0R0Cm/RRo9sPWOQlOMJX3nA50SHezIyNVwCMMtKu7OQtD1b0yQGF/XxBHWm
-         0cp78g6urYMGJvXyIz517zOUO7zWXttrqIwSmE1nnVemvy/FSvCL+QRfwmz40F4uouIW
-         +A5gmEc+9RthIAW6KJOUwsJo2aviSY54c1xu8g7TKOJX5VD/WUjwldSeoyHyNQ82yaQj
-         m4iy6gh1/B4yXXkhzCRpjyA7sxRo8oU9mvj5fZeGB+2+od4ZTXa6d72r0XeRV2bEKeHD
-         qXH2tsvqLxF9SBaE7ZIl3iofLjtzfb731nIWigkAVJccklwqgJGiwNYgW9SvrZ1mMk8h
-         XUzQ==
-X-Gm-Message-State: AOAM533kAM6A6t5kDxrKhlFvLqQXK/EdguZRBkRWr5Eyso8g4oni13yX
-        RWqn/ASRC/PmgXIZTj4Ab1uhCg==
-X-Google-Smtp-Source: ABdhPJwWjMZAyLfJ0E9B8GRyN2meuwNffp9+5ZYWtwCpfUrwQjj8uej2C7H59DTF1LfNJWBTTZ9/zA==
-X-Received: by 2002:a63:db54:: with SMTP id x20mr1543682pgi.200.1611873925104;
-        Thu, 28 Jan 2021 14:45:25 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id d21sm6051801pjz.39.2021.01.28.14.45.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 14:45:24 -0800 (PST)
-Date:   Thu, 28 Jan 2021 14:45:23 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 net-next 2/4] skbuff: constify skb_propagate_pfmemalloc()
- "page" argument
-In-Reply-To: <20210127201031.98544-3-alobakin@pm.me>
-Message-ID: <b1d34275-1564-a46c-601b-a4b9865f50c7@google.com>
-References: <20210127201031.98544-1-alobakin@pm.me> <20210127201031.98544-3-alobakin@pm.me>
+        id S231720AbhA1WrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:47:24 -0500
+Received: from ms.lwn.net ([45.79.88.28]:48384 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231646AbhA1WqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 17:46:21 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 756CD6173;
+        Thu, 28 Jan 2021 22:45:38 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 756CD6173
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1611873938; bh=pKlA1wCqIPKqJF4CMFRPlVennY+CpW7wzlpMvVlXI1s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XoDWBYQfaxpSOgrZKc7nSVh2UXNLy4CjdCFmSmNlDOkB+NE5/YVEuV+Zd6OGecd8m
+         VTAEWi+wXWTfdXwrOS6VQ8QO3JtgjKtK4OryBQZvVre2R8olI5bWN5UbXhLzXvJMUJ
+         oGGCGOPUVpEgau+t/igHDW1x0yJCzG+3PPLPjKtmLPj4z843OoclkjqmORPvzMRPnA
+         2V5IC/qtAZwL78iVZmcpSHflTXBFiCxYJFI+wvX/6IKaL93kEYvSmI3lGHn8piHJOx
+         jgkMNEwQcqTvMwKB305gfas4505XH86QKa+a8Yfl5NjR0lIN9ljriV25UWN6YEayOH
+         Qz7nWFRO2rNmg==
+Date:   Thu, 28 Jan 2021 15:45:37 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Eric Curtin <ericcurtin17@gmail.com>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] Update Documentation/admin-guide/sysctl/fs.rst
+Message-ID: <20210128154537.2ed50d06@lwn.net>
+In-Reply-To: <20210120132648.19046-1-ericcurtin17@gmail.com>
+References: <20210120132648.19046-1-ericcurtin17@gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021, Alexander Lobakin wrote:
+On Wed, 20 Jan 2021 13:26:47 +0000
+Eric Curtin <ericcurtin17@gmail.com> wrote:
 
-> The function doesn't write anything to the page struct itself,
-> so this argument can be const.
+> max_user_watches for epoll should say 1/25, rather than 1/32
 > 
-> Misc: align second argument to the brace while at it.
+> Signed-off-by: Eric Curtin <ericcurtin17@gmail.com>
+> ---
+>  Documentation/admin-guide/sysctl/fs.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> diff --git a/Documentation/admin-guide/sysctl/fs.rst b/Documentation/admin-guide/sysctl/fs.rst
+> index f48277a0a850..2a501c9ddc55 100644
+> --- a/Documentation/admin-guide/sysctl/fs.rst
+> +++ b/Documentation/admin-guide/sysctl/fs.rst
+> @@ -380,5 +380,5 @@ This configuration option sets the maximum number of "watches" that are
+>  allowed for each user.
+>  Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
+>  on a 64bit one.
+> -The current default value for  max_user_watches  is the 1/32 of the available
+> -low memory, divided for the "watch" cost in bytes.
+> +The current default value for  max_user_watches  is the 1/25 (4%) of the
+> +available low memory, divided for the "watch" cost in bytes.
 
-Acked-by: David Rientjes <rientjes@google.com>
+That does appear to be the way of it...patch applied, thanks.
+
+jon
