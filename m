@@ -2,191 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DE6307C56
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AA5307C3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhA1R01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232966AbhA1RXT (ORCPT
+        id S233111AbhA1RXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:23:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42880 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233083AbhA1RU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:23:19 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF58C061574;
-        Thu, 28 Jan 2021 09:22:39 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id z6so6159544wrq.10;
-        Thu, 28 Jan 2021 09:22:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cmZOIvIi8bofhn0TZQeaQ2LsskOECrmX+BsvEebrKcI=;
-        b=Nf7bcA3ngq1y2KUJN9/hgr09WEAtN29oFIMqcLC1ygSALt4q1ov1XRoqzzrJ5Bg37n
-         WRMFQvHMqFtaAwUEbIJCKGYJkyQcLqVe7owC8R0+IdMHF1OL4kiIWMTUXxkGI/s7Jvjd
-         aZb2fZtgMNQ4WqRF86E9/rJBlYl05xMp7dJSQevoxQwfz6iznLT0nIvcNEaEh7J+6TBG
-         E0TDpPr2JXDaAh4GbZsFDDw8Pfbm2xpqXh2F0asGQByZJKJGt5kvtVM23d6YV/NWpqWH
-         PFCwoybK4cnpiEgt+Dh5xk5VoeupJE/Mff9WyAOhJ/rRwYRquguw3dchJrB32TaKJjPz
-         oVPw==
+        Thu, 28 Jan 2021 12:20:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611854369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C3eK8ADi3ZeyPV4PVYDApesK2wmgAogV+vFpEBdBI34=;
+        b=CAtd+js9CWodlUPuJWsWLEuPaL8j6f8WnxHTYmAPvV+YsmYl1tSbThMwsE8+ArO0+Sn0Q3
+        n9MQa+LBrsfKa8TFOyst2u108bIxqDL8hI30YC+3FyIeVXUukG/ejqILeURJmhv93eEeO4
+        V76ZYmFcZTrlPVsJ0b0i1OpdxiLQ51s=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-4ATh89xnOdOIgHrkzY1YVA-1; Thu, 28 Jan 2021 12:19:28 -0500
+X-MC-Unique: 4ATh89xnOdOIgHrkzY1YVA-1
+Received: by mail-wm1-f69.google.com with SMTP id u1so2692895wml.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:19:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cmZOIvIi8bofhn0TZQeaQ2LsskOECrmX+BsvEebrKcI=;
-        b=SGcGxRsNNhZGvit/SPM2hmPL3ut2FQSNOaVP7svyz3glpisEnNYts3kdpymU+8BAeg
-         2e1tDMbcvcvW+5kh+JjqxwSjutmqBx9fhn97XpDlL8v5aK62CM03MVXsiA+qRuZjd7ks
-         UKnW2CjyCIxL3LJlDFIOyDI8U9IwPvtwX953klrugqEMCGjP8QULmU3R2Dk2nL2z29r4
-         psylK7r2B2d9hN59DTIZkHJOef97/A7wWFXi8PjE8xEwxOuyNwGIdu1rrkwH6/A9kHUH
-         G+8qKzmPhHFzHKh/qr4x9ooz4AM8kOusSxhV/pSEI5zrYFcJkULkWwtGi+gyutJGRgSh
-         tOOg==
-X-Gm-Message-State: AOAM531/D7ItV+infoAiyJt2BwDs4n4RW0ftR06kNvxpK0jiI4jRkzyy
-        050wcPPrIFhhZpVHV+KkrRJLZdcyw9o=
-X-Google-Smtp-Source: ABdhPJwoF0PdXu8LU66GzCiRXpeQcStbn/xoQb78LtHrMN992IjIGamK1XEi8Cy99Z4kPYS6meDczA==
-X-Received: by 2002:a5d:4046:: with SMTP id w6mr39118wrp.369.1611854558235;
-        Thu, 28 Jan 2021 09:22:38 -0800 (PST)
-Received: from [192.168.8.160] ([148.252.132.131])
-        by smtp.gmail.com with ESMTPSA id o13sm8264074wrh.88.2021.01.28.09.22.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 09:22:37 -0800 (PST)
-Subject: Re: WARNING in io_uring_cancel_task_requests
-To:     syzbot <syzbot+3e3d9bd0c6ce9efbc3ef@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000619ae405b9f8cf6e@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <02244f62-d5a2-d27f-9535-87af192eca73@gmail.com>
-Date:   Thu, 28 Jan 2021 17:18:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C3eK8ADi3ZeyPV4PVYDApesK2wmgAogV+vFpEBdBI34=;
+        b=mMgDDNxCWOywGjZaeDj1Fx2T5bEiMtI2tAE1yl8frLaS9w0O7E4cwnlQItWwxq+yrV
+         CcfqII2QlMrHscJRluLJK2zJIa32CgTd8ZGD0NK7Vt+HXZblZWfFWj+hnq8li4XxImBU
+         mte7i7eeQQPYA3rTOd8xir5Hi88S/CtsVco/T3v22UebjYQlHqu8v5RgkilDinXWdm1t
+         Pq+NsjjNJUFGVdyyKm2ShOs/zDpuCPmy4HyuvkUcj+Xe5CGf7MSDwu4CWdWrlE7xnqxO
+         EmcapGBAQlmFJZZHpGmQWQqAuR7/DzRFXeu6O8q5fqzL68vKnB1OBnGV5RzeJo2gWQ4N
+         5ABw==
+X-Gm-Message-State: AOAM5311bcdNFi2hH5WkvCNrH+/g5r7i27dqs7TO5sRmWLj+73shBvIV
+        /jEVp8zB0U/3sHFvd53j5ei5jlMQUARamNbWj+VhvfntqH4bxc4oYl7HfixIFFmarRYFzF7iG65
+        i0HIIE4KoKq9YUxCLFmBhGoSv
+X-Received: by 2002:adf:ee43:: with SMTP id w3mr132418wro.200.1611854366591;
+        Thu, 28 Jan 2021 09:19:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy/v8ANcRwlI8G7EsFYD8nauxfmP7TArGJygNoYeVZtqgy5WGQaFyFb7Is20oZGBeCQYNOxTA==
+X-Received: by 2002:adf:ee43:: with SMTP id w3mr132383wro.200.1611854366394;
+        Thu, 28 Jan 2021 09:19:26 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id y18sm7666251wrt.19.2021.01.28.09.19.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 09:19:25 -0800 (PST)
+Date:   Thu, 28 Jan 2021 18:19:23 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210128171923.esyna5ccv5s27jyu@steredhat>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <000000000000619ae405b9f8cf6e@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/2021 16:59, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    d03154e8 Add linux-next specific files for 20210128
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=159d08a0d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6953ffb584722a1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3e3d9bd0c6ce9efbc3ef
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
+Hi Arseny,
+I reviewed a part, tomorrow I hope to finish the other patches.
 
-This is not interesting either, we can just kill the warning, there
-is a better one queued for 5.12.
+Just a couple of comments in the TODOs below.
 
-I'll send patches for both reports later.
+On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
+>	This patchset impelements support of SOCK_SEQPACKET for virtio
+>transport.
+>	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>do it, new packet operation was added: it marks start of record (with
+>record length in header), such packet doesn't carry any data.  To send
+>record, packet with start marker is sent first, then all data is sent
+>as usual 'RW' packets. On receiver's side, length of record is known
+>from packet with start record marker. Now as  packets of one socket
+>are not reordered neither on vsock nor on vhost transport layers, such
+>marker allows to restore original record on receiver's side. If user's
+>buffer is smaller that record length, when all out of size data is
+>dropped.
+>	Maximum length of datagram is not limited as in stream socket,
+>because same credit logic is used. Difference with stream socket is
+>that user is not woken up until whole record is received or error
+>occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>	Tests also implemented.
+>
+> Arseny Krasnov (13):
+>  af_vsock: prepare for SOCK_SEQPACKET support
+>  af_vsock: prepare 'vsock_connectible_recvmsg()'
+>  af_vsock: implement SEQPACKET rx loop
+>  af_vsock: implement send logic for SOCK_SEQPACKET
+>  af_vsock: rest of SEQPACKET support
+>  af_vsock: update comments for stream sockets
+>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>  virtio/vsock: fetch length for SEQPACKET record
+>  virtio/vsock: add SEQPACKET receive logic
+>  virtio/vsock: rest of SOCK_SEQPACKET support
+>  virtio/vsock: setup SEQPACKET ops for transport
+>  vhost/vsock: setup SEQPACKET ops for transport
+>  vsock_test: add SOCK_SEQPACKET tests
+>
+> drivers/vhost/vsock.c                   |   7 +-
+> include/linux/virtio_vsock.h            |  12 +
+> include/net/af_vsock.h                  |   6 +
+> include/uapi/linux/virtio_vsock.h       |   9 +
+> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
+> net/vmw_vsock/virtio_transport.c        |   4 +
+> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
+> tools/testing/vsock/util.c              |  32 +-
+> tools/testing/vsock/util.h              |   3 +
+> tools/testing/vsock/vsock_test.c        | 126 +++++
+> 10 files changed, 862 insertions(+), 175 deletions(-)
+>
+> TODO:
+> - Support for record integrity control. As transport could drop some
+>   packets, something like "record-id" and record end marker need to
+>   be implemented. Idea is that SEQ_BEGIN packet carries both record
+>   length and record id, end marker(let it be SEQ_END) carries only
+>   record id. To be sure that no one packet was lost, receiver checks
+>   length of data between SEQ_BEGIN and SEQ_END(it must be same with
+>   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
+>   means that both markers were not dropped. I think that easiest way
+>   to implement record id for SEQ_BEGIN is to reuse another field of
+>   packet header(SEQ_BEGIN already uses 'flags' as record length).For
+>   SEQ_END record id could be stored in 'flags'.
 
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3e3d9bd0c6ce9efbc3ef@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 21359 at fs/io_uring.c:9042 io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9042
-> Modules linked in:
-> CPU: 0 PID: 21359 Comm: syz-executor.0 Not tainted 5.11.0-rc5-next-20210128-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9042
-> Code: 00 00 e9 1c fe ff ff 48 8b 7c 24 18 e8 f4 b4 da ff e9 f2 fc ff ff 48 8b 7c 24 18 e8 e5 b4 da ff e9 64 f2 ff ff e8 eb 16 97 ff <0f> 0b e9 ed f2 ff ff e8 df b4 da ff e9 c8 f5 ff ff 4c 89 ef e8 52
-> RSP: 0018:ffffc9000c5a7950 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffff88806e79f000 RCX: 0000000000000000
-> RDX: ffff88806c9d5400 RSI: ffffffff81dbfe65 RDI: ffff88806e79f0d0
-> RBP: ffff88806e79f0e8 R08: 0000000000000000 R09: ffff88806c9d5407
-> R10: ffffffff81dbf0df R11: 0000000000000000 R12: ffff88806e79f000
-> R13: ffff88806c9d5400 R14: ffff88801cdbb800 R15: ffff88802a151018
-> FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000749138 CR3: 0000000011ffd000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  io_uring_flush+0x47b/0x6e0 fs/io_uring.c:9227
->  filp_close+0xb4/0x170 fs/open.c:1295
->  close_files fs/file.c:403 [inline]
->  put_files_struct fs/file.c:418 [inline]
->  put_files_struct+0x1cc/0x350 fs/file.c:415
->  exit_files+0x7e/0xa0 fs/file.c:435
->  do_exit+0xc22/0x2ae0 kernel/exit.c:820
->  do_group_exit+0x125/0x310 kernel/exit.c:922
->  get_signal+0x427/0x20f0 kernel/signal.c:2773
->  arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
->  handle_signal_work kernel/entry/common.c:147 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
->  exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45e219
-> Code: Unable to access opcode bytes at RIP 0x45e1ef.
-> RSP: 002b:00007f33ed289be8 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
-> RAX: 0000000000000004 RBX: 0000000020000200 RCX: 000000000045e219
-> RDX: 0000000020ff8000 RSI: 0000000020000200 RDI: 0000000000002d38
-> RBP: 000000000119c080 R08: 00000000200002c0 R09: 00000000200002c0
-> R10: 0000000020000280 R11: 0000000000000206 R12: 0000000020ff8000
-> R13: 0000000020ff1000 R14: 00000000200002c0 R15: 0000000020000280
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+I don't really like the idea of reusing the 'flags' field for this 
+purpose.
 
--- 
-Pavel Begunkov
+>     Another way to implement it, is to move metadata of both SEQ_END
+>   and SEQ_BEGIN to payload. But this approach has problem, because
+>   if we move something to payload, such payload is accounted by
+>   credit logic, which fragments payload, while payload with record
+>   length and id couldn't be fragmented. One way to overcome it is to
+>   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
+>   is to update 'stream_has_space()' function: current implementation
+>   return non-zero when at least 1 byte is allowed to use,but updated
+>   version will have extra argument, which is needed length. For 'RW'
+>   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
+>   record id) and for SEQ_END it is sizeof(record id).
+
+Is the payload accounted by credit logic also if hdr.op is not 
+VIRTIO_VSOCK_OP_RW?
+
+I think that we can define a specific header to put after the 
+virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header 
+we can store the id and the length of the message.
+
+>
+> - What to do, when server doesn't support SOCK_SEQPACKET. In current
+>   implementation RST is replied in the same way when listening port
+>   is not found. I think that current RST is enough,because case when
+>   server doesn't support SEQ_PACKET is same when listener missed(e.g.
+>   no listener in both cases).
+
+I think so, but I'll check better if we can have some issues.
+
+Thanks,
+Stefano
+
+>
+> v2 -> v3:
+> - patches reorganized: split for prepare and implementation patches
+> - local variables are declared in "Reverse Christmas tree" manner
+> - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
+>   fields access
+> - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
+>   between stream and seqpacket sockets.
+> - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
+> - af_vsock.c: 'vsock_wait_data()' refactored.
+>
+> v1 -> v2:
+> - patches reordered: af_vsock.c related changes now before virtio vsock
+> - patches reorganized: more small patches, where +/- are not mixed
+> - tests for SOCK_SEQPACKET added
+> - all commit messages updated
+> - af_vsock.c: 'vsock_pre_recv_check()' inlined to
+>   'vsock_connectible_recvmsg()'
+> - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
+>   was not found
+> - virtio_transport_common.c: transport callback for seqpacket dequeue
+> - virtio_transport_common.c: simplified
+>   'virtio_transport_recv_connected()'
+> - virtio_transport_common.c: send reset on socket and packet type
+>			      mismatch.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>
+>-- 
+>2.25.1
+>
+
