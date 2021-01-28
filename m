@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47497308131
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36E6308168
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhA1Wld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:41:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229561AbhA1Wl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:41:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611873602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=D1asM/mdpxR1vYWT48GbcZmtlsbJYFV6SyTJkmfAp54=;
-        b=gRA7Ss7DXy+pMROj3gz4284bPVeRPi+mUPZjVVJI3NoOSC4UL6r6+V8tTkuCz48cZQmx4e
-        9TVWMtOJWt95PfbB8sLN/Km6P1pdQ9uwdCcg85jIj/Oy5fN8VYdkPPDPkjDkRNjx63LHfz
-        kBtMnCQ2MEpdc+DEx+jpnXTzJ918+FM=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-LA2L0HQ2PZOO8OHkDg8naQ-1; Thu, 28 Jan 2021 17:39:58 -0500
-X-MC-Unique: LA2L0HQ2PZOO8OHkDg8naQ-1
-Received: by mail-il1-f198.google.com with SMTP id l68so6017271ild.21
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:39:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:message-id:mime-version;
-        bh=D1asM/mdpxR1vYWT48GbcZmtlsbJYFV6SyTJkmfAp54=;
-        b=rS9va9vot1VGgRbwq7s5JeGMkU+S40s/Xgsok0kZqxCsrolntn69qmrYNKA79tOhkf
-         H/doBxPlJvjBL2ettvqll0TobzSQnB6uVCBGiHGfyBUCCjLex5xueHOq7wQFAk3VTud9
-         PmLUrz5O9RV0exyUtP2vd3HsW695CXgDKVla1v5fHTT/uCArfNnmhEWO1PTABQ/ReyLd
-         0OvKaK45W6TGat816vVxx/DgkdMOaFU132pQfWu0vhpQYZILLYkyf5+K6Jnah7xkeQdg
-         Vlc+7VzaXIGz+Y9kWrBa1dq5Ts1GrYPBzmisVIaZ8NOeeii5YoGi99kpOBHJhLRnRjCS
-         PiDA==
-X-Gm-Message-State: AOAM5312iFD3+2Qsu32UZJkwO/t8pz8MEdCAcC8F0o2RuiK3wfZi9GAm
-        7qjvXB4bYVuD2JbBO1pWC5bIm/7l2zPYMwODEjznWsG4xvB9PY+XBFVw0ZrDJV55E5b619wYs0T
-        aq9tXQ7qFZkz3eIHbh59gqnrC
-X-Received: by 2002:a02:cc43:: with SMTP id i3mr1266656jaq.58.1611873597735;
-        Thu, 28 Jan 2021 14:39:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzcaTSXcL4AYZdldj4cezSvP2lg+1lhTtXjvAHJFF8aCcJcvdASnKcaPNsTC8bU8dAa7/nETQ==
-X-Received: by 2002:a02:cc43:: with SMTP id i3mr1266647jaq.58.1611873597445;
-        Thu, 28 Jan 2021 14:39:57 -0800 (PST)
-Received: from chargestone-cave ([2607:9000:0:57::8e])
-        by smtp.gmail.com with ESMTPSA id j7sm2822590ilo.52.2021.01.28.14.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 14:39:56 -0800 (PST)
-Date:   Thu, 28 Jan 2021 16:39:50 -0600
-From:   Michael Catanzaro <mcatanzaro@redhat.com>
-Subject: [REGRESSION] "ALSA: HDA: Early Forbid of runtime PM" broke my
- laptop's internal audio
-To:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Harsha Priya <harshapriya.n@intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Message-Id: <EM1ONQ.OL5CFJTBEBBW@redhat.com>
-X-Mailer: geary/3.38.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+        id S231745AbhA1Wsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:48:39 -0500
+Received: from mga07.intel.com ([134.134.136.100]:61310 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231645AbhA1WrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 17:47:24 -0500
+IronPort-SDR: ESrQw8NWLJFzx91OrrbMWYddvams/JTm97htASZqeRQxbo5ECrx+dZ4FENkQ+YkCDgSmB3bxYr
+ tbcYm96L7fLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="244412988"
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="244412988"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 14:45:37 -0800
+IronPort-SDR: iBwPD+B0KuvDfR8HYD37hqZlgN/MivHhAMepedohfVVYtrPccgTAtwWzuP30ZYbQNaA7ogsFSZ
+ pVbpSRh6ZHlA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="389034551"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga008.jf.intel.com with ESMTP; 28 Jan 2021 14:45:37 -0800
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
+        maddy@linux.vnet.ibm.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V3 0/5] perf core PMU support for Sapphire Rapids (Kernel)
+Date:   Thu, 28 Jan 2021 14:40:06 -0800
+Message-Id: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-On my System76 Gazelle Pro (gazp9) laptop, internal audio broke after 
-upgrading to kernel 5.10.
+Changes since V2:
+- Add the the big-endian and little-endian support for
+  union perf_sample_weight.
+  Rename the fields of the union perf_sample_weight.
+- Move the check for the unsupported topdown events to event creation.
+- Update the comments for the auxiliary event and modify the encoding
+  of the auxiliary event.
 
-The laptop's speakers produce no sound. Audio from headphones still 
-works fine. A quick test is to visit GNOME System Settings -> Sound -> 
-Output, select Test, click Front Left or Front Right and notice there 
-is no sound. I tested a mainline kernel revision from yesterday 
-(5.11-rc5+) and the regression is not yet fixed. I bisected the 
-regression to "ALSA: HDA: Early Forbid of runtime PM":
+Changes since V1:
+- Use PERF_SAMPLE_WEIGHT_STRUCT to replace PERF_SAMPLE_WEIGHT_EXT.
+  The new sample type PERF_SAMPLE_WEIGHT_STRUCT shares the same space as
+  the current PERF_SAMPLE_WEIGHT.
+- Move the check for the unsupported Topdown event into a separate patch
+- Use the 'pebs_block' to replace the 'pebs_no_block'.
+- Apply Peter's suggestion for the patch ("perf/x86/intel: Support CPUID
+  10.ECX to disable fixed counters")
+- Only include Kernel patches
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a0645daf16101bb9a6d87598c17e9a8b7bd60ea7
+Intel Sapphire Rapids server is the successor of the Intel Ice Lake
+server. The enabling code is based on Ice Lake, but there are several
+new features introduced.
+- The event encoding is changed and simplified.
+- A new Precise Distribution (PDist) facility.
+- Two new data source fields, data block & address block, are added in
+  the PEBS Memory Info Record for the load latency event.
+- A new store Latency facility is introduced.
+- The layout of access latency field of PEBS Memory Info Record has been
+  changed. Two latency, instruction latency and cache access latency are
+  recorded. To support the new latency fields, a new sample type,
+  PERF_SAMPLE_WEIGHT_EXT, is introduced.
+- Extends the PERF_METRICS MSR to feature TMA method level 2 metrics.
 
-I created a downstream bug report here, including some bits from dmesg 
-that may or may not be relevant in comment #2:
+Besides the Sapphire Rapids specific features, the CPUID 10.ECX
+extension is also supported, which is available for all platforms with
+Architectural Performance Monitoring Version 5.
 
-https://bugzilla.redhat.com/show_bug.cgi?id=1918933
+The full description for the SPR features can be found at Intel
+Architecture Instruction Set Extensions and Future Features Programming
+Reference, 319433-041 (and later).
 
-Audio devices:
+Kan Liang (5):
+  perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
+  perf/x86/intel: Factor out intel_update_topdown_event()
+  perf/x86/intel: Filter unsupported Topdown metrics event
+  perf/x86/intel: Add perf core PMU support for Sapphire Rapids
+  perf/x86/intel: Support CPUID 10.ECX to disable fixed counters
 
-$ lspci | grep -i audio
-00:03.0 Audio device: Intel Corporation Xeon E3-1200 v3/4th Gen Core 
-Processor HD Audio Controller (rev 06)
-00:1b.0 Audio device: Intel Corporation 8 Series/C220 Series Chipset 
-High Definition Audio Controller (rev 05)
+ arch/powerpc/perf/core-book3s.c   |   2 +-
+ arch/x86/events/core.c            |   8 +-
+ arch/x86/events/intel/core.c      | 363 +++++++++++++++++++++++++++++++++++---
+ arch/x86/events/intel/ds.c        | 131 ++++++++++++--
+ arch/x86/events/perf_event.h      |  39 +++-
+ arch/x86/include/asm/perf_event.h |  16 +-
+ include/linux/perf_event.h        |   4 +-
+ include/uapi/linux/perf_event.h   |  61 ++++++-
+ kernel/events/core.c              |  11 +-
+ 9 files changed, 578 insertions(+), 57 deletions(-)
 
-OS: Fedora 33
-
-I'm happy to provide any additional required info or test patches if 
-you CC me, since I'm not a kernel developer and am not subscribed to 
-these lists. Thanks.
-
+-- 
+2.7.4
 
