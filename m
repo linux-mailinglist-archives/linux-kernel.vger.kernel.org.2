@@ -2,175 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D030307999
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16973079AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhA1PYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:24:15 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11530 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbhA1PWP (ORCPT
+        id S232018AbhA1P1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:27:16 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:34456 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231875AbhA1P1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:22:15 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DRPKs1ZVgzjFdr;
-        Thu, 28 Jan 2021 23:20:17 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 28 Jan 2021 23:21:20 +0800
-Subject: Re: [PATCH v3 2/2] vfio/iommu_type1: Fix some sanity checks in detach
- group
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20210122092635.19900-1-zhukeqian1@huawei.com>
- <20210122092635.19900-3-zhukeqian1@huawei.com>
- <20210127164641.36e17bf5@omen.home.shazbot.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <5093dace-4b8a-d455-ba16-d0c2da755573@huawei.com>
-Date:   Thu, 28 Jan 2021 23:21:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 28 Jan 2021 10:27:00 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SFJuIQ118435;
+        Thu, 28 Jan 2021 15:26:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=2gLXiKCgRSS7kTFwCYui5MzR6pPKfBNKiPKEY7OQMgY=;
+ b=gXPKERt+Fh24YexAqdwWgz3yhxChk94LGX69wA793D+trr/TxxloojLJnSyA1RsPXAkx
+ StsSDCcYK1Wlef9js1oC27V4MOyz+/YqYazJZ7KtSkrgfyOxx61wrC55KA4NKf3MdYkJ
+ udMvFA3iwbEz7cf6KrCQy33px8mJDTmXzedBYXl2PIHdA5cCB3j8vZyxjlvEks8ShR41
+ OXkcmdVMsbOtYgUrfisN5ComUBjSkr5noqKvUOo2+GB/uEOIz9i7YxKHQU9uomZvW6Im
+ rEartVXsyEFV7bz/imqdDxA3n9Z0V9NnIJBXJpDO5rW+EMwxDeemMkf1aWFKhrQPwDzQ dA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 368b7r4pg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 15:26:09 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SFJqP9134457;
+        Thu, 28 Jan 2021 15:24:07 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 368wju6y2h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 15:24:07 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10SFO21G020707;
+        Thu, 28 Jan 2021 15:24:02 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 28 Jan 2021 07:24:01 -0800
+Date:   Thu, 28 Jan 2021 18:23:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Carlis <zhangxuezhi3@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        oliver.graute@kococonnector.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Colin King <colin.king@canonical.com>, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v12] staging: fbtft: add tearing signal detect
+Message-ID: <20210128152352.GH2696@kadam>
+References: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
+ <CAHp75Vd=ijxnamuSYuxNLeyhGMCod=HaXWrQ0W0+3QCsQAychg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127164641.36e17bf5@omen.home.shazbot.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vd=ijxnamuSYuxNLeyhGMCod=HaXWrQ0W0+3QCsQAychg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ adultscore=0 mlxscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280079
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9877 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101280079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28, 2021 at 04:33:02PM +0200, Andy Shevchenko wrote:
+> > +               init_completion(&spi_panel_te);
+> > +               rc = devm_request_irq(dev,
+> 
+> > +                                     gpiod_to_irq(par->gpio.te),
+> 
+> ...and here simply use irq.
+> 
+> > +                                    spi_panel_te_handler, IRQF_TRIGGER_RISING,
+> > +                                    "TE_GPIO", par);
+> 
+> > +               if (IS_ERR(rc))
+> 
+> This is wrong. rc is integer no IS_ERR() is required. Ditto for
+> PTR_ERR(). Have you even looked for these macros implementations?
+> 
 
+Yeah...  It leads to a compile warning:
 
-On 2021/1/28 7:46, Alex Williamson wrote:
-> On Fri, 22 Jan 2021 17:26:35 +0800
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> 
->> vfio_sanity_check_pfn_list() is used to check whether pfn_list and
->> notifier are empty when remove the external domain, so it makes a
->> wrong assumption that only external domain will use the pinning
->> interface.
->>
->> Now we apply the pfn_list check when a vfio_dma is removed and apply
->> the notifier check when all domains are removed.
->>
->> Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>  drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++-----------------------
->>  1 file changed, 10 insertions(+), 23 deletions(-)
->>
->> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->> index 161725395f2f..d8c10f508321 100644
->> --- a/drivers/vfio/vfio_iommu_type1.c
->> +++ b/drivers/vfio/vfio_iommu_type1.c
->> @@ -957,6 +957,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
->>  
->>  static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
->>  {
->> +	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
->>  	vfio_unmap_unpin(iommu, dma, true);
->>  	vfio_unlink_dma(iommu, dma);
->>  	put_task_struct(dma->task);
->> @@ -2250,23 +2251,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
->>  	}
->>  }
->>  
->> -static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
->> -{
->> -	struct rb_node *n;
->> -
->> -	n = rb_first(&iommu->dma_list);
->> -	for (; n; n = rb_next(n)) {
->> -		struct vfio_dma *dma;
->> -
->> -		dma = rb_entry(n, struct vfio_dma, node);
->> -
->> -		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
->> -			break;
->> -	}
->> -	/* mdev vendor driver must unregister notifier */
->> -	WARN_ON(iommu->notifier.head);
->> -}
->> -
->>  /*
->>   * Called when a domain is removed in detach. It is possible that
->>   * the removed domain decided the iova aperture window. Modify the
->> @@ -2366,10 +2350,10 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->>  			kfree(group);
->>  
->>  			if (list_empty(&iommu->external_domain->group_list)) {
->> -				vfio_sanity_check_pfn_list(iommu);
->> -
->> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
->> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)) {
->> +					WARN_ON(iommu->notifier.head);
->>  					vfio_iommu_unmap_unpin_all(iommu);
->> +				}
->>  
->>  				kfree(iommu->external_domain);
->>  				iommu->external_domain = NULL;
->> @@ -2403,10 +2387,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->>  		 */
->>  		if (list_empty(&domain->group_list)) {
->>  			if (list_is_singular(&iommu->domain_list)) {
->> -				if (!iommu->external_domain)
->> +				if (!iommu->external_domain) {
->> +					WARN_ON(iommu->notifier.head);
->>  					vfio_iommu_unmap_unpin_all(iommu);
->> -				else
->> +				} else {
->>  					vfio_iommu_unmap_unpin_reaccount(iommu);
->> +				}
->>  			}
->>  			iommu_domain_free(domain->domain);
->>  			list_del(&domain->next);
->> @@ -2488,9 +2474,10 @@ static void vfio_iommu_type1_release(void *iommu_data)
->>  	struct vfio_iommu *iommu = iommu_data;
->>  	struct vfio_domain *domain, *domain_tmp;
->>  
->> +	WARN_ON(iommu->notifier.head);
-> 
-> I don't see that this does any harm, but isn't it actually redundant?
-> It seems vfio-core only calls the iommu backend release function after
-> removing all the groups, so the tests in _detach_group should catch all
-> cases.  We're expecting the vfio bus/mdev driver to remove the notifier
-> when a device is closed, which necessarily occurs before detaching the
-> group.  Thanks,
-> 
-> Alex
-Hi Alex,
+	warning: passing argument 1 of ‘IS_ERR’ makes pointer from integer without a cast [-Wint-conversion]
 
-Sorry that today I was busy at sending the smmu HTTU based dma dirty log tracking.
-I will reply you tomorrow. Thanks!
+regards,
+dan carpenter
 
-Keqian.
-
-> 
->> +
->>  	if (iommu->external_domain) {
->>  		vfio_release_domain(iommu->external_domain, true);
->> -		vfio_sanity_check_pfn_list(iommu);
->>  		kfree(iommu->external_domain);
->>  	}
->>  
-> 
-> .
-> 
