@@ -2,76 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97374307556
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DAF307559
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhA1L6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        id S231324AbhA1L67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA1L6g (ORCPT
+        with ESMTP id S231283AbhA1L6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:58:36 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578DCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 03:57:55 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id c18so5970637ljd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 03:57:55 -0800 (PST)
+        Thu, 28 Jan 2021 06:58:47 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC21C061756;
+        Thu, 28 Jan 2021 03:58:06 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id h7so7222699lfc.6;
+        Thu, 28 Jan 2021 03:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HoMOBJThzXerD1B5eqMbs1auuz0GIc2u3gEbh1anF2Q=;
-        b=RJA1Oatr7liQLuVNqEwPVHcjnNDcjxjB79zzIaVNzGWLRndifubGGTMfe7uDikNHTQ
-         fCBqeuAzw+hkCYoR551ns1A47rufKvOj3IST2EFT2y8bKOj3m0quhNUNoTt7wGykmnKB
-         rCC+7hF4tesMM9jpMHRzaljG6/XkhKdwHkgS4UlRPNM/JNgN+Ym6PKpegAN+kK7DrKpy
-         YIhFwFIyhw79uFS3ColWHGGbkNQZjmPs0PQKUQOx8VVQhnKakGPK7gRCVtOHrR8JdzhX
-         LpgfJJDyfGjBpHFYm7m7EfXLSqW8gIHmjBWrAGnRXmOGzQpaPe6hKrLEbqJQ0M68ODU3
-         tLag==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yRtf0QmcidBZ2Eqy3uoPpzsmJyl+wCM0aMIKjggK7A8=;
+        b=WLuGkfbk251OeDawLSI1Kz9L02B4yMXYZ52Jdve6ERDDKJbfUvoON5f7nddP9+meXs
+         kSVZS3saeGGSLq+tLObzYEU9L0tAw6pHWMq2IJNCrNh/tvrbmqrzBU8c+LAAFeMd1P3j
+         Co4u2DtM9ZOJ+k0D4N2zZwtv1wvJKYxvqrkMNHnWJiqOvjwDPxEP3vNMFMCEiaPw5jjw
+         lf6u2dS20UtTpWDg8RuuNDOTGYJ4Jv9XWpMiv9CbNvAgyZT4aZuw6vU/p5gSOLhrZvde
+         nE7N4H21JmChe24t9A7UAKNsdvoz6VxjJsMoZFu0/up7Lbwz4hPUTeCYGJPfOwN3rX1q
+         Lbow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HoMOBJThzXerD1B5eqMbs1auuz0GIc2u3gEbh1anF2Q=;
-        b=UW6NZtlLVr8Bg1GshKFbCegh7D6WuhY3VngJ1L9TCg76OImOKCPW1y5xXvPSC1SXUn
-         jTeCz1wOiFqNMqlMp1qL/zPzEfZ8Cnfcy6faHEp1c8w8JVdPRdQyXjGD7XVuo8oon13N
-         pogsqCyhVyAdMbokvEkJ8RroQDxAc3r8Wq4zxfXSIchrgj9SimAXiFpCr6KSsFa5JcTz
-         eorIpfffXLDnDUl2nI3u6tbA8LBJvh2hh1LUMdhylXUOO+3hdxZwbtr7GT5MLOEzKjSO
-         ocQ1sl4aRaJLqq5kAKrGaYuXtdOSRNTA4/LNNJY84n5ZWg86rXbap0147mYmi7NEo5Q8
-         +ZvQ==
-X-Gm-Message-State: AOAM531T0z33PGmXKLaPymBnedXfvp86WAHJ3IHCk1/Mk3HJ5kzeyKjQ
-        mVigSvyqNGJELuy6XmIftlbsJViGotwzPlO9tLCU5Q==
-X-Google-Smtp-Source: ABdhPJwG9m5Wn1gurcbOyqKjX7kvvKuJQkXbCno0nBjtvdak7Op2rYnzDQQ67qhv1+XrUC6cN0l17D9aQmigdm+rnOg=
-X-Received: by 2002:a2e:964f:: with SMTP id z15mr8124244ljh.368.1611835073798;
- Thu, 28 Jan 2021 03:57:53 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yRtf0QmcidBZ2Eqy3uoPpzsmJyl+wCM0aMIKjggK7A8=;
+        b=cPC9pHF++p7+NM2GZOizJ7sZQQaeVknpRS13fjgt2U/0b67XbiwL2QrT1XJEi0K6yN
+         Q4H0II+2QuoDjw7m6lXdqRAzlM2WD9e+FOGi+ztYkRxFlLZCeO4i7b9olIfRpTIBaNys
+         ej7QEvqn0qoNKdi2hDA+5XLsQJ5rQ2C/Z6sC6dVlpoblZpSnT5PuM9WzF0VRbu0rxkfa
+         SIjNlVcmWZvRt6PDw6O210IdwYStCTOl86mi3H+8uNENnuYE/2+f3764Hck8esbzDfxR
+         H1gSinB6zuxb3o/Y2cQTPULsceZ77uJbwa2qhjqC0/oSPn5tvMOYJlsLtqJymBkFi2nb
+         rIhg==
+X-Gm-Message-State: AOAM532TsiAOcUZiOpZlBaxUTc8GKFF62QYloM2RU/vbbrXa/dAq7VBv
+        bmsLYuUCw7P4M+wmXN/Sl5c=
+X-Google-Smtp-Source: ABdhPJyA7LZmHW8TeIRomANLiH/WRxpbRzXeQqac0q4FvxGRQO4VIke+5eW5o2gx53UHVtqQi3mrQQ==
+X-Received: by 2002:a19:3f94:: with SMTP id m142mr7512904lfa.196.1611835085330;
+        Thu, 28 Jan 2021 03:58:05 -0800 (PST)
+Received: from localhost.localdomain ([5.76.199.233])
+        by smtp.googlemail.com with ESMTPSA id h5sm1943447ljj.136.2021.01.28.03.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 03:58:04 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     penguin-kernel@i-love.sakura.ne.jp
+Cc:     andreyknvl@google.com, casey@schaufler-ca.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mhocko@suse.com,
+        serge@hallyn.com, snovitoll@gmail.com,
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Subject: [PATCH v2] smackfs: restrict bytes count in smackfs write functions
+Date:   Thu, 28 Jan 2021 17:58:01 +0600
+Message-Id: <20210128115801.1096425-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <3c35f7cc-1c8d-2fa0-6bc9-bde4e96017ce@i-love.sakura.ne.jp>
+References: <3c35f7cc-1c8d-2fa0-6bc9-bde4e96017ce@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
- <20210127104617.1173-1-nikita.shubin@maquefel.me> <CACRpkdYPYua-NuxVC7aBxJtLYFEECL-60jr4pYgK4=fd5Mb-6g@mail.gmail.com>
- <7b932babfe5ad5756eed70effe32bdc03b901d84.camel@gmail.com>
-In-Reply-To: <7b932babfe5ad5756eed70effe32bdc03b901d84.camel@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 Jan 2021 12:57:43 +0100
-Message-ID: <CACRpkdZmepnXck1eV6fXSYaiKbkz56eT9p-D7qVGu3+DzWthXg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] gpio: ep93xx: fixes series patch
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:19 AM Alexander Sverdlin
-<alexander.sverdlin@gmail.com> wrote:
+syzbot found WARNINGs in several smackfs write operations where
+bytes count is passed to memdup_user_nul which exceeds
+GFP MAX_ORDER. Check count size if bigger than PAGE_SIZE.
 
-> as we don't have a dedicated EP93xx tree, would you like to take
-> the series in one of your trees?
+Per smackfs doc, smk_write_net4addr accepts any label or -CIPSO,
+smk_write_net6addr accepts any label or -DELETE. I couldn't find
+any general rule for other label lengths except SMK_LABELLEN,
+SMK_LONGLABEL, SMK_CIPSOMAX which are documented.
 
-Bartosz is managing the GPIO tree right now and I think he will
-queue it once all reviews are finished.
+Let's constrain, in general, smackfs label lengths for PAGE_SIZE.
+Although fuzzer crashes write to smackfs/netlabel on 0x400000 length.
 
-Yours,
-Linus Walleij
+Here is a quick way to reproduce the WARNING:
+python -c "print('A' * 0x400000)" > /sys/fs/smackfs/netlabel
+
+Reported-by: syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+---
+ security/smack/smackfs.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 5d44b7d258ef..22ded2c26089 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -1167,7 +1167,7 @@ static ssize_t smk_write_net4addr(struct file *file, const char __user *buf,
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -1427,7 +1427,7 @@ static ssize_t smk_write_net6addr(struct file *file, const char __user *buf,
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -1834,6 +1834,10 @@ static ssize_t smk_write_ambient(struct file *file, const char __user *buf,
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	/* Enough data must be present */
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2005,6 +2009,9 @@ static ssize_t smk_write_onlycap(struct file *file, const char __user *buf,
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	if (count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2092,6 +2099,9 @@ static ssize_t smk_write_unconfined(struct file *file, const char __user *buf,
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	if (count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2648,6 +2658,10 @@ static ssize_t smk_write_syslog(struct file *file, const char __user *buf,
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	/* Enough data must be present */
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2740,10 +2754,13 @@ static ssize_t smk_write_relabel_self(struct file *file, const char __user *buf,
+ 		return -EPERM;
+ 
+ 	/*
++	 * No partial write.
+ 	 * Enough data must be present.
+ 	 */
+ 	if (*ppos != 0)
+ 		return -EINVAL;
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+-- 
+2.25.1
+
