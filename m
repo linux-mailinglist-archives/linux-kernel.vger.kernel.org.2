@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780BF3072ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0AF3072BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhA1Jjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:39:55 -0500
-Received: from m12-14.163.com ([220.181.12.14]:53403 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232489AbhA1Jaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:30:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=u572u
-        RJOAm3kNOY9kS7OvdsbJ0boIJxgCpqT07Onf2k=; b=LHOoLY13HCGKNOo0D3qiL
-        XdZJnWyHz92xKWw4rXtY6orqheMhfe/z7l5ikOLBc6Ri2aGTaeDjoPkXMRfxF/B6
-        2/7E57OhZ5vnVBKMrVptm9afIn1RHA1Nj3ds9J1XrG13tklYUUTVn6bIRNdH2fVH
-        AGEXrHCngXzMk1OuBuRSTY=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowAAHwbY8NRJgxjLNiA--.49842S2;
-        Thu, 28 Jan 2021 11:53:35 +0800 (CST)
-From:   dingsenjie@163.com
-To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        leon@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] net/ethernet: convert to use module_platform_driver in octeon_mgmt.c
-Date:   Thu, 28 Jan 2021 11:53:30 +0800
-Message-Id: <20210128035330.17676-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S232259AbhA1JaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:30:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232543AbhA1JZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:25:11 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804D2C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:24:30 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l53Az-0005JR-0y; Thu, 28 Jan 2021 10:01:17 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l53Av-0003Jb-3S; Thu, 28 Jan 2021 10:01:13 +0100
+Date:   Thu, 28 Jan 2021 10:01:13 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        a.fatoum@pengutronix.de, david@lechnology.com,
+        linux-iio@vger.kernel.org, patrick.havelange@essensium.com,
+        alexandre.belloni@bootlin.com, mcoquelin.stm32@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel@pengutronix.de, fabrice.gasnier@st.com,
+        syednwaris@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, alexandre.torgue@st.com
+Subject: Re: [PATCH v7 3/5] counter: Add character device interface
+Message-ID: <20210128090113.GA8734@pengutronix.de>
+References: <cover.1608935587.git.vilhelm.gray@gmail.com>
+ <57bc509273bf288d74835e6ebdaebf27b4991888.1608935587.git.vilhelm.gray@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAAHwbY8NRJgxjLNiA--.49842S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZw47KFW3KFW7Kr1DCrWDtwb_yoWkKrbE9r
-        1xX3WfXF4UCr1Fka1qgw1a93ySka4kZrn3GF4IgrZ0qa13Wwn0v34DArW7Xw1kWr4xJFyD
-        CrsrGFy7C3y2yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU58Ma5UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRUnyFUMcFIUcwAGsF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <57bc509273bf288d74835e6ebdaebf27b4991888.1608935587.git.vilhelm.gray@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:50:15 up 44 days, 16:58, 76 users,  load average: 0.25, 19.96,
+ 32.07
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+Hello William,
 
-Simplify the code by using module_platform_driver macro
-for octeon_mgmt.
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/net/ethernet/cavium/octeon/octeon_mgmt.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+On Fri, Dec 25, 2020 at 07:15:36PM -0500, William Breathitt Gray wrote:
+> This patch introduces a character device interface for the Counter
+> subsystem. Device data is exposed through standard character device read
+> operations. Device data is gathered when a Counter event is pushed by
+> the respective Counter device driver. Configuration is handled via ioctl
+> operations on the respective Counter character device node.
+> 
+> Cc: David Lechner <david@lechnology.com>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
+...
+> +struct counter_event {
+> +	__aligned_u64 timestamp;
+> +	__aligned_u64 value;
+> +	struct counter_watch watch;
+> +	__u8 errno;
 
-diff --git a/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c b/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
-index 5e50bb1..ecffebd 100644
---- a/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
-+++ b/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
-@@ -1556,18 +1556,7 @@ static int octeon_mgmt_remove(struct platform_device *pdev)
- 	.remove		= octeon_mgmt_remove,
- };
- 
--static int __init octeon_mgmt_mod_init(void)
--{
--	return platform_driver_register(&octeon_mgmt_driver);
--}
--
--static void __exit octeon_mgmt_mod_exit(void)
--{
--	platform_driver_unregister(&octeon_mgmt_driver);
--}
--
--module_init(octeon_mgmt_mod_init);
--module_exit(octeon_mgmt_mod_exit);
-+module_platform_driver(octeon_mgmt_driver);
- 
- MODULE_SOFTDEP("pre: mdio-cavium");
- MODULE_DESCRIPTION(DRV_DESCRIPTION);
+This variable clashed in user space, as soon as you include errno.h,
+with the libc's "magic" definition of errno. What about "err" instead.
+I'm not sure it an __u8 is the proper type, IIRC usually it's an int.
+
+Regards,
+Oleksij
 -- 
-1.9.1
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
