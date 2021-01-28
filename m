@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0053072CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404853072CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhA1Jc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
+        id S232556AbhA1JcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbhA1JVK (ORCPT
+        with ESMTP id S232520AbhA1JWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:21:10 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:20:29 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id s64so5300430yba.20
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:20:29 -0800 (PST)
+        Thu, 28 Jan 2021 04:22:33 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DE1C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:21:53 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id u14so5346105ybu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:21:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:mime-version:message-id:date:subject:from:to:cc;
         bh=wIBUTVGHIg6gXpFBoxosuSvN89uYeSslgY6GnwvtvqM=;
-        b=l4n1xGeB/eoQiZW4Rl2+W2lroCXDsC966iYB8CktLob4be++3n5yoo46mRyZGQvoYv
-         EsUb1dKaBq/WyMAdxFHxrgw/zhEBxM0Nhdy9cm603K0uTyvAYGZWGXd95O3gPAAwVdln
-         /sAOyqLJvA9lpcXUBI5UoWaNBsSp6c/3JaliIvXrFSfwOqvTCteXIsyYVEeYJRga9CKe
-         fnwgL72GlgGF6uyW1ogczZuRdBZwxDgaDseJwiYl5nyA2iphg6IS1tXImaRDYlTNndwh
-         HvlRFzdgvNCth/4beW2fVcMyFyzqz4J/thk2l8VABszV+zfk570aLP4OYr7GTic4HvwJ
-         XUlQ==
+        b=oYgXl9L1NuQMmPwFJHZauMaZ3aglVOiQk6E5rY8VZ+7sDuvqU5XS8bo39C2cTCKUpr
+         XYLQGqHJpfy+kJy3yOL1Pw2DabJM7QchG3qD3hiqyrM0Nu1OQE9444i0GOI5I14SJPNP
+         CcJmpBGqJie+WuSQpjRaMGrEDk5xWDvlRyW/4q8iGS0/uCCNnelXvtwvx84g+vNeEJ+8
+         6rRhvK2UxvKH0DNPYnAxNmg2g/zpvAaS9lNhHQSiIZGKCgIXF2Yg/gpdFB8qw+1jb7vr
+         nitn/Vzf83uXjKx1XtIHhWvS3tD4GiBTk/XsG+ZZnKvfALHnJkZzG4nDQfa2y17uj8ES
+         ++Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
          :to:cc;
         bh=wIBUTVGHIg6gXpFBoxosuSvN89uYeSslgY6GnwvtvqM=;
-        b=Nv8QScprCobLsah/Br7PTk3yJA9GC+Aui4m6l8xLY7u7zJLN7/hlbtfw/d0vg9nHd5
-         Jhs8haHVDr52omOXPJbUpu90fZa4wT/wa9iU4jHvZTqBnO3fq6njTxQLwYiS2KC13Q+s
-         o9rcOQPxHuBuNIcvyMXpWkT2rDQM2KFzEzT4uzdF/fWC4Bek41h8BALApnyLHxUJ3qX6
-         HtGZCX/pJPd/82D88gVH/hJlSXG75uo03RSXk5NepvQUOJH3phbAuD199l4BS3v0xJPk
-         JqG2Xx2QOfpQzwjJ8BVEGYnVech+wMnjCPbz8/LO4dPsYx0yTi/XGP+Q4CAmRdpz5+G5
-         qUHQ==
-X-Gm-Message-State: AOAM531cOjGPdPjXHNbUeiahQ8c2BAW1GxTwlLxgLs4s362P9mqaxIFT
-        c9PWI6hN1vgb+Ty7/wusuuCuTwqEgIqnN3qh
-X-Google-Smtp-Source: ABdhPJxbJKpHaIGLM5sTBziB2LVTSPNFQiF62M8WYFgVzhWb2ClelrvzQ63o1Vq/IRA66SVLZ1VCg16IE1l8BU5H
+        b=ZtnOdDn7YCMHiIM9aC1MObV0JOlJrW38VFsw/wtH1gJvIXjKJv4Qtn5OYMSHLwLB6l
+         Eu4tDnuWeTo6QirAHgQ6ceffDfg9tTadRNi5ZeZClE91IEi13Sv4S0LUYo8s416EqKKN
+         1sM0zPP+qyjro60nCZg0ZyT2WwsLzImL4aeCLyE3B14aDukOny82RjL1RLKKYl4FQq8t
+         uB+J6Fkp8BY0R4NCu6Eq79YiddZrmUM4e58XuAStKRCZKV26qF0azTFlexBzJS/JNH8q
+         A/VJJDExVro9717gYBoom9SQZv8j/E3OiYAaaeCpK0gRGfwv/f+FAh0xByxwmSPeD+XD
+         9x3Q==
+X-Gm-Message-State: AOAM531s658GpmKOWKy6UBxXMkN4xkHaw/Hq1ssl1+KTJ31sV//rc9St
+        if5wGlJqa+YHbRNidvkAxGAz64d9y4Fy2QmF
+X-Google-Smtp-Source: ABdhPJySXiM69uvOnkpK2j2D4HX+QWmgqg6MD7iQEC+4H8MMXhJTem552VCGCX68HuZXc/Bq7t5i/3mefpqtdFWu
 Sender: "josephjang via sendgmr" 
         <josephjang@josephjang-p920.ntc.corp.google.com>
 MIME-Version: 1.0
 X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:a5e2:e68a:ef67:8128])
- (user=josephjang job=sendgmr) by 2002:a25:ea09:: with SMTP id
- p9mr22326987ybd.109.1611825628799; Thu, 28 Jan 2021 01:20:28 -0800 (PST)
-Message-ID: <0000000000000bebf105b9f266eb@google.com>
-Date:   Thu, 28 Jan 2021 09:20:28 +0000
+ (user=josephjang job=sendgmr) by 2002:a25:3a04:: with SMTP id
+ h4mr22140678yba.285.1611825712228; Thu, 28 Jan 2021 01:21:52 -0800 (PST)
+Message-ID: <00000000000004f27505b9f26bca@google.com>
+Date:   Thu, 28 Jan 2021 09:21:52 +0000
 Subject: Re: [PATCH v4] power: suspend: Move dpm_watchdog to suspend.c and
  enhance it
 From:   <josephjang@google.com>
