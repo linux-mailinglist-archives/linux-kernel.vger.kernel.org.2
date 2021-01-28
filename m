@@ -2,269 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B12306F38
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D8D306F4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbhA1HZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:25:07 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:8270 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhA1HWz (ORCPT
+        id S231946AbhA1H05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:26:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231765AbhA1HYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:22:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611818574; x=1643354574;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=9Hp1mmxIhP12exuHZUs6f4NIF64JekIbMU2y2gjowsY=;
-  b=KmiMkW4ERc8uQLBvck7mIo06Arcipz/SnNoovMstKYQsL/25huj/Eoxo
-   RQY0mm1mc5i1cSAkKi9LbydoKmryrqzzuzCNf2Y4DTooKcIM5UMwHy9o2
-   7wWTR/L5qt3I+fJ1jjHJde/0nIsnwwrgTaP7dUGFHg6l0j8ks83NCJ86f
-   amlkS/kUYpR5XWUitwRUoO9CsBDC/X74h/mO4jSEUqhAyl+ovzbKTKNwL
-   aqr74gYpSq2XQbRYgyrmwcLjymehuqz/06Gkhl0/TzugBQU+j6aqTpkNz
-   W2IyVuIggmdJ5g9BKU+RbUGEEquhjx2C2PXoLJuPQ8eGoqpE6eifKcxOH
-   A==;
-IronPort-SDR: QEF+8TGngCqTGDYAfES0k7Iq8Lj8Z1j23hWw3M3LnFhL6QZih1XM5LZxSRsfTJXgpv5E1SblKM
- Bsu7V10JhP5TnAvBjYRtRxEqUPv2HJm33T5x70FdtpKeTam8Lku0k8SIl7hluBD5ij/As5Vw9s
- nKuDQlS8VQ8KHSrpBH6erXI92dE58YUlccMAgxKbmkG5Krj4uGkirZn5TulPgUw8Qky4rfx2PQ
- aWCuLtWfwtNgNSyX+xM2wVuWWfLlJn8a8AVx4NTLiKKss4UTZKw7CG5gC5hQr1D2fM05/SrZuv
- r5A=
-X-IronPort-AV: E=Sophos;i="5.79,381,1602518400"; 
-   d="scan'208";a="158517951"
-Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Jan 2021 15:21:44 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XGvTFC0yVocA1hFeGOYvjQ+f/YSuD75Q/8tkuiyNxQkF23UxvMywneYGAln1lw8Xhs3qjQvWItdgd+CqdoCZOLpmuH4ptIfJkiKypbJOF8fjo6xly5kpeejMCcmb9TV+VYlceFyaNhO46nha82bqmy7/luCs/lrsoL/cArREno60UHuMizWsEmdy4Bxfq7LnJpERyi07H9ww2vM5jeFFQj0tMeAigkwO1DsWafJt0Fq839vVOSa6z1KrJTZS1iJDKKe3rPYdaA3pbji5icSyWi0MHi2Av8SuAEzbzvSxch0j+tb0kMkBwUJVhvH8tc9lyxzjLZbBWdlEFDj4KAQoSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZQ79VfW37oEjUPhbUXgVDt26btMTlh35TXahcKTIxw=;
- b=ewcyy+f5pm0Gvfuq66QLUzmljFfxV1XcSt+FlXT110bCllm3RqvEk+y6rdwmDmRsLuIdGvXsMnFhphdnjfxABcalxu6RrTkW7MnOnWh9EF/8L3nffa7eXXB95G3BRw9RE5QltDcCZ1vcJ9c2HoEAI4HaooQEfE5prpKhyIBJc+z2sT8ynyDdElAtc2TQJJC8yAuAd8n0jS7Wc+YTaNR4fwo2ziu1wBo7rB+4xYRJnj/90sIzgR+/oyqJ8hNKi14vk4mwaZnVXoctiOqF4V0CjyJ2prws95UPtxPw9I8GHkzSJXn0TdiFJJTWo1ZfduzHSE90W7Sesm7qKNrg2W5Wag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Thu, 28 Jan 2021 02:24:48 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339CBC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:24:08 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id k193so4407778qke.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:24:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZQ79VfW37oEjUPhbUXgVDt26btMTlh35TXahcKTIxw=;
- b=hrFaGwglVnPWcvrZYYTSLmKDzWe4Ql8MYzMhE/ZNdzUUxZaQHpa0WUmIc6fKPln6CA7rT0gIe3GHUdejLdgow6Yj1ChwX6iG2QGP9vTtBq0U3ZLqwlykpawLR4D2R+Htay7VfWrlfDvS5SjOdFc1MzrgeW8k4qfHTZmC0UwhJ90=
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
- by MN2PR04MB6352.namprd04.prod.outlook.com (2603:10b6:208:1ab::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 28 Jan
- 2021 07:21:42 +0000
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::b880:19d5:c7fe:329d]) by BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::b880:19d5:c7fe:329d%7]) with mapi id 15.20.3784.017; Thu, 28 Jan 2021
- 07:21:42 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "philipp.reisner@linbit.com" <philipp.reisner@linbit.com>,
-        "lars.ellenberg@linbit.com" <lars.ellenberg@linbit.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "ngupta@vflare.org" <ngupta@vflare.org>,
-        "sergey.senozhatsky.work@gmail.com" 
-        <sergey.senozhatsky.work@gmail.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "shaggy@kernel.org" <shaggy@kernel.org>,
-        "konishi.ryusuke@gmail.com" <konishi.ryusuke@gmail.com>,
-        "mark@fasheh.com" <mark@fasheh.com>,
-        "jlbec@evilplan.org" <jlbec@evilplan.org>,
-        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "jth@kernel.org" <jth@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hare@suse.de" <hare@suse.de>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "alex.shi@linux.alibaba.com" <alex.shi@linux.alibaba.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "tj@kernel.org" <tj@kernel.org>, "osandov@fb.com" <osandov@fb.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>
-Subject: Re: [RFC PATCH 02/34] block: introduce and use bio_new
-Thread-Topic: [RFC PATCH 02/34] block: introduce and use bio_new
-Thread-Index: AQHW9UTnP+XqlvwCeEC+5iodtWSeNA==
-Date:   Thu, 28 Jan 2021 07:21:42 +0000
-Message-ID: <BL0PR04MB6514C554B4AC96866BC1B16FE7BA9@BL0PR04MB6514.namprd04.prod.outlook.com>
-References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
- <20210128071133.60335-3-chaitanya.kulkarni@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:47a:7b5a:7dfa:1b1e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: eb871fa1-3f12-44a2-a077-08d8c35d5ca2
-x-ms-traffictypediagnostic: MN2PR04MB6352:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR04MB6352DBDFAB902914B9C585EEE7BA9@MN2PR04MB6352.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M09uEpCy2sHYnN+orzp8d3r4sKwPwnS+kovdPTr+X2vGltHHUOiuwt35YiL4pwUTQFJb9lI/cctrcvMtSEsYDG11B6WuQeQ5LhCFOm8xnCx/j7IUhZfAc+BSTsEsxty8tkWMahat2Us5tDlHI9XpWnzEpUBuIiTIis6CFGcSzDbZQv+YTkDwb0pb6zKYryvjjNyuaDbfN6d7lDvAFgMe/S84pCGpf8NIYlMhpfcnANa9rtVk1fEfaQ11KXM8VaoFYslEaC8FtVVKMdMiSlVm1G6wR6EIe9QpF54CPrt28byH/cHhwj053vEXp8RFF07hlGeGEHLWbouozYb93iT1K6F5OPFCWV/ewR8z5Kn/uykKQypwrh09HC+m3KNohPQSss4YboxRFNRKIUOjUD9KDfOD2dh3DMVG9Wehar1cknnRs6eoICQxgNf9XdAqhQxkvWGbAdwofxGFVG96zdq+KiRY7l6iGEQ9lizBBRpl1Cl5YsTWF3Ebz7haDS4uRI4CUlc0EEMGTEpRabqGyepXSSCQauC0I01aeQXMPzWGYL5JlkA/UoQC4yu0QYoNvMSIgo+cZP34MN7KkNUL2U0tyA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(366004)(136003)(396003)(7366002)(7406005)(64756008)(66556008)(66476007)(66946007)(5660300002)(7416002)(316002)(6506007)(186003)(66446008)(76116006)(110136005)(83380400001)(53546011)(7696005)(91956017)(54906003)(52536014)(9686003)(86362001)(55016002)(71200400001)(2906002)(478600001)(33656002)(4326008)(921005)(8676002)(8936002)(21314003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ilRnIHb2W+3T2C2caNzRqpDzJ0Ea0Xivh3HFrmVjFepbjG/4fJPeoU7kjRlT?=
- =?us-ascii?Q?4cfEdoxq1pKIhTR8YC8VWpTJjQgCARNQwY+MfHwWAHyq7XzZrTJ+W5zBB4Nr?=
- =?us-ascii?Q?gbqboym+VApr7h2E6XSe0FmXOz+omKq6DFZVboi3NwQAYnWCDCcygMa0n5ZC?=
- =?us-ascii?Q?i+orw+uEOMmnA8L/tMdOkJYMmLEyVDh+G9pnjfMmYkt0blpGnFBWHNDym39U?=
- =?us-ascii?Q?dIrdmaQbh6883La06gFXbWGdjQgjXOXLEnZ3UgQdxTZ3JyxZKLQ71jVVbmhr?=
- =?us-ascii?Q?0p2pkHIwQoMPz5HKOnR6V80LYTmpcP7VgrO091zZ/4rct/lsBVwykJza+GD5?=
- =?us-ascii?Q?IHbQu1IRlEAKFeXGAtTjEb578LsnTaSvJCJYoQS2vP+axrzwvVVw8mOt+5k0?=
- =?us-ascii?Q?KL2XZSeojWALtQsww9PwXxXKo/u++tt+9E5GT2jM5O4BtWCGYIeHt1uhRADL?=
- =?us-ascii?Q?gJ0hzvvlILRjU/TqEgmmCXBE50OH3C99QT7ii97n4+QFDEjw2bGLKb5lrf6H?=
- =?us-ascii?Q?IHyTRN7gvNFJTUay5wTAkpCCUyYWXZIjEb2UFpB6lV531wPPtNPC4ZXwwrWy?=
- =?us-ascii?Q?UUwx0RViz7R7iLMJP7kZUpan/n9xAtlMTSdfuUl+LJK65X0ynOT4EUBmjZh1?=
- =?us-ascii?Q?7f2FeVb24U1zoxD5JnIuvykDuOYgmJlnvf2GvI4IfNA9RybrTxAbVd7Ev1uE?=
- =?us-ascii?Q?iYKXh1HRo38Gzl+/krexExV4e0GgKuB8ROJUM1mrrLxC0PLvUJVZZWIIKY/T?=
- =?us-ascii?Q?EtWttQJe8PPeFmAWMbSTnlaoUKPvNyDC93hjlfGSDIjTTLIFZ4iZg/v8/mfl?=
- =?us-ascii?Q?vPF743c6M4QtXnUUQcdd8jMU2Xffoi6iuon4E7e6TeLOR0e7niaTBUf3bgPv?=
- =?us-ascii?Q?W2AR7teeocTc9v/wp1bkGDqoO4PDXnCni+0tsViRKD+BHAkawcDVDIjbtPby?=
- =?us-ascii?Q?TmOiQAj1HhTITExgPZ3Am1ML0xT8XHeZOcxCj8XLjunGXY367EkeICLa7oc4?=
- =?us-ascii?Q?Hx+SgjQnG25wJn9UaUXUtvbZ+SxW0OdUJGfxAAPJaG/AhMr+s6nN+ezf5jC+?=
- =?us-ascii?Q?TnbTVjltXe3BweymPazgpv3fxkvT/+e3/ihgd/xwUglKOJv1POJWqDO9pOjp?=
- =?us-ascii?Q?vVmRwBKsvdP+eIgHWtuWTOV2jEyOlzJg4w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qqelSm9jRgqOzRGjVHy6t5lVO+mx8FPrl1KKm52Xk9s=;
+        b=FknLWtpS81+TsF/wnogjtw79o34ux4xtV8Ham+7/b368zxZYtt2DP43qE3HxpZdKQF
+         mLyqxlt+Ah7MVuj7yVERIVwv4LaBelUkVkbbdeRYQ2NStxnk1DZNhoioTGscelChpMlL
+         WxPWP2dMoH/wiJiXcgslLwOo+7im5gzq+M4ReH7M9orVQAOMxGX38iYB0XqjwPm4A97E
+         p51vbvP6XUZUX+Cq8J+La4PCufboRtFDQEtIH8aXdmLB4Q2OfIp9nSuLu6ax8JceMPQ4
+         b1v1GuFM6smkZmd3FKHAfNDwnSCUIUyrDPWfRB5tUwJtnzCnPdu4w+ZchQ8hB6IDOWpV
+         q7aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qqelSm9jRgqOzRGjVHy6t5lVO+mx8FPrl1KKm52Xk9s=;
+        b=r13rqxQpwhfDLRyc0wC3WO5bPElIQsRJRv4Jao4C9VsV9eaZOifP/ui6g5CrF/4psu
+         3MZQrBNrK9TjkEsHHGeTZ4Kl1L7YeBBkJDwH6lmnW1/a5UmzwUtOmuaqbb6AWyuELjF7
+         LBrk1zzxjoLd1fbdjXi0dHuhvapuokeDnOtjcdkBqQZ3bhC8lOSOxgSocTJJCNZoLpgj
+         zCZT9X6VFernoskbNikGGdJSYoeubnGyniKdZtTs76Zej8wZVM83Y02TH4GOwNIMXoba
+         wzwHLBMJ6T2Asiq4d5x/CVjuR69qZEoAjiZ7sOWrAv7mY4oPXOvjTizcdXkUdgpsNbLz
+         qv3g==
+X-Gm-Message-State: AOAM530+WNOsgsyDBE2PYTSnC++fudzGp5Wle4eajR3K1xOaAN3dE57R
+        LK1LDUWR32KKytJhE8SEqynpVAwwWHA5+hxtalf5FQ==
+X-Google-Smtp-Source: ABdhPJzXzMst2crbmzBnKSE0SscbaT0zqtzoyW3iKaICdv+MlWbyXFLHlkCoUGo9b2+wBQBJ4W9s3JyW71I70C79b80=
+X-Received: by 2002:a05:620a:711:: with SMTP id 17mr13147922qkc.501.1611818647095;
+ Wed, 27 Jan 2021 23:24:07 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb871fa1-3f12-44a2-a077-08d8c35d5ca2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2021 07:21:42.3813
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HOBO+8eTXWVmpt6dgIHyBBjDN753lOgBMYt0QXNGr1qUdGHKogIJ1c3Ww3ZO4DM7PeQNbxVnSGwrctGN0hiVFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6352
+References: <20210128024316.1425-1-hdanton@sina.com>
+In-Reply-To: <20210128024316.1425-1-hdanton@sina.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 28 Jan 2021 08:23:55 +0100
+Message-ID: <CACT4Y+Z8NwmvuqynuFO8XFk4sdeTLi9Bn5RWt3xWU_Vb+z+hAA@mail.gmail.com>
+Subject: Re: [PATCH] netdevsim: init u64 stats for 32bit hardware
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     netdev <netdev@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot <syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/01/28 16:12, Chaitanya Kulkarni wrote:=0A=
-> Introduce bio_new() helper and use it in blk-lib.c to allocate and=0A=
-> initialize various non-optional or semi-optional members of the bio=0A=
-> along with bio allocation done with bio_alloc(). Here we also calmp the=
-=0A=
-> max_bvecs for bio with BIO_MAX_PAGES before we pass to bio_alloc().=0A=
-> =0A=
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-> ---=0A=
->  block/blk-lib.c     |  6 +-----=0A=
->  include/linux/bio.h | 25 +++++++++++++++++++++++++=0A=
->  2 files changed, 26 insertions(+), 5 deletions(-)=0A=
-> =0A=
-> diff --git a/block/blk-lib.c b/block/blk-lib.c=0A=
-> index fb486a0bdb58..ec29415f00dd 100644=0A=
-> --- a/block/blk-lib.c=0A=
-> +++ b/block/blk-lib.c=0A=
-> @@ -14,17 +14,13 @@ struct bio *blk_next_bio(struct bio *bio, struct bloc=
-k_device *bdev,=0A=
->  			sector_t sect, unsigned op, unsigned opf,=0A=
->  			unsigned int nr_pages, gfp_t gfp)=0A=
->  {=0A=
-> -	struct bio *new =3D bio_alloc(gfp, nr_pages);=0A=
-> +	struct bio *new =3D bio_new(bdev, sect, op, opf, gfp, nr_pages);=0A=
->  =0A=
->  	if (bio) {=0A=
->  		bio_chain(bio, new);=0A=
->  		submit_bio(bio);=0A=
->  	}=0A=
->  =0A=
-> -	new->bi_iter.bi_sector =3D sect;=0A=
-> -	bio_set_dev(new, bdev);=0A=
-> -	bio_set_op_attrs(new, op, opf);=0A=
-> -=0A=
->  	return new;=0A=
->  }=0A=
->  =0A=
-> diff --git a/include/linux/bio.h b/include/linux/bio.h=0A=
-> index c74857cf1252..2a09ba100546 100644=0A=
-> --- a/include/linux/bio.h=0A=
-> +++ b/include/linux/bio.h=0A=
-> @@ -826,5 +826,30 @@ static inline void bio_set_polled(struct bio *bio, s=
-truct kiocb *kiocb)=0A=
->  	if (!is_sync_kiocb(kiocb))=0A=
->  		bio->bi_opf |=3D REQ_NOWAIT;=0A=
->  }=0A=
-> +/**=0A=
-> + * bio_new -	allcate and initialize new bio=0A=
-> + * @bdev:	blockdev to issue discard for=0A=
-> + * @sector:	start sector=0A=
-> + * @op:		REQ_OP_XXX from enum req_opf=0A=
-> + * @op_flags:	REQ_XXX from enum req_flag_bits=0A=
-> + * @max_bvecs:	maximum bvec to be allocated for this bio=0A=
-> + * @gfp_mask:	memory allocation flags (for bio_alloc)=0A=
-> + *=0A=
-> + * Description:=0A=
-> + *    Allocates, initializes common members, and returns a new bio.=0A=
-> + */=0A=
-> +static inline struct bio *bio_new(struct block_device *bdev, sector_t se=
-ctor,=0A=
-> +				  unsigned int op, unsigned int op_flags,=0A=
-> +				  unsigned int max_bvecs, gfp_t gfp_mask)=0A=
-> +{=0A=
-> +	unsigned nr_bvec =3D clamp_t(unsigned int, max_bvecs, 0, BIO_MAX_PAGES)=
-;=0A=
-> +	struct bio *bio =3D bio_alloc(gfp_mask, nr_bvec);=0A=
-=0A=
-I think that depending on the gfp_mask passed, bio can be NULL. So this sho=
-uld=0A=
-be checked.=0A=
-=0A=
-> +=0A=
-> +	bio_set_dev(bio, bdev);=0A=
-> +	bio->bi_iter.bi_sector =3D sector;=0A=
-> +	bio_set_op_attrs(bio, op, op_flags);=0A=
-=0A=
-This function is obsolete. Open code this.=0A=
-=0A=
-> +=0A=
-> +	return bio;=0A=
-> +}=0A=
->  =0A=
->  #endif /* __LINUX_BIO_H */=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+On Thu, Jan 28, 2021 at 3:43 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+> Init the u64 stats in order to avoid the lockdep prints on the 32bit
+> hardware like
+
+FTR this is not just to avoid lockdep prints, but also to prevent very
+real stalls in production.
+u64_stats_init initializes seqlock, if the uninitialized
+selock->sequence would be odd, the kernel will stall.
+
+Maintainers, please send this upstream on your earliest convenience,
+this breaks all 32-bit arches for testing purposes.
+
+Thanks
+
+>  INFO: trying to register non-static key.
+>  the code is fine but needs lockdep annotation.
+>  turning off the locking correctness validator.
+>  CPU: 0 PID: 4695 Comm: syz-executor.0 Not tainted 5.11.0-rc5-syzkaller #0
+>  Hardware name: ARM-Versatile Express
+>  Backtrace:
+>  [<826fc5b8>] (dump_backtrace) from [<826fc82c>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
+>  [<826fc814>] (show_stack) from [<8270d1f8>] (__dump_stack lib/dump_stack.c:79 [inline])
+>  [<826fc814>] (show_stack) from [<8270d1f8>] (dump_stack+0xa8/0xc8 lib/dump_stack.c:120)
+>  [<8270d150>] (dump_stack) from [<802bf9c0>] (assign_lock_key kernel/locking/lockdep.c:935 [inline])
+>  [<8270d150>] (dump_stack) from [<802bf9c0>] (register_lock_class+0xabc/0xb68 kernel/locking/lockdep.c:1247)
+>  [<802bef04>] (register_lock_class) from [<802baa2c>] (__lock_acquire+0x84/0x32d4 kernel/locking/lockdep.c:4711)
+>  [<802ba9a8>] (__lock_acquire) from [<802be840>] (lock_acquire.part.0+0xf0/0x554 kernel/locking/lockdep.c:5442)
+>  [<802be750>] (lock_acquire.part.0) from [<802bed10>] (lock_acquire+0x6c/0x74 kernel/locking/lockdep.c:5415)
+>  [<802beca4>] (lock_acquire) from [<81560548>] (seqcount_lockdep_reader_access include/linux/seqlock.h:103 [inline])
+>  [<802beca4>] (lock_acquire) from [<81560548>] (__u64_stats_fetch_begin include/linux/u64_stats_sync.h:164 [inline])
+>  [<802beca4>] (lock_acquire) from [<81560548>] (u64_stats_fetch_begin include/linux/u64_stats_sync.h:175 [inline])
+>  [<802beca4>] (lock_acquire) from [<81560548>] (nsim_get_stats64+0xdc/0xf0 drivers/net/netdevsim/netdev.c:70)
+>  [<8156046c>] (nsim_get_stats64) from [<81e2efa0>] (dev_get_stats+0x44/0xd0 net/core/dev.c:10405)
+>  [<81e2ef5c>] (dev_get_stats) from [<81e53204>] (rtnl_fill_stats+0x38/0x120 net/core/rtnetlink.c:1211)
+>  [<81e531cc>] (rtnl_fill_stats) from [<81e59d58>] (rtnl_fill_ifinfo+0x6d4/0x148c net/core/rtnetlink.c:1783)
+>  [<81e59684>] (rtnl_fill_ifinfo) from [<81e5ceb4>] (rtmsg_ifinfo_build_skb+0x9c/0x108 net/core/rtnetlink.c:3798)
+>  [<81e5ce18>] (rtmsg_ifinfo_build_skb) from [<81e5d0ac>] (rtmsg_ifinfo_event net/core/rtnetlink.c:3830 [inline])
+>  [<81e5ce18>] (rtmsg_ifinfo_build_skb) from [<81e5d0ac>] (rtmsg_ifinfo_event net/core/rtnetlink.c:3821 [inline])
+>  [<81e5ce18>] (rtmsg_ifinfo_build_skb) from [<81e5d0ac>] (rtmsg_ifinfo+0x44/0x70 net/core/rtnetlink.c:3839)
+>  [<81e5d068>] (rtmsg_ifinfo) from [<81e45c2c>] (register_netdevice+0x664/0x68c net/core/dev.c:10103)
+>  [<81e455c8>] (register_netdevice) from [<815608bc>] (nsim_create+0xf8/0x124 drivers/net/netdevsim/netdev.c:317)
+>  [<815607c4>] (nsim_create) from [<81561184>] (__nsim_dev_port_add+0x108/0x188 drivers/net/netdevsim/dev.c:941)
+>  [<8156107c>] (__nsim_dev_port_add) from [<815620d8>] (nsim_dev_port_add_all drivers/net/netdevsim/dev.c:990 [inline])
+>  [<8156107c>] (__nsim_dev_port_add) from [<815620d8>] (nsim_dev_probe+0x5cc/0x750 drivers/net/netdevsim/dev.c:1119)
+>  [<81561b0c>] (nsim_dev_probe) from [<815661dc>] (nsim_bus_probe+0x10/0x14 drivers/net/netdevsim/bus.c:287)
+>  [<815661cc>] (nsim_bus_probe) from [<811724c0>] (really_probe+0x100/0x50c drivers/base/dd.c:554)
+>  [<811723c0>] (really_probe) from [<811729c4>] (driver_probe_device+0xf8/0x1c8 drivers/base/dd.c:740)
+>  [<811728cc>] (driver_probe_device) from [<81172fe4>] (__device_attach_driver+0x8c/0xf0 drivers/base/dd.c:846)
+>  [<81172f58>] (__device_attach_driver) from [<8116fee0>] (bus_for_each_drv+0x88/0xd8 drivers/base/bus.c:431)
+>  [<8116fe58>] (bus_for_each_drv) from [<81172c6c>] (__device_attach+0xdc/0x1d0 drivers/base/dd.c:914)
+>  [<81172b90>] (__device_attach) from [<8117305c>] (device_initial_probe+0x14/0x18 drivers/base/dd.c:961)
+>  [<81173048>] (device_initial_probe) from [<81171358>] (bus_probe_device+0x90/0x98 drivers/base/bus.c:491)
+>  [<811712c8>] (bus_probe_device) from [<8116e77c>] (device_add+0x320/0x824 drivers/base/core.c:3109)
+>  [<8116e45c>] (device_add) from [<8116ec9c>] (device_register+0x1c/0x20 drivers/base/core.c:3182)
+>  [<8116ec80>] (device_register) from [<81566710>] (nsim_bus_dev_new drivers/net/netdevsim/bus.c:336 [inline])
+>  [<8116ec80>] (device_register) from [<81566710>] (new_device_store+0x178/0x208 drivers/net/netdevsim/bus.c:215)
+>  [<81566598>] (new_device_store) from [<8116fcb4>] (bus_attr_store+0x2c/0x38 drivers/base/bus.c:122)
+>  [<8116fc88>] (bus_attr_store) from [<805b4b8c>] (sysfs_kf_write+0x48/0x54 fs/sysfs/file.c:139)
+>  [<805b4b44>] (sysfs_kf_write) from [<805b3c90>] (kernfs_fop_write_iter+0x128/0x1ec fs/kernfs/file.c:296)
+>  [<805b3b68>] (kernfs_fop_write_iter) from [<804d22fc>] (call_write_iter include/linux/fs.h:1901 [inline])
+>  [<805b3b68>] (kernfs_fop_write_iter) from [<804d22fc>] (new_sync_write fs/read_write.c:518 [inline])
+>  [<805b3b68>] (kernfs_fop_write_iter) from [<804d22fc>] (vfs_write+0x3dc/0x57c fs/read_write.c:605)
+>  [<804d1f20>] (vfs_write) from [<804d2604>] (ksys_write+0x68/0xec fs/read_write.c:658)
+>  [<804d259c>] (ksys_write) from [<804d2698>] (__do_sys_write fs/read_write.c:670 [inline])
+>  [<804d259c>] (ksys_write) from [<804d2698>] (sys_write+0x10/0x14 fs/read_write.c:667)
+>  [<804d2688>] (sys_write) from [<80200060>] (ret_fast_syscall+0x0/0x2c arch/arm/mm/proc-v7.S:64)
+>
+> Fixes: 83c9e13aa39a ("netdevsim: add software driver for testing offloads")
+> Reported-by: syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com
+> Tested-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Cc: Simon Horman <simon.horman@netronome.com>
+> Cc: Quentin Monnet <quentin.monnet@netronome.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> ---
+>
+> --- a/drivers/net/netdevsim/netdev.c
+> +++ b/drivers/net/netdevsim/netdev.c
+> @@ -296,6 +296,7 @@ nsim_create(struct nsim_dev *nsim_dev, s
+>         dev_net_set(dev, nsim_dev_net(nsim_dev));
+>         ns = netdev_priv(dev);
+>         ns->netdev = dev;
+> +       u64_stats_init(&ns->syncp);
+>         ns->nsim_dev = nsim_dev;
+>         ns->nsim_dev_port = nsim_dev_port;
+>         ns->nsim_bus_dev = nsim_dev->nsim_bus_dev;
+> --
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210128024316.1425-1-hdanton%40sina.com.
