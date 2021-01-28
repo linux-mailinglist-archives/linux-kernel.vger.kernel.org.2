@@ -2,100 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B4F307FB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D536307FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhA1Ubk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:31:40 -0500
-Received: from smtprelay0105.hostedemail.com ([216.40.44.105]:40190 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229595AbhA1Ubj (ORCPT
+        id S231201AbhA1UcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:32:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhA1UcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:31:39 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id 785C218018AB6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:13:26 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id D34D3181D3042;
-        Thu, 28 Jan 2021 19:11:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3871:3872:4321:4605:5007:6119:7652:7903:10004:10400:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13095:13161:13229:13311:13357:13439:14181:14659:14721:21080:21221:21433:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: patch09_4108f99275a2
-X-Filterd-Recvd-Size: 2214
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 28 Jan 2021 19:11:06 +0000 (UTC)
-Message-ID: <37535426fad04587289023e3dcc705a438c59ef6.camel@perches.com>
-Subject: Re: [PATCH v2 1/3] checkpatch: add verbose mode
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org
-Date:   Thu, 28 Jan 2021 11:11:05 -0800
-In-Reply-To: <20210128143802.15888-2-dwaipayanray1@gmail.com>
-References: <20210128143802.15888-1-dwaipayanray1@gmail.com>
-         <20210128143802.15888-2-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 28 Jan 2021 15:32:03 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3B2C061573;
+        Thu, 28 Jan 2021 12:31:23 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id m1so2306860wml.2;
+        Thu, 28 Jan 2021 12:31:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lIO5kM+zDyYDd38SsYlTwtI8yepYfulfKs7DP0doKqU=;
+        b=syRrrZb0JaALX1sz2rUrO22yiN5ffT0thUKVDW7NM/29x5HYSWhgb2aLQhdAO59sYM
+         4nZSHOhVo2UOBYI5cpz5WB09gqJ4MurLALRxR791BzLKluSZUld7QV9H4qSeGrZItMvS
+         Tt79TKd8Ego/XtCAS5Te2sGhJJQ+UG8l/54OukZGuqCxZIB+qi8uh5GieSAFR5ORh8eC
+         Ye7HKwSodsLROPjaJqCwxK5GOXBzKK3DUQ7f50X/4jJ+Bv5SJjMtM8Cuxezo5XUgYAcn
+         q48YAAN+pZcBhUW4rmarBxf2Umk1F4+yRmJPtIIQKx1Z9yuVnONQw3yd2Az0hHDIZJDt
+         2auw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lIO5kM+zDyYDd38SsYlTwtI8yepYfulfKs7DP0doKqU=;
+        b=ccKEOxQCmbqKlpYjZBsVeOVtaJujM5DY24jkJE+2PyrnHWBcINK+KzxPJQtcqriOHK
+         0d9rJNpbtOMVx/UK5fDxGlO2lu4DWMVaclmtrP5JxYmzGa2EsETeyTyBeBcyxvXf7iov
+         w6eHYOWG6ez3MGPTQlGKJt1AA6zmis/U/7qjXEdxM1DNtWyqbXMVIaeimRxUOmNhn1t4
+         wWGDTbRrcSr/R0iTNbCfRd8CqhfkfquPOPSXq16lvnsAkkSzTpLvcGpij4iiN9RPjEBH
+         2GTwkT2qUZZ/ufiv5yiC7rID5V2Yx11OoG2RGX+z6vBVWHEB8Mlk8sei1YNlI4cXhXJk
+         /UYA==
+X-Gm-Message-State: AOAM532ptSiBtWiQHaHydCTVdPq8CyglYtI9hXbfd+Kr91qF3g2EiBBD
+        63K+BvcY2CZSCcIXa2MZr2c=
+X-Google-Smtp-Source: ABdhPJz35IIaCFuBWIp85fYEBgf494zrQNqYq+/SP3Pr7n7zye6oMIunw2HLsGbqqpCO9tQtsuyQrA==
+X-Received: by 2002:a05:600c:24b:: with SMTP id 11mr840992wmj.17.1611865881702;
+        Thu, 28 Jan 2021 12:31:21 -0800 (PST)
+Received: from ?IPv6:2a02:2455:e0:e000:3005:efab:c884:ced0? ([2a02:2455:e0:e000:3005:efab:c884:ced0])
+        by smtp.gmail.com with ESMTPSA id z63sm6975204wme.8.2021.01.28.12.31.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 12:31:20 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, linux-man <linux-man@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Edgar_Arriaga_Garc=c3=ada?= <edgararriaga@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/1] process_madvise.2: Add process_madvise man page
+To:     Suren Baghdasaryan <surenb@google.com>
+References: <20210120202337.1481402-1-surenb@google.com>
+ <CAKgNAkgsQWL3QAyF6CQU=yifzA1tfp_E5kBBNKuAq_+sB4Amyw@mail.gmail.com>
+ <CAJuCfpEfMgA6z5S5gmHwJB_3KWwmKKp434GeHheUGF3yC7r01w@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <6cd84701-fb65-7aa0-38db-b69fe5748754@gmail.com>
+Date:   Thu, 28 Jan 2021 21:31:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAJuCfpEfMgA6z5S5gmHwJB_3KWwmKKp434GeHheUGF3yC7r01w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 20:08 +0530, Dwaipayan Ray wrote:
-> Add a new verbose mode to checkpatch.pl to emit additional verbose
-> test descriptions. The verbose mode is optional and can be enabled
-> by the flag -v or --verbose.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[] 
-> +sub load_docs {
-> +	open(my $docs, '<', "$docsfile")
-> +	    or warn "$P: Can't read the documentation file $docsfile $!\n";
-> +
-> +	my @lines = ();
-> +	while (<$docs>) {
-> +		my $line = $_;
-> +
-> +		$line =~ s/\s*\n?$//g;
+Hello Suren,
 
-chomp
+On 1/28/21 7:40 PM, Suren Baghdasaryan wrote:
+> On Thu, Jan 28, 2021 at 4:24 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>>
+>> Hello Suren,
+>>
+>> Thank you for writing this page! Some comments below.
+> 
+> Thanks for the review!
+> Couple questions below and I'll respin the new version once they are clarified.
 
-> +		push (@lines, $line);
-> +	}
-> +	close($docs);
-> +
-> +	my $linenr = 0;
-> +	my $cnt = scalar @lines;
-> +	while ($linenr < $cnt) {
-> +		while ($linenr < $cnt &&
-> +		       $lines[$linenr++] !~ /^\:(.+)\:$/)
-> +		{
-> +		}
-> +
-> +		last if ($linenr >= $cnt);
-> +
-> +		my $type = $lines[$linenr - 1];
-> +		$type =~ s/^\:(.+)\:$/$1/;
-> +		my $message = '';
-> +
-> +		while ($linenr < $cnt &&
-> +		       $lines[$linenr] =~ /^(?:\s+(.+)$|$)/) {
-> +			$message .= $1 if (defined $1);
-> +			$message .= "\n";
-> +			$linenr++;
-> +		}
-> +
-> +		$message = trim($message);
-> +		$verbose_messages{$type} = $message;
-> +	}
-> +}
+Okay. See below.
 
-I think this is overly complicated.
+>> On Wed, 20 Jan 2021 at 21:36, Suren Baghdasaryan <surenb@google.com> wrote:
+>>>
 
-There's no need to read and store the entire file and then
-parse it.  Just parse it line by line as its read.
+[...]
+
+Thanks for all the acks. That let's me know that you saw what I said.
+
+>>> RETURN VALUE
+>>>     On success, process_madvise() returns the number of bytes advised. This
+>>>     return value may be less than the total number of requested bytes, if an
+>>>     error occurred. The caller should check return value to determine whether
+>>>     a partial advice occurred.
+>>
+>> So there are three return values possible,
+> 
+> Ok, I think I see your point. How about this instead:
+
+Well, I'm glad you saw it, because I forgot to finish it. But yes,
+you understood what I forgot to say.
+
+> RETURN VALUE
+>      On success, process_madvise() returns the number of bytes advised. This
+>      return value may be less than the total number of requested bytes, if an
+>      error occurred after some iovec elements were already processed. The caller
+>      should check the return value to determine whether a partial
+> advice occurred.
+> 
+>     On error, -1 is returned and errno is set appropriately.
+
+We recently standardized some wording here:
+s/appropriately/to indicate the error/.
 
 
+>>> +.PP
+>>> +The pointer
+>>> +.I iovec
+>>> +points to an array of iovec structures, defined in
+>>
+>> "iovec" should be formatted as
+>>
+>> .I iovec
+> 
+> I think it is formatted that way above. What am I missing?
+
+But also in "an array of iovec structures"...
+
+> BTW, where should I be using .I vs .IR? I was looking for an answer
+> but could not find it.
+
+.B / .I == bold/italic this line
+.BR / .IR == alternate bold/italic with normal (Roman) font.
+
+So:
+.I iovec
+.I iovec ,       # so that comma is not italic
+.BR process_madvise ()
+etc.
+
+[...]
+
+>>> +.I iovec
+>>> +if one of its elements points to an invalid memory
+>>> +region in the remote process. No further elements will be
+>>> +processed beyond that point.
+>>> +.PP
+>>> +Permission to provide a hint to external process is governed by a
+>>> +ptrace access mode
+>>> +.B PTRACE_MODE_READ_REALCREDS
+>>> +check; see
+>>> +.BR ptrace (2)
+>>> +and
+>>> +.B CAP_SYS_ADMIN
+>>> +capability that caller should have in order to affect performance
+>>> +of an external process.
+>>
+>> The preceding sentence is garbled. Missing words?
+> 
+> Maybe I worded it incorrectly. What I need to say here is that the
+> caller should have both PTRACE_MODE_READ_REALCREDS credentials and
+> CAP_SYS_ADMIN capability. The first part I shamelessly copy/pasted
+> from https://man7.org/linux/man-pages/man2/process_vm_readv.2.html and
+> tried adding the second one to it, obviously unsuccessfully. Any
+> advice on how to fix that?
+
+I think you already got pretty close. How about:
+
+[[
+Permission to provide a hint to another process is governed by a
+ptrace access mode
+.B PTRACE_MODE_READ_REALCREDS
+check (see
+BR ptrace (2));
+in addition, the caller must have the
+.B CAP_SYS_ADMIN
+capability.
+]]
+
+[...]
+
+>>> +.TP
+>>> +.B ESRCH
+>>> +No process with ID
+>>> +.I pidfd
+>>> +exists.
+>>
+>> Should this maybe be:
+>> [[
+>> The target process does not exist (i.e., it has terminated and
+>> been waited on).
+>> ]]
+>>
+>> See pidfd_send_signal(2).
+> 
+> I "borrowed" mine from
+> https://man7.org/linux/man-pages/man2/process_vm_readv.2.html but
+> either one sounds good to me. Maybe for pidfd_send_signal the wording
+> about termination is more important. Anyway, it's up to you. Just let
+> me know which one to use.
+
+I think the pidfd_send_signal(2) wording fits better.
+
+[...]
+
+Thanks,
+
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
