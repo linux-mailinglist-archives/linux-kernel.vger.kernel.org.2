@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6784307148
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE7430714C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhA1ISs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231922AbhA1ISQ (ORCPT
+        id S231454AbhA1ITw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:19:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59360 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229709AbhA1ITn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:18:16 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E98C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:17:36 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id e2so2817633lfj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6UUPO56zRHIcd1GGmE9q6C6hc7jbcbMJSOt0JbCE1PY=;
-        b=tNYn5HjEhmrxYsyOI6paQCtk4XutacdpJb6s45x4bcruVIEvtNaxmpI9bJvYDCKQQB
-         Maob1jxRcCHcmkx8Lu1JMQJ6pPdzo2f1ULgSzSnWIRBIkSAqGevrWQP4HtHitu/3xcgd
-         CQE+RPWdOI0LSfqkfdmsVPVeUHV2k+RmxLX+s/m3EIncRDg70Rh9mXZzOwzw6yYORuXu
-         XTHj7vmhuM+MGb8f6Znn1vjAfpaElwdmvyoMwjG8+Kx5RdEkLzHHKoVQKVFUGr1qJ/3D
-         lQbY9P3QTQ9whmaremBq+ZaqzIoI80BKYXLlfJsceuKvi+n4GVTu5qztMwFudfAFkfBq
-         7XGQ==
+        Thu, 28 Jan 2021 03:19:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611821888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9C3yiPfFKb5aW+Bgfuw5xS6YHiwj8cVR/h8E0NIrX2U=;
+        b=KrCBhJy7rq6KYx8A2/3mrjiMdGe45UY3WQx/r/z2SNilAuDUWv3215/fUsG8OgniT5NVTv
+        oNgI9gSmrZCpDTi+cDSxuJzN55pUAk6vIikLS4rJMeAr5L4MHijHQYGHBWYvZr66FPP3S7
+        LX+M1G0JVGZnmk2gwbbUCLsEe/VzrZU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-_ljoiMAsPPCe6sN-vmkztA-1; Thu, 28 Jan 2021 03:18:06 -0500
+X-MC-Unique: _ljoiMAsPPCe6sN-vmkztA-1
+Received: by mail-ed1-f69.google.com with SMTP id dg17so2826051edb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:18:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6UUPO56zRHIcd1GGmE9q6C6hc7jbcbMJSOt0JbCE1PY=;
-        b=BdWwwbLvkMc3IaiH02vL02tSeAx3QAPs3rGRshu1UKT7S/kcqrpQDNB+DW4huXAVtG
-         sAaZNYrgAgyHWFxz5ZFyDNe/wbIs8FPUALW/s+4TeXOQSxUnnp7ReOHvfchvR9L0Xri9
-         NisLz5ogBBF1+hLboJc3oEqslaiyWWTKSAPrHLA7le7l+maCS9ufdqPaDvzJUp8SK7/l
-         EsvOQQeLuz9QFnpNNmH/fDruG9M972arhPUH1EfYG3jnI69N52s6jOXUvwoejLZuNMwE
-         46AY0k3TAeCCnR3Y3sEXw4SqoVEB2sGPpjeM6l8d5Z3aGDCaqGgGTQLiba5FmAi3alAo
-         6aJw==
-X-Gm-Message-State: AOAM533UHoFMsw8+/WbIBTSpZCKncu+EPYyO5qQlJaT4Es4aOAJcbBhW
-        63xd0IQz2Bfb1FuFJelyVpdOUDPD4HFGiVlmyRxU9w==
-X-Google-Smtp-Source: ABdhPJyFkTnYADY3GMqkCQcxbWIGND0JGm60R62dLMZIsQBHeSNbgkO3acjUCd+bes6A0vp2FBcf6/8Zf58N3zwRMfk=
-X-Received: by 2002:a19:b8e:: with SMTP id 136mr7276317lfl.29.1611821854852;
- Thu, 28 Jan 2021 00:17:34 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9C3yiPfFKb5aW+Bgfuw5xS6YHiwj8cVR/h8E0NIrX2U=;
+        b=Kf4Fj1/LB5YGhevnibSFmnod04rPYhcq0I44ws0apDGMUp37XW0XWNiBrR08q8rjXr
+         AuXBVflD5IBkPAW3LopZd+8vVeFjejlDp4wZhLfR1BVr2apqc0cNji5SzGvx2vhuimYO
+         8nQ/zlwUotMG3Iv9bHgnWJSm3r+aVtLKBhNn9AP+Pym8VAQGViFutvJ0PUJD2Y+a9iey
+         JEe5oPrWJNRnpyq7sLQWuwD2yojVei5uMPK1SeniaMJIJ738BzmSt07YqnVxDk3wDW6L
+         bc8C9Dg7uRLQ8BxBCXEXveSAIb2Ctmsv7/utfC2fSlXPzH1nbtWmnujV8FWPZYIfJMu8
+         dnEw==
+X-Gm-Message-State: AOAM533OBPCw7HdofT3LMsCKsHF79x1LtYiHM8x/AHya14/49z52ISuj
+        RXR7hDOgKfkYML8BAnEfkX1GDBhpCp0kcGKFhuo3anYxDTJqP8bGS2AXoFQ+MiEKvoXYA4y/rku
+        /p7NgAHXO+rLrdmn01eBwFhFB
+X-Received: by 2002:aa7:d0d4:: with SMTP id u20mr12312768edo.203.1611821885483;
+        Thu, 28 Jan 2021 00:18:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJKqbOLa1ltAkb+2RvgjlMFRSmUiSGsTYcB1FyvSUbCwutAznr+10kD6tqpqX55az450Jegg==
+X-Received: by 2002:aa7:d0d4:: with SMTP id u20mr12312749edo.203.1611821885259;
+        Thu, 28 Jan 2021 00:18:05 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gj9sm1935372ejb.107.2021.01.28.00.18.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 00:18:04 -0800 (PST)
+Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-16-bgardon@google.com> <YAjIddUuw/SZ+7ut@google.com>
+ <460d38b9-d920-9339-1293-5900d242db37@redhat.com>
+ <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
+ <fae0e326-cfd4-bf5d-97b5-ae632fb2de34@redhat.com>
+ <CANgfPd_TOpc_cinPwAyH-0WajRM1nZvn9q6s70jno5LFf2vsdQ@mail.gmail.com>
+ <f1ef3118-2a8e-4bf2-b3b0-60ac4947e106@redhat.com>
+ <CANgfPd9FaPhQiEkJ=VHKiVWZ_5S3k2uWHU+ViCi4nEF=GU4qsw@mail.gmail.com>
+ <4c0d4c30-a95b-7954-d344-fb991270f79a@redhat.com>
+ <CANgfPd9torZ_ta7eoB6OwZa3M-LCqU+8802wfWiWDFLio2-Ysg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <816d3c6a-2418-8091-96fb-6a4e6bbf0a95@redhat.com>
+Date:   Thu, 28 Jan 2021 09:18:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210126131239.8335-1-o.rempel@pengutronix.de> <20210126131239.8335-2-o.rempel@pengutronix.de>
-In-Reply-To: <20210126131239.8335-2-o.rempel@pengutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 Jan 2021 09:17:23 +0100
-Message-ID: <CACRpkdY2XYi2jqYiXaBUfRO1+UEK3QCC8JQ0duENVGoOfYTmBA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: counter: add pulse-counter binding
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANgfPd9torZ_ta7eoB6OwZa3M-LCqU+8802wfWiWDFLio2-Ysg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On 27/01/21 22:20, Ben Gardon wrote:
+> On Wed, Jan 27, 2021 at 12:55 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 27/01/21 21:08, Ben Gardon wrote:
+>>> I'm not entirely sure I understand this suggestion. Are you suggesting
+>>> we'd have the spinlock and rwlock in a union in struct kvm but then
+>>> use a static define to choose which one is used by other functions? It
+>>> seems like if we're using static defines the union doesn't add value.
+>>
+>> Of course you're right.  You'd just place the #ifdef in the struct kvm
+>> definition.
+> 
+> Ah okay, thanks for clarifying.
+> 
+>>
+>> You can place static inline functions for lock/unlock in
+>> virt/kvm/mmu_lock.h, in order to avoid a proliferation of #ifdefs.
+> 
+> Would you prefer to make that change in this series or at a later
+> date? I'm assuming this would replace all the wrapper functions and
+> mean that x86 is rwlock only.
 
-thanks for your patch!
+Yes, exactly.  I would like to make tdp_mmu=1 the default as soon as 
+parallel page faults are in (and thus scalability should be on par with 
+the shadow MMU).
 
-On Tue, Jan 26, 2021 at 2:15 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+Paolo
 
-> Add binding for the pulse counter node
->
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-(...)
-
-> +properties:
-> +  compatible:
-> +    const: virtual,pulse-counter
-
-What is so virtual about this? The device seems very real.
-However it is certainly a GPIO counter.
-
-I would call it "gpio-counter" simply.
-
-Define:
-  $nodename:
-     pattern: "^counter(@.*)?$"
-
-> +    counter-0 {
-
-counter@0 {
-
-> +    counter-1 {
-
-counter@1 {
-
-Thanks!
-Linus Walleij
