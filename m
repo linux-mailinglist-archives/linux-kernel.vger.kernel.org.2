@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E682D307CA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D1E307CAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhA1Rf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:35:56 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:41247 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbhA1Re5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:34:57 -0500
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1l5B9C-0006Sz-Uk; Thu, 28 Jan 2021 18:31:59 +0100
-To:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de,
-        jlu@pengutronix.de
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Migration to trusted keys: sealing user-provided key?
-Message-ID: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-Date:   Thu, 28 Jan 2021 18:31:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S233136AbhA1Rgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:36:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233053AbhA1Rfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:35:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91CA964D9A;
+        Thu, 28 Jan 2021 17:34:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611855297;
+        bh=TkMt06C39KAtu27x1DMMhjzHHmvklcYVEo9Dtplc7bE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QXEDB2oB667WqtQ3FaoY5JbM3br+ouLPdfGippereJ3bazR3YvSFM3/yMYFpa5s9m
+         I3SLgnoW2gL6Jbrl0kvEocY30o4L6ccfLwVjicpke430MgCinys1z1Y8ZjlkpNLhpE
+         g1awn+IWlMu9bBOvr2kGhOYvZPJdtnAxTl/ElWA1Kkxp2dBivL/yinx1thffOp56BA
+         c09mNreubOtXTYEMkNE4RDILxeC7fCCmKi/l/KLiP9RLTZJYJtMrr+UWxsfX8dlkoE
+         8oS+ZuDaIDSNTtp+vAovpleEwM5FNHZlLbeagoI4a8EUOCNol4DfH7U9m4l+ZR9e07
+         FxoB6QhkZCDiw==
+Date:   Fri, 29 Jan 2021 02:34:51 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Jianxiong Gao <jxgao@google.com>, erdemaktas@google.com,
+        marcorr@google.com, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, gregkh@linuxfoundation.org,
+        saravanak@google.com, heikki.krogerus@linux.intel.com,
+        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        jroedel@suse.de, iommu@lists.linux-foundation.org, axboe@fb.com,
+        sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] Add swiotlb offset preserving mapping when
+ dma_dma_parameters->page_offset_mask is non zero.
+Message-ID: <20210128173451.GA31631@redsun51.ssa.fujisawa.hgst.com>
+References: <20210128003829.1892018-1-jxgao@google.com>
+ <20210128003829.1892018-3-jxgao@google.com>
+ <YBLxMP3sr71BTL+d@Konrads-MacBook-Pro.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBLxMP3sr71BTL+d@Konrads-MacBook-Pro.local>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jan 28, 2021 at 12:15:28PM -0500, Konrad Rzeszutek Wilk wrote:
+> On Wed, Jan 27, 2021 at 04:38:28PM -0800, Jianxiong Gao wrote:
+> > For devices that need to preserve address offset on mapping through
+> > swiotlb, this patch adds offset preserving based on page_offset_mask
+> > and keeps the offset if the mask is non zero. This is needed for
+> > device drivers like NVMe.
+> 
+> <scratches his head>
+> 
+> Didn't you send this patch like a month ago and someone pointed
+> out that the right fix would be in the NVMe driver?
+> 
+> Is there an issue with fixing the NVMe driver?
 
-I've been looking into how a migration to using trusted/encrypted keys
-would look like (particularly with dm-crypt).
-
-Currently, it seems the the only way is to re-encrypt the partitions
-because trusted/encrypted keys always generate their payloads from
-RNG.
-
-If instead there was a key command to initialize a new trusted/encrypted
-key with a user provided value, users could use whatever mechanism they
-used beforehand to get a plaintext key and use that to initialize a new
-trusted/encrypted key. From there on, the key will be like any other
-trusted/encrypted key and not be disclosed again to userspace.
-
-What are your thoughts on this? Would an API like
-
-  keyctl add trusted dmcrypt-key 'set <content>' # user-supplied content
-
-be acceptable?
-
-Cheers,
-Ahmad
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+You got it backwards. The initial "fix" used a flag specific to the nvme
+driver, and it was pointed out that it should just be the generic
+behaviour.
