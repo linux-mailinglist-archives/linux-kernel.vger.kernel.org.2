@@ -2,145 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF74306DE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB3A306DF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbhA1Gss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:48:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        id S229953AbhA1GxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhA1Grp (ORCPT
+        with ESMTP id S229695AbhA1GxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:47:45 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F166CC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:47:04 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id w24so4469723ybi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:47:04 -0800 (PST)
+        Thu, 28 Jan 2021 01:53:18 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4152C061573;
+        Wed, 27 Jan 2021 22:52:37 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id c18so5030340ljd.9;
+        Wed, 27 Jan 2021 22:52:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qigc4Q2zk4kidcc5fEGaK1ackCv7ueDldw+kGCII7Bw=;
-        b=hgoerTFgqNvDpLMPuMzlDkC+IuNj/hB86RUKJAWckBtM75bFjZhqdiqg9/FqsECrsc
-         rNw/AFqRO2MGcIcpAosrYvSOY4jEg0lffZp6BO1MFGAVUGiPRoF0czDRDSgWrX/Lt5Jt
-         URJszFQoQ4Dj2T99LuByD18ivtQa8Oh4EGntDwZJa8FvP+3chJIIPIoUoNKLRPd7GwTp
-         MxYleGons4w1O89FdTKTMJYY/UmA5Rpz/lyhmFgx23gbmlPIltZgfSLCef3OOLHtN/kM
-         tHPg4npdzidpUPyzdH2NtwEaFCPyFlaK4yJ4hyognKLJe9N8swraSAilXpNEOgdjLt1s
-         IHjw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0f8ZmrzuRXVxsk0SyBLitP6T9N64hUKSEphOtPuOnnU=;
+        b=s+g+9RsgEvfyHBAfUcVSsvVK/MPPAhyVtK61GUGybbJo3USYD2l22Xsq5KyeCpb0f/
+         l1xM12+qQnzcDbEEwE5NLLvrD1GkzD3o6ODrZXwCpwUiuHBGvcW4/gcxN7/QesOCbvRw
+         qZzz213l28pva/a4EMbmsfli5alFUpJDcK/5ctFYL7S4mKgjcuLe+HBeNwfv31f6o592
+         eefP7qqqkvXrSvxcezl8+8YrbiZi7tbRSVFNpUxApCFR8x48GWr/a6UXw8+gm5GA7cXU
+         PldFlVfnAt6ruHdg4Fzwg0D6SryNeBQPFysHDqBV57Tk611P+KNV7o5H2hSK6tRoFJHJ
+         a9Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qigc4Q2zk4kidcc5fEGaK1ackCv7ueDldw+kGCII7Bw=;
-        b=fwlchH33doYw1bMsHQjD+mEetK6+XD4idi7UKOlEOC3kzb0nybTDsS+zfDlIrq3U9Y
-         7Vfbal8ObacJ6TUFDbhOpq9kmnu+j+qjddXMl3G6hjInhF+H67Iuu2AEtfdpaz+VGNxC
-         bNm+LZUToLslmS+iwu2Cf42S2jEq5WgVoBK5gJ6MIrRTRTCECnYTNpgQVvInE8d7g2k2
-         c7vTdrO5riLtRmKBz9zPbGwDm8Uv9URG0QYH311jdTg2nmONBelWxoWVXLTOmldYgrRt
-         Kaw1c2kVmQmWqhjqsfpqtatkeZKAw6enk9fie+87jkHxG8eF1vzFpmFkoTLzcevuObNl
-         L91A==
-X-Gm-Message-State: AOAM530PLSBzXVPndhojmZQzDliHbPsvVN8Hs49IbzKXaMWHUQlCNaUT
-        heMMdIxealfzzfQNKsYVOfg9FJr/97GxgnE1EUY=
-X-Google-Smtp-Source: ABdhPJytiUOd9V3L5u4KUvlAzxRbcw+pCVek5LBOTYfa4EicfpLXGlNVPkUGVtq55oAu6rxFsWk08qJIA3io+f5z9C0=
-X-Received: by 2002:a25:3bc5:: with SMTP id i188mr21663855yba.332.1611816424260;
- Wed, 27 Jan 2021 22:47:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0f8ZmrzuRXVxsk0SyBLitP6T9N64hUKSEphOtPuOnnU=;
+        b=EhO4h6f9ufAsPNPlPNgKh5/legr302nsrIU1SYQPba/v3R+56tWEdC5zt/SZ0rpv8G
+         6Rd86UtRTMSfppeBBT/7ZPH87aMaAi1twLJ2qFLbIMvNe+p//ZSoyP5wOym6IMHl5Pjl
+         E6GVSx9kS92mSFNOaEZ1GQyUE7gpKHePPhsLgh8k1IUg2nn3635L2VIcx7k2zW/LETAc
+         2UY2NwihCTg3+IheRMAi3q1G8BbXdYQDW2OinNIbrmm92xL2wID2nbb12wpRU10S5wVZ
+         Y/Y0Y8hplQmbZ5coM6L8+jOpBI6m6nEtVTj0kfQay5lAJohRtnhaGeG2rTGIEH/iT+Pi
+         2dUw==
+X-Gm-Message-State: AOAM531NEpaeLY3LIPZ9RgMrAxGlnvsElnjVBr4Q/q2rAsSDzxirQyOo
+        xXSpC9r+lpJfYZ5/pjFZ1fY=
+X-Google-Smtp-Source: ABdhPJzrGUlABaISZ4hc6GbDuExEK/6vRiKAKwuM77hmE1jRQLaxmTiugZ80sCFhjv+vgSxmjuzXCw==
+X-Received: by 2002:a2e:8106:: with SMTP id d6mr7678908ljg.217.1611816755777;
+        Wed, 27 Jan 2021 22:52:35 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id o4sm1313687lfo.231.2021.01.27.22.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 22:52:35 -0800 (PST)
+Date:   Thu, 28 Jan 2021 08:52:33 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     carlis <zhangxuezhi3@gmail.com>
+Cc:     gregkh@linuxfoundation.org, colin.king@canonical.com,
+        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
+        mh12gx2825@gmail.com, sbrivio@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
+Message-ID: <20210128065233.ji4b7ea54ihyu2l5@kari-VirtualBox>
+References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
+ <20210127223222.3lavtl3roc4cabso@kari-VirtualBox>
+ <20210128094258.000012c3@gmail.com>
 MIME-Version: 1.0
-References: <20210127110510.24492-1-candlesea@gmail.com> <CAKwvOdm4XaoW+yrtj=7C7ct5dvNuxT81zs1Wp=X0MBFceukd9g@mail.gmail.com>
-In-Reply-To: <CAKwvOdm4XaoW+yrtj=7C7ct5dvNuxT81zs1Wp=X0MBFceukd9g@mail.gmail.com>
-From:   Candle Sun <candlesea@gmail.com>
-Date:   Thu, 28 Jan 2021 14:46:52 +0800
-Message-ID: <CAPnx3XMEtVQVYUD5aLAC3Adp+Y0fz13nbBTHg75f6W1q1g9Usg@mail.gmail.com>
-Subject: Re: [PATCH v2] lkdtm: fix memory copy size for WRITE_KERN
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Candle Sun <candle.sun@unisoc.com>,
-        David Laight <David.Laight@aculab.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128094258.000012c3@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 1:40 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Wed, Jan 27, 2021 at 3:05 AM Candle Sun <candlesea@gmail.com> wrote:
-> >
-> > From: Candle Sun <candle.sun@unisoc.com>
-> >
-> > Though do_overwritten() follows do_nothing() in source code, the final
-> > memory address order is determined by compiler. We can't always assume
->
-> ^ "by the compiler."
->
-> > address of do_overwritten() is bigger than do_nothing(). At least the
-> > Clang we are using places do_overwritten() before do_nothing() in the
-> > object. This causes the copy size in lkdtm_WRITE_KERN() is *really*
->
-> Hopefully nothing else gets placed in between the two, otherwise we're
-> going to overwrite that, too.
->
-> > big and WRITE_KERN test on ARM32 arch will fail.
-> >
-> > Get absolute value of the address substraction for memcpy() size.
->
-> ^ typo: subtraction
->
-> >
-> > Signed-off-by: Candle Sun <candle.sun@unisoc.com>
-> > ---
-> > Changes in v2:
-> > - Use abs() in place of address comparison.
-> > ---
-> >  drivers/misc/lkdtm/perms.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-> > index 2dede2ef658f..fbb7f4554054 100644
-> > --- a/drivers/misc/lkdtm/perms.c
-> > +++ b/drivers/misc/lkdtm/perms.c
-> > @@ -31,13 +31,13 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
-> >   * This just returns to the caller. It is designed to be copied into
-> >   * non-executable memory regions.
-> >   */
-> > -static void do_nothing(void)
-> > +static noinline void do_nothing(void)
-> >  {
-> >         return;
-> >  }
-> >
-> >  /* Must immediately follow do_nothing for size calculuations to work out. */
->
-> ^ This comment is now obsolete and should be removed together with
-> this patch.  That will also fix the typo in it.
->
-> > -static void do_overwritten(void)
-> > +static noinline void do_overwritten(void)
-> >  {
-> >         pr_info("do_overwritten wasn't overwritten!\n");
-> >         return;
-> > @@ -113,7 +113,7 @@ void lkdtm_WRITE_KERN(void)
-> >         size_t size;
-> >         volatile unsigned char *ptr;
-> >
-> > -       size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
-> > +       size = (size_t)abs((uintptr_t)do_overwritten - (uintptr_t)do_nothing);
-> >         ptr = (unsigned char *)do_overwritten;
-> >
-> >         pr_info("attempting bad %zu byte write at %px\n", size, ptr);
-> > --
-> > 2.17.0
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+On Thu, Jan 28, 2021 at 09:42:58AM +0800, carlis wrote:
+> On Thu, 28 Jan 2021 00:32:22 +0200
+> Kari Argillander <kari.argillander@gmail.com> wrote:
+> > >  #include "fbtft.h"
+> > >  
+> > >  #define DRVNAME "fb_st7789v"
+> > > @@ -66,6 +69,32 @@ enum st7789v_command {
+> > >  #define MADCTL_MX BIT(6) /* bitmask for column address order */
+> > >  #define MADCTL_MY BIT(7) /* bitmask for page address order */
+> > >  
+> > > +#define SPI_PANEL_TE_TIMEOUT	400 /* msecs */
+> > > +static struct mutex te_mutex;/* mutex for set te gpio irq status
+> > > */  
+> > 
+> > Space after ;
+> hi, i have fix it in the patch v11
+> > 
 
-Thanks Nick. I will clean the typo and the comment line in the next patch.
+Yeah sorry. I accidentally review wrong patch. But mostly stuff are
+still relevant.
 
-Regards,
-Candle
+> > > @@ -82,6 +111,33 @@ enum st7789v_command {
+> > >   */
+> > >  static int init_display(struct fbtft_par *par)
+> > >  {
+> > > +	int rc;
+> > > +	struct device *dev = par->info->device;
+> > > +
+> > > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> > > GPIOD_IN);
+> > > +	if (IS_ERR(par->gpio.te)) {
+> > > +		rc = PTR_ERR(par->gpio.te);
+> > > +		dev_err(par->info->device, "Failed to request te
+> > > gpio: %d\n", rc);
+> > > +		return rc;
+> > > +	}  
+> > 
+> > You request with optinal and you still want to error out? We could
+> > just continue and not care about that error. User will be happier if
+> > device still works somehow.
+> You mean i just delete this dev_err print ?!
+> like this:
+> 	par->gpio.te = devm_gpiod_get_index_optional(dev, "te",
+> 0,GPIOD_IN); 
+>         if (IS_ERR(par->gpio.te))
+> 		return PTR_ERR(par->gpio.te);
+
+Not exactly. I'm suggesting something like this.
+
+if (IS_ERR(par->gpio.te) == -EPROBE_DEFER) {
+	return -EPROBE_DEFER;
+
+if (IS_ERR(par->gpio.te))
+	par-gpio.te = NULL;
+
+This like beginning of your patch series but the difference is that if
+EPROBE_DEFER then we will try again later. Any other error and we will
+just ignore TE gpio. But this is up to you what you want to do. To me
+this just seems place where this kind of logic can work.
+
+> > > +		if (par->gpio.te) {
+> > > +			set_spi_panel_te_irq_status(par, true);
+> > > +			reinit_completion(&spi_panel_te);
+> > > +			ret =
+> > > wait_for_completion_timeout(&spi_panel_te,
+> > > +
+> > > msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
+> > > +			if (ret == 0)  
+> > 
+> > !ret
+> > 
+> > > +				dev_err(par->info->device, "wait
+> > > panel TE time out\n");
+> > > +		}
+> > > +		ret = par->fbtftops.write(par, par->txbuf.buf,
+> > > +					 startbyte_size + to_copy
+> > > * 2);
+> > > +		if (par->gpio.te)
+> > > +			set_spi_panel_te_irq_status(par, false);
+> > > +		if (ret < 0)
+> > > +			return ret;
+> > > +		remain -= to_copy;
+> > > +	}
+> > > +
+> > > +	return ret;  
+> > 
+> > Do we want to return something over 0? If not then this can be return
+> > 0. And then you do not need to even init ret value at the beginning.
+> > 
+> > Also wait little bit like Greg sayd before sending new version.
+> > Someone might nack about what I say or say something more.
+> > 
+> hi, i copy fbtft_write_vmem16_bus8 from file fbtft_bus.c and modify it
+> ,just add te wait logic, i will take more time to check this original
+> function.
+
+It might be ok or not. You should still check.
