@@ -2,261 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB7A306FA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 529ED306F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhA1HgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbhA1Hdf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:33:35 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1E1C061356
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:28:40 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id cq1so3350148pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:28:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I+6LEjbPxnK5XUm1IAzkHe2JVjsVZdrysUSg+x7zjQg=;
-        b=YDdxnCi48t+HTRHG12z2FmkeXhuMRm38za7VPYITtspbo2enplHhOd74FApiLhKd+I
-         87zxyM6TYQwBKaCl2moA3maGfW0QpXmhb2/6gDiBcVp8lHJWYpn5R99ilQl3OlNr+z6x
-         O6610MiYCTykhdo0En/iLH+uxjWmWUDlt0diM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I+6LEjbPxnK5XUm1IAzkHe2JVjsVZdrysUSg+x7zjQg=;
-        b=Seuc8qjIdBV92VPHw4rtbLpZTNfEOxe+VJ6e9OCKgIsdeovchZQppIxsn+bi2C50YH
-         gD4EsgAoNGeCl+UtObyY/+Zo2dr0Juh9LOANfKJaJI1sKOmga2Gb5/M9NI9NPozx/ckf
-         dYmCaJBWZIbpP9WJHXR+kTudd6ZMtQiVwoTPETkFaMYrdaG3b1rQvakmw87QLC9muKZa
-         0x6g+SBwu48Lpgb85o6Vw4lqPWBAdf9mA/Wm8B8psmE7Qp884ZXOukklXFp8GP3ei6Dp
-         UIIzifpWIXMAmcgMq4wU+tX0KME297Jxm0kaPrErCwVhDrsd0DhSejHIVYrSKF+r20pq
-         0oEQ==
-X-Gm-Message-State: AOAM530S1rqxkNgqqEvUygbvcWP9UI0WGniyVjquwDj+mh4kV+BzEFBc
-        jhebQsEFyjT2c6DiWUWGFoi5Ag==
-X-Google-Smtp-Source: ABdhPJyTnMME9QV+aoymo69sJBgffY6ho1UU9uFFV5OSEuzxskSyO2U7Ja3soy8iM8Bsb5vSQ+vu+Q==
-X-Received: by 2002:a17:902:c085:b029:de:ad05:8e90 with SMTP id j5-20020a170902c085b02900dead058e90mr15235309pld.42.1611818920234;
-        Wed, 27 Jan 2021 23:28:40 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:e0a5:d2fc:aaad:1e4a])
-        by smtp.gmail.com with ESMTPSA id h2sm4800304pfk.4.2021.01.27.23.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 23:28:39 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v11 9/9] drm/mediatek: add support for mediatek SOC MT8183
-Date:   Thu, 28 Jan 2021 15:28:03 +0800
-Message-Id: <20210128072802.830971-10-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-In-Reply-To: <20210128072802.830971-1-hsinyi@chromium.org>
-References: <20210128072802.830971-1-hsinyi@chromium.org>
+        id S231932AbhA1Hbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:31:40 -0500
+Received: from mail-dm6nam12on2137.outbound.protection.outlook.com ([40.107.243.137]:15040
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231858AbhA1H3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:29:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DpS4zUS+QpZA/vACon/Tgm5LASV0uSGwTOxZtcOlcf6nHQnMILIM7Ab0Eo+5xihALCbyweHXaqito8yPomUt1s+K0AFhIiWRJ5GLYXvgqHDDlPwjZxaO0zj5TTKJyJ1HPAuN3J4ITGN+oSEEJlTDboLWPwHjBxeHr2SSUef8Kfg7xcPqbIEYFRNEeDbnEzLepXv9dqrlz+OkoP64JCHpFRUs7BYhVYEPXQj3O1IGu0LtPWi534TC8UF0PZb2P/D+oEYF0kcxJcyKdVWVMvt1BD5wjZt0IL7WT2rOUV4CqJZTsaBNOrCKdRN23ysLzmldLxyL5JsUB+euxqFD/lrFOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bIA5KQ6A7AeVq0IopnHo4MjChan4MX7Rg9THMFnnUO0=;
+ b=UGzPanIloP1oN/kIlM/d16MLCHdvVFpRv/iQf+xzUr0F19wa+69/uIcb4dMDCh8ce+10pPdZi1SCTPQhV2IMqTiM7akRPStCeWmxflx7wjfXGBFrKRs2Aexw1CsxqvjStwfb4xGA1Fp1nGnM5q/VQ4OHIZ5DG9iZYOnizTa2iZFhuHaNnVgn1rPDrWuqFJd+XxHosvAf+zowoEuFwzA7wd9YE0ecnwPPcHSWFASowRuA3rXORPR8Pf5vqa4HqAWaNT9lqhvugeGw4C5cPNbHVaLWu50Ww4wjsJYwkIzaMTYgdB4wBg65lB5ivf4esIbcvkPTygitaulkX9MQa/k+Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bIA5KQ6A7AeVq0IopnHo4MjChan4MX7Rg9THMFnnUO0=;
+ b=EeKrn2DX1XXluHJjAGR5NvafzYy1YtSM+N/XzozTKkAXJP444HwZMJhmTT+G54Bn2xnR/045tsMGZBhP5i0OO0sPynpN8sRNVd67sU76Wop8Zuy61kA+dbCOfcgb+ye9zJm1Oo3M3n6RFA0pHqq43HB5ySteVDAsqkpEY62rJs4=
+Received: from (2603:10b6:302:8::15) by
+ MWHPR2101MB0875.namprd21.prod.outlook.com (2603:10b6:301:80::39) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.1; Thu, 28 Jan
+ 2021 07:28:21 +0000
+Received: from MW2PR2101MB1787.namprd21.prod.outlook.com
+ ([fe80::c9f1:a5ea:6bd9:f0de]) by MW2PR2101MB1787.namprd21.prod.outlook.com
+ ([fe80::c9f1:a5ea:6bd9:f0de%6]) with mapi id 15.20.3825.006; Thu, 28 Jan 2021
+ 07:28:20 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+CC:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Thread-Topic: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Thread-Index: AdbC4sELsDFnKKqwSUucudo1Ms9VZwBKI3EAAAtIoWAAASWqAAABOEggAANl+gAMPdI9EA==
+Date:   Thu, 28 Jan 2021 07:28:20 +0000
+Message-ID: <MW2PR2101MB1787FF5912C90FC4FFEF3993BFBA9@MW2PR2101MB1787.namprd21.prod.outlook.com>
+References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+ <20201126154630.GR1437@paulmck-ThinkPad-P72>
+ <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
+ <20201126214226.GS1437@paulmck-ThinkPad-P72>
+ <MW2PR2101MB18011DA2FCF66D03BF8BB0CCBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
+ <20201126235440.GT1437@paulmck-ThinkPad-P72>
+In-Reply-To: <20201126235440.GT1437@paulmck-ThinkPad-P72>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=42b98977-bb50-49b3-9199-3ee5d91e2244;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-28T07:25:43Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:4da9:51c5:c8ee:3beb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 079519b4-2359-429d-c50d-08d8c35e49f7
+x-ms-traffictypediagnostic: MWHPR2101MB0875:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MWHPR2101MB08757CC5B48A7A9F45691A38BFBA9@MWHPR2101MB0875.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iRR/H3CBENA7KErcOV8R0ny6SXspLfCUSVu9D/ulx1gU6B0Gmhr/afxPZ0Tcu1+tt847q9lCey2cEvWgiKt06mdHQ5Zt2D55+/XPtXke8kLacI0/rlTibThI32dS9oJcmJKMTYG+LZev9wQ0HY0yF/n9TEqK3SOKD1pQB3p9U2VFCOvxdLl8d8jPnIoM+s6dYWYoLeEMC9xmfdSIWIdtuT0ylKan7xuRFKl3Z1LeArFlMVGKbibMEJyJZ34YOxEqNRQz0SgZ0Oey9iIVW9dR/RB2AEdERlmmmNnGNh+3PQduEibzq78XOy4IGCE/3BGdw1pgEdy0uYv+25/diTjE6zlDAje6ZqXdzdKaitXnmM+erndC64ndZnASRC0weK1TM45m9y7E1WHQWjUNuoKza/Bi612QzQHztqGkcgF7rMgGDnN8vsAvdbiVislAm7zR+gh1WVMWMlBstW1nKKoQBfSMX5cxgVT1iHNeAlV5Q000VnRQlgEd3F2Iy+GCHY4uAbLwZxzeKtTOVzuEK0SYi3ER7WGQgeZPAHCK5FmR+6XwEABJlvLJLuq2groclkuZCy/fJrTYozoLvoCNiTrkeoC0tVZL2/uPrIpJFEPnLBw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1787.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(366004)(376002)(71200400001)(8990500004)(186003)(6506007)(76116006)(4326008)(8676002)(83380400001)(66556008)(54906003)(52536014)(66446008)(316002)(110136005)(9686003)(66946007)(82950400001)(64756008)(7696005)(10290500003)(86362001)(478600001)(2906002)(33656002)(8936002)(82960400001)(966005)(53546011)(5660300002)(55016002)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?KOTEMUWViQ/WcMvRjunR3TyelFK9WilhJSabHR9YwaNTdvl2+xF882drRsCO?=
+ =?us-ascii?Q?SRqtaNhp1wRkruLz4ET2v6nI0puQKTm1oTzTaWLyQHvmu/QTOVTRE5glQbC0?=
+ =?us-ascii?Q?8Mwf77Q4Vrl8ubYFI6q1Xo2uSf80+NI08Eddx06tcc6I9fiKAB+RHgkCLdqV?=
+ =?us-ascii?Q?iyFKHUCNzf0BsqPKI5LwfdkxJMUIm7rbOfRFSfWGGfT4rX2xYSMMp6ryp1Z6?=
+ =?us-ascii?Q?4yyt8JA2Nal0LpV47/Dzp0asF62VBYZUXCIpKYKJ0eoaX0qSfNuNjmgSgu5X?=
+ =?us-ascii?Q?WwHS6UaI2d7A5sGOpodFauJFEUFI24P7tewHiP2jHooufhw5ZhPDpNq+PVAv?=
+ =?us-ascii?Q?/7ui3QUFV0wJyKkznLoxU212YQA5JD/j3DFTmlFfLhry43vtBlOBpHI9cOlC?=
+ =?us-ascii?Q?sxoZWWMlwvuR70fVBimbdi/ADdVH01YzFs+evOJVU7Dv7JmkK8V8Vac3j3a+?=
+ =?us-ascii?Q?qqnWTy0+5jh0wjx3yneFoZOgmUsEftkJRuGPMtboDn9uMwecAT8MpH+mgsU+?=
+ =?us-ascii?Q?oCqMBIxgiJULVmKnZX8dEeFkwcFPs/7oIWyEpD+rS8bvM0Qo4eHlW/+fjy/A?=
+ =?us-ascii?Q?tQGbQNpjbJwQgEUsPBaDWSqJoR91mbK/6IHYSG8kMvLY9ugFw8SgBFTlyAUN?=
+ =?us-ascii?Q?UTQUlcOdQN+GmHkSEkbzcEZaeyD49LXXsytf2IZgOMhbJVTgphRvGMrrxzaq?=
+ =?us-ascii?Q?qiY1fiz0vIDjVBdDpcInHCPgSbyzltiwVaEkg5rIwc9cq1Bvm7Z65jiSijSQ?=
+ =?us-ascii?Q?mYLVZCTAFgvrsSjjWyhju/doFEtLAFjfW7g3hTshfD+5EHd9Kj8TDHk4gs78?=
+ =?us-ascii?Q?Euql1DJ233pYAXyqhdqUUkgaAFCi9dIFOu8wUoBnC0I3BAqw1co1hyjwWf9m?=
+ =?us-ascii?Q?6KLVdzw0NbbE0Ut73xDHHmUJyuuuquYvNz7G6EG+YA5Bu8vn02SboKKpS5BJ?=
+ =?us-ascii?Q?UnWKydw7nyS/BNtLCJBUPEKWR32xhy1UiHoaMXg5AawmkBmkFIUcCb6Vdnme?=
+ =?us-ascii?Q?Zf55QE1nj87XRE6GB+KBP9szlf+xe7JKPvSoDcQ+Bb3GToqTKJl8jxuaVV1M?=
+ =?us-ascii?Q?o+XdpMNHU0FuIXAyFV/8nEFYufWteOXBcyA7Y8MF/6llRqXrLMuD0iae+vAq?=
+ =?us-ascii?Q?UqWucX3xUzRx?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1787.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 079519b4-2359-429d-c50d-08d8c35e49f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2021 07:28:20.6163
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X5jHucKvpyoCoF7uvrjsSSBGzRMNcnZP+PInSy8eLUcTbq1pdZuEHQc52joMG9cDw+z1f/kvyGKzTxr0v64ekw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0875
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> From: Paul E. McKenney <paulmck@kernel.org>
+> Sent: Thursday, November 26, 2020 3:55 PM
+> To: Dexuan Cui <decui@microsoft.com>
+> Cc: boqun.feng@gmail.com; Ingo Molnar <mingo@redhat.com>;
+> rcu@vger.kernel.org; vkuznets <vkuznets@redhat.com>; Michael Kelley
+> <mikelley@microsoft.com>; linux-kernel@vger.kernel.org
+> Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
+>=20
+> On Thu, Nov 26, 2020 at 10:59:19PM +0000, Dexuan Cui wrote:
+> > > From: Paul E. McKenney <paulmck@kernel.org>
+> > > Sent: Thursday, November 26, 2020 1:42 PM
+> > >
+> > > > > Another possibility is that rcu_state.gp_kthread is non-NULL, but=
+ that
+> > > > > something else is preventing RCU grace periods from completing, b=
+ut in
+> > > >
+> > > > It looks like somehow the scheduling is not working here: in rcu_ba=
+rrier()
+> > > > , if I replace the wait_for_completion() with
+> > > > wait_for_completion_timeout(&rcu_state.barrier_completion, 30*HZ),
+> the
+> > > > issue persists.
+> > >
+> > > Have you tried using sysreq-t to see what the various tasks are doing=
+?
+> >
+> > Will try it.
+> >
+> > BTW, this is a "Generation 2" VM on Hyper-V, meaning sysrq only starts =
+to
+> > work after the Hyper-V para-virtualized keyboard driver loads... So, at=
+ this
+> > early point, sysrq is not working. :-( I'll have to hack the code and u=
+se a
+> > virtual NMI interrupt to force the sysrq handler to be called.
+>=20
+> Whatever works!
+>=20
+> > > Having interrupts disabled on all CPUs would have the effect of disab=
+ling
+> > > the RCU CPU stall warnings.
+> > > 							Thanx, Paul
+> >
+> > I'm sure the interrupts are not disabled. Here the VM only has 1 virtua=
+l CPU,
+> > and when the hang issue happens the virtual serial console is still res=
+ponding
+> > when I press Enter (it prints a new line) or Ctrl+C (it prints ^C).
+> >
+> > Here the VM does not use the "legacy timers" (PIT, Local APIC timer, et=
+c.) at
+> all.
+> > Instead, the VM uses the Hyper-V para-virtualized timers. It looks the
+> Hyper-V
+> > timer never fires in the kdump kernel when the hang issue happens. I'm
+> > looking into this... I suspect this hang issue may only be specific to =
+Hyper-V.
+>=20
+> Fair enough, given that timers not working can also suppress RCU CPU
+> stall warnings.  ;-)
+>=20
+> 							Thanx, Paul
 
-1. add ovl private data
-2. add rdma private data
-3. add gamma privte data
-4. add main and external path module for crtc create
+FYI: the issue has been fixed by this fix:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3Dfff7b5e6ee63c5d20406a131b260c619cdd24fd1
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c |  1 +
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c   | 18 +++++++++
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c  |  6 +++
- drivers/gpu/drm/mediatek/mtk_drm_drv.c    | 45 +++++++++++++++++++++++
- 4 files changed, 70 insertions(+)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-index 22199ef11f65d..16f73267bb202 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-@@ -180,6 +180,7 @@ static const struct mtk_disp_gamma_data mt8173_gamma_driver_data = {
- static const struct of_device_id mtk_disp_gamma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = &mt8173_gamma_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-gamma"},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_gamma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 1c295c58a5e82..da7e38a28759b 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -424,11 +424,29 @@ static const struct mtk_disp_ovl_data mt8173_ovl_driver_data = {
- 	.fmt_rgb565_is_0 = true,
- };
- 
-+static const struct mtk_disp_ovl_data mt8183_ovl_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 4,
-+	.fmt_rgb565_is_0 = true,
-+};
-+
-+static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 2,
-+	.fmt_rgb565_is_0 = true,
-+};
-+
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-ovl",
- 	  .data = &mt2701_ovl_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-ovl",
- 	  .data = &mt8173_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-ovl",
-+	  .data = &mt8183_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
-+	  .data = &mt8183_ovl_2l_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 04b9542010b00..29fa5f3a05c30 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -355,11 +355,17 @@ static const struct mtk_disp_rdma_data mt8173_rdma_driver_data = {
- 	.fifo_size = SZ_8K,
- };
- 
-+static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
-+	.fifo_size = 5 * SZ_1K,
-+};
-+
- static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = &mt2701_rdma_driver_data},
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = &mt8173_rdma_driver_data},
-+	{ .compatible = "mediatek,mt8183-disp-rdma",
-+	  .data = &mt8183_rdma_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 279d3e6f11563..486e73e675ad5 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -129,6 +129,24 @@ static const enum mtk_ddp_comp_id mt8173_mtk_ddp_ext[] = {
- 	DDP_COMPONENT_DPI0,
- };
- 
-+static const enum mtk_ddp_comp_id mt8183_mtk_ddp_main[] = {
-+	DDP_COMPONENT_OVL0,
-+	DDP_COMPONENT_OVL_2L0,
-+	DDP_COMPONENT_RDMA0,
-+	DDP_COMPONENT_COLOR0,
-+	DDP_COMPONENT_CCORR,
-+	DDP_COMPONENT_AAL0,
-+	DDP_COMPONENT_GAMMA,
-+	DDP_COMPONENT_DITHER,
-+	DDP_COMPONENT_DSI0,
-+};
-+
-+static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
-+	DDP_COMPONENT_OVL_2L1,
-+	DDP_COMPONENT_RDMA1,
-+	DDP_COMPONENT_DPI0,
-+};
-+
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.main_path = mt2701_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
-@@ -161,6 +179,13 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
- 	.ext_len = ARRAY_SIZE(mt8173_mtk_ddp_ext),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
-+	.main_path = mt8183_mtk_ddp_main,
-+	.main_len = ARRAY_SIZE(mt8183_mtk_ddp_main),
-+	.ext_path = mt8183_mtk_ddp_ext,
-+	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
-+};
-+
- static int mtk_drm_kms_init(struct drm_device *drm)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
-@@ -375,12 +400,20 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8173-disp-ovl",
- 	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8183-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
-+	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
-+	{ .compatible = "mediatek,mt8183-disp-rdma",
-+	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-wdma",
- 	  .data = (void *)MTK_DISP_WDMA },
-+	{ .compatible = "mediatek,mt8183-disp-ccorr",
-+	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt2701-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-color",
-@@ -389,22 +422,32 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = (void *)MTK_DISP_GAMMA, },
-+	{ .compatible = "mediatek,mt8183-disp-gamma",
-+	  .data = (void *)MTK_DISP_GAMMA, },
-+	{ .compatible = "mediatek,mt8183-disp-dither",
-+	  .data = (void *)MTK_DISP_DITHER },
- 	{ .compatible = "mediatek,mt8173-disp-ufoe",
- 	  .data = (void *)MTK_DISP_UFOE },
- 	{ .compatible = "mediatek,mt2701-dsi",
- 	  .data = (void *)MTK_DSI },
- 	{ .compatible = "mediatek,mt8173-dsi",
- 	  .data = (void *)MTK_DSI },
-+	{ .compatible = "mediatek,mt8183-dsi",
-+	  .data = (void *)MTK_DSI },
- 	{ .compatible = "mediatek,mt2701-dpi",
- 	  .data = (void *)MTK_DPI },
- 	{ .compatible = "mediatek,mt8173-dpi",
- 	  .data = (void *)MTK_DPI },
-+	{ .compatible = "mediatek,mt8183-dpi",
-+	  .data = (void *)MTK_DPI },
- 	{ .compatible = "mediatek,mt2701-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2712-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt8173-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
-+	{ .compatible = "mediatek,mt8183-disp-mutex",
-+	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2701-disp-pwm",
- 	  .data = (void *)MTK_DISP_BLS },
- 	{ .compatible = "mediatek,mt8173-disp-pwm",
-@@ -423,6 +466,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt2712_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8173-mmsys",
- 	  .data = &mt8173_mmsys_driver_data},
-+	{ .compatible = "mediatek,mt8183-mmsys",
-+	  .data = &mt8183_mmsys_driver_data},
- 	{ }
- };
- 
--- 
-2.30.0.280.ga3ce27912f-goog
-
+Thanks,
+-- Dexuan
