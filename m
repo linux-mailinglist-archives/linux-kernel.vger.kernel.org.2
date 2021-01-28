@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91F3307D86
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74FC307DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhA1SMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:12:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231760AbhA1SJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:09:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A10D64E1C;
-        Thu, 28 Jan 2021 18:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611857352;
-        bh=I9b2CY9oG+7j/Q9+LnonZv0tg8jELW8RgIxY4SKAgPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h6cdOo6dNdavRRc1d40577CbEq9Qqz9G09q2/4hlPc8DLukSHRWlv4Dc2CYTCxJOl
-         nfv0op4q3Fe+JORysXvTXKyvEAHLwIW/VgwlkFyT3iPkTW2Gi1rz3mYx3jZU0PTWXj
-         iWXCKW1qDk+ivaxS7i2LPmqMipiuMriqVOSSvbjULFZBoA4ROstn0q0wMAN/VY/z1u
-         Dgda/l5Z5A2faJ7etE2Z3GbEHJGsud7dU2XAY8XC+ph61sn+BaE044NsVvsjsRaPXM
-         ju0yR9cDjUPL2/zkhveVojdpEBV/mbkHWbGphlUVoNXg7+puEx7LqGfaZqK7ZciRhn
-         ez5F8XCG5tqgg==
-Date:   Thu, 28 Jan 2021 18:09:07 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [next] mm/nommu.c:1671:6: error: conflicting types for
- 'filemap_map_pages'
-Message-ID: <20210128180906.GA2678@willie-the-truck>
-References: <CA+G9fYta_uOLktmMnZHUTK9Uqx-rjtmQSSvHFCsvQsVdZDdm8A@mail.gmail.com>
- <CAMuHMdUzCFuuUcgMwh+numoCnr_p0tfTucybytymUceyPV0TBQ@mail.gmail.com>
+        id S231829AbhA1STE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:19:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231340AbhA1SPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:15:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DB2C061756;
+        Thu, 28 Jan 2021 10:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=7s5dD/3siooJ6nsDrgQUKG6OOTocrmy+kkM/wYIzMpc=; b=iqY1YkZhUVUBceYZp90531D8xU
+        ZKg4JwNC+GLLwqAbNZA2rDL2oOqW9LDy/mNx7ttNdwk3ksr1oMYETuKMCln0h0VUfdxtBMttHh0x0
+        5+uUYyyM7n+4VkMxTF9lfnhHn/y96OKGLLG0ulbN7rxlOce4T4wYSTy4/sBkeVNI6KNgWOZZiP9/W
+        LZLrtCdREv2wRQ8tM3SQM6NaI1DYOzhJc8ewPKTWOSO82sgKNR3yqkXV4E2u7aI5qE7heyacTyvwO
+        tWV9YWth5K239OX2a9Mqc+2+ussOlN3yXBOUrAX0k/nm9QlLULsE0vTRtN35Z8BHHPTHPXpHjb8Be
+        yt7k5vKQ==;
+Received: from [2001:4bb8:198:6bf4:e052:196b:7e32:37d9] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l5BoE-008nqb-2X; Thu, 28 Jan 2021 18:14:27 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: module loader dead code removal and cleanups v2
+Date:   Thu, 28 Jan 2021 19:14:08 +0100
+Message-Id: <20210128181421.2279-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUzCFuuUcgMwh+numoCnr_p0tfTucybytymUceyPV0TBQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 04:26:09PM +0100, Geert Uytterhoeven wrote:
-> Hi Naresh,
-> 
-> On Thu, Jan 28, 2021 at 3:25 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> > arm, sh and riscv architecture build failed on today's Linux next tag 20210128.
-> >
-> > FYI,
-> > # CONFIG_MMU is not set on these failed configs.
-> > config file attached to this email.
-> >
-> > make --silent --keep-going --jobs=8 O=/home/tux  -
-> > build/.cache/tuxmake/builds/1/tmp ARCH=arm
-> > CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-> > arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
-> > mm/nommu.c:1671:6: error: conflicting types for 'filemap_map_pages'
-> >  1671 | void filemap_map_pages(struct vm_fault *vmf,
-> >       |      ^~~~~~~~~~~~~~~~~
-> > In file included from mm/nommu.c:20:
-> > include/linux/mm.h:2578:19: note: previous declaration of
-> > 'filemap_map_pages' was here
-> >  2578 | extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
-> >       |                   ^~~~~~~~~~~~~~~~~
-> 
-> Care to give "[PATCH -next] mm/nommu: Fix return type of
-> filemap_map_pages()" a try?
-> https://lore.kernel.org/lkml/20210128100626.2257638-1-geert@linux-m68k.org/
+Hi all,
 
-I'll go queue that now, cheers,
+this series removes support for long term unused export types and
+cleans up various loose ends in the module loader.
 
-Will
+Changes since v1:
+ - move struct symsearch to module.c
+ - rework drm to not call find_module at all
+ - llow RCU-sched locking for find_module
+ - keep find_module as a public API instead of module_loaded
+ - update a few comments and commit logs
+
+Diffstat:
+ arch/arm/configs/bcm2835_defconfig          |    1 
+ arch/arm/configs/mxs_defconfig              |    1 
+ arch/mips/configs/nlm_xlp_defconfig         |    1 
+ arch/mips/configs/nlm_xlr_defconfig         |    1 
+ arch/parisc/configs/generic-32bit_defconfig |    1 
+ arch/parisc/configs/generic-64bit_defconfig |    1 
+ arch/powerpc/configs/ppc6xx_defconfig       |    1 
+ arch/powerpc/platforms/powernv/pci-cxl.c    |   22 -
+ arch/s390/configs/debug_defconfig           |    1 
+ arch/s390/configs/defconfig                 |    1 
+ arch/sh/configs/edosk7760_defconfig         |    1 
+ arch/sh/configs/sdk7780_defconfig           |    1 
+ arch/x86/configs/i386_defconfig             |    1 
+ arch/x86/configs/x86_64_defconfig           |    1 
+ arch/x86/tools/relocs.c                     |    4 
+ drivers/gpu/drm/drm_crtc_helper_internal.h  |   10 
+ drivers/gpu/drm/drm_fb_helper.c             |   21 -
+ drivers/gpu/drm/drm_kms_helper_common.c     |   25 +-
+ include/asm-generic/vmlinux.lds.h           |   42 ---
+ include/linux/export.h                      |    9 
+ include/linux/kallsyms.h                    |   17 -
+ include/linux/module.h                      |   48 ----
+ init/Kconfig                                |   17 -
+ kernel/kallsyms.c                           |    8 
+ kernel/livepatch/core.c                     |   11 
+ kernel/module.c                             |  310 +++++++++-------------------
+ kernel/trace/trace_kprobe.c                 |    4 
+ lib/bug.c                                   |    3 
+ scripts/checkpatch.pl                       |    6 
+ scripts/mod/modpost.c                       |   50 ----
+ scripts/mod/modpost.h                       |    3 
+ scripts/module.lds.S                        |    6 
+ tools/include/linux/export.h                |    3 
+ 33 files changed, 142 insertions(+), 490 deletions(-)
