@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798FD307B01
+	by mail.lfdr.de (Postfix) with ESMTP id EC8F1307B02
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhA1Qch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        id S232576AbhA1Qco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232457AbhA1Qce (ORCPT
+        with ESMTP id S232490AbhA1Qcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:32:34 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FDAC061756;
-        Thu, 28 Jan 2021 08:31:53 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id p15so6017589wrq.8;
-        Thu, 28 Jan 2021 08:31:53 -0800 (PST)
+        Thu, 28 Jan 2021 11:32:35 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAAB8C0613D6;
+        Thu, 28 Jan 2021 08:31:54 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id e18so7050423lja.12;
+        Thu, 28 Jan 2021 08:31:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aB7zuQWcrPzPmAQrvOloCgHrIKsDNj/0Gfzl4leTLYE=;
-        b=e5uIsa58hkgWWmUhwaKnmmHmMUqxBkDVk7uZLLwbgjSz2lN4sTUnVWwF1moV9j/Zfm
-         9SoMLVIaxYNZCG9mfg/6Frbu3C2JGaXQqMN6L+v+3zyCD+pk6JpVlVSYBhu5O4Xe9OUa
-         0ieB3VbXfC/pLsnVtkmY26Vq5jDJkM3FNHnQN9Lz0ywTWglPxoQPT2+TKvizMPwOmUAT
-         f0ouhlrpI7UphqCMOrtQTF3xmHtt4oqHX/eBzNg59KoIpx/PI1k1TPNVlnBNpYFCb2jb
-         hppBiESlyfW1zUk11ucEBIlEnNnprnXvBmPYkuSsedCk07W0f4bXH25nu+Xdf7/jplag
-         bT7Q==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=p4OiRJxx5bDRgrHfvhZaQlIJJXqKiMdcy/FzycqDLAc=;
+        b=El/vD5HO2EGCOn/tpMFK3eB0W0852ZEvQ1+9iWiVI2Jl4X7pj3DRm5WKuDHMhmg9He
+         Lq0es0ZlA0JlOHVMWBikXYamYY1I73/A6Jn2UwX2tVVPkA2A3/HTwSBcB9XmQj5oLYIh
+         VBgCJ54R4Z+HczjH6mYh3B2fRY6sQzUrrkdWk1NR/sAH9BRfP3t1QV5wMqyDCbOgh3XX
+         S/E8mX80uPv7F5+1P2m3pqvUWaMUh5SEslTiyNA0Jt90+xl5gvueKvAyp+y+UwvwS1hC
+         dZinz53FqnRION+lp4upmZs4IZJiGAMZCinwoCjQq+3SOt77gt/JQohn6xrqeBPQ/pe4
+         hwWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aB7zuQWcrPzPmAQrvOloCgHrIKsDNj/0Gfzl4leTLYE=;
-        b=gMZNtv9QYoCYu6h/RkY7BWnjVQUm2V3wQdpYj4rDpEZEZ4NsKMvoMGWTnV36oTEW9+
-         BHy3sllj7sYqNq9QpYaF3kIk9kMKi6V29MZhiNbAgTo/8AfPDM/+bMfEWAH902KKVVJt
-         bs12e8JOYi3w4vgL+pT1xMExXJTe/oOwohGkGOTXCf523hTQl38jYAxIYmqJl7AamGo8
-         Nxy84pHsbKPWIR6p6DR9IUhSI7hiRfAw4ibCMYSoi6/VnA5xdQKFzsioqHhGhOoBqIta
-         bdCc22PPdphb88wceScolinIOz2mbCzz84OuXFhhpXNXgQpS0V1/ZwcopAu9B56Dz2Jc
-         i/Yw==
-X-Gm-Message-State: AOAM531wnsuRHKeURjNRhDpzqohhrRqcA9IW5qHaC0hSFBKk3ZHnY2wy
-        jt+u4LY4XLX1xuTBhDpIadg=
-X-Google-Smtp-Source: ABdhPJwYip4jGo3j1j/kpGaNQKnhSrNc2zFSNPByK826616JOYqRX00Y68OHdP666t5omBXVRS5RQQ==
-X-Received: by 2002:adf:e511:: with SMTP id j17mr14390620wrm.17.1611851512379;
-        Thu, 28 Jan 2021 08:31:52 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id b3sm7439842wme.32.2021.01.28.08.31.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=p4OiRJxx5bDRgrHfvhZaQlIJJXqKiMdcy/FzycqDLAc=;
+        b=gfjg9XBR1rnY9VWpvoq7DN9dNI35Tf36EjZZzZsPhpt635HIQGbjhnmXqOU7NZbMU6
+         l1wqOFN+4yauLHBXL7nx0Z1FZeC2poiWIdj25mwY7KzCoSd2NXJIxKIKT5gBmbREknV4
+         2FPcCjewpUMciN0vgUYJCiUbna/rjETAJD31H4uOOUzKBJGw98oERY2hoKZshZrURdlX
+         jhzeCXoY1g8GbalBT0K3kDzmuaRR1TojTghLiyLkKWMCYt0ozBcMQ5ZJhCv+csihXYUY
+         7GNprl2p1IqzNuSCAsbQpUdj+lqGLxeKhMOQAU6nGgRXUqsN9gQubFoNuQrVS2H2nVle
+         UKRQ==
+X-Gm-Message-State: AOAM533pCtdnQ4D32Brv3Yqlesp0U5z8rqxG+XNtZQM1SImQI+RskBR9
+        C4fRsW/V0sa3/sb3+vycJbk=
+X-Google-Smtp-Source: ABdhPJzPKXHRVKIEB9pRP1jjpFvde+0amuyf2AyihvG/d5BZYXwqALcGKJqiv7sxNhDP7MVKqcUQdA==
+X-Received: by 2002:a2e:140e:: with SMTP id u14mr32705ljd.496.1611851513179;
+        Thu, 28 Jan 2021 08:31:53 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c16sm1972472ljj.20.2021.01.28.08.31.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 28 Jan 2021 08:31:51 -0800 (PST)
-Subject: Re: [PATCH v12 1/8] arm64: dts: mt8183: rename rdma fifo size
-To:     Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-References: <20210128112314.1304160-1-hsinyi@chromium.org>
- <20210128112314.1304160-2-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <5eec39ff-de13-a749-d8c2-f2426e9565ed@gmail.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
 Date:   Thu, 28 Jan 2021 17:31:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+To:     qiang.zhang@windriver.com
+Cc:     urezki@gmail.com, paulmck@kernel.org, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kvfree_rcu: Release page cache under memory pressure
+Message-ID: <20210128163149.GA2397@pc638.lan>
+References: <20210128130509.35489-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <20210128112314.1304160-2-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128130509.35489-1-qiang.zhang@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello, Zqiang.
 
+See below some nits:
 
-On 28/01/2021 12:23, Hsin-Yi Wang wrote:
-> From: Yongqiang Niu <yongqiang.niu@mediatek.com>
 > 
-> property name must include only lowercase and '-'
+> Add free per-cpu existing krcp's page cache operation, when
+> the system is under memory pressure.
 > 
-> Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-Applied to v5.11-next/dts64
-
-Thanks
-
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 > ---
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  kernel/rcu/tree.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 5b782a4769e7e..6c84ccb709af6 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -1011,7 +1011,7 @@ rdma0: rdma@1400b000 {
->  			clocks = <&mmsys CLK_MM_DISP_RDMA0>;
->  			iommus = <&iommu M4U_PORT_DISP_RDMA0>;
->  			mediatek,larb = <&larb0>;
-> -			mediatek,rdma_fifo_size = <5120>;
-> +			mediatek,rdma-fifo-size = <5120>;
->  			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xb000 0x1000>;
->  		};
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c1ae1e52f638..4e1c14b12bdd 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3571,17 +3571,41 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  }
+>  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
 >  
-> @@ -1023,7 +1023,7 @@ rdma1: rdma@1400c000 {
->  			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
->  			iommus = <&iommu M4U_PORT_DISP_RDMA1>;
->  			mediatek,larb = <&larb0>;
-> -			mediatek,rdma_fifo_size = <2048>;
-> +			mediatek,rdma-fifo-size = <2048>;
->  			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
->  		};
+> +static inline int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
+Do we need it "inlined"?
+
+> +{
+> +	unsigned long flags;
+> +	struct kvfree_rcu_bulk_data *bnode;
+> +	int i, num = 0;
+> +
+> +	for (i = 0; i < rcu_min_cached_objs; i++) {
+> +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> +		bnode = get_cached_bnode(krcp);
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +		if (!bnode)
+> +			break;
+> +		free_page((unsigned long)bnode);
+> +		num++;
+> +	}
+> +
+> +	return num;
+Get rid of "num" and return i instead?
+
+> +}
+> +
+>  static unsigned long
+>  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+>  {
+>  	int cpu;
+>  	unsigned long count = 0;
+> +	unsigned long flags;
 >  
-> 
+>  	/* Snapshot count of all CPUs */
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		count += READ_ONCE(krcp->count);
+> +
+> +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> +		count += krcp->nr_bkv_objs;
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  	}
+>  
+>  	return count;
+> @@ -3604,6 +3628,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  		else
+>  			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  
+> +		count += free_krc_page_cache(krcp);
+Move it upper right after count = krcp->count;, so a "count" is set
+in one place what i more readable and clear?
+
+Thank you!
+
+--
+Vlad Rezki
