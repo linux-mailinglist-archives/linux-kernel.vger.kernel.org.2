@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A023F306E71
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A81306EE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhA1HOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:14:02 -0500
-Received: from mail.synology.com ([211.23.38.101]:51592 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231659AbhA1HNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:13:20 -0500
-Received: from localhost.localdomain (unknown [10.17.32.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 8FADCCE781E9;
-        Thu, 28 Jan 2021 15:12:37 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1611817957; bh=R4KeaYF2/mSonW5sbKKW6KXiw+UWGiwQrlYs1JRLISs=;
-        h=From:To:Cc:Subject:Date;
-        b=OpBjaZP5D0xajNTTvjPnkOrwKZGK6irL1R6sq9P/YW/4+Zl+x9rHYI5dw/cWe3xRi
-         Xq/UMr0bMWUt3AZyAT3sZKsC4czZJqGOvmD/1PN52JArJ3bwGyg7e49GvBlCdYfTrR
-         VWwVwaSWbQBvv7xI36mdoVJwt7IbtsRYGOHSlas4=
-From:   bingjingc <bingjingc@synology.com>
-To:     viro@zeniv.linux.org.uk, jack@suse.com, jack@suse.cz,
-        axboe@kernel.dk, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, cccheng@synology.com,
-        bingjingc@synology.com, robbieko@synology.com, willy@infradead.org,
-        rdunlap@infradead.org
-Subject: [PATCH v2 0/3] handle large user and group ID for isofs and udf
-Date:   Thu, 28 Jan 2021 15:12:27 +0800
-Message-Id: <1611817947-2839-1-git-send-email-bingjingc@synology.com>
-X-Mailer: git-send-email 2.7.4
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S231782AbhA1HUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:20:25 -0500
+Received: from mga09.intel.com ([134.134.136.24]:63854 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231728AbhA1HSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:18:07 -0500
+IronPort-SDR: gPUDcP/O++Kn2cWMJ635aCkrEOCGMw5k/Juevv5MftelAhqX2SyZ6R4jBTd1+OfRcg5pGQn/Zs
+ v61CuN7Rt0Pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180334930"
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="180334930"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 23:17:23 -0800
+IronPort-SDR: 4i/tuonmMO40i7wG9qqRNh9cAXsGwZDWS1ZyYcvhWgyMbtD4INBo7DAZwRXD2YJEBhpd0bafnE
+ TH5EUorHw9+A==
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="388640946"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.104]) ([10.239.13.104])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 23:17:21 -0800
+Subject: Re: [RESEND PATCH 1/2] KVM: X86: Add support for the emulation of
+ DR6_BUS_LOCK bit
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210108064924.1677-1-chenyi.qiang@intel.com>
+ <20210108064924.1677-2-chenyi.qiang@intel.com>
+ <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
+ <5f3089a2-5a5c-a839-9ed9-471c404738a3@intel.com>
+ <6bf8fc0d-ad7d-0282-9dcc-695f16af0715@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <ec623f67-d7b7-2d9a-1610-4da7702288b1@intel.com>
+Date:   Thu, 28 Jan 2021 15:17:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <6bf8fc0d-ad7d-0282-9dcc-695f16af0715@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: BingJing Chang <bingjingc@synology.com>
+On 1/27/2021 6:04 PM, Paolo Bonzini wrote:
+> On 27/01/21 04:41, Xiaoyao Li wrote:
+>> On 1/27/2021 12:31 AM, Paolo Bonzini wrote:
+>>> On 08/01/21 07:49, Chenyi Qiang wrote:
+>>>> To avoid breaking the CPUs without bus lock detection, activate the
+>>>> DR6_BUS_LOCK bit (bit 11) conditionally in DR6_FIXED_1 bits.
+>>>>
+>>>> The set/clear of DR6_BUS_LOCK is similar to the DR6_RTM in DR6
+>>>> register. The processor clears DR6_BUS_LOCK when bus lock debug
+>>>> exception is generated. (For all other #DB the processor sets this bit
+>>>> to 1.) Software #DB handler should set this bit before returning to the
+>>>> interrupted task.
+>>>>
+>>>> For VM exit caused by debug exception, bit 11 of the exit qualification
+>>>> is set to indicate that a bus lock debug exception condition was
+>>>> detected. The VMM should emulate the exception by clearing bit 11 of 
+>>>> the
+>>>> guest DR6.
+>>>
+>>> Please rename DR6_INIT to DR6_ACTIVE_LOW, and then a lot of changes 
+>>> become simpler:
+>>
+>> Paolo,
+>>
+>> What do you want to convey with the new name DR6_ACTIVE_LOW? To be 
+>> honest, the new name is confusing to me.
+> 
+> "Active low" means that the bit is usually 1 and goes to 0 when the 
+> condition (such as RTM or bus lock) happens.  For almost all those DR6 
+> bits the value is in fact always 1, but if they are defined in the 
+> future it will require no code change.
 
-The uid/gid (unsigned int) of a domain user may be larger than INT_MAX.
-The parse_options of isofs and udf will return 0, and mount will fail
-with -EINVAL. These patches try to handle large user and group ID.
+Why not keep use DR6_INIT, or DR6_RESET_VALUE? or any other better name.
 
-BingJing Chang (3):
-  parser: add unsigned int parser
-  isofs: handle large user and group ID
-  udf: handle large user and group ID
+It's just the default clear value of DR6 that no debug condition is hit.
 
- fs/isofs/inode.c       |  9 +++++----
- fs/udf/super.c         |  9 +++++----
- include/linux/parser.h |  1 +
- lib/parser.c           | 44 +++++++++++++++++++++++++++++++++-----------
- 4 files changed, 44 insertions(+), 19 deletions(-)
-
--- 
-2.7.4
+> Paolo
+> 
+>>>> -        dr6 |= DR6_BD | DR6_RTM;
+>>>> +        dr6 |= DR6_BD | DR6_RTM | DR6_BUS_LOCK;
+>>>
+>>> dr6 |= DR6_BD | DR6_ACTIVE_LOW;
+>>>
+>>
+>>
+> 
 
