@@ -2,90 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A60307467
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAB2307471
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhA1LGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:06:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhA1LGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:06:13 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C17C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 03:05:33 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id d2so6127686edz.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 03:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=TPihZmZSboTqtAvk5X0vZT42XQZtvspEs/tBaq/zssU=;
-        b=YoPFj287TNgdqKPwkJbRI07UelMaNURhetbtllXmtyJJYzgT2MUD3A9io2/ViGelUi
-         tYtjaT62HHZdCXAxloP4XF58raObnBi6VggoxM618SatzRBuTg9mZK+04OqV3rIfsZ4e
-         Mr+RbnMunYfHLQeqr7h7WWpwuiUGOUsCQQCeJhzpm4rq/NypbbL/9vgJFJv9NcyIHzTA
-         780AVg8qdItwTjdtlQGKpBy7ZxZkW6zfx43yMtMeHEdstTNBeTXjDLoY0TSAOMATtcSy
-         hysX3tWHPmrj7vWKaW2OXc6r264Ai2zrE8IYNayeraRNmGfBIy7gKyAUT8YMk92F/JGT
-         7mSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=TPihZmZSboTqtAvk5X0vZT42XQZtvspEs/tBaq/zssU=;
-        b=YMEbYBEgm/vOkOzsbMMxMBrx9RCDCfoEMrjuVlAwh2qtVi6lAZ7W+3viIpIeAi/V9O
-         XYrDOsiVAmIv2b8yrBr75KF8ubN9RpIDHziSOraxLzdq0EbPkRyWfr0U4giEx1dzl6D7
-         xUOGxr0ODn1b7EFHTEYtCxrHnMTwQ3wYOCczPDC1DfG+f59K78r9TrPEwPP/JpTrAH30
-         Wy1RcgqofiMBUp8VVsMhuOPMaXDrKlsBYgglnZ2O3E+Fzo9KdLX3XUlxQrkigKNWAO6y
-         RspxRVkjm3I2OIomJDXp7ZxP4xcXcfa2sy83cXRF20ggwxZcf1VGdGWsWitSZlg/j2lt
-         IZOg==
-X-Gm-Message-State: AOAM531/09TblBzImYVFiSCoSPxdqzwoRmtgDZ0jBKQuqMNAfcbo2MBP
-        eOvkA/plLSUcHHwzd6UD1ZmaJ21SDe4ytL6S3A==
-X-Google-Smtp-Source: ABdhPJwuSFLK3GECLdtCOMDCK17nwLKy5dogHR+VZPa0Sy7T/hIQfjSPAid5R/izKEkknRim6olCho/mBwcYFFznr3w=
-X-Received: by 2002:aa7:cfda:: with SMTP id r26mr13146368edy.142.1611831931899;
- Thu, 28 Jan 2021 03:05:31 -0800 (PST)
+        id S229531AbhA1LIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:08:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50934 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhA1LIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:08:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6072BAE57;
+        Thu, 28 Jan 2021 11:07:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B9699DA7D9; Thu, 28 Jan 2021 12:06:11 +0100 (CET)
+Date:   Thu, 28 Jan 2021 12:06:11 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Michal Rostecki <mrostecki@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
+Message-ID: <20210128110611.GK1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Michal Rostecki <mrostecki@suse.de>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michal Rostecki <mrostecki@suse.com>
+References: <20210127135728.30276-1-mrostecki@suse.de>
 MIME-Version: 1.0
-Received: by 2002:a17:906:5511:0:0:0:0 with HTTP; Thu, 28 Jan 2021 03:05:31
- -0800 (PST)
-From:   "Rosemary C. williams" <cwilliamsrosemary@gmail.com>
-Date:   Thu, 28 Jan 2021 12:05:31 +0100
-Message-ID: <CABA3TPt+8_w9=HgguxPA6CqCrtAcHQ8mcCm5j7JLF0wA7Tk5zw@mail.gmail.com>
-Subject: My Dearest Beloved in Christ ,
-To:     cwilliamsrosemary@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127135728.30276-1-mrostecki@suse.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dearest Beloved in Christ ,
+On Wed, Jan 27, 2021 at 02:57:27PM +0100, Michal Rostecki wrote:
+> From: Michal Rostecki <mrostecki@suse.com>
+> 
+> Before this change, the btrfs_get_io_geometry() function was calling
+> btrfs_get_chunk_map() to get the extent mapping, necessary for
+> calculating the I/O geometry. It was using that extent mapping only
+> internally and freeing the pointer after its execution.
+> 
+> That resulted in calling btrfs_get_chunk_map() de facto twice by the
+> __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+> first and then calling btrfs_get_chunk_map() directly to get the extent
+> mapping, used by the rest of the function.
+> 
+> This change fixes that by passing the extent mapping to the
+> btrfs_get_io_geometry() function as an argument.
+> 
+> v2:
+> When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
+> - Use errno_to_blk_status(PTR_ERR(em)) as the status
+> - Set em to NULL
 
-Happy new year 2021.
+The version-to-version changelog belongs under the -- line. If there's
+something relevant in v2 it should be put into the proper changelog but
+normal fixups like 'set em to NULL' do not have the long-term value that
+we want to record in the changelog.
 
-How are you today? I hope all is well with you and your family to the
-glory of Almighty God. My name is Mrs. Rosemary C. Williams, I am
-married to Late MR. C. Williams,who works in SAUDI ARABIA Embassy in
-Africa for nine years and also a Gold Merchant before he died in the
-year 2010. My dear I am divinely touched in my heart to offer my
-inheritance fund through you for Charity work to help the less
-privileges, orphans and motherless children. My dear I am written you
-this message because I am suffering from esophageal Liver Cancer for
-years now and I have undergone series of cancer treatments but no
-avail.
+> Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+> ---
+>  fs/btrfs/inode.c   | 38 +++++++++++++++++++++++++++++---------
+>  fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
+>  fs/btrfs/volumes.h |  5 +++--
+>  3 files changed, 48 insertions(+), 34 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0dbe1aaa0b71..e2ee3a9c1140 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+>  	struct inode *inode = page->mapping->host;
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	u64 logical = bio->bi_iter.bi_sector << 9;
+> +	struct extent_map *em;
+>  	u64 length = 0;
+>  	u64 map_length;
+> -	int ret;
+> +	int ret = 0;
+>  	struct btrfs_io_geometry geom;
+>  
+>  	if (bio_flags & EXTENT_BIO_COMPRESSED)
+> @@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+>  
+>  	length = bio->bi_iter.bi_size;
+>  	map_length = length;
+> -	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
+> -				    &geom);
+> +	em = btrfs_get_chunk_map(fs_info, logical, map_length);
+> +	if (IS_ERR(em))
+> +		return PTR_ERR(em);
+> +	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
+> +				    map_length, &geom);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  
+> -	if (geom.len < length + size)
+> -		return 1;
+> -	return 0;
+> +	if (geom.len < length + size) {
+> +		ret = 1;
+> +		goto out;
+> +	}
+> +out:
+> +	free_extent_map(em);
+> +	return ret;
+>  }
+>  
+>  /*
+> @@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+>  	u64 submit_len;
+>  	int clone_offset = 0;
+>  	int clone_len;
+> +	int logical;
 
-Recently I went for a medical check up and my doctor privately told me
-that I might not survive this cancer illness for the next 3 weeks
-because the cancer has damage my Liver. Having known to my condition,I
-have decided to donate my inheritance fund to you the sum of
-(US$3.250.000) Three Million Two Hundred and fifty Thousand United
-States Dollars.My dear I want you to use this fund for Charity work in
-helping the less privileges, orphans and motherless children.My dear I
-have decided to hand over this fund to you so that you will conduct a
-vastly charity work and dispense the fund to the glory of God in
-helping the less privileges and orphans around.
+This needs to be u64
 
-My dear immediately I hear from you I will give you all the
-information about this Fund with our Bank contact detail.I pray that
-God will be with you in as you desire to do this Charity work.
+>  	int ret;
+>  	blk_status_t status;
+>  	struct btrfs_io_geometry geom;
+>  	struct btrfs_dio_data *dio_data = iomap->private;
+> +	struct extent_map *em;
+>  
+>  	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
+>  	if (!dip) {
+> @@ -7970,11 +7980,18 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+>  	}
+>  
+>  	start_sector = dio_bio->bi_iter.bi_sector;
+> +	logical = start_sector << 9;
 
-I'm waiting to receive your reply.
-
-Best Regards,
-Your sister in Christ.
+Otherwise this overflows on logical address larger than 2^23 which is 8G.
