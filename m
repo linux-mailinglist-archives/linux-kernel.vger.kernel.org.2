@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF73307B37
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B4D307B39
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbhA1QlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:41:18 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:11741 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbhA1QlB (ORCPT
+        id S232684AbhA1QmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:42:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232655AbhA1QlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:41:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611852038; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=v4QZtcN/NF44ksO02JGpPju7+31t5OKRwBwUNKC9wfw=; b=txFqJRPD6lMVygyKDbtG9vI1yJCCUqrM6pVcVGYcNu6n+nIGC9W1nfNYeLkb1cn1fuo6Zwk2
- KohSQJbYuiOcLpLt7Qwvnu47SIsaR/3f4iVZh36oNCQ+Q+I3weO+mQjelKDw6y8prIIThBCz
- M9bra2K4d6iqoHEqlEqqLbKC1pk=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6012e8e783b274b0af8f9822 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 16:40:07
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3DA3C43465; Thu, 28 Jan 2021 16:40:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0696C433CA;
-        Thu, 28 Jan 2021 16:40:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C0696C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Date:   Thu, 28 Jan 2021 08:39:59 -0800
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "cang@codeaurora.org" <cang@codeaurora.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 2/2] scsi: ufs: Fix deadlock while suspending ufs
- host
-Message-ID: <20210128163959.GA32780@stor-presley.qualcomm.com>
-References: <b1db5394aa3f6cf44cd9adb9c8d569caa0c9e4f5.1611803264.git.asutoshd@codeaurora.org>
- <d50e7620c47109ea7664dd9ca4144fc0c7c8502d.1611803264.git.asutoshd@codeaurora.org>
- <DM6PR04MB657577E28BEDC95DC5FFCA96FCBA9@DM6PR04MB6575.namprd04.prod.outlook.com>
+        Thu, 28 Jan 2021 11:41:21 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17B4C061574;
+        Thu, 28 Jan 2021 08:40:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=IgLKMIHvPUsI5zslyWKJePRUZ8hujDrhZLqTi4Dvd3Y=; b=fq8rlOT/6xIlLR2u/rhBooz06
+        Wt1ta3iLTSJK0QixGBc7B22AnR0Qd98C5t1ghF87/T2t/r6/0KGozlEy/j6lS4qXitgf7iE42AV0j
+        VMhlF7GoOIS5OAAPutNUyRJXqFlqcMEQuzwtGfn432ewPskUHig7jGnH6VKbPqPNHJQYQrQ9Erv/i
+        NzCikQltxQatXzgW1aqtT3RC+QAIzMbZxfiW0kJve0UUhidbibiefjuHx8nwIKNI6JHJqTSClMcRx
+        w7GZd/O3S0MluVNsmTu9TbkqjhQc8OnSTq+Gc5mVO+X/Aii7wW+xDQeYgmtYBUP76T0lEA86f1nSv
+        /qsY6e58g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53858)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l5ALG-0006s8-GW; Thu, 28 Jan 2021 16:40:22 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l5ALE-0005yW-8A; Thu, 28 Jan 2021 16:40:20 +0000
+Date:   Thu, 28 Jan 2021 16:40:20 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        David Miller <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "mw@semihalf.com" <mw@semihalf.com>, Andrew Lunn <andrew@lunn.ch>,
+        Antoine Tenart <atenart@kernel.org>
+Subject: Re: [EXT] Re: [PATCH v4 net-next 10/19] net: mvpp2: add FCA RXQ non
+ occupied descriptor threshold
+Message-ID: <20210128164019.GR1551@shell.armlinux.org.uk>
+References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
+ <1611747815-1934-11-git-send-email-stefanc@marvell.com>
+ <CAF=yD-Lohx+1DRijK5=qgTj0uctBkS-Loh20zrMF7_Ditb2+pQ@mail.gmail.com>
+ <CO6PR18MB3873573FA21D4B82A32948B3B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR04MB657577E28BEDC95DC5FFCA96FCBA9@DM6PR04MB6575.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CO6PR18MB3873573FA21D4B82A32948B3B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28 2021 at 04:21 -0800, Avri Altman wrote:
->>
->> During runtime-suspend of ufs host, the scsi devices are
->> already suspended and so are the queues associated with them.
->> But the ufs host sends SSU to wlun during its runtime-suspend.
->Do you possible meant: "sends request-sense while clearing UAC to...."
->
+On Wed, Jan 27, 2021 at 06:41:32PM +0000, Stefan Chulski wrote:
+> 
+>  >
+> > > From: Stefan Chulski <stefanc@marvell.com>
+> > >
+> > > RXQ non occupied descriptor threshold would be used by Flow Control
+> > > Firmware feature to move to the XOFF mode.
+> > > RXQ non occupied threshold would change interrupt cause that polled by
+> > > CM3 Firmware.
+> > > Actual non occupied interrupt masked and won't trigger interrupt.
+> > 
+> > Does this mean that this change enables a feature, but it is unused due to a
+> > masked interrupt?
+> 
+> Firmware poll RXQ non occupied cause register to indicate if number of registers bellow threshold.
+> We do not trigger any interrupt, just poll this bit in CM3. So this cause always masked.
 
-The idea was to show that there's a scsi command that's sent during
-suspend which may deadlock.
+The functional spec for A8040 says that the register at 0xF2005520
+is "RX Exceptions Interrupt Mask" and the bit description talks about
+it controlling interrupt signal generation. However, the bit that
+allows RX Exceptions to be raised in MVPP2_ISR_RX_TX_MASK_REG is clear,
+so it won't proceed beyond the next level up.
 
-Yes, I agree to your comment and would change the message to reflect it in
-the next version.
+So, I think the commit description needs to say something like:
 
->
->Thanks,
->Avri
+"The firmware needs to monitor the RX Non-occupied descriptor bits for
+ flow control to move to XOFF mode. These bits need to be unmasked to
+ be functional, but they will not raise interrupts as we leave the
+ RX exception summary bit in MVPP2_ISR_RX_TX_MASK_REG clear."
+
+I think that's essentially what you're trying to describe - please
+change if not.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
