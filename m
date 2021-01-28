@@ -2,81 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317773075B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533EE3075D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhA1MPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:15:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34692 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA1MOb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:14:31 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611836029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1rfB/IZ4d07bQ4kaZK+SNMWZnaf6ZtvArs5ezTl/PSc=;
-        b=vJsf/NU9N6V1aNC54ZJA0dRiWDFy20a0Z9N6u/dxzqmbirOA6xS7gRUYKg67d+wTWLMlww
-        7TDyz/jzYQ94WMc/DtX/JGjJZTgXkxEjpYhwd9SE+9xbnxHWC4S59UgBE2wUQgiMzEcLgE
-        AIB5ZSsParAfxPgZQB58/040YYli9AXxh7IiCr0FuivsfgVNTVA677TDFKhBYxXKnz1zHm
-        XWz46jpyiMGmyKctZQnfEBpIFlrGyFu67khdqV1NDyid6BZU9+Y1kUFKFINUZlGsTu9KxF
-        yqCczWoSTxSC/KAt+G238rlxcm8miEu89ywYn0UDJSeYrjagKIlRkf4nM6gvTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611836029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1rfB/IZ4d07bQ4kaZK+SNMWZnaf6ZtvArs5ezTl/PSc=;
-        b=YVxBRhQUGQCQALNBhxM/OEiYwbSUV3fnFR7i+H+r7iw1F3RotZd5mFqr+p2dFC1CX3mkF7
-        CpxQYZspOXFTdcBA==
-To:     kernel test robot <lkp@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [tip:locking/core 10/10] sclp_early_core.c:undefined reference to `warn_bogus_irq_restore'
-In-Reply-To: <202101281628.n32qBmXh-lkp@intel.com>
-References: <202101281628.n32qBmXh-lkp@intel.com>
-Date:   Thu, 28 Jan 2021 13:13:49 +0100
-Message-ID: <871re5dzsy.fsf@nanos.tec.linutronix.de>
+        id S231377AbhA1MSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:18:38 -0500
+Received: from 8bytes.org ([81.169.241.247]:53324 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231127AbhA1MSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:18:35 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 9A61D51D; Thu, 28 Jan 2021 13:17:49 +0100 (CET)
+Date:   Thu, 28 Jan 2021 13:17:48 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Will Deacon <will@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu/vt-d: Correctly check addr alignment in
+ qi_flush_dev_iotlb_pasid()
+Message-ID: <20210128121747.GK32671@8bytes.org>
+References: <20210119043500.1539596-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119043500.1539596-1-baolu.lu@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28 2021 at 16:29, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-> head:   997acaf6b4b59c6a9c259740312a69ea549cc684
-> commit: 997acaf6b4b59c6a9c259740312a69ea549cc684 [10/10] lockdep: report broken irq restoration
-> config: s390-randconfig-r035-20210128 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 48bdd676a1d1338c10541460bf5beb69ac17e451)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install s390 cross compiling tool for clang build
->         # apt-get install binutils-s390x-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=997acaf6b4b59c6a9c259740312a69ea549cc684
->         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
->         git fetch --no-tags tip locking/core
->         git checkout 997acaf6b4b59c6a9c259740312a69ea549cc684
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=s390 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    s390x-linux-gnu-ld: arch/s390/boot/sclp_early_core.o: in function `sclp_early_cmd':
->>> sclp_early_core.c:(.text+0x18c): undefined reference to `warn_bogus_irq_restore'
->    s390x-linux-gnu-ld: arch/s390/boot/sclp_early_core.o: in function `sclp_early_set_event_mask':
->    sclp_early_core.c:(.text+0x376): undefined reference to `warn_bogus_irq_restore'
->    s390x-linux-gnu-ld: arch/s390/boot/sclp_early_core.o: in function `__sclp_early_printk':
->    sclp_early_core.c:(.text+0xa90): undefined reference to `warn_bogus_irq_restore'
->>> s390x-linux-gnu-ld: sclp_early_core.c:(.text+0xa9a): undefined reference to `warn_bogus_irq_restore'
+On Tue, Jan 19, 2021 at 12:35:00PM +0800, Lu Baolu wrote:
+> An incorrect address mask is being used in the qi_flush_dev_iotlb_pasid()
+> to check the address alignment. This leads to a lot of spurious kernel
+> warnings:
+> 
+> [  485.837093] DMAR: Invalidate non-aligned address 7f76f47f9000, order 0
+> [  485.837098] DMAR: Invalidate non-aligned address 7f76f47f9000, order 0
+> [  492.494145] qi_flush_dev_iotlb_pasid: 5734 callbacks suppressed
+> [  492.494147] DMAR: Invalidate non-aligned address 7f7728800000, order 11
+> [  492.508965] DMAR: Invalidate non-aligned address 7f7728800000, order 11
+> 
+> Fix it by checking the alignment in right way.
+> 
+> Fixes: 288d08e780088 ("iommu/vt-d: Handle non-page aligned address")
+> Reported-and-tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Cc: Liu Yi L <yi.l.liu@intel.com>
+> ---
+>  drivers/iommu/intel/dmar.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's S390 early boot code which lacks a stub function ....
+Applied for 5.11, thanks.
+
