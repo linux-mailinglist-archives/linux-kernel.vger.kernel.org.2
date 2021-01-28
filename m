@@ -2,161 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48563076CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310F03076CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhA1NKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbhA1NKf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:10:35 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBE9C061756;
-        Thu, 28 Jan 2021 05:09:55 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a10so7630759ejg.10;
-        Thu, 28 Jan 2021 05:09:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CdHrZZKCFGbRw7B5b9fj5zGmhgaPbbkoPZv2x5b3J7o=;
-        b=IvGKLCyZfj99YBUzT5iluG/lUsUVkiH2ItSUJdxken6550pj5eJ2uWtZ5gasF+pNMv
-         VeURcKIg8OpMrdzBNQwxunPsuxTI54zvMvYeqqeRNU0h/UYLuZbrr06YWKZ9zHUEGmnX
-         W8oxubR828pVuVmKeajgoIRL8Pguu93AQI2sXqNd7U7uUYNYbrh2sPTO5dmBt+3h9srA
-         /K3aQyvOIhUu9MxCp/va5Sd0rR+/amxa1qc650I0p3J0pAXXqoRlgO0YmZgpdYJ28+JG
-         Y4aN+shrWTXU7LAQCAE3LqSU3NHDjguOnHkgXV2BLuTRxPERb9RYUTrPnpbczKgtIDyl
-         bHyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CdHrZZKCFGbRw7B5b9fj5zGmhgaPbbkoPZv2x5b3J7o=;
-        b=mM8d7ZQLkizZOurgY4N2LIvcK0N6CDPgiiDeKqH/yF9beq6Lwa2OJjoBPDBUaMTz28
-         VWnW63khVjhq7/7+hB7KqtlcvUaHpAQ9nkfz1oQraw253qHUZP2O7JKkP0pfwIjeMlhI
-         +cUWQsLKe76gYaOeWfHbiGx9pvQlgYoGD4pmBX8HqZtBiKIMc6XGKEMqt/Pu0sBSMJzM
-         YJBhGllqh+nEwWB0M5P3Wx2K0FjkE2UgciryKMtUT8LxkPjCDLFfNnSMuHQ5IVUmfCB+
-         k75ookh8Euewlu+uDvz//PPKDRJmeX4zseEBKP2g7MhOpTW/0XvK0g/nJT9PtqmuT5D0
-         /AKQ==
-X-Gm-Message-State: AOAM532fv9lP5Y/ykSQWaF9lioxS1wnHd7Pt6NJhrN53N/bUuPdOXnva
-        7sYQFdkFKxl1cxDW49OYfg8=
-X-Google-Smtp-Source: ABdhPJxBNXZE6rL2hNwD6LVXA79HcYy2S3Puzk0YxZD8gsKML539+nNAG1cr5zTuFzHfmdfRqFjyJg==
-X-Received: by 2002:a17:906:941a:: with SMTP id q26mr11346434ejx.266.1611839394293;
-        Thu, 28 Jan 2021 05:09:54 -0800 (PST)
-Received: from [192.168.0.101] ([77.124.61.116])
-        by smtp.gmail.com with ESMTPSA id v15sm2277913ejj.4.2021.01.28.05.09.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 05:09:53 -0800 (PST)
-Subject: Re: [PATCH v4 net-next] net: Remove redundant calls of
- sk_tx_queue_clear().
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Amit Shah <aams@amazon.de>, Kuniyuki Iwashima <kuni1840@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Boris Pismenny <borisp@mellanox.com>
-References: <20210128124229.78315-1-kuniyu@amazon.co.jp>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <fad76e94-ca1f-41f6-f1aa-f9853f64d36d@gmail.com>
-Date:   Thu, 28 Jan 2021 15:09:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232056AbhA1NLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:11:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:58672 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229684AbhA1NLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:11:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60D4231B;
+        Thu, 28 Jan 2021 05:10:51 -0800 (PST)
+Received: from e125579.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F16853F719;
+        Thu, 28 Jan 2021 05:10:48 -0800 (PST)
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Hillf Danton <hdanton@sina.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 0/3] sched: Task priority related cleanups
+Date:   Thu, 28 Jan 2021 14:10:37 +0100
+Message-Id: <20210128131040.296856-1-dietmar.eggemann@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210128124229.78315-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+(1) Removing MAX_USER_RT_PRIO was already discussed here in April 2020:
 
+    https://lkml.kernel.org/r/20200423094403.6f1d2b8d@gandalf.local.home
 
-On 1/28/2021 2:42 PM, Kuniyuki Iwashima wrote:
-> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
-> other hand, the original commit had already put sk_tx_queue_clear() in
-> sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
-> sk_tx_queue_clear() is called twice in each path.
-> 
-> If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
-> currently works well because (i) sk_tx_queue_mapping is defined between
-> sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
-> sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
-> However, if we move sk_tx_queue_mapping out of the no copy area, it
-> introduces a bug unintentionally.
-> 
-> Therefore, this patch adds a compile-time check to take care of the order
-> of sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
-> sk_prot_alloc() so that it does the only allocation and its callers
-> initialize fields.
-> 
-> v4:
-> * Fix typo in the changelog (runtime -> compile-time)
-> 
-> v3: https://lore.kernel.org/netdev/20210128021905.57471-1-kuniyu@amazon.co.jp/
-> * Remove Fixes: tag
-> * Add BUILD_BUG_ON
-> * Remove sk_tx_queue_clear() from sk_prot_alloc()
->    instead of sk_alloc() and sk_clone_lock()
-> 
-> v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
-> * Remove Reviewed-by: tag
-> 
-> v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
-> 
+(2) USER_PRIO() and related macros are not used anymore except in one
+    case for powerpc where MAX_USER_PRIO can be replaced by NICE_WIDTH.
+    Set_load_weight(), task_prio(), cpu_weight_nice_write_s64(),
+    __update_max_tr() don't use USER_PRIO() but priority - MAX_RT_PRIO.
 
-Sorry for not pointing this out earlier, but shouldn't the changelog 
-come after the --- separator? Unless you want it to appear as part of 
-the commit message.
+(3) The function header of task_prio() needs an update. It looks
+    ancient since it mentions a prio space [-16 ... 15] for mormal
+    tasks. I can't figure out why this range is mentioned here? Maybe
+    the influence of the 'sleep-bonus interactivity' feature which was
+    removed by commit f3479f10c5d6 ("sched: remove the sleep-bonus
+    interactivity code")? 
 
-Other than that, I think now I'm fine with the patch.
+Dietmar Eggemann (3):
+  sched: Remove MAX_USER_RT_PRIO
+  sched: Remove USER_PRIO, TASK_USER_PRIO and MAX_USER_PRIO
+  sched/core: Update task_prio() function header
 
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
+ arch/powerpc/platforms/cell/spufs/sched.c |  2 +-
+ include/linux/sched/prio.h                | 18 +-----------------
+ kernel/sched/core.c                       | 15 +++++++++------
+ kernel/sched/sched.h                      |  2 +-
+ 4 files changed, 12 insertions(+), 25 deletions(-)
 
-Thanks,
-Tariq
+-- 
+2.25.1
 
-> CC: Tariq Toukan <tariqt@mellanox.com>
-> CC: Boris Pismenny <borisp@mellanox.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->   net/core/sock.c | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index bbcd4b97eddd..cfbd62a5e079 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
->   #ifdef CONFIG_SECURITY_NETWORK
->   	void *sptr = nsk->sk_security;
->   #endif
-> +
-> +	/* If we move sk_tx_queue_mapping out of the private section,
-> +	 * we must check if sk_tx_queue_clear() is called after
-> +	 * sock_copy() in sk_clone_lock().
-> +	 */
-> +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
-> +		     offsetof(struct sock, sk_dontcopy_begin) ||
-> +		     offsetof(struct sock, sk_tx_queue_mapping) >=
-> +		     offsetof(struct sock, sk_dontcopy_end));
-> +
->   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
->   
->   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
-> @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
->   
->   		if (!try_module_get(prot->owner))
->   			goto out_free_sec;
-> -		sk_tx_queue_clear(sk);
->   	}
->   
->   	return sk;
-> 
