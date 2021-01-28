@@ -2,178 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FFE307640
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3BA30763D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhA1MjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S231187AbhA1Mit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhA1Mi7 (ORCPT
+        with ESMTP id S229728AbhA1Mim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:38:59 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E282AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:38:18 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id 11so3908632pfu.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:38:18 -0800 (PST)
+        Thu, 28 Jan 2021 07:38:42 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB25EC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:38:02 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id i20so4993092otl.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:38:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6WaOltVmRWY4A85dkkyKWm4CB5hPuoSl1c1lXUzFBBo=;
-        b=CtMUy+LGS6RZ6wo05NIVWOeVZapiGPFCG7S6qJhU2IbnzcVusdLgW/ZbNsskfVWrUN
-         MQywc7znYQ5UERN4AzrEKHe2ItHXgXNU5klDm31oxeP/khbY+vUSQryPVBBIAfEDw/Vv
-         3gTs3OJ9VpgcBuGYgOcVbeDMqBlEe0o+q3OSkydmSSa0Tv4WpFi3eaD3wE5ZpbL0crjv
-         gcdSagrLpFTsVhn1PVCAnGY9EaYJOiVYJDDn8QKGR432e9cmrI7pxQk3XQYVNmAj5Ajm
-         CgzxOmE5U8+7o8LkzGpeB3UemRiwygv/eyF+McqBGgVLBIXVvJtsjPIFFsjT6R04v3tk
-         hOaQ==
+        d=mvista-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ic6h2SFkOzRN97sGVwqYqqaNZ1eJrrc6kgyyHGlVERY=;
+        b=jMY/1HY3b9d5bJhF0yal4luLKK9YeW4Mp6JZH0NAUva1nb7zw8WTEonAlTxUcxkiaX
+         91XgOvr8lRVV1WhBIn/cDVCOAHDc3947Vn2+48e4papRappbIv9ldMaqo0UofrBBD28l
+         +1QMUhfHUwYsOb0I7YzrHzGRVZo9UL2j922LnlveSZJKmrTj3pUwsm3iLjEM16J4Dqk/
+         ZprUtRFLiAHcgdG2FJGcE2gwbZPn3ncrSKHviGRRz0ad5vOzaynVCMwUdGITYUQssR9V
+         lOawc006uc/F3tP4btcgZdApNHTFmhj7giU1s0gi/SSSnEjG/gFKso+NMOlGmy+CkIIn
+         k17g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6WaOltVmRWY4A85dkkyKWm4CB5hPuoSl1c1lXUzFBBo=;
-        b=HkFBQHI2W2VcR/zRwjlUzK0CFyOnCV8L3Vzu1hviadPotrtCBGdDuImgZd2kSBszzv
-         s8pnFpIy9xDAgytRx7hK45m+x5//B2W0c/uf9nNM3SC7rrvY3VhppgxxZT23bMs3bNsP
-         gHb+yu6VoBYwy5k+p0ZJeomvRYNSE2Hs8K1OAf+DF1lf4Xa4FwKrcWRSXhBWnu+gHc7B
-         6oearfXh4JJ260sVH4ofujYWblRGWkV+QCIMiNMok+dkJHWMys3bg/HtVBCH67fkcJHA
-         UPe7wjZW4EUZcfeGk0CNNleVvtJaruD3viVOvL+CezsQBlmPBRewOLLz87WhecI1c/wb
-         Xe3Q==
-X-Gm-Message-State: AOAM532NXpTb0BAncL7wp9niYxDqZe2WzRNbInX91EBk/b16JZqCiG2Z
-        LvyZzQF+BXYaGG20J8Pc8judQZBTThmKGVLDk8txRQ==
-X-Google-Smtp-Source: ABdhPJyw1u0Xr3B5Tu98ZrHbYMZERXsgmC0lR2sLTrtGK6j+NRKrFU5g/BHrH5XrtlG5N0b0Kqx1Q95yjO3O+N/Ejxk=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr16523781pgf.31.1611837498467;
- Thu, 28 Jan 2021 04:38:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Ic6h2SFkOzRN97sGVwqYqqaNZ1eJrrc6kgyyHGlVERY=;
+        b=WiI105lmYL4SPCdfV2rmYt02+6jm2/khumSnDRiTzy6xnrneK63K/QJtsK/ZBcNIEq
+         fg6IJB/DZaA8TBOP+84eVfJQsjG3EYft+zTpy98Us1ZaZXNcp4T8VGx4aGdnfQAKVDks
+         PLNzfNkR8picvwOrkRNaL/PMCSYW4tZ0i4KWU+hlMQ4dZuanxHjqyAjnSLZMoYRVr6Pz
+         +cSt58uLj+HJWJn1GjdjdSeuIywNtNROy8y0Q4U00OMLzjVtJvwXlRjNFWSPILMZiHVT
+         vZahbBFGkY9DOjgS4nfeWARElANJA7epin9+TtIC/a3VxvqbKx8OHe9eyDB2h+Ij3hjp
+         iEuQ==
+X-Gm-Message-State: AOAM532ce4DAA0Hd5PX2DWCeoNqUbdEAN+V1BakUnoDZKJcnB12j/ASQ
+        XEuJEVl1qFvwnFOL1JdkFPiYLBomgqm2Ag==
+X-Google-Smtp-Source: ABdhPJx2++uXhA/l2NGSQmog9eANjfBpbJ1mv58ElnQuc1TYJ8799n/KJXkZNKK5bHF7SeOtz7Fh6g==
+X-Received: by 2002:a9d:66c1:: with SMTP id t1mr11251422otm.106.1611837481916;
+        Thu, 28 Jan 2021 04:38:01 -0800 (PST)
+Received: from minyard.net ([2001:470:b8f6:1b:d0e0:7e1d:debb:57fe])
+        by smtp.gmail.com with ESMTPSA id o16sm936217ote.79.2021.01.28.04.37.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 04:37:58 -0800 (PST)
+Date:   Thu, 28 Jan 2021 06:37:57 -0600
+From:   Corey Minyard <cminyard@mvista.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-i2c@vger.kernel.org, Asmaa Mnebhi <asmaa@nvidia.com>,
+        Corey Minyard <minyard@acm.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] ipmi: remove open coded version of SMBus block
+ write
+Message-ID: <20210128123757.GW21462@minyard.net>
+Reply-To: cminyard@mvista.com
+References: <20210128085544.7609-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com> <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com> <20210126145819.GB16870@linux>
- <259b9669-0515-01a2-d714-617011f87194@redhat.com> <20210126153448.GA17455@linux>
- <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com> <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
-In-Reply-To: <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 28 Jan 2021 20:37:41 +0800
-Message-ID: <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
- vmemmap pages associated with each HugeTLB page
-To:     David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128085544.7609-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 6:36 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 26.01.21 16:56, David Hildenbrand wrote:
-> > On 26.01.21 16:34, Oscar Salvador wrote:
-> >> On Tue, Jan 26, 2021 at 04:10:53PM +0100, David Hildenbrand wrote:
-> >>> The real issue seems to be discarding the vmemmap on any memory that has
-> >>> movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, we
-> >>> can reuse parts of the thingy we're freeing for the vmemmap. Not that it
-> >>> would be ideal: that once-a-huge-page thing will never ever be a huge page
-> >>> again - but if it helps with OOM in corner cases, sure.
-> >>
-> >> Yes, that is one way, but I am not sure how hard would it be to implement.
-> >> Plus the fact that as you pointed out, once that memory is used for vmemmap
-> >> array, we cannot use it again.
-> >> Actually, we would fragment the memory eventually?
-> >>
-> >>> Possible simplification: don't perform the optimization for now with free
-> >>> huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: what
-> >>> happens when migrating a huge page from ZONE_NORMAL to (ZONE_MOVABLE|CMA)?
-> >>
-> >> But if we do not allow theose pages to be in ZONE_MOVABLE or CMA, there is no
-> >> point in migrate them, right?
-> >
-> > Well, memory unplug "could" still work and migrate them and
-> > alloc_contig_range() "could in the future" still want to migrate them
-> > (virtio-mem, gigantic pages, powernv memtrace). Especially, the latter
-> > two don't work with ZONE_MOVABLE/CMA. But, I mean, it would be fair
-> > enough to say "there are no guarantees for
-> > alloc_contig_range()/offline_pages() with ZONE_NORMAL, so we can break
-> > these use cases when a magic switch is flipped and make these pages
-> > non-migratable anymore".
-> >
-> > I assume compaction doesn't care about huge pages either way, not sure
-> > about numa balancing etc.
-> >
-> >
-> > However, note that there is a fundamental issue with any approach that
-> > allocates a significant amount of unmovable memory for user-space
-> > purposes (excluding CMA allocations for unmovable stuff, CMA is
-> > special): pairing it with ZONE_MOVABLE becomes very tricky as your user
-> > space might just end up eating all kernel memory, although the system
-> > still looks like there is plenty of free memory residing in
-> > ZONE_MOVABLE. I mentioned that in the context of secretmem in a reduced
-> > form as well.
-> >
-> > We theoretically have that issue with dynamic allocation of gigantic
-> > pages, but it's something a user explicitly/rarely triggers and it can
-> > be documented to cause problems well enough. We'll have the same issue
-> > with GUP+ZONE_MOVABLE that Pavel is fixing right now - but GUP is
-> > already known to be broken in various ways and that it has to be treated
-> > in a special way. I'd like to limit the nasty corner cases.
-> >
-> > Of course, we could have smart rules like "don't online memory to
-> > ZONE_MOVABLE automatically when the magic switch is active". That's just
-> > ugly, but could work.
-> >
->
-> Extending on that, I just discovered that only x86-64, ppc64, and arm64
-> really support hugepage migration.
->
-> Maybe one approach with the "magic switch" really would be to disable
-> hugepage migration completely in hugepage_migration_supported(), and
-> consequently making hugepage_movable_supported() always return false.
->
-> Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
-> migrated. The problem I describe would apply (careful with using
-> ZONE_MOVABLE), but well, it can at least be documented.
+Looks good, do you want this in the IPMI tree or are you handling this
+another way?
 
-Thanks for your explanation.
+Thanks,
 
-All thinking seems to be introduced by encountering OOM. :-(
+-corey
 
-In order to move forward and free the hugepage. We should add some
-restrictions below.
-
-1. Only free the hugepage which is allocated from the ZONE_NORMAL.
-2. Disable hugepage migration when this feature is enabled.
-3. Using GFP_ATOMIC to allocate vmemmap pages firstly (it can reduce
-   memory fragmentation), if it fails, we use part of the hugepage to
-   remap.
-
-Hi Oscar, Mike and David H
-
-What's your opinion about this? Should we take this approach?
-
-Thanks.
-
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+On Thu, Jan 28, 2021 at 09:55:43AM +0100, Wolfram Sang wrote:
+> The block-write function of the core was not used because there was no
+> client-struct to use. However, in this case it seems apropriate to use a
+> temporary client struct. Because we are answering a request we recieved
+> when being a client ourselves. So, convert the code to use a temporary
+> client and use the block-write function of the I2C core.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
+> Acked-by: Corey Minyard <cminyard@mvista.com>
+> ---
+> 
+> No change since V1, Only added tags given in private communication.
+> 
+>  drivers/char/ipmi/ipmb_dev_int.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmb_dev_int.c b/drivers/char/ipmi/ipmb_dev_int.c
+> index 382b28f1cf2f..49b8f22fdcf0 100644
+> --- a/drivers/char/ipmi/ipmb_dev_int.c
+> +++ b/drivers/char/ipmi/ipmb_dev_int.c
+> @@ -137,7 +137,7 @@ static ssize_t ipmb_write(struct file *file, const char __user *buf,
+>  {
+>  	struct ipmb_dev *ipmb_dev = to_ipmb_dev(file);
+>  	u8 rq_sa, netf_rq_lun, msg_len;
+> -	union i2c_smbus_data data;
+> +	struct i2c_client *temp_client;
+>  	u8 msg[MAX_MSG_LEN];
+>  	ssize_t ret;
+>  
+> @@ -160,21 +160,21 @@ static ssize_t ipmb_write(struct file *file, const char __user *buf,
+>  	}
+>  
+>  	/*
+> -	 * subtract rq_sa and netf_rq_lun from the length of the msg passed to
+> -	 * i2c_smbus_xfer
+> +	 * subtract rq_sa and netf_rq_lun from the length of the msg. Fill the
+> +	 * temporary client. Note that its use is an exception for IPMI.
+>  	 */
+>  	msg_len = msg[IPMB_MSG_LEN_IDX] - SMBUS_MSG_HEADER_LENGTH;
+> -	if (msg_len > I2C_SMBUS_BLOCK_MAX)
+> -		msg_len = I2C_SMBUS_BLOCK_MAX;
+> +	temp_client = kmemdup(ipmb_dev->client, sizeof(*temp_client), GFP_KERNEL);
+> +	if (!temp_client)
+> +		return -ENOMEM;
+> +
+> +	temp_client->addr = rq_sa;
+>  
+> -	data.block[0] = msg_len;
+> -	memcpy(&data.block[1], msg + SMBUS_MSG_IDX_OFFSET, msg_len);
+> -	ret = i2c_smbus_xfer(ipmb_dev->client->adapter, rq_sa,
+> -			     ipmb_dev->client->flags,
+> -			     I2C_SMBUS_WRITE, netf_rq_lun,
+> -			     I2C_SMBUS_BLOCK_DATA, &data);
+> +	ret = i2c_smbus_write_block_data(temp_client, netf_rq_lun, msg_len,
+> +					 msg + SMBUS_MSG_IDX_OFFSET);
+> +	kfree(temp_client);
+>  
+> -	return ret ? : count;
+> +	return ret < 0 ? ret : count;
+>  }
+>  
+>  static __poll_t ipmb_poll(struct file *file, poll_table *wait)
+> -- 
+> 2.28.0
+> 
