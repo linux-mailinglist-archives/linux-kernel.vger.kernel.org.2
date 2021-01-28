@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E626F307201
+	by mail.lfdr.de (Postfix) with ESMTP id 697FA307200
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhA1Iu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:50:29 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:40571 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232086AbhA1Iqv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:46:51 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UN7ZE16_1611823637;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN7ZE16_1611823637)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 28 Jan 2021 16:47:21 +0800
-From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
-To:     kvalo@codeaurora.org
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, lee.jones@linaro.org,
-        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Abaci Team <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] b43: Remove redundant code
-Date:   Thu, 28 Jan 2021 16:47:16 +0800
-Message-Id: <1611823636-18377-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231473AbhA1ItZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:49:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232145AbhA1IrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 03:47:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4563F64DD1;
+        Thu, 28 Jan 2021 08:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611823667;
+        bh=ef5HP8kCtd0XxgudGLXbW1GarQgWdsRVnQ7V6cZdKAY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qGR0flb4Z2A/DtGA+cnNZ+rJdyOIDpu/4bO2LKaZzWRMUNovt9aY+Rwnn1/1Ive9T
+         tHSrzI18/2HC29FSVqW8uXR/Gc18rEqOTeMvDMnfbD8YCruPO+gVCBBm9fwSytytS5
+         +VM01RvqfxbMBGiXKOVw8Zh0nNEfsEO7sK9ZmKIb2bHgtwSsXuJ+2GjpTpSn/mn/Ke
+         Fj5SZJuA/4pNAVCSsnLN6S3Q+oMAShXLNjfUMztuXzsXCaQvICzAhAtbZ5u0iypvlo
+         oBwnc0Nyny8jBPH8Ky9r8JJR73W88/qKch9d9RpOCNoQWm/X31C6W1f4VytmA95S79
+         OL8lI/qsDFfyQ==
+Date:   Thu, 28 Jan 2021 09:47:45 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 3/3] i2c: remove zte zx bus driver
+Message-ID: <20210128084745.GB963@ninjato>
+References: <20210120132834.2375048-1-arnd@kernel.org>
+ <20210120132834.2375048-4-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+Content-Disposition: inline
+In-Reply-To: <20210120132834.2375048-4-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
 
-./drivers/net/wireless/broadcom/b43/phy_n.c:4640:2-4: WARNING: possible
-condition with no effect (if == else).
+--WYTEVAkct0FjGQmd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-./drivers/net/wireless/broadcom/b43/phy_n.c:4606:2-4: WARNING: possible
-condition with no effect (if == else).
+On Wed, Jan 20, 2021 at 02:28:34PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The zte zx platform is getting removed, so this driver is no
+> longer needed.
+>=20
+> Cc: Jun Nie <jun.nie@linaro.org>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
-Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
----
- drivers/net/wireless/broadcom/b43/phy_n.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+Applied to for-next, thanks!
 
-diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
-index b669dff..39a335f 100644
---- a/drivers/net/wireless/broadcom/b43/phy_n.c
-+++ b/drivers/net/wireless/broadcom/b43/phy_n.c
-@@ -4601,16 +4601,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
- 	if (nphy->hang_avoid)
- 		b43_nphy_stay_in_carrier_search(dev, 1);
- 
--	if (nphy->gband_spurwar_en) {
--		/* TODO: N PHY Adjust Analog Pfbw (7) */
--		if (channel == 11 && b43_is_40mhz(dev)) {
--			; /* TODO: N PHY Adjust Min Noise Var(2, tone, noise)*/
--		} else {
--			; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
--		}
--		/* TODO: N PHY Adjust CRS Min Power (0x1E) */
--	}
--
- 	if (nphy->aband_spurwar_en) {
- 		if (channel == 54) {
- 			tone[0] = 0x20;
-@@ -4636,12 +4626,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
- 			tone[0] = 0;
- 			noise[0] = 0;
- 		}
--
--		if (!tone[0] && !noise[0]) {
--			; /* TODO: N PHY Adjust Min Noise Var(1, tone, noise)*/
--		} else {
--			; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
--		}
- 	}
- 
- 	if (nphy->hang_avoid)
--- 
-1.8.3.1
 
+--WYTEVAkct0FjGQmd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASejAACgkQFA3kzBSg
+KbYN2w//Zn8B3sS6iHHx9vNRG5hzmhh3xvyWvawFvWmojwrZU8yYt1zycYDARkFc
+Qws1GmbZ6onGwMBAdxQgOqXStgRpXnMOOUsCG+TJR9iiQDdExc2rdIpwh+kXus4B
+JnbqLgdGfl5FS81OJ06w53QTjumxbIb+yFcYTtfrlaVWZTUYjUSAkSfYXB6BsEBt
+RzRqd7RohM+lqFOTF+ECNYC4DmRTm21KTUF4eXBJSzjXRtiI3bVcAD4PpRNhvjGt
+413QBiPYxnQXxuKxdjJYPdFtft38pXU7Yl4AjrGj2ESI7iHIsTGleW3+Q716j+dw
+dJBggNVqfURoG+opmoWT7UQ1rgCwJuoZTIWvlhoTdyin+snK4UnM/zCECLpKSv/Q
+AUmvGcnyfkakGQglEsYOJfkNAaBmi8i9l32IidcLVNVYL4gRimFwXlTz1BbJ8y8b
+oRxwX1r8wKxh+rJANFQcrDCmqTziwhknAtRXUqoZys4UJTEy4ZpG6dVtEXpyRGpd
+6GMjcCXPDx6e4foK9hNFXWdBlGDiiae/ykIGhoPAyB1PF9Kr9Y/wqTWkd0yu+q+D
+3UGMSB0/wxbLef/8piPrmIx2/1BWo+sRe1yWqyrrBGC/OVZMNzlTwSmy71OCweNB
+RprLFSiij0CR+6oglfLE2wCXUL1gwigpDQHlDk2+qUH1XtJPqfg=
+=RCjn
+-----END PGP SIGNATURE-----
+
+--WYTEVAkct0FjGQmd--
