@@ -2,239 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E86307D40
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B90307D42
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhA1SAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:00:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59078 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231437AbhA1R6g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:58:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611856628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oUrhpiGGbTD0gAMn83fBLzGBVoI9/BE/KMSqjcuvSN0=;
-        b=SEM+b+8HtQPXk9o09qoniH0a3ymhX4ZJ/cZyg4caKFs7CT/OlbO4x7nQGJlsy9cyigljIL
-        TTk5J+YV2m9fSJEXzQ67D9PqfOtq5It1xGs1vVTczXjoIHCvo0Mmanx3OtWEcEkb5N04t5
-        xm3Hv4fhThNTnhfvwbDg9KFCITKvckE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-fGk89nGmPwOgaNY1XFADhQ-1; Thu, 28 Jan 2021 12:57:05 -0500
-X-MC-Unique: fGk89nGmPwOgaNY1XFADhQ-1
-Received: by mail-ed1-f72.google.com with SMTP id f4so3560195eds.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:57:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oUrhpiGGbTD0gAMn83fBLzGBVoI9/BE/KMSqjcuvSN0=;
-        b=ei47FLK3h9VbWwJNgFp3C505RnJS52SGc/CAEcSOxykpbt2CZ2q3wN1miVI3htuiId
-         gcCln9L1d0qk85qzlOY+4tupMdC5AO2FogoQknbVCaHU1JlSjXhE4Owrw3J7k0NwZIrl
-         sytUNVF7Zaboqq5cCHJHXGY1/yW3afC7ijzoTWEcac539T3pevbsePDAOL6BCTDuknIa
-         +Q6CZTWOEOgQYxJCA1+L+UCfV4fdZ56G19CeLCiY5TtsAC1DOdk2F0lOwtQCZ9tFXHB2
-         7V0M1v6v3AAH94dXqeTBxeNpO8iY6azsuaphG0KjG1is+3we6ZL/EsD5l9nr7giO3KJa
-         WU3w==
-X-Gm-Message-State: AOAM530MErQR4tKBbg4IWgunFtR0kYfyQmzg73lc4Gb8iNx4sOo6WcEF
-        m8SWmIAFIc4FpnMbZuciGbEU0yGGuoJwnUJv7WFTkoUuBz2w3nY8AtXMh1siXORCXwdaf54v4k/
-        jBCbIeYPaog8GDaGvx0ZTE4t9
-X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr830454edb.202.1611856624121;
-        Thu, 28 Jan 2021 09:57:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzhv5xdUV2+d83mJyPr/00SecV4xuLtdToo7JnM2GR2etJ9J2KmSq5DkCGTyEAmpBCetgZsEA==
-X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr830432edb.202.1611856623910;
-        Thu, 28 Jan 2021 09:57:03 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h12sm3219173edb.16.2021.01.28.09.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 09:57:02 -0800 (PST)
-Subject: Re: [PATCH v14 00/13] Introduce support for guest CET feature
-To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jmattson@google.com,
-        Sean Christopherson <seanjc@google.com>
-Cc:     yu.c.zhang@linux.intel.com
-References: <20201106011637.14289-1-weijiang.yang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c6e87502-6443-62f7-5df8-d7fcee0bca58@redhat.com>
-Date:   Thu, 28 Jan 2021 18:57:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20201106011637.14289-1-weijiang.yang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S231208AbhA1SA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:00:58 -0500
+Received: from mga07.intel.com ([134.134.136.100]:62687 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231446AbhA1R6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:58:49 -0500
+IronPort-SDR: DL8SY/b333KVSqSbCPKYtjt9ubhJQvyUUKYTskxPoOArVdFtVHBTvwiNQZ2tgLDE79sdH+to94
+ aogJyy2DX0oQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="244367920"
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="244367920"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 09:57:53 -0800
+IronPort-SDR: DjuDc+ED+B7u05IN5Yc8E9sNgLGhr+YLu6AmqfYCJY4KplT658lVrOiGkjfWh6YIqqweS5jg2v
+ MVKnFxPKdaMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="363892443"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jan 2021 09:57:53 -0800
+Received: from lcsmsx603.ger.corp.intel.com (10.109.210.12) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 28 Jan 2021 09:57:52 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX603.ger.corp.intel.com (10.109.210.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 28 Jan 2021 19:57:50 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Thu, 28 Jan 2021 19:57:50 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mtd: use refcount to prevent corruption
+Thread-Topic: [PATCH] mtd: use refcount to prevent corruption
+Thread-Index: AQHW9OeD00Da249Jw0qJn6+VIZAeUao7z7AAgAAh5BBxoBSOfPxzntFAEGBJdu//fSiMQP//4NkAAA+XK+A=
+Date:   Thu, 28 Jan 2021 17:57:50 +0000
+Message-ID: <10c2e98c393a486cab3bc953e9926e38@intel.com>
+References: <20210127200319.662842-1-tomas.winkler@intel.com>
+        <9732911.325628.1611780400338.JavaMail.zimbra@nod.at>
+        <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com>
+        <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at>
+        <a6cb6eb10bbb48989d3a9e087951e50e@intel.com>
+        <1665542284.336646.1611820031174.JavaMail.zimbra@nod.at>
+        <f91d7eff1d764ba7b47f023bc0fafacb@intel.com> <20210128100032.5eb542c6@xps13>
+In-Reply-To: <20210128100032.5eb542c6@xps13>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/20 02:16, Yang Weijiang wrote:
-> Control-flow Enforcement Technology (CET) provides protection against
-> Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
-> sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
-> SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
-> 
-> Several parts in KVM have been updated to provide VM CET support, including:
-> CPUID/XSAVES config, MSR pass-through, user space MSR access interface,
-> vmentry/vmexit config, nested VM etc. These patches have dependency on CET
-> kernel patches for xsaves support and CET definitions, e.g., MSR and related
-> feature flags.
-> 
-> CET kernel patches are here:
-> SHSTK: https://lkml.kernel.org/r/20201012153850.26996-1-yu-cheng.yu@intel.com/
-> IBT: https://lkml.kernel.org/r/20201012154530.28382-1-yu-cheng.yu@intel.com/
-> 
-> CET QEMU patch:
-> https://patchwork.ozlabs.org/project/qemu-devel/patch/20201013051935.6052-2-weijiang.yang@intel.com/
-> KVM Unit test:
-> https://patchwork.kernel.org/project/kvm/patch/20200506082110.25441-12-weijiang.yang@intel.com/
-> 
-> v14:
-> - Sean refactored v13 patchset then came out v14-rc1, this version is
->    rebased on top of 5.10-rc1 and tested on TGL.
-> - Fixed a few minor issues found during test, such as nested CET broken,
->    call-trace and guest reboot failure etc.
-> - Original v14-rc1 is here: https://github.com/sean-jc/linux/tree/vmx/cet.
-> 
-> v13:
-> - Added CET definitions as a separate patch to facilitate KVM test.
-> - Disabled CET support in KVM if unrestricted_guest is turned off since
->    in this case CET related instructions/infrastructure cannot be emulated
->    well.
-> 
-> v12:
-> - Fixed a few issues per Sean and Paolo's review feeback.
-> - Refactored patches to make them properly arranged.
-> - Removed unnecessary hard-coded CET states for host/guest.
-> - Added compile-time assertions for vmcs_field_to_offset_table to detect
->    mismatch of the field type and field encoding number.
-> - Added a custom MSR MSR_KVM_GUEST_SSP for guest active SSP save/restore.
-> - Rebased patches to 5.7-rc3.
-> 
-> v11:
-> - Fixed a guest vmentry failure issue when guest reboots.
-> - Used vm_xxx_control_{set, clear}bit() to avoid side effect, it'll
->    clear cached data instead of pure VMCS field bits.
-> - Added vcpu->arch.guest_supported_xss dedidated for guest runtime mask,
->    this avoids supported_xss overwritten issue caused by an old qemu.
-> - Separated vmentry/vmexit state setting with CR0/CR4 dependency check
->    to make the patch more clear.
-> - Added CET VMCS states in dump_vmcs() for debugging purpose.
-> - Other refactor based on testing.
-> - This patch serial is built on top of below branch and CET kernel patches
->    for seeking xsaves support.
-> 
-> v10:
-> - Refactored code per Sean's review feedback.
-> - Added CET support for nested VM.
-> - Removed fix-patch for CPUID(0xd,N) enumeration as this part is done
->    by Paolo and Sean.
-> - This new patchset is based on Paolo's queued cpu_caps branch.
-> - Modified patch per XSAVES related change.
-> - Consolidated KVM unit-test patch with KVM patches.
-> 
-> v9:
-> - Refactored msr-check functions per Sean's feedback.
-> - Fixed a few issues per Sean's suggestion.
-> - Rebased patch to kernel-v5.4.
-> - Moved CET CPUID feature bits and CR4.CET to last patch.
-> 
-> v8:
-> - Addressed Jim and Sean's feedback on: 1) CPUID(0xD,i) enumeration. 2)
->    sanity check when configure guest CET. 3) function improvement.
-> - Added more sanity check functions.
-> - Set host vmexit default status so that guest won't leak CET status to
->    host when vmexit.
-> - Added CR0.WP vs. CR4.CET mutual constrains.
-> 
-> v7:
-> - Rebased patch to kernel v5.3
-> - Sean suggested to change CPUID(0xd, n) enumeration code as alined with
->    existing one, and I think it's better to make the fix as an independent patch
->    since XSS MSR are being used widely on X86 platforms.
-> - Check more host and guest status before configure guest CET
->    per Sean's feedback.
-> - Add error-check before guest accesses CET MSRs per Sean's feedback.
-> - Other minor fixes suggested by Sean.
-> 
-> v6:
-> - Rebase patch to kernel v5.2.
-> - Move CPUID(0xD, n>=1) helper to a seperate patch.
-> - Merge xsave size fix with other patch.
-> - Other minor fixes per community feedback.
-> 
-> v5:
-> - Rebase patch to kernel v5.1.
-> - Wrap CPUID(0xD, n>=1) code to a helper function.
-> - Pass through MSR_IA32_PL1_SSP and MSR_IA32_PL2_SSP to Guest.
-> - Add Co-developed-by expression in patch description.
-> - Refine patch description.
-> 
-> v4:
-> - Add Sean's patch for loading Guest fpu state before access XSAVES
->    managed CET MSRs.
-> - Melt down CET bits setting into CPUID configuration patch.
-> - Add VMX interface to query Host XSS.
-> - Check Host and Guest XSS support bits before set Guest XSS.
-> - Make Guest SHSTK and IBT feature enabling independent.
-> - Do not report CET support to Guest when Host CET feature is Disabled.
-> 
-> v3:
-> - Modified patches to make Guest CET independent to Host enabling.
-> - Added patch 8 to add user space access for Guest CET MSR access.
-> - Modified code comments and patch description to reflect changes.
-> 
-> v2:
-> - Re-ordered patch sequence, combined one patch.
-> - Added more description for CET related VMCS fields.
-> - Added Host CET capability check while enabling Guest CET loading bit.
-> - Added Host CET capability check while reporting Guest CPUID(EAX=7, EXC=0).
-> - Modified code in reporting Guest CPUID(EAX=D,ECX>=1), make it clearer.
-> - Added Host and Guest XSS mask check while setting bits for Guest XSS.
-> 
-> 
-> Sean Christopherson (2):
->    KVM: x86: Report XSS as an MSR to be saved if there are supported features
->    KVM: x86: Load guest fpu state when accessing MSRs managed by XSAVES
-> 
-> Yang Weijiang (11):
->    KVM: x86: Refresh CPUID on writes to MSR_IA32_XSS
->    KVM: x86: Add #CP support in guest exception dispatch
->    KVM: VMX: Introduce CET VMCS fields and flags
->    KVM: x86: Add fault checks for CR4.CET
->    KVM: VMX: Emulate reads and writes to CET MSRs
->    KVM: VMX: Add a synthetic MSR to allow userspace VMM to access GUEST_SSP
->    KVM: x86: Report CET MSRs as to-be-saved if CET is supported
->    KVM: x86: Enable CET virtualization for VMX and advertise CET to userspace
->    KVM: VMX: Pass through CET MSRs to the guest when supported
->    KVM: nVMX: Add helper to check the vmcs01 MSR bitmap for MSR pass-through
->    KVM: nVMX: Enable CET support for nested VMX
-> 
->   arch/x86/include/asm/kvm_host.h      |   4 +-
->   arch/x86/include/asm/vmx.h           |   8 ++
->   arch/x86/include/uapi/asm/kvm.h      |   1 +
->   arch/x86/include/uapi/asm/kvm_para.h |   1 +
->   arch/x86/kvm/cpuid.c                 |  26 +++-
->   arch/x86/kvm/vmx/capabilities.h      |   5 +
->   arch/x86/kvm/vmx/nested.c            |  57 ++++++--
->   arch/x86/kvm/vmx/vmcs12.c            |   6 +
->   arch/x86/kvm/vmx/vmcs12.h            |  14 +-
->   arch/x86/kvm/vmx/vmx.c               | 207 ++++++++++++++++++++++++++-
->   arch/x86/kvm/x86.c                   |  56 +++++++-
->   arch/x86/kvm/x86.h                   |  10 +-
->   12 files changed, 370 insertions(+), 25 deletions(-)
-> 
-
-I reviewed the patch and it is mostly okay.  However, if I understand it 
-correctly, it will not do anything until host support materializes, 
-because otherwise XSS will be 0.
-
-If this is the case, I plan to apply locally v15 and hold on it until 
-the host code is committed.
-
-Paolo
-
+PiBIaSBUb21hcywNCj4gDQo+ICJXaW5rbGVyLCBUb21hcyIgPHRvbWFzLndpbmtsZXJAaW50ZWwu
+Y29tPiB3cm90ZSBvbiBUaHUsIDI4IEphbiAyMDIxDQo+IDA4OjUzOjQzICswMDAwOg0KPiANCj4g
+PiA+IFRvbWFzLA0KPiA+ID4NCj4gPiA+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0N
+Cj4gPiA+ID4+ID4+IENhbiB5b3UgcGxlYXNlIGV4cGxhaW4gYSBsaXR0bGUgbW9yZSB3aGF0IGRl
+dmljZXMgYXJlIGludm9sdmVkPw0KPiA+ID4gPj4gPj4gRG9lcyBpdCBpbXBsZW1lbnQgX2dldF9k
+ZXZpY2UoKSBhbmQgX3B1dF9kZXZpY2UoKT8NCj4gPiA+ID4+ID4gTm8gdGhpcyBpcyBub3QgY29u
+bmVjdGVkIHRvIHRob3NlIGhhbmRsZXJzIG9mIHRoZSB1bmRlcmx5aW5nDQo+ID4gPiA+PiA+IGRl
+dmljZSBhbmQgdGhvc2Ugd29uJ3QgaGVscC4NCj4gPiA+ID4+ID4gSSBoYXZlIGEgc3BpIGRldmlj
+ZSBwcm92aWRlZCBieSBNRkQgZnJhbWV3b3JrIHNvIGl0IGNhbiBnbyBhd2F5DQo+IGFueXRpbWUu
+DQo+ID4gPiA+Pg0KPiA+ID4gPj4gQ2FuIGl0IGdvIGF3YXkgcGh5c2ljYWxseSBvciBqdXN0IGlu
+IHNvZnR3YXJlPw0KPiA+ID4gPiBTb2Z0d2FyZSwgYnV0IHNpbmNlIHRoaXMgaXMgbWZkIGl0J3Mg
+YmFzaWNhbGx5IGhvdHBsdWcuIFRoZSBrZXJuZWwNCj4gPiA+ID4gaXMgY3Jhc2hpbmcgd2hlbiBJ
+IHNpbXVsYXRlIGhhcmR3YXJlIGZhaWx1cmUuDQo+ID4gPiA+Pg0KPiA+ID4gPj4gVXN1YWxseSB0
+aGUgcGF0dGVybiBpcyB0aGF0IHlvdSBtYWtlIHN1cmUgaW4gdGhlIGRldmljZSBkcml2ZXINCj4g
+PiA+ID4+IHRoYXQgbm9ib2R5IGNhbiBvcnBoYW4gdGhlIE1URCB3aGlsZSBpdCBpcyBpbiB1c2Uu
+DQo+ID4gPiA+PiBlLmcuIGRyaXZlcnMvbXRkL3ViaS9nbHVlYmkuYyBkb2VzIHNvLiBJbiBfZ2V0
+X2RldmljZSgpIGl0IGdyYWJzDQo+ID4gPiA+PiBhIHJlZmVyZW5jZSBvbiB0aGUgdW5kZXJseWlu
+ZyBVQkkgdm9sdW1lIHRvIG1ha2Ugc3VyZSBpdCBjYW5ub3QNCj4gPiA+ID4+IGdvIGF3YXkgd2hp
+bGUgdGhlIE1URCAob24gdG9wIG9mIFVCSSkgaXMgaW4gdXNlLg0KPiA+ID4gPg0KPiA+ID4gPiBJ
+IGNhbiB0cnkgdGhhdCBpZiBpdCBoZWxwcywgYmVjYXVzZSB3ZSBhcmUgc2ltdWxhdGluZyBwb3Nz
+aWJsZQ0KPiA+ID4gPiBsb3dlciBsZXZlbCBjcmFzaC4NCj4gPiA+ID4gSW4gYW4gY2FzZSBJIGJl
+bGlldmUgdGhhdCB0aGUgcHJvcGVyIHJlZmNvdXRpbmcgaXMgbXVjaCBtb3JlDQo+ID4gPiA+IHJv
+YnVzdCBzb2x1dGlvbiwgdGhhbiB0aGUgY3VycmVudCBvbmUuDQo+ID4gPiA+IEknZCBhcHByZWNp
+YXRlIGlmIHNvbWVvbmUgY2FuIHJldmlldyB0aGUgYWN0dWFsIGltcGxlbWVudGF0aW9uLg0KPiA+
+ID4NCj4gPiA+IFRoaXMgaGFwcGVucyByaWdodCBub3csIEkgdHJ5IHRvIHVuZGVyc3RhbmQgd2h5
+IGV4YWN0bHkgdGhlIGN1cnJlbnQNCj4gPiA+IHdheSBpcyBub3QgZ29vZCBpbiBlbm91Z2guIDot
+KQ0KPiA+ID4NCj4gPiA+IFlvdXIgYXBwcm9hY2ggbWFrZXMgc3VyZSB0aGF0IHRoZSBNVEQgaXRz
+ZWxmIGRvZXMgbm90IGdvIGF3YXkgd2hpbGUNCj4gPiA+IGl0IGhhcyB1c2VycyBidXQgaG93IGRv
+ZXMgdGhpcyBoZWxwIGluIHRoZSBjYXNlIHdoZXJlIHRoZSB1bmRlcmx5aW5nDQo+ID4gPiBNRkQg
+anVzdCB2YW5pc2hlcz8NCj4gPiA+IFRoZSBNVEQgY2FuIGJlIGluIHVzZSBhbmQgdGhlIE1GRCBj
+YW4gZ28gYXdheSB3aGlsZSBlLmcuIG10ZF9yZWFkKCkNCj4gPiA+IG9yIHN1Y2ggdGFrZXMgcGxh
+Y2UuDQo+ID4NCj4gPiBSZWFkIHdpbGwgZmFpbCwgYnV0IGtlcm5lbCB3b24ndCBjcmFzaCBvbiBh
+Y2Nlc3MgdG8gbWVtb3J5IHRoYXQgd2FzIGZyZWVkLg0KPiANCj4gQXMgUmljaGFyZCB3YXMgc2F5
+aW5nLCB3ZSBhcmUgcmVhbGx5IG9wZW4gdG8gZW5oYW5jZSBNVEQgcmVmY291bnRpbmcuDQo+IA0K
+PiBIb3dldmVyLCB0aGUgaXNzdWUgeW91IGFyZSBmYWNpbmcgaXMsIElNSE8sIG5vdCByZWxhdGVk
+IHRvIE1URCBidXQgdG8gTUZELg0KPiBUaGVyZSBzaG91bGQgYmUgYSB3YXkgdG8gYXZvaWQgTUZE
+IHRvIHZhbmlzaCBieSB0YWtpbmcgYSByZWZlcmVuY2Ugb2YgaXQNCj4gdGhyb3VnaCBtdGQtPl9n
+ZXRfZGV2aWNlKCkuIEkgZG9uJ3QgdGhpbmsgYWRkcmVzc2luZyB0aGUgY2FzZSB3aGVyZSBNRkQN
+Cj4gdmFuaXNoZXMgd2hpbGUgTVREIChhcyBhIHVzZXIpIGlzIHN0aWxsIGFjdGl2ZSBpcyB0aGUg
+cmlnaHQgYXBwcm9hY2guDQoNCkkgdGhpbmsgaXQgd29uJ3Qgd29yayBiZWNhdXNlIE1GRCBzdWIt
+ZHJpdmVyIHJlbW92ZSgpIGlzIGNhbGxlZCAgIGFuZCBpdCBtdXN0IHN1Y2NlZWQgYmVjYXVzZSB0
+aGUgbWFpbiBkZXZpY2UgIGlzIG5vdCBhY2Nlc3NpYmxlIHVubGlrZSBnbHVldWJpIHdoaWNoIGp1
+c3QgcmV0dXJucyAtRUJVU1kuDQpzbyB3ZSBwb3N0cG9uZSB0aGUgbXRkIHVucmVnaXN0ZXIgdG8g
+IG10ZF9pbmZvLT5fcHV0X2RldmljZSgpICBidXQgaXQgdGhhdCBzdGF0ZSB3ZSBoYXZlIG5vdGhp
+bmcgdG8gaG9sZA0Kb24gYXMgdGhlIGRldmljZSBpcyBnb25lIGluIHJlbW92ZSgpDQpVc2VyIHdp
+bGwgZmFpbCBhbnl3YXksIGFzIHRoZSB1bmRlcmx5aW5nIGRldmljZSBpcyBub3QgZnVuY3Rpb25h
+bCBpbiB0aGF0IHN0YXRlLg0KQW55d2F5IEkndmUgdHJpZWQgeW91ciBzdWdnZXN0aW9uLCB0aGUg
+a2VybmVsIGlzIGNyYXNoaW5nLCBob3BlIEkgaGF2ZW4ndCBkb25lIHNvbWUgc2lsbHkgYnVnLg0K
+DQpUaGFua3MNClRvbWFzDQoNCg0KDQo=
