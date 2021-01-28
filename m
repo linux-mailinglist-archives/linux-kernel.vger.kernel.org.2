@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1BF3073F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4045C3073F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhA1Kkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:40:41 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:52578 "EHLO fornost.hmeau.com"
+        id S231388AbhA1Kkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:40:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:56252 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhA1Kk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231289AbhA1Kk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Jan 2021 05:40:28 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1l54hh-0000Ph-4Z; Thu, 28 Jan 2021 21:39:10 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Jan 2021 21:39:08 +1100
-Date:   Thu, 28 Jan 2021 21:39:08 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Meng Yu <yumeng18@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
-Message-ID: <20210128103908.GA32495@gondor.apana.org.au>
-References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
- <1611299395-675-5-git-send-email-yumeng18@huawei.com>
- <20210128050354.GA30874@gondor.apana.org.au>
- <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D1411FB;
+        Thu, 28 Jan 2021 02:39:41 -0800 (PST)
+Received: from e123427-lin.arm.com (unknown [10.57.46.3])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B27E3F766;
+        Thu, 28 Jan 2021 02:39:39 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Jingoo Han <jingoohan1@gmail.com>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] PCI: dwc: remove useless dw_pcie_ops
+Date:   Thu, 28 Jan 2021 10:39:32 +0000
+Message-Id: <161183035514.4271.3911411429293996469.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20210128144208.343052f7@xhacker.debian>
+References: <20210128144208.343052f7@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:30:23AM +0100, Ard Biesheuvel wrote:
->
-> But this also begs the question which ecdh-nist-pXXX implementations
-> we actually need? Why are we exposing these curves in the first place?
+On Thu, 28 Jan 2021 14:42:13 +0800, Jisheng Zhang wrote:
+> Some designware based device driver especially host only driver may
+> work well with the default read_dbi/write_dbi/link_up implementation
+> in pcie-designware.c, thus remove the assumption to simplify those
+> drivers.
+> 
+> Since v2:
+>   - rebase to the latest pci/dwc
+>   - add Acked-by tag
+> 
+> [...]
 
-Once they're distinct algorithms, we can then make sure that only
-the ones that are used in the kernel is added, even if some hardware
-may support more curves.
+Applied to pci/dwc, thanks!
+
+[1/2] PCI: dwc: Don't assume the ops in dw_pcie always exists
+      https://git.kernel.org/lpieralisi/pci/c/f2213e5f3b
+[2/2] PCI: dwc: al: Remove useless dw_pcie_ops
+      https://git.kernel.org/lpieralisi/pci/c/05e11f20f5
 
 Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Lorenzo
