@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BC307364
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1275307367
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhA1KGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S232326AbhA1KH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhA1KG3 (ORCPT
+        with ESMTP id S231857AbhA1KHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:06:29 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAB1C061573;
-        Thu, 28 Jan 2021 02:05:45 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id m1so799721wml.2;
-        Thu, 28 Jan 2021 02:05:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kBCcVC0SZ3UIXIu4hu72Rj9+3Dd8kHErgQA4UPujZrs=;
-        b=T3lzVsHMLs2U7sP8Oo0/0DWUlkbNttHUeNH6jsIrKyQmdNO+PVvkwe5VqwASF4WAQj
-         BSUjdTAkpdgY3aVbDhfx5UDCU3nC9qnqIfmodkGTpgy7CsdjFXoM5qGApOd0AOjKwn0T
-         vvsfWJeOBKEXLpL4gYer+Av0X2KElnbxDAeU2fssw562ql+9PM7LlgZhQlA48877mThU
-         Ebp90CmBfIF1h2DFN6XLjWBDSTq3Vb2WdnpDzzKit5fPTCbAxkJskXFFjs8YxHNp23nl
-         NqUgZ3jMm2Xy4VfG4P8IVfzT7dEEB1NSffOUoGrdmvgsGLVCpAEwVNbK7/uhR0J2CCSM
-         bebA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kBCcVC0SZ3UIXIu4hu72Rj9+3Dd8kHErgQA4UPujZrs=;
-        b=WrUUNCmfWjOOLYM5uv9teENoV1hwBEnk0yKwJBTTdgiSya0XtfEtdJyGKY/iBHho6R
-         INni+4ZbNCVt7+g4DkGQN1Y/kl6m1p3zG8VYOULHGsEvUC3wwcUjlK9t6cjDX/P3RQJl
-         F73S9Et8YQTIB+ChMwCKi9U/iBpqax+RgQc6pM6JF09W2wK/tF4hJ5IagK7DrccAaTzl
-         4RXOa7el5pwHpdkx+dXIFNDo5QqcTXgQKzDVhg1d/LfqBhhwC+PGMpZZDoMgddgB3KcG
-         9PWrQNjE9TccZkIzC9e1J9wKULoEO2WzsrpDVdPJTS4SG4xu9zUPKkCE3KgrEoLRBD/g
-         aWSA==
-X-Gm-Message-State: AOAM530sG+iCyoiNNAoteNFRAvEHUn2JPoNl/waLvruwqrUVmJitQLP5
-        5u6bYfuv9YFC2bEoau6MaOfNKJfusww=
-X-Google-Smtp-Source: ABdhPJwrFGEC64XsGK1Z3Zcdt2iTuumJ900it1s3bmjvyCqRvyHy5YdHpgm95AxEG0qQRtJ+To0mSA==
-X-Received: by 2002:a7b:ca4d:: with SMTP id m13mr8258014wml.28.1611828344550;
-        Thu, 28 Jan 2021 02:05:44 -0800 (PST)
-Received: from [192.168.1.20] (5ec062a9.skybroadband.com. [94.192.98.169])
-        by smtp.googlemail.com with ESMTPSA id s4sm5406454wme.38.2021.01.28.02.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 02:05:43 -0800 (PST)
-Subject: Re: linux-5.10.11 build failure
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-References: <f141f12d-a5b9-1e60-2740-388bf350b631@googlemail.com>
- <YBKFNUp5WYtdg9pE@kroah.com>
-From:   Chris Clayton <chris2553@googlemail.com>
-Message-ID: <fef32b91-89fe-64b8-fe57-d681db29f86e@googlemail.com>
-Date:   Thu, 28 Jan 2021 10:05:43 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 28 Jan 2021 05:07:16 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BB6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:06:30 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id NA6T2400T4C55Sk01A6TE5; Thu, 28 Jan 2021 11:06:28 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l54C3-001KNc-83; Thu, 28 Jan 2021 11:06:27 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l54C2-009TKH-NB; Thu, 28 Jan 2021 11:06:26 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH -next] mm/nommu: Fix return type of filemap_map_pages()
+Date:   Thu, 28 Jan 2021 11:06:26 +0100
+Message-Id: <20210128100626.2257638-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YBKFNUp5WYtdg9pE@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If CONFIG_MMU is not set (e.g. m68k/m5272c3_defconfig):
 
-On 28/01/2021 09:34, Greg Kroah-Hartman wrote:
-> On Thu, Jan 28, 2021 at 09:17:10AM +0000, Chris Clayton wrote:
->> Hi,
->>
->> Building 5.10.11 fails on my (x86-64) laptop thusly:
->>
->> ..
->>
->>  AS      arch/x86/entry/thunk_64.o
->>   CC      arch/x86/entry/vsyscall/vsyscall_64.o
->>   AS      arch/x86/realmode/rm/header.o
->>   CC      arch/x86/mm/pat/set_memory.o
->>   CC      arch/x86/events/amd/core.o
->>   CC      arch/x86/kernel/fpu/init.o
->>   CC      arch/x86/entry/vdso/vma.o
->>   CC      kernel/sched/core.o
->> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at offset 0x3e
->>
->>   AS      arch/x86/realmode/rm/trampoline_64.o
->> make[2]: *** [scripts/Makefile.build:360: arch/x86/entry/thunk_64.o] Error 255
->> make[2]: *** Deleting file 'arch/x86/entry/thunk_64.o'
->> make[2]: *** Waiting for unfinished jobs....
->>
->> ..
->>
->> Compiler is latest snapshot of gcc-10.
->>
->> Happy to test the fix but please cc me as I'm not subscribed
-> 
-> Can you do 'git bisect' to track down the offending commit?
-> 
+    mm/nommu.c:1671:6: error: conflicting types for ‘filemap_map_pages’
+     1671 | void filemap_map_pages(struct vm_fault *vmf,
+	  |      ^~~~~~~~~~~~~~~~~
+    In file included from mm/nommu.c:20:
+    ./include/linux/mm.h:2578:19: note: previous declaration of ‘filemap_map_pages’ was here
+     2578 | extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+	  |                   ^~~~~~~~~~~~~~~~~
 
-Sure, but I'll hold that request for a while. I updated to binutils-2.36 on Monday and I'm pretty sure that is a feature
-of this build fail. I've reverted binutils to 2.35.1, and the build succeeds. Updated to 2.36 again and, surprise,
-surprise, the kernel build fails again.
+The signature of filemap_map_pages() was changed, but the nommu
+implementation wasn't updated.
 
-I've had a glance at the binutils ML and there are all sorts of issues being reported, but it's beyond my knowledge to
-assess if this build error is related to any of them.
+Reported-by: noreply@ellerman.id.au
+Fixes: f9ce0be71d1fbb03 ("mm: Cleanup faultaround and finish_fault() codepaths")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Compile-tested only.
+Feel free to fold into the commit introducing the issue.
+---
+ mm/nommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I'll stick with binutils-2.35.1 for the time being.
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 870fea12823e633d..5c9ab799c0e63958 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -1668,10 +1668,11 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+ }
+ EXPORT_SYMBOL(filemap_fault);
+ 
+-void filemap_map_pages(struct vm_fault *vmf,
++vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+ 		pgoff_t start_pgoff, pgoff_t end_pgoff)
+ {
+ 	BUG();
++	return 0;
+ }
+ EXPORT_SYMBOL(filemap_map_pages);
+ 
+-- 
+2.25.1
 
-> And what exact gcc version are you using?
->
-
- It's built from the 10-20210123 snapshot tarball.
-
-I can report this to the binutils folks, but might it be better if the objtool maintainer looks at it first? The
-binutils change might just have opened the gate to a bug in objtool.
-
-> thanks,
-> 
-> greg k-h
-> 
-
-Thanks.
-
-Chris
