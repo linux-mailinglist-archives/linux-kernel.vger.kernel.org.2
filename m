@@ -2,110 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69C0307564
+	by mail.lfdr.de (Postfix) with ESMTP id 67014307563
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhA1MA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:00:27 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:41174 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231377AbhA1MAA (ORCPT
+        id S231398AbhA1L77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:59:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34580 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhA1L7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:00:00 -0500
-X-Greylist: delayed 945 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 06:59:59 EST
-X-AuditID: 0a580155-713ff700000550c6-8c-60129d2b0143
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id B7.E6.20678.B2D92106; Thu, 28 Jan 2021 19:16:59 +0800 (HKT)
-Received: from aili-OptiPlex-7020 (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 28 Jan
- 2021 19:43:27 +0800
-Date:   Thu, 28 Jan 2021 19:43:26 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     <x86@kernel.org>, <tony.luck@intel.com>, <naoya.horiguchi@nec.com>
-CC:     <linux-kernel@vger.kernel.org>, <yangfeng1@kingsoft.com>
-Subject: [PATCH] x86/fault: Send SIGBUS to user process always for hwpoison
- page access.
-Message-ID: <20210128194326.71895e92.yaoaili@kingsoft.com>
-Organization: Kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 28 Jan 2021 06:59:46 -0500
+Date:   Thu, 28 Jan 2021 11:59:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611835141;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BGEuwSNboDiyZ/BU59QnUC32kqSwFnS/E8nL29mj7YY=;
+        b=CreLqvLWUX4yL9Ty5XYGZ8uf+wAS6E+NZdMDg+VFsOrDGCzVN+HRxQPqCKbtqrfexTEbQF
+        Rc+eQcn3hQ8qKwN4tHQpq3ziRolkK4lYtv9FtJgT8e+ixNFhPJXTWdpdhQ5gxKqXCdUR0w
+        Zcih6dxM0zrAQvcFuyPeNtRRWLTdrvn7sZhxV9z/73vN96kBBfXZpr1eSs6Y/Z2jYqT6hb
+        1we8NHbI7yOadRAvcbSAGmAGIcCMU/9P0QAkjibP0NSZzyzXbUhdX9qK0oDcQ7pD5FDwNn
+        nlXdOrJU92/MUP5ryN7kPAZ40CsmPbjWBZaYvg2vYATJG5xn9j1sZSaoqRbPzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611835141;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BGEuwSNboDiyZ/BU59QnUC32kqSwFnS/E8nL29mj7YY=;
+        b=NOobTiqMJ2GCo+KKpkwYnghmjtzN8uGyE5E2GH0U0ZLEeCUZKxycsUPszh/PXq7rAbPtEf
+        +veEDJuWZtZAMxBw==
+From:   "tip-bot2 for Fangrui Song" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/build] x86/build: Treat R_386_PLT32 relocation as R_386_PC32
+Cc:     Arnd Bergmann <arnd@arndb.de>, Fangrui Song <maskray@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210127205600.1227437-1-maskray@google.com>
+References: <20210127205600.1227437-1-maskray@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Message-ID: <161183514033.23325.16464186456601359972.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMLMWRmVeSWpSXmKPExsXCFcGooKs9VyjB4MUkJovLu+awWVxsPMBo
-        8ebCPRaLHxseszqweCze85LJY9OqTjaPF1c3snh83iQXwBLFZZOSmpNZllqkb5fAlbH20mrG
-        gg6Bike377A1ME7l7WLk5JAQMJG4++sGcxcjF4eQwHQmiW1fDzFCOC8YJS6+PAHkcHCwCKhK
-        fLhuCNLABmTuujeLFcQWEXCTOPj9MTuIzSxgI/F4xzQWEFtYIEri1ZQOJpBWXgEriR0H0kBM
-        fgExiVcNxhBr7SWe/z3LDGLzCghKnJz5hAViio7EiVXHmCFseYntb+eA2UICihKHl/xih+hV
-        kjjSPYMNwo6VWDbvFesERsFZSEbNQjJqFpJRCxiZVzGyFOemG21ihIRr6A7GGU0f9Q4xMnEw
-        HmKU4GBWEuF9O0coQYg3JbGyKrUoP76oNCe1+BCjNAeLkjhvuQNfgpBAemJJanZqakFqEUyW
-        iYNTqoEpMHFnVffZS2vtv/9+9s/d21tMOqD9tf+/T/+4mk7UNtfYps2pffV8jptMlbD3/aNX
-        5jx45BSrpWMSuGadS8dE/fd33oV83iL+7fGi6XO8GGvrb/vyBhwz21/OJL6na97iC7dlIhJy
-        d7tpTD2xP/lFb8/BLw5pz3cdy9pw4s+f7dOOPOvPj0+t/8qjZ1Jo/WL51oQ5r05kFTTJ2PnP
-        qb/7U+2//hyjRWH/zBgqBN+d42BLjv40JeKuhPLR+qlbhZKeTrE7wySy+6eHZMdXcVEWbc+i
-        aLOc7iD3qWunzo3YL1KsVPNCK3H6VekdNy+Uboz/sncr67ufa6fY/b/N++F+XlPeGe9PnbPK
-        N5hdnniRTYmlOCPRUIu5qDgRAF5VeATGAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when one page is already hwpoisoned by AO action, process may not be
-killed, the process mapping this page may make a syscall include this
-page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
-mode it may be fixed by fixup_exception, current code will just return
-error code to user process.
+The following commit has been merged into the x86/build branch of tip:
 
-This is not suffient, we should send a SIGBUS to the process and log the
-info to console, as we can't trust the process will handle the error
-correctly.
+Commit-ID:     bb73d07148c405c293e576b40af37737faf23a6a
+Gitweb:        https://git.kernel.org/tip/bb73d07148c405c293e576b40af37737faf23a6a
+Author:        Fangrui Song <maskray@google.com>
+AuthorDate:    Wed, 27 Jan 2021 12:56:00 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 28 Jan 2021 12:24:06 +01:00
 
-Suggested-by: Feng Yang <yangfeng1@kingsoft.com>
-Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+x86/build: Treat R_386_PLT32 relocation as R_386_PC32
+
+This is similar to commit
+
+  b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as R_X86_64_PC32")
+
+but for i386. As far as the kernel is concerned, R_386_PLT32 can be
+treated the same as R_386_PC32.
+
+R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types which
+can only be used by branches. If the referenced symbol is defined
+externally, a PLT will be used.
+
+R_386_PC32/R_X86_64_PC32 are PC-relative relocation types which can be
+used by address taking operations and branches. If the referenced symbol
+is defined externally, a copy relocation/canonical PLT entry will be
+created in the executable.
+
+On x86-64, there is no PIC vs non-PIC PLT distinction and an
+R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
+`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
+This avoids canonical PLT entries (st_shndx=0, st_value!=0).
+
+On i386, there are 2 types of PLTs, PIC and non-PIC. Currently,
+the GCC/GNU as convention is to use R_386_PC32 for non-PIC PLT and
+R_386_PLT32 for PIC PLT. Copy relocations/canonical PLT entries
+are possible ABI issues but GCC/GNU as will likely keep the status
+quo because (1) the ABI is legacy (2) the change will drop a GNU
+ld diagnostic for non-default visibility ifunc in shared objects.
+
+clang-12 -fno-pic (since [1]) can emit R_386_PLT32 for compiler
+generated function declarations, because preventing canonical PLT
+entries is weighed over the rare ifunc diagnostic.
+
+Further info for the more interested:
+
+  https://github.com/ClangBuiltLinux/linux/issues/1210
+  https://sourceware.org/bugzilla/show_bug.cgi?id=27169
+  https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6 [1]
+
+ [ bp: Massage commit message. ]
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Link: https://lkml.kernel.org/r/20210127205600.1227437-1-maskray@google.com
 ---
- arch/x86/mm/fault.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/x86/kernel/module.c |  1 +
+ arch/x86/tools/relocs.c  | 12 ++++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index f1f1b5a0956a..36d1e385512b 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -662,7 +662,16 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 		 * In this case we need to make sure we're not recursively
- 		 * faulting through the emulate_vsyscall() logic.
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 34b153c..5e9a34b 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -114,6 +114,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
+ 			*location += sym->st_value;
+ 			break;
+ 		case R_386_PC32:
++		case R_386_PLT32:
+ 			/* Add the value, subtract its position */
+ 			*location += sym->st_value - (uint32_t)location;
+ 			break;
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index ce7188c..1c3a196 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -867,9 +867,11 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
  		 */
-+#ifdef CONFIG_MEMORY_FAILURE
-+		if (si_code == BUS_MCEERR_AR && signal == SIGBUS)
-+			pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
-+				current->comm, current->pid, address);
-+
-+		if ((current->thread.sig_on_uaccess_err && signal) ||
-+			(si_code == BUS_MCEERR_AR && signal == SIGBUS)) {
-+#else
- 		if (current->thread.sig_on_uaccess_err && signal) {
-+#endif
- 			sanitize_error_code(address, &error_code);
+ 		break;
  
- 			set_signal_archinfo(address, error_code);
-@@ -927,7 +936,14 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
- {
- 	/* Kernel mode? Handle exceptions or die: */
- 	if (!(error_code & X86_PF_USER)) {
-+#ifdef CONFIG_MEMORY_FAILURE
-+		if (fault & (VM_FAULT_HWPOISON|VM_FAULT_HWPOISON_LARGE))
-+			no_context(regs, error_code, address, SIGBUS, BUS_MCEERR_AR);
-+		else
-+			no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
-+#else
- 		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
-+#endif
- 		return;
- 	}
+@@ -910,9 +912,11 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
  
--- 
-2.25.1
-
