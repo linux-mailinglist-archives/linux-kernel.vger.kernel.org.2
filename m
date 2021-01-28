@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634E3307D7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69792307DB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhA1SKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S231797AbhA1SSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhA1SGe (ORCPT
+        with ESMTP id S231578AbhA1SGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:06:34 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A46AC0611BC
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:03 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id v15so6355720wrx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:03 -0800 (PST)
+        Thu, 28 Jan 2021 13:06:51 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89099C0611BD
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:04 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id c4so3632889wru.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9Kb16WgSiv4QCUnRh1QxmaZs22WYIlooIF+TJGzI06k=;
-        b=uY4tumtm8YxOImI9ocT2XoW8jBaWMaHHZiFSt4FEuXv9bdzGN9Xj+osrJCQGerKD/P
-         sSgI2L4hb4qjMt7aVvkNRMKuZ6rj0dJ7y396CeWuYr+K5hDfG0ixH0Mwj/jWYlHVTDDO
-         ZUAiIdWz/0iGZCKsHCQSS9R4hek/lPkeCB40HrUQRcjNokwQKG7GwmrVAvVR8eDczZY0
-         LO5KJDXrrVmjxg+x/mySwzjkG8UG/5mvat7AgllpymQ6UA2+ssRaQdKkCoCFvnNseHJ0
-         3ZT37UgpKQ+OBZllJcKKbHglPTxM3GSUNQYr92qAEjJ4y/Jk3R+/h3imz9I/qP1n3zZr
-         qXEg==
+        bh=BlJPa4weJ+jes2vrsBZmFk9aHoMXb6b/UAhdjjLI1xw=;
+        b=tIoUH1MMZgHPgcFm1H5xu5GhnyoOc6pk1LknTNWKf1oRwOVc068CLd4D+hvcZXd3Dt
+         ZWekkNvjydaiLPrxtaSjQZWwB6pworR01AK+cB7oEEL5CfA9vfOx3l2cYwFWPEmGD5WX
+         /XUfMWHAgo+JLnjCquaGOUWO0E3+vodO+gsmcFkAWrLPeF+8MEPEDMGH9yg5HEp9GXQ+
+         pNWuR1mkrY1sscEUp1LswyjfN6lD84DZp0la7v5j7tIuyACn7j2ddg4MpbihmbuX7Zim
+         RnZxc6rXRoC14A6KgxJbyA2TXVc2x8e+Gh2mNWBEWqhnzwEMJKWV+Iep3OU9jqog7yQb
+         +2fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9Kb16WgSiv4QCUnRh1QxmaZs22WYIlooIF+TJGzI06k=;
-        b=uBBv0NPuHuPHX3cmdSxfUFGJ0IoZPSizzVkZJfj8diNMKw6uscklI9pE5K1au0J+qV
-         7kyyy5r+fn0c0NZrpth1fs0VjfoICoFzaDM0kLnOVTN6IpUgncv8UwsoQsSAip1oE2d8
-         z9nAV9N7Z/cpoJrWKH5fu7hMFHPP/IuZFvqh7QZ/fjQ5mYbjI5DJC1kvJZCNb3iVG6vx
-         z7cH/UvjI4ejQzxvatNoK47ZoPyV1iW37fqGX+jrT7IgaMtgmf+NNp21/4R/aQtXBGJl
-         21XvHxdU7hyaDexl475cfkz1NbMQwh6C//9pQWLMXKo7ja3SBIw86qy07oJrLw+FTNd1
-         WDrg==
-X-Gm-Message-State: AOAM530gPrxDYiYDCLQGF3JzpH92ap9IHTxWVtt9pzOlANNbdUalUtUm
-        b9aWSKr0uAgoLLq3cEQB0Qb7005O3mOvpcoD
-X-Google-Smtp-Source: ABdhPJy0q7zmSeCorDLSuCQkUi+uvpRw9C9SmnsugADQK5tQ2YEsviEZpL2JQSzXWWVaz05j2FO+8w==
-X-Received: by 2002:adf:dc88:: with SMTP id r8mr238462wrj.401.1611856982219;
-        Thu, 28 Jan 2021 10:03:02 -0800 (PST)
+        bh=BlJPa4weJ+jes2vrsBZmFk9aHoMXb6b/UAhdjjLI1xw=;
+        b=IwzZhnebzErQayYOhPcyeCCNPmMoLBOf/ofiyjo5t0TGLZ4daNs9RyyhABBfe5++Uz
+         qKP1PljewHGQPzU60wzP4B2uYh49DiaBlIpIa3RB/vj/Mv9yv29WOldzo7WgUttoykzB
+         ClBiBeNkIa4sjEgJpJtprFXwBH1TkVw5u37nzuNbX7xlKZ3a54PXbey+3OJkDGALgJ6u
+         mPl4nMuiuC+HC5JNe7PUlp42i+P+Z9X6oEAiRysk9MJDcKcPViXgoHKTSHvyfbhfXC/x
+         BfpNuKae/QaFZ1Su8UUi8b5UJlCmyeOExv/pcPHf/zbS/pxliYplf6rBXgM3LUgRlpeU
+         cKFg==
+X-Gm-Message-State: AOAM531M4/PZ36SzopaaVy7EQPKFdtO6bV+g2qxSxiGNu37pu0uD4sAl
+        lepQiNJhnKbKittkN8h/p5WMOw==
+X-Google-Smtp-Source: ABdhPJzCh/6Len5XnN+iFyPGMOmxw2mV+V4tO818WFPny0PyiE6vtR+TA1iztn7KqE0i9aOnTYVTwQ==
+X-Received: by 2002:adf:80c3:: with SMTP id 61mr357970wrl.100.1611856983215;
+        Thu, 28 Jan 2021 10:03:03 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.03.00
+        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.03.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:03:01 -0800 (PST)
+        Thu, 28 Jan 2021 10:03:02 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-ide@vger.kernel.org
-Subject: [PATCH 16/20] ata: ahci_brcm: Ignore -Woverride-init
-Date:   Thu, 28 Jan 2021 18:02:35 +0000
-Message-Id: <20210128180239.548512-17-lee.jones@linaro.org>
+        Loc Ho <lho@apm.com>, Tuan Phan <tphan@apm.com>,
+        Suman Tripathi <stripathi@apm.com>, linux-ide@vger.kernel.org
+Subject: [PATCH 17/20] ata: ahci_xgene: Fix incorrect naming of 'xgene_ahci_handle_broken_edge_irq()'s 'host' param
+Date:   Thu, 28 Jan 2021 18:02:36 +0000
+Message-Id: <20210128180239.548512-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210128180239.548512-1-lee.jones@linaro.org>
 References: <20210128180239.548512-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some ATA drivers use the SCSI host template, a series of interwoven
-macros, to aid with initialisation.  Some of these macros conflict,
-resulting in the over-writing of previously set values.
-
-This is known behaviour and can be safely ignored.
-
 Fixes the following W=1 kernel build warning(s):
 
- In file included from drivers/ata/ahci_brcm.c:22:
- drivers/ata/ahci.h:387:16: warning: initialized field overwritten [-Woverride-init]
- drivers/ata/ahci_brcm.c:414:2: note: in expansion of macro ‘AHCI_SHT’
- drivers/ata/ahci.h:387:16: note: (near initialization for ‘ahci_platform_sht.can_queue’)
- drivers/ata/ahci_brcm.c:414:2: note: in expansion of macro ‘AHCI_SHT’
- drivers/ata/ahci.h:391:17: warning: initialized field overwritten [-Woverride-init]
- drivers/ata/ahci_brcm.c:414:2: note: in expansion of macro ‘AHCI_SHT’
- drivers/ata/ahci.h:391:17: note: (near initialization for ‘ahci_platform_sht.sdev_attrs’)
- drivers/ata/ahci_brcm.c:414:2: note: in expansion of macro ‘AHCI_SHT’
+ drivers/ata/ahci_xgene.c:564: warning: Function parameter or member 'host' not described in 'xgene_ahci_handle_broken_edge_irq'
+ drivers/ata/ahci_xgene.c:564: warning: Excess function parameter 'ata_host' description in 'xgene_ahci_handle_broken_edge_irq'
 
 Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Loc Ho <lho@apm.com>
+Cc: Tuan Phan <tphan@apm.com>
+Cc: Suman Tripathi <stripathi@apm.com>
 Cc: linux-ide@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/ata/ahci_xgene.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ata/Makefile b/drivers/ata/Makefile
-index cf851f5a4e7fd..a6755a524efa0 100644
---- a/drivers/ata/Makefile
-+++ b/drivers/ata/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/drivers/ata/ahci_xgene.c b/drivers/ata/ahci_xgene.c
+index 16246c843365e..dffc432b9d54a 100644
+--- a/drivers/ata/ahci_xgene.c
++++ b/drivers/ata/ahci_xgene.c
+@@ -537,7 +537,7 @@ static int xgene_ahci_softreset(struct ata_link *link, unsigned int *class,
  
- CFLAGS_acard-ahci.o		= $(call cc-disable-warning, override-init)
-+CFLAGS_ahci_brcm.o		= $(call cc-disable-warning, override-init)
- CFLAGS_ahci_ceva.o		= $(call cc-disable-warning, override-init)
- CFLAGS_ahci_dm816.o		= $(call cc-disable-warning, override-init)
- CFLAGS_ahci_mtk.o		= $(call cc-disable-warning, override-init)
+ /**
+  * xgene_ahci_handle_broken_edge_irq - Handle the broken irq.
+- * @ata_host: Host that recieved the irq
++ * @host: Host that recieved the irq
+  * @irq_masked: HOST_IRQ_STAT value
+  *
+  * For hardware with broken edge trigger latch
 -- 
 2.25.1
 
