@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EB3307A7E
+	by mail.lfdr.de (Postfix) with ESMTP id D3818307A7F
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhA1QQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:16:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbhA1QPJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:15:09 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08669C061574;
-        Thu, 28 Jan 2021 08:14:29 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id 31so3579214plb.10;
-        Thu, 28 Jan 2021 08:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ebmoIuF3Uj9Dga3CXxlH/hPzyMKtg/WMNHqvabp/Ti4=;
-        b=AxdzqfrIbxcmKZFyQjZJ3+WGqUHBwTOM6sjuiAwkB4WqLNIkDRs9lAbUiuw+2xqH82
-         2hDuPZuOD8656SQOww9s3MqZ1tZGdzPT9UuFo+FrYL29YWe4d5SDQoEVnzpLkupfVl4o
-         /qDGzUCLLTAK0934Vr426N0pveRJ6tRuo90jSpnrT8ylyrKW61Avmewb4P6ZpkIbJ1lu
-         CBDBqDHdcKfE+FqaTocipkBjJ/JAyY6z5GceYK+IJav0mfY28Hll4kgTYB9YjBrOG4iv
-         RirtC0velWCKqZfdZ3YjqwxrUpA4QiTLLcrgU5gbLYLN+B+WyW/HgAc2AjzrDQ/dF/aq
-         wrDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ebmoIuF3Uj9Dga3CXxlH/hPzyMKtg/WMNHqvabp/Ti4=;
-        b=fIZujtnpt4bfpyu9MvjYT2qEasEArGWV7DtYt5qPSUwXOLLt771ImWWoUpj1m5zDGL
-         RvF/Et9dGCMhEkVb4Ws57cRV+hV1sCh2NBJm5H4VN70Dqnm60dH1jzHpOn7qT0jECx9M
-         KmsN8ZGYmPdEHHG3C2yjzz3upsZGX6UOEBOLzNn0nYPNT4lkZytiP8jb5C0hgWQhc7ed
-         2/dHhwbtc2Kj66K6Y5pXAVs9MehCq6OJnByesCkrkzAHblYHyEHYW2QN7RhJg3y+PaIW
-         Ig5AyMDEDsdwFQh+axaeNZtv0ZFUCenM4auqgBC+0n9rJFQRo6RzhY5TP1/T6JUzmA5y
-         Rtvg==
-X-Gm-Message-State: AOAM530o4GAj5SsK2GkgXT7c856ZAI+SKruRUoEEVKqwSrSTUCl7iUsG
-        8m/np5rqt4/xSdXrShHQNR8GxmDHoim8fsqigzo=
-X-Google-Smtp-Source: ABdhPJyZq6kVNUSeUf2yzdXfA9ybotJ7FzYElXwK6i7SYrYjQxxnsF1okmFz94xBB2sQCvkK8i9plQUsU6IUM7d2qXY=
-X-Received: by 2002:a17:90a:644a:: with SMTP id y10mr108794pjm.129.1611850468557;
- Thu, 28 Jan 2021 08:14:28 -0800 (PST)
+        id S232425AbhA1QQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:16:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231233AbhA1QQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:16:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC2E164E07
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611850531;
+        bh=Bf8FGjgHMZZQbBqF/RyoAVCwsQFjmzA+aLlGG8ewick=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LQx+MfLkWxwe8AEdJqQ7+nZXcQ56oMK22Mf7TduQYvPyXWM2yKrgVC7jVy3P9p+8D
+         a8yMj+pJ7MtdeovESRJ1lqyVOthIRxXPwyhvUke9FrbD0yuU4LhgFTbtC7MR9BzEWR
+         L9d0v1KR3u43WjhocoiVfpJhdlvkiNMDc4rrUpMmyvn9fkTSIdQcG0/P1xWdtqlZ5f
+         ZEU0eAPeRMUQuJdRTCVlaRJ3Xe7GDMvOE1Y5y1exvpWJIMxhYGf+uUWxD+qcEFIh21
+         jXaPK+ZrrX4s3KYdJ4AHSpQXnsQ8OxM+9Lz3L8APXKVIWDKnjtAINsixdXnpPww1fz
+         Up7mUMin2FupA==
+Received: by mail-oo1-f47.google.com with SMTP id u7so1554908ooq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:15:30 -0800 (PST)
+X-Gm-Message-State: AOAM530Cx+kzR7CaQVxjZjdmNwDtWtZPXtCzIQGDd8zel7acpsnq79FN
+        jdMH0Cm32NxurljP8j9su5nMFXwmWMP4YZvkMoQ=
+X-Google-Smtp-Source: ABdhPJztAGHg/Ija/0BNN0/p16vx3WFptcgZ+GPHCTPTPxaZHtGJVx0dTrhlcnnxi5C9+7ujlXgl3Q3hmZSUvC8sSa4=
+X-Received: by 2002:a4a:88c9:: with SMTP id q9mr237072ooh.26.1611850530253;
+ Thu, 28 Jan 2021 08:15:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20210128122123.25341-1-nikita.shubin@maquefel.me> <20210128122123.25341-3-nikita.shubin@maquefel.me>
-In-Reply-To: <20210128122123.25341-3-nikita.shubin@maquefel.me>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 Jan 2021 18:14:12 +0200
-Message-ID: <CAHp75VeQ55yZ9cFo0i6ep9tL-yW15coDnmXS6QJSccBdvk=+0w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] gpio: gpio-ep93xx: Fix single irqchip with multi gpiochips
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210128044356.38419-1-ndesaulniers@google.com>
+In-Reply-To: <20210128044356.38419-1-ndesaulniers@google.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 28 Jan 2021 17:15:13 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
+Message-ID: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: kprobes: rewrite in UAL
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 2:21 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+On Thu, Jan 28, 2021 at 5:44 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
 >
-> Fixes the following warnings which results in interrupts disabled on
-> port B/F:
+> Clang's integrated assembler only accepts UAL syntax, rewrite the
+> instructions that were changed by RVCTv2.1.
 >
-> gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
-> gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
+> The document "Assembly language changes after RVCTv2.1" was very
+> helpful.
 >
-> - added separate irqchip for each interrupt capable gpiochip
-> - provided unique names for each irqchip
-> - reworked ep93xx_gpio_port to make it usable before chip_add_data
->   in ep93xx_init_irq_chips
+> This exposed a bug in Clang's integrated assembler, which hopefully will
+> land in clang-12, but is required to test this patch with LLVM_IAS=1.
 >
-> Fixes: d2b091961510 ("gpio: ep93xx: Pass irqchip when adding gpiochip")
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> Link: https://developer.arm.com/documentation/dui0473/c/writing-arm-assembly-language/assembly-language-changes-after-rvctv2-1
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1271
+> Link: https://reviews.llvm.org/D95586
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  arch/arm/probes/kprobes/test-arm.c | 288 ++++++++++++++---------------
+>  1 file changed, 144 insertions(+), 144 deletions(-)
 
-...
+This mostly works, but I see one extra case in some configurations:
 
-> +#define EP93XX_GPIO_IRQ_CHIPS_NUM 3
-> +
->  struct ep93xx_gpio {
->         void __iomem            *base;
->         struct gpio_chip        gc[8];
-> +       struct irq_chip         ic[EP93XX_GPIO_IRQ_CHIPS_NUM];
->  };
 
->  /* Port ordering is: A B F */
-> +static const char * const irq_chip_names[] = {
-> +       "gpio-irq-a",
-> +       "gpio-irq-b",
-> +       "gpio-irq-f",
-> +};
+arch/arm/probes/kprobes/test-arm.c:453:2: error: invalid instruction,
+did you mean: swpb?
+        TEST_R( "swpvsb r0, r",1,VAL1,", [sp]")
+        ^
+arch/arm/probes/kprobes/test-core.h:235:2: note: expanded from macro 'TEST_R'
+        TEST_INSTRUCTION(code1 #reg code2)              \
+        ^
+arch/arm/probes/kprobes/test-core.h:155:17: note: expanded from macro
+'TEST_INSTRUCTION'
+        "50:    nop                                     \n\t"   \
+                                                          ^
+<inline asm>:20:5: note: instantiated into assembly here
+        1:      swpvsb  r0, r1, [sp]
+                ^~~~~~
 
-Depending on the solution from the previous patch I would also go here
-rather with holes, than messing up with mapping between port index and
-index in this array.
+Plus a lot of extra errors when building with CONFIG_THUMB2_KERNEL,
+as that uses tests in arch/arm/probes/kprobes/test-thumb.c.
 
--- 
-With Best Regards,
-Andy Shevchenko
+        Arnd
