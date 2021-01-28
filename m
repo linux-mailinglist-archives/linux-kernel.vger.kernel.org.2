@@ -2,138 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C802F30732F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E6F307339
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhA1Jux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:50:53 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:58577 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231674AbhA1JuH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:50:07 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CC34B580777;
-        Thu, 28 Jan 2021 04:48:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 28 Jan 2021 04:48:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=TV859JvWohvleWj2mlFpPgmtkri
-        A19iCS+DM5VX5zO4=; b=fA7G8+msT4KYcqnHIgLxQP+PqklcjUp1JZ+v1tH8kqI
-        bfcRaN8oQIGt8feTaYgoQ797EGT4peyAf0gzWMd1ognhfVbmYQgBmhgw60DKKwyF
-        OkCr7MzW/hkSHxjIGOjhi3L4+CQIUvZJMCv1ClRvZk1ejkP+0D978Y1mC77LWaDR
-        2Qv8RqW46xThBokYMhl4Yl41IQKtMc3cBQDW+qUa7K+knCKcRhd25b4DxnyEE5t8
-        AIKB0H3hBJmhaO4BCdg+bMMJyym8WZO3ys5RNKNbU9VU93sxoN3eGAliw8DcVBVx
-        JH4ElzvJB47Sm3xtSSMHKG/jLO4fGowAXci8hEdVKyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TV859J
-        vWohvleWj2mlFpPgmtkriA19iCS+DM5VX5zO4=; b=GhODBhboPsDZZcXYC4C7Fd
-        GFtz/Nerkl/LyDWteUwO2WVRURMcZxsQI0bjETRzoTCgrm98a5xmbZ5rz4aWcPAb
-        37/I6AevS2omsNi94Dg9Iuv3BkbAgDdthef/2hVImSL/KMUjm8bCZouiSKutu2Z8
-        OkfFwvjnnFGQXr89HTfrIE/jdbfudB6aqaiw2H2JkmkzmwwgZhopwXLeFfHgJvSj
-        hR6t43g22N9fMI2DVNp46biqC8hYjHbDXioBnwU0HSokS/RIg2HsquQKUErjHAf6
-        rZxT0HDTScO+FLCBgAu9u8fYNTa2r+fdU64CTm+8MljxCKaWRXFJsz6f+2/8pPHg
-        ==
-X-ME-Sender: <xms:g4gSYIpPEYZg8W6QasCiNpwsxO1K-SEnjT7vF-e1MbYr55R98toN8A>
-    <xme:g4gSYOr1AupiGrRkxJrRal_nRoEO_AbaZBNnJ3kipsX0Tw33xWhOdNeYYaXbpePIQ
-    G_5rlnsk7RPVvvhKMI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgddtiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:hIgSYNNIS-Nmwee4hfp0b5Qp-_i8qySVH2DpNB95c9EPMkKTxfk8Og>
-    <xmx:hIgSYP7_4ssmloHnIfI11jndKRxEOFAwppQu-ik5BnIFnz91qSUxqA>
-    <xmx:hIgSYH73EECJsEFmHEaqT4sNbcaS0WmWjG9WYdw9QTnZaRDLjO9daA>
-    <xmx:hYgSYPw-gWN3drIkmH5-4V--xcluONBqCQoJdFkYBzfFU06BT9yMfw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B2A7D24005A;
-        Thu, 28 Jan 2021 04:48:51 -0500 (EST)
-Date:   Thu, 28 Jan 2021 10:48:49 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 00/15] drm/vc4: hdmi: Add CEC support for the BCM2711
-Message-ID: <20210128094849.5hxx6ui3tgkmu5p5@gilmour>
-References: <20210111142309.193441-1-maxime@cerno.tech>
- <acd2ba9f35732ba3fb7c31ba05132434ec99fd66.camel@suse.de>
+        id S231501AbhA1JzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:55:05 -0500
+Received: from sauhun.de ([88.99.104.3]:49816 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhA1JzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:55:00 -0500
+Received: from localhost (p54b33782.dip0.t-ipconnect.de [84.179.55.130])
+        by pokefinder.org (Postfix) with ESMTPSA id 6C95F2C04D8;
+        Thu, 28 Jan 2021 10:54:18 +0100 (CET)
+Date:   Thu, 28 Jan 2021 10:54:18 +0100
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Qii Wang <qii.wang@mediatek.com>
+Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com
+Subject: Re: [RESEND, V2] i2c: mediatek: Move suspend and resume handling to
+ NOIRQ phase
+Message-ID: <20210128095418.GM963@ninjato>
+References: <1610180990-23496-1-git-send-email-qii.wang@mediatek.com>
+ <1611661020.15158.4.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="puhomd6fgdwr2xp5"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yaap9KN+GmBP785v"
 Content-Disposition: inline
-In-Reply-To: <acd2ba9f35732ba3fb7c31ba05132434ec99fd66.camel@suse.de>
+In-Reply-To: <1611661020.15158.4.camel@mhfsdcap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---puhomd6fgdwr2xp5
+--yaap9KN+GmBP785v
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
-On Mon, Jan 25, 2021 at 10:03:44PM +0100, Nicolas Saenz Julienne wrote:
-> Hi,
+On Tue, Jan 26, 2021 at 07:37:00PM +0800, Qii Wang wrote:
+> Hi Wolfram,
 >=20
-> On Mon, 2021-01-11 at 15:22 +0100, Maxime Ripard wrote:
-> > Hi,
+> On Sat, 2021-01-09 at 16:29 +0800, qii.wang@mediatek.com wrote:
+> > From: Qii Wang <qii.wang@mediatek.com>
 > >=20
-> > Here's a series introducing the CEC support for the BCM2711 found on the
-> > RaspberryPi4.
+> > Some i2c device driver indirectly uses I2C driver when it is now
+> > being suspended. The i2c devices driver is suspended during the
+> > NOIRQ phase and this cannot be changed due to other dependencies.
+> > Therefore, we also need to move the suspend handling for the I2C
+> > controller driver to the NOIRQ phase as well.
 > >=20
-> > The BCM2711 HDMI controller uses a similar layout for the CEC registers=
-, the
-> > main difference being that the interrupt handling part is now shared be=
-tween
-> > both HDMI controllers.
-> >=20
-> > This series is mainly about fixing a couple of bugs, reworking the driv=
-er to
-> > support having two different interrupts, one for each direction, provid=
-ed by an
-> > external irqchip, and enables the irqchip driver for the controller we =
-have.
-> >=20
-> > This has been tested on an RPi3 and RPi4, but requires the latest firmw=
-are.
-> > It's is based on the 10 and 12 bpc series.
->=20
-> I applied patches #1 and #14 for-next. I'm waiting on Hans' testing for #=
-15.
+> > Signed-off-by: Qii Wang <qii.wang@mediatek.com>
 
-I've applied to drm-misc-next the patches 2 to 13
+Applied to for-current, thanks!
 
-Maxime
 
---puhomd6fgdwr2xp5
+--yaap9KN+GmBP785v
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBKIgQAKCRDj7w1vZxhR
-xcFjAQDyhilWiZOnBtF/6Ds6w1BfcUQewBo/s/AMDRirS7HODgD/RWnajJxfaPQ/
-BJAVsfoxNFRZbgY7Cl/919hBHx8nfA8=
-=F65t
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASicUACgkQFA3kzBSg
+Kbb1SxAAkdlzqRe2g/+FlrSwbUlvm/+2tdGA2oq/oRPw5uUiSeSC860KEdWS6q0b
+eF3cQLo3iiPFeUO0bUc/JPpQn6ItaFDVfbvbBLX2hRJswUPXmVJxHqTQqOKuHgrM
+rsCyXohNdxdT40Bf7+0VteZydDXFbcnStJyCKdn2RjjOXnpX4Y5kQmsqkMxKY4bd
+4LXYyvKsuqfTSPqdvSKozOuspmNDI+/Vq8x/IZHccR27y2vz8vg7b6yRjiRQp2tc
+0dwXzzIUYvMhKEK0ivfNe1uPMI9Sw7SD5i6wFzkT5DIuKfWRpiQxd304nExOvdoI
+xe244OgI6WUCXgTax2UwtOnUdscIrP0Edc3wwf7ewdmCAqirUKsZenWbpBOcvdDn
+lz5IGU5WOQjjds6rL/dYyUlhQRghhRpsmyiF65vFQ/80h0sEMP/g+CAq7GfuAXw2
+rqNkOw4YGCqTy5oidT9s4g+69G8i6alQZ+p1GE0B/2KIzMgwPwcKS3NmIrwcrYEE
++lszyWcK2o3kkcyYls5hvniLK5zSoJomdfqwwRnCNeJng3GqAUaD34Lq5k7lmaIv
+IgT3vOzUWN5V/gCtGg6SPEUzkalEhcQ3Z3eu/+nAOj518SLroSdHfWWqwkpktfjs
+8KQgg+hYgQxHq5qvs9X12mbYiRI3ZlSnNISA7/k47w3US6BmlLE=
+=eBay
 -----END PGP SIGNATURE-----
 
---puhomd6fgdwr2xp5--
+--yaap9KN+GmBP785v--
