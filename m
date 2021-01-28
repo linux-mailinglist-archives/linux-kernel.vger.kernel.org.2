@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C88308220
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61731308227
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhA1Xzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:55:33 -0500
-Received: from ms.lwn.net ([45.79.88.28]:51954 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229757AbhA1Xz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:55:29 -0500
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C130D2B8;
-        Thu, 28 Jan 2021 23:54:48 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C130D2B8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1611878089; bh=YdD+k8vJN24eZfQuSsHdwnb9+XXDsBI/7xyammat07o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J4c4WhtX4sz2gyAotY2Iyml6l/BKOQGzF6VJm9hPhTO6Ocf5YpZ4MP7DO8byYRN99
-         ULQg7ab5mgIAIO5X3UzpIq7wsHzWWF0ayoOEg/0z0XWSMGrDszNrCTgbi/orvIKFGa
-         rTJir9ItNpCMhUXsqCpnMo3j2EtokSJm6Vs98QwuLXXjapjskVejUCITy+UaRUDCJO
-         TIAtO42LRdaLAYihax4w1r9/ptzYEvpX00AxtINSr+v6jMxXhb8d7iokY3NMQ5ydHD
-         lD4mxhAxcj9w0WjF3o6NA82hrj19eXG5Znc2VnCkKyx1oAzCKUD3qdbqsOd8R0axKO
-         8BpVxNu+em3bA==
-Date:   Thu, 28 Jan 2021 16:54:47 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     devel@lists.elisa.tech,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        =?UTF-8?B?QmHFn2Fr?= Erdamar <basakerdamar@gmail.com>
-Subject: Re: Small student project idea on appropriate integration trees in
- MAINTAINERS
-Message-ID: <20210128165447.3da0d98e@lwn.net>
-In-Reply-To: <CAKXUXMyRAer=0S9pxiRs2iF3pdkU8zW=JZw2a+nJJ30iPLPhCA@mail.gmail.com>
-References: <CAKXUXMyRAer=0S9pxiRs2iF3pdkU8zW=JZw2a+nJJ30iPLPhCA@mail.gmail.com>
-Organization: LWN.net
+        id S231229AbhA1X5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:57:22 -0500
+Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:53636 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229530AbhA1X5V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:57:21 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id E910418014495;
+        Thu, 28 Jan 2021 23:56:39 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3871:3872:4321:4605:5007:6119:7652:7875:7903:10004:10400:10848:11026:11232:11658:11783:11914:12043:12296:12297:12555:12740:12895:12986:13069:13200:13229:13311:13357:13439:13894:14096:14097:14181:14659:14721:21080:21433:21451:21627:30041:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: glass70_2c03527275a3
+X-Filterd-Recvd-Size: 2803
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 28 Jan 2021 23:56:38 +0000 (UTC)
+Message-ID: <955a079a3d15228ce9aeba8720dccae2dc7dfb7c.camel@perches.com>
+Subject: Re: [PATCH -next] acpi: fpdt: drop errant comma in pr_info()
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        Zhang Rui <rui.zhang@intel.com>
+Date:   Thu, 28 Jan 2021 15:56:37 -0800
+In-Reply-To: <20210128232528.21117-1-rdunlap@infradead.org>
+References: <20210128232528.21117-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 09:22:24 +0100
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-
-> In this project, we can make use of:
+On Thu, 2021-01-28 at 15:25 -0800, Randy Dunlap wrote:
+> Drop a mistaken comma in the pr_info() args to prevent the
+> build warning.
 > 
-> - gitdm [git://git.lwn.net/gitdm.git]: gitdm includes some scripts to
-> parse MAINTAINERS and obtain the integration tree patch of a commit.
+> ../drivers/acpi/acpi_fpdt.c: In function 'acpi_init_fpdt':
+> ../include/linux/kern_levels.h:5:18: warning: too many arguments for format [-Wformat-extra-args]
+> ../drivers/acpi/acpi_fpdt.c:255:4: note: in expansion of macro 'pr_info'
+>     pr_info(FW_BUG, "Invalid subtable type %d found.\n",
+[]
+> --- linux-next-20210128.orig/drivers/acpi/acpi_fpdt.c
+> +++ linux-next-20210128/drivers/acpi/acpi_fpdt.c
+> @@ -252,7 +252,7 @@ void acpi_init_fpdt(void)
+>  					      subtable->type);
+>  			break;
+>  		default:
+> -			pr_info(FW_BUG, "Invalid subtable type %d found.\n",
+> +			pr_info(FW_BUG "Invalid subtable type %d found.\n",
+>  			       subtable->type);
 
-Look also at the 'treeplot' tool there, which determines which tree(s)
-each patch went through and makes pretty (OK, not hugely pretty) pictures
-from the result.
+Another question would be why is the pr_info when all the other
+FW_BUG uses in this file are pr_err
 
-I suspect you'll find that the tree information is mostly correct.
-Developers need to know that to be able to base their patches properly; an
-incorrect entry would lead to a certain amount of maintainer misery.
+One would think it's at least a defect of some time.
+I would think it should at least be pr_notice or pr_warn
 
-Thanks,
+Documentation/admin-guide/kernel-parameters.txt-                        1 (KERN_ALERT)          action must be taken immediately
+Documentation/admin-guide/kernel-parameters.txt-                        2 (KERN_CRIT)           critical conditions
+Documentation/admin-guide/kernel-parameters.txt-                        3 (KERN_ERR)            error conditions
+Documentation/admin-guide/kernel-parameters.txt-                        4 (KERN_WARNING)        warning conditions
+Documentation/admin-guide/kernel-parameters.txt-                        5 (KERN_NOTICE)         normal but significant condition
+Documentation/admin-guide/kernel-parameters.txt:                        6 (KERN_INFO)           informational
+Documentation/admin-guide/kernel-parameters.txt-                        7 (KERN_DEBUG)          debug-level messages
 
-jon
+
