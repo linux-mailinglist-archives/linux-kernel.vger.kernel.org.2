@@ -2,235 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE05308199
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AF83081AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhA1W6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:58:07 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53084 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbhA1W5f (ORCPT
+        id S231239AbhA1XGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:06:40 -0500
+Received: from 3.mo69.mail-out.ovh.net ([188.165.52.203]:57995 "EHLO
+        3.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhA1XGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:57:35 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10SMt95U097208;
-        Thu, 28 Jan 2021 16:55:09 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611874510;
-        bh=jonMZv526fvLfzZM6MKHRBQrNWc4O0SRB31532W4+KU=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=xUhqGDFTyCN3lfJIhQ+XBxnZZ2SrDFbAvF5aHn2SW7RO6f+2d/qXXFR6z12fqGNLM
-         N+uwpJ7etWS13zGb0aqCvS18Vzq0PZUe6+5baqHU9vIqwz3DvVzleAOnaExKgav1ax
-         5be3EmHpe0st499SsQwLKO/qru3ZttPh1WA2Dhs4=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10SMt9j5015626
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Jan 2021 16:55:09 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- Jan 2021 16:55:09 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 Jan 2021 16:55:09 -0600
-Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10SMt9KI010966;
-        Thu, 28 Jan 2021 16:55:09 -0600
-Subject: Re: [PATCH] remoteproc: pru: future-proof PRU ID matching
-From:   Suman Anna <s-anna@ti.com>
-To:     David Lechner <david@lechnology.com>,
-        <linux-remoteproc@vger.kernel.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210104211816.420602-1-david@lechnology.com>
- <ccc1ee4b-ed73-f7c8-ca1e-f15eedeeb84b@ti.com>
-Message-ID: <e2a0a40d-f720-8139-29f3-39a473c69119@ti.com>
-Date:   Thu, 28 Jan 2021 16:55:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 28 Jan 2021 18:06:39 -0500
+X-Greylist: delayed 3301 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 18:06:37 EST
+Received: from player714.ha.ovh.net (unknown [10.109.138.52])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id 9F499A2459
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:10:54 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player714.ha.ovh.net (Postfix) with ESMTPSA id C81081A7379B6;
+        Thu, 28 Jan 2021 22:10:47 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-100R003a02efd4b-9d07-4c0e-bd5a-efc0456abeec,
+                    8C41145FDD04D9C53928627EF68C09805F6E2986) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+Date:   Thu, 28 Jan 2021 23:10:40 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] close_range.2: new page documenting close_range(2)
+Message-ID: <20210128231040.6c85915f@heffalump.sk2.org>
+In-Reply-To: <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
+References: <20210123161154.29332-1-steve@sk2.org>
+        <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <ccc1ee4b-ed73-f7c8-ca1e-f15eedeeb84b@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/ILFGuzCoLO/Vcnpsoz0txD5"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 3922072327938592125
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgdduheeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuufhprghmkfhppfgvthifohhrkhepkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjedugedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+--Sig_/ILFGuzCoLO/Vcnpsoz0txD5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 1/15/21 6:53 PM, Suman Anna wrote:
-> On 1/4/21 3:18 PM, David Lechner wrote:
->> Currently, to determine the ID (0 or 1) of a PRU core, the last 19 bits
->> of the physical address of the cores IRAM are compared to known values.
->> However, the PRUs on TI AM18XX have IRAM at 0x01c38000 and 0x01c3c000
->> respectively. The former conflicts with PRU1_IRAM_ADDR_MASK which could
->> cause PRU0 to be detected as PRU1. (The latter also conflicts with
->> TX_PRU1_IRAM_ADDR_MASK but it would still be correctly detected as
->> PRU1.)
->>
->> This fixes the problem by moving the address matching offset values to
->> the device-specific data. This way the compatible string does half of
->> the work of narrowing down the addresses to two possibilities instead
->> of checking the address against all possible PRU types. This also lets
->> us narrow down the scope of the match from 19 bits to 16 bits for all
->> PRU types.
->>
->> After this, the TI AM18XX PRUs will be able to be added without running
->> into the problems stated above.
->>
->> We can also drop the local ret variable while touching this code.
->>
->> Signed-off-by: David Lechner <david@lechnology.com>
-> 
-> Will test this patch on Mon/Tue on various platforms.
-> 
-> Bjorn,
-> Please wait for my Ack on this before you pick this up.
-> 
-> regards
-> Suman
-> 
->> ---
->>  drivers/remoteproc/pru_rproc.c | 49 ++++++++++++++--------------------
->>  1 file changed, 20 insertions(+), 29 deletions(-)
->>
->> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
->> index 2667919d76b3..94ce48df2f48 100644
->> --- a/drivers/remoteproc/pru_rproc.c
->> +++ b/drivers/remoteproc/pru_rproc.c
->> @@ -46,15 +46,6 @@
->>  #define PRU_DEBUG_GPREG(x)	(0x0000 + (x) * 4)
->>  #define PRU_DEBUG_CT_REG(x)	(0x0080 + (x) * 4)
->>  
->> -/* PRU/RTU/Tx_PRU Core IRAM address masks */
->> -#define PRU_IRAM_ADDR_MASK	0x3ffff
->> -#define PRU0_IRAM_ADDR_MASK	0x34000
->> -#define PRU1_IRAM_ADDR_MASK	0x38000
->> -#define RTU0_IRAM_ADDR_MASK	0x4000
->> -#define RTU1_IRAM_ADDR_MASK	0x6000
->> -#define TX_PRU0_IRAM_ADDR_MASK	0xa000
->> -#define TX_PRU1_IRAM_ADDR_MASK	0xc000
->> -
->>  /* PRU device addresses for various type of PRU RAMs */
->>  #define PRU_IRAM_DA	0	/* Instruction RAM */
->>  #define PRU_PDRAM_DA	0	/* Primary Data RAM */
->> @@ -96,10 +87,14 @@ enum pru_type {
->>  /**
->>   * struct pru_private_data - device data for a PRU core
->>   * @type: type of the PRU core (PRU, RTU, Tx_PRU)
->> + * @pru0_iram_offset: used to identify PRU core 0
->> + * @pru1_iram_offset: used to identify PRU core 1
->>   * @is_k3: flag used to identify the need for special load handling
->>   */
->>  struct pru_private_data {
->>  	enum pru_type type;
->> +	u16 pru0_iram_offset;
->> +	u16 pru1_iram_offset;
->>  	unsigned int is_k3 : 1;
->>  };
->>  
->> @@ -693,33 +688,21 @@ static int pru_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
->>  }
->>  
->>  /*
->> - * Compute PRU id based on the IRAM addresses. The PRU IRAMs are
->> + * Compute PRU id based on the last 16 bits of IRAM addresses. The PRU IRAMs are
->>   * always at a particular offset within the PRUSS address space.
->>   */
->>  static int pru_rproc_set_id(struct pru_rproc *pru)
->>  {
->> -	int ret = 0;
->> -
->> -	switch (pru->mem_regions[PRU_IOMEM_IRAM].pa & PRU_IRAM_ADDR_MASK) {
->> -	case TX_PRU0_IRAM_ADDR_MASK:
->> -		fallthrough;
->> -	case RTU0_IRAM_ADDR_MASK:
->> -		fallthrough;
->> -	case PRU0_IRAM_ADDR_MASK:
->> +	u16 offset = pru->mem_regions[PRU_IOMEM_IRAM].pa;
->> +
->> +	if (offset == pru->data->pru0_iram_offset)
->>  		pru->id = 0;
->> -		break;
->> -	case TX_PRU1_IRAM_ADDR_MASK:
->> -		fallthrough;
->> -	case RTU1_IRAM_ADDR_MASK:
->> -		fallthrough;
->> -	case PRU1_IRAM_ADDR_MASK:
->> +	else if (offset == pru->data->pru1_iram_offset)
->>  		pru->id = 1;
->> -		break;
->> -	default:
->> -		ret = -EINVAL;
->> -	}
->> +	else
->> +		return -EINVAL;
->>  
->> -	return ret;
->> +	return 0;
+Hello Michael,
 
-While this logic does work, it is a bit convoluted IMO for any one reading the
-code. The offset here is kind of a misnomer, this logic is relying on only the
-least 16-bits of the address.
+On Thu, 28 Jan 2021 21:50:23 +0100, "Michael Kerrisk (man-pages)"
+<mtk.manpages@gmail.com> wrote:
+> Thanks for your patch revision. I've merged it, and have
+> done some light editing, but I still have a question:
+>=20
+> On 1/23/21 5:11 PM, Stephen Kitt wrote:
+>=20
+> [...]
+>=20
+> > +.SH ERRORS =20
+>=20
+> > +.TP
+> > +.B EMFILE
+> > +The per-process limit on the number of open file descriptors has been
+> > reached +(see the description of
+> > +.B RLIMIT_NOFILE
+> > +in
+> > +.BR getrlimit (2)). =20
+>=20
+> I think there was already a question about this error, but
+> I still have a doubt.
+>=20
+> A glance at the code tells me that indeed EMFILE can occur.
+> But how can the reason be because the limit on the number
+> of open file descriptors has been reached? I mean: no new
+> FDs are being opened, so how can we go over the limit. I think
+> the cause of this error is something else, but what is it?
 
-I have actually used a different logic in our downstream code, and we chose the
-current approach to minimize the static data.
+Here=E2=80=99s how I understand the code that can lead to EMFILE:
 
-https://git.ti.com/gitweb?p=rpmsg/remoteproc.git;a=blob;f=drivers/remoteproc/pru_rproc.c;h=cbcd8a6e420e61d60218a01ea0e76f0c9989a337;hb=refs/heads/rproc-linux-5.4.y#l1135
+* in __close_range(), if CLOSE_RANGE_UNSHARE is set, call unshare_fd() with
+  CLONE_FILES to clone the fd table
+* unshare_fd() calls dup_fd()
+* dup_fd() allocates a new fdtable, and if the resulting fdtable ends up
+  being too small to hold the number of fds calculated by
+  sane_fdtable_size(), fails with EMFILE
 
->>  }
->>  
->>  static int pru_rproc_probe(struct platform_device *pdev)
->> @@ -825,20 +808,28 @@ static int pru_rproc_remove(struct platform_device *pdev)
->>  
->>  static const struct pru_private_data pru_data = {
->>  	.type = PRU_TYPE_PRU,
->> +	.pru0_iram_offset = 0x4000,
->> +	.pru1_iram_offset = 0x8000,
+I suspect that, given that we=E2=80=99re starting with a valid fdtable, the=
+ only way
+this can happen is if there=E2=80=99s a race with sysctl_nr_open being redu=
+ced.
 
-The offsets for the PRU cores are actually 0x34000 and 0x38000 respectively from
-the base of the PRUSS on non-Davinci SoCs.
+Incidentally, isn=E2=80=99t this comment in file.c somewhat misleading?
 
-If we were to use this static data approach, then we might as well continue to
-use the current address masking logic with the appropriate masks for Davinci
-(0x38000 and 0x3C000, not true offsets but as masks they would work). Davinci
-PRUSS is the only one with its differences being the first PRUSS IP, and I would
-prefer to keep the logic aligned to the IPs on all the recent SoCs on 3
-different TI SoC families (OMAP, Keystone 2 and K3).
+		/*
+		 * If the requested range is greater than the current maximum,
+		 * we're closing everything so only copy all file descriptors
+		 * beneath the lowest file descriptor.
+		 */
 
-Let me know what you think.
+As I understand it, dup_fd() will always copy any open file descriptor
+anyway, it won=E2=80=99t stop at max_unshare_fds if that=E2=80=99s lower th=
+an the number of
+open fds (thanks to save_fdtable_size())...
 
-regards
-Suman
+Regards,
 
->>  };
->>  
->>  static const struct pru_private_data k3_pru_data = {
->>  	.type = PRU_TYPE_PRU,
->> +	.pru0_iram_offset = 0x4000,
->> +	.pru1_iram_offset = 0x8000,
->>  	.is_k3 = 1,
->>  };
->>  
->>  static const struct pru_private_data k3_rtu_data = {
->>  	.type = PRU_TYPE_RTU,
->> +	.pru0_iram_offset = 0x4000,
->> +	.pru1_iram_offset = 0x6000,
->>  	.is_k3 = 1,
->>  };
->>  
->>  static const struct pru_private_data k3_tx_pru_data = {
->>  	.type = PRU_TYPE_TX_PRU,
->> +	.pru0_iram_offset = 0xa000,
->> +	.pru1_iram_offset = 0xc000,
->>  	.is_k3 = 1,
->>  };
->>  
->>
-> 
+Stephen
 
+--Sig_/ILFGuzCoLO/Vcnpsoz0txD5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAmATNmAACgkQgNMC9Yht
+g5ycdw/8D+BJbjsIiVnh1Qw7rEXtzXwo1RYAhY5JScjqqcevI5+YAtBc5TbcoSBP
+s8F0bdAPp4m85xF9/lvh9QzcjNjI/TtyC0ohlXtxbX8F3pkip7va012ISEOwru/W
+F/MMmOIHxjDfmt9SkE2Ekp9A5zxmM+/hxjeLs1wTySZCkZUOEr2+TVIQE86wmWvW
+2Rq7evRSbMgxlQIvZIAPj9b5Ks2fhJY9Tdh8LwN+NgavDkIH/U6pj95NKrGXEOwr
+az8o9+LD0hROOCaC9kJMgLThWTuBHbliaQF1mYasIttijYzVBgA3M8QS6NVD7Q6y
+34S0Azy6VygGrkRnr5aIpT1w3EcJziJAn+YuBoSd2cCbEbE/O7dl6hWNCKeNZviM
+rcUOfJbNe1799mD4e2XHvF1MPYDmbkmqUWjz58N7x0n0zPQe4+6M7vBk769EBB+z
+zoJrYfwchUX0N0RTyPvliZh6x9ELlcYfPA1jceElu7Mhgsjzu3uhptiNrR0uwlsa
+iz/r2GFsD2zWm4OUSnVP4kK1BI8QHep/pxwnlkWBsQfbyJz2xiWOFr51tyIlDrgA
+zdh5DZUffnqztmHlaNK0+lToYULp17EfGXF3blJLLegrHCiWgCRHnOStEShSFdfK
+NLvljJTKDP8JzJ4g2jMOxoxWjESw9acwImPZWR/VZPNRifYS6nE=
+=tH9U
+-----END PGP SIGNATURE-----
+
+--Sig_/ILFGuzCoLO/Vcnpsoz0txD5--
