@@ -2,160 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40583076DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C10B3076E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232153AbhA1NNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:13:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhA1NMy (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:12:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D4664DD6;
-        Thu, 28 Jan 2021 13:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611839533;
-        bh=ZX6K15y6D95NOp9NCDKRQN3rhlp+uobKSvz7LLoHREM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RbP6bW0fDcEh9apMW/ezK14WrzC28sYlJb0UIVqNiLWeXK84hdgOR/hZqR1QYPJyl
-         W+7ZGwEeM7K8PTY9fhLGAlPZQvfJuWHTEZxB+8e+pHwtN9SRSyFCSEa7/uT2JYJ+nG
-         fo+DwsX6YWqwZIOQTBvWbpN6EKuq6MZV3uztcphPzAFHg3utuNjCfnGYUu8lCJn7iJ
-         OzFW3oqB3meGsmcunTaUtpBQVO8SP2gxX15lT9TH9zKmpQZH4W30nnd0SGuO7zXo1a
-         3HIOw8QPwX4nRJSlt8Ovq/nDq1CKHfyTZiq7Ec0EnCU6BFxUgYP0jIhB1vUy682RBH
-         NsY88K/GA6g3w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 80F2C40513; Thu, 28 Jan 2021 10:12:09 -0300 (-03)
-Date:   Thu, 28 Jan 2021 10:12:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH 2/2] perf script: Support dso filter
-Message-ID: <20210128131209.GD775562@kernel.org>
-References: <20210124232750.19170-1-yao.jin@linux.intel.com>
- <20210124232750.19170-2-yao.jin@linux.intel.com>
+        id S232179AbhA1NQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhA1NQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:16:32 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2B8C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:15:45 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id u8so393930ior.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0PGdMQ0TDu9zKtvn6673ROuE0PDK2I1RtDiboapzC8s=;
+        b=VYeclZwWQhLMD104jyE9AuQ8V+//JWv8yByb4SW8/15ARDJqwMEfMQOJq/Jgo08sga
+         T4mmIc8Rbk+hn3vsCN8qC3BT1i5gS/T3DE6A7PrarvCM2J7uaDbUrC8aGAz3FYlHsXWY
+         HkpFQD1mDL4d9+/5813MfTpGPVepimecKh++c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0PGdMQ0TDu9zKtvn6673ROuE0PDK2I1RtDiboapzC8s=;
+        b=Gec5p54ThGr57l4WilgFb+N8fYZ8BGeBeBjYrKDdp9AiviORPiv8by0qcXrP6VvP/m
+         6CmConysD5AoIXg8NrHvk03IM783ew223Mfl8GNgoxiHeuAhDVLg56dmpSifysGQtI7W
+         /wHlNtT8Lm/L4xbzTn92Zc82S2QhRAb1O3TcBIm6EQOzCPIjGreAit8TzTavFJAsE4o0
+         XatjqPConQOZRDZVoxgM6NBQNUeCAi08AhKYSDQvcDiy5+n3PLa2Qaxa0pt5ePTnFCog
+         YYwMZhKqvWN+ANWbCw7aZ2AXJCEWH5vAPJ4QT/E5ZsMBwBRLaH9PZdfp51xUK2NLh4F8
+         1h3g==
+X-Gm-Message-State: AOAM530gt/cNQivqh8U0nbnr7voZfSK+ulvAqkRg0agAQtaZfuYbpo4R
+        rT6KbATLykYLMMzdoTnnAQ62A9cGT1IZGp3R
+X-Google-Smtp-Source: ABdhPJyffD6Bp+QqWe6lwDL1AHwbn1xb6/hLxDPBRhSUQiTh1Ez2MooJYkOqxP6JEOjbuNF/yhjj/g==
+X-Received: by 2002:a02:cf8c:: with SMTP id w12mr12775957jar.84.1611839744914;
+        Thu, 28 Jan 2021 05:15:44 -0800 (PST)
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
+        by smtp.gmail.com with ESMTPSA id y16sm601576ilm.7.2021.01.28.05.15.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 05:15:43 -0800 (PST)
+Received: by mail-io1-f41.google.com with SMTP id n2so5487024iom.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:15:42 -0800 (PST)
+X-Received: by 2002:a05:6602:154e:: with SMTP id h14mr11415923iow.1.1611839742551;
+ Thu, 28 Jan 2021 05:15:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124232750.19170-2-yao.jin@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210128131054.637715-1-colin.king@canonical.com>
+In-Reply-To: <20210128131054.637715-1-colin.king@canonical.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 28 Jan 2021 14:15:31 +0100
+X-Gmail-Original-Message-ID: <CANiDSCs2WrwSHdiazPhvGtnXOvtRMsaZvMUFrpE5T5cOufnPWA@mail.gmail.com>
+Message-ID: <CANiDSCs2WrwSHdiazPhvGtnXOvtRMsaZvMUFrpE5T5cOufnPWA@mail.gmail.com>
+Subject: Re: [PATCH][next] media: uvcvideo: Fix memory leak when gpiod_to_irq fails
+To:     Colin King <colin.king@canonical.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jan 25, 2021 at 07:27:50AM +0800, Jin Yao escreveu:
-> Other perf tool builtins have already supported dso filter.
-> 
-> For example,
-> perf report --dso, which only considers symbols in these dsos.
-> 
-> Now dso filter is supported for perf-script.
-> 
-> root@kbl-ppc:~# ./perf script --dso "[kernel.kallsyms]"
->             perf 18123 [000] 6142863.075104:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->             perf 18123 [000] 6142863.075107:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->             perf 18123 [000] 6142863.075108:         10   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->             perf 18123 [000] 6142863.075109:        273   cycles:  ffffffff9ca7730a native_write_msr+0xa ([kernel.kallsyms])
->             perf 18123 [000] 6142863.075110:       7684   cycles:  ffffffff9ca3c9c0 native_sched_clock+0x50 ([kernel.kallsyms])
->             perf 18123 [000] 6142863.075112:     213017   cycles:  ffffffff9d765a92 syscall_exit_to_user_mode+0x32 ([kernel.kallsyms])
->             perf 18123 [001] 6142863.075156:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->             perf 18123 [001] 6142863.075158:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->             perf 18123 [001] 6142863.075159:         17   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
+Hi Colin
 
-Applied, and in testing it I noticed this fix was also needed, added
-just before it, please ack :-)
+Thanks a lot for the patch. It is definitely a bug.
 
-- Arnaldo
+On Thu, Jan 28, 2021 at 2:10 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently when the call to gpiod_to_irq fails the error return
+> path does not kfree the recently allocated object 'unit'. Fix this
+> by kfree'ing it before returning.
+>
+> Addresses-Coverity: ("Resource leak")
+> Fixes: 2886477ff987 ("media: uvcvideo: Implement UVC_EXT_GPIO_UNIT")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/media/usb/uvc/uvc_driver.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 1abc122a0977..56f867790ef1 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -1543,6 +1543,7 @@ static int uvc_gpio_parse(struct uvc_device *dev)
+>                 if (irq != EPROBE_DEFER)
+>                         dev_err(&dev->udev->dev,
+>                                 "No IRQ for privacy GPIO (%d)\n", irq);
+> +               kfree(unit);
 
-commit d4b6078bd58b799a8ea2a57842193504c867bee5
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Thu Jan 28 09:52:47 2021 -0300
+Wouldn't it be better to swap the order of the resource handling?
 
-    perf tools: Fix DSO filtering when not finding a map for a sampled address
-    
-    When we lookup an address and don't find a map we should filter that
-    sample if the user specified a list of --dso entries to filter on, fix
-    it.
-    
-    Before:
-    
-      $ perf script
-                 sleep 274800  2843.556162:          1 cycles:u:  ffffffffbb26bff4 [unknown] ([unknown])
-                 sleep 274800  2843.556168:          1 cycles:u:  ffffffffbb2b047d [unknown] ([unknown])
-                 sleep 274800  2843.556171:          1 cycles:u:  ffffffffbb2706b2 [unknown] ([unknown])
-                 sleep 274800  2843.556174:          6 cycles:u:  ffffffffbb2b0267 [unknown] ([unknown])
-                 sleep 274800  2843.556176:         59 cycles:u:  ffffffffbb2b03b1 [unknown] ([unknown])
-                 sleep 274800  2843.556180:        691 cycles:u:  ffffffffbb26bff4 [unknown] ([unknown])
-                 sleep 274800  2843.556189:       9160 cycles:u:      7fa9550eeaa3 __GI___tunables_init+0xf3 (/usr/lib64/ld-2.32.so)
-                 sleep 274800  2843.556312:      86937 cycles:u:      7fa9550e157b _dl_lookup_symbol_x+0x4b (/usr/lib64/ld-2.32.so)
-      $
-    
-    So we have some samples we somehow didn't find in a map for, if we now
-    do:
-    
-      $ perf report --stdio --dso /usr/lib64/ld-2.32.so
-      # dso: /usr/lib64/ld-2.32.so
-      #
-      # Total Lost Samples: 0
-      #
-      # Samples: 8  of event 'cycles:u'
-      # Event count (approx.): 96856
-      #
-      # Overhead  Command  Symbol
-      # ........  .......  ........................
-      #
-          89.76%  sleep    [.] _dl_lookup_symbol_x
-           9.46%  sleep    [.] __GI___tunables_init
-           0.71%  sleep    [k] 0xffffffffbb26bff4
-           0.06%  sleep    [k] 0xffffffffbb2b03b1
-           0.01%  sleep    [k] 0xffffffffbb2b0267
-           0.00%  sleep    [k] 0xffffffffbb2706b2
-           0.00%  sleep    [k] 0xffffffffbb2b047d
-      $
-    
-    After this patch we get the right output with just entries for the DSOs
-    specified in --dso:
-    
-      $ perf report --stdio --dso /usr/lib64/ld-2.32.so
-      # dso: /usr/lib64/ld-2.32.so
-      #
-      # Total Lost Samples: 0
-      #
-      # Samples: 8  of event 'cycles:u'
-      # Event count (approx.): 96856
-      #
-      # Overhead  Command  Symbol
-      # ........  .......  ........................
-      #
-          89.76%  sleep    [.] _dl_lookup_symbol_x
-           9.46%  sleep    [.] __GI___tunables_init
-      $
-    
-      # To display the perf.data header info, please use --header/--header-only options.
-      #
-    
-    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Cc: Andi Kleen <ak@linux.intel.com>
-    Cc: Ingo Molnar <mingo@redhat.com>
-    Cc: Jin Yao <yao.jin@linux.intel.com>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: Kan Liang <kan.liang@intel.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Fixes: 96415e4d3f5fdf9c ("perf symbols: Avoid unnecessary symbol loading when dso list is specified")
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+1st: gpiod_to_irq
+2nd: uvc_alloc_entity
 
-diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-index fbe8578e4c475773..208b6c141d98bb5d 100644
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -692,6 +692,8 @@ int machine__resolve(struct machine *machine, struct addr_location *al,
- 		}
- 
- 		al->sym = map__find_symbol(al->map, al->addr);
-+	} else if (symbol_conf.dso_list) {
-+		al->filtered |= (1 << HIST_FILTER__DSO);
- 	}
- 
- 	if (symbol_conf.sym_list) {
+Thanks
+
+>                 return irq;
+>         }
+>
+> --
+> 2.29.2
+>
+
+
+-- 
+Ricardo Ribalda
