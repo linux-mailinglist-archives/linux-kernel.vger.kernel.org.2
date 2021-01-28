@@ -2,65 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC503306B50
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEB2306B4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhA1DAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:00:09 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38141 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229682AbhA1DAF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:00:05 -0500
-X-UUID: 6bbe9a276bb54c81b12c8dda8186fa27-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=aqShpSnRtd7/hTVNe8MJJvFv2eUPYon5fnP3Eu5cFxE=;
-        b=FMTmEsu7SsLEfEHAs68c+/JUBVt7A4jPfdfMipcMeMLghAcdHFnkthpCubR6idWOl9AJTcHKdqI38jHFn9+9Lh2j88jT5jB5bZy6trmsdAzw+4LQUhtCuEmofiWGzpL4miLkMJxJb/orsQA1OZMkIJ++M+w+PCbv89W3/KaUXvs=;
-X-UUID: 6bbe9a276bb54c81b12c8dda8186fa27-20210128
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 849238491; Thu, 28 Jan 2021 10:59:21 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 10:59:14 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
- 2021 10:59:10 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 10:59:10 +0800
-Message-ID: <1611802750.1261.7.camel@mtkswgap22>
-Subject: Re: [PATCH v2] scsi: ufs: Give clk scaling min gear a value
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <jaegeuk@kernel.org>, <asutoshd@codeaurora.org>,
-        <nguyenb@codeaurora.org>, <hongwus@codeaurora.org>,
-        <bjorn.andersson@linaro.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 Jan 2021 10:59:10 +0800
-In-Reply-To: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
-References: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-MTK:  N
-X-TM-SNTS-SMTP: E45801C943FF85AA7ACC75482F954222CD7128B145BC04EFAA5C357ED89527022000:8
-Content-Transfer-Encoding: base64
+        id S229595AbhA1C6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 21:58:44 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:58804 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhA1C6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 21:58:43 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 76752200B57;
+        Thu, 28 Jan 2021 03:57:56 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 67FC1200D88;
+        Thu, 28 Jan 2021 03:57:52 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EFCF8402A9;
+        Thu, 28 Jan 2021 03:57:46 +0100 (CET)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
+        Biwen Li <biwen.li@nxp.com>
+Subject: [v3] irqchip: ls-extirq: add IRQCHIP_SKIP_SET_WAKE to the irqchip flags
+Date:   Thu, 28 Jan 2021 11:06:27 +0800
+Message-Id: <20210128030627.41022-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAxLTI3IGF0IDE4OjQ5IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBUaGUg
-aW5pdGlhbGl6YXRpb24gb2YgY2xrX3NjYWxpbmcubWluX2dlYXIgd2FzIHJlbW92ZWQgYnkgbWlz
-dGFrZS4gVGhpcw0KPiBjaGFuZ2UgYWRkcyBpdCBiYWNrLCBvdGhlcndpc2UgY2xvY2sgc2NhbGlu
-ZyBkb3duIHdvdWxkIGZhaWwuDQo+IA0KPiBGaXhlczogNDU0M2Q5ZDc4MjI3ICgic2NzaTogdWZz
-OiBSZWZhY3RvciB1ZnNoY2RfaW5pdC9leGl0X2Nsa19zY2FsaW5nL2dhdGluZygpIikNCj4gDQo+
-IFNpZ25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoNClJldmlld2Vk
-LWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoNCg==
+From: Biwen Li <biwen.li@nxp.com>
+
+The ls-extirq driver doesn't implement the irq_set_wake()
+callback, while being wake-up capable. This results in
+ugly behaviours across suspend/resume cycles.
+
+Advertise this by adding IRQCHIP_SKIP_SET_WAKE to
+the irqchip flags
+
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+Change in v3:
+	- update description
+
+Change in v2:
+	- Update description
+
+ drivers/irqchip/irq-ls-extirq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+index 564e6de0bd8e..3c6ed7b4744d 100644
+--- a/drivers/irqchip/irq-ls-extirq.c
++++ b/drivers/irqchip/irq-ls-extirq.c
+@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
+ 	.irq_set_type		= ls_extirq_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+-	.flags                  = IRQCHIP_SET_TYPE_MASKED,
++	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
+ };
+ 
+ static int
+-- 
+2.17.1
 
