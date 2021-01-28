@@ -2,166 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5688307D8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBED5307D8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhA1SOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhA1SH7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:07:59 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B336CC061786;
-        Thu, 28 Jan 2021 10:07:19 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id u25so8818381lfc.2;
-        Thu, 28 Jan 2021 10:07:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HYqq0dEU1gtRG0YHpO7vLOo7MghFZ/pOcJQO5+wjdFA=;
-        b=m2LxK9ZO1ECm0zggJ9dlCcwA7DlzTwsQDPHCkFP6RPRrVcgLdWSqo1VWIf3I+uzGFQ
-         5jn9jdcuMmiR1sizs6hwVGEaspZ/C979xdTxt2CBXCrQ3cq8vrq6bl61LoESUX2fkwT4
-         RyNqejdsfr7cpNGOmsa7oXpbDaa+tMLmzRcvGQIt5X47dsb7LTw/cFqnhacgo5mUtqzP
-         9IJo8Lm33ymr11KVT7bLADiUFYK/6dHF6n5FFAoAO8fiFHehFVbToVJLH4712OCJjGpE
-         8Q6GekdE5qMGAcgqtCC0jt5KocmpCOGg74TTgAmBp7Eq/OCu57Kajdp/kriexEpa7qkF
-         +qyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HYqq0dEU1gtRG0YHpO7vLOo7MghFZ/pOcJQO5+wjdFA=;
-        b=QRkItdcejv6LgAgS453m8PqvE2XIWZ4SeVJYqmbJ618BAtJmg5yRY5WsfQAo1NN8k7
-         8CluaFwetxw5AOx7rnvy7njahVcaMhFLrGKV+teNJtWLhMdcjrldJ0qcMvXTeSZnhxUj
-         extw610tpQRbl0wKyFKFegTJrRoAuy47szftWCX5r/1bZefrNevv/h8YL339ZuOMQuSP
-         9coSz7cutze04Nx1Jx3dT7xeWfYr4x8Zc54A7z8rdH4evvsh/XrlviEuuD+KrZ6re04g
-         knZUomGX6SrI20miNSND4pNbWTqZH48RLJO07RUE8X8kHpksYmnBG6IFGPH1feViiAup
-         qvJQ==
-X-Gm-Message-State: AOAM530ZCo7JDO/tOalfiPhMRdjnUHy5iIHbDk2AbTWvLNLQZrHb6WoI
-        XkXdfkSSSNiLRMGCaDko/dHsXRK7aLEQUg==
-X-Google-Smtp-Source: ABdhPJyPb2gzXTkabvQU53TpHLVfZKqP+YokiLWcCr2zNJbC+3T57/fgXpla9W5YdAQhfqTToLL9lA==
-X-Received: by 2002:a05:6512:1156:: with SMTP id m22mr118641lfg.637.1611857238234;
-        Thu, 28 Jan 2021 10:07:18 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id u17sm2215456ljj.2.2021.01.28.10.07.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:07:08 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 28 Jan 2021 19:06:58 +0100
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        id S231422AbhA1SNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:13:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231518AbhA1SJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:09:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E451F64E07;
+        Thu, 28 Jan 2021 18:08:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611857301;
+        bh=OGnQjiAgDA+88msfO4WmhcYEeZS/bNwPrFTaeyzswjA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ms8PfZju4tvgssHZjkeqp4UYoYnlnNZQzQBsbyOk6GlaqF2fx6nuxVOxfCog4zU/y
+         SXH5QTCcEicGYmgE2RW2tuIzTyncvWwsPrcJ1YNWZG1wOsvoJTFg2tGekXm/aUq7XH
+         jfmE/5P1xTJWBdccnG5fZYKGsSl8TI5PeXsz/QxY6SwCveATCnCZLUmX7iqRMGAXvs
+         Wzl9hdegZSwG6+nbnzZNBJKf4Jt3d/L6E6LmEJWYZ67qTb0GiXEWe3ad6kxVvys/eJ
+         dkWaDtomrh+KXG2fOVGeb3LvszPiYwRYP0Ft00sQ8nwUAqmnxBu6EjU8KCSqtjvDrA
+         99OGszTo768+A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 929E63523769; Thu, 28 Jan 2021 10:08:21 -0800 (PST)
+Date:   Thu, 28 Jan 2021 10:08:21 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Oliver Sang <oliver.sang@intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/3] kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument
- kvfree_rcu()
-Message-ID: <20210128180658.GB5144@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120162148.1973-2-urezki@gmail.com>
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@intel.com
+Subject: Re: [workqueue] d5bff968ea:
+ WARNING:at_kernel/workqueue.c:#process_one_work
+Message-ID: <20210128180821.GA24510@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210126073925.1962-1-hdanton@sina.com>
+ <20210127092128.2299-1-hdanton@sina.com>
+ <20210128090905.1596-1-hdanton@sina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120162148.1973-2-urezki@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210128090905.1596-1-hdanton@sina.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 05:21:47PM +0100, Uladzislau Rezki (Sony) wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Jan 28, 2021 at 05:09:05PM +0800, Hillf Danton wrote:
+> On Thu, 28 Jan 2021 15:52:40 +0800 Xing Zhengjun wrote:
+
+[ . . . ]
+
+> >I test the patch 4 times, no warning appears in the kernel log.
 > 
-> This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
-> carried out by the single-argument variant of kvfree_rcu(), thus avoiding
-> this can-sleep code path from dipping into the emergency reserves.
+> Thank you so much Zhengjun!
 > 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> And the overall brain dump so far is
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 2014fb22644d..454809514c91 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3491,7 +3491,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->  		if (!bnode && can_alloc) {
->  			krc_this_cpu_unlock(*krcp, *flags);
->  			bnode = (struct kvfree_rcu_bulk_data *)
-> -				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-> +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
->  			*krcp = krc_this_cpu_lock(flags);
->  		}
->  
-> -- 
-> 2.20.1
+> 1/ before and after d5bff968ea, changing the allowed ptr at online time
+> is the key to quiesce the warning in process_one_work().
 > 
-Please see below a V2:
+> 2/ marking pcpu before changing aptr in rebind_workers() is mandatory in
+> regards to cutting the risk of triggering such a warning.
+> 
+> 3/ we canot maintain such an order without quiescing the 508 warning for
+> kworkers. And we have a couple of excuses to do so, a) the number of
+> allowed CPUs is no longer checked in is_per_cpu_kthread() instead of
+> PF_NO_SETAFFINITY, b) there is always a followup act to change the aptr
+> in order to fix the number of aCPUs. 
+> 
+> 4/ same order is maintained also at rescue time.
 
-V1 -> V2:
-    - rebase on [PATCH v2 1/1] kvfree_rcu: Directly allocate page for single-argument
-    - add a comment about __GFP_NOMEMALLOC usage.
+Just out of curiosity, does this test still fail on current mainline?
 
-<snip>
-From 1427698cdbdced53d9b5eee60aa5d22bc223056d Mon Sep 17 00:00:00 2001
-From: "Paul E. McKenney" <paulmck@kernel.org>
-Date: Wed, 20 Jan 2021 17:21:47 +0100
-Subject: [PATCH v2 1/1] kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument
- kvfree_rcu()
-
-This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
-carried out by the single-argument variant of kvfree_rcu(), thus avoiding
-this can-sleep code path from dipping into the emergency reserves.
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e450c17a06b2..e7b705155c92 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3496,11 +3496,14 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 			// view. Apart of that it forbids any OOM invoking what is
- 			// also beneficial since we are about to release memory soon.
- 			//
-+			// __GFP_NOMEMALLOC - prevents from consuming of all the
-+			// memory reserves. Please note we have a fallback path.
-+			//
- 			// __GFP_NOWARN - it is supposed that an allocation can
- 			// be failed under low memory or high memory pressure
- 			// scenarios.
- 			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN);
-+				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 			*krcp = krc_this_cpu_lock(flags);
- 		}
- 
--- 
-2.20.1
-<snip>
-
-Thanks!
-
---
-Vlad Rezki
+							Thanx, Paul
