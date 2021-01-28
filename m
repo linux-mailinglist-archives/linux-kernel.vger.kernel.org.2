@@ -2,208 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6E73076A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01123076B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhA1NCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:02:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56842 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232004AbhA1NBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:01:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611838867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S231848AbhA1ND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:03:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26386 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231679AbhA1ND4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:03:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611838950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vJt24NNAalCKv4rVDS2NDaUKT5dH4I+q/BbkjyVKFas=;
-        b=rIpkGAScsHGELAFRulv4V5GPLX8Fe3xWhurZF6bgCmSiVv4UgjaRPQqEv2RCkHxJlrAsoN
-        Lz5A7u3DqPIrgoJhJlC5dpcIL9LlLQGEGCmT7XeNDqmogifq0K6BdZXNTT0uXoQHYRUWbZ
-        KvYFdrDmwtb1rJfxtMH3Yh/efBvnMhg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A6D68AE47;
-        Thu, 28 Jan 2021 13:01:07 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 14:01:06 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-8-rppt@kernel.org>
- <20210126114657.GL827@dhcp22.suse.cz>
- <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
- <20210126120823.GM827@dhcp22.suse.cz>
- <20210128092259.GB242749@kernel.org>
+        bh=R2ph27LsnJWE/vNqq5QXePd70W1JBZ6Ej3HYrxh7gn8=;
+        b=M9TXj9U+1UZAY5qTN6/49xIGltom7WCNzVb/UggURLiQVDelJCwVx/pR7r0F02ArpB+kKx
+        +F3KsEpq0DzN6oQFnkgqHO4NrzNP6hggSKKWJlhk964kuxtfgTPuAEkvUHnMQQ5fHdeM3G
+        0lbLTdf3riqMTEZtqLigR9v/K+5mpGQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-wypQ61oNMB-xJXmwS99e-g-1; Thu, 28 Jan 2021 08:02:28 -0500
+X-MC-Unique: wypQ61oNMB-xJXmwS99e-g-1
+Received: by mail-ed1-f70.google.com with SMTP id v19so3125461edx.22
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:02:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=R2ph27LsnJWE/vNqq5QXePd70W1JBZ6Ej3HYrxh7gn8=;
+        b=WSVeIdO2fiw0GbqoFedv+x0KVYlXlYhDz7V5+NGUYnLFUkGH9VXmCjfc2S5z+Ix/zK
+         paEquHe55sP3CrKQWQiQ0F/041/7ewFVk5+hrax4BPXttXyshquWFWY4QOIEjG8CEYz9
+         6mRgCpLpqzuvQljWhuE6lh/FhEOJSSE+OFKHi2pDRoC1lLAljK4ZArqnhmRxq2o6fmDM
+         nDY31LtXH2FD2EeI9zQNyhnABtJ6ZCyIGuGuLiDSMP4Em5/+wXKJDgvjpq8qp8v1Ry9e
+         JL1qTyQ+6HvHjhjS5XD6gZup4N4CDtmSO0wVLGwkaAIMLWsAG/F0YIP/E/Dmb1mj/IS0
+         +/Uw==
+X-Gm-Message-State: AOAM530v93IMzT9sdAlHO0DzFegd3lHu8c51lIXUv2LELQ3e5yrWMQjL
+        2rnNsWAevHEiMT3qo8yZ9jYA1N07VcbvNb8BIi7aG1Gnm+pxYlkeVOMToliVohHojDJlscViyph
+        1m709ypMQfsik6rYwqeLbn7a3ehInnCUEux3pyE0XFYMIIMvKGN0OfgvPNVivw/Rcsq1wtdaYj2
+        fg
+X-Received: by 2002:a05:6402:1383:: with SMTP id b3mr6832499edv.131.1611838947351;
+        Thu, 28 Jan 2021 05:02:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz56w8vVCEHtOHUL50ezdOWF0eUZrlkOctieZfcvY9MRquWig4nHRkLqOdFIXP388lr7rSpIg==
+X-Received: by 2002:a05:6402:1383:: with SMTP id b3mr6832469edv.131.1611838947126;
+        Thu, 28 Jan 2021 05:02:27 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id t11sm2842107edd.1.2021.01.28.05.02.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 05:02:26 -0800 (PST)
+Subject: Re: 5.11 new lockdep warning related to led-class code (also may
+ involve ata / piix controller)
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jens Axboe <axboe@kernel.dk>, Dan Murphy <dmurphy@ti.com>,
+        linux-ide@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
+ <20210112223015.GB28214@duo.ucw.cz>
+ <f344f1db-1a7a-0a80-1cb1-f9c3fbf83abd@redhat.com>
+ <0ec34bca-f7e0-8954-c253-d07ed6b71b80@redhat.com>
+ <20210127220134.GC23419@amd>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <cc1cac99-e3de-9585-bfa0-db7b013e8a80@redhat.com>
+Date:   Thu, 28 Jan 2021 14:02:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128092259.GB242749@kernel.org>
+In-Reply-To: <20210127220134.GC23419@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 28-01-21 11:22:59, Mike Rapoport wrote:
-> On Tue, Jan 26, 2021 at 01:08:23PM +0100, Michal Hocko wrote:
-> > On Tue 26-01-21 12:56:48, David Hildenbrand wrote:
-> > > On 26.01.21 12:46, Michal Hocko wrote:
-> > > > On Thu 21-01-21 14:27:19, Mike Rapoport wrote:
-> > > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > > 
-> > > > > Removing a PAGE_SIZE page from the direct map every time such page is
-> > > > > allocated for a secret memory mapping will cause severe fragmentation of
-> > > > > the direct map. This fragmentation can be reduced by using PMD-size pages
-> > > > > as a pool for small pages for secret memory mappings.
-> > > > > 
-> > > > > Add a gen_pool per secretmem inode and lazily populate this pool with
-> > > > > PMD-size pages.
-> > > > > 
-> > > > > As pages allocated by secretmem become unmovable, use CMA to back large
-> > > > > page caches so that page allocator won't be surprised by failing attempt to
-> > > > > migrate these pages.
-> > > > > 
-> > > > > The CMA area used by secretmem is controlled by the "secretmem=" kernel
-> > > > > parameter. This allows explicit control over the memory available for
-> > > > > secretmem and provides upper hard limit for secretmem consumption.
-> > > > 
-> > > > OK, so I have finally had a look at this closer and this is really not
-> > > > acceptable. I have already mentioned that in a response to other patch
-> > > > but any task is able to deprive access to secret memory to other tasks
-> > > > and cause OOM killer which wouldn't really recover ever and potentially
-> > > > panic the system. Now you could be less drastic and only make SIGBUS on
-> > > > fault but that would be still quite terrible. There is a very good
-> > > > reason why hugetlb implements is non-trivial reservation system to avoid
-> > > > exactly these problems.
+Hi,
+
+On 1/27/21 11:01 PM, Pavel Machek wrote:
+> Hi!
 > 
-> So, if I understand your concerns correct this implementation has two
-> issues:
-> 1) allocation failure at page fault that causes unrecoverable OOM and
-> 2) a possibility for an unprivileged user to deplete secretmem pool and
-> cause (1) to others
+>>>>> Booting a 5.11-rc2 kernel with lockdep enabled inside a virtualbox vm (which still
+>>>>> emulates good old piix ATA controllers) I get the below lockdep splat early on during boot:
+>>>>>
+>>>>> This seems to be led-class related but also seems to have a (P)ATA
+>>>>> part to it. To the best of my knowledge this is a new problem in
+>>>>> 5.11 .
+>>>>
+>>>> This is on my for-next branch:
+>>>>
+>>>> commit 9a5ad5c5b2d25508996f10ee6b428d5df91d9160 (HEAD -> for-next, origin/for-next)
+>>>>
+>>>>     leds: trigger: fix potential deadlock with libata
+>>>>     
+>>>>     We have the following potential deadlock condition:
+>>>>     
+>>>>      ========================================================
+>>>>      WARNING: possible irq lock inversion dependency detected
+>>>>      5.10.0-rc2+ #25 Not tainted
+>>>>      --------------------------------------------------------
+>>>>      swapper/3/0 just changed the state of lock:
+>>>>      ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x27/0x200
+>>>>      but this lock took another, HARDIRQ-READ-unsafe lock in the past:
+>>>>       (&trig->leddev_list_lock){.+.?}-{2:2}
+>>>>
+>>>> If I'm not mistaken, that should fix your issue.
+>>>
+>>> I can confirm that this fixes things, thanks.
+>>>
+>>> I assume that this will be part of some future 5.11 fixes pull-req?
+>>
+>> This *regression* fix seems to still have not landed in 5.11-rc5, can
+>> we please get this on its way to Linus ?
 > 
-> I'm not really familiar with OOM internals, but when I simulated an
-> allocation failure in my testing only the allocating process and it's
-> parent were OOM-killed and then the system continued normally. 
+> Is it a regression? AFAIK it is a bug that has been there
+> forever... My original plan was to simply wait for 5.12, so it gets
+> full release of testing...
 
-If you kill the allocating process then yes, it would work, but your
-process might be the very last to be selected.
+It may have been a pre-existing bug which got triggered by libata changes?
 
-> You are right, it would be better if we SIGBUS instead of OOM but I don't
-> agree SIGBUS is terrible. As we started to draw parallels with hugetlbfs
-> even despite it's complex reservation system, hugetlb_fault() may fail to
-> allocate pages from CMA and this still will cause SIGBUS.
+I don't know. I almost always run all my locally build kernels with lockdep
+enabled and as the maintainer of the vboxvideo, vboxguest and vboxsf guest
+drivers in the mainline kernel I quite often boot local build kernels inside
+a vm.
 
-This is an unexpected runtime error. Unless you make it an integral part
-of the API design.
+So I believe that lockdep tripping over this is new in 5.11, which is why
+I called it a regression.
 
-> And hugetlb pools may be also depleted by anybody by calling
-> mmap(MAP_HUGETLB) and there is no any limiting knob for this, while
-> secretmem has RLIMIT_MEMLOCK.
+And the fix seems very safe and simple, so IMHO it would be good to get
+this into 5.11
 
-Yes it can fail. But it would fail at the mmap time when the reservation
-fails. Not during the #PF time which can be at any time.
+Regards,
 
-> That said, simply replacing VM_FAULT_OOM with VM_FAULT_SIGBUS makes
-> secretmem at least as controllable and robust than hugeltbfs even without
-> complex reservation at mmap() time.
+Hans
 
-Still sucks huge!
-
-> > > > So unless I am really misreading the code
-> > > > Nacked-by: Michal Hocko <mhocko@suse.com>
-> > > > 
-> > > > That doesn't mean I reject the whole idea. There are some details to
-> > > > sort out as mentioned elsewhere but you cannot really depend on
-> > > > pre-allocated pool which can fail at a fault time like that.
-> > > 
-> > > So, to do it similar to hugetlbfs (e.g., with CMA), there would have to be a
-> > > mechanism to actually try pre-reserving (e.g., from the CMA area), at which
-> > > point in time the pages would get moved to the secretmem pool, and a
-> > > mechanism for mmap() etc. to "reserve" from these secretmem pool, such that
-> > > there are guarantees at fault time?
-> > 
-> > yes, reserve at mmap time and use during the fault. But this all sounds
-> > like a self inflicted problem to me. Sure you can have a pre-allocated
-> > or more dynamic pool to reduce the direct mapping fragmentation but you
-> > can always fall back to regular allocatios. In other ways have the pool
-> > as an optimization rather than a hard requirement. With a careful access
-> > control this sounds like a manageable solution to me.
-> 
-> I'd really wish we had this discussion for earlier spins of this series,
-> but since this didn't happen let's refresh the history a bit.
-
-I am sorry but I am really fighting to find time to watch for all the
-moving targets...
-
-> One of the major pushbacks on the first RFC [1] of the concept was about
-> the direct map fragmentation. I tried really hard to find data that shows
-> what is the performance difference with different page sizes in the direct
-> map and I didn't find anything.
-> 
-> So presuming that large pages do provide advantage the first implementation
-> of secretmem used PMD_ORDER allocations to amortise the effect of the
-> direct map fragmentation and then handed out 4k pages at each fault. In
-> addition there was an option to reserve a finite pool at boot time and
-> limit secretmem allocations only to that pool.
-> 
-> At some point David suggested to use CMA to improve overall flexibility
-> [3], so I switched secretmem to use CMA.
-> 
-> Now, with the data we have at hand (my benchmarks and Intel's report David
-> mentioned) I'm even not sure this whole pooling even required.
-
-I would still like to understand whether that data is actually
-representative. With some underlying reasoning rather than I have run
-these XYZ benchmarks and numbers do not look terrible.
-
-> I like the idea to have a pool as an optimization rather than a hard
-> requirement but I don't see why would it need a careful access control. As
-> the direct map fragmentation is not necessarily degrades the performance
-> (and even sometimes it actually improves it) and even then the degradation
-> is small, trying a PMD_ORDER allocation for a pool and then falling back to
-> 4K page may be just fine.
-
-Well, as soon as this is a scarce resource then an access control seems
-like a first thing to think of. Maybe it is not really necessary but
-then this should be really justified.
-
-I am also still not sure why this whole thing is not just a
-ramdisk/ramfs which happens to unmap its pages from the direct
-map. Wouldn't that be a much more easier model to work with? You would
-get an access control for free as well.
--- 
-Michal Hocko
-SUSE Labs
