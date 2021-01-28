@@ -2,228 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C403D3072C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 961C83072F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhA1JcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:32:21 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:46789 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbhA1J0Q (ORCPT
+        id S231964AbhA1JjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:39:13 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:19547 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232466AbhA1Jag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:26:16 -0500
-Received: by mail-ot1-f45.google.com with SMTP id d1so4536033otl.13;
-        Thu, 28 Jan 2021 01:25:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NxnDl2GrRpSMyEh3P5ogDr/y/Z8is37UEIaUl8bFtVI=;
-        b=j5g4zOFBuop8ehlvVl6Z5Cb12BGxVUmv5eDp3Un7TZHqSwNzO3HDwxg/w1ydXG1cEj
-         +zaEAu+a+DScuwlZZFj6lrPsAuS/rTdo1R/iUF69LXgamhLkL90pGVImXQd8qHnlNLQg
-         CaYxHuYx1WqyzP60HtaGGK+r1YddAwayPHJvUQC5A/Yl+OmnoDGEnJjkaO+quz9m7mwl
-         Masw4Mm29yOzpk9qV+Y0dmsSR5x2nVJ2Aao2SqLbFKZ8tL8rxaogrs2f7gcC7hDvkL18
-         /s+1s6PcpALjBKuht1GkbUn5PXjjejPSLa0JLlaE+XgWaOZSbP60nja9x9gc7UB79Mqx
-         /Lig==
-X-Gm-Message-State: AOAM5307wA3NedqiHD0vTxrYyA86Ih49tNvdhPuwTs0OfVYNWpLmiu59
-        2r7ODAMt2+qrMDi/OVGMIzQnDXrstKSbUhse5uw=
-X-Google-Smtp-Source: ABdhPJwIK/ebf1zOwoD5aMbXd7iqWR7pWcC/KS+N8M04xbTvxixhJs51oTBmGIastbl3pUtGaeoY22gVYXFn6StzkmQ=
-X-Received: by 2002:a05:6830:1489:: with SMTP id s9mr10058455otq.250.1611825934080;
- Thu, 28 Jan 2021 01:25:34 -0800 (PST)
+        Thu, 28 Jan 2021 04:30:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611826058;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+        From:Subject:Sender;
+        bh=ggZcq1KRQ/pdSEYJdxgcAOgsVpYsxLJwddK5gt6xtlg=;
+        b=a+te04OOr9mo/KRqXVvzw3BBi/E+Jc/Sdv3h/v4T+kfmGG++zHgXOyrdCNOACpdHrr
+        1xQ98/ASaqS/PuPn1lfNY4oBlTMZS9ektTIncbfqowGJcnVfX79TbsHiDX76RfdYFObn
+        ayXHyoj5VoTN1pxiiyMIc1Rjk1i63KYFcDvpU2rgdG6cF3qt8GGd8WGgKOq00r2uILrx
+        5/d/mVTMPm7C68IajcEi6HHGC0UxNFeEeXusnHKi9KJSYxj7B9bagRBuhmPHRhNT5S6N
+        rENCbMYEhcJ5CR2SYc+wHxmSjVrrovwYF1YcdDt1oiZ6EIBK/i/n2dVksjguFYuaS9rB
+        JB7g==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9IczEaYo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.16.0 DYNA|AUTH)
+        with ESMTPSA id L06318x0S9RV36x
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 28 Jan 2021 10:27:31 +0100 (CET)
+Date:   Thu, 28 Jan 2021 10:27:19 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Add initial support for BQ Aquaris X5
+Message-ID: <YBKDa1irydOUaXag@gerhold.net>
+References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
+ <20210124210119.GA27676@amd>
+ <YA3rTAx2vfOXPCMq@gerhold.net>
+ <20210127222407.GD24799@amd>
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
- <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
- <a24391e62b107040435766fff52bdd31@walle.cc> <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
- <CAMuHMdX8__juNc-Lx8Tu9abMKq-pT=yA4s6D1w4ZeStKOasGpg@mail.gmail.com>
- <CAGETcx-0G-Y8wT_+BfP5vbi0gW6KonwgoJ6DdqjaGbFkutTGag@mail.gmail.com>
- <CAMuHMdXMaAtrbQibJh+Z2v5qhe_Tg0hQU9YqxuU0ow_iNO1atg@mail.gmail.com>
- <CAGETcx8=woX_SVckG+gs68KMif-JGoy3a1PQGfonMNBH18Ak6A@mail.gmail.com>
- <CAMuHMdUpzaRutO+jKffXtGDoy5g2QoXkbO+-tzbEzibNYbhCuA@mail.gmail.com> <CAGETcx_81qOe2LvX-J_PBZWdouykPoPYdf5=yMVhnjgDxAkgaw@mail.gmail.com>
-In-Reply-To: <CAGETcx_81qOe2LvX-J_PBZWdouykPoPYdf5=yMVhnjgDxAkgaw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Jan 2021 10:25:22 +0100
-Message-ID: <CAMuHMdVHouzMFiGcUz=0M0_RFL-OBvkRvQiF5h56XKDMZuC7Kg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127222407.GD24799@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On Wed, Jan 27, 2021 at 11:24:07PM +0100, Pavel Machek wrote:
+> > > How close are you to having useful phone calls?
+> > 
+> > You can do phone calls (with audio) and you can use mobile data, if you
+> > have the patches for that. :) I'm trying to find time to finish up the
+> > drivers needed for that, but I've been a bit short on time lately.
+> 
+> > Most of the functionality is packaged in postmarketOS [1] and you can
+> > find a list of the devices in the postmarketOS wiki [2]. Especially
+> > the ones in the "community" category are quite similar in terms of
+> > working functionality.
+> 
+> I know about postmarketOS (I even contributed a bit some time ago),
+> and watch it from time to time. Currently I'm using old Nokia 6151 for
+> phone calls, but would not mind switching. Work is ongoing in Droid 4
+> land -- phone calls are also "almost there". But the almost seems to
+> be a lot of work :-(.
+> 
 
-On Wed, Jan 27, 2021 at 6:11 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Wed, Jan 27, 2021 at 8:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Jan 27, 2021 at 5:42 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Tue, Jan 26, 2021 at 11:43 PM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > > > On Wed, Jan 27, 2021 at 1:44 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > On Tue, Jan 26, 2021 at 12:50 AM Geert Uytterhoeven
-> > > > > <geert@linux-m68k.org> wrote:
-> > > > > > On Mon, Jan 25, 2021 at 11:42 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > > On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
-> > > > > > > > Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
-> > > > > > > > > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
-> > > > > > > > > wrote:
-> > > > > > > > >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
-> > > > > > > > >> wrote:
-> > > > > > > > >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> > > > > > > > >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> > > > > > > > >> > > wrote:
-> > > > > > > > >> > >>
-> > > > > > > > >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
-> > > > > > > > >> > >> all CCs to BCCs :(]
-> > > > > > > > >> > >>
-> > > > > > > > >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> > > > > > > > >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> > > > > > > > >> > >> >>
-> > > > > > > > >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> > > > > > > > >> > >> >> wrote:
-> > > > > > > > >> > >> >> >
-> > > > > > > > >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > > > > > > > >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > > > > > > > >> > >> >> > deferral. Convert it to builtin_platform_driver().
-> > > > > > > > >> > >> >>
-> > > > > > > > >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> > > > > > > > >> > >> >> shouldn't it be fixed or removed?
-> > > > > > > > >> > >> >
-> > > > > > > > >> > >> > I was actually thinking about this too. The problem with fixing
-> > > > > > > > >> > >> > builtin_platform_driver_probe() to behave like
-> > > > > > > > >> > >> > builtin_platform_driver() is that these probe functions could be
-> > > > > > > > >> > >> > marked with __init. But there are also only 20 instances of
-> > > > > > > > >> > >> > builtin_platform_driver_probe() in the kernel:
-> > > > > > > > >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> > > > > > > > >> > >> > 20
-> > > > > > > > >> > >> >
-> > > > > > > > >> > >> > So it might be easier to just fix them to not use
-> > > > > > > > >> > >> > builtin_platform_driver_probe().
-> > > > > > > > >> > >> >
-> > > > > > > > >> > >> > Michael,
-> > > > > > > > >> > >> >
-> > > > > > > > >> > >> > Any chance you'd be willing to help me by converting all these to
-> > > > > > > > >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> > > > > > > > >> > >>
-> > > > > > > > >> > >> If it just moving the probe function to the _driver struct and
-> > > > > > > > >> > >> remove the __init annotations. I could look into that.
-> > > > > > > > >> > >
-> > > > > > > > >> > > Yup. That's pretty much it AFAICT.
-> > > > > > > > >> > >
-> > > > > > > > >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> > > > > > > > >> > > for async probe, etc. But I doubt anyone is actually setting async
-> > > > > > > > >> > > flags and still using builtin_platform_driver_probe().
-> > > > > > > > >> >
-> > > > > > > > >> > Hasn't module_platform_driver_probe() the same problem? And there
-> > > > > > > > >> > are ~80 drivers which uses that.
-> > > > > > > > >>
-> > > > > > > > >> Yeah. The biggest problem with all of these is the __init markers.
-> > > > > > > > >> Maybe some familiar with coccinelle can help?
-> > > > > > > > >
-> > > > > > > > > And dropping them will increase memory usage.
-> > > > > > > >
-> > > > > > > > Although I do have the changes for the builtin_platform_driver_probe()
-> > > > > > > > ready, I don't think it makes much sense to send these unless we agree
-> > > > > > > > on the increased memory footprint. While there are just a few
-> > > > > > > > builtin_platform_driver_probe() and memory increase _might_ be
-> > > > > > > > negligible, there are many more module_platform_driver_probe().
-> > > > > > >
-> > > > > > > While it's good to drop code that'll not be used past kernel init, the
-> > > > > > > module_platform_driver_probe() is going even more extreme. It doesn't
-> > > > > > > even allow deferred probe (well before kernel init is done). I don't
-> > > > > > > think that behavior is right and that's why we should delete it. Also,
-> > > > > >
-> > > > > > This construct is typically used for builtin hardware for which the
-> > > > > > dependencies are registered very early, and thus known to probe at
-> > > > > > first try (if present).
-> > > > > >
-> > > > > > > I doubt if any of these probe functions even take up 4KB of memory.
-> > > > > >
-> > > > > > How many 4 KiB pages do you have in a system with 10 MiB of SRAM?
-> > > > > > How many can you afford to waste?
-> > > > >
-> > > > > There are only a few instances of this macro in the kernel. How many
-> > > >
-> > > > $ git grep -lw builtin_platform_driver_probe | wc -l
-> > > > 21
-> > > > $ git grep -lw module_platform_driver_probe | wc -l
-> > > > 86
-> > > >
-> > > > + the ones that haven't been converted to the above yet:
-> > > >
-> > > > $ git grep -lw platform_driver_probe | wc -l
-> > > > 58
-> > > >
-> > >
-> > > Yeah, this adds up in terms of the number of places we'd need to fix.
-> > > But thinking more about it, a couple of points:
-> > > 1. Not all builtin_platform_driver_probe() are problems for
-> > > fw_devlink. So we can just fix them as we go if we need to.
-> > >
-> > > 2. The problem with builtin_platform_driver_probe() isn't really with
-> > > the use of __init. It's the fact that it doesn't allow deferred
-> > > probes. builtin_platform_driver_probe()/platform_driver_probe() could
-> > > still be fixed up to allow deferred probe until we get to the point
-> > > where we free the __init section (so at least till late_initcall).
-> >
-> > That's intentional: it is used for cases that will (must) never be deferred.
-> > That's why it's safe to use __init.
->
-> So was the usage of builtin_platform_driver_probe() wrong in the
-> driver Michael fixed? Because, deferring and probing again clearly
-> works?
+It's fairly simple on Qualcomm SoCs once audio DSP and modem are working
+(which is not that simple). I basically just tell the audio DSP to
+stream voice call audio to the audio ports and then it does that without
+involving the kernel.
 
-It wasn't.  The regression is that the driver no longer probes at first
-try, because its dependencies are now probed later.  The question is:
-why are the dependencies now probed later?  How to fix that?
+It seems to work quite well, so far no one complained about quality or
+something like that. Not sure if anyone is actively using it already
+though :)
 
-> Also, "must never be deferred" seems like a weird condition to
-> enforce. I think the real "rule" is that if it defers, the platform is
-> not expected to work. But disallowing a probe reattempt seems weird.
-> What is it going to hurt if it's attempted again? At worst it fails
-> one more time?
+The work left is mainly making the driver more generic so it can work on
+other Qualcomm SoCs as well (right now I have some things hardcoded).
+Also, I still haven't fully figured out what is the best way to
+integrate it into ASoC/UCM/..., so that it can be easily activated when
+starting a voice call.
 
-"must never be deferred" is not the real condition, but "must not be
-probed after __init is freed" is (one of them, there may be other, cfr.
-the last paragraph below).  The simplest way to guarantee that is to
-probe the driver immediately, and only once.
-
-> Also, I'd argue that all/most of the "can't defer, but I'm still a
-> proper struct device" cases are all just patchwork to deal with the
-> fact we were playing initcall chicken when there was no fw_devlink.
-> I'm hoping we can move people away from that mindset. And the first
-
-I agree, partially.  Still, how come the dependencies are no longer
-probed before their consumers when fw_devlinks are enabled?
-I thought fw_devlinks is supposed to avoid exactly that?
-
-> step towards that would be to allow *platform_probe() to allow
-> deferred probes until late_initcall().
-
-At which increase of complexity, to keep track of which drivers can and
-cannot be reprobed anymore after late_initcall?
-Still, many of these drivers use platform_driver_probe() early for a
-reason: because they need to initialize the hardware early. Probing them
-later may introduce subtle bugs.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Stephan
