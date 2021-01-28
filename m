@@ -2,149 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732F9308059
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0447930805B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhA1VRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:17:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S231417AbhA1VR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhA1VR1 (ORCPT
+        with ESMTP id S231378AbhA1VRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:17:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18A4C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vFXdrprJYXLFSPP8UE1ua7upEFkQkB4P+OBl0fVN1/w=; b=ZWuUotXO8UZSCJ6GuCbVCNcbho
-        zI3CCKZPFNJBK0yVdakT5lVAnp0ywyNSTXtWQPXfcdxfNHiU+NABEMVn7hKt+E+yZEPcYjcet5tts
-        O3GDoSP47nuYMZ2i/B9d6Fg+6n+12RUrEnnevNpzW4/EfgUZIj3+2c5ol6djuFFCXlAopmmEYmhGc
-        FkamGzDhVwHdVpOpmnt/e+niMVlqu1MIktl/Q/AuS5I3Xo9yMNPg2jjDk+Rg86XcOg+E++2XTrBYf
-        GQWlJqoKGEscsbQOGhEkcxWfbiY5Khf5IuKOivRgBUPy91VLUpycbP9xCMg715YUskW/zVqvlFFuO
-        ETNL8USQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5EeU-008zZK-GN; Thu, 28 Jan 2021 21:16:31 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6B650986584; Thu, 28 Jan 2021 22:16:27 +0100 (CET)
-Date:   Thu, 28 Jan 2021 22:16:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, tdevries@suse.de
-Cc:     linux-kernel@vger.kernel.org, andrew.cooper3@citrix.com,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: [PATCH v2] x86/debug: Fix DR6 handling
-Message-ID: <20210128211627.GB4348@worktop.programming.kicks-ass.net>
-References: <YBMAbQGACujjfz+i@hirez.programming.kicks-ass.net>
+        Thu, 28 Jan 2021 16:17:35 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32FEC061574;
+        Thu, 28 Jan 2021 13:16:54 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id j13so8303806edp.2;
+        Thu, 28 Jan 2021 13:16:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Bn/uZbi53prTbKMwEZWHXl6XCtApRQIRtzYnDibrEI=;
+        b=M1Xs1mWrpvwVSmNxKUfVObBna2/o8jikxGlcqEeHhf0DSudNj8QY6OAX3C7uy2Dpx/
+         1MZMRcZeq4VuYtZTJjUVrNOseOr8M/B75LrHOC+GhGpocyFVVJRDP7TdB09LgRzkIvZM
+         By9mh5EVAdU0FegixQb+tT5mLFvocEcYinNP5sBPh25nKxAwSZvDdbzX5VoG0zMcTUK9
+         LBYCgT62MIreVF/Ke+S7X1DhrrxB+SKiJ72osOSrGkg790v42NGClbocqMbpYCFWoARD
+         VmgwKYP4Aq1VGBmw/tAhIGRAsE899bCnYJ8Kf3HdmPScPV4Dx3xBHBlJDVFL88vm1f28
+         dxgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Bn/uZbi53prTbKMwEZWHXl6XCtApRQIRtzYnDibrEI=;
+        b=tQtq2v8PbdGVZdA1izCOrgNR56zs+NQaXV/pWkZZ/jYoMZk3z+bWeyHcTjlxmQ6oZ9
+         9aODpY4LZCz6gzGXXhRRL5DK+2RnOoYa4KscTjFPTiAuebUJSZG1hxmAf4VIqpvNQ8hJ
+         NADy7mc+54AYw9ewXCGkOlUAbSnIYepSzNg0eMKQ0FskV5csdTgME3rKPj4qaZTuiemR
+         WcYnxiF+3ZFGsqEh+U/m6acnvl8TCsmDv+TO0aqNEZNaxYsjmWGEjnoqQetkuT06tQ/R
+         WzRpRsNfA8ElccLYX4m9PrFyhwV9/infZ8GPnlkZB6tXD8NvrKPeLHqosbyJFI/DCKeR
+         ESmg==
+X-Gm-Message-State: AOAM5317/v+UITeXvTqt32ri0IisNzMm44zJFgc2hqauMgaKQtt090Fl
+        gWBX9CXGkrlYwb0MPuK8nE8jtRHcFLEubGo9NFg=
+X-Google-Smtp-Source: ABdhPJy9bs5zjsAcg8AJRyenRTcYrzHPwabscBl9E9PA/LMnOGH2QrK37cEXMePa86ZjH47zlOt/oZjVyiAUvhdIHHc=
+X-Received: by 2002:a05:6402:312e:: with SMTP id dd14mr1780887edb.366.1611868613546;
+ Thu, 28 Jan 2021 13:16:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBMAbQGACujjfz+i@hirez.programming.kicks-ass.net>
+References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-3-shy828301@gmail.com>
+ <4b0a6d22-e29b-fb85-b05f-b9f9f62ca8ea@suse.cz>
+In-Reply-To: <4b0a6d22-e29b-fb85-b05f-b9f9f62ca8ea@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 28 Jan 2021 13:16:41 -0800
+Message-ID: <CAHbLzkoW_vQNgfwrVRy4hXaJkqW+era885dFQZfZy-OHZOOZdg@mail.gmail.com>
+Subject: Re: [v5 PATCH 02/11] mm: vmscan: consolidate shrinker_maps handling code
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28, 2021 at 8:10 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/28/21 12:33 AM, Yang Shi wrote:
+> > The shrinker map management is not purely memcg specific, it is at the intersection
+> > between memory cgroup and shrinkers.  It's allocation and assignment of a structure,
+> > and the only memcg bit is the map is being stored in a memcg structure.  So move the
+> > shrinker_maps handling code into vmscan.c for tighter integration with shrinker code,
+> > and remove the "memcg_" prefix.  There is no functional change.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>
+> Nits below:
+>
+> > @@ -1581,10 +1581,10 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+> >       return false;
+> >  }
+> >
+> > -extern int memcg_expand_shrinker_maps(int new_id);
+> > -
+> > -extern void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+> > -                                int nid, int shrinker_id);
+> > +extern int alloc_shrinker_maps(struct mem_cgroup *memcg);
+> > +extern void free_shrinker_maps(struct mem_cgroup *memcg);
+> > +extern void set_shrinker_bit(struct mem_cgroup *memcg,
+> > +                          int nid, int shrinker_id);
+>
+> "extern" is unnecessary and people seem to be removing them nowadays when
+> touching the code
 
-Tom reported that one of the GDB test-cases failed, and Boris bisected
-it to commit:
+OK, will fix in v6.
 
-  d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
+>
+> >  /*
+> >   * We allow subsystems to populate their shrinker-related
+> >   * LRU lists before register_shrinker_prepared() is called
+> > @@ -212,7 +338,7 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >               goto unlock;
+> >
+> >       if (id >= shrinker_nr_max) {
+> > -             if (memcg_expand_shrinker_maps(id)) {
+> > +             if (expand_shrinker_maps(id)) {
+> >                       idr_remove(&shrinker_idr, id);
+> >                       goto unlock;
+> >               }
+> > @@ -601,7 +727,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>
+> Above this is a comment about barriers in memcg_set_shrinker_bit() that should
+> be updated.
 
-The debugging session led us to commit:
+Thanks for catching this. Will fix in v6.
 
-  6c0aca288e72 ("x86: Ignore trap bits on single step exceptions")
-
-It turns out that TF and data breakpoints are both traps and will be
-merged, while instruction breakpoints are faults and will not be
-merged. This means 6c0aca288e72 is wrong, we only need to exclude TF
-and instruction breakpoints while we can merge TF and data
-breakpoints.
-
-Fixes: d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
-Fixes: 6c0aca288e72 ("x86: Ignore trap bits on single step exceptions")
-Reported-by: Tom de Vries <tdevries@suse.de>
-Bisected-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/hw_breakpoint.c |   39 ++++++++++++++++++---------------------
- 1 file changed, 18 insertions(+), 21 deletions(-)
-
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -491,15 +491,12 @@ static int hw_breakpoint_handler(struct
- 	struct perf_event *bp;
- 	unsigned long *dr6_p;
- 	unsigned long dr6;
-+	bool bpx;
- 
- 	/* The DR6 value is pointed by args->err */
- 	dr6_p = (unsigned long *)ERR_PTR(args->err);
- 	dr6 = *dr6_p;
- 
--	/* If it's a single step, TRAP bits are random */
--	if (dr6 & DR_STEP)
--		return NOTIFY_DONE;
--
- 	/* Do an early return if no trap bits are set in DR6 */
- 	if ((dr6 & DR_TRAP_BITS) == 0)
- 		return NOTIFY_DONE;
-@@ -509,28 +506,29 @@ static int hw_breakpoint_handler(struct
- 		if (likely(!(dr6 & (DR_TRAP0 << i))))
- 			continue;
- 
-+		bp = this_cpu_read(bp_per_reg[i]);
-+		if (!bp)
-+			continue;
-+
-+		bpx = bp->hw.info.type == X86_BREAKPOINT_EXECUTE;
-+
- 		/*
--		 * The counter may be concurrently released but that can only
--		 * occur from a call_rcu() path. We can then safely fetch
--		 * the breakpoint, use its callback, touch its counter
--		 * while we are in an rcu_read_lock() path.
-+		 * TF and data breakpoints are traps and can be merged, however
-+		 * instruction breakpoints are faults and will be raised
-+		 * separately.
-+		 *
-+		 * However DR6 can indicate both TF and instruction
-+		 * breakpoints. In that case take TF as that has precedence and
-+		 * delay the instruction breakpoint for the next exception.
- 		 */
--		rcu_read_lock();
-+		if (bpx && (dr6 & DR_STEP))
-+			continue;
- 
--		bp = this_cpu_read(bp_per_reg[i]);
- 		/*
- 		 * Reset the 'i'th TRAP bit in dr6 to denote completion of
- 		 * exception handling
- 		 */
- 		(*dr6_p) &= ~(DR_TRAP0 << i);
--		/*
--		 * bp can be NULL due to lazy debug register switching
--		 * or due to concurrent perf counter removing.
--		 */
--		if (!bp) {
--			rcu_read_unlock();
--			break;
--		}
- 
- 		perf_bp_event(bp, args->regs);
- 
-@@ -538,11 +536,10 @@ static int hw_breakpoint_handler(struct
- 		 * Set up resume flag to avoid breakpoint recursion when
- 		 * returning back to origin.
- 		 */
--		if (bp->hw.info.type == X86_BREAKPOINT_EXECUTE)
-+		if (bpx)
- 			args->regs->flags |= X86_EFLAGS_RF;
--
--		rcu_read_unlock();
- 	}
-+
- 	/*
- 	 * Further processing in do_debug() is needed for a) user-space
- 	 * breakpoints (to generate signals) and b) when the system has
+>
+> >                       if (ret == SHRINK_EMPTY)
+> >                               ret = 0;
+> >                       else
+> > -                             memcg_set_shrinker_bit(memcg, nid, i);
+> > +                             set_shrinker_bit(memcg, nid, i);
+> >               }
+> >               freed += ret;
+> >
+> >
+>
