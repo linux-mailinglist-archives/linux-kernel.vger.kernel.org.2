@@ -2,121 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97493080EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B14A3080EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhA1WHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhA1WHu (ORCPT
+        id S231214AbhA1WJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:09:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27359 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229658AbhA1WJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:07:50 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A9CC061573;
-        Thu, 28 Jan 2021 14:07:09 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id j11so1523080plt.11;
-        Thu, 28 Jan 2021 14:07:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gwbhYTYlKJc3qWdffrQGsNa7auYkd8037d2LbAoaq+4=;
-        b=db/3JuT74AtHbaNhPY2iun2rxxrUDTOmNcTQ6ISyxUVI80SvBONASBZrgcArON/+Dx
-         sODZKu+kRLiq/khuiNm/HKLWRc8fAiF/157bhEUHqqfIMbLB6o9auw/wjx9LXaEzSIx7
-         9DrA63JAq/e1DFj/sZ0FShOYkVaNit+f/UhRoaxN+oxD6C0r47FXz1muA3xlsnMwoepc
-         AnUTV7wnnkvlp/9vBmGtzZASlGWhSnDmKdtnthItkTQUIXi8Ym2415vaiWjFOb3m+764
-         I5W3QDM2PF9Ta5jfeGPIyocwaLbaJ2E/XoXgGmDOdqy+zBiL4hyBLkSICq3bpvSXj9Fg
-         OrVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gwbhYTYlKJc3qWdffrQGsNa7auYkd8037d2LbAoaq+4=;
-        b=kkKgfkU7aXGFds1zBG+mmLinoW4Wn9Ik+CIOTQe+VEvtC6UmNg48klM4XaBBNeE82Y
-         icS5xS5bqCvFay+pVx5Bf32rJIzhCzlxG+p2W4MzSrwXEFlg2lXC35dRrJG8jA5wyQF4
-         tHtcQX6jSkpXh6ZC/y7Gjna80RQAbiUvf7eOZX1wG6c0BvbIbINI+K1Qs2muWebYQ4KS
-         fYwgOMY8Pgldox5YwZBpHg9m3S1KifrBhnx3vT36S8HmvQt1Pdyvy0AQ9V73ynWpp+mP
-         eMPIByWv7HB0k63M+Tya+eeH3H1qZd8Nr8+zH9DovFV4SAk/dYuPZbmhCJUrlrOP3rZC
-         dhDg==
-X-Gm-Message-State: AOAM5316QGtKpRPafCpBTBcS8j12eGLIybjcGXCJQRuEzpCx0N+IUuWk
-        gts3PB0zF8EvGIxSpxTwVuBJGvHbhY3FviqqE9Q=
-X-Google-Smtp-Source: ABdhPJw9WypNzW1bzGBwSjcGr7cz3aeXqXGoZrWbxvCJdbVifHCjIQb2bmi/DpUFIJ8LZOiMsiypkYhnBRSd5wUlPJY=
-X-Received: by 2002:a17:902:9a4a:b029:dc:435c:70ad with SMTP id
- x10-20020a1709029a4ab02900dc435c70admr1408753plv.77.1611871629557; Thu, 28
- Jan 2021 14:07:09 -0800 (PST)
+        Thu, 28 Jan 2021 17:09:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611871691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kOJTlDiAp+anCAKFi1PTZAWVwlPCpb+mMwrxIH+Y2fY=;
+        b=HtegKaUs9AfScpnjYdJw1MBaa2CBWBuiyA70Ld8dmxinSuSyYi5O5SquNxUqaBL33EKBDL
+        R0dbWac+3hI+fcE4OTkuMK5G+w/MThz6p1h8Ow/H7T4vv5oe4AG2dQg+v6yIAqV1or6vM9
+        bsZQ2mXgDrUyKEB2aV11EybPVYEhSws=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-nlqn8EtLP9edGLfr02XzBA-1; Thu, 28 Jan 2021 17:08:09 -0500
+X-MC-Unique: nlqn8EtLP9edGLfr02XzBA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 916868042A6;
+        Thu, 28 Jan 2021 22:08:07 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D2DD5C1BB;
+        Thu, 28 Jan 2021 22:08:05 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 16:08:03 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external
+ modules
+Message-ID: <20210128220803.fixcmuv4ceq5m7dy@treble>
+References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
+ <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com>
+ <20210128205207.awdbh4bmx56pxxjl@treble>
+ <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
+ <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
+ <20210128213409.qxnclchjyq6v23up@treble>
+ <CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210127090747.364951-1-xie.he.0141@gmail.com> <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 28 Jan 2021 14:06:58 -0800
-Message-ID: <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
-Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:47 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Noob question - could you point at or provide a quick guide to layering
-> here? I take there is only one netdev, and something maintains an
-> internal queue which is not stopped when HW driver stops the qdisc?
+On Thu, Jan 28, 2021 at 01:45:51PM -0800, Linus Torvalds wrote:
+> On Thu, Jan 28, 2021 at 1:34 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Thu, Jan 28, 2021 at 01:23:11PM -0800, Linus Torvalds wrote:
+> > > THAT workaround is long gone, but I didn't check what other ones we
+> > > might have now. But the gcc version checks we _do_ have are not
+> > > necessarily about major versions at all (ie I trivially found checks
+> > > for 4.9, 4.9.2, 5.1, 7.2 and 9.1).
+> >
+> > Then maybe the check should be same major.minor?
+> 
+> Well, how many of them are actually about things that generate
+> incompatible object code?
+> 
+> The main one I can think of is the KASAN ABI version checks, but
+> honestly, I think that's irrelevant. I really hope no distros enable
+> KASAN in user kernels.
+> 
+> Another version check I looked at was the one that just checks whether
+> the compiler natively supports __builtin_mul_overflow() or not - it
+> doesn't generate incompatible object code, it just takes advantage of
+> a compiler feature if one exists. You can mix and match those kinds of
+> things well enough.
+> 
+> So I'd really like to hear actual hard technical reasons with
+> examples, for why you'd want to add this test in the first place.
 
-Yes, there is only one netdev. The LAPB module (net/lapb/) (which is
-used as a library by the netdev driver - hdlc_x25.c) is maintaining an
-internal queue which is not stopped when the HW driver stops the
-qdisc.
+Unfortunately I don't have technical reasons beyond what we've already
+discussed, found from code inspection.
 
-The queue is "write_queue" in "struct lapb_cb" in
-"include/net/lapb.h". The code that takes skbs out of the queue and
-feeds them to lower layers for transmission is at the "lapb_kick"
-function in "net/lapb/lapb_out.c".
+This patch was born from a discussion where wildly different opinions
+were expressed about whether such a mismatch scenario (or even external
+modules in general!) would be supported at all.
 
-The layering is like this:
+So I guess the goal is to clarify (in the code base) to what extent
+compiler mismatches are supported/allowed/encouraged.  Because they
+definitely happen in the real world, but a lot of people seem to be
+sticking their head in the sand about it.
 
-Upper layer (Layer 3) (net/x25/ or net/packet/)
+If we decide it's not a cut-and-dry makefile check, then the policy
+should at least be documented.
 
-^
-| L3 packets (with control info)
-v
+I'd prefer the warning though, since nobody's going to read the docs.
 
-The netdev driver (hdlc_x25.c)
+> No hand-waving "different compiler versions don't work together".
+> Because that's simply not true.
+> 
+> > And convert it to a strongly worded warning/disclaimer?
+> 
+> A warning might be better for the simple reason that it wouldn't cause
+> people to just fix it with "make oldconfig".
+> 
+> Maybe you haven't looked at people who compile external modules, but
+> they always have various "this is how to work around issues with
+> version XYZ". That "make oldconfig" would simply just become the
+> workaround for any build errors.
+> 
+> And a warning might be more palatable even if different compiler
+> version work fine together. Just a heads up on "it looks like you
+> might be mixing compiler versions" is a valid note, and isn't
+> necessarily wrong. Even when they work well together, maybe you want
+> to have people at least _aware_ of it.
 
-^
-| L3 packets
-v
+Sounds reasonable.
 
-The LAPB Module (net/lapb/)
+-- 
+Josh
 
-^
-| LAPB (L2) frames
-v
-
-The netdev driver (hdlc_x25.c)
-
-^
-| LAPB (L2) frames
-| (also called HDLC frames in the context of the HDLC subsystem)
-v
-
-HDLC core (hdlc.c)
-
-^
-| HDLC frames
-v
-
-HDLC Hardware Driver
-
-> Sounds like we're optimizing to prevent drops, and this was not
-> reported from production, rather thru code inspection. Ergo I think
-> net-next will be more appropriate here, unless Martin disagrees.
-
-Yes, I have no problem in targeting net-next instead. Thanks!
