@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EF3306BB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E5C306BB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhA1DdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:33:23 -0500
-Received: from mga06.intel.com ([134.134.136.31]:64683 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhA1DdV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:33:21 -0500
-IronPort-SDR: 4GAoTuFXJmimnhVoeJMHbsuMuW6d78TNmCrjuwRnvnOmEg3LADJ8t8JYPJ400v1wAVVGLsKDw/
- CgaqsMUhCbQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241701780"
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="241701780"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 19:31:33 -0800
-IronPort-SDR: /Jc3c5jYCj7kC1arPXYY9H/0QUKyDtq7ivr/H3f0v0YmkuXskfIvnjXSTUxpWD03sHZaOGpmQX
- QKdh4vvviHnQ==
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="388577104"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 19:31:28 -0800
-Subject: Re: [PATCH 1/2] perf script: Support filtering by hex address
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210124232750.19170-1-yao.jin@linux.intel.com>
- <20210127222905.GD284633@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <60d102fa-d98a-6182-0a1d-b78122fed574@linux.intel.com>
-Date:   Thu, 28 Jan 2021 11:31:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231224AbhA1Deh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhA1Dee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:34:34 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562A1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:33:54 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id g1so4978901edu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lg0aZvX/Z7DG/BSJJpeI6lt7+vzjbMgpBvQcOOM0A9M=;
+        b=rXnNgGYgmLL3oBvQhr7H/Xa47h/d32c0XCMJrctZo7OR3DjiOlLrjZLDQdDLUZNRAq
+         JGZPdDvFSFb1AW1thMVEcU1sDUL3WjOyuihQ/LOkPBVXn0gh7OX4RVW6R1SDLN3u/D+p
+         SEf+S39VyXR6fqt0G3tzpl8NDjvXaIS/JQZ65IDrJFqn/t6bO7dlursPqlJgnjJnlSzo
+         22m9OYuZNgP1mUxgjT1TiXj03I2cFz4WrMK3qJip69Qsrto3+Hryk3/1NDds6edBeWcg
+         eWKn0X2PGegK+eGqLP/dN0x5Gtnk8HJPHHvDEKajUmNOe3lJaCLmBcjoCRT48Etn7T2p
+         OQag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lg0aZvX/Z7DG/BSJJpeI6lt7+vzjbMgpBvQcOOM0A9M=;
+        b=XchWZstWOB/kKoeZ3IecdQpaxu1XtIHM/QkqzytSVTgSjezklZtF+F5CvIQtUxi8Hk
+         YsA8G3elWEZANPJrhp89BHwv+fUq5K0vWzQMWGCR3M7QnVJfJfMXdhXT8UI/l3B3vdFi
+         lYTv1VfXadhbtALU67TFUuFPt1+H2lBImQAK+54EGFXxvUWwuJYnRAfk0Q11oZhpNI07
+         gzwlnF7/+P+J45HI30L/qS0IA5FydHe1oAGYqDKCUYmcCVuCESFrKNhvtK9bs8siFyiw
+         ZlUwIaYvNHAmfQPcgDDcdb3gn9WJij2OPKBZ0ERnb3MgHS7LrVr0Tl8OZ7dJRDQgWgsY
+         l9mQ==
+X-Gm-Message-State: AOAM531XuCMSVXvjMwSyThK2iv4Wes5BfH24+m51/Xy6evZDzs8txOQL
+        mlew+QfSwIz6UWlbsSdWivsud3MbCH/TDUM0WE5q
+X-Google-Smtp-Source: ABdhPJxzQzlMQINkQGtgusn8x3KlFXQ/4GU7tlgwwblRaGpA95RboHliLDm1HFhptD2hzonh8LpJDVD0O66OR92ZFQo=
+X-Received: by 2002:a05:6402:34e:: with SMTP id r14mr12133430edw.269.1611804832864;
+ Wed, 27 Jan 2021 19:33:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210127222905.GD284633@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210121200150.2448-1-nramas@linux.microsoft.com>
+ <CAHC9VhT13nhaHY3kJZ6ni4rjUffSG-hD5vOfK-q2KfsVFOtaCg@mail.gmail.com> <c61e3ea5-7412-7e39-4d71-945f906d68a3@linux.microsoft.com>
+In-Reply-To: <c61e3ea5-7412-7e39-4d71-945f906d68a3@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 27 Jan 2021 22:33:41 -0500
+Message-ID: <CAHC9VhS2j4cAqdPtUHzHcc_ShLAP7cndVurcpcLj9G1cAxSMMQ@mail.gmail.com>
+Subject: Re: [PATCH] selinux: measure state and policy capabilities
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Sun, Jan 24, 2021 at 12:04 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+> On 1/22/21 1:21 PM, Paul Moore wrote:
 
-On 1/28/2021 7:13 AM, Jiri Olsa wrote:
->> @@ -709,6 +725,26 @@ int machine__resolve(struct machine *machine, struct addr_location *al,
->>   			ret = strlist__has_entry(symbol_conf.sym_list,
->>   						al_addr_str);
->>   		}
->> +		if (!ret && al->map) {
->> +			snprintf(al_addr_str, sz, "0x%"PRIx64,
->> +				al->map->unmap_ip(al->map, al->addr));
->> +			ret = strlist__has_entry(symbol_conf.sym_list,
->> +						 al_addr_str);
->> +			if (!ret) {
->> +				/* Check for hex without "0x" prefix */
->> +				snprintf(al_addr_str, sz, "%"PRIx64,
->> +					al->map->unmap_ip(al->map, al->addr));
->> +				ret = strlist__has_entry(symbol_conf.sym_list,
->> +							 al_addr_str);
->> +			}
-> that seems tricky.. what if user specify more leading zeros,
-> I think it'd be better to search intlist instead
-> 
-> we could move all 'address' entries from sym_list to
-> new intlist (in symbol__init) and use it for this search
-> 
-> jirka
-> 
+...
 
-intlist now only supports 'int' type.
+> >> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> >> index 644b17ec9e63..879a0d90615d 100644
+> >> --- a/security/selinux/hooks.c
+> >> +++ b/security/selinux/hooks.c
+> >> @@ -7407,6 +7408,10 @@ int selinux_disable(struct selinux_state *state)
+> >>
+> >>          selinux_mark_disabled(state);
+> >>
+> >> +       mutex_lock(&state->policy_mutex);
+> >> +       selinux_ima_measure_state(state);
+> >> +       mutex_unlock(&state->policy_mutex);
+> >
+> > I'm not sure if this affects your decision to include this action in
+> > the measurements, but this function is hopefully going away in the not
+> > too distant future as we do away with support for disabling SELinux at
+> > runtime.
+> >
+> > FWIW, I'm not sure it's overly useful anyway; you only get here if you
+> > never had any SELinux policy/state configured and you decide to
+> > disable SELinux instead of loading a policy.  However, I've got no
+> > objection to this code.
+>
+> If support for disabling SELinux at runtime will be removed, then I
+> don't see a reason to trigger a measurement here. I'll remove this
+> measurement.
 
-I'm considering to use 'long' to replace original 'int' in struct int_node.
+It's currently marked as deprecated, see
+Documentation/ABI/obsolete/sysfs-selinux-disable.
 
-struct int_node {
-	struct rb_node rb_node;
--	int i;
-+	long i;
-	void *priv;
-};
-
-On 32 bits platform, sizeof(long) is 4, and on 64 bits platform, sizeof(long) is 8. So that should 
-be OK for storing the values such as pid/tid and address.
-
-I'm not very clear why currently it uses 'int' for i in struct int_node, maybe something I don't 
-understand correctly. Please correct me if my understanding is wrong.
-
-Thanks
-Jin Yao
-
-
-
-
-
+-- 
+paul moore
+www.paul-moore.com
