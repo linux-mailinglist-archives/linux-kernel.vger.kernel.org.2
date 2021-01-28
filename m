@@ -2,166 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2606307B48
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C9A307B4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhA1Qsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:48:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232706AbhA1QrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:47:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611852346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+        id S232566AbhA1QtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:49:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43400 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232636AbhA1Qqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:46:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611852357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LrbBbrZjgAv/B1wjq2Km74Xb+2VP5Qkal75C1Cc+NeE=;
-        b=XPCOGggRAQ45nd85vXiM+rdBrNJtxO8toUq1Dm0/ZZ/y5JTqY5oJ4vPZdWGSUvxol0gkWI
-        vYD9v9E0l943eSzVtNlti2G4DeH2ZvGMZubrMPIhB/Yta2ReFCR3r+JWXgvsacsnbWKdzl
-        aPNrCzyep0cRFJcfQM9//VvCZk+2uaQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-Sc0k_4bSOiuTVbO9hkQWLQ-1; Thu, 28 Jan 2021 11:45:42 -0500
-X-MC-Unique: Sc0k_4bSOiuTVbO9hkQWLQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FAC459;
-        Thu, 28 Jan 2021 16:45:40 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-207.ams2.redhat.com [10.36.113.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E5C910027A5;
-        Thu, 28 Jan 2021 16:45:34 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        linux-api@vger.kernel.org
-Subject: [PATCH v2] mm/page_alloc: count CMA pages per zone and print them in /proc/zoneinfo
-Date:   Thu, 28 Jan 2021 17:45:33 +0100
-Message-Id: <20210128164533.18566-1-david@redhat.com>
-In-Reply-To: <20210127101813.6370-3-david@redhat.com>
-References: <20210127101813.6370-3-david@redhat.com>
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=0XxMGxtIjAuo7zn7mo60R0A0DEYJ4h5ASS9zc02cvdk=;
+        b=DbGG9Y9WXLyseWT1CsNLluusXrrpg4rRqCDWUhKFdpFnjmzSkvLoMP1XzrmE7wrTvdJ4fA
+        H4YQS7KyAwA6ye4KCi97gnBXDc9azVbnDEet4eZbWTneEUrxL2e97P+pMr+zC8T8gXSp4P
+        f0Z1vwayFULvSyOfDpHsY5QWcNAKW8Y=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3FA24AD2B;
+        Thu, 28 Jan 2021 16:45:57 +0000 (UTC)
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with
+ nmi_enter()")
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+Date:   Thu, 28 Jan 2021 18:45:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's count the number of CMA pages per zone and print them in
-/proc/zoneinfo.
 
-Having access to the total number of CMA pages per zone is helpful for
-debugging purposes to know where exactly the CMA pages ended up, and to
-figure out how many pages of a zone might behave differently, even after
-some of these pages might already have been allocated.
 
-As one example, CMA pages part of a kernel zone cannot be used for
-ordinary kernel allocations but instead behave more like ZONE_MOVABLE.
+On 28.01.21 г. 18:12 ч., Nikolay Borisov wrote:
+> 
+> 
+> On 28.01.21 г. 5:38 ч., Masami Hiramatsu wrote:
+>> Hi,
+> 
+> <snip>
+> 
+>>
+>> Alexei, could you tell me what is the concerning situation for bpf?
+> 
+> Another data point masami is that this affects bpf kprobes which are
+> entered via int3, alternatively if the kprobe is entered via
+> kprobe_ftrace_handler it works as expected. I haven't been able to
+> determine why a particular bpf probe won't use ftrace's infrastructure
+> if it's put at the beginning of the function.  An alternative call chain
+> is :
+> 
+>  => __ftrace_trace_stack
+>  => trace_call_bpf
+>  => kprobe_perf_func
+>  => kprobe_ftrace_handler
+>  => 0xffffffffc095d0c8
+>  => btrfs_validate_metadata_buffer
+>  => end_bio_extent_readpage
+>  => end_workqueue_fn
+>  => btrfs_work_helper
+>  => process_one_work
+>  => worker_thread
+>  => kthread
+>  => ret_from_fork
+> 
+>>
 
-For now, we are only able to get the global nr+free cma pages from
-/proc/meminfo and the free cma pages per zone from /proc/zoneinfo.
+I have a working theory why I'm seeing this. My kernel (broken) was
+compiled with retpolines off and with the gcc that comes with ubuntu
+(both 9 and 10:
+gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+gcc-10 (Ubuntu 10.2.0-5ubuntu1~20.04) 10.2.0
+)
 
-Example after this patch when booting a 6 GiB QEMU VM with
-"hugetlb_cma=2G":
-  # cat /proc/zoneinfo | grep cma
-          cma      0
-        nr_free_cma  0
-          cma      0
-        nr_free_cma  0
-          cma      524288
-        nr_free_cma  493016
-          cma      0
-          cma      0
-  # cat /proc/meminfo | grep Cma
-  CmaTotal:        2097152 kB
-  CmaFree:         1972064 kB
+this results in CFI being enabled so functions look like:
+0xffffffff81493890 <+0>: endbr64
+0xffffffff81493894 <+4>: callq  0xffffffff8104d820 <__fentry__>
 
-Note: We track/print only with CONFIG_CMA; "nr_free_cma" in /proc/zoneinfo
-is currently also printed without CONFIG_CMA.
+i.e fentry's thunk is not the first instruction on the function hence
+it's not going through the optimized ftrace handler. Instead it's using
+int3 which is broken as ascertained.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: linux-api@vger.kernel.org
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
+After testing with my testcase I confirm that with cfi off and
+__fentry__ being the first entry bpf starts working. And indeed, even
+with CFI turned on if I use a probe like :
 
-v1 -> v2:
-- Print/track only with CONFIG_CMA
-- Extend patch description
+bpftrace -e 'kprobe:btrfs_sync_file+4 {printf("kprobe: %s\n",
+kstack());}' &>bpf-output &
 
----
- include/linux/mmzone.h | 6 ++++++
- mm/page_alloc.c        | 1 +
- mm/vmstat.c            | 5 +++++
- 3 files changed, 12 insertions(+)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index ae588b2f87ef..27d22fb22e05 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -503,6 +503,9 @@ struct zone {
- 	 * bootmem allocator):
- 	 *	managed_pages = present_pages - reserved_pages;
- 	 *
-+	 * cma pages is present pages that are assigned for CMA use
-+	 * (MIGRATE_CMA).
-+	 *
- 	 * So present_pages may be used by memory hotplug or memory power
- 	 * management logic to figure out unmanaged pages by checking
- 	 * (present_pages - managed_pages). And managed_pages should be used
-@@ -527,6 +530,9 @@ struct zone {
- 	atomic_long_t		managed_pages;
- 	unsigned long		spanned_pages;
- 	unsigned long		present_pages;
-+#ifdef CONFIG_CMA
-+	unsigned long		cma_pages;
-+#endif
- 
- 	const char		*name;
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b031a5ae0bd5..9a82375bbcb2 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2168,6 +2168,7 @@ void __init init_cma_reserved_pageblock(struct page *page)
- 	}
- 
- 	adjust_managed_page_count(page, pageblock_nr_pages);
-+	page_zone(page)->cma_pages += pageblock_nr_pages;
- }
- #endif
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 7758486097f9..957680db41fa 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1650,6 +1650,11 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 		   zone->spanned_pages,
- 		   zone->present_pages,
- 		   zone_managed_pages(zone));
-+#ifdef CONFIG_CMA
-+	seq_printf(m,
-+		   "\n        cma      %lu",
-+		   zone->cma_pages);
-+#endif
- 
- 	seq_printf(m,
- 		   "\n        protection: (%ld",
--- 
-2.29.2
+it would be placed on the __fentry__ (and not endbr64) hence it works.
+So perhaps a workaround outside of bpf could essentially detect this
+scenario and adjust the probe to be on the __fentry__ and not preceding
+instruction if it's detected to be endbr64 ?
+
+
+
+<snip>
 
