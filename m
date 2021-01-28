@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DA1307D20
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B58307D23
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhA1Ryq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S231239AbhA1RzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhA1RyE (ORCPT
+        with ESMTP id S231173AbhA1RyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:54:04 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815CEC0612F2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:42 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id u4so5878078ljh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:42 -0800 (PST)
+        Thu, 28 Jan 2021 12:54:10 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D163EC06121F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:53:11 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id c4so3601583wru.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:53:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9xirdUoG4Ll4lVtpP53/4UjQ/mMXV3s/T44FiAusFTg=;
-        b=HijFpgtDKzCt+F1Vszpyo4UAot2v3Wo7ywl19BCZmF6Jn1zYV92BJIoNi9APoJ5SR8
-         pKszdSR2/6VZ0IiW5D6N3OZwYyPp1Fc2Wi8VRc8/H6RRFK2/T1xvtL6MbvBBnx81aUKo
-         e17S/ZSA4UDGZqfwP3dghScK2HyDSDUvyd0N/u5zwME+lq4WSLzHMFwbeVGBBNDNfK9P
-         vsC/g8N8kXlXWefcBQcJaNkt+kvGTg4CHdK6XqTpvf7MebRIJf0IAFnZ4gUF9YyijdP2
-         4cF+Fe6UKf2xbLLTeNf+codZpf0Z4cbZJnBQ+lozrk8Q6pnN/fNXiL8xTQWKbJWF5mvD
-         wNjA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1yrHTpCxJbPqJxPosBUCqHjQNeMsmt6Vm7ugtgzEReE=;
+        b=ez3mBXPhoqFz1D3IFmXN3JtwjoO2rNSDfgvnHC2YcXG14lhpNPd5zYmbbD8+pcGVq6
+         AI2c8Urh2Bb+okX+xWbE5YxfBXEvjwaAH4ag9VriOmGaE8MLOma8D2W56hCwqfIun6A9
+         P133f7nV5kCBXDTJ0v3Fh7ufr+igEpbVcs2OxxVnfhcFOTm2VQ+2KOvcJxxtpe0eXIjO
+         oNI6bg5v2vfU/OymKzVBb8jV6UyEZSlca/u9CCqCQh5CUMP8ej4gYQUhqkCY50a3Y75G
+         aQyhYowhGe/6O6ZDgEv+PVFoYmQIdibb8orbwSm6/XmEH2wzsaKDo6c0p/HNCBl2BWKL
+         eMig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9xirdUoG4Ll4lVtpP53/4UjQ/mMXV3s/T44FiAusFTg=;
-        b=FE0FZhelQ2zZfEqQqIqII6y6SnkbEX3AYIrYyNnWcBCFLTlwNwOrlQHSn6ZVALPxnO
-         FtQ7AFFeYNdzJhyMJfNYv8x0dmhAaNWNR83eJt/tqGEnZjobspcSg6iaLBcJy0p4uCTA
-         Q1ThVux3ebERf80yv3KH6pwIOzhMv+Drj8NAgrvVXR31E+lm6uzfoXZpBsQqw4wHLXBO
-         ehK2D5FZV6bio3wW2vFxUp6/Nv0X1+oyfqqwzr3bmJwo3LMLwsHaLnQad0bzokC13IjL
-         E91KnS7zAvcX1Lv3zDuljml45MM+AiMV47M6cjJ2KXJGEmo0KBPkhto5NRFHIpH2DPxQ
-         twqw==
-X-Gm-Message-State: AOAM533/trpPw7DJYtTT7kgavL7he+R31h3vFNrTppge6YGnZ3aW3owc
-        oywJvvZhVCLLR7lItV4YD7dtQg==
-X-Google-Smtp-Source: ABdhPJysn9iMUtZv0ooelD8ZTgrcs6z9oIPbqb0gRaA/8BdgTlXZ/020aKDq/p9mBFGXUP7W9C6wdA==
-X-Received: by 2002:a2e:85ca:: with SMTP id h10mr247977ljj.474.1611856361059;
-        Thu, 28 Jan 2021 09:52:41 -0800 (PST)
-Received: from eriador.lan ([94.25.229.83])
-        by smtp.gmail.com with ESMTPSA id w10sm2216119ljj.37.2021.01.28.09.52.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 09:52:40 -0800 (PST)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH v2 5/5] arm64: dts: qcom: Add Bluetooth support on RB5
-Date:   Thu, 28 Jan 2021 20:52:25 +0300
-Message-Id: <20210128175225.3102958-6-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
-References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1yrHTpCxJbPqJxPosBUCqHjQNeMsmt6Vm7ugtgzEReE=;
+        b=cGHDosx3jYD9/GO2LMISveZVhQ/YEJTO+rRSxPy564QKSe84npBvCvZUOunZZE710A
+         8wZ7X+EazWbfs/qg37S+i3VYk+kizpyWSiLKggP5dCzYj/xNfyp/5xyaFKZs+b9DT5hu
+         sjyr+xJsXyTYDiePgTnkbYnGQeFDX6VLo0SzQ+ceH1ql2fHbLE9FpB09T3ANvwBVbhvs
+         njB9fbAMflDEEq1BnPKJoKU2MOFUHB+01jCOzXVlbXLUFZr+xw8gGr0mMU9ankDJWSAe
+         o6pjNerJLLdJxLaiqLTZ9Fxil/6Ec/rgAuqRGJL6jE7zDFwKOeHGq7xBUwl8GPQCp8Lx
+         wNVw==
+X-Gm-Message-State: AOAM532SHEwORs8nEfIm5R3oOlnWLhSBGZxuW4D0iVw8pyto0Qz87LjL
+        SZJVTJRScEkRgU9zmGIDAFSWU1GJzJAHBjpqvSFEOQ==
+X-Google-Smtp-Source: ABdhPJxwJqmSpiOHWxbkktFlqp4IMoBe4w7eVr8q1PfPy4kMSqkddDUEO7do+MQxEcJmtNOrfxqEeXfGoH86SezSyCg=
+X-Received: by 2002:adf:ed45:: with SMTP id u5mr267262wro.358.1611856390338;
+ Thu, 28 Jan 2021 09:53:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210128083817.314315-1-surenb@google.com> <20210128091348.GA1962975@infradead.org>
+In-Reply-To: <20210128091348.GA1962975@infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 28 Jan 2021 09:52:59 -0800
+Message-ID: <CAJuCfpFUhJozS98WJpH0KQKBzyGXvqS1fitu-mgSyhaJ1xL8SQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
+ linux vm
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        benjamin.gaignard@linaro.org, Liam Mark <lmark@codeaurora.org>,
+        labbott@redhat.com, Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>, christian.koenig@amd.com,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        James Jones <jajones@nvidia.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Thu, Jan 28, 2021 at 1:13 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Jan 28, 2021 at 12:38:17AM -0800, Suren Baghdasaryan wrote:
+> > Currently system heap maps its buffers with VM_PFNMAP flag using
+> > remap_pfn_range. This results in such buffers not being accounted
+> > for in PSS calculations because vm treats this memory as having no
+> > page structs. Without page structs there are no counters representing
+> > how many processes are mapping a page and therefore PSS calculation
+> > is impossible.
+> > Historically, ION driver used to map its buffers as VM_PFNMAP areas
+> > due to memory carveouts that did not have page structs [1]. That
+> > is not the case anymore and it seems there was desire to move away
+> > from remap_pfn_range [2].
+> > Dmabuf system heap design inherits this ION behavior and maps its
+> > pages using remap_pfn_range even though allocated pages are backed
+> > by page structs.
+> > Clear VM_IO and VM_PFNMAP flags when mapping memory allocated by the
+> > system heap and replace remap_pfn_range with vm_insert_page, following
+> > Laura's suggestion in [1]. This would allow correct PSS calculation
+> > for dmabufs.
+> >
+> > [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
+> > [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
+> > (sorry, could not find lore links for these discussions)
+> >
+> > Suggested-by: Laura Abbott <labbott@kernel.org>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > index 17e0e9a68baf..0e92e42b2251 100644
+> > --- a/drivers/dma-buf/heaps/system_heap.c
+> > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > @@ -200,11 +200,13 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+> >       struct sg_page_iter piter;
+> >       int ret;
+> >
+> > +     /* All pages are backed by a "struct page" */
+> > +     vma->vm_flags &= ~VM_PFNMAP;
+>
+> Why do we clear this flag?  It shouldn't even be set here as far as I
+> can tell.
 
-Add Bluetooth support on RB5 using the onboard QCA6391 WLAN+BT chipset.
-
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-[DB: added qca6391 power domain, removed s2f regulator]
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 29 ++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index b39a9729395f..c65c13994a86 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -19,6 +19,7 @@ / {
- 	compatible = "qcom,qrb5165-rb5", "qcom,sm8250";
- 
- 	aliases {
-+		hsuart0 = &uart6;
- 		serial0 = &uart12;
- 		sdhc2 = &sdhc_2;
- 	};
-@@ -689,6 +690,26 @@ &pm8150_rtc {
- 	status = "okay";
- };
- 
-+&qup_uart6_default {
-+	ctsrx {
-+		pins = "gpio16", "gpio19";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	rts {
-+		pins = "gpio17";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	tx {
-+		pins = "gpio18";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-@@ -1194,6 +1215,14 @@ wlan-en {
- 	};
- };
- 
-+&uart6 {
-+	status = "okay";
-+	bluetooth {
-+		compatible = "qcom,qca6390-bt";
-+		power-domains = <&qca6391>;
-+	};
-+};
-+
- &uart12 {
- 	status = "okay";
- };
--- 
-2.29.2
-
+Thanks for the question, Christoph.
+I tracked down that flag being set by drm_gem_mmap_obj() which DRM
+drivers use to "Set up the VMA to prepare mapping of the GEM object"
+(according to drm_gem_mmap_obj comments). I also see a pattern in
+several DMR drivers to call drm_gem_mmap_obj()/drm_gem_mmap(), then
+clear VM_PFNMAP and then map the VMA (for example here:
+https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/rockchip/rockchip_drm_gem.c#L246).
+I thought that dmabuf allocator (in this case the system heap) would
+be the right place to set these flags because it controls how memory
+is allocated before mapping. However it's quite possible that I'm
+missing the real reason for VM_PFNMAP being set in drm_gem_mmap_obj()
+before dma_buf_mmap() is called. I could not find the answer to that,
+so I hope someone here can clarify that.
