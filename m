@@ -2,79 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E09330786F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFA2307886
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhA1On6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:43:58 -0500
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:53599 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231550AbhA1Onl (ORCPT
+        id S232261AbhA1OqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:46:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232036AbhA1Oo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:43:41 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 3ACA6BAE48
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:42:47 +0000 (GMT)
-Received: (qmail 20546 invoked from network); 28 Jan 2021 14:42:46 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 Jan 2021 14:42:46 -0000
-Date:   Thu, 28 Jan 2021 14:42:45 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Lameter <cl@linux.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-Message-ID: <20210128144245.GH3592@techsingularity.net>
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com>
- <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
- <20210126085243.GE827@dhcp22.suse.cz>
- <CAKfTPtAhqiHtPMUTZv8Bs3Cg5=HXLmrda=j4_HFrF=7ztYZLGA@mail.gmail.com>
- <20210126135918.GQ827@dhcp22.suse.cz>
- <20210128134512.GF3592@techsingularity.net>
- <YBLCthvRYtBRQiXW@dhcp22.suse.cz>
+        Thu, 28 Jan 2021 09:44:59 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AB2C061574;
+        Thu, 28 Jan 2021 06:44:19 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id u15so3454361plf.1;
+        Thu, 28 Jan 2021 06:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=avzsR9HHm+QL99Sb8COQafM2D/UB+zvy2SDex57jg+0=;
+        b=eXPiZkGMap/Z5070F49FN5G/JWvZTAyrzydO7aluQ4YdPKVTMjqoQAhTijEoidHgT2
+         gnL3A6lvV0vgnmsdRENwEFqU8LUBpyg2T8tQHJy2qGiFpfIl7jLZcutY6shsYVDK1iO3
+         +i9wott36RmTUX7SUEKypiTDIHvZ55/OB6SeO9y3vV4hHz9r5SjGS/9aU8qzp6Y6FTMZ
+         4tuvoUXs5SA5d0C42SQWInTx1fbKvT+Qf6gNOPXoT8J0QVmqhB7kzXifklcnxn8PO8fB
+         VZeVpLHbKWU2xliR4ivEVyUe+jkg2zFjJpRdFzq9LlNzj9m57aj/pB07yjhPr1qg3Yio
+         xLnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=avzsR9HHm+QL99Sb8COQafM2D/UB+zvy2SDex57jg+0=;
+        b=QyIv8eztMyZq9gSKM9csKq2Ymcmim+W+oxUqsSLuDAFuz39Frc/Ey2HBM51FTnJUmC
+         YI8BbgoJj4N6xppqDFXfwz/6alMNPclQEdY65cWn1kxreUMN4qBi+LzD8Ysj4h9rfO1g
+         mzziySmeoGaS7ufnhx7f+OuXt1KkIymZyLFh/gGEPHLd+P1J+I1/z7PzonKXhcW/CSkF
+         X/o+zlOyRgndC1BOOBIdg1KKyzBEcSIPkqDDMW5llqy/Ph6+bfjOcIglBNmJk2+wqcMU
+         ZMFvMgXHMHJHBHuZ7AYrXpeN41VhxQHzBorK6D8oZnUfvHR638kOLqxLt2ay3UYthRZX
+         /sfg==
+X-Gm-Message-State: AOAM530Sq4px6u9dDmWZRAqG7BD7YNI0OzCB9lxmt0e2KMX4HfLV7z3x
+        Cbj9GA+hbF5Vf0tc5NVUtakXFDKQhx+cQTQKeug=
+X-Google-Smtp-Source: ABdhPJxdWZlfKzAXL6EI4mZXjZ6Qyag0y/Kfcll/RaipN/m7rOKpPNtVy7DUEFkxq10YSC0k4n+LayvZfsvZxen34VA=
+X-Received: by 2002:a17:902:758b:b029:df:d1f6:9af9 with SMTP id
+ j11-20020a170902758bb02900dfd1f69af9mr16603032pll.21.1611845058615; Thu, 28
+ Jan 2021 06:44:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YBLCthvRYtBRQiXW@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com> <CAHp75Vd=ijxnamuSYuxNLeyhGMCod=HaXWrQ0W0+3QCsQAychg@mail.gmail.com>
+In-Reply-To: <CAHp75Vd=ijxnamuSYuxNLeyhGMCod=HaXWrQ0W0+3QCsQAychg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 28 Jan 2021 16:44:02 +0200
+Message-ID: <CAHp75VcRxPVs0KHwaY8QZima489D2_hntuW0eUqdfK8HJ-gnKA@mail.gmail.com>
+Subject: Re: [PATCH v12] staging: fbtft: add tearing signal detect
+To:     Carlis <zhangxuezhi3@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Colin King <colin.king@canonical.com>,
+        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 02:57:10PM +0100, Michal Hocko wrote:
-> On Thu 28-01-21 13:45:12, Mel Gorman wrote:
-> [...]
-> > So mostly this is down to the number of times SLUB calls into the page
-> > allocator which only caches order-0 pages on a per-cpu basis. I do have
-> > a prototype for a high-order per-cpu allocator but it is very rough --
-> > high watermarks stop making sense, code is rough, memory needed for the
-> > pcpu structures quadruples etc.
-> 
-> Thanks this is really useful. But it really begs a question whether this
-> is a general case or more an exception. And as such maybe we want to
-> define high throughput caches which would gain a higher order pages to
-> keep pace with allocation and reduce the churn or deploy some other
-> techniques to reduce the direct page allocator involvement.
+On Thu, Jan 28, 2021 at 4:33 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Thu, Jan 28, 2021 at 2:58 PM Carlis <zhangxuezhi3@gmail.com> wrote:
 
-I don't think we want to define "high throughput caches" because it'll
-be workload dependant and a game of whack-a-mole. If the "high throughput
-cache" is a kmalloc cache for some set of workloads and one of the inode
-caches or dcaches for another one, there will be no setting that is
-universally good.
+...
+
+> Taking all together you probably need to create a helper and use it
+> inside init_display(), like
+>
+> static int init_tearing_effect_line(struct fbtft_par *par)
+> {
+>   struct device *dev = par->info->device;
+>   struct gpio_desc *te;
+>   int irq, rc;
+>
+>   te = gpiod_get_optional(dev, "te", GPIOD_IN);
+>   if (IS_ERR(te))
+>            return dev_err_probe(dev, PTR_ERR(te), "Failed to request
+> te GPIO\n");
+
+Sorry, here I missed the following:
+
+  /* Absence of TE IRQ is not critical */
+  if (!te)
+    return 0;
+
+>   irq = gpiod_to_irq(te); // this value you have to save in the
+> driver's (per device) data structure.
+>
+>   /* GPIO is locked as an IRQ, we may drop the reference */
+>   gpiod_put(te);
+
+...and here:
+
+  if (irq < 0)
+    return irq;
+
+>   init_completion(&spi_panel_te); // should be in the (per device)
+> data structure
+>   rc = devm_request_irq(dev, irq,  spi_panel_te_handler,
+> IRQF_TRIGGER_RISING, "TE_GPIO", par);
+>   if (rc)
+>                 return dev_err_probe(dev, rc, "TE IRQ request failed.\n");
+>   disable_irq_nosync(irq);
+>   return irq;
+> }
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
