@@ -2,234 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93C3307C25
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38009307C1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhA1RVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:21:32 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:46206 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbhA1RQ5 (ORCPT
+        id S233066AbhA1RUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:20:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232644AbhA1RRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:16:57 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SHAelO184502;
-        Thu, 28 Jan 2021 17:15:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=Iui4vAgvoMar5XVf7t6WuU8qOxjFj2O+Ktt4kCn+RGI=;
- b=WO5y/ATOL8lxujD6/SOCFtd7Ss0ljNIKFxx/BorG8h4sNAAkA//0Q1y/nzpkh9u/CmSg
- we5MudxjDCvKTmPKRMjv/RW9q3OLpqUbE9YHEejpWwMKWukbThOqGTjy/G3o6myF5C8q
- R0nx18idaT6C2oiJAWFpCK2iqaKzHLH9aE2Z6WwmJnX51PHOZgG78cuj/SJp1KZ8Wu7X
- /KjkBeK057eirrS/8WugIWOY0Cl5ElyZLvqmmBX7d4jPFJzXzVrRKNRwz9mEITtkaQJ+
- 9ff+Fja1eD5T/jzNXRtJO2S+EJ001xaAJGgfQWUCdrMRXVQ1ZexnrSjtTf4KsozstC42 Hg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 368brkw7dr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 17:15:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10SHAeC7112496;
-        Thu, 28 Jan 2021 17:15:37 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by aserp3020.oracle.com with ESMTP id 368wq1ywgn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 17:15:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G9ADsQ9jMR8aZqowxrTN/yGPGmDwi64qMvwGuwc/BSzSR6MU3Snb+cBiNuZ9GSV9SHpkYZBdY9DkiY2BIj3AvH0OVS466ipTtywwDEWyJV7SrZMkUbCy2bXeb6DL9r7f3xYg61N+w0O69dHZyQTf/lKUOrWVjXw9txc5wcbpn3YNjHZEwCd/QSDwgYz+nL52Xiv7UrzPmXgNBad4pZcc1b8Z25a3cbQiojV4g4bpAAV8IS1MHzMtX7LfVyd4mYYhieWsZ2RbEKmWnmoxODvNyLNntvPMz8+flgMkeI/ZUsJYBjlx+AQ/Rqz3J4/8CvAtXlGtvbA3W88qKXqbdA3N7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iui4vAgvoMar5XVf7t6WuU8qOxjFj2O+Ktt4kCn+RGI=;
- b=cSY2xDkz4Naj5z6xhfIO1Gj8nLbXbkFsp4aWKfSSI/6jXtLZOlzWOGc9f3Fq1GR6MYlcx23PV+Ao+oxP/T9JgaFur8Sxs6p6yZxL+beAZ/Lam7MaTTgWysjmwhWEnAPElBu9AYaSZCFDYwep+8JPvxK5Y5Yu4PZhHU0tybS8UDigoCT2VLRC1gg8zJXTKQrUVAh8rveCfJpEVaUy2lpV/ZHWZyXkSNpai+lLsjd6oTsf57RvJzLX6T54Y0lO/VOVDH7BO2QKlinX1FW28DSaE4xxz7SImZKtLrcZbPj6lkTKrrYDgkbPbdZUbzZILLQ2O0T0o9ZcsnbNs3dKrR1GCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 28 Jan 2021 12:17:49 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8EBC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:17:08 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id u20so5961232qku.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:17:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iui4vAgvoMar5XVf7t6WuU8qOxjFj2O+Ktt4kCn+RGI=;
- b=G727a58bjKRMRDjXWLwMYqpYibxSxdCpocHzejrb7AUOYUNWiJQso1b0j49X8KaLIjffUrFdR7UhhatdKFzbw3rqeBmDjEeA3H1yoHXZfqBRTtAJTKfE6lmowCF4EyuAwsU60x8HADLFaW4M72cWyo57Wa2Qya/0WizzQoLZvxg=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB3736.namprd10.prod.outlook.com (2603:10b6:a03:121::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.16; Thu, 28 Jan
- 2021 17:15:34 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3784.019; Thu, 28 Jan 2021
- 17:15:34 +0000
-Date:   Thu, 28 Jan 2021 12:15:28 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Jianxiong Gao <jxgao@google.com>
-Cc:     erdemaktas@google.com, marcorr@google.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, saravanak@google.com,
-        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
-        andriy.shevchenko@linux.intel.com, dan.j.williams@intel.com,
-        bgolaszewski@baylibre.com, jroedel@suse.de,
-        iommu@lists.linux-foundation.org, kbusch@kernel.org, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] Add swiotlb offset preserving mapping when
- dma_dma_parameters->page_offset_mask is non zero.
-Message-ID: <YBLxMP3sr71BTL+d@Konrads-MacBook-Pro.local>
-References: <20210128003829.1892018-1-jxgao@google.com>
- <20210128003829.1892018-3-jxgao@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128003829.1892018-3-jxgao@google.com>
-X-Originating-IP: [138.3.200.34]
-X-ClientProxiedBy: BY5PR04CA0024.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::34) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QcxWapiPSO2xibmizYTYMcU/jNeQgQwDKDZ2S3JeesY=;
+        b=gaWXFMPRVqVeDtaReNuY+HIPrNq18rT3QXGDm9R0y2tUU105e1eXClTzhg0DQLTl/d
+         kAHB9AEA0qHXWDPn56AShhvL0j1uFg9qaT9eZZELq9AWpwYrysC74sYg/Zxe+GMgnE66
+         PiomzFZopNn3XxWuRwIbR38lJeICuBlBJ6plAnYnbThrunblmnYqs+aeZV9BclqcnkjU
+         YwZXMz/F/JYMFnVw7KBsumJAXAIDUVhAJIE75dPgXBSJVMHTg+9C/xcCNWBd/2/uHX3e
+         gg2f14Dd93dRYHdUpOEZVhtGrZAm+URNtsETmDh/mhUxs55ZpKYv1ualmbhiGfKxG027
+         c3Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QcxWapiPSO2xibmizYTYMcU/jNeQgQwDKDZ2S3JeesY=;
+        b=E5Ur1OgY1f7lJtYf6XQcoFPXVrgdSTsRfFzxZHUvj43JsPWBJPVKcNtYrqFbI8VlQJ
+         /vQ0h/KtFhHpC6NfBrqEk3N6MAGPWLe0cldfj9DVDjEHae932HDrmujKazR1Gii2645s
+         UQHh7PSsU6IzNPsZW6uUzZfFihscjOPmh9YZXojW/bdRhaEf3xYGJa7WO8GaoNQ76xwR
+         kkkyGHuZzJCrVz2p3DSqN9QJTSVG8gZlLFGw/8ANojUBnfH+0Acw1QGRuw1Css2Z8mLa
+         iUR42nDosGGGdomUFt4uK6ci1t08wmMRuUxuUD/sAwsLRA8btMaUfwHKJUdSx07BPUp1
+         C/4A==
+X-Gm-Message-State: AOAM533/P/ptcX0M4Ue4LJe3+yLShKNar0caqF+KdeQeyUyWJBbwEwKC
+        +M2QTvCWm95yVB9tGiLHfQtGaawQRUgAozIrQW/S6g==
+X-Google-Smtp-Source: ABdhPJzvwexGUyi1U4sEDOXhS8/21q2NjCfFTi7Xpvmf2IfjbrrwKIgvttehLclwYemJpMticsLcGx6ENgYm4tYeyIw=
+X-Received: by 2002:a37:2716:: with SMTP id n22mr160075qkn.265.1611854227676;
+ Thu, 28 Jan 2021 09:17:07 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Konrads-MacBook-Pro.local (138.3.200.34) by BY5PR04CA0024.namprd04.prod.outlook.com (2603:10b6:a03:1d0::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 17:15:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fbffaaeb-c311-4b15-f179-08d8c3b052a0
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3736:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3736917BA768CDD48FD13ED089BA9@BYAPR10MB3736.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S95JaRRWfuY6hOnzaV4l84Adqh11MnbnkFKdg4imLgk1Zd57X+ou3v4iVMLkKSn0ZFVBFLfbXh3mN8EAPrnWTiA1pX/I/KnYa7RCIjDUaTiUTmbtgpAKVAMdm4cJiBU5C9SAQHDyhqiEHyK01cmpNxHhGu0HOVn1KJuMt5UAL6EQGsTnzNxd88t83kE5xeEiCEd0eIP6QcKJm4jsMrtNXwTOnlJ80D4TREfW57OAj9iHe8icWzg6S9WRNTIj17p6TSkounOczPyNbO5yfGIMyIIVY1R4PJoTFbkI1ScB0NL+vtXYFNTm7/h9O+ECtSj7XAc3w0v8E5444Ra44s7YV1PYvaiMyHYZ9cTJUvpVpdbj2YKpv6FIUIR1HCAIzcENED/47IbL4vWakKtUVFPA6Z/g+6jzHgYoIMrsel94o8vJC0W9X12MJuq8CbVdfhzwv1yAXNhTg1V/LTNPulsUaxzt2l9doUIDchgBQIu+BYr4Tr81QUxBOTzLdZN/sKbYthvDAxQAHK8cm51caAd6Nf3Sd7ONoQH4/y9puRtcv906K6K4ssExrgumJ/MF5fWJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(396003)(366004)(346002)(8676002)(5660300002)(4326008)(2906002)(86362001)(186003)(8936002)(66556008)(26005)(956004)(6916009)(316002)(6506007)(52116002)(55016002)(9686003)(83380400001)(66476007)(66946007)(478600001)(7696005)(7416002)(16526019)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?0To3o0A2tjlIMIPcWXAxdp4cbcsvJaq7SjXDVyFCZUssVe5pjB1G0KuWpiaG?=
- =?us-ascii?Q?pQb7+5pPrg6SVYh7w+9r8gt0FaKKYJNq8iMs0JdVdZHuOHsIzQ1ZidEWv9+C?=
- =?us-ascii?Q?wNVLFhOBFKheVRi/FxKLPFB3k5/VbMJhxRPX+HgBAUO+7yQDKLQICKLIAK/H?=
- =?us-ascii?Q?/6TGHihfDzEajebrjLZsxEVBD7fMNPe8X77ORf+PakbVWt0kDCjnJIH2S3t8?=
- =?us-ascii?Q?n6vmIM0VZGqAoACJj5uv3DRmXtoINu8Ct1cKNoxfFlVte+nxLR/jZ5gBYA4K?=
- =?us-ascii?Q?2a6LUFBFOnzF801FnUAb9GdAx61jisr0iL/XM+n+QnBvUW1mdThIpTP5Asx1?=
- =?us-ascii?Q?eWsHHB604she6yQk8P6ELxQg/qEGh8v6zrRNnIln3qQ+m9US/jvYhw9i0Sfg?=
- =?us-ascii?Q?QHQJJ8eNw4gvL9o/wHjQ/exaMJPRa4MQR4RTb2PJ/cqbiOhVb0xgpI0bG0qv?=
- =?us-ascii?Q?yTOAwH0A8cIPv5ZSrqj9ZtHjTfrEQKY21kBg28rMZSF12EfFEib8TcgUkFfZ?=
- =?us-ascii?Q?3WB+zrMUjbbMFhDICRWq6WI5ValZaWrQqn6tpTv2z1IUDEJAkowD17Ae7MXK?=
- =?us-ascii?Q?21kmJZCsoQGVldRx538OUQxts4DZ4JcDgKaWidJ0LDV5Hk8a7mMKHfR3nTV2?=
- =?us-ascii?Q?tUpX0p+JVq1TfjIKSN/yCpXy4F31Gugwdr5cnKTwEXrfpL1lm28IyJ0PBozL?=
- =?us-ascii?Q?a3V4i94RPrLf1te91uVBMidSv9iN/XZjmK3MgKFNWeT+XJtyUtjFLb9uDETB?=
- =?us-ascii?Q?pDF1B4tJDFazM4s4vZOntVGNsZeBkAwHaypLtW0q+RkMbae/gyYGBSv5N5CR?=
- =?us-ascii?Q?6KZhUe1fnbmJ88KIEcA2btmFLEqm73Rl6jwSxSDYhEIZTEP97YPE5oDjgVGD?=
- =?us-ascii?Q?o/cZ8VF1egzYKnXJtUDu1TIRk6NMDw333E4ceDH9/sy9aklkuPpjOuL0Vmtk?=
- =?us-ascii?Q?j3Hs/pNq7KIEj5idApyzQolU6TlQch3MsCY9Gu2bmIlfNMZeeMryRzhZlu0B?=
- =?us-ascii?Q?akTdhxBT/p4jWLFjvfqrOFXc73PKc2BR1lQPv8D27uIokc+VDohi/XEIomal?=
- =?us-ascii?Q?RocKHYgn?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fbffaaeb-c311-4b15-f179-08d8c3b052a0
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 17:15:34.4043
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Uij+hqOgHlFCfQBDcqSivl2sODR+A+lW7L7fsCcsnov9OYVvN052bkp0FNscjU0oasH+OIeieiEsk8zWY3e7OQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3736
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
- adultscore=0 bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101280083
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280083
+References: <20210128024316.1425-1-hdanton@sina.com> <CACT4Y+Z8NwmvuqynuFO8XFk4sdeTLi9Bn5RWt3xWU_Vb+z+hAA@mail.gmail.com>
+ <2cfd53f0-2a38-4550-a354-a8967736298a@gmail.com>
+In-Reply-To: <2cfd53f0-2a38-4550-a354-a8967736298a@gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 28 Jan 2021 18:16:55 +0100
+Message-ID: <CACT4Y+bGPmMi0uFXz618GVwf4CHyF6TArYDpNGNFkR4p_xYPKg@mail.gmail.com>
+Subject: Re: [PATCH] netdevsim: init u64 stats for 32bit hardware
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Hillf Danton <hdanton@sina.com>, netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot <syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 04:38:28PM -0800, Jianxiong Gao wrote:
-> For devices that need to preserve address offset on mapping through
-> swiotlb, this patch adds offset preserving based on page_offset_mask
-> and keeps the offset if the mask is non zero. This is needed for
-> device drivers like NVMe.
+On Thu, Jan 28, 2021 at 5:01 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>
+>
+>
+> On 1/28/21 8:23 AM, Dmitry Vyukov wrote:
+> > On Thu, Jan 28, 2021 at 3:43 AM Hillf Danton <hdanton@sina.com> wrote:
+> >>
+> >> Init the u64 stats in order to avoid the lockdep prints on the 32bit
+> >> hardware like
+> >
+> > FTR this is not just to avoid lockdep prints, but also to prevent very
+> > real stalls in production.
+>
+> Are you sure ?
+>
+> > u64_stats_init initializes seqlock, if the uninitialized
+> > selock->sequence would be odd, the kernel will stall.
+>
+> Normally the whole netdev structure is zeroed when allocated,
+> this is done in alloc_netdev_mqs()
+>
+> p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+>
+> So unless kvzalloc() has been changed recently to inject random data
+> instead of 0, this bug is really about lockdep only.
 
-<scratches his head>
+You are right, I missed that the object is zero-initialized. Then it's
+only a latent bug (if e.g. seqcount_init initializes count to an odd
+value).
 
-Didn't you send this patch like a month ago and someone pointed
-out that the right fix would be in the NVMe driver?
-
-Is there an issue with fixing the NVMe driver?
-
-> 
-> Signed-off-by: Jianxiong Gao <jxgao@google.com>
-> ---
->  kernel/dma/swiotlb.c | 25 ++++++++++++++++++++++---
->  1 file changed, 22 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 7c42df6e6100..4cab35f2c9bc 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -468,7 +468,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
->  	dma_addr_t tbl_dma_addr = phys_to_dma_unencrypted(hwdev, io_tlb_start);
->  	unsigned long flags;
->  	phys_addr_t tlb_addr;
-> -	unsigned int nslots, stride, index, wrap;
-> +	unsigned int nslots, stride, index, wrap, page_offset_mask, page_offset;
->  	int i;
->  	unsigned long mask;
->  	unsigned long offset_slots;
-> @@ -500,12 +500,16 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
->  		    ? ALIGN(mask + 1, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT
->  		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
->  
-> +	page_offset_mask = dma_get_page_offset_mask(hwdev);
-> +	page_offset = orig_addr & page_offset_mask;
-> +	alloc_size += page_offset;
-> +
->  	/*
->  	 * For mappings greater than or equal to a page, we limit the stride
->  	 * (and hence alignment) to a page size.
->  	 */
->  	nslots = ALIGN(alloc_size, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
-> -	if (alloc_size >= PAGE_SIZE)
-> +	if ((alloc_size >= PAGE_SIZE) || (page_offset_mask > (1 << IO_TLB_SHIFT)))
->  		stride = (1 << (PAGE_SHIFT - IO_TLB_SHIFT));
->  	else
->  		stride = 1;
-> @@ -583,6 +587,11 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
->  	 */
->  	for (i = 0; i < nslots; i++)
->  		io_tlb_orig_addr[index+i] = orig_addr + (i << IO_TLB_SHIFT);
-> +	/*
-> +	 * When keeping the offset of the original data, we need to advance
-> +	 * the tlb_addr by the offset of orig_addr.
-> +	 */
-> +	tlb_addr += page_offset;
->  	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
->  	    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
->  		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_TO_DEVICE);
-> @@ -598,7 +607,9 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
->  			      enum dma_data_direction dir, unsigned long attrs)
->  {
->  	unsigned long flags;
-> -	int i, count, nslots = ALIGN(alloc_size, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
-> +	unsigned int num_page_offset_slabs, page_offset_mask = dma_get_page_offset_mask(hwdev);
-> +	int i, count;
-> +	int nslots = ALIGN(alloc_size + tlb_addr & page_offset_mask, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
->  	int index = (tlb_addr - io_tlb_start) >> IO_TLB_SHIFT;
->  	phys_addr_t orig_addr = io_tlb_orig_addr[index];
->  
-> @@ -610,6 +621,14 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
->  	    ((dir == DMA_FROM_DEVICE) || (dir == DMA_BIDIRECTIONAL)))
->  		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_FROM_DEVICE);
->  
-> +	/*
-> +	 * When dma_get_page_offset_mask is used, we may have padded more slabs
-> +	 * when padding exceeds one slab. We need to move index back to the
-> +	 * beginning of the padding.
-> +	 */
-> +	num_page_offset_slabs =  (tlb_addr & page_offset_mask) / (1 << IO_TLB_SHIFT);
-> +	index -= num_page_offset_slabs;
-> +
->  	/*
->  	 * Return the buffer to the free list by setting the corresponding
->  	 * entries to indicate the number of contiguous entries available.
-> -- 
-> 2.27.0
-> 
+> > Maintainers, please send this upstream on your earliest convenience,
+> > this breaks all 32-bit arches for testing purposes.
+> >
+> > Thanks
+> >
+> >>  INFO: trying to register non-static key.
+> >>  the code is fine but needs lockdep annotation.
+> >>  turning off the locking correctness validator.
+> >>  CPU: 0 PID: 4695 Comm: syz-executor.0 Not tainted 5.11.0-rc5-syzkaller #0
+> >>  Hardware name: ARM-Versatile Express
+> >>  Backtrace:
+> >>  [<826fc5b8>] (dump_backtrace) from [<826fc82c>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
+> >>  [<826fc814>] (show_stack) from [<8270d1f8>] (__dump_stack lib/dump_stack.c:79 [inline])
+> >>  [<826fc814>] (show_stack) from [<8270d1f8>] (dump_stack+0xa8/0xc8 lib/dump_stack.c:120)
+> >>  [<8270d150>] (dump_stack) from [<802bf9c0>] (assign_lock_key kernel/locking/lockdep.c:935 [inline])
+> >>  [<8270d150>] (dump_stack) from [<802bf9c0>] (register_lock_class+0xabc/0xb68 kernel/locking/lockdep.c:1247)
+> >>  [<802bef04>] (register_lock_class) from [<802baa2c>] (__lock_acquire+0x84/0x32d4 kernel/locking/lockdep.c:4711)
+> >>  [<802ba9a8>] (__lock_acquire) from [<802be840>] (lock_acquire.part.0+0xf0/0x554 kernel/locking/lockdep.c:5442)
+> >>  [<802be750>] (lock_acquire.part.0) from [<802bed10>] (lock_acquire+0x6c/0x74 kernel/locking/lockdep.c:5415)
+> >>  [<802beca4>] (lock_acquire) from [<81560548>] (seqcount_lockdep_reader_access include/linux/seqlock.h:103 [inline])
+> >>  [<802beca4>] (lock_acquire) from [<81560548>] (__u64_stats_fetch_begin include/linux/u64_stats_sync.h:164 [inline])
+> >>  [<802beca4>] (lock_acquire) from [<81560548>] (u64_stats_fetch_begin include/linux/u64_stats_sync.h:175 [inline])
+> >>  [<802beca4>] (lock_acquire) from [<81560548>] (nsim_get_stats64+0xdc/0xf0 drivers/net/netdevsim/netdev.c:70)
+> >>  [<8156046c>] (nsim_get_stats64) from [<81e2efa0>] (dev_get_stats+0x44/0xd0 net/core/dev.c:10405)
+> >>  [<81e2ef5c>] (dev_get_stats) from [<81e53204>] (rtnl_fill_stats+0x38/0x120 net/core/rtnetlink.c:1211)
+> >>  [<81e531cc>] (rtnl_fill_stats) from [<81e59d58>] (rtnl_fill_ifinfo+0x6d4/0x148c net/core/rtnetlink.c:1783)
+> >>  [<81e59684>] (rtnl_fill_ifinfo) from [<81e5ceb4>] (rtmsg_ifinfo_build_skb+0x9c/0x108 net/core/rtnetlink.c:3798)
+> >>  [<81e5ce18>] (rtmsg_ifinfo_build_skb) from [<81e5d0ac>] (rtmsg_ifinfo_event net/core/rtnetlink.c:3830 [inline])
+> >>  [<81e5ce18>] (rtmsg_ifinfo_build_skb) from [<81e5d0ac>] (rtmsg_ifinfo_event net/core/rtnetlink.c:3821 [inline])
+> >>  [<81e5ce18>] (rtmsg_ifinfo_build_skb) from [<81e5d0ac>] (rtmsg_ifinfo+0x44/0x70 net/core/rtnetlink.c:3839)
+> >>  [<81e5d068>] (rtmsg_ifinfo) from [<81e45c2c>] (register_netdevice+0x664/0x68c net/core/dev.c:10103)
+> >>  [<81e455c8>] (register_netdevice) from [<815608bc>] (nsim_create+0xf8/0x124 drivers/net/netdevsim/netdev.c:317)
+> >>  [<815607c4>] (nsim_create) from [<81561184>] (__nsim_dev_port_add+0x108/0x188 drivers/net/netdevsim/dev.c:941)
+> >>  [<8156107c>] (__nsim_dev_port_add) from [<815620d8>] (nsim_dev_port_add_all drivers/net/netdevsim/dev.c:990 [inline])
+> >>  [<8156107c>] (__nsim_dev_port_add) from [<815620d8>] (nsim_dev_probe+0x5cc/0x750 drivers/net/netdevsim/dev.c:1119)
+> >>  [<81561b0c>] (nsim_dev_probe) from [<815661dc>] (nsim_bus_probe+0x10/0x14 drivers/net/netdevsim/bus.c:287)
+> >>  [<815661cc>] (nsim_bus_probe) from [<811724c0>] (really_probe+0x100/0x50c drivers/base/dd.c:554)
+> >>  [<811723c0>] (really_probe) from [<811729c4>] (driver_probe_device+0xf8/0x1c8 drivers/base/dd.c:740)
+> >>  [<811728cc>] (driver_probe_device) from [<81172fe4>] (__device_attach_driver+0x8c/0xf0 drivers/base/dd.c:846)
+> >>  [<81172f58>] (__device_attach_driver) from [<8116fee0>] (bus_for_each_drv+0x88/0xd8 drivers/base/bus.c:431)
+> >>  [<8116fe58>] (bus_for_each_drv) from [<81172c6c>] (__device_attach+0xdc/0x1d0 drivers/base/dd.c:914)
+> >>  [<81172b90>] (__device_attach) from [<8117305c>] (device_initial_probe+0x14/0x18 drivers/base/dd.c:961)
+> >>  [<81173048>] (device_initial_probe) from [<81171358>] (bus_probe_device+0x90/0x98 drivers/base/bus.c:491)
+> >>  [<811712c8>] (bus_probe_device) from [<8116e77c>] (device_add+0x320/0x824 drivers/base/core.c:3109)
+> >>  [<8116e45c>] (device_add) from [<8116ec9c>] (device_register+0x1c/0x20 drivers/base/core.c:3182)
+> >>  [<8116ec80>] (device_register) from [<81566710>] (nsim_bus_dev_new drivers/net/netdevsim/bus.c:336 [inline])
+> >>  [<8116ec80>] (device_register) from [<81566710>] (new_device_store+0x178/0x208 drivers/net/netdevsim/bus.c:215)
+> >>  [<81566598>] (new_device_store) from [<8116fcb4>] (bus_attr_store+0x2c/0x38 drivers/base/bus.c:122)
+> >>  [<8116fc88>] (bus_attr_store) from [<805b4b8c>] (sysfs_kf_write+0x48/0x54 fs/sysfs/file.c:139)
+> >>  [<805b4b44>] (sysfs_kf_write) from [<805b3c90>] (kernfs_fop_write_iter+0x128/0x1ec fs/kernfs/file.c:296)
+> >>  [<805b3b68>] (kernfs_fop_write_iter) from [<804d22fc>] (call_write_iter include/linux/fs.h:1901 [inline])
+> >>  [<805b3b68>] (kernfs_fop_write_iter) from [<804d22fc>] (new_sync_write fs/read_write.c:518 [inline])
+> >>  [<805b3b68>] (kernfs_fop_write_iter) from [<804d22fc>] (vfs_write+0x3dc/0x57c fs/read_write.c:605)
+> >>  [<804d1f20>] (vfs_write) from [<804d2604>] (ksys_write+0x68/0xec fs/read_write.c:658)
+> >>  [<804d259c>] (ksys_write) from [<804d2698>] (__do_sys_write fs/read_write.c:670 [inline])
+> >>  [<804d259c>] (ksys_write) from [<804d2698>] (sys_write+0x10/0x14 fs/read_write.c:667)
+> >>  [<804d2688>] (sys_write) from [<80200060>] (ret_fast_syscall+0x0/0x2c arch/arm/mm/proc-v7.S:64)
+> >>
+> >> Fixes: 83c9e13aa39a ("netdevsim: add software driver for testing offloads")
+> >> Reported-by: syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com
+> >> Tested-by: Dmitry Vyukov <dvyukov@google.com>
+> >> Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+> >> Cc: Simon Horman <simon.horman@netronome.com>
+> >> Cc: Quentin Monnet <quentin.monnet@netronome.com>
+> >> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> >> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> >> ---
+> >>
+> >> --- a/drivers/net/netdevsim/netdev.c
+> >> +++ b/drivers/net/netdevsim/netdev.c
+> >> @@ -296,6 +296,7 @@ nsim_create(struct nsim_dev *nsim_dev, s
+> >>         dev_net_set(dev, nsim_dev_net(nsim_dev));
+> >>         ns = netdev_priv(dev);
+> >>         ns->netdev = dev;
+> >> +       u64_stats_init(&ns->syncp);
+> >>         ns->nsim_dev = nsim_dev;
+> >>         ns->nsim_dev_port = nsim_dev_port;
+> >>         ns->nsim_bus_dev = nsim_dev->nsim_bus_dev;
