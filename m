@@ -2,190 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD06308118
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAA630811A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhA1W3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:29:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhA1W3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:29:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58CAB64D9E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611872899;
-        bh=GPi14VrJeAzqYhzhT3Tfxjisys1fOMTUT3KKTU1Vla0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fFGk3PqaD/7fT9hRNDTh2u+oxTThZlf1QW5cICLNfXqHrR02qTQhall3P5HpgE8oV
-         591Y4d2iqaNQc68MTTwFfZrxzyzmvau5l4Q5l2puajGGrYHtDHyhuw9q2ASfKsHiOS
-         RSHU8pOwbEWPKUVAXvoe3CMe1FGsybmwVfXvZK1oSy+GSZVMM31Gd03fO7os+k2YjQ
-         7tXRBhWbpRXD4fcAkJO8ofyPAE9KsALBOhY6EZAbvKoGsnG3Bbn0+7xqhbdY9SbNQX
-         X65AWlAMP6WsLbfNFdW2nalXRGFa9Xi+6b4lnoH4Tw4tinrezk5XsKyO3m3niLbKKV
-         w7GHrhPmm46fQ==
-Received: by mail-ot1-f53.google.com with SMTP id i30so6806494ota.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:28:19 -0800 (PST)
-X-Gm-Message-State: AOAM532BafvWq/gKLuXlXci72IhsXBJcHk7iN6tI7VrpQjDtiSvo2nG2
-        CnRRC2DJufTgJxYoSpvYPGfurIeyt1GwBe6WBZ4=
-X-Google-Smtp-Source: ABdhPJxYmGrm7otLD0c+gI8B2YyRsHnwQc/hNHXYNta5PFke+nYH+2+OxjgAasMsiuBl4O84Cd82qnNzeyqFK83CDBs=
-X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr1078337otq.305.1611872898629;
- Thu, 28 Jan 2021 14:28:18 -0800 (PST)
+        id S231342AbhA1W3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:29:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231308AbhA1W3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 17:29:06 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2FCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:28:26 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id j11so1548856plt.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:28:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=EU8Tm3K3oBlbbIeULtvbxU5p2tn0TQtZedwnNIY0Y84=;
+        b=BgZAIzU4NSonuhxkBzNY3c7VaB8jSmmWONbtZOdYQ2id+Zm4dBNl3Td000Ay/R2Vka
+         HZz13NCZDH7whsxHvmb0YNyd6VBfj3CYEfI2Y3wx7D41QkClnROSyUaMEVU4IWrmn8QN
+         sOA4U26j0xUAErYAkMHrfo+uMIfEiPCQL9JXLbglEzeXG1qXZvH2jHSVQaEAc3b6xZRY
+         LkKp6X1lRRi8pLYyIWcIL1+kjTiR/nF2DKWS4cwbJ1Rv385gkQz33y13ihw+dcBs3i7Y
+         z4wAaYzPpICf5r2Uq09E59pO12nEXLdMArTYcW4Kf9e0jPIzP4WTDs1LAg4ANYYnrMZV
+         Xrww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=EU8Tm3K3oBlbbIeULtvbxU5p2tn0TQtZedwnNIY0Y84=;
+        b=a9oQFzwMT1EGJG/j/bVo+pOlG3mdXe6h045/F0dqMnKpNrPUqsldq34EyWrDYX1uMK
+         rJqyystMcz9egVA2RqAKOW8XWc48V4TVnvU2jNLB77jo8JAZrrgiSUZkurdMDnYzaxvR
+         1Yl7LwvshnkYrBbjnYdUYGBlShhL67X6prJGWMopgrAp22M8Rf5PiNIjODeK7NFNKbI2
+         f3CF7TpM8xqcdpbE+nnhgEJ5856tekcworI8Qtorb9DaKDnh+kMI9ddtXcjgTXhw6A5W
+         D1ncMukJYRsKWl1tmvJBW6xA1b/i+jSM3AckPaHth2TVMScbm8wLpqq4H4Szy93tbsja
+         soVQ==
+X-Gm-Message-State: AOAM531SxIZHp+xjhRI/FKihqzYKlV9ONvZ6NzkiGwkquOL27hMxm3s+
+        k6Av5YBT12GzN/WRpIx0HEKuSpWCpkun2g==
+X-Google-Smtp-Source: ABdhPJzFe2/P5brnc2ev5Q8HoSO/uUHvj6D6QO6jxHq4qeewaCtN9jvyrggp2amIDjiWjiU/RgsauA==
+X-Received: by 2002:a17:90b:fc9:: with SMTP id gd9mr1429601pjb.107.1611872905499;
+        Thu, 28 Jan 2021 14:28:25 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id r30sm6872643pfq.12.2021.01.28.14.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 14:28:24 -0800 (PST)
+Date:   Thu, 28 Jan 2021 14:28:23 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     David Hildenbrand <david@redhat.com>
+cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2] mm/page_alloc: count CMA pages per zone and print
+ them in /proc/zoneinfo
+In-Reply-To: <F1BB7F6F-DD08-4D97-A79A-CC7CA6A579E2@redhat.com>
+Message-ID: <89e1dbcd-605d-6a7b-361-c130f7eb9d8c@google.com>
+References: <6d9cff33-39c1-ef8e-a18e-c865b95240b6@google.com> <F1BB7F6F-DD08-4D97-A79A-CC7CA6A579E2@redhat.com>
 MIME-Version: 1.0
-References: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
- <20210128193422.241155-1-ndesaulniers@google.com> <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
-In-Reply-To: <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 28 Jan 2021 23:28:02 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0CTUh=4h=U6S5A_tqHxYEyO52HTropAV9mKh2hwJvi0g@mail.gmail.com>
-Message-ID: <CAK8P3a0CTUh=4h=U6S5A_tqHxYEyO52HTropAV9mKh2hwJvi0g@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: rewrite test-[arm|thumb].c in UAL
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="1482994552-507496633-1611872904=:323143"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> On Thu, 28 Jan 2021 at 20:34, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > @@ -468,15 +468,15 @@ void kprobe_thumb32_test_cases(void)
-> >
-> >         TEST_UNSUPPORTED("strexb        r0, r1, [r2]")
-> >         TEST_UNSUPPORTED("strexh        r0, r1, [r2]")
-> > -       TEST_UNSUPPORTED("strexd        r0, r1, [r2]")
-> > +       TEST_UNSUPPORTED("strexd        r0, r1, r2, [r2]")
-> >         TEST_UNSUPPORTED("ldrexb        r0, [r1]")
-> >         TEST_UNSUPPORTED("ldrexh        r0, [r1]")
-> > -       TEST_UNSUPPORTED("ldrexd        r0, [r1]")
-> > +       TEST_UNSUPPORTED("ldrexd        r0, r1, [r1]")
-> >
-> >         TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
-> >
-> >  #define _DATA_PROCESSING32_DNM(op,s,val)                                       \
-> > -       TEST_RR(op s".w r0,  r",1, VAL1,", r",2, val, "")                       \
-> > +       TEST_RR(op s"   r0,  r",1, VAL1,", r",2, val, "")                       \
->
-> What is wrong with these .w suffixes? Shouldn't the assembler accept
-> these even on instructions that only exist in a wide encoding?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I don't know if that is a bug in the integrated assembler or
-intentional behavior, but it may be easier to just change the
-kernel than the compiler in this case, as it also makes it work
-for older versions.
+--1482994552-507496633-1611872904=:323143
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-FWIW, I needed a related change in a couple of other files:
+On Thu, 28 Jan 2021, David Hildenbrand wrote:
 
-diff --git a/arch/arm/lib/copy_from_user.S b/arch/arm/lib/copy_from_user.S
-index 6acdfde56849..3ced01d9afe4 100644
---- a/arch/arm/lib/copy_from_user.S
-+++ b/arch/arm/lib/copy_from_user.S
-@@ -60,7 +60,7 @@
- #define LDR1W_SHIFT 0
+> > ﻿On Thu, 28 Jan 2021, David Hildenbrand wrote:
+> > 
+> >> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> >> index 7758486097f9..957680db41fa 100644
+> >> --- a/mm/vmstat.c
+> >> +++ b/mm/vmstat.c
+> >> @@ -1650,6 +1650,11 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+> >>           zone->spanned_pages,
+> >>           zone->present_pages,
+> >>           zone_managed_pages(zone));
+> >> +#ifdef CONFIG_CMA
+> >> +    seq_printf(m,
+> >> +           "\n        cma      %lu",
+> >> +           zone->cma_pages);
+> >> +#endif
+> >> 
+> >>    seq_printf(m,
+> >>           "\n        protection: (%ld",
+> > 
+> > Hmm, not sure about this.  If cma is only printed for CONFIG_CMA, we can't 
+> > distinguish between (1) a kernel without your patch without including some 
+> > version checking and (2) a kernel without CONFIG_CMA enabled.  IOW, 
+> > "cma 0" carries value: we know immediately that we do not have any CMA 
+> > pages on this zone, period.
+> > 
+> > /proc/zoneinfo is also not known for its conciseness so I think printing 
+> > "cma 0" even for !CONFIG_CMA is helpful :)
+> > 
+> > I think this #ifdef should be removed and it should call into a 
+> > zone_cma_pages(struct zone *zone) which returns 0UL if disabled.
+> > 
+> 
+> Yeah, that’s also what I proposed in a sub-thread here.
+> 
 
-  .macro ldr1w ptr reg abort
-- USERL(\abort, W(ldr) \reg, [\ptr], #4)
-+ USERL(\abort, ldr \reg, [\ptr], #4)
-  .endm
+Ah, I certainly think your original intuition was correct.
 
-  .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-@@ -80,7 +80,7 @@
- #define STR1W_SHIFT 0
+> The last option would be going the full mile and not printing nr_free_cma. Code might get a bit uglier though, but we could also remove that stats counter ;)
+> 
+> I don‘t particularly care, while printing „0“ might be easier, removing nr_free_cma might be cleaner.
+> 
+> But then, maybe there are tools that expect that value to be around on any kernel?
+> 
 
-  .macro str1w ptr reg abort
-- W(str) \reg, [\ptr], #4
-+ str \reg, [\ptr], #4
-  .endm
+Yeah, that's probably undue risk, the ship has sailed and there's no 
+significant upside.
 
-  .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-diff --git a/arch/arm/lib/copy_to_user.S b/arch/arm/lib/copy_to_user.S
-index 485fa3cffdbe..a6a96f814720 100644
---- a/arch/arm/lib/copy_to_user.S
-+++ b/arch/arm/lib/copy_to_user.S
-@@ -34,7 +34,7 @@
- #define LDR1W_SHIFT 0
+I still think "cma 0" in /proc/zoneinfo carries value, though, especially 
+for NUMA and it looks like this is how it's done in linux-next.  With a 
+single read of the file, userspace can make the determination what CMA 
+pages exist on this node.
 
-  .macro ldr1w ptr reg abort
-- W(ldr) \reg, [\ptr], #4
-+ ldr \reg, [\ptr], #4
-  .endm
+In general, I think the rule-of-thumb is that the fewer ifdefs in 
+/proc/zoneinfo, the easier it is for userspace to parse it.
 
-  .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-@@ -77,7 +77,7 @@
- #define STR1W_SHIFT 0
-
-  .macro str1w ptr reg abort
-- USERL(\abort, W(str) \reg, [\ptr], #4)
-+ USERL(\abort, str \reg, [\ptr], #4)
-  .endm
-
-  .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-diff --git a/arch/arm/lib/memcpy.S b/arch/arm/lib/memcpy.S
-index e4caf48c089f..7b980a1a4227 100644
---- a/arch/arm/lib/memcpy.S
-+++ b/arch/arm/lib/memcpy.S
-@@ -15,7 +15,7 @@
- #define STR1W_SHIFT 0
-
-  .macro ldr1w ptr reg abort
-- W(ldr) \reg, [\ptr], #4
-+ ldr \reg, [\ptr], #4
-  .endm
-
-  .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-@@ -31,7 +31,7 @@
-  .endm
-
-  .macro str1w ptr reg abort
-- W(str) \reg, [\ptr], #4
-+ str \reg, [\ptr], #4
-  .endm
-
-  .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-diff --git a/arch/arm/lib/memmove.S b/arch/arm/lib/memmove.S
-index 6fecc12a1f51..35c5c06b7588 100644
---- a/arch/arm/lib/memmove.S
-+++ b/arch/arm/lib/memmove.S
-@@ -84,24 +84,24 @@ WEAK(memmove)
-  addne pc, pc, ip @ C is always clear here
-  b 7f
- 6: W(nop)
-- W(ldr) r3, [r1, #-4]!
-- W(ldr) r4, [r1, #-4]!
-- W(ldr) r5, [r1, #-4]!
-- W(ldr) r6, [r1, #-4]!
-- W(ldr) r7, [r1, #-4]!
-- W(ldr) r8, [r1, #-4]!
-- W(ldr) lr, [r1, #-4]!
-+ ldr r3, [r1, #-4]!
-+ ldr r4, [r1, #-4]!
-+ ldr r5, [r1, #-4]!
-+ ldr r6, [r1, #-4]!
-+ ldr r7, [r1, #-4]!
-+ ldr r8, [r1, #-4]!
-+ ldr lr, [r1, #-4]!
-
-  add pc, pc, ip
-  nop
-  W(nop)
-- W(str) r3, [r0, #-4]!
-- W(str) r4, [r0, #-4]!
-- W(str) r5, [r0, #-4]!
-- W(str) r6, [r0, #-4]!
-- W(str) r7, [r0, #-4]!
-- W(str) r8, [r0, #-4]!
-- W(str) lr, [r0, #-4]!
-+ str r3, [r0, #-4]!
-+ str r4, [r0, #-4]!
-+ str r5, [r0, #-4]!
-+ str r6, [r0, #-4]!
-+ str r7, [r0, #-4]!
-+ str r8, [r0, #-4]!
-+ str lr, [r0, #-4]!
-
-  CALGN( bcs 2b )
+(I made that change to /proc/zoneinfo to even print non-existant zones for 
+each node because otherwise you cannot determine what the indices of 
+things like vm.lowmem_reserve_ratio represent.)
+--1482994552-507496633-1611872904=:323143--
