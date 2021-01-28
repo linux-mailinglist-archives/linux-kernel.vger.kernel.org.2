@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED413079AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC6930799D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhA1P13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:27:29 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:42981 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbhA1P1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:27:01 -0500
-Received: by mail-oi1-f180.google.com with SMTP id x71so6354895oia.9;
-        Thu, 28 Jan 2021 07:26:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=22NNIJdwFVtaiYnEXy306Fq0ou0H+TSG6fT0yU8Xc64=;
-        b=OhWYNVIobtqgnaJY70ID61jJE3nRay9VuOGtlfKmorSp3Iaxd39AbgGtIka5pXnmBK
-         1I53mfOe5A16GSyO9YEC6zff0WlUWAPodpURmA4uGvPncyb2WiroOd1+YD2BFc5kDRBv
-         ZrGMoWZR9B3KpFBFit3ko13G41faJuY+Sr3/5Xkbmvh25/e6bgynd6kgsxe5Az5/e7ye
-         H51oxjh7yzr4NVaVyCBycvLNLl1HNw28WGw8UAxQ8VbC8w+mRdhUTsgpkfttCskO/z5B
-         F6TS8ge6SAJNj83bgwTYFZ5cMBQTpTQfliCGhPCXKz4zeJLJ/Yo/+qmqwFole2t3I0rt
-         Ed4g==
-X-Gm-Message-State: AOAM533IcOwYA//M6SdBqmOm9hpSXs7Vqy6HPc+F5pzTrsRgJVqk2Sxz
-        k1v11UhvkxSXPKiVopOyCEDhzQlVCNUlAVPijmc=
-X-Google-Smtp-Source: ABdhPJwtbqub3RLU0ojGN/DhaJhbIQp0M2FPhLkgMFxBJXtpYqt2MlrWj8HIYEH5Ijo/ju/HPcDtnyakbL0+WizWBWY=
-X-Received: by 2002:aca:4d8d:: with SMTP id a135mr6655596oib.153.1611847580638;
- Thu, 28 Jan 2021 07:26:20 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+G9fYta_uOLktmMnZHUTK9Uqx-rjtmQSSvHFCsvQsVdZDdm8A@mail.gmail.com>
-In-Reply-To: <CA+G9fYta_uOLktmMnZHUTK9Uqx-rjtmQSSvHFCsvQsVdZDdm8A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Jan 2021 16:26:09 +0100
-Message-ID: <CAMuHMdUzCFuuUcgMwh+numoCnr_p0tfTucybytymUceyPV0TBQ@mail.gmail.com>
-Subject: Re: [next] mm/nommu.c:1671:6: error: conflicting types for 'filemap_map_pages'
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232496AbhA1PYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:24:45 -0500
+Received: from mga17.intel.com ([192.55.52.151]:51062 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231487AbhA1PXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:23:13 -0500
+IronPort-SDR: JYNNfPVLK7rJmK54oeD7K9FJ85zWoPZmfg85Ove/Kkq+k1s1KazL6+OTcJyD5o4IQh71+ME0z7
+ Kp5psLnIIFsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="160021940"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="160021940"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 07:21:26 -0800
+IronPort-SDR: oA41dCjYaX7ZrF3VFZ2/pAM/g6mqxi2nAYGAhIHD7WZdRK9zcLsZNwVkhoR/K2+vN11w0PyJJM
+ BGBNhw/M1LtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="354211355"
+Received: from marshy.an.intel.com ([10.122.105.143])
+  by orsmga003.jf.intel.com with ESMTP; 28 Jan 2021 07:21:26 -0800
+From:   richard.gong@linux.intel.com
+To:     gregkh@linuxfoundation.org
+Cc:     mdf@kernel.org, trix@redhat.com, linux-kernel@vger.kernel.org,
+        Richard Gong <richard.gong@intel.com>,
+        "# 5 . 9+" <stable@vger.kernel.org>
+Subject: [PATCHv2] firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+Date:   Thu, 28 Jan 2021 09:38:12 -0600
+Message-Id: <1611848292-17882-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
+From: Richard Gong <richard.gong@intel.com>
 
-On Thu, Jan 28, 2021 at 3:25 PM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
-> arm, sh and riscv architecture build failed on today's Linux next tag 20210128.
->
-> FYI,
-> # CONFIG_MMU is not set on these failed configs.
-> config file attached to this email.
->
-> make --silent --keep-going --jobs=8 O=/home/tux  -
-> build/.cache/tuxmake/builds/1/tmp ARCH=arm
-> CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-> arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
-> mm/nommu.c:1671:6: error: conflicting types for 'filemap_map_pages'
->  1671 | void filemap_map_pages(struct vm_fault *vmf,
->       |      ^~~~~~~~~~~~~~~~~
-> In file included from mm/nommu.c:20:
-> include/linux/mm.h:2578:19: note: previous declaration of
-> 'filemap_map_pages' was here
->  2578 | extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
->       |                   ^~~~~~~~~~~~~~~~~
+Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
+aligns with the firmware settings.
 
-Care to give "[PATCH -next] mm/nommu: Fix return type of
-filemap_map_pages()" a try?
-https://lore.kernel.org/lkml/20210128100626.2257638-1-geert@linux-m68k.org/
+Cc: <stable@vger.kernel.org> # 5.9+
+Fixes: 36847f9e3e56 ("firmware: correct reconfig flag and timeout values")
+Signed-off-by: Richard Gong <richard.gong@intel.com>
+---
+v2: add tag Cc: <stable@vger.kernel.org> # 5.9+
+    add 'Fixes: ... ' line in the comment
+---
+ include/linux/firmware/intel/stratix10-svc-client.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+index a93d859..f843c6a 100644
+--- a/include/linux/firmware/intel/stratix10-svc-client.h
++++ b/include/linux/firmware/intel/stratix10-svc-client.h
+@@ -56,7 +56,7 @@
+  * COMMAND_RECONFIG_FLAG_PARTIAL:
+  * Set to FPGA configuration type (full or partial).
+  */
+-#define COMMAND_RECONFIG_FLAG_PARTIAL	1
++#define COMMAND_RECONFIG_FLAG_PARTIAL	0
+ 
+ /**
+  * Timeout settings for service clients:
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
