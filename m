@@ -2,124 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5925E307BBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 198EA307BD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhA1RF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232835AbhA1RDU (ORCPT
+        id S232825AbhA1RJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:09:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232824AbhA1RGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:03:20 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C6DC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:02:19 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id s61so2819949ybi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TxfC0LSb+w4Mx5k+ngQX+YNZxCiSH66WcjjhmDzqjHw=;
-        b=dprUGeiX80gn4mEgVWVAQCiaSyP+m5HgsKhjQSonal4Ez9hNsuFcoPwDKC4hVeL5ZX
-         Ak4k2WMrsKmRlW3eUbu7YtVYAj29ghMGpnYo5ld4mFOhciRN5lhlra2YEW4wrS7vattw
-         ZpZoqV4YHJX2ARch0m/+VkekczL00sadSBn9n9lh8x4bzaV7jSX3f1txIq2uigtUo9ku
-         C9fkPMxBgZUohNKp05EwcV2L1ZAwdxEWadwy7LVp3rxibUATf6SlL+XPdiF3cDNsSOqM
-         mp2Il9FeM9Q+6z3Nu0iY3DpmgilW4kduekuAsEPOteB4q3NH8n0eRgNKSoLb3rt6dQmu
-         dtlA==
+        Thu, 28 Jan 2021 12:06:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611853473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LvcQzCTMhw0EZfzlSb3F515FxbS4cvGqc8hLzWtIraw=;
+        b=JcDnJh5pewXv5NoDV+Wsn4MLDtPKTQJHuCf1YH3OcwfNxXwsCoImJLW1YdIKyib2q8nluV
+        a2hg3Pb7mAujnj0zj8AKS6UrscBXebqoLA06j/BJ9LDOVqJQ7WeUwy67X7YcuFrLIfDo97
+        dld42Mua92RJOIDALSNiLBW9n+aEwgc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-pDY4RnDlM7ak02jp2OvygQ-1; Thu, 28 Jan 2021 12:04:31 -0500
+X-MC-Unique: pDY4RnDlM7ak02jp2OvygQ-1
+Received: by mail-wr1-f69.google.com with SMTP id x12so3434898wrw.21
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:04:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TxfC0LSb+w4Mx5k+ngQX+YNZxCiSH66WcjjhmDzqjHw=;
-        b=eUYFiAts8PTGsFU6RJbz9qmyndWQ47K+kebRbvr/Ydjrp0qaOM78G9H1ChW+rK2hr1
-         yX1yKTSG45ZN8fUnwrflg1B/rkfOudV0vAUWMvllCPAXSg+lOpem5s1fV5uopPAzxn23
-         xf2i3Q9b7RViFnnDFfwUZkgQlYU0hKZU/97om04su3eSxShIE4f+CSwYujC+poonE2+c
-         0O1366onW3a0aYRjGedGRVjuWRlNtXDOoWAU2Ur2afe4u8pG8HEyoyyl8qR6ZD2wikJ4
-         BHW13FGgJ9TTxlaza4jf5r6CFxyR5yRR4S5T0VQX9Y9XjQmlWtRiXCfVjxhxgyurgI4u
-         e1nw==
-X-Gm-Message-State: AOAM531MNUCKNgcQ6kPg1vdTtLgDgx946pKysrq6brJKTI1Tp7Pyb9+S
-        yGh1QxJqf3r+DZeRa2Ie67qPSPYtJadfL0/Aiv5bSA==
-X-Google-Smtp-Source: ABdhPJyJ64ff4ZX4+kB76nIxgR7kFcJYguXJs6b9+CHVRVxs4BiVUGNPcgoSUAlcDDiF4Ql+4jx6gRCwLt5HuRMnAtc=
-X-Received: by 2002:a25:718b:: with SMTP id m133mr170374ybc.412.1611853338032;
- Thu, 28 Jan 2021 09:02:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LvcQzCTMhw0EZfzlSb3F515FxbS4cvGqc8hLzWtIraw=;
+        b=I45xR4aJ8MVFGxD5LqY2l0pdyDUIQa/x85prPdqCQQSilK9Byx4oD6fzAtCrX0IH6C
+         xhOL+p1xuNzFRQ8WLkkFeE1RgWxt8Ck2U9wQbqg45Gd6ePaAktrkCNmBkevQ4CCrBsUc
+         gSLvwKUlchSe26NqiMkhz8hNZrKRhyntk8XQMnGW3OsMVDMsunRUTregKZcOmEp8DXn2
+         i0GHuN5l4aCb9Ad3mmIradqefXF7r5xd+gy0kd+YDQwkTaz81PEE4X68T7dm65I48gS1
+         meK5GFZ31Q2Zlu5frFyUTeFIbu0eHziIXEMlVnfLEQZXrrodUZ4apvS4dlcI59mtkeqU
+         gxLQ==
+X-Gm-Message-State: AOAM531wVKTHWia8qBcf8ADbAiTzcf63ZxhXV+gSMmNL033DCssCm2F+
+        kMjytll+/bW1rs/+VXYHvmM/QoViSDIL6FS/nfdD74aGoNKiE6y5S8zJxJng904uEutu1fhv6Ix
+        qxc6ZFLTnCIWDsTYJnabpNJOR
+X-Received: by 2002:adf:9148:: with SMTP id j66mr47596wrj.28.1611853470441;
+        Thu, 28 Jan 2021 09:04:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyFXNXAEEeUISjmsj6o5JuE/Q8ctqnwUsP41thgGGDQLpC8xK5225WjWWJKnBOg3AVOH+RIYQ==
+X-Received: by 2002:adf:9148:: with SMTP id j66mr47572wrj.28.1611853470215;
+        Thu, 28 Jan 2021 09:04:30 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id v4sm8574382wrw.42.2021.01.28.09.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 09:04:29 -0800 (PST)
+Date:   Thu, 28 Jan 2021 18:04:26 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v3 05/13] af_vsock: rest of SEQPACKET support
+Message-ID: <20210128170426.522mpkocdd35bt2e@steredhat>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+ <20210125111321.598653-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210128104446.164269-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20210128104446.164269-1-tudor.ambarus@microchip.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 28 Jan 2021 09:01:41 -0800
-Message-ID: <CAGETcx9CodHDeqSYM1zQXRi-p_rFUJQgwMtnuWeKvCt_B3dCOw@mail.gmail.com>
-Subject: Re: [PATCH] clk: at91: sama5d2: Mark device OF_POPULATED after setup
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        claudiu.beznea@microchip.com, mirq-linux@rere.qmqm.pl,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-clk@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210125111321.598653-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 2:45 AM Tudor Ambarus
-<tudor.ambarus@microchip.com> wrote:
+On Mon, Jan 25, 2021 at 02:13:18PM +0300, Arseny Krasnov wrote:
+>This does rest of SOCK_SEQPACKET support:
+>1) Adds socket ops for SEQPACKET type.
+>2) Allows to create socket with SEQPACKET type.
 >
-> The sama5d2 requires the clock provider initialized before timers.
-> We can't use a platform driver for the sama5d2-pmc driver, as the
-> platform_bus_init() is called later on, after time_init().
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 71 ++++++++++++++++++++++++++++++++++++++++
+> 1 file changed, 71 insertions(+)
 >
-> As fw_devlink considers only devices, it does not know that the
-> pmc is ready. Hence probing of devices that depend on it fail:
-> probe deferral - supplier f0014000.pmc not ready
->
-> Fix this by setting the OF_POPULATED flag for the sama5d2_pmc
-> device node after successful setup. This will make
-> of_link_to_phandle() ignore the sama5d2_pmc device node as a
-> dependency, and consumer devices will be probed again.
->
-> Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
-> I'll be out of office, will check the rest of the at91 SoCs
-> at the begining of next week.
->
->  drivers/clk/at91/sama5d2.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
-> index 9a5cbc7cd55a..5eea2b4a63dd 100644
-> --- a/drivers/clk/at91/sama5d2.c
-> +++ b/drivers/clk/at91/sama5d2.c
-> @@ -367,6 +367,8 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
->
->         of_clk_add_hw_provider(np, of_clk_hw_pmc_get, sama5d2_pmc);
->
-> +       of_node_set_flag(np, OF_POPULATED);
-> +
->         return;
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 4600c1ec3bb3..bbc3c31085aa 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 		new_transport = transport_dgram;
+> 		break;
+> 	case SOCK_STREAM:
+>+	case SOCK_SEQPACKET:
+> 		if (vsock_use_local_transport(remote_cid))
+> 			new_transport = transport_local;
+> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
+>@@ -459,6 +460,13 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 			new_transport = transport_g2h;
+> 		else
+> 			new_transport = transport_h2g;
+>+
+>+		if (sk->sk_type == SOCK_SEQPACKET) {
 
-Hi Tudor,
+I think you must also check that new_transport is not NULL.
 
-Thanks for looking into this.
+>+			if (!new_transport->seqpacket_seq_send_len ||
+>+			    !new_transport->seqpacket_seq_get_len ||
+>+			    !new_transport->seqpacket_dequeue)
+>+				return -ENODEV;
 
-I already accounted for early clocks like this when I designed
-fw_devlink. Each driver shouldn't need to set OF_POPULATED.
-drivers/clk/clk.c already does this for you.
+I'm not sure about ENODEV is the better choice in this case, since the 
+transport exists, but it doesn't support SOCK_SEQPACKET, so maybe is 
+better ESOCKTNOSUPPORT.
 
-I think the problem is that your driver is using
-CLK_OF_DECLARE_DRIVER() instead of CLK_OF_DECLARE(). The comments for
-CLK_OF_DECLARE_DRIVER() says:
-/*
- * Use this macro when you have a driver that requires two initialization
- * routines, one at of_clk_init(), and one at platform device probe
- */
+>+		}
+> 		break;
+> 	default:
+> 		return -ESOCKTNOSUPPORT;
+>@@ -684,6 +692,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+>
+> 	switch (sk->sk_socket->type) {
+> 	case SOCK_STREAM:
+>+	case SOCK_SEQPACKET:
+> 		spin_lock_bh(&vsock_table_lock);
+> 		retval = __vsock_bind_connectible(vsk, addr);
+> 		spin_unlock_bh(&vsock_table_lock);
+>@@ -1406,6 +1415,12 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+> 	return vsock_connect(sock, addr, addr_len, flags);
+> }
+>
+>+static int vsock_seqpacket_connect(struct socket *sock, struct sockaddr *addr,
+>+				   int addr_len, int flags)
+>+{
+>+	return vsock_connect(sock, addr, addr_len, flags);
+>+}
+>+
+> static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
+> 			bool kern)
+> {
+>@@ -1633,6 +1648,16 @@ static int vsock_stream_setsockopt(struct socket *sock,
+> 					    optlen);
+> }
+>
+>+static int vsock_seqpacket_setsockopt(struct socket *sock,
+>+				      int level,
+>+				      int optname,
+>+				      sockptr_t optval,
+>+				      unsigned int optlen)
+>+{
+>+	return vsock_connectible_setsockopt(sock, level, optname, optval,
+>+					    optlen);
+>+}
+>+
+> static int vsock_connectible_getsockopt(struct socket *sock,
+> 					int level, int optname,
+> 					char __user *optval,
+>@@ -1713,6 +1738,15 @@ static int vsock_stream_getsockopt(struct socket *sock,
+> 					    optlen);
+> }
+>
+>+static int vsock_seqpacket_getsockopt(struct socket *sock,
+>+				      int level, int optname,
+>+				      char __user *optval,
+>+				      int __user *optlen)
+>+{
+>+	return vsock_connectible_getsockopt(sock, level, optname, optval,
+>+					    optlen);
+>+}
+>+
+> static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+> 				     size_t len)
+> {
+>@@ -1870,6 +1904,12 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+> 	return vsock_connectible_sendmsg(sock, msg, len);
+> }
+>
+>+static int vsock_seqpacket_sendmsg(struct socket *sock, struct msghdr *msg,
+>+				   size_t len)
+>+{
+>+	return vsock_connectible_sendmsg(sock, msg, len);
+>+}
+>+
+> static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
+> 			   long timeout,
+> 			   struct vsock_transport_recv_notify_data *recv_data,
+>@@ -2184,6 +2224,13 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> 	return vsock_connectible_recvmsg(sock, msg, len, flags);
+> }
+>
+>+static int
+>+vsock_seqpacket_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>+			int flags)
+>+{
+>+	return vsock_connectible_recvmsg(sock, msg, len, flags);
+>+}
+>+
 
-In your case, you are explicitly NOT having a driver bind to this
-clock later. So you shouldn't be using CLK_OF_DECLARE() instead.
+As I said, I think you don't need to implement all of this helpers and 
+you can directly assign the vsock_connectible_* functions in the 
+'vsock_seqpacket_ops'.
 
-Thanks,
-Saravana
+> static const struct proto_ops vsock_stream_ops = {
+> 	.family = PF_VSOCK,
+> 	.owner = THIS_MODULE,
+>@@ -2205,6 +2252,27 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.sendpage = sock_no_sendpage,
+> };
+>
+>+static const struct proto_ops vsock_seqpacket_ops = {
+>+	.family = PF_VSOCK,
+>+	.owner = THIS_MODULE,
+>+	.release = vsock_release,
+>+	.bind = vsock_bind,
+>+	.connect = vsock_seqpacket_connect,
+>+	.socketpair = sock_no_socketpair,
+>+	.accept = vsock_accept,
+>+	.getname = vsock_getname,
+>+	.poll = vsock_poll,
+>+	.ioctl = sock_no_ioctl,
+>+	.listen = vsock_listen,
+>+	.shutdown = vsock_shutdown,
+>+	.setsockopt = vsock_seqpacket_setsockopt,
+>+	.getsockopt = vsock_seqpacket_getsockopt,
+>+	.sendmsg = vsock_seqpacket_sendmsg,
+>+	.recvmsg = vsock_seqpacket_recvmsg,
+>+	.mmap = sock_no_mmap,
+>+	.sendpage = sock_no_sendpage,
+>+};
+>+
+> static int vsock_create(struct net *net, struct socket *sock,
+> 			int protocol, int kern)
+> {
+>@@ -2225,6 +2293,9 @@ static int vsock_create(struct net *net, struct socket *sock,
+> 	case SOCK_STREAM:
+> 		sock->ops = &vsock_stream_ops;
+> 		break;
+>+	case SOCK_SEQPACKET:
+>+		sock->ops = &vsock_seqpacket_ops;
+>+		break;
+> 	default:
+> 		return -ESOCKTNOSUPPORT;
+> 	}
+>-- 
+>2.25.1
+>
+
