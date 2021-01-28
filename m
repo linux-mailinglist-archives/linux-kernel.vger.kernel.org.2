@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533EE3075D0
+	by mail.lfdr.de (Postfix) with ESMTP id C2B9E3075D1
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhA1MSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:18:38 -0500
-Received: from 8bytes.org ([81.169.241.247]:53324 "EHLO theia.8bytes.org"
+        id S231555AbhA1MSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:18:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhA1MSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:18:35 -0500
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 9A61D51D; Thu, 28 Jan 2021 13:17:49 +0100 (CET)
-Date:   Thu, 28 Jan 2021 13:17:48 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Will Deacon <will@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu/vt-d: Correctly check addr alignment in
- qi_flush_dev_iotlb_pasid()
-Message-ID: <20210128121747.GK32671@8bytes.org>
-References: <20210119043500.1539596-1-baolu.lu@linux.intel.com>
+        id S231203AbhA1MSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:18:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D2E764DD8;
+        Thu, 28 Jan 2021 12:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611836276;
+        bh=s3EDpFbWiBJJNv/SQ1O2cBql1JF4jSDUEnFB8Ix7H8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WLcTS9m9Y4XnYOukvPEVykEl5T5OZ/F0uxcgUsLaFIgWvneuTKFb8WCgesD7WzJr/
+         Ddw8oKWb6EMZe2vW4WTj+l79npwdcCJ9iz8tdMJSVYTy15NacjbTq5shgskOAOSet7
+         D86IsqB1ZpvQtvTUqol0OzicMl6guiajSBKpCQ14uqj0Chn5OHIwza0kcHd/qJ9L05
+         OTzKJl71MwsI0py0W2qxb7mn1YCmXJ9Je9J3bQpq3NwZhL33toqQ7HcQkEwwKPOgeR
+         /oKanX1yKVsak/NQpF5OzBTi4DKBZMCbMa8cLcWnZX4wTr4mwc/woZz6Yv0a8X0oHS
+         Q1IvXorBe4jcw==
+Date:   Thu, 28 Jan 2021 13:17:53 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        ardb@kernel.org, jpoimboe@redhat.com
+Subject: Re: [RFC PATCH 4/8] preempt: Introduce CONFIG_PREEMPT_DYNAMIC
+Message-ID: <20210128121753.GA122776@lothringen>
+References: <20210118141223.123667-1-frederic@kernel.org>
+ <20210118141223.123667-5-frederic@kernel.org>
+ <20210122165343.GE16371@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119043500.1539596-1-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210122165343.GE16371@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 12:35:00PM +0800, Lu Baolu wrote:
-> An incorrect address mask is being used in the qi_flush_dev_iotlb_pasid()
-> to check the address alignment. This leads to a lot of spurious kernel
-> warnings:
+On Fri, Jan 22, 2021 at 05:53:43PM +0100, Peter Zijlstra wrote:
+> On Mon, Jan 18, 2021 at 03:12:19PM +0100, Frederic Weisbecker wrote:
+> > +config HAVE_PREEMPT_DYNAMIC
+> > +	bool
+> > +	depends on HAVE_STATIC_CALL_INLINE
 > 
-> [  485.837093] DMAR: Invalidate non-aligned address 7f76f47f9000, order 0
-> [  485.837098] DMAR: Invalidate non-aligned address 7f76f47f9000, order 0
-> [  492.494145] qi_flush_dev_iotlb_pasid: 5734 callbacks suppressed
-> [  492.494147] DMAR: Invalidate non-aligned address 7f7728800000, order 11
-> [  492.508965] DMAR: Invalidate non-aligned address 7f7728800000, order 11
-> 
-> Fix it by checking the alignment in right way.
-> 
-> Fixes: 288d08e780088 ("iommu/vt-d: Handle non-page aligned address")
-> Reported-and-tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Cc: Liu Yi L <yi.l.liu@intel.com>
-> ---
->  drivers/iommu/intel/dmar.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I think we can relax this to HAVE_STATIC_CALL, using trampolines
+> shouldn't be too bad, and that would put it in reach of arm64.
 
-Applied for 5.11, thanks.
+Why not, but then I need to make CONFIG_PREEMPT_DYNAMIC optional
+in order not to make the overhead mandatory for everyone.
 
+> 
+> > +	depends on GENERIC_ENTRY
+> > +	help
+> > +	   Select this if the architecture support boot time preempt setting
+> > +	   on top of static calls. It is strongly advised to support inline
+> > +	   static call to avoid any overhead.
