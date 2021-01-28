@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D439307E0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24829307E18
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhA1SdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbhA1Sa6 (ORCPT
+        id S232208AbhA1SgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:36:04 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:21192 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232034AbhA1Sef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:30:58 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92AC061756;
-        Thu, 28 Jan 2021 10:30:17 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id m2so5096825wmm.1;
-        Thu, 28 Jan 2021 10:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=FOT56mw0O0r1/EN41NHrTrcQj92z0Zt2Tm5uGtNf7nU=;
-        b=qYnAHPQLGrD49l4LyT+zlLwR82HT6fro1oVy1mVw7IOtn7QVc1N1QezOI53dvPHPX6
-         /TeiMv8C1azZjkqvvsa3FfyUmyxltRG/hv8/R5d0KFhi7uwKyVhZHwrTanwZ6We3VRul
-         SuaXlG3OEZ6QPZpIBCgZjmxBlLM8P8hE6f72BA0ZfBndvSdVHYgV3xi24nagpz3HV1Eg
-         J/tNk+m1cixLGqiAU1BndClq2ixWRTQtfTRPrOajxLVD2egJsrW/g2Ufum7di7e4h0Td
-         IFKqOmANrvtFVd/JDRlSBuAwlbBsGLlqY0y9a16/vIMV0jjwej0hkxHHnLeShSAMS+AR
-         FaNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=FOT56mw0O0r1/EN41NHrTrcQj92z0Zt2Tm5uGtNf7nU=;
-        b=l/6hvlNsBcb8XR1izlstDPUTWDmp2BPwf8OjcVw/W9tZr9BoU9DfmsMurgYb9Laf52
-         2T4HbHj/Ujq0hZnGy0eCG7XBHfCXgEwtLwD2pWmO/Z23eszDJowEaEInwPdcIjcyHm8h
-         X4mK5mMv2WnODhw447ZhvaCp+Z9GHsJxjdXFaKrhRQnx4pgWYR5dBHrJKtD+DGMEk9Y+
-         w4DHkfOla+X0JAo+de/GRtUqeIrSMD8bDIyBMgBxF00CMMJg8B+UpgksqN8KrXp/QWxH
-         +yotCG1DTYnytB3Slsah7rXAfbtROSXupQCE+6bActEHJovlx8VXkCKoi3K9h1hrJBSg
-         gF9A==
-X-Gm-Message-State: AOAM532YNUJ2BPKPd2Nrj8PjrtmAxdyfkrC6CuQsfLAPxMFp/vGnGJO2
-        aRAJcqXqGxaTMXWOnlfQvOU=
-X-Google-Smtp-Source: ABdhPJyIC1JObbIm5EPnjP8J70ZZu+ICvNjxUdqJvHK+8Lu6u6lyUXKfjIOv3B+4EI/HdstNS1hnHw==
-X-Received: by 2002:a05:600c:35c4:: with SMTP id r4mr523115wmq.174.1611858616283;
-        Thu, 28 Jan 2021 10:30:16 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id z15sm7570542wrs.25.2021.01.28.10.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:30:15 -0800 (PST)
-Message-ID: <f964e132200b9e952a3ad424c5fa82f9d1bf74f1.camel@gmail.com>
-Subject: Re: [PATCH v3 7/7] gpiod: ep93xx: refactor base IRQ number
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 28 Jan 2021 19:30:14 +0100
-In-Reply-To: <20210128122123.25341-8-nikita.shubin@maquefel.me>
-References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
-         <20210128122123.25341-8-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Thu, 28 Jan 2021 13:34:35 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10SI6KAA011207;
+        Thu, 28 Jan 2021 10:31:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=YccNla7+MM6+0y0+HkOTLVpcXPupLVKj6UvrIorxUl0=;
+ b=jggNVQKW2AEPhWamfQOgRe+T+pBMM+hsL17izKzF+CBRh7C8kDyAmTS32PjcJxLou7eR
+ tgCKhgHXLlyZ8eT6fuIMeLx2BzX3B8qaFkv7sJwEJbWJRPyVyroPDL3x5Isk9R9wvQe5
+ ZZhPXMDp00F2sgAxu/hvxhVj0Y3eqTMLvvM6MNnl5xWIQku0VGzOj2hdm6DKcDWTjf/V
+ 1Qf6NWgeahddQ8Qd9n6dwkDkeI+LSPiAqhiuozgRFY2AoDOTKv17v0o85BoDE7HsVT3n
+ NMiZVZJo3a1ARNO1XSk2SMOcGy2XkSEwG7OqkNFe0enOQgp7jW76KkU/4Abs+AzksaWu 3g== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36b1xpncpr-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 10:31:47 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
+ 2021 10:31:45 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
+ 2021 10:31:44 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 10:31:45 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 1785C3F703F;
+        Thu, 28 Jan 2021 10:31:41 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [PATCH v5 net-next 04/18] doc: marvell: add PPv2.3 description to marvell-pp2.txt
+Date:   Thu, 28 Jan 2021 20:31:08 +0200
+Message-ID: <1611858682-9845-5-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1611858682-9845-1-git-send-email-stefanc@marvell.com>
+References: <1611858682-9845-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Stefan Chulski <stefanc@marvell.com>
 
-On Thu, 2021-01-28 at 15:21 +0300, Nikita Shubin wrote:
-> - use predefined constants instead of plain numbers
-> - use provided bank IRQ number instead of defined constant
->   for port F
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ Documentation/devicetree/bindings/net/marvell-pp2.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-
-> ---
->  drivers/gpio/gpio-ep93xx.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-> index df55aa13bd9a..b1501607e8ed 100644
-> --- a/drivers/gpio/gpio-ep93xx.c
-> +++ b/drivers/gpio/gpio-ep93xx.c
-> @@ -28,6 +28,8 @@
->  /* Maximum value for irq capable line identifiers */
->  #define EP93XX_GPIO_LINE_MAX_IRQ 23
->  
-> +#define EP93XX_GPIO_A_IRQ_BASE 64
-> +#define EP93XX_GPIO_B_IRQ_BASE 72
->  /*
->   * Static mapping of GPIO bank F IRQS:
->   * F0..F7 (16..24) to irq 80..87.
-> @@ -311,14 +313,14 @@ struct ep93xx_gpio_bank {
->  
->  static struct ep93xx_gpio_bank ep93xx_gpio_banks[] = {
->         /* Bank A has 8 IRQs */
-> -       EP93XX_GPIO_BANK("A", 0x00, 0x10, 0, true, false, 64),
-> +       EP93XX_GPIO_BANK("A", 0x00, 0x10, 0, true, false,
-> EP93XX_GPIO_A_IRQ_BASE),
->         /* Bank B has 8 IRQs */
-> -       EP93XX_GPIO_BANK("B", 0x04, 0x14, 8, true, false, 72),
-> +       EP93XX_GPIO_BANK("B", 0x04, 0x14, 8, true, false,
-> EP93XX_GPIO_B_IRQ_BASE),
->         EP93XX_GPIO_BANK("C", 0x08, 0x18, 40, false, false, 0),
->         EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 24, false, false, 0),
->         EP93XX_GPIO_BANK("E", 0x20, 0x24, 32, false, false, 0),
->         /* Bank F has 8 IRQs */
-> -       EP93XX_GPIO_BANK("F", 0x30, 0x34, 16, false, true, 0),
-> +       EP93XX_GPIO_BANK("F", 0x30, 0x34, 16, false, true,
-> EP93XX_GPIO_F_IRQ_BASE),
->         EP93XX_GPIO_BANK("G", 0x38, 0x3c, 48, false, false, 0),
->         EP93XX_GPIO_BANK("H", 0x40, 0x44, 56, false, false, 0),
->  };
-> @@ -414,7 +416,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
-> *gc,
->                 /* Pick resources 1..8 for these IRQs */
->                 for (i = 0; i < girq->num_parents; i++) {
->                         girq->parents[i] = platform_get_irq(pdev, i +
-> 1);
-> -                       gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
-> +                       gpio_irq = bank->irq_base + i;
->                         irq_set_chip_data(gpio_irq, &epg->gc[5]);
->                         irq_set_chip_and_handler(gpio_irq,
->                                                 
-> &ep93xx_gpio_irq_chip,
-> @@ -423,7 +425,7 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
-> *gc,
->                 }
->                 girq->default_type = IRQ_TYPE_NONE;
->                 girq->handler = handle_level_irq;
-> -               girq->first = EP93XX_GPIO_F_IRQ_BASE;
-> +               girq->first = bank->irq_base;
->         }
->  
->         return devm_gpiochip_add_data(dev, gc, epg);
-
+diff --git a/Documentation/devicetree/bindings/net/marvell-pp2.txt b/Documentation/devicetree/bindings/net/marvell-pp2.txt
+index f9f8cc6..df80cff 100644
+--- a/Documentation/devicetree/bindings/net/marvell-pp2.txt
++++ b/Documentation/devicetree/bindings/net/marvell-pp2.txt
+@@ -1,5 +1,6 @@
+ * Marvell Armada 375 Ethernet Controller (PPv2.1)
+   Marvell Armada 7K/8K Ethernet Controller (PPv2.2)
++  Marvell CN913X Ethernet Controller (PPv2.3)
+ 
+ Required properties:
+ 
+@@ -12,7 +13,7 @@ Required properties:
+ 	- common controller registers
+ 	- LMS registers
+ 	- one register area per Ethernet port
+-  For "marvell,armada-7k-pp2", must contain the following register
++  For "marvell,armada-7k-pp2" used by 7K/8K and CN913X, must contain the following register
+   sets:
+ 	- packet processor registers
+ 	- networking interfaces registers
 -- 
-Alexander Sverdlin.
-
+1.9.1
 
