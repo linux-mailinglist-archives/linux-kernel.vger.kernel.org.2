@@ -2,108 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D683068C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B913068CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhA1Aov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:44:51 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59264 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231401AbhA1Aod (ORCPT
+        id S231986AbhA1ArV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:47:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231754AbhA1Aq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:44:33 -0500
-X-UUID: 2d3e5f84166047e1b8b9b7547dc167c8-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=Moaf8HVdiYJmhrqmKzTtI0+ZWpCyJb1HWG+7EkTaLdo=;
-        b=HXsg1wxo8L7aaUznhnxvxnOB+9X7Uql7uKcD1DvlllDWtVXvrBd9akVsOAf99b6w/zxAofDCQGf+5w/07H67Tmb/QAgIkx/eJWPUNM+mhB+5x90Jp04X3v1NT/uDBf6aZubV8SpBeYIOcH9VNRRVZkmYYepCNYoHSudS9xnvwKE=;
-X-UUID: 2d3e5f84166047e1b8b9b7547dc167c8-20210128
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 996953265; Thu, 28 Jan 2021 08:43:42 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n1.mediatek.inc
- (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
- 2021 08:43:41 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 08:43:39 +0800
-Message-ID: <1611794619.1947.0.camel@mhfsdcap03>
-Subject: Re: [PATCH v3, 07/15] drm/mediatek: enable OVL_LAYER_SMI_ID_EN for
- multi-layer usecase
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 28 Jan 2021 08:43:39 +0800
-In-Reply-To: <CAAOTY_9_LN8nYSmg42gpR5dLqTe+ABt61WzM8S5cp2D6-rWKyw@mail.gmail.com>
-References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com>
-         <1610351031-21133-8-git-send-email-yongqiang.niu@mediatek.com>
-         <CAAOTY_9_LN8nYSmg42gpR5dLqTe+ABt61WzM8S5cp2D6-rWKyw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 27 Jan 2021 19:46:57 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715ACC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:46:16 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id u27so1402927uaa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:46:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VYCvTwZJOS57yUVnxbUMBR/ZIyqJvL3EdTrVvMpFbLk=;
+        b=Joshxx+/UN08Fz/VhlZjoQZ3rW/0jAS6jOzE308XrIuaxjAGCuLnnSzC3c84ol+PgH
+         KVdgT7XRiCLCn2/ZMnW4rC/FBZgkIjhJsl+byYiXmzxGbI59MV/+9yHqhcoKLqCc4s8N
+         P9T/qplfRzID6kBC6+Rl0wu/pf5f2AiEcJwwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VYCvTwZJOS57yUVnxbUMBR/ZIyqJvL3EdTrVvMpFbLk=;
+        b=LOGHsRajiKH2oFcmra8EW70sxqGdM0uE+CV5vhLoH/Rusi+34PJ7NUyy5YT0z7EQph
+         k5CERUs66pe+JNX1PL5nOJbwWVBNZVBd2gSzzHGKSUKzbwcrVOM9vbthqNPKXGuTp+l6
+         pm6mHA7meodTNeA21HjIsMBqWJHZmQc+G9VA76MPfbL16CE5xo8JOaBkXUrNOwnr8TUA
+         CIrj7OTHAgUvWL+9ZlkQSnWx8liWzkjEkvPHx6MTEv0fDB7xXPXFoRgBlxKLduOjpKTl
+         xec3G25EAwgd+Q34a81LiVP2bl4sn5sBr5VBAJ6cTfBryPTPIiZiy2GXtfb2O7aGyhLR
+         af7Q==
+X-Gm-Message-State: AOAM53126ZBmGpF7jKJHrbMWs+oaTuJjDAdRy8Lg26YHha2px505D5Um
+        pJlDvdiXoPVFSFKMFgQeOcG9dzm4Gpb4DEGVSj9j6w==
+X-Google-Smtp-Source: ABdhPJzuDZxh+qw/MvtjGYzB6+oogsiyhUApdtCsLfVil7mXOTri3nULuLziCbS7F51cuR8bn2X4VcCJbwbnM/xaW00=
+X-Received: by 2002:ab0:3043:: with SMTP id x3mr10083307ual.88.1611794775533;
+ Wed, 27 Jan 2021 16:46:15 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid>
+ <20210126233840.GG4626@dread.disaster.area>
+In-Reply-To: <20210126233840.GG4626@dread.disaster.area>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Thu, 28 Jan 2021 08:46:04 +0800
+Message-ID: <CANMq1KBcs+S02T=76V6YMwTprUx6ucTK8d+ZKG2VmekbXPBZnA@mail.gmail.com>
+Subject: Re: [PATCH] fs: generic_copy_file_checks: Do not adjust count based
+ on file size
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J . Wong" <djwong@kernel.org>,
+        Luis Lozano <llozano@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAxLTEyIGF0IDA3OjU5ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgWW9uZ3FpYW5nOg0KPiANCj4gWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRp
-YXRlay5jb20+IOaWvCAyMDIx5bm0MeaciDEx5pelIOmAseS4gCDkuIvljYgzOjQ05a+r6YGT77ya
-DQo+ID4NCj4gPiBlbmFibGUgT1ZMX0xBWUVSX1NNSV9JRF9FTiBmb3IgbXVsdGktbGF5ZXIgdXNl
-Y2FzZQ0KPiANCj4gQ291bGQgeW91IGRlc2NyaWJlIG1vcmUgaW5mb3JtYXRpb24/IFdpdGhvdXQg
-dGhpcyBwYXRjaCwgd2hhdCB3b3VsZCBoYXBwZW4/DQo+IA0KDQp3aXRob3V0IHRoaXMgcGF0Y2gs
-IG92bCB3aWxsIGhhbmcgdXAgd2hlbiBtb3JlIHRoYW4gMSBsYXllciBlbmFibGVkDQoNCj4gPg0K
-PiA+IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsu
-Y29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3Zs
-LmMgfCAxMiArKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMo
-KykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rp
-c3Bfb3ZsLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMNCj4gPiBp
-bmRleCBiNDdjMjM4Li40OTM0YmVlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9t
-ZWRpYXRlay9tdGtfZGlzcF9vdmwuYw0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
-ay9tdGtfZGlzcF9vdmwuYw0KPiA+IEBAIC0yMyw2ICsyMyw3IEBADQo+ID4gICNkZWZpbmUgRElT
-UF9SRUdfT1ZMX1JTVCAgICAgICAgICAgICAgICAgICAgICAgMHgwMDE0DQo+ID4gICNkZWZpbmUg
-RElTUF9SRUdfT1ZMX1JPSV9TSVpFICAgICAgICAgICAgICAgICAgMHgwMDIwDQo+ID4gICNkZWZp
-bmUgRElTUF9SRUdfT1ZMX0RBVEFQQVRIX0NPTiAgICAgICAgICAgICAgMHgwMDI0DQo+ID4gKyNk
-ZWZpbmUgT1ZMX0xBWUVSX1NNSV9JRF9FTiAgICAgICAgICAgICAgICAgICAgICAgICAgICBCSVQo
-MCkNCj4gPiAgI2RlZmluZSBPVkxfQkdDTFJfU0VMX0lOICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIEJJVCgyKQ0KPiA+ICAjZGVmaW5lIERJU1BfUkVHX09WTF9ST0lfQkdDTFIgICAgICAg
-ICAgICAgICAgIDB4MDAyOA0KPiA+ICAjZGVmaW5lIERJU1BfUkVHX09WTF9TUkNfQ09OICAgICAg
-ICAgICAgICAgICAgIDB4MDAyYw0KPiA+IEBAIC02MSw2ICs2Miw3IEBAIHN0cnVjdCBtdGtfZGlz
-cF9vdmxfZGF0YSB7DQo+ID4gICAgICAgICB1bnNpZ25lZCBpbnQgZ21jX2JpdHM7DQo+ID4gICAg
-ICAgICB1bnNpZ25lZCBpbnQgbGF5ZXJfbnI7DQo+ID4gICAgICAgICBib29sIGZtdF9yZ2I1NjVf
-aXNfMDsNCj4gPiArICAgICAgIGJvb2wgc21pX2lkX2VuOw0KPiA+ICB9Ow0KPiA+DQo+ID4gIC8q
-Kg0KPiA+IEBAIC0xMTYsNyArMTE4LDE3IEBAIHN0YXRpYyB2b2lkIG10a19vdmxfZGlzYWJsZV92
-Ymxhbmsoc3RydWN0IG10a19kZHBfY29tcCAqY29tcCkNCj4gPg0KPiA+ICBzdGF0aWMgdm9pZCBt
-dGtfb3ZsX3N0YXJ0KHN0cnVjdCBtdGtfZGRwX2NvbXAgKmNvbXApDQo+ID4gIHsNCj4gPiArICAg
-ICAgIHN0cnVjdCBtdGtfZGlzcF9vdmwgKm92bCA9IGNvbXBfdG9fb3ZsKGNvbXApOw0KPiA+ICsN
-Cj4gPiAgICAgICAgIHdyaXRlbF9yZWxheGVkKDB4MSwgY29tcC0+cmVncyArIERJU1BfUkVHX09W
-TF9FTik7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYob3ZsLT5kYXRhLT5zbWlfaWRfZW4pIHsNCj4g
-PiArICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IHJlZzsNCj4gPiArDQo+ID4gKyAgICAgICAg
-ICAgICAgIHJlZyA9IHJlYWRsKGNvbXAtPnJlZ3MgKyBESVNQX1JFR19PVkxfREFUQVBBVEhfQ09O
-KTsNCj4gPiArICAgICAgICAgICAgICAgcmVnID0gcmVnIHwgT1ZMX0xBWUVSX1NNSV9JRF9FTjsN
-Cj4gPiArICAgICAgICAgICAgICAgd3JpdGVsX3JlbGF4ZWQocmVnLCBjb21wLT5yZWdzICsgRElT
-UF9SRUdfT1ZMX0RBVEFQQVRIX0NPTik7DQo+IA0KPiBJIHRoaW5rIHRoaXMgc2V0dGluZyBzaG91
-bGQgYmVmb3JlIHdyaXRlIDEgdG8gRElTUF9SRUdfT1ZMX0VOLg0KPiANCj4gPiArICAgICAgIH0N
-Cj4gPiAgfQ0KPiA+DQo+ID4gIHN0YXRpYyB2b2lkIG10a19vdmxfc3RvcChzdHJ1Y3QgbXRrX2Rk
-cF9jb21wICpjb21wKQ0KPiANCj4gU2hvdWxkIGNsZWFyIERJU1BfUkVHX09WTF9EQVRBUEFUSF9D
-T04gd2hlbiBzdG9wPw0KPiANCj4gUmVnYXJkcywNCj4gQ2h1bi1LdWFuZy4NCj4gDQo+ID4gLS0N
-Cj4gPiAxLjguMS4xLmRpcnR5DQo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18NCj4gPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gPiBMaW51
-eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tZWRpYXRlaw0KDQo=
+On Wed, Jan 27, 2021 at 7:38 AM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Tue, Jan 26, 2021 at 01:50:22PM +0800, Nicolas Boichat wrote:
+> > copy_file_range (which calls generic_copy_file_checks) uses the
+> > inode file size to adjust the copy count parameter. This breaks
+> > with special filesystems like procfs/sysfs, where the file size
+> > appears to be zero, but content is actually returned when a read
+> > operation is performed.
+> >
+> > This commit ignores the source file size, and makes copy_file_range
+> > match the end of file behaviour documented in POSIX's "read",
+> > where 0 is returned to mark EOF. This would allow "cp" and other
+> > standard tools to make use of copy_file_range with the exact same
+> > behaviour as they had in the past.
+> >
+> > Fixes: 96e6e8f4a68d ("vfs: add missing checks to copy_file_range")
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+>
+> Nack.
 
+Thanks Dave and Al for the detailed explanations.
+
+>
+> As I've explained, this is intentional and bypassing it is not a
+> work around for enabling cfr on filesystems that produce ephemeral,
+> volatile read-once data using seq-file pipes that masquerade as
+> regular files with zero size. These files are behaving like pipes
+> and only work because the VFS has to support read() and friends from
+> pipes that don't publish the amount of data they contain to the VFS
+> inode.
+>
+> copy_file_range() does not support such behaviour.
+>
+> copy_file_range() -writes- data, so we have to check that those
+> writes do not extend past boundaries that the destination inode
+> imposes on the operation. e.g. maximum offset limits, whether the
+> ranges overlap in the same file, etc.
+>
+> Hence we need to know how much data there is present to copy before
+> we can check if it is safe to perform the -write- of the data we are
+> going to read. Hence we cannot safely support data sources that
+> cannot tell us how much data is present before we start the copy
+> operation.
+>
+> IOWs, these source file EOF restrictions are required by the write
+> side of copy_file_range(), not the read side.
+>
+> > ---
+> > This can be reproduced with this simple test case:
+> >  #define _GNU_SOURCE
+> >  #include <fcntl.h>
+> >  #include <stdio.h>
+> >  #include <stdlib.h>
+> >  #include <sys/stat.h>
+> >  #include <unistd.h>
+> >
+> >  int
+> >  main(int argc, char **argv)
+> >  {
+> >    int fd_in, fd_out;
+> >    loff_t ret;
+> >
+> >    fd_in = open("/proc/version", O_RDONLY);
+> >    fd_out = open("version", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+> >
+> >    do {
+> >      ret = copy_file_range(fd_in, NULL, fd_out, NULL, 1024, 0);
+> >      printf("%d bytes copied\n", (int)ret);
+> >    } while (ret > 0);
+> >
+> >    return 0;
+> >  }
+> >
+> > Without this patch, `version` output file is empty, and no bytes
+> > are copied:
+> > 0 bytes copied
+>
+> $ ls -l /proc/version
+> -r--r--r-- 1 root root 0 Jan 20 17:25 /proc/version
+> $
+>
+> It's a zero length file.
+>
+> sysfs does this just fine - it's regular files have a size of
+> at least PAGE_SIZE rather than zero, and so copy_file_range works
+> just fine on them:
+>
+> $ ls -l /sys/block/nvme0n1/capability
+> -r--r--r-- 1 root root 4096 Jan 27 08:41 /sys/block/nvme0n1/capability
+> $ cat /sys/block/nvme0n1/capability
+> 50
+> $ xfs_io -f -c "copy_range -s 0 -d 0 -l 4096 /sys/block/nvme0n1/capability" /tmp/foo
+> $ sudo cat /tmp/foo
+> 50
+>
+> And the behaviour is exactly as you'd expect a read() loop to copy
+> the file to behave:
+>
+> openat(AT_FDCWD, "/tmp/foo", O_RDWR|O_CREAT, 0600) = 3
+> ....
+> openat(AT_FDCWD, "/sys/block/nvme0n1/capability", O_RDONLY) = 4
+> copy_file_range(4, [0], 3, [0], 4096, 0) = 3
+> copy_file_range(4, [3], 3, [3], 4093, 0) = 0
+> close(4)
+>
+> See? Inode size of 4096 means there's a maximum of 4kB of data that
+> can be read from this file.  copy_file_range() now behaves exactly
+> as read() would, returning a short copy and then 0 bytes to indicate
+> EOF.
+
+Unless the content happens to be larger than PAGE_SIZE, then
+copy_file_range would only copy the beginning of the file. And as Al
+explained, this will still break in case of short writes.
+
+>
+> If you want ephemeral data pipes masquerading as regular files to
+> work with copy_file_range, then the filesystem implementation needs
+> to provide the VFS with a data size that indicates the maximum
+> amount of data that the pipe can produce in a continuous read loop.
+> Otherwise we cannot validate the range of the write we may be asked
+> to perform...
+>
+> > Under the hood, Go 1.15 uses `copy_file_range` syscall to optimize the
+> > copy operation. However, that fails to copy any content when the input
+> > file is from sysfs/tracefs, with an apparent size of 0 (but there is
+> > still content when you `cat` it, of course).
+>
+> Libraries using copy_file_range() must be prepared for it to fail
+> and fall back to normal copy mechanisms.
+
+How is userspace suppose to detect that? (checking for 0 file size
+won't work with the example above)
+
+> Of course, with these
+> special zero length files that contain ephemeral data, userspace can't
+> actually tell that they contain data from userspace using stat(). So
+> as far as userspace is concerned, copy_file_range() correctly
+> returned zero bytes copied from a zero byte long file and there's
+> nothing more to do.
+>
+> This zero length file behaviour is, fundamentally, a kernel
+> filesystem implementation bug, not a copy_file_range() bug.
+
+Okay, so, based on this and Al's reply, I see 2 things we can do:
+ 1. Go should probably not use copy_file_range in a common library
+function, as I don't see any easy way to detect this scenario
+currently (detect 0 size? sure, but that won't work with the example
+you provide above). And the man page should document this behaviour
+more explicitly to prevent further incorrect usage.
+ 2. Can procfs/sysfs/debugfs and friends explicitly prevent usage of
+copy_file_range? (based on Al's reply, there seems to be no way to
+implement it correctly as seeking in such files will not work in case
+of short writes)
+
+Thanks,
+
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
