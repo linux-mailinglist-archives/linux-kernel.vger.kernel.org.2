@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E96307FCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38387307FCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhA1Ulh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        id S231324AbhA1Uls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhA1Uld (ORCPT
+        with ESMTP id S229825AbhA1Ulp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:41:33 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED9CC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 12:40:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=dT3QLKJD/CzMv+auklBWXRdST9SnwaARKpGCe857cJ0=; b=nuQOLXVqY2MjTtXxAILYKw41tk
-        jyJg8pr2cEU+9hhmxv4hQT8RrWGzu+1djgNfxn/1WaZbw+lRYL4U2UdE1rouz6pOzz/AZOW/ejcF0
-        sheib5b4TsD8uZs4OyocLBoDFrwp/BibSRxDjzUJIigWMh9BcguGHG/DZ98WRjuTysfD5rqK4T3cV
-        vQiFULoTt5zE70ElMNaQdPihLHrgejOroaYQzJ6TnFt9SJ9P4M27wcsNWxZllBWzLiWEl55Emb/B/
-        p56uwDL/CIsROoQ6/dWMFLJ1LYjypFT3omLVwZxUrMoiFiRjSrf9ayQu2TfhntcVlXlfRyBZuq4oQ
-        QD1tnNYw==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l5E5w-000531-Is; Thu, 28 Jan 2021 20:40:48 +0000
-Subject: Re: Kconfig-induced build errors: CONFIG_PAGE_OFFSET
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-References: <b67f8941-6624-d814-e6d3-2ddfdfbdf7dd@infradead.org>
- <CAOnJCUJc0-x-gmLAKxb9ULjOX1yBjxZvwi4=_0ETH-L7JtKhNw@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e90a2745-7ca6-ce78-63c8-5aaf31602eab@infradead.org>
-Date:   Thu, 28 Jan 2021 12:40:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 28 Jan 2021 15:41:45 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8DAC061574;
+        Thu, 28 Jan 2021 12:41:04 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id z6so6705517wrq.10;
+        Thu, 28 Jan 2021 12:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eZQDBDX7ysZjWH15k/VD+oczZr4PH6075utJ1xgiXgY=;
+        b=oHlkxnKaIiOGZACS9UxXHxQTNSI7Cf3kAEv/slmvz6Fr6NiFpmgruxfX4MNyTwkasB
+         QYt4Sbp/LClgIHBtTOO4s/5Uqy5bSHlA42pmWC8og0ee5189WTurNXFr2P4RzcomIong
+         1/XFeLRQMFdH/v8QAZ3J5KM6uki8FjmqPKj+M12CVNCm+QghYs4NKDF+z0M/TRUhZqg1
+         CgUK9ZcnQYBG0T/c+iRTtaR6wn7EErMTDKGXXQYWa4oczFCR61YH0rmK/xOisN5q65We
+         Mqd8EPEqgHiO35rl8Fe61apwXy+FKSFIL5ES5Wz2/ocpzoqu6faCNFqpR+5Xsy2Z9KdN
+         /dUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eZQDBDX7ysZjWH15k/VD+oczZr4PH6075utJ1xgiXgY=;
+        b=EJZRdiO83TstL/sVpR/JszPXfpXXtd0wNc/OCijKXY1MJJISzfT2nkXPvhG+xRbLUe
+         UOB7Y549TY3gZ5caWM8tjDD8qlx48r9MeyxOZUWgLWvmZspt2xbETjwijt+K74w35bFl
+         Zq6e2ouQowxFk0r6bnQnvdgXFCH6//RlP3w2hgXsS/vHfdsfsd0aYZ/xGutjdVNU/UQo
+         35h0Y3+NDh9inCc9hpIDBP5y1BoBSryc5zmwbJHB3D3VLfOkAouhCuRsRVHsZ70e5vGc
+         9P+wXS9WQmFG4hHcnfVjQqZiRfsxAO6UBt7YM5I5c1nGSkcosg+tG13BOARyMOjREQAt
+         CdrA==
+X-Gm-Message-State: AOAM531cGN9poXZA4xC6XjG+WsuhqajreMObJXzKm214klvkC8XdTLqm
+        etR/dTrpaabm++ly3RF2KuDYfYmDNEBrVehOreG6JRPkJgY=
+X-Google-Smtp-Source: ABdhPJwlenfZHCOiOfMruxm3X3cs5f9FZfYo4d1ePGXG/fE7YrlvrE++5B7mIUl2kqjHSrrwt81TWvaGodsyTveDQsM=
+X-Received: by 2002:adf:f749:: with SMTP id z9mr855909wrp.327.1611866463544;
+ Thu, 28 Jan 2021 12:41:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAOnJCUJc0-x-gmLAKxb9ULjOX1yBjxZvwi4=_0ETH-L7JtKhNw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210127233946.1286386-1-eric@anholt.net> <20210127233946.1286386-2-eric@anholt.net>
+In-Reply-To: <20210127233946.1286386-2-eric@anholt.net>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 28 Jan 2021 12:40:52 -0800
+Message-ID: <CAF6AEGuXeU18cUKGogtJD7O4SPUgFVQZcw3H-MDXNR5HAXcgFw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] drm/msm: Fix races managing the OOB state for
+ timestamp vs timestamps.
+To:     Eric Anholt <eric@anholt.net>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 12:07 PM, Atish Patra wrote:
-> On Wed, Jan 27, 2021 at 7:18 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> Hi,
->>
->> I took a riscv-32 .config from kernel test robot (it was for a clang build)
->> and did a "make olddefconfig" (using gcc tools) and got build errors
->> due to this config item from arch/riscv/Kconfig;
->>
->>
->> config PAGE_OFFSET
->>         hex
->>         default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
->>         default 0x80000000 if 64BIT && !MMU
->>         default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
->>         default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->>
->> PAGE_OFFSET is undefined for the case of 32BIT && MAXPHYSMEM_2GB.
-> 
-> Because, RV32 doesn't support 2GB physical memory yet.
-> 
-> The compilation errors can be fixed by not allowing MAXPHYSMEM_2GB for RV32 and
-> MAXPHYSMEM_1GB for RV64. How about this ?
-> 
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -253,8 +253,10 @@ choice
->         default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
-> 
->         config MAXPHYSMEM_1GB
-> +               depends on 32BIT
->                 bool "1GiB"
->         config MAXPHYSMEM_2GB
-> +               depends on 64BIT && CMODEL_MEDLOW
->                 bool "2GiB"
->         config MAXPHYSMEM_128GB
->                 depends on 64BIT && CMODEL_MEDANY
-Looks good. Thanks.
+On Wed, Jan 27, 2021 at 3:39 PM Eric Anholt <eric@anholt.net> wrote:
+>
+> Now that we're not racing with GPU setup, also fix races of timestamps
+> against other timestamps.  In CI, we were seeing this path trigger
+> timeouts on setting the GMU bit, especially on the first set of tests
+> right after boot (it's probably easier to lose the race than one might
+> think, given that we start many tests in parallel, and waiting for NFS
+> to page in code probably means that lots of tests hit the same point
+> of screen init at the same time).
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Could you add the error msg to the commit msg, to make it more easily
+searchable?
 
--- 
-~Randy
+BR,
+-R
 
+> Signed-off-by: Eric Anholt <eric@anholt.net>
+> Cc: stable@vger.kernel.org # v5.9
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 7424a70b9d35..e8f0b5325a7f 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1175,6 +1175,9 @@ static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
+>  {
+>         struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>         struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> +       static DEFINE_MUTEX(perfcounter_oob);
+> +
+> +       mutex_lock(&perfcounter_oob);
+>
+>         /* Force the GPU power on so we can read this register */
+>         a6xx_gmu_set_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
+> @@ -1183,6 +1186,7 @@ static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
+>                 REG_A6XX_RBBM_PERFCTR_CP_0_HI);
+>
+>         a6xx_gmu_clear_oob(&a6xx_gpu->gmu, GMU_OOB_PERFCOUNTER_SET);
+> +       mutex_unlock(&perfcounter_oob);
+>         return 0;
+>  }
+>
+> --
+> 2.30.0
+>
