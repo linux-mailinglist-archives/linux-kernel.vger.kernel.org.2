@@ -2,76 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C1A3073AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31A93073AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhA1K0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:26:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232517AbhA1KYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:24:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CEF8AAE57;
-        Thu, 28 Jan 2021 10:23:26 +0000 (UTC)
-Subject: Re: [PATCH 1/3] mm, slub: use pGp to print page flags
-To:     Yafang Shao <laoar.shao@gmail.com>, david@redhat.com, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210128021947.22877-1-laoar.shao@gmail.com>
- <20210128021947.22877-2-laoar.shao@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1c64112b-ade8-682f-3963-b4040fffb52d@suse.cz>
-Date:   Thu, 28 Jan 2021 11:23:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232532AbhA1K0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:26:16 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38763 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232520AbhA1KYW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 05:24:22 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7D3875C0114;
+        Thu, 28 Jan 2021 05:23:34 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 28 Jan 2021 05:23:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=XZ6rY75cmqr7UvehnpYsJbl4pPV
+        fDKYpP2TSgwIX+LY=; b=ClCkU64xRlU8R3kM85z8BKWePs6ZggbQct3wkKZdZwI
+        hUUTn7Dx8uNRMOhtTslPXqX2jv/rUa0Y7hp6R+ubVjoNu4qtFMcwqWaAlOiWz2hi
+        DyppgtMyY6X+O2Z9Ju3/ayh6rMVLWOu780Cd75e0FgYnoAshCwVtouYJuyfxnh+G
+        JU/nIjJBA30dc6Q7S1ABSj4A7g6FRKjwh2xtzo4suwC64Vz2K9H2WqhHKlOGYppA
+        hO5dB6PZjlFrrNWl4DStQuf88vPGqi9GEDX5f1fOsREyylflqMSp+xDZ1eXUmf3E
+        vkcPgxKg1ZyPoQvD0/7Wf/Z9YqFFmFZOb+i5WG13UCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XZ6rY7
+        5cmqr7UvehnpYsJbl4pPVfDKYpP2TSgwIX+LY=; b=SKW29gsGlS7zuSEEQSN0vT
+        7R2BswVCqK1z+PpISL1rG70UmrWVCkQK1O0UCvN69wrAaVL46+L7kj5QzXhyA4pd
+        9pDeL25L9BL/wxUtCANmBdNP7X6sc39wbgFxbIMZEYRvucWTL3E9y2XwFq9OMt8B
+        mJjn+EyJMUgFcpIPRq7ZV88j6NzFlrQumMz/qZIY7O9NQ5yyQTK8XbevQqD+YZ8H
+        rA96IjRRmtcPOTye0eTcA4q5jLHtU7sHR5qA1VoRsFrT8Zn3pa81oDOlm5q2L4IM
+        neb+cljK4rTHUgR2s7xQOKWd7GeCMsFXV4j0Hb8sr1Ix2dpVmETk0sRlX8+cR4rA
+        ==
+X-ME-Sender: <xms:pZASYMZGmRk5yGru3TOH3XSI0SpCEPqgY9C0ERUy5VhAWQqxO7NxIw>
+    <xme:pZASYHYiV9acXy63_9508wTKzeeMBd68p3sJqBQHXoQ3leMZ2DFtmwdwgGG_sUiTj
+    aV8bEisnqVmGXlJk1Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgddufecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:pZASYG8IOJxow-aZkvw-Aq2URMo226ilMutQFz_3_BVQjgtNnxvEgg>
+    <xmx:pZASYGq9pihJMMntc2BTT9Nbrke3T2QrHSXxEnB9fEmRaBMCu6KELg>
+    <xmx:pZASYHqmJ-PekSyJwXLOWq_5zGU3NqWctmxB2JPf6sHaes3ifBsXEg>
+    <xmx:ppASYDI2RuqD8QuO72L8iKAkE5wj0paJHdt5MybCIuOfoMn3Fu6kAw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9F5D3240057;
+        Thu, 28 Jan 2021 05:23:33 -0500 (EST)
+Date:   Thu, 28 Jan 2021 11:23:32 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/2] soc: sunxi: mbus: Remove DE2 display engine
+ compatibles
+Message-ID: <20210128102332.3e6i63epnu4pyceg@gilmour>
+References: <20210115175831.1184260-1-paul.kocialkowski@bootlin.com>
+ <20210115175831.1184260-2-paul.kocialkowski@bootlin.com>
+ <YBFkh/faoPnTRZtl@aptenodytes>
 MIME-Version: 1.0
-In-Reply-To: <20210128021947.22877-2-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dhm3aq36fwshxmlu"
+Content-Disposition: inline
+In-Reply-To: <YBFkh/faoPnTRZtl@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 3:19 AM, Yafang Shao wrote:
-> As pGp has been already introduced in printk, we'd better use it to make
-> the output human readable.
-> 
-> Before this change, the output is,
-> [ 6155.716018] INFO: Slab 0x000000004027dd4f objects=33 used=3 fp=0x000000008cd1579c flags=0x17ffffc0010200
-> 
-> While after this change, the output is,
-> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+--dhm3aq36fwshxmlu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  mm/slub.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 69742ab9a21d..4b9ab267afbc 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -641,8 +641,9 @@ void print_tracking(struct kmem_cache *s, void *object)
->  
->  static void print_page_info(struct page *page)
->  {
-> -	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=0x%04lx\n",
-> -	       page, page->objects, page->inuse, page->freelist, page->flags);
-> +	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
-> +	       page, page->objects, page->inuse, page->freelist,
-> +	       page->flags, &page->flags);
->  
->  }
->  
-> 
+On Wed, Jan 27, 2021 at 02:03:03PM +0100, Paul Kocialkowski wrote:
+> Hi,
+>=20
+> On Fri 15 Jan 21, 18:58, Paul Kocialkowski wrote:
+> > The DE2 display engine hardware takes physical addresses that do not
+> > need PHYS_BASE subtracted. As a result, they should not be present
+> > on the mbus driver match list. Remove them.
+> >=20
+> > This was tested on the A83T, along with the patch allowing the DMA
+> > range map to be non-NULL and restores a working display.
+>=20
+> Could we get this merged ASAP (in this RC cycle), hopefully with the patch
+> that superseded 1/2 from this series so that we don't end up with either
+> CSI or DE2 broken in the next release?
 
+I just applied it
+
+Maxime
+
+--dhm3aq36fwshxmlu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBKQpAAKCRDj7w1vZxhR
+xXU2AQDNobRB5Qb8nVgu+X90jUJ+LUMOvjrOxUHztFlhy3Sd1QD/fkTRAOhfzVVh
+IhTj0/Ka77jsmN6JEUQQLqmSiOcdoQQ=
+=YOWo
+-----END PGP SIGNATURE-----
+
+--dhm3aq36fwshxmlu--
