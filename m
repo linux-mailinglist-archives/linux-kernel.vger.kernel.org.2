@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7789306E0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E9B306E0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhA1HCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        id S231231AbhA1HEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbhA1HCF (ORCPT
+        with ESMTP id S229551AbhA1HEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:02:05 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCE8C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:01:25 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id u11so2793998plg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nlba24MbVDarjbDWpz/7r7AuP6jGDXLXfVDSaaZnioc=;
-        b=CQrSlYQAFkR9mTkea/Og6d9itO4X0ucrPrdmZnnS+W7X9SSXuLeRnkUW42pl3MuDlu
-         HMGldKk3rabPpFJ4Y/7RGCcMHADDabJc3vgRy4az+r1YlIeabU/h26bGp9s65SkwMclJ
-         cdpa8X6Qhg22Ma4mbSSC9HwJaSS0alKqZoOa0x6HNkaKPGHUXDgS0ff0cPOWuFO70ZPU
-         izGmB5iu1z/0ks366VGNhSTOrnzqc3fL1AuOljYrvh0fJKVRVgXJwhz/l4N5N/33II5P
-         pKdZLVzdEfrN650ZYNQ3/EI0y1N27p8GVG/mivXwNpUrx1WSOayX+jTnPPgYf8FMlwgR
-         M6AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nlba24MbVDarjbDWpz/7r7AuP6jGDXLXfVDSaaZnioc=;
-        b=tKcNqq8+ILZi5eYDH6UHfWOor7jyfU/qrrHDldTJIczJEgd+CSOSRyXAQQDrKF7nyT
-         w3UoXTAT9zszGsYdqWzO1YRUYCYB+nGlTZWp0jtey+6+qNtUJPEyklz/+y18RUz8B+cD
-         ymNdSws/I3IFjAHFV5a0GhqvaQGgD+bhNKTIrh782HmS0xlh0fDzfkigykvnaNLI44n4
-         brTJYySmsqo3Nn2jx0BCsk6thi+io39hWSNVh7T2bqhXfb9OkWV8Iys/can39xL+Fi3l
-         PnfOo1sxnt1reVaoO74V7080FOjzIcCY5yFpJUxv00Dq/TBabZiKYt1ufliM7XOzDXPf
-         PK5A==
-X-Gm-Message-State: AOAM5314g5RY5MrrDQjFz91n/O55GcxGIZYacYvyXeqzbN3MbOZ8Z2kn
-        3WhR9Jhpb8ss7a1AfOwkwRoPIWHpIN+Mdg==
-X-Google-Smtp-Source: ABdhPJwJrZUiQO7pCFolzTYtxYtzNwESyIYHO8ut0T/Glo0lFk5TiR1nbYNQ/a7MnPw6ElBz53tRAQ==
-X-Received: by 2002:a17:902:854b:b029:db:c725:edcd with SMTP id d11-20020a170902854bb02900dbc725edcdmr15248493plo.64.1611817285276;
-        Wed, 27 Jan 2021 23:01:25 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id 77sm4530580pfx.130.2021.01.27.23.01.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 23:01:24 -0800 (PST)
-Date:   Thu, 28 Jan 2021 12:31:22 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 11/13] devfreq: tegra30: Migrate to
- dev_pm_opp_set_opp()
-Message-ID: <20210128070122.d3syt7mhey2dcf4s@vireshk-i7>
-References: <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
- <f0341655361aa0107266ed9c838aa8bcfe50a3ed.1611738418.git.viresh.kumar@linaro.org>
- <20210127100234.vl2wwe7rjrrz4btz@vireshk-i7>
- <b5f1065b-14ad-adae-af1c-e9962e6626ad@gmail.com>
+        Thu, 28 Jan 2021 02:04:50 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD44C061573;
+        Wed, 27 Jan 2021 23:04:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=xTj5iUr2pNOoeNVjs1n88tIxBjCvKioFx6e9RyoCseM=; b=dz2TgDLK5eoH2z4ZCfs/qT5PIV
+        IaRzVY2+eFwm52EJfrNvLBC6Wd1hJNVg7QlsnIQFcXfyDKod78aGFtup/wxdWpT7+vHPPsMe5IVTZ
+        zQs1+jXDUBcNUaMTMz40LzbVWZ54ILVqxDm6PUl+qSFvwfIDnh2O6LbX2osrfHcAWihdX+zBnmC1z
+        B1rJgb99SVAWNOzzU3HlOqJDhPrFp0zOihrDsqeRNjcJ3Am5ECf7OoFiH+n7WbnmEd3rAoYJnKqY7
+        Mq2tTcOEmeXIOEDBURdhn8Os4toUDxKjLZ+40iQD+Jzbck7fDGE3LAF0q31ug/Xxp1wxDWFWX5rxm
+        B+anS/gQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l51LZ-00845z-RY; Thu, 28 Jan 2021 07:04:06 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/25] Page folios
+Date:   Thu, 28 Jan 2021 07:03:39 +0000
+Message-Id: <20210128070404.1922318-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5f1065b-14ad-adae-af1c-e9962e6626ad@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-01-21, 18:58, Dmitry Osipenko wrote:
-> Sadly this doesn't work because we missed that clk is assigned to
-> opp_table when OPP table is allocated and not when it's added to device.
+Some functions which take a struct page as an argument operate on
+PAGE_SIZE bytes.  Others operate on the entire compound page if
+passed either a head or tail page.  Others operate on the compound
+page if passed a head page, but PAGE_SIZE bytes if passed a tail page.
+Yet others either BUG or do the wrong thing if passed a tail page.
 
-Ahh, I missed that.
+This patch series starts to resolve this ambiguity by introducing a new
+type, the struct folio.  A function which takes a struct folio argument
+declares that it will operate on the entire page.  In return, the caller
+guarantees that the pointer it is passing does not point to a tail page.
 
-I have bumped up the other patchset to V2, that should work fine with
-this patch for tegra30 (this shouldn't require any update).
+This allows us to do less work.  Now we have a type that is guaranteed
+not to be a tail page, we can avoid calling compound_head().  That saves
+us hundreds of bytes of text and even manages to reduce the amount of
+data in the kernel image somehow.
 
-Everything is pushed in opp/linux-next, fetch and try it. Thanks.
+The focus for this patch series is on introducing infrastructure.
+The big correctness proof that exists in this patch series is to make
+it clear that one cannot wait (for the page lock or writeback) on a
+tail page.  I don't believe there were any places which could miss a
+wakeup due to this, but it's hard to prove that without struct folio.
+Now the compiler proves it for us.
+
+v3:
+ - Rebase on next-20210127.  Two major sources of conflict, the
+   generic_file_buffered_read refactoring (in akpm tree) and the
+   fscache work (in dhowells tree).  Not sure how this patch series
+   can get merged with these two sources of conflict?
+v2:
+ - Pare patch series back to just infrastructure and the page waiting
+   parts.
+
+Matthew Wilcox (Oracle) (25):
+  mm: Introduce struct folio
+  mm: Add folio_pgdat
+  mm/vmstat: Add folio stat wrappers
+  mm/debug: Add VM_BUG_ON_FOLIO and VM_WARN_ON_ONCE_FOLIO
+  mm: Add put_folio
+  mm: Add get_folio
+  mm: Create FolioFlags
+  mm: Handle per-folio private data
+  mm: Add folio_index, folio_page and folio_contains
+  mm/util: Add folio_mapping and folio_file_mapping
+  mm/memcg: Add folio_memcg, lock_folio_memcg and unlock_folio_memcg
+  mm/memcg: Add mem_cgroup_folio_lruvec
+  mm: Add unlock_folio
+  mm: Add lock_folio
+  mm: Add lock_folio_killable
+  mm: Convert lock_page_async to lock_folio_async
+  mm/filemap: Convert end_page_writeback to end_folio_writeback
+  mm: Convert wait_on_page_bit to wait_on_folio_bit
+  mm: Add wait_for_stable_folio and wait_on_folio_writeback
+  mm: Add wait_on_folio_locked & wait_on_folio_locked_killable
+  mm: Convert lock_page_or_retry to lock_folio_or_retry
+  mm/filemap: Convert wake_up_page_bit to wake_up_folio_bit
+  mm: Convert test_clear_page_writeback to test_clear_folio_writeback
+  mm/filemap: Convert page wait queues to be folios
+  cachefiles: Switch to wait_page_key
+
+ fs/afs/write.c             |  31 +++---
+ fs/cachefiles/rdwr.c       |  13 ++-
+ fs/io_uring.c              |   2 +-
+ include/linux/memcontrol.h |  22 ++++
+ include/linux/mm.h         |  88 ++++++++++++----
+ include/linux/mm_types.h   |  33 ++++++
+ include/linux/mmdebug.h    |  20 ++++
+ include/linux/netfs.h      |   5 +
+ include/linux/page-flags.h | 106 +++++++++++++++----
+ include/linux/pagemap.h    | 201 ++++++++++++++++++++++++-----------
+ include/linux/vmstat.h     |  60 +++++++++++
+ mm/filemap.c               | 207 ++++++++++++++++++-------------------
+ mm/memcontrol.c            |  36 ++++---
+ mm/memory.c                |  10 +-
+ mm/page-writeback.c        |  48 ++++-----
+ mm/swapfile.c              |   6 +-
+ mm/util.c                  |  20 ++--
+ 17 files changed, 621 insertions(+), 287 deletions(-)
 
 -- 
-viresh
+2.29.2
+
