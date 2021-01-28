@@ -2,72 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DB2308006
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B45730800A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhA1U5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:57:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231217AbhA1U5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:57:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBB6464DDB;
-        Thu, 28 Jan 2021 20:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611867380;
-        bh=7YWg/7qqCEaamJgUhJGjOesv5dRB/I0KuiqrciA2/N4=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ANG+h9JUdelx3ORfRF2flAwbtQEtJssY/1v2pQsrNueytWDxa1zE8WR54AVZSVUxQ
-         zOsx1ISgdOQOOuauYb8a0AhlvXYkWTqbugjgJ7Ix5H8RWe+uVD2ceOhp8cbOKW15o/
-         lSRPBmkOH9jW2/mxtVlNu5+/6RLbOyWyhZjhx1POroc7u/4VYvALiGzMGAW3pGADDc
-         6E05T5L4MLKMw8aw1bUK4r8tO1hP3Tb9/kMhGF9X19zvh5g1UaZuTqvpE1fmTXYjSr
-         aO8EI8BWZrDhyB/VZrqxkOSQkWB0Le66wQ0QY6QuX71thbMJ+w7IbSiGS0xMlvg/mE
-         l0gKjGdqzHx4A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20210128120151.554411-1-axel.lin@ingics.com>
-References: <20210128120151.554411-1-axel.lin@ingics.com>
-Subject: Re: [PATCH] regulator: pf8x00: Fix typo for PF8200 chip name
-Message-Id: <161186733613.43884.17136128791316394196.b4-ty@kernel.org>
-Date:   Thu, 28 Jan 2021 20:55:36 +0000
+        id S229684AbhA1U61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:58:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231187AbhA1U6I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 15:58:08 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FECC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 12:57:28 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l5ELu-0001TJ-Ct; Thu, 28 Jan 2021 21:57:18 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l5ELs-0002Ax-DZ; Thu, 28 Jan 2021 21:57:16 +0100
+Date:   Thu, 28 Jan 2021 21:57:16 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>, linux-pwm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] pwm: fix semicolon.cocci warnings
+Message-ID: <20210128205716.j2afd32lcxh2l323@pengutronix.de>
+References: <202101282111.dfwxyPwI-lkp@intel.com>
+ <20210128134537.GA54687@068c7b848bbb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="b6z4cigldfqahqsy"
+Content-Disposition: inline
+In-Reply-To: <20210128134537.GA54687@068c7b848bbb>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 20:01:51 +0800, Axel Lin wrote:
-> Trivial typo fix.
 
-Applied to
+--b6z4cigldfqahqsy
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Hello,
 
-Thanks!
+On Thu, Jan 28, 2021 at 09:45:37PM +0800, kernel test robot wrote:
+> From: kernel test robot <lkp@intel.com>
+>=20
+> drivers/pwm/pwm-lpc18xx-sct.c:292:2-3: Unneeded semicolon
+>=20
+>=20
+>  Remove unneeded semicolon.
+>=20
+> Generated by: scripts/coccinelle/misc/semicolon.cocci
+>=20
+> Fixes: e96c0ff4b1e0 ("pwm: Enable compile testing for some of drivers")
 
-[1/1] regulator: pf8x00: Fix typo for PF8200 chip name
-      commit: 64f09ea1b551189f491ffb626fdccc2c31fe2d70
+This looks wrong. e96c0ff4b1e0 only touches drivers/pwm/Kconfig.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+The ; was introduced by commit 841e6f90bb78 ("pwm: NXP LPC18xx PWM/SCT
+driver")
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Best regards
+Uwe
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> CC: Krzysztof Kozlowski <krzk@kernel.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> ---
+>=20
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   76c057c84d286140c6c416c3b4ba832cd1d8984e
+> commit: e96c0ff4b1e013a4e9174344b0fcda0d566d3689 pwm: Enable compile test=
+ing for some of drivers
+>=20
+>  pwm-lpc18xx-sct.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> --- a/drivers/pwm/pwm-lpc18xx-sct.c
+> +++ b/drivers/pwm/pwm-lpc18xx-sct.c
+> @@ -289,7 +289,7 @@ static int lpc18xx_pwm_request(struct pw
+>  		dev_err(lpc18xx_pwm->dev,
+>  			"maximum number of simultaneous channels reached\n");
+>  		return -EBUSY;
+> -	};
+> +	}
+> =20
+>  	set_bit(event, &lpc18xx_pwm->event_map);
+>  	lpc18xx_data->duty_event =3D event;
+>=20
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Thanks,
-Mark
+--b6z4cigldfqahqsy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmATJSkACgkQwfwUeK3K
+7Al3Hwf+P8VVmOOf5rWtn9MKhYar3Xb7CAMRTa4T77hrdrcAjH7rCxafa4+JooXE
+kgH5pitjPAt41o2YkYmngoMuChVXRswnmRSTURKdSloHh6oqLl27hVhU1PIujPpD
+1nax9rMy/ltwYI0/VFIrDI6oFqMSA6fHmneTzws4QUlg/ANaUhRnnYyRCt89xO0W
+GL6Y0O80U06pjGh4s/PDIQOdiYLARuMBGScvB3xh+VuPWDEqU7BfpSHue7wbWSDs
+rumxGbO+ixaREEQkOR2el4KpQhasENxJ3rFO9jDvdd92Bhx+LFNZoi42RrQIli6m
+RTRr+RQzzis8PBVJKduRK0nUliYbng==
+=Y7CL
+-----END PGP SIGNATURE-----
+
+--b6z4cigldfqahqsy--
