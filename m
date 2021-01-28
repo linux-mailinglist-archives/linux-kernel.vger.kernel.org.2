@@ -2,128 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B183080BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927123080BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbhA1Vq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbhA1Vqv (ORCPT
+        id S231341AbhA1Vto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:49:44 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:31811 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhA1Vtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:46:51 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B90BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:46:11 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id q8so9619841lfm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:46:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aulEyvePMTpx/72fW0hN1PIWw4ZHfny70yTPEo93PYU=;
-        b=EltLr0XGGrfIy4QTWkG2B3ar+vWLaQrnqB5//XwlmUzMK7AbvbR3Fvsi/PLk6LXnAP
-         39t+8Aq5fgrYmP/03KD8K0WUDa6Jeo8fWJP1i+c2XHl1g/zAYPwmeQzSrhjfA4MH0ozt
-         WrbO52L591kyaFSGgd/9ste+nBDt1KFlJkMhc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aulEyvePMTpx/72fW0hN1PIWw4ZHfny70yTPEo93PYU=;
-        b=hhdFDLKhHRuFB+pXbbepKa94GHMGZee3tnenwuSNOJPuTD4i0id0R1G8mnR3J6Hw+7
-         TXkMHufHOdoq32mlkT0ue3JdooKmrDacoZW22GXGCO2x5MQN1msBbrGVI9AIN5UKkr8s
-         SS7wvwWHSABvoIFY2Z7MB0IDSNN7c40zxG/Mc1Ew53GfzyV88b1SEji1oyRiQfCIUlBY
-         n8/5q0nC18/bK+M/2DheJInlje2HHqa5QPNbujfOOtQUEpNpJ/6xY1KCoa3QvxxL22ih
-         Tt5jE1OK69Wf7edimenXX6D44sL2+vVSGngvLJML7fAtD1PTnOwC1E/4xtZQu4FNgj+8
-         mh6Q==
-X-Gm-Message-State: AOAM530pX4y8T4YN+Prl/i/fCwunzQ2ANeIScXibq8treKfAVONhEbYo
-        mQl7+ofTCWF3lQg5qmlcSmPGrFgv+fH7Rg==
-X-Google-Smtp-Source: ABdhPJzTjJdPUyzWX6AJs3eZhtIOIeNlK6SVnGL29yqWaaj5gXg0l/4QoZmzqVqygBm8LfGXvLPZBQ==
-X-Received: by 2002:a05:6512:33c9:: with SMTP id d9mr491082lfg.630.1611870369353;
-        Thu, 28 Jan 2021 13:46:09 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id b11sm1782158lfi.174.2021.01.28.13.46.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 13:46:08 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id a12so9666102lfb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:46:07 -0800 (PST)
-X-Received: by 2002:a05:6512:516:: with SMTP id o22mr147014lfb.487.1611870367595;
- Thu, 28 Jan 2021 13:46:07 -0800 (PST)
+        Thu, 28 Jan 2021 16:49:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611870556; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=QPIEjZKvgdeO2BUqX8enyP4sqNbzs/o8VkfIbx9QDCk=;
+ b=vc5RnckovSRpOR9m9hr3t/ltHzhPqspGufKRpvLdnrN0ekaiS4CqPdfgyCJAdz3bKB8Zhdvk
+ 5Y+nWrF9pf+aZus7kyfXFwnLZHrZDySq3WafkMY121Vk8dobNwnTHzMB6CAh6oaceteGJFif
+ 0Gu1lFMCkCpVsYHJPwUNJISkizo=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60133141d08556f455303700 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 21:48:48
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B76D6C43465; Thu, 28 Jan 2021 21:48:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82169C433CA;
+        Thu, 28 Jan 2021 21:48:46 +0000 (UTC)
 MIME-Version: 1.0
-References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
- <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com>
- <20210128205207.awdbh4bmx56pxxjl@treble> <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
- <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com> <20210128213409.qxnclchjyq6v23up@treble>
-In-Reply-To: <20210128213409.qxnclchjyq6v23up@treble>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 Jan 2021 13:45:51 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com>
-Message-ID: <CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com>
-Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external modules
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        David Laight <David.Laight@aculab.com>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 29 Jan 2021 03:18:46 +0530
+From:   mdalam@codeaurora.org
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     manivannan.sadhasivam@linaro.org, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <20210114165325.3d510355@xps13>
+References: <1610251305-20792-1-git-send-email-mdalam@codeaurora.org>
+ <20210114165325.3d510355@xps13>
+Message-ID: <769ea3fe77eab9b37d863251e97bcb29@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 1:34 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Jan 28, 2021 at 01:23:11PM -0800, Linus Torvalds wrote:
-> > THAT workaround is long gone, but I didn't check what other ones we
-> > might have now. But the gcc version checks we _do_ have are not
-> > necessarily about major versions at all (ie I trivially found checks
-> > for 4.9, 4.9.2, 5.1, 7.2 and 9.1).
->
-> Then maybe the check should be same major.minor?
+On 2021-01-14 21:23, Miquel Raynal wrote:
+> Hello,
+> 
+> Md Sadre Alam <mdalam@codeaurora.org> wrote on Sun, 10 Jan 2021
+> 09:31:45 +0530:
+> 
+>> From QPIC version 2.0 onwards new register got added to
+> 
+>                                 a
+> 
+>> read last codeword. This change will update the same.
+> 
+>        the?           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                       Please reword this sentence.
 
-Well, how many of them are actually about things that generate
-incompatible object code?
+   Fixed this in V4 patch.
+> 
+>> For first three code word READ_LOCATION_n register will be
+>> use.For last code word READ_LOCATION_LAST_CW_n register will be
+>> use.
+> 
+> "For the first three codewords, READ_LOCATION_n registers will be used.
+> The last codeword register will be accessed through
+> READ_LOCATION_LAST_CW_n."
+> 
+> Also, please specify what these registers store.
 
-The main one I can think of is the KASAN ABI version checks, but
-honestly, I think that's irrelevant. I really hope no distros enable
-KASAN in user kernels.
+   The location register is mainly use for reading controller
+   buffer via BAM mode. The bits of the register 
+"NAND_READ_LOCATION_LAST_CW_n, n=0..4"
+   as follow:
+   [9:0]-bits : (OFFSET) This bit defines the offset from the buffer base 
+address to be picked up for DMA.
+   [25:16]-bits: (SIZE) This bit of every register will define the size 
+of the chunk for DMA.
+   31-bit :      (LAST) If this bit is set, the controller takes the 
+particular register to specify the last chunk
+                       of data made available for DMA. This chunk is part 
+of the internal buffer of the controller.
 
-Another version check I looked at was the one that just checks whether
-the compiler natively supports __builtin_mul_overflow() or not - it
-doesn't generate incompatible object code, it just takes advantage of
-a compiler feature if one exists. You can mix and match those kinds of
-things well enough.
+> 
+>> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> 
+> Could someone please test this patch?
 
-So I'd really like to hear actual hard technical reasons with
-examples, for why you'd want to add this test in the first place.
+   I have tested this patch on IPQ5018 platform and its working fine.
+> 
+>> ---
+>> [V3]
+>>  * Added else condition for last code word in update_rw_regs().
+>>  drivers/mtd/nand/raw/qcom_nandc.c | 84 
+>> ++++++++++++++++++++++++++++++++-------
+>>  1 file changed, 70 insertions(+), 14 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
+>> b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index 667e4bf..50ff6e3 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -48,6 +48,10 @@
+>>  #define	NAND_READ_LOCATION_1		0xf24
+>>  #define	NAND_READ_LOCATION_2		0xf28
+>>  #define	NAND_READ_LOCATION_3		0xf2c
+>> +#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
+>> +#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
+>> +#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
+>> +#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
+>> 
+>>  /* dummy register offsets, used by write_reg_dma */
+>>  #define	NAND_DEV_CMD1_RESTORE		0xdead
+>> @@ -187,6 +191,12 @@ nandc_set_reg(nandc, 
+>> NAND_READ_LOCATION_##reg,			\
+>>  	      ((size) << READ_LOCATION_SIZE) |			\
+>>  	      ((is_last) << READ_LOCATION_LAST))
+>> 
+>> +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
+>> +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
+>> +	      ((offset) << READ_LOCATION_OFFSET) |		\
+>> +	      ((size) << READ_LOCATION_SIZE) |			\
+>> +	      ((is_last) << READ_LOCATION_LAST))
+>> +
+>>  /*
+>>   * Returns the actual register address for all NAND_DEV_ registers
+>>   * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and 
+>> NAND_DEV_CMD_VLD)
+>> @@ -316,6 +326,10 @@ struct nandc_regs {
+>>  	__le32 read_location1;
+>>  	__le32 read_location2;
+>>  	__le32 read_location3;
+>> +	__le32 read_location_last0;
+>> +	__le32 read_location_last1;
+>> +	__le32 read_location_last2;
+>> +	__le32 read_location_last3;
+>> 
+>>  	__le32 erased_cw_detect_cfg_clr;
+>>  	__le32 erased_cw_detect_cfg_set;
+>> @@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct 
+>> nandc_regs *regs, int offset)
+>>  		return &regs->read_location2;
+>>  	case NAND_READ_LOCATION_3:
+>>  		return &regs->read_location3;
+>> +	case NAND_READ_LOCATION_LAST_CW_0:
+>> +		return &regs->read_location_last0;
+>> +	case NAND_READ_LOCATION_LAST_CW_1:
+>> +		return &regs->read_location_last1;
+>> +	case NAND_READ_LOCATION_LAST_CW_2:
+>> +		return &regs->read_location_last2;
+>> +	case NAND_READ_LOCATION_LAST_CW_3:
+>> +		return &regs->read_location_last3;
+>>  	default:
+>>  		return NULL;
+>>  	}
+>> @@ -719,9 +741,14 @@ static void update_rw_regs(struct qcom_nand_host 
+>> *host, int num_cw, bool read)
+>>  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>> 
+>> -	if (read)
+>> -		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+>> -				   host->cw_data : host->cw_size, 1);
+>> +	if (read) {
+>> +		if (nandc->props->qpic_v2)
+>> +			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
+>> +					host->cw_data : host->cw_size, 1);
+>> +		else
+>> +			nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+>> +					host->cw_data : host->cw_size, 1);
+>> +	}
+>>  }
+>> 
+>>  /*
+>> @@ -1096,9 +1123,13 @@ static void config_nand_page_read(struct 
+>> qcom_nand_controller *nandc)
+>>  static void
+>>  config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+>>  {
+>> -	if (nandc->props->is_bam)
+>> +	if (nandc->props->is_bam) {
+>> +		if (nandc->props->qpic_v2)
+>> +			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
+>> +				      1, NAND_BAM_NEXT_SGL);
+>>  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+>>  			      NAND_BAM_NEXT_SGL);
+>> +	}
+>> 
+>>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>> @@ -1633,16 +1664,28 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
+>> struct nand_chip *chip,
+>>  	}
+>> 
+>>  	if (nandc->props->is_bam) {
+>> -		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> +			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
+>> +		else
+>> +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+> 
+> You repeat many times this logic, a helper to avoid this extra
+> indentation level with the if/else block is needed.
 
-No hand-waving "different compiler versions don't work together".
-Because that's simply not true.
-
-> And convert it to a strongly worded warning/disclaimer?
-
-A warning might be better for the simple reason that it wouldn't cause
-people to just fix it with "make oldconfig".
-
-Maybe you haven't looked at people who compile external modules, but
-they always have various "this is how to work around issues with
-version XYZ". That "make oldconfig" would simply just become the
-workaround for any build errors.
-
-And a warning might be more palatable even if different compiler
-version work fine together. Just a heads up on "it looks like you
-might be mixing compiler versions" is a valid note, and isn't
-necessarily wrong. Even when they work well together, maybe you want
-to have people at least _aware_ of it.
-
-              Linus
+   Fixed this V4 patch.
+> 
+>>  		read_loc += data_size1;
+>> 
+>> -		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> +			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
+>> +		else
+>> +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+>>  		read_loc += oob_size1;
+>> 
+>> -		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> +			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
+>> +		else
+>> +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+>>  		read_loc += data_size2;
+>> 
+>> -		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>> +			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 0);
+>> +		else
+>> +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>>  	}
+> 
+> Thanks,
+> Miquèl
