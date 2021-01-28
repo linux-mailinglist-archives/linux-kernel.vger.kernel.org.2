@@ -2,271 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E7830689C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BABE6306893
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhA1AXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:23:32 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5062 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231758AbhA1AVZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:21:25 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10S0FPll022520
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:20:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=3mEGsO0haNbHvy2sWt56CvAmLVAanMmXJKhfoJxZJLc=;
- b=HPHzeQF8oJMjP6lld27n9MSyvbrQOOkVcu3/iY5mStBqU0VVQBwM11vKMCVU/Yg1lj1I
- guv5KvusaLpbbaCLFtTRcJJ2YDvdOjLNI8XVEkk7KkYzOn166h4LyLcNZPJPktZozkJI
- 4b7Q6qOEu+F9jFfnhIDE4HtpFjqOeqqCrI0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36b4x2ce91-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:20:41 -0800
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 27 Jan 2021 16:20:40 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id B786362E0B6C; Wed, 27 Jan 2021 16:20:37 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mingo@redhat.com>, <peterz@infradead.org>, <daniel@iogearbox.net>,
-        <kpsingh@chromium.org>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v3 bpf-next 2/4] selftests/bpf: add non-BPF_LSM test for task local storage
-Date:   Wed, 27 Jan 2021 16:19:46 -0800
-Message-ID: <20210128001948.1637901-3-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210128001948.1637901-1-songliubraving@fb.com>
-References: <20210128001948.1637901-1-songliubraving@fb.com>
+        id S231504AbhA1AWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:22:12 -0500
+Received: from mx.socionext.com ([202.248.49.38]:13384 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231199AbhA1AUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:20:45 -0500
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 28 Jan 2021 09:19:47 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 95ED62059027;
+        Thu, 28 Jan 2021 09:19:47 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Thu, 28 Jan 2021 09:19:47 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by iyokan2.css.socionext.com (Postfix) with ESMTP id 67A20B1D40;
+        Thu, 28 Jan 2021 09:19:47 +0900 (JST)
+Received: from [10.212.22.231] (unknown [10.212.22.231])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id B11F412014A;
+        Thu, 28 Jan 2021 09:19:46 +0900 (JST)
+Subject: Re: [PATCH] PCI: dwc: Move forward the iATU detection process
+To:     "Z.q. Hou" <zhiqiang.hou@nxp.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "jaswinder.singh@linaro.org" <jaswinder.singh@linaro.org>,
+        "masami.hiramatsu@linaro.org" <masami.hiramatsu@linaro.org>
+References: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
+ <7d2d8a01-1339-2858-0d6a-5674f1cf2bca@socionext.com>
+ <HE1PR0402MB33713DFC517B00EE1D13371784BB0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <8a7121f8-2b5c-82dd-3636-df390ec2b70d@socionext.com>
+Date:   Thu, 28 Jan 2021 09:19:46 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_10:2021-01-27,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
- suspectscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101280000
-X-FB-Internal: deliver
+In-Reply-To: <HE1PR0402MB33713DFC517B00EE1D13371784BB0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Task local storage is enabled for tracing programs. Add two tests for
-task local storage without CONFIG_BPF_LSM.
+On 2021/01/27 15:27, Z.q. Hou wrote:
+> Hi,
+> 
+> Yes, they are fix the same issue.
+> Rob and other contributors sent so many patches to refine the drivers and make the code brief and more readable, so I don't think we should just focus on the fixes of this issue. I don't think it is a good choice that your patch move some of the software perspective initializations into hardware ones.
 
-The first test stores a value in sys_enter and read it back in sys_exit.
+Ok, I checked your patch fixed this issue on my board with or without
+my patch. I'll follow the maintainers for handling my patch.
 
-The second test checks whether the kernel allows allocating task local
-storage in exit_creds() (which it should not).
+Tested-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Thank you,
+
+> 
+> Thanks
+> Zhiqiang
+> 
+>> -----Original Message-----
+>> From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> Sent: 2021年1月26日 13:26
+>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
+>> Cc: linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org;
+>> lorenzo.pieralisi@arm.com; robh@kernel.org; bhelgaas@google.com;
+>> gustavo.pimentel@synopsys.com; jingoohan1@gmail.com;
+>> jaswinder.singh@linaro.org; masami.hiramatsu@linaro.org
+>> Subject: Re: [PATCH] PCI: dwc: Move forward the iATU detection process
+>>
+>> Hi,
+>>
+>> This looks to me the same fix as my posted patch[1].
+>> Is this more effective than mine?
+>>
+>> Thank you,
+>>
+>> [1]
+>> https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww
+>> .spinics.net%2Flists%2Flinux-pci%2Fmsg103889.html&amp;data=04%7C01%
+>> 7CZhiqiang.Hou%40nxp.com%7Cd9fa58aac4774c9dd61b08d8c1bad128%7C
+>> 686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637472355412202563
+>> %7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiL
+>> CJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Mt3B4jQ1Q1fu%2
+>> FAz9s4Y4eieHv7nYorvvT2pKlqFLE9k%3D&amp;reserved=0
+>>
+>> On 2021/01/25 13:48, Zhiqiang Hou wrote:
+>>> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+>>>
+>>> In the dw_pcie_ep_init(), it depends on the detected iATU region
+>>> numbers to allocate the in/outbound window management bit map.
+>>> It fails after the commit 281f1f99cf3a ("PCI: dwc: Detect number of
+>>> iATU windows").
+>>>
+>>> So this patch move the iATU region detection into a new function, move
+>>> forward the detection to the very beginning of functions
+>>> dw_pcie_host_init() and dw_pcie_ep_init(). And also remove it from the
+>>> dw_pcie_setup(), since it's more like a software perspective
+>>> initialization step than hardware setup.
+>>>
+>>> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
+>>> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+>>> ---
+>>>    drivers/pci/controller/dwc/pcie-designware-ep.c   |  2 ++
+>>>    drivers/pci/controller/dwc/pcie-designware-host.c |  2 ++
+>>>    drivers/pci/controller/dwc/pcie-designware.c      | 11 ++++++++---
+>>>    drivers/pci/controller/dwc/pcie-designware.h      |  1 +
+>>>    4 files changed, 13 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c
+>>> b/drivers/pci/controller/dwc/pcie-designware-ep.c
+>>> index bcd1cd9ba8c8..fcf935bf6f5e 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+>>> @@ -707,6 +707,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>>>    		}
+>>>    	}
+>>>
+>>> +	dw_pcie_iatu_detect(pci);
+>>> +
+>>>    	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>> "addr_space");
+>>>    	if (!res)
+>>>    		return -EINVAL;
+>>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> index 8a84c005f32b..8eae817c138d 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> @@ -316,6 +316,8 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>>>    			return PTR_ERR(pci->dbi_base);
+>>>    	}
+>>>
+>>> +	dw_pcie_iatu_detect(pci);
+>>> +
+>>>    	bridge = devm_pci_alloc_host_bridge(dev, 0);
+>>>    	if (!bridge)
+>>>    		return -ENOMEM;
+>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c
+>>> b/drivers/pci/controller/dwc/pcie-designware.c
+>>> index 5b72a5448d2e..5b9bf02d918b 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+>>> @@ -654,11 +654,9 @@ static void dw_pcie_iatu_detect_regions(struct
+>> dw_pcie *pci)
+>>>    	pci->num_ob_windows = ob;
+>>>    }
+>>>
+>>> -void dw_pcie_setup(struct dw_pcie *pci)
+>>> +void dw_pcie_iatu_detect(struct dw_pcie *pci)
+>>>    {
+>>> -	u32 val;
+>>>    	struct device *dev = pci->dev;
+>>> -	struct device_node *np = dev->of_node;
+>>>    	struct platform_device *pdev = to_platform_device(dev);
+>>>
+>>>    	if (pci->version >= 0x480A || (!pci->version && @@ -687,6 +685,13
+>>> @@ void dw_pcie_setup(struct dw_pcie *pci)
+>>>
+>>>    	dev_info(pci->dev, "Detected iATU regions: %u outbound, %u
+>> inbound",
+>>>    		 pci->num_ob_windows, pci->num_ib_windows);
+>>> +}
+>>> +
+>>> +void dw_pcie_setup(struct dw_pcie *pci) {
+>>> +	u32 val;
+>>> +	struct device *dev = pci->dev;
+>>> +	struct device_node *np = dev->of_node;
+>>>
+>>>    	if (pci->link_gen > 0)
+>>>    		dw_pcie_link_set_max_speed(pci, pci->link_gen); diff --git
+>>> a/drivers/pci/controller/dwc/pcie-designware.h
+>>> b/drivers/pci/controller/dwc/pcie-designware.h
+>>> index 5d979953800d..867369d4c4f7 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware.h
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+>>> @@ -305,6 +305,7 @@ int dw_pcie_prog_inbound_atu(struct dw_pcie
+>> *pci, u8 func_no, int index,
+>>>    void dw_pcie_disable_atu(struct dw_pcie *pci, int index,
+>>>    			 enum dw_pcie_region_type type);
+>>>    void dw_pcie_setup(struct dw_pcie *pci);
+>>> +void dw_pcie_iatu_detect(struct dw_pcie *pci);
+>>>
+>>>    static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32
+>> val)
+>>>    {
+>>>
+>>
+>> ---
+>> Best Regards
+>> Kunihiko Hayashi
+
 ---
- .../bpf/prog_tests/task_local_storage.c       | 69 +++++++++++++++++++
- .../selftests/bpf/progs/task_local_storage.c  | 64 +++++++++++++++++
- .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++++
- 3 files changed, 165 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
-rage.c
- create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
-exit_creds.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c =
-b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-new file mode 100644
-index 0000000000000..dbb7525cdd567
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#define _GNU_SOURCE         /* See feature_test_macros(7) */
-+#include <unistd.h>
-+#include <sys/syscall.h>   /* For SYS_xxx definitions */
-+#include <sys/types.h>
-+#include <test_progs.h>
-+#include "task_local_storage.skel.h"
-+#include "task_local_storage_exit_creds.skel.h"
-+
-+static void test_sys_enter_exit(void)
-+{
-+	struct task_local_storage *skel;
-+	int err;
-+
-+	skel =3D task_local_storage__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	skel->bss->target_pid =3D syscall(SYS_gettid);
-+
-+	err =3D task_local_storage__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	syscall(SYS_gettid);
-+	syscall(SYS_gettid);
-+
-+	/* 3x syscalls: 1x attach and 2x gettid */
-+	ASSERT_EQ(skel->bss->enter_cnt, 3, "enter_cnt");
-+	ASSERT_EQ(skel->bss->exit_cnt, 3, "exit_cnt");
-+	ASSERT_EQ(skel->bss->mismatch_cnt, 0, "mismatch_cnt");
-+out:
-+	task_local_storage__destroy(skel);
-+}
-+
-+static void test_exit_creds(void)
-+{
-+	struct task_local_storage_exit_creds *skel;
-+	int err;
-+
-+	skel =3D task_local_storage_exit_creds__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err =3D task_local_storage_exit_creds__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	/* trigger at least one exit_creds() */
-+	if (CHECK_FAIL(system("ls > /dev/null")))
-+		goto out;
-+
-+	/* sync rcu to make sure exit_creds() is called for "ls" */
-+	kern_sync_rcu();
-+	ASSERT_EQ(skel->bss->valid_ptr_count, 0, "valid_ptr_count");
-+	ASSERT_NEQ(skel->bss->null_ptr_count, 0, "null_ptr_count");
-+out:
-+	task_local_storage_exit_creds__destroy(skel);
-+}
-+
-+void test_task_local_storage(void)
-+{
-+	if (test__start_subtest("sys_enter_exit"))
-+		test_sys_enter_exit();
-+	if (test__start_subtest("exit_creds"))
-+		test_exit_creds();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/task_local_storage.c b/too=
-ls/testing/selftests/bpf/progs/task_local_storage.c
-new file mode 100644
-index 0000000000000..80a0a20db88d2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/task_local_storage.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} enter_id SEC(".maps");
-+
-+#define MAGIC_VALUE 0xabcd1234
-+
-+pid_t target_pid =3D 0;
-+int mismatch_cnt =3D 0;
-+int enter_cnt =3D 0;
-+int exit_cnt =3D 0;
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	ptr =3D bpf_task_storage_get(&enter_id, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+
-+	__sync_fetch_and_add(&enter_cnt, 1);
-+	*ptr =3D MAGIC_VALUE + enter_cnt;
-+
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_exit")
-+int BPF_PROG(on_exit, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	ptr =3D bpf_task_storage_get(&enter_id, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+
-+	__sync_fetch_and_add(&exit_cnt, 1);
-+	if (*ptr !=3D MAGIC_VALUE + exit_cnt)
-+		__sync_fetch_and_add(&mismatch_cnt, 1);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/task_local_storage_exit_cr=
-eds.c b/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
-new file mode 100644
-index 0000000000000..81758c0aef993
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, __u64);
-+} task_storage SEC(".maps");
-+
-+int valid_ptr_count =3D 0;
-+int null_ptr_count =3D 0;
-+
-+SEC("fentry/exit_creds")
-+int BPF_PROG(trace_exit_creds, struct task_struct *task)
-+{
-+	__u64 *ptr;
-+
-+	ptr =3D bpf_task_storage_get(&task_storage, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		__sync_fetch_and_add(&valid_ptr_count, 1);
-+	else
-+		__sync_fetch_and_add(&null_ptr_count, 1);
-+	return 0;
-+}
---=20
-2.24.1
-
+Best Regards
+Kunihiko Hayashi
