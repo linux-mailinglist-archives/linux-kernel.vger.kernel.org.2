@@ -2,154 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD86830784A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9D2307859
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhA1OjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhA1Oir (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:38:47 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7343BC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:38:06 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id q20so4108454pfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:38:06 -0800 (PST)
+        id S231640AbhA1Okr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:40:47 -0500
+Received: from mail-bn8nam11on2066.outbound.protection.outlook.com ([40.107.236.66]:51645
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231309AbhA1Oko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:40:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eDPe9mZTCk8LMcNezVs2qwnVh4WWjtEVC5XYdUiDv0LRdkXDrQqBTulrtyL+dDk9KyRcXA+NcGNA8bac5BBwHIEm7KPmABx5ot2jRDy+sws3LB+WcDS54AeN7/g1Ixg1DrjC88QnPP43nt5MehF03zRjJ182jyvBGxV7yeGwE/e0XbhDKgz2/NDhcA4/h5MPKqMy6vefAEQKw/FkBckvfcWyTFtGJRsNmPOHjRTfevFn3wwaz3KsXAXIkzKZRnXbqq5S9oXb7Q/Ox+/W8NipKFyYsGRK2a+m4qvbfqExMOnKoHopFHCf9gwOgzkqrkahB8N5EpBWPaVo3BmYC3Cqkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FVOvS5jmWQ0hZA01M/V4u4ErUTYfIJ5iyz0pVcNIg4c=;
+ b=VxAkd6SXcTiCWYUUsZeAF6sF+IrshTQb/Me5XyNO18cgVxSz/Z51bePzmYZiwM6mLHpdxntM5Ogw+SfpyUNcpkhka0oYK1uQCcwQIhbSWhpcAx+vO62XkCrkjCgFtwLX++tJThqylnUqXkfQP4TzI/P5vdH79as5ywSVDRnaS4k7+GyCpFFLGiKFdPiyGMSNBgCTBCLhN6V5rjprUOrbMF2DcyopBdDNdg0q0F1TXq7eD5YUq5ZCJFGoYuj9q30/BY2gVNPoXl9Aw8FxlU9Y3bgqBTWyjawSm40+o2KI+Qm5j4RtXB4PiS69YOwESlf+dMJ3RGyJi6NCpIl5q0XLiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
+ dkim=pass header.d=labundy.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+K9aRikhzkU/M83eoE775gCY9CV/6b9E2oecU5axx5g=;
-        b=UMAxMG1FLhDbDsBf51QXNFGmn0mwp++nMNGqrEfynUCJ3cWwcCSGds0fZsfDoQcBak
-         fsOVcl9etsXuKbnwhMZaLdlg4Yk13sr4vdMkubJLJ4PNmbcG0h1JAhdI8+5M9cz7Xi8D
-         YLOnI+VT7aOwynM7CQhRpsjkkP3o2bSU0Go28TanqY25/coaBtUgo5t4X2jpI1g9Ce6w
-         vivCVWOe1k+QAwpqX5tkcfXer2T9txbbdWncaalBy+TrL+oaiWfsWhxbuw53sZyVNibV
-         w3YEc9V2PEX+gLzWSsQedWAzZDBW87S0K5flsI7JSdkqpG/9TMmwqoIlURSlPYxOmtYT
-         yuKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+K9aRikhzkU/M83eoE775gCY9CV/6b9E2oecU5axx5g=;
-        b=q2aP/txLancJyCtP6nKTvV8EZSCm0BPvOx/SxGh9LJynfMVJxYG9pYqdrdY4mhDDc0
-         sDn5YL9v4ektWKBl3kqc6ufP1ZU1lhDoDuPqVvmVJ/GVwzCCIsZ09gMY7K9BuZaaBGXZ
-         yOrFTm583JdX5Gxs7J5BYqfLo2DhV7hqAOnVDQanA5BFZ6vb1c6095cW3vIVj6D0MTLg
-         7sGYdLoLMOu9vUO+mUxedxlXzUwb+jqi2kREHvMGir8sRwfxtG0w4+iOLjt/lcJkxYqc
-         JgXyF91n5Yy2pOTna9rW3A751MPpXCQNxRZVvxRTaLbj4/uDOWVyqGjbetA2wG+zyUZi
-         ypdg==
-X-Gm-Message-State: AOAM533e+vZT++JWcBSZxHpfWNoEqslHQ3LiOZL6Glpro6DZ5AAQDg4h
-        oKb5hQ63pVXalgyDhatqJSYZjA==
-X-Google-Smtp-Source: ABdhPJxoXLGAyp++HZF4CXIJUzkqE1H0ePUwPy8jBDvALyGIXU+gMp1KP4aQg31Mh8+DlsvT8IOp8w==
-X-Received: by 2002:a63:e109:: with SMTP id z9mr16757589pgh.5.1611844685941;
-        Thu, 28 Jan 2021 06:38:05 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id b62sm6249262pfg.58.2021.01.28.06.38.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 06:38:05 -0800 (PST)
-Subject: Re: [RFC PATCH 0/4] Asynchronous passthrough ioctl
-To:     Kanchan Joshi <joshiiitr@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Selvakumar S <selvakuma.s1@samsung.com>
-References: <CGME20210127150134epcas5p251fc1de3ff3581dd4c68b3fbe0b9dd91@epcas5p2.samsung.com>
- <20210127150029.13766-1-joshi.k@samsung.com>
- <489691ce-3b1e-30ce-9f72-d32389e33901@gmail.com>
- <a287bd9e-3474-83a4-e5c2-98df17214dc7@gmail.com>
- <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2d37d0ca-5853-4bb6-1582-551b9044040c@kernel.dk>
-Date:   Thu, 28 Jan 2021 07:38:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FVOvS5jmWQ0hZA01M/V4u4ErUTYfIJ5iyz0pVcNIg4c=;
+ b=Plk1m6w9zqSvacMSYiaYVW4fKzY857FmD9DnONY9PRzbOX8CFTcwz4Qgfh/DZsWcuAGGLPlnyG8set0MPVPaTWEaV6Lh5bY6mFAe2dK6ARz/df3YExoouGgoIi0qVQsru3l+0fw0+SMaVL5O4xGh6trCAXNkgHgUqI5VHTstwKw=
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=labundy.com;
+Received: from SN6PR08MB5517.namprd08.prod.outlook.com (2603:10b6:805:fb::32)
+ by SN6PR08MB4094.namprd08.prod.outlook.com (2603:10b6:805:1c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Thu, 28 Jan
+ 2021 14:39:51 +0000
+Received: from SN6PR08MB5517.namprd08.prod.outlook.com
+ ([fe80::972:c257:aa68:9be0]) by SN6PR08MB5517.namprd08.prod.outlook.com
+ ([fe80::972:c257:aa68:9be0%4]) with mapi id 15.20.3763.019; Thu, 28 Jan 2021
+ 14:39:50 +0000
+Date:   Thu, 28 Jan 2021 08:39:46 -0600
+From:   Jeff LaBundy <jeff@labundy.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] Input: iqs5xx: Ensure error_bl is initialized on
+ error exit path
+Message-ID: <20210128143946.GA14625@labundy.com>
+References: <20210128121903.636652-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128121903.636652-1-colin.king@canonical.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [136.49.173.128]
+X-ClientProxiedBy: SN1PR12CA0107.namprd12.prod.outlook.com
+ (2603:10b6:802:21::42) To SN6PR08MB5517.namprd08.prod.outlook.com
+ (2603:10b6:805:fb::32)
 MIME-Version: 1.0
-In-Reply-To: <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from labundy.com (136.49.173.128) by SN1PR12CA0107.namprd12.prod.outlook.com (2603:10b6:802:21::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 14:39:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d1249f60-1278-425b-c1fa-08d8c39a9180
+X-MS-TrafficTypeDiagnostic: SN6PR08MB4094:
+X-Microsoft-Antispam-PRVS: <SN6PR08MB40948EF42453B947E5EB9461D3BA9@SN6PR08MB4094.namprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uvs/ZxzgiMsS2h/yKQsZg99Sf2Om7PmfMkppJevXX8qV/0PfNwsIcwAWMWc74OhnpVoKGYZtTSPnaldBqDalhjXegHCoR3ruLIOz5ifMVF+Ep233bJNYMG5HVtJITqs4ZReOhRcpBYpZYuvlNT4kdBRaYpCiOjK8DrQpS6DBBRuqcrF9fl5jTWCwttjLORLfefYdcbfZ1XuUBpSSzi/UHlWgY6flIwdAvYWK1ZF+VGOH0ORnzJuCWTwzhZbXz/aRx17vECTbGwibUKtRs8j6mfpRD5wju19wwSaNyNGTA6aGB5HDD1t3aqkHwGYaO6yXBgP4jsAyGERy00GNcRvfeZWfc8TJw4ZEP8wWZTeW22lecKwtjpHbs/j6JNa80shR06a8bKwNA8IgKsVAlx+j2Gqk8Xygy9k45l4nfIP2oxUhNVllaMASAqJpdaJBteQ30wOlwnwk/gcch48SZCe/OLzBQRfnODFrScvxyviC67kIxRFkbTDobfSf2/Cc5G2x74F7HGazZG8kHnah7F1Xcu930E4ftmqIRW+DOHs4hJeLgBd4A8/7hkLtUfujjM2HKvgjO9ljLdT7nUrbSus5NgQkA3ZyMGSnxC9smGDK/34dgYLZIzLs2vjlV1wFBvRG1iH990taZlEGpFZS+jjIjA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB5517.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39830400003)(396003)(136003)(346002)(376002)(66556008)(83380400001)(66476007)(5660300002)(33656002)(966005)(8886007)(1076003)(4326008)(478600001)(66946007)(6666004)(55016002)(8936002)(26005)(16526019)(186003)(956004)(2616005)(86362001)(6916009)(316002)(8676002)(2906002)(52116002)(36756003)(7696005)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Zyeh25sXUGab8UlGyTyJx9LZu5tKRljIgSmAAyqsmxASC39zwUpdcXe2HVod?=
+ =?us-ascii?Q?8LOAy9fpjG6ZrpQT7XzUcIm9snoEzRpvI2S58IFqNc/r7zJVy+sqCpyS7iyK?=
+ =?us-ascii?Q?WyLxgbGBYcUDJyXZ7y6SYx9kQvilrhhmcTG0cvME9nQcOvoKYb5a081btxyC?=
+ =?us-ascii?Q?YwttUrXlPK99S9pPZ3H+2IyfciHMzJ1OeBgEyLFbuMkhnL7xmWAflEqic6FS?=
+ =?us-ascii?Q?SKBbHT3ref5yDdCUTI0SmINz5tHzBkiGqxpHLIx09wdJwE9V7jJrBH+tln2G?=
+ =?us-ascii?Q?OpQqzvzZFEhUMA3W81g9yhb5XsqkzZlF9Cen8D12QCpRbNukynlGWRTLryax?=
+ =?us-ascii?Q?PO9y1/UJdMb6RH55YGVCRq3sPx/VWAerJ5ImD9iTVgoSYCP2WW+8Ns4rf8Xx?=
+ =?us-ascii?Q?YNq7bwhm6DGI61N4XwBpbsLt4Jnu48Mx9vGDB0FYkdficRnDc3OWxJpBcdh3?=
+ =?us-ascii?Q?seLgZqiTXt2qREyFn+Q5QVe0Mgem6PtnxOcXk3P1ZJrILQotnt9Lf9El59TR?=
+ =?us-ascii?Q?nTK/R8CTjl9xutJbWGVg5xSfT8Zs+hIHmJUZZpgFz4Wch34GfK8EUsU2q141?=
+ =?us-ascii?Q?KjeVvSN/bwBmQkSmwrfyZaUw42yqwAa/tcVxs2x+79JE00w0SQ1FQNDkWtUw?=
+ =?us-ascii?Q?e7Iy1uHCRlum9ClFUolERsnluQizGO7oFaibC3sSJj4oOSCWu57KXrq+vnmg?=
+ =?us-ascii?Q?K/JHICUFOMWG/vNVQGSr9LmcwaySHHnM9u4bXTeOGAcoMo8v5x+N9M/rJyYC?=
+ =?us-ascii?Q?+SKFoqa38HjPFLuavniXRgIZUthg44u9UNqLw+5XhXydqjBQ6zMcjTnomBVB?=
+ =?us-ascii?Q?Q4IMluScOsv6oVHlRyB4EGFmEeXV9YbaZrvxW+JO8ZnZfBdP898XYz2si9CR?=
+ =?us-ascii?Q?TRp2b6OBZyzCko8zyQufc53kpFhv6tn/WAwB0qJtw+yFz395J0xT26p+N9iu?=
+ =?us-ascii?Q?XiSYduzrzWHYyEOW8wSnC3bKViBvV0i+G1McBYeDwaREo0sNsqMe0s7f83OA?=
+ =?us-ascii?Q?DWJLMv/7nmPShYC7gsccA39Euzo/In6eyCqiX71shhYBZ8KYGio46Cz3F4nP?=
+ =?us-ascii?Q?SK/Aws03?=
+X-OriginatorOrg: labundy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1249f60-1278-425b-c1fa-08d8c39a9180
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR08MB5517.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 14:39:50.8048
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bGkvrEb4V0WX3QXW4J7M1IfH7FklFDnA9eE7Wz4YGgIYgJG9Qy8StxPcdyjt1YqXDImVELyueI6lqasTAiPQRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB4094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 5:04 AM, Kanchan Joshi wrote:
-> On Wed, Jan 27, 2021 at 9:32 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 27/01/2021 15:42, Pavel Begunkov wrote:
->>> On 27/01/2021 15:00, Kanchan Joshi wrote:
->>>> This RFC patchset adds asynchronous ioctl capability for NVMe devices.
->>>> Purpose of RFC is to get the feedback and optimize the path.
->>>>
->>>> At the uppermost io-uring layer, a new opcode IORING_OP_IOCTL_PT is
->>>> presented to user-space applications. Like regular-ioctl, it takes
->>>> ioctl opcode and an optional argument (ioctl-specific input/output
->>>> parameter). Unlike regular-ioctl, it is made to skip the block-layer
->>>> and reach directly to the underlying driver (nvme in the case of this
->>>> patchset). This path between io-uring and nvme is via a newly
->>>> introduced block-device operation "async_ioctl". This operation
->>>> expects io-uring to supply a callback function which can be used to
->>>> report completion at later stage.
->>>>
->>>> For a regular ioctl, NVMe driver submits the command to the device and
->>>> the submitter (task) is made to wait until completion arrives. For
->>>> async-ioctl, completion is decoupled from submission. Submitter goes
->>>> back to its business without waiting for nvme-completion. When
->>>> nvme-completion arrives, it informs io-uring via the registered
->>>> completion-handler. But some ioctls may require updating certain
->>>> ioctl-specific fields which can be accessed only in context of the
->>>> submitter task. For that reason, NVMe driver uses task-work infra for
->>>> that ioctl-specific update. Since task-work is not exported, it cannot
->>>> be referenced when nvme is compiled as a module. Therefore, one of the
->>>> patch exports task-work API.
->>>>
->>>> Here goes example of usage (pseudo-code).
->>>> Actual nvme-cli source, modified to issue all ioctls via this opcode
->>>> is present at-
->>>> https://github.com/joshkan/nvme-cli/commit/a008a733f24ab5593e7874cfbc69ee04e88068c5
->>>
->>> see https://git.kernel.dk/cgit/linux-block/log/?h=io_uring-fops
->>>
->>> Looks like good time to bring that branch/discussion back
->>
->> a bit more context:
->> https://github.com/axboe/liburing/issues/270
+Hi Colin,
+
+On Thu, Jan 28, 2021 at 12:19:03PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Thanks, it looked good. It seems key differences (compared to
-> uring-patch that I posted) are -
-> 1. using file-operation instead of block-dev operation.
-
-Right, it's meant to span wider than just block devices.
-
-> 2. repurpose the sqe memory for ioctl-cmd. If an application does
-> ioctl with <=40 bytes of cmd, it does not have to allocate ioctl-cmd.
-> That's nifty. We still need to support passing larger-cmd (e.g.
-> nvme-passthru ioctl takes 72 bytes) but that shouldn't get too
-> difficult I suppose.
-
-It's actually 48 bytes in the as-posted version, and I've bumped it to
-56 bytes in the latest branch. So not quite enough for everything,
-nothing ever will be, but should work for a lot of cases without
-requiring per-command allocations just for the actual command.
-
-> And for some ioctls, driver may still need to use task-work to update
-> the user-space pointers (embedded in uring/ioctl cmd) during
-> completion.
+> Currently if the call to qs5xx_fw_file_parse fails the error return
+> exit path will read the uninitialized variable error_bl. Fix this
+> by ensuring error_bl is initialized to zero.
 > 
-> @Jens - will it be fine if I start looking at plumbing nvme-part of
-> this series on top of your work?
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 2539da6677b6 ("Input: iqs5xx - preserve bootloader errors")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Sure, go ahead. Just beware that things are still changing, so you might
-have to adapt it a few times. It's still early days, but I do think
-that's the way forward in providing controlled access to what is
-basically async ioctls.
+This was fixed in [1]; it just needs pushed.
 
--- 
-Jens Axboe
+[1] https://patchwork.kernel.org/patch/12043701
 
+> ---
+>  drivers/input/touchscreen/iqs5xx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/touchscreen/iqs5xx.c b/drivers/input/touchscreen/iqs5xx.c
+> index 05e0c6ff217b..54f30038dca4 100644
+> --- a/drivers/input/touchscreen/iqs5xx.c
+> +++ b/drivers/input/touchscreen/iqs5xx.c
+> @@ -852,7 +852,7 @@ static int iqs5xx_fw_file_parse(struct i2c_client *client,
+>  static int iqs5xx_fw_file_write(struct i2c_client *client, const char *fw_file)
+>  {
+>  	struct iqs5xx_private *iqs5xx = i2c_get_clientdata(client);
+> -	int error, error_bl;
+> +	int error, error_bl = 0;
+>  	u8 *pmap;
+>  
+>  	if (iqs5xx->bl_status == IQS5XX_BL_STATUS_NONE)
+> -- 
+> 2.29.2
+> 
+
+Kind regards,
+Jeff LaBundy
