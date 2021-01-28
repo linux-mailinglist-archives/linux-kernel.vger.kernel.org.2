@@ -2,167 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C2B307382
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2762E307384
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhA1KQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:16:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42886 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231811AbhA1KQm (ORCPT
+        id S232163AbhA1KRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:17:03 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:33805 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232031AbhA1KQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:16:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611828914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=264k/ES24/5FzBGHM2fYr7IzBwxBwCNGsVT8SMTVVPM=;
-        b=ApM+nrpf7PV7A+Grhv8G2ZVY2I9Gtx6KXf19qlq4Tsr7/J+WaCMQb7cWXIl6/lxF43HAXC
-        l87TI4BIaQchiYCZ6jZmQ37edDDv6ftjX4vLNCq4Ryar+/x4Dcg9LExCgHSY9GNdni8LJk
-        hi4L1KouO7/nCn1AhUJjdUVcjatkRiQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-bAzsECiPPdOlizDuaeO9wA-1; Thu, 28 Jan 2021 05:15:12 -0500
-X-MC-Unique: bAzsECiPPdOlizDuaeO9wA-1
-Received: by mail-ej1-f70.google.com with SMTP id ar27so835936ejc.22
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:15:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=264k/ES24/5FzBGHM2fYr7IzBwxBwCNGsVT8SMTVVPM=;
-        b=PKVCKozquDETifwQvhht7V64CJUVYHvN8U1HCjtljSuxJqPWkZdBBkQaA1snLs5Bc0
-         HHk6fBE6YcNjvMz/iP9dPI0YtzRNfcK4B8jucZXGCvj/3PDiYkcGQ5+APxk9G+W9C2EW
-         eQhopAkECvBeWIiIzABXs3+6683UUCozZ49quO8HOyPY/8HzJ3B+SNp6GK2AftknvLh8
-         cKXrblHzdP4KQ/l3BaXSTAAW46PgB7yrAY2OxNAvswItfKOcKr0azmHTNYxWGjPbWyC+
-         Q6Lam3jXlr1cePrfQ/pYYDxJ74qwTKAT7XJxXe0IoxAxoh0k3Knqob5bwcr0rsuJhXVY
-         WwrA==
-X-Gm-Message-State: AOAM532qFfhg1I02NUv6/GLThhSkrHDuFzizzsSEYzKVyU9tGH1KVjbm
-        6xweNX8DAgR9fXlwJP4MlnKwLHfOOEey6ml4/wGT8iaIB4r7mBznSvH/5vSBuCK9B5xP117twx1
-        u5j8WIsi08WUIjrespILTygpYSqpm1LcxKDaypCgpXiB7E0Zszr/SvrJspoelSjsV368r9JkR1E
-        22
-X-Received: by 2002:a05:6402:556:: with SMTP id i22mr12971205edx.56.1611828911400;
-        Thu, 28 Jan 2021 02:15:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy4SAH7IU0R5i26466TR/gOXJqVjt6mKq2oIXhXos1oK+4OFr5vXHw1ve0htUjPFzXJN36T8Q==
-X-Received: by 2002:a05:6402:556:: with SMTP id i22mr12971163edx.56.1611828911092;
-        Thu, 28 Jan 2021 02:15:11 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f22sm2080999eje.34.2021.01.28.02.15.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 02:15:10 -0800 (PST)
-Subject: Re: [PATCH V2] Fix unsynchronized access to sev members through
- svm_register_enc_region
-To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210127161524.2832400-1-pgonda@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bfb1205a-5442-536e-931c-206f4904e188@redhat.com>
-Date:   Thu, 28 Jan 2021 11:15:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 28 Jan 2021 05:16:55 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A30CE58078B;
+        Thu, 28 Jan 2021 05:15:48 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 28 Jan 2021 05:15:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=sBHceBX3nouDZkvavqurqgQf2F/
+        vRYTPOBuP3L3yZFE=; b=GqIYTyhsobAcx5Yipt8FdKD8Qv5QEl6HyioVIh0HddM
+        LF8Yp7/RUr5p/jvFANAxobMoLA6Ka+YuqvKn6V8oMJeO/7DKiSeEUikOmOC6hyH2
+        Hi9O+BVasiZj0uxCdLWJWa7iDGCcVznm42fmswG7oK4WHjJ5avsdu/K79zFrzrg3
+        h7hPa6+stwC4wcNvntmuowDDgwjuCXdb3ikDABoRRYYBLiiOu+U+ySy4LFMrB3Pc
+        7V37cpAImtT17mfVX2hJDU9GibhhUAnlSFiui4Zf3H+2ZNOz6Vroccl2vvuAdttg
+        AT/Fp8r71xwkbb0kkU+RJftldrQjtuK+xo0RDzRn82Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sBHceB
+        X3nouDZkvavqurqgQf2F/vRYTPOBuP3L3yZFE=; b=aFoV/URNlkUQKRY4W2xAki
+        LIqmWZ6Bcme1kUtMxe5SRq9wgZN8IyVX6AEYBfVW76w/NkS4bn9hkugCEFKcAoN5
+        1omUDSSsurKB7rBxY6+Pnut4LJYhdEbHzuCXXUJ0kg7lZMnJse5rgqRbdhFFa+o1
+        o8sBaaouN/YUS5RvMgpfXnItowt9M2k7e68H/AngS5Za/ECkPeRBxRaNTKJ7gggx
+        JFaqWXHEc54qQHJGSH/9FcBtNECqLdU8QYofKCqG8YTFgMm6xUYpyL3RZrHOEDXi
+        8H6QB3Ejfi2juc81BfzkhyvzfPjsTwjJ+Hw1f4DkwKI4knWC4Ce64IiThq/RMurQ
+        ==
+X-ME-Sender: <xms:0o4SYGlwrGoUMK8fdn8kan39Z6RqAkPegg2Ljr666_Lb3t5aHM0W_g>
+    <xme:0o4SYNyzq29q5dCRukUk9C5JQT0zdUfTSrRR67yL909bvHnHOifq6bLIY08UQuX31
+    GdIgG6UsL00imzCmpE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:0o4SYBgyqAf70frOBOpUXmd2XEOWzQvnJePA8Bh31fVhyVtvWQnhYQ>
+    <xmx:0o4SYCXRaR-7NgzJpG6Og2aot_EhJsfEqEjD5Qvh0q6n1Wcy_b3i7w>
+    <xmx:0o4SYD1UEGUavME5UEERoZN7OlOOQJZt9iDjuA7yhCptPR2dK3KxdQ>
+    <xmx:1I4SYL9JBxR24Ju1k76BDEhzS4FcD0edyhV58AN0tQ-QRSs3wSepcA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 34BAB24005D;
+        Thu, 28 Jan 2021 05:15:46 -0500 (EST)
+Date:   Thu, 28 Jan 2021 11:15:44 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v5 06/20] mfd: axp20x: Allow AXP chips without interrupt
+ lines
+Message-ID: <20210128101544.yyvrguk2jlgr4uwo@gilmour>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-7-andre.przywara@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127161524.2832400-1-pgonda@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6eblr7x2iq5pdape"
+Content-Disposition: inline
+In-Reply-To: <20210127172500.13356-7-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/01/21 17:15, Peter Gonda wrote:
-> Grab kvm->lock before pinning memory when registering an encrypted
-> region; sev_pin_memory() relies on kvm->lock being held to ensure
-> correctness when checking and updating the number of pinned pages.
-> 
-> Add a lockdep assertion to help prevent future regressions.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Fixes: 1e80fdc09d12 ("KVM: SVM: Pin guest memory when SEV is active")
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> 
-> V2
->   - Fix up patch description
->   - Correct file paths svm.c -> sev.c
->   - Add unlock of kvm->lock on sev_pin_memory error
-> 
-> V1
->   - https://lore.kernel.org/kvm/20210126185431.1824530-1-pgonda@google.com/
-> 
-> ---
->   arch/x86/kvm/svm/sev.c | 17 ++++++++++-------
->   1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index c8ffdbc81709..b80e9bf0a31b 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -342,6 +342,8 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
->   	unsigned long first, last;
->   	int ret;
->   
-> +	lockdep_assert_held(&kvm->lock);
-> +
->   	if (ulen == 0 || uaddr + ulen < uaddr)
->   		return ERR_PTR(-EINVAL);
->   
-> @@ -1119,12 +1121,20 @@ int svm_register_enc_region(struct kvm *kvm,
->   	if (!region)
->   		return -ENOMEM;
->   
-> +	mutex_lock(&kvm->lock);
->   	region->pages = sev_pin_memory(kvm, range->addr, range->size, &region->npages, 1);
->   	if (IS_ERR(region->pages)) {
->   		ret = PTR_ERR(region->pages);
-> +		mutex_unlock(&kvm->lock);
->   		goto e_free;
->   	}
->   
-> +	region->uaddr = range->addr;
-> +	region->size = range->size;
-> +
-> +	list_add_tail(&region->list, &sev->regions_list);
-> +	mutex_unlock(&kvm->lock);
-> +
->   	/*
->   	 * The guest may change the memory encryption attribute from C=0 -> C=1
->   	 * or vice versa for this memory range. Lets make sure caches are
-> @@ -1133,13 +1143,6 @@ int svm_register_enc_region(struct kvm *kvm,
->   	 */
->   	sev_clflush_pages(region->pages, region->npages);
->   
-> -	region->uaddr = range->addr;
-> -	region->size = range->size;
-> -
-> -	mutex_lock(&kvm->lock);
-> -	list_add_tail(&region->list, &sev->regions_list);
-> -	mutex_unlock(&kvm->lock);
-> -
->   	return ret;
->   
->   e_free:
-> 
 
-Queued, thanks.
+--6eblr7x2iq5pdape
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Paolo
+On Wed, Jan 27, 2021 at 05:24:46PM +0000, Andre Przywara wrote:
+> Currently the AXP chip requires to have its IRQ line connected to some
+> interrupt controller, and will fail probing when this is not the case.
+>=20
+> On a new Allwinner SoC (H616) there is no NMI pin anymore, and at
+> least one board does not connect the AXP's IRQ pin to anything else,
+> so the interrupt functionality of the AXP chip is simply not available.
+>=20
+> Check whether the interrupt line number returned by the platform code is
+> valid, before trying to register the irqchip. If not, we skip this
+> registration, to avoid the driver to bail out completely.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Maxime
+
+--6eblr7x2iq5pdape
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBKO0AAKCRDj7w1vZxhR
+xfuSAQDsBnkmPRLbuwfbB2tNnWlYrtOy/dSadYy1k/1FEC1DnwEA4ZmBkAyH5K/z
+igfyPWSk2ldQN7UJGNIPKL6JiBIjnAk=
+=+6sm
+-----END PGP SIGNATURE-----
+
+--6eblr7x2iq5pdape--
