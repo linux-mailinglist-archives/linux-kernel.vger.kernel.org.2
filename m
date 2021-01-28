@@ -2,114 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B67307B41
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B10307B45
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhA1QqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:46:06 -0500
-Received: from mga12.intel.com ([192.55.52.136]:57328 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232680AbhA1QmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:42:04 -0500
-IronPort-SDR: CD3bq3rV0YR8j8vAoy88Lh0xHI1OUL77q2F5IgpOCCxzokg/En9qGHD5st3Ggw7Z1gFv2m5ZrR
- bkPotME4L/Bg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="159438457"
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="159438457"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 08:41:27 -0800
-IronPort-SDR: gi0oiZLlKIqpDVrmw/zdV263sqweNZeeqjXKsRXxdnjZtJB49mJEzBQlYe3hkvQDXLvaYTap50
- 0zOJtS7e1u9Q==
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="388891748"
-Received: from emcabell-mobl.amr.corp.intel.com (HELO [10.212.164.154]) ([10.212.164.154])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 08:41:26 -0800
-Subject: Re: [PATCH V5] x86/mm: Tracking linear mapping split events
-To:     Zi Yan <ziy@nvidia.com>, Saravanan D <saravanand@fb.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, corbet@lwn.net, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        songliubraving@fb.com
-References: <20210128045153.GW308988@casper.infradead.org>
- <20210128104934.2916679-1-saravanand@fb.com>
- <EBB7E363-FE25-453C-89C6-9FC4A90615B9@nvidia.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <15a29679-ea0b-d1c8-1a1f-698d3db35293@intel.com>
-Date:   Thu, 28 Jan 2021 08:41:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232685AbhA1QrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232655AbhA1QoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:44:09 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9100AC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:43:29 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id q5so5802073ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:43:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=au/rWxVLXC+jhFOhYtTmIM0u2Qs05NxR7vYgq9rMjTg=;
+        b=Mg4cII1XQ+Mj3Sw1csKsWnqF12MNlEnokkufPkrXXu7gJrxx02m3M+fDmUGTni+FI3
+         QBHDdU156bpR33lm1BiGFqMeaaw3IU8MyoLDP6G3+Y4VKiLX1ALLM+b5bfqz5vBHGe3A
+         /LLAfGUJx5Luyra6DHcApAVueuuWhwSPHnot4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=au/rWxVLXC+jhFOhYtTmIM0u2Qs05NxR7vYgq9rMjTg=;
+        b=t5fwVqCZNU8GSZudpRmJQd1twBNGzO5/g9cV8ic+zlP8uKXOfp4lswgB2LbUzQUBgK
+         y0bY2AX9SY17o6citqtrFaTIecaZzk9yX+p1DdXgz2diPeByQbSm9uffgFyusPCiHEey
+         Co830oNyGCzFH7SrJpt5uzRewHzMK74cVc/0l1ZkwrLxEe57d6jh5mR6hoKakhTTLbPb
+         DEPStutNBRNCczXBlML+uF2YeyVRb23axTjPjERaOyXL5gygrqv82B14Tc5CF8VxsUMb
+         DJ7Dg2aE4a3AWrkAc4xjJeBeekBPznGQeGOWlQGGiXDYPJ5PhMbIx6AN/XdoGiElvP+Z
+         fLIA==
+X-Gm-Message-State: AOAM532oJ2OMbCIWWMKPY0hW3zOX3grAQAAFH4d/QNAzWd2iUQTUu9pb
+        Bf6afwxzE3v2PVGgkDJZ6EwKofY0ONcqFTdB
+X-Google-Smtp-Source: ABdhPJxFKdaKD1kKTBUwf/dnEJstPW4JuK+cP/Xf1qx30PDCGgLrGEkLy88UKyZoBX2C91WI7CKkoA==
+X-Received: by 2002:a92:484a:: with SMTP id v71mr13221979ila.263.1611852208720;
+        Thu, 28 Jan 2021 08:43:28 -0800 (PST)
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com. [209.85.166.179])
+        by smtp.gmail.com with ESMTPSA id c25sm2653657iom.11.2021.01.28.08.43.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 08:43:27 -0800 (PST)
+Received: by mail-il1-f179.google.com with SMTP id g7so4718034iln.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:43:27 -0800 (PST)
+X-Received: by 2002:a05:6e02:13c1:: with SMTP id v1mr13889942ilj.89.1611852206979;
+ Thu, 28 Jan 2021 08:43:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <EBB7E363-FE25-453C-89C6-9FC4A90615B9@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210128145837.2250561-1-hch@lst.de> <20210128145837.2250561-7-hch@lst.de>
+In-Reply-To: <20210128145837.2250561-7-hch@lst.de>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 28 Jan 2021 17:43:15 +0100
+X-Gmail-Original-Message-ID: <CANiDSCvbfgpmPyMjKxLqcv4zzPaG2QLR+ipszy5e6ku==Mg8AA@mail.gmail.com>
+Message-ID: <CANiDSCvbfgpmPyMjKxLqcv4zzPaG2QLR+ipszy5e6ku==Mg8AA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 8:33 AM, Zi Yan wrote:
->> One of the many lasting (as we don't coalesce back) sources for
->> huge page splits is tracing as the granular page
->> attribute/permission changes would force the kernel to split code
->> segments mapped to huge pages to smaller ones thereby increasing
->> the probability of TLB miss/reload even after tracing has been
->> stopped.
-> It is interesting to see this statement saying splitting kernel
-> direct mappings causes performance loss, when Zhengjun (cc’d) from
-> Intel recently posted a kernel direct mapping performance report[1]
-> saying 1GB mappings are good but not much better than 2MB and 4KB
-> mappings.
+On Thu, Jan 28, 2021 at 4:03 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> From: Ricardo Ribalda <ribalda@chromium.org>
+>
+> On architectures where the is no coherent caching such as ARM use the
+> dma_alloc_noncontiguos API and handle manually the cache flushing using
+> dma_sync_sgtable().
+>
+> With this patch on the affected architectures we can measure up to 20x
+> performance improvement in uvc_video_copy_data_work().
+>
+> Eg: aarch64 with an external usb camera
+>
+> NON_CONTIGUOUS
+> frames:  999
+> packets: 999
+> empty:   0 (0 %)
+> errors:  0
+> invalid: 0
+> pts: 0 early, 0 initial, 999 ok
+> scr: 0 count ok, 0 diff ok
+> sof: 2048 <= sof <= 0, freq 0.000 kHz
+> bytes 67034480 : duration 33303
+> FPS: 29.99
+> URB: 523446/4993 uS/qty: 104.836 avg 132.532 std 13.230 min 831.094 max (uS)
+> header: 76564/4993 uS/qty: 15.334 avg 15.229 std 3.438 min 186.875 max (uS)
+> latency: 468945/4992 uS/qty: 93.939 avg 132.577 std 9.531 min 824.010 max (uS)
+> decode: 54161/4993 uS/qty: 10.847 avg 6.313 std 1.614 min 111.458 max (uS)
+> raw decode speed: 9.931 Gbits/s
+> raw URB handling speed: 1.025 Gbits/s
+> throughput: 16.102 Mbits/s
+> URB decode CPU usage 0.162600 %
+>
+> COHERENT
+> frames:  999
+> packets: 999
+> empty:   0 (0 %)
+> errors:  0
+> invalid: 0
+> pts: 0 early, 0 initial, 999 ok
+> scr: 0 count ok, 0 diff ok
+> sof: 2048 <= sof <= 0, freq 0.000 kHz
+> bytes 54683536 : duration 33302
+> FPS: 29.99
+> URB: 1478135/4000 uS/qty: 369.533 avg 390.357 std 22.968 min 3337.865 max (uS)
+> header: 79761/4000 uS/qty: 19.940 avg 18.495 std 1.875 min 336.719 max (uS)
+> latency: 281077/4000 uS/qty: 70.269 avg 83.102 std 5.104 min 735.000 max (uS)
+> decode: 1197057/4000 uS/qty: 299.264 avg 318.080 std 1.615 min 2806.667 max (uS)
+> raw decode speed: 365.470 Mbits/s
+> raw URB handling speed: 295.986 Mbits/s
+> throughput: 13.136 Mbits/s
+> URB decode CPU usage 3.594500 %
+>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/media/usb/uvc/uvc_video.c | 76 ++++++++++++++++++++++---------
+>  drivers/media/usb/uvc/uvcvideo.h  |  4 +-
+>  2 files changed, 57 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index a6a441d92b9488..9c051b55dc7bc6 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+>  #include <linux/usb.h>
+> +#include <linux/usb/hcd.h>
+>  #include <linux/videodev2.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/wait.h>
+> @@ -1097,6 +1098,23 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+>         return data[0];
+>  }
+>
+> +static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
+> +{
+> +       return bus_to_hcd(stream->dev->udev->bus)->self.sysdev;
+> +}
+> +
+> +static void uvc_urb_dma_sync(struct uvc_urb *uvc_urb, bool for_device)
+> +{
+> +       struct device *dma_dev = dma_dev = stream_to_dmadev(uvc_urb->stream);
+> +
+> +       if (for_device)
+> +               dma_sync_sgtable_for_device(dma_dev, uvc_urb->sgt,
+> +                                           DMA_FROM_DEVICE);
+> +       else
+> +               dma_sync_sgtable_for_cpu(dma_dev, uvc_urb->sgt,
+> +                                        DMA_FROM_DEVICE);
+> +}
+> +
+>  /*
+>   * uvc_video_decode_data_work: Asynchronous memcpy processing
+>   *
+> @@ -1118,6 +1136,8 @@ static void uvc_video_copy_data_work(struct work_struct *work)
+>                 uvc_queue_buffer_release(op->buf);
+>         }
+>
+> +       uvc_urb_dma_sync(uvc_urb, true);
+> +
+>         ret = usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
+>         if (ret < 0)
+>                 uvc_printk(KERN_ERR, "Failed to resubmit video URB (%d).\n",
+> @@ -1539,10 +1559,12 @@ static void uvc_video_complete(struct urb *urb)
+>          * Process the URB headers, and optionally queue expensive memcpy tasks
+>          * to be deferred to a work queue.
+>          */
+> +       uvc_urb_dma_sync(uvc_urb, false);
+>         stream->decode(uvc_urb, buf, buf_meta);
+>
+>         /* If no async work is needed, resubmit the URB immediately. */
+>         if (!uvc_urb->async_operations) {
+> +               uvc_urb_dma_sync(uvc_urb, true);
+>                 ret = usb_submit_urb(uvc_urb->urb, GFP_ATOMIC);
+>                 if (ret < 0)
+>                         uvc_printk(KERN_ERR,
+> @@ -1559,24 +1581,47 @@ static void uvc_video_complete(struct urb *urb)
+>   */
+>  static void uvc_free_urb_buffers(struct uvc_streaming *stream)
+>  {
+> +       struct device *dma_dev = dma_dev = stream_to_dmadev(stream);
+>         struct uvc_urb *uvc_urb;
+>
+>         for_each_uvc_urb(uvc_urb, stream) {
+>                 if (!uvc_urb->buffer)
+>                         continue;
+>
+> -#ifndef CONFIG_DMA_NONCOHERENT
+> -               usb_free_coherent(stream->dev->udev, stream->urb_size,
+> -                                 uvc_urb->buffer, uvc_urb->dma);
+> -#else
+> -               kfree(uvc_urb->buffer);
+> -#endif
+> +               dma_vunmap_noncontiguous(dma_dev, uvc_urb->buffer);
+> +               dma_free_noncontiguous(dma_dev, stream->urb_size, uvc_urb->sgt,
+> +                                      uvc_urb->dma, DMA_BIDIRECTIONAL);
 
-No, that's not what the report said.
+Maybe DMA_FROM_DEVICE instead of DMA_BIDIRECTIONAL ?
 
-*Overall*, there is no clear winner between 4k, 2M and 1G.  In other
-words, no one page size is best for *ALL* workloads.
+> +
+>                 uvc_urb->buffer = NULL;
+>         }
+>
+>         stream->urb_size = 0;
+>  }
+>
+> +static bool uvc_alloc_urb_buffer(struct uvc_streaming *stream,
+> +                                struct uvc_urb *uvc_urb, gfp_t gfp_flags)
+> +{
+> +       struct device *dma_dev = stream_to_dmadev(stream);
+> +
+> +
+> +       uvc_urb->sgt = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
+> +                                              &uvc_urb->dma, DMA_BIDIRECTIONAL,
+> +                                              gfp_flags);
+> +       if (!uvc_urb->sgt)
+> +               return false;
+> +
+> +       uvc_urb->buffer = dma_vmap_noncontiguous(dma_dev, stream->urb_size,
+> +                                                uvc_urb->sgt);
+> +       if (!uvc_urb->buffer) {
+> +               dma_free_noncontiguous(dma_dev, stream->urb_size,
+> +                                      uvc_urb->sgt, uvc_urb->dma,
+> +                                      DMA_BIDIRECTIONAL);
+> +               return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+>  /*
+>   * Allocate transfer buffers. This function can be called with buffers
+>   * already allocated when resuming from suspend, in which case it will
+> @@ -1607,19 +1652,11 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
+>
+>         /* Retry allocations until one succeed. */
+>         for (; npackets > 1; npackets /= 2) {
+> +               stream->urb_size = psize * npackets;
+>                 for (i = 0; i < UVC_URBS; ++i) {
+>                         struct uvc_urb *uvc_urb = &stream->uvc_urb[i];
+>
+> -                       stream->urb_size = psize * npackets;
+> -#ifndef CONFIG_DMA_NONCOHERENT
+> -                       uvc_urb->buffer = usb_alloc_coherent(
+> -                               stream->dev->udev, stream->urb_size,
+> -                               gfp_flags | __GFP_NOWARN, &uvc_urb->dma);
+> -#else
+> -                       uvc_urb->buffer =
+> -                           kmalloc(stream->urb_size, gfp_flags | __GFP_NOWARN);
+> -#endif
+> -                       if (!uvc_urb->buffer) {
+> +                       if (!uvc_alloc_urb_buffer(stream, uvc_urb, gfp_flags)) {
+>                                 uvc_free_urb_buffers(stream);
+>                                 break;
+>                         }
+> @@ -1728,12 +1765,8 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
+>                 urb->context = uvc_urb;
+>                 urb->pipe = usb_rcvisocpipe(stream->dev->udev,
+>                                 ep->desc.bEndpointAddress);
+> -#ifndef CONFIG_DMA_NONCOHERENT
+>                 urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>                 urb->transfer_dma = uvc_urb->dma;
+> -#else
+> -               urb->transfer_flags = URB_ISO_ASAP;
+> -#endif
+>                 urb->interval = ep->desc.bInterval;
+>                 urb->transfer_buffer = uvc_urb->buffer;
+>                 urb->complete = uvc_video_complete;
+> @@ -1793,10 +1826,8 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
+>
+>                 usb_fill_bulk_urb(urb, stream->dev->udev, pipe, uvc_urb->buffer,
+>                                   size, uvc_video_complete, uvc_urb);
+> -#ifndef CONFIG_DMA_NONCOHERENT
+>                 urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+>                 urb->transfer_dma = uvc_urb->dma;
+> -#endif
+>
+>                 uvc_urb->urb = urb;
+>         }
+> @@ -1891,6 +1922,7 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
+>
+>         /* Submit the URBs. */
+>         for_each_uvc_urb(uvc_urb, stream) {
+> +               uvc_urb_dma_sync(uvc_urb, true);
+>                 ret = usb_submit_urb(uvc_urb->urb, gfp_flags);
+>                 if (ret < 0) {
+>                         uvc_printk(KERN_ERR, "Failed to submit URB %u (%d).\n",
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index a3dfacf069c44d..a386114bd22999 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -521,7 +521,8 @@ struct uvc_copy_op {
+>   * @urb: the URB described by this context structure
+>   * @stream: UVC streaming context
+>   * @buffer: memory storage for the URB
+> - * @dma: DMA coherent addressing for the urb_buffer
+> + * @dma: Allocated DMA handle
+> + * @sgt: sgt_table with the urb locations in memory
+>   * @async_operations: counter to indicate the number of copy operations
+>   * @copy_operations: work descriptors for asynchronous copy operations
+>   * @work: work queue entry for asynchronous decode
+> @@ -532,6 +533,7 @@ struct uvc_urb {
+>
+>         char *buffer;
+>         dma_addr_t dma;
+> +       struct sg_table *sgt;
+>
+>         unsigned int async_operations;
+>         struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
+> --
+> 2.29.2
+>
 
-There were *ABSOLUTELY* individual workloads in those tests that saw
-significant deltas between the direct map sizes.  There are also
-real-world workloads that feel the impact here.
+
+-- 
+Ricardo Ribalda
