@@ -2,153 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E197307D82
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FAD307DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhA1SLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:11:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
+        id S231857AbhA1SR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:17:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhA1SG6 (ORCPT
+        with ESMTP id S231249AbhA1SGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:06:58 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB414C061A10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:05 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id d16so6299254wro.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:05 -0800 (PST)
+        Thu, 28 Jan 2021 13:06:32 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B5BC0611C2;
+        Thu, 28 Jan 2021 10:03:03 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id c18so7444113ljd.9;
+        Thu, 28 Jan 2021 10:03:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uUtjn0S2LB1hEBiPsRyILzvTGxsfFgJnwAguVJkwf8M=;
-        b=VOWAoFI7f87mmQpF61/B6XhrpLRiOTDKRgEzgQUruqg8nla/mCupvO58MKBvSqkMGg
-         FCrwCgcHxom4YbO8EwoZlPubu2t9ejuP33iBOTlNe+632hC+nrhvzfROOAV0YUscqN4W
-         ISmw/4ebKvXCCw5NgyawYbvhPd93k/VZ1bFBOGt+uv+BVbZ6DUnQ5KnQeZNmvfjlKpCy
-         gJVhcZwkDBs2PWCHnFn9yo6716dRaWTOXvjY15FcC3PiYWhz4784EPLhTD+x4TwERxhA
-         sxYlwlNERTo6gO3curiKUdKz4Egu2R4wdK3MnMBr0nS9F8YVS2Jm5RgqVuqxHQXQi6DT
-         Xbcw==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5OZYmrNcxG3BvJiqZEDeQgXJXCAtsmjQULD8f7sH9Uk=;
+        b=f/9VviffW7U61PDTs2O6LL9Zyq5IYUAwFc86VO6Hge9QxvhrBQ6Kj3fb8E5Q7iFWYK
+         wdBy8IjuLLxBTvlavGuHaIagwQOhPmCn687Tvm5r4KkKR+Sy8MyPzKZLat4vTOasGc8P
+         D/r7KoWibyGouKPf2QzgrYPQfrEgi112V4vVK4KM8rp8xhSdm3Kutg3yUxEeVwsSsgro
+         6jqPXNZXexdB7F9zz9o6z4Ml9lryhcY9rYHKzlZyWLhXhPk3GG1FcNSthpWNZRI0JUKZ
+         WHyVjrIMUItGhzwYjdcpp2MAKmzmyodJD3QwXJur3rcVKN2VJ6B7c4iMGTCP3nmiknPw
+         Hdvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uUtjn0S2LB1hEBiPsRyILzvTGxsfFgJnwAguVJkwf8M=;
-        b=iA2aLZ+1uhJNpYaYK+lEtoExcPZoBJ9/VnOMNY7qNzeQXD8+HlN23IIBTRJHc2MtW4
-         MMx6dKyuYkXeDF23v+AWegbWX0imT7Kf7cla89Q3iN0HEL85m32cEqaSO+e72p7ucGf8
-         CiS/e3PagEEqWRzSznDaft8LsuUg2bZkKdteOH2Iv57spB0a0PblgT/nKqlfe7x6JZl9
-         VfxxdDO8Y1uYUcGTGRM6yA7Ua+OZeMVs/2lbLIj3/nRhh6cEBsvLmrPt94zy7v3OyQRd
-         cQDdOK3p3zTPGSSAU3/CFQ8x0khNnWNCgMbzO03MeZEaV4Z/05jphPLI+L5kY0yqy4Rc
-         VSpw==
-X-Gm-Message-State: AOAM531/Je6KHr5fPeh6ulzdeVNwX4L5caiWW6/3F9dNMMpCbl6DF/O1
-        F8jQ1ewsTm8QbF6crFZlluwwtg==
-X-Google-Smtp-Source: ABdhPJxPzc0IA9xahgijtPLfT9dZqdD9ejn57gN/lqF5wwV6CnFzhmlrLK3RGRvHy7StR5WPLMJ2jg==
-X-Received: by 2002:adf:c109:: with SMTP id r9mr255640wre.261.1611856984478;
-        Thu, 28 Jan 2021 10:03:04 -0800 (PST)
-Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.03.03
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5OZYmrNcxG3BvJiqZEDeQgXJXCAtsmjQULD8f7sH9Uk=;
+        b=uD+fEXW9XGVqU/cmD9jkQAPM8zCNTCIchdSV0OGZW+HJk1cPe3C/knB+K+9mJ3mk1H
+         URMGXeVUX95CZ0BsoSOjSdD/CYRt1L/pIZwyQB9ETZN4+7M9KAWAjfgiV5JR/JL9XYd0
+         AT8AGQGDiQ1xsE3nt4/+Ed1jNzkB7kDO4YutLDb1rB2TMqVk/BAA0nH+MPwTwOJ0fbwW
+         EU18k/021UpSPBpbAZf1DhIbQFEXGrbar20M+ZCnVAv4zNksywAfocMBr24O7DGN0ICy
+         3xBDltHsbUjpjNRAk7wD8wtIBqARYi6s+FG77+0TmDDMcbVMBnyUatwLJLAfCce5ZiIc
+         eU2g==
+X-Gm-Message-State: AOAM5318Kh25O6+XEREFxx7ZoU7v0FqETi1TVR3zhpImXfmZS3rrIPoe
+        HNnniLl3Pdcd+6l8wRKmc08=
+X-Google-Smtp-Source: ABdhPJy8OuBlRl1VwDZvg5NcJoVhHuMdZgcnQpVF8cmLrBUKXNkpeTcqBZXntvAOr3qTXmwYxQqMxw==
+X-Received: by 2002:a2e:824b:: with SMTP id j11mr241497ljh.473.1611856981250;
+        Thu, 28 Jan 2021 10:03:01 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id o14sm2199218ljp.48.2021.01.28.10.02.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:03:03 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Mark Lord <mlord@pobox.com>,
-        ALWAYS copy <linux-ide@vger.kernel.org>
-Subject: [PATCH 18/20] ata: sata_mv: Fix worthy headers and demote others
-Date:   Thu, 28 Jan 2021 18:02:37 +0000
-Message-Id: <20210128180239.548512-19-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210128180239.548512-1-lee.jones@linaro.org>
-References: <20210128180239.548512-1-lee.jones@linaro.org>
+        Thu, 28 Jan 2021 10:02:50 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 28 Jan 2021 19:02:37 +0100
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210128180237.GA5144@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
+ <20210125143150.GA2282@pc638.lan>
+ <20210125153943.GN827@dhcp22.suse.cz>
+ <20210125162559.GA52712@pc638.lan>
+ <20210128151152.GA1867@pc638.lan>
+ <YBLVbZzy0KSONizm@dhcp22.suse.cz>
+ <20210128153017.GA2006@pc638.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128153017.GA2006@pc638.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, Jan 28, 2021 at 04:30:17PM +0100, Uladzislau Rezki wrote:
+> On Thu, Jan 28, 2021 at 04:17:01PM +0100, Michal Hocko wrote:
+> > On Thu 28-01-21 16:11:52, Uladzislau Rezki wrote:
+> > > On Mon, Jan 25, 2021 at 05:25:59PM +0100, Uladzislau Rezki wrote:
+> > > > On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
+> > > > > On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
+> > > > > > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> > > > > > > > For a single argument we can directly request a page from a caller
+> > > > > > > > context when a "carry page block" is run out of free spots. Instead
+> > > > > > > > of hitting a slow path we can request an extra page by demand and
+> > > > > > > > proceed with a fast path.
+> > > > > > > > 
+> > > > > > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > > > > > > > and that its fallback is the relatively high latency synchronize_rcu().
+> > > > > > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > > > > > > > to allow limited sleeping within the memory allocator.
+> > > > > > > 
+> > > > > > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+> > > > > > > way to allocate without triggering the OOM killer. Is this really what
+> > > > > > > you need/want? Is __GFP_NORETRY too weak?
+> > > > > > > 
+> > > > > > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
+> > > > > > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
+> > > > > > point: https://www.spinics.net/lists/rcu/msg02856.html
+> > > > > > 
+> > > > > > <snip>
+> > > > > >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
+> > > > > >     further decisions based on instrumentation of the success rates of
+> > > > > >     these opportunistic allocations.
+> > > > > > <snip>
+> > > > > 
+> > > > > I completely agree with Johannes here.
+> > > > > 
+> > > > > > but for some reason, i can't find a tail or head of it, we introduced
+> > > > > > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
+> > > > > > What we would like to avoid.
+> > > > > 
+> > > > > Not that I object to this use but I think it would be much better to use
+> > > > > it based on actual data. Going along with it right away might become a
+> > > > > future burden to make any changes in this aspect later on due to lack of 
+> > > > > exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
+> > > > > try as hard as it can get without being really disruptive (like OOM
+> > > > > killing something). And your wording didn't really give me that
+> > > > > impression.
+> > > > > 
+> > > > Initially i proposed just to go with GFP_NOWAIT flag. But later on there
+> > > > was a discussion about a fallback path, that uses synchronize_rcu() can be
+> > > > slow, thus minimizing its hitting would be great. So, here we go with a
+> > > > trade off.
+> > > > 
+> > > > Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
+> > > > light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
+> > > > 
+> > > > There were simple criterias we discussed which we would like to achieve:
+> > > > 
+> > > > a) minimize a fallback hitting;
+> > > > b) avoid of OOM involving;
+> > > > c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+> > > > 
+> > > One question here. Since the code that triggers a page request can be
+> > > directly invoked from reclaim context as well as outside of it. We had
+> > > a concern about if any recursion is possible, but what i see it is safe.
+> > > The context that does it can not enter it twice:
+> > > 
+> > > <snip>
+> > >     /* Avoid recursion of direct reclaim */
+> > >     if (current->flags & PF_MEMALLOC)
+> > >         goto nopage;
+> > > <snip>
+> > 
+> > Yes this is a recursion protection.
+> > 
+> > > What about any deadlocking in regards to below following flags?
+> > > 
+> > > GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
+> > 
+> > and __GFP_NOMEMALLOC will make sure that the allocation will not consume
+> > all the memory reserves. The later should be clarified in one of your
+> > patches I have acked IIRC.
+> >
+> Yep, it is clarified and reflected in another patch you ACKed.
+> 
+> Thanks!
+> 
 
- drivers/ata/sata_mv.c:1162: warning: Function parameter or member 'ap' not described in 'mv_start_edma'
- drivers/ata/sata_mv.c:1162: warning: Function parameter or member 'port_mmio' not described in 'mv_start_edma'
- drivers/ata/sata_mv.c:1162: warning: Function parameter or member 'protocol' not described in 'mv_start_edma'
- drivers/ata/sata_mv.c:1162: warning: Excess function parameter 'base' description in 'mv_start_edma'
- drivers/ata/sata_mv.c:1535: warning: Function parameter or member 'enable_bmdma' not described in 'mv_bmdma_enable_iie'
- drivers/ata/sata_mv.c:1535: warning: expecting prototype for mv_bmdma_enable(). Prototype was for mv_bmdma_enable_iie() instead
- drivers/ata/sata_mv.c:1930: warning: Function parameter or member 'ap' not described in 'mv_bmdma_stop_ap'
- drivers/ata/sata_mv.c:1930: warning: expecting prototype for mv_bmdma_stop(). Prototype was for mv_bmdma_stop_ap() instead
- drivers/ata/sata_mv.c:2228: warning: Function parameter or member 'ap' not described in 'mv_send_fis'
- drivers/ata/sata_mv.c:3263: warning: Function parameter or member 'hpriv' not described in 'mv6_reset_hc'
- drivers/ata/sata_mv.c:3263: warning: Function parameter or member 'n_hc' not described in 'mv6_reset_hc'
- drivers/ata/sata_mv.c:3541: warning: Function parameter or member 'hpriv' not described in 'soc_is_65n'
- drivers/ata/sata_mv.c:3541: warning: expecting prototype for soc_is_65(). Prototype was for soc_is_65n() instead
+Please find below the V2.
 
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Mark Lord <mlord@pobox.com>
-Cc: ALWAYS copy <linux-ide@vger.kernel.org>
-Cc: linux-ide@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Changelog V1 -> V2:
+    - replace the __GFP_RETRY_MAYFAIL by __GFP_NORETRY;
+    - add more comments explaining why and which flags are used.
+
+<snip>
+From 0bdb8ca1ae62088790e0a452c4acec3821e06989 Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Wed, 20 Jan 2021 17:21:46 +0100
+Subject: [PATCH v2 1/1] kvfree_rcu: Directly allocate page for single-argument
+ case
+
+Single-argument kvfree_rcu() must be invoked from sleepable contexts,
+so we can directly allocate pages.  Furthermmore, the fallback in case
+of page-allocation failure is the high-latency synchronize_rcu(), so it
+makes sense to do these page allocations from the fastpath, and even to
+permit limited sleeping within the allocator.
+
+This commit therefore allocates if needed on the fastpath using
+GFP_KERNEL|__GFP_NORETRY.  This also has the beneficial effect
+of leaving kvfree_rcu()'s per-CPU caches to the double-argument variant
+of kvfree_rcu(), given that the double-argument variant cannot directly
+invoke the allocator.
+
+[ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- drivers/ata/sata_mv.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c | 51 ++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 35 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
-index 664ef658a955f..eafca46d8feb4 100644
---- a/drivers/ata/sata_mv.c
-+++ b/drivers/ata/sata_mv.c
-@@ -1146,9 +1146,8 @@ static void mv_set_irq_coalescing(struct ata_host *host,
- 	spin_unlock_irqrestore(&host->lock, flags);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e04e336bee42..e450c17a06b2 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3465,37 +3465,59 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+ 	}
  }
  
--/**
-+/*
-  *      mv_start_edma - Enable eDMA engine
-- *      @base: port base address
-  *      @pp: port private data
-  *
-  *      Verify the local cache of the eDMA state is accurate with a
-@@ -1519,7 +1518,7 @@ static void mv_60x1_errata_sata25(struct ata_port *ap, int want_ncq)
- 		writel(new, hpriv->base + GPIO_PORT_CTL);
++// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
++// state specified by flags.  If can_alloc is true, the caller must
++// be schedulable and not be holding any locks or mutexes that might be
++// acquired by the memory allocator or anything that it might invoke.
++// Returns true if ptr was successfully recorded, else the caller must
++// use a fallback.
+ static inline bool
+-kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
++add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
++	unsigned long *flags, void *ptr, bool can_alloc)
+ {
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	int idx;
+ 
+-	if (unlikely(!krcp->initialized))
++	*krcp = krc_this_cpu_lock(flags);
++	if (unlikely(!(*krcp)->initialized))
+ 		return false;
+ 
+-	lockdep_assert_held(&krcp->lock);
+ 	idx = !!is_vmalloc_addr(ptr);
+ 
+ 	/* Check if a new block is required. */
+-	if (!krcp->bkvhead[idx] ||
+-			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+-		bnode = get_cached_bnode(krcp);
+-		/* Switch to emergency path. */
++	if (!(*krcp)->bkvhead[idx] ||
++			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
++		bnode = get_cached_bnode(*krcp);
++		if (!bnode && can_alloc) {
++			krc_this_cpu_unlock(*krcp, *flags);
++
++			// __GFP_NORETRY - allows a light-weight direct reclaim
++			// what is OK from minimizing of fallback hitting point of
++			// view. Apart of that it forbids any OOM invoking what is
++			// also beneficial since we are about to release memory soon.
++			//
++			// __GFP_NOWARN - it is supposed that an allocation can
++			// be failed under low memory or high memory pressure
++			// scenarios.
++			bnode = (struct kvfree_rcu_bulk_data *)
++				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN);
++			*krcp = krc_this_cpu_lock(flags);
++		}
++
+ 		if (!bnode)
+ 			return false;
+ 
+ 		/* Initialize the new block. */
+ 		bnode->nr_records = 0;
+-		bnode->next = krcp->bkvhead[idx];
++		bnode->next = (*krcp)->bkvhead[idx];
+ 
+ 		/* Attach it to the head. */
+-		krcp->bkvhead[idx] = bnode;
++		(*krcp)->bkvhead[idx] = bnode;
+ 	}
+ 
+ 	/* Finally insert. */
+-	krcp->bkvhead[idx]->records
+-		[krcp->bkvhead[idx]->nr_records++] = ptr;
++	(*krcp)->bkvhead[idx]->records
++		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
+ 
+ 	return true;
  }
+@@ -3533,8 +3555,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		ptr = (unsigned long *) func;
+ 	}
  
--/**
-+/*
-  *	mv_bmdma_enable - set a magic bit on GEN_IIE to allow bmdma
-  *	@ap: Port being initialized
-  *
-@@ -1919,7 +1918,7 @@ static void mv_bmdma_start(struct ata_queued_cmd *qc)
+-	krcp = krc_this_cpu_lock(&flags);
+-
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+@@ -3542,12 +3562,11 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 			  __func__, head);
  
- /**
-  *	mv_bmdma_stop - Stop BMDMA transfer
-- *	@qc: queued command to stop DMA on.
-+ *	@ap: port to stop
-  *
-  *	Clears the ATA_DMA_START flag in the bmdma control register
-  *
-@@ -2221,6 +2220,7 @@ static u8 mv_sff_check_status(struct ata_port *ap)
+ 		// Mark as success and leave.
+-		success = true;
+-		goto unlock_return;
++		return;
+ 	}
  
- /**
-  *	mv_send_fis - Send a FIS, using the "Vendor-Unique FIS" register
-+ *	@ap: ATA port to send a FIS
-  *	@fis: fis to be sent
-  *	@nwords: number of 32-bit words in the fis
-  */
-@@ -3249,7 +3249,7 @@ static void mv6_reset_flash(struct mv_host_priv *hpriv, void __iomem *mmio)
- 	writel(tmp, mmio + GPIO_PORT_CTL);
- }
+ 	kasan_record_aux_stack(ptr);
+-	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
++	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+ 	if (!success) {
+ 		run_page_cache_worker(krcp);
  
--/**
-+/*
-  *      mv6_reset_hc - Perform the 6xxx global soft reset
-  *      @mmio: base address of the HBA
-  *
-@@ -3530,7 +3530,7 @@ static void mv_soc_65n_phy_errata(struct mv_host_priv *hpriv,
- 	writel(reg, port_mmio + PHY_MODE9_GEN1);
- }
- 
--/**
-+/*
-  *	soc_is_65 - check if the soc is 65 nano device
-  *
-  *	Detect the type of the SoC, this is done by reading the PHYCFG_OFS
 -- 
-2.25.1
+2.20.1
+<snip>
 
+--
+Vlad Rezki
