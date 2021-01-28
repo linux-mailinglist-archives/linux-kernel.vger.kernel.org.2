@@ -2,141 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAB2307471
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5270730746E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbhA1LIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:08:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50934 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhA1LIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:08:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6072BAE57;
-        Thu, 28 Jan 2021 11:07:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B9699DA7D9; Thu, 28 Jan 2021 12:06:11 +0100 (CET)
-Date:   Thu, 28 Jan 2021 12:06:11 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
-Message-ID: <20210128110611.GK1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Michal Rostecki <mrostecki@suse.de>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michal Rostecki <mrostecki@suse.com>
-References: <20210127135728.30276-1-mrostecki@suse.de>
+        id S229817AbhA1LIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhA1LIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:08:10 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B284C061573;
+        Thu, 28 Jan 2021 03:07:30 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id b21so6105210edy.6;
+        Thu, 28 Jan 2021 03:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ShvLSg8TcUv7NMdoxeoIAAQL8A+KbCkuTPD4+VWr/xw=;
+        b=r20bWnHJcpDYrun7/+dblaBlkZmvrlfcUzFlVhAM/99ifcympYDgkFJyRa5qglBNVP
+         lUgsevJEU/ojexhJyVjLCUuwaApmjfBSEBvK9aSkcLozLKy0Khac4ULZBqkqVui8/gnF
+         KgMlIyc6wAoVSH/2z/Wwb8+lDP7m2v8wyFixfmUNRPNBDaXf/nHYjnT55FfYVQ2djsLj
+         v7sWQ5NXFLPHIit4r7eXQXCouRZr69eKN7T8KUc1dR/IJuj4re4jHhKBYTa/AzZz7Mbh
+         hikuSfhdiVyfxEArZrbdLnzBXy5MCbmaX97+0UIykVpxI0uwyAJduv1hS7xbXeXRKkjq
+         z4eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ShvLSg8TcUv7NMdoxeoIAAQL8A+KbCkuTPD4+VWr/xw=;
+        b=g0hf9rOfPiQWBXgefTf/e/cDv0StQTUDr3xFRqQSgEpDmxtPX9Bb93yIntTfSrZ7zQ
+         ctFUHru4YJOnA99CN33QiMKBVJQAB6coXW1m4OmkejRfNJ+iYUwyOZtA+gkUl6m1yX9M
+         jT1ibMWDMu1gv1jPG7RxNwoGDFf7RoEr0ANjzm/IQc2NKkiK434zFqHn9cdpH74+mSBo
+         ijnPDSk4tFx2g9ZKvKK4scrv4mMRWXu56Jcto+mMmkbgYwBmyfuE+07QEfhHgf2GYYXY
+         I6KH7wUdSMSJhJQFWgC2vLRDhbnToIByxSXr0bfFpuXpv9khCzyhrId8CijeQxpGLpcl
+         6YJw==
+X-Gm-Message-State: AOAM532+Prrwgngkh+Gv6AmQZLrCFEOWYUFJEe1F0nrJZjXLHFHuzemR
+        ELoQKZUQSzlW0m6gURvBCB0=
+X-Google-Smtp-Source: ABdhPJwhYhYq0R/c5h8bydiP9Pk+wXe395h/cBdTuhpEq8mWvbd2dvjWgMBDjbMC7ld61pjcVKSJWA==
+X-Received: by 2002:aa7:ce87:: with SMTP id y7mr13556149edv.211.1611832048909;
+        Thu, 28 Jan 2021 03:07:28 -0800 (PST)
+Received: from [192.168.0.101] ([77.124.61.116])
+        by smtp.gmail.com with ESMTPSA id a22sm2793249edv.67.2021.01.28.03.07.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 03:07:28 -0800 (PST)
+Subject: Re: [PATCH v3 net-next] net: Remove redundant calls of
+ sk_tx_queue_clear().
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Amit Shah <aams@amazon.de>, Kuniyuki Iwashima <kuni1840@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>
+References: <20210128021905.57471-1-kuniyu@amazon.co.jp>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <6f77d50f-b658-b751-5ac4-caaf9876f287@gmail.com>
+Date:   Thu, 28 Jan 2021 13:07:26 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127135728.30276-1-mrostecki@suse.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210128021905.57471-1-kuniyu@amazon.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 02:57:27PM +0100, Michal Rostecki wrote:
-> From: Michal Rostecki <mrostecki@suse.com>
-> 
-> Before this change, the btrfs_get_io_geometry() function was calling
-> btrfs_get_chunk_map() to get the extent mapping, necessary for
-> calculating the I/O geometry. It was using that extent mapping only
-> internally and freeing the pointer after its execution.
-> 
-> That resulted in calling btrfs_get_chunk_map() de facto twice by the
-> __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
-> first and then calling btrfs_get_chunk_map() directly to get the extent
-> mapping, used by the rest of the function.
-> 
-> This change fixes that by passing the extent mapping to the
-> btrfs_get_io_geometry() function as an argument.
-> 
-> v2:
-> When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
-> - Use errno_to_blk_status(PTR_ERR(em)) as the status
-> - Set em to NULL
 
-The version-to-version changelog belongs under the -- line. If there's
-something relevant in v2 it should be put into the proper changelog but
-normal fixups like 'set em to NULL' do not have the long-term value that
-we want to record in the changelog.
 
-> Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+On 1/28/2021 4:19 AM, Kuniyuki Iwashima wrote:
+> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
+> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
+> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
+> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
+> other hand, the original commit had already put sk_tx_queue_clear() in
+> sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
+> sk_tx_queue_clear() is called twice in each path.
+> 
+> If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
+> currently works well because (i) sk_tx_queue_mapping is defined between
+> sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
+> sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
+> However, if we move sk_tx_queue_mapping out of the no copy area, it
+> introduces a bug unintentionally.
+> 
+> Therefore, this patch adds a runtime 
+
+compile-time
+
+> check to take care of the order of
+> sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
+> sk_prot_alloc() so that it does the only allocation and its callers
+> initialize fields.
+> 
+> v3:
+> * Remove Fixes: tag
+> * Add BUILD_BUG_ON
+> * Remove sk_tx_queue_clear() from sk_prot_alloc()
+>    instead of sk_alloc() and sk_clone_lock()
+> 
+> v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
+> * Remove Reviewed-by: tag
+> 
+> v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
+> 
+> CC: Tariq Toukan <tariqt@mellanox.com>
+> CC: Boris Pismenny <borisp@mellanox.com>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 > ---
->  fs/btrfs/inode.c   | 38 +++++++++++++++++++++++++++++---------
->  fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
->  fs/btrfs/volumes.h |  5 +++--
->  3 files changed, 48 insertions(+), 34 deletions(-)
+>   net/core/sock.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 0dbe1aaa0b71..e2ee3a9c1140 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
->  	struct inode *inode = page->mapping->host;
->  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	u64 logical = bio->bi_iter.bi_sector << 9;
-> +	struct extent_map *em;
->  	u64 length = 0;
->  	u64 map_length;
-> -	int ret;
-> +	int ret = 0;
->  	struct btrfs_io_geometry geom;
->  
->  	if (bio_flags & EXTENT_BIO_COMPRESSED)
-> @@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
->  
->  	length = bio->bi_iter.bi_size;
->  	map_length = length;
-> -	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
-> -				    &geom);
-> +	em = btrfs_get_chunk_map(fs_info, logical, map_length);
-> +	if (IS_ERR(em))
-> +		return PTR_ERR(em);
-> +	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
-> +				    map_length, &geom);
->  	if (ret < 0)
-> -		return ret;
-> +		goto out;
->  
-> -	if (geom.len < length + size)
-> -		return 1;
-> -	return 0;
-> +	if (geom.len < length + size) {
-> +		ret = 1;
-> +		goto out;
-> +	}
-> +out:
-> +	free_extent_map(em);
-> +	return ret;
->  }
->  
->  /*
-> @@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
->  	u64 submit_len;
->  	int clone_offset = 0;
->  	int clone_len;
-> +	int logical;
-
-This needs to be u64
-
->  	int ret;
->  	blk_status_t status;
->  	struct btrfs_io_geometry geom;
->  	struct btrfs_dio_data *dio_data = iomap->private;
-> +	struct extent_map *em;
->  
->  	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
->  	if (!dip) {
-> @@ -7970,11 +7980,18 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
->  	}
->  
->  	start_sector = dio_bio->bi_iter.bi_sector;
-> +	logical = start_sector << 9;
-
-Otherwise this overflows on logical address larger than 2^23 which is 8G.
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index bbcd4b97eddd..cfbd62a5e079 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
+>   #ifdef CONFIG_SECURITY_NETWORK
+>   	void *sptr = nsk->sk_security;
+>   #endif
+> +
+> +	/* If we move sk_tx_queue_mapping out of the private section,
+> +	 * we must check if sk_tx_queue_clear() is called after
+> +	 * sock_copy() in sk_clone_lock().
+> +	 */
+> +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
+> +		     offsetof(struct sock, sk_dontcopy_begin) ||
+> +		     offsetof(struct sock, sk_tx_queue_mapping) >=
+> +		     offsetof(struct sock, sk_dontcopy_end));
+> +
+>   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
+>   
+>   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
+> @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
+>   
+>   		if (!try_module_get(prot->owner))
+>   			goto out_free_sec;
+> -		sk_tx_queue_clear(sk);
+>   	}
+>   
+>   	return sk;
+> 
