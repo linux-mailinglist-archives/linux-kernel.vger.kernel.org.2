@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C552330809C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D473D30809A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhA1Vfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:35:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44631 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231301AbhA1Vfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:35:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611869657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=57t5IEFW55dtVez1wzr0cQ3lFQ9NLibehfOHwQswbsw=;
-        b=UVJr7MEI/h/sIFOsTeerkeOf+7/hFMVHrWEQk8EHErBKFbU5OtEs8EnpleEglMKxEwzYCs
-        tlJU3OTpbk+WbX2qPZy1kNMYbLgwmXeyVaccAvMLI6wPYQHhnmkknytZZAadmOLahW2xco
-        S7QeOUN6ubNpYfof9v9XN2YK2VmQMDE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-2XkRJHRdONmXO1wBy5yXBg-1; Thu, 28 Jan 2021 16:34:16 -0500
-X-MC-Unique: 2XkRJHRdONmXO1wBy5yXBg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7741A8030A2;
-        Thu, 28 Jan 2021 21:34:13 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 757636F98B;
-        Thu, 28 Jan 2021 21:34:11 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 15:34:09 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        David Laight <David.Laight@aculab.com>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external
- modules
-Message-ID: <20210128213409.qxnclchjyq6v23up@treble>
-References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
- <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com>
- <20210128205207.awdbh4bmx56pxxjl@treble>
- <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
- <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
+        id S231281AbhA1VfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:35:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229596AbhA1Ve4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 16:34:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A03364DE8;
+        Thu, 28 Jan 2021 21:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611869655;
+        bh=wN2rpturJmJM7GiWuXK4eGf/ciS8iKIQ7U1Snpc7h5s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JlQ6Mob8h88NUFo2916XCe1b7Pg4y+SDol2GTmf927YbnmzDCGBET8sTUw4TztMgR
+         SRxhfcpWttg2KHdNjs2ByrJf5CUinlE016Mma8lazXGhVuiaftS++DKM/Kc3oq6XU0
+         kuKiWPtXNQPpgNlzf7Pce08IRxlm3lukvwQ3qjhUzf4eed3Agt3bLDoluKxaQvk8x/
+         mYY0FJ4R28dtd7MjeMagjK48b0xCUYuhnOPjE+JlvfPjZ7as0d96FRnzy1+JSgKFhI
+         lSuBcfZJ3T46Qh4dY2+mBE6l/tNSKPJ9RgErdkzAM7bFRmt/iHyrAA721QwG1apRvT
+         jt2HZA989mKyw==
+Date:   Thu, 28 Jan 2021 22:34:13 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 04/16] rcu/nocb: Only (re-)initialize segcblist when
+ needed on CPU up
+Message-ID: <20210128213413.GC122776@lothringen>
+References: <20210128171222.131380-1-frederic@kernel.org>
+ <20210128171222.131380-5-frederic@kernel.org>
+ <20210128191228.GQ2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210128191228.GQ2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 01:23:11PM -0800, Linus Torvalds wrote:
-> On Thu, Jan 28, 2021 at 1:03 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > I really think the whole compiler version check is purely voodoo programming.
+On Thu, Jan 28, 2021 at 11:12:28AM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 28, 2021 at 06:12:10PM +0100, Frederic Weisbecker wrote:
+> > Simply checking if the segcblist is enabled is enough to know if we
+> > need to initialize it or not. It's safe to check within hotplug
+> > machine.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
 > 
-> .. but there are obviously potentially things we - in the kernel - do
-> that may make certain compiler versions incompatible. We long long ago
-> used to have things like "you can't have an empty struct because gcc
-> version x.y.z doesn't support it", so even a UP spinlock would be
+> Hmmm...
 > 
->        typedef struct { int gcc_is_buggy; } raw_spinlock_t;
+> At the start of a CPU-hotplug operation, an incoming CPU's callback
+> list can be in a number of states:
 > 
-> but only if you compiled it with a version of gcc older than 3.0. So
-> compiling one file with one compiler, and another with a newer one,
-> would result in the data structures simply not having the same layout.
+> 1.	Disabled and empty.  This is the case when the boot CPU has
+> 	not done call_rcu(), when a non-boot CPU first comes online,
+> 	and when a non-offloaded CPU comes back online.  In this case,
+> 	it is permissible to initialize ->cblist.  Because either the
+> 	CPU is currently running with interrupts disabled (boot CPU)
+> 	or is not yet running at all (other CPUs), it is not necessary
+> 	to acquire ->nocb_lock.
 > 
-> That's not because of compiler versions per se, it's because of our
-> version checks.
+> 2.	Disabled and non-empty.  This is the case when the boot CPU has
+> 	done call_rcu().  It is not permissible to initialize ->cblist
+> 	because doing so will leak any callbacks posted by early boot
+> 	invocations of call_rcu().
 
-Right, this is what I'm trying to say.  We have features based on
-compiler version checks.  Peterz pointed out asm goto as a previous
-example.
+I don't think that's possible. In this case __call_rcu() has called
+rcu_segcblist_init() and has enabled the segcblist.
 
-> THAT workaround is long gone, but I didn't check what other ones we
-> might have now. But the gcc version checks we _do_ have are not
-> necessarily about major versions at all (ie I trivially found checks
-> for 4.9, 4.9.2, 5.1, 7.2 and 9.1).
+> 
+> 	Test for the possibility of leaking by building with
+> 	CONFIG_PROVE_RCU=y and booting with rcupdate.rcu_self_test=1.
+> 
+> 3.	Enabled, whether empty or not.  This is the case when an
+> 	offloaded CPU comes back online.  This is the only case where
+> 	the ->nocb_lock must be held to modify ->cblist.  However,
+> 	it is not necessarily to modify ->cblist because the rcuoc
+> 	kthread is on the job.
+> 
+> So I believe that it is necessary to check for both disabled and empty.
+> But don't take my word for it!  Build with CONFIG_PROVE_RCU=y and boot
+> with rcupdate.rcu_self_test=1.  ;-)
 
-Then maybe the check should be same major.minor?
-
-And convert it to a strongly worded warning/disclaimer?
-
--- 
-Josh
-
+I'm trying that :-)
