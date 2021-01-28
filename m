@@ -2,122 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86556307748
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ADB307752
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhA1NkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbhA1NkI (ORCPT
+        id S232228AbhA1NmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:42:20 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10848 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231195AbhA1NmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:40:08 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B8DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:39:28 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l57W7-0004tf-81; Thu, 28 Jan 2021 14:39:23 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l57W6-0005Fj-Kg; Thu, 28 Jan 2021 14:39:22 +0100
-Date:   Thu, 28 Jan 2021 14:39:22 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: counter: add pulse-counter binding
-Message-ID: <20210128133922.khkb4zyccoxdnlyp@pengutronix.de>
-References: <20210126131239.8335-1-o.rempel@pengutronix.de>
- <20210126131239.8335-2-o.rempel@pengutronix.de>
- <CACRpkdY2XYi2jqYiXaBUfRO1+UEK3QCC8JQ0duENVGoOfYTmBA@mail.gmail.com>
+        Thu, 28 Jan 2021 08:42:18 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6012bf110003>; Thu, 28 Jan 2021 05:41:37 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
+ 2021 13:41:37 +0000
+Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Thu, 28 Jan 2021 13:41:35 +0000
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>
+CC:     <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lulu@redhat.com>, <elic@nvidia.com>
+Subject: [PATCH 0/2] Fix failure to hot add memory
+Date:   Thu, 28 Jan 2021 15:41:28 +0200
+Message-ID: <20210128134130.3051-1-elic@nvidia.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACRpkdY2XYi2jqYiXaBUfRO1+UEK3QCC8JQ0duENVGoOfYTmBA@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 13:43:14 up 57 days,  2:49, 33 users,  load average: 0.00, 0.02,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611841297; bh=DisB0kHtwE92+PqVn4btpi5qX92YhpfOEYqfJRcGINA=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type;
+        b=hs0xW+1Iem9MEqgagvn4JZbZTPxdjnjZ0mx7qkMrR19E+ETVwZAby5OdVSbXmrH8v
+         tCuHkdd9zVY5iHAiN4XguzrmjMikCG4zMIyZVOqFHClNC/fhfjRVJ91bywMu1QnCdT
+         vwh3BoFE4W36qu0K9omlNLvvgs4N4tXUw0px1lGJxLZqnYQM0DVCyP2bbETYCoS6Cg
+         l1N+F5ZHyWYNfPlWpfENHev04Caj851UgqAJuXloORr7Rt/v6U89aeJGEtLgUpHRS+
+         B4OVT7RX4rRZKRGUzHpxYjwBooDdjSC3S9bimGCJRjVld/F1TxWuC4NXAwKzurARhM
+         4hjjgExt5F1aw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 09:17:23AM +0100, Linus Walleij wrote:
-> Hi Oleksij,
-> 
-> thanks for your patch!
-> 
-> On Tue, Jan 26, 2021 at 2:15 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> > Add binding for the pulse counter node
-> >
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> (...)
-> 
-> > +properties:
-> > +  compatible:
-> > +    const: virtual,pulse-counter
-> 
-> What is so virtual about this? The device seems very real.
+Hi Michael,
+The following two patches are a fixing a failure to update the hardware
+with the updated used index. This results in a failure to to hot add
+memory to the guest which results in a memory map update and teardown
+and re-create of the resources.
 
-Currently there are two ways:
-1. use "virtual" or "linux" vendor. Same as "virtual,mdio-gpio"
-2. Extend the list of "not vendor" prefixes in the prefixes list:
-   Documentation/devicetree/bindings/vendor-prefixes.yaml
+The first patch just removes unnecessary code. The second on is the
+actual fix.
 
-Since both ways seems to be valid, i personally prefer to use existing
-prefix instead of maintaining the vendor-prefixes.yaml
+Eli Cohen (2):
+  vdpa/mlx5: Avoid unnecessary query virtqueue
+  vdpa/mlx5: Restore the hardware used index after change map
 
-@Rob, what do you prefer?
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-> However it is certainly a GPIO counter.
+--=20
+2.29.2
 
-This was my first implementation. @Jonathan you suggest to use GPIO-free
-way, can you and Linus please decide what is the way to go.
-
-I personally can imagine that this driver can be attached to any IRQ
-source, including drivers/iio/trigger/iio-trig-sysfs.c
-
-> I would call it "gpio-counter" simply.
-> 
-> Define:
->   $nodename:
->      pattern: "^counter(@.*)?$"
-> 
-> > +    counter-0 {
-> 
-> counter@0 {
-> 
-> > +    counter-1 {
-> 
-> counter@1 {
-
-In this case the dtc compiler will say:
-/counter@0: node has a unit name, but no reg property
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
