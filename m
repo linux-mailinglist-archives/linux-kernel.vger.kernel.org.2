@@ -2,129 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79163075DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EFA3075F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhA1MWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:22:24 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34756 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhA1MWT (ORCPT
+        id S231791AbhA1M0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:26:36 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:22687 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231508AbhA1MYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:22:19 -0500
-Date:   Thu, 28 Jan 2021 12:21:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611836497;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=trpTr5Kt6dyOcuEAnVdH0aFyDdUBi+2DCuy6JjrYcbI=;
-        b=dAsjuBJO3JBaZxSNHCZBNQntmN1/5W2H7oEzyAMWOIs0NpRftMqPRuyNA3diT2ymJ6xGpU
-        aoPTEpO1d7H7MeEd92hWeQi5gj2sPOZ64pe6BRT5JwnKdP+VgpvhuoF0N374NhWTZVxcTW
-        HSZv38oIrmYRjKDmLG9wUNOuocZoErNqXs15deXWJ6dsu68/mL0G7qc0uvurYFsX51hwHe
-        0ac4cxyzKHYwj799akte2cLYUMu0zum4wXBLj6x7XUwFtfEpuhErj8z20JMhiz49ip5FVa
-        nldIu1yy+ADDl/Cu5TyZOOl3ZMiFHwezBNhz/d9oElUoforlVib28rDtLgjmfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611836497;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=trpTr5Kt6dyOcuEAnVdH0aFyDdUBi+2DCuy6JjrYcbI=;
-        b=eOVuruo85Tf6Q46WXOGYDzuZJD2mqkrylbvsieO7XilfeKT2tkLY5wEONYZV+uhE9L8Wo4
-        X5c8b78sAvDhJ2BQ==
-From:   "tip-bot2 for Alex Shi" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rtmutex: Add missing kernel-doc markup
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1605257895-5536-2-git-send-email-alex.shi@linux.alibaba.com>
-References: <1605257895-5536-2-git-send-email-alex.shi@linux.alibaba.com>
+        Thu, 28 Jan 2021 07:24:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1611836681; x=1643372681;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=DymNgAN7fANbzQT7lS3cFouNRshO2mbPQxpOadj7G5A=;
+  b=qR+wKT825ctVAyGO/9DqFvSN9uAugvvyWDKvH0L8ayCfA9RAXvYEUbv+
+   Af6BFrhSGtmRty/m/mGf3hml2S+UvUl1xNLFXzKvEZ03fGVugoEHz9umE
+   CBiMG7A49Z+NYSPoJ+Esj/sdwV7t80lFjMp/h/tIHLxOkE0oRCO0aQwIO
+   g=;
+X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
+   d="scan'208";a="82172617"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 28 Jan 2021 12:24:00 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 724C7A19B1;
+        Thu, 28 Jan 2021 12:23:57 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 12:23:56 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.162.94) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 12:23:52 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <ttoukan.linux@gmail.com>
+CC:     <aams@amazon.de>, <borisp@mellanox.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <tariqt@mellanox.com>
+Subject: Re: [PATCH v3 net-next] net: Remove redundant calls of sk_tx_queue_clear().
+Date:   Thu, 28 Jan 2021 21:23:47 +0900
+Message-ID: <20210128122347.74746-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <6f77d50f-b658-b751-5ac4-caaf9876f287@gmail.com>
+References: <6f77d50f-b658-b751-5ac4-caaf9876f287@gmail.com>
 MIME-Version: 1.0
-Message-ID: <161183649616.23325.8512729812885530815.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.94]
+X-ClientProxiedBy: EX13D27UWB002.ant.amazon.com (10.43.161.167) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Date:   Thu, 28 Jan 2021 13:07:26 +0200
+> On 1/28/2021 4:19 AM, Kuniyuki Iwashima wrote:
+> > The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
+> > sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
+> > it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
+> > the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
+> > other hand, the original commit had already put sk_tx_queue_clear() in
+> > sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
+> > sk_tx_queue_clear() is called twice in each path.
+> > 
+> > If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
+> > currently works well because (i) sk_tx_queue_mapping is defined between
+> > sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
+> > sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
+> > However, if we move sk_tx_queue_mapping out of the no copy area, it
+> > introduces a bug unintentionally.
+> > 
+> > Therefore, this patch adds a runtime 
+> 
+> compile-time
 
-Commit-ID:     bf594bf400016a1ac58c753bcc0393a39c36f669
-Gitweb:        https://git.kernel.org/tip/bf594bf400016a1ac58c753bcc0393a39c36f669
-Author:        Alex Shi <alex.shi@linux.alibaba.com>
-AuthorDate:    Fri, 13 Nov 2020 16:58:11 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 28 Jan 2021 13:20:18 +01:00
+Oh, shame on me...
+I'll fix it in the next spin.
 
-locking/rtmutex: Add missing kernel-doc markup
-
-To fix the following issues:
-kernel/locking/rtmutex.c:1612: warning: Function parameter or member
-'lock' not described in '__rt_mutex_futex_unlock'
-kernel/locking/rtmutex.c:1612: warning: Function parameter or member
-'wake_q' not described in '__rt_mutex_futex_unlock'
-kernel/locking/rtmutex.c:1675: warning: Function parameter or member
-'name' not described in '__rt_mutex_init'
-kernel/locking/rtmutex.c:1675: warning: Function parameter or member
-'key' not described in '__rt_mutex_init'
-
-[ tglx: Change rt lock to rt_mutex for consistency sake ]
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/1605257895-5536-2-git-send-email-alex.shi@linux.alibaba.com
+Thank you,
+Kuniyuki
 
 
----
- kernel/locking/rtmutex.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index cfdd5b9..a201e5e 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1604,8 +1604,11 @@ void __sched rt_mutex_unlock(struct rt_mutex *lock)
- EXPORT_SYMBOL_GPL(rt_mutex_unlock);
- 
- /**
-- * Futex variant, that since futex variants do not use the fast-path, can be
-- * simple and will not need to retry.
-+ * __rt_mutex_futex_unlock - Futex variant, that since futex variants
-+ * do not use the fast-path, can be simple and will not need to retry.
-+ *
-+ * @lock:	The rt_mutex to be unlocked
-+ * @wake_q:	The wake queue head from which to get the next lock waiter
-  */
- bool __sched __rt_mutex_futex_unlock(struct rt_mutex *lock,
- 				    struct wake_q_head *wake_q)
-@@ -1662,13 +1665,15 @@ void rt_mutex_destroy(struct rt_mutex *lock)
- EXPORT_SYMBOL_GPL(rt_mutex_destroy);
- 
- /**
-- * __rt_mutex_init - initialize the rt lock
-+ * __rt_mutex_init - initialize the rt_mutex
-  *
-- * @lock: the rt lock to be initialized
-+ * @lock:	The rt_mutex to be initialized
-+ * @name:	The lock name used for debugging
-+ * @key:	The lock class key used for debugging
-  *
-- * Initialize the rt lock to unlocked state.
-+ * Initialize the rt_mutex to unlocked state.
-  *
-- * Initializing of a locked rt lock is not allowed
-+ * Initializing of a locked rt_mutex is not allowed
-  */
- void __rt_mutex_init(struct rt_mutex *lock, const char *name,
- 		     struct lock_class_key *key)
+> > check to take care of the order of
+> > sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
+> > sk_prot_alloc() so that it does the only allocation and its callers
+> > initialize fields.
+> > 
+> > v3:
+> > * Remove Fixes: tag
+> > * Add BUILD_BUG_ON
+> > * Remove sk_tx_queue_clear() from sk_prot_alloc()
+> >    instead of sk_alloc() and sk_clone_lock()
+> > 
+> > v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
+> > * Remove Reviewed-by: tag
+> > 
+> > v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
+> > 
+> > CC: Tariq Toukan <tariqt@mellanox.com>
+> > CC: Boris Pismenny <borisp@mellanox.com>
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > ---
+> >   net/core/sock.c | 11 ++++++++++-
+> >   1 file changed, 10 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/core/sock.c b/net/core/sock.c
+> > index bbcd4b97eddd..cfbd62a5e079 100644
+> > --- a/net/core/sock.c
+> > +++ b/net/core/sock.c
+> > @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
+> >   #ifdef CONFIG_SECURITY_NETWORK
+> >   	void *sptr = nsk->sk_security;
+> >   #endif
+> > +
+> > +	/* If we move sk_tx_queue_mapping out of the private section,
+> > +	 * we must check if sk_tx_queue_clear() is called after
+> > +	 * sock_copy() in sk_clone_lock().
+> > +	 */
+> > +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
+> > +		     offsetof(struct sock, sk_dontcopy_begin) ||
+> > +		     offsetof(struct sock, sk_tx_queue_mapping) >=
+> > +		     offsetof(struct sock, sk_dontcopy_end));
+> > +
+> >   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
+> >   
+> >   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
+> > @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
+> >   
+> >   		if (!try_module_get(prot->owner))
+> >   			goto out_free_sec;
+> > -		sk_tx_queue_clear(sk);
+> >   	}
+> >   
+> >   	return sk;
+> > 
