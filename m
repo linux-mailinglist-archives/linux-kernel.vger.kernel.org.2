@@ -2,180 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EF83076B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2301B3076B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhA1NFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:05:40 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:51948 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhA1NFe (ORCPT
+        id S231991AbhA1NH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231377AbhA1NHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:05:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From;
-        bh=uSh/nbr5myWUoYd0uMZeNZLBjVL7y7b3A+YslUvvtUE=; b=di5UZsTvb+vMktgfuPpIFL3V6m
-        kyJMyEUOv+AuBIACA13egD+cKHvoZtoTaVLq9n/vWH/H/PB6HACTzjgQc3vB0M7aV0QIGRWCBr3Ds
-        bkyqs967pvFA729na7qb5vqnFSax+H5Roh7RWRct489JLpjBy3GYEj1akJtP5zEyPcgI=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1l56yb-0005yN-Fz; Thu, 28 Jan 2021 13:04:45 +0000
-Received: from [54.239.6.186] (helo=localhost.localdomain)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1l56yb-0000K8-3m; Thu, 28 Jan 2021 13:04:45 +0000
-From:   Paul Durrant <paul@xen.org>
-To:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dongli Zhang <dongli.zhang@oracle.com>
-Subject: [PATCH v2] xen-blkback: fix compatibility bug with single page rings
-Date:   Thu, 28 Jan 2021 13:04:41 +0000
-Message-Id: <20210128130441.11744-1-paul@xen.org>
-X-Mailer: git-send-email 2.17.1
+        Thu, 28 Jan 2021 08:07:25 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A840C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:06:45 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id n2so5457216iom.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:06:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R5AmyTAxwdCn14G+u2C+YUTCaRy+e3KtKL++CDObPQY=;
+        b=bIInvfI2erl556NcqE26CdvyZS1i0f2lZ4YQ+vrDzBAtJlAQjb0mG73aJqxbAUxrLd
+         twuAXu/a9Tv9a+6hbn1q/eaFYy1yeP2NIRUIcTE+d6Qn+tI9BZn6mmaap9JjDlwCtOWs
+         OCjBhsE7i6beC1aa4nskk1axlHfZPL0NDRFFh6FLshW7htvzO/eveACfWJ50IXjFwpkj
+         C2Gz9CFEMxtk8ZOAIr3jtvIc78zT1CriL5AKz0n5956A2Pghzhd3vsrfGaC/HrBO+W7v
+         dAIDB87NdgeMjoJImIRzQwwLT4TFIBvX+r7hmbKJQs35YcaF6D/ENo1tRokfBB9IduT9
+         4Szw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R5AmyTAxwdCn14G+u2C+YUTCaRy+e3KtKL++CDObPQY=;
+        b=cJgSdKmJNlb8LNwfC6x9cBO8T3X1jiruUxu9Vm2yABP76syJWF3UP22T3SrY7+QFS3
+         FU/EStmlmy6+WQ5sLo9TXucXqgIGKSA9K8xZl3PdFPQPsUknSv5ZLG1ymf539QiMXv5w
+         bms/DESpix0mn+1+ez0cL3bgRX6QmQZI2WjqPT2oI3l1Ej3KqjK42qgMd/2+ft7TC9NJ
+         hvyR8MIbOIAwRu31e+L8OQi3ZRMNwDK0PSqzXR31jiVEWHDLxg3WJNQihHzKjZcea5YZ
+         77IIpTByGLWO6HLTM+wJU6I/EfAW5XpRDwVE7JW29zaMxT1Fw8ijDW5D+Nr6RBG4NFB/
+         0J3w==
+X-Gm-Message-State: AOAM5323qDhZIzZBL1FkEOtyfC2u4EQJ5c1zFtZQB6jG/hQF5Fnt0wdt
+        MvPSTsl6lH7s/clsUd37D6QNS6UXTa/dbKnExDM=
+X-Google-Smtp-Source: ABdhPJyNsoTx7kPhpc8DTZ+IGBwljtCc0WwblZh+zMI0ljNcvyzmIay/MEoZEU+D874v7s0hm9z1lQ7urL5rDUOhk1M=
+X-Received: by 2002:a05:6602:224b:: with SMTP id o11mr11251520ioo.10.1611839205042;
+ Thu, 28 Jan 2021 05:06:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-3-laoar.shao@gmail.com>
+ <0b2f4419-06a9-0b6c-067b-8d0848e78c33@suse.cz>
+In-Reply-To: <0b2f4419-06a9-0b6c-067b-8d0848e78c33@suse.cz>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 28 Jan 2021 21:06:09 +0800
+Message-ID: <CALOAHbBb3ULnObisew=zv==6NdSD3aMqQ=pKRGOQUeWSghrpqg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm, slub: don't combine pr_err with INFO
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        andriy.shevchenko@linux.intel.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Durrant <pdurrant@amazon.com>
+On Thu, Jan 28, 2021 at 6:35 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/28/21 3:19 AM, Yafang Shao wrote:
+> > It is strange to combine "pr_err" with "INFO", so let's clean them up.
+> > This patch is motivated by David's comment[1].
+> >
+> > - before the patch
+> > [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
+> >
+> > - after the patch
+> > [ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
+> >
+> > [1]. https://lore.kernel.org/linux-mm/b9c0f2b6-e9b0-0c36-ebdd-2bc684c5a762@redhat.com/#t
+> >
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>
+> These are usually printed as part of slab_bug() with its prominent banner. In
+> that sense it's additional details, thus INFO. The details itself are not error,
+> thus ERR makes little sense imho. How about removing the prefix completely, or
+> just replacing with an ident to make it visually part of the BUG report.
+>
 
-Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
-inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
-behaviour of xen-blkback when connecting to a frontend was:
+Thanks for the explanation. I will remove the prefix completely in the
+next version.
 
-- read 'ring-page-order'
-- if not present then expect a single page ring specified by 'ring-ref'
-- else expect a ring specified by 'ring-refX' where X is between 0 and
-  1 << ring-page-order
+> > ---
+> >  mm/slub.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index 4b9ab267afbc..18b4474c8fa2 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -615,7 +615,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
+> >       if (!t->addr)
+> >               return;
+> >
+> > -     pr_err("INFO: %s in %pS age=%lu cpu=%u pid=%d\n",
+> > +     pr_err("ERR: %s in %pS age=%lu cpu=%u pid=%d\n",
+> >              s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
+> >  #ifdef CONFIG_STACKTRACE
+> >       {
+> > @@ -641,7 +641,7 @@ void print_tracking(struct kmem_cache *s, void *object)
+> >
+> >  static void print_page_info(struct page *page)
+> >  {
+> > -     pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+> > +     pr_err("ERR: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+> >              page, page->objects, page->inuse, page->freelist,
+> >              page->flags, &page->flags);
+> >
+> > @@ -698,7 +698,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
+> >
+> >       print_page_info(page);
+> >
+> > -     pr_err("INFO: Object 0x%p @offset=%tu fp=0x%p\n\n",
+> > +     pr_err("ERR: Object 0x%p @offset=%tu fp=0x%p\n\n",
+> >              p, p - addr, get_freepointer(s, p));
+> >
+> >       if (s->flags & SLAB_RED_ZONE)
+> > @@ -791,7 +791,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+> >               end--;
+> >
+> >       slab_bug(s, "%s overwritten", what);
+> > -     pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+> > +     pr_err("ERR: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+> >                                       fault, end - 1, fault - addr,
+> >                                       fault[0], value);
+> >       print_trailer(s, page, object);
+> > @@ -3855,7 +3855,7 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
+> >       for_each_object(p, s, addr, page->objects) {
+> >
+> >               if (!test_bit(__obj_to_index(s, addr, p), map)) {
+> > -                     pr_err("INFO: Object 0x%p @offset=%tu\n", p, p - addr);
+> > +                     pr_err("ERR: Object 0x%p @offset=%tu\n", p, p - addr);
+> >                       print_tracking(s, p);
+> >               }
+> >       }
+> >
+>
 
-This was correct behaviour, but was broken by the afforementioned commit to
-become:
 
-- read 'ring-page-order'
-- if not present then expect a single page ring (i.e. ring-page-order = 0)
-- expect a ring specified by 'ring-refX' where X is between 0 and
-  1 << ring-page-order
-- if that didn't work then see if there's a single page ring specified by
-  'ring-ref'
-
-This incorrect behaviour works most of the time but fails when a frontend
-that sets 'ring-page-order' is unloaded and replaced by one that does not
-because, instead of reading 'ring-ref', xen-blkback will read the stale
-'ring-ref0' left around by the previous frontend will try to map the wrong
-grant reference.
-
-This patch restores the original behaviour.
-
-Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid inconsistent xenstore 'ring-page-order' set by malicious blkfront")
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
----
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: "Roger Pau Monné" <roger.pau@citrix.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Dongli Zhang <dongli.zhang@oracle.com>
-
-v2:
- - Remove now-spurious error path special-case when nr_grefs == 1
----
- drivers/block/xen-blkback/common.h |  1 +
- drivers/block/xen-blkback/xenbus.c | 38 +++++++++++++-----------------
- 2 files changed, 17 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
-index b0c71d3a81a0..524a79f10de6 100644
---- a/drivers/block/xen-blkback/common.h
-+++ b/drivers/block/xen-blkback/common.h
-@@ -313,6 +313,7 @@ struct xen_blkif {
- 
- 	struct work_struct	free_work;
- 	unsigned int 		nr_ring_pages;
-+	bool                    multi_ref;
- 	/* All rings for this device. */
- 	struct xen_blkif_ring	*rings;
- 	unsigned int		nr_rings;
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index 9860d4842f36..6c5e9373e91c 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -998,14 +998,17 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
- 	for (i = 0; i < nr_grefs; i++) {
- 		char ring_ref_name[RINGREF_NAME_LEN];
- 
--		snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-+		if (blkif->multi_ref)
-+			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-+		else {
-+			WARN_ON(i != 0);
-+			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref");
-+		}
-+
- 		err = xenbus_scanf(XBT_NIL, dir, ring_ref_name,
- 				   "%u", &ring_ref[i]);
- 
- 		if (err != 1) {
--			if (nr_grefs == 1)
--				break;
--
- 			err = -EINVAL;
- 			xenbus_dev_fatal(dev, err, "reading %s/%s",
- 					 dir, ring_ref_name);
-@@ -1013,18 +1016,6 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
- 		}
- 	}
- 
--	if (err != 1) {
--		WARN_ON(nr_grefs != 1);
--
--		err = xenbus_scanf(XBT_NIL, dir, "ring-ref", "%u",
--				   &ring_ref[0]);
--		if (err != 1) {
--			err = -EINVAL;
--			xenbus_dev_fatal(dev, err, "reading %s/ring-ref", dir);
--			return err;
--		}
--	}
--
- 	err = -ENOMEM;
- 	for (i = 0; i < nr_grefs * XEN_BLKIF_REQS_PER_PAGE; i++) {
- 		req = kzalloc(sizeof(*req), GFP_KERNEL);
-@@ -1129,10 +1120,15 @@ static int connect_ring(struct backend_info *be)
- 		 blkif->nr_rings, blkif->blk_protocol, protocol,
- 		 blkif->vbd.feature_gnt_persistent ? "persistent grants" : "");
- 
--	ring_page_order = xenbus_read_unsigned(dev->otherend,
--					       "ring-page-order", 0);
--
--	if (ring_page_order > xen_blkif_max_ring_order) {
-+	err = xenbus_scanf(XBT_NIL, dev->otherend, "ring-page-order", "%u",
-+			   &ring_page_order);
-+	if (err != 1) {
-+		blkif->nr_ring_pages = 1;
-+		blkif->multi_ref = false;
-+	} else if (ring_page_order <= xen_blkif_max_ring_order) {
-+		blkif->nr_ring_pages = 1 << ring_page_order;
-+		blkif->multi_ref = true;
-+	} else {
- 		err = -EINVAL;
- 		xenbus_dev_fatal(dev, err,
- 				 "requested ring page order %d exceed max:%d",
-@@ -1141,8 +1137,6 @@ static int connect_ring(struct backend_info *be)
- 		return err;
- 	}
- 
--	blkif->nr_ring_pages = 1 << ring_page_order;
--
- 	if (blkif->nr_rings == 1)
- 		return read_per_ring_refs(&blkif->rings[0], dev->otherend);
- 	else {
 -- 
-2.17.1
-
+Thanks
+Yafang
