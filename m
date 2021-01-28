@@ -2,176 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFDD3068CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3433068DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhA1Asx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbhA1Asm (ORCPT
+        id S229635AbhA1AyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:54:14 -0500
+Received: from conuserg-12.nifty.com ([210.131.2.79]:28376 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhA1AyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:48:42 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDB3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:48:02 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id u7so3845413iol.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:48:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nqhWuPJQWzxcYd51zOTBBe32ajnLh+ur9OS99sopons=;
-        b=sFkN5dQvyK6yJYdEfBoJcRZzCVAr1MiZyViMHcaSUMRI6ow86O+L29R7KPwHQsi2QP
-         St9izOKpm8nyZmLbh2W2ea1B2vNK0DmE7nmJPs6S9M3NxO4bA8U7IRoMws82A9IA+Xha
-         J34F7FUNPaB3Xt0IFfCPc/JEsEm6j9C3wE6Uw3L8u6BZ4DVpGiOBSbRqLvQvYA5cRc+C
-         Ce3O4auwngGU6jEJttPduHN9mvIb3fxpd+xfD+e59kb22sw2hvD/mQHEEjCVsI/jz4vQ
-         4TnUucD4F/aBygGXgRMtKTPgBlSzya+Z/Wtp7x46ajWBm9twUjFNx13HFV6WiRNxFojL
-         vyFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nqhWuPJQWzxcYd51zOTBBe32ajnLh+ur9OS99sopons=;
-        b=kXhnw0GyCVH/LeDrB4xsF+68sxNZs3uxONgaw5q8f0d6wUuggpozXotCw3tAfnArps
-         YK2EngX6rmKyfK9N+VgLOS0t5A7qkUrZmQqAkmkXNScMXOKU+apxkdVJNRnw3MXzUGwl
-         Bbnl1WauhSYnNOalc83hljfq/2jWr+sWya/rNHZ6Fpftl+GFbBmFspXzNJIUsLPhjbAc
-         7SSsm+BWu9FCXgj5ser5aqc/p1MzdIEp+XN1kpe28CRNV2c07ll5nYiRN2kUQrftp5Qh
-         URyQq7LY8dTLRu8okQiijnZ2LJgBAcT09R4Ab/fpeXi5pj2XpgGw6+Wtcb1RNdvO/cTT
-         3Ctw==
-X-Gm-Message-State: AOAM530CnWVov6c+eo3wmKBE23q0tiW08x0yCrCHWIXe4yzc3aDr4KOt
-        2AqchwvNdYBLpRQBaqbCt085PqrurnHXno2U1q8=
-X-Google-Smtp-Source: ABdhPJxtZMc3G20lQKXkp9oNrQpfNPo285rwLEOWBEkrxL+XMTBOnCDrMr4P98gwhooUW9UVrxJMwd1qCarEDkLVq1Y=
-X-Received: by 2002:a05:6602:122b:: with SMTP id z11mr9458563iot.210.1611794881571;
- Wed, 27 Jan 2021 16:48:01 -0800 (PST)
+        Wed, 27 Jan 2021 19:54:04 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIV024172;
+        Thu, 28 Jan 2021 09:51:45 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIV024172
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611795106;
+        bh=jQK2la2Ui/cbd7OVnHnnldJT4VCvoMGBdUZ9L0a9brw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RCDhaLrSacWGW2jMoA/CnF0PXcaoEGBb/27Iq340URIjyF5oOdKIioy3xHP3gsabi
+         mw2ZoaQYGVOEzsCJagmyEeYa+/en2HXL/VNwpblpu+H4HmQiy3FuHey7xwIHawrWhz
+         J046GTpD7glj5cXJqXMwWZMnKHaOG7PR+D6EQTv69ORhiD33OFaqqBEEw0u6JdDmdu
+         GOthXjVErdPRXsvNFscEIJJkwb+kD+1TCC1UM6286+BXL8saw9gPf83J7mGkOtYG0m
+         pEFy1183wEobPYroWAor8uPgimvicQp7OOAgunUeDJfA8jTaVxyFcGYh5N2AWxcL+E
+         4y0JIaJgjdFmg==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-arch@vger.kernel.org, x86@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 00/27] arch: syscalls: unifiy all syscalltbl.sh into scripts/syscalltbl.sh
+Date:   Thu, 28 Jan 2021 09:50:42 +0900
+Message-Id: <20210128005110.2613902-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
- <20210126171141.122639-4-paul.gortmaker@windriver.com> <YBCGqfW0hKSgo9Rl@smile.fi.intel.com>
- <20210127080206.GE23530@windriver.com>
-In-Reply-To: <20210127080206.GE23530@windriver.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Wed, 27 Jan 2021 16:47:50 -0800
-Message-ID: <CAAH8bW-tWRJ4m3pP37YBVrferOa9CwMZGdZkSDC+GXvBfC=Uhw@mail.gmail.com>
-Subject: Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:02 AM Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> [Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct] On 26/01/2021 (Tue 23:16) Andy Shevchenko wrote:
->
-> > On Tue, Jan 26, 2021 at 12:11:36PM -0500, Paul Gortmaker wrote:
-> > > This will reduce parameter passing and enable using nbits as part
-> > > of future dynamic region parameter parsing.
-> >
-> > One nit below, nevertheless
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > > Cc: Yury Norov <yury.norov@gmail.com>
-> > > Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > Suggested-by: Yury Norov <yury.norov@gmail.com>
-> > > Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> > > ---
-> > >  lib/bitmap.c | 19 ++++++++++---------
-> > >  1 file changed, 10 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/lib/bitmap.c b/lib/bitmap.c
-> > > index 75006c4036e9..162e2850c622 100644
-> > > --- a/lib/bitmap.c
-> > > +++ b/lib/bitmap.c
-> > > @@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
-> > >
-> > >  /*
-> > >   * Region 9-38:4/10 describes the following bitmap structure:
-> > > - * 0          9  12    18                  38
-> > > - * .........****......****......****......
-> > > - *     ^  ^     ^                   ^
-> > > - *      start  off   group_len            end
-> > > + * 0          9  12    18                  38           N
-> > > + * .........****......****......****..................
-> > > + *     ^  ^     ^                   ^           ^
-> > > + *      start  off   group_len            end       nbits
-> > >   */
-> > >  struct region {
-> > >     unsigned int start;
-> > >     unsigned int off;
-> > >     unsigned int group_len;
-> > >     unsigned int end;
-> > > +   unsigned int nbits;
-> > >  };
-> > >
-> > > -static int bitmap_set_region(const struct region *r,
-> > > -                           unsigned long *bitmap, int nbits)
-> > > +static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
-> > >  {
-> > >     unsigned int start;
-> > >
-> > > -   if (r->end >= nbits)
-> > > +   if (r->end >= r->nbits)
-> > >             return -ERANGE;
-> > >
-> > >     for (start = r->start; start <= r->end; start += r->group_len)
-> > > @@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
-> > >     struct region r;
-> > >     long ret;
-> > >
-> > > -   bitmap_zero(maskp, nmaskbits);
-> > > +   r.nbits = nmaskbits;
-> >
-> > > +   bitmap_zero(maskp, r.nbits);
-> >
-> > This sounds not right from style perspective.
-> > You have completely uninitialized r on stack, then you assign only one value
-> > for immediate use here and...
->
-> So, this change was added because Yury suggested that I "..store
-> nmaskbits in the struct region, and avoid passing nmaskbits as a
-> parameter."
->
-> To which I originally noted "I considered that and went with the param
-> so as to not open the door to someone possibly using an uninitialized
-> struct value later."
 
-struct region is purely internal structure. It's declared on stack and filled
-field-by-field using helpers. 'Someone' misusing the structure doesn't exist
-because the structure doesn't exist out of the scope.
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
 
-> https://lore.kernel.org/lkml/20210122044357.GS16838@windriver.com/
->
-> Looking back, I had a similar thought as to yours, it seems...
->
-> I am also thinking more and more that nbits doesn't belong in the
-> region anyway - yes, a region gets validated against a specific nbits
-> eventually, but it doesn't need an nbits field to be a complete
-> specification.  The region "0-3" is a complete specification for "the
-> 1st four cores" and is as valid on a 4 core machine as it is on a 64 core
-> machine -- a validation we do when we deploy the region on that machine.
->
-> I will set this change aside and get the nbits value to getnum() another
-> way, and leave the region struct as it was -- without a nbits field.
->
-> This will also resolve having the macro handling of region that you were
-> not really liking.
->
-> Paul.
+  $ find arch -name syscalltbl.sh | sort
+  arch/alpha/kernel/syscalls/syscalltbl.sh
+  arch/arm/tools/syscalltbl.sh
+  arch/ia64/kernel/syscalls/syscalltbl.sh
+  arch/m68k/kernel/syscalls/syscalltbl.sh
+  arch/microblaze/kernel/syscalls/syscalltbl.sh
+  arch/mips/kernel/syscalls/syscalltbl.sh
+  arch/parisc/kernel/syscalls/syscalltbl.sh
+  arch/powerpc/kernel/syscalls/syscalltbl.sh
+  arch/sh/kernel/syscalls/syscalltbl.sh
+  arch/sparc/kernel/syscalls/syscalltbl.sh
+  arch/x86/entry/syscalls/syscalltbl.sh
+  arch/xtensa/kernel/syscalls/syscalltbl.sh
 
-Region is a convenient structure. Adding nbits into it helps to remove
-validation
-logic from bitmap_set_region(), so it's worth doing this.
+This patch set unifies all of them into a single file,
+scripts/syscalltbl.sh.
 
-Can you please have it unchanged?
+The code-diff is attractive:
 
-Thanks,
-Yury
+ 51 files changed, 254 insertions(+), 674 deletions(-)
+ delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/arm/tools/syscalltbl.sh
+ delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
+ delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
+ create mode 100644 scripts/syscalltbl.sh
+
+Also, this includes Makefile fixes, and some x86 fixes and cleanups.
+
+My question is, how to merge this series.
+
+I am touching all architectures, but the first patch is a prerequisite
+of the rest of this series.
+
+One possibility is to ask the x86 maintainers to pickup the first 5
+patches for v5.12-rc1, and then send the rest for v5.13-rc1,
+splitting per-arch.
+
+I want the x86 maintainers to check the first 5 patches because
+I cleaned up the x32 code.
+
+I know x32 was considered for deprecation, but my motivation is to
+clean-up scripts across the tree without changing the functionality.
+
+
+
+Masahiro Yamada (27):
+  scripts: add generic syscalltbl.sh
+  x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
+  x86/build: add missing FORCE and fix 'targets' to make if_changed work
+  x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
+  x86/syscalls: switch to generic syscalltbl.sh
+  ARM: syscalls: switch to generic syscalltbl.sh
+  alpha: add missing FORCE and fix 'targets' to make if_changed work
+  alpha: syscalls: switch to generic syscalltbl.sh
+  ia64: add missing FORCE and fix 'targets' to make if_changed work
+  ia64: syscalls: switch to generic syscalltbl.sh
+  m68k: add missing FORCE and fix 'targets' to make if_changed work
+  m68k: syscalls: switch to generic syscalltbl.sh
+  microblaze: add missing FORCE and fix 'targets' to make if_changed
+    work
+  microblaze: syscalls: switch to generic syscalltbl.sh
+  mips: add missing FORCE and fix 'targets' to make if_changed work
+  mips: syscalls: switch to generic syscalltbl.sh
+  parisc: add missing FORCE and fix 'targets' to make if_changed work
+  parisc: syscalls: switch to generic syscalltbl.sh
+  sh: add missing FORCE and fix 'targets' to make if_changed work
+  sh: syscalls: switch to generic syscalltbl.sh
+  sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
+  sparc: add missing FORCE and fix 'targets' to make if_changed work
+  sparc: syscalls: switch to generic syscalltbl.sh
+  powerpc: add missing FORCE and fix 'targets' to make if_changed work
+  powerpc: syscalls: switch to generic syscalltbl.sh
+  xtensa: add missing FORCE and fix 'targets' to make if_changed work
+  xtensa: syscalls: switch to generic syscalltbl.sh
+
+ arch/alpha/kernel/syscalls/Makefile           | 18 +++----
+ arch/alpha/kernel/syscalls/syscalltbl.sh      | 32 -----------
+ arch/alpha/kernel/systbls.S                   |  3 +-
+ arch/arm/kernel/entry-common.S                |  8 +--
+ arch/arm/tools/Makefile                       |  9 ++--
+ arch/arm/tools/syscalltbl.sh                  | 22 --------
+ arch/ia64/kernel/entry.S                      |  3 +-
+ arch/ia64/kernel/syscalls/Makefile            | 19 +++----
+ arch/ia64/kernel/syscalls/syscalltbl.sh       | 32 -----------
+ arch/m68k/kernel/syscalls/Makefile            | 18 +++----
+ arch/m68k/kernel/syscalls/syscalltbl.sh       | 32 -----------
+ arch/m68k/kernel/syscalltable.S               |  3 +-
+ arch/microblaze/kernel/syscall_table.S        |  3 +-
+ arch/microblaze/kernel/syscalls/Makefile      | 18 +++----
+ arch/microblaze/kernel/syscalls/syscalltbl.sh | 32 -----------
+ arch/mips/include/asm/Kbuild                  |  7 ++-
+ arch/mips/kernel/scall32-o32.S                |  4 +-
+ arch/mips/kernel/scall64-n32.S                |  3 +-
+ arch/mips/kernel/scall64-n64.S                |  3 +-
+ arch/mips/kernel/scall64-o32.S                |  4 +-
+ arch/mips/kernel/syscalls/Makefile            | 53 ++++++++-----------
+ arch/mips/kernel/syscalls/syscalltbl.sh       | 36 -------------
+ arch/parisc/include/asm/Kbuild                |  1 -
+ arch/parisc/kernel/syscall.S                  | 16 +++---
+ arch/parisc/kernel/syscalls/Makefile          | 34 +++++-------
+ arch/parisc/kernel/syscalls/syscalltbl.sh     | 36 -------------
+ arch/powerpc/include/asm/Kbuild               |  1 -
+ arch/powerpc/kernel/syscalls/Makefile         | 39 +++++---------
+ arch/powerpc/kernel/syscalls/syscalltbl.sh    | 36 -------------
+ arch/powerpc/kernel/systbl.S                  |  5 +-
+ arch/powerpc/platforms/cell/spu_callbacks.c   |  2 +-
+ arch/sh/kernel/syscalls/Makefile              | 18 +++----
+ arch/sh/kernel/syscalls/syscalltbl.sh         | 32 -----------
+ arch/sparc/include/asm/Kbuild                 |  3 --
+ arch/sparc/kernel/syscalls/Makefile           | 34 +++++-------
+ arch/sparc/kernel/syscalls/syscalltbl.sh      | 36 -------------
+ arch/sparc/kernel/systbls_32.S                |  4 +-
+ arch/sparc/kernel/systbls_64.S                |  8 +--
+ arch/x86/entry/syscall_32.c                   | 12 +++--
+ arch/x86/entry/syscall_64.c                   |  9 ++--
+ arch/x86/entry/syscall_x32.c                  | 27 ++--------
+ arch/x86/entry/syscalls/Makefile              | 33 +++++++-----
+ arch/x86/entry/syscalls/syscalltbl.sh         | 46 ----------------
+ arch/x86/include/asm/Kbuild                   |  1 +
+ arch/x86/include/asm/syscall_wrapper.h        | 11 ++--
+ arch/x86/um/sys_call_table_32.c               |  8 +--
+ arch/x86/um/sys_call_table_64.c               |  9 ++--
+ arch/xtensa/kernel/syscall.c                  |  3 +-
+ arch/xtensa/kernel/syscalls/Makefile          | 18 +++----
+ arch/xtensa/kernel/syscalls/syscalltbl.sh     | 32 -----------
+ scripts/syscalltbl.sh                         | 52 ++++++++++++++++++
+ 51 files changed, 254 insertions(+), 674 deletions(-)
+ delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/arm/tools/syscalltbl.sh
+ delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
+ delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
+ delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
+ create mode 100644 scripts/syscalltbl.sh
+
+-- 
+2.27.0
+
