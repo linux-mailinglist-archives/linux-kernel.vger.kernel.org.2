@@ -2,63 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08136307902
+	by mail.lfdr.de (Postfix) with ESMTP id ED47C307904
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhA1PCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:02:41 -0500
-Received: from mleia.com ([178.79.152.223]:45774 "EHLO mail.mleia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231724AbhA1PCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:02:34 -0500
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id 8680642F515;
-        Thu, 28 Jan 2021 15:01:49 +0000 (UTC)
-Subject: Re: [PATCH] pwm: fix semicolon.cocci warnings
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel test robot <lkp@intel.com>
-References: <202101282111.dfwxyPwI-lkp@intel.com>
- <20210128134537.GA54687@068c7b848bbb>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <71050e33-97cb-43f0-6ca2-ceb65505406f@mleia.com>
-Date:   Thu, 28 Jan 2021 17:01:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232217AbhA1PDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:03:33 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:47240 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232036AbhA1PDX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:03:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1611846203; x=1643382203;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=9/VdyTFb8NHluY/IjaW1kRd1KpXx4zAWoo8u1a5kQC4=;
+  b=YYdhKgjL3XmSgnHjooxKIv/NZzGpl0m8sv2S1HpplNzurlV/m/Wqsm/F
+   9JqBaJptDW3IYqEhcNu50SXkwDGZb+16HLYPixPrtJs6yp1aXg1QIsdKl
+   WS14YMos2WHt6txHt5jlWQsYGtYSoJdUJzcAwqkvvq1XwSIngyDmrhg8w
+   8=;
+X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
+   d="scan'208";a="80752060"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 28 Jan 2021 15:02:42 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id D9BC1A2134;
+        Thu, 28 Jan 2021 15:02:40 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 15:02:40 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.253) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 15:02:36 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+CC:     Tariq Toukan <tariqt@nvidia.com>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Amit Shah <aams@amazon.de>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "Kuniyuki Iwashima" <kuni1840@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Tariq Toukan <tariqt@mellanox.com>,
+        "Boris Pismenny" <borisp@mellanox.com>
+Subject: [PATCH v5 net-next] net: Remove redundant calls of sk_tx_queue_clear().
+Date:   Fri, 29 Jan 2021 00:02:17 +0900
+Message-ID: <20210128150217.6060-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
 MIME-Version: 1.0
-In-Reply-To: <20210128134537.GA54687@068c7b848bbb>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20210128_150149_573529_01032E2A 
-X-CRM114-Status: UNSURE (   7.41  )
-X-CRM114-Notice: Please train this message. 
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.253]
+X-ClientProxiedBy: EX13D23UWC001.ant.amazon.com (10.43.162.196) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 3:45 PM, kernel test robot wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> drivers/pwm/pwm-lpc18xx-sct.c:292:2-3: Unneeded semicolon
-> 
-> 
->   Remove unneeded semicolon.
-> 
-> Generated by: scripts/coccinelle/misc/semicolon.cocci
-> 
-> Fixes: e96c0ff4b1e0 ("pwm: Enable compile testing for some of drivers")
-> CC: Krzysztof Kozlowski <krzk@kernel.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
+The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
+sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
+it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
+the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
+other hand, the original commit had already put sk_tx_queue_clear() in
+sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
+sk_tx_queue_clear() is called twice in each path.
 
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
+currently works well because (i) sk_tx_queue_mapping is defined between
+sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
+sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
+However, if we move sk_tx_queue_mapping out of the no copy area, it
+introduces a bug unintentionally.
 
---
-Best wishes,
-Vladimir
+Therefore, this patch adds a compile-time check to take care of the order
+of sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
+sk_prot_alloc() so that it does the only allocation and its callers
+initialize fields.
+
+CC: Tariq Toukan <tariqt@mellanox.com>
+CC: Boris Pismenny <borisp@mellanox.com>
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
+---
+v5:
+* Move the changelog after the --- separator
+
+v4: https://lore.kernel.org/netdev/20210128124229.78315-1-kuniyu@amazon.co.jp/
+* Fix typo in the changelog (runtime -> compile-time)
+
+v3: https://lore.kernel.org/netdev/20210128021905.57471-1-kuniyu@amazon.co.jp/
+* Remove Fixes: tag
+* Add BUILD_BUG_ON
+* Remove sk_tx_queue_clear() from sk_prot_alloc()
+  instead of sk_alloc() and sk_clone_lock()
+
+v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
+* Remove Reviewed-by: tag
+
+v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
+
+ net/core/sock.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/sock.c b/net/core/sock.c
+index bbcd4b97eddd..cfbd62a5e079 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
+ #ifdef CONFIG_SECURITY_NETWORK
+ 	void *sptr = nsk->sk_security;
+ #endif
++
++	/* If we move sk_tx_queue_mapping out of the private section,
++	 * we must check if sk_tx_queue_clear() is called after
++	 * sock_copy() in sk_clone_lock().
++	 */
++	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
++		     offsetof(struct sock, sk_dontcopy_begin) ||
++		     offsetof(struct sock, sk_tx_queue_mapping) >=
++		     offsetof(struct sock, sk_dontcopy_end));
++
+ 	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
+ 
+ 	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
+@@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
+ 
+ 		if (!try_module_get(prot->owner))
+ 			goto out_free_sec;
+-		sk_tx_queue_clear(sk);
+ 	}
+ 
+ 	return sk;
+-- 
+2.17.2 (Apple Git-113)
+
