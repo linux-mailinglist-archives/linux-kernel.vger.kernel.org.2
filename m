@@ -2,105 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C703079C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979213079D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhA1PbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:31:00 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29170 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231718AbhA1PaG (ORCPT
+        id S231623AbhA1PcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhA1PbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:30:06 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10SFLaCT077541;
-        Thu, 28 Jan 2021 10:29:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=GyDjDpNYMVYYyuvqFG01VOsGa4j+Mn3jzM16mD+XQZE=;
- b=eG02fpaE7hmqyVq/g/kVD3NQfgZIRy4Vv8uHKsafFPpD1ptgGlsjaoiDQM1fYA6a/EWi
- 8bc4cM920kDV/x88OjpkpqO8f0wvFu8iFdvggK8cQGyeH9zPrRg/K+VBJjME+Vb8ct2f
- KQXcX4F9LXQ7nCKASYtUt3BpJXrHOPEylJ2K8+EW720du4SPBnmiGJwD52rA6w6ykPtP
- SJdYHvO06s/n6GQFHNJk1rfojZfJVpuQZpHM2J6/8ZP+7FWe/Ak4pTOyIMfqdSpKKLRp
- wfz/9Z5JWqYhWIXVhSyp4AaodlS23ciJ7rOT09rWI93h0U8ecwwmbA5JiAfDiM4VjVpM Zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36by9chehy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 10:29:17 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10SFMnhM085312;
-        Thu, 28 Jan 2021 10:29:16 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36by9cheh5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 10:29:16 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10SFMCpZ001645;
-        Thu, 28 Jan 2021 15:29:13 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 368be82k5v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 15:29:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10SFT37632047484
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 15:29:03 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D665AE051;
-        Thu, 28 Jan 2021 15:29:11 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2DA73AE045;
-        Thu, 28 Jan 2021 15:29:08 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.115.82])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Jan 2021 15:29:08 +0000 (GMT)
-Message-ID: <fb6c895d98596d802c825961ca8c5ee0a91f8d29.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 0/4] Add EFI_CERT_X509_GUID support for dbx/mokx
- entries
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     David Howells <dhowells@redhat.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dwmw2@infradead.org, jarkko@kernel.org,
-        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
-        ardb@kernel.org, lszubowi@redhat.com, javierm@redhat.com,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Thu, 28 Jan 2021 10:29:07 -0500
-In-Reply-To: <1ff03fa10f78884b399e2c20ca4e376b575d5b0f.camel@linux.ibm.com>
-References: <20210122181054.32635-1-eric.snowberg@oracle.com>
-         <3568165.1611846997@warthog.procyon.org.uk>
-         <1ff03fa10f78884b399e2c20ca4e376b575d5b0f.camel@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_08:2021-01-28,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280074
+        Thu, 28 Jan 2021 10:31:02 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6C0C061573;
+        Thu, 28 Jan 2021 07:30:22 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id p21so8105968lfu.11;
+        Thu, 28 Jan 2021 07:30:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=R+Hue0PWlTxdyWc5K6RSHcz9rExWoyGU+yGHd9hzTV0=;
+        b=aOVKWLC/LNskFli8f/Sqb0ejCNpPOgvj4L+dRMZXBxLUD2ua5XcEr4YAs93zwtIhbp
+         JK1172wcLyUJ1HAUgQcsSUqZtoAZANorPdQRa6eoIGGew3NI3ZVOBQQVbY8waDUhhRmA
+         itMIsLiSp2JWeMazv5MczitXTQhUnEaoJA1ckuFeopYgdr1/dZ7DWwMnv20twYfuj+NC
+         nQxDFNsLhnT++nhT+qLCxbgCsUocjYVRgTFxoEPx7sNM7VNBLnsq2bVGB6zcKOaLuHej
+         XyQ2sqsyM8/UDlRu2AOmsv7QaCZtdZkiC1bSkoEOdkVLJWAuJakE798fAiXwsHHENJrC
+         3y+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=R+Hue0PWlTxdyWc5K6RSHcz9rExWoyGU+yGHd9hzTV0=;
+        b=X62FrZBZ9Y9+/T2rJKARWIgidWJGoAOzyXTnmdVIPw+pyIBgv6kHdsdG5qoIqB0A/+
+         ZT+fCl7j6xd5BPnNIYmwPTqiM/NDt1tvrqtDqHqghHc/OaG5m14HPa5mo/aVAE8m0FLD
+         +1dguAy2y5BqlDErNXGynNaneAzq6NJ4KUm6FB2vP2a2Dl702vbAN6rcE3L0+2i6FSQL
+         e6JNII3PQPfQtquwOBdgkWAbtl1bjgzYr/un10wOKfW+VT+IHuf9yj+btN2fBLahJb/7
+         +ALbBlN/FVL565PnHC/DvJFxgvRybu5C2XpBj+LOESQbA3D3O1jTFvAGgxxCyvC84704
+         yAnA==
+X-Gm-Message-State: AOAM533Fib1FmWtlzxepvko2p6rLwWGTpCfvKACyUZAhgBcrPb1WxcKF
+        x91+WCbDhqCCZSRud6UtuzI=
+X-Google-Smtp-Source: ABdhPJy56uEiInFhFpbpttAzsRdD+R+o4+uVFk6y67VZEtJzVAKTz0VYUpxH6QPZcvuXH5mmH84K9g==
+X-Received: by 2002:a05:6512:510:: with SMTP id o16mr7817099lfb.378.1611847820573;
+        Thu, 28 Jan 2021 07:30:20 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t22sm689273lfk.128.2021.01.28.07.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 07:30:19 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 28 Jan 2021 16:30:17 +0100
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210128153017.GA2006@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
+ <20210125143150.GA2282@pc638.lan>
+ <20210125153943.GN827@dhcp22.suse.cz>
+ <20210125162559.GA52712@pc638.lan>
+ <20210128151152.GA1867@pc638.lan>
+ <YBLVbZzy0KSONizm@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBLVbZzy0KSONizm@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 10:27 -0500, Mimi Zohar wrote:
-> Hi David,
+On Thu, Jan 28, 2021 at 04:17:01PM +0100, Michal Hocko wrote:
+> On Thu 28-01-21 16:11:52, Uladzislau Rezki wrote:
+> > On Mon, Jan 25, 2021 at 05:25:59PM +0100, Uladzislau Rezki wrote:
+> > > On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
+> > > > On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
+> > > > > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> > > > > > > For a single argument we can directly request a page from a caller
+> > > > > > > context when a "carry page block" is run out of free spots. Instead
+> > > > > > > of hitting a slow path we can request an extra page by demand and
+> > > > > > > proceed with a fast path.
+> > > > > > > 
+> > > > > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > > > > > > and that its fallback is the relatively high latency synchronize_rcu().
+> > > > > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > > > > > > to allow limited sleeping within the memory allocator.
+> > > > > > 
+> > > > > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+> > > > > > way to allocate without triggering the OOM killer. Is this really what
+> > > > > > you need/want? Is __GFP_NORETRY too weak?
+> > > > > > 
+> > > > > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
+> > > > > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
+> > > > > point: https://www.spinics.net/lists/rcu/msg02856.html
+> > > > > 
+> > > > > <snip>
+> > > > >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
+> > > > >     further decisions based on instrumentation of the success rates of
+> > > > >     these opportunistic allocations.
+> > > > > <snip>
+> > > > 
+> > > > I completely agree with Johannes here.
+> > > > 
+> > > > > but for some reason, i can't find a tail or head of it, we introduced
+> > > > > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
+> > > > > What we would like to avoid.
+> > > > 
+> > > > Not that I object to this use but I think it would be much better to use
+> > > > it based on actual data. Going along with it right away might become a
+> > > > future burden to make any changes in this aspect later on due to lack of 
+> > > > exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
+> > > > try as hard as it can get without being really disruptive (like OOM
+> > > > killing something). And your wording didn't really give me that
+> > > > impression.
+> > > > 
+> > > Initially i proposed just to go with GFP_NOWAIT flag. But later on there
+> > > was a discussion about a fallback path, that uses synchronize_rcu() can be
+> > > slow, thus minimizing its hitting would be great. So, here we go with a
+> > > trade off.
+> > > 
+> > > Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
+> > > light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
+> > > 
+> > > There were simple criterias we discussed which we would like to achieve:
+> > > 
+> > > a) minimize a fallback hitting;
+> > > b) avoid of OOM involving;
+> > > c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+> > > 
+> > One question here. Since the code that triggers a page request can be
+> > directly invoked from reclaim context as well as outside of it. We had
+> > a concern about if any recursion is possible, but what i see it is safe.
+> > The context that does it can not enter it twice:
+> > 
+> > <snip>
+> >     /* Avoid recursion of direct reclaim */
+> >     if (current->flags & PF_MEMALLOC)
+> >         goto nopage;
+> > <snip>
 > 
-> On Thu, 2021-01-28 at 15:16 +0000, David Howells wrote:
-> > Which tree do you envision this going through?  EFI or keyrings - or are you
-> > going to ask Linus to pull it directly?  I can pull it if it should go through
-> > the keyrings tree.
+> Yes this is a recursion protection.
 > 
-> There's one more patch, yet to be posted, which updates
-> asymmetric_verify().  As long as you're willing to upstream all of the
-> patches, that's fine with me.
+> > What about any deadlocking in regards to below following flags?
+> > 
+> > GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
+> 
+> and __GFP_NOMEMALLOC will make sure that the allocation will not consume
+> all the memory reserves. The later should be clarified in one of your
+> patches I have acked IIRC.
+>
+Yep, it is clarified and reflected in another patch you ACKed.
 
-Oops, wrong thread.  I thought this was Stefan's patch set.
+Thanks!
 
-Mimi
-
+--
+Vlad Rezki
