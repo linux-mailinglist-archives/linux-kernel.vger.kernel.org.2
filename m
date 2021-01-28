@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43513078F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F6A3078EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhA1PAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbhA1O7J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:59:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FE3C061573;
-        Thu, 28 Jan 2021 06:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Z5EsWkl1JmttEYNurc9klzo0vYFtmKtLRijlck9brLw=; b=TX91hQiTGUsm7UXi+3eXnYVa1f
-        Bcud80EnB8TuCrhp+pjIslNddxZugUrcTZ+KjglWNql8qwA6yRtk7k6gZ13x4FlnQ/KhJvPY3cLb+
-        axiSZvX2N2atf7hd+t1BjtQ2DZZ1ysQRbd7+pQIdVtwaOgUIuT4n90dvIBkjIyZDJKen2NNH2LfHb
-        tF/XHPkJ67pEfOjmwO0HxEYiVGWi6arfr9q9YIUDTCZ3cMcjRRT/3iBvCpa3BtEqPC5mkkbf0iGWy
-        JMSfdiTlagLLAwW0NFN6fcS/Lwq6Xtw9y6e1FZOIXuHr2yROKMINrGiRgJZLhqagna9qcjQ1pumIc
-        ZYQfzi8Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l58kD-008ayM-0R; Thu, 28 Jan 2021 14:58:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4AE5D300B22;
-        Thu, 28 Jan 2021 15:57:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 29A0221405372; Thu, 28 Jan 2021 15:57:58 +0100 (CET)
-Date:   Thu, 28 Jan 2021 15:57:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] MIPS: Octeon: Implement __smp_store_release()
-Message-ID: <YBLQ9hbj8Zafjz+c@hirez.programming.kicks-ass.net>
-References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
- <20210127203627.47510-2-alexander.sverdlin@nokia.com>
- <YBHp4139X+p+4IZ+@hirez.programming.kicks-ass.net>
- <aace6ff1-9ddf-15af-3c0a-378c53c59acb@nokia.com>
- <YBKhBQQ97f/J6L+u@hirez.programming.kicks-ass.net>
- <b00f945a-1278-5fd2-321c-6ea5f07be128@nokia.com>
+        id S232215AbhA1O7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:59:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232298AbhA1O6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:58:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7FAE64DE8;
+        Thu, 28 Jan 2021 14:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611845893;
+        bh=70skHL26c2uu6S1xdkaZjxMf+ykcMABGtYclFtKAfcg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OguBSFVkSHqI1jyK8IOJ9tmmFkeG1MMSkHM0jk/O9eV6uMTB799yFf3Ck73uLHEyj
+         laVerO1xPgp3QSNZWAyOHQUnVXPWo9rsuRxuEov/KoMixq+T7WTF1XK208Xoj+zG+j
+         /Wkb77qyiKjalBH6RDzuLIPMXUCuD5aTdTxAEBGy4goJ4b9nedbXj7kOUubpF8TC2j
+         uvOTgbrvrwq3xUpwQsZTyjGW8oaRJmlvncMOjvtthOLGXiPMnjkHXtzU64sPVUQMx7
+         7lGkAP8UtbHsl6Balo/4JxkZsrcSj8HVrFm9FivltvU3Jd4PuUmEhi0nj5PRO5UbAe
+         CNkdk9hObQWOw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 61CD03522748; Thu, 28 Jan 2021 06:58:13 -0800 (PST)
+Date:   Thu, 28 Jan 2021 06:58:13 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Message-ID: <20210128145813.GO2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+ <20201126154630.GR1437@paulmck-ThinkPad-P72>
+ <MW2PR2101MB18014505C01027A9486D45EEBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
+ <20201126214226.GS1437@paulmck-ThinkPad-P72>
+ <MW2PR2101MB18011DA2FCF66D03BF8BB0CCBFF91@MW2PR2101MB1801.namprd21.prod.outlook.com>
+ <20201126235440.GT1437@paulmck-ThinkPad-P72>
+ <MW2PR2101MB1787FF5912C90FC4FFEF3993BFBA9@MW2PR2101MB1787.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b00f945a-1278-5fd2-321c-6ea5f07be128@nokia.com>
+In-Reply-To: <MW2PR2101MB1787FF5912C90FC4FFEF3993BFBA9@MW2PR2101MB1787.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:52:22PM +0100, Alexander Sverdlin wrote:
-> Hello Peter,
-> 
-> On 28/01/2021 12:33, Peter Zijlstra wrote:
-> > This, from commit 6b07d38aaa52 ("MIPS: Octeon: Use optimized memory
-> > barrier primitives."):
+On Thu, Jan 28, 2021 at 07:28:20AM +0000, Dexuan Cui wrote:
+> > From: Paul E. McKenney <paulmck@kernel.org>
+> > Sent: Thursday, November 26, 2020 3:55 PM
+> > To: Dexuan Cui <decui@microsoft.com>
+> > Cc: boqun.feng@gmail.com; Ingo Molnar <mingo@redhat.com>;
+> > rcu@vger.kernel.org; vkuznets <vkuznets@redhat.com>; Michael Kelley
+> > <mikelley@microsoft.com>; linux-kernel@vger.kernel.org
+> > Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
 > > 
-> > 	#define smp_mb__before_llsc() smp_wmb()
-> > 	#define __smp_mb__before_llsc() __smp_wmb()
+> > On Thu, Nov 26, 2020 at 10:59:19PM +0000, Dexuan Cui wrote:
+> > > > From: Paul E. McKenney <paulmck@kernel.org>
+> > > > Sent: Thursday, November 26, 2020 1:42 PM
+> > > >
+> > > > > > Another possibility is that rcu_state.gp_kthread is non-NULL, but that
+> > > > > > something else is preventing RCU grace periods from completing, but in
+> > > > >
+> > > > > It looks like somehow the scheduling is not working here: in rcu_barrier()
+> > > > > , if I replace the wait_for_completion() with
+> > > > > wait_for_completion_timeout(&rcu_state.barrier_completion, 30*HZ),
+> > the
+> > > > > issue persists.
+> > > >
+> > > > Have you tried using sysreq-t to see what the various tasks are doing?
+> > >
+> > > Will try it.
+> > >
+> > > BTW, this is a "Generation 2" VM on Hyper-V, meaning sysrq only starts to
+> > > work after the Hyper-V para-virtualized keyboard driver loads... So, at this
+> > > early point, sysrq is not working. :-( I'll have to hack the code and use a
+> > > virtual NMI interrupt to force the sysrq handler to be called.
 > > 
-> > is also dodgy as hell and really wants a comment too. I'm not buying the
-> > Changelog of that commit either, __smp_mb__before_llsc should also
-> > ensure the LL cannot happen earlier, but SYNCW has no effect on loads.
-> > So what stops the load from being speculated?
+> > Whatever works!
+> > 
+> > > > Having interrupts disabled on all CPUs would have the effect of disabling
+> > > > the RCU CPU stall warnings.
+> > > > 							Thanx, Paul
+> > >
+> > > I'm sure the interrupts are not disabled. Here the VM only has 1 virtual CPU,
+> > > and when the hang issue happens the virtual serial console is still responding
+> > > when I press Enter (it prints a new line) or Ctrl+C (it prints ^C).
+> > >
+> > > Here the VM does not use the "legacy timers" (PIT, Local APIC timer, etc.) at
+> > all.
+> > > Instead, the VM uses the Hyper-V para-virtualized timers. It looks the
+> > Hyper-V
+> > > timer never fires in the kdump kernel when the hang issue happens. I'm
+> > > looking into this... I suspect this hang issue may only be specific to Hyper-V.
+> > 
+> > Fair enough, given that timers not working can also suppress RCU CPU
+> > stall warnings.  ;-)
+> > 
+> > 							Thanx, Paul
 > 
-> hmm, the commit message you point to above, says:
-> 
-> "Since Octeon does not do speculative reads, this functions as a full barrier."
+> FYI: the issue has been fixed by this fix:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fff7b5e6ee63c5d20406a131b260c619cdd24fd1
 
-So then the only difference between SYNC and SYNCW is a pipeline drain?
+Thank you for the update!
 
-I still worry about the transitivity thing.. ISTR that being a sticky
-point back then too.
+							Thanx, Paul
