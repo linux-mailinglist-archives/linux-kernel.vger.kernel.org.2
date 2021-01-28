@@ -2,135 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6538E307CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AC4307CDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhA1RoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:44:15 -0500
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:39430 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhA1Rnv (ORCPT
+        id S233200AbhA1RoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:44:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45366 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233072AbhA1RoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:43:51 -0500
-Received: from [192.168.1.41] ([92.131.99.25])
-        by mwinf5d58 with ME
-        id NHi22400V0Ys01Y03Hi4sp; Thu, 28 Jan 2021 18:42:09 +0100
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 28 Jan 2021 18:42:09 +0100
-X-ME-IP: 92.131.99.25
-Subject: Re: [PATCH] media: venus: core: Fix some resource leaks in the error
- path of 'venus_probe()'
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        stanimir.varbanov@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210127201732.743938-1-christophe.jaillet@wanadoo.fr>
- <309678ef-c3b9-0269-0715-05a469c04345@linaro.org>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <bb2aa9f2-3e1b-7af0-8009-f543adec3c2a@wanadoo.fr>
-Date:   Thu, 28 Jan 2021 18:42:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 28 Jan 2021 12:44:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611855758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJS+3GFCtCfmN69c0BzqEjKIwA/fcAY9rImqkPB5gBQ=;
+        b=B/2CCgFkmyeAJj7mGIlu26zdYxdh4cpuk4/oc6/xG79u9p4YxZLpw+sA+52h6Pjv00A0r6
+        VXVMkYGHH6P7njTlGSE2eL/ChLMM8eFnsBNyuOtZcT0PcURs5u/AfB8/nDuq9GDz0zlX4e
+        W0bajWWd6MJv+OJB59BzyOkKkJTmL70=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-NmFiAxUhM6a82EySumj8Xw-1; Thu, 28 Jan 2021 12:42:36 -0500
+X-MC-Unique: NmFiAxUhM6a82EySumj8Xw-1
+Received: by mail-ej1-f72.google.com with SMTP id jg11so2541141ejc.23
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:42:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xJS+3GFCtCfmN69c0BzqEjKIwA/fcAY9rImqkPB5gBQ=;
+        b=uiUp3kkTSJcLyug4rXCz2o4WY22YtTKpDuY7KhY80MXv4wOOgNxtdcXNI3IZZBI5aS
+         uQ4GX9k0jqDt/Fc6i5lbxhCb3kW3Elhh3zsXlrJ20eHqlcuEuwwobmGkHgKwfLF2Cbab
+         F/Wv8unguByV+lxSXJroRQPjCfddDxIjwleu/ii80kQbXNoi0fpjiGDlNtMUJJOPyHBv
+         cfoxo2ucMAfpkeSAYWWhxUW7bn7NrGLz2qAD8GFQuyjbi0oyEi69tbiYROgHDX7rd1Ge
+         0H0hMK9yXDcoIxI85H+EERcPTpV6ZgVYcH6YwSk7KsvTZwjP5lLbVz9sBr96bbgumxwS
+         O3qQ==
+X-Gm-Message-State: AOAM531dzCFDknFH6JPHjEJf9D1vly9Rx6IggNo++7+OTM1AhWZ2wqc9
+        8IwnVJ1DzvpYPQnrwJOsbUy0GReJlJglBtc0sJZdOdJFXU/34fRxgVUf5kgHAbG/3WtYlj+IPF0
+        4iCBDgYEqH3twxXEbpmy3MpcW
+X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr814649edc.68.1611855754985;
+        Thu, 28 Jan 2021 09:42:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrN8Ed0JfsjIGJTjYBE38cLR12dA3PUS54cDu+Mv1wdeKrexLUMtwsnv/jahIBOMJlz8hpYw==
+X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr814625edc.68.1611855754788;
+        Thu, 28 Jan 2021 09:42:34 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p12sm3437911edr.82.2021.01.28.09.42.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 09:42:33 -0800 (PST)
+Subject: Re: [PATCH v14 08/13] KVM: VMX: Add a synthetic MSR to allow
+ userspace VMM to access GUEST_SSP
+To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        jmattson@google.com
+Cc:     yu.c.zhang@linux.intel.com
+References: <20201106011637.14289-1-weijiang.yang@intel.com>
+ <20201106011637.14289-9-weijiang.yang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f94b472f-086e-ea0c-5ff0-848d5a9689dc@redhat.com>
+Date:   Thu, 28 Jan 2021 18:42:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <309678ef-c3b9-0269-0715-05a469c04345@linaro.org>
+In-Reply-To: <20201106011637.14289-9-weijiang.yang@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/11/20 02:16, Yang Weijiang wrote:
+> Introduce a host-only synthetic MSR, MSR_KVM_GUEST_SSP so that the VMM
+> can read/write the guest's SSP, e.g. to migrate CET state.  Use a
+> synthetic MSR, e.g. as opposed to a VCPU_REG_, as GUEST_SSP is subject
+> to the same consistency checks as the PL*_SSP MSRs, i.e. can share code.
+> 
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>   arch/x86/include/uapi/asm/kvm_para.h |  1 +
+>   arch/x86/kvm/vmx/vmx.c               | 14 ++++++++++++--
+>   2 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 812e9b4c1114..5203dc084125 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -53,6 +53,7 @@
+>   #define MSR_KVM_POLL_CONTROL	0x4b564d05
+>   #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
+>   #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
+> +#define MSR_KVM_GUEST_SSP	0x4b564d08
+>   
+>   struct kvm_steal_time {
+>   	__u64 steal;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index dd78d3a79e79..28ba8414a7a3 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1817,7 +1817,8 @@ static bool cet_is_ssp_msr_accessible(struct kvm_vcpu *vcpu,
+>   	if (msr->host_initiated)
+>   		return true;
+>   
+> -	if (!guest_cpuid_has(vcpu, X86_FEATURE_SHSTK))
+> +	if (!guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
+> +	    msr->index == MSR_KVM_GUEST_SSP)
+>   		return false;
+>   
+>   	if (msr->index == MSR_IA32_INT_SSP_TAB)
+> @@ -1995,6 +1996,11 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   			return 1;
+>   		msr_info->data = vmcs_readl(GUEST_INTR_SSP_TABLE);
+>   		break;
+> +	case MSR_KVM_GUEST_SSP:
+> +		if (!cet_is_ssp_msr_accessible(vcpu, msr_info))
+> +			return 1;
+> +		msr_info->data = vmcs_readl(GUEST_SSP);
+> +		break;
+>   	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+>   		if (!cet_is_ssp_msr_accessible(vcpu, msr_info))
+>   			return 1;
+> @@ -2287,12 +2293,16 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   			return 1;
+>   		vmcs_writel(GUEST_INTR_SSP_TABLE, data);
+>   		break;
+> +	case MSR_KVM_GUEST_SSP:
+>   	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+>   		if (!cet_is_ssp_msr_accessible(vcpu, msr_info))
+>   			return 1;
+>   		if ((data & GENMASK(2, 0)) || is_noncanonical_address(data, vcpu))
+>   			return 1;
+> -		vmx_set_xsave_msr(msr_info);
+> +		if (msr_index == MSR_KVM_GUEST_SSP)
+> +			vmcs_writel(GUEST_SSP, data);
+> +		else
+> +			vmx_set_xsave_msr(msr_info);
+>   		break;
+>   	case MSR_TSC_AUX:
+>   		if (!msr_info->host_initiated &&
+> 
 
-Le 28/01/2021 à 11:49, Georgi Djakov a écrit :
-> Hi Christophe,
->
-> Thanks for the fix!
->
-> On 1/27/21 22:17, Christophe JAILLET wrote:
->> If an error occurs after a successful 'of_icc_get()' call, it must be
->> undone by a corresponding 'icc_put()' call.
->
-> This works, but why not switch to devm_of_icc_get() instead?
->
-Because I was not aware of devm_of_icc_get :)
+Doh, I misread the change in cet_is_ssp_msr_accessible, sorry.  */
 
-I'll send a V2.
-
-Thanks for the review and the feedback.
-
-CJ
-
-
-> Thanks,
-> Georgi
->
->>
->> Add it in the error handling path of the probe function as already 
->> done in
->> the remove function.
->>
->> Fixes: 32f0a6ddc8c9 ("media: venus: Use on-chip interconnect API")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/media/platform/qcom/venus/core.c | 31 +++++++++++++++++-------
->>   1 file changed, 22 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/core.c 
->> b/drivers/media/platform/qcom/venus/core.c
->> index 0bde19edac86..8fd5da941067 100644
->> --- a/drivers/media/platform/qcom/venus/core.c
->> +++ b/drivers/media/platform/qcom/venus/core.c
->> @@ -200,27 +200,35 @@ static int venus_probe(struct platform_device 
->> *pdev)
->>           return PTR_ERR(core->video_path);
->>         core->cpucfg_path = of_icc_get(dev, "cpu-cfg");
->> -    if (IS_ERR(core->cpucfg_path))
->> -        return PTR_ERR(core->cpucfg_path);
->> +    if (IS_ERR(core->cpucfg_path)) {
->> +        ret = PTR_ERR(core->cpucfg_path);
->> +        goto err_video_path_put;
->> +    }
->>         core->irq = platform_get_irq(pdev, 0);
->> -    if (core->irq < 0)
->> -        return core->irq;
->> +    if (core->irq < 0) {
->> +        ret = core->irq;
->> +        goto err_cpucfg_path_put;
->> +    }
->>         core->res = of_device_get_match_data(dev);
->> -    if (!core->res)
->> -        return -ENODEV;
->> +    if (!core->res) {
->> +        ret = -ENODEV;
->> +        goto err_cpucfg_path_put;
->> +    }
->>         mutex_init(&core->pm_lock);
->>         core->pm_ops = venus_pm_get(core->res->hfi_version);
->> -    if (!core->pm_ops)
->> -        return -ENODEV;
->> +    if (!core->pm_ops) {
->> +        ret = -ENODEV;
->> +        goto err_cpucfg_path_put;
->> +    }
->>         if (core->pm_ops->core_get) {
->>           ret = core->pm_ops->core_get(dev);
->>           if (ret)
->> -            return ret;
->> +            goto err_cpucfg_path_put;
->>       }
->>         ret = dma_set_mask_and_coherent(dev, core->res->dma_mask);
->> @@ -305,6 +313,11 @@ static int venus_probe(struct platform_device 
->> *pdev)
->>   err_core_put:
->>       if (core->pm_ops->core_put)
->>           core->pm_ops->core_put(dev);
->> +err_cpucfg_path_put:
->> +    icc_put(core->cpucfg_path);
->> +err_video_path_put:
->> +    icc_put(core->video_path);
->> +
->>       return ret;
->>   }
->>
