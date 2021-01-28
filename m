@@ -2,163 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE470306CB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7716306CE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhA1FWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 00:22:46 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:57251 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229446AbhA1FWn (ORCPT
+        id S229747AbhA1FXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 00:23:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55739 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229551AbhA1FXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 00:22:43 -0500
-X-UUID: 05fcc12e37534f9cb16e399a4f9711de-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=/pktXs/wn5J8yEqVNUEYeMaMl9r2rAFdxrOGFNkrSkM=;
-        b=PnpzPdTiKCQQ9b5/3OgTqMV9ORINQgqGAqCTy4LLr5UEMBQHbr5TMQ0olJbQ5hz1k4dzvUKCgV34ujgXZkiPq5Pq0jevpt5Enz+PoeyvK21ym/rxM9BIYlBk4neJmh1GUw0DDfLA3aFtibMgxjAInF6DVAAu7eo8bmgp8F9yBhI=;
-X-UUID: 05fcc12e37534f9cb16e399a4f9711de-20210128
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2109424651; Thu, 28 Jan 2021 13:21:53 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 13:21:50 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 13:21:50 +0800
-Message-ID: <1611811310.25395.4.camel@mtksdaap41>
-Subject: Re: [PATCH v10 4/9] drm/mediatek: generalize mtk_dither_set()
- function
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "David Airlie" <airlied@linux.ie>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 28 Jan 2021 13:21:50 +0800
-In-Reply-To: <CAJMQK-jeBBsxZ1RnFJfT5ouNJsBwEkLbZ_+6T+VUFZ_xDQ7rpQ@mail.gmail.com>
-References: <20210127045422.2418917-1-hsinyi@chromium.org>
-         <20210127045422.2418917-5-hsinyi@chromium.org>
-         <1611808753.19104.2.camel@mtksdaap41>
-         <CAJMQK-jeBBsxZ1RnFJfT5ouNJsBwEkLbZ_+6T+VUFZ_xDQ7rpQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 28 Jan 2021 00:23:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611811342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=biRqszkHP+pvKFYG307Vk8Bx3khhjfa4Uut3UTzeY2s=;
+        b=WcOwdshXKHCjPw8AYVT3JmIxDIIGYoMOkQBYs/LQNY90tWzbsx5lmTJ+t7zXs18FYcj9Z0
+        6uL8DEXapy9mWVWdI+82BgsJiM23F8JLJJWGaR6sLFPNw7wcDzuPzTlJY+eowQ+6F1NFNl
+        l1FiUxhNY3jFrjrZnTbLGNNoWeKvbE4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-0XJ-QC08PHSmBbvjBIXOHA-1; Thu, 28 Jan 2021 00:22:15 -0500
+X-MC-Unique: 0XJ-QC08PHSmBbvjBIXOHA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5730180DE08;
+        Thu, 28 Jan 2021 05:22:12 +0000 (UTC)
+Received: from localhost (ovpn-12-59.pek2.redhat.com [10.72.12.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 49F1C60C13;
+        Thu, 28 Jan 2021 05:22:10 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 13:22:08 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, tyhicks@linux.microsoft.com,
+        pmladek@suse.com, ebiederm@xmission.com, keescook@chromium.org,
+        anton@enomsg.org, ccross@android.com, tony.luck@intel.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v2 1/1] kexec: dump kmessage before machine_kexec
+Message-ID: <20210128052208.GB2339@MiWiFi-R3L-srv>
+References: <20210126204125.313820-1-pasha.tatashin@soleen.com>
+ <20210126204125.313820-2-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 80E37F9612338877016C51274D77713CD38E07D9BF6559E650938D31C7674E2C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126204125.313820-2-pasha.tatashin@soleen.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTI4IGF0IDEzOjA5ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
-IE9uIFRodSwgSmFuIDI4LCAyMDIxIGF0IDEyOjM5IFBNIENLIEh1IDxjay5odUBtZWRpYXRlay5j
-b20+IHdyb3RlOg0KPiA+DQo+ID4gSGksIEhzaW4tWWk6DQo+ID4NCj4gPiBPbiBXZWQsIDIwMjEt
-MDEtMjcgYXQgMTI6NTQgKzA4MDAsIEhzaW4tWWkgV2FuZyB3cm90ZToNCj4gPiA+IFRoZXJlIG1h
-eSBiZSBkYXRhIHN0cnVjdHVyZSBvdGhlciB0aGFuIG10a19kZHBfY29tcF9kZXYgdGhhdCB3b3Vs
-ZCBjYWxsDQo+ID4gPiBtdGtfZGl0aGVyX3NldCgpLCBzbyB1c2UgcmVncyBhcyBwYXJhbWV0ZXIg
-aW5zdGVhZCBvZiBkZXZpY2UuDQo+ID4NCj4gPiBZb3UgZG9lcyBub3QgY2hhbmdlIHRoZSBpbnRl
-cmZhY2Ugb2YgbXRrX2RpdGhlcl9zZXQoKS4gWW91IG1vdmUgdGhlDQo+ID4gY29tbW9uIHBhcnQg
-aW4gbXRrX2RpdGhlcl9zZXQoKSB0byBhIG5ldyBmdW5jdGlvbiB3aGljaCBjb3VsZCBiZSBjYWxs
-ZWQNCj4gPiBieSBhbm90aGVyIGNhbGxlci4NCj4gPg0KPiA+IFJlZ2FyZHMsDQo+ID4gQ0suDQo+
-ID4NCj4gQ3VycmVudCBtdGtfZGl0aGVyX3NldCgpIGNhc3QgZGV2IGRhdGEgdG8gc3RydWN0IG10
-a19kZHBfY29tcF9kZXYuIEJ1dA0KPiBtdGtfZGlzcF9nYW1tYSBpbiBuZXh0IHBhdGNoIHdvdWxk
-IGFsc28gY2FsbCB0aGlzIGZ1bmN0aW9uLiBCdXQgaXQncw0KPiBkZXYgZGF0YSBpcyBzdHJ1Y3Qg
-bXRrX2Rpc3BfZ2FtbWEsIHdoaWNoIGlzIGRpZmZlcmVudCwgc28gd2UgY2FuJ3QNCj4gY2FzdCB0
-byBtdGtfZGRwX2NvbXBfZGV2LiBJIHNlcGFyYXRlIHRoZSBuZWNlc3NhcnkgcGFyYW1ldGVycyAo
-cmVncywNCj4gY21kcV9yZWcpIG91dCwgc28gYm90aCBjb21wb25lbnQgZGl0aGVyIGFuZCBnYW1t
-YSBjYW4gYm90aCBjYWxsIHRoaXMNCj4gc2VwYXJhdGVkIGZ1bmN0aW9uLg0KDQpJIGtub3cgdGhp
-cy4gVGhpcyBwYXRjaCBsb29rcyBnb29kIHRvIG1lIGJ1dCB0aGUgZGVzY3JpcHRpb24gd291bGQN
-CmNvbmZ1c2UgbWUuRnJvbSB0aGUgZGVzY3JpcHRpb24sIGl0IHNlZW1zIHRoYXQgeW91IG1vZGlm
-eSB0aGUgaW50ZXJmYWNlDQpvZiBtdGtfZGl0aGVyX3NldCgpLiBTbyBwbGVhc2UgbW9kaWZ5IHRo
-ZSBkZXNjcmlwdGlvbiB0byBiZSBtb3JlIGNsZWFyLg0KDQpSZWdhcmRzLA0KQ0sNCg0KPiANCj4g
-VGhpcyBpcyBzaW1pbGFyIHRvIHRoZSBtdGtfZ2FtbWFfc2V0X2NvbW1vbigpIGluIHRoZSBuZXh0
-IHBhdGNoLCB3aGljaA0KPiBnYW1tYSBhbmQgYWFsIGJvdGggdXNlZC4NCj4gDQo+ID4gPg0KPiA+
-ID4gU2lnbmVkLW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxoc2lueWlAY2hyb21pdW0ub3JnPg0KPiA+
-ID4gLS0tDQo+ID4gPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Rydi5oICAg
-ICB8ICA0ICsrKysNCj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBf
-Y29tcC5jIHwgMjUgKysrKysrKysrKysrKy0tLS0tLS0tDQo+ID4gPiAgMiBmaWxlcyBjaGFuZ2Vk
-LCAyMCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZHJ2LmggYi9kcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZHJ2LmgNCj4gPiA+IGluZGV4IDQ2ZDE5OWI3YjRhMjku
-LmM1MGQ1ZmM5ZmQzNDkgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX2Rpc3BfZHJ2LmgNCj4gPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfZGlzcF9kcnYuaA0KPiA+ID4gQEAgLTE3LDYgKzE3LDEwIEBAIHZvaWQgbXRrX2NvbG9yX2Nv
-bmZpZyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHVuc2lnbmVkIGludCB3LA0KPiA+ID4gICAgICAgICAg
-ICAgICAgICAgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0KTsN
-Cj4gPiA+ICB2b2lkIG10a19jb2xvcl9zdGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiA+ID4N
-Cj4gPiA+ICt2b2lkIG10a19kaXRoZXJfc2V0X2NvbW1vbih2b2lkIF9faW9tZW0gKnJlZ3MsIHN0
-cnVjdCBjbWRxX2NsaWVudF9yZWcgKmNtZHFfcmVnLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgIHVuc2lnbmVkIGludCBicGMsIHVuc2lnbmVkIGludCBDRkcsDQo+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgc3RydWN0IGNtZHFfcGt0ICpjbWRxX3BrdCk7DQo+ID4gPiArDQo+
-ID4gPiAgdm9pZCBtdGtfZHBpX3N0YXJ0KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ID4gPiAgdm9p
-ZCBtdGtfZHBpX3N0b3Aoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gPiA+DQo+ID4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyBiL2RyaXZl
-cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gPiA+IGluZGV4IDdiNTI5
-MzQyOTQyNmQuLjUzZDI1ODIzYTM3Y2MgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiArKysgYi9kcml2ZXJzL2dwdS9k
-cm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiBAQCAtMTUxLDMzICsxNTEsNDAg
-QEAgc3RhdGljIHZvaWQgbXRrX2RkcF9jbGtfZGlzYWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+
-ID4gPiAgICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUocHJpdi0+Y2xrKTsNCj4gPiA+ICB9DQo+
-ID4gPg0KPiA+ID4gLXN0YXRpYyB2b2lkIG10a19kaXRoZXJfc2V0KHN0cnVjdCBkZXZpY2UgKmRl
-diwgdW5zaWduZWQgaW50IGJwYywNCj4gPiA+IC0gICAgICAgICAgICAgICAgIHVuc2lnbmVkIGlu
-dCBDRkcsIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9wa3QpDQo+ID4gPiAtew0KPiA+ID4gLSAgICAg
-c3RydWN0IG10a19kZHBfY29tcF9kZXYgKnByaXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4g
-PiA+DQo+ID4gPiArdm9pZCBtdGtfZGl0aGVyX3NldF9jb21tb24odm9pZCBfX2lvbWVtICpyZWdz
-LCBzdHJ1Y3QgY21kcV9jbGllbnRfcmVnICpjbWRxX3JlZywNCj4gPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICB1bnNpZ25lZCBpbnQgYnBjLCB1bnNpZ25lZCBpbnQgQ0ZHLCBzdHJ1Y3QgY21k
-cV9wa3QgKmNtZHFfcGt0KQ0KPiA+ID4gK3sNCj4gPiA+ICAgICAgIC8qIElmIGJwYyBlcXVhbCB0
-byAwLCB0aGUgZGl0aGVyaW5nIGZ1bmN0aW9uIGRpZG4ndCBiZSBlbmFibGVkICovDQo+ID4gPiAg
-ICAgICBpZiAoYnBjID09IDApDQo+ID4gPiAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiA+DQo+
-ID4gPiAgICAgICBpZiAoYnBjID49IE1US19NSU5fQlBDKSB7DQo+ID4gPiAtICAgICAgICAgICAg
-IG10a19kZHBfd3JpdGUoY21kcV9wa3QsIDAsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywg
-RElTUF9ESVRIRVJfNSk7DQo+ID4gPiAtICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9w
-a3QsIDAsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9ESVRIRVJfNyk7DQo+ID4g
-PiArICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIDAsIGNtZHFfcmVnLCByZWdz
-LCBESVNQX0RJVEhFUl81KTsNCj4gPiA+ICsgICAgICAgICAgICAgbXRrX2RkcF93cml0ZShjbWRx
-X3BrdCwgMCwgY21kcV9yZWcsIHJlZ3MsIERJU1BfRElUSEVSXzcpOw0KPiA+ID4gICAgICAgICAg
-ICAgICBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LA0KPiA+ID4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIERJVEhFUl9MU0JfRVJSX1NISUZUX1IoTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfQUREX0xTSElGVF9SKE1US19NQVhf
-QlBDIC0gYnBjKSB8DQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRElUSEVSX05F
-V19CSVRfTU9ERSwNCj4gPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAmcHJpdi0+Y21k
-cV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfRElUSEVSXzE1KTsNCj4gPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBjbWRxX3JlZywgcmVncywgRElTUF9ESVRIRVJfMTUpOw0KPiA+ID4gICAg
-ICAgICAgICAgICBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LA0KPiA+ID4gICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIERJVEhFUl9MU0JfRVJSX1NISUZUX0IoTVRLX01BWF9CUEMgLSBicGMpIHwN
-Cj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfQUREX0xTSElGVF9CKE1U
-S19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRElU
-SEVSX0xTQl9FUlJfU0hJRlRfRyhNVEtfTUFYX0JQQyAtIGJwYykgfA0KPiA+ID4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX0coTVRLX01BWF9CUEMgLSBicGMp
-LA0KPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICZwcml2LT5jbWRxX3JlZywgcHJp
-di0+cmVncywgRElTUF9ESVRIRVJfMTYpOw0KPiA+ID4gLSAgICAgICAgICAgICBtdGtfZGRwX3dy
-aXRlKGNtZHFfcGt0LCBESVNQX0RJVEhFUklORywgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdz
-LCBDRkcpOw0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIGNtZHFfcmVnLCByZWdz
-LCBESVNQX0RJVEhFUl8xNik7DQo+ID4gPiArICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21k
-cV9wa3QsIERJU1BfRElUSEVSSU5HLCBjbWRxX3JlZywgcmVncywgQ0ZHKTsNCj4gPiA+ICAgICAg
-IH0NCj4gPiA+ICB9DQo+ID4gPg0KPiA+ID4gK3N0YXRpYyB2b2lkIG10a19kaXRoZXJfc2V0KHN0
-cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IGJwYywNCj4gPiA+ICsgICAgICAgICAgICAg
-ICAgIHVuc2lnbmVkIGludCBDRkcsIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9wa3QpDQo+ID4gPiAr
-ew0KPiA+ID4gKyAgICAgc3RydWN0IG10a19kZHBfY29tcF9kZXYgKnByaXYgPSBkZXZfZ2V0X2Ry
-dmRhdGEoZGV2KTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIG10a19kaXRoZXJfc2V0X2NvbW1vbihw
-cml2LT5yZWdzLCAmcHJpdi0+Y21kcV9yZWcsIGJwYywgQ0ZHLCBjbWRxX3BrdCk7DQo+ID4gPiAr
-fQ0KPiA+ID4gKw0KPiA+ID4gIHN0YXRpYyB2b2lkIG10a19vZF9jb25maWcoc3RydWN0IGRldmlj
-ZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIHVu
-c2lnbmVkIGludCBoLCB1bnNpZ25lZCBpbnQgdnJlZnJlc2gsDQo+ID4gPiAgICAgICAgICAgICAg
-ICAgICAgICAgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0K
-PiA+DQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gTGludXgtbWVkaWF0ZWtAbGlzdHMu
-aW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
+On 01/26/21 at 03:41pm, Pavel Tatashin wrote:
+> kmsg_dump(KMSG_DUMP_SHUTDOWN) is called before
+> machine_restart(), machine_halt(), machine_power_off(), the only one that
+> is missing is  machine_kexec().
+> 
+> The dmesg output that it contains can be used to study the shutdown
+> performance of both kernel and systemd during kexec reboot.
+> 
+> Here is example of dmesg data collected after kexec:
+> 
+> root@dplat-cp22:~# cat /sys/fs/pstore/dmesg-ramoops-0 | tail
+> ...
+> <6>[   70.914592] psci: CPU3 killed (polled 0 ms)
+> <5>[   70.915705] CPU4: shutdown
+> <6>[   70.916643] psci: CPU4 killed (polled 4 ms)
+> <5>[   70.917715] CPU5: shutdown
+> <6>[   70.918725] psci: CPU5 killed (polled 0 ms)
+> <5>[   70.919704] CPU6: shutdown
+> <6>[   70.920726] psci: CPU6 killed (polled 4 ms)
+> <5>[   70.921642] CPU7: shutdown
+> <6>[   70.922650] psci: CPU7 killed (polled 0 ms)
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
+> ---
+>  kernel/kexec_core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+> index 4f8efc278aa7..e253c8b59145 100644
+> --- a/kernel/kexec_core.c
+> +++ b/kernel/kexec_core.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/compiler.h>
+>  #include <linux/hugetlb.h>
+>  #include <linux/objtool.h>
+> +#include <linux/kmsg_dump.h>
+>  
+>  #include <asm/page.h>
+>  #include <asm/sections.h>
+> @@ -1180,6 +1181,7 @@ int kernel_kexec(void)
+>  		machine_shutdown();
+>  	}
+>  
+> +	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+>  	machine_kexec(kexec_image);
+
+Looks good to me, thx.
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
+>  
+>  #ifdef CONFIG_KEXEC_JUMP
+> -- 
+> 2.25.1
+> 
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
 
