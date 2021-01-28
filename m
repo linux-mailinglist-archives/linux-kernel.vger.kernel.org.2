@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6A830728D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7AB307292
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhA1JW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:22:59 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2567 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbhA1JTr (ORCPT
+        id S232435AbhA1JYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:24:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51903 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232465AbhA1JVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:19:47 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DRFGf5zyKzW2PM;
-        Thu, 28 Jan 2021 17:16:58 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 28 Jan 2021 17:18:58 +0800
-Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Thu, 28
- Jan 2021 17:18:57 +0800
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     <linux-nvme@lists.infradead.org>, Sagi Grimberg <sagi@grimberg.me>,
-        <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@fb.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
-Date:   Thu, 28 Jan 2021 17:18:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 28 Jan 2021 04:21:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611825599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BnmVGKIvsnH3KiFsOG7CdLvqfhvMHJo37XYIQD3By1w=;
+        b=Sw7O4vNkZKIIav52nSVlHbY1z26wRJxKp9UOO5LZyCwrLJjEyWvGdcbmzKxZbZO0XNzL+3
+        K4lFgPbMOH6VvJiFDkpOzAgJsuQOiu8A+Om0jrJJNrRboKkR4yK3wdSNZf+VBC6onmt7KN
+        bhmpLa9k4D96/AyJ0wdtXorHpKyNuQk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-uqtLZuADMF2qhdEiUX5iIA-1; Thu, 28 Jan 2021 04:19:55 -0500
+X-MC-Unique: uqtLZuADMF2qhdEiUX5iIA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E28D98049C0;
+        Thu, 28 Jan 2021 09:19:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B7E8D7771E;
+        Thu, 28 Jan 2021 09:19:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210128001412.822048-1-stefanb@linux.vnet.ibm.com>
+References: <20210128001412.822048-1-stefanb@linux.vnet.ibm.com>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v4 0/3] Add support for x509 certs with NIST p256 and p192 keys
 MIME-Version: 1.0
-In-Reply-To: <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.169.42.93]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3451835.1611825591.1@warthog.procyon.org.uk>
+Date:   Thu, 28 Jan 2021 09:19:51 +0000
+Message-ID: <3451836.1611825591@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This (sub)set is intended to go through the keyrings tree or is it all going
+through the crypto tree now?
 
+David
 
-On 2021/1/28 15:58, Daniel Wagner wrote:
-> On Thu, Jan 28, 2021 at 09:31:30AM +0800, Chao Leng wrote:
->>> --- a/drivers/nvme/host/multipath.c
->>> +++ b/drivers/nvme/host/multipath.c
->>> @@ -221,7 +221,7 @@ static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
->>>    	}
->>>    	for (ns = nvme_next_ns(head, old);
->>> -	     ns != old;
->>> +	     ns && ns != old;
->> nvme_round_robin_path just be called when !"old".
->> nvme_next_ns should not return NULL when !"old".
->> It seems unnecessary to add checking "ns".
-> 
-> The problem is when we enter nvme_round_robin_path() and there is no
-> path available. In this case the initialization ns = nvme_next_ns(head,
-> old) could return a NULL pointer."old" should not be NULL, so there is at least one path that is "old".
-It is impossible to return NULL for nvme_next_ns(head, old).
-> .
-> 
