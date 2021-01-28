@@ -2,92 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB693081C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21973081CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhA1XWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:22:10 -0500
-Received: from vern.gendns.com ([98.142.107.122]:59422 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhA1XWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:22:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=vxlxCLEYe7Qe4lS7C6DM4d8MIH71fHWxRV8aQVea7Ys=; b=X+VBHukCOX8r+XYvSfWAR9bb+8
-        JqHbWpTS3cQ07ZU36o3kbzgAG2kNkxUZF/vsZMJ3E6n2Y1CczeTLgc7e8zpdH5kecX8V01t0pp1AH
-        UEpaxF9RGjJggnbaQFY6q9zzC/2xlG7kAmgRszhsnfz1dL/4qVUafF25eeSQdPMceSmH5/hejksgR
-        rOusT0hb07HieVXhQ19wni1Hoy4kQx6/qbtfsDujPqUbBvmiS2jAqqPvVzIPWOw/KHq5hObXJpap+
-        rtH2rPxr8w/DFAiWWwrQJdcp2ZrzRVdRaRofZAQ2naRWOEN8/AW3qiM9amRlU+IP5Aza5drcq5FPI
-        2lKAACIA==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:50246 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1l5GbL-00079l-AH; Thu, 28 Jan 2021 18:21:23 -0500
-Subject: Re: [PATCH] remoteproc: pru: future-proof PRU ID matching
-To:     Suman Anna <s-anna@ti.com>, linux-remoteproc@vger.kernel.org
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20210104211816.420602-1-david@lechnology.com>
- <ccc1ee4b-ed73-f7c8-ca1e-f15eedeeb84b@ti.com>
- <e2a0a40d-f720-8139-29f3-39a473c69119@ti.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <5fed434e-1569-ab9f-b1a4-475aa820ef47@lechnology.com>
-Date:   Thu, 28 Jan 2021 17:21:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231732AbhA1XXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:23:00 -0500
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:42689 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231703AbhA1XW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:22:56 -0500
+Received: by mail-oo1-f53.google.com with SMTP id g46so1859244ooi.9;
+        Thu, 28 Jan 2021 15:22:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ydH4nhxewK7vs+CzByTZsj+twADBwFlu+n9oaryGu3g=;
+        b=IJlJC3Qs0gVk7M/YqtVq22LZ8sjoohEOaF5AP3U4pIiKC3PYqtFyvYjqnEuZJHm/UC
+         O4IJp0lOA8DtpDy+AAcIRyE5/yV55T/FMrz1zHjRu1OnDT/AiMZiF+avbx6gCDtun5/D
+         2uojSCNJVhN1Md78PLMqs52zfZ9gQv+3alRtQZpQWI0wQf94fQ0+AYtwm602XQr5UhUx
+         nP4oZgfMFLoILsZsfe3zBgjtZawV4nW1hq9euuc2adX6faztP9IfX2Ok8/8a3wqqVwGx
+         OqWpvxw3MsC/pa5NvPF+74nmcNkUF9400sZb0WR+Q+9bJ9XlG+GgiICfSRZ8hQsgaCg4
+         m09Q==
+X-Gm-Message-State: AOAM5302vT+HO7BZNItQE/vbeFEF4ZJxbk1vHNIUKVwZl7o4ZOV+jYoF
+        8gxmhsa0VmfAA2PsRukQUnhf30z4das=
+X-Google-Smtp-Source: ABdhPJzFUzfv7gbRcuengnXOY5sHTHQQk8G+pTaTghZ5FijpRS07urmHAGpgzlyrL+/VeXxxP58SjQ==
+X-Received: by 2002:a4a:a22a:: with SMTP id m42mr1356247ool.22.1611876134785;
+        Thu, 28 Jan 2021 15:22:14 -0800 (PST)
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com. [209.85.167.177])
+        by smtp.gmail.com with ESMTPSA id t65sm1537692oie.25.2021.01.28.15.22.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 15:22:14 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id w8so7963523oie.2;
+        Thu, 28 Jan 2021 15:22:13 -0800 (PST)
+X-Received: by 2002:aca:f382:: with SMTP id r124mr1069457oih.175.1611876133354;
+ Thu, 28 Jan 2021 15:22:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <e2a0a40d-f720-8139-29f3-39a473c69119@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20210108093610.28595-1-Zhiqiang.Hou@nxp.com> <20210108093610.28595-2-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20210108093610.28595-2-Zhiqiang.Hou@nxp.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Thu, 28 Jan 2021 17:22:02 -0600
+X-Gmail-Original-Message-ID: <CADRPPNQr4xGH0On94rxr69VYeZAQEYQgt=CosVqEDi91cfO_tw@mail.gmail.com>
+Message-ID: <CADRPPNQr4xGH0On94rxr69VYeZAQEYQgt=CosVqEDi91cfO_tw@mail.gmail.com>
+Subject: Re: [PATCHv3 1/7] PCI: dwc: Fix a bug of the case dw_pci->ops is NULL
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, gustavo.pimentel@synopsys.com,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 4:55 PM, Suman Anna wrote:
-> Hi David,
-> 
-> On 1/15/21 6:53 PM, Suman Anna wrote:
->> On 1/4/21 3:18 PM, David Lechner wrote:
->>>   static int pru_rproc_probe(struct platform_device *pdev)
->>> @@ -825,20 +808,28 @@ static int pru_rproc_remove(struct platform_device *pdev)
->>>   
->>>   static const struct pru_private_data pru_data = {
->>>   	.type = PRU_TYPE_PRU,
->>> +	.pru0_iram_offset = 0x4000,
->>> +	.pru1_iram_offset = 0x8000,
-> 
-> The offsets for the PRU cores are actually 0x34000 and 0x38000 respectively from
-> the base of the PRUSS on non-Davinci SoCs.
-> 
-> If we were to use this static data approach, then we might as well continue to
-> use the current address masking logic with the appropriate masks for Davinci
-> (0x38000 and 0x3C000, not true offsets but as masks they would work). Davinci
-> PRUSS is the only one with its differences being the first PRUSS IP, and I would
-> prefer to keep the logic aligned to the IPs on all the recent SoCs on 3
-> different TI SoC families (OMAP, Keystone 2 and K3).
-> 
-> Let me know what you think.
+On Fri, Jan 8, 2021 at 3:29 AM Zhiqiang Hou <Zhiqiang.Hou@nxp.com> wrote:
+>
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+>
+> The dw_pci->ops may be a NULL, and fix it by adding one more check.
+>
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Acked-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 
-I'm not too picky as long as it works. :-)
+Hi Bjorn,
 
-If keeping the static data to a minimum is really important, I suppose we could
-introduce a new type = PRU_TYPE_PRU_V1 for these PRUSSs instead. It sounds like
-this information might be useful elsewhere anyway.
+This is causing many layerscape platforms to fail to boot.  Can you
+help to pick up this patch?  Or are you actually preferring other
+solutions like creating dummy ops when it is not needed?
+
+Regards,
+Leo
+
+> ---
+> V3:
+>  - Rebased against the latest code base
+>
+>  drivers/pci/controller/dwc/pcie-designware-host.c |  2 +-
+>  drivers/pci/controller/dwc/pcie-designware.c      | 14 +++++++-------
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 516b151e0ef3..0413284fdd93 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -429,7 +429,7 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>         dw_pcie_setup_rc(pp);
+>         dw_pcie_msi_init(pp);
+>
+> -       if (!dw_pcie_link_up(pci) && pci->ops->start_link) {
+> +       if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
+>                 ret = pci->ops->start_link(pci);
+>                 if (ret)
+>                         goto err_free_msi;
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 645fa1892375..cf895c12f71f 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -141,7 +141,7 @@ u32 dw_pcie_read_dbi(struct dw_pcie *pci, u32 reg, size_t size)
+>         int ret;
+>         u32 val;
+>
+> -       if (pci->ops->read_dbi)
+> +       if (pci->ops && pci->ops->read_dbi)
+>                 return pci->ops->read_dbi(pci, pci->dbi_base, reg, size);
+>
+>         ret = dw_pcie_read(pci->dbi_base + reg, size, &val);
+> @@ -156,7 +156,7 @@ void dw_pcie_write_dbi(struct dw_pcie *pci, u32 reg, size_t size, u32 val)
+>  {
+>         int ret;
+>
+> -       if (pci->ops->write_dbi) {
+> +       if (pci->ops && pci->ops->write_dbi) {
+>                 pci->ops->write_dbi(pci, pci->dbi_base, reg, size, val);
+>                 return;
+>         }
+> @@ -171,7 +171,7 @@ void dw_pcie_write_dbi2(struct dw_pcie *pci, u32 reg, size_t size, u32 val)
+>  {
+>         int ret;
+>
+> -       if (pci->ops->write_dbi2) {
+> +       if (pci->ops && pci->ops->write_dbi2) {
+>                 pci->ops->write_dbi2(pci, pci->dbi_base2, reg, size, val);
+>                 return;
+>         }
+> @@ -186,7 +186,7 @@ static u32 dw_pcie_readl_atu(struct dw_pcie *pci, u32 reg)
+>         int ret;
+>         u32 val;
+>
+> -       if (pci->ops->read_dbi)
+> +       if (pci->ops && pci->ops->read_dbi)
+>                 return pci->ops->read_dbi(pci, pci->atu_base, reg, 4);
+>
+>         ret = dw_pcie_read(pci->atu_base + reg, 4, &val);
+> @@ -200,7 +200,7 @@ static void dw_pcie_writel_atu(struct dw_pcie *pci, u32 reg, u32 val)
+>  {
+>         int ret;
+>
+> -       if (pci->ops->write_dbi) {
+> +       if (pci->ops && pci->ops->write_dbi) {
+>                 pci->ops->write_dbi(pci, pci->atu_base, reg, 4, val);
+>                 return;
+>         }
+> @@ -273,7 +273,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>  {
+>         u32 retries, val;
+>
+> -       if (pci->ops->cpu_addr_fixup)
+> +       if (pci->ops && pci->ops->cpu_addr_fixup)
+>                 cpu_addr = pci->ops->cpu_addr_fixup(pci, cpu_addr);
+>
+>         if (pci->iatu_unroll_enabled) {
+> @@ -481,7 +481,7 @@ int dw_pcie_link_up(struct dw_pcie *pci)
+>  {
+>         u32 val;
+>
+> -       if (pci->ops->link_up)
+> +       if (pci->ops && pci->ops->link_up)
+>                 return pci->ops->link_up(pci);
+>
+>         val = readl(pci->dbi_base + PCIE_PORT_DEBUG1);
+> --
+> 2.17.1
+>
