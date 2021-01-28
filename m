@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE694306FED
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFC1306FF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhA1Hmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232070AbhA1HmC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:42:02 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CFEC061573;
-        Wed, 27 Jan 2021 23:41:21 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id x71so5084247oia.9;
-        Wed, 27 Jan 2021 23:41:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s4OuxxgWe2Ahx+yCxHgtlR+K9khejRjBXvMJQGWTjFA=;
-        b=ZW69HnstykrV7cO0QdoErRAX0lOqZLQKPJ8VTZjabYJgySEH72vmx1TPUPIE4Df05B
-         sfXrPqum1pVjfHtFOA5IkQhSIOJbzxKdAmL/5zezZealW/crspNjMafo07/sOdX+taF9
-         de/5hI9yWD8/+kTxgNaMC7mHMLQmujXzE4JZzCHVSBx/IA/1HbgkScVJCkpc2QbcGc8c
-         xPoL8r/C29jzxxmHVvY7qsmDBDMf0aHabAeXqkkcnmg1cXKwgRn068pX3ykBddawAo+9
-         Kg0RzP9rCpW+r/g6Yu+0idSRIpYEJUNq8CD/OA8dkuYkeatVgGiPfgeIaVtiIxNn965L
-         rIaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s4OuxxgWe2Ahx+yCxHgtlR+K9khejRjBXvMJQGWTjFA=;
-        b=V4srMVr0s+eoTTw0tEuQUSH7OB7rsqumdGAR+E9vYlT/Nqb0rJS/gqX8VGTTREXjxH
-         6v5gzV1sdiibf+m1gTJsADHQGYuZMzobq7IW13VK4LslHw2be4QDepy0jxzSqoQ5Kud0
-         EIHegI9sgY7HeFSlGA0IyRkMF8Bc/UJkUIyXvvDq7nKHO8zdaCbZykAbckvohcyVjvh7
-         68I90nS77RxrriFFve528l4o8JlAwuJAG2gA1INEJTtGfyseWb/Ox41DjR4pD86epxBd
-         j0hdAvxe9KlKMgMxFAA7VgV7309YizflROY7rcmR6L2Zdnz+t+nx2ApTYk0R8MHnTQUl
-         pNeg==
-X-Gm-Message-State: AOAM531JAaWFlwP5noXqFbSM1TgvnJ7B+JkdpkXC9CmD/shZwYm8Y5xU
-        3f80IOcvQhtOP9+QLJAJCyf3aweUrsIOQLPvpCQ=
-X-Google-Smtp-Source: ABdhPJw/eiXe4gLSfUUZ31T65hzmkeEcYKgxYTY70SJ4q1VB9Y3ZQ7dcRSvDe2HIclNoi4wiSxkA+Iony1yi4CVxcx0=
-X-Received: by 2002:aca:f510:: with SMTP id t16mr5936180oih.141.1611819681371;
- Wed, 27 Jan 2021 23:41:21 -0800 (PST)
+        id S231830AbhA1Hoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:44:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232034AbhA1HmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:42:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D815064DD1;
+        Thu, 28 Jan 2021 07:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611819689;
+        bh=UIZAl1ypNxIx0VC4863WBaN/fRN2pw975WDiM1ldZGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bXuKnZrNYpxXInKGae/o3bmzevQexIN83M+3UnxY8xgDrBJRnYGrfEMs2pKdOLMke
+         1A/LQeDq0t99Hwa1TuLGNrAPTD355YKPfzazqeg85TyoVXyVxu++UCgN2Uco9EBDR+
+         STnAyFRkCoI9UMSiMGJfm6xrrYEC1pqVuooxeT8k=
+Date:   Thu, 28 Jan 2021 08:41:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Howard Yen <howardyen@google.com>,
+        Mathias Nyman <mathias.nyman@intel.com>, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] add xhci hooks for USB offload
+Message-ID: <YBJqpbspmXZknX4n@kroah.com>
+References: <20210119101044.1637023-1-howardyen@google.com>
+ <af91bbf1-6731-3e87-4086-de0dbba22c22@intel.com>
+ <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
+ <ca442ca7-a434-2527-9945-861dafa685cc@linux.intel.com>
+ <YBAk795ccXBPgJWp@kroah.com>
+ <CAJDAHvZ2CCm9tT+C=hNc_U1CaYJg3ZjifsYLik3UqfXwUm++Lg@mail.gmail.com>
+ <f77d1149-7bd1-3914-8841-439cb67397fd@linux.intel.com>
 MIME-Version: 1.0
-References: <1610960877-3110-1-git-send-email-wanpengli@tencent.com>
- <CANRm+Cx65UHSJA+S4qRR1wdZ=dhyM=U=KwZnbNUSN4XdM1nyQA@mail.gmail.com>
- <146d2a3f-88db-ff80-29d6-de2b22efdf61@redhat.com> <CANRm+CwcrrTC8w5h3GrszOcu0H2vtcXNi0GD1iXc6O4-x_Ms0A@mail.gmail.com>
-In-Reply-To: <CANRm+CwcrrTC8w5h3GrszOcu0H2vtcXNi0GD1iXc6O4-x_Ms0A@mail.gmail.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Thu, 28 Jan 2021 15:41:09 +0800
-Message-ID: <CANRm+Cw-DkVHU-q5cq1q6Md587Qu2n3utwNPx8gMJPCUw51zrA@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: kvmclock: Fix vCPUs > 64 can't be online/hotpluged
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f77d1149-7bd1-3914-8841-439cb67397fd@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 at 08:28, Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> On Wed, 27 Jan 2021 at 01:26, Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 26/01/21 02:28, Wanpeng Li wrote:
-> > > ping=EF=BC=8C
-> > > On Mon, 18 Jan 2021 at 17:08, Wanpeng Li <kernellwp@gmail.com> wrote:
-> > >>
-> > >> From: Wanpeng Li <wanpengli@tencent.com>
-> > >>
-> > >> The per-cpu vsyscall pvclock data pointer assigns either an element =
-of the
-> > >> static array hv_clock_boot (#vCPU <=3D 64) or dynamically allocated =
-memory
-> > >> hvclock_mem (vCPU > 64), the dynamically memory will not be allocate=
-d if
-> > >> kvmclock vsyscall is disabled, this can result in cpu hotpluged fail=
-s in
-> > >> kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it b=
-y not
-> > >> assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode =
-is not
-> > >> VDSO_CLOCKMODE_PVCLOCK.
-> >
-> > I am sorry, I still cannot figure out this patch.
-> >
-> > Is hotplug still broken if kvm vsyscall is enabled?
->
-> Just when kvm vsyscall is disabled. :)
->
-> # lscpu
-> Architecture:           x86_64
-> CPU op-mode(s):    32-bit, 64-bit
-> Byte Order:             Little Endian
-> CPU(s):                   88
-> On-line CPU(s) list:   0-63
-> Off-line CPU(s) list:  64-87
->
-> # cat /proc/cmdline
-> BOOT_IMAGE=3D/vmlinuz-5.10.0-rc3-tlinux2-0050+ root=3D/dev/mapper/cl-root
-> ro rd.lvm.lv=3Dcl/root rhgb quiet console=3DttyS0 LANG=3Den_US
-> .UTF-8 no-kvmclock-vsyscall
->
-> # echo 1 > /sys/devices/system/cpu/cpu76/online
-> -bash: echo: write error: Cannot allocate memory
+On Thu, Jan 28, 2021 at 08:31:14AM +0200, Mathias Nyman wrote:
+> On 28.1.2021 5.38, Howard Yen wrote:
+> > On Tue, Jan 26, 2021 at 10:19 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >>
+> >> On Fri, Jan 22, 2021 at 05:32:58PM +0200, Mathias Nyman wrote:
+> >>>
+> >>> Ok, before adding hooks like this I think we need to see how they are used.
+> >>> Do you have the rest of the patches that go on top of this series?
+> >>>
+> >>> Maybe it could make sense to use overrides for the functions in struct hc_driver
+> >>> instead in some cases? There is support for that already.
+> >>
+> >> What overrides could be done for these changes?  At first glance that
+> >> would seem to require a lot of duplicated code in whatever override
+> >> happens to be needed.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> > 
+> > This patch series is all the changes for the offload hooks currently.
+> > 
+> > I thought about this, but if I tried to override the functions in
+> > struct hc_driver, that'll need to
+> > copy many code to the override function, and it won't follow the
+> > latest change in the core
+> > xhci driver.
+> > 
+> > 
+> > - Howard
+> 
+> Ok, I see. 
+> 
+> The point I'm trying to make is that there is no way for me to know if
+> these hooks are the right solution before I see any code using them.
+> 
+> Is the offloading code ready and public somewhere?
 
-The original bug report is here.
-https://bugzilla.kernel.org/show_bug.cgi?id=3D210213
+There is offload code published in the last few Samsung phone kernels, I
+want to get that ported to these hooks to see if that works properly.
 
-    Wanpeng
+Give me a few days and I'll see if I can get it working, I had a
+half-finished port around here somewhere...
+
+thanks,
+
+greg k-h
