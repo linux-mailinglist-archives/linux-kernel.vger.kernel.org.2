@@ -2,82 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FF0307F88
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7959A307FA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhA1UYQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 15:24:16 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:47986 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhA1UYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:24:12 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 036DC6083270;
-        Thu, 28 Jan 2021 21:23:30 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id wydx1ZZ3JqXG; Thu, 28 Jan 2021 21:23:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 8E6986083271;
-        Thu, 28 Jan 2021 21:23:29 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nM_5qrai2wzW; Thu, 28 Jan 2021 21:23:29 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 6A9DA6083270;
-        Thu, 28 Jan 2021 21:23:29 +0100 (CET)
-Date:   Thu, 28 Jan 2021 21:23:29 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Tomas Winkler <tomas.winkler@intel.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1363048722.339069.1611865409332.JavaMail.zimbra@nod.at>
-In-Reply-To: <10c2e98c393a486cab3bc953e9926e38@intel.com>
-References: <20210127200319.662842-1-tomas.winkler@intel.com> <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com> <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at> <a6cb6eb10bbb48989d3a9e087951e50e@intel.com> <1665542284.336646.1611820031174.JavaMail.zimbra@nod.at> <f91d7eff1d764ba7b47f023bc0fafacb@intel.com> <20210128100032.5eb542c6@xps13> <10c2e98c393a486cab3bc953e9926e38@intel.com>
-Subject: Re: [PATCH] mtd: use refcount to prevent corruption
+        id S231445AbhA1UZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:25:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51160 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231154AbhA1UYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 15:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA9DF64DDE;
+        Thu, 28 Jan 2021 20:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611865424;
+        bh=iO7ZSC72FkSO5msxnrNl3pzkNeuJI0KURaMGIetLQqA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=We7XJH0G5nMQ6fnPVASdW/lPKdJOtJIBANLe2NM+9ZNg2tu7HZkxijytP9xkxCd/v
+         HdYLQ18qG5hTw7DJnaZt7ZvK6hfdq0Pe3J1d+vpVnh5pOuRPYXuWPHXwP1qcUbKxCU
+         N7tIqaorTkPh2jZBx4BQcNfw2wej30nLdaTpyik3lekkdwSHBYrLQCLuX2nL285Cby
+         Yvsx9SkR1fghrl4eLc8385w5hE+xvfQafo+4D3/H7RJoizRbS8fbyXbW2hyt4Wocn6
+         6QZWwC/7rnjGOkvq8yVJqG95Yq0+F22vSwj7SJLwY6p/nKStoz510U/yhQgo5R41sk
+         0q2hosLtkFK5A==
+Date:   Thu, 28 Jan 2021 21:23:36 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Wolfram Sang <wolfram@the-dreams.de>,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Cleanup standard unit properties
+Message-ID: <20210128202336.GA3094@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Wolfram Sang <wolfram@the-dreams.de>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-watchdog@vger.kernel.org
+References: <20210128194515.743252-1-robh@kernel.org>
+ <20210128201614.GA162245@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: use refcount to prevent corruption
-Thread-Index: AQHW9OeD00Da249Jw0qJn6+VIZAeUao7z7AAgAAh5BBxoBSOfPxzntFAEGBJdu//fSiMQP//4NkAAA+XK+AnHY02HQ==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Content-Disposition: inline
+In-Reply-To: <20210128201614.GA162245@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tomas,
 
------ Ursprüngliche Mail -----
->> As Richard was saying, we are really open to enhance MTD refcounting.
->> 
->> However, the issue you are facing is, IMHO, not related to MTD but to MFD.
->> There should be a way to avoid MFD to vanish by taking a reference of it
->> through mtd->_get_device(). I don't think addressing the case where MFD
->> vanishes while MTD (as a user) is still active is the right approach.
-> 
-> I think it won't work because MFD sub-driver remove() is called   and it must
-> succeed because the main device  is not accessible unlike glueubi which just
-> returns -EBUSY.
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Well, the trick in glubi (and other MTDs with "hotplug" support) is not to reject
-removal of the sub-device. ->_put_device() is of return type void.
-The key is grabbing a reference on the sub-device in ->_get_device() such that
-the layer below doesn't even try to remove while the MTD is in use.
+On Thu, Jan 28, 2021 at 12:16:14PM -0800, Guenter Roeck wrote:
+> On Thu, Jan 28, 2021 at 01:45:15PM -0600, Rob Herring wrote:
+> > Properties with standard unit suffixes already have a type and don't ne=
+ed
+> > type definitions. They also default to a single entry, so 'maxItems: 1'
+> > can be dropped.
+> >=20
+> > adi,ad5758 is an oddball which defined an enum of arrays. While a valid
+> > schema, it is simpler as a whole to only define scalar constraints.
 
-> so we postpone the mtd unregister to  mtd_info->_put_device()  but it that state
-> we have nothing to hold
-> on as the device is gone in remove()
-> User will fail anyway, as the underlying device is not functional in that state.
-> Anyway I've tried your suggestion, the kernel is crashing, hope I haven't done
-> some silly bug.
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
 
-Can you point us to the affected code?
-This would help a lot to understand the issue better.
-I'm sure we can find a solution.
 
-Thanks,
-//richard
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmATHUQACgkQFA3kzBSg
+Kbb6dA//VS8eldi8uAa1mEf6ElM2KDOvyEFV2uyartRr0Y//54CMkLEmCIu16Whx
+AKOzpk7OOfMUlETV22cBsCRRLyZuJ/rDqgkphiLtPuQUi2h1sj89grqSUBL5Kg8C
+MzqNNOnqdbiISFKTgyfNM9cVOxPkbJ+3TrZHou8QfKKtl8x7SuE+Wr6+xYUpxC6x
+ZBI7NC1taOe8tHTM6DdsGTVh+sclfzaUXgxmabZfzBXlNM2rhANaWTa2MB2unWqk
+Lf/O8VVLc1f3NbfDS0UVafL6M3zbLrzBvlZWyBSHdo56y1P1ejpDzDl9PDQvzcNA
+ed9JmdQO0Jh+C6yESODylcOONiiQuGl4s11pId4+UPjWe/YSlnrd4BjncNBMWjb2
+2WDAvHWJxRt8Gh95EgIZIVSDExFpnsfw4s0QW8pUcEDh/SeADHkP/rCnT5pJ04oO
+AA8gfbdb7DpGzPo7+1M4DGMqfHC9nNk20bpByc0g10tDLfpf+fov01NJS95Ph4ms
+np4yxEtQ5cV4qGO+5Qm615C0xCcmsqpgmOe60USL3eb1N7FwjTX9/eCYxc61UOsK
+jQt6iVQaeoOXwJppAkSmzLa1q6er4BpPJyEK58HC77cmvr9X4udR7WNQY0+nUqpI
+0P7HBGXr9c2zQY0mVC86pc0EN8rjY/CIVrwn1RJ7f+D+CgI1Fno=
+=/5B3
+-----END PGP SIGNATURE-----
+
+--/9DWx/yDrRhgMJTb--
