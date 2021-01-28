@@ -2,184 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5E13076C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48563076CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhA1NKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:10:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        id S232031AbhA1NKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhA1NJx (ORCPT
+        with ESMTP id S231932AbhA1NKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:09:53 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3175CC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:12 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b17so3298679plz.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:12 -0800 (PST)
+        Thu, 28 Jan 2021 08:10:35 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBE9C061756;
+        Thu, 28 Jan 2021 05:09:55 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a10so7630759ejg.10;
+        Thu, 28 Jan 2021 05:09:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wV6oz0k6223jz7bAL5Zk8NtAtXo6+ezaMn2fhP1oIYw=;
-        b=LC3TkXKy3vn5GvO4Kf87XAOF7u+IP4qG3NOTmirr40/P/+XPyRG5SDdGc0xFE1cHzH
-         x5korc+db7u6Jg0h5ILb8wHVnJPZoRTCcjqqufpBVYaBcu3M97Nxel7VCt5w/FlLY1eW
-         HZ6M99/NpP2WRtl2d6UH0ByzCBG86H0E2YucVJ4Q2EXwE3VgBpnDydWwZtoo4c8vWi8/
-         RvIlU+znzcboc0Yh8QxfNNH8UbjIWjr1OkTDbxt3PU3UmW2PclQszMys1ZSv8glvYbk6
-         OWaYKN3NgoDEUUFpXKZFEoFBIGnGUHi87LSDbF5nBI9fPA1TJ7gs+avJKhwjP02wdMgh
-         U//g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CdHrZZKCFGbRw7B5b9fj5zGmhgaPbbkoPZv2x5b3J7o=;
+        b=IvGKLCyZfj99YBUzT5iluG/lUsUVkiH2ItSUJdxken6550pj5eJ2uWtZ5gasF+pNMv
+         VeURcKIg8OpMrdzBNQwxunPsuxTI54zvMvYeqqeRNU0h/UYLuZbrr06YWKZ9zHUEGmnX
+         W8oxubR828pVuVmKeajgoIRL8Pguu93AQI2sXqNd7U7uUYNYbrh2sPTO5dmBt+3h9srA
+         /K3aQyvOIhUu9MxCp/va5Sd0rR+/amxa1qc650I0p3J0pAXXqoRlgO0YmZgpdYJ28+JG
+         Y4aN+shrWTXU7LAQCAE3LqSU3NHDjguOnHkgXV2BLuTRxPERb9RYUTrPnpbczKgtIDyl
+         bHyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wV6oz0k6223jz7bAL5Zk8NtAtXo6+ezaMn2fhP1oIYw=;
-        b=I09wQxHTp+Cbxew0+QvUrFhMKduEKzfn/N7aPS02bJuh2SiloRJ9kCu+4ogL7ql1nh
-         CLXEMkmFuWx6Jn2e9mNIAsagFtO0e481J0IBe1Z4dElCQX3yrz6QfSGgRe6jOxvyaOBS
-         4nPH2b1Pij7P7r6XSOD/ZZ/ULA0Saf1s51hRZujvnWDWX+GjX4b1isp5Yw9+xdHbu+jD
-         A3z8GFQ7qV6lJ0uJu8+gfip+K9MWJgcbkunELKytEuOH1zaQMRvDFwslHD087wEKmf8R
-         XAsG40TkNucZRJEU9ozGW+hyDsPb3YFKFctl28N5mgDRbXAh1SoQ+JkfdngdNhxHyvIx
-         OfPw==
-X-Gm-Message-State: AOAM531YYzms+VGuTvgKXKXn2MrJ+em61qXOg2SFJRSAh4Dz+HCa/KCs
-        rMyty9u1LDF0MOdZyXmx2mshRPcoScyZXq3pJbxCFA==
-X-Google-Smtp-Source: ABdhPJyufgziyJlqzFS90vCqlwRzjRmjfQIf+qHC8gEyNqlz6n+25WRZktQ7hAQucfD1mMlI+eOC+QOtDcYv/xXSLn8=
-X-Received: by 2002:a17:90a:808a:: with SMTP id c10mr11001877pjn.229.1611839351754;
- Thu, 28 Jan 2021 05:09:11 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CdHrZZKCFGbRw7B5b9fj5zGmhgaPbbkoPZv2x5b3J7o=;
+        b=mM8d7ZQLkizZOurgY4N2LIvcK0N6CDPgiiDeKqH/yF9beq6Lwa2OJjoBPDBUaMTz28
+         VWnW63khVjhq7/7+hB7KqtlcvUaHpAQ9nkfz1oQraw253qHUZP2O7JKkP0pfwIjeMlhI
+         +cUWQsLKe76gYaOeWfHbiGx9pvQlgYoGD4pmBX8HqZtBiKIMc6XGKEMqt/Pu0sBSMJzM
+         YJBhGllqh+nEwWB0M5P3Wx2K0FjkE2UgciryKMtUT8LxkPjCDLFfNnSMuHQ5IVUmfCB+
+         k75ookh8Euewlu+uDvz//PPKDRJmeX4zseEBKP2g7MhOpTW/0XvK0g/nJT9PtqmuT5D0
+         /AKQ==
+X-Gm-Message-State: AOAM532fv9lP5Y/ykSQWaF9lioxS1wnHd7Pt6NJhrN53N/bUuPdOXnva
+        7sYQFdkFKxl1cxDW49OYfg8=
+X-Google-Smtp-Source: ABdhPJxBNXZE6rL2hNwD6LVXA79HcYy2S3Puzk0YxZD8gsKML539+nNAG1cr5zTuFzHfmdfRqFjyJg==
+X-Received: by 2002:a17:906:941a:: with SMTP id q26mr11346434ejx.266.1611839394293;
+        Thu, 28 Jan 2021 05:09:54 -0800 (PST)
+Received: from [192.168.0.101] ([77.124.61.116])
+        by smtp.gmail.com with ESMTPSA id v15sm2277913ejj.4.2021.01.28.05.09.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 05:09:53 -0800 (PST)
+Subject: Re: [PATCH v4 net-next] net: Remove redundant calls of
+ sk_tx_queue_clear().
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Amit Shah <aams@amazon.de>, Kuniyuki Iwashima <kuni1840@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Boris Pismenny <borisp@mellanox.com>
+References: <20210128124229.78315-1-kuniyu@amazon.co.jp>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <fad76e94-ca1f-41f6-f1aa-f9853f64d36d@gmail.com>
+Date:   Thu, 28 Jan 2021 15:09:51 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com> <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com> <20210126145819.GB16870@linux>
- <259b9669-0515-01a2-d714-617011f87194@redhat.com> <20210126153448.GA17455@linux>
- <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com> <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
- <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
-In-Reply-To: <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 28 Jan 2021 21:08:35 +0800
-Message-ID: <CAMZfGtXXPpvnGotwgYj5G5DkWM1e+McLOLM3pTGuUui54f5TFg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
- vmemmap pages associated with each HugeTLB page
-To:     David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128124229.78315-1-kuniyu@amazon.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 8:37 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Wed, Jan 27, 2021 at 6:36 PM David Hildenbrand <david@redhat.com> wrote:
-> >
-> > On 26.01.21 16:56, David Hildenbrand wrote:
-> > > On 26.01.21 16:34, Oscar Salvador wrote:
-> > >> On Tue, Jan 26, 2021 at 04:10:53PM +0100, David Hildenbrand wrote:
-> > >>> The real issue seems to be discarding the vmemmap on any memory that has
-> > >>> movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, we
-> > >>> can reuse parts of the thingy we're freeing for the vmemmap. Not that it
-> > >>> would be ideal: that once-a-huge-page thing will never ever be a huge page
-> > >>> again - but if it helps with OOM in corner cases, sure.
-> > >>
-> > >> Yes, that is one way, but I am not sure how hard would it be to implement.
-> > >> Plus the fact that as you pointed out, once that memory is used for vmemmap
-> > >> array, we cannot use it again.
-> > >> Actually, we would fragment the memory eventually?
-> > >>
-> > >>> Possible simplification: don't perform the optimization for now with free
-> > >>> huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: what
-> > >>> happens when migrating a huge page from ZONE_NORMAL to (ZONE_MOVABLE|CMA)?
-> > >>
-> > >> But if we do not allow theose pages to be in ZONE_MOVABLE or CMA, there is no
-> > >> point in migrate them, right?
-> > >
-> > > Well, memory unplug "could" still work and migrate them and
-> > > alloc_contig_range() "could in the future" still want to migrate them
-> > > (virtio-mem, gigantic pages, powernv memtrace). Especially, the latter
-> > > two don't work with ZONE_MOVABLE/CMA. But, I mean, it would be fair
-> > > enough to say "there are no guarantees for
-> > > alloc_contig_range()/offline_pages() with ZONE_NORMAL, so we can break
-> > > these use cases when a magic switch is flipped and make these pages
-> > > non-migratable anymore".
-> > >
-> > > I assume compaction doesn't care about huge pages either way, not sure
-> > > about numa balancing etc.
-> > >
-> > >
-> > > However, note that there is a fundamental issue with any approach that
-> > > allocates a significant amount of unmovable memory for user-space
-> > > purposes (excluding CMA allocations for unmovable stuff, CMA is
-> > > special): pairing it with ZONE_MOVABLE becomes very tricky as your user
-> > > space might just end up eating all kernel memory, although the system
-> > > still looks like there is plenty of free memory residing in
-> > > ZONE_MOVABLE. I mentioned that in the context of secretmem in a reduced
-> > > form as well.
-> > >
-> > > We theoretically have that issue with dynamic allocation of gigantic
-> > > pages, but it's something a user explicitly/rarely triggers and it can
-> > > be documented to cause problems well enough. We'll have the same issue
-> > > with GUP+ZONE_MOVABLE that Pavel is fixing right now - but GUP is
-> > > already known to be broken in various ways and that it has to be treated
-> > > in a special way. I'd like to limit the nasty corner cases.
-> > >
-> > > Of course, we could have smart rules like "don't online memory to
-> > > ZONE_MOVABLE automatically when the magic switch is active". That's just
-> > > ugly, but could work.
-> > >
-> >
-> > Extending on that, I just discovered that only x86-64, ppc64, and arm64
-> > really support hugepage migration.
-> >
-> > Maybe one approach with the "magic switch" really would be to disable
-> > hugepage migration completely in hugepage_migration_supported(), and
-> > consequently making hugepage_movable_supported() always return false.
-> >
-> > Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
-> > migrated. The problem I describe would apply (careful with using
-> > ZONE_MOVABLE), but well, it can at least be documented.
->
-> Thanks for your explanation.
->
-> All thinking seems to be introduced by encountering OOM. :-(
->
-> In order to move forward and free the hugepage. We should add some
-> restrictions below.
->
-> 1. Only free the hugepage which is allocated from the ZONE_NORMAL.
-           ^^
-Sorry. Here "free" should be "optimize".
 
-> 2. Disable hugepage migration when this feature is enabled.
-> 3. Using GFP_ATOMIC to allocate vmemmap pages firstly (it can reduce
->    memory fragmentation), if it fails, we use part of the hugepage to
->    remap.
->
-> Hi Oscar, Mike and David H
->
-> What's your opinion about this? Should we take this approach?
->
-> Thanks.
->
-> >
-> > --
-> > Thanks,
-> >
-> > David / dhildenb
-> >
+
+On 1/28/2021 2:42 PM, Kuniyuki Iwashima wrote:
+> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
+> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
+> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
+> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
+> other hand, the original commit had already put sk_tx_queue_clear() in
+> sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
+> sk_tx_queue_clear() is called twice in each path.
+> 
+> If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
+> currently works well because (i) sk_tx_queue_mapping is defined between
+> sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
+> sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
+> However, if we move sk_tx_queue_mapping out of the no copy area, it
+> introduces a bug unintentionally.
+> 
+> Therefore, this patch adds a compile-time check to take care of the order
+> of sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
+> sk_prot_alloc() so that it does the only allocation and its callers
+> initialize fields.
+> 
+> v4:
+> * Fix typo in the changelog (runtime -> compile-time)
+> 
+> v3: https://lore.kernel.org/netdev/20210128021905.57471-1-kuniyu@amazon.co.jp/
+> * Remove Fixes: tag
+> * Add BUILD_BUG_ON
+> * Remove sk_tx_queue_clear() from sk_prot_alloc()
+>    instead of sk_alloc() and sk_clone_lock()
+> 
+> v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
+> * Remove Reviewed-by: tag
+> 
+> v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
+> 
+
+Sorry for not pointing this out earlier, but shouldn't the changelog 
+come after the --- separator? Unless you want it to appear as part of 
+the commit message.
+
+Other than that, I think now I'm fine with the patch.
+
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
+
+Thanks,
+Tariq
+
+> CC: Tariq Toukan <tariqt@mellanox.com>
+> CC: Boris Pismenny <borisp@mellanox.com>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> ---
+>   net/core/sock.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index bbcd4b97eddd..cfbd62a5e079 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
+>   #ifdef CONFIG_SECURITY_NETWORK
+>   	void *sptr = nsk->sk_security;
+>   #endif
+> +
+> +	/* If we move sk_tx_queue_mapping out of the private section,
+> +	 * we must check if sk_tx_queue_clear() is called after
+> +	 * sock_copy() in sk_clone_lock().
+> +	 */
+> +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
+> +		     offsetof(struct sock, sk_dontcopy_begin) ||
+> +		     offsetof(struct sock, sk_tx_queue_mapping) >=
+> +		     offsetof(struct sock, sk_dontcopy_end));
+> +
+>   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
+>   
+>   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
+> @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
+>   
+>   		if (!try_module_get(prot->owner))
+>   			goto out_free_sec;
+> -		sk_tx_queue_clear(sk);
+>   	}
+>   
+>   	return sk;
+> 
