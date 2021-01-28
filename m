@@ -2,170 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979213079D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109813079DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhA1PcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhA1PbC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:31:02 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6C0C061573;
-        Thu, 28 Jan 2021 07:30:22 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id p21so8105968lfu.11;
-        Thu, 28 Jan 2021 07:30:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=R+Hue0PWlTxdyWc5K6RSHcz9rExWoyGU+yGHd9hzTV0=;
-        b=aOVKWLC/LNskFli8f/Sqb0ejCNpPOgvj4L+dRMZXBxLUD2ua5XcEr4YAs93zwtIhbp
-         JK1172wcLyUJ1HAUgQcsSUqZtoAZANorPdQRa6eoIGGew3NI3ZVOBQQVbY8waDUhhRmA
-         itMIsLiSp2JWeMazv5MczitXTQhUnEaoJA1ckuFeopYgdr1/dZ7DWwMnv20twYfuj+NC
-         nQxDFNsLhnT++nhT+qLCxbgCsUocjYVRgTFxoEPx7sNM7VNBLnsq2bVGB6zcKOaLuHej
-         XyQ2sqsyM8/UDlRu2AOmsv7QaCZtdZkiC1bSkoEOdkVLJWAuJakE798fAiXwsHHENJrC
-         3y+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R+Hue0PWlTxdyWc5K6RSHcz9rExWoyGU+yGHd9hzTV0=;
-        b=X62FrZBZ9Y9+/T2rJKARWIgidWJGoAOzyXTnmdVIPw+pyIBgv6kHdsdG5qoIqB0A/+
-         ZT+fCl7j6xd5BPnNIYmwPTqiM/NDt1tvrqtDqHqghHc/OaG5m14HPa5mo/aVAE8m0FLD
-         +1dguAy2y5BqlDErNXGynNaneAzq6NJ4KUm6FB2vP2a2Dl702vbAN6rcE3L0+2i6FSQL
-         e6JNII3PQPfQtquwOBdgkWAbtl1bjgzYr/un10wOKfW+VT+IHuf9yj+btN2fBLahJb/7
-         +ALbBlN/FVL565PnHC/DvJFxgvRybu5C2XpBj+LOESQbA3D3O1jTFvAGgxxCyvC84704
-         yAnA==
-X-Gm-Message-State: AOAM533Fib1FmWtlzxepvko2p6rLwWGTpCfvKACyUZAhgBcrPb1WxcKF
-        x91+WCbDhqCCZSRud6UtuzI=
-X-Google-Smtp-Source: ABdhPJy56uEiInFhFpbpttAzsRdD+R+o4+uVFk6y67VZEtJzVAKTz0VYUpxH6QPZcvuXH5mmH84K9g==
-X-Received: by 2002:a05:6512:510:: with SMTP id o16mr7817099lfb.378.1611847820573;
-        Thu, 28 Jan 2021 07:30:20 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t22sm689273lfk.128.2021.01.28.07.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 07:30:19 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 28 Jan 2021 16:30:17 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210128153017.GA2006@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210125132236.GJ827@dhcp22.suse.cz>
- <20210125143150.GA2282@pc638.lan>
- <20210125153943.GN827@dhcp22.suse.cz>
- <20210125162559.GA52712@pc638.lan>
- <20210128151152.GA1867@pc638.lan>
- <YBLVbZzy0KSONizm@dhcp22.suse.cz>
+        id S231496AbhA1Peu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:34:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49970 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231349AbhA1Pem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:34:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611848036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=D5OYwaFxK/AYOwT4ncyOrXqBEV4/eu+1M6R/qN+DFI0=;
+        b=W5AmWTVXQ+hg+J2XIu9xHUnE2UFHAlRi65K/7iy6cyqOvwRYgc9P+38qiTh4m01P02bJhG
+        1dQGcW0pYJWZO/ujcxBa4nC4EonOH+6C65E3ZOO6zCQgA3DzMIMl/3uS5TKsuzBOAnY8fn
+        upcXyenuXozBO410T9hiarsnJrOmMPE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8FC0ACB7;
+        Thu, 28 Jan 2021 15:33:56 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        boris.ostrovsky@oracle.com
+Subject: [GIT PULL] xen: branch for v5.11-rc6
+Date:   Thu, 28 Jan 2021 16:33:56 +0100
+Message-Id: <20210128153356.13823-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBLVbZzy0KSONizm@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 04:17:01PM +0100, Michal Hocko wrote:
-> On Thu 28-01-21 16:11:52, Uladzislau Rezki wrote:
-> > On Mon, Jan 25, 2021 at 05:25:59PM +0100, Uladzislau Rezki wrote:
-> > > On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
-> > > > On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
-> > > > > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
-> > > > > > > For a single argument we can directly request a page from a caller
-> > > > > > > context when a "carry page block" is run out of free spots. Instead
-> > > > > > > of hitting a slow path we can request an extra page by demand and
-> > > > > > > proceed with a fast path.
-> > > > > > > 
-> > > > > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> > > > > > > and that its fallback is the relatively high latency synchronize_rcu().
-> > > > > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> > > > > > > to allow limited sleeping within the memory allocator.
-> > > > > > 
-> > > > > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
-> > > > > > way to allocate without triggering the OOM killer. Is this really what
-> > > > > > you need/want? Is __GFP_NORETRY too weak?
-> > > > > > 
-> > > > > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
-> > > > > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
-> > > > > point: https://www.spinics.net/lists/rcu/msg02856.html
-> > > > > 
-> > > > > <snip>
-> > > > >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
-> > > > >     further decisions based on instrumentation of the success rates of
-> > > > >     these opportunistic allocations.
-> > > > > <snip>
-> > > > 
-> > > > I completely agree with Johannes here.
-> > > > 
-> > > > > but for some reason, i can't find a tail or head of it, we introduced
-> > > > > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
-> > > > > What we would like to avoid.
-> > > > 
-> > > > Not that I object to this use but I think it would be much better to use
-> > > > it based on actual data. Going along with it right away might become a
-> > > > future burden to make any changes in this aspect later on due to lack of 
-> > > > exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
-> > > > try as hard as it can get without being really disruptive (like OOM
-> > > > killing something). And your wording didn't really give me that
-> > > > impression.
-> > > > 
-> > > Initially i proposed just to go with GFP_NOWAIT flag. But later on there
-> > > was a discussion about a fallback path, that uses synchronize_rcu() can be
-> > > slow, thus minimizing its hitting would be great. So, here we go with a
-> > > trade off.
-> > > 
-> > > Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
-> > > light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
-> > > 
-> > > There were simple criterias we discussed which we would like to achieve:
-> > > 
-> > > a) minimize a fallback hitting;
-> > > b) avoid of OOM involving;
-> > > c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
-> > > 
-> > One question here. Since the code that triggers a page request can be
-> > directly invoked from reclaim context as well as outside of it. We had
-> > a concern about if any recursion is possible, but what i see it is safe.
-> > The context that does it can not enter it twice:
-> > 
-> > <snip>
-> >     /* Avoid recursion of direct reclaim */
-> >     if (current->flags & PF_MEMALLOC)
-> >         goto nopage;
-> > <snip>
-> 
-> Yes this is a recursion protection.
-> 
-> > What about any deadlocking in regards to below following flags?
-> > 
-> > GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
-> 
-> and __GFP_NOMEMALLOC will make sure that the allocation will not consume
-> all the memory reserves. The later should be clarified in one of your
-> patches I have acked IIRC.
->
-Yep, it is clarified and reflected in another patch you ACKed.
+Linus,
 
-Thanks!
+Please git pull the following tag:
 
---
-Vlad Rezki
+ git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc6-tag
+
+xen: branch for v5.11-rc6
+
+It contains the following fixes:
+
+- A fix for a regression introduced in 5.11 resulting in Xen dom0 having
+  problems to correctly initialize Xenstore.
+
+- A fix for avoiding WARN splats when booting as Xen dom0 with
+  CONFIG_AMD_MEM_ENCRYPT enabled due to a missing trap handler for the
+  #VC exception (even if the handler should never be called).
+
+- A fix for the Xen bklfront driver adapting to the correct but
+  unexpected behavior of new qemu.
+
+
+Thanks.
+
+Juergen
+
+ arch/x86/include/asm/idtentry.h   |  1 +
+ arch/x86/xen/enlighten_pv.c       | 15 ++++++++++++++-
+ arch/x86/xen/xen-asm.S            |  1 +
+ drivers/block/xen-blkfront.c      | 20 +++++++-------------
+ drivers/xen/xenbus/xenbus_probe.c | 31 +++++++++++++++++++++++++++++++
+ 5 files changed, 54 insertions(+), 14 deletions(-)
+
+David Woodhouse (1):
+      xen: Fix XenStore initialisation for XS_LOCAL
+
+Juergen Gross (1):
+      x86/xen: avoid warning in Xen pv guest with CONFIG_AMD_MEM_ENCRYPT enabled
+
+Roger Pau Monne (1):
+      xen-blkfront: allow discard-* nodes to be optional
