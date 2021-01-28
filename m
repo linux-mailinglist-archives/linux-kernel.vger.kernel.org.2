@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E8F307265
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBF2307264
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhA1JOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:14:16 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:57041 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbhA1JLg (ORCPT
+        id S232391AbhA1JOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232348AbhA1JMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:11:36 -0500
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l53KI-0006EQ-4a; Thu, 28 Jan 2021 10:10:54 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l53KH-00071Y-Rq; Thu, 28 Jan 2021 10:10:53 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel@pengutronix.de
-Subject: [PATCH 2/2] i3c: Make remove callback return void
-Date:   Thu, 28 Jan 2021 10:10:48 +0100
-Message-Id: <20210128091048.17006-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210128091048.17006-1-u.kleine-koenig@pengutronix.de>
-References: <20210128091048.17006-1-u.kleine-koenig@pengutronix.de>
+        Thu, 28 Jan 2021 04:12:06 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01537C061574;
+        Thu, 28 Jan 2021 01:11:22 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id a109so4543765otc.1;
+        Thu, 28 Jan 2021 01:11:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BpH8ufxoi7Wf0OvvYg4DlAzvPrwoTT0dl+FXt2N9bdw=;
+        b=ZG3D9l1mrE8u11+4t1oKrakZ8yoNRc3iqYfBA5JFX711kPox/GdilHmoQd34vIz5q7
+         nW/1iTSXzQzCf4rWRapemQKLf4bA3RswLUmLKCWQg40dRNG7ozxOCgYdIn33SS2SnqOF
+         1lTlgz9Hf5oOYTlzqYoItp+GObYybgOWDw27u8orGRbM5SmX1+IbZt0sny2HDGxYlvgr
+         R6Nk+sFAWjyoL0YTv4yfbn1Wsm/JG2gDMahzUjPX40k1CcUuZpKK8nkFAn+X74fJnyiN
+         nPmElhgFBvCCLEy1E6S3C23NUM4xZxeh3NcnHdRxUWoI1/tg0FaY95iiYGIXAeCXND+H
+         5mxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BpH8ufxoi7Wf0OvvYg4DlAzvPrwoTT0dl+FXt2N9bdw=;
+        b=gsBJu6XBChcLz7pux9fkUaxnLEFP8kk6jgmTTJIcFYgzIMBbIUy1NYDVfaICjK1Nj3
+         /i7G93/IMzsUWalT2O3nywxFHd5OQHR/wOMGaAbv/MJyAUatU1N6zY5FhQ61xyCR1rzb
+         UU5NrhdMDmigbd9khvwAn2QHm1UhJ2yMp46shGG3duZPDHBzJKqpUIzX65PC+0DDPveG
+         1CBNlJpH8MU3PMi/Lj43jDMfpUARwO7hQM9Aq7KC2rhXit43NrqR8GpsPdHUi2VIjq7p
+         jUUV+TS3oalKewzsq2JPyaHryeE1Tqzs7iDs55ur+OtlaxdsGQw3emT6FMvLSHW39uoL
+         q2kw==
+X-Gm-Message-State: AOAM5328tUw4dgmNVLEyMgb/yGjHWYR/gg6aGpvvA/HzU8HJfis1xZ7f
+        sbSe5JCFgYX/paFo0D8jXjwhMob64WTMnvGRtwI=
+X-Google-Smtp-Source: ABdhPJwmVwbpJuVCu7aP1ss+R20SLHhCSoSintnWm2cqEvOWeAq3xFHQVy5TXM8vV1E/vhrdcmfiXUh2L7R41WY/m08=
+X-Received: by 2002:a05:6830:230b:: with SMTP id u11mr10952979ote.184.1611825081403;
+ Thu, 28 Jan 2021 01:11:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210128072802.830971-1-hsinyi@chromium.org> <20210128072802.830971-3-hsinyi@chromium.org>
+In-Reply-To: <20210128072802.830971-3-hsinyi@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Thu, 28 Jan 2021 10:11:09 +0100
+Message-ID: <CAFqH_53kVHh2Phyd=xoM7A3g0qz2HACAJHYcgX24eRTo_YE5Cg@mail.gmail.com>
+Subject: Re: [PATCH v11 2/9] arm64: dts: mt8183: refine gamma compatible name
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of struct bus_type::remove()
-because there is only little that can be done. To simplify the quest to
-make this function return void, let struct i3c_driver::remove() return
-void, too. This makes it obvious that returning an error code is
-a bad idea and future driver authors cannot get that wrong.
+Hi Hsin-Yi,
 
-Up to now there are no drivers with a remove callback, so there is no
-need to adapt drivers.
+Thank you for your patch.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/i3c/master.c       | 10 +++-------
- include/linux/i3c/device.h |  2 +-
- 2 files changed, 4 insertions(+), 8 deletions(-)
+Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dj., 28 de gen.
+2021 a les 8:28:
+>
+> From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+>
+> mt8183 gamma is different with mt8173
+> remove mt8173 compatible name for mt8183 gamma
+>
 
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 57a4f699eb8d..f8e9b7305c13 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -326,17 +326,13 @@ static int i3c_device_remove(struct device *dev)
- {
- 	struct i3c_device *i3cdev = dev_to_i3cdev(dev);
- 	struct i3c_driver *driver = drv_to_i3cdrv(dev->driver);
--	int ret = 0;
- 
--	if (driver->remove) {
--		ret = driver->remove(i3cdev);
--		if (ret)
--			return ret;
--	}
-+	if (driver->remove)
-+		driver->remove(i3cdev);
- 
- 	i3c_device_free_ibi(i3cdev);
- 
--	return ret;
-+	return 0;
- }
- 
- struct bus_type i3c_bus_type = {
-diff --git a/include/linux/i3c/device.h b/include/linux/i3c/device.h
-index de102e4418ab..8242e13e7b0b 100644
---- a/include/linux/i3c/device.h
-+++ b/include/linux/i3c/device.h
-@@ -176,7 +176,7 @@ struct i3c_device;
- struct i3c_driver {
- 	struct device_driver driver;
- 	int (*probe)(struct i3c_device *dev);
--	int (*remove)(struct i3c_device *dev);
-+	void (*remove)(struct i3c_device *dev);
- 	const struct i3c_device_id *id_table;
- };
- 
--- 
-2.29.2
+Should this patch contain?
 
+Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
+
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 6c84ccb709af6..9c0073cfad452 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -1055,8 +1055,7 @@ aal0: aal@14010000 {
+>                 };
+>
+>                 gamma0: gamma@14011000 {
+> -                       compatible = "mediatek,mt8183-disp-gamma",
+> -                                    "mediatek,mt8173-disp-gamma";
+> +                       compatible = "mediatek,mt8183-disp-gamma";
+>                         reg = <0 0x14011000 0 0x1000>;
+>                         interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
+>                         power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+> --
+> 2.30.0.280.ga3ce27912f-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
