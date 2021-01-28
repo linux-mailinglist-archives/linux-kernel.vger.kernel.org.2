@@ -2,92 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D5B307821
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03EA30782F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbhA1Ocz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        id S231345AbhA1Oea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbhA1Ocp (ORCPT
+        with ESMTP id S231220AbhA1OeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:32:45 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAB0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:32:05 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id c132so4413611pga.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:32:05 -0800 (PST)
+        Thu, 28 Jan 2021 09:34:01 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D73DC061756;
+        Thu, 28 Jan 2021 06:33:21 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id q2so3430340plk.4;
+        Thu, 28 Jan 2021 06:33:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R9tH9YjKdu4SV5abNwwJi97SLfnNUb/O813edamRM6Q=;
-        b=JDmPw59tJk29B48kwIPKMz8KmvxLlJaaL1BgF4PLqrTIPWOsd2twVS3BZHj3LqHf/U
-         tVkocwsz1ijDsPRE8Lh0rHKqIaPBxD68EvPZuRDRxeyFh0/RydPe00W8XBvxCIezyQDE
-         U7o4h7sq3V+jfnHYdfXa1zced+kebVZ5WwWH0AuZbpl8NrmTChkCa4zu6Pfij7OwB+Pe
-         xnLp++aHRlDNuc2B9fwl5dGTmL4I8ekGdMANiQefjJt9CwRK07Xt++q6WH8YZHf1kuOQ
-         CheoPG0P6G5bqkQugw+92XkrSKpZ+Q5qoio15YLoW05cd0ey4B9mSoo+ptj0jxQZyujf
-         cigQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=00AnnnxbvHqhiLog3KtyVq86J2iHZsP1rdfFuFi4dKs=;
+        b=t1lZGPaSTxfsfGKmBb1FEFj9WPlagFlHU8kST7jAmClJ/QQnKPa9Lvx6nTNGW4yvlx
+         q1Fh2NfhRXx6D+jXCxPzuFX3rx09Mh+2Cu/KwJoHYArJx82d4YuhT3SQMWZ1QsxBxlIL
+         HRQLQopuqgQQ/z2MzI4WURF/ealrUwt20T9eRbLQI4VBnKSY8JgyVFo8Tc2rlQMXtzko
+         yuZNe+7LX55p0n/UUirwwa0V0qpPHHWULNYYZOkOMo0n+U4pO7PIyBwnJvxYJXoUHCza
+         LW6UT7VmbdSZCOY2U7q9k2Hda8Jurq7qLAjuFUKw7eafGhycgOLTghnmz88yM2vqSIfN
+         SmEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R9tH9YjKdu4SV5abNwwJi97SLfnNUb/O813edamRM6Q=;
-        b=AVGk1aJcSXVbpzaA/naqqZu7RHATDl7bw+cehF95r9zVTX5g7BUyHwgwLxapgYv6Vs
-         Ij02TqC2PSzracMQGx/Nqdq68aYM992HeH0OZ2CuaV78bzP7H3oUHNLRA929ZSBJFrsM
-         e4KTnagA4C9/O2acZOYVP8qe4mZ78xX+8qa1/6vjiQsBklBKfm3Hfj/yJz7bDMznaRBE
-         M5d93ktcTVPjYwBxcBh7I7lT6tpsy5m7bLnyQGcK7ed9p/2XWgsJBJWNaaoRMjVHNOrV
-         Ov7vuTj+Mpw0S0zia0CwM5mSb+V0H+99LRbhowjDZFmU+fBlLeSSQFnKKzjpi8fAO7qp
-         7uMg==
-X-Gm-Message-State: AOAM530LHYTJjpTPpGTY+xZFW/rjXz0tBTW8/fbGGklBLSkidxbNK2f3
-        RnZwTi/GWqFTHELNb6dDr99gvF0ObMDxMg==
-X-Google-Smtp-Source: ABdhPJyn8mjoxYrivmEV09qI42ucQQdWuIe50sPqGBeCUhM8pOyzcP5QzWmZEXPMW98hrtXAZDR3Ig==
-X-Received: by 2002:a63:4507:: with SMTP id s7mr16729858pga.390.1611844324746;
-        Thu, 28 Jan 2021 06:32:04 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id 6sm5827613pfz.34.2021.01.28.06.32.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 06:32:04 -0800 (PST)
-Subject: Re: [PATCH v3] blk-cgroup: Use cond_resched() when destroy blkgs
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>, tj@kernel.org
-Cc:     joseph.qi@linux.alibaba.com, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0be1a0a03367f7230497a2e7a5ed47d2a2d5ae1a.1611809091.git.baolin.wang@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <9087d02b-ef9b-46c4-6933-82bb3e520597@kernel.dk>
-Date:   Thu, 28 Jan 2021 07:32:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=00AnnnxbvHqhiLog3KtyVq86J2iHZsP1rdfFuFi4dKs=;
+        b=SKfoE9c6QFBVGgdhKagJet/0PYI7bpshxlgPr6wOw4vQUjcRBoe2SH6zKWUB2Az2JL
+         NtoCBEE+9MlWUgImNqmnakb1ewbof9vrL5CZC5X/3Z/hW4ubvXtBBj0T7zRgWnPvDlCt
+         bCf+SRVanfR/YopCk279PriEplO2pZYZNi+P7FActJM6v6rJG6kpbzB7Yz2hytReMvyI
+         ioRUAAyzWXyzYpZGagi30mOIjQY3FnxW1a+HkQl5Plf1zHu6AkxsUVpyacfBnP7aRoUp
+         WsbAfflYW7AR4hznw/E6jnGIAX5NVkwREqp4zPF+E+rWTbMtaovn/s+xYtQlwSrkaB0o
+         GEEQ==
+X-Gm-Message-State: AOAM530w9lFAOn4TIATBZPeqrYheh5pA5NyRcUkBoGUu59DYuYco46x7
+        l/yUJlt5wCFK58AdwLUhKnb+QYZPq8PJ42jxIVqkISppxb4+cFFs
+X-Google-Smtp-Source: ABdhPJxvsuDPnLVEisa0gTU4TS0iGn5ck2Xg+E6xV7cc8w4Jne9XNQAhZQ2FQiyxh3KJG/Wjb+m+u3OWkMGHowImQ30=
+X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr11549430pja.228.1611844399298;
+ Thu, 28 Jan 2021 06:33:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0be1a0a03367f7230497a2e7a5ed47d2a2d5ae1a.1611809091.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
+In-Reply-To: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 28 Jan 2021 16:33:02 +0200
+Message-ID: <CAHp75Vd=ijxnamuSYuxNLeyhGMCod=HaXWrQ0W0+3QCsQAychg@mail.gmail.com>
+Subject: Re: [PATCH v12] staging: fbtft: add tearing signal detect
+To:     Carlis <zhangxuezhi3@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Colin King <colin.king@canonical.com>,
+        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 10:58 PM, Baolin Wang wrote:
-> On !PREEMPT kernel, we can get below softlockup when doing stress
-> testing with creating and destroying block cgroup repeatly. The
-> reason is it may take a long time to acquire the queue's lock in
-> the loop of blkcg_destroy_blkgs(), or the system can accumulate a
-> huge number of blkgs in pathological cases. We can add a need_resched()
-> check on each loop and release locks and do cond_resched() if true
-> to avoid this issue, since the blkcg_destroy_blkgs() is not called
-> from atomic contexts.
-> 
-> [ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
-> [ 4757.010698] Call trace:
-> [ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
-> [ 4757.010701]  cgwb_release_workfn+0x104/0x158
-> [ 4757.010702]  process_one_work+0x1bc/0x3f0
-> [ 4757.010704]  worker_thread+0x164/0x468
-> [ 4757.010705]  kthread+0x108/0x138
+On Thu, Jan 28, 2021 at 2:58 PM Carlis <zhangxuezhi3@gmail.com> wrote:
 
-Thanks, applied.
+Thanks for your contribution, my comments below.
+
+> From: zhangxuezhi <zhangxuezhi1@yulong.com>
+
+You probably have to configure your Git to use the same account for
+author and committer.
+
+> For st7789v ic,when we need continuous full screen refresh, it is best to
+
+'ic,when' -> 'IC, when'
+
+> wait for the TE signal arrive to avoid screen tearing
+
+Decode TE for people who are not familiar with the abbreviation.
+
+Missed period at the end of sentence.
+
+...
+
+>  #include <linux/delay.h>
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/completion.h>
+>  #include <linux/module.h>
+> +#include <linux/gpio/consumer.h>
+> +
+
+Good, but I would rather squeeze it above to be more or less ordered,
+like just after delay.h inclusion.
+
+>  #include <video/mipi_display.h>
+
+...
+
+> +#define SPI_PANEL_TE_TIMEOUT   400 /* msecs */
+
+Useless comment. Instead use _MS suffix in the name of constant.
+Besides that please add a comment explaining why this value has been
+chosen.
+
+...
+
+> +static struct completion spi_panel_te;
+
+As Greg said.
+
+...
+
+>  static int init_display(struct fbtft_par *par)
+>  {
+> +       int rc;
+> +       struct device *dev = par->info->device;
+
+Keep reversed xmas tree order:
+
+       struct device *dev = par->info->device;
+       int rc;
+
+...
+
+> +       par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
+
+No need to have it requested for all time since you use it as an IRQ
+later on. The IRQ chip will call the GPIO library framework to lock a
+pin as IRQ anyway.
+
+> +       if (IS_ERR(par->gpio.te))
+> +               return dev_err_probe(par->info->device, PTR_ERR(par->gpio.te),
+> +                                    "Failed to request te gpio\n");
+
+> +       if (par->gpio.te) {
+
+Instead you should probably do the following:
+
+int irq;
+
+irq = gpiod_to_irq(...);
+if (irq > 0)
+
+> +               init_completion(&spi_panel_te);
+> +               rc = devm_request_irq(dev,
+
+> +                                     gpiod_to_irq(par->gpio.te),
+
+...and here simply use irq.
+
+> +                                    spi_panel_te_handler, IRQF_TRIGGER_RISING,
+> +                                    "TE_GPIO", par);
+
+> +               if (IS_ERR(rc))
+
+This is wrong. rc is integer no IS_ERR() is required. Ditto for
+PTR_ERR(). Have you even looked for these macros implementations?
+
+> +                       return dev_err_probe(par->info->device, PTR_ERR(rc),
+
+Use your temporary variable and move...
+
+> +                                            "TE request_irq failed.\n");
+
+...this on the previous line.
+
+> +               disable_irq_nosync(gpiod_to_irq(par->gpio.te));
+
+Why do you call gpio_to_irq() twice?
+
+
+> +       } else {
+> +               dev_info(par->info->device, "%s:%d, TE gpio not specified\n",
+> +                        __func__, __LINE__);
+
+Remove this noise (besides the fact that we don't use __file__ and
+__LINE__ in messages like this.
+
+> +       }
+
+Taking all together you probably need to create a helper and use it
+inside init_display(), like
+
+static int init_tearing_effect_line(struct fbtft_par *par)
+{
+  struct device *dev = par->info->device;
+  struct gpio_desc *te;
+  int irq, rc;
+
+  te = gpiod_get_optional(dev, "te", GPIOD_IN);
+  if (IS_ERR(te))
+           return dev_err_probe(dev, PTR_ERR(te), "Failed to request
+te GPIO\n");
+
+  irq = gpiod_to_irq(te); // this value you have to save in the
+driver's (per device) data structure.
+
+  /* GPIO is locked as an IRQ, we may drop the reference */
+  gpiod_put(te);
+
+  init_completion(&spi_panel_te); // should be in the (per device)
+data structure
+  rc = devm_request_irq(dev, irq,  spi_panel_te_handler,
+IRQF_TRIGGER_RISING, "TE_GPIO", par);
+  if (rc)
+                return dev_err_probe(dev, rc, "TE IRQ request failed.\n");
+  disable_irq_nosync(irq);
+  return irq;
+}
+
+Note, when you define proper fields for IRQ line and completion in the
+data structure the above can be amended accordingly.
+
+...
+
+> +       /* tearing effect line on */
+> +       if (par->gpio.te)
+> +               write_reg(par, 0x35, 0x00);
+
+0x35 is defined. use it and drop useless comments.
+
+...
+
+>  /**
+> + * st7789v_write_vmem16_bus8() -  write data to display
+
+> + *
+
+Redundant blank line.
+
+> + * @par: FBTFT parameter object
+> + * @offset: offset from screen_buffer
+> + * @len: the length of data to be written
+> + *
+> + * 16 bit pixel over 8-bit databus
+> + *
+> + * Return: 0 on success, < 0 if error occurred.
+
+", or a negative error code otherwise"
+
+> + */
+
+> +
+Redundant blank line
+
+> +static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
+> +{
+> +       u16 *vmem16;
+> +       __be16 *txbuf16 = par->txbuf.buf;
+> +       size_t remain;
+> +       size_t to_copy;
+> +       size_t tx_array_size;
+> +       int i;
+> +       int ret = 0;
+> +       size_t startbyte_size = 0;
+
+Reversed xmas tree order.
+
+> +       fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
+> +                     __func__, offset, len);
+> +
+> +       remain = len / 2;
+> +       vmem16 = (u16 *)(par->info->screen_buffer + offset);
+
+> +       if (par->gpio.dc)
+
+Useless duplicate check.
+
+> +               gpiod_set_value(par->gpio.dc, 1);
+
+> +       if (par->gpio.te) {
+> +               enable_irq(gpiod_to_irq(par->gpio.te));
+
+Here you should use the IRQ line rather than the GPIO descriptor. See above.
+
+> +               reinit_completion(&spi_panel_te);
+> +               ret = wait_for_completion_timeout(&spi_panel_te,
+> +                                                 msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
+> +               if (ret == 0)
+> +                       dev_err(par->info->device, "wait panel TE time out\n");
+> +
+> +               disable_irq(gpiod_to_irq(par->gpio.te));
+> +       }
+
+> +
+> +       while (remain) {
+> +               to_copy = min(tx_array_size, remain);
+
+> +               dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
+> +                       to_copy, remain - to_copy);
+
+Like in previous functions create a temporary variable to keep a
+pointer to struct device and use it here and everywhere else. It might
+save you LOCs and make code easier to read and understand.
+
+> +               for (i = 0; i < to_copy; i++)
+> +                       txbuf16[i] = cpu_to_be16(vmem16[i]);
+
+If both of them are 16-bit wide, consider moving this to a helper
+which somebody can move to byteorder/generic.h in the future.
+
+> +               vmem16 = vmem16 + to_copy;
+> +               ret = par->fbtftops.write(par, par->txbuf.buf,
+> +                                        startbyte_size + to_copy * 2);
+> +               if (ret < 0)
+> +                       return ret;
+> +               remain -= to_copy;
+> +       }
+> +
+> +       return ret;
+> +}
 
 -- 
-Jens Axboe
-
+With Best Regards,
+Andy Shevchenko
