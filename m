@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0403D3080E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97493080EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhA1WGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:06:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
+        id S231462AbhA1WHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhA1WGT (ORCPT
+        with ESMTP id S229658AbhA1WHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:06:19 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D0FC061573;
-        Thu, 28 Jan 2021 14:05:39 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id r12so10064877ejb.9;
-        Thu, 28 Jan 2021 14:05:39 -0800 (PST)
+        Thu, 28 Jan 2021 17:07:50 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A9CC061573;
+        Thu, 28 Jan 2021 14:07:09 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id j11so1523080plt.11;
+        Thu, 28 Jan 2021 14:07:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HKCtWFXH5+r8I6QVN7JmwP43GunaybG6wrPKLDTJuxc=;
-        b=k2a1fUl4a4gmJwlGyVf7KUDgt1EkUownghvr5s1vnwYaI/Ryp30QG4+EBdzOn2JrVN
-         m/rfXkIEG5oChyQaS/kuRTPSCCTUFGKh3PCUWDnflgupTHroIH+JfQs4vWeh8GDT/MAT
-         lqtvRAehXZL6kUXzwYPK45ujlOgmYw+hCemvaj7B5SNHEy7NFPGhBbcI5NB6vmYi1Cte
-         dBf/2FJsIGKCv09DZAlLeiAH6oJDUTwwKxCpFXDRN9DTvnsRRgSCpe/yKNdif/6FyRgU
-         RWdttuEqTvn6LXw1V+xa+JzilcpjQtxMd9cMBD2BAPbG/CqacKkMiajJZ0OF3qLdEMPQ
-         VGlA==
+        bh=gwbhYTYlKJc3qWdffrQGsNa7auYkd8037d2LbAoaq+4=;
+        b=db/3JuT74AtHbaNhPY2iun2rxxrUDTOmNcTQ6ISyxUVI80SvBONASBZrgcArON/+Dx
+         sODZKu+kRLiq/khuiNm/HKLWRc8fAiF/157bhEUHqqfIMbLB6o9auw/wjx9LXaEzSIx7
+         9DrA63JAq/e1DFj/sZ0FShOYkVaNit+f/UhRoaxN+oxD6C0r47FXz1muA3xlsnMwoepc
+         AnUTV7wnnkvlp/9vBmGtzZASlGWhSnDmKdtnthItkTQUIXi8Ym2415vaiWjFOb3m+764
+         I5W3QDM2PF9Ta5jfeGPIyocwaLbaJ2E/XoXgGmDOdqy+zBiL4hyBLkSICq3bpvSXj9Fg
+         OrVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HKCtWFXH5+r8I6QVN7JmwP43GunaybG6wrPKLDTJuxc=;
-        b=oUsIi1yCW4yAdNOs8qFhS1BXbCPdriOc2ZUJ5Z9+G5K5FUQy8Q+i3Al1u2dFzC2fv7
-         ePn0220MYP6t4/URMFRseeHoxSUecDmN7B9GkacIQgt+Nh3SKnBx2AOSImQlgNEgPYAY
-         JxhXf97WuvdHZ25qIhx7LlXrKSXWDOPTjFMKrmqVg+ZQGpWOubHg2V/8oKSHOUHvDc11
-         LNTaU8TzMK72SSDuVOBdVGyz31mSaJY0RzChUsaClyhtSFp4rbwQVu78C6n+6+sPCld4
-         GdQW01pD4/r4+EeUHGeFwJRAXPH7sPFoJxoKKb5ZgO5GD12viO4IYQcaXH4SyD3AAgZ/
-         xHTQ==
-X-Gm-Message-State: AOAM532oIwBhXGAJ/E1hhv/S/kOVFDYIarYLmuLSgD5johES1dpPxNag
-        TrYcK+Iy6Oh8JeafCoDyqpCY0hARMJEs6S98g+I=
-X-Google-Smtp-Source: ABdhPJyfNcJK0c+Euz/ZYhosU+vaemOk6O/laqqaC0tPerCWVKz9aeQO7JwhzBS1VCDUfOWJX+oQpzZBxyKdT2qgHzA=
-X-Received: by 2002:a17:906:94d3:: with SMTP id d19mr1488136ejy.383.1611871537966;
- Thu, 28 Jan 2021 14:05:37 -0800 (PST)
+        bh=gwbhYTYlKJc3qWdffrQGsNa7auYkd8037d2LbAoaq+4=;
+        b=kkKgfkU7aXGFds1zBG+mmLinoW4Wn9Ik+CIOTQe+VEvtC6UmNg48klM4XaBBNeE82Y
+         icS5xS5bqCvFay+pVx5Bf32rJIzhCzlxG+p2W4MzSrwXEFlg2lXC35dRrJG8jA5wyQF4
+         tHtcQX6jSkpXh6ZC/y7Gjna80RQAbiUvf7eOZX1wG6c0BvbIbINI+K1Qs2muWebYQ4KS
+         fYwgOMY8Pgldox5YwZBpHg9m3S1KifrBhnx3vT36S8HmvQt1Pdyvy0AQ9V73ynWpp+mP
+         eMPIByWv7HB0k63M+Tya+eeH3H1qZd8Nr8+zH9DovFV4SAk/dYuPZbmhCJUrlrOP3rZC
+         dhDg==
+X-Gm-Message-State: AOAM5316QGtKpRPafCpBTBcS8j12eGLIybjcGXCJQRuEzpCx0N+IUuWk
+        gts3PB0zF8EvGIxSpxTwVuBJGvHbhY3FviqqE9Q=
+X-Google-Smtp-Source: ABdhPJw9WypNzW1bzGBwSjcGr7cz3aeXqXGoZrWbxvCJdbVifHCjIQb2bmi/DpUFIJ8LZOiMsiypkYhnBRSd5wUlPJY=
+X-Received: by 2002:a17:902:9a4a:b029:dc:435c:70ad with SMTP id
+ x10-20020a1709029a4ab02900dc435c70admr1408753plv.77.1611871629557; Thu, 28
+ Jan 2021 14:07:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-6-shy828301@gmail.com>
- <f6cfbe3c-bfca-61ee-72b4-981188456362@suse.cz>
-In-Reply-To: <f6cfbe3c-bfca-61ee-72b4-981188456362@suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 28 Jan 2021 14:05:25 -0800
-Message-ID: <CAHbLzkp7p9vS1AScqi-w7bkUNBLATDJdjE+x1FipZXkMpGLx+A@mail.gmail.com>
-Subject: Re: [v5 PATCH 05/11] mm: memcontrol: rename shrinker_map to shrinker_info
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210127090747.364951-1-xie.he.0141@gmail.com> <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Thu, 28 Jan 2021 14:06:58 -0800
+Message-ID: <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
+Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 9:38 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+On Thu, Jan 28, 2021 at 11:47 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> On 1/28/21 12:33 AM, Yang Shi wrote:
-> > The following patch is going to add nr_deferred into shrinker_map, the change will
-> > make shrinker_map not only include map anymore, so rename it to a more general
-> > name.  And this should make the patch adding nr_deferred cleaner and readable and make
-> > review easier. Rename "memcg_shrinker_info" to "shrinker_info" as well.
->
-> You mean rename struct memcg_shrinker_map, not "memcg_shrinker_info", right?
+> Noob question - could you point at or provide a quick guide to layering
+> here? I take there is only one netdev, and something maintains an
+> internal queue which is not stopped when HW driver stops the qdisc?
 
-Actually, I mean remove "memcg_" prefix. The patch renames
-memcg_shrinker_map to shrinker_info.
+Yes, there is only one netdev. The LAPB module (net/lapb/) (which is
+used as a library by the netdev driver - hdlc_x25.c) is maintaining an
+internal queue which is not stopped when the HW driver stops the
+qdisc.
 
->
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+The queue is "write_queue" in "struct lapb_cb" in
+"include/net/lapb.h". The code that takes skbs out of the queue and
+feeds them to lower layers for transmission is at the "lapb_kick"
+function in "net/lapb/lapb_out.c".
+
+The layering is like this:
+
+Upper layer (Layer 3) (net/x25/ or net/packet/)
+
+^
+| L3 packets (with control info)
+v
+
+The netdev driver (hdlc_x25.c)
+
+^
+| L3 packets
+v
+
+The LAPB Module (net/lapb/)
+
+^
+| LAPB (L2) frames
+v
+
+The netdev driver (hdlc_x25.c)
+
+^
+| LAPB (L2) frames
+| (also called HDLC frames in the context of the HDLC subsystem)
+v
+
+HDLC core (hdlc.c)
+
+^
+| HDLC frames
+v
+
+HDLC Hardware Driver
+
+> Sounds like we're optimizing to prevent drops, and this was not
+> reported from production, rather thru code inspection. Ergo I think
+> net-next will be more appropriate here, unless Martin disagrees.
+
+Yes, I have no problem in targeting net-next instead. Thanks!
