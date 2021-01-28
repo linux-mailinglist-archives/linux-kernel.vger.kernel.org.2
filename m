@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D11306DA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B832306DA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhA1Gbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:31:35 -0500
-Received: from mga11.intel.com ([192.55.52.93]:30344 "EHLO mga11.intel.com"
+        id S231199AbhA1Gec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:34:32 -0500
+Received: from mga06.intel.com ([134.134.136.31]:64772 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229513AbhA1Gbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:31:33 -0500
-IronPort-SDR: 9/glW3f/fxfRDs4J9Bo1JyGKXd3asTpamti0TfCIr8yRp+oUk+z5xJMNUF2kIE/bc/XlYUzg38
- CH72QDVqoo0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="176679077"
+        id S229785AbhA1Geb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 01:34:31 -0500
+IronPort-SDR: t7pGZuJZZrGj1rHFX+90i69wbK/yci8qv09lfnUeO/nZFb/Ob3s1j0SM/B0wZL8VtcpyJovLOO
+ knXnphN7lfrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241714346"
 X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="176679077"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 22:29:47 -0800
-IronPort-SDR: 2sHmcAycUWwl+qp8hg4k182E79KDApQRadpEl8N0fhTPpdZ9a70d9vMLTOoCaTPbA7pJElsNyo
- Tc3bD3LszZNw==
+   d="scan'208";a="241714346"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 22:33:50 -0800
+IronPort-SDR: l+tRUQI/DhisSjVUdEcootSuETTPJUR3+HNQC3fCUbAzmTztf1oDip2R11hPCeoajwpETZ2XFn
+ 4ouf1ZYNdvZQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="574628257"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Jan 2021 22:29:45 -0800
-Subject: Re: [PATCH 0/4] add xhci hooks for USB offload
-To:     Howard Yen <howardyen@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210119101044.1637023-1-howardyen@google.com>
- <af91bbf1-6731-3e87-4086-de0dbba22c22@intel.com>
- <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
- <ca442ca7-a434-2527-9945-861dafa685cc@linux.intel.com>
- <YBAk795ccXBPgJWp@kroah.com>
- <CAJDAHvZ2CCm9tT+C=hNc_U1CaYJg3ZjifsYLik3UqfXwUm++Lg@mail.gmail.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <f77d1149-7bd1-3914-8841-439cb67397fd@linux.intel.com>
-Date:   Thu, 28 Jan 2021 08:31:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAJDAHvZ2CCm9tT+C=hNc_U1CaYJg3ZjifsYLik3UqfXwUm++Lg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+   d="scan'208";a="407414005"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Jan 2021 22:33:50 -0800
+Received: from lcsmsx602.ger.corp.intel.com (10.109.210.11) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 27 Jan 2021 22:33:49 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX602.ger.corp.intel.com (10.109.210.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 28 Jan 2021 08:33:47 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Thu, 28 Jan 2021 08:33:47 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Richard Weinberger <richard@nod.at>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mtd: use refcount to prevent corruption
+Thread-Topic: [PATCH] mtd: use refcount to prevent corruption
+Thread-Index: AQHW9OeD00Da249Jw0qJn6+VIZAeUao7z7AAgAAh5BBxoBSOfPxzntFA
+Date:   Thu, 28 Jan 2021 06:33:47 +0000
+Message-ID: <a6cb6eb10bbb48989d3a9e087951e50e@intel.com>
+References: <20210127200319.662842-1-tomas.winkler@intel.com>
+ <9732911.325628.1611780400338.JavaMail.zimbra@nod.at>
+ <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com>
+ <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at>
+In-Reply-To: <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.1.2021 5.38, Howard Yen wrote:
-> On Tue, Jan 26, 2021 at 10:19 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->>
->> On Fri, Jan 22, 2021 at 05:32:58PM +0200, Mathias Nyman wrote:
->>>
->>> Ok, before adding hooks like this I think we need to see how they are used.
->>> Do you have the rest of the patches that go on top of this series?
->>>
->>> Maybe it could make sense to use overrides for the functions in struct hc_driver
->>> instead in some cases? There is support for that already.
->>
->> What overrides could be done for these changes?  At first glance that
->> would seem to require a lot of duplicated code in whatever override
->> happens to be needed.
->>
->> thanks,
->>
->> greg k-h
-> 
-> This patch series is all the changes for the offload hooks currently.
-> 
-> I thought about this, but if I tried to override the functions in
-> struct hc_driver, that'll need to
-> copy many code to the override function, and it won't follow the
-> latest change in the core
-> xhci driver.
-> 
-> 
-> - Howard
-
-Ok, I see. 
-
-The point I'm trying to make is that there is no way for me to know if
-these hooks are the right solution before I see any code using them.
-
-Is the offloading code ready and public somewhere?
-
-Thanks
--Mathias 
-
+DQo+IA0KPiAtLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tDQo+ID4+ID4gV2hlbiB1bmRl
+cmx5aW5nIGRldmljZSBpcyByZW1vdmVkIG10ZCBjb3JlIHdpbGwgY3Jhc2ggaW4gY2FzZSB1c2Vy
+DQo+ID4+ID4gc3BhY2UgaXMgc3RpbGwgaG9sZGluZyBhbiBvcGVuIGhhbmRsZSB0byBhIG10ZCBk
+ZXZpY2Ugbm9kZS4NCj4gPj4gPiBBIHByb3BlciByZWZjb3VudGluZyBpcyBuZWVkZWQgc28gZGV2
+aWNlIGlzIHJlbGVhc2Ugb25seSB3aGVuIGENCj4gPj4gPiBwYXJ0aXRpb24gaGFzIG5vIGFjdGl2
+ZSB1c2Vycy4gVGhlIGN1cnJlbnQgc2ltcGxlIGNvdW50ZXIgaXMgbm90DQo+ID4+ID4gc3VmZmlj
+aWVudC4NCj4gPj4NCj4gPj4gQ2FuIHlvdSBwbGVhc2UgZXhwbGFpbiBhIGxpdHRsZSBtb3JlIHdo
+YXQgZGV2aWNlcyBhcmUgaW52b2x2ZWQ/DQo+ID4+IERvZXMgaXQgaW1wbGVtZW50IF9nZXRfZGV2
+aWNlKCkgYW5kIF9wdXRfZGV2aWNlKCk/DQo+ID4gTm8gdGhpcyBpcyBub3QgY29ubmVjdGVkIHRv
+IHRob3NlIGhhbmRsZXJzIG9mIHRoZSB1bmRlcmx5aW5nIGRldmljZQ0KPiA+IGFuZCB0aG9zZSB3
+b24ndCBoZWxwLg0KPiA+IEkgaGF2ZSBhIHNwaSBkZXZpY2UgcHJvdmlkZWQgYnkgTUZEIGZyYW1l
+d29yayBzbyBpdCBjYW4gZ28gYXdheSBhbnl0aW1lLg0KPiANCj4gQ2FuIGl0IGdvIGF3YXkgcGh5
+c2ljYWxseSBvciBqdXN0IGluIHNvZnR3YXJlPw0KU29mdHdhcmUsIGJ1dCBzaW5jZSB0aGlzIGlz
+IG1mZCBpdCdzIGJhc2ljYWxseSBob3RwbHVnLiBUaGUga2VybmVsIGlzIGNyYXNoaW5nIHdoZW4g
+SSBzaW11bGF0ZSBoYXJkd2FyZSBmYWlsdXJlLg0KPiANCj4gVXN1YWxseSB0aGUgcGF0dGVybiBp
+cyB0aGF0IHlvdSBtYWtlIHN1cmUgaW4gdGhlIGRldmljZSBkcml2ZXIgdGhhdCBub2JvZHkgY2Fu
+DQo+IG9ycGhhbiB0aGUgTVREIHdoaWxlIGl0IGlzIGluIHVzZS4NCj4gZS5nLiBkcml2ZXJzL210
+ZC91YmkvZ2x1ZWJpLmMgZG9lcyBzby4gSW4gX2dldF9kZXZpY2UoKSBpdCBncmFicyBhIHJlZmVy
+ZW5jZSBvbg0KPiB0aGUgdW5kZXJseWluZyBVQkkgdm9sdW1lIHRvIG1ha2Ugc3VyZSBpdCBjYW5u
+b3QgZ28gYXdheSB3aGlsZSB0aGUgTVREIChvbg0KPiB0b3Agb2YgVUJJKSBpcyBpbiB1c2UuDQoN
+CkkgY2FuIHRyeSB0aGF0IGlmIGl0IGhlbHBzLCBiZWNhdXNlIHdlIGFyZSBzaW11bGF0aW5nIHBv
+c3NpYmxlIGxvd2VyIGxldmVsIGNyYXNoLiANCkluIGFuIGNhc2UgSSBiZWxpZXZlIHRoYXQgdGhl
+IHByb3BlciByZWZjb3V0aW5nIGlzIG11Y2ggbW9yZSByb2J1c3Qgc29sdXRpb24sIHRoYW4gdGhl
+IGN1cnJlbnQgb25lLg0KSSdkIGFwcHJlY2lhdGUgaWYgc29tZW9uZSBjYW4gcmV2aWV3IHRoZSBh
+Y3R1YWwgaW1wbGVtZW50YXRpb24uIA0KDQpUaGFua3MNClRvbWFzDQoNCg==
