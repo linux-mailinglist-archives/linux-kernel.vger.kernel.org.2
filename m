@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5270730746E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E061B307475
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhA1LIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhA1LIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:08:10 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B284C061573;
-        Thu, 28 Jan 2021 03:07:30 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id b21so6105210edy.6;
-        Thu, 28 Jan 2021 03:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ShvLSg8TcUv7NMdoxeoIAAQL8A+KbCkuTPD4+VWr/xw=;
-        b=r20bWnHJcpDYrun7/+dblaBlkZmvrlfcUzFlVhAM/99ifcympYDgkFJyRa5qglBNVP
-         lUgsevJEU/ojexhJyVjLCUuwaApmjfBSEBvK9aSkcLozLKy0Khac4ULZBqkqVui8/gnF
-         KgMlIyc6wAoVSH/2z/Wwb8+lDP7m2v8wyFixfmUNRPNBDaXf/nHYjnT55FfYVQ2djsLj
-         v7sWQ5NXFLPHIit4r7eXQXCouRZr69eKN7T8KUc1dR/IJuj4re4jHhKBYTa/AzZz7Mbh
-         hikuSfhdiVyfxEArZrbdLnzBXy5MCbmaX97+0UIykVpxI0uwyAJduv1hS7xbXeXRKkjq
-         z4eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ShvLSg8TcUv7NMdoxeoIAAQL8A+KbCkuTPD4+VWr/xw=;
-        b=g0hf9rOfPiQWBXgefTf/e/cDv0StQTUDr3xFRqQSgEpDmxtPX9Bb93yIntTfSrZ7zQ
-         ctFUHru4YJOnA99CN33QiMKBVJQAB6coXW1m4OmkejRfNJ+iYUwyOZtA+gkUl6m1yX9M
-         jT1ibMWDMu1gv1jPG7RxNwoGDFf7RoEr0ANjzm/IQc2NKkiK434zFqHn9cdpH74+mSBo
-         ijnPDSk4tFx2g9ZKvKK4scrv4mMRWXu56Jcto+mMmkbgYwBmyfuE+07QEfhHgf2GYYXY
-         I6KH7wUdSMSJhJQFWgC2vLRDhbnToIByxSXr0bfFpuXpv9khCzyhrId8CijeQxpGLpcl
-         6YJw==
-X-Gm-Message-State: AOAM532+Prrwgngkh+Gv6AmQZLrCFEOWYUFJEe1F0nrJZjXLHFHuzemR
-        ELoQKZUQSzlW0m6gURvBCB0=
-X-Google-Smtp-Source: ABdhPJwhYhYq0R/c5h8bydiP9Pk+wXe395h/cBdTuhpEq8mWvbd2dvjWgMBDjbMC7ld61pjcVKSJWA==
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr13556149edv.211.1611832048909;
-        Thu, 28 Jan 2021 03:07:28 -0800 (PST)
-Received: from [192.168.0.101] ([77.124.61.116])
-        by smtp.gmail.com with ESMTPSA id a22sm2793249edv.67.2021.01.28.03.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 03:07:28 -0800 (PST)
-Subject: Re: [PATCH v3 net-next] net: Remove redundant calls of
- sk_tx_queue_clear().
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Amit Shah <aams@amazon.de>, Kuniyuki Iwashima <kuni1840@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Boris Pismenny <borisp@mellanox.com>
-References: <20210128021905.57471-1-kuniyu@amazon.co.jp>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <6f77d50f-b658-b751-5ac4-caaf9876f287@gmail.com>
-Date:   Thu, 28 Jan 2021 13:07:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229595AbhA1LJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:09:06 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:37357 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231202AbhA1LJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:09:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611832118; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7S5azOzwX8e049MI5M6Veu02TXu2AvF+W2vCd/OZNWw=;
+ b=j0WwNGovY43otpZHyNRgHrKNaYI9vwtCLjBN+ZC9iz/CNFQK25DmUzT0U+yg11kAHRLqb22a
+ 8DVdDCpl3LXt78SC3t3NIIjod8Zy5D92XTZ0nHrXw73KfD83nj+nmAJmFNBYY8RMLdAeTbtO
+ JGMKmq85wwKl4UMiDYEwy1rV0PQ=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60129b1583b274b0af07cef7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 11:08:05
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE464C43463; Thu, 28 Jan 2021 11:08:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27706C433CA;
+        Thu, 28 Jan 2021 11:08:04 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210128021905.57471-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 28 Jan 2021 16:38:04 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] watchdog: qcom: Remove incorrect usage of
+ QCOM_WDT_ENABLE_IRQ
+In-Reply-To: <20210128081924.GA30289@trex>
+References: <20210126150241.10009-1-saiprakash.ranjan@codeaurora.org>
+ <20210128081924.GA30289@trex>
+Message-ID: <72cdf644c431b7b605f9d15a4a7fb7b8@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-28 13:49, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 26/01/21, Sai Prakash Ranjan wrote:
+>> As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
+>> of watchdog control register is wakeup interrupt enable bit and
+>> not related to bark interrupt at all, BIT(0) is used for that.
+>> So remove incorrect usage of this bit when supporting bark irq for
+>> pre-timeout notification. Currently with this bit set and bark
+>> interrupt specified, pre-timeout notification and/or watchdog
+>> reset/bite does not occur.
+>> 
+>> Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the 
+>> bark irq is available")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>> 
+>> Reading the conversations from when qcom pre-timeout support was
+>> added [1], Bjorn already had mentioned it was not right to touch this
+>> bit, not sure which SoC the pre-timeout was tested on at that time,
+>> but I have tested this on SDM845, SM8150, SC7180 and watchdog bark
+>> and bite does not occur with enabling this bit with the bark irq
+>> specified in DT.
+> 
+> this was tested on QCS404. have you validated there? unfortunately I
+> no longer have access to that hardware or the documentation
+> 
 
+I didn't validate on qcs404 yet since I didn't have access to it.
+But now that you mention it, let me arrange for a setup and test it
+there as well. Note: I did not see bark irq entry in upstream qcs404
+dtsi, so you must have had some local change when you tested?
 
-On 1/28/2021 4:19 AM, Kuniyuki Iwashima wrote:
-> The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
-> other hand, the original commit had already put sk_tx_queue_clear() in
-> sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
-> sk_tx_queue_clear() is called twice in each path.
-> 
-> If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
-> currently works well because (i) sk_tx_queue_mapping is defined between
-> sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
-> sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
-> However, if we move sk_tx_queue_mapping out of the no copy area, it
-> introduces a bug unintentionally.
-> 
-> Therefore, this patch adds a runtime 
+Thanks,
+Sai
 
-compile-time
-
-> check to take care of the order of
-> sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
-> sk_prot_alloc() so that it does the only allocation and its callers
-> initialize fields.
-> 
-> v3:
-> * Remove Fixes: tag
-> * Add BUILD_BUG_ON
-> * Remove sk_tx_queue_clear() from sk_prot_alloc()
->    instead of sk_alloc() and sk_clone_lock()
-> 
-> v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
-> * Remove Reviewed-by: tag
-> 
-> v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
-> 
-> CC: Tariq Toukan <tariqt@mellanox.com>
-> CC: Boris Pismenny <borisp@mellanox.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->   net/core/sock.c | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index bbcd4b97eddd..cfbd62a5e079 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
->   #ifdef CONFIG_SECURITY_NETWORK
->   	void *sptr = nsk->sk_security;
->   #endif
-> +
-> +	/* If we move sk_tx_queue_mapping out of the private section,
-> +	 * we must check if sk_tx_queue_clear() is called after
-> +	 * sock_copy() in sk_clone_lock().
-> +	 */
-> +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
-> +		     offsetof(struct sock, sk_dontcopy_begin) ||
-> +		     offsetof(struct sock, sk_tx_queue_mapping) >=
-> +		     offsetof(struct sock, sk_dontcopy_end));
-> +
->   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
->   
->   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
-> @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
->   
->   		if (!try_module_get(prot->owner))
->   			goto out_free_sec;
-> -		sk_tx_queue_clear(sk);
->   	}
->   
->   	return sk;
-> 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
