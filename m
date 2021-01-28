@@ -2,104 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D1F307464
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F47307465
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhA1LE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:04:57 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:38890 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229786AbhA1LEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:04:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611831865; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=j55mBQJ/9hjcHEw/ph7PjcJzIdxKFmME8IhZNJftkic=;
- b=FbDNzQuoN0C+nomt6YNm/+l3PagRArabwzHN1vwWbOuhvePzQ37kswDTENa8n5folUZIFeKu
- DXcU5CMRt6w/kIyg9YbUu1FbPkFWBLlzWqrR4KaY7guxLkDeu5CrovIhldjQdKCnuttAVcvR
- L9lqwvfReuCcN+1vBaCfXdPreFI=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60129a20beacd1a25210f0d5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 11:04:00
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7D6F4C43464; Thu, 28 Jan 2021 11:03:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74BD2C433ED;
-        Thu, 28 Jan 2021 11:03:58 +0000 (UTC)
+        id S231158AbhA1LFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhA1LE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:04:56 -0500
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FBBC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 03:04:16 -0800 (PST)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 4B07C51D; Thu, 28 Jan 2021 12:04:13 +0100 (CET)
+Date:   Thu, 28 Jan 2021 12:04:11 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Lianbo Jiang <lijiang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
+        iommu@lists.linux-foundation.org, jsnitsel@redhat.com,
+        thomas.lendacky@amd.com, robin.murphy@arm.com, bhe@redhat.com
+Subject: Re: [PATCH 0/2 v2] iommu: fix the failure of deferred attach for
+ iommu attach device
+Message-ID: <20210128110411.GJ32671@8bytes.org>
+References: <20210119111616.12761-1-lijiang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Jan 2021 16:33:58 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        jorge@foundries.io, linux-watchdog@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] watchdog: qcom: Remove incorrect usage of
- QCOM_WDT_ENABLE_IRQ
-In-Reply-To: <161179763694.76967.7406861246436700530@swboyd.mtv.corp.google.com>
-References: <20210126150241.10009-1-saiprakash.ranjan@codeaurora.org>
- <161179763694.76967.7406861246436700530@swboyd.mtv.corp.google.com>
-Message-ID: <e3e9e4a9ef8adcf78d32f7996dc66083@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119111616.12761-1-lijiang@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28 07:03, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2021-01-26 07:02:41)
->> As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
->> of watchdog control register is wakeup interrupt enable bit and
->> not related to bark interrupt at all, BIT(0) is used for that.
->> So remove incorrect usage of this bit when supporting bark irq for
->> pre-timeout notification. Currently with this bit set and bark
->> interrupt specified, pre-timeout notification and/or watchdog
->> reset/bite does not occur.
+On Tue, Jan 19, 2021 at 07:16:14PM +0800, Lianbo Jiang wrote:
+> Lianbo Jiang (2):
+>   dma-iommu: use static-key to minimize the impact in the fast-path
+>   iommu: use the __iommu_attach_device() directly for deferred attach
 > 
-> It looks like the QCOM_WDT_ENABLE_IRQ bit is to catch a problem where a
-> pending irq is unmasked but the watchdog irq isn't handled in time? So
-> some sort of irq storm?
-> 
+>  drivers/iommu/dma-iommu.c | 29 +++++++++++------------------
+>  drivers/iommu/iommu.c     | 12 ++++++++++++
+>  include/linux/iommu.h     |  2 ++
+>  3 files changed, 25 insertions(+), 18 deletions(-)
 
-In sleep mode, this bit is used to enable unmasked irq to wakeup
-watchdog timer. The watchdog counter can be brought out of
-reset either by writing 1 to WDOG_RESET or setting this BIT(1) to 1.
-
->> 
->> Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the 
->> bark irq is available")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> 
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Applied, thanks.
