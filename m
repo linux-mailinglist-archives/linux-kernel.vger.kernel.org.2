@@ -2,120 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C5330821F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C88308220
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhA1Xxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhA1XxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:53:07 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE13CC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 15:52:26 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id v126so7164879qkd.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 15:52:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:message-id:from:to:subject;
-        bh=RD/LxBAWTwAy2rb69wLLZgdJrwEuGTJQYn4XDIMEKFU=;
-        b=PhrT3C9PtWqAfOHfGG0dltWF2tbNuZXOuBfgRO28HGgXfi88SxE8xoqAcO0+N5dP64
-         4/7N+rZyuGD4JNcCOwoSRwUZoh+VwHLt833mLYbxJQdDxWifddc35lVGzY4DKmGzx2Er
-         K2aPICc/eXRjqkl1Kt7bJP/tKNwfvkgJAQiY5uWK+InSsCBoeReZnh5I+7wFtLuDaTzn
-         wq1FuwM1+nzxhrbDj+Gx9wfGJIsGP3tDV46f0bFy9qXVLiXaMsymK2Y8mkUoYFyAVhFu
-         7ZbFwztDUU78Kuuw8mBFWPBKhlUjYIbmHDxRy6F0qWF52DeeqVt6LZO5NjAcpzhggKHA
-         jlIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:from:to:subject;
-        bh=RD/LxBAWTwAy2rb69wLLZgdJrwEuGTJQYn4XDIMEKFU=;
-        b=cS6InWNhkqpSB6CkVkig9N6HC+BXyOPgBXxD5DQlx1UE6nfLLVxViWAd+f3mxfxQVt
-         Awun43hxuHtgIWBgOYHIf7saVguR1SHDpw7uqbuuZbIvclIqsPTc5tndy7OvLDDxckv6
-         7onlmAZaV1eLYq/K6fWo5ikTcnbvJbwnPIZJ1F94gfW9P3Myl0K8CjmBsX6FvtrYfoAD
-         AfaSD5aqf/mlc/mA1smNcuNVHdgMJO+nw243Y+gIyDDSnfOKgmRhMAw/NFokm2DKjPsK
-         lhkg4LcWDE00oQ0fHX1Gqn5P6ATuqbbx57HDBojGsJnkxQXqA28lF6q6H5llNUFth2Br
-         VC2w==
-X-Gm-Message-State: AOAM531lPNagSxit4Ei2ir1cSsM5R0ZXlB56shTb6tVLSxLX57iVKd7y
-        CbcqfZYUeHLs9FA7bY3YKXU=
-X-Google-Smtp-Source: ABdhPJxo/CUWvspwtLWswY7LQBJuxrJzhTYF76ZJz6BlO7W/b6Pm4O0dLsk4HMUZJz4jDdHrYJGt6w==
-X-Received: by 2002:a37:5a47:: with SMTP id o68mr1842516qkb.423.1611877945816;
-        Thu, 28 Jan 2021 15:52:25 -0800 (PST)
-Received: from aragorn (wsip-72-215-235-61.ri.ri.cox.net. [72.215.235.61])
-        by smtp.gmail.com with ESMTPSA id j11sm4668165qkm.47.2021.01.28.15.52.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 Jan 2021 15:52:25 -0800 (PST)
-Date:   Thu, 28 Jan 2021 18:52:23 -0500
-Message-Id: <2nft2kipqg.fsf@aragorn.infrastructure.cah>
-From:   Michael D Labriola <michael.d.labriola@gmail.com>
-To:     David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Roger Pau Monne <roger.pau@citrix.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: Problems starting Xen domU after latest stable update
+        id S231196AbhA1Xzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:55:33 -0500
+Received: from ms.lwn.net ([45.79.88.28]:51954 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229757AbhA1Xz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:55:29 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id C130D2B8;
+        Thu, 28 Jan 2021 23:54:48 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C130D2B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1611878089; bh=YdD+k8vJN24eZfQuSsHdwnb9+XXDsBI/7xyammat07o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J4c4WhtX4sz2gyAotY2Iyml6l/BKOQGzF6VJm9hPhTO6Ocf5YpZ4MP7DO8byYRN99
+         ULQg7ab5mgIAIO5X3UzpIq7wsHzWWF0ayoOEg/0z0XWSMGrDszNrCTgbi/orvIKFGa
+         rTJir9ItNpCMhUXsqCpnMo3j2EtokSJm6Vs98QwuLXXjapjskVejUCITy+UaRUDCJO
+         TIAtO42LRdaLAYihax4w1r9/ptzYEvpX00AxtINSr+v6jMxXhb8d7iokY3NMQ5ydHD
+         lD4mxhAxcj9w0WjF3o6NA82hrj19eXG5Znc2VnCkKyx1oAzCKUD3qdbqsOd8R0axKO
+         8BpVxNu+em3bA==
+Date:   Thu, 28 Jan 2021 16:54:47 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     devel@lists.elisa.tech,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        =?UTF-8?B?QmHFn2Fr?= Erdamar <basakerdamar@gmail.com>
+Subject: Re: Small student project idea on appropriate integration trees in
+ MAINTAINERS
+Message-ID: <20210128165447.3da0d98e@lwn.net>
+In-Reply-To: <CAKXUXMyRAer=0S9pxiRs2iF3pdkU8zW=JZw2a+nJJ30iPLPhCA@mail.gmail.com>
+References: <CAKXUXMyRAer=0S9pxiRs2iF3pdkU8zW=JZw2a+nJJ30iPLPhCA@mail.gmail.com>
+Organization: LWN.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey, everyone.  I've run into problems starting up my Xen domUs as of
-the latest batch of stable updates.  Whenever I try to create one, I
-get a bunch of block device errors like this:
+On Fri, 22 Jan 2021 09:22:24 +0100
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51712
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51728
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51744
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51760
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51776
-libxl: error: libxl_create.c:1452:domcreate_launch_dm: Domain 4:unable to add disk devices
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51712
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51728
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51744
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51760
-libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51776
-libxl: error: libxl_domain.c:1290:devices_destroy_cb: Domain 4:libxl__devices_destroy failed
-libxl: error: libxl_domain.c:1177:libxl__destroy_domid: Domain 4:Non-existant domain
-libxl: error: libxl_domain.c:1131:domain_destroy_callback: Domain 4:Unable to destroy guest
-libxl: error: libxl_domain.c:1058:domain_destroy_cb: Domain 4:Destruction of domain failed
+> In this project, we can make use of:
+> 
+> - gitdm [git://git.lwn.net/gitdm.git]: gitdm includes some scripts to
+> parse MAINTAINERS and obtain the integration tree patch of a commit.
 
-I'm using Xen 4.13.1 on the box I've been testing with.
+Look also at the 'treeplot' tool there, which determines which tree(s)
+each patch went through and makes pretty (OK, not hugely pretty) pictures
+from the result.
 
-I bisected down to this commit, and reverting it does indeed fix my
-problem.  Well, this commit upstream and it's cherry-picked variants
-on linux-5.4.y and linux-5.10.y.
+I suspect you'll find that the tree information is mostly correct.
+Developers need to know that to be able to base their patches properly; an
+incorrect entry would lead to a certain amount of maintainer misery.
 
-commit 3499ba8198cad47b731792e5e56b9ec2a78a83a2
-Author: David Woodhouse <dwmw@amazon.co.uk>
-Date:   Wed Jan 13 13:26:02 2021 +0000
+Thanks,
 
-    xen: Fix event channel callback via INTX/GSI
-    
-    For a while, event channel notification via the PCI platform device
-    has been broken, because we attempt to communicate with xenstore before
-    we even have notifications working, with the xs_reset_watches() call
-    in xs_init().
-    
-    We tend to get away with this on Xen versions below 4.0 because we avoid
-    calling xs_reset_watches() anyway, because xenstore might not cope with
-    reading a non-existent key. And newer Xen *does* have the vector
-    callback support, so we rarely fall back to INTX/GSI delivery.
-    
-    To fix it, clean up a bit of the mess of xs_init() and xenbus_probe()
-    startup. Call xs_init() directly from xenbus_init() only in the !XS_HVM
-    case, deferring it to be called from xenbus_probe() in the XS_HVM case
-    instead.
-    
-    Then fix up the invocation of xenbus_probe() to happen either from its
-    device_initcall if the callback is available early enough, or when the
-    callback is finally set up. This means that the hack of calling
-    xenbus_probe() from a workqueue after the first interrupt, or directly
-    from the PCI platform device setup, is no longer needed.
-    
-    Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-    Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-    Link: https://lore.kernel.org/r/20210113132606.422794-2-dwmw2@infradead.org
-    Signed-off-by: Juergen Gross <jgross@suse.com>
-
+jon
