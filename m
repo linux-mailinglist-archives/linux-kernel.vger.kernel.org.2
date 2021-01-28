@@ -2,140 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FB030702F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F04F307028
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhA1HvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:51:22 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:64675 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231767AbhA1HrR (ORCPT
+        id S232276AbhA1Hu0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 02:50:26 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:59074 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhA1Hr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:47:17 -0500
-X-UUID: 4976aa3d3e3a4ae880e96192bac560a9-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=c9gdNjmeMqiUvuQwcv01PQ6DmCkI4yW/69ukd7Zj6m4=;
-        b=YIZBCaswfJP72ZJUkgw+CXFnVNnaWP0+plSb9QxiBXfmQzlH3Iz8bFXkMBAUFgr8ljOF0XWWnDiaY0obzljmPIDa8tdZVhlka4R9HomsADNKmfoejd7NHiL5Vpddjmp7eZ6y/glGV9xr0b3IbEDkYnbzoMblNpEegr21U0hrtsU=;
-X-UUID: 4976aa3d3e3a4ae880e96192bac560a9-20210128
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 859978195; Thu, 28 Jan 2021 15:46:23 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 15:46:21 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 15:46:20 +0800
-Message-ID: <1611819981.16091.6.camel@mtksdaap41>
-Subject: Re: [PATCH v11 8/9] soc: mediatek: add mtk mutex support for MT8183
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Thu, 28 Jan 2021 15:46:21 +0800
-In-Reply-To: <20210128072802.830971-9-hsinyi@chromium.org>
-References: <20210128072802.830971-1-hsinyi@chromium.org>
-         <20210128072802.830971-9-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 28 Jan 2021 02:47:56 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id D1B596074005;
+        Thu, 28 Jan 2021 08:47:11 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 2I6E_uKbcIlQ; Thu, 28 Jan 2021 08:47:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 7917B6074007;
+        Thu, 28 Jan 2021 08:47:11 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gwvr2wLtfqUm; Thu, 28 Jan 2021 08:47:11 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 582B36074005;
+        Thu, 28 Jan 2021 08:47:11 +0100 (CET)
+Date:   Thu, 28 Jan 2021 08:47:11 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Tomas Winkler <tomas.winkler@intel.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1665542284.336646.1611820031174.JavaMail.zimbra@nod.at>
+In-Reply-To: <a6cb6eb10bbb48989d3a9e087951e50e@intel.com>
+References: <20210127200319.662842-1-tomas.winkler@intel.com> <9732911.325628.1611780400338.JavaMail.zimbra@nod.at> <c8d0f22c5fdf443cb8dda1f996b148d9@intel.com> <1776363776.325713.1611782270873.JavaMail.zimbra@nod.at> <a6cb6eb10bbb48989d3a9e087951e50e@intel.com>
+Subject: Re: [PATCH] mtd: use refcount to prevent corruption
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: DCECC5BE7E61B5432AE1222A77586C89CDAD526E3E8AD7EF97E91E585D2340E82000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: use refcount to prevent corruption
+Thread-Index: AQHW9OeD00Da249Jw0qJn6+VIZAeUao7z7AAgAAh5BBxoBSOfPxzntFAEGBJdu8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk9uIFRodSwgMjAyMS0wMS0yOCBhdCAxNToyOCArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
-dGVrLmNvbT4NCj4gDQo+IEFkZCBtdGsgbXV0ZXggc3VwcG9ydCBmb3IgTVQ4MTgzIFNvQy4NCj4g
-DQo+IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsu
-Y29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+
-DQo+IC0tLQ0KPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLW11dGV4LmMgfCA1MCArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDUwIGluc2VydGlv
-bnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXgu
-YyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+IGluZGV4IGY1MzFiMTE5ZGE3
-YTkuLmIzNDhmOTYyZjgyYTQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210
-ay1tdXRleC5jDQo+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+IEBA
-IC0xNCw2ICsxNCw4IEBADQo+ICANCj4gICNkZWZpbmUgTVQyNzAxX01VVEVYMF9NT0QwCQkJMHgy
-Yw0KPiAgI2RlZmluZSBNVDI3MDFfTVVURVgwX1NPRjAJCQkweDMwDQo+ICsjZGVmaW5lIE1UODE4
-M19ESVNQX01VVEVYMF9NT0QwCQkJMHgzMA0KPiArI2RlZmluZSBNVDgxODNfRElTUF9NVVRFWDBf
-U09GMAkJCTB4MmMNCg0KTW9kaWZ5ICdESVNQX01VVEVYJyB0byAnTVVURVgnDQoNClJlZ2FyZHMs
-DQpDSw0KDQo+ICANCj4gICNkZWZpbmUgRElTUF9SRUdfTVVURVhfRU4obikJCQkoMHgyMCArIDB4
-MjAgKiAobikpDQo+ICAjZGVmaW5lIERJU1BfUkVHX01VVEVYKG4pCQkJKDB4MjQgKyAweDIwICog
-KG4pKQ0KPiBAQCAtMzcsNiArMzksMTggQEANCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVYX01PRF9E
-SVNQX0RJVEhFUgkJMTUNCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVYX01PRF9ESVNQX1VGT0UJCTE2
-DQo+ICANCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX1JETUEwCQkwDQo+ICsjZGVm
-aW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1BMQkJMQ0KPiArI2RlZmluZSBNVDgxODNfTVVU
-RVhfTU9EX0RJU1BfT1ZMMAkJOQ0KPiArI2RlZmluZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZM
-MF8yTAkJMTANCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDFfMkwJCTExDQo+
-ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9XRE1BMAkJMTINCj4gKyNkZWZpbmUgTVQ4
-MTgzX01VVEVYX01PRF9ESVNQX0NPTE9SMAkJMTMNCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01P
-RF9ESVNQX0NDT1JSMAkJMTQNCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0FBTDAJ
-CTE1DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9HQU1NQTAJCTE2DQo+ICsjZGVm
-aW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9ESVRIRVIwCQkxNw0KPiArDQo+ICAjZGVmaW5lIE1U
-ODE3M19NVVRFWF9NT0RfRElTUF9PVkwwCQkxMQ0KPiAgI2RlZmluZSBNVDgxNzNfTVVURVhfTU9E
-X0RJU1BfT1ZMMQkJMTINCj4gICNkZWZpbmUgTVQ4MTczX01VVEVYX01PRF9ESVNQX1JETUEwCQkx
-Mw0KPiBAQCAtODcsNiArMTAxLDExIEBADQo+ICAjZGVmaW5lIE1UMjcxMl9NVVRFWF9TT0ZfRFNJ
-MwkJCTYNCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVYX1NPRl9EUEkwCQkJMg0KPiAgI2RlZmluZSBN
-VDgxNjdfTVVURVhfU09GX0RQSTEJCQkzDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9TT0ZfRFNJ
-MAkJCTENCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX1NPRl9EUEkwCQkJMg0KPiArDQo+ICsjZGVm
-aW5lIE1UODE4M19NVVRFWF9FT0ZfRFNJMAkJCShNVDgxODNfTVVURVhfU09GX0RTSTAgPDwgNikN
-Cj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX0VPRl9EUEkwCQkJKE1UODE4M19NVVRFWF9TT0ZfRFBJ
-MCA8PCA2KQ0KPiAgDQo+ICBzdHJ1Y3QgbXRrX211dGV4IHsNCj4gIAlpbnQgaWQ7DQo+IEBAIC0x
-ODEsNiArMjAwLDIwIEBAIHN0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4MTczX211dGV4X21v
-ZFtERFBfQ09NUE9ORU5UX0lEX01BWF0gPSB7DQo+ICAJW0REUF9DT01QT05FTlRfV0RNQTFdID0g
-TVQ4MTczX01VVEVYX01PRF9ESVNQX1dETUExLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0
-IHVuc2lnbmVkIGludCBtdDgxODNfbXV0ZXhfbW9kW0REUF9DT01QT05FTlRfSURfTUFYXSA9IHsN
-Cj4gKwlbRERQX0NPTVBPTkVOVF9BQUwwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9BQUwwLA0K
-PiArCVtERFBfQ09NUE9ORU5UX0NDT1JSXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9DQ09SUjAs
-DQo+ICsJW0REUF9DT01QT05FTlRfQ09MT1IwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9DT0xP
-UjAsDQo+ICsJW0REUF9DT01QT05FTlRfRElUSEVSXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9E
-SVRIRVIwLA0KPiArCVtERFBfQ09NUE9ORU5UX0dBTU1BXSA9IE1UODE4M19NVVRFWF9NT0RfRElT
-UF9HQU1NQTAsDQo+ICsJW0REUF9DT01QT05FTlRfT1ZMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJ
-U1BfT1ZMMCwNCj4gKwlbRERQX0NPTVBPTkVOVF9PVkxfMkwwXSA9IE1UODE4M19NVVRFWF9NT0Rf
-RElTUF9PVkwwXzJMLA0KPiArCVtERFBfQ09NUE9ORU5UX09WTF8yTDFdID0gTVQ4MTgzX01VVEVY
-X01PRF9ESVNQX09WTDFfMkwsDQo+ICsJW0REUF9DT01QT05FTlRfUkRNQTBdID0gTVQ4MTgzX01V
-VEVYX01PRF9ESVNQX1JETUEwLA0KPiArCVtERFBfQ09NUE9ORU5UX1JETUExXSA9IE1UODE4M19N
-VVRFWF9NT0RfRElTUF9SRE1BMSwNCj4gKwlbRERQX0NPTVBPTkVOVF9XRE1BMF0gPSBNVDgxODNf
-TVVURVhfTU9EX0RJU1BfV0RNQTAsDQo+ICt9Ow0KPiArDQo+ICBzdGF0aWMgY29uc3QgdW5zaWdu
-ZWQgaW50IG10MjcxMl9tdXRleF9zb2ZbTVVURVhfU09GX0RTSTMgKyAxXSA9IHsNCj4gIAlbTVVU
-RVhfU09GX1NJTkdMRV9NT0RFXSA9IE1VVEVYX1NPRl9TSU5HTEVfTU9ERSwNCj4gIAlbTVVURVhf
-U09GX0RTSTBdID0gTVVURVhfU09GX0RTSTAsDQo+IEBAIC0xOTgsNiArMjMxLDEzIEBAIHN0YXRp
-YyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4MTY3X211dGV4X3NvZltNVVRFWF9TT0ZfRFNJMyArIDFd
-ID0gew0KPiAgCVtNVVRFWF9TT0ZfRFBJMV0gPSBNVDgxNjdfTVVURVhfU09GX0RQSTEsDQo+ICB9
-Ow0KPiAgDQo+ICsvKiBBZGQgRU9GIHNldHRpbmcgc28gb3ZlcmxheSBoYXJkd2FyZSBjYW4gcmVj
-ZWl2ZSBmcmFtZSBkb25lIGlycSAqLw0KPiArc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDgx
-ODNfbXV0ZXhfc29mW01VVEVYX1NPRl9EU0kzICsgMV0gPSB7DQo+ICsJW01VVEVYX1NPRl9TSU5H
-TEVfTU9ERV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01PREUsDQo+ICsJW01VVEVYX1NPRl9EU0kwXSA9
-IE1VVEVYX1NPRl9EU0kwIHwgTVQ4MTgzX01VVEVYX0VPRl9EU0kwLA0KPiArCVtNVVRFWF9TT0Zf
-RFBJMF0gPSBNVDgxODNfTVVURVhfU09GX0RQSTAgfCBNVDgxODNfTVVURVhfRU9GX0RQSTAsDQo+
-ICt9Ow0KPiArDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19tdXRleF9kYXRhIG10MjcwMV9t
-dXRleF9kcml2ZXJfZGF0YSA9IHsNCj4gIAkubXV0ZXhfbW9kID0gbXQyNzAxX211dGV4X21vZCwN
-Cj4gIAkubXV0ZXhfc29mID0gbXQyNzEyX211dGV4X3NvZiwNCj4gQEAgLTIyNyw2ICsyNjcsMTQg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfbXV0ZXhfZGF0YSBtdDgxNzNfbXV0ZXhfZHJpdmVy
-X2RhdGEgPSB7DQo+ICAJLm11dGV4X3NvZl9yZWcgPSBNVDI3MDFfTVVURVgwX1NPRjAsDQo+ICB9
-Ow0KPiAgDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG10a19tdXRleF9kYXRhIG10ODE4M19tdXRl
-eF9kcml2ZXJfZGF0YSA9IHsNCj4gKwkubXV0ZXhfbW9kID0gbXQ4MTgzX211dGV4X21vZCwNCj4g
-KwkubXV0ZXhfc29mID0gbXQ4MTgzX211dGV4X3NvZiwNCj4gKwkubXV0ZXhfbW9kX3JlZyA9IE1U
-ODE4M19ESVNQX01VVEVYMF9NT0QwLA0KPiArCS5tdXRleF9zb2ZfcmVnID0gTVQ4MTgzX0RJU1Bf
-TVVURVgwX1NPRjAsDQo+ICsJLm5vX2NsayA9IHRydWUsDQo+ICt9Ow0KPiArDQo+ICBzdHJ1Y3Qg
-bXRrX211dGV4ICptdGtfbXV0ZXhfZ2V0KHN0cnVjdCBkZXZpY2UgKmRldikNCj4gIHsNCj4gIAlz
-dHJ1Y3QgbXRrX211dGV4X2N0eCAqbXR4ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IEBAIC00
-NTcsNiArNTA1LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXV0ZXhfZHJp
-dmVyX2R0X21hdGNoW10gPSB7DQo+ICAJICAuZGF0YSA9ICZtdDgxNjdfbXV0ZXhfZHJpdmVyX2Rh
-dGF9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRpc3AtbXV0ZXgiLA0K
-PiAgCSAgLmRhdGEgPSAmbXQ4MTczX211dGV4X2RyaXZlcl9kYXRhfSwNCj4gKwl7IC5jb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLW11dGV4IiwNCj4gKwkgIC5kYXRhID0gJm10ODE4
-M19tdXRleF9kcml2ZXJfZGF0YX0sDQo+ICAJe30sDQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9U
-QUJMRShvZiwgbXV0ZXhfZHJpdmVyX2R0X21hdGNoKTsNCg0K
+Tomas,
 
+----- Ursprüngliche Mail -----
+>> >> Can you please explain a little more what devices are involved?
+>> >> Does it implement _get_device() and _put_device()?
+>> > No this is not connected to those handlers of the underlying device
+>> > and those won't help.
+>> > I have a spi device provided by MFD framework so it can go away anytime.
+>> 
+>> Can it go away physically or just in software?
+> Software, but since this is mfd it's basically hotplug. The kernel is crashing
+> when I simulate hardware failure.
+>> 
+>> Usually the pattern is that you make sure in the device driver that nobody can
+>> orphan the MTD while it is in use.
+>> e.g. drivers/mtd/ubi/gluebi.c does so. In _get_device() it grabs a reference on
+>> the underlying UBI volume to make sure it cannot go away while the MTD (on
+>> top of UBI) is in use.
+> 
+> I can try that if it helps, because we are simulating possible lower level
+> crash.
+> In an case I believe that the proper refcouting is much more robust solution,
+> than the current one.
+> I'd appreciate if someone can review the actual implementation.
+
+This happens right now, I try to understand why exactly the current way is not
+good in enough. :-)
+
+Your approach makes sure that the MTD itself does not go away while it has users but
+how does this help in the case where the underlying MFD just vanishes?
+The MTD can be in use and the MFD can go away while e.g. mtd_read() or such
+takes place.
+
+Thanks,
+//richard
