@@ -2,185 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0E6307694
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D87E30769A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhA1M7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:59:15 -0500
-Received: from mga03.intel.com ([134.134.136.65]:56589 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhA1M6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:58:51 -0500
-IronPort-SDR: 6pyPUY9FBrsjKx1gBPXYDwjxbCFQHVY12tzvUrQknEs7iDEKBgBCiDeh/9taYLcIcqO7NyB6/O
- dfjhDtJ7K2gw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180304493"
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="180304493"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 04:58:10 -0800
-IronPort-SDR: TWZWcvwQXSUo33bxnj60GGoqWYsq2GREQQql21mjTuXeMNzMMbNeXSRw1pObi3QAp3fvqn7b9X
- 7s1Az/67qVWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="473692379"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Jan 2021 04:58:09 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l56sC-0002vJ-DO; Thu, 28 Jan 2021 12:58:08 +0000
-Date:   Thu, 28 Jan 2021 20:57:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:for-mingo-rcu] BUILD SUCCESS
- 0d2460ba61841e5c2e64e77f7a84d3fc69cfe899
-Message-ID: <6012b4c8.pCEsd+szDgAVsL3G%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231987AbhA1M7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:59:43 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:62208 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231932AbhA1M7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:59:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1611838756; x=1643374756;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=B56E1Awf7VEQPdUFQmhu23n9pP7LJrGNglTlfuHed+U=;
+  b=ERdJQ3q0L8dvF3APuLnziiKfn9NEKDpQpubh+o8HN7qA+Y+m5tQ3eLN1
+   3nfh847FpF1czOV4xRQu6/YTw8MIGNz+qhdLFcOtzXhlf95sZmPujaqcc
+   w7HXqVpJNWioN8ECo+IFIdgdl9Nk45NFKEyQx8R5rJm5GdFG4Mc+e3nAc
+   4=;
+X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
+   d="scan'208";a="82178107"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 28 Jan 2021 12:58:25 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 6DE2AC0600;
+        Thu, 28 Jan 2021 12:58:22 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 12:58:21 +0000
+Received: from Alexanders-MacBook-Air.local (10.43.162.125) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 12:58:14 +0000
+Subject: Re: [PATCH v4 0/2] System Generation ID driver and VMGENID backend
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>
+CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "Jason@zx2c4.com" <Jason@zx2c4.com>,
+        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "areber@redhat.com" <areber@redhat.com>,
+        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
+        "avagin@gmail.com" <avagin@gmail.com>,
+        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
+        "gil@azul.com" <gil@azul.com>,
+        "asmehra@redhat.com" <asmehra@redhat.com>,
+        "dgunigun@redhat.com" <dgunigun@redhat.com>,
+        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>
+References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
+ <20210112074658-mutt-send-email-mst@kernel.org>
+ <9952EF0C-CD1D-4EDB-BAB8-21F72C0BF90D@amazon.com>
+ <20210127074549-mutt-send-email-mst@kernel.org>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <7bcd1cf3-d055-db46-95ea-5c023df2f184@amazon.de>
+Date:   Thu, 28 Jan 2021 13:58:12 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210127074549-mutt-send-email-mst@kernel.org>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.125]
+X-ClientProxiedBy: EX13D02UWC002.ant.amazon.com (10.43.162.6) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo-rcu
-branch HEAD: 0d2460ba61841e5c2e64e77f7a84d3fc69cfe899  Merge branches 'doc.2021.01.06a', 'fixes.2021.01.04b', 'kfree_rcu.2021.01.04a', 'mmdumpobj.2021.01.22a', 'nocb.2021.01.06a', 'rt.2021.01.04a', 'stall.2021.01.06a', 'torture.2021.01.12a' and 'tortureall.2021.01.06a' into HEAD
+Hey Michael!
 
-elapsed time: 726m
+On 27.01.21 13:47, Michael S. Tsirkin wrote:
+> =
 
-configs tested: 123
-configs skipped: 2
+> On Thu, Jan 21, 2021 at 10:28:16AM +0000, Catangiu, Adrian Costin wrote:
+>> On 12/01/2021, 14:49, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+>>
+>>      On Tue, Jan 12, 2021 at 02:15:58PM +0200, Adrian Catangiu wrote:
+>>      > The first patch in the set implements a device driver which expos=
+es a
+>>      > read-only device /dev/sysgenid to userspace, which contains a
+>>      > monotonically increasing u32 generation counter. Libraries and
+>>      > applications are expected to open() the device, and then call rea=
+d()
+>>      > which blocks until the SysGenId changes. Following an update, rea=
+d()
+>>      > calls no longer block until the application acknowledges the new
+>>      > SysGenId by write()ing it back to the device. Non-blocking read()=
+ calls
+>>      > return EAGAIN when there is no new SysGenId available. Alternativ=
+ely,
+>>      > libraries can mmap() the device to get a single shared page which
+>>      > contains the latest SysGenId at offset 0.
+>>
+>>      Looking at some specifications, the gen ID might actually be located
+>>      at an arbitrary address. How about instead of hard-coding the offse=
+t,
+>>      we expose it e.g. in sysfs?
+>>
+>> The functionality is split between SysGenID which exposes an internal u32
+>> counter to userspace, and an (optional) VmGenID backend which drives
+>> SysGenID generation changes based on hw vmgenid updates.
+>>
+>> The hw UUID you're referring to (vmgenid) is not mmap-ed to userspace or
+>> otherwise exposed to userspace. It is only used internally by the vmgenid
+>> driver to find out about VM generation changes and drive the more generic
+>> SysGenID.
+>>
+>> The SysGenID u32 monotonic increasing counter is the one that is mmaped =
+to
+>> userspace, but it is a software counter. I don't see any value in using =
+a dynamic
+>> offset in the mmaped page. Offset 0 is fast and easy and most importantl=
+y it is
+>> static so no need to dynamically calculate or find it at runtime.
+> =
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Well you are burning a whole page on it, using an offset the page
+> can be shared with other functionality.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      mgcoge_defconfig
-powerpc                          g5_defconfig
-powerpc                         ps3_defconfig
-nds32                            alldefconfig
-c6x                        evmc6457_defconfig
-m68k                            q40_defconfig
-m68k                       m5208evb_defconfig
-sh                            titan_defconfig
-arm                         lpc18xx_defconfig
-sh                         microdev_defconfig
-mips                         mpc30x_defconfig
-riscv                               defconfig
-arc                     nsimosci_hs_defconfig
-c6x                        evmc6474_defconfig
-mips                           ip28_defconfig
-alpha                            alldefconfig
-powerpc                    gamecube_defconfig
-sparc                       sparc32_defconfig
-mips                         tb0226_defconfig
-nios2                            allyesconfig
-sh                         apsh4a3a_defconfig
-arm                       aspeed_g5_defconfig
-arm                        mvebu_v5_defconfig
-m68k                       m5275evb_defconfig
-powerpc                      ppc44x_defconfig
-m68k                        m5407c3_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                  colibri_pxa270_defconfig
-arm                       multi_v4t_defconfig
-sh                        sh7785lcr_defconfig
-arm                        oxnas_v6_defconfig
-arm                       aspeed_g4_defconfig
-c6x                        evmc6678_defconfig
-mips                          malta_defconfig
-arc                           tb10x_defconfig
-xtensa                generic_kc705_defconfig
-sh                          rsk7269_defconfig
-mips                            ar7_defconfig
-openrisc                            defconfig
-ia64                        generic_defconfig
-openrisc                 simple_smp_defconfig
-mips                  cavium_octeon_defconfig
-sparc                            allyesconfig
-powerpc                  storcenter_defconfig
-x86_64                              defconfig
-powerpc                    ge_imp3a_defconfig
-arm                         at91_dt_defconfig
-arm                            lart_defconfig
-sh                          r7785rp_defconfig
-ia64                         bigsur_defconfig
-m68k                        m5272c3_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210128
-i386                 randconfig-a002-20210128
-i386                 randconfig-a004-20210128
-i386                 randconfig-a005-20210128
-i386                 randconfig-a003-20210128
-i386                 randconfig-a006-20210128
-x86_64               randconfig-a012-20210128
-x86_64               randconfig-a015-20210128
-x86_64               randconfig-a016-20210128
-x86_64               randconfig-a011-20210128
-x86_64               randconfig-a013-20210128
-x86_64               randconfig-a014-20210128
-i386                 randconfig-a013-20210128
-i386                 randconfig-a011-20210128
-i386                 randconfig-a012-20210128
-i386                 randconfig-a016-20210128
-i386                 randconfig-a014-20210128
-i386                 randconfig-a015-20210128
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Currently, the SysGenID lives is one page owned by Linux that we share =
 
-clang tested configs:
-x86_64               randconfig-a002-20210128
-x86_64               randconfig-a003-20210128
-x86_64               randconfig-a001-20210128
-x86_64               randconfig-a005-20210128
-x86_64               randconfig-a006-20210128
-x86_64               randconfig-a004-20210128
+out to multiple user space clients. So yes, we burn a single page of the =
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+system here.
+
+If we put more data in that same page, what data would you put there? =
+
+Random other bits from other subsystems? At that point, we'd be =
+
+reinventing vdso all over again, no? Probably with the same problems.
+
+Which gets me to the second alternative: Reuse VDSO. The problem there =
+
+is that the VDSO is an extremely architecture specific mechanism. Any =
+
+new architecture we'd want to support would need multiple layers of =
+
+changes in multiple layers of both kernel and libc. I'd like to avoid =
+
+that if we can :).
+
+So that leaves us with either wasting a page per system or not having an =
+
+mmap() interface in the first place.
+
+The reason we have the mmap() interface is that it's be easier to =
+
+consume for libraries, that are not hooked into the main event loop.
+
+So, uh, what are you suggesting? :)
+
+
+Alex
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
