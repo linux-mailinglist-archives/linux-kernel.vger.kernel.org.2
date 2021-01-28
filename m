@@ -2,190 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73A73076CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5E13076C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231998AbhA1NKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:10:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
+        id S231913AbhA1NKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbhA1NKf (ORCPT
+        with ESMTP id S231709AbhA1NJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:10:35 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A32C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:55 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id s18so6230655ljg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:55 -0800 (PST)
+        Thu, 28 Jan 2021 08:09:53 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3175CC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:12 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id b17so3298679plz.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=d7LZ22+oyphnUi5mVFQCXWwH/H/OEMXyG0FmJuE7rMk=;
-        b=1NaX3Fx5vR3LylPGpehoAVK9/R5LQc1yFDM+xUNseADsOEUXVW5Q9LXSQ2+IdagFWT
-         g17CQRs0VwFP0a2tL1bXhujKOqEM6lkUZDVODU6Hw2R7p2QCqsBUETrCvjQymrwYUahS
-         nfxtjx/NVhn+h5LYjNPtGBROa2P10ty/VpG8g0XIO7HmIXaz6pt1auwsFavdNz/gl79a
-         +tQk2xmBhQw3M0eMvwVbWXv+494isqb6hUZK9WaCrGlqMCdU4c/npKP0+UucOuOWSFce
-         GaLbtmUHIYAlUNkZThHrs9x+SlYFzHSQxudMKdLs5XCeIdBvAboJ1LqE/6aI9N/ud6qf
-         SViA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wV6oz0k6223jz7bAL5Zk8NtAtXo6+ezaMn2fhP1oIYw=;
+        b=LC3TkXKy3vn5GvO4Kf87XAOF7u+IP4qG3NOTmirr40/P/+XPyRG5SDdGc0xFE1cHzH
+         x5korc+db7u6Jg0h5ILb8wHVnJPZoRTCcjqqufpBVYaBcu3M97Nxel7VCt5w/FlLY1eW
+         HZ6M99/NpP2WRtl2d6UH0ByzCBG86H0E2YucVJ4Q2EXwE3VgBpnDydWwZtoo4c8vWi8/
+         RvIlU+znzcboc0Yh8QxfNNH8UbjIWjr1OkTDbxt3PU3UmW2PclQszMys1ZSv8glvYbk6
+         OWaYKN3NgoDEUUFpXKZFEoFBIGnGUHi87LSDbF5nBI9fPA1TJ7gs+avJKhwjP02wdMgh
+         U//g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=d7LZ22+oyphnUi5mVFQCXWwH/H/OEMXyG0FmJuE7rMk=;
-        b=byE7gOIh+9VCQ0OzdTEM8845nqRC7MKmGZ737sf+gQRQ9GCuPFzRtu6aeNjkUINMPE
-         rhJB5X01k6JQG1ZjiVNsJejpFcQmnbeiqPsPeqM8NDNRem5zv4FEiTiNGD3vjr87/lRL
-         5yId8vz0Gd/BTp5XWbbmWva4pd3mUUxOYYX+czGj/ATajyS32Xg9YSdnXzWKN0OAga8n
-         FFkxihmI//tgrZuHW2dFzPOKNyuxZZ9An+joe6N5L/NKvDGbJhZEIMcjSjZ7LHrsQgZs
-         pLYfb2iBW11xa5HyyicMO96Ppfkdc7Xhu5cYsaOGIkbtKj+Cc/SQHxYPie9c+fho7mHT
-         RfnQ==
-X-Gm-Message-State: AOAM532YZcB39leTpmu8UJ7ZcGyLXTL9Ec0KzB96GSXw0Od0+UuRE45f
-        CTPVnormoj2JFcGz0+u3ofsomQ==
-X-Google-Smtp-Source: ABdhPJwX9m/KtjKAA/+SzyVBGo91thnSD/C7o9Qt3wssfmXp+di+H9MEh0o1WqvjA7v9uFmxgxaNPA==
-X-Received: by 2002:a2e:9055:: with SMTP id n21mr4142030ljg.377.1611839393676;
-        Thu, 28 Jan 2021 05:09:53 -0800 (PST)
-Received: from localhost.localdomain (89-70-221-122.dynamic.chello.pl. [89.70.221.122])
-        by smtp.gmail.com with ESMTPSA id m10sm1632458lfk.2.2021.01.28.05.09.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 05:09:52 -0800 (PST)
-From:   Lukasz Majczak <lma@semihalf.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Subject: [PATCH v2] tpm_tis: Add missing tpm_request/relinquish_locality calls
-Date:   Thu, 28 Jan 2021 14:07:53 +0100
-Message-Id: <20210128130753.1283534-1-lma@semihalf.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210123014247.989368-1-lma@semihalf.com>
-References: <20210123014247.989368-1-lma@semihalf.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wV6oz0k6223jz7bAL5Zk8NtAtXo6+ezaMn2fhP1oIYw=;
+        b=I09wQxHTp+Cbxew0+QvUrFhMKduEKzfn/N7aPS02bJuh2SiloRJ9kCu+4ogL7ql1nh
+         CLXEMkmFuWx6Jn2e9mNIAsagFtO0e481J0IBe1Z4dElCQX3yrz6QfSGgRe6jOxvyaOBS
+         4nPH2b1Pij7P7r6XSOD/ZZ/ULA0Saf1s51hRZujvnWDWX+GjX4b1isp5Yw9+xdHbu+jD
+         A3z8GFQ7qV6lJ0uJu8+gfip+K9MWJgcbkunELKytEuOH1zaQMRvDFwslHD087wEKmf8R
+         XAsG40TkNucZRJEU9ozGW+hyDsPb3YFKFctl28N5mgDRbXAh1SoQ+JkfdngdNhxHyvIx
+         OfPw==
+X-Gm-Message-State: AOAM531YYzms+VGuTvgKXKXn2MrJ+em61qXOg2SFJRSAh4Dz+HCa/KCs
+        rMyty9u1LDF0MOdZyXmx2mshRPcoScyZXq3pJbxCFA==
+X-Google-Smtp-Source: ABdhPJyufgziyJlqzFS90vCqlwRzjRmjfQIf+qHC8gEyNqlz6n+25WRZktQ7hAQucfD1mMlI+eOC+QOtDcYv/xXSLn8=
+X-Received: by 2002:a17:90a:808a:: with SMTP id c10mr11001877pjn.229.1611839351754;
+ Thu, 28 Jan 2021 05:09:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com> <20210126092942.GA10602@linux>
+ <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com> <20210126145819.GB16870@linux>
+ <259b9669-0515-01a2-d714-617011f87194@redhat.com> <20210126153448.GA17455@linux>
+ <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com> <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
+ <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
+In-Reply-To: <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 28 Jan 2021 21:08:35 +0800
+Message-ID: <CAMZfGtXXPpvnGotwgYj5G5DkWM1e+McLOLM3pTGuUui54f5TFg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
+ vmemmap pages associated with each HugeTLB page
+To:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a missing call to tpm_request_locality before the call to
-the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
-approach might work for tpm2, it fails for tpm1.x - in that case
-call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
-without locality fails and in turn causes tpm_tis_core_init() to fail.
-Tested on Samsung Chromebook Pro (Caroline).
+On Thu, Jan 28, 2021 at 8:37 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Wed, Jan 27, 2021 at 6:36 PM David Hildenbrand <david@redhat.com> wrote:
+> >
+> > On 26.01.21 16:56, David Hildenbrand wrote:
+> > > On 26.01.21 16:34, Oscar Salvador wrote:
+> > >> On Tue, Jan 26, 2021 at 04:10:53PM +0100, David Hildenbrand wrote:
+> > >>> The real issue seems to be discarding the vmemmap on any memory that has
+> > >>> movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, we
+> > >>> can reuse parts of the thingy we're freeing for the vmemmap. Not that it
+> > >>> would be ideal: that once-a-huge-page thing will never ever be a huge page
+> > >>> again - but if it helps with OOM in corner cases, sure.
+> > >>
+> > >> Yes, that is one way, but I am not sure how hard would it be to implement.
+> > >> Plus the fact that as you pointed out, once that memory is used for vmemmap
+> > >> array, we cannot use it again.
+> > >> Actually, we would fragment the memory eventually?
+> > >>
+> > >>> Possible simplification: don't perform the optimization for now with free
+> > >>> huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: what
+> > >>> happens when migrating a huge page from ZONE_NORMAL to (ZONE_MOVABLE|CMA)?
+> > >>
+> > >> But if we do not allow theose pages to be in ZONE_MOVABLE or CMA, there is no
+> > >> point in migrate them, right?
+> > >
+> > > Well, memory unplug "could" still work and migrate them and
+> > > alloc_contig_range() "could in the future" still want to migrate them
+> > > (virtio-mem, gigantic pages, powernv memtrace). Especially, the latter
+> > > two don't work with ZONE_MOVABLE/CMA. But, I mean, it would be fair
+> > > enough to say "there are no guarantees for
+> > > alloc_contig_range()/offline_pages() with ZONE_NORMAL, so we can break
+> > > these use cases when a magic switch is flipped and make these pages
+> > > non-migratable anymore".
+> > >
+> > > I assume compaction doesn't care about huge pages either way, not sure
+> > > about numa balancing etc.
+> > >
+> > >
+> > > However, note that there is a fundamental issue with any approach that
+> > > allocates a significant amount of unmovable memory for user-space
+> > > purposes (excluding CMA allocations for unmovable stuff, CMA is
+> > > special): pairing it with ZONE_MOVABLE becomes very tricky as your user
+> > > space might just end up eating all kernel memory, although the system
+> > > still looks like there is plenty of free memory residing in
+> > > ZONE_MOVABLE. I mentioned that in the context of secretmem in a reduced
+> > > form as well.
+> > >
+> > > We theoretically have that issue with dynamic allocation of gigantic
+> > > pages, but it's something a user explicitly/rarely triggers and it can
+> > > be documented to cause problems well enough. We'll have the same issue
+> > > with GUP+ZONE_MOVABLE that Pavel is fixing right now - but GUP is
+> > > already known to be broken in various ways and that it has to be treated
+> > > in a special way. I'd like to limit the nasty corner cases.
+> > >
+> > > Of course, we could have smart rules like "don't online memory to
+> > > ZONE_MOVABLE automatically when the magic switch is active". That's just
+> > > ugly, but could work.
+> > >
+> >
+> > Extending on that, I just discovered that only x86-64, ppc64, and arm64
+> > really support hugepage migration.
+> >
+> > Maybe one approach with the "magic switch" really would be to disable
+> > hugepage migration completely in hugepage_migration_supported(), and
+> > consequently making hugepage_movable_supported() always return false.
+> >
+> > Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
+> > migrated. The problem I describe would apply (careful with using
+> > ZONE_MOVABLE), but well, it can at least be documented.
+>
+> Thanks for your explanation.
+>
+> All thinking seems to be introduced by encountering OOM. :-(
+>
+> In order to move forward and free the hugepage. We should add some
+> restrictions below.
+>
+> 1. Only free the hugepage which is allocated from the ZONE_NORMAL.
+           ^^
+Sorry. Here "free" should be "optimize".
 
-Signed-off-by: Lukasz Majczak <lma@semihalf.com>
----
-Jarkko, James, Guenter
-
-I’m aware about the other thread, but it seems to be dead for a few months.
-Here is the small patch as fixing this specific issue
-would allow us to unblock the ChromeOs development. 
-We want to upstream all of our patches,
-so the ChromeOs will not diverge even more,
-so I'm hoping this could be applied, if you see it neat enough.
-
-Best regards,
-Lukasz
-
-v1 -> v2:
- - fixed typos
- - as there is no need to enable clock, switched to
-   use only tpm_request/relinquish_locality calls
- - narrowed down boundaries of tpm_request/relinquish_locality calls
- 
- drivers/char/tpm/tpm-chip.c      |  4 ++--
- drivers/char/tpm/tpm-interface.c | 11 +++++++++--
- drivers/char/tpm/tpm.h           |  2 ++
- drivers/char/tpm/tpm_tis_core.c  | 12 ++++++++++--
- 4 files changed, 23 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index ddaeceb7e109..5351963a4b19 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -32,7 +32,7 @@ struct class *tpm_class;
- struct class *tpmrm_class;
- dev_t tpm_devt;
- 
--static int tpm_request_locality(struct tpm_chip *chip)
-+int tpm_request_locality(struct tpm_chip *chip)
- {
- 	int rc;
- 
-@@ -47,7 +47,7 @@ static int tpm_request_locality(struct tpm_chip *chip)
- 	return 0;
- }
- 
--static void tpm_relinquish_locality(struct tpm_chip *chip)
-+void tpm_relinquish_locality(struct tpm_chip *chip)
- {
- 	int rc;
- 
-diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
-index 1621ce818705..69309b2bea6a 100644
---- a/drivers/char/tpm/tpm-interface.c
-+++ b/drivers/char/tpm/tpm-interface.c
-@@ -243,8 +243,15 @@ int tpm_get_timeouts(struct tpm_chip *chip)
- 
- 	if (chip->flags & TPM_CHIP_FLAG_TPM2)
- 		return tpm2_get_timeouts(chip);
--	else
--		return tpm1_get_timeouts(chip);
-+	else {
-+		ssize_t ret = tpm_request_locality(chip);
-+
-+		if (ret)
-+			return ret;
-+		ret = tpm1_get_timeouts(chip);
-+		tpm_relinquish_locality(chip);
-+		return ret;
-+	}
- }
- EXPORT_SYMBOL_GPL(tpm_get_timeouts);
- 
-diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-index 947d1db0a5cc..8c13008437dd 100644
---- a/drivers/char/tpm/tpm.h
-+++ b/drivers/char/tpm/tpm.h
-@@ -193,6 +193,8 @@ static inline void tpm_msleep(unsigned int delay_msec)
- 
- int tpm_chip_start(struct tpm_chip *chip);
- void tpm_chip_stop(struct tpm_chip *chip);
-+int tpm_request_locality(struct tpm_chip *chip);
-+void tpm_relinquish_locality(struct tpm_chip *chip);
- struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
- __must_check int tpm_try_get_ops(struct tpm_chip *chip);
- void tpm_put_ops(struct tpm_chip *chip);
-diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-index 92c51c6cfd1b..0ae675e8cf2f 100644
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -754,9 +754,17 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *chip)
- 
- 	if (chip->flags & TPM_CHIP_FLAG_TPM2)
- 		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
--	else
--		return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
-+	else {
-+		ssize_t ret = tpm_request_locality(chip);
-+
-+		if (ret)
-+			return ret;
-+		ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
- 				  0);
-+		tpm_relinquish_locality(chip);
-+		return ret;
-+	}
-+
- }
- 
- /* Register the IRQ and issue a command that will cause an interrupt. If an
--- 
-2.25.1
-
+> 2. Disable hugepage migration when this feature is enabled.
+> 3. Using GFP_ATOMIC to allocate vmemmap pages firstly (it can reduce
+>    memory fragmentation), if it fails, we use part of the hugepage to
+>    remap.
+>
+> Hi Oscar, Mike and David H
+>
+> What's your opinion about this? Should we take this approach?
+>
+> Thanks.
+>
+> >
+> > --
+> > Thanks,
+> >
+> > David / dhildenb
+> >
