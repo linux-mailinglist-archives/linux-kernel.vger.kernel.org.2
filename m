@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E9E307692
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC5A307695
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbhA1M7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:59:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60112 "EHLO mail.kernel.org"
+        id S231962AbhA1M7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:59:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231882AbhA1M7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:59:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0770564D9D;
-        Thu, 28 Jan 2021 12:58:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611838700;
-        bh=C4qSykV9Ua8Po/5N13FLIU468aGWyLm2jJyx3ABSln4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xz8HtbVrbtSfTv+ggNZOODBQQWdtWmHrkQ4XFzInDN4B6llxh8K2hJ5RG5O7rTw6I
-         PQmQV0gSCm9jRUfrvDw0yUH+t+j/LJFJ4mHNbdTfUn26ZZqDLArhJHbv8+sV3z0Dg4
-         NuKkWCYeOYZ4iKAlECxevvtTsd/XvYX4T74MV4qc=
-Date:   Thu, 28 Jan 2021 13:58:17 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
-        mh12gx2825@gmail.com, oliver.graute@kococonnector.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        sbrivio@redhat.com, colin.king@canonical.com,
-        zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v12] staging: fbtft: add tearing signal detect
-Message-ID: <YBK06WnVg7xQ1H8a@kroah.com>
-References: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
+        id S231880AbhA1M7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:59:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B15764DD8;
+        Thu, 28 Jan 2021 12:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611838709;
+        bh=+X6/S8TIzROyCscNL2Zpna/HXn70q3+ajUjZ7HNRiAU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RGWcjlLIWrGovksSstY30JmqTRfZCBscviaxR4kslvyFkhO8bCAtHDB2WUjsYZzcv
+         MutNhdGi36yfC/dc4S28cWOtdWPd37n2sW8o/oFY9mvvUBDHGwmql7zRm2vOf0hwdk
+         Nkf2K9jItce47ytcpxq0QWGqcn9i9QsiPjv5Ha7+Qil6wiUnlER3rY+fUdLiGxizhg
+         a2f/urXpywgTwFsHm++rY6YjbyNYOHXN3269HrLtqI6jYhtGcsKfPS7gXW5nft/iqO
+         RRLZHsYkfZr9Gfev44tEmL2xdoL7Vwd9bVvPkHdwet9nmSJtoTE3GNELBQCyh+XBF6
+         nuebD84od3Zyw==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     dave.hansen@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] x86/sgx: Fix use-after-free in sgx_mmu_notifier_release()
+Date:   Thu, 28 Jan 2021 14:58:23 +0200
+Message-Id: <20210128125823.18660-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 08:53:55PM +0800, Carlis wrote:
-> From: zhangxuezhi <zhangxuezhi1@yulong.com>
-> 
-> For st7789v ic,when we need continuous full screen refresh, it is best to
-> wait for the TE signal arrive to avoid screen tearing
-> 
-> Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
-> ---
-> v12: change dev_err to dev_err_probe and add space in comments start, and
->      delete te_mutex, change te wait logic
-> v11: remove devm_gpio_put and change a dev_err to dev_info
-> v10: additional notes
-> v9: change pr_* to dev_*
-> v8: delete a log line
-> v7: return error value when request fail
-> v6: add te gpio request fail deal logic
-> v5: fix log print
-> v4: modify some code style and change te irq set function name
-> v3: modify author and signed-off-by name
-> v2: add release te gpio after irq request fail
-> ---
->  drivers/staging/fbtft/fb_st7789v.c | 116 +++++++++++++++++++++++++++++++++++++
->  drivers/staging/fbtft/fbtft.h      |   1 +
->  2 files changed, 117 insertions(+)
-> 
-> diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-> index 3a280cc..f08e9da 100644
-> --- a/drivers/staging/fbtft/fb_st7789v.c
-> +++ b/drivers/staging/fbtft/fb_st7789v.c
-> @@ -9,7 +9,11 @@
->  #include <linux/delay.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/completion.h>
->  #include <linux/module.h>
-> +#include <linux/gpio/consumer.h>
-> +
->  #include <video/mipi_display.h>
->  
->  #include "fbtft.h"
-> @@ -66,6 +70,15 @@ enum st7789v_command {
->  #define MADCTL_MX BIT(6) /* bitmask for column address order */
->  #define MADCTL_MY BIT(7) /* bitmask for page address order */
->  
-> +#define SPI_PANEL_TE_TIMEOUT	400 /* msecs */
-> +static struct completion spi_panel_te;
+The most trivial example of a race condition can be demonstrated by this
+sequence where mm_list contains just one entry:
 
-Doesn't this structure have to be per-device?  How can it be global for
-all devices in the system controlled by this driver?
+CPU A                           CPU B
+-> sgx_release()
+                                -> sgx_mmu_notifier_release()
+                                -> list_del_rcu()
+                                <- list_del_rcu()
+-> kref_put()
+-> sgx_encl_release()
+                                -> synchronize_srcu()
+-> cleanup_srcu_struct()
 
-thanks,
+A sequence similar to this has also been spotted in tests under high
+stress:
 
-greg k-h
+[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
+
+Albeit not spotted in the tests, it's also entirely possible that the
+following scenario could happen:
+
+CPU A                           CPU B
+-> sgx_release()
+                                -> sgx_mmu_notifier_release()
+                                -> list_del_rcu()
+-> kref_put()
+-> sgx_encl_release()
+-> cleanup_srcu_struct()
+<- cleanup_srcu_struct()
+                                -> synchronize_srcu()
+
+This scenario would lead into use-after free in cleaup_srcu_struct().
+
+Fix this by taking a reference to the enclave in
+sgx_mmu_notifier_release().
+
+Cc: stable@vger.kernel.org
+Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v5:
+- To make sure that the instance does not get deleted use kref_get()
+  kref_put(). This also removes the need for additional
+  synchronize_srcu().
+v4:
+- Rewrite the commit message.
+- Just change the call order. *_expedited() is out of scope for this
+  bug fix.
+v3: Fine-tuned tags, and added missing change log for v2.
+v2: Switch to synchronize_srcu_expedited().
+ arch/x86/kernel/cpu/sgx/encl.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index ee50a5010277..5ecbcf94ec2a 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -465,6 +465,7 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
+ 	spin_lock(&encl_mm->encl->mm_lock);
+ 	list_for_each_entry(tmp, &encl_mm->encl->mm_list, list) {
+ 		if (tmp == encl_mm) {
++			kref_get(&encl_mm->encl->refcount);
+ 			list_del_rcu(&encl_mm->list);
+ 			break;
+ 		}
+@@ -474,6 +475,7 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
+ 	if (tmp == encl_mm) {
+ 		synchronize_srcu(&encl_mm->encl->srcu);
+ 		mmu_notifier_put(mn);
++		kref_put(&encl_mm->encl->refcount, sgx_encl_release);
+ 	}
+ }
+ 
+-- 
+2.30.0
+
