@@ -2,86 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512A7307CA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181C1307C6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhA1RfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:35:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232986AbhA1RPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:15:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 389AB64E15;
-        Thu, 28 Jan 2021 17:12:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611853973;
-        bh=fhusc1wuTqLzOxUdIHskj1dqwbyC6LdZg87VOwYou5g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R8KymZX+ZXUTSbxthj7PdBL4sVRgIo6EVTVhFspL+Sjl+GGado6OZypH6Hn1kvUwM
-         LcQXnlLQKQ7/tHgUVPnr4JglwekLv7ua0P3pXVtdCzXRpH3GUem1QMOZGrEvO8tCDn
-         JM/wiCBx2+MQqUUp+VvxIzXD/1rRAtiNOiKs74fpQFsO1q0EVMQEhLw0A4J/bqS+v0
-         lad5BKIlyL1qYePsxMgKLqAgchdRGtjDIXs3w3a/nKrnWAEliPUnEqXSMyIY0tAWm5
-         cya5cdpFAKSBxhEtkAtJjPWjtLLS/k+hKz84mIcGZAuQZINLovnwpaj80MAt0IBkh6
-         tCcgZgGNYhM2g==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 10/16] rcu/nocb: Directly call __wake_nocb_gp() from bypass timer
-Date:   Thu, 28 Jan 2021 18:12:16 +0100
-Message-Id: <20210128171222.131380-11-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210128171222.131380-1-frederic@kernel.org>
-References: <20210128171222.131380-1-frederic@kernel.org>
+        id S232793AbhA1R2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233087AbhA1RZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:25:28 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB9BC06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:24:48 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id jx18so4718353pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:24:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=k6KOw6TO5y2Bh+eL97C+VrKyBkEDWeKSo94qjJ/JXQc=;
+        b=cSldyJVO7TOXIgus+kBTIbdd3giA793RvJ93NhNvoz1FzQ63s3CUEn865rFGh7uTqT
+         TuWlu3nCyv1xm5OCaFUPfGwy6ezaduaTdCbwa6XVoqxaln8vYD+FeVALYfTJbnRjh4jb
+         b2w7i+6z2m+2WU6cxo+WxQvKP/VhoQB2ouaUrS0zYyUm0Q4WCoZ1RGrOGZISbLeNcRO6
+         Ojk3hQvV9NdgrJH+KY9KTufNj/lkj2yIvYGQJ/oQALjXTsQBMBPw3gcrkulZUdyr26EZ
+         Jp4H6Jtb9G6bbCg8K4EgQt3n3PBxq5/NaKhJmeN+IZP++k7T0gxDA7m6nYtyYJ2OoIKI
+         YLnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k6KOw6TO5y2Bh+eL97C+VrKyBkEDWeKSo94qjJ/JXQc=;
+        b=RyGIWaaE8hlNNP3K2NvVsgFYUGmW4OyiM/xMhvKoohYMGHyZbd2o41gr1NddZfvVyD
+         AdgRQ9IZXmLq/BeaXEHK7ydqr5OQc8hWs1u4k+VwJSuN2lZKl0rizewTKUAAd45rMgEV
+         AoFweNZ6GbT2qv/jBASS1dTip+7Gsql29zZ1eMkMxGK/nY3mYu7rL5DXvjNZUY7c1hsr
+         6rETAWGCxKTCQ5FsaYgWICDt6ygHRFR1sQrRa7w6ruwOJFLL7ypp9Di9Y4FNWj0vV3zT
+         csX4SGYQgMDYciYkjhB4ybacpQhWYmC+WeeKFtCiVrGh/18t7hsgF+BqhlcpTKOZ5+Vd
+         aoUQ==
+X-Gm-Message-State: AOAM533dOmrVIvp48YkWW9kE89ej/xHgbzZ8CuH6aCiRWgmBa0jjH0AX
+        KtDjc2riOnzRDAoUyD+0DRpVBA==
+X-Google-Smtp-Source: ABdhPJysQVpQhoQlkD/frj1l6FrX3HY6nooq1GEcHiieSHhCQzb4baX4OI4a/K2auNWakmowOnOAOw==
+X-Received: by 2002:a17:903:1cc:b029:de:98bb:d46d with SMTP id e12-20020a17090301ccb02900de98bbd46dmr350979plh.54.1611854687441;
+        Thu, 28 Jan 2021 09:24:47 -0800 (PST)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id r194sm6392534pfr.168.2021.01.28.09.24.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 09:24:46 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] Asynchronous passthrough ioctl
+To:     Kanchan Joshi <joshiiitr@gmail.com>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Selvakumar S <selvakuma.s1@samsung.com>
+References: <CGME20210127150134epcas5p251fc1de3ff3581dd4c68b3fbe0b9dd91@epcas5p2.samsung.com>
+ <20210127150029.13766-1-joshi.k@samsung.com>
+ <489691ce-3b1e-30ce-9f72-d32389e33901@gmail.com>
+ <a287bd9e-3474-83a4-e5c2-98df17214dc7@gmail.com>
+ <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
+ <2d37d0ca-5853-4bb6-1582-551b9044040c@kernel.dk>
+ <CA+1E3rKeqaLXBuvpMcjZ37XH9RqJHjPnTFObJj0T-u8K9Otw-w@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <dd0392a1-acfa-ef4d-5531-5f1dddc9efe7@kernel.dk>
+Date:   Thu, 28 Jan 2021 10:24:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+1E3rKeqaLXBuvpMcjZ37XH9RqJHjPnTFObJj0T-u8K9Otw-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bypass timer calls __call_rcu_nocb_wake() instead of directly
-calling __wake_nocb_gp(). The only difference here is that
-rdp->qlen_last_fqs_check gets overriden. But resetting the deferred
-force quiescent state base shouldn't be relevant for that timer. In fact
-the bypass queue in concern can be for any rdp from the group and not
-necessarily the rdp leader on which the bypass timer is attached.
+On 1/28/21 10:13 AM, Kanchan Joshi wrote:
+> On Thu, Jan 28, 2021 at 8:08 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 1/28/21 5:04 AM, Kanchan Joshi wrote:
+>>> On Wed, Jan 27, 2021 at 9:32 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>
+>>>> On 27/01/2021 15:42, Pavel Begunkov wrote:
+>>>>> On 27/01/2021 15:00, Kanchan Joshi wrote:
+>>>>>> This RFC patchset adds asynchronous ioctl capability for NVMe devices.
+>>>>>> Purpose of RFC is to get the feedback and optimize the path.
+>>>>>>
+>>>>>> At the uppermost io-uring layer, a new opcode IORING_OP_IOCTL_PT is
+>>>>>> presented to user-space applications. Like regular-ioctl, it takes
+>>>>>> ioctl opcode and an optional argument (ioctl-specific input/output
+>>>>>> parameter). Unlike regular-ioctl, it is made to skip the block-layer
+>>>>>> and reach directly to the underlying driver (nvme in the case of this
+>>>>>> patchset). This path between io-uring and nvme is via a newly
+>>>>>> introduced block-device operation "async_ioctl". This operation
+>>>>>> expects io-uring to supply a callback function which can be used to
+>>>>>> report completion at later stage.
+>>>>>>
+>>>>>> For a regular ioctl, NVMe driver submits the command to the device and
+>>>>>> the submitter (task) is made to wait until completion arrives. For
+>>>>>> async-ioctl, completion is decoupled from submission. Submitter goes
+>>>>>> back to its business without waiting for nvme-completion. When
+>>>>>> nvme-completion arrives, it informs io-uring via the registered
+>>>>>> completion-handler. But some ioctls may require updating certain
+>>>>>> ioctl-specific fields which can be accessed only in context of the
+>>>>>> submitter task. For that reason, NVMe driver uses task-work infra for
+>>>>>> that ioctl-specific update. Since task-work is not exported, it cannot
+>>>>>> be referenced when nvme is compiled as a module. Therefore, one of the
+>>>>>> patch exports task-work API.
+>>>>>>
+>>>>>> Here goes example of usage (pseudo-code).
+>>>>>> Actual nvme-cli source, modified to issue all ioctls via this opcode
+>>>>>> is present at-
+>>>>>> https://github.com/joshkan/nvme-cli/commit/a008a733f24ab5593e7874cfbc69ee04e88068c5
+>>>>>
+>>>>> see https://git.kernel.dk/cgit/linux-block/log/?h=io_uring-fops
+>>>>>
+>>>>> Looks like good time to bring that branch/discussion back
+>>>>
+>>>> a bit more context:
+>>>> https://github.com/axboe/liburing/issues/270
+>>>
+>>> Thanks, it looked good. It seems key differences (compared to
+>>> uring-patch that I posted) are -
+>>> 1. using file-operation instead of block-dev operation.
+>>
+>> Right, it's meant to span wider than just block devices.
+>>
+>>> 2. repurpose the sqe memory for ioctl-cmd. If an application does
+>>> ioctl with <=40 bytes of cmd, it does not have to allocate ioctl-cmd.
+>>> That's nifty. We still need to support passing larger-cmd (e.g.
+>>> nvme-passthru ioctl takes 72 bytes) but that shouldn't get too
+>>> difficult I suppose.
+>>
+>> It's actually 48 bytes in the as-posted version, and I've bumped it to
+>> 56 bytes in the latest branch. So not quite enough for everything,
+>> nothing ever will be, but should work for a lot of cases without
+>> requiring per-command allocations just for the actual command.
+> 
+> Agreed. But if I got it right, you are open to support both in-the-sqe
+> command (<= 56 bytes) and out-of-sqe command (> 56 bytes) with this
+> interface.
+> Driver processing the ioctl can fetch the cmd from user-space in one
+> case (as it does now), and skips in another.
 
-Therefore we can simply call directly __wake_nocb_gp(). This way we
-don't even need to lock the nocb_lock.
+Your out-of-seq command would be none of io_urings business, outside of
+the fact that we'd need to ensure it's stable if we need to postpone
+it. So yes, that would be fine, it just means your actual command is
+passed in as a pointer, and you would be responsible for copying it
+in for execution
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
----
- kernel/rcu/tree_plugin.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+We're going to need something to handle postponing, and something
+for ensuring that eg cancelations free the allocated memory.
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 5e83ea380bec..28ace1ae83d6 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2018,9 +2018,10 @@ static void do_nocb_bypass_wakeup_timer(struct timer_list *t)
- 	struct rcu_data *rdp = from_timer(rdp, t, nocb_bypass_timer);
- 
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Timer"));
--	rcu_nocb_lock_irqsave(rdp, flags);
-+
-+	raw_spin_lock_irqsave(&rdp->nocb_gp_lock, flags);
- 	smp_mb__after_spinlock(); /* Timer expire before wakeup. */
--	__call_rcu_nocb_wake(rdp, true, flags);
-+	__wake_nocb_gp(rdp, rdp, false, flags);
- }
- 
- /*
+>>> And for some ioctls, driver may still need to use task-work to update
+>>> the user-space pointers (embedded in uring/ioctl cmd) during
+>>> completion.
+>>>
+>>> @Jens - will it be fine if I start looking at plumbing nvme-part of
+>>> this series on top of your work?
+>>
+>> Sure, go ahead. Just beware that things are still changing, so you might
+>> have to adapt it a few times. It's still early days, but I do think
+>> that's the way forward in providing controlled access to what is
+>> basically async ioctls.
+> 
+> Sounds good, I will start with the latest branch that you posted. Thanks.
+
+It's io_uring-fops.v2 for now, use that one.
+
 -- 
-2.25.1
+Jens Axboe
 
