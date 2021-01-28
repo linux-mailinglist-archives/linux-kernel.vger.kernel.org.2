@@ -2,130 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1079630792F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924CB307934
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhA1PJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:09:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbhA1PIV (ORCPT
+        id S232545AbhA1PKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:10:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24648 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232406AbhA1PJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:08:21 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AF3C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:07:39 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id v24so8002566lfr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:07:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gx1FZQ1uHuDZkl2l0QuCyhlDjtM4hAvEVSjKq4XHXek=;
-        b=rNDrJmirIdtuQRNEjYCJqIahTLFcoP8DR9oYw737/DvxJ19UDGdrbCsIGle2umy0jD
-         NXWAsRT1flRccegDPvkf55kCw2DNk8SqDIL58JVr3fvRjKunbCHaj8KABu2swU23b+Tn
-         x+NU2ZIn6ek86dpsaDWMjLSj4H8o+tTQ3yC4aFlrBvOa8XcqzmKF2TQDerrN2R5pYJu+
-         fAMFlALz41f7QuqjuFdkX9Gq9MHturSOMu64f3KjxUu+KSfCnR6HUHqw812RnfVk6aYa
-         yoVqSkXCV6LgmIAb66X006PCDW1Z8Wnv3RYQ7I2XqpROsvJE5rsKOwyxmgJqOxI69qOR
-         rdKQ==
+        Thu, 28 Jan 2021 10:09:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611846458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BTgUbUK04S+AE+SXl9oa06nYx0xizsEpdYjWl3KZECA=;
+        b=Kw2rI8iLrbs69fcxQHECTYtrtG56dfsFNB76fnicUIIXcP4Gl/jerJpD6PDZZu8cWgZL0X
+        rGqhEiQSjFQi/EvKTleZWbA/g6EWKxKxltpGFud97fC130MG5GdhfeASzrVmboh7ro8dEn
+        a8sn+7tykf5jHFsoxLYd4XgSZkVgcXk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-xQQ_weEUOfiSQdVPCWk7EQ-1; Thu, 28 Jan 2021 10:07:36 -0500
+X-MC-Unique: xQQ_weEUOfiSQdVPCWk7EQ-1
+Received: by mail-ed1-f72.google.com with SMTP id f4so3310963eds.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:07:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gx1FZQ1uHuDZkl2l0QuCyhlDjtM4hAvEVSjKq4XHXek=;
-        b=O6u7SjVkfRv6xCF3yQniBFW3HlmzX2wG6JGyIIji/T2adNbD1Y4MmKddaWLT//ln5Y
-         whURLzLpnKQi0Zlzqb4pP2A2Mmwd0JAJz7W7sdQpO0zFGDc1YsLttCh/PxeA6QIA1a7i
-         03s/TMW/ihVs/xuYvD72LRopkUHpkvTt6Ht4FTi0duxbTP9Y59yYxrMovTm4zCre5VWV
-         WFIyLOhx+TfcPPv4OF/kgsuw1J7XkR05zFB1mENFjxI3L7O+SoZtuNrwMkeKkoxQyFqm
-         kjdGpRWQpA2J3cgBGaAzeKZFt3nKW3qITCCHMgTRVVnPEHlDywWHCI4zlPRxPSpXP4BS
-         IG6A==
-X-Gm-Message-State: AOAM532Fxzs7uEmG+WUPaVLlBXNZcl1y1HdKMiVPNC8Mm1DWHv5t5zjQ
-        rb7okb61lLcoQPHCdGrXDsvZImJvV1YLWnhz+3fwUQ==
-X-Google-Smtp-Source: ABdhPJxzwr8HMJ6apJZ3CZOR5fR8XzuCeUvw1xC4eQd5oEBUK4Q1RF1OXJXRQ9M4PBPC4V1mLDTLd34b3MmjmhPEFbo=
-X-Received: by 2002:ac2:5a41:: with SMTP id r1mr7813210lfn.117.1611846457199;
- Thu, 28 Jan 2021 07:07:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20210121122723.3446-1-rppt@kernel.org> <20210121122723.3446-9-rppt@kernel.org>
- <20210125161706.GE308988@casper.infradead.org> <CALvZod7rn_5oXT6Z+iRCeMX_iMRO9G_8FnwSRGpJJwyBz5Wpnw@mail.gmail.com>
- <20210125213526.GK6332@kernel.org>
-In-Reply-To: <20210125213526.GK6332@kernel.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 28 Jan 2021 07:07:26 -0800
-Message-ID: <CALvZod4__691+OBMcQMfszJzd0g3OTz95gK2vHoL+c5gw+h++Q@mail.gmail.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BTgUbUK04S+AE+SXl9oa06nYx0xizsEpdYjWl3KZECA=;
+        b=CI7VPM01JwsZUHtdxIlCIVF196eUA5pLtB/mlpnDzTjvSxQ48IuXIGbvgSLRcBa30O
+         mmW5WnPNtmT7eGR2Uom+FP36IN5BY+3Wfn/BKwhvELlXuOUhB8Z8yKB2MUrrwEGfR0Wg
+         rCGCCxQ+uGkJ8M/JtTKpo+71+Z5BvkMxRun9dERk+fnglN2f75rFxJoIGXIl8KQOjc/n
+         5FcB8uIizRRiidoVbPNfm3pfoVleZ4WFS6+bV5psZlaPDG3Yf97So2aa+nirvbZPdG/I
+         TZ/SsjTpejMxo+v0r5qyWnSojh2vxK2X8a+ADkxmGTKDA1x7GngXScXzvPRlPSwP/U04
+         sLQw==
+X-Gm-Message-State: AOAM532zyuyjnhLfBLkZOG8VlmdxgECjTTC43lPfU9aZ9br/IS9U6qzK
+        v6G8QHChC1dTtLK0OFazhpFGEuc7RpFkrog/U5w7H77omD4HoICGAuO3gqkcL8GkvMxJWp0YsUi
+        ghcEG34DaccNVmeD/Iys5CB7P
+X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr11492438ejb.503.1611846455478;
+        Thu, 28 Jan 2021 07:07:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy6MqOgCM2JylpXHGLATWOIoR2fX+kK2gf5U9sB6HR+mHn5JvfqvEVhY3xK7+22I0WlVH+R+A==
+X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr11492414ejb.503.1611846455254;
+        Thu, 28 Jan 2021 07:07:35 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s12sm3218300edu.28.2021.01.28.07.07.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 07:07:34 -0800 (PST)
+Subject: Re: [PATCH v2 05/14] KVM: x86: Override reported SME/SEV feature
+ flags with host mask
+To:     Sean Christopherson <seanjc@google.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210114003708.3798992-1-seanjc@google.com>
+ <20210114003708.3798992-6-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <74642db3-14dc-4e13-3130-dc8abe1a2b6e@redhat.com>
+Date:   Thu, 28 Jan 2021 16:07:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210114003708.3798992-6-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 1:35 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Mon, Jan 25, 2021 at 09:18:04AM -0800, Shakeel Butt wrote:
-> > On Mon, Jan 25, 2021 at 8:20 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Thu, Jan 21, 2021 at 02:27:20PM +0200, Mike Rapoport wrote:
-> > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > >
-> > > > Account memory consumed by secretmem to memcg. The accounting is updated
-> > > > when the memory is actually allocated and freed.
->
-> I though about doing per-page accounting, but then one would be able to
-> create a lot of secretmem file descriptors, use only a page from each while
-> actual memory consumption will be way higher.
->
-> > > I think this is wrong.  It fails to account subsequent allocators from
-> > > the same PMD.  If you want to track like this, you need separate pools
-> > > per memcg.
-> > >
-> >
-> > Are these secretmem pools shared between different jobs/memcgs?
->
-> A secretmem pool is per anonymous file descriptor and this file descriptor
-> can be shared only explicitly between several processes. So, the secretmem
-> pool should not be shared between different jobs/memcg. Of course, it's
-> possible to spread threads of a process across different memcgs, but in
-> that case the accounting will be similar to what's happening today with
-> sl*b.
+On 14/01/21 01:36, Sean Christopherson wrote:
+> Add a reverse-CPUID entry for the memory encryption word, 0x8000001F.EAX,
+> and use it to override the supported CPUID flags reported to userspace.
+> Masking the reported CPUID flags avoids over-reporting KVM support, e.g.
+> without the mask a SEV-SNP capable CPU may incorrectly advertise SNP
+> support to userspace.
+> 
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/cpuid.c | 2 ++
+>   arch/x86/kvm/cpuid.h | 1 +
+>   2 files changed, 3 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 13036cf0b912..b7618cdd06b5 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -855,6 +855,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>   	case 0x8000001F:
+>   		if (!boot_cpu_has(X86_FEATURE_SEV))
+>   			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
+> +		else
+> +			cpuid_entry_override(entry, CPUID_8000_001F_EAX);
+>   		break;
+>   	/*Add support for Centaur's CPUID instruction*/
+>   	case 0xC0000000:
+> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> index dc921d76e42e..8b6fc9bde248 100644
+> --- a/arch/x86/kvm/cpuid.h
+> +++ b/arch/x86/kvm/cpuid.h
+> @@ -63,6 +63,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
+>   	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
+>   	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
+>   	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
+> +	[CPUID_8000_001F_EAX] = {0x8000001f, 1, CPUID_EAX},
+>   };
+>   
+>   /*
+> 
 
-I don't think memcg accounting for sl*b works like that.
+I don't understand, wouldn't this also need a kvm_cpu_cap_mask call 
+somewhere else?  As it is, it doesn't do anything.
 
-> The first thread to cause kmalloc() will be charged for the
-> allocation of the entire slab and subsequent allocations from that slab
-> will not be accounted.
+Paolo
 
-The latest kernel does object level memcg accounting. So, each
-allocation from these threads will correctly charge their own memcgs.
