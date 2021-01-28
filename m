@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC980306A84
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABF3306A86
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhA1Bgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:36:53 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:50690 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231181AbhA1BgW (ORCPT
+        id S231515AbhA1Bhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:37:36 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4591 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhA1Bg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:36:22 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UN56c69_1611797735;
-Received: from 30.21.164.7(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UN56c69_1611797735)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 28 Jan 2021 09:35:35 +0800
-Subject: Re: [PATCH] blk-cgroup: Use cond_resched() when destroy blkgs
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, joseph.qi@linux.alibaba.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <8f4fb91ced02e58ef425189c83214086f1154a0c.1611664710.git.baolin.wang@linux.alibaba.com>
- <YBF6uiFcU8k4u0Da@slm.duckdns.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <ace471fc-4ba9-c16a-65af-102a5425e4e4@linux.alibaba.com>
-Date:   Thu, 28 Jan 2021 09:35:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 27 Jan 2021 20:36:58 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DR31n2S46zY3jw;
+        Thu, 28 Jan 2021 09:35:09 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 28 Jan 2021 09:36:14 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Thu, 28
+ Jan 2021 09:36:14 +0800
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Daniel Wagner <dwagner@suse.de>, <linux-nvme@lists.infradead.org>
+CC:     Sagi Grimberg <sagi@grimberg.me>, <linux-kernel@vger.kernel.org>,
+        "Jens Axboe" <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <ca8be10a-11fb-dd4d-3606-f9e75a42c99d@huawei.com>
+Date:   Thu, 28 Jan 2021 09:36:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <YBF6uiFcU8k4u0Da@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210127103033.15318-1-dwagner@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
 
-> Hello, Baolin.
+
+On 2021/1/27 18:30, Daniel Wagner wrote:
+> nvme_round_robin_path() should test if the return ns pointer is
+> valid. nvme_next_ns() will return a NULL pointer if there is no path
+> left.
 > 
-> On Tue, Jan 26, 2021 at 09:33:25PM +0800, Baolin Wang wrote:
->> On !PREEMPT kernel, we can get below softlockup when doing stress
->> testing with creating and destroying block cgroup repeatly. The
->> reason is it may take a long time to acquire the queue's lock in
->> the loop of blkcg_destroy_blkgs(), thus we can use cond_resched()
->> instead of cpu_relax() to avoid this issue, since the
->> blkcg_destroy_blkgs() is not called from atomic contexts.
->>
->> [ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
->> [ 4757.010698] Call trace:
->> [ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
->> [ 4757.010701]  cgwb_release_workfn+0x104/0x158
->> [ 4757.010702]  process_one_work+0x1bc/0x3f0
->> [ 4757.010704]  worker_thread+0x164/0x468
->> [ 4757.010705]  kthread+0x108/0x138
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Fixes: 75c10e732724 ("nvme-multipath: round-robin I/O policy")
+> Cc: Hannes Reinecke <hare@suse.de>
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> v2:
+>    - moved NULL test into the if conditional statement
+>    - added Fixes tag
 > 
-> * Can you please add might_sleep() at the top of the function?
-
-Sure.
-
+>   drivers/nvme/host/multipath.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> * Given that the system can accumulate a huge number of blkgs in
->    pathological cases, I wonder whether a better way to go about it is
->    explicitly testing need_resched() on each loop and release locks and do
->    cond_resched() if true?
-
-Yes, sound better to to me and will update in next version. Thanks for 
-your sugestion.
+> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+> index 9ac762b28811..282b7a4ea9a9 100644
+> --- a/drivers/nvme/host/multipath.c
+> +++ b/drivers/nvme/host/multipath.c
+> @@ -221,7 +221,7 @@ static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
+>   	}
+>   
+>   	for (ns = nvme_next_ns(head, old);
+> -	     ns != old;
+> +	     ns && ns != old;
+nvme_round_robin_path just be called when !"old".
+nvme_next_ns should not return NULL when !"old".
+It seems unnecessary to add checking "ns".
+Is there a bug that "old" is not in "head" list?
+If yes, we should fix it.
+>   	     ns = nvme_next_ns(head, ns)) {
+>   		if (nvme_path_is_disabled(ns))
+>   			continue;
+> 
