@@ -2,205 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093893081F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D353081FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhA1Xdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:33:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50862 "EHLO mail.kernel.org"
+        id S231321AbhA1Xea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:34:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231131AbhA1Xbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:31:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5BA264DFC
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:31:02 +0000 (UTC)
+        id S229530AbhA1Xca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:32:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA82364DFA;
+        Thu, 28 Jan 2021 23:31:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611876662;
-        bh=a/cMMnXPcsFfWRH4ryA6nFzHSiiHCZHsMnVY+j8TpNA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XPW2F5CgDSmxwT+iNeeFzJG4ExgB3HxUxmFIueio5D1h3LU6xuRRjZoKjrpL2czMv
-         nR6DQxXCzD3sMAX5HtdgCOxNiTx+1l5Lw8llD9oW7R2EQTdD+i4mlXo7fGAHNZ37ly
-         wPHw/jhm0pwdJivwOAmGJS1SvaOBmCnB7m3zjWguvZUKCprItprd3F/FvNvJm8Dk7K
-         l9D3Czn4BBNf2nctfdRho6AJoiFzsglkVK9ZYmJ6yfWq4H+SGu3benls/r+bliRgAU
-         cu4adoCEMEOKYL7Wj/H2phXsxn48ooT+Wry66266ccKTh7NYprZYZqfj5tJJInduGP
-         WgoN/tRxXz5SQ==
-Received: by mail-ot1-f44.google.com with SMTP id f6so6934026ots.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 15:31:02 -0800 (PST)
-X-Gm-Message-State: AOAM531P7UKzi2otP4XkM2f31NruCa4c3fe5XvHEbQhY/8/gzLNCxRCC
-        e5z7kPwxe0SKy/Yvp6izVM1/VnAekGWKlmbbSq0=
-X-Google-Smtp-Source: ABdhPJzMqChs1UsbWimh9zi6kegNqbnttrllJ6lkUF6YMJe6YOAehd+7J9gJL7tMQ92JiUY9FjGysoCfRjmLL3RoleU=
-X-Received: by 2002:a05:6830:1158:: with SMTP id x24mr1209516otq.108.1611876661885;
- Thu, 28 Jan 2021 15:31:01 -0800 (PST)
+        s=k20201202; t=1611876709;
+        bh=JSf3KXQzZzdKJi8SkvGxvcdaO3L0ednDXW8ZLuAudRI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=j47gCH5EXzb2Zwh3Z5CKZPEPOr7WUx6QyfDxD4l3TMVBroKWRdS08yi+aGiYkqIjc
+         S6mZFZMg4/D6uavjuhpN3LpLc7HOO+zRi9x6CMcZxIDZXPkiFyvRDQr6VexDbuDAC6
+         SlZUdTYBFHVPdmIhbsnO/fLOS5Wa0B5AcByJCmH7+WI4iOfkIraT+VBB6gK4Pc3LTB
+         lBjtb4D0OeKP6OOwRbNVYHROnSI1Y4RW3DTXWM8rvpMGIPXvG56YqxL4y5v15Z3l2z
+         rv9kL+Hx1m3lRSIuJfbmI51EUQJFQgA2rKUuDdP99NnpcTMPZ39ICRiAjdonYXRqGU
+         fCauzqY4le1eQ==
+Date:   Thu, 28 Jan 2021 17:31:47 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        mark.rutland@arm.com, Jon Masters <jcm@jonmasters.org>,
+        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
+        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+Message-ID: <20210128233147.GA28434@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
- <20210128193422.241155-1-ndesaulniers@google.com> <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
- <CAK8P3a0CTUh=4h=U6S5A_tqHxYEyO52HTropAV9mKh2hwJvi0g@mail.gmail.com>
-In-Reply-To: <CAK8P3a0CTUh=4h=U6S5A_tqHxYEyO52HTropAV9mKh2hwJvi0g@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 29 Jan 2021 00:30:50 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEx-mUCgX5F6xg8-6jKtpqQ=sRosmo4u-0jhW5zu9A-fw@mail.gmail.com>
-Message-ID: <CAMj1kXEx-mUCgX5F6xg8-6jKtpqQ=sRosmo4u-0jhW5zu9A-fw@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: rewrite test-[arm|thumb].c in UAL
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 at 23:28, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Thu, Jan 28, 2021 at 10:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > On Thu, 28 Jan 2021 at 20:34, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > @@ -468,15 +468,15 @@ void kprobe_thumb32_test_cases(void)
-> > >
-> > >         TEST_UNSUPPORTED("strexb        r0, r1, [r2]")
-> > >         TEST_UNSUPPORTED("strexh        r0, r1, [r2]")
-> > > -       TEST_UNSUPPORTED("strexd        r0, r1, [r2]")
-> > > +       TEST_UNSUPPORTED("strexd        r0, r1, r2, [r2]")
-> > >         TEST_UNSUPPORTED("ldrexb        r0, [r1]")
-> > >         TEST_UNSUPPORTED("ldrexh        r0, [r1]")
-> > > -       TEST_UNSUPPORTED("ldrexd        r0, [r1]")
-> > > +       TEST_UNSUPPORTED("ldrexd        r0, r1, [r1]")
-> > >
-> > >         TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
-> > >
-> > >  #define _DATA_PROCESSING32_DNM(op,s,val)                                       \
-> > > -       TEST_RR(op s".w r0,  r",1, VAL1,", r",2, val, "")                       \
-> > > +       TEST_RR(op s"   r0,  r",1, VAL1,", r",2, val, "")                       \
-> >
-> > What is wrong with these .w suffixes? Shouldn't the assembler accept
-> > these even on instructions that only exist in a wide encoding?
->
-> I don't know if that is a bug in the integrated assembler or
-> intentional behavior, but it may be easier to just change the
-> kernel than the compiler in this case, as it also makes it work
-> for older versions.
->
-> FWIW, I needed a related change in a couple of other files:
->
+On Tue, Jan 26, 2021 at 10:46:04AM -0600, Jeremy Linton wrote:
+> On 1/22/21 1:48 PM, Will Deacon wrote:
+> > On Fri, Jan 08, 2021 at 10:32:16AM +0000, Lorenzo Pieralisi wrote:
+> > > On Thu, Jan 07, 2021 at 04:05:48PM -0500, Jon Masters wrote:
+> > > > On 1/7/21 1:14 PM, Will Deacon wrote:
+> > > > > On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
+> > > > > > Given that most arm64 platform's PCI implementations needs quirks
+> > > > > > to deal with problematic config accesses, this is a good place to
+> > > > > > apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+> > > > > > standard SMC conduit designed to provide a simple PCI config
+> > > > > > accessor. This specification enhances the existing ACPI/PCI
+> > > > > > abstraction and expects power, config, etc functionality is handled
+> > > > > > by the platform. It also is very explicit that the resulting config
+> > > > > > space registers must behave as is specified by the pci specification.
+> > > > > > 
+> > > > > > Lets hook the normal ACPI/PCI config path, and when we detect
+> > > > > > missing MADT data, attempt to probe the SMC conduit. If the conduit
+> > > > > > exists and responds for the requested segment number (provided by the
+> > > > > > ACPI namespace) attach a custom pci_ecam_ops which redirects
+> > > > > > all config read/write requests to the firmware.
+> > > > > > 
+> > > > > > This patch is based on the Arm PCI Config space access document @
+> > > > > > https://developer.arm.com/documentation/den0115/latest
+> > > > > 
+> > > > > Why does firmware need to be involved with this at all? Can't we just
+> > > > > quirk Linux when these broken designs show up in production? We'll need
+> > > > > to modify Linux _anyway_ when the firmware interface isn't implemented
+> > > > > correctly...
+> > > > 
+> > > > I agree with Will on this. I think we want to find a way to address some
+> > > > of the non-compliance concerns through quirks in Linux. However...
+> > > 
+> > > I understand the concern and if you are asking me if this can be fixed
+> > > in Linux it obviously can. The point is, at what cost for SW and
+> > > maintenance - in Linux and other OSes, I think Jeremy summed it up
+> > > pretty well:
+> > > 
+> > > https://lore.kernel.org/linux-pci/61558f73-9ac8-69fe-34c1-2074dec5f18a@arm.com
+> > > 
+> > > The issue here is that what we are asked to support on ARM64 ACPI is a
+> > > moving target and the target carries PCI with it.
+> > > 
+> > > This potentially means that all drivers in:
+> > > 
+> > > drivers/pci/controller
+> > > 
+> > > may require an MCFG quirk and to implement it we may have to:
+> > > 
+> > > - Define new ACPI bindings (that may need AML and that's already a
+> > >    showstopper for some OSes)
+> > > - Require to manage clocks in the kernel (see link-up checks)
+> > > - Handle PCI config space faults in the kernel
+> > > 
+> > > Do we really want to do that ? I don't think so. Therefore we need
+> > > to have a policy to define what constitutes a "reasonable" quirk and
+> > > that's not objective I am afraid, however we slice it (there is no
+> > > such a thing as eg 90% ECAM).
+> > 
+> > Without a doubt, I would much prefer to see these quirks and workarounds
+> > in Linux than hidden behind a firmware interface. Every single time.
+> > 
+> > This isn't like the usual fragmentation problems, where firmware swoops in
+> > to save the day; CPU onlining, spectre mitigations, early entropy etc. All
+> > of these problems exist because there isn't a standard method to implement
+> > them outside of firmware, and so adding a layer of abstraction there makes
+> > sense.
 
-For fully specified test cases, I suppose removing the .w is fine. But
-for the macros below, it really isn't: it depends on the actual
-register assignment whether narrow encodings exist or not, and in that
-case, we definitely want the wide one. The fact that instantiating the
-macro in a different way can only produce wide encodings in the first
-place should really not trigger an error.
+> > But PCIe is already a standard!
+> 
+> And it says that ECAM is optional, particularly if there are
+> firmware/platform standardized ways of accessing the config space.
 
-Things like this can break the Thumb2 build very subtly, so if the
-integrated assembler is not up to that, we should simply disable it
-for Thumb2 builds.
+This is really a tangent to the main discussion, but I don't read it
+quite that way.  PCIe r5.0, sec 7.2.2 says:
 
-> diff --git a/arch/arm/lib/copy_from_user.S b/arch/arm/lib/copy_from_user.S
-> index 6acdfde56849..3ced01d9afe4 100644
-> --- a/arch/arm/lib/copy_from_user.S
-> +++ b/arch/arm/lib/copy_from_user.S
-> @@ -60,7 +60,7 @@
->  #define LDR1W_SHIFT 0
->
->   .macro ldr1w ptr reg abort
-> - USERL(\abort, W(ldr) \reg, [\ptr], #4)
-> + USERL(\abort, ldr \reg, [\ptr], #4)
->   .endm
->
->   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-> @@ -80,7 +80,7 @@
->  #define STR1W_SHIFT 0
->
->   .macro str1w ptr reg abort
-> - W(str) \reg, [\ptr], #4
-> + str \reg, [\ptr], #4
->   .endm
->
->   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-> diff --git a/arch/arm/lib/copy_to_user.S b/arch/arm/lib/copy_to_user.S
-> index 485fa3cffdbe..a6a96f814720 100644
-> --- a/arch/arm/lib/copy_to_user.S
-> +++ b/arch/arm/lib/copy_to_user.S
-> @@ -34,7 +34,7 @@
->  #define LDR1W_SHIFT 0
->
->   .macro ldr1w ptr reg abort
-> - W(ldr) \reg, [\ptr], #4
-> + ldr \reg, [\ptr], #4
->   .endm
->
->   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-> @@ -77,7 +77,7 @@
->  #define STR1W_SHIFT 0
->
->   .macro str1w ptr reg abort
-> - USERL(\abort, W(str) \reg, [\ptr], #4)
-> + USERL(\abort, str \reg, [\ptr], #4)
->   .endm
->
->   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-> diff --git a/arch/arm/lib/memcpy.S b/arch/arm/lib/memcpy.S
-> index e4caf48c089f..7b980a1a4227 100644
-> --- a/arch/arm/lib/memcpy.S
-> +++ b/arch/arm/lib/memcpy.S
-> @@ -15,7 +15,7 @@
->  #define STR1W_SHIFT 0
->
->   .macro ldr1w ptr reg abort
-> - W(ldr) \reg, [\ptr], #4
-> + ldr \reg, [\ptr], #4
->   .endm
->
->   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-> @@ -31,7 +31,7 @@
->   .endm
->
->   .macro str1w ptr reg abort
-> - W(str) \reg, [\ptr], #4
-> + str \reg, [\ptr], #4
->   .endm
->
->   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-> diff --git a/arch/arm/lib/memmove.S b/arch/arm/lib/memmove.S
-> index 6fecc12a1f51..35c5c06b7588 100644
-> --- a/arch/arm/lib/memmove.S
-> +++ b/arch/arm/lib/memmove.S
-> @@ -84,24 +84,24 @@ WEAK(memmove)
->   addne pc, pc, ip @ C is always clear here
->   b 7f
->  6: W(nop)
-> - W(ldr) r3, [r1, #-4]!
-> - W(ldr) r4, [r1, #-4]!
-> - W(ldr) r5, [r1, #-4]!
-> - W(ldr) r6, [r1, #-4]!
-> - W(ldr) r7, [r1, #-4]!
-> - W(ldr) r8, [r1, #-4]!
-> - W(ldr) lr, [r1, #-4]!
-> + ldr r3, [r1, #-4]!
-> + ldr r4, [r1, #-4]!
-> + ldr r5, [r1, #-4]!
-> + ldr r6, [r1, #-4]!
-> + ldr r7, [r1, #-4]!
-> + ldr r8, [r1, #-4]!
-> + ldr lr, [r1, #-4]!
->
->   add pc, pc, ip
->   nop
->   W(nop)
-> - W(str) r3, [r0, #-4]!
-> - W(str) r4, [r0, #-4]!
-> - W(str) r5, [r0, #-4]!
-> - W(str) r6, [r0, #-4]!
-> - W(str) r7, [r0, #-4]!
-> - W(str) r8, [r0, #-4]!
-> - W(str) lr, [r0, #-4]!
-> + str r3, [r0, #-4]!
-> + str r4, [r0, #-4]!
-> + str r5, [r0, #-4]!
-> + str r6, [r0, #-4]!
-> + str r7, [r0, #-4]!
-> + str r8, [r0, #-4]!
-> + str lr, [r0, #-4]!
->
->   CALGN( bcs 2b )
+  For systems that are PC-compatible, or that do not implement a
+  processor-architecture-specific firmware interface standard that
+  allows access to the Configuration Space, the Enhanced Configuration
+  Access Mechanism (ECAM) is required as defined in this section.
+
+I read that as "ECAM is *required* unless you have a standard firmware
+interface."  I think the firmware interface originally referred to
+ia64 SAL, but I would say this new ARM thing also qualifies.
+
+But the bottom line is we all want to make it so new hardware works
+with old kernels.  Nobody wants to ask distros to release updates just
+to boot a new platform.  That means a generic host bridge driver (like
+the ACPI pci_root.c) and generic config access (like ECAM or SAL).
+
+> > I appreciate the sentiment, but you're not solving the problem
+> > here. You're moving it somewhere else. Somewhere where you don't
+> > have to deal with it (and I honestly can't blame you for that),
+> > but also somewhere where you _can't_ necessarily deal with it. The
+> > inevitable outcome is an endless succession of crappy,
+> > non-compliant machines which only appear to operate correctly with
+> > particularly kernel/firmware combinations. Imagine trying to use
+> > something like that?
+> > 
+> > The approach championed here actively discourages vendors from
+> > building spec-compliant hardware and reduces our ability to work
+> > around problems on such hardware at the same time.
+
+That's a pretty good argument.  And it's true that there are
+subtleties even in seemingly trivial interface like this.
+Synchronization and error handling are common problem areas.
+
+> Does that mean its open season for ECAM quirks, and we can expect
+> them to start being merged now?
+
+"Open season" makes me cringe because it suggests we have a license to
+use quirks indiscriminately forever, and I hope that's not the case.
+
+Lorenzo is closer to this issue than I am and has much better insight
+into the mess this could turn into.  From my point of view, it's
+shocking how much of a hassle this is compared to x86.  There just
+aren't ECAM quirks, in-kernel clock management, or any of that crap.
+I don't know how they do it on x86 and I don't have to care.  Whatever
+they need to do, they apparently do in AML.  Eventually ARM64 has to
+get there as well if vendors want distro support.
+
+I don't want to be in the position of enforcing a draconian "no more
+quirks ever" policy.  The intent -- to encourage/force vendors to
+develop spec-compliant machines -- is good, but it seems like the
+reward of having compliant machines "just work" vs the penalty of
+having to write quirks and shepherd them upstream and into distros
+will probably be more effective and not much slower.
+
+Bjorn
