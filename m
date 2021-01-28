@@ -2,181 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D0B3072CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97903072DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhA1Jcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbhA1J2o (ORCPT
+        id S231887AbhA1Jft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:35:49 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14920 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232605AbhA1Jcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:28:44 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BB6C0613D6;
-        Thu, 28 Jan 2021 01:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RSaE20MTVKoIECxENvXHDc3MDGyLuUpJPvHpNOIsTJo=; b=YlOBHBIUr3mwVNm52+54YtSUE+
-        h0IwI6xuYxStA41dTKYR8+uKky4na3QlCNzPt2yi0kA7ZuskZidpBGm/RgdIzBchn1SgmQbRQmU8g
-        3xfi6GwJqtMfaWzV5o2CIdMgXfQTbLgjllz2ZgKq6nfX4xWm7QyoF8KLpHMevTJnp0RztEfy2O1nW
-        eX1LME59elKAjVb7g2pex7pndEwmxy39IMY61vUXjHU0SCa97EccFgj72igXAgswFH8eqb4ouuF0r
-        VzmTWpNnV7gLJ2VQX3tHQn3Az5NNWi/I7ytk1mIfIqRMaIU8VXs/H8LaZFWqrPyvMVqIt3TZbHtgQ
-        7NRJMnuA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l53ao-008GCf-Qo; Thu, 28 Jan 2021 09:27:58 +0000
-Date:   Thu, 28 Jan 2021 09:27:58 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <dchinner@redhat.com>, linux-xfs@vger.kernel.org,
-        hch@infradead.org, david@fromorbit.com, bfoster@redhat.com,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] xfs: set WQ_SYSFS on all workqueues in debug mode
-Message-ID: <20210128092758.GD1967319@infradead.org>
-References: <161181380539.1525344.442839530784024643.stgit@magnolia>
- <161181381679.1525344.10913812775756159263.stgit@magnolia>
+        Thu, 28 Jan 2021 04:32:48 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10S9Vuj4091082;
+        Thu, 28 Jan 2021 04:31:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=3Q2qmiEifmRSPBb1Bip1Gm9i9vcD47f/XUqE1pAP5QA=;
+ b=mBwEYkbLLBX6CkFNL3AOe7+yTQgPflpMqs9mH77s9zNyk121NSGoaOb7B5IZUTakj+RP
+ HBvZX7oCT2quPLp+7K0hYCoFVuwaFtFILv1HCYVto/bH/lU0XDa8eJFRSWFmIVsN3HH2
+ kY+c6NprCmqqPQ0VjBF6mCgSyeY0yfsRT1/j2iVEiGIqhY//AwgFCaAI5jGG3wrd2cOk
+ 2yPEYeK5pf7WO8bhHxyTolNcuIJKa7duu7QjaOkbRzZm0uOVPpnvBLkNcpvS+Vd7/AFr
+ EdNcVOoS48TpQgwljkLTsHs1X2NtKAJpvW3NBadZbMl0COhKAY5nZAwRv72bBMb+KSyi XQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36brxgu4qt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 04:31:57 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10S91vVK166493;
+        Thu, 28 Jan 2021 04:31:40 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36brxgu4ph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 04:31:40 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10S9HNv3024670;
+        Thu, 28 Jan 2021 09:31:34 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 368b2h4np4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 09:31:34 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10S9VW4f44433778
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 09:31:32 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A796A4053;
+        Thu, 28 Jan 2021 09:31:32 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BADA0A4051;
+        Thu, 28 Jan 2021 09:31:29 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.187.107])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 28 Jan 2021 09:31:29 +0000 (GMT)
+Date:   Thu, 28 Jan 2021 11:31:27 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        Guenter Roeck <groeck@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
+Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
+ holes in memory layout
+Message-ID: <20210128093127.GB299309@linux.ibm.com>
+References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
+ <20210127100454.GK196782@linux.ibm.com>
+ <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
+ <20210127111858.GA273567@linux.ibm.com>
+ <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
+ <CAFJ_xbrwLwgDfCyHA=PmJ8j_3dJXqVNxmv7e+ATQAAa9n3de2w@mail.gmail.com>
+ <20210127182651.GA281042@linux.ibm.com>
+ <20210128024549.GA3693@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <161181381679.1525344.10913812775756159263.stgit@magnolia>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210128024549.GA3693@MiWiFi-R3L-srv>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_05:2021-01-27,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 phishscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 10:03:36PM -0800, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
+On Thu, Jan 28, 2021 at 10:45:49AM +0800, Baoquan He wrote:
+> On 01/27/21 at 08:26pm, Mike Rapoport wrote:
+> > Hi Lukasz,
+> > 
+> > On Wed, Jan 27, 2021 at 02:15:53PM +0100, Łukasz Majczak wrote:
+> > > Hi Mike,
+> > > 
+> > > I have started bisecting your patch and I have figured out that there
+> > > might be something wrong with clamping - with comments out these lines
+> > > it started to work.
+> > > The full log (with logs from below patch) can be found here:
+> > > https://gist.github.com/semihalf-majczak-lukasz/3cecbab0ddc59a6c3ce11ddc29645725
+> > > it's fresh - I haven't analyze it yet, just sharing with hope it will help.
+> > 
+> > Thanks, that helps!
+> > 
+> > The first page is never considered by the kernel as memory and so
+> > arch_zone_lowest_possible_pfn[ZONE_DMA] is set to 0x1000. As the result,
+> > init_unavailable_mem() skips pfn 0 and then __SetPageReserved(page) in
+> > reserve_bootmem_region() panics because the struct page for pfn 0 remains
+> > poisoned.
 > 
-> When CONFIG_XFS_DEBUG=y, set WQ_SYSFS on all workqueues that we create
-> so that we (developers) have a means to monitor cpu affinity and whatnot
-> for background workers.  In the next patchset we'll expose knobs for
-> some of the workqueues publicly and document it, but not now.
+> It's a great finding and quick fix.
 
-And I still think this is a horrible idea.
+Unfortunately it's only a partial fix as it does not address the problem of
+having pfn 0 outside any zone. It gets ZONE_DMA link at
+init_unavailable_mem(), but zones[ZONE_DMA]->zone_start_pfn is 1.
 
-> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> Reviewed-by: Dave Chinner <dchinner@redhat.com>
-> ---
->  fs/xfs/xfs_log.c       |    5 +++--
->  fs/xfs/xfs_mru_cache.c |    2 +-
->  fs/xfs/xfs_super.c     |   23 ++++++++++++++---------
->  fs/xfs/xfs_super.h     |    6 ++++++
->  4 files changed, 24 insertions(+), 12 deletions(-)
+I'm looking now how to fix this as well, hopefully I'll have a patch Real
+Soon (tm) :)
+
+>  Previously I tested my cleanup patches based on Mike's commit
+>  9ebeee59af4cdd4d ("mm: fix initialization of struct page for holes in
+>  memory layout") on a hardware system, didn't meet this crash. But this
+>  crash seems to be a always reproduced issue, wondering why I didn't
+>  reproduce it.
+
+This crash is reproducible on systems that do not report pfn 0 as usable,
+e.g for Chromebook Lukasz is using it is 'type 16':
+
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x0000000000000fff] type 16
+[    0.000000] BIOS-e820: [mem 0x0000000000001000-0x000000000009ffff] usable
+
+And on my laptop and on a bunch of other systems I have it is usable:
+
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009cfff] usable
+[    0.000000] BIOS-e820: [mem 0x000000000009d000-0x000000000009ffff] reserved
+
+ 
+> > 
+> > Can you please try the below patch on top of v5.11-rc5?
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 783913e41f65..3ce9ef238dfc 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -7083,10 +7083,11 @@ void __init free_area_init_memoryless_node(int nid)
+> >  static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
+> >  					 int zone, int nid)
+> >  {
+> > -	unsigned long pfn, zone_spfn, zone_epfn;
+> > +	unsigned long pfn, zone_spfn = 0, zone_epfn;
+> >  	u64 pgcnt = 0;
+> >  
+> > -	zone_spfn = arch_zone_lowest_possible_pfn[zone];
+> > +	if (zone > 0)
+> > +		zone_spfn = arch_zone_highest_possible_pfn[zone - 1];
+> >  	zone_epfn = arch_zone_highest_possible_pfn[zone];
+> >  
+> >  	spfn = clamp(spfn, zone_spfn, zone_epfn);
+> > 
+> >  
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index eed54ce26ad1..9f4468c413a1 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -7093,9 +7093,11 @@ static u64 __init
+> > > init_unavailable_range(unsigned long spfn, unsigned long epfn,
+> > >         zone_spfn = arch_zone_lowest_possible_pfn[zone];
+> > >         zone_epfn = arch_zone_highest_possible_pfn[zone];
+> > > 
+> > > -       spfn = clamp(spfn, zone_spfn, zone_epfn);
+> > > -       epfn = clamp(epfn, zone_spfn, zone_epfn);
+> > > -
+> > > +       //spfn = clamp(spfn, zone_spfn, zone_epfn);
+> > > +       //epfn = clamp(epfn, zone_spfn, zone_epfn);
+> > > +       pr_info("LMA DBG: zone_spfn: %llx, zone_epfn %llx\n",
+> > > zone_spfn, zone_epfn);
+> > > +       pr_info("LMA DBG: spfn: %llx, epfn %llx\n", spfn, epfn);
+> > > +       pr_info("LMA DBG: clamp_spfn: %llx, clamp_epfn %llx\n",
+> > > clamp(spfn, zone_spfn, zone_epfn), clamp(epfn, zone_spfn, zone_epfn));
+> > >         for (pfn = spfn; pfn < epfn; pfn++) {
+> > >                 if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+> > >                         pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+> > > 
+> > > Best regards,
+> > > Lukasz
+> > > 
+> > > 
+> > > śr., 27 sty 2021 o 13:15 Łukasz Majczak <lma@semihalf.com> napisał(a):
+> > > >
+> > > > Unfortunately nothing :( my current kernel command line contains:
+> > > > console=ttyS0,115200n8 debug earlyprintk=serial loglevel=7
+> > > >
+> > > > I was thinking about using earlycon, but it seems to be blocked.
+> > > > (I think the lack of earlycon might be related to Chromebook HW
+> > > > security design. There is an EC controller which is a part of AP ->
+> > > > serial chain as kernel messages are considered sensitive from a
+> > > > security standpoint.)
+> > > >
+> > > > Best regards,
+> > > > Lukasz
+> > > >
+> > > > śr., 27 sty 2021 o 12:19 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
+> > > > >
+> > > > > On Wed, Jan 27, 2021 at 11:08:17AM +0100, Łukasz Majczak wrote:
+> > > > > > Hi Mike,
+> > > > > >
+> > > > > > Actually I have a serial console attached (via servo device), but
+> > > > > > there is no output :( and also the reboot/crash is very fast/immediate
+> > > > > > after power on.
+> > > > >
+> > > > > If you boot with earlyprintk=serial are there any messages?
+> > > > >
+> > > > > > Best regards
+> > > > > > Lukasz
+> > > > > >
+> > > > > > śr., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
+> > > > > > >
+> > > > > > > Hi Lukasz,
+> > > > > > >
+> > > > > > > On Wed, Jan 27, 2021 at 10:22:29AM +0100, Łukasz Majczak wrote:
+> > > > > > > > Crash after mm: fix initialization of struct page for holes in memory layout
+> > > > > > > >
+> > > > > > > > Hi,
+> > > > > > > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Caroline),
+> > > > > > > > but I've noticed it has crashed - unfortunately it seems to happen at
+> > > > > > > > a very early stage - No output to the console nor to the screen, so I
+> > > > > > > > have started a bisect (between 5.11-rc4 - which works just find - and
+> > > > > > > > 5.11-rc5),
+> > > > > > > > bisect results points to:
+> > > > > > > >
+> > > > > > > > d3921cb8be29 mm: fix initialization of struct page for holes in memory layout
+> > > > > > > >
+> > > > > > > > Reproduction is just to build and load the kernel.
+> > > > > > > >
+> > > > > > > > If it will help any how I am attaching:
+> > > > > > > > - /proc/cpuinfo (from healthy system):
+> > > > > > > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1a785b64a97066
+> > > > > > > > - my .config file (for a broken system):
+> > > > > > > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53efe8e18b5da33c
+> > > > > > > >
+> > > > > > > > If there is anything I could add/do/test to help fix this please let me know.
+> > > > > > >
+> > > > > > > Chris Wilson also reported boot failures on several Chromebooks:
+> > > > > > >
+> > > > > > > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@build.alporthouse.com
+> > > > > > >
+> > > > > > > I presume serial console is not an option, so if you could boot with
+> > > > > > > earlyprintk=vga and see if there is anything useful printed on the screen
+> > > > > > > it would be really helpful.
+> > > > > > >
+> > > > > > > > Best regards
+> > > > > > > > Lukasz
+> > > > > > >
+> > > > > > > --
+> > > > > > > Sincerely yours,
+> > > > > > > Mike.
+> > > > >
+> > > > > --
+> > > > > Sincerely yours,
+> > > > > Mike.
+> > 
+> > -- 
+> > Sincerely yours,
+> > Mike.
+> > 
 > 
-> 
-> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-> index d8b814227734..9aa30e7cd314 100644
-> --- a/fs/xfs/xfs_log.c
-> +++ b/fs/xfs/xfs_log.c
-> @@ -1492,8 +1492,9 @@ xlog_alloc_log(
->  	log->l_iclog->ic_prev = prev_iclog;	/* re-write 1st prev ptr */
->  
->  	log->l_ioend_workqueue = alloc_workqueue("xfs-log/%s",
-> -			WQ_MEM_RECLAIM | WQ_FREEZABLE | WQ_HIGHPRI, 0,
-> -			mp->m_super->s_id);
-> +			XFS_WQFLAGS(WQ_FREEZABLE | WQ_MEM_RECLAIM |
-> +				    WQ_HIGHPRI),
-> +			0, mp->m_super->s_id);
->  	if (!log->l_ioend_workqueue)
->  		goto out_free_iclog;
->  
-> diff --git a/fs/xfs/xfs_mru_cache.c b/fs/xfs/xfs_mru_cache.c
-> index a06661dac5be..34c3b16f834f 100644
-> --- a/fs/xfs/xfs_mru_cache.c
-> +++ b/fs/xfs/xfs_mru_cache.c
-> @@ -294,7 +294,7 @@ int
->  xfs_mru_cache_init(void)
->  {
->  	xfs_mru_reap_wq = alloc_workqueue("xfs_mru_cache",
-> -				WQ_MEM_RECLAIM|WQ_FREEZABLE, 1);
-> +			XFS_WQFLAGS(WQ_MEM_RECLAIM | WQ_FREEZABLE), 1);
->  	if (!xfs_mru_reap_wq)
->  		return -ENOMEM;
->  	return 0;
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index aed74a3fc787..8959561351ca 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -495,33 +495,37 @@ xfs_init_mount_workqueues(
->  	struct xfs_mount	*mp)
->  {
->  	mp->m_buf_workqueue = alloc_workqueue("xfs-buf/%s",
-> -			WQ_MEM_RECLAIM|WQ_FREEZABLE, 1, mp->m_super->s_id);
-> +			XFS_WQFLAGS(WQ_FREEZABLE | WQ_MEM_RECLAIM),
-> +			1, mp->m_super->s_id);
->  	if (!mp->m_buf_workqueue)
->  		goto out;
->  
->  	mp->m_unwritten_workqueue = alloc_workqueue("xfs-conv/%s",
-> -			WQ_MEM_RECLAIM|WQ_FREEZABLE, 0, mp->m_super->s_id);
-> +			XFS_WQFLAGS(WQ_FREEZABLE | WQ_MEM_RECLAIM),
-> +			0, mp->m_super->s_id);
->  	if (!mp->m_unwritten_workqueue)
->  		goto out_destroy_buf;
->  
->  	mp->m_cil_workqueue = alloc_workqueue("xfs-cil/%s",
-> -			WQ_MEM_RECLAIM | WQ_FREEZABLE | WQ_UNBOUND,
-> +			XFS_WQFLAGS(WQ_FREEZABLE | WQ_MEM_RECLAIM | WQ_UNBOUND),
->  			0, mp->m_super->s_id);
->  	if (!mp->m_cil_workqueue)
->  		goto out_destroy_unwritten;
->  
->  	mp->m_reclaim_workqueue = alloc_workqueue("xfs-reclaim/%s",
-> -			WQ_MEM_RECLAIM|WQ_FREEZABLE, 0, mp->m_super->s_id);
-> +			XFS_WQFLAGS(WQ_FREEZABLE | WQ_MEM_RECLAIM),
-> +			0, mp->m_super->s_id);
->  	if (!mp->m_reclaim_workqueue)
->  		goto out_destroy_cil;
->  
->  	mp->m_eofblocks_workqueue = alloc_workqueue("xfs-eofblocks/%s",
-> -			WQ_MEM_RECLAIM|WQ_FREEZABLE, 0, mp->m_super->s_id);
-> +			XFS_WQFLAGS(WQ_FREEZABLE | WQ_MEM_RECLAIM),
-> +			0, mp->m_super->s_id);
->  	if (!mp->m_eofblocks_workqueue)
->  		goto out_destroy_reclaim;
->  
-> -	mp->m_sync_workqueue = alloc_workqueue("xfs-sync/%s", WQ_FREEZABLE, 0,
-> -					       mp->m_super->s_id);
-> +	mp->m_sync_workqueue = alloc_workqueue("xfs-sync/%s",
-> +			XFS_WQFLAGS(WQ_FREEZABLE), 0, mp->m_super->s_id);
->  	if (!mp->m_sync_workqueue)
->  		goto out_destroy_eofb;
->  
-> @@ -2085,11 +2089,12 @@ xfs_init_workqueues(void)
->  	 * max_active value for this workqueue.
->  	 */
->  	xfs_alloc_wq = alloc_workqueue("xfsalloc",
-> -			WQ_MEM_RECLAIM|WQ_FREEZABLE, 0);
-> +			XFS_WQFLAGS(WQ_MEM_RECLAIM | WQ_FREEZABLE), 0);
->  	if (!xfs_alloc_wq)
->  		return -ENOMEM;
->  
-> -	xfs_discard_wq = alloc_workqueue("xfsdiscard", WQ_UNBOUND, 0);
-> +	xfs_discard_wq = alloc_workqueue("xfsdiscard", XFS_WQFLAGS(WQ_UNBOUND),
-> +			0);
->  	if (!xfs_discard_wq)
->  		goto out_free_alloc_wq;
->  
-> diff --git a/fs/xfs/xfs_super.h b/fs/xfs/xfs_super.h
-> index b552cf6d3379..1ca484b8357f 100644
-> --- a/fs/xfs/xfs_super.h
-> +++ b/fs/xfs/xfs_super.h
-> @@ -75,6 +75,12 @@ extern void xfs_qm_exit(void);
->  				XFS_ASSERT_FATAL_STRING \
->  				XFS_DBG_STRING /* DBG must be last */
->  
-> +#ifdef DEBUG
-> +# define XFS_WQFLAGS(wqflags)	(WQ_SYSFS | (wqflags))
-> +#else
-> +# define XFS_WQFLAGS(wqflags)	(wqflags)
-> +#endif
-> +
->  struct xfs_inode;
->  struct xfs_mount;
->  struct xfs_buftarg;
-> 
----end quoted text---
+
+-- 
+Sincerely yours,
+Mike.
