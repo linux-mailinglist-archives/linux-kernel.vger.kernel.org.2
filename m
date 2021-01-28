@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDF4307361
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD9F307366
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhA1KFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:05:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:55766 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231872AbhA1KFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:05:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CA411042;
-        Thu, 28 Jan 2021 02:04:54 -0800 (PST)
-Received: from [10.57.11.243] (unknown [10.57.11.243])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5127D3F766;
-        Thu, 28 Jan 2021 02:04:52 -0800 (PST)
-Subject: Re: [PATCH v2] drm/lima: add governor data with pre-defined
- thresholds
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Steven Price <steven.price@arm.com>
-References: <20210127194047.21462-1-christianshewitt@gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <3ff0efe3-c57a-369c-863a-955004612bda@arm.com>
-Date:   Thu, 28 Jan 2021 10:04:50 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232159AbhA1KGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:06:45 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:8081 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231322AbhA1KGb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 05:06:31 -0500
+X-UUID: 9fed7893d48c433292e317bf762fff20-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=4IK9jdUP/+9o12Q2Z2gnHGjv+cdCrjUnCtGVYV+uXkI=;
+        b=LRz9ZM4eyki9WUACnrozgwOfzqkb5E6qeQ+gmDRn6gOSDw62FGMncd7Vq3ZxsCRpTCN8kJzvdJcl57L7drNjJuW1Wrg31zWn2PcsLTu2Gc1oWqW0Vm3fkLrM2bB7CipCiSbiKhGioB/xz09wLGJsC9z4DYUp0OtKsJmo/2TaET8=;
+X-UUID: 9fed7893d48c433292e317bf762fff20-20210128
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 86084368; Thu, 28 Jan 2021 18:05:46 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
+ 2021 18:05:34 +0800
+Received: from mcddlt001.mediatek.inc (10.19.240.15) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 18:05:34 +0800
+From:   <mingchuang.qiao@mediatek.com>
+To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
+        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
+        <mika.westerberg@linux.intel.com>, <alex.williamson@redhat.com>,
+        <rjw@rjwysocki.net>, <utkarsh.h.patel@intel.com>
+Subject: [v2] PCI: Avoid unsync of LTR mechanism configuration
+Date:   Thu, 28 Jan 2021 18:05:31 +0800
+Message-ID: <20210128100531.2694-1-mingchuang.qiao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210127194047.21462-1-christianshewitt@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: F6A356DF7791F0854E1DE6CABFFA9C33DDDF10543AF8572B337683DD4611E8382000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
+biBidXMgc2NhbiBmbG93LCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgREVWQ1RM
+MiByZWdpc3RlciBpcw0KY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZp
+Y2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQptZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
+bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQplbmFibGVkIGlu
+IERFVkNUTDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcyAx
+Lg0KDQpJZiBQQ0llIGxpbmsgZ29lcyBkb3duIHdoZW4gZGV2aWNlIHJlc2V0cywgdGhlICJMVFIg
+TWVjaGFuaXNtIEVuYWJsZSIgYml0DQpvZiBicmlkZ2Ugd2lsbCBjaGFuZ2UgdG8gMCBhY2NvcmRp
+bmcgdG8gUENJZSByNS4wLCBzZWMgNy41LjMuMTYuIEhvd2V2ZXIsDQp0aGUgcGNpX2Rldi0+bHRy
+X3BhdGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEuDQoNCkZvciBmb2xsb3dpbmcgY29uZGl0
+aW9ucywgY2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdA0K
+b2YgYnJpZGdlIHRvIG1ha2UgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgbXRhY2ggbHRyX3Bh
+dGggdmFsdWUuDQogICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmljZSdzIExUUiBmb3IgaG90LXJl
+bW92ZS9ob3QtYWRkDQogICAtYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UncyBERVZDVEwyIHJlZ2lz
+dGVyIHdoZW4gcmVzdG9yZSBkZXZpY2Ugc3RhdGUNCg0KU2lnbmVkLW9mZi1ieTogTWluZ2NodWFu
+ZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KLS0tDQpjaGFuZ2VzIG9mIHYy
+DQogLW1vZGlmeSBwYXRjaCBkZXNjcmlwdGlvbg0KIC1yZWNvbmZpZ3VyZSBicmlkZ2UncyBMVFIg
+YmVmb3JlIHJlc3RvcmluZyBkZXZpY2UgREVWQ1RMMiByZWdpc3Rlcg0KLS0tDQogZHJpdmVycy9w
+Y2kvcGNpLmMgICB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysNCiBkcml2ZXJzL3BjaS9w
+cm9iZS5jIHwgMTkgKysrKysrKysrKysrKysrKy0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgNDEgaW5z
+ZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3Bj
+aS5jIGIvZHJpdmVycy9wY2kvcGNpLmMNCmluZGV4IGI5ZmVjYzI1ZDIxMy4uODhiNGViNzBjMjUy
+IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kvcGNpLmMNCisrKyBiL2RyaXZlcnMvcGNpL3BjaS5j
+DQpAQCAtMTQzNyw2ICsxNDM3LDI0IEBAIHN0YXRpYyBpbnQgcGNpX3NhdmVfcGNpZV9zdGF0ZShz
+dHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIAlyZXR1cm4gMDsNCiB9DQogDQorc3RhdGljIHZvaWQgcGNp
+X3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldikNCit7DQorI2lmZGVm
+IENPTkZJR19QQ0lFQVNQTQ0KKwlzdHJ1Y3QgcGNpX2RldiAqYnJpZGdlOw0KKwl1MzIgY3RsOw0K
+Kw0KKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7DQorCWlmIChicmlkZ2UgJiYg
+YnJpZGdlLT5sdHJfcGF0aCkgew0KKwkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfZHdvcmQoYnJpZGdl
+LCBQQ0lfRVhQX0RFVkNUTDIsICZjdGwpOw0KKwkJaWYgKCEoY3RsICYgUENJX0VYUF9ERVZDVEwy
+X0xUUl9FTikpIHsNCisJCQlwY2lfZGJnKGJyaWRnZSwgInJlLWVuYWJsaW5nIExUUlxuIik7DQor
+CQkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGJyaWRnZSwgUENJX0VYUF9ERVZDVEwyLA0KKwkJ
+CQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCisJCX0NCisJfQ0KKyNlbmRpZg0KK30NCisN
+CiBzdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYp
+DQogew0KIAlpbnQgaSA9IDA7DQpAQCAtMTQ0Nyw2ICsxNDY1LDEzIEBAIHN0YXRpYyB2b2lkIHBj
+aV9yZXN0b3JlX3BjaWVfc3RhdGUoc3RydWN0IHBjaV9kZXYgKmRldikNCiAJaWYgKCFzYXZlX3N0
+YXRlKQ0KIAkJcmV0dXJuOw0KIA0KKwkvKg0KKwkgKiBEb3duc3RyZWFtIHBvcnRzIHJlc2V0IHRo
+ZSBMVFIgZW5hYmxlIGJpdCB3aGVuIGxpbmsgZ29lcyBkb3duLg0KKwkgKiBDaGVjayBhbmQgcmUt
+Y29uZmlndXJlIHRoZSBiaXQgaGVyZSBiZWZvcmUgcmVzdG9yaW5nIGRldmljZS4NCisJICogUENJ
+ZSByNS4wLCBzZWMgNy41LjMuMTYuDQorCSAqLw0KKwlwY2lfcmVjb25maWd1cmVfYnJpZGdlX2x0
+cihkZXYpOw0KKw0KIAljYXAgPSAodTE2ICopJnNhdmVfc3RhdGUtPmNhcC5kYXRhWzBdOw0KIAlw
+Y2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChkZXYsIFBDSV9FWFBfREVWQ1RMLCBjYXBbaSsrXSk7
+DQogCXBjaWVfY2FwYWJpbGl0eV93cml0ZV93b3JkKGRldiwgUENJX0VYUF9MTktDVEwsIGNhcFtp
+KytdKTsNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wcm9iZS5jIGIvZHJpdmVycy9wY2kvcHJv
+YmUuYw0KaW5kZXggOTUzZjE1YWJjODUwLi40YWQxNzI1MTdmZDIgMTAwNjQ0DQotLS0gYS9kcml2
+ZXJzL3BjaS9wcm9iZS5jDQorKysgYi9kcml2ZXJzL3BjaS9wcm9iZS5jDQpAQCAtMjEzMiw5ICsy
+MTMyLDIyIEBAIHN0YXRpYyB2b2lkIHBjaV9jb25maWd1cmVfbHRyKHN0cnVjdCBwY2lfZGV2ICpk
+ZXYpDQogCSAqIENvbXBsZXggYW5kIGFsbCBpbnRlcm1lZGlhdGUgU3dpdGNoZXMgaW5kaWNhdGUg
+c3VwcG9ydCBmb3IgTFRSLg0KIAkgKiBQQ0llIHI0LjAsIHNlYyA2LjE4Lg0KIAkgKi8NCi0JaWYg
+KHBjaV9wY2llX3R5cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9PVF9QT1JUIHx8DQotCSAgICAo
+KGJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2UoZGV2KSkgJiYNCi0JICAgICAgYnJpZGdlLT5s
+dHJfcGF0aCkpIHsNCisJaWYgKHBjaV9wY2llX3R5cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9P
+VF9QT1JUKSB7DQorCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNU
+TDIsDQorCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9FTik7DQorCQlkZXYtPmx0cl9wYXRoID0g
+MTsNCisJCXJldHVybjsNCisJfQ0KKw0KKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRl
+dik7DQorCWlmIChicmlkZ2UgJiYgYnJpZGdlLT5sdHJfcGF0aCkgew0KKwkJcGNpZV9jYXBhYmls
+aXR5X3JlYWRfZHdvcmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNUTDIsICZjdGwpOw0KKwkJaWYgKCEo
+Y3RsICYgUENJX0VYUF9ERVZDVEwyX0xUUl9FTikpIHsNCisJCQlwY2lfZGJnKGJyaWRnZSwgInJl
+LWVuYWJsaW5nIExUUlxuIik7DQorCQkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGJyaWRnZSwg
+UENJX0VYUF9ERVZDVEwyLA0KKwkJCQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCisJCX0N
+CisNCiAJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChkZXYsIFBDSV9FWFBfREVWQ1RMMiwNCiAJ
+CQkJCSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCiAJCWRldi0+bHRyX3BhdGggPSAxOw0KLS0g
+DQoyLjE4LjANCg==
 
-
-On 1/27/21 7:40 PM, Christian Hewitt wrote:
-> This patch adapts the panfrost pre-defined thresholds change [0] to the
-> lima driver to improve real-world performance. The upthreshold value has
-> been set to ramp GPU frequency to max freq faster (compared to panfrost)
-> to compensate for the lower overall performance of utgard devices.
-> 
-> [0] https://patchwork.kernel.org/project/dri-devel/patch/20210121170445.19761-1-lukasz.luba@arm.com/
-> 
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
-> Change since v1: increased upthreshold from 20 to 30, with a soft
-> dependency on Lukasz delayed timer patch [0]
-> 
-> [0] https://lore.kernel.org/lkml/20210127105121.20345-1-lukasz.luba@arm.com/
-> 
->   drivers/gpu/drm/lima/lima_devfreq.c | 10 +++++++++-
->   drivers/gpu/drm/lima/lima_devfreq.h |  2 ++
->   2 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-> index 5686ad4aaf7c..c9854315a0b5 100644
-> --- a/drivers/gpu/drm/lima/lima_devfreq.c
-> +++ b/drivers/gpu/drm/lima/lima_devfreq.c
-> @@ -163,8 +163,16 @@ int lima_devfreq_init(struct lima_device *ldev)
->   	lima_devfreq_profile.initial_freq = cur_freq;
->   	dev_pm_opp_put(opp);
->   
-> +	/*
-> +	 * Setup default thresholds for the simple_ondemand governor.
-> +	 * The values are chosen based on experiments.
-> +	 */
-> +	ldevfreq->gov_data.upthreshold = 30;
-> +	ldevfreq->gov_data.downdifferential = 5;
-> +
->   	devfreq = devm_devfreq_add_device(dev, &lima_devfreq_profile,
-> -					  DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
-> +					  DEVFREQ_GOV_SIMPLE_ONDEMAND,
-> +					  &ldevfreq->gov_data);
->   	if (IS_ERR(devfreq)) {
->   		dev_err(dev, "Couldn't initialize GPU devfreq\n");
->   		ret = PTR_ERR(devfreq);
-> diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-> index 2d9b3008ce77..b0c7c736e81a 100644
-> --- a/drivers/gpu/drm/lima/lima_devfreq.h
-> +++ b/drivers/gpu/drm/lima/lima_devfreq.h
-> @@ -4,6 +4,7 @@
->   #ifndef __LIMA_DEVFREQ_H__
->   #define __LIMA_DEVFREQ_H__
->   
-> +#include <linux/devfreq.h>
->   #include <linux/spinlock.h>
->   #include <linux/ktime.h>
->   
-> @@ -18,6 +19,7 @@ struct lima_devfreq {
->   	struct opp_table *clkname_opp_table;
->   	struct opp_table *regulators_opp_table;
->   	struct thermal_cooling_device *cooling;
-> +	struct devfreq_simple_ondemand_data gov_data;
->   
->   	ktime_t busy_time;
->   	ktime_t idle_time;
-> 
-
-It looks good.
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
