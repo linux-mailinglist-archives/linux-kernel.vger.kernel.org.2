@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77FD307E15
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63599307E53
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhA1Sfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:35:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:37358 "EHLO foss.arm.com"
+        id S232374AbhA1SnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:43:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:37444 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231446AbhA1Sc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:32:58 -0500
+        id S232147AbhA1SfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:35:07 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72C541478;
-        Thu, 28 Jan 2021 10:32:12 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2024B1480;
+        Thu, 28 Jan 2021 10:32:14 -0800 (PST)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 045203F719;
-        Thu, 28 Jan 2021 10:32:10 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A6A153F719;
+        Thu, 28 Jan 2021 10:32:12 -0800 (PST)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -28,9 +28,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Quentin Perret <qperret@google.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
         Rik van Riel <riel@surriel.com>
-Subject: [PATCH 4/8] sched/fair: Use dst_cpu's capacity rather than group {min, max} capacity
-Date:   Thu, 28 Jan 2021 18:31:37 +0000
-Message-Id: <20210128183141.28097-5-valentin.schneider@arm.com>
+Subject: [PATCH 5/8] sched/fair: Make check_misfit_status() only compare dynamic capacities
+Date:   Thu, 28 Jan 2021 18:31:38 +0000
+Message-Id: <20210128183141.28097-6-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210128183141.28097-1-valentin.schneider@arm.com>
 References: <20210128183141.28097-1-valentin.schneider@arm.com>
@@ -40,77 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Comparing capacity extrema of local and source sched_group's doesn't make
-much sense when at the day of the day the imbalance will be pulled by a
-known env->dst_cpu, whose capacity can be anywhere within the local group's
-capacity extrema.
+check_misfit_status() checks for both capacity pressure & available CPUs
+with higher capacity. Now that we have a sane(ish) capacity comparison
+margin which is used throughout load-balance, this can be condensed into a
+single check:
 
-Replace group_smaller_{min, max}_cpu_capacity() with comparisons of the
-source group's min/max capacity and the destination CPU's capacity.
+  capacity_greater(<root_domain max capacity>, <misfit task CPU's capacity>);
+
+This has the added benefit of returning false if the misfit task CPU's is
+heavily pressured, but there are no better candidates for migration.
 
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/fair.c | 31 +++----------------------------
- 1 file changed, 3 insertions(+), 28 deletions(-)
+ kernel/sched/fair.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 58ce0b22fcb0..0959a770ecc0 100644
+index 0959a770ecc0..ef44474b8fbf 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -8352,26 +8352,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
- 	return false;
+@@ -8254,14 +8254,12 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+ 
+ /*
+  * Check whether a rq has a misfit task and if it looks like we can actually
+- * help that task: we can migrate the task to a CPU of higher capacity, or
+- * the task's current CPU is heavily pressured.
++ * help that task: we can migrate the task to a CPU of higher capacity.
+  */
+-static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
++static inline int check_misfit_status(struct rq *rq)
+ {
+ 	return rq->misfit_task_load &&
+-		(capacity_greater(rq->rd->max_cpu_capacity, rq->cpu_capacity_orig) ||
+-		 check_cpu_capacity(rq, sd));
++		capacity_greater(rq->rd->max_cpu_capacity, rq->cpu_capacity);
  }
  
--/*
-- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity than sched_group ref.
-- */
--static inline bool
--group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return capacity_greater(ref->sgc->min_capacity, sg->sgc->min_capacity);
--}
--
--/*
-- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity_orig than sched_group ref.
-- */
--static inline bool
--group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return capacity_greater(ref->sgc->max_capacity, sg->sgc->max_capacity);
--}
--
- static inline enum
- group_type group_classify(unsigned int imbalance_pct,
- 			  struct sched_group *group,
-@@ -8523,15 +8503,10 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	if (!sgs->sum_h_nr_running)
- 		return false;
- 
--	/*
--	 * Don't try to pull misfit tasks we can't help.
--	 * We can use max_capacity here as reduction in capacity on some
--	 * CPUs in the group should either be possible to resolve
--	 * internally or be covered by avg_load imbalance (eventually).
--	 */
-+	/* Don't try to pull misfit tasks we can't help */
- 	if (static_branch_unlikely(&sched_asym_cpucapacity) &&
- 	    sgs->group_type == group_misfit_task &&
--	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
-+	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
- 	     sds->local_stat.group_type != group_has_spare))
- 		return false;
- 
-@@ -8615,7 +8590,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	 */
- 	if (sd_has_asym_cpucapacity(env->sd) &&
- 	    (sgs->group_type <= group_fully_busy) &&
--	    (group_smaller_min_cpu_capacity(sds->local, sg)))
-+	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
- 		return false;
- 
- 	return true;
+ /*
+@@ -10238,7 +10236,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 * When ASYM_CPUCAPACITY; see if there's a higher capacity CPU
+ 		 * to run the misfit task on.
+ 		 */
+-		if (check_misfit_status(rq, sd)) {
++		if (check_misfit_status(rq)) {
+ 			flags = NOHZ_KICK_MASK;
+ 			goto unlock;
+ 		}
 -- 
 2.27.0
 
