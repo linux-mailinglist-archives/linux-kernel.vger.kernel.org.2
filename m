@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C047A306D7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9245E306D81
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhA1GOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:14:42 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:17040 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229652AbhA1GOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:14:37 -0500
-X-UUID: 660443e4bd5a4868a182df3e66c90ade-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=M+1NmVcqJddvPrPZfZxMzwZFz8yoMpRe6BggTkWmWIc=;
-        b=TRrdXlLkcyIU/w2qKiqyzorq8Vqj3uzGcdPdu4Jig+hmjG4bQ66Cfgoz4GRIA1WgFfH/GAcCv7gwVtMnPzd3XRMW3cEYhy9OHnI4BGXCA5M/0cJo7VWLYc5CxlDsHTYajgyVnaJzeqA4CPCMamA+sjUzgGPbEdUOdWr3k14FZoU=;
-X-UUID: 660443e4bd5a4868a182df3e66c90ade-20210128
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 647912754; Thu, 28 Jan 2021 14:13:48 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 14:13:41 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 14:13:42 +0800
-Message-ID: <1611814421.28312.9.camel@mtksdaap41>
-Subject: Re: [PATCH v10 8/9] drm/mediatek: add DDP support for MT8183
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Thu, 28 Jan 2021 14:13:41 +0800
-In-Reply-To: <20210127045422.2418917-9-hsinyi@chromium.org>
-References: <20210127045422.2418917-1-hsinyi@chromium.org>
-         <20210127045422.2418917-9-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S231300AbhA1GP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:15:56 -0500
+Received: from mga04.intel.com ([192.55.52.120]:24335 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229892AbhA1GPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 01:15:52 -0500
+IronPort-SDR: MkrC852xUQ/X6/8ewZYky7nLyK2UEbApcwSRv/AZ/9WDQE/xTYgE/senzNs4WTYLrzGe5W81Bs
+ s2uruIdydXYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="177622374"
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="177622374"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 22:15:10 -0800
+IronPort-SDR: BmzLm6FN4u7yhGcv3/T9vs/EQWMOgBfjr/kDyT1ZdHVp6bFV+Z9pVr8mP97QPxQlvWYGBOWm1E
+ zkpyqIkM49qg==
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="410791453"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 22:15:10 -0800
+From:   ira.weiny@intel.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Ira Weiny <ira.weiny@intel.com>, Miao Xie <miaox@cn.fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fs/btrfs: Fix raid6 qstripe kmap'ing
+Date:   Wed, 27 Jan 2021 22:15:03 -0800
+Message-Id: <20210128061503.1496847-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: E1725DCAAD6A55064C0D3F208A3FC7FCF756C73E594FB201E869F3F741AF8DC22000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk1vZGlmeSB0aGUgdGl0bGUncyBwcmVmaXggdG8gJ3NvYzogbWVkaWF0
-ZWs6Jw0KDQpPbiBXZWQsIDIwMjEtMDEtMjcgYXQgMTI6NTQgKzA4MDAsIEhzaW4tWWkgV2FuZyB3
-cm90ZToNCj4gRnJvbTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+
-DQo+IA0KPiBBZGQgRERQIHN1cHBvcnQgZm9yIE1UODE4MyBTb0MuDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbT4NCj4gU2lnbmVk
-LW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxoc2lueWlAY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4gIGRy
-aXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jIHwgNTAgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA1MCBpbnNlcnRpb25zKCspDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLW11dGV4LmMgYi9kcml2ZXJzL3Nv
-Yy9tZWRpYXRlay9tdGstbXV0ZXguYw0KPiBpbmRleCBmNTMxYjExOWRhN2E5Li5mNjRlOWMzM2U4
-NWFkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYw0KPiAr
-KysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYw0KPiBAQCAtMTQsNiArMTQsOCBA
-QA0KPiAgDQo+ICAjZGVmaW5lIE1UMjcwMV9NVVRFWDBfTU9EMAkJCTB4MmMNCj4gICNkZWZpbmUg
-TVQyNzAxX01VVEVYMF9TT0YwCQkJMHgzMA0KPiArI2RlZmluZSBNVDgxODNfRElTUF9NVVRFWDBf
-TU9EMAkJCTB4MzANCj4gKyNkZWZpbmUgTVQ4MTgzX0RJU1BfTVVURVgwX1NPRjAJCQkweDJjDQoN
-Ck1vZGlmeSAnRElTUF9NVVRFWCcgdG8gJ01VVEVYJw0KDQo+ICANCj4gICNkZWZpbmUgRElTUF9S
-RUdfTVVURVhfRU4obikJCQkoMHgyMCArIDB4MjAgKiAobikpDQo+ICAjZGVmaW5lIERJU1BfUkVH
-X01VVEVYKG4pCQkJKDB4MjQgKyAweDIwICogKG4pKQ0KPiBAQCAtMzcsNiArMzksMTggQEANCj4g
-ICNkZWZpbmUgTVQ4MTY3X01VVEVYX01PRF9ESVNQX0RJVEhFUgkJMTUNCj4gICNkZWZpbmUgTVQ4
-MTY3X01VVEVYX01PRF9ESVNQX1VGT0UJCTE2DQo+ICANCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVY
-X01PRF9ESVNQX1JETUEwCQkwDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1B
-MQkJMQ0KPiArI2RlZmluZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMAkJOQ0KPiArI2RlZmlu
-ZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8yTAkJMTANCj4gKyNkZWZpbmUgTVQ4MTgzX01V
-VEVYX01PRF9ESVNQX09WTDFfMkwJCTExDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElT
-UF9XRE1BMAkJMTINCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0NPTE9SMAkJMTMN
-Cj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0NDT1JSMAkJMTQNCj4gKyNkZWZpbmUg
-TVQ4MTgzX01VVEVYX01PRF9ESVNQX0FBTDAJCTE1DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9N
-T0RfRElTUF9HQU1NQTAJCTE2DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9ESVRI
-RVIwCQkxNw0KPiArDQo+ICAjZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9PVkwwCQkxMQ0K
-PiAgI2RlZmluZSBNVDgxNzNfTVVURVhfTU9EX0RJU1BfT1ZMMQkJMTINCj4gICNkZWZpbmUgTVQ4
-MTczX01VVEVYX01PRF9ESVNQX1JETUEwCQkxMw0KPiBAQCAtODcsNiArMTAxLDEyIEBADQo+ICAj
-ZGVmaW5lIE1UMjcxMl9NVVRFWF9TT0ZfRFNJMwkJCTYNCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVY
-X1NPRl9EUEkwCQkJMg0KPiAgI2RlZmluZSBNVDgxNjdfTVVURVhfU09GX0RQSTEJCQkzDQo+ICsj
-ZGVmaW5lIE1UODE4M19NVVRFWF9TT0ZfRFNJMAkJCTENCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVY
-X1NPRl9EUEkwCQkJMg0KPiArDQo+ICsvKiBBZGQgRU9GIHNldHRpbmcgc28gb3ZlcmxheSBoYXJk
-d2FyZSBjYW4gcmVjZWl2ZSBmcmFtZSBkb25lIGlycSAqLw0KPiArI2RlZmluZSBNVDgxODNfTVVU
-RVhfRU9GX0RTSTAJCQkoTVQ4MTgzX01VVEVYX1NPRl9EU0kwIDw8IDYpDQo+ICsjZGVmaW5lIE1U
-ODE4M19NVVRFWF9FT0ZfRFBJMAkJCShNVDgxODNfTVVURVhfU09GX0RQSTAgPDwgNikNCj4gIA0K
-PiAgc3RydWN0IG10a19tdXRleCB7DQo+ICAJaW50IGlkOw0KPiBAQCAtMTgxLDYgKzIwMSwyMCBA
-QCBzdGF0aWMgY29uc3QgdW5zaWduZWQgaW50IG10ODE3M19tdXRleF9tb2RbRERQX0NPTVBPTkVO
-VF9JRF9NQVhdID0gew0KPiAgCVtERFBfQ09NUE9ORU5UX1dETUExXSA9IE1UODE3M19NVVRFWF9N
-T0RfRElTUF9XRE1BMSwNCj4gIH07DQo+ICANCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQg
-bXQ4MTgzX211dGV4X21vZFtERFBfQ09NUE9ORU5UX0lEX01BWF0gPSB7DQo+ICsJW0REUF9DT01Q
-T05FTlRfQUFMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQUFMMCwNCj4gKwlbRERQX0NPTVBP
-TkVOVF9DQ09SUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ0NPUlIwLA0KPiArCVtERFBfQ09N
-UE9ORU5UX0NPTE9SMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ09MT1IwLA0KPiArCVtERFBf
-Q09NUE9ORU5UX0RJVEhFUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfRElUSEVSMCwNCj4gKwlb
-RERQX0NPTVBPTkVOVF9HQU1NQV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfR0FNTUEwLA0KPiAr
-CVtERFBfQ09NUE9ORU5UX09WTDBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAsDQo+ICsJ
-W0REUF9DT01QT05FTlRfT1ZMXzJMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8yTCwN
-Cj4gKwlbRERQX0NPTVBPTkVOVF9PVkxfMkwxXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwx
-XzJMLA0KPiArCVtERFBfQ09NUE9ORU5UX1JETUEwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9S
-RE1BMCwNCj4gKwlbRERQX0NPTVBPTkVOVF9SRE1BMV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1Bf
-UkRNQTEsDQo+ICsJW0REUF9DT01QT05FTlRfV0RNQTBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQ
-X1dETUEwLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDI3MTJf
-bXV0ZXhfc29mW01VVEVYX1NPRl9EU0kzICsgMV0gPSB7DQo+ICAJW01VVEVYX1NPRl9TSU5HTEVf
-TU9ERV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01PREUsDQo+ICAJW01VVEVYX1NPRl9EU0kwXSA9IE1V
-VEVYX1NPRl9EU0kwLA0KPiBAQCAtMTk4LDYgKzIzMiwxMiBAQCBzdGF0aWMgY29uc3QgdW5zaWdu
-ZWQgaW50IG10ODE2N19tdXRleF9zb2ZbTVVURVhfU09GX0RTSTMgKyAxXSA9IHsNCj4gIAlbTVVU
-RVhfU09GX0RQSTFdID0gTVQ4MTY3X01VVEVYX1NPRl9EUEkxLA0KPiAgfTsNCj4gIA0KPiArc3Rh
-dGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDgxODNfbXV0ZXhfc29mW01VVEVYX1NPRl9EU0kzICsg
-MV0gPSB7DQo+ICsJW01VVEVYX1NPRl9TSU5HTEVfTU9ERV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01P
-REUsDQo+ICsJW01VVEVYX1NPRl9EU0kwXSA9IE1VVEVYX1NPRl9EU0kwIHwgTVQ4MTgzX01VVEVY
-X0VPRl9EU0kwLA0KPiArCVtNVVRFWF9TT0ZfRFBJMF0gPSBNVDgxODNfTVVURVhfU09GX0RQSTAg
-fCBNVDgxODNfTVVURVhfRU9GX0RQSTAsDQoNCkFjY29yZGluZyB0byBkaXNjdXNzaW9uIGluIFsx
-XSwgYWRkIGNvbW1lbnQgZm9yIHRoZSBvZGQgRU9GIHNldHRpbmcuDQoNClsxXQ0KaHR0cHM6Ly9w
-YXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlhdGVrL3BhdGNoLzE1OTU0Njk3
-OTgtMzgyNC04LWdpdC1zZW5kLWVtYWlsLXlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29tLw0KDQpS
-ZWdhcmRzLA0KQ0suDQoNCg0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtf
-bXV0ZXhfZGF0YSBtdDI3MDFfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7DQo+ICAJLm11dGV4X21vZCA9
-IG10MjcwMV9tdXRleF9tb2QsDQo+ICAJLm11dGV4X3NvZiA9IG10MjcxMl9tdXRleF9zb2YsDQo+
-IEBAIC0yMjcsNiArMjY3LDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX211dGV4X2RhdGEg
-bXQ4MTczX211dGV4X2RyaXZlcl9kYXRhID0gew0KPiAgCS5tdXRleF9zb2ZfcmVnID0gTVQyNzAx
-X01VVEVYMF9TT0YwLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfbXV0
-ZXhfZGF0YSBtdDgxODNfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7DQo+ICsJLm11dGV4X21vZCA9IG10
-ODE4M19tdXRleF9tb2QsDQo+ICsJLm11dGV4X3NvZiA9IG10ODE4M19tdXRleF9zb2YsDQo+ICsJ
-Lm11dGV4X21vZF9yZWcgPSBNVDgxODNfRElTUF9NVVRFWDBfTU9EMCwNCj4gKwkubXV0ZXhfc29m
-X3JlZyA9IE1UODE4M19ESVNQX01VVEVYMF9TT0YwLA0KPiArCS5ub19jbGsgPSB0cnVlLA0KPiAr
-fTsNCj4gKw0KPiAgc3RydWN0IG10a19tdXRleCAqbXRrX211dGV4X2dldChzdHJ1Y3QgZGV2aWNl
-ICpkZXYpDQo+ICB7DQo+ICAJc3RydWN0IG10a19tdXRleF9jdHggKm10eCA9IGRldl9nZXRfZHJ2
-ZGF0YShkZXYpOw0KPiBAQCAtNDU3LDYgKzUwNSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2Zf
-ZGV2aWNlX2lkIG11dGV4X2RyaXZlcl9kdF9tYXRjaFtdID0gew0KPiAgCSAgLmRhdGEgPSAmbXQ4
-MTY3X211dGV4X2RyaXZlcl9kYXRhfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
-ODE3My1kaXNwLW11dGV4IiwNCj4gIAkgIC5kYXRhID0gJm10ODE3M19tdXRleF9kcml2ZXJfZGF0
-YX0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1tdXRleCIsDQo+
-ICsJICAuZGF0YSA9ICZtdDgxODNfbXV0ZXhfZHJpdmVyX2RhdGF9LA0KPiAgCXt9LA0KPiAgfTsN
-Cj4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIG11dGV4X2RyaXZlcl9kdF9tYXRjaCk7DQoNCg==
+From: Ira Weiny <ira.weiny@intel.com>
+
+When a qstripe is required an extra page is allocated and mapped.  There
+were 3 problems.
+
+1) There is no reason to map the qstripe page more than 1 time if the
+   number of bits set in rbio->dbitmap is greater than one.
+2) There is no reason to map the parity page and unmap it each time
+   through the loop.
+3) There is no corresponding call of kunmap() for the qstripe page.
+
+The page memory can continue to be reused with a single mapping on each
+iteration by raid6_call.gen_syndrome() without remapping.  So map the
+page for the duration of the loop.
+
+Similarly, improve the algorithm by mapping the parity page just 1 time.
+
+Fixes: 5a6ac9eacb49 ("Btrfs, raid56: support parity scrub on raid56")
+To: Chris Mason <clm@fb.com>
+To: Josef Bacik <josef@toxicpanda.com>
+To: David Sterba <dsterba@suse.com>
+Cc: Miao Xie <miaox@cn.fujitsu.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+---
+This was found while replacing kmap() with kmap_local_page().  After
+this patch unwinding all the mappings becomes pretty straight forward.
+
+I'm not exactly sure I've worded this commit message intelligently.
+Please forgive me if there is a better way to word it.
+---
+ fs/btrfs/raid56.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
+
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 93fbf87bdc8d..b8a39dad0f00 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -2363,16 +2363,21 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 	SetPageUptodate(p_page);
+ 
+ 	if (has_qstripe) {
++		/* raid6, allocate and map temp space for the qstripe */
+ 		q_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
+ 		if (!q_page) {
+ 			__free_page(p_page);
+ 			goto cleanup;
+ 		}
+ 		SetPageUptodate(q_page);
++		pointers[rbio->real_stripes] = kmap(q_page);
+ 	}
+ 
+ 	atomic_set(&rbio->error, 0);
+ 
++	/* map the parity stripe just once */
++	pointers[nr_data] = kmap(p_page);
++
+ 	for_each_set_bit(pagenr, rbio->dbitmap, rbio->stripe_npages) {
+ 		struct page *p;
+ 		void *parity;
+@@ -2382,16 +2387,8 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 			pointers[stripe] = kmap(p);
+ 		}
+ 
+-		/* then add the parity stripe */
+-		pointers[stripe++] = kmap(p_page);
+-
+ 		if (has_qstripe) {
+-			/*
+-			 * raid6, add the qstripe and call the
+-			 * library function to fill in our p/q
+-			 */
+-			pointers[stripe++] = kmap(q_page);
+-
++			/* raid6, call the library function to fill in our p/q */
+ 			raid6_call.gen_syndrome(rbio->real_stripes, PAGE_SIZE,
+ 						pointers);
+ 		} else {
+@@ -2412,12 +2409,14 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 
+ 		for (stripe = 0; stripe < nr_data; stripe++)
+ 			kunmap(page_in_rbio(rbio, stripe, pagenr, 0));
+-		kunmap(p_page);
+ 	}
+ 
++	kunmap(p_page);
+ 	__free_page(p_page);
+-	if (q_page)
++	if (q_page) {
++		kunmap(q_page);
+ 		__free_page(q_page);
++	}
+ 
+ writeback:
+ 	/*
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
