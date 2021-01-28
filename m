@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8355E3072F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB7D307304
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhA1JkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:40:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:55276 "EHLO foss.arm.com"
+        id S232421AbhA1Jk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:40:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232468AbhA1JfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:35:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B229106F;
-        Thu, 28 Jan 2021 01:34:19 -0800 (PST)
-Received: from [10.57.45.249] (unknown [10.57.45.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CE0D3F766;
-        Thu, 28 Jan 2021 01:34:17 -0800 (PST)
-Subject: Re: [PATCH V3 10/14] arm64: nvhe: Allow TRBE access at EL1
-To:     Marc Zyngier <maz@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        lcherian@marvell.com, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-11-git-send-email-anshuman.khandual@arm.com>
- <12b1572e2568d4936f0458649065fe64@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d0daf831-3340-87f2-a021-0b775ce7af2a@arm.com>
-Date:   Thu, 28 Jan 2021 09:34:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231561AbhA1Jfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:35:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12FF060C3D;
+        Thu, 28 Jan 2021 09:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611826491;
+        bh=uBf9wG5WIjmuGoa3jRdeISfU7YHOD2GcgT3b1zVeQ50=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X8YX0t3qIynspfZT5taR4Z0XXri1Ma7P/1pKLfXWf+viaYnLBaZraWso1YbKomBs7
+         g8Upb0P2G+ppndL12j6/E9gDd/7cwEfgtR+phyuk8CqfWqPhokeGv/DO9Cia2m+F/Z
+         YQBUNpCSl2gb90Xz9dwR7MaqPu4JGyzA8IKhqC2g=
+Date:   Thu, 28 Jan 2021 10:34:45 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chris Clayton <chris2553@googlemail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Subject: Re: linux-5.10.11 build failure
+Message-ID: <YBKFNUp5WYtdg9pE@kroah.com>
+References: <f141f12d-a5b9-1e60-2740-388bf350b631@googlemail.com>
 MIME-Version: 1.0
-In-Reply-To: <12b1572e2568d4936f0458649065fe64@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f141f12d-a5b9-1e60-2740-388bf350b631@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 9:58 AM, Marc Zyngier wrote:
-> On 2021-01-27 08:55, Anshuman Khandual wrote:
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>
->> When the kernel is booted at EL2 in a nvhe configuration,
->> enable the TRBE access to the EL1. The EL1 still can't trace
->> EL2, unless EL2 permits explicitly via TRFCR_EL2.E2TRE.
->>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On Thu, Jan 28, 2021 at 09:17:10AM +0000, Chris Clayton wrote:
+> Hi,
 > 
-> Acked-by: Marc Zyngier <maz@kernel.org>
+> Building 5.10.11 fails on my (x86-64) laptop thusly:
 > 
-> One comment below, though:
+> ..
 > 
->> ---
->>  arch/arm64/include/asm/el2_setup.h | 19 +++++++++++++++++++
->>  arch/arm64/include/asm/kvm_arm.h   |  2 ++
->>  2 files changed, 21 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/el2_setup.h
->> b/arch/arm64/include/asm/el2_setup.h
->> index a7f5a1b..05ecce9 100644
->> --- a/arch/arm64/include/asm/el2_setup.h
->> +++ b/arch/arm64/include/asm/el2_setup.h
->> @@ -72,6 +72,25 @@
->>  .endif
->>
->>  3:
->> +
->> +.ifeqs    "\mode", "nvhe"
->> +    /*
->> +     * If the Trace Buffer is available, allow
->> +     * the EL1 to own it. Note that EL1 cannot
->> +     * trace the EL2, as it is prevented by
->> +     * TRFCR_EL2.E2TRE == 0.
->> +     */
->> +    ubfx    x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #4
->> +    cbz    x0, 1f
->> +
->> +    mrs_s    x0, SYS_TRBIDR_EL1
->> +    and    x0, x0, TRBIDR_PROG
->> +    cbnz    x0, 1f
->> +    mov    x0, #(MDCR_EL2_E2TB_EL1_OWN << MDCR_EL2_E2TB_SHIFT)
->> +    orr    x2, x2, x0
->> +.endif
->> +
->> +1:
+>  AS      arch/x86/entry/thunk_64.o
+>   CC      arch/x86/entry/vsyscall/vsyscall_64.o
+>   AS      arch/x86/realmode/rm/header.o
+>   CC      arch/x86/mm/pat/set_memory.o
+>   CC      arch/x86/events/amd/core.o
+>   CC      arch/x86/kernel/fpu/init.o
+>   CC      arch/x86/entry/vdso/vma.o
+>   CC      kernel/sched/core.o
+> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at offset 0x3e
 > 
-> Note that this will (badly) conflict with the late-VHE patches[1],
-> where this code path has been reworked.
+>   AS      arch/x86/realmode/rm/trampoline_64.o
+> make[2]: *** [scripts/Makefile.build:360: arch/x86/entry/thunk_64.o] Error 255
+> make[2]: *** Deleting file 'arch/x86/entry/thunk_64.o'
+> make[2]: *** Waiting for unfinished jobs....
+> 
+> ..
+> 
+> Compiler is latest snapshot of gcc-10.
+> 
+> Happy to test the fix but please cc me as I'm not subscribed
 
-Thanks for the heads up. We will need to see how things get merged.
-Ideally this patch and the previous one (TRBE definitions could go
-via the arm64 tree / kvm tree), in which case we could rebase these
-two patches on the respective tree.
+Can you do 'git bisect' to track down the offending commit?
 
-Cheers
-Suzuki
+And what exact gcc version are you using?
+
+thanks,
+
+greg k-h
