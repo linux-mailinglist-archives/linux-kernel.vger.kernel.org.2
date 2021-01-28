@@ -2,195 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B928D307BCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021CF307BB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbhA1RHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:07:52 -0500
-Received: from mail.hallyn.com ([178.63.66.53]:40000 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232835AbhA1RGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:06:17 -0500
-X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 12:06:16 EST
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 5334E11D4; Thu, 28 Jan 2021 10:58:52 -0600 (CST)
-Date:   Thu, 28 Jan 2021 10:58:52 -0600
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH 2/2] security.capability: fix conversions on getxattr
-Message-ID: <20210128165852.GA20974@mail.hallyn.com>
-References: <20210119162204.2081137-1-mszeredi@redhat.com>
- <20210119162204.2081137-3-mszeredi@redhat.com>
- <8735yw8k7a.fsf@x220.int.ebiederm.org>
+        id S232573AbhA1RCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:02:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44622 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232833AbhA1RBH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:01:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611853181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O4v5XWPNcZdSmISm472mH90bUGvUqIsL5GmAjen7+Gg=;
+        b=EwVyVwU68R5xHqqm6tw8HjdEEfvHB+vQ7oweuumX2NMe+TXyuT63ds/hyRByWbsVOBBtyt
+        7+bOAdY54vdxJUto8mXVPhnQR7MctXMIU8aMYrWFLitPE11ZuMnJjxKUCiUnnKFmHl0p17
+        Hsf8O0SgVaWp5U3oveAYplpiCSFdjec=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-wSuEOgG5PI-g4NLjLJt2bw-1; Thu, 28 Jan 2021 11:59:39 -0500
+X-MC-Unique: wSuEOgG5PI-g4NLjLJt2bw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B443280A5C0;
+        Thu, 28 Jan 2021 16:59:36 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FEA01F450;
+        Thu, 28 Jan 2021 16:59:29 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 7A60D4178900; Thu, 28 Jan 2021 13:59:03 -0300 (-03)
+Date:   Thu, 28 Jan 2021 13:59:03 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        sfr@canb.auug.org.au, stephen@networkplumber.org,
+        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
+        zhangshaokun@hisilicon.com
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping
+ CPUs
+Message-ID: <20210128165903.GB38339@fuller.cnet>
+References: <20200625223443.2684-1-nitesh@redhat.com>
+ <20200625223443.2684-2-nitesh@redhat.com>
+ <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+ <20210127121939.GA54725@fuller.cnet>
+ <87r1m5can2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8735yw8k7a.fsf@x220.int.ebiederm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87r1m5can2.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:34:49PM -0600, Eric W. Biederman wrote:
-> Miklos Szeredi <mszeredi@redhat.com> writes:
-> 
-> > If a capability is stored on disk in v2 format cap_inode_getsecurity() will
-> > currently return in v2 format unconditionally.
+On Thu, Jan 28, 2021 at 05:02:41PM +0100, Thomas Gleixner wrote:
+> On Wed, Jan 27 2021 at 09:19, Marcelo Tosatti wrote:
+> > On Wed, Jan 27, 2021 at 11:57:16AM +0000, Robin Murphy wrote:
+> >> > +	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
+> >> > +	mask = housekeeping_cpumask(hk_flags);
+> >> 
+> >> AFAICS, this generally resolves to something based on cpu_possible_mask
+> >> rather than cpu_online_mask as before, so could now potentially return an
+> >> offline CPU. Was that an intentional change?
 > >
-> > This is wrong: v2 cap should be equivalent to a v3 cap with zero rootid,
-> > and so the same conversions performed on it.
+> > Robin,
 > >
-> > If the rootid cannot be mapped v3 is returned unconverted.  Fix this so
-> > that both v2 and v3 return -EOVERFLOW if the rootid (or the owner of the fs
-> > user namespace in case of v2) cannot be mapped in the current user
-> > namespace.
+> > AFAICS online CPUs should be filtered.
 > 
-> This looks like a good cleanup.
+> The whole pile wants to be reverted. It's simply broken in several ways.
 
-Sorry, I'm not following.  Why is this a good cleanup?  Why should
-the xattr be shown as faked v3 in this case?
+I was asking for your comments on interaction with CPU hotplug :-)
+Anyway...
 
-A separate question below.
+So housekeeping_cpumask has multiple meanings. In this case:
 
-> I do wonder how well this works with stacking.  In particular
-> ovl_xattr_set appears to call vfs_getxattr without overriding the creds.
-> What the purpose of that is I haven't quite figured out.  It looks like
-> it is just a probe to see if an xattr is present so maybe it is ok.
-> 
-> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> >
-> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> > ---
-> >  security/commoncap.c | 67 ++++++++++++++++++++++++++++----------------
-> >  1 file changed, 43 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/security/commoncap.c b/security/commoncap.c
-> > index bacc1111d871..c9d99f8f4c82 100644
-> > --- a/security/commoncap.c
-> > +++ b/security/commoncap.c
-> > @@ -371,10 +371,11 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
-> >  {
-> >  	int size, ret;
-> >  	kuid_t kroot;
-> > +	__le32 nsmagic, magic;
-> >  	uid_t root, mappedroot;
-> >  	char *tmpbuf = NULL;
-> >  	struct vfs_cap_data *cap;
-> > -	struct vfs_ns_cap_data *nscap;
-> > +	struct vfs_ns_cap_data *nscap = NULL;
-> >  	struct dentry *dentry;
-> >  	struct user_namespace *fs_ns;
-> >  
-> > @@ -396,46 +397,61 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
-> >  	fs_ns = inode->i_sb->s_user_ns;
-> >  	cap = (struct vfs_cap_data *) tmpbuf;
-> >  	if (is_v2header((size_t) ret, cap)) {
-> > -		/* If this is sizeof(vfs_cap_data) then we're ok with the
-> > -		 * on-disk value, so return that.  */
-> > -		if (alloc)
-> > -			*buffer = tmpbuf;
-> > -		else
-> > -			kfree(tmpbuf);
-> > -		return ret;
-> > -	} else if (!is_v3header((size_t) ret, cap)) {
-> > -		kfree(tmpbuf);
-> > -		return -EINVAL;
-> > +		root = 0;
-> > +	} else if (is_v3header((size_t) ret, cap)) {
-> > +		nscap = (struct vfs_ns_cap_data *) tmpbuf;
-> > +		root = le32_to_cpu(nscap->rootid);
-> > +	} else {
-> > +		size = -EINVAL;
-> > +		goto out_free;
-> >  	}
-> >  
-> > -	nscap = (struct vfs_ns_cap_data *) tmpbuf;
-> > -	root = le32_to_cpu(nscap->rootid);
-> >  	kroot = make_kuid(fs_ns, root);
-> >  
-> >  	/* If the root kuid maps to a valid uid in current ns, then return
-> >  	 * this as a nscap. */
-> >  	mappedroot = from_kuid(current_user_ns(), kroot);
-> >  	if (mappedroot != (uid_t)-1 && mappedroot != (uid_t)0) {
-> > +		size = sizeof(struct vfs_ns_cap_data);
-> >  		if (alloc) {
-> > -			*buffer = tmpbuf;
-> > +			if (!nscap) {
-> > +				/* v2 -> v3 conversion */
-> > +				nscap = kzalloc(size, GFP_ATOMIC);
-> > +				if (!nscap) {
-> > +					size = -ENOMEM;
-> > +					goto out_free;
-> > +				}
-> > +				nsmagic = VFS_CAP_REVISION_3;
-> > +				magic = le32_to_cpu(cap->magic_etc);
-> > +				if (magic & VFS_CAP_FLAGS_EFFECTIVE)
-> > +					nsmagic |= VFS_CAP_FLAGS_EFFECTIVE;
-> > +				memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
-> > +				nscap->magic_etc = cpu_to_le32(nsmagic);
-> > +			} else {
-> > +				/* use allocated v3 buffer */
-> > +				tmpbuf = NULL;
-> > +			}
-> >  			nscap->rootid = cpu_to_le32(mappedroot);
-> > -		} else
-> > -			kfree(tmpbuf);
-> > -		return size;
-> > +			*buffer = nscap;
-> > +		}
-> > +		goto out_free;
-> >  	}
-> >  
-> >  	if (!rootid_owns_currentns(kroot)) {
-> > -		kfree(tmpbuf);
-> > -		return -EOPNOTSUPP;
-> > +		size = -EOVERFLOW;
+HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ
 
-Why this change?  Christian (cc:d) noticed that this is a user visible change.
-Without this change, if you are in a userns which has different rootid, the
-EOVERFLOW tells vfs_getxattr to vall back to __vfs_getxattr() and so you can
-see the v3 capability with its rootid.
+     domain
+       Isolate from the general SMP balancing and scheduling
+       algorithms. Note that performing domain isolation this way
+       is irreversible: it's not possible to bring back a CPU to
+       the domains once isolated through isolcpus. It's strongly
+       advised to use cpusets instead to disable scheduler load
+       balancing through the "cpuset.sched_load_balance" file.
+       It offers a much more flexible interface where CPUs can
+       move in and out of an isolated set anytime.
 
-With this change, you instead just get EOVERFLOW.
+       You can move a process onto or off an "isolated" CPU via
+       the CPU affinity syscalls or cpuset.
+       <cpu number> begins at 0 and the maximum value is
+       "number of CPUs in system - 1".
 
-> > +		goto out_free;
-> >  	}
-> >  
-> >  	/* This comes from a parent namespace.  Return as a v2 capability */
-> >  	size = sizeof(struct vfs_cap_data);
-> >  	if (alloc) {
-> > -		*buffer = kmalloc(size, GFP_ATOMIC);
-> > -		if (*buffer) {
-> > -			struct vfs_cap_data *cap = *buffer;
-> > -			__le32 nsmagic, magic;
-> > +		if (nscap) {
-> > +			/* v3 -> v2 conversion */
-> > +			cap = kzalloc(size, GFP_ATOMIC);
-> > +			if (!cap) {
-> > +				size = -ENOMEM;
-> > +				goto out_free;
-> > +			}
-> >  			magic = VFS_CAP_REVISION_2;
-> >  			nsmagic = le32_to_cpu(nscap->magic_etc);
-> >  			if (nsmagic & VFS_CAP_FLAGS_EFFECTIVE)
-> > @@ -443,9 +459,12 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
-> >  			memcpy(&cap->data, &nscap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
-> >  			cap->magic_etc = cpu_to_le32(magic);
-> >  		} else {
-> > -			size = -ENOMEM;
-> > +			/* use unconverted v2 */
-> > +			tmpbuf = NULL;
-> >  		}
-> > +		*buffer = cap;
-> >  	}
-> > +out_free:
-> >  	kfree(tmpbuf);
-> >  	return size;
-> >  }
+     managed_irq
+
+       Isolate from being targeted by managed interrupts
+       which have an interrupt mask containing isolated
+       CPUs. The affinity of managed interrupts is
+       handled by the kernel and cannot be changed via
+       the /proc/irq/* interfaces.
+
+       This isolation is best effort and only effective
+       if the automatically assigned interrupt mask of a
+       device queue contains isolated and housekeeping
+       CPUs. If housekeeping CPUs are online then such
+       interrupts are directed to the housekeeping CPU
+       so that IO submitted on the housekeeping CPU
+       cannot disturb the isolated CPU.
+
+       If a queue's affinity mask contains only isolated
+       CPUs then this parameter has no effect on the
+       interrupt routing decision, though interrupts are
+       only delivered when tasks running on those
+       isolated CPUs submit IO. IO submitted on
+       housekeeping CPUs has no influence on those
+       queues.
+
+So as long as the meaning of the flags are respected, seems
+alright.
+
+Nitesh, is there anything preventing this from being fixed
+in userspace ? (as Thomas suggested previously).
+
+
+
