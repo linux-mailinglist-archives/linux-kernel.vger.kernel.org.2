@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA66C307E75
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A863307E7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhA1Ss3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhA1Sph (ORCPT
+        id S232226AbhA1SyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:54:24 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:40403 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhA1SwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:45:37 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EA2C06178A;
-        Thu, 28 Jan 2021 10:44:56 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id d2so7843018edz.3;
-        Thu, 28 Jan 2021 10:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7KqrQELa5Ib7c8yGtm34ctZRTTgOgBVXw/XDTJkuZzM=;
-        b=IXUtJ5Szhp/b70fyb4fSpJB8MQDglir6QCQtRcOrmv1bOwcD30SolN6AWHVYYLzuwS
-         Ph9uWqoX8bPzCBV5yduoFUKIMf/UTx1rJTaO0PZoaUQLZXV3B5EJcQQxwUEA5XuZ2d3s
-         CPYwOuFB3/APwHAQ3lBl+Ic/R+5RplfC+/sBICq2Xs93/BbeEaV7gefkYvgc7UaF9nKw
-         pyXGaplyNyZNFjRpLi+t3zesfnHoGqLYcjCKlX9WVN5eFXEW32BbGusLapPR6aRLoKeC
-         lzeArUreGdckovm7Dnp8qmYzXUyrLZzgSqhE+N8/+Nx25xagQ7UO5FFCOQIdZfC0vK1X
-         vkOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7KqrQELa5Ib7c8yGtm34ctZRTTgOgBVXw/XDTJkuZzM=;
-        b=ogCpXC1JFrPWlzMro0/tNi/7ppNGLQ12sWKglQh68DwsU4Hwua/wq12JoAVsozlJQ5
-         LKnXr4HE61jjgPmCegWsvDcat463jPkB2ZQ7yKPZqLnytQppMDfuFZwAlHNo1bKs/le1
-         fJ1ykVjQIZ+WbvWR6J6TAtrNL1X/gl+2N+sl3nB4Q1z4r7rPul7mmZOZ0iXeyhYGdJFR
-         ReZ2GnzVYLvRnKP8hxtdzcYfPem4iSrAoZCFaVDR+qgrKcgXPYuHbKGU0aXyEubQnxHy
-         C6MJiIKJ7EgZjx568MkP3c0qPhmvXMiHAxh+BHF99JiNf75bLOlyTbW/fQ59GVS+OCuf
-         bRnA==
-X-Gm-Message-State: AOAM530xWh0hcK+GJSM+lwrOlwFYbX8sPLyn0POZRzGlf70LRQhqYY/l
-        X9v7n/5hYb5AWLGVKJkqMVGXaixNpCOxOtek6kg=
-X-Google-Smtp-Source: ABdhPJwYXgpelFGaMKtoBoeGm2MCJD/XU+Wcb7Htk7rD2MP9VZhUJRVc4yNmq5clr0JIitmRa50x0bg55Xw+iNAQrBY=
-X-Received: by 2002:aa7:d1d7:: with SMTP id g23mr1120272edp.6.1611859495550;
- Thu, 28 Jan 2021 10:44:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128171048.644669-1-colin.king@canonical.com>
-In-Reply-To: <20210128171048.644669-1-colin.king@canonical.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 28 Jan 2021 13:44:18 -0500
-Message-ID: <CAF=yD-KvXYW-r69k8Mf80uQ5Ww60HEfT+FrxNbu4FCxOF=Xy0Q@mail.gmail.com>
-Subject: Re: [PATCH] rtlwifi: rtl8192se: remove redundant initialization of
- variable rtstatus
-To:     Colin King <colin.king@canonical.com>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 28 Jan 2021 13:52:19 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 28 Jan 2021 10:48:57 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Jan 2021 10:48:55 -0800
+X-QCInternal: smtphost
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 29 Jan 2021 00:18:17 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id 714E321A02; Fri, 29 Jan 2021 00:18:16 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        david.brown@linaro.org, devicetree@vger.kernel.org,
+        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, mark.rutland@arm.com,
+        mturquette@baylibre.com, ohad@wizery.com, robh+dt@kernel.org,
+        sricharan@codeaurora.org, nprakash@codeaurora.org,
+        gokulsri@codeaurora.org
+Subject: [PATCH v9 4/4] remoteproc: qcom: wcss: explicitly request exclusive reset control
+Date:   Fri, 29 Jan 2021 00:18:15 +0530
+Message-Id: <1611859695-11824-5-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611859695-11824-1-git-send-email-gokulsri@codeaurora.org>
+References: <1611859695-11824-1-git-send-email-gokulsri@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:15 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable rtstatu is being initialized with a value that is never
-> read and it is being updated later with a new value.  The initialization
-> is redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+From: Govind Singh <govinds@codeaurora.org>
 
-(for netdrv)
+Use request exclusive reset control for wcss reset controls.
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+---
+ drivers/remoteproc/qcom_q6v5_wcss.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c b/drivers/remoteproc/qcom_q6v5_wcss.c
+index 7a6cadc..7628259 100644
+--- a/drivers/remoteproc/qcom_q6v5_wcss.c
++++ b/drivers/remoteproc/qcom_q6v5_wcss.c
+@@ -788,21 +788,21 @@ static int q6v5_wcss_init_reset(struct q6v5_wcss *wcss,
+ 	struct device *dev = wcss->dev;
+ 
+ 	if (desc->aon_reset_required) {
+-		wcss->wcss_aon_reset = devm_reset_control_get(dev, "wcss_aon_reset");
++		wcss->wcss_aon_reset = devm_reset_control_get_exclusive(dev, "wcss_aon_reset");
+ 		if (IS_ERR(wcss->wcss_aon_reset)) {
+ 			dev_err(wcss->dev, "fail to acquire wcss_aon_reset\n");
+ 			return PTR_ERR(wcss->wcss_aon_reset);
+ 		}
+ 	}
+ 
+-	wcss->wcss_reset = devm_reset_control_get(dev, "wcss_reset");
++	wcss->wcss_reset = devm_reset_control_get_exclusive(dev, "wcss_reset");
+ 	if (IS_ERR(wcss->wcss_reset)) {
+ 		dev_err(wcss->dev, "unable to acquire wcss_reset\n");
+ 		return PTR_ERR(wcss->wcss_reset);
+ 	}
+ 
+ 	if (desc->wcss_q6_reset_required) {
+-		wcss->wcss_q6_reset = devm_reset_control_get(dev, "wcss_q6_reset");
++		wcss->wcss_q6_reset = devm_reset_control_get_exclusive(dev, "wcss_q6_reset");
+ 		if (IS_ERR(wcss->wcss_q6_reset)) {
+ 			dev_err(wcss->dev, "unable to acquire wcss_q6_reset\n");
+ 			return PTR_ERR(wcss->wcss_q6_reset);
+-- 
+2.7.4
+
