@@ -2,117 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762BD307B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B928D307BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhA1RAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:00:21 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:54680 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232683AbhA1Q7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:59:04 -0500
-Received: by mail-il1-f199.google.com with SMTP id l68so5203157ild.21
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:58:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yHR4pCE/W7QS+DPSKPkNiMts5F725B7gfmojeRI0ao4=;
-        b=ezjI9BdrhIq/frcbMOUciaqyfdxTiAxng+d/8736fRY4WScFUqGdBT0EXPMluiE/Pz
-         HQvMI61B/i6cnXgUR9P2y0c1aGwd2169eT8ff/9kiRhbuTZzBotbimwCFs3vOftvJJU9
-         U+lHDPO/JytB6FsrJ5iaU8BUSKrYwDuz1fAPxX18BZlmX7IKnlU0BrDT9Ik5dhRXzAr0
-         0uLz6FHfO6IFxKSjIgoBdQ5mVBzyLdx1akv+ASDiNsVm/FIBBSViSZ2O65u4uMIzpnhn
-         gIuMd1PC4aLLKG08MwhTlMnUYYGmhXdHMBzX7I8k8C+WWOFXrABu3XLwXX3a7IIZ2NRR
-         CEtg==
-X-Gm-Message-State: AOAM5305+8dneuO1DAUgTHd274ZizwWUUBAn7WEsON4BLNsX6Y+ERo54
-        ANRd/6G+RnPzyZ/+RJjDDySvKiHfSe/oxBp9Pt6XT6vuzGQ/
-X-Google-Smtp-Source: ABdhPJwM3LuJJ/YwC8tCeeJ0Htq5Yf5bMGXJ8EBz8+wSQqjjJucZx+eIN38q39fTfDU10XTF9PyFYMEd39JFh9ZeJnsnVagIjmPP
+        id S232801AbhA1RHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:07:52 -0500
+Received: from mail.hallyn.com ([178.63.66.53]:40000 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232835AbhA1RGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:06:17 -0500
+X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 12:06:16 EST
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 5334E11D4; Thu, 28 Jan 2021 10:58:52 -0600 (CST)
+Date:   Thu, 28 Jan 2021 10:58:52 -0600
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH 2/2] security.capability: fix conversions on getxattr
+Message-ID: <20210128165852.GA20974@mail.hallyn.com>
+References: <20210119162204.2081137-1-mszeredi@redhat.com>
+ <20210119162204.2081137-3-mszeredi@redhat.com>
+ <8735yw8k7a.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b38f:: with SMTP id p15mr151485jan.83.1611853103318;
- Thu, 28 Jan 2021 08:58:23 -0800 (PST)
-Date:   Thu, 28 Jan 2021 08:58:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a74f5b05b9f8cb83@google.com>
-Subject: WARNING in cfg80211_dev_rename
-From:   syzbot <syzbot+ed107c5fa3e21cdcd86e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735yw8k7a.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jan 19, 2021 at 07:34:49PM -0600, Eric W. Biederman wrote:
+> Miklos Szeredi <mszeredi@redhat.com> writes:
+> 
+> > If a capability is stored on disk in v2 format cap_inode_getsecurity() will
+> > currently return in v2 format unconditionally.
+> >
+> > This is wrong: v2 cap should be equivalent to a v3 cap with zero rootid,
+> > and so the same conversions performed on it.
+> >
+> > If the rootid cannot be mapped v3 is returned unconverted.  Fix this so
+> > that both v2 and v3 return -EOVERFLOW if the rootid (or the owner of the fs
+> > user namespace in case of v2) cannot be mapped in the current user
+> > namespace.
+> 
+> This looks like a good cleanup.
 
-syzbot found the following issue on:
+Sorry, I'm not following.  Why is this a good cleanup?  Why should
+the xattr be shown as faked v3 in this case?
 
-HEAD commit:    d1f3bdd4 net: dsa: rtl8366rb: standardize init jam tables
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d2308cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b5f48fca2e44a9a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=ed107c5fa3e21cdcd86e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1248bc54d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12174ad8d00000
+A separate question below.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ed107c5fa3e21cdcd86e@syzkaller.appspotmail.com
+> I do wonder how well this works with stacking.  In particular
+> ovl_xattr_set appears to call vfs_getxattr without overriding the creds.
+> What the purpose of that is I haven't quite figured out.  It looks like
+> it is just a probe to see if an xattr is present so maybe it is ok.
+> 
+> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> >
+> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> > ---
+> >  security/commoncap.c | 67 ++++++++++++++++++++++++++++----------------
+> >  1 file changed, 43 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/security/commoncap.c b/security/commoncap.c
+> > index bacc1111d871..c9d99f8f4c82 100644
+> > --- a/security/commoncap.c
+> > +++ b/security/commoncap.c
+> > @@ -371,10 +371,11 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
+> >  {
+> >  	int size, ret;
+> >  	kuid_t kroot;
+> > +	__le32 nsmagic, magic;
+> >  	uid_t root, mappedroot;
+> >  	char *tmpbuf = NULL;
+> >  	struct vfs_cap_data *cap;
+> > -	struct vfs_ns_cap_data *nscap;
+> > +	struct vfs_ns_cap_data *nscap = NULL;
+> >  	struct dentry *dentry;
+> >  	struct user_namespace *fs_ns;
+> >  
+> > @@ -396,46 +397,61 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
+> >  	fs_ns = inode->i_sb->s_user_ns;
+> >  	cap = (struct vfs_cap_data *) tmpbuf;
+> >  	if (is_v2header((size_t) ret, cap)) {
+> > -		/* If this is sizeof(vfs_cap_data) then we're ok with the
+> > -		 * on-disk value, so return that.  */
+> > -		if (alloc)
+> > -			*buffer = tmpbuf;
+> > -		else
+> > -			kfree(tmpbuf);
+> > -		return ret;
+> > -	} else if (!is_v3header((size_t) ret, cap)) {
+> > -		kfree(tmpbuf);
+> > -		return -EINVAL;
+> > +		root = 0;
+> > +	} else if (is_v3header((size_t) ret, cap)) {
+> > +		nscap = (struct vfs_ns_cap_data *) tmpbuf;
+> > +		root = le32_to_cpu(nscap->rootid);
+> > +	} else {
+> > +		size = -EINVAL;
+> > +		goto out_free;
+> >  	}
+> >  
+> > -	nscap = (struct vfs_ns_cap_data *) tmpbuf;
+> > -	root = le32_to_cpu(nscap->rootid);
+> >  	kroot = make_kuid(fs_ns, root);
+> >  
+> >  	/* If the root kuid maps to a valid uid in current ns, then return
+> >  	 * this as a nscap. */
+> >  	mappedroot = from_kuid(current_user_ns(), kroot);
+> >  	if (mappedroot != (uid_t)-1 && mappedroot != (uid_t)0) {
+> > +		size = sizeof(struct vfs_ns_cap_data);
+> >  		if (alloc) {
+> > -			*buffer = tmpbuf;
+> > +			if (!nscap) {
+> > +				/* v2 -> v3 conversion */
+> > +				nscap = kzalloc(size, GFP_ATOMIC);
+> > +				if (!nscap) {
+> > +					size = -ENOMEM;
+> > +					goto out_free;
+> > +				}
+> > +				nsmagic = VFS_CAP_REVISION_3;
+> > +				magic = le32_to_cpu(cap->magic_etc);
+> > +				if (magic & VFS_CAP_FLAGS_EFFECTIVE)
+> > +					nsmagic |= VFS_CAP_FLAGS_EFFECTIVE;
+> > +				memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
+> > +				nscap->magic_etc = cpu_to_le32(nsmagic);
+> > +			} else {
+> > +				/* use allocated v3 buffer */
+> > +				tmpbuf = NULL;
+> > +			}
+> >  			nscap->rootid = cpu_to_le32(mappedroot);
+> > -		} else
+> > -			kfree(tmpbuf);
+> > -		return size;
+> > +			*buffer = nscap;
+> > +		}
+> > +		goto out_free;
+> >  	}
+> >  
+> >  	if (!rootid_owns_currentns(kroot)) {
+> > -		kfree(tmpbuf);
+> > -		return -EOPNOTSUPP;
+> > +		size = -EOVERFLOW;
 
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor171'.
-------------[ cut here ]------------
-RTNL: assertion failed at net/wireless/core.c (131)
-WARNING: CPU: 1 PID: 8485 at net/wireless/core.c:131 cfg80211_dev_rename+0x1f5/0x230 net/wireless/core.c:131
-Modules linked in:
-CPU: 1 PID: 8485 Comm: syz-executor171 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cfg80211_dev_rename+0x1f5/0x230 net/wireless/core.c:131
-Code: 0f 85 5b fe ff ff e8 ca 92 3e f9 ba 83 00 00 00 48 c7 c6 e0 52 61 8a 48 c7 c7 20 53 61 8a c6 05 df 5c bb 04 01 e8 88 05 86 00 <0f> 0b e9 30 fe ff ff e8 4f 70 81 f9 e9 4d fe ff ff e8 45 70 81 f9
-RSP: 0018:ffffc900015ef488 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffc900015ef680 RCX: 0000000000000000
-RDX: ffff888021490000 RSI: ffffffff815b6d25 RDI: fffff520002bde83
-RBP: ffff88801b498000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815afefe R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888013a58420 R14: ffff88801b4ecbd0 R15: ffff88801b498000
-FS:  0000000001f55880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007faf23dcc000 CR3: 000000001c3ca000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nl80211_set_wiphy+0x22b/0x2b80 net/wireless/nl80211.c:3231
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440a29
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b 11 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe71735868 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440a29
-RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000402010
-R13: 00000000004020a0 R14: 0000000000000000 R15: 0000000000000000
+Why this change?  Christian (cc:d) noticed that this is a user visible change.
+Without this change, if you are in a userns which has different rootid, the
+EOVERFLOW tells vfs_getxattr to vall back to __vfs_getxattr() and so you can
+see the v3 capability with its rootid.
 
+With this change, you instead just get EOVERFLOW.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> > +		goto out_free;
+> >  	}
+> >  
+> >  	/* This comes from a parent namespace.  Return as a v2 capability */
+> >  	size = sizeof(struct vfs_cap_data);
+> >  	if (alloc) {
+> > -		*buffer = kmalloc(size, GFP_ATOMIC);
+> > -		if (*buffer) {
+> > -			struct vfs_cap_data *cap = *buffer;
+> > -			__le32 nsmagic, magic;
+> > +		if (nscap) {
+> > +			/* v3 -> v2 conversion */
+> > +			cap = kzalloc(size, GFP_ATOMIC);
+> > +			if (!cap) {
+> > +				size = -ENOMEM;
+> > +				goto out_free;
+> > +			}
+> >  			magic = VFS_CAP_REVISION_2;
+> >  			nsmagic = le32_to_cpu(nscap->magic_etc);
+> >  			if (nsmagic & VFS_CAP_FLAGS_EFFECTIVE)
+> > @@ -443,9 +459,12 @@ int cap_inode_getsecurity(struct inode *inode, const char *name, void **buffer,
+> >  			memcpy(&cap->data, &nscap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
+> >  			cap->magic_etc = cpu_to_le32(magic);
+> >  		} else {
+> > -			size = -ENOMEM;
+> > +			/* use unconverted v2 */
+> > +			tmpbuf = NULL;
+> >  		}
+> > +		*buffer = cap;
+> >  	}
+> > +out_free:
+> >  	kfree(tmpbuf);
+> >  	return size;
+> >  }
