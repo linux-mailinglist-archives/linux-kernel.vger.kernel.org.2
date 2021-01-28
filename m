@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C16E3076D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9F53076D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhA1NMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:12:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:58744 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232069AbhA1NLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:11:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A95712FC;
-        Thu, 28 Jan 2021 05:10:59 -0800 (PST)
-Received: from e125579.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 264D63F719;
-        Thu, 28 Jan 2021 05:10:56 -0800 (PST)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Hillf Danton <hdanton@sina.com>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 3/3] sched/core: Update task_prio() function header
-Date:   Thu, 28 Jan 2021 14:10:40 +0100
-Message-Id: <20210128131040.296856-4-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210128131040.296856-1-dietmar.eggemann@arm.com>
-References: <20210128131040.296856-1-dietmar.eggemann@arm.com>
+        id S232000AbhA1NML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:12:11 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:39718 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231797AbhA1NLj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:11:39 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l574Y-00053e-CY; Thu, 28 Jan 2021 13:10:54 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] media: uvcvideo: Fix memory leak when gpiod_to_irq fails
+Date:   Thu, 28 Jan 2021 13:10:54 +0000
+Message-Id: <20210128131054.637715-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description of the RT offset and the values for 'normal' tasks needs
-update. Moreover there are DL tasks now.
-task_prio() has to stay like it is to guarantee compatibility with the
-/proc/<pid>/stat priority field:
+From: Colin Ian King <colin.king@canonical.com>
 
-  # cat /proc/<pid>/stat | awk '{ print $18; }'
+Currently when the call to gpiod_to_irq fails the error return
+path does not kfree the recently allocated object 'unit'. Fix this
+by kfree'ing it before returning.
 
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Addresses-Coverity: ("Resource leak")
+Fixes: 2886477ff987 ("media: uvcvideo: Implement UVC_EXT_GPIO_UNIT")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- kernel/sched/core.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/usb/uvc/uvc_driver.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 625ec1e12064..be3a956c2d23 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5602,8 +5602,12 @@ SYSCALL_DEFINE1(nice, int, increment)
-  * @p: the task in question.
-  *
-  * Return: The priority value as seen by users in /proc.
-- * RT tasks are offset by -200. Normal tasks are centered
-- * around 0, value goes from -16 to +15.
-+ *
-+ * sched policy         return value   kernel prio    user prio/nice
-+ *
-+ * normal, batch, idle     [0 ... 39]  [100 ... 139]          0/[-20 ... 19]
-+ * fifo, rr             [-2 ... -100]     [98 ... 0]  [1 ... 99]
-+ * deadline                     -101             -1           0
-  */
- int task_prio(const struct task_struct *p)
- {
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 1abc122a0977..56f867790ef1 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -1543,6 +1543,7 @@ static int uvc_gpio_parse(struct uvc_device *dev)
+ 		if (irq != EPROBE_DEFER)
+ 			dev_err(&dev->udev->dev,
+ 				"No IRQ for privacy GPIO (%d)\n", irq);
++		kfree(unit);
+ 		return irq;
+ 	}
+ 
 -- 
-2.25.1
+2.29.2
 
