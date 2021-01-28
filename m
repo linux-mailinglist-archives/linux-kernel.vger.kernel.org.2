@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E5C306BB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B97306BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhA1Deh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhA1Dee (ORCPT
+        id S229913AbhA1Dfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:35:41 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:29326 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhA1Dfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:34:34 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562A1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:33:54 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id g1so4978901edu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:33:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lg0aZvX/Z7DG/BSJJpeI6lt7+vzjbMgpBvQcOOM0A9M=;
-        b=rXnNgGYgmLL3oBvQhr7H/Xa47h/d32c0XCMJrctZo7OR3DjiOlLrjZLDQdDLUZNRAq
-         JGZPdDvFSFb1AW1thMVEcU1sDUL3WjOyuihQ/LOkPBVXn0gh7OX4RVW6R1SDLN3u/D+p
-         SEf+S39VyXR6fqt0G3tzpl8NDjvXaIS/JQZ65IDrJFqn/t6bO7dlursPqlJgnjJnlSzo
-         22m9OYuZNgP1mUxgjT1TiXj03I2cFz4WrMK3qJip69Qsrto3+Hryk3/1NDds6edBeWcg
-         eWKn0X2PGegK+eGqLP/dN0x5Gtnk8HJPHHvDEKajUmNOe3lJaCLmBcjoCRT48Etn7T2p
-         OQag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lg0aZvX/Z7DG/BSJJpeI6lt7+vzjbMgpBvQcOOM0A9M=;
-        b=XchWZstWOB/kKoeZ3IecdQpaxu1XtIHM/QkqzytSVTgSjezklZtF+F5CvIQtUxi8Hk
-         YsA8G3elWEZANPJrhp89BHwv+fUq5K0vWzQMWGCR3M7QnVJfJfMXdhXT8UI/l3B3vdFi
-         lYTv1VfXadhbtALU67TFUuFPt1+H2lBImQAK+54EGFXxvUWwuJYnRAfk0Q11oZhpNI07
-         gzwlnF7/+P+J45HI30L/qS0IA5FydHe1oAGYqDKCUYmcCVuCESFrKNhvtK9bs8siFyiw
-         ZlUwIaYvNHAmfQPcgDDcdb3gn9WJij2OPKBZ0ERnb3MgHS7LrVr0Tl8OZ7dJRDQgWgsY
-         l9mQ==
-X-Gm-Message-State: AOAM531XuCMSVXvjMwSyThK2iv4Wes5BfH24+m51/Xy6evZDzs8txOQL
-        mlew+QfSwIz6UWlbsSdWivsud3MbCH/TDUM0WE5q
-X-Google-Smtp-Source: ABdhPJxzQzlMQINkQGtgusn8x3KlFXQ/4GU7tlgwwblRaGpA95RboHliLDm1HFhptD2hzonh8LpJDVD0O66OR92ZFQo=
-X-Received: by 2002:a05:6402:34e:: with SMTP id r14mr12133430edw.269.1611804832864;
- Wed, 27 Jan 2021 19:33:52 -0800 (PST)
+        Wed, 27 Jan 2021 22:35:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611804918; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=k799vAWQKhIKDzFLTFOrNxO82k2RAuyDNRkNXxXXN5A=;
+ b=lOigCKwb4wo951H1cs7oNrpD8r985p0JGIaKfLm5ivrTlzBUSBJQB8wh4FA+sjtCBZbBJ2/Z
+ 6B8fVcqODSSZ/lWuwnZ5wp8dp3ZLFW8CJ6Gsju6r3MXzFXyxsn3BLXzgyErDGGDQQbXgCR/A
+ +LYpQUsWOzkzOLQV9WN7Bexeb0o=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 601230d7d75e1218e355a531 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 03:34:47
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 39673C43462; Thu, 28 Jan 2021 03:34:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 565E7C433CA;
+        Thu, 28 Jan 2021 03:34:45 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210121200150.2448-1-nramas@linux.microsoft.com>
- <CAHC9VhT13nhaHY3kJZ6ni4rjUffSG-hD5vOfK-q2KfsVFOtaCg@mail.gmail.com> <c61e3ea5-7412-7e39-4d71-945f906d68a3@linux.microsoft.com>
-In-Reply-To: <c61e3ea5-7412-7e39-4d71-945f906d68a3@linux.microsoft.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 27 Jan 2021 22:33:41 -0500
-Message-ID: <CAHC9VhS2j4cAqdPtUHzHcc_ShLAP7cndVurcpcLj9G1cAxSMMQ@mail.gmail.com>
-Subject: Re: [PATCH] selinux: measure state and policy capabilities
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 28 Jan 2021 11:34:45 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] scsi: ufs: Give clk scaling min gear a value
+In-Reply-To: <20210128032807.GA5254@yoga>
+References: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
+ <20210128032807.GA5254@yoga>
+Message-ID: <8c0d0edebbfaa0fdd47acb6d180fa84d@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 12:04 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
-> On 1/22/21 1:21 PM, Paul Moore wrote:
+On 2021-01-28 11:28, Bjorn Andersson wrote:
+> On Wed 27 Jan 20:49 CST 2021, Can Guo wrote:
+> 
+>> The initialization of clk_scaling.min_gear was removed by mistake. 
+>> This
+>> change adds it back, otherwise clock scaling down would fail.
+>> 
+> 
+> Thanks for the patch Can, it solves the problem I'm seeing!
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> 
+> And perhaps a:
+> 
+> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
 
-...
+I missed the two lines due to I was not working on the latest
+scsi code tip - I should have tested it based on commit 29b87e92a216
+("scsi: ufs: Stop hardcoding the scale down gear"), my bad.
 
-> >> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> >> index 644b17ec9e63..879a0d90615d 100644
-> >> --- a/security/selinux/hooks.c
-> >> +++ b/security/selinux/hooks.c
-> >> @@ -7407,6 +7408,10 @@ int selinux_disable(struct selinux_state *state)
-> >>
-> >>          selinux_mark_disabled(state);
-> >>
-> >> +       mutex_lock(&state->policy_mutex);
-> >> +       selinux_ima_measure_state(state);
-> >> +       mutex_unlock(&state->policy_mutex);
-> >
-> > I'm not sure if this affects your decision to include this action in
-> > the measurements, but this function is hopefully going away in the not
-> > too distant future as we do away with support for disabling SELinux at
-> > runtime.
-> >
-> > FWIW, I'm not sure it's overly useful anyway; you only get here if you
-> > never had any SELinux policy/state configured and you decide to
-> > disable SELinux instead of loading a policy.  However, I've got no
-> > objection to this code.
->
-> If support for disabling SELinux at runtime will be removed, then I
-> don't see a reason to trigger a measurement here. I'll remove this
-> measurement.
+Anyways, thanks for the test!
 
-It's currently marked as deprecated, see
-Documentation/ABI/obsolete/sysfs-selinux-disable.
+Regards,
+Can Guo.
 
--- 
-paul moore
-www.paul-moore.com
+> Regards,
+> Bjorn
+> 
+>> Fixes: 4543d9d78227 ("scsi: ufs: Refactor 
+>> ufshcd_init/exit_clk_scaling/gating()")
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 36bcbb3..8ef6796 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -1602,6 +1602,9 @@ static void ufshcd_init_clk_scaling(struct 
+>> ufs_hba *hba)
+>>  	if (!ufshcd_is_clkscaling_supported(hba))
+>>  		return;
+>> 
+>> +	if (!hba->clk_scaling.min_gear)
+>> +		hba->clk_scaling.min_gear = UFS_HS_G1;
+>> +
+>>  	INIT_WORK(&hba->clk_scaling.suspend_work,
+>>  		  ufshcd_clk_scaling_suspend_work);
+>>  	INIT_WORK(&hba->clk_scaling.resume_work,
+>> --
+>> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+>> Linux Foundation Collaborative Project.
+>> 
