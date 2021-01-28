@@ -2,87 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729D53073BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9794E3073C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhA1K3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S232311AbhA1KaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232098AbhA1K2x (ORCPT
+        with ESMTP id S229774AbhA1KaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:28:53 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE264C061573;
-        Thu, 28 Jan 2021 02:28:12 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id c2so5953078edr.11;
-        Thu, 28 Jan 2021 02:28:12 -0800 (PST)
+        Thu, 28 Jan 2021 05:30:08 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597E3C061573;
+        Thu, 28 Jan 2021 02:29:27 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id s18so5675012ljg.7;
+        Thu, 28 Jan 2021 02:29:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jQ5Hlu/ZfdYUm4Mstk8XMC0psWWUDqeKF2vH90g7FI0=;
-        b=sm8mLVrrlk3rdtTrwvsW4NGujP3HAlJZlmofB65pxL5iNBh8s/6G2gfxIIjIR9/fzn
-         8X6rkeR0NP3Redik3XApoPkjp+1aWf/gmecBUxOvjLqNQ7RLxumhKUhtsqZVuhJ66Bg2
-         klCWRlh0QtlkeXa3LnmHlGOiKj0yMvNJF4wWBzlq+9PPMAnfh5m2dOBJC4SwVsesyCfE
-         JukSQpf/QCjpQFzZAK/7mz6v9h6RwgrUaC1JVxSuO9eh9AymygsGMqLcPrfNMAAsuzey
-         QB2K6T4g023tUEzzG7yCyll3l+ZRKsetJx6YIohdMB5wXzV9QFoJ9Y+KkJnU1Usnzo5U
-         /XxQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yMLTIPyc/LiQ2bi7uEqiU4NDimPedT3k+buADRHwdTU=;
+        b=QFePxmMTPUq6l/K2kvKuT5EUpnlXD+oMUphHFUWQphUh154VEiEKNgki2GaMRiCFPh
+         2u1v1nC9swFExYJhcS/GzSu+SaQ38wE8qPaQKanwn6GfSKrX9bd2MeC+F0GnXxHipsOM
+         Ldvv3CnWjpXEA0XLRAWLaDCYyK+zdYztlgb9fZOEEE6W9RisUGHLpd10PBfdlBNEjoLV
+         y9fLucwUqTi9/kniAJHWUyd3Ak1dJ99kaWkPknEHlxiav4ya8ZAfMSau8rN4eETsEC4Y
+         vWvWPpN1PwDkteAGMB5YRZ4f9YKLEgAThZPP+13eR+cNnJP/Vba/7lOcqpBTBvDBjCEZ
+         JdkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jQ5Hlu/ZfdYUm4Mstk8XMC0psWWUDqeKF2vH90g7FI0=;
-        b=FiBAXp7jfsJEVbFR37j2P+obuAwoffxm4ULoB4nihLQy/HkxXa2MHc7+DFvQ6WX/6j
-         y7q1WTljJ06ZUSrkajcyHt9pEXPTmrk9IG34FSS4CdFi+UkJ3qhh4RQu85klskRfOHxL
-         3QpK4gdH542qPkc8U6bEOBJkfurKCnQKmN63+KTzwK6ma/Q0NK5uT+Ntc35xtk+4sdUG
-         9t4OFPm530BeLWe9C9+micjT11TwcnTjcSZHteK5in22s7z9iWMfnTcnbStFhKCXoNxp
-         fZ0pN6gYWzs3vzbnaUBtlVk0TWjlOY5LcdEUK8Z1OkoFkhVWi9C6K1Sei8tWVNoBEYAi
-         /1Bg==
-X-Gm-Message-State: AOAM533GPHE9dEPyI/rdjjH3agVvcINFlRuxhkX5aAcSZSEbhOY2AwGD
-        EdsVYm5uG/7G5m0kNULFW8Cb2ssFvFg=
-X-Google-Smtp-Source: ABdhPJypo1mcpMMpDB4PqZKFmSy/mCBuuqGMWZhFqSfRu0ZmlaavYLQoxiSuoBENI6C97sV3WkXjLA==
-X-Received: by 2002:a50:f288:: with SMTP id f8mr13159540edm.388.1611829691430;
-        Thu, 28 Jan 2021 02:28:11 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id l1sm2054762eje.12.2021.01.28.02.28.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 Jan 2021 02:28:10 -0800 (PST)
-Message-ID: <7436d052ddf9e59cfa7358069d3e0f3a84f89777.camel@gmail.com>
-Subject: Re: [PATCH v2] scsi: ufs: Give clk scaling min gear a value
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, jaegeuk@kernel.org,
-        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, bjorn.andersson@linaro.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 Jan 2021 11:28:08 +0100
-In-Reply-To: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
-References: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yMLTIPyc/LiQ2bi7uEqiU4NDimPedT3k+buADRHwdTU=;
+        b=RE7xD47nKA5UyYh3CXVBYeS+j9Mc2TJQ6HuCjnU/dTdpxzL8Ti0Lzgv5ksPnMQ78+I
+         V32b5uQG9vsyM/7sh0pHWDpyfKa8ksK82hZHvXn9VAZv1o7AZ11/Xx6DijcfZ9uHaDT1
+         /cTrGuKvO6CIfmVm/LrxxHk9dv2FtJkxMKHGyn6I2Jdz7/u5N2Je2pqT0jDHHsWhz7wK
+         VXiq7Ywrh53XR7141RUguWma04B4FYq2Ix587PeatDpvkvP892nCCtevds/F9LXn+ANv
+         R4G5V3WWaQ30oDBknK6Fxp+ezI7prR+dw8tAGsNHfBJNXFSeJtjmHVXNFL/mH4xMpNhX
+         hheQ==
+X-Gm-Message-State: AOAM531kpGIJm5/SYmlBTVk/4qIQmUTtuBjg6QhR45mWiWQfL10BoAhF
+        WOarxVhS7wx7YH5u7f5SsG40s3dGyBJAGIK81yvfdJwSoLw=
+X-Google-Smtp-Source: ABdhPJz1AmHnLn2KLgRF4r4Hmx5P13kWS8+cqvl6PWUGuwWzFvBAPV3paGe7pBeKMz9IdzvJVas6y7g+gElcNSvmvcY=
+X-Received: by 2002:a2e:9b57:: with SMTP id o23mr8388781ljj.314.1611829765892;
+ Thu, 28 Jan 2021 02:29:25 -0800 (PST)
+MIME-Version: 1.0
+References: <1611823636-18377-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1611823636-18377-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Thu, 28 Jan 2021 21:29:14 +1100
+Message-ID: <CAGRGNgWM=dQx4suXZJX+u6m0i4=Qx3hZFZWdWJ8VO+FG_edH2w@mail.gmail.com>
+Subject: Re: [PATCH] b43: Remove redundant code
+To:     Abaci Team <abaci-bugfix@linux.alibaba.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        b43-dev <b43-dev@lists.infradead.org>, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-27 at 18:49 -0800, Can Guo wrote:
-> The initialization of clk_scaling.min_gear was removed by mistake.
-> This
-> change adds it back, otherwise clock scaling down would fail.
-> 
-> Fixes: 4543d9d78227 ("scsi: ufs: Refactor
-> ufshcd_init/exit_clk_scaling/gating()")
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
+Hi ..... <insert name here>,
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-Tested-by: Bean Huo <beanhuo@micron.com>
+(No proper name in the from field or signed-off-by, as you're already aware)
 
+On Thu, Jan 28, 2021 at 7:53 PM Abaci Team
+<abaci-bugfix@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./drivers/net/wireless/broadcom/b43/phy_n.c:4640:2-4: WARNING: possible
+> condition with no effect (if == else).
+>
+> ./drivers/net/wireless/broadcom/b43/phy_n.c:4606:2-4: WARNING: possible
+> condition with no effect (if == else).
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
+> Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+> ---
+>  drivers/net/wireless/broadcom/b43/phy_n.c | 16 ----------------
+>  1 file changed, 16 deletions(-)
+>
+> diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
+> index b669dff..39a335f 100644
+> --- a/drivers/net/wireless/broadcom/b43/phy_n.c
+> +++ b/drivers/net/wireless/broadcom/b43/phy_n.c
+> @@ -4601,16 +4601,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
+>         if (nphy->hang_avoid)
+>                 b43_nphy_stay_in_carrier_search(dev, 1);
+>
+> -       if (nphy->gband_spurwar_en) {
+> -               /* TODO: N PHY Adjust Analog Pfbw (7) */
+> -               if (channel == 11 && b43_is_40mhz(dev)) {
+> -                       ; /* TODO: N PHY Adjust Min Noise Var(2, tone, noise)*/
+> -               } else {
+> -                       ; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
+> -               }
+> -               /* TODO: N PHY Adjust CRS Min Power (0x1E) */
+> -       }
+
+I'm not sure how useful this patch is, even though it is technically correct.
+
+The b43 driver was almost entirely reverse engineered from various
+sources so there's still a lot of places, like this, where placeholder
+comments were written until the actual code that would have been here
+was ready / reverse engineered.
+
+That said, I believe the driver works well enough for all it's users
+and has not seen any significant changes in a long time.
+
+Thanks,
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
+
+On Thu, Jan 28, 2021 at 7:53 PM Abaci Team
+<abaci-bugfix@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./drivers/net/wireless/broadcom/b43/phy_n.c:4640:2-4: WARNING: possible
+> condition with no effect (if == else).
+>
+> ./drivers/net/wireless/broadcom/b43/phy_n.c:4606:2-4: WARNING: possible
+> condition with no effect (if == else).
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
+> Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+> ---
+>  drivers/net/wireless/broadcom/b43/phy_n.c | 16 ----------------
+>  1 file changed, 16 deletions(-)
+>
+> diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
+> index b669dff..39a335f 100644
+> --- a/drivers/net/wireless/broadcom/b43/phy_n.c
+> +++ b/drivers/net/wireless/broadcom/b43/phy_n.c
+> @@ -4601,16 +4601,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
+>         if (nphy->hang_avoid)
+>                 b43_nphy_stay_in_carrier_search(dev, 1);
+>
+> -       if (nphy->gband_spurwar_en) {
+> -               /* TODO: N PHY Adjust Analog Pfbw (7) */
+> -               if (channel == 11 && b43_is_40mhz(dev)) {
+> -                       ; /* TODO: N PHY Adjust Min Noise Var(2, tone, noise)*/
+> -               } else {
+> -                       ; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
+> -               }
+> -               /* TODO: N PHY Adjust CRS Min Power (0x1E) */
+> -       }
+> -
+>         if (nphy->aband_spurwar_en) {
+>                 if (channel == 54) {
+>                         tone[0] = 0x20;
+> @@ -4636,12 +4626,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
+>                         tone[0] = 0;
+>                         noise[0] = 0;
+>                 }
+> -
+> -               if (!tone[0] && !noise[0]) {
+> -                       ; /* TODO: N PHY Adjust Min Noise Var(1, tone, noise)*/
+> -               } else {
+> -                       ; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
+> -               }
+>         }
+>
+>         if (nphy->hang_avoid)
+> --
+> 1.8.3.1
+>
+
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
