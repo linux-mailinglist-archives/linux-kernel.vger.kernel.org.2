@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B09C307FCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E96307FCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhA1Uju convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 15:39:50 -0500
-Received: from mga12.intel.com ([192.55.52.136]:15177 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhA1Ujq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:39:46 -0500
-IronPort-SDR: carf5NRYFQYEVCuNUFcVV8MLmj0xrdGRFHBBvY9FDmUu0SygaOeo3YF+jva7hfU257XtEpkCKv
- zy7b/PhlICEQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="159482356"
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="159482356"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 12:38:59 -0800
-IronPort-SDR: AN5IBw3CGhrbXQIiJONhVKfE6RhYzSuYkMGfX4kV1hMTF88xP6YqityZNgJZMIMqP3Be3CLRPi
- sIIZ8hvN/IAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="354315727"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jan 2021 12:38:56 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 28 Jan 2021 12:38:55 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 28 Jan 2021 12:38:55 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.002;
- Thu, 28 Jan 2021 12:38:55 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: removal of the ia64 tree
-Thread-Topic: linux-next: removal of the ia64 tree
-Thread-Index: AQHW9a8nWF9ZnaJl5EOokyd9Zq820qo9f4/A
-Date:   Thu, 28 Jan 2021 20:38:54 +0000
-Message-ID: <9e4eadad78f644a5ba22b2c11bee91ad@intel.com>
-References: <20210129065237.39b2bea3@canb.auug.org.au>
-In-Reply-To: <20210129065237.39b2bea3@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231285AbhA1Ulh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229825AbhA1Uld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 15:41:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED9CC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 12:40:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=dT3QLKJD/CzMv+auklBWXRdST9SnwaARKpGCe857cJ0=; b=nuQOLXVqY2MjTtXxAILYKw41tk
+        jyJg8pr2cEU+9hhmxv4hQT8RrWGzu+1djgNfxn/1WaZbw+lRYL4U2UdE1rouz6pOzz/AZOW/ejcF0
+        sheib5b4TsD8uZs4OyocLBoDFrwp/BibSRxDjzUJIigWMh9BcguGHG/DZ98WRjuTysfD5rqK4T3cV
+        vQiFULoTt5zE70ElMNaQdPihLHrgejOroaYQzJ6TnFt9SJ9P4M27wcsNWxZllBWzLiWEl55Emb/B/
+        p56uwDL/CIsROoQ6/dWMFLJ1LYjypFT3omLVwZxUrMoiFiRjSrf9ayQu2TfhntcVlXlfRyBZuq4oQ
+        QD1tnNYw==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l5E5w-000531-Is; Thu, 28 Jan 2021 20:40:48 +0000
+Subject: Re: Kconfig-induced build errors: CONFIG_PAGE_OFFSET
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+References: <b67f8941-6624-d814-e6d3-2ddfdfbdf7dd@infradead.org>
+ <CAOnJCUJc0-x-gmLAKxb9ULjOX1yBjxZvwi4=_0ETH-L7JtKhNw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e90a2745-7ca6-ce78-63c8-5aaf31602eab@infradead.org>
+Date:   Thu, 28 Jan 2021 12:40:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <CAOnJCUJc0-x-gmLAKxb9ULjOX1yBjxZvwi4=_0ETH-L7JtKhNw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen,
+On 1/28/21 12:07 PM, Atish Patra wrote:
+> On Wed, Jan 27, 2021 at 7:18 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Hi,
+>>
+>> I took a riscv-32 .config from kernel test robot (it was for a clang build)
+>> and did a "make olddefconfig" (using gcc tools) and got build errors
+>> due to this config item from arch/riscv/Kconfig;
+>>
+>>
+>> config PAGE_OFFSET
+>>         hex
+>>         default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
+>>         default 0x80000000 if 64BIT && !MMU
+>>         default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+>>         default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+>>
+>> PAGE_OFFSET is undefined for the case of 32BIT && MAXPHYSMEM_2GB.
+> 
+> Because, RV32 doesn't support 2GB physical memory yet.
+> 
+> The compilation errors can be fixed by not allowing MAXPHYSMEM_2GB for RV32 and
+> MAXPHYSMEM_1GB for RV64. How about this ?
+> 
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -253,8 +253,10 @@ choice
+>         default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
+> 
+>         config MAXPHYSMEM_1GB
+> +               depends on 32BIT
+>                 bool "1GiB"
+>         config MAXPHYSMEM_2GB
+> +               depends on 64BIT && CMODEL_MEDLOW
+>                 bool "2GiB"
+>         config MAXPHYSMEM_128GB
+>                 depends on 64BIT && CMODEL_MEDANY
+Looks good. Thanks.
 
-Yes. Most stuff I do these days goes through the RAS tree I share with Boris.
-
--Tony
-
------Original Message-----
-From: Stephen Rothwell <sfr@canb.auug.org.au> 
-Sent: Thursday, January 28, 2021 11:53 AM
-To: Luck, Tony <tony.luck@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: removal of the ia64 tree
-
-Hi Tony,
-
-I noticed commit
-
-  96ec72a3425d ("ia64: Mark architecture as orphaned")
-
-just went into Linus' tree, so I assume I should drop the ia64 tree
-from linux-next?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
 -- 
-Cheers,
-Stephen Rothwell
+~Randy
+
