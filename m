@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF78A30693D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A1330695F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhA1BBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:01:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhA1A6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:58:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E0E61492;
-        Thu, 28 Jan 2021 00:57:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611795462;
-        bh=GmiQS9jbtp67wxyW//Qr7OOg3keGiSKqCrr+Cvr/THQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jNzKXLmzl9LiQ21rTP0SVfohiEwxUxkWxj0ZvFfUqDClO67LIsQuTyZfG9aiheu5P
-         BOcpcXor8txN0iXnkXOwGMmebCn/mlI9XHa+zjel4dFDcr0fXOC/nln9Ln4DA1/DSz
-         fdLxLlePGrOYRaRkJW9KT4zgNLnAuly6cAIHXZOo=
-Date:   Wed, 27 Jan 2021 16:57:40 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     vjitta@codeaurora.org
-Cc:     minchan@kernel.org, glider@google.com, dan.j.williams@intel.com,
-        broonie@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, ylal@codeaurora.org,
-        vinmenon@codeaurora.org
-Subject: Re: [PATCH v6 2/2] lib: stackdepot: Add support to disable stack
- depot
-Message-Id: <20210127165740.d3546f332ed49c5570b06057@linux-foundation.org>
-In-Reply-To: <1611749198-24316-2-git-send-email-vjitta@codeaurora.org>
-References: <1611749198-24316-1-git-send-email-vjitta@codeaurora.org>
-        <1611749198-24316-2-git-send-email-vjitta@codeaurora.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231370AbhA1BFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:05:15 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:57917 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231480AbhA1BCV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 20:02:21 -0500
+Date:   Thu, 28 Jan 2021 01:01:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1611795682;
+        bh=oN3yS61gBPJ9xdHSwY1nQqpqd4e0ESFLymvcdmGZwp0=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=oE963L2Oh2GbfTyYnc+jswD84Z7wFbj1K4D4c5axtEZt1VdZXOV+BYEsrmnT5EUxY
+         Dfw85b5AKNIrTAmCFw05l0c2NPf3ZM78H+3LseuTp7qCpTRKj2dckjle5Sha1KI2vy
+         Sm6zaX3l1n9+sbGEsf2lq70ZzW69CF8khFpSfoVc=
+To:     Jonathan Corbet <corbet@lwn.net>
+From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@protonmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+          <nfraprado@protonmail.com>
+Subject: [PATCH 0/2] docs: Add support for relative paths in automarkup
+Message-ID: <20210128010028.58541-1-nfraprado@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 17:36:38 +0530 vjitta@codeaurora.org wrote:
+As Jon previously noted [1], it would be nice if automarkup supported relat=
+ive
+paths as well when cross-referencing to other documents. This adds the supp=
+ort
+for it, and documents it.
 
-> Add a kernel parameter stack_depot_disable to disable
-> stack depot. So that stack hash table doesn't consume
-> any memory when stack depot is disabled.
-> 
-> The usecase is CONFIG_PAGE_OWNER without page_owner=on.
-> Without this patch, stackdepot will consume the memory
-> for the hashtable. By default, it's 8M which is never trivial.
-> 
-> With this option, in CONFIG_PAGE_OWNER configured system,
-> page_owner=off, stack_depot_disable in kernel command line,
-> we could save the wasted memory for the hashtable.
+Jon, after applying this, 43bc3ed73639 ("docs: dt: Use full path to enable
+cross-reference") could be reverted without the link stopping to work.
 
-CONFIG_STACKDEPOT=n:
+[1] https://lore.kernel.org/linux-doc/20201130142404.6ef6689e@lwn.net/
 
-main.c:(.init.text+0x4c1): undefined reference to `stack_depot_init'
+N=C3=ADcolas F. R. A. Prado (2):
+  docs: Enable usage of relative paths to docs on automarkup
+  docs: Document cross-referencing using relative path
 
+ Documentation/doc-guide/sphinx.rst | 30 ++++++++++++++++++++----------
+ Documentation/sphinx/automarkup.py |  7 +++++--
+ 2 files changed, 25 insertions(+), 12 deletions(-)
 
---- a/include/linux/stackdepot.h~lib-stackdepot-add-support-to-disable-stack-depot-fix
-+++ a/include/linux/stackdepot.h
-@@ -21,5 +21,13 @@ unsigned int stack_depot_fetch(depot_sta
- 
- unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
- 
-+#ifdef CONFIG_STACKDEPOT
- int stack_depot_init(void);
-+#else
-+static inline int stack_depot_init(void)
-+{
-+	return 0;
-+}
-+#endif	/* CONFIG_STACKDEPOT */
-+
- #endif
-_
+--=20
+2.30.0
+
 
