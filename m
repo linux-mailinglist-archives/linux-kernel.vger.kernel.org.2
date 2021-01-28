@@ -2,145 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756E6306914
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE22830692B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhA1A6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:58:03 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:29008 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhA1A4I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:56:08 -0500
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIw024172;
-        Thu, 28 Jan 2021 09:52:20 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIw024172
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795141;
-        bh=/X+a0eVCUwbWMu6duZ0EkFZtdpgfoDTltQ6BKB/OTxE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0mEMz0ETOM3X4aEL+4S7svEefOdXWXc3PrggLxlLd3p0rpMkY8XKeNM1tRpBRWR0z
-         oAvhO5r6m8nTHRmfzovYcTME6kuBQLq5qRis8tQaGg7wphvOnJqeZfkubbqQSC1S0Y
-         /jtBhQ5JAjPXDBUB8hJS3zaDgRRCgwTWxMLSCqI/ktNHhmoWFkBO+9p54+c9rl6EGa
-         fkhwdmv7kmPUCxtmi9dMEG2rsLwmD39yakdbVBO8fjWf4jXSW0ztwXFYOMXoWvmHzD
-         WBHu0CT2Qqcw6mJqNk+sNfvzIKO3hJtwn9qqvweL/MQ4KHGG771GSa2g6RauXZI032
-         1C460nitcoGVw==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-arch@vger.kernel.org, x86@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 27/27] xtensa: syscalls: switch to generic syscalltbl.sh
-Date:   Thu, 28 Jan 2021 09:51:09 +0900
-Message-Id: <20210128005110.2613902-28-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+        id S231374AbhA1A7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:59:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231191AbhA1A5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:57:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 861D164DD1;
+        Thu, 28 Jan 2021 00:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611795363;
+        bh=GNeySK//oA5sSbdd0ASJJufb+YqjhGpqsI7+o18dH+Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KV8nM1tkterFMMGncJ0Ouxe4+T5HViuwIQ2K5oG4Utk4wUb7ltOcwvTlnTlOh8KF0
+         yObQHQQsddU9FAY3V5CbzZLhccNdraiSNaeJd6IRgZGrEccSRAJJ04di/C3cUhJ99I
+         wi60vC3HxxKklMlCA7F8f4IUbsjyvJj4ILtJpbdt8LaVdT3Vw5wqZ2YkoKn9nykEb1
+         6g8XNqhCWvwklTEBQNBVX/ga5B32J94KF+Ed6dTyc7f1L/m1Ev9G2TEE8yLgb8sJuc
+         TEQnUtvS3ANKrUNHnTTtMducM1cK9E+wgQwU7iljWtURwv399DKsbH94hEV3XZroNZ
+         GGx7RTTy7E8Sw==
+Date:   Wed, 27 Jan 2021 16:56:02 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     xiyou.wangcong@gmail.com
+Cc:     Slava Bacherikov <mail@slava.cc>, willemb@google.com,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Subject: Re: BUG: Incorrect MTU on GRE device if remote is unspecified
+Message-ID: <20210127165602.610b10c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <e2dde066-44b2-6bb3-a359-6c99b0a812ea@slava.cc>
+References: <e2dde066-44b2-6bb3-a359-6c99b0a812ea@slava.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+On Mon, 25 Jan 2021 22:10:10 +0200 Slava Bacherikov wrote:
+> Hi, I'd like to report a regression. Currently, if you create GRE
+> interface on the latest stable or LTS kernel (5.4 branch) with
+> unspecified remote destination it's MTU will be adjusted for header size
+> twice. For example:
+> 
+> $ ip link add name test type gre local 127.0.0.32
+> $ ip link show test | grep mtu
+> 27: test@NONE: <NOARP> mtu 1452 qdisc noop state DOWN mode DEFAULT group
+> default qlen 1000
+> 
+> or with FOU
+> 
+> $ ip link add name test2   type gre local 127.0.0.32 encap fou
+> encap-sport auto encap-dport 6666
+> $ ip link show test2 | grep mtu
+> 28: test2@NONE: <NOARP> mtu 1436 qdisc noop state DOWN mode DEFAULT
+> group default qlen 1000
+> 
+> The same happens with GUE too (MTU is 1428 instead of 1464).
+> As you can see that MTU in first case is 1452 (1500 - 24 - 24) and with
+> FOU it's 1436 (1500 - 32 - 32), GUE 1428 (1500 - 36 - 36). If remote
+> address is specified MTU is correct.
+> 
+> This regression caused by fdafed459998e2be0e877e6189b24cb7a0183224 commit.
 
-This commit converts xtensa to use scripts/syscalltbl.sh.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/xtensa/kernel/syscall.c              |  3 +--
- arch/xtensa/kernel/syscalls/Makefile      |  7 ++---
- arch/xtensa/kernel/syscalls/syscalltbl.sh | 32 -----------------------
- 3 files changed, 3 insertions(+), 39 deletions(-)
- delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
-
-diff --git a/arch/xtensa/kernel/syscall.c b/arch/xtensa/kernel/syscall.c
-index 2c415fce6801..a453d17f0da8 100644
---- a/arch/xtensa/kernel/syscall.c
-+++ b/arch/xtensa/kernel/syscall.c
-@@ -31,9 +31,8 @@
- syscall_t sys_call_table[__NR_syscalls] /* FIXME __cacheline_aligned */= {
- 	[0 ... __NR_syscalls - 1] = (syscall_t)&sys_ni_syscall,
- 
--#define __SYSCALL(nr, entry, nargs)[nr] = (syscall_t)entry,
-+#define __SYSCALL(nr, entry)[nr] = (syscall_t)entry,
- #include <asm/syscall_table.h>
--#undef __SYSCALL
- };
- 
- #define COLOUR_ALIGN(addr, pgoff) \
-diff --git a/arch/xtensa/kernel/syscalls/Makefile b/arch/xtensa/kernel/syscalls/Makefile
-index 1c42d2d2926d..6610130c67bc 100644
---- a/arch/xtensa/kernel/syscalls/Makefile
-+++ b/arch/xtensa/kernel/syscalls/Makefile
-@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 
- syscall := $(srctree)/$(src)/syscall.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_offset_$(basetarget))'
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
- 
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
-diff --git a/arch/xtensa/kernel/syscalls/syscalltbl.sh b/arch/xtensa/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index 85d78d9309ad..000000000000
---- a/arch/xtensa/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,32 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry ; do
--		emit $((nxt+offset)) $((nr+offset)) $entry
--		nxt=$((nr+1))
--	done
--) > "$out"
--- 
-2.27.0
-
+Cong is this one on your radar?
