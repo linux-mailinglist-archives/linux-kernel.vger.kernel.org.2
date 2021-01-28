@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAFE3070CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 024653070C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhA1INU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbhA1IJc (ORCPT
+        id S231712AbhA1IKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:10:46 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:55038 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhA1IJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:09:32 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8A1C061573;
-        Thu, 28 Jan 2021 00:08:47 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 28 Jan 2021 03:09:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611821358; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/o88EhhP0c4dq6yUyZ8eKopV10aGp5VPu/c4f/R2ei8=;
+ b=u3kUXs89sUKHRIlOC+6exM+7LSRGEKO8SVtx9nHS7pSHIjfhKlbq/0eig3M2selVNC8jtfpd
+ RDTpNFJMh0ag+gNePU0yf2sayDpoJ55SoptCnrCWSjLs7MfY3Jzr2gy4EwdSjJtutWR8IhFR
+ O0Y4pVkTj7Xwokn8CIXUAUeD+qs=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6012710fe32560064279c7a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 08:08:47
+ GMT
+Sender: youghand=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C921BC43462; Thu, 28 Jan 2021 08:08:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRClw12Rjz9sBy;
-        Thu, 28 Jan 2021 19:08:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611821324;
-        bh=fJPiRFgyiabLdeqqjnnR/3xPw7FBcnEqi5dlpoEIdbA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=r5OZbvw7zJ62iDdGzBcyi4ZHsWnFN4gGUBaoxack1l26Fzv6u1Ea+eL8XTMzbuO0x
-         6tvwXTp73ssJ8PONZHvLIgAQlfUBjB0eX9C4f2NVOucKSHK3PIkhv/0cdeL3oYsNVn
-         w6B7GZP3FxRlXhnFLt8l7bg3YEdvX41Hq8FKCa0TedssZ+dvfXvwKvFAffbXaXMamb
-         XyK+IIMOPqutVxlTPULWnPF4VnJQKo4JNakZQ0qoKgm/HRpNA/IJyxp5UmnIacoQQf
-         I9gVQcziICQAfeuK8Zx5YCN4LsJL0FblcsHD7KMvPpbauhWqrPBDH6jn4g4sSA9y8h
-         ljpSXrT5mGx4w==
-Date:   Thu, 28 Jan 2021 19:08:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm tree with the arm64 tree
-Message-ID: <20210128190843.0d2bf730@canb.auug.org.au>
+        (Authenticated sender: youghand)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1F1EBC433CA;
+        Thu, 28 Jan 2021 08:08:46 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/n61/3m4ITPZwTvL73rOd6un";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 28 Jan 2021 13:38:46 +0530
+From:   youghand@codeaurora.org
+To:     Felix Fietkau <nbd@nbd.name>
+Cc:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, briannorris@chromium.org,
+        pillair@codeaurora.org
+Subject: Re: [PATCH 2/3] mac80211: Add support to trigger sta disconnect on
+ hardware restart
+In-Reply-To: <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
+References: <20201215172352.5311-1-youghand@codeaurora.org>
+ <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
+Message-ID: <ba0e6a3b783722c22715ae21953b1036@codeaurora.org>
+X-Sender: youghand@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/n61/3m4ITPZwTvL73rOd6un
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020-12-15 23:10, Felix Fietkau wrote:
+> On 2020-12-15 18:23, Youghandhar Chintala wrote:
+>> Currently in case of target hardware restart, we just reconfig and
+>> re-enable the security keys and enable the network queues to start
+>> data traffic back from where it was interrupted.
+>> 
+>> Many ath10k wifi chipsets have sequence numbers for the data
+>> packets assigned by firmware and the mac sequence number will
+>> restart from zero after target hardware restart leading to mismatch
+>> in the sequence number expected by the remote peer vs the sequence
+>> number of the frame sent by the target firmware.
+>> 
+>> This mismatch in sequence number will cause out-of-order packets
+>> on the remote peer and all the frames sent by the device are dropped
+>> until we reach the sequence number which was sent before we restarted
+>> the target hardware
+>> 
+>> In order to fix this, we trigger a sta disconnect, for the targets
+>> which expose this corresponding wiphy flag, in case of target hw
+>> restart. After this there will be a fresh connection and thereby
+>> avoiding the dropping of frames by remote peer.
+>> 
+>> The right fix would be to pull the entire data path into the host
+>> which is not feasible or would need lots of complex changes and
+>> will still be inefficient.
+> How about simply tracking which tids have aggregation enabled and send
+> DELBA frames for those after the restart?
+> It would mean less disruption for affected stations and less ugly hacks
+> in the stack for unreliable hardware.
+> 
+> - Felix
 
-Hi all,
+Hi Felix,
 
-Today's linux-next merge of the akpm tree got a conflict in:
+We did try to send an ADDBA frame to the AP once the SSR happened. The 
+AP ack’ed the frame and the new BA session with renewed sequence number 
+was established. But still, the AP did not respond to the ping requests 
+with the new sequence number. It did not respond until one of the two 
+happened.
+1.	The sequence number was more than the sequence number that DUT had 
+used before SSR happened
+2.	DUT disconnected and then reconnected.
+The other option is to send a DELBA frame to the AP and make the AP also 
+force to establish the BA session from its side. This we feel can have 
+some interoperability issues as some of the AP’s may not honour the 
+DELBA frame and will continue to use the earlier BA session that it had 
+established. Given that re-negotiating the BA session is prone to IOT 
+issues, we feel that it would be good to go with the 
+Disconnect/Reconnect solution which is foolproof and will work in all 
+scenarios.
 
-  mm/filemap.c
-
-between commit:
-
-  f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
-
-from the arm64 tree and patch:
-
-  "secretmem: add memcg accounting"
-
-from the akpm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc mm/filemap.c
-index 4d0b7a122850,4417fd15d633..000000000000
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@@ -42,7 -42,7 +42,8 @@@
-  #include <linux/psi.h>
-  #include <linux/ramfs.h>
-  #include <linux/page_idle.h>
- +#include <asm/pgalloc.h>
-+ #include <linux/secretmem.h>
-  #include "internal.h"
- =20
-  #define CREATE_TRACE_POINTS
-
---Sig_/n61/3m4ITPZwTvL73rOd6un
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAScQsACgkQAVBC80lX
-0GyZcwf+MC6Ks3iQ6txweeYwUP47Mz3qaqiSJi8m7nMRfogMynSgkeSTn8Xmma07
-y0eFTxBJsZgRZZdA6tmspSd9s3QVzYZyGaZV5hxRbo8N4WeUFnrMy226XVd5Ii0a
-orJQzKKpZQRNOboSobm9AFwJGdx23m/pgNRi+e/wxme5x5Axd3uY32++NlOS7xK0
-OpAe2nc/DZGUpZ6p86dPDCxZ1h9vL84zIVTqjB7hgdDeyRyr4NzsTHBRTjd/9vSY
-aPIgjbOavvJMNeZq+lrq68Hv1kgXlVCFk1ZEjeMaIoYl6/e8mv2qDAdjsjFkQz7Y
-JP4wP+xduQ0AYXi2Du3nW1Tb8MMYfA==
-=FSXG
------END PGP SIGNATURE-----
-
---Sig_/n61/3m4ITPZwTvL73rOd6un--
+Regards,
+Youghandhar
