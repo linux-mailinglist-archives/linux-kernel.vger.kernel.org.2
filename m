@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA653080F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4E73080F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhA1WLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:11:37 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:34908 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhA1WLe (ORCPT
+        id S231248AbhA1WMA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 17:12:00 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:32915 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbhA1WL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:11:34 -0500
-Received: from [192.168.254.32] (unknown [47.187.219.45])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7F77920B7192;
-        Thu, 28 Jan 2021 14:10:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7F77920B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1611871853;
-        bh=ZA2oSM80w+RdJ/gENbHPlEraVHFQ5GUGuDOI84otWqQ=;
-        h=From:Subject:To:Cc:References:Date:In-Reply-To:From;
-        b=b1XGVIJ11p8YrFEjhTOOsWPkgVJ1pwfcR9jZ+MllQtZMHIWyYefW7DKgPJatPai+7
-         Dz7hbE72mu7+23aHXEWklEXI7+cnEwZ1vcsBxJ9nq7MlZTar2idPNvNO9c86/AYmH4
-         78ogAZo3+o5tEXQX2VNOWZoF16HDXD/bYTvewRCs=
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
-To:     Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org, live-patching@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Kees Cook <keescook@chromium.org>
-References: <20210120173800.1660730-1-jthierry@redhat.com>
- <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
- <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
- <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
- <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net>
- <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
- <20210121185452.fxoz4ehqfv75bdzq@treble>
- <20210122174342.GG6391@sirena.org.uk>
- <CAMj1kXF31FxCTbo4M8MX0aaegaq7AQXMUdCtsm6xrKUFSpkzjA@mail.gmail.com>
-Message-ID: <c8f0cfec-b23e-dc84-0c43-feb9d892ea26@linux.microsoft.com>
-Date:   Thu, 28 Jan 2021 16:10:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 28 Jan 2021 17:11:57 -0500
+X-Originating-IP: 86.210.203.150
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id A951F40007;
+        Thu, 28 Jan 2021 22:11:11 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 23:11:10 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     mdalam@codeaurora.org
+Cc:     manivannan.sadhasivam@linaro.org, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: update last code word register
+Message-ID: <20210128231110.64266932@xps13>
+In-Reply-To: <769ea3fe77eab9b37d863251e97bcb29@codeaurora.org>
+References: <1610251305-20792-1-git-send-email-mdalam@codeaurora.org>
+        <20210114165325.3d510355@xps13>
+        <769ea3fe77eab9b37d863251e97bcb29@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXF31FxCTbo4M8MX0aaegaq7AQXMUdCtsm6xrKUFSpkzjA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-I sent this suggestion to linux-arm-kernel in response to the Reliable Stacktrace RFC from Mark Brown
-and Mark Rutland. I am repeating it here for two reasons:
+mdalam@codeaurora.org wrote on Fri, 29 Jan 2021 03:18:46 +0530:
 
-- It involves objtool.
+> On 2021-01-14 21:23, Miquel Raynal wrote:
+> > Hello,
+> > 
+> > Md Sadre Alam <mdalam@codeaurora.org> wrote on Sun, 10 Jan 2021
+> > 09:31:45 +0530:
+> >   
+> >> From QPIC version 2.0 onwards new register got added to  
+> > 
+> >                                 a
+> >   
+> >> read last codeword. This change will update the same.  
+> > 
+> >        the?           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >                       Please reword this sentence.  
+> 
+>    Fixed this in V4 patch.
+> >   
+> >> For first three code word READ_LOCATION_n register will be
+> >> use.For last code word READ_LOCATION_LAST_CW_n register will be
+> >> use.  
+> > 
+> > "For the first three codewords, READ_LOCATION_n registers will be used.
+> > The last codeword register will be accessed through
+> > READ_LOCATION_LAST_CW_n."
+> > 
+> > Also, please specify what these registers store.  
+> 
+>    The location register is mainly use for reading controller
+>    buffer via BAM mode. The bits of the register "NAND_READ_LOCATION_LAST_CW_n, n=0..4"
+>    as follow:
 
-- There are many more recipients in this thread that may be interested in this topic.
+Perhaps what I do not understand is: when is this "last_cw" register
+more useful than the previous set?
 
-Please let me know if this suggestion is acceptable. If it is not, please let me know why.
-Thanks.
+>    [9:0]-bits : (OFFSET) This bit defines the offset from the buffer base address to be picked up for DMA.
+>    [25:16]-bits: (SIZE) This bit of every register will define the size of the chunk for DMA.
+>    31-bit :      (LAST) If this bit is set, the controller takes the particular register to specify the last chunk
+>                        of data made available for DMA. This chunk is part of the internal buffer of the controller.
+> 
+> >   
 
-Also, I apologize to all of you who have received this more than once.
-
-FP and no-FP functions
-=====================
-
-I have a suggestion for objtool and the unwinder for ARM64.
-
-IIUC, objtool is responsible for walking all the code paths (except unreachable
-and ignored ones) and making sure that every function has proper frame pointer
-code (prolog, epilog, etc). If a function is found to not have it, the kernel
-build is failed. Is this understanding correct?
-
-If so, can we take a different approach for ARM64?
-
-Instead of failing the kernel build, can we just mark the functions as:
-
-	FP	Functions that have proper FP code
-	no-FP	Functions that don't
-
-May be, we can add an "FP" flag in the symbol table entry for this.
-
-Then, the unwinder can check the functions it encounters in the stack trace and
-inform the caller if it found any no-FP functions. The caller of the unwinder can
-decide what he wants to do with that information.
-
-	- the caller can ignore it
-
-	- the caller can print the stack trace with a warning that no-FP functions
-	  were found
-
-	- if the caller is livepatch, the caller can retry until the no-FP functions
-	  disappear from the stack trace. This way, we can have live patching even
-	  when some of the functions in the kernel are no-FP.
-
-Does this make any sense? Is this acceptable? What are the pitfalls?
-
-If we can do this, the unwinder could detect cases such as:
-
-- If gcc thinks that a function is a leaf function but the function contains
-  inline assembly code that calls another function.
-
-- If a call to a function bounces through some intermediate code such as a
-  trampoline.
-
-- etc.
-
-For specific no-FP functions, the unwinder might be able to deduce the original
-caller. In these cases, the stack trace would still be reliable. For all the others,
-the stack trace would be considered unreliable.
-
-Compiler instead of objtool
-===========================
-
-If the above suggestion is acceptable, I have another suggestion.
-
-It is a lot of work for every new architecture to add frame pointer verification
-support in objtool. Can we get some help from the compiler?
-
-The compiler knows which C functions it generates the FP prolog and epilog for. It can
-mark those functions as FP. As for assembly functions, kernel developers could manually
-annotate functions that have proper FP code. The compiler/assembler would mark them
-as FP. Only a small subset of assembly functions would even have FP prolog and epilog.
-
-Is this acceptable? What are the pitfalls?
-
-This can be implemented easily for all architectures for which the compiler generates
-FP code.
-
-Can this be implemented using a GCC plugin? I know squat about GCC plugins.
-
-Thanks!
-
-Madhavan
+Thanks,
+Miquèl
