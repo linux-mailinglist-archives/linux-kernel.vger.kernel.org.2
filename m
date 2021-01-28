@@ -2,170 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA503307F17
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26504307EFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhA1UDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:03:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhA1UAk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:00:40 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198E0C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 11:51:32 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id s7so3641280wru.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 11:51:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EyD3wHKnz4mNZyyvJbfB06klVKrdyE3VJ5F5elJU0p4=;
-        b=dE6DkK29jp1+2E1wW4vsdERPnjCiGfWiDO/sMZTB7Ak26IuFMJQv59WorheyAZjC+A
-         WMGzKQl2IPb8WDCumWHWk0exXWe0DR5W2MXc2boIjmbvsHkTup0MURQuP6O2xaeiaG/i
-         cQwicLWx+9CXz/RGIKJlXjhC+4lDsFMlMuCnpdvB1E5iWsvRwylRX2XGyr03u7bYW/dg
-         aHCQsUX0XfLFEDRER1WS9zZumqHSOUR4kqOcb4e914Uj3aH8XZ3+1aU/+IJ32eTCjPWP
-         7ydfG7rlPVXbzmI7RNdrj/LykQawxAQyc3Bs9MpJaSeLB5oHkOaUbHXgDhkaktLGjFna
-         o2fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EyD3wHKnz4mNZyyvJbfB06klVKrdyE3VJ5F5elJU0p4=;
-        b=lAU30W5mx7oBaQdF0C3t7g7pcK1iWtsL7j7RzZGsVAXdkervg2BUolU6f9Hjn3kVic
-         7b5C+dkV2smdtTQx+kAwG5CZpgLv6OCbQfvqRvDA6zA5NVR4hyR2xaEdrLw0CIKlvVqz
-         PE7dDiGjua+Jr5W0y5tfsbePqtgr99VyuW/vbIv3R95DR3zk4Ke8PUPZio7GnjlaITOU
-         a8byGlJN/KO1O/h1r7ra/uCOZgxNYY7c5QfSuiQDi5pvhVC4bY7u6NIVF0cfrN0ktOdX
-         5plXxI8YioQsWI3/dtkPa2XV67fXwKu5iU7xfIoi0dMVpBbGpCvg+XlOwgq13EZK8gdt
-         yOFA==
-X-Gm-Message-State: AOAM533gjzjwDVUu5bSi03CwiYfiDDM2p0YF86EeWklmYWYiMi1WmH2n
-        C2WgPFEoNvLy1EP0S5Wy4sPqlEBwlRHhO263aZ4FwA==
-X-Google-Smtp-Source: ABdhPJxFwy5Z8MQNDvk+8YAnLtFQ3tf9xJlcNP6VxscFRdyqIQPeQC47UCqkw9kazNJmLs+Te6L/YObeg7RsVtG7o9Y=
-X-Received: by 2002:a5d:453b:: with SMTP id j27mr808169wra.92.1611863490625;
- Thu, 28 Jan 2021 11:51:30 -0800 (PST)
+        id S231135AbhA1T71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 14:59:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229595AbhA1T67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 14:58:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2772964E3D;
+        Thu, 28 Jan 2021 19:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611863542;
+        bh=8zEAI1CZ86s1UlqBcPyZhOMT3EnyRxIPkSG0TJEOVf0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=s8ygVHbUKNn0fTuAJGqG6PNEMLynCCBP9o8mMAuqEhdmBp9AY4+Oy/Kc5tUov8YMS
+         /6+JVFD7TEskuVwYzE32eoFF5tPj5vXYWJnR9L1CoZHFObKMUUIh/GCwxSMG81vyYO
+         PO9RRiBFYSA/u3nZU6bZcSG3I/xyvOPC5b029rrHFnK+6rF2stvwoxXTAlksLyOfhp
+         x+Wopvk7STf4X1zuNi5PwKSuhG1xORF13ic3y+zQJjkWHr7rU6u5b3ls91Qo/idnka
+         JTtpGvxIoqfqAQr5clvx0bKLtm48gu7DT0UNFynf2NAqCVm+nrJy8sQVCltCiepNKG
+         ksci4VXhmP+pA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A6DEE35237A0; Thu, 28 Jan 2021 11:52:21 -0800 (PST)
+Date:   Thu, 28 Jan 2021 11:52:21 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 03/16] rcu/nocb: Forbid NOCB toggling on offline CPUs
+Message-ID: <20210128195221.GS2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210128171222.131380-1-frederic@kernel.org>
+ <20210128171222.131380-4-frederic@kernel.org>
 MIME-Version: 1.0
-References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
- <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
- <20210113142202.GC22493@dhcp22.suse.cz> <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
- <20210126135254.GP827@dhcp22.suse.cz>
-In-Reply-To: <20210126135254.GP827@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 28 Jan 2021 11:51:19 -0800
-Message-ID: <CAJuCfpEnMyo9XAnoF+q1j9EkC0okZfUxxdAFhzhPJi+adJYqjw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128171222.131380-4-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 5:52 AM 'Michal Hocko' via kernel-team
-<kernel-team@android.com> wrote:
->
-> On Wed 20-01-21 14:17:39, Jann Horn wrote:
-> > On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
-> > > > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > > > >
-> > > > > On 01/12, Michal Hocko wrote:
-> > > > > >
-> > > > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
-> > > > > >
-> > > > > > > What we want is the ability for one process to influence another process
-> > > > > > > in order to optimize performance across the entire system while leaving
-> > > > > > > the security boundary intact.
-> > > > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > > > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > > > > > > and CAP_SYS_NICE for influencing process performance.
-> > > > > >
-> > > > > > I have to say that ptrace modes are rather obscure to me. So I cannot
-> > > > > > really judge whether MODE_READ is sufficient. My understanding has
-> > > > > > always been that this is requred to RO access to the address space. But
-> > > > > > this operation clearly has a visible side effect. Do we have any actual
-> > > > > > documentation for the existing modes?
-> > > > > >
-> > > > > > I would be really curious to hear from Jann and Oleg (now Cced).
-> > > > >
-> > > > > Can't comment, sorry. I never understood these security checks and never tried.
-> > > > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
-> > > > > is the difference.
-> >
-> > Yama in particular only does its checks on ATTACH and ignores READ,
-> > that's the difference you're probably most likely to encounter on a
-> > normal desktop system, since some distros turn Yama on by default.
-> > Basically the idea there is that running "gdb -p $pid" or "strace -p
-> > $pid" as a normal user will usually fail, but reading /proc/$pid/maps
-> > still works; so you can see things like detailed memory usage
-> > information and such, but you're not supposed to be able to directly
-> > peek into a running SSH client and inject data into the existing SSH
-> > connection, or steal the cryptographic keys for the current
-> > connection, or something like that.
-> >
-> > > > I haven't seen a written explanation on ptrace modes but when I
-> > > > consulted Jann his explanation was:
-> > > >
-> > > > PTRACE_MODE_READ means you can inspect metadata about processes with
-> > > > the specified domain, across UID boundaries.
-> > > > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
-> > > > specified domain, across UID boundaries.
-> > >
-> > > Maybe this would be a good start to document expectations. Some more
-> > > practical examples where the difference is visible would be great as
-> > > well.
-> >
-> > Before documenting the behavior, it would be a good idea to figure out
-> > what to do with perf_event_open(). That one's weird in that it only
-> > requires PTRACE_MODE_READ, but actually allows you to sample stuff
-> > like userspace stack and register contents (if perf_event_paranoid is
-> > 1 or 2). Maybe for SELinux things (and maybe also for Yama), there
-> > should be a level in between that allows fully inspecting the process
-> > (for purposes like profiling) but without the ability to corrupt its
-> > memory or registers or things like that. Or maybe perf_event_open()
-> > should just use the ATTACH mode.
->
-> Thanks for the clarification. I still cannot say I would have a good
-> mental picture. Having something in Documentation/core-api/ sounds
-> really needed. Wrt to perf_event_open it sounds really odd it can do
-> more than other places restrict indeed. Something for the respective
-> maintainer but I strongly suspect people simply copy the pattern from
-> other places because the expected semantic is not really clear.
->
+On Thu, Jan 28, 2021 at 06:12:09PM +0100, Frederic Weisbecker wrote:
+> Toggling the NOCB state of a CPU when it is offline imply some specific
+> issues to handle, especially making sure that the kthreads have handled
+> all the remaining callbacks and bypass before the corresponding CPU can
+> be set as non-offloaded while it is offline.
+> 
+> To prevent from such complications, simply forbid offline CPUs to
+> perform NOCB-mode toggling. It's a simple rule to observe and after all
+> it doesn't make much sense to switch a non working CPU to/from offloaded
+> state.
+> 
+> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Sorry, back to the matters of this patch. Are there any actionable
-items for me to take care of before it can be accepted? The only
-request from Andrew to write a man page is being worked on at
-https://lore.kernel.org/linux-mm/20210120202337.1481402-1-surenb@google.com/
-and I'll follow up with the next version. I also CC'ed stable@ for
-this to be included into 5.10 per Andrew's request. That CC was lost
-at some point, so CC'ing again.
+Very nice, cuts out a world of hurt, thank you!  Queued for testing and
+further review, the usual wordsmithing applied and the usual request
+for you to check to see if I messed anything up.
 
-I do not see anything else on this patch to fix. Please chime in if
-there are any more concerns, otherwise I would ask Andrew to take it
-into mm-tree and stable@ to apply it to 5.10.
-Thanks!
+							Thanx, Paul
 
+------------------------------------------------------------------------
 
-> --
-> Michal Hocko
-> SUSE Labs
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+commit 4fbfeec81533e6ea9811e57cc848ee30522c0517
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Thu Jan 28 18:12:09 2021 +0100
+
+    rcu/nocb: Forbid NOCB toggling on offline CPUs
+    
+    It makes no sense to de-offload an offline CPU because that CPU will never
+    invoke any remaining callbacks.  It also makes little sense to offload an
+    offline CPU because any pending RCU callbacks were migrated when that CPU
+    went offline.  Yes, it is in theory possible to use a number of tricks
+    to permit offloading and deoffloading offline CPUs in certain cases, but
+    in practice it is far better to have the simple and deterministic rule
+    "Toggling the offload state of an offline CPU is forbidden".
+    
+    For but one example, consider that an offloaded offline CPU might have
+    millions of callbacks queued.  Best to just say "no".
+    
+    This commit therefore forbids toggling of the offloaded state of
+    offline CPUs.
+    
+    Reported-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Josh Triplett <josh@joshtriplett.org>
+    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+    Cc: Joel Fernandes <joel@joelfernandes.org>
+    Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+    Cc: Boqun Feng <boqun.feng@gmail.com>
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8bb8da2..00059df 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4066,8 +4066,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
+ 	/*
+ 	 * Lock in case the CB/GP kthreads are still around handling
+-	 * old callbacks (longer term we should flush all callbacks
+-	 * before completing CPU offline)
++	 * old callbacks.
+ 	 */
+ 	rcu_nocb_lock(rdp);
+ 	if (rcu_segcblist_empty(&rdp->cblist)) /* No early-boot CBs? */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index f1ebe67..c61613a 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2398,23 +2398,18 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
+ 	return 0;
+ }
+ 
+-static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
++static long rcu_nocb_rdp_deoffload(void *arg)
+ {
++	struct rcu_data *rdp = arg;
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+ 	int ret;
+ 
++	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
++
+ 	pr_info("De-offloading %d\n", rdp->cpu);
+ 
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+-	/*
+-	 * If there are still pending work offloaded, the offline
+-	 * CPU won't help much handling them.
+-	 */
+-	if (cpu_is_offline(rdp->cpu) && !rcu_segcblist_empty(&rdp->cblist)) {
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
+-		return -EBUSY;
+-	}
+ 
+ 	ret = rdp_offload_toggle(rdp, false, flags);
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+@@ -2445,14 +2440,6 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	return ret;
+ }
+ 
+-static long rcu_nocb_rdp_deoffload(void *arg)
+-{
+-	struct rcu_data *rdp = arg;
+-
+-	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+-	return __rcu_nocb_rdp_deoffload(rdp);
+-}
+-
+ int rcu_nocb_cpu_deoffload(int cpu)
+ {
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+@@ -2465,12 +2452,14 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ 	mutex_lock(&rcu_state.barrier_mutex);
+ 	cpus_read_lock();
+ 	if (rcu_rdp_is_offloaded(rdp)) {
+-		if (cpu_online(cpu))
++		if (cpu_online(cpu)) {
+ 			ret = work_on_cpu(cpu, rcu_nocb_rdp_deoffload, rdp);
+-		else
+-			ret = __rcu_nocb_rdp_deoffload(rdp);
+-		if (!ret)
+-			cpumask_clear_cpu(cpu, rcu_nocb_mask);
++			if (!ret)
++				cpumask_clear_cpu(cpu, rcu_nocb_mask);
++		} else {
++			pr_info("NOCB: Can't CB-deoffload an offline CPU\n");
++			ret = -EINVAL;
++		}
+ 	}
+ 	cpus_read_unlock();
+ 	mutex_unlock(&rcu_state.barrier_mutex);
+@@ -2479,12 +2468,14 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_deoffload);
+ 
+-static int __rcu_nocb_rdp_offload(struct rcu_data *rdp)
++static long rcu_nocb_rdp_offload(void *arg)
+ {
++	struct rcu_data *rdp = arg;
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+ 	int ret;
+ 
++	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+ 	/*
+ 	 * For now we only support re-offload, ie: the rdp must have been
+ 	 * offloaded on boot first.
+@@ -2524,14 +2515,6 @@ static int __rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 	return ret;
+ }
+ 
+-static long rcu_nocb_rdp_offload(void *arg)
+-{
+-	struct rcu_data *rdp = arg;
+-
+-	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+-	return __rcu_nocb_rdp_offload(rdp);
+-}
+-
+ int rcu_nocb_cpu_offload(int cpu)
+ {
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+@@ -2540,12 +2523,14 @@ int rcu_nocb_cpu_offload(int cpu)
+ 	mutex_lock(&rcu_state.barrier_mutex);
+ 	cpus_read_lock();
+ 	if (!rcu_rdp_is_offloaded(rdp)) {
+-		if (cpu_online(cpu))
++		if (cpu_online(cpu)) {
+ 			ret = work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
+-		else
+-			ret = __rcu_nocb_rdp_offload(rdp);
+-		if (!ret)
+-			cpumask_set_cpu(cpu, rcu_nocb_mask);
++			if (!ret)
++				cpumask_set_cpu(cpu, rcu_nocb_mask);
++		} else {
++			pr_info("NOCB: Can't CB-offload an offline CPU\n");
++			ret = -EINVAL;
++		}
+ 	}
+ 	cpus_read_unlock();
+ 	mutex_unlock(&rcu_state.barrier_mutex);
