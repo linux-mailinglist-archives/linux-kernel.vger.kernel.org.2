@@ -2,258 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE68B306D76
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12A9306D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhA1GLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:11:08 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61139 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhA1GLG (ORCPT
+        id S231312AbhA1GLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:11:22 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11454 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhA1GLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:11:06 -0500
-Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10S69GZX089344;
-        Thu, 28 Jan 2021 15:09:16 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
- Thu, 28 Jan 2021 15:09:16 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10S69FU5089275
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 28 Jan 2021 15:09:16 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000647eff05b3f7e0d4@google.com>
- <20201113120055.11748-1-hdanton@sina.com>
- <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Message-ID: <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
-Date:   Thu, 28 Jan 2021 15:09:14 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 28 Jan 2021 01:11:21 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DR96V4H7vzjDNG;
+        Thu, 28 Jan 2021 14:09:38 +0800 (CST)
+Received: from [10.174.184.214] (10.174.184.214) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 28 Jan 2021 14:10:28 +0800
+Subject: Re: [RFC PATCH v1 2/4] vfio: Add a page fault handler
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210125090402.1429-1-lushenming@huawei.com>
+ <20210125090402.1429-3-lushenming@huawei.com>
+ <20210127174223.GB1738577@infradead.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <d4c51504-24ed-2592-37b4-f390b97fdd00@huawei.com>
+Date:   Thu, 28 Jan 2021 14:10:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210127174223.GB1738577@infradead.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.214]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/14 2:14, Shuah Khan wrote:
-> On 11/13/20 5:00 AM, Hillf Danton wrote:
->> Thu, 12 Nov 2020 23:21:26 -0800
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    9dbc1c03 Merge tag 'xfs-5.10-fixes-3' of git://git.kernel...
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=10453034500000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=1735b7978b1c3721
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=95ce4b142579611ef0a9
->>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>> userspace arch: i386
->>>
->>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
+On 2021/1/28 1:42, Christoph Hellwig wrote:
+> On Mon, Jan 25, 2021 at 05:04:00PM +0800, Shenming Lu wrote:
+>> +EXPORT_SYMBOL_GPL(vfio_iommu_dev_fault_handler);
 > 
-> I would like to see the reproducer for this. I just can't reproduce
-> this problem.
+> This function is only used in vfio.c itself, so it should not be
+> exported, but rather marked static.
+> .
 > 
->>
->> Fix 96c2737716d5 ("usbip: move usbip kernel code out of staging")
->> by closing the race between readers and writer of ud->tcp_socket on
->> sock shutdown. To do that, add waitqueue for usbip device and make
->> writer wait for all readers to go home before releasing the socket.
 
-Worrysome part for me is vhci_device_reset() which resets ud->tcp_socket to NULL
-without waiting for tx thread to terminate, though I don't know if
-vhci_device_reset() can be called while tx thread is running.
+Yeah, it makes sense. Thanks,
 
-I'd like to try below debug printk() patch on linx-next tree, for this bug is
-reported on linux.git and linux-next.git trees. Which git tree can be used for
-sending this to-be-removed patch to linux-next.git ? I wish there is a kernel
-config for fuzzers in linux.git so that every git tree can carry debug printk()
-patch for syzbot's reports...
-
-Subject: [PATCH] usb: usbip: vhci_hcd: add printk() for debug
-
-This is linux-next only patch for examining a bug reported at
-https://syzkaller.appspot.com/bug?id=3e1d941a31361efc4ced2ba8b4af2044d4e43c59 .
-
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- drivers/usb/usbip/stub_dev.c   |  6 ++++++
- drivers/usb/usbip/vhci_hcd.c   | 11 +++++++++++
- drivers/usb/usbip/vhci_sysfs.c |  4 ++++
- drivers/usb/usbip/vhci_tx.c    | 12 ++++++++++++
- drivers/usb/usbip/vudc_dev.c   |  6 ++++++
- 5 files changed, 39 insertions(+)
-
-diff --git a/drivers/usb/usbip/stub_dev.c b/drivers/usb/usbip/stub_dev.c
-index 2305d425e6c9..627f83c0ebc8 100644
---- a/drivers/usb/usbip/stub_dev.c
-+++ b/drivers/usb/usbip/stub_dev.c
-@@ -131,10 +131,14 @@ static void stub_shutdown_connection(struct usbip_device *ud)
- 
- 	/* 1. stop threads */
- 	if (ud->tcp_rx) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: stop rx %p\n", __func__, ud->tcp_rx);
- 		kthread_stop_put(ud->tcp_rx);
- 		ud->tcp_rx = NULL;
- 	}
- 	if (ud->tcp_tx) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: stop tx %p\n", __func__, ud->tcp_tx);
- 		kthread_stop_put(ud->tcp_tx);
- 		ud->tcp_tx = NULL;
- 	}
-@@ -146,6 +150,8 @@ static void stub_shutdown_connection(struct usbip_device *ud)
- 	 * not touch NULL socket.
- 	 */
- 	if (ud->tcp_socket) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: close sock %p\n", __func__, ud->tcp_socket);
- 		sockfd_put(ud->tcp_socket);
- 		ud->tcp_socket = NULL;
- 		ud->sockfd = -1;
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 3209b5ddd30c..9e95bf9330f5 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -1016,10 +1016,14 @@ static void vhci_shutdown_connection(struct usbip_device *ud)
- 
- 	/* kill threads related to this sdev */
- 	if (vdev->ud.tcp_rx) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: stop rx %p\n", __func__, vdev->ud.tcp_rx);
- 		kthread_stop_put(vdev->ud.tcp_rx);
- 		vdev->ud.tcp_rx = NULL;
- 	}
- 	if (vdev->ud.tcp_tx) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: stop tx %p\n", __func__, vdev->ud.tcp_tx);
- 		kthread_stop_put(vdev->ud.tcp_tx);
- 		vdev->ud.tcp_tx = NULL;
- 	}
-@@ -1027,6 +1031,8 @@ static void vhci_shutdown_connection(struct usbip_device *ud)
- 
- 	/* active connection is closed */
- 	if (vdev->ud.tcp_socket) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: close sock %p\n", __func__, ud->tcp_socket);
- 		sockfd_put(vdev->ud.tcp_socket);
- 		vdev->ud.tcp_socket = NULL;
- 		vdev->ud.sockfd = -1;
-@@ -1074,6 +1080,11 @@ static void vhci_device_reset(struct usbip_device *ud)
- 	vdev->udev = NULL;
- 
- 	if (ud->tcp_socket) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT)) {
-+			pr_info("%s: close sock %p\n", __func__, ud->tcp_socket);
-+			BUG_ON(vdev->ud.tcp_tx);
-+			BUG_ON(vdev->ud.tcp_rx);
-+		}
- 		sockfd_put(ud->tcp_socket);
- 		ud->tcp_socket = NULL;
- 		ud->sockfd = -1;
-diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
-index be37aec250c2..b37e7770aa35 100644
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -390,6 +390,10 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
- 
- 	vdev->ud.tcp_rx = kthread_get_run(vhci_rx_loop, &vdev->ud, "vhci_rx");
- 	vdev->ud.tcp_tx = kthread_get_run(vhci_tx_loop, &vdev->ud, "vhci_tx");
-+	if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT)) {
-+		BUG_ON(IS_ERR(vdev->ud.tcp_rx));
-+		BUG_ON(IS_ERR(vdev->ud.tcp_tx));
-+	}
- 
- 	rh_port_connect(vdev, speed);
- 
-diff --git a/drivers/usb/usbip/vhci_tx.c b/drivers/usb/usbip/vhci_tx.c
-index 0ae40a13a9fe..05da652e7bbe 100644
---- a/drivers/usb/usbip/vhci_tx.c
-+++ b/drivers/usb/usbip/vhci_tx.c
-@@ -63,6 +63,9 @@ static int vhci_send_cmd_submit(struct vhci_device *vdev)
- 	int iovnum;
- 	int err = -ENOMEM;
- 	int i;
-+#ifdef CONFIG_DEBUG_AID_FOR_SYZBOT
-+	struct socket *socket = vdev->ud.tcp_socket;
-+#endif
- 
- 	while ((priv = dequeue_from_priv_tx(vdev)) != NULL) {
- 		int ret;
-@@ -135,6 +138,11 @@ static int vhci_send_cmd_submit(struct vhci_device *vdev)
- 			iovnum++;
- 			txsize += len;
- 		}
-+#ifdef CONFIG_DEBUG_AID_FOR_SYZBOT
-+		if (!socket || socket != vdev->ud.tcp_socket)
-+			pr_err("%s: sock changed from %p to %p\n",
-+			       __func__, socket, vdev->ud.tcp_socket);
-+#endif
- 
- 		ret = kernel_sendmsg(vdev->ud.tcp_socket, &msg, iov, iovnum,
- 				     txsize);
-@@ -237,6 +245,8 @@ int vhci_tx_loop(void *data)
- 	struct usbip_device *ud = data;
- 	struct vhci_device *vdev = container_of(ud, struct vhci_device, ud);
- 
-+	if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+		pr_info("%s: thread starting %p\n", __func__, vdev->ud.tcp_tx);
- 	while (!kthread_should_stop()) {
- 		if (vhci_send_cmd_submit(vdev) < 0)
- 			break;
-@@ -251,6 +261,8 @@ int vhci_tx_loop(void *data)
- 
- 		usbip_dbg_vhci_tx("pending urbs ?, now wake up\n");
- 	}
-+	if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+		pr_info("%s: thread exiting %p\n", __func__, vdev->ud.tcp_tx);
- 
- 	return 0;
- }
-diff --git a/drivers/usb/usbip/vudc_dev.c b/drivers/usb/usbip/vudc_dev.c
-index c8eeabdd9b56..816cb4b5700b 100644
---- a/drivers/usb/usbip/vudc_dev.c
-+++ b/drivers/usb/usbip/vudc_dev.c
-@@ -437,15 +437,21 @@ static void vudc_shutdown(struct usbip_device *ud)
- 		kernel_sock_shutdown(ud->tcp_socket, SHUT_RDWR);
- 
- 	if (ud->tcp_rx) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: stop rx %p\n", __func__, ud->tcp_rx);
- 		kthread_stop_put(ud->tcp_rx);
- 		ud->tcp_rx = NULL;
- 	}
- 	if (ud->tcp_tx) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: stop tx %p\n", __func__, ud->tcp_tx);
- 		kthread_stop_put(ud->tcp_tx);
- 		ud->tcp_tx = NULL;
- 	}
- 
- 	if (ud->tcp_socket) {
-+		if (IS_BUILTIN(CONFIG_DEBUG_AID_FOR_SYZBOT))
-+			pr_info("%s: close sock %p\n", __func__, ud->tcp_socket);
- 		sockfd_put(ud->tcp_socket);
- 		ud->tcp_socket = NULL;
- 	}
--- 
-2.18.4
+Shenming
