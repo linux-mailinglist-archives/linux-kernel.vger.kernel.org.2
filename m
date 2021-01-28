@@ -2,66 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742C9307973
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0577C30795B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhA1PSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:18:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231171AbhA1PSN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:18:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611847008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S231451AbhA1PRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:17:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59002 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231171AbhA1PRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:17:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611847022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=4Fg7udZXlvfLLHzwve4X1QMdCahnQwMs0ZSOV+O7j8M=;
-        b=g2OhDa6CS4gMgPBJw/zeTh07t3EkKcDWEI8/Qu+8r0DLi7Y2pOXL0ErlNuzDwDFbl2L+Fa
-        XexI6t/QGylMiv6VXN2oY9aUb5Kv98kQdjTgOovTYmL/Zip3Is7DyP9IO9+55mDgFTWPXm
-        mh9sF19cX+lYSsXl35/YjJMc/RtV29c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-5RdBc43ROIK6zvjrJxsEGw-1; Thu, 28 Jan 2021 10:16:46 -0500
-X-MC-Unique: 5RdBc43ROIK6zvjrJxsEGw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6D4B80A5C6;
-        Thu, 28 Jan 2021 15:16:43 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 038FD1DB;
-        Thu, 28 Jan 2021 15:16:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210122181054.32635-1-eric.snowberg@oracle.com>
-References: <20210122181054.32635-1-eric.snowberg@oracle.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org, jarkko@kernel.org,
-        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
-        ardb@kernel.org, zohar@linux.ibm.com, lszubowi@redhat.com,
-        javierm@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] Add EFI_CERT_X509_GUID support for dbx/mokx entries
+        bh=CUUsqoDshqZ4qwQ1Kc4iSyaByclB2HlvDzwBh7gRls4=;
+        b=ioVcpdleXlKYLmDeMvdOTbmadVIiiTiPMNjAXN3IgvJ0IvirC8P2v31xUobENq54J/wb2w
+        PSX/PY9AtEbCb/sE6Twy/kOgmVmfXfdyJS0I/19RceFU/kk6U+ypGZKvQiMKjZb33mV/iX
+        iyZsKoaaBfeEp0ndRGvraK+yuGh7Ks8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BF9A2AE44;
+        Thu, 28 Jan 2021 15:17:02 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 16:17:01 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <YBLVbZzy0KSONizm@dhcp22.suse.cz>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
+ <20210125143150.GA2282@pc638.lan>
+ <20210125153943.GN827@dhcp22.suse.cz>
+ <20210125162559.GA52712@pc638.lan>
+ <20210128151152.GA1867@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3568164.1611846997.1@warthog.procyon.org.uk>
-Date:   Thu, 28 Jan 2021 15:16:37 +0000
-Message-ID: <3568165.1611846997@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128151152.GA1867@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Which tree do you envision this going through?  EFI or keyrings - or are you
-going to ask Linus to pull it directly?  I can pull it if it should go through
-the keyrings tree.
+On Thu 28-01-21 16:11:52, Uladzislau Rezki wrote:
+> On Mon, Jan 25, 2021 at 05:25:59PM +0100, Uladzislau Rezki wrote:
+> > On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
+> > > On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
+> > > > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> > > > > > For a single argument we can directly request a page from a caller
+> > > > > > context when a "carry page block" is run out of free spots. Instead
+> > > > > > of hitting a slow path we can request an extra page by demand and
+> > > > > > proceed with a fast path.
+> > > > > > 
+> > > > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > > > > > and that its fallback is the relatively high latency synchronize_rcu().
+> > > > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > > > > > to allow limited sleeping within the memory allocator.
+> > > > > 
+> > > > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+> > > > > way to allocate without triggering the OOM killer. Is this really what
+> > > > > you need/want? Is __GFP_NORETRY too weak?
+> > > > > 
+> > > > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
+> > > > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
+> > > > point: https://www.spinics.net/lists/rcu/msg02856.html
+> > > > 
+> > > > <snip>
+> > > >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
+> > > >     further decisions based on instrumentation of the success rates of
+> > > >     these opportunistic allocations.
+> > > > <snip>
+> > > 
+> > > I completely agree with Johannes here.
+> > > 
+> > > > but for some reason, i can't find a tail or head of it, we introduced
+> > > > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
+> > > > What we would like to avoid.
+> > > 
+> > > Not that I object to this use but I think it would be much better to use
+> > > it based on actual data. Going along with it right away might become a
+> > > future burden to make any changes in this aspect later on due to lack of 
+> > > exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
+> > > try as hard as it can get without being really disruptive (like OOM
+> > > killing something). And your wording didn't really give me that
+> > > impression.
+> > > 
+> > Initially i proposed just to go with GFP_NOWAIT flag. But later on there
+> > was a discussion about a fallback path, that uses synchronize_rcu() can be
+> > slow, thus minimizing its hitting would be great. So, here we go with a
+> > trade off.
+> > 
+> > Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
+> > light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
+> > 
+> > There were simple criterias we discussed which we would like to achieve:
+> > 
+> > a) minimize a fallback hitting;
+> > b) avoid of OOM involving;
+> > c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+> > 
+> One question here. Since the code that triggers a page request can be
+> directly invoked from reclaim context as well as outside of it. We had
+> a concern about if any recursion is possible, but what i see it is safe.
+> The context that does it can not enter it twice:
+> 
+> <snip>
+>     /* Avoid recursion of direct reclaim */
+>     if (current->flags & PF_MEMALLOC)
+>         goto nopage;
+> <snip>
 
-David
+Yes this is a recursion protection.
 
+> What about any deadlocking in regards to below following flags?
+> 
+> GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
+
+and __GFP_NOMEMALLOC will make sure that the allocation will not consume
+all the memory reserves. The later should be clarified in one of your
+patches I have acked IIRC.
+-- 
+Michal Hocko
+SUSE Labs
