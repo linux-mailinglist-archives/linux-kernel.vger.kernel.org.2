@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC943306E36
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D43D5306E2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhA1HKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
+        id S231516AbhA1HJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhA1HG3 (ORCPT
+        with ESMTP id S231585AbhA1HIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:06:29 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B0AC0612F2;
-        Wed, 27 Jan 2021 23:05:46 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id r14so5087623ljc.2;
-        Wed, 27 Jan 2021 23:05:46 -0800 (PST)
+        Thu, 28 Jan 2021 02:08:04 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6182AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:07:22 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id a25so5096563ljn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:07:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k6Ja0b6no5eZDxYMF3LcCjisrlOc+aXrwQbbpI1j+FU=;
-        b=vR3wxqh/qmhwGrbVwupmBVa176b9HWbzlBi+iHpE2Ycg3SLdVUaFFVWJRoDflvOdUM
-         aWsfXml59wmBYin5SlN4xPN6RcIK4dNQcXmOWado8NdbDeiQYMEx9jUwc2FSefBaZsTb
-         UppvhET8UGl0VaK3nPfEI3NeSolRoxAjUmD/Twjh8E4UabvGtnBhvdK4Pp/0MfZgKspn
-         EbnXKBnWSLwOuA8eGVoZOC1ie3IunASVVcj3NKoElHEMt6SbJYta7lDwO2SMVvg2m/by
-         5Dg/ReU5K8DaNZiZQw6REGpMyc2vLhV0PBbGGTcgWEnqc/YsiI2u5nxThcqW1igtLrDg
-         FA3Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U4Le4OADQ4X6UWQn59tMgq3QYv0xokdX9NaCQXSLbA4=;
+        b=brLlSjOpHJW7xOqtvDyhDlKqhlcVrEUVlUgVf59vM6wrpbarF5/kxUUxweuZYfCL0K
+         YNgMX0I+IyHS84Q4drYLBz2a6gQtPY5K5kBi1YhwbhcvVlWJoxoQhl0ukV869E+QkCxx
+         MHFREUuF6+DlSj6FYjPiIAohSeUTd10VXmg5Nv8x5JBlNSebwC2MkIIGT3gldIsOVci/
+         k8Cc1OybZAj13DIHJv/coyi9RFqJJKIfm6FPPEADY5wtBgDIT9Xsdbj7uCBlqhDI8zBK
+         tchMEq34WlGyIFMGqni9sSXWQNvxnQ2sr8ksVm3JJfQia08+J167dtHsaI7HbFp+2wkc
+         /5ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k6Ja0b6no5eZDxYMF3LcCjisrlOc+aXrwQbbpI1j+FU=;
-        b=K4JqbH8wUDlP7lFfPGYVY7wrFfnhHQGNU5Trq4enNO1XIGPg5B3nWAFCQ/U7KEJ0Pw
-         Xs0qkA4hz5m03J8Ata3pMF70gj3FX6qOBRNK/x85SO4hhv/6ct5+kYloyGSI8ccJwMKE
-         Agr1UJp4Ul7uH+npAtYIgIT9fnIpPlSL7ABL9k5+O/yKfx2ZP2eBKPydEdgZsZ1rl9zc
-         yvDY01QIbd9c0LNRDE8+tj3xVCFiDIXqCknZg9tt7mayjHwzYh+buKQpQ8wYM4oWso+K
-         gRNzTyqtVyNaS8TqAuAOYy+4he+gUzNTK3qAJ+okiFfz07bbkjB8b6K4PjXQCO3oXxTV
-         edVA==
-X-Gm-Message-State: AOAM5330UdMKEX8VvlVhsh3ASdHsQMpXrsAJLKRQSGdUK1eniTMWlDyC
-        qlWBJA7dQQ6ZfCVplSR21UAiSlXdyQBeFg==
-X-Google-Smtp-Source: ABdhPJyBKxRLdlULivn3zwS67VsgEmgyzQZjno9E0hYhphWAEuj721B0R/ffUiJ+gvuTBqvxO9A/aw==
-X-Received: by 2002:a2e:964f:: with SMTP id z15mr7511737ljh.368.1611817544692;
-        Wed, 27 Jan 2021 23:05:44 -0800 (PST)
-Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
-        by smtp.gmail.com with ESMTPSA id r2sm1324510lff.143.2021.01.27.23.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 23:05:44 -0800 (PST)
-Date:   Thu, 28 Jan 2021 09:05:41 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Mark Harmstone <mark@harmstone.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com
-Subject: Re: [PATCH v18 01/10] fs/ntfs3: Add headers and misc files
-Message-ID: <20210128070541.ynzsgpniyo2xe23k@kari-VirtualBox>
-References: <20210122140159.4095083-1-almaz.alexandrovich@paragon-software.com>
- <20210122140159.4095083-2-almaz.alexandrovich@paragon-software.com>
- <45515008-e4a9-26e3-3ce4-026bfacf7d53@harmstone.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U4Le4OADQ4X6UWQn59tMgq3QYv0xokdX9NaCQXSLbA4=;
+        b=GgV20Nykugn9Dq7HN4gag23wc8g5C0IY+5tW16vaVUF4X4o4UtppLQ36AdORZLPhSc
+         F6iUQ2IcrE/NOEd06HJYrQu3GiRmNbzOmUAEuOm89t7GzkicskZ6q6eZkbdXIWILtCLw
+         mn8m1duj2r5Ny+BD9Y1RjpZf3t3KWgeSUXssehAIda3tvNGWjO1zE+bYjAA26WBk2/zE
+         6XCp41n9YBnpcwZN4zwoOXMUG0JbjNh++5yr27Zy8sP9r1d+WoKsSVs/jHIjxQ1u9qNu
+         3Kh7FqL5PudUBTqKdMPnzrtshtuTuZLlY5uiEs7zNqGieRWp5i2vFFlVmcmlp7yszXMm
+         RxHQ==
+X-Gm-Message-State: AOAM533aEePIww1KORGoY3Zi+hzR/PGOjqJ9ItkRAK4S6xwz0EotMcrN
+        r5EQeOnHT3fcy58wHHiPguTxdJ/PiX2CChLHQawybQ==
+X-Google-Smtp-Source: ABdhPJyTeRWB2ugAst/H6rGNbz2aCzpR8+No66qDk0TfdmSulbKXbiH7KwrNR50HjwrGd+zytXhZ9MqGLDB2l7LMNLI=
+X-Received: by 2002:a2e:9b57:: with SMTP id o23mr7948569ljj.314.1611817640923;
+ Wed, 27 Jan 2021 23:07:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45515008-e4a9-26e3-3ce4-026bfacf7d53@harmstone.com>
+References: <1610712101-14929-1-git-send-email-sumit.garg@linaro.org> <20210126141818.GC29956@willie-the-truck>
+In-Reply-To: <20210126141818.GC29956@willie-the-truck>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 28 Jan 2021 12:37:09 +0530
+Message-ID: <CAFA6WYNdasL4SZ3f1TyEs3C1B_jHjxVi2stKofXuGD=AZUx_ZQ@mail.gmail.com>
+Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Jian-Lin Chen <lecopzer.chen@mediatek.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 02:55:30PM +0000, Mark Harmstone wrote:
-> On 22/1/21 2:01 pm, Konstantin Komarov wrote:
-> > diff --git a/fs/ntfs3/upcase.c b/fs/ntfs3/upcase.c
+Hi Will,
 
-> > +static inline u16 upcase_unicode_char(const u16 *upcase, u16 chr)
+On Tue, 26 Jan 2021 at 19:48, Will Deacon <will@kernel.org> wrote:
+>
+> Hi Sumit,
+>
+> On Fri, Jan 15, 2021 at 05:31:41PM +0530, Sumit Garg wrote:
+> > With the recent feature added to enable perf events to use pseudo NMIs
+> > as interrupts on platforms which support GICv3 or later, its now been
+> > possible to enable hard lockup detector (or NMI watchdog) on arm64
+> > platforms. So enable corresponding support.
+> >
+> > One thing to note here is that normally lockup detector is initialized
+> > just after the early initcalls but PMU on arm64 comes up much later as
+> > device_initcall(). So we need to re-initialize lockup detection once
+> > PMU has been initialized.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+>
+> [...]
+>
+> > diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+> > index 3605f77a..bafb7c8 100644
+> > --- a/arch/arm64/kernel/perf_event.c
+> > +++ b/arch/arm64/kernel/perf_event.c
+> > @@ -23,6 +23,8 @@
+> >  #include <linux/platform_device.h>
+> >  #include <linux/sched_clock.h>
+> >  #include <linux/smp.h>
+> > +#include <linux/nmi.h>
+> > +#include <linux/cpufreq.h>
+> >
+> >  /* ARMv8 Cortex-A53 specific event types. */
+> >  #define ARMV8_A53_PERFCTR_PREF_LINEFILL                              0xC2
+> > @@ -1246,12 +1248,30 @@ static struct platform_driver armv8_pmu_driver = {
+> >       .probe          = armv8_pmu_device_probe,
+> >  };
+> >
+> > +static int __init lockup_detector_init_fn(void *data)
 > > +{
-> > +	if (chr < 'a')
-> > +		return chr;
-> > +
-> > +	if (chr <= 'z')
-> > +		return chr - ('a' - 'A');
-> > +
-> > +	return upcase[chr];
+> > +     lockup_detector_init();
+> > +     return 0;
 > > +}
-> 
-> Shouldn't upcase_unicode_char be using the NTFS pseudo-file $UpCase?
-> That way you should also be covered for other bicameral alphabets.
+> > +
+> >  static int __init armv8_pmu_driver_init(void)
+> >  {
+> > +     int ret;
+> > +
+> >       if (acpi_disabled)
+> > -             return platform_driver_register(&armv8_pmu_driver);
+> > +             ret = platform_driver_register(&armv8_pmu_driver);
+> >       else
+> > -             return arm_pmu_acpi_probe(armv8_pmuv3_init);
+> > +             ret = arm_pmu_acpi_probe(armv8_pmuv3_init);
+> > +
+> > +     /*
+> > +      * Try to re-initialize lockup detector after PMU init in
+> > +      * case PMU events are triggered via NMIs.
+> > +      */
+> > +     if (ret == 0 && arm_pmu_irq_is_nmi())
+> > +             smp_call_on_cpu(raw_smp_processor_id(), lockup_detector_init_fn,
+> > +                             NULL, false);
+> > +
+> > +     return ret;
+>
+> What's wrong with the alternative approach outlined by Mark:
+>
+> https://lore.kernel.org/r/20210113130235.GB19011@C02TD0UTHF1T.local
+>
+> ?
 
-return upcase[chr] is just for that? Upcase table from $UpCase is constucted
-in super.c and this will get it in and use it.
+I have replied on this thread.
+
+-Sumit
+
+>
+> Will
