@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F269307921
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D8E30792A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhA1PH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:07:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34114 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231793AbhA1PEr (ORCPT
+        id S232433AbhA1PIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:08:52 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11666 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232269AbhA1PEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:04:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611846201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ChbOkEgbATFM37SwTaCF7y0/gcttE6lmGqqCimF4GA8=;
-        b=NakydoJ9h1ceN5CE7BYMNXJyGgNZ2zTJUZU2q07QU+GQYwZH6geO6/Dl5MOOlUdcjXbzQ/
-        wAkz3zxVpyu5VfbsFrw8xBRGr/IdxqadoSIcgxNJemO4wTMY4Q2kTKhn6HGKx7NvYYUnLW
-        PHaIwAerF7vdWJFev7rQtzelOf7i52c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-h47oyd7PPFO5_XSp3oVzYw-1; Thu, 28 Jan 2021 10:03:16 -0500
-X-MC-Unique: h47oyd7PPFO5_XSp3oVzYw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21BC210052FE;
-        Thu, 28 Jan 2021 15:03:13 +0000 (UTC)
-Received: from [10.36.113.207] (ovpn-113-207.ams2.redhat.com [10.36.113.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A1845D720;
-        Thu, 28 Jan 2021 15:03:08 +0000 (UTC)
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        James Morris <jmorris@namei.org>
-References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
- <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com>
- <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
- <94797c92-cd90-8a65-b879-0bb5f12b9fc5@redhat.com>
- <CA+CK2bCjD7PujEwWMT32p4e6x6hZ-f5QOKXir10mT8RfijvnUA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: dax alignment problem on arm64 (and other achitectures)
-Message-ID: <db692fcd-40e8-9c2b-d63b-9803f4bf9d5e@redhat.com>
-Date:   Thu, 28 Jan 2021 16:03:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 28 Jan 2021 10:04:08 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6012d2400000>; Thu, 28 Jan 2021 07:03:28 -0800
+Received: from [10.26.73.116] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
+ 2021 15:03:24 +0000
+Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Saravana Kannan <saravanak@google.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com>
+ <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
+ <17939709-f6f4-fa9c-836f-9779081c4087@nvidia.com>
+ <CAGETcx_1x7LFprsEM+-X8Y42-sbajBav5Bik4U=s4Z5XCSZtUg@mail.gmail.com>
+ <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com>
+Message-ID: <6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com>
+Date:   Thu, 28 Jan 2021 15:03:21 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CA+CK2bCjD7PujEwWMT32p4e6x6hZ-f5QOKXir10mT8RfijvnUA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611846208; bh=xyVB/nXmGqUdKAurlytAs4Ivga7O+JRNlwLBfje94Ik=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=JCa4Snojg2M2xuT8hrJ5OITwTtTwVwvCbBTiUPNEHk06ADPCS3Y6ymFxjU5pUqZmr
+         qqvUbPaq98TqvG59ORl1ejijao6OywKJjENLEEC+/o1x7MKDNtHpEIpjyCeeq6/Gu1
+         doz4wGc+hQQR48Lz7E96oJ/ftj7i1xinxIe5++TUiJu7iH/v+j6dcCehe1apNiN2Bx
+         ldumRsA5OuYiA2GJkYkaim2Rr4Kbz8NZDsv+HyJy0CsLiLb2HVtmhotEQ9+g5HH/P+
+         2qjKYk+lezLKvBPaTBymUccWzypSh+nCYS5RJatDDGb4PAwutGr2U+NmB9c/pTfRFi
+         cPaDSCiB3Yqsw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> One issue usually is that often firmware can allocate from available
->> system RAM and/or modify/initialize it. I assume you're running some
->> custom firmware :)
+
+On 14/01/2021 16:56, Jon Hunter wrote:
 > 
-> We have a special firmware that does not touch the last 2G of physical
-> memory for its allocations :)
+> On 14/01/2021 16:47, Saravana Kannan wrote:
 > 
-
-Fancy :)
-
-[...]
-
->> Personally, I think the future is 4k, especially for smaller machines.
->> (also, imagine right now how many 512MB THP you can actually use in your
->> 8GB VM ..., simply not suitable for small machines).
+> ...
 > 
-> Um, this is not really about 512THP. Yes, this is smaller machine, but
-> performance is very important to us. Boot budget for the kernel is
-> under half a second. With 64K we save 0.2s  0.35s vs 0.55s. This is
-> because fewer struct pages need to be initialized. Also, fewer TLB
-> misses, and 3-level page tables add up as performance benefits. >
-> For larger servers 64K pages make total sense: Less memory is wasted as metdata.
-
-Yes, indeed, for very large servers it might make sense in that regard. 
-However, once we can eventually free vmemmap of hugetlbfs things could 
-change; assuming user space will be consuming huge pages (which large 
-machines better be doing ... databases, hypervisors ... ).
-
-Also, some hypervisors try allocating the memmap completely ... but I 
-consider that rather a special case.
-
-Personally, I consider being able to use THP/huge pages more important 
-than having 64k base pages and saving some TLB space there. Also, with 
-64k you have other drawbacks: for example, each stack, each TLS for 
-threads in applications suddenly consumes 16 times more memory as "minimum".
-
-Optimizing boot time/memmap initialization further is certainly an 
-interesting topic.
-
-Anyhow, you know your use case best, just sharing my thoughts :)
-
-[...]
-
->>>
->>> Right, but I do not think it is possible to do for dax devices (as of
->>> right now). I assume, it contains information about what kind of
->>> device it is: devdax, fsdax, sector, uuid etc.
->>> See [1] namespaces tabel. It contains summary of pmem devices types,
->>> and which of them have label (all except for raw).
+>>> Yes this is the warning shown here [0] and this is coming from
+>>> the 'Generic PHY stmmac-0:00' device.
 >>
->> Interesting, I wonder if the label is really required to get this
->> special use case running. I mean, all you want is to have dax/kmem
->> expose the whole thing as system RAM. You don't want to lose even 2MB if
->> it's just for the sake of unnecessary metadata - this is not a real
->> device, it's "fake" already.
+>> Can you print the supplier and consumer device when this warning is
+>> happening and let me know? That'd help too. I'm guessing the phy is
+>> the consumer.
 > 
-> Hm, would not it essentially  mean allowing memory hot-plug for raw
-> pmem devices? Something like create mmap, and hot-add raw pmem?
+> 
+> Sorry I should have included that. I added a print to dump this on
+> another build but failed to include here.
+> 
+> WARNING KERN Generic PHY stmmac-0:00: supplier 2200000.gpio (status 1)
+> 
+> The status is the link->status and looks like the supplier is the
+> gpio controller. I have verified that the gpio controller is probed
+> before this successfully.
+> 
+>> So the warning itself isn't a problem -- it's not breaking anything or
+>> leaking memory or anything like that. But the device link is jumping
+>> states in an incorrect manner. With enough context of this code (why
+>> the device_bind_driver() is being called directly instead of going
+>> through the normal probe path), it should be easy to fix (I'll just
+>> need to fix up the device link state).
+> 
+> Correct, the board seems to boot fine, we just get this warning.
 
-Theoretically yes, but I have no idea if that would make sense for real 
-"raw pmem" as well. Hope some of the pmem/nvdimm experts can clarify 
-what's possible and what's not :)
 
+Have you had chance to look at this further?
+
+The following does appear to avoid the warning, but I am not sure if
+this is the correct thing to do ...
+
+index 9179825ff646..095aba84f7c2 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -456,6 +456,10 @@ int device_bind_driver(struct device *dev)
+ {
+        int ret;
+
++       ret = device_links_check_suppliers(dev);
++       if (ret)
++               return ret;
++
+        ret = driver_sysfs_add(dev);
+        if (!ret)
+                driver_bound(dev);
+
+
+Cheers
+Jon
 
 -- 
-Thanks,
-
-David / dhildenb
-
+nvpublic
