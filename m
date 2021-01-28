@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA03307A3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB70307A41
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhA1QDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:03:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39250 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhA1QDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:03:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 050F6AC41;
-        Thu, 28 Jan 2021 16:02:33 +0000 (UTC)
-Subject: Re: [v5 PATCH 01/11] mm: vmscan: use nid from shrink_control for
- tracepoint
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, ktkhai@virtuozzo.com,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210127233345.339910-1-shy828301@gmail.com>
- <20210127233345.339910-2-shy828301@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <621d771e-5d28-9f5f-662b-9f4d81c0ef04@suse.cz>
-Date:   Thu, 28 Jan 2021 17:02:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232011AbhA1QDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:03:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhA1QDX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:03:23 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08207C061573;
+        Thu, 28 Jan 2021 08:02:43 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611849761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=opwOYFvkdEM7XYU2EhAoDAkPWSc3olWO0Af++hxj9mU=;
+        b=KnJPsfvvLNXw+V12/m2lcBaRfcQWAJKlVkXATHownTUMWvoMhf2Bw3vNXzzrc0clrXpR3W
+        Zm+0xv+sQBluYgdSDqtOZGzCIzRC+emmEAIERDRABeAwLhDLF/QB2RcFq1aH/vYGolPl3S
+        gQGQiRDfwcmA963lV0HU2KyW9e0OsYBsK3TAMM4fQXYSdW3MTfruNS1m1fK9SqUOYuXw8E
+        ud/4KXWnh07kbcip812caDzgCBHD19LaM+Q2OokYlInd+Z+YsQGpb5TNvNh+XFxKSzICuA
+        sZH9u07WpSGeD8jAVWT2VQQJuHeu0nYOAkdgiLALBqk0WQOEhYpIdI5Hm4C3sQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611849761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=opwOYFvkdEM7XYU2EhAoDAkPWSc3olWO0Af++hxj9mU=;
+        b=lkf7myXefu6y6dhRY7jH1/YyUT7WrmfSbQcT+GqksICp5QmAuav2CcSIfs7OJwlxhZ5wka
+        eEWw1peY/X9JUdAg==
+To:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        frederic@kernel.org, juri.lelli@redhat.com, abelits@marvell.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        rostedt@goodmis.org, mingo@kernel.org, peterz@infradead.org,
+        davem@davemloft.net, akpm@linux-foundation.org,
+        sfr@canb.auug.org.au, stephen@networkplumber.org,
+        rppt@linux.vnet.ibm.com, jinyuqi@huawei.com,
+        zhangshaokun@hisilicon.com
+Subject: Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to houskeeping CPUs
+In-Reply-To: <20210127121939.GA54725@fuller.cnet>
+References: <20200625223443.2684-1-nitesh@redhat.com> <20200625223443.2684-2-nitesh@redhat.com> <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com> <20210127121939.GA54725@fuller.cnet>
+Date:   Thu, 28 Jan 2021 17:02:41 +0100
+Message-ID: <87r1m5can2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210127233345.339910-2-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 12:33 AM, Yang Shi wrote:
-> The tracepoint's nid should show what node the shrink happens on, the start tracepoint
-> uses nid from shrinkctl, but the nid might be set to 0 before end tracepoint if the
-> shrinker is not NUMA aware, so the traceing log may show the shrink happens on one
-> node but end up on the other node.  It seems confusing.  And the following patch
-> will remove using nid directly in do_shrink_slab(), this patch also helps cleanup
-> the code.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+On Wed, Jan 27 2021 at 09:19, Marcelo Tosatti wrote:
+> On Wed, Jan 27, 2021 at 11:57:16AM +0000, Robin Murphy wrote:
+>> > +	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
+>> > +	mask = housekeeping_cpumask(hk_flags);
+>> 
+>> AFAICS, this generally resolves to something based on cpu_possible_mask
+>> rather than cpu_online_mask as before, so could now potentially return an
+>> offline CPU. Was that an intentional change?
+>
+> Robin,
+>
+> AFAICS online CPUs should be filtered.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+The whole pile wants to be reverted. It's simply broken in several ways.
 
-> ---
->  mm/vmscan.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b1b574ad199d..b512dd5e3a1c 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -535,7 +535,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->  	else
->  		new_nr = atomic_long_read(&shrinker->nr_deferred[nid]);
->  
-> -	trace_mm_shrink_slab_end(shrinker, nid, freed, nr, new_nr, total_scan);
-> +	trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new_nr, total_scan);
->  	return freed;
->  }
->  
-> 
+Thanks,
 
+        tglx
