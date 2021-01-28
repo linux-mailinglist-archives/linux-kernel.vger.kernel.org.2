@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C3D307B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF73307B37
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbhA1Qko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:40:44 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:45876 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhA1Qke (ORCPT
+        id S232667AbhA1QlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:41:18 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:11741 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232655AbhA1QlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:40:34 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l5AKi-00040V-2J; Thu, 28 Jan 2021 16:39:48 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iwlwifi: mvm: remove redundant initialization of variable phy_id
-Date:   Thu, 28 Jan 2021 16:39:47 +0000
-Message-Id: <20210128163947.643705-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 28 Jan 2021 11:41:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611852038; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=v4QZtcN/NF44ksO02JGpPju7+31t5OKRwBwUNKC9wfw=; b=txFqJRPD6lMVygyKDbtG9vI1yJCCUqrM6pVcVGYcNu6n+nIGC9W1nfNYeLkb1cn1fuo6Zwk2
+ KohSQJbYuiOcLpLt7Qwvnu47SIsaR/3f4iVZh36oNCQ+Q+I3weO+mQjelKDw6y8prIIThBCz
+ M9bra2K4d6iqoHEqlEqqLbKC1pk=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6012e8e783b274b0af8f9822 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 16:40:07
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3DA3C43465; Thu, 28 Jan 2021 16:40:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0696C433CA;
+        Thu, 28 Jan 2021 16:40:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C0696C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Date:   Thu, 28 Jan 2021 08:39:59 -0800
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "cang@codeaurora.org" <cang@codeaurora.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 2/2] scsi: ufs: Fix deadlock while suspending ufs
+ host
+Message-ID: <20210128163959.GA32780@stor-presley.qualcomm.com>
+References: <b1db5394aa3f6cf44cd9adb9c8d569caa0c9e4f5.1611803264.git.asutoshd@codeaurora.org>
+ <d50e7620c47109ea7664dd9ca4144fc0c7c8502d.1611803264.git.asutoshd@codeaurora.org>
+ <DM6PR04MB657577E28BEDC95DC5FFCA96FCBA9@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB657577E28BEDC95DC5FFCA96FCBA9@DM6PR04MB6575.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Jan 28 2021 at 04:21 -0800, Avri Altman wrote:
+>>
+>> During runtime-suspend of ufs host, the scsi devices are
+>> already suspended and so are the queues associated with them.
+>> But the ufs host sends SSU to wlun during its runtime-suspend.
+>Do you possible meant: "sends request-sense while clearing UAC to...."
+>
 
-The variable phy_id is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
+The idea was to show that there's a scsi command that's sent during
+suspend which may deadlock.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/intel/iwlwifi/mvm/quota.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, I agree to your comment and would change the message to reflect it in
+the next version.
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/quota.c b/drivers/net/wireless/intel/iwlwifi/mvm/quota.c
-index 3d0166df2002..4a0ba7f44900 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/quota.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/quota.c
-@@ -90,7 +90,7 @@ static void iwl_mvm_adjust_quota_for_noa(struct iwl_mvm *mvm,
- {
- #ifdef CONFIG_NL80211_TESTMODE
- 	struct iwl_mvm_vif *mvmvif;
--	int i, phy_id = -1, beacon_int = 0;
-+	int i, phy_id, beacon_int = 0;
- 
- 	if (!mvm->noa_duration || !mvm->noa_vif)
- 		return;
--- 
-2.29.2
-
+>
+>Thanks,
+>Avri
