@@ -2,353 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B27C306AA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7E2306AC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhA1Boz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:44:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA1Bnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:43:49 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F080C06174A;
-        Wed, 27 Jan 2021 17:43:09 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id my11so3922460pjb.1;
-        Wed, 27 Jan 2021 17:43:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=aLnHcsVzTybOGfmfrxsAnhlQ3Vuld8baNUB9PVoHh6Y=;
-        b=ovxIBjYLObG8GNMq7qXkVHuiVnnpQgh4WvrFs21LmlhgFjECQ2Y7OntVqxa4rAhXZZ
-         srskp6/XJWnCL/y8ZP2U+WFPDrz0Ayh8g2VWqlkLjoBclEL8gQiwaCqoKFxhzvU4YBsd
-         rpLGLYkxGEU19zXIbk8vEf6DQC29UPIXKaoA6eMFkSL0KOtCfKKOO7oFZnrRY2XNzCR+
-         nLXnOwez4nuGyAm0znTkFX2IQ/m2ETc1t8+uRp8ExByqG8zUYjZ06uLboHmeq2GZQcJG
-         3a/T8rnRmQIkAhAv9kchy1C6cYa5UmlrReMJxP9neKGppksJKfIGjUmOLECZIa5DuAnD
-         FqgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=aLnHcsVzTybOGfmfrxsAnhlQ3Vuld8baNUB9PVoHh6Y=;
-        b=E+JfBCaF9eGZV862Koq4/RUdylhHkoBOCTjwCWwAo+L5TsszD/yI7BbL3tNuCdiV8C
-         U6Pv1J3KJAFoyOtwHswZmMm8uxeKhZ/mZwzDuoFuJUQYC5IPcnjLwj4hd4V6xdHRS+EA
-         9i18buPkTfJ/VrXxwquOAaJ2SPvdkL0PYD5x2VIXBfjfqV58iXfUIQbQ5WN+2tVvhq/N
-         frCEHMOQitQeL9qjQTtQtCKTarzl4DWBxPUpd91ndOCzK1GAtY42olsz8z9YjguaWNKm
-         jlVT3XGx+cW2XH8ezBnK+lNiEgDbrW6uQaBJXado2XLTTZJs4YsRxvBj/4El1ocyF/Zh
-         IkPg==
-X-Gm-Message-State: AOAM532K6WAxXCaB7aE70ZKFVz1kXkFV92EANg4sLrB4IN8a7Il1I4V3
-        zWj2+ab8Zr5/5gHOk8CvfGiuON4v8R0mVdpl
-X-Google-Smtp-Source: ABdhPJykyWkbsEeVy/u2ousqs2hVZa8H55LBByXoRF4UXBzg0By+NDlzoQOvEeX6HrZ8+rGyPS7elw==
-X-Received: by 2002:a17:90a:4a85:: with SMTP id f5mr8708829pjh.117.1611798189061;
-        Wed, 27 Jan 2021 17:43:09 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id k6sm4034011pgk.36.2021.01.27.17.43.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 17:43:08 -0800 (PST)
-Date:   Thu, 28 Jan 2021 09:42:58 +0800
-From:   carlis <zhangxuezhi3@gmail.com>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     gregkh@linuxfoundation.org, colin.king@canonical.com,
-        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
-        mh12gx2825@gmail.com, sbrivio@redhat.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
-Message-ID: <20210128094258.000012c3@gmail.com>
-In-Reply-To: <20210127223222.3lavtl3roc4cabso@kari-VirtualBox>
-References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
-        <20210127223222.3lavtl3roc4cabso@kari-VirtualBox>
-Organization: Tyzmig-ryrjum-8kedto
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S231136AbhA1Bxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:53:41 -0500
+Received: from mga01.intel.com ([192.55.52.88]:14814 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhA1Bx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 20:53:28 -0500
+IronPort-SDR: fFMBxtAptYDbJFoL3+ZlwH0WiIKX8ylb7DUG5qkhd7PnHLhxRFA3a22x16rotR/BOn5rNnkc0f
+ PcvODrzgKSHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="198991706"
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="198991706"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 17:51:41 -0800
+IronPort-SDR: rnpuTqtNP5HTpd56nN+iQtZfrfdhwWMnRLL81Xvssp8Mo7L9PCghuihYGjHq/9M98Z90fxl9z7
+ Ag00aOHWkVmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="403302867"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Jan 2021 17:51:39 -0800
+Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3] iommu/vt-d: do not use flush-queue when caching-mode
+ is on
+To:     Nadav Amit <nadav.amit@gmail.com>, iommu@lists.linux-foundation.org
+References: <20210127175317.1600473-1-namit@vmware.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <31808b1a-c5ce-b262-3022-ec6f31700728@linux.intel.com>
+Date:   Thu, 28 Jan 2021 09:43:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210127175317.1600473-1-namit@vmware.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 00:32:22 +0200
-Kari Argillander <kari.argillander@gmail.com> wrote:
+On 1/28/21 1:53 AM, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> When an Intel IOMMU is virtualized, and a physical device is
+> passed-through to the VM, changes of the virtual IOMMU need to be
+> propagated to the physical IOMMU. The hypervisor therefore needs to
+> monitor PTE mappings in the IOMMU page-tables. Intel specifications
+> provide "caching-mode" capability that a virtual IOMMU uses to report
+> that the IOMMU is virtualized and a TLB flush is needed after mapping to
+> allow the hypervisor to propagate virtual IOMMU mappings to the physical
+> IOMMU. To the best of my knowledge no real physical IOMMU reports
+> "caching-mode" as turned on.
+> 
+> Synchronizing the virtual and the physical IOMMU tables is expensive if
+> the hypervisor is unaware which PTEs have changed, as the hypervisor is
+> required to walk all the virtualized tables and look for changes.
+> Consequently, domain flushes are much more expensive than page-specific
+> flushes on virtualized IOMMUs with passthrough devices. The kernel
+> therefore exploited the "caching-mode" indication to avoid domain
+> flushing and use page-specific flushing in virtualized environments. See
+> commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
+> mode.")
+> 
+> This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
+> of iova deferred flushing"). Now, when batched TLB flushing is used (the
+> default), full TLB domain flushes are performed frequently, requiring
+> the hypervisor to perform expensive synchronization between the virtual
+> TLB and the physical one.
+> 
+> Getting batched TLB flushes to use page-specific invalidations again in
+> such circumstances is not easy, since the TLB invalidation scheme
+> assumes that "full" domain TLB flushes are performed for scalability.
+> 
+> Disable batched TLB flushes when caching-mode is on, as the performance
+> benefit from using batched TLB invalidations is likely to be much
+> smaller than the overhead of the virtual-to-physical IOMMU page-tables
+> synchronization.
+> 
+> Fixes: 13cf01744608 ("iommu/vt-d: Make use of iova deferred flushing")
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: stable@vger.kernel.org
+> 
+> ---
+> v2->v3:
+> 
+> * Fix the fixes tag in the commit-log (Lu).
+> * Minor English rephrasing of the commit-log.
+> 
+> v1->v2:
+> 
+> * disable flush queue for all domains if caching-mode is on for any
+>    IOMMU (Lu).
+> ---
+>   drivers/iommu/intel/iommu.c | 32 +++++++++++++++++++++++++++++++-
+>   1 file changed, 31 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 788119c5b021..de3dd617cf60 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5373,6 +5373,36 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
+>   	return ret;
+>   }
+>   
+> +static bool domain_use_flush_queue(void)
+> +{
+> +	struct dmar_drhd_unit *drhd;
+> +	struct intel_iommu *iommu;
+> +	bool r = true;
+> +
+> +	if (intel_iommu_strict)
+> +		return false;
+> +
+> +	/*
+> +	 * The flush queue implementation does not perform page-selective
+> +	 * invalidations that are required for efficient TLB flushes in virtual
+> +	 * environments. The benefit of batching is likely to be much lower than
+> +	 * the overhead of synchronizing the virtual and physical IOMMU
+> +	 * page-tables.
+> +	 */
+> +	rcu_read_lock();
+> +	for_each_active_iommu(iommu, drhd) {
+> +		if (!cap_caching_mode(iommu->cap))
+> +			continue;
+> +
+> +		pr_warn_once("IOMMU batching is disabled due to virtualization");
+> +		r = false;
+> +		break;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return r;
+> +}
+> +
+>   static int
+>   intel_iommu_domain_get_attr(struct iommu_domain *domain,
+>   			    enum iommu_attr attr, void *data)
+> @@ -5383,7 +5413,7 @@ intel_iommu_domain_get_attr(struct iommu_domain *domain,
+>   	case IOMMU_DOMAIN_DMA:
+>   		switch (attr) {
+>   		case DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE:
+> -			*(int *)data = !intel_iommu_strict;
+> +			*(int *)data = domain_use_flush_queue();
+>   			return 0;
+>   		default:
+>   			return -ENODEV;
+> 
 
-> On Wed, Jan 27, 2021 at 09:42:52PM +0800, Carlis wrote:
-> > For st7789v ic,when we need continuous full screen refresh, it is
-> > best to wait for the TE signal arrive to avoid screen tearing  
->  
-> > diff --git a/drivers/staging/fbtft/fb_st7789v.c
-> > b/drivers/staging/fbtft/fb_st7789v.c index 3a280cc..cba08a8 100644
-> > --- a/drivers/staging/fbtft/fb_st7789v.c
-> > +++ b/drivers/staging/fbtft/fb_st7789v.c
-> > @@ -9,9 +9,12 @@
-> >  #include <linux/delay.h>
-> >  #include <linux/init.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/completion.h>
-> >  #include <linux/module.h>
-> >  #include <video/mipi_display.h>
-> > -
-> > +#include <linux/gpio/consumer.h>  
-> 
-> Space after local headers. Also this should one up so all Linux
-> headers are group together. You agreed?
-> 
-OK,i will fix it in patch v12 tomorrow
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-> >  #include "fbtft.h"
-> >  
-> >  #define DRVNAME "fb_st7789v"
-> > @@ -66,6 +69,32 @@ enum st7789v_command {
-> >  #define MADCTL_MX BIT(6) /* bitmask for column address order */
-> >  #define MADCTL_MY BIT(7) /* bitmask for page address order */
-> >  
-> > +#define SPI_PANEL_TE_TIMEOUT	400 /* msecs */
-> > +static struct mutex te_mutex;/* mutex for set te gpio irq status
-> > */  
-> 
-> Space after ;
-hi, i have fix it in the patch v11
-> 
-> > +static struct completion spi_panel_te;  
-> 
-> What if multiple displays? Is this possible for user?
-I will check it carefully again about this logic.
-> 
-> > +
-> > +static irqreturn_t spi_panel_te_handler(int irq, void *data)
-> > +{
-> > +	complete(&spi_panel_te);
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static void set_spi_panel_te_irq_status(struct fbtft_par *par,
-> > bool enable) +{
-> > +	static int te_irq_count;  
-> 
-> Same here. Maybe you can think better way and then this code would
-> also be cleaner.
-> 
-> > +
-> > +	mutex_lock(&te_mutex);  
-> 
-> So locking should be done if we really do action and not just in case.
-> 
-> > +
-> > +	if (enable) {
-> > +		if (++te_irq_count == 1)
-> > +			enable_irq(gpiod_to_irq(par->gpio.te));
-> > +	} else {
-> > +		if (--te_irq_count == 0)
-> > +			disable_irq(gpiod_to_irq(par->gpio.te));
-> > +	}
-> > +	mutex_unlock(&te_mutex);
-> > +}
-> > +
-> >  /**
-> >   * init_display() - initialize the display controller
-> >   *
-> > @@ -82,6 +111,33 @@ enum st7789v_command {
-> >   */
-> >  static int init_display(struct fbtft_par *par)
-> >  {
-> > +	int rc;
-> > +	struct device *dev = par->info->device;
-> > +
-> > +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
-> > GPIOD_IN);
-> > +	if (IS_ERR(par->gpio.te)) {
-> > +		rc = PTR_ERR(par->gpio.te);
-> > +		dev_err(par->info->device, "Failed to request te
-> > gpio: %d\n", rc);
-> > +		return rc;
-> > +	}  
-> 
-> You request with optinal and you still want to error out? We could
-> just continue and not care about that error. User will be happier if
-> device still works somehow.
-You mean i just delete this dev_err print ?!
-like this:
-	par->gpio.te = devm_gpiod_get_index_optional(dev, "te",
-0,GPIOD_IN); 
-        if (IS_ERR(par->gpio.te))
-		return PTR_ERR(par->gpio.te);
-> 
-> > +	if (par->gpio.te) {
-> > +		init_completion(&spi_panel_te);
-> > +		mutex_init(&te_mutex);
-> > +		rc = devm_request_irq(dev,
-> > +				      gpiod_to_irq(par->gpio.te),
-> > +				     spi_panel_te_handler,
-> > IRQF_TRIGGER_RISING,
-> > +				     "TE_GPIO", par);
-> > +		if (rc) {
-> > +			dev_err(par->info->device, "TE request_irq
-> > failed.\n");
-> > +			devm_gpiod_put(dev, par->gpio.te);
-> > +			return rc;
-> > +		}
-> > +
-> > +		disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> > +	} else {
-> > +		dev_info(par->info->device, "%s:%d, TE gpio not
-> > specified\n",
-> > +			 __func__, __LINE__);
-> > +	}
-> >  	/* turn off sleep mode */
-> >  	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
-> >  	mdelay(120);
-> > @@ -137,6 +193,9 @@ static int init_display(struct fbtft_par *par)
-> >  	 */
-> >  	write_reg(par, PWCTRL1, 0xA4, 0xA1);
-> >  
-> > +    /*Tearing Effect Line On*/  
-> 
-> Spaces and why upcase everything?
-i will fix it in patch v12 tomorrow
-> 
-> > +	if (par->gpio.te)
-> > +		write_reg(par, 0x35, 0x00);
-> >  	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
-> >  
-> >  	if (HSD20_IPS)
-> > @@ -145,6 +204,76 @@ static int init_display(struct fbtft_par *par)
-> >  	return 0;
-> >  }
-> >  
-> > +/*****************************************************************************
-> > + *
-> > + *   int (*write_vmem)(struct fbtft_par *par);
-> > + *
-> > +
-> > *****************************************************************************/
-> > +  
-> 
-> Why this kind of function comment? Please use same as another function
-> comments in this file. They are atleast almoust like kernel-doc style.
-i will fix it in patch v12 tomorrow
-> > +/* 16 bit pixel over 8-bit databus */
-> > +static int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t
-> > offset, size_t len) +{
-> > +	u16 *vmem16;
-> > +	__be16 *txbuf16 = par->txbuf.buf;
-> > +	size_t remain;
-> > +	size_t to_copy;
-> > +	size_t tx_array_size;
-> > +	int i;
-> > +	int ret = 0;
-> > +	size_t startbyte_size = 0;
-> > +
-> > +	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v
-> > ---%s(offset=%zu, len=%zu)\n",
-> > +		      __func__, offset, len);
-> > +
-> > +	remain = len / 2;
-> > +	vmem16 = (u16 *)(par->info->screen_buffer + offset);
-> > +
-> > +	if (par->gpio.dc)
-> > +		gpiod_set_value(par->gpio.dc, 1);
-> > +
-> > +	/* non buffered write */
-> > +	if (!par->txbuf.buf)
-> > +		return par->fbtftops.write(par, vmem16, len);
-> > +
-> > +	/* buffered write */
-> > +	tx_array_size = par->txbuf.len / 2;
-> > +
-> > +	if (par->startbyte) {
-> > +		txbuf16 = par->txbuf.buf + 1;
-> > +		tx_array_size -= 2;
-> > +		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
-> > +		startbyte_size = 1;
-> > +	}
-> > +
-> > +	while (remain) {  
-> 
-> for (remain = len / 2; remain; remain -= to_copy) {
-> 
-> or even use len = len / 2 if you wanna save variable.
-> 
-> > +		to_copy = min(tx_array_size, remain);  
-> 
-> Care must be taken that this will not be endless loop if another is
-> 0. I will not check this further but hopefully you have.
-> 
-> > +		dev_dbg(par->info->device, "    to_copy=%zu,
-> > remain=%zu\n",
-> > +			to_copy, remain - to_copy);
-> > +
-> > +		for (i = 0; i < to_copy; i++)
-> > +			txbuf16[i] = cpu_to_be16(vmem16[i]);
-> > +
-> > +		vmem16 = vmem16 + to_copy;  
-> 
-> += Or you can ++ vmem16 at the for loop but that is not so readable
-> sometimes with pointers.
-> 
-> > +		if (par->gpio.te) {
-> > +			set_spi_panel_te_irq_status(par, true);
-> > +			reinit_completion(&spi_panel_te);
-> > +			ret =
-> > wait_for_completion_timeout(&spi_panel_te,
-> > +
-> > msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
-> > +			if (ret == 0)  
-> 
-> !ret
-> 
-> > +				dev_err(par->info->device, "wait
-> > panel TE time out\n");
-> > +		}
-> > +		ret = par->fbtftops.write(par, par->txbuf.buf,
-> > +					 startbyte_size + to_copy
-> > * 2);
-> > +		if (par->gpio.te)
-> > +			set_spi_panel_te_irq_status(par, false);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +		remain -= to_copy;
-> > +	}
-> > +
-> > +	return ret;  
-> 
-> Do we want to return something over 0? If not then this can be return
-> 0. And then you do not need to even init ret value at the beginning.
-> 
-> Also wait little bit like Greg sayd before sending new version.
-> Someone might nack about what I say or say something more.
-> 
-hi, i copy fbtft_write_vmem16_bus8 from file fbtft_bus.c and modify it
-,just add te wait logic, i will take more time to check this original
-function.
-> > +}
-> > +
-> >  /**
-> >   * set_var() - apply LCD properties like rotation and BGR mode
-> >   *
-> > @@ -259,6 +388,7 @@ static int blank(struct fbtft_par *par, bool on)
-> >  	.gamma = HSD20_IPS_GAMMA,
-> >  	.fbtftops = {
-> >  		.init_display = init_display,
-> > +		.write_vmem = st7789v_write_vmem16_bus8,
-> >  		.set_var = set_var,
-> >  		.set_gamma = set_gamma,
-> >  		.blank = blank,
-> > diff --git a/drivers/staging/fbtft/fbtft.h
-> > b/drivers/staging/fbtft/fbtft.h index 76f8c09..93bac05 100644
-> > --- a/drivers/staging/fbtft/fbtft.h
-> > +++ b/drivers/staging/fbtft/fbtft.h
-> > @@ -212,6 +212,7 @@ struct fbtft_par {
-> >  		struct gpio_desc *wr;
-> >  		struct gpio_desc *latch;
-> >  		struct gpio_desc *cs;
-> > +		struct gpio_desc *te;
-> >  		struct gpio_desc *db[16];
-> >  		struct gpio_desc *led[16];
-> >  		struct gpio_desc *aux[16];
-> > -- 
-> > 1.9.1
-> >   
-
+Best regards,
+baolu
