@@ -2,159 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8528030756F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6D1307573
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhA1MCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:02:18 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:34380 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbhA1MBd (ORCPT
+        id S231555AbhA1MC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhA1MBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:01:33 -0500
-Received: by mail-ot1-f47.google.com with SMTP id a109so4921098otc.1;
-        Thu, 28 Jan 2021 04:01:17 -0800 (PST)
+        Thu, 28 Jan 2021 07:01:53 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE81C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:01:12 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id f11so5975463ljm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n9EOKkeTY2+d1Fa4iHB/4cHa37Z0fzFo4OzOK4oM6Q4=;
+        b=F/CmSMOuSr5zNpyIz8oDpfs0uxO2NhcU5b2INzxjrItESHLsnvvNX/yf1410eKA9ve
+         VQpoXLUK241FEkj9ofwBDSWNFjyOlJ1/B0w503sD1RjI/Sv8Mpy9AuKTl4v9unPAbVpt
+         o2NhCHR1kO8BzF2uLKVtJlY/eb6hmEA6dxkoKIZIDA//svyJxEpWliH0+/KoPRpX6yuQ
+         xOaOhiqgJROQ4qzL4Ai4Vu8QEK7vHTmjcR+D0QSzio07rhzy0JmaMHDNZNHoYvUzzBdq
+         PIk0qSMqBACkwRrT1oeqoueNhsZKSRQyiROFe5pXaQq2lZ0IVc3HI0/lPCj4ym1EPKe0
+         BuLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YFd+ePX8uVw6q9k4sjKVG2onbgLoQUdjhM3fDLy+Btw=;
-        b=LKAWVBS4m/h6/48Dn7N3w/0wd/2/YrXf3YGyPnTCTcha00mJP7Bcd7j0kSVCxIlT1a
-         nRFIRNFxyLbsSFE1bIT9E6R9RfRE7Ix+IkidxlxQidzV63n//jEn7JK2dOYUPYXuVNrx
-         4346xc/BYZWanIKx34Gua+023jjAl8+GnV2eGbNp45x4NIPODrXb+SlG+mQ1VBNe10q3
-         9JeQJ0cI0kiuFN5ygg7dL5JMWfNVcCCVhqJ8FL9HtpoZ04zafFjdCpS2DxHeY0YYC3zR
-         UYAKxHRuBfPUsJ3BjyAQSHy3UchLkW4+UDe5YZLud5VJV7vgoDk5RqgIbSozJUiK4v99
-         KO8w==
-X-Gm-Message-State: AOAM531WQHwOAHnXHH+l80TuECAHVajGLwz9Dy6O7jQ2nLfXvqSiOsUq
-        EIoTjc1NkZoADqscNK7YHWNL92mg1xZLgmgNTe0=
-X-Google-Smtp-Source: ABdhPJzw7uAHH10wT+hfkmC7l6BXx19Gtl05Ag3LL5T55Scni979vNQ+rXgR5Evx5NIc8UxTLZi8I+qmU3q2QMTkMfc=
-X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr11396877otm.206.1611835251636;
- Thu, 28 Jan 2021 04:00:51 -0800 (PST)
+        bh=n9EOKkeTY2+d1Fa4iHB/4cHa37Z0fzFo4OzOK4oM6Q4=;
+        b=j1kZj9h1vSxABGy7V+ZWoGKgr6yo2z7pGk4Pwws31qU79sZDUwGBWjGKqs0fKukBrq
+         +xYXQR6tCZ5ASBfSbPnjcNNJyOSGhbJkpUjqFU0GBm2k1XCBPjc/dsm2Vohozz9xuSGA
+         FBf4JJQvAnLJfk8cU4cUlDSyxZWW6RMqQtql1bHL0zhfOAWK/ZangoXcvl4v/s0PACL6
+         5GzoReGb0QLrFxITJHpdDJC2LE/IPnjLQ2k7UFgteameYZmn2vhuxUuxoC1JLNGnTKza
+         vhD7NcIAOd+qeIZUYuOiufMDkoxjeFn/6vvTrkcgk7vfclvm2ImUYBsHusRHnNIR/c4Q
+         o+pw==
+X-Gm-Message-State: AOAM531UeDq1Rg6RozVFAKzCOKcZI08DLzHU2xZ/FO1S8Iyywkimx0Ki
+        zqs/RCuXdGbmHf08/dR+oUBdBbAioTlcw2W9SwbUXw==
+X-Google-Smtp-Source: ABdhPJypbRkZO7oNmfkvuCEOFNhZkoDt3uSClsJKrU2bBbdo1JdlUWBieGzbeMl4eG6ef0bI+oE4Ri5xIQqzgGc6PuE=
+X-Received: by 2002:a2e:8ec3:: with SMTP id e3mr7938969ljl.467.1611835271030;
+ Thu, 28 Jan 2021 04:01:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
- <20210122154300.7628-2-calvin.johnson@oss.nxp.com> <CAJZ5v0iX3uU36448ALA20hiVk968VKTsvgwLrp8ur96MQo3Acw@mail.gmail.com>
- <20210128112729.GA28413@lsv03152.swis.in-blr01.nxp.com>
-In-Reply-To: <20210128112729.GA28413@lsv03152.swis.in-blr01.nxp.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 28 Jan 2021 13:00:40 +0100
-Message-ID: <CAJZ5v0id1i57K_=7eiK0cpOE6UtsKNfR7L7UEBcN1=G+WS+1TA@mail.gmail.com>
-Subject: Re: [net-next PATCH v4 01/15] Documentation: ACPI: DSD: Document MDIO PHY
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Grant Likely <grant.likely@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20210127000303.436595-1-drew@beagleboard.org>
+In-Reply-To: <20210127000303.436595-1-drew@beagleboard.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 28 Jan 2021 13:01:00 +0100
+Message-ID: <CACRpkdam4gY3iU1DBtczgdnxQ-t0OkrRMZ-Y9e1W0FQOrYnndw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ARM: dts: am335x-pocketbeagle: unique gpio-line-names
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:27 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Hi Rafael,
->
-> Thanks for the review. I'll work on all the comments.
->
-> On Fri, Jan 22, 2021 at 08:22:21PM +0100, Rafael J. Wysocki wrote:
-> > On Fri, Jan 22, 2021 at 4:43 PM Calvin Johnson
-> > <calvin.johnson@oss.nxp.com> wrote:
-> > >
-> > > Introduce ACPI mechanism to get PHYs registered on a MDIO bus and
-> > > provide them to be connected to MAC.
-> > >
-> > > Describe properties "phy-handle" and "phy-mode".
-> > >
-> > > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > > ---
-> > >
-> > > Changes in v4:
-> > > - More cleanup
-> >
-> > This looks much better that the previous versions IMV, some nits below.
-> >
-> > > Changes in v3: None
-> > > Changes in v2:
-> > > - Updated with more description in document
-> > >
-> > >  Documentation/firmware-guide/acpi/dsd/phy.rst | 129 ++++++++++++++++++
-> > >  1 file changed, 129 insertions(+)
-> > >  create mode 100644 Documentation/firmware-guide/acpi/dsd/phy.rst
-> > >
-> > > diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
-> > > new file mode 100644
-> > > index 000000000000..76fca994bc99
-> > > --- /dev/null
-> > > +++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
-> > > @@ -0,0 +1,129 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +=========================
-> > > +MDIO bus and PHYs in ACPI
-> > > +=========================
-> > > +
-> > > +The PHYs on an MDIO bus [1] are probed and registered using
-> > > +fwnode_mdiobus_register_phy().
-> >
-> > Empty line here, please.
-> >
-> > > +Later, for connecting these PHYs to MAC, the PHYs registered on the
-> > > +MDIO bus have to be referenced.
-> > > +
-> > > +The UUID given below should be used as mentioned in the "Device Properties
-> > > +UUID For _DSD" [2] document.
-> > > +   - UUID: daffd814-6eba-4d8c-8a91-bc9bbf4aa301
-> >
-> > I would drop the above paragraph.
-> >
-> > > +
-> > > +This document introduces two _DSD properties that are to be used
-> > > +for PHYs on the MDIO bus.[3]
-> >
-> > I'd say "for connecting PHYs on the MDIO bus [3] to the MAC layer."
-> > above and add the following here:
-> >
-> > "These properties are defined in accordance with the "Device
-> > Properties UUID For _DSD" [2] document and the
-> > daffd814-6eba-4d8c-8a91-bc9bbf4aa301 UUID must be used in the Device
-> > Data Descriptors containing them."
-> >
-> > > +
-> > > +phy-handle
-> > > +----------
-> > > +For each MAC node, a device property "phy-handle" is used to reference
-> > > +the PHY that is registered on an MDIO bus. This is mandatory for
-> > > +network interfaces that have PHYs connected to MAC via MDIO bus.
-> > > +
-> > > +During the MDIO bus driver initialization, PHYs on this bus are probed
-> > > +using the _ADR object as shown below and are registered on the MDIO bus.
-> >
-> > Do you want to mention the "reg" property here?  I think it would be
-> > useful to do that.
->
-> No. I think we should adhere to _ADR in MDIO case. The "reg" property for ACPI
-> may be useful for other use cases that Andy is aware of.
+On Wed, Jan 27, 2021 at 1:04 AM Drew Fustini <drew@beagleboard.org> wrote:
 
-The code should reflect this, then.  I mean it sounds like you want to
-check the "reg" property only if this is a non-ACPI node.
+> Based on linux-gpio discussion [1], it is best practice to make the
+> gpio-line-names unique. Generic names like "[ethernet]" are replaced
+> with the name of the unique signal on the AM3358 SoC ball corresponding
+> to the gpio line. "[NC]" is also renamed to the standard "NC" name to
+> represent "not connected".
+>
+> [1] https://lore.kernel.org/linux-gpio/20201216195357.GA2583366@x1/
+>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+
+This certainly looks better!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
