@@ -2,155 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5533307311
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B67307318
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhA1Jpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbhA1JnA (ORCPT
+        id S232050AbhA1Jp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:45:57 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:35615 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232550AbhA1Jnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:43:00 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660F1C061574;
-        Thu, 28 Jan 2021 01:42:19 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id l9so6787970ejx.3;
-        Thu, 28 Jan 2021 01:42:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VS2BXLiTQG5Ywx+8YI/6vIBJgTmi0BPOFN3mLacxjo4=;
-        b=rlxtghjBfMv4sBljBAWBUtNHU7Amys8VPM6WUQ97fwHB6t2TC77Dzg71iFL+GpzU0v
-         mNXzfIZRMQv+lYOPDgWb1DBPIeGc0M6wNql9PRFg9ptBFb72lx+7T2BXDREJhgee7iwL
-         j/ZyszTs9ktqcwXXxCJ5rnQ5iGTXtmpCTc/7RubSPyHLZaPVuQXMUAqMCe6Q7Z1KK3nC
-         +a9lmbGrrgOjw76O9rPePmHpW59cNJ9rG75PiVQXoFQL2JOV176Xpo405L1DVYgMvjoB
-         wI80jK1WReqzS+ilePNs5t6MiE+P9/WkzamG9pa6I7tbx/pfONBOZBApQCPxuMqza233
-         pvVQ==
+        Thu, 28 Jan 2021 04:43:47 -0500
+Received: by mail-oi1-f180.google.com with SMTP id w8so5403564oie.2;
+        Thu, 28 Jan 2021 01:43:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VS2BXLiTQG5Ywx+8YI/6vIBJgTmi0BPOFN3mLacxjo4=;
-        b=fgPFED/VmgSVriiccufxD9CpnHPo6Yp++CbZoyYKSCy+nye+XJv7t5wkdtGKc5b3wR
-         gq27IvEyhZSaqOfAocixe/f++cILhsISsBkWcbgKA6u1mo5MsdVubuxIEFxSlh/aJzWC
-         miJkMM3MCco50+mw5xUytGW4S8XNRVjrGfO1U/pJz+lraQM0Gj3DgLRebF7cJbi2onEd
-         vY2cjp7yKs5Oa5ZAqk0yhp792Snt6a8Vk6sGIE8appxMazZduuI8rvwqUiP+Xkgu2dnq
-         cJZTSXI1+5pbnaoCFvFUcKlAYtym2O0mH8sT1w6XZsZ/sWJQ6hLdP4R3EB25sqCGSCgg
-         YeCg==
-X-Gm-Message-State: AOAM532rRihYxaaHfHe1B3kLz27h2AHCTm7QonkM964nF3GXvNEQM5yR
-        UMQI9+5dkCjsDz5oihJrqeg=
-X-Google-Smtp-Source: ABdhPJwwQr9fpLfw/ULp0RvD+T6rOzO4W88QBT5qcyDraLNmTY0zXsKsqA/nLyzQSi69y6wF0zp7HQ==
-X-Received: by 2002:a17:907:7255:: with SMTP id ds21mr10178552ejc.258.1611826937030;
-        Thu, 28 Jan 2021 01:42:17 -0800 (PST)
-Received: from [192.168.74.106] (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id cx6sm2810192edb.53.2021.01.28.01.42.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 01:42:16 -0800 (PST)
-Subject: Re: [PATCH 2/2] drm/panel: simple: add samsung,s6e3fa2 panel
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Samuel Pascua <pascua.samuel.14@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20201230151711.3619846-1-iskren.chernev@gmail.com>
- <20201230151711.3619846-2-iskren.chernev@gmail.com>
-Message-ID: <e8701e3c-b0b2-559c-e808-1e6983b85b00@gmail.com>
-Date:   Thu, 28 Jan 2021 11:42:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0UQD5rzLUItAad2Pj4MS3WUwxXLDc49HJgM9YhC9w4E=;
+        b=th6kE6AmrlkBPLYE5c7JauhzVY93ox9Qb/Hb6aSZSJKOFXxA/0HZLCMJXMV2lPWawk
+         jAEMS+A2tukNzwFMMLxl8n7DwoN+fJyYkuZHQj/0qxttIA8n3fwAzCkaA5fKCwymssBj
+         t43hs2W878P7U2Oh/9fAx/PLBC9nT0oeZPZm35l+9pAzhyKUtaIaRBLumwKv1Mdvaggs
+         3iRe+WZ75vcqaWdoTZO82oeJbFrOkPtsrhs1exPi7SJHn2uhIHNorknlH5spclL2jdKu
+         VbhTeTY7jbed3WUUledG4VhVgRM8PvJ6UE8WbniRZtp4lA7LciZzhzTR1IUe30rLpM4p
+         pPRw==
+X-Gm-Message-State: AOAM532eUGrJh75Jf+vurCdiwoNcBCE78ay9Mw/QIKKcOlxcRTPk9iuu
+        L/PQDbs8UOAjswnldt/i2fPraCM5OZ6HWbsp3xI=
+X-Google-Smtp-Source: ABdhPJxoZOzI4xZTWdYHcsO/prgFXGQqxvTaD/BSBKbTP3NgRRBKa973/1xtxNzdsgrR5mdE52PMmLLYLmNTUlRGhEM=
+X-Received: by 2002:aca:1219:: with SMTP id 25mr6108127ois.54.1611826986355;
+ Thu, 28 Jan 2021 01:43:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201230151711.3619846-2-iskren.chernev@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
+ <20210127223222.3lavtl3roc4cabso@kari-VirtualBox> <20210128094258.000012c3@gmail.com>
+ <20210128065233.ji4b7ea54ihyu2l5@kari-VirtualBox>
+In-Reply-To: <20210128065233.ji4b7ea54ihyu2l5@kari-VirtualBox>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Jan 2021 10:42:54 +0100
+Message-ID: <CAMuHMdWK0wbMVJNwSW=pafsyjDVg14h2AX=haJeAkyivehP=JQ@mail.gmail.com>
+Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     carlis <zhangxuezhi3@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Colin King <colin.king@canonical.com>,
+        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
+        mh12gx2825@gmail.com, Stefano Brivio <sbrivio@redhat.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kari,
 
+On Thu, Jan 28, 2021 at 7:53 AM Kari Argillander
+<kari.argillander@gmail.com> wrote:
+> On Thu, Jan 28, 2021 at 09:42:58AM +0800, carlis wrote:
+> > On Thu, 28 Jan 2021 00:32:22 +0200
+> > Kari Argillander <kari.argillander@gmail.com> wrote:
+> > > >  #include "fbtft.h"
+> > > >
+> > > >  #define DRVNAME "fb_st7789v"
+> > > > @@ -66,6 +69,32 @@ enum st7789v_command {
+> > > >  #define MADCTL_MX BIT(6) /* bitmask for column address order */
+> > > >  #define MADCTL_MY BIT(7) /* bitmask for page address order */
+> > > >
+> > > > +#define SPI_PANEL_TE_TIMEOUT     400 /* msecs */
+> > > > +static struct mutex te_mutex;/* mutex for set te gpio irq status
+> > > > */
+> > >
+> > > Space after ;
+> > hi, i have fix it in the patch v11
+> > >
+>
+> Yeah sorry. I accidentally review wrong patch. But mostly stuff are
+> still relevant.
+>
+> > > > @@ -82,6 +111,33 @@ enum st7789v_command {
+> > > >   */
+> > > >  static int init_display(struct fbtft_par *par)
+> > > >  {
+> > > > + int rc;
+> > > > + struct device *dev = par->info->device;
+> > > > +
+> > > > + par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
+> > > > GPIOD_IN);
+> > > > + if (IS_ERR(par->gpio.te)) {
+> > > > +         rc = PTR_ERR(par->gpio.te);
+> > > > +         dev_err(par->info->device, "Failed to request te
+> > > > gpio: %d\n", rc);
+> > > > +         return rc;
+> > > > + }
+> > >
+> > > You request with optinal and you still want to error out? We could
+> > > just continue and not care about that error. User will be happier if
+> > > device still works somehow.
 
-On 12/30/20 5:17 PM, Iskren Chernev wrote:
-> From: Samuel Pascua <pascua.samuel.14@gmail.com>
-> 
-> This panel is used on the Samsung Galaxy S5 (klte).
-> 
-> Signed-off-by: Samuel Pascua <pascua.samuel.14@gmail.com>
-> ---
->  drivers/gpu/drm/panel/panel-simple.c | 30 ++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 41bbec72b2dad..5f16826f3ae06 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -4611,6 +4611,33 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
->  	.lanes = 4,
->  };
-> 
-> +static const struct drm_display_mode s6e3fa2_mode = {
-> +	.clock = 149769,
-> +	.hdisplay = 1080,
-> +	.hsync_start = 1080 + 162,
-> +	.hsync_end = 1080 + 162 + 10,
-> +	.htotal = 1080 + 162 + 10 + 36,
-> +	.vdisplay = 1920,
-> +	.vsync_start = 1920 + 13,
-> +	.vsync_end = 1920 + 13 + 2,
-> +	.vtotal = 1920 + 13 + 2 + 3,
-> +};
-> +
-> +static const struct panel_desc_dsi samsung_s6e3fa2 = {
-> +	.desc = {
-> +		.modes = &s6e3fa2_mode,
-> +		.num_modes = 1,
-> +		.bpc = 8,
-> +		.size = {
-> +			.width = 65,
-> +			.height = 115,
-> +		},
-> +	},
-> +	.flags = MIPI_DSI_MODE_VIDEO_BURST,
-> +	.format = MIPI_DSI_FMT_RGB888,
-> +	.lanes = 4,
-> +};
-> +
->  static const struct of_device_id dsi_of_match[] = {
->  	{
->  		.compatible = "auo,b080uan01",
-> @@ -4633,6 +4660,9 @@ static const struct of_device_id dsi_of_match[] = {
->  	}, {
->  		.compatible = "osddisplays,osd101t2045-53ts",
->  		.data = &osd101t2045_53ts
-> +	}, {
-> +		.compatible = "samsung,s6e3fa2",
-> +		.data = &samsung_s6e3fa2
+devm_gpiod_get_index_optional() returns NULL, not an error, if the
+GPIO is not found.  So if IS_ERR() is the right check.
 
-I just want to share some details to avoid issues in the future.
+And checks for -EPROBE_DEFER can be handled automatically
+by using dev_err_probe() instead of dev_err().
 
-This setup (with simple panel and bindings), works in the sense that the
-display shows stuff, after being left on by the bootloader on the Samsung
-Galaxy S5 (klte). There is no provisions for turning the screen off and
-back on, backlight, or anything else.
+> > You mean i just delete this dev_err print ?!
+> > like this:
+> >       par->gpio.te = devm_gpiod_get_index_optional(dev, "te",
+> > 0,GPIOD_IN);
+> >         if (IS_ERR(par->gpio.te))
+> >               return PTR_ERR(par->gpio.te);
+>
+> Not exactly. I'm suggesting something like this.
+>
+> if (IS_ERR(par->gpio.te) == -EPROBE_DEFER) {
+>         return -EPROBE_DEFER;
+>
+> if (IS_ERR(par->gpio.te))
+>         par-gpio.te = NULL;
+>
+> This like beginning of your patch series but the difference is that if
+> EPROBE_DEFER then we will try again later. Any other error and we will
+> just ignore TE gpio. But this is up to you what you want to do. To me
+> this just seems place where this kind of logic can work.
 
-The display is a rather advanced one, containing many features, but so far
-none of them (including on/off) has been made to work. It is possible that
-in the future some of those features will be figured out, and these might
-very well include additional DT properties.
+Gr{oetje,eeting}s,
 
-So would it be better to put the bindings in a separate file, ready to
-grow, and for the panel - include a simple custom driver that works no
-better than the simple-panel one now, but can accommodate future expansion?
+                        Geert
 
->  	}, {
->  		/* sentinel */
->  	}
-> --
-> 2.29.2
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
