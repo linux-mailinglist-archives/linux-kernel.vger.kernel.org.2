@@ -2,243 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599B8307B80
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E77307B83
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhA1Q44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:56:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232614AbhA1Q4w (ORCPT
+        id S232732AbhA1Q5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:57:17 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11482 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231634AbhA1Q4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:56:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611852925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HgtxAPALtY+nCny47e18Ou0vNrOzLT1OduAQqQAsR8o=;
-        b=dEF+xAKD3c90Ckg9ajmBEyYf4esEiK8KqqWcUEFXdKyMg1WTnavLwtr03Doug6PuwFkXwk
-        hBbI5hXXCKibR2DHOc4aptOV+Y0EToCgePzqXWWRZE/C+q6+mQbR0HAa4EdnzA1ESykkBT
-        I18uazIpo3+OKiCVFaF0jN8Mwy1TQwU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-tTAKUMOkNVmjkjq3uBT2lw-1; Thu, 28 Jan 2021 11:55:23 -0500
-X-MC-Unique: tTAKUMOkNVmjkjq3uBT2lw-1
-Received: by mail-wr1-f71.google.com with SMTP id c1so3431376wrx.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:55:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HgtxAPALtY+nCny47e18Ou0vNrOzLT1OduAQqQAsR8o=;
-        b=OwNCufthinAQEQiUH7DPKBCOSGj3B1zV3SdXo+rez7BHLy36Nffmfrl1Du2wuhTEkV
-         6QAohPSpE9kqW7ZnM3RbgvraHWxljJvOhxKLLdnokfeuCw6+9VdALceNX2/JcbjV+yfb
-         9FqJCHaLPI8nbS4UEU6LM20SshqCDAQFrHVbiP1SafdqYKYihW97EArP8IURuePCK2Jg
-         Hog5dnyz89kIoSVC/kXO8X8nYkaeV+FLeUoHk7juoKJKD1Hbof8ho0j4w31zO4VQCPHL
-         kvxkXSWG6b/cWThGU/PTFPMinr0J5wygGh6MR2SzJOh19B6V72qEQZIHdLOhsdYs4FlE
-         agtw==
-X-Gm-Message-State: AOAM533JGKiALJ6oiFTA901n5ZxD+mSWCBJtKbd8PE43oEBRLguc+lnG
-        7E7JIfB7WEhPqLaSwM60uuI4pP9JQePeXO+ZLGSXVeVR1UzJCbUhSyfG2p7pIZmqZ0Vl6wHsp8+
-        PJ0XKGKajVnAKQExwHfjvJ27O
-X-Received: by 2002:a1c:a549:: with SMTP id o70mr135301wme.71.1611852922174;
-        Thu, 28 Jan 2021 08:55:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyb6UPtRnhkfUKRNkSJfjFxJ3q1MvMrhDM7KtpKfLvcGV1YzLJVQtRahOZNlCd6vpRf46h8cQ==
-X-Received: by 2002:a1c:a549:: with SMTP id o70mr135279wme.71.1611852921999;
-        Thu, 28 Jan 2021 08:55:21 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id q6sm6320451wmj.32.2021.01.28.08.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 08:55:21 -0800 (PST)
-Date:   Thu, 28 Jan 2021 17:55:18 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v3 03/13] af_vsock: implement SEQPACKET rx loop
-Message-ID: <20210128165518.ho3csm5u7v5pnwnd@steredhat>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
+        Thu, 28 Jan 2021 11:56:51 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6012eca90000>; Thu, 28 Jan 2021 08:56:09 -0800
+Received: from [10.2.82.52] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
+ 2021 16:56:07 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+CC:     Saravanan D <saravanand@fb.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        <x86@kernel.org>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
+        <peterz@infradead.org>, <corbet@lwn.net>, <willy@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
+        <songliubraving@fb.com>
+Subject: Re: [PATCH V5] x86/mm: Tracking linear mapping split events
+Date:   Thu, 28 Jan 2021 11:56:05 -0500
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <33B5B608-4D74-4221-AB0F-AEEBA170AF84@nvidia.com>
+In-Reply-To: <15a29679-ea0b-d1c8-1a1f-698d3db35293@intel.com>
+References: <20210128045153.GW308988@casper.infradead.org>
+ <20210128104934.2916679-1-saravanand@fb.com>
+ <EBB7E363-FE25-453C-89C6-9FC4A90615B9@nvidia.com>
+ <15a29679-ea0b-d1c8-1a1f-698d3db35293@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_D2AC2C86-6398-4A40-A664-B827FF98A4B6_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611852969; bh=TqHTHtpr92THE4RjCQocs8iwlOpyElibdaaOo1NcySU=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=FKiel3XQq1Kxt1ppXI/o6tWHRIp75XA3+YvmTLCUha+QJtstNeqlSJ+i0FVjCEFg8
+         6RzA0bzztU1asF0ryVE4A14eRzGqEfNchfa3/gm7rxVaQK4tk8mGqiznHdMbkUsZtc
+         9pgKbwqdRBzy67qOFur45OqAvGzMdWLMSIPNkcfOqNT0lN24Og8RAU5eB7/CBrstX4
+         kyGTjtyA6g8p96TbXcKQksLAS5ocar3ce+qqbgCfGcuXOTGwkJ+KRc1iYgLq5m4PQP
+         g4be4l92oaUB5dXlFKrLgzJAdheL38mw+aMSav5CeIEevIBL+wH3FpCNctyQK/MCYe
+         FGykOccYJv+uw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:12:36PM +0300, Arseny Krasnov wrote:
->This adds receive loop for SEQPACKET. It looks like receive loop for
->SEQPACKET, but there is a little bit difference:
->1) It doesn't call notify callbacks.
->2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
->   there is no sense for these values in SEQPACKET case.
->3) It waits until whole record is received or error is found during
->   receiving.
->4) It processes and sets 'MSG_TRUNC' flag.
+--=_MailMate_D2AC2C86-6398-4A40-A664-B827FF98A4B6_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On 28 Jan 2021, at 11:41, Dave Hansen wrote:
+
+> On 1/28/21 8:33 AM, Zi Yan wrote:
+>>> One of the many lasting (as we don't coalesce back) sources for
+>>> huge page splits is tracing as the granular page
+>>> attribute/permission changes would force the kernel to split code
+>>> segments mapped to huge pages to smaller ones thereby increasing
+>>> the probability of TLB miss/reload even after tracing has been
+>>> stopped.
+>> It is interesting to see this statement saying splitting kernel
+>> direct mappings causes performance loss, when Zhengjun (cc=E2=80=99d) =
+from
+>> Intel recently posted a kernel direct mapping performance report[1]
+>> saying 1GB mappings are good but not much better than 2MB and 4KB
+>> mappings.
 >
->So to avoid extra conditions for two types of socket inside one loop, two
->independent functions were created.
+> No, that's not what the report said.
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/net/af_vsock.h   |   5 ++
-> net/vmw_vsock/af_vsock.c | 102 ++++++++++++++++++++++++++++++++++++++-
-> 2 files changed, 106 insertions(+), 1 deletion(-)
+> *Overall*, there is no clear winner between 4k, 2M and 1G.  In other
+> words, no one page size is best for *ALL* workloads.
 >
->diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index b1c717286993..46073842d489 100644
->--- a/include/net/af_vsock.h
->+++ b/include/net/af_vsock.h
->@@ -135,6 +135,11 @@ struct vsock_transport {
-> 	bool (*stream_is_active)(struct vsock_sock *);
-> 	bool (*stream_allow)(u32 cid, u32 port);
->
->+	/* SEQ_PACKET. */
->+	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
->+	ssize_t (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
->+				     size_t len, int flags);
->+
-> 	/* Notification. */
-> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
-> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 524df8fc84cd..3b266880b7c8 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -2006,7 +2006,107 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
-> static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
-> 				     size_t len, int flags)
-> {
->-	return -1;
->+	const struct vsock_transport *transport;
->+	const struct iovec *orig_iov;
->+	unsigned long orig_nr_segs;
->+	ssize_t dequeued_total = 0;
->+	struct vsock_sock *vsk;
->+	size_t record_len;
->+	long timeout;
->+	int err = 0;
->+	DEFINE_WAIT(wait);
->+
->+	vsk = vsock_sk(sk);
->+	transport = vsk->transport;
->+
->+	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
->+	msg->msg_flags &= ~MSG_EOR;
+> There were *ABSOLUTELY* individual workloads in those tests that saw
+> significant deltas between the direct map sizes.  There are also
+> real-world workloads that feel the impact here.
 
-Maybe add a comment about why we need to clear MSG_EOR.
+Yes, it is what I understand from the report. But this patch says
+=E2=80=9C
+Maintaining huge direct mapped pages greatly reduces TLB miss pressure.
+The splintering of huge direct pages into smaller ones does result in
+a measurable performance hit caused by frequent TLB miss and reloads.
+=E2=80=9D,
 
->+	orig_nr_segs = msg->msg_iter.nr_segs;
->+	orig_iov = msg->msg_iter.iov;
->+
->+	while (1) {
->+		ssize_t dequeued;
->+		s64 ready;
->+
->+		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
->+		ready = vsock_stream_has_data(vsk);
->+
->+		if (ready == 0) {
->+			if (vsock_wait_data(sk, &wait, timeout, NULL, 0)) {
->+				/* In case of any loop break(timeout, signal
->+				 * interrupt or shutdown), we report user that
->+				 * nothing was copied.
->+				 */
->+				dequeued_total = 0;
->+				break;
->+			}
->+			continue;
->+		}
->+
->+		finish_wait(sk_sleep(sk), &wait);
->+
->+		if (ready < 0) {
->+			err = -ENOMEM;
->+			goto out;
->+		}
->+
->+		if (dequeued_total == 0) {
->+			record_len =
->+				transport->seqpacket_seq_get_len(vsk);
->+
->+			if (record_len == 0)
->+				continue;
->+		}
->+
->+		/* 'msg_iter.count' is number of unused bytes in iov.
->+		 * On every copy to iov iterator it is decremented at
->+		 * size of data.
->+		 */
->+		dequeued = transport->seqpacket_dequeue(vsk, msg,
->+					msg->msg_iter.count, flags);
-                                         ^
-                                         Is this needed or 'msg' can be 
-                                         used in the transport?
->+
->+		if (dequeued < 0) {
->+			dequeued_total = 0;
->+
->+			if (dequeued == -EAGAIN) {
->+				iov_iter_init(&msg->msg_iter, READ,
->+					      orig_iov, orig_nr_segs,
->+					      len);
->+				msg->msg_flags &= ~MSG_EOR;
->+				continue;
+indicating large mappings (2MB, 1GB) are generally better. It is
+different from what the report said, right?
 
-Why we need to reset MSG_EOR here?
+The above text could be improved to make sure readers get both sides
+of the story and not get afraid of performance loss after seeing
+a lot of direct_map_xxx_splits events.
 
->+			}
->+
->+			err = -ENOMEM;
->+			break;
->+		}
->+
->+		dequeued_total += dequeued;
->+
->+		if (dequeued_total >= record_len)
->+			break;
->+	}
 
-Maybe a new line here.
 
->+	if (sk->sk_err)
->+		err = -sk->sk_err;
->+	else if (sk->sk_shutdown & RCV_SHUTDOWN)
->+		err = 0;
->+
->+	if (dequeued_total > 0) {
->+		/* User sets MSG_TRUNC, so return real length of
->+		 * packet.
->+		 */
->+		if (flags & MSG_TRUNC)
->+			err = record_len;
->+		else
->+			err = len - msg->msg_iter.count;
->+
->+		/* Always set MSG_TRUNC if real length of packet is
->+		 * bigger that user buffer.
+=E2=80=94
+Best Regards,
+Yan Zi
 
-s/that/than
+--=_MailMate_D2AC2C86-6398-4A40-A664-B827FF98A4B6_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
 
->+		 */
->+		if (record_len > len)
->+			msg->msg_flags |= MSG_TRUNC;
->+	}
->+out:
->+	return err;
-> }
->
-> static int
->-- 
->2.25.1
->
+-----BEGIN PGP SIGNATURE-----
 
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmAS7KUPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKYdMQAKBobb76q21Ixb/TD/fyvGsflD/C65TLw6Sq
+vEf2JEsBDBhZEJkY3/MeDeeNp6sCYM1qrF9bkvBjZRJN2gP/XF7W0biSY1V2DDYx
+q2aC6/i8Qo1K3MkEPbKCjx/hmM9Ap2vepsT7nZh58QsZyW830wpUlpOPsIPDziUX
+f66xKC4OsqSW1X1DcAj3R3Deb6eXwMX/naPAF3uu01KaW5zZYaLRSHi/nJ8bMR4c
+mx4eFShbKDpCAICr8KEY94PK7WlrJxV4K1kDSjE9ZMk4fkTPa+bqvxNj4fyc/05d
+vTfwqOXzQZZt1Uesiu4Cq/BoyosqhEhd2kkChFgkspTxBzGaRJ4eyGCmxROwaDWn
+Yp3JGqvgdozOw/EErB3Y1SSCmQZkuVszDj2+rsAPB2WhqyeH7o5+5RivGPTML6go
+FHP2UdXY5kcC8rxktoyTmgCkRfZPnD8EHOubdz9xqn+MddZNDCKpb1KpLZx7iDtW
+LbBbdemC0JdVl9k16LaO1724RzarfbAnoYo1kRXi+pRqBmaMZ2lqYjE8B7DGL4Lc
+qJxryKnlEnFbVpTX/M1TndhpvCWca67OeJNVioTcgIU/KEf/FfbnCtwQMB5WTcKj
+zOtC8EGQmW1e/uDxXhRSLrpy+UtsEz8mxQJJqxG2Q6SjL4CRNgsLm2r7mO132GHh
+GCz+1PqC
+=iChr
+-----END PGP SIGNATURE-----
+
+--=_MailMate_D2AC2C86-6398-4A40-A664-B827FF98A4B6_=--
