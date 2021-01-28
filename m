@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BB430736E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC6830737A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhA1KIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232396AbhA1KIJ (ORCPT
+        id S231497AbhA1KP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:15:58 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:33003 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229578AbhA1KP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:08:09 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DE7C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:07:07 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id e19so3668892pfh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:07:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FS3sXlWa1a9CJeGm7yuJDVISGCvP2szSJ0Qe9lOwid0=;
-        b=sIVf3EmrBQVyo69/ikM3B14VNYgALXDSfENkZeCmczqXizbbIRBtHtEv2h3cU4kIsb
-         zrtfI+WVyYpF/fuqGjVRDSD7zeWefsyQYS862TXrX0JGsTowQVfCO/jf3Hl10pTuTua2
-         5fyQylydnjbaIVGtTewY+Q7soCRuuOCltdYyPHeC/hYyOQyukLW1woDzLySCVDQygL4i
-         7ycFGeoM8PtmNXJCI9K+H0Ka2IajDL1H6WW+MQSzoG56f1FzZxaajYNWa4x5pFXHTAmr
-         e4Q+iyZNe+VI+3QvkREjSeRXwamEbEdtqkQLBWvX3WPRX4QTFXUmiNbPOt2EqYUkooxJ
-         NAdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FS3sXlWa1a9CJeGm7yuJDVISGCvP2szSJ0Qe9lOwid0=;
-        b=L7O4Y30lHCdAb9UJAYlJanOu9XxMkLuFHRfNTvsXVuUWXDPMvG4l2a+dxE/wZzOIhI
-         JmMO3jGJ8McYEqqpfMbx3l6OWGFXsiMcDbKzz1jnME9oXu/Vj26BptFlI+wSZs2B0c1q
-         6GmQUJwieQh5+mNnvZwX2b4+eJBBvD4IED05paiwU/Wtss/l0//sjEzR4I0nNVcA8IhC
-         ddZyJTN2bOuBLliKSps+ehUlp5/ICB2Y4xciHSDv7leyb5fKRObn4BMmOLXr2765uagk
-         Whc5bPoKNZxHdZFCoWffQffqImaljFBG0eggR5q0/cq6rRIPKKcZRCzaYJtBsoSY2cAs
-         r7gQ==
-X-Gm-Message-State: AOAM532+DhfnU3BIvlYcZSyXeF6s0kkdigfJJ64VYKq7mhv46QuzzHtM
-        YCUe5Izio2Y+AEoiexvKWryNuhTxBLayqmHTjE6qOQ==
-X-Google-Smtp-Source: ABdhPJxPbc4H2Su8ybjWXQk/Og3L8DQf6PlhyWKLU2HLctWQaqk8uS5XrfuSX3qH9kdI+DowIQXusQJeaAyMO6EXVcQ=
-X-Received: by 2002:a63:5b4f:: with SMTP id l15mr5187293pgm.339.1611828427188;
- Thu, 28 Jan 2021 02:07:07 -0800 (PST)
+        Thu, 28 Jan 2021 05:15:56 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C3A80580788;
+        Thu, 28 Jan 2021 05:15:09 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 28 Jan 2021 05:15:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=VTAFBqtOhCy0yoYTvGJOxx1nJ1N
+        oRdob2zC/BpgUKks=; b=g4AIlX3F6DiznNiGaTka0EUZDD8hi8igdLJJDrfriG4
+        d1+Ftxe+KHjXVJGlj1upwk8cdXmhngFNvb/o40JVkuQ20RkasOt94cGT28mcHfsT
+        kUfP5LtsIAZjQw9q9DKalE1vjPddANgqbf8gk7snbhKgaDdNT7dmrSDOuY/H3zAK
+        kVDYWHyPdmMmxR6XALbOsPSav98uIzmSHRWIXzMQAhiVJSMcJy/tEws7+gnV2ODD
+        Jf0kTVfX4/BcjdfqGaDHRm3fhzl6TFReLE6MwfTAoPEkCtm206pmkU1YicqEsLtL
+        jPDoEUlwrQ/WnIfXCAU0sRdWkItAYPEOXEQEHPXsY1g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VTAFBq
+        tOhCy0yoYTvGJOxx1nJ1NoRdob2zC/BpgUKks=; b=Xwtt2EBT4Hti9Gg38Hlg2x
+        m/rwpEUDn52RsE9YjmL73YodArqMkfR8VT4wRBH3xjEaIY6Rt66eXf1orMedt7ud
+        RG7f+49hx8JKuVi9wn1WK41OmYY8H6B0/lcot40BBFUdokwdANk9JY8J0H/Rd1i4
+        E/l4XP5WUuo/va3Oic9OEg6Egn/jPa7P0nAlJxq04wIC4j5R09CWRzKUYMIAkTrF
+        6h/fpzWvJyh+BB7JcWwx2dRONQzMcHkPsNSLLW2hlivMuXvQ06VPfaBDbRN39vHC
+        a4hgir6CyKUBh/ke6Q+SzbEnU6bzhlI8NB5wC5ZnQ4EZt7ROuj7HXyFibiAH4Hgw
+        ==
+X-ME-Sender: <xms:q44SYHZ_PUiIdFLNsxZCCka5DhT7n6fas8_z_UALO59mcMIBBJFFsw>
+    <xme:q44SYGZlcR9Hvskrjin2Ww5Q_5Wvd3FobZw5HJjzmu9dcT7I5ohV1FgqwSVDaUa1W
+    PvF1saAGJDzhrsq4oE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:rI4SYJ8oyinGri0CexKbWmrbvAnXmw9hKW6NJ8hxtosj0pc9Fd250A>
+    <xmx:rI4SYNqRCQXJ-ZjhV1QB4B7CVDtgwgL5Imv-YFyGeCZQNLvs2o-W5g>
+    <xmx:rI4SYCq6WHsRZwRhD3pLG1ZILWPVVSzEzSz5XUAs_mwc-APJJL8Wxw>
+    <xmx:rY4SYPQj7YY03Ybqa08irg_W08-mRv3qZZ62L3Bmp5yZObeO4FeZ2g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B502A1080059;
+        Thu, 28 Jan 2021 05:15:07 -0500 (EST)
+Date:   Thu, 28 Jan 2021 11:15:05 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 04/20] dt-bindings: mfd: axp20x: Add AXP305 compatible
+ (plus optional IRQ)
+Message-ID: <20210128101505.67pszbw4wuejzx2n@gilmour>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-5-andre.przywara@arm.com>
 MIME-Version: 1.0
-References: <20210127144930.2158242-1-robert.foss@linaro.org>
- <20210127144930.2158242-6-robert.foss@linaro.org> <CANMq1KCUUg3rozY3=snz7YCNwPbbxZtJftCj-a=QPLp2XFSXwA@mail.gmail.com>
-In-Reply-To: <CANMq1KCUUg3rozY3=snz7YCNwPbbxZtJftCj-a=QPLp2XFSXwA@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 28 Jan 2021 11:06:56 +0100
-Message-ID: <CAG3jFyse7+s+FQ_R+dOkkAmMggLMYouuZ0oePLc-8nc00+CN8Q@mail.gmail.com>
-Subject: Re: [PATCH v3 05/22] media: camss: Refactor VFE HW version support
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, shawnguo@kernel.org,
-        leoyang.li@nxp.com, Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>, Anson.Huang@nxp.com,
-        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
-        angelogioacchino.delregno@somainline.org,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fqj34mvsav6svqec"
+Content-Disposition: inline
+In-Reply-To: <20210127172500.13356-5-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Nicolas,
 
-Thanks for the review!
+--fqj34mvsav6svqec
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 28 Jan 2021 at 01:19, Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> On Wed, Jan 27, 2021 at 10:56 PM Robert Foss <robert.foss@linaro.org> wrote:
-> >
-> > In order to support Qualcomm ISP hardware architectures that diverge
-> > from older architectures, the VFE subdevice driver needs to be refactored
-> > to better abstract the different ISP architectures.
-> >
-> > Gen1 represents the CAMSS ISP architecture. The ISP architecture developed
-> > after CAMSS, Titan, will be referred to as Gen2.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > ---
-> > [snip]
-> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-8.c b/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
-> > new file mode 100644
-> > index 000000000000..153e0e20664e
-> > --- /dev/null
-> > +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
-> > [snip]
-> > +/*
-> > + * vfe_isr - VFE module interrupt handler
-> > + * @irq: Interrupt line
-> > + * @dev: VFE device
-> > + *
-> > + * Return IRQ_HANDLED on success
-> > + */
-> > +static irqreturn_t vfe_isr(int irq, void *dev)
-> > +{
-> > +       struct vfe_device *vfe = dev;
-> > +       u32 value0, value1;
-> > +       int i, j;
-> > +
-> > +       vfe->ops->isr_read(vfe, &value0, &value1);
-> > +
-> > +       trace_printk("VFE: status0 = 0x%08x, status1 = 0x%08x\n",
-> > +                    value0, value1);
->
-> Please do not use trace_printk in production code [1,2], it is only
-> meant for debug use. Consider using trace events, or dev_dbg.
+On Wed, Jan 27, 2021 at 05:24:44PM +0000, Andre Przywara wrote:
+> The AXP305 PMIC used in AXP805 seems to be fully compatible to the
+> AXP805 PMIC, so add the proper chain of compatible strings.
+>=20
+> Also at least on one board (Orangepi Zero2) there is no interrupt line
+> connected to the CPU, so make the "interrupts" property optional.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
-Ack, this is a copy paste error, I'll add a commit fixing all
-occurrences of this in the driver
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
->
-> [1] https://elixir.bootlin.com/linux/v5.8/source/kernel/trace/trace.c#L3158
-> [2] https://elixir.bootlin.com/linux/v5.8/source/include/linux/kernel.h#L766
->
-> > [snip]
+Maxime
+
+--fqj34mvsav6svqec
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBKOqQAKCRDj7w1vZxhR
+xWBiAP9QPwJpPoRsCkZZdEFpsl4TmNgW4FP0suiOarrVsgL3PQEAlEfUSjVJvec/
+ToigsVeSNnhJnU/Th9JHWi7qW83GAwE=
+=Zt1l
+-----END PGP SIGNATURE-----
+
+--fqj34mvsav6svqec--
