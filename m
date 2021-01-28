@@ -2,117 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4A8307F4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E63F307F48
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhA1UNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:13:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231194AbhA1UJ4 (ORCPT
+        id S231379AbhA1UMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:12:14 -0500
+Received: from antares.kleine-koenig.org ([94.130.110.236]:45986 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhA1UJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:09:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611864509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xAaYmkPI3SgxXv9WICFqFagDyxX9PqaHRD1OB+S1ECg=;
-        b=jHQOydcXdIpZHozHthUYa4EJ2aGGi36+mQlfCW7xM+hA/X6c7ivepB9xRPptFmbQVFwkjT
-        hwJKIvuTxiz8uwxIRvi3TYBlWDXOk7W2ctouqkbBjHZZ76uf5JKgO4kZzVtSt/OBkNTlM7
-        ylax9zclCKT7KtStnYlQrKWc6SykhkI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-NR2Tp5ecMk2VgnEgGOS_mA-1; Thu, 28 Jan 2021 15:08:26 -0500
-X-MC-Unique: NR2Tp5ecMk2VgnEgGOS_mA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EEE5803622;
-        Thu, 28 Jan 2021 20:08:24 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF98260C13;
-        Thu, 28 Jan 2021 20:08:22 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
+        Thu, 28 Jan 2021 15:09:35 -0500
+X-Greylist: delayed 80298 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 15:09:34 EST
+Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
+        by antares.kleine-koenig.org (Postfix) with ESMTP id 2969DAE1E57;
+        Thu, 28 Jan 2021 21:08:43 +0100 (CET)
+Received: from antares.kleine-koenig.org ([94.130.110.236])
+        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
+        with ESMTP id NYAo-JJQbWWS; Thu, 28 Jan 2021 21:08:40 +0100 (CET)
+Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5ad:20fc:2b29:ca75:841e:b14c])
+        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
+        Thu, 28 Jan 2021 21:08:40 +0100 (CET)
+Subject: Re: [PATCH] vio: make remove callback return void
+To:     Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Haren Myneni <haren@us.ibm.com>,
+        =?UTF-8?Q?Breno_Leit=c3=a3o?= <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Steven Royer <seroyer@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH RFC] kbuild: Prevent compiler mismatch with external modules
-Date:   Thu, 28 Jan 2021 14:08:02 -0600
-Message-Id: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
+        Cristobal Forno <cforno12@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Cyr <mikecyr@linux.ibm.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org
+References: <20210127215010.99954-1-uwe@kleine-koenig.org>
+ <20210128190750.GA490196@us.ibm.com>
+From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+Message-ID: <f3655d10-26ba-5f9f-761e-2f48d13d0b11@kleine-koenig.org>
+Date:   Thu, 28 Jan 2021 21:08:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210128190750.GA490196@us.ibm.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="0WS2s8Dj7oAQDuvcAexs4Jz4r6U02PT15"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building an external module, if the compiler version differs from
-what the kernel was built with, bad things can happen.  Many kernel
-features change based on available compiler features.  Silently removing
-a compiler-dependent feature in the external module build can cause
-unpredictable behavior.  Right now there are no checks to help prevent
-such mismatches.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0WS2s8Dj7oAQDuvcAexs4Jz4r6U02PT15
+Content-Type: multipart/mixed; boundary="C8P4GGVXo3CFpsOyigcYdiPTK9L9mB3i8";
+ protected-headers="v1"
+From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+To: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, "David S. Miller" <davem@davemloft.net>,
+ Jens Axboe <axboe@kernel.dk>, Matt Mackall <mpm@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Peter Huewe <peterhuewe@gmx.de>,
+ Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Haren Myneni <haren@us.ibm.com>, =?UTF-8?Q?Breno_Leit=c3=a3o?=
+ <leitao@debian.org>, Nayna Jain <nayna@linux.ibm.com>,
+ Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+ Steven Royer <seroyer@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Cristobal Forno <cforno12@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
+ Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+ Tyrel Datwyler <tyreld@linux.ibm.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Michael Cyr <mikecyr@linux.ibm.com>, Jiri Slaby <jirislaby@kernel.org>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+ netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org
+Message-ID: <f3655d10-26ba-5f9f-761e-2f48d13d0b11@kleine-koenig.org>
+Subject: Re: [PATCH] vio: make remove callback return void
+References: <20210127215010.99954-1-uwe@kleine-koenig.org>
+ <20210128190750.GA490196@us.ibm.com>
+In-Reply-To: <20210128190750.GA490196@us.ibm.com>
 
-On the other hand, when a user is building an external module against a
-distro kernel, the exact compiler version may not be installed, or in
-some cases not even released yet.  In fact it's quite common for
-external modules to be built with a slightly different version of GCC
-than the kernel.
+--C8P4GGVXo3CFpsOyigcYdiPTK9L9mB3i8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-A minor version mismatch should be ok.  User space does it all the time.
-New compiler features aren't added within a major version.
+Hello Sukadev,
 
-Add a check for compiler mismatch, but only check the major version.
+On 1/28/21 8:07 PM, Sukadev Bhattiprolu wrote:
+> Slightly off-topic, should ndo_stop() also return a void? Its return va=
+lue
+> seems to be mostly ignored and [...]
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
-This is related to the previous RFC I posted:
+I don't know enough about the network stack to tell. Probably it's a=20
+good idea to start a separate thread for this and address this to the=20
+netdev list only.
 
-  https://lkml.kernel.org/r/efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com
-
-The discussion revealed gaps between developer perceptions and distro
-realities with respect to external (out-of-tree) modules...
-
-Backing up a bit, let's please decide on what exactly is supported (or
-not supported) with respect to mismatched compiler versions.  Then let's
-try to enforce and/or document the decision.
-
-Please stick to technical arguments...
+Best regards
+Uwe
 
 
- Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index b0e4767735dc..f281d2587fa5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1744,6 +1744,14 @@ help:
- # no-op for external module builds
- PHONY += prepare modules_prepare
- 
-+# External module compiler (major) version must match the kernel
-+ifneq ($(shell echo $(CONFIG_GCC_VERSION) | cut -c-2), $(shell $(srctree)/scripts/gcc-version.sh $(CC) | cut -c-2))
-+  $(error ERROR: Compiler version mismatch in external module build)
-+endif
-+ifneq ($(shell echo $(CONFIG_CLANG_VERSION) | cut -c-2), $(shell $(srctree)/scripts/clang-version.sh $(CC) | cut -c-2))
-+  $(error ERROR: Compiler version mismatch in external module build)
-+endif
-+
- endif # KBUILD_EXTMOD
- 
- # Single targets
--- 
-2.29.2
+--C8P4GGVXo3CFpsOyigcYdiPTK9L9mB3i8--
 
+--0WS2s8Dj7oAQDuvcAexs4Jz4r6U02PT15
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmATGcQACgkQwfwUeK3K
+7AljPggAhaj+JnoGN++1YO/4Nz81FEvRKFR9Eky+A4TCDGs8NvV1eVbhztqchotk
+bm71ZlCLS23+/m5xoA/4bjOHPxc0ETs8V37z86n9Tcf/QTiwI1eN4UYU0l7cPqGO
+cxuT/eLxm7WQ/kKwlJucUUHREWVCXH5NNTw4/zH9r+qc3MVQ++uUrKjtF94cnkGa
+iOO8nW+fhP+e8bVENm+gcTwONaL45UG+qABpFj9mXiWMrA7L0kSEyqG4wUMgeKb3
+YUtPKsAuS8xpUhT5C/zEQJ6qWI3rXkGCPEMUMcpWk+ut4McB9mE+TP6XWC36nfFy
+uq8ofa7nTpO48ZQIj/PU3d+UIzp2eQ==
+=XsiK
+-----END PGP SIGNATURE-----
+
+--0WS2s8Dj7oAQDuvcAexs4Jz4r6U02PT15--
