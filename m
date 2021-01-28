@@ -2,148 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2422830802A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26650308028
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhA1VEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:04:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26072 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231301AbhA1VEb (ORCPT
+        id S231318AbhA1VEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhA1VEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:04:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611867784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w8mrFQHaUAGM+n/lJX/S6DQtEwYC+8NCqbTxgF+Ilcs=;
-        b=c+LNSjIaYNW+oANtjwn0ALwHxLywD4VWHP8E0iNP0BF/B74yPtr3TE4ph8821Ij+vpq8Ff
-        XkogvyCpayh8z9dNxD3DNzNUOVc24CkvMmKI6fXxGlBMui8rYlDs/tmbjUiiDWQfFgHPuO
-        ljHfLnqC8cWWlMyGsOIlKO4O/TnB6aA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-IJgZ_eCKMDC9_PNRxFwCJA-1; Thu, 28 Jan 2021 16:03:00 -0500
-X-MC-Unique: IJgZ_eCKMDC9_PNRxFwCJA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2949F801B16;
-        Thu, 28 Jan 2021 21:02:58 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1265710023BA;
-        Thu, 28 Jan 2021 21:02:57 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 14:02:56 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210128140256.178d3912@omen.home.shazbot.org>
-In-Reply-To: <20210128172930.74baff41.cohuck@redhat.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
-        <20210122122503.4e492b96@omen.home.shazbot.org>
-        <20210122200421.GH4147@nvidia.com>
-        <20210125172035.3b61b91b.cohuck@redhat.com>
-        <20210125180440.GR4147@nvidia.com>
-        <20210125163151.5e0aeecb@omen.home.shazbot.org>
-        <20210126004522.GD4147@nvidia.com>
-        <20210125203429.587c20fd@x1.home.shazbot.org>
-        <1419014f-fad2-9599-d382-9bba7686f1c4@nvidia.com>
-        <20210128172930.74baff41.cohuck@redhat.com>
+        Thu, 28 Jan 2021 16:04:16 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C956C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:36 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id i187so9505169lfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jdDuCRzkz9xp+XJsVq7mYn0DfZeI0K4LQW2Z/nEcmQg=;
+        b=CuBesJ1LP2UaDvKAEEK9ty4JNIugW6e5APVFSm9E7fiJHWA1KPAf2iH8izI6RoPs65
+         G836VUTI89SC+kl1ZPl9l4OgX/cECS+G1kYkfmV/UQBF0i1mf5GuGzIwbuCYArHK+FB6
+         knl7IYoNkyPRHrFhmo03wZoUvIqYUTzW/LwZg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jdDuCRzkz9xp+XJsVq7mYn0DfZeI0K4LQW2Z/nEcmQg=;
+        b=sCAPiC4ORsODWzRtXwuouPZ2ws+73fN9xkWLSdHICpZNW+GqD+0b68DsocdXemjgFN
+         lzwK4Rkf8Zqr3fDwnK0thev9a7R1uAY+1+/UUVt7oty1TB7XWmiT5bpUQtswFd/AiIqS
+         TXvF+cyvZqJwAh5079EHmSEItXkabj4LKxTBQ9ajyTXi4F5rmgfkj6YSGoovwr5JxGdG
+         ++Cw3jt4bxlFj5poR21PHkQMxxdNJ9L2Ha1GcCJI9snaG11CApsR53JEG2LtUBZSq6So
+         Fs5L2pPNrhvLlnHFbkVQWgEjc46zKYynEbG58OuD1zzpZ+gUa8bTUCMbhOoRGju+mowr
+         HGtg==
+X-Gm-Message-State: AOAM533Ad0X0NrgphY4yl5vq/Y+BjWvAwzR0UcVNAJDVVEPL7q5FLqaL
+        5GBHZ3eDh75hh9KrV9ha/g7YdwQtHRgmOw==
+X-Google-Smtp-Source: ABdhPJyIrOyNhtl/RzUH5RxlmIFOqN5g5TppnU6N3n2aPwVbSQZvqpceRlejnFn8nasAsw6+QZ8YeA==
+X-Received: by 2002:a05:6512:6f:: with SMTP id i15mr480030lfo.426.1611867814235;
+        Thu, 28 Jan 2021 13:03:34 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id m18sm1024851ljb.138.2021.01.28.13.03.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 13:03:33 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id f1so9515453lfu.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:32 -0800 (PST)
+X-Received: by 2002:ac2:420a:: with SMTP id y10mr424761lfh.377.1611867812567;
+ Thu, 28 Jan 2021 13:03:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
+ <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com> <20210128205207.awdbh4bmx56pxxjl@treble>
+In-Reply-To: <20210128205207.awdbh4bmx56pxxjl@treble>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 28 Jan 2021 13:03:15 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
+Message-ID: <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
+Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external modules
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Jessica Yu <jeyu@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 17:29:30 +0100
-Cornelia Huck <cohuck@redhat.com> wrote:
+On Thu, Jan 28, 2021 at 12:52 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> Huh?  Why would you do a "make oldconfig" on a distro-released kernel
+> before building an OOT module?
 
-> On Tue, 26 Jan 2021 15:27:43 +0200
-> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> > On 1/26/2021 5:34 AM, Alex Williamson wrote:  
-> > > On Mon, 25 Jan 2021 20:45:22 -0400
-> > > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >    
-> > >> On Mon, Jan 25, 2021 at 04:31:51PM -0700, Alex Williamson wrote:
-> > >>> extensions potentially break vendor drivers, etc.  We're only even hand
-> > >>> waving that existing device specific support could be farmed out to new
-> > >>> device specific drivers without even going to the effort to prove that.    
-> > >> This is a RFC, not a complete patch series. The RFC is to get feedback
-> > >> on the general design before everyone comits alot of resources and
-> > >> positions get dug in.
-> > >>
-> > >> Do you really think the existing device specific support would be a
-> > >> problem to lift? It already looks pretty clean with the
-> > >> vfio_pci_regops, looks easy enough to lift to the parent.
-> > >>    
-> > >>> So far the TODOs rather mask the dirty little secrets of the
-> > >>> extension rather than showing how a vendor derived driver needs to
-> > >>> root around in struct vfio_pci_device to do something useful, so
-> > >>> probably porting actual device specific support rather than further
-> > >>> hand waving would be more helpful.    
-> > >> It would be helpful to get actual feedback on the high level design -
-> > >> someting like this was already tried in May and didn't go anywhere -
-> > >> are you surprised that we are reluctant to commit alot of resources
-> > >> doing a complete job just to have it go nowhere again?    
-> > > That's not really what I'm getting from your feedback, indicating
-> > > vfio-pci is essentially done, the mlx stub driver should be enough to
-> > > see the direction, and additional concerns can be handled with TODO
-> > > comments.  Sorry if this is not construed as actual feedback, I think
-> > > both Connie and I are making an effort to understand this and being
-> > > hampered by lack of a clear api or a vendor driver that's anything more
-> > > than vfio-pci plus an aux bus interface.  Thanks,    
-> > 
-> > I think I got the main idea and I'll try to summarize it:
-> > 
-> > The separation to vfio-pci.ko and vfio-pci-core.ko is acceptable, and we 
-> > do need it to be able to create vendor-vfio-pci.ko driver in the future 
-> > to include vendor special souse inside.  
-> 
-> One other thing I'd like to bring up: What needs to be done in
-> userspace? Does a userspace driver like QEMU need changes to actually
-> exploit this? Does management software like libvirt need to be involved
-> in decision making, or does it just need to provide the knobs to make
-> the driver configurable?
+I guarantee you that this patch will *make* people do that.
 
-I'm still pretty nervous about the userspace aspect of this as well.
-QEMU and other actual vfio drivers are probably the least affected,
-at least for QEMU, it'll happily open any device that has a pointer to
-an IOMMU group that's reflected as a vfio group device.  Tools like
-libvirt, on the other hand, actually do driver binding and we need to
-consider how they make driver decisions. Jason suggested that the
-vfio-pci driver ought to be only spec compliant behavior, which sounds
-like some deprecation process of splitting out the IGD, NVLink, zpci,
-etc. features into sub-drivers and eventually removing that device
-specific support from vfio-pci.  Would we expect libvirt to know, "this
-is an 8086 graphics device, try to bind it to vfio-pci-igd" or "uname
--m says we're running on s390, try to bind it to vfio-zpci"?  Maybe we
-expect derived drivers to only bind to devices they recognize, so
-libvirt could blindly try a whole chain of drivers, ending in vfio-pci.
-Obviously if we have competing drivers that support the same device in
-different ways, that quickly falls apart.
+> Hm?  Are you saying the check is too strict, since GCC9 binaries _might_
+> be compatible with GCC10?
 
-Libvirt could also expand its available driver models for the user to
-specify a variant, I'd support that for overriding a choice that libvirt
-might make otherwise, but forcing the user to know this information is
-just passing the buck.
+I'm saying that your argument about minor and major versions is bogus.
 
-Some derived drivers could probably actually include device IDs rather
-than only relying on dynamic ids, but then we get into the problem that
-we're competing with native host driver for a device.  The aux bus
-example here is essentially the least troublesome variation since it
-works in conjunction with the native host driver rather than replacing
-it.  Thanks,
+There is absolutely nothing that makes gcc9 object files not
+compatible with gcc10.
 
-Alex
+And this is not just some theoretical issue: this is a fundamental
+fact of EVERY SINGLE LIBRARY OUT THERE.
 
+Do you think that when you compile your binaries with gcc-10, you need
+to link against a standard library that has been compiled with gcc-10?
+
+I really think the whole compiler version check is purely voodoo programming.
+
+                 Linus
