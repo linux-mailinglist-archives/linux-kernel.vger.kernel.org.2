@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3B3307236
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678BA307239
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhA1JBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:01:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231351AbhA1JBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:01:32 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BF1664DD6;
-        Thu, 28 Jan 2021 09:02:16 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l53Bu-00AZWy-Bo; Thu, 28 Jan 2021 09:02:14 +0000
+        id S231800AbhA1JEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:04:50 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11457 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231652AbhA1JDE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:03:04 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRDyG4PPgzjDQy;
+        Thu, 28 Jan 2021 17:02:46 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 28 Jan 2021 17:03:38 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Yi Chen <chenyi77@huawei.com>,
+        Daiyue Zhang <zhangdaiyue1@huawei.com>,
+        Dehe Gu <gudehe@huawei.com>,
+        Junchao Jiang <jiangjunchao1@huawei.com>,
+        Ge Qiu <qiuge@huawei.com>
+Subject: [PATCH] f2fs: fix to avoid inconsistent quota data
+Date:   Thu, 28 Jan 2021 17:02:56 +0800
+Message-ID: <20210128090256.73910-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 28 Jan 2021 09:02:14 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
-Cc:     mark.rutland@arm.com, Leo Li <leoyang.li@nxp.com>,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, Ran Wang <ran.wang_1@nxp.com>
-Subject: Re: [v2] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE to remove
- call trace
-In-Reply-To: <DB6PR0401MB2438851F8196DA9C6EF8C3D48FBA9@DB6PR0401MB2438.eurprd04.prod.outlook.com>
-References: <20210127085818.23742-1-biwen.li@oss.nxp.com>
- <a0c0cdaee31d49848525332deec6eb75@kernel.org>
- <DB6PR0401MB2438851F8196DA9C6EF8C3D48FBA9@DB6PR0401MB2438.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <6e20a326ebffdb6768a95c15ac743759@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: biwen.li@oss.nxp.com, mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, jiafei.pan@nxp.com, linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28 02:37, Biwen Li (OSS) wrote:
->> -----Original Message-----
->> From: Marc Zyngier <maz@kernel.org>
->> Sent: 2021年1月27日 19:38
->> To: Biwen Li (OSS) <biwen.li@oss.nxp.com>
->> Cc: mark.rutland@arm.com; Leo Li <leoyang.li@nxp.com>; 
->> tglx@linutronix.de;
->> jason@lakedaemon.net; linux-kernel@vger.kernel.org; Jiafei Pan
->> <jiafei.pan@nxp.com>; linux-arm-kernel@lists.infradead.org; Ran Wang
->> <ran.wang_1@nxp.com>; Biwen Li <biwen.li@nxp.com>
->> Subject: Re: [v2] irqchip: ls-extirq: add flag IRQCHIP_SKIP_SET_WAKE 
->> to
->> remove call trace
->> 
->> On 2021-01-27 08:58, Biwen Li wrote:
->> > From: Biwen Li <biwen.li@nxp.com>
->> >
->> > Add flag IRQCHIP_SKIP_SET_WAKE to remove call trace as follow, ...
->> > [   45.605239] Unbalanced IRQ 120 wake disable
->> > [   45.609445] WARNING: CPU: 0 PID: 1124 at kernel/irq/manage.c:800
->> > irq_set_irq_wake+0x154/0x1a0
->> > ...
->> > [   45.645141] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
->> > [   45.651144] pc : irq_set_irq_wake+0x154/0x1a0
->> > [   45.655497] lr : irq_set_irq_wake+0x154/0x1a0
->> > ...
->> > [   45.742825] Call trace:
->> > [   45.745268]  irq_set_irq_wake+0x154/0x1a0
->> > [   45.749278]  ds3232_resume+0x38/0x50
->> >
->> > On ls2088ardb:
->> > In suspend progress(# echo mem > /sys/power/state),
->> >
->> pm_suspend()->suspend_devices_and_enter()->dpm_suspend()->device_suspe
->> > nd()
->> > ->ds3232_suspend()->enable_irq_wake()->irq_set_irq_wake()
->> > ->set_irq_wake_real(), return -ENXIO, there get
->> > "Cannot set wakeup source" in ds3232_suspend().
->> >
->> > In resume progress(wakeup by flextimer)
->> > dpm_resume_end()->dpm_resume()
->> > ->device_resume()->ds3232_resume()
->> > ->disable_irq_wake()->irq_set_irq_wake()
->> > ->set_irq_wake_real(), there get
->> > kernel call trace(Unbalanced IRQ 120 wake
->> > disable)
->> 
->> This is again paraphrasing the stack trace instead of explaining the 
->> problem it
->> fixes. How about:
->> 
->> "The ls-extirq driver doesn't implement the irq_set_wake()
->>   callback, while being wake-up capable. This results in
->>   ugly behaviours across suspend/resume cycles.
->> 
->>   Advertise this by adding IRQCHIP_SKIP_SET_WAKE to the irqchip
->>   flags"
->> 
->> The subject line should be fixed along the same lines, and a Fixes: 
->> tag added.
-> Okay, got it. Thanks. Will update in v3.
+From: Yi Chen <chenyi77@huawei.com>
 
-... and v3 still doesn't have a Fixes: tag.
+Occasionally, quota data may be corrupted detected by fsck:
 
-Frankly, if you can't be bothered to do this, why should I worry
-about your platform being broken?
+Info: checkpoint state = 45 :  crc compacted_summary unmount
+[QUOTA WARNING] Usage inconsistent for ID 0:actual (1543036928, 762) != expected (1543032832, 762)
+[ASSERT] (fsck_chk_quota_files:1986)  --> Quota file is missing or invalid quota file content found.
+[QUOTA WARNING] Usage inconsistent for ID 0:actual (1352478720, 344) != expected (1352474624, 344)
+[ASSERT] (fsck_chk_quota_files:1986)  --> Quota file is missing or invalid quota file content found.
 
-         M.
+[FSCK] Unreachable nat entries                        [Ok..] [0x0]
+[FSCK] SIT valid block bitmap checking                [Ok..]
+[FSCK] Hard link checking for regular file            [Ok..] [0x0]
+[FSCK] valid_block_count matching with CP             [Ok..] [0xdf299]
+[FSCK] valid_node_count matcing with CP (de lookup)   [Ok..] [0x2b01]
+[FSCK] valid_node_count matcing with CP (nat lookup)  [Ok..] [0x2b01]
+[FSCK] valid_inode_count matched with CP              [Ok..] [0x2665]
+[FSCK] free segment_count matched with CP             [Ok..] [0xcb04]
+[FSCK] next block offset is free                      [Ok..]
+[FSCK] fixing SIT types
+[FSCK] other corrupted bugs                           [Fail]
+
+The root cause is:
+If we open file w/ readonly flag, disk quota info won't be initialized
+for this file, however, following mmap() will force to convert inline
+inode via f2fs_convert_inline_inode(), which may increase block usage
+for this inode w/o updating quota data, it causes inconsistent disk quota
+info.
+
+The issue will happen in following stack:
+open(file, O_RDONLY)
+mmap(file)
+- f2fs_convert_inline_inode
+ - f2fs_convert_inline_page
+  - f2fs_reserve_block
+   - f2fs_reserve_new_block
+    - f2fs_reserve_new_blocks
+     - f2fs_i_blocks_write
+      - dquot_claim_block
+inode->i_blocks increase, but the dqb_curspace keep the size for the dquots
+is NULL.
+
+To fix this issue, let's call dquot_initialize() anyway in both
+f2fs_truncate() and f2fs_convert_inline_inode() functions to avoid potential
+inconsistent quota data issue.
+
+Fixes: 0abd675e97e6 ("f2fs: support plain user/group quota")
+Signed-off-by: Daiyue Zhang <zhangdaiyue1@huawei.com>
+Signed-off-by: Dehe Gu <gudehe@huawei.com>
+Signed-off-by: Junchao Jiang <jiangjunchao1@huawei.com>
+Signed-off-by: Ge Qiu <qiuge@huawei.com>
+Signed-off-by: Yi Chen <chenyi77@huawei.com>
+---
+ fs/f2fs/file.c   | 4 ++++
+ fs/f2fs/inline.c | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 7db27c81d034..00b2ce47fa37 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -771,6 +771,10 @@ int f2fs_truncate(struct inode *inode)
+ 		return -EIO;
+ 	}
+ 
++	err = dquot_initialize(inode);
++	if (err)
++		return err;
++
+ 	/* we should check inline_data size */
+ 	if (!f2fs_may_inline_data(inode)) {
+ 		err = f2fs_convert_inline_inode(inode);
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 806ebabf5870..993caefcd2bb 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -192,6 +192,10 @@ int f2fs_convert_inline_inode(struct inode *inode)
+ 			f2fs_hw_is_readonly(sbi) || f2fs_readonly(sbi->sb))
+ 		return 0;
+ 
++	err = dquot_initialize(inode);
++	if (err)
++		return err;
++
+ 	page = f2fs_grab_cache_page(inode->i_mapping, 0, false);
+ 	if (!page)
+ 		return -ENOMEM;
 -- 
-Jazz is not dead. It just smells funny...
+2.29.2
+
