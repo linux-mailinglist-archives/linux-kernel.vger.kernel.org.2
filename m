@@ -2,176 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B11306AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBD1306ABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbhA1Bri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
+        id S231149AbhA1BwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhA1Br3 (ORCPT
+        with ESMTP id S229732AbhA1BwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:47:29 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F0CC061573;
-        Wed, 27 Jan 2021 17:46:49 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id e70so3725359ote.11;
-        Wed, 27 Jan 2021 17:46:49 -0800 (PST)
+        Wed, 27 Jan 2021 20:52:14 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FBDC061574;
+        Wed, 27 Jan 2021 17:51:33 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id kg20so5466396ejc.4;
+        Wed, 27 Jan 2021 17:51:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9zxL+Xh/GiGjMNr2zojIuA/hQyF+jMwVwqRuljPa8dM=;
-        b=lo6xLwQxrdLBwy6lIEtyBjY/DScnLt6mbDkOr9/g5JJhP2A1vg5ByJcf3SljZ//gLz
-         OR8m4QQpc7QxnngXF8BcgBV/J2ALo8xD09THnBPRu4XneBRakSMJGrcGEVyCSgnwg2kG
-         SsPKYdb6tTFDJA94o3T3Pv6vbGtS8IRRrTdGMPevhhMHJvdee+z/rYeMuNnr16va2wk/
-         mgGPEemkCOnLJssIJFhKsngOCsJd63ulnyb26VfNNUlrLTsrjc3b92S7V6hpAfmdbREY
-         yVaUrAssGNLP2avvy+DpfXfu+n1rcbEE+HqF5RBX+jQlp1codlXeryha3pSKCMdR2/AM
-         SIiQ==
+        bh=APM/j64XJ64toEHsmY/3rHQUz6ZGR8j9tLguMFaF1jg=;
+        b=BhtLdpqElIQ4v960FzTsQkjcTWfOx/hJJ573l0QiDZh1y2ViL9KJDWgSvzStSgMbj9
+         hkvQVH0bZWL9P5fxuubMCW7wASm+/x9YZ/FkgkNh+hOypv51sYsmgzBWLP3448O0NKdx
+         kIHJztUnGo9h0WXKFsrGvpU9dMhaZM94etGgallF9tDtdsQ0624l8l2pmQxYdZgwKoZo
+         anmKprjGSCWxJK5zGsmsGklidj1QjYIc6SPdtnkj6XCzpdnYf/Ypq98k0eP0dUIwYobV
+         ehmzQU5YEL3XXlkM3z/IknbFDPOn8Sa0RIKEeoGw55mR05gO7QFhOtdNkv+2DP02yM32
+         DQTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=9zxL+Xh/GiGjMNr2zojIuA/hQyF+jMwVwqRuljPa8dM=;
-        b=cL45FM4FQrB3x0jqBcfo9xf+kQXfx4Df8Q9SiBQE53hBZ7jSQhm68BOejgAb75nbuG
-         eqLWJYshhtaxA7ojE4vs48ywb8Bh1u1dm1dVlJeqO8kGa0vOGm+8fWZlVtH+jVgiYN93
-         Qizgp33X+kt0m6dPQnOY7vTLh3o/dVJI124qSN7AW2hQ/DUN9j+Bd8+kRj7ZfPZ7KVF7
-         IjlZ5ybEwH/BUNphAEbNPIZfTkUpuPmy89Z7jI3a9a3x3kjDqFZy+PDJmSQ82iT66bwa
-         EI40Y4UGrh+Ejbia0a6ATxS422SxRB/4BVIAGAPNEzb1Rtg6Gk/I6I6zDVT04LC4Lfae
-         1wAw==
-X-Gm-Message-State: AOAM532Z+c+5hbFRgPS/nThjdek6DIr7+mIb6H3P6FB4BdhTQzquJtJh
-        WrrD7Km8h0DLAKoxf5P0WcFYoPLYWzw=
-X-Google-Smtp-Source: ABdhPJx+aKPSWRepxZxGjP1Z08LORw+WxUgDydXJAIpHYyfa6l51f+qRfW4Oj0OoI/ne1FF/SY2icA==
-X-Received: by 2002:a9d:2c48:: with SMTP id f66mr9639858otb.239.1611798408225;
-        Wed, 27 Jan 2021 17:46:48 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s123sm810889oos.3.2021.01.27.17.46.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 17:46:47 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control
- blacklist
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Thomas Hebb <tommyhebb@gmail.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Bob Hepple <bob.hepple@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
- <20210125100540.55wbgdsem3htplx3@pali> <20210125201938.GB78651@roeck-us.net>
- <20210125202130.afwhcuznietmqo5s@pali> <20210127230001.7zeeczkfj33zj5sw@pali>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <aef96a2a-9e27-32a2-62a5-92b8d87b9136@roeck-us.net>
-Date:   Wed, 27 Jan 2021 17:46:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APM/j64XJ64toEHsmY/3rHQUz6ZGR8j9tLguMFaF1jg=;
+        b=GG4zgr96dxNwOIIP+S5wOi8Br6PEJq2BxCOwkoEH1z3GOARGyrSd4dmG25pnUCDoHk
+         r7J/ZiOs6QspquEFGTpEteeZQMNlVVRPU/uhSwKtwkFzSAcTorheThuze9QGtXYBR9ow
+         tQdbmUPbR9hsc3jE/rWY7awELpZrGsZ8yk0k0KiZi8nCrIBKQjGKdqcbHvffzeWbpevB
+         gn/qjbeFIUBE7EnPxxhOrCGGNTx5Rz/POFpPfSBlQXqP3qptOvjLFDYUPaW3wfPqKSwx
+         aSgBIxxkp1pZetwev02OwsZimRtryB6uYO0Dl5GndJk0Xp/5WERYNJf0vVzO+7g9qdar
+         qSQw==
+X-Gm-Message-State: AOAM532bFvAlrLBERO57uRwPWSyNLY++QeHdMFw5zpv68wq5SpsZ+i67
+        ux1IB42KVmae6WnwNiWiwDY=
+X-Google-Smtp-Source: ABdhPJwce9SBC+OVGSSnm3XN8ibbrolKNzCaDCbl7vdBiAjsneGheJELpoxTNQxpM+wX8AHmgDJnQg==
+X-Received: by 2002:a17:907:104e:: with SMTP id oy14mr8583617ejb.276.1611798692278;
+        Wed, 27 Jan 2021 17:51:32 -0800 (PST)
+Received: from localhost.localdomain (ip-109-40-66-249.web.vodafone.de. [109.40.66.249])
+        by smtp.gmail.com with ESMTPSA id p10sm1610141ejb.82.2021.01.27.17.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 17:51:31 -0800 (PST)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yulia Kartseva <hex@fb.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Briana Oursler <briana.oursler@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH bpf-next] tools: Factor Clang, LLC and LLVM utils definitions
+Date:   Thu, 28 Jan 2021 02:50:58 +0100
+Message-Id: <20210128015117.20515-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210127230001.7zeeczkfj33zj5sw@pali>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 3:00 PM, Pali Rohár wrote:
-> On Monday 25 January 2021 21:21:30 Pali Rohár wrote:
->> On Monday 25 January 2021 12:19:38 Guenter Roeck wrote:
->>> On Mon, Jan 25, 2021 at 11:05:40AM +0100, Pali Rohár wrote:
->>>> On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
->>>>> It has been reported[0] that the Dell XPS 15 L502X exhibits similar
->>>>> freezing behavior to the other systems[1] on this blacklist. The issue
->>>>> was exposed by a prior change of mine to automatically load
->>>>> dell_smm_hwmon on a wider set of XPS models. To fix the regression, add
->>>>> this model to the blacklist.
->>>>>
->>>>> [0] https://bugzilla.kernel.org/show_bug.cgi?id=211081
->>>>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=195751
->>>>>
->>>>> Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all XPS models")
->>>>> Cc: stable@vger.kernel.org
->>>>> Reported-by: Bob Hepple <bob.hepple@gmail.com>
->>>>> Tested-by: Bob Hepple <bob.hepple@gmail.com>
->>>>> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
->>>>> ---
->>>>>
->>>>>  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
->>>>>  1 file changed, 7 insertions(+)
->>>>>
->>>>> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
->>>>> index ec448f5f2dc3..73b9db9e3aab 100644
->>>>> --- a/drivers/hwmon/dell-smm-hwmon.c
->>>>> +++ b/drivers/hwmon/dell-smm-hwmon.c
->>>>> @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_fan_support_dmi_table[] __initdata = {
->>>>>  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 9333"),
->>>>>  		},
->>>>>  	},
->>>>> +	{
->>>>> +		.ident = "Dell XPS 15 L502X",
->>>>> +		.matches = {
->>>>> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
->>>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell System XPS L502X"),
->>>>
->>>> Hello! Are you sure that it is required to completely disable fan
->>>> support? And not only access to fan type label for which is different
->>>> blaclist i8k_blacklist_fan_type_dmi_table?
->>>>
->>>
->>> I'll drop this patch from my branch. Please send a Reviewed-by: or Acked-by: tag
->>> if/when I should apply it.
->>
->> Of course! We will just wait for Bob test results.
-> 
-> Guenter, now we have all needed information, fix is really needed in
-> this form. So you can add my:
-> 
-> Reviewed-by: Pali Rohár <pali@kernel.org>
-> 
+When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
 
-Applied (again)
+While looking into the source code I found duplicate assignments
+in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
 
-Thanks,
-Guenter
+Move the Clang, LLC and/or LLVM utils definitions to
+tools/scripts/Makefile.include file and add missing
+includes where needed.
+Honestly, I was inspired by commit c8a950d0d3b9
+("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
+
+I tested with bpftool and perf on Debian/testing AMD64 and
+LLVM/Clang v11.1.0-rc1.
+
+Build instructions:
+
+[ make and make-options ]
+MAKE="make V=1"
+MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
+MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
+
+[ clean-up ]
+$MAKE $MAKE_OPTS -C tools/ clean
+
+[ bpftool ]
+$MAKE $MAKE_OPTS -C tools/bpf/bpftool/
+
+[ perf ]
+PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
+
+I was careful with respecting the user's wish to override custom compiler,
+linker, GNU/binutils and/or LLVM utils settings.
+
+Some personal notes:
+1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
+2. This patch is on top of bpf-next.
+
+CC: bpf@vger.kernel.org
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com> # tools/build and tools/perf
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ tools/bpf/bpftool/Makefile                  | 2 --
+ tools/bpf/runqslower/Makefile               | 3 ---
+ tools/build/feature/Makefile                | 4 ++--
+ tools/perf/Makefile.perf                    | 1 -
+ tools/scripts/Makefile.include              | 7 +++++++
+ tools/testing/selftests/bpf/Makefile        | 2 --
+ tools/testing/selftests/tc-testing/Makefile | 3 +--
+ 7 files changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 45ac2f9e0aa9..8ced1655fea6 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -75,8 +75,6 @@ endif
+ 
+ INSTALL ?= install
+ RM ?= rm -f
+-CLANG ?= clang
+-LLVM_STRIP ?= llvm-strip
+ 
+ FEATURE_USER = .bpftool
+ FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib libcap \
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index 4d5ca54fcd4c..9d9fb6209be1 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -3,9 +3,6 @@ include ../../scripts/Makefile.include
+ 
+ OUTPUT ?= $(abspath .output)/
+ 
+-CLANG ?= clang
+-LLC ?= llc
+-LLVM_STRIP ?= llvm-strip
+ BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
+ DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bpftool
+ BPFTOOL ?= $(DEFAULT_BPFTOOL)
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 89ba522e377d..3e55edb3ea54 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -1,4 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../scripts/Makefile.include
++
+ FILES=                                          \
+          test-all.bin                           \
+          test-backtrace.bin                     \
+@@ -76,8 +78,6 @@ FILES=                                          \
+ FILES := $(addprefix $(OUTPUT),$(FILES))
+ 
+ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+-LLVM_CONFIG ?= llvm-config
+-CLANG ?= clang
+ 
+ all: $(FILES)
+ 
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 62f3deb1d3a8..f4df7534026d 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -176,7 +176,6 @@ endef
+ LD += $(EXTRA_LDFLAGS)
+ 
+ PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+-LLVM_CONFIG ?= llvm-config
+ 
+ RM      = rm -f
+ LN      = ln -f
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 1358e89cdf7d..4255e71f72b7 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -69,6 +69,13 @@ HOSTCC  ?= gcc
+ HOSTLD  ?= ld
+ endif
+ 
++# Some tools require Clang, LLC and/or LLVM utils
++CLANG		?= clang
++LLC		?= llc
++LLVM_CONFIG	?= llvm-config
++LLVM_OBJCOPY	?= llvm-objcopy
++LLVM_STRIP	?= llvm-strip
++
+ ifeq ($(CC_NO_CLANG), 1)
+ EXTRA_WARNINGS += -Wstrict-aliasing=3
+ endif
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 63d6288e419c..f0674d406f40 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -19,8 +19,6 @@ ifneq ($(wildcard $(GENHDR)),)
+   GENFLAGS := -DHAVE_GENHDR
+ endif
+ 
+-CLANG		?= clang
+-LLVM_OBJCOPY	?= llvm-objcopy
+ BPF_GCC		?= $(shell command -v bpf-gcc;)
+ SAN_CFLAGS	?=
+ CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) $(SAN_CFLAGS)		\
+diff --git a/tools/testing/selftests/tc-testing/Makefile b/tools/testing/selftests/tc-testing/Makefile
+index 91fee5c43274..4d639279f41e 100644
+--- a/tools/testing/selftests/tc-testing/Makefile
++++ b/tools/testing/selftests/tc-testing/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../../scripts/Makefile.include
+ 
+ top_srcdir = $(abspath ../../../..)
+ APIDIR := $(top_scrdir)/include/uapi
+@@ -7,8 +8,6 @@ TEST_GEN_FILES = action.o
+ KSFT_KHDR_INSTALL := 1
+ include ../lib.mk
+ 
+-CLANG ?= clang
+-LLC   ?= llc
+ PROBE := $(shell $(LLC) -march=bpf -mcpu=probe -filetype=null /dev/null 2>&1)
+ 
+ ifeq ($(PROBE),)
+-- 
+2.30.0
+
