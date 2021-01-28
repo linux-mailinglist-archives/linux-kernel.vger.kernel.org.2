@@ -2,105 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68ADB30793E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F8930793B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhA1PMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:12:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42440 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232519AbhA1PL2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:11:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611846602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hhj0Ci4ubmUQAoG6OK5IyEkrRViQ/scCNDoyVb3q4mQ=;
-        b=NR3dnObxx8Eihp52ZBg7xx6uODXZTAQrz8M00b1FoBBTgoAm7TVGTS1c6wpaB7k4HXfG+W
-        gYx44Sh5QdE/IW5yqbWCNQCNXaBQPTIUP+Ux6uSZhinQpk14oWB9iI4GesP/kkCsO5fj5H
-        5Me+JHF0rGuPjYfSTx/Y+RW1WqsvXEo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-oa0avZq6P3mQAd-x0GRXOQ-1; Thu, 28 Jan 2021 10:10:00 -0500
-X-MC-Unique: oa0avZq6P3mQAd-x0GRXOQ-1
-Received: by mail-ej1-f70.google.com with SMTP id h4so2325224eja.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:09:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Hhj0Ci4ubmUQAoG6OK5IyEkrRViQ/scCNDoyVb3q4mQ=;
-        b=WZ1InYmWbDbm3glExx1ZRSgxedoLtEUEE9kQnyZJJWSQnyvXpET4NBkdZFmBJ5Sa3O
-         tHsQC+sFChby+266fXDI0aXqWE1Wub+Llnr+j3V5aPlxguydQOAtNsrFGWzAqBoEvajv
-         PgoUGDMV1+w2p7x7X2qLsSexkT/blzB/4iKZLOhOLNOjFDQtJZpSNvNpZ2R5Ssax80mv
-         WPzk7qW8nn+8zjsB2nNVkQZoz4t0qOpwP0VujXctkyjxEe/adxc4GJHPcUOAs67BLALu
-         hgmEA7Ry1vxCTBm3wCK4bIncCNgnsupe976if+e2JOG5KYRqt6pKbOw7wZlu/sDRK5Wu
-         YAkA==
-X-Gm-Message-State: AOAM533+JrcDjszKm0RmNUeevT93SGM10D5sDfa1T815vqkd4g02HHEs
-        cdfcZAxXSjdjHZreFrNRWeild/24D9XAIA+LlSxf+InZuPUlkkSycP9QWez1ZqNRPcR4D3JOLKd
-        NRm7YFtI5qQ5ZQuONeZLu+87/
-X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr14873140edc.68.1611846597817;
-        Thu, 28 Jan 2021 07:09:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1REmvoZPIJf+xL+eFSS8Ak+MJ/YNFFHwKFPfHuNuoqq5vaw2RU+a2VckY/qs6e13g6PjcYA==
-X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr14873116edc.68.1611846597610;
-        Thu, 28 Jan 2021 07:09:57 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s22sm2381402ejd.106.2021.01.28.07.09.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 07:09:56 -0800 (PST)
-Subject: Re: [PATCH v2 04/14] x86/cpufeatures: Assign dedicated feature word
- for AMD mem encryption
-To:     Borislav Petkov <bp@suse.de>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-5-seanjc@google.com> <20210114113528.GC13213@zn.tnic>
- <YAB6yLXb4Es+pJ8G@google.com> <20210114171631.GD13213@zn.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c177d918-7421-9441-fb24-45ffe46f8298@redhat.com>
-Date:   Thu, 28 Jan 2021 16:09:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232398AbhA1PLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:11:42 -0500
+Received: from verein.lst.de ([213.95.11.211]:57690 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232554AbhA1PKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:10:40 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4C75668AFE; Thu, 28 Jan 2021 16:09:55 +0100 (CET)
+Date:   Thu, 28 Jan 2021 16:09:55 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        iommu@lists.linux-foundation.org
+Cc:     linux-media@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 6/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+Message-ID: <20210128150955.GA30563@lst.de>
+References: <20210128145837.2250561-1-hch@lst.de> <20210128145837.2250561-7-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210114171631.GD13213@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128145837.2250561-7-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/01/21 18:16, Borislav Petkov wrote:
-> On Thu, Jan 14, 2021 at 09:09:28AM -0800, Sean Christopherson wrote:
->> Hmm, patch 05/14 depends on the existence of the new word.  That's a non-issue
->> if you're planning on taking this for 5.11.  If it's destined for 5.12, maybe
->> get an ack from Paolo on patch 05 and take both through tip?
-> 
-> Yeah, I guess that. Both are not urgent 5.11 material to take 'em now.
-> So I guess I'll wait for Paolo's ACK.
+I just included this patch as-is, but here are a few comments:
 
-If you think this patch is valuable go ahead and pick it.  I can wait 
-until after the merge window to queue patch 5.  It is independent from 
-the others and I had questions, so I am just queuing the others for 5.12.
+On Thu, Jan 28, 2021 at 03:58:37PM +0100, Christoph Hellwig wrote:
+> +static void uvc_urb_dma_sync(struct uvc_urb *uvc_urb, bool for_device)
+> +{
+> +	struct device *dma_dev = dma_dev = stream_to_dmadev(uvc_urb->stream);
+> +
+> +	if (for_device)
+> +		dma_sync_sgtable_for_device(dma_dev, uvc_urb->sgt,
+> +					    DMA_FROM_DEVICE);
+> +	else
+> +		dma_sync_sgtable_for_cpu(dma_dev, uvc_urb->sgt,
+> +					 DMA_FROM_DEVICE);
+> +}
 
-Paolo
-
->> I can drop them from this series when I send v3. In hindsight, I
->> should have split these two patches into a separate mini-series from
->> the get-go.
-> 
-> Nah, no worries. We do patch acrobatics on a daily basis. :-)
-
+Given that we vmap the addresses this also needs
+flush_kernel_vmap_range / invalidate_kernel_vmap_range calls for
+VIVT architectures.
