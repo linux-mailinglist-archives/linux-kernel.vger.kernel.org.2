@@ -2,82 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02775307D63
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F310307D93
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhA1SGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:06:24 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:36810 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231348AbhA1SEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:04:00 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l5BdN-0034Q1-If; Thu, 28 Jan 2021 19:03:09 +0100
-Date:   Thu, 28 Jan 2021 19:03:09 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     olteanv@gmail.com, netdev@vger.kernel.org, robh+dt@kernel.org,
-        kuba@kernel.org, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, UNGLinuxDriver@microchip.com,
-        Woojung.Huh@microchip.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 2/8] net: dsa: tag_ksz: add tag handling for
- Microchip LAN937x
-Message-ID: <YBL8XaZlVQRVg+qA@lunn.ch>
-References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
- <20210128064112.372883-3-prasanna.vengateshan@microchip.com>
+        id S231546AbhA1SOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231458AbhA1SH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:07:26 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60D2C06178C;
+        Thu, 28 Jan 2021 10:04:08 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id gx5so9120559ejb.7;
+        Thu, 28 Jan 2021 10:04:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JYIcKDp3tq6KjFCoe7KRgOLFg5+oBqHlOawfom5+j9o=;
+        b=VOn2MpLrXKaxK1WPLYqt26nt+g2L5eKbET1kCRHZkmbeuKo7RJRol4B9rWNCkYkZPy
+         VZbzBtP+f9rdp7jS3WiGU/YqQBC9jLmsZRlHmpxdBpIr6+rlDo6LHkUAD/6F5B6fHLg3
+         U1TMiU7XsVaDwwWF1ihGF/LjZoiZpgP5mkddf7D988kUeUwE06vUuzlH2JHTy3UXLexd
+         FIS0O8pRssAGdqa1iCsKMt+jtIyNVifkmPx521d6h/2mjctswTszxVFH/FM2i4DEACvV
+         9yBtf2ZfCtdxUOimfwwYiiZ22rkNpW+NisZEVAtZmPtRoDUPhoGcCQI3SLcheyep+sVF
+         JKgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JYIcKDp3tq6KjFCoe7KRgOLFg5+oBqHlOawfom5+j9o=;
+        b=POCdvNOiQ3xk7pF2JPbpIe9UGgKT4DE23DzcunlAuTVYNdQd84vivo51ZDZEtIWkuC
+         zUCK/lhCwBblCuV65FUXc8fyLg84i6I4aAZYuJz3mkWfeVqMNpv5iWK/Wr0s3G3MT/+W
+         b+3d/Lh4V7O8M3XiDn97H8QhE97b5lDLonh+EvrG/EWUk44GZrTUTI4KAPH34E1owxHF
+         Hkx1/qbJtx9WGN28lyuudBsyTsbl/wvhxflsbQRL0lDYdnL63UXef3FgjLvwkPeUEdqR
+         8yodVhsOLOSGhTSdf4jBEQ+xw6eZLVJXm/FvBiNOppEw5PMX+kTId1AkSBqBKzQoPusX
+         /6QA==
+X-Gm-Message-State: AOAM5335ycGpgKFZTVcnOiA20k4CC8SaKbu6aKKDb16LEgbJNI7X+yVA
+        fnHHhWGF8ErphQY3m6MjBtY=
+X-Google-Smtp-Source: ABdhPJyMiDTAlloSahlJa1ZSKuwy4dEWHmgmekCvFGhbYz4eNpmvkTs0i0b71XQdwWpOudjXSWWGVw==
+X-Received: by 2002:a17:906:9499:: with SMTP id t25mr576105ejx.339.1611857047723;
+        Thu, 28 Jan 2021 10:04:07 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id pw28sm2623456ejb.115.2021.01.28.10.04.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 10:04:07 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Subject: Re: [PATCH v14 11/13] KVM: VMX: Pass through CET MSRs to the guest
+ when supported
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        jmattson@google.com
+Cc:     yu.c.zhang@linux.intel.com
+References: <20201106011637.14289-1-weijiang.yang@intel.com>
+ <20201106011637.14289-12-weijiang.yang@intel.com>
+ <78948a28-2b6c-fccb-971a-550ea7e4da2c@redhat.com>
+Message-ID: <e383a377-ee64-342d-b1dd-0f99186714e3@redhat.com>
+Date:   Thu, 28 Jan 2021 19:04:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128064112.372883-3-prasanna.vengateshan@microchip.com>
+In-Reply-To: <78948a28-2b6c-fccb-971a-550ea7e4da2c@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:11:06PM +0530, Prasanna Vengateshan wrote:
-> The Microchip LAN937X switches have a tagging protocol which is
-> very similar to KSZ tagging. So that the implementation is added to
-> tag_ksz.c and reused common APIs
+On 28/01/21 18:54, Paolo Bonzini wrote:
+> On 06/11/20 02:16, Yang Weijiang wrote:
+>> Pass through all CET MSRs when the associated CET component (kernel vs.
+>> user) is enabled to improve guest performance.  All CET MSRs are context
+>> switched, either via dedicated VMCS fields or XSAVES.
+>>
+>> Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+>> Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/vmx.c | 29 +++++++++++++++++++++++++++++
+>>   1 file changed, 29 insertions(+)
+>>
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index c88a6e1721b1..6ba2027a3d44 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -7366,6 +7366,32 @@ static void update_intel_pt_cfg(struct kvm_vcpu 
+>> *vcpu)
+>>           vmx->pt_desc.ctl_bitmask &= ~(0xfULL << (32 + i * 4));
+>>   }
+>> +static bool is_cet_state_supported(struct kvm_vcpu *vcpu, u32 xss_state)
+>> +{
+>> +    return (vcpu->arch.guest_supported_xss & xss_state) &&
+>> +           (guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
+>> +        guest_cpuid_has(vcpu, X86_FEATURE_IBT));
+>> +}
+>> +
+>> +static void vmx_update_intercept_for_cet_msr(struct kvm_vcpu *vcpu)
+>> +{
+>> +    bool incpt = !is_cet_state_supported(vcpu, XFEATURE_MASK_CET_USER);
+>> +
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET, MSR_TYPE_RW, incpt);
+>> +
+>> +    incpt |= !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL3_SSP, MSR_TYPE_RW, 
+>> incpt);
+>> +
+>> +    incpt = !is_cet_state_supported(vcpu, XFEATURE_MASK_CET_KERNEL);
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET, MSR_TYPE_RW, incpt);
+>> +
+>> +    incpt |= !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_INT_SSP_TAB, 
+>> MSR_TYPE_RW, incpt);
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL0_SSP, MSR_TYPE_RW, 
+>> incpt);
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL1_SSP, MSR_TYPE_RW, 
+>> incpt);
+>> +    vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL2_SSP, MSR_TYPE_RW, 
+>> incpt);
+>> +}
+>> +
+>>   static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>>   {
+>>       struct vcpu_vmx *vmx = to_vmx(vcpu);
+>> @@ -7409,6 +7435,9 @@ static void vmx_vcpu_after_set_cpuid(struct 
+>> kvm_vcpu *vcpu)
+>>       /* Refresh #PF interception to account for MAXPHYADDR changes. */
+>>       update_exception_bitmap(vcpu);
+>> +
+>> +    if (kvm_cet_supported())
+>> +        vmx_update_intercept_for_cet_msr(vcpu);
+>>   }
+>>   static __init void vmx_set_cpu_caps(void)
+>>
 > 
-> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-> ---
->  include/net/dsa.h |  2 ++
->  net/dsa/Kconfig   |  4 +--
->  net/dsa/tag_ksz.c | 74 +++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 78 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/net/dsa.h b/include/net/dsa.h
-> index 2f5435d3d1db..b9bc7a9a8c15 100644
-> --- a/include/net/dsa.h
-> +++ b/include/net/dsa.h
-> @@ -47,6 +47,7 @@ struct phylink_link_state;
->  #define DSA_TAG_PROTO_RTL4_A_VALUE		17
->  #define DSA_TAG_PROTO_HELLCREEK_VALUE		18
->  #define DSA_TAG_PROTO_XRS700X_VALUE		19
-> +#define DSA_TAG_PROTO_LAN937X_VALUE		20
->  
->  enum dsa_tag_protocol {
->  	DSA_TAG_PROTO_NONE		= DSA_TAG_PROTO_NONE_VALUE,
-> @@ -69,6 +70,7 @@ enum dsa_tag_protocol {
->  	DSA_TAG_PROTO_RTL4_A		= DSA_TAG_PROTO_RTL4_A_VALUE,
->  	DSA_TAG_PROTO_HELLCREEK		= DSA_TAG_PROTO_HELLCREEK_VALUE,
->  	DSA_TAG_PROTO_XRS700X		= DSA_TAG_PROTO_XRS700X_VALUE,
-> +	DSA_TAG_PROTO_LAN937X		= DSA_TAG_PROTO_LAN937X_VALUE,
->  };
->  
->  struct packet_type;
-> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-> index 2d226a5c085f..217fa0f8d13e 100644
-> --- a/net/dsa/Kconfig
-> +++ b/net/dsa/Kconfig
-> @@ -92,10 +92,10 @@ config NET_DSA_TAG_MTK
->  	  Mediatek switches.
->  
->  config NET_DSA_TAG_KSZ
-> -	tristate "Tag driver for Microchip 8795/9477/9893 families of switches"
-> +	tristate "Tag driver for Microchip 8795/9477/9893/937x families of switches"
+> Can you do this only if CR4.CET=1?
 
-You might want to keep these in numerical order.
+Actually, considering this is XSAVES and not RDMSR/WRMSR state, this is 
+okay as is.
 
-    Andrew
+Paolo
