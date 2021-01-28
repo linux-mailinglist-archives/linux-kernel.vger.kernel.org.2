@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295DD307480
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8866A307485
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhA1LLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:11:14 -0500
-Received: from mga06.intel.com ([134.134.136.31]:58317 "EHLO mga06.intel.com"
+        id S231270AbhA1LNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:13:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:56800 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhA1LK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:10:59 -0500
-IronPort-SDR: DFQBtcOw5+BAGZfTiQ3jiETQcG5ISXr8zLS69GvPIUtBxm+Yaq2gG4GccZBoX0PXI7vMjtBkaq
- o1+i3iN5PmJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241742155"
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="241742155"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:09:11 -0800
-IronPort-SDR: oLTOeHJAxZveY+y0cspU8swh3mUykqlmfDB8CBvJ7nLRG4fyjW6mcagPZOo5rs3vUPhbqZP1K6
- kC7ATHgNjRPw==
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="473506403"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:09:07 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 13:09:04 +0200
-Date:   Thu, 28 Jan 2021 13:09:04 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-usb@vger.kernel.org, Michael Jamet <michael.jamet@intel.com>,
-        netdev@vger.kernel.org, Yehezkel Bernat <YehezkelShB@gmail.com>
-Subject: Re: [PATCH 00/12] Rid W=1 warnings from Thunderbolt
-Message-ID: <20210128110904.GR2542@lahna.fi.intel.com>
-References: <20210127112554.3770172-1-lee.jones@linaro.org>
+        id S229586AbhA1LM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:12:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 102441FB;
+        Thu, 28 Jan 2021 03:12:11 -0800 (PST)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0A833F7D8;
+        Thu, 28 Jan 2021 03:12:08 -0800 (PST)
+Date:   Thu, 28 Jan 2021 11:11:28 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>,
+        linux-input@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 05/20] Input: axp20x-pek: Bail out if AXP has no
+ interrupt line connected
+Message-ID: <20210128104627.76b35a5c@slackpad.fritz.box>
+In-Reply-To: <YBHCF2tWIX4MeMia@google.com>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-6-andre.przywara@arm.com>
+ <YBHCF2tWIX4MeMia@google.com>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127112554.3770172-1-lee.jones@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Wed, 27 Jan 2021 11:42:15 -0800
+Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
 
-On Wed, Jan 27, 2021 at 11:25:42AM +0000, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+Hi Dmitry,
+
+thanks for your feedback!
+
+> On Wed, Jan 27, 2021 at 05:24:45PM +0000, Andre Przywara wrote:
+> > On at least one board (Orangepi Zero2) the AXP305 PMIC does not have its
+> > interrupt line connected to the CPU (mostly because the H616 SoC does
+> > not feature an NMI pin anymore).
+> > After allowing the AXP driver to proceed without an "interrupts"
+> > property [1], the axp20x-pek driver crashes with a NULL pointer
+> > dereference (see below).
+> > 
+> > Check for the regmap_irqc member to be not NULL before proceeding with
+> > probe. This gets normally filled by the call to regmap_add_irq_chip(),
+> > which we allow to skip now, when the DT node lacks an interrupt
+> > property.  
 > 
-> Only 1 small set required for Thunderbolt.  Pretty good!
-> 
-> Lee Jones (12):
->   thunderbolt: dma_port: Remove unused variable 'ret'
->   thunderbolt: cap: Fix kernel-doc formatting issue
->   thunderbolt: ctl: Demote non-conformant kernel-doc headers
->   thunderbolt: eeprom: Demote non-conformant kernel-doc headers to
->     standard comment blocks
->   thunderbolt: pa: Demote non-conformant kernel-doc headers
->   thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv'
->     param
->   thunderbolt: nhi: Demote some non-conformant kernel-doc headers
->   thunderbolt: tb: Kernel-doc function headers should document their
->     parameters
->   thunderbolt: swit: Demote a bunch of non-conformant kernel-doc headers
->   thunderbolt: icm: Fix a couple of formatting issues
->   thunderbolt: tunnel: Fix misspelling of 'receive_path'
->   thunderbolt: swit: Fix function name in the header
+> No, the driver is not the right place to patch this; regmap should be
+> fixed so it does not crash instead.
 
-I applied all of the changes that touch static functions. For non-static
-functions I will send a patch set shortly that adds the missing bits for
-the kernel-doc descriptions. I also fixed $subject lines of few patches
-("switch:" instead of "swit:").
+I am not sure this is the right approach, those regmap functions look
+more like an internal interface to me, with lots of wrapper functions
+happily dereferencing pointers and reaching into structs. Moving
+NULL checks into those does not sound like the right thing. CC:ing Mark
+for more opinions on this.
 
-Please check that I got everything correct in
+A more general solution would be to not instantiate this driver here
+at all, when we don't have an interrupt line.
+However at the moment the AXP MFD driver uses a const struct to hold
+all MFD cells, so there is no easy way of omitting the power key
+device dynamically. And even then it would hard code the requirement
+for an interrupt into the MFD driver, when this could be considered an
+implementation detail of the axp20x-pek driver.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git next
+That's why I came up with this patch here, which was the easiest and
+cleanest: This driver *requires* a valid regmap_irqc, so it should
+verify this at probe time, kind of like a normal driver would bail out
+if no IRQ line could be reserved.
 
-Thanks!
+Let me know what you think!
+
+Cheers,
+Andre
