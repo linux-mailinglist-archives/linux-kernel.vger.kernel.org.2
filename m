@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678BA307239
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D793F30723D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhA1JEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:04:50 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11457 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhA1JDE (ORCPT
+        id S231383AbhA1JF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:05:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhA1JFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:03:04 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRDyG4PPgzjDQy;
-        Thu, 28 Jan 2021 17:02:46 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 28 Jan 2021 17:03:38 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Yi Chen <chenyi77@huawei.com>,
-        Daiyue Zhang <zhangdaiyue1@huawei.com>,
-        Dehe Gu <gudehe@huawei.com>,
-        Junchao Jiang <jiangjunchao1@huawei.com>,
-        Ge Qiu <qiuge@huawei.com>
-Subject: [PATCH] f2fs: fix to avoid inconsistent quota data
-Date:   Thu, 28 Jan 2021 17:02:56 +0800
-Message-ID: <20210128090256.73910-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 28 Jan 2021 04:05:35 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B979C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:04:54 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id w1so6575133ejf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:04:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZSpbOwM3PgqgMsQHXF6oksjxPNWs7WTnaxH8AahkgyY=;
+        b=D51Vy1KvVoIMcajJ2UgisCcNbDzngPmQBW1XkS+CxR/ySYWIPbYW1RzPePmClZ0rm8
+         4jtlg1iGU8IZscGGV2HOPzSfIb0bLTaMsaa2i8ROQOm1HXuSyx6x/nLUUM8sIPMXDRzg
+         dOtzFvslT+YOtQ1SgH89MXANMzeA2vblDh/l2ivSWB8Y2MxAulprUb0khur0kY6U1vW0
+         ckUNh2kicVJPoDFgaOG0hp+Pg0jAVZr8oU8eDuuBe/4p1PfCk/iot7mKwOp13rzV39Tp
+         tcpVcprtjvNpUdIji8XuEM1++l8sg2YxiWYp8djScYLFatv0SEECHJiFtCY4buOxWILa
+         ltYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZSpbOwM3PgqgMsQHXF6oksjxPNWs7WTnaxH8AahkgyY=;
+        b=serXKKenzseDgRiTzuc+74PbGcJobV8LBAz1gpbDRVXn9TXweciirDoBx265KOOOht
+         YRMZKqETQICSMS102lbv88Mp9QMgTB9om57mMGKi86uLhEqpOlohV/+/EP+l7fdpZC/3
+         p7GNfMuUbVFQdTjKNP6BYlCy9YVSyF4NomAWs8QS5yphs9nHsD9me1Bx3+Gjz7r148Fh
+         koNoJJjg8UnPjUDMruAuN6MINPofBcHdBVZy24Zxzlm86oB4y38yfFkqRmV2rVaWBk5D
+         IrHwEOQ9DjBuRcIJ7+RRpr39cTIfY2bhj0EdTQYETifXlnnpE5JA1mBOcMbQUcxhAujJ
+         TC2w==
+X-Gm-Message-State: AOAM530SNFIfEPHII/bOrxTMwziD9Cq2zysxrwLvvxFXYKueM4O77NJA
+        m+G4LvXYKftlG1S/zd2+NXMY+BnWDSC1kGlaGb+M8A==
+X-Google-Smtp-Source: ABdhPJxn+F9siFCKA5qHn1XUbiijC3To5DMNOqSqTrHG6AgWP7g5X6a8uIwQjLffe8r4cgy/FDblbX0palKas1Y06Wg=
+X-Received: by 2002:a17:906:3146:: with SMTP id e6mr9701086eje.363.1611824693112;
+ Thu, 28 Jan 2021 01:04:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+References: <20210128081030.2345998-1-hsiufangho@google.com>
+In-Reply-To: <20210128081030.2345998-1-hsiufangho@google.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 28 Jan 2021 10:04:42 +0100
+Message-ID: <CAMpxmJWMMMNYj-U3WXGBa2GOO1xLze44ABnxnBo6-owgUwWwog@mail.gmail.com>
+Subject: Re: [PATCH] eeprom: at24: Add permission to write_timeout
+To:     Jenny Ho <hsiufangho@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yi Chen <chenyi77@huawei.com>
+On Thu, Jan 28, 2021 at 9:10 AM Jenny Ho <hsiufangho@google.com> wrote:
+>
+> Need to change timeout time for different use
+> cases to prevent I2C error cases. Open the api
+> and allow Read/Write permission to write_timeout
+>
+> Signed-off-by: Jenny Ho <hsiufangho@google.com>
+> ---
+>  drivers/misc/eeprom/at24.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 926408b41270..39caead4058c 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -117,7 +117,7 @@ MODULE_PARM_DESC(at24_io_limit, "Maximum bytes per I/O (default 128)");
+>   * it's important to recover from write timeouts.
+>   */
+>  static unsigned int at24_write_timeout = 25;
+> -module_param_named(write_timeout, at24_write_timeout, uint, 0);
+> +module_param_named(write_timeout, at24_write_timeout, uint, 0600);
+>  MODULE_PARM_DESC(at24_write_timeout, "Time (in ms) to try writes (default 25)");
+>
+>  struct at24_chip_data {
+> --
+> 2.30.0.280.ga3ce27912f-goog
+>
 
-Occasionally, quota data may be corrupted detected by fsck:
+IMO this should be a per-chip device property and not a global module
+param. Any chance you could maybe try and extend the driver with a new
+property for that?
 
-Info: checkpoint state = 45 :  crc compacted_summary unmount
-[QUOTA WARNING] Usage inconsistent for ID 0:actual (1543036928, 762) != expected (1543032832, 762)
-[ASSERT] (fsck_chk_quota_files:1986)  --> Quota file is missing or invalid quota file content found.
-[QUOTA WARNING] Usage inconsistent for ID 0:actual (1352478720, 344) != expected (1352474624, 344)
-[ASSERT] (fsck_chk_quota_files:1986)  --> Quota file is missing or invalid quota file content found.
-
-[FSCK] Unreachable nat entries                        [Ok..] [0x0]
-[FSCK] SIT valid block bitmap checking                [Ok..]
-[FSCK] Hard link checking for regular file            [Ok..] [0x0]
-[FSCK] valid_block_count matching with CP             [Ok..] [0xdf299]
-[FSCK] valid_node_count matcing with CP (de lookup)   [Ok..] [0x2b01]
-[FSCK] valid_node_count matcing with CP (nat lookup)  [Ok..] [0x2b01]
-[FSCK] valid_inode_count matched with CP              [Ok..] [0x2665]
-[FSCK] free segment_count matched with CP             [Ok..] [0xcb04]
-[FSCK] next block offset is free                      [Ok..]
-[FSCK] fixing SIT types
-[FSCK] other corrupted bugs                           [Fail]
-
-The root cause is:
-If we open file w/ readonly flag, disk quota info won't be initialized
-for this file, however, following mmap() will force to convert inline
-inode via f2fs_convert_inline_inode(), which may increase block usage
-for this inode w/o updating quota data, it causes inconsistent disk quota
-info.
-
-The issue will happen in following stack:
-open(file, O_RDONLY)
-mmap(file)
-- f2fs_convert_inline_inode
- - f2fs_convert_inline_page
-  - f2fs_reserve_block
-   - f2fs_reserve_new_block
-    - f2fs_reserve_new_blocks
-     - f2fs_i_blocks_write
-      - dquot_claim_block
-inode->i_blocks increase, but the dqb_curspace keep the size for the dquots
-is NULL.
-
-To fix this issue, let's call dquot_initialize() anyway in both
-f2fs_truncate() and f2fs_convert_inline_inode() functions to avoid potential
-inconsistent quota data issue.
-
-Fixes: 0abd675e97e6 ("f2fs: support plain user/group quota")
-Signed-off-by: Daiyue Zhang <zhangdaiyue1@huawei.com>
-Signed-off-by: Dehe Gu <gudehe@huawei.com>
-Signed-off-by: Junchao Jiang <jiangjunchao1@huawei.com>
-Signed-off-by: Ge Qiu <qiuge@huawei.com>
-Signed-off-by: Yi Chen <chenyi77@huawei.com>
----
- fs/f2fs/file.c   | 4 ++++
- fs/f2fs/inline.c | 4 ++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 7db27c81d034..00b2ce47fa37 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -771,6 +771,10 @@ int f2fs_truncate(struct inode *inode)
- 		return -EIO;
- 	}
- 
-+	err = dquot_initialize(inode);
-+	if (err)
-+		return err;
-+
- 	/* we should check inline_data size */
- 	if (!f2fs_may_inline_data(inode)) {
- 		err = f2fs_convert_inline_inode(inode);
-diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-index 806ebabf5870..993caefcd2bb 100644
---- a/fs/f2fs/inline.c
-+++ b/fs/f2fs/inline.c
-@@ -192,6 +192,10 @@ int f2fs_convert_inline_inode(struct inode *inode)
- 			f2fs_hw_is_readonly(sbi) || f2fs_readonly(sbi->sb))
- 		return 0;
- 
-+	err = dquot_initialize(inode);
-+	if (err)
-+		return err;
-+
- 	page = f2fs_grab_cache_page(inode->i_mapping, 0, false);
- 	if (!page)
- 		return -ENOMEM;
--- 
-2.29.2
-
+Bart
