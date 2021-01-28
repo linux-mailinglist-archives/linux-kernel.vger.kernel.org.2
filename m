@@ -2,121 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239B7306FE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6972306FF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhA1HmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:42:15 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11904 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhA1HlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:41:16 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DRC5y5JP5z7cFJ;
-        Thu, 28 Jan 2021 15:39:18 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
- 15:40:21 +0800
-From:   Sun Ke <sunke32@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <sunke32@huawei.com>
-CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nbd: Fix NULL pointer in flush_workqueue
-Date:   Thu, 28 Jan 2021 02:41:53 -0500
-Message-ID: <20210128074153.1633374-1-sunke32@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S232214AbhA1Hnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:43:41 -0500
+Received: from mail-eopbgr140094.outbound.protection.outlook.com ([40.107.14.94]:19164
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232157AbhA1Hm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:42:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dEQAP0Vw7JRvhf4L3Imj8GBLOnU4Yfe41BP3Dw62SkqBPlkTZ+6W/Os2ltfYBwbCsaYnodW+P6vDlGt1sSjFU6io8/PmKoqX1RvR2Z7OyZHSwr6rgixf8WtyA9jRwca1lyuIaqWyu+gGIhTDvCV3SV7tae3gocrHmqEugImGLZR1FOgHKOUN2G/6rp8nuA5pq7NT2T79wRzQEdpR0jIjnfjo6ARX/pxu9GjuWcZLrXHg/TwNt4nr/lEcQc2mNdSRtn9Y3ddqebl0o7x7tMidswnlKFAqc5mvPjDozHtWeWAupUcea8dCb9tnjz4R7wm+fLNlkmDdginTwoc7zbLBKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+1qrNaxGVEWfE9scEi3H0Ue1HoQ0Gc3oxkVySoNh7yk=;
+ b=JU42O6zxy5WvSl0ZgNu5srGrRXKSCr9CjgMjgaR465j42SxG0qmn5wnthYmxw6tBi5oeD3/bBn/xfYhptFMH17/FoORS7vej7PylVDmcDgGWauD+NHwoS8NwgG2Fn0s09u5odyx+KzKHJ5J3RbjXMTc7sBvqQmnVWg37crFukQZnet1Xbfp1C/diFj1i8sj2siQjpGUXNIjWVXlaI1pUzGQdOBP3kGc9d6p+dgFfzBm2f1fwHj4/Z1vFfxy/6ir2B5Qd5RZnL3ulpo+pIAtzeQRPAGG07BiqC6X5jsFduLj6pGbR+IDtpBRnK297Ltx/6V8YFMca6L7wgT5BT3i2CQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+1qrNaxGVEWfE9scEi3H0Ue1HoQ0Gc3oxkVySoNh7yk=;
+ b=r2LEU5kKZ1Ekd4xH++oivg1LEqJH/QJ+0iEnhKatX5Ax3qplLkUpjcf/0dZ/a7HyZ4sX35sj/32v8Fqe0Su2RwxDFGOcSMLwaUczFh1HsymUxLxZ/rW9ClI8D/Jg9Bu4MPOhwAgurczJbCswloOqSzK4H4Z5bl4B0Y6GANXjUh8=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nokia.com;
+Received: from (2603:10a6:208:6e::15) by
+ AM0PR07MB4036.eurprd07.prod.outlook.com (2603:10a6:208:50::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.8; Thu, 28 Jan 2021 07:42:05 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3825.008; Thu, 28 Jan 2021
+ 07:42:05 +0000
+Subject: Re: [PATCH 1/2] qspinlock: Ensure writes are pushed out of core write
+ buffer
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210127200109.16412-1-alexander.sverdlin@nokia.com>
+ <YBHsqIjop6X0Z+1c@hirez.programming.kicks-ass.net>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <f1070b0f-7e3e-0f51-da7b-2ad9269b2ee6@nokia.com>
+Date:   Thu, 28 Jan 2021 08:42:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <YBHsqIjop6X0Z+1c@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [131.228.32.169]
+X-ClientProxiedBy: AM0PR04CA0116.eurprd04.prod.outlook.com
+ (2603:10a6:208:55::21) To AM0PR07MB4531.eurprd07.prod.outlook.com
+ (2603:10a6:208:6e::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.169) by AM0PR04CA0116.eurprd04.prod.outlook.com (2603:10a6:208:55::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 07:42:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b1c2db44-68e6-42e4-a989-08d8c3603585
+X-MS-TrafficTypeDiagnostic: AM0PR07MB4036:
+X-Microsoft-Antispam-PRVS: <AM0PR07MB403638F18227E387C57E34DD88BA9@AM0PR07MB4036.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Id7VHBsMUwvScsFEl1wrGNG9TIWFlG2XDwGSQa1qcOHzSawxvWpCwvcMCVuw7ZBoHbZ0dGNbf2IC7LaekYxuKocjb8KFYbAwIQw1w2nRaCX1Vl149OmAJ6Jd8FbCPRmf4YquJljaHQpKnbIpttQ/h7HFHq7BW4Bpi4bNrVIwYbdMs1Y2UFOjrdxmTWzFHUwBzL4MUMgFVU0MJLgQCTyYjRrvJ9kbKw2OJMKccjXKw9Sj3rzwHv8GgGQFSoYEJ++Mtq6BCZyMbbvLHrpkYYEJK5WgkbDKAJeoD66riMX5K4bLiYjtPgD15DWTx8QuKmrzVDrxLwO1QyKMJiriJ/BzIbgtsvPOOc0Fypz8mNnJoutKWX3/cO7QruaRpSjCsTKW4AGl5CGg7arp/L8yw0TNb4Ab/HfkmbAAqKe1iITU3jvFymFoG1AtOFVIBSAfCZW+RLLQ+2N+hWzwvu+Ye/fBD+WQlhkvdqakg/NELIkOA4aVUVb6RKmuBYwyckmyO/sxMLeF7bp5z8cUVH56aCaAnYyuu1Xvb9IubOfkR+9LFhX3LUpyJMLZjtWSVI8Ha97RyLE2P45knIAUalHf8yFr2kFXKFBxi7Onuc+prVEy7p0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(316002)(31686004)(8936002)(36756003)(54906003)(31696002)(83380400001)(956004)(44832011)(186003)(2906002)(2616005)(86362001)(52116002)(16526019)(53546011)(6486002)(8676002)(6916009)(6506007)(6512007)(4326008)(66476007)(66556008)(26005)(5660300002)(478600001)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ai9COXl5RFZFUUg2NFJsTUtBVEtiKzE5aTJmblpDNTMzWDcxOWVlWFNBVmg4?=
+ =?utf-8?B?cHlJL0pkYXYrYXFxdVZObzNJbjl3S1JOL3Q0ajNvSU5jcVBCanRRcHBLQnc2?=
+ =?utf-8?B?dXYweFdabmlCaFJQZm8vOE9ISzlkR2gzd2JjODNrcXZJSURLZ3BOQ3ZWenBr?=
+ =?utf-8?B?Y1h0ZUsxVzRvdjJITDNyQVcxMEpJWk90QlRDVGNKRitTNHYvV29EZWExZzZv?=
+ =?utf-8?B?bWV2M3F2bVR5UUtBUm9JcXd2NTlYd2FPcHlYZkNYZHRnNENNcEpEZk1mdEQy?=
+ =?utf-8?B?anI1NFRua0NNajJjOXFWMjNVOFNvMWhFV3lTeHBRemRkUUo3RU8xMStFeEZ6?=
+ =?utf-8?B?QmgrUTlpcFgyUnpiQlE0dHVOQkcvN3B6cVovMjdIQ3JEbjFhVU9uZ0Q0am4x?=
+ =?utf-8?B?aks2cDJJa1h5bC9PVUwwTWhpYVMzaS9SYS80bEU4Q2V6ditJWll0ZEY0bXBt?=
+ =?utf-8?B?TFYrSVFxcU51TDdkU1lFdUN1T2h0NXp2T2tJN3JaV1pqMzFRVkhsNjMrK0JR?=
+ =?utf-8?B?YmhZQ2Z2SU0xYzVjZ2ptVmxQSkpFcEpKTTVvL2lqZDh0KzA3UkZXdFpXQVF0?=
+ =?utf-8?B?T2Rubk12U2dDTFo0QXVQczVXZlN4bTdJbXdSS2pnc3Q1dFdQQ2VVaW9LUVh6?=
+ =?utf-8?B?OE0wTVRNSGZQSHNZMkRvUTJBTEljOWsvbXJRMDVBMmdsZE90aVBjUi8zRVA3?=
+ =?utf-8?B?Z1ZlRkVraHRldDJ4YnFIQVlReXhXcWVmTWl4eFZhMGNmd0JFNzh3Mnl6Szdo?=
+ =?utf-8?B?S29hdUJscW9jdURLc25iZ0gydUZLSmxGVWNYQ1JBaklydDA3dGdUcUxCRXBr?=
+ =?utf-8?B?L0dKeU9CL28yelFvWGlUNjJYeFVNdTRnSExEQnBkQW16aVUzSmRBZkd2cGU2?=
+ =?utf-8?B?aXh4cmNiOGtsUXZOVHV6aUJ4WlpERzVYRVBJWGtjVy9EcE94ZUY5SExhRVl3?=
+ =?utf-8?B?TVRuNlEwUU5BdGdWRkxJRG12YjFzVFFkRzdPUnJtS3FRMW1qU2xtc0NDRzRZ?=
+ =?utf-8?B?VXJmRFVRNjJNcHRGV2RFU3cyWjRla0FVOHE5anNsVWFIaGZpM3dsbFRaWSth?=
+ =?utf-8?B?amswdUpsYnFPb2YzbmhUOWZpRGZBT2JqdjRxdGJVNUZvdnRYZEVsQkxUMzhV?=
+ =?utf-8?B?cVpOU3ZpR3lobTNDSU0xNGRzOGsrc2JNV05yRFIxUmx0WEJTZzFjWXR0YUlj?=
+ =?utf-8?B?Sm05YUlOQ2xMeHRVQWFpUEFHWHFOSzVFRWtyZm9MYUdXTzVGdzZaeGY3K0hJ?=
+ =?utf-8?B?N1FiTXVvc1UzWS93VEEwaEtNamx4cERBUjZ0aGdoSUw2R2Rsb3NuYzJ3R0Q3?=
+ =?utf-8?B?aEVZNXpGZHNZc1JscExNYVprOEFDNkYzMnRKa3N2UEx4a1loOXdMMmtPb2ww?=
+ =?utf-8?B?RXlSUGM2RjBHbCtFeXpma2pTNWdRZytCTkZuZWsvWE5MbmdyOTBzbWVPTUNx?=
+ =?utf-8?Q?DWd2Co+T?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1c2db44-68e6-42e4-a989-08d8c3603585
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 07:42:05.6623
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y2X+tD1PxL892siw+tocDwzjYwbdenwcJlD9Hvo+0+WpE9X3pRVcfKmx5sojkg7fHg3g/LitJQo+BYMifTKHeHh4D1UzEVlIEyfHVK2+l1k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4036
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Open /dev/nbdX first, the config_refs will be 1 and
-the pointers in nbd_device are still null. Disconnect
-/dev/nbdX, then reference a null recv_workq. The
-protection by config_refs in nbd_genl_disconnect is useless.
+Hi!
 
-[  656.366194] BUG: kernel NULL pointer dereference, address: 0000000000000020
-[  656.368943] #PF: supervisor write access in kernel mode
-[  656.369844] #PF: error_code(0x0002) - not-present page
-[  656.370717] PGD 10cc87067 P4D 10cc87067 PUD 1074b4067 PMD 0
-[  656.371693] Oops: 0002 [#1] SMP
-[  656.372242] CPU: 5 PID: 7977 Comm: nbd-client Not tainted 5.11.0-rc5-00040-g76c057c84d28 #1
-[  656.373661] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  656.375904] RIP: 0010:mutex_lock+0x29/0x60
-[  656.376627] Code: 00 0f 1f 44 00 00 55 48 89 fd 48 83 05 6f d7 fe 08 01 e8 7a c3 ff ff 48 83 05 6a d7 fe 08 01 31 c0 65 48 8b 14 25 00 6d 01 00 <f0> 48 0f b1 55 d
-[  656.378934] RSP: 0018:ffffc900005eb9b0 EFLAGS: 00010246
-[  656.379350] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-[  656.379915] RDX: ffff888104cf2600 RSI: ffffffffaae8f452 RDI: 0000000000000020
-[  656.380473] RBP: 0000000000000020 R08: 0000000000000000 R09: ffff88813bd6b318
-[  656.381039] R10: 00000000000000c7 R11: fefefefefefefeff R12: ffff888102710b40
-[  656.381599] R13: ffffc900005eb9e0 R14: ffffffffb2930680 R15: ffff88810770ef00
-[  656.382166] FS:  00007fdf117ebb40(0000) GS:ffff88813bd40000(0000) knlGS:0000000000000000
-[  656.382806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  656.383261] CR2: 0000000000000020 CR3: 0000000100c84000 CR4: 00000000000006e0
-[  656.383819] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  656.384370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  656.384927] Call Trace:
-[  656.385111]  flush_workqueue+0x92/0x6c0
-[  656.385395]  nbd_disconnect_and_put+0x81/0xd0
-[  656.385716]  nbd_genl_disconnect+0x125/0x2a0
-[  656.386034]  genl_family_rcv_msg_doit.isra.0+0x102/0x1b0
-[  656.386422]  genl_rcv_msg+0xfc/0x2b0
-[  656.386685]  ? nbd_ioctl+0x490/0x490
-[  656.386954]  ? genl_family_rcv_msg_doit.isra.0+0x1b0/0x1b0
-[  656.387354]  netlink_rcv_skb+0x62/0x180
-[  656.387638]  genl_rcv+0x34/0x60
-[  656.387874]  netlink_unicast+0x26d/0x590
-[  656.388162]  netlink_sendmsg+0x398/0x6c0
-[  656.388451]  ? netlink_rcv_skb+0x180/0x180
-[  656.388750]  ____sys_sendmsg+0x1da/0x320
-[  656.389038]  ? ____sys_recvmsg+0x130/0x220
-[  656.389334]  ___sys_sendmsg+0x8e/0xf0
-[  656.389605]  ? ___sys_recvmsg+0xa2/0xf0
-[  656.389889]  ? handle_mm_fault+0x1671/0x21d0
-[  656.390201]  __sys_sendmsg+0x6d/0xe0
-[  656.390464]  __x64_sys_sendmsg+0x23/0x30
-[  656.390751]  do_syscall_64+0x45/0x70
-[  656.391017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On 27/01/2021 23:43, Peter Zijlstra wrote:
+> On Wed, Jan 27, 2021 at 09:01:08PM +0100, Alexander A Sverdlin wrote:
+>> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+>>
+>> Ensure writes are pushed out of core write buffer to prevent waiting code
+>> on another cores from spinning longer than necessary.
+> Our smp_wmb() as defined does not have that property. You're relying on
+> some arch specific details which do not belong in common code.
 
-To fix it, just add a check for a non null task_recv in
-nbd_genl_disconnect.
+Yes, my intention was SYNCW on Octeon, which by accident is smp_wmb().
+Do you think that the core write buffer is only Octeon feature and there
+will be no others?
 
-Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
-Signed-off-by: Sun Ke <sunke32@huawei.com>
----
- drivers/block/nbd.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Should I re-implement arch_mcs_spin_lock_contended() for Octeon only,
+as it has been done for ARM?
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 6727358e147d..4f7885966d32 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -2011,12 +2011,20 @@ static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
- 		       index);
- 		return -EINVAL;
- 	}
-+	mutex_lock(&nbd->config_lock);
- 	if (!refcount_inc_not_zero(&nbd->refs)) {
- 		mutex_unlock(&nbd_index_mutex);
-+		mutex_unlock(&nbd->config_lock);
- 		printk(KERN_ERR "nbd: device at index %d is going down\n",
- 		       index);
- 		return -EINVAL;
- 	}
-+	if (!nbd->recv_workq) {
-+		mutex_unlock(&nbd->config_lock);
-+		mutex_unlock(&nbd_index_mutex);
-+		return -EINVAL;
-+	}
-+	mutex_unlock(&nbd->config_lock);
- 	mutex_unlock(&nbd_index_mutex);
- 	if (!refcount_inc_not_zero(&nbd->config_refs)) {
- 		nbd_put(nbd);
+>> diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
+>> index 5e10153..10e497a 100644
+>> --- a/kernel/locking/mcs_spinlock.h
+>> +++ b/kernel/locking/mcs_spinlock.h
+>> @@ -89,6 +89,11 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
+>>  		return;
+>>  	}
+>>  	WRITE_ONCE(prev->next, node);
+>> +	/*
+>> +	 * This is necessary to make sure that the corresponding "while" in the
+>> +	 * mcs_spin_unlock() doesn't loop forever
+>> +	 */
+> This comment is utterly inadequate, since it does not describe an
+> explicit ordering between two (or more) stores.
+> 
+>> +	smp_wmb();
+>>  
+>>  	/* Wait until the lock holder passes the lock down. */
+>>  	arch_mcs_spin_lock_contended(&node->locked);
+>> diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
+>> index cbff6ba..577fe01 100644
+>> --- a/kernel/locking/qspinlock.c
+>> +++ b/kernel/locking/qspinlock.c
+>> @@ -469,6 +469,12 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
+>>  
+>>  		/* Link @node into the waitqueue. */
+>>  		WRITE_ONCE(prev->next, node);
+>> +		/*
+>> +		 * This is necessary to make sure that the corresponding
+>> +		 * smp_cond_load_relaxed() below (running on another core)
+>> +		 * doesn't spin forever.
+>> +		 */
+>> +		smp_wmb();
+> That's insane, cache coherency should not allow that to happen in the
+> first place. Our smp_wmb() cannot help with that.
+> 
+
 -- 
-2.25.4
-
+Best regards,
+Alexander Sverdlin.
