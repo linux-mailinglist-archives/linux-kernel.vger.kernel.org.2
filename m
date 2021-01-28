@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AC0306F9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA052306FAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhA1He5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:34:57 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:34032 "EHLO
+        id S232139AbhA1Hgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:36:31 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:31138 "EHLO
         a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbhA1Hc2 (ORCPT
+        with ESMTP id S231774AbhA1HeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:32:28 -0500
+        Thu, 28 Jan 2021 02:34:15 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611819132; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=tOwx9ySemA2pZ8ZeH5+WX2oWlYQS0p0fzZnS0NMhwKY=;
- b=Fw2kJ/yezY6VAtdRIUGlLKp3I7o9heQKPxf4kds0yFa5uoFau8tXOl3yKSs4FymfwQ6bFAh9
- tiMlxdzrZ2M8Xe1XEMFzfb5AwUy886ISwEbWTvzUggtvdWBlJy9nDqF1wrQMLeo4ZweY46aM
- QlHQIhP28ww69BaO+NkTLIZLA9c=
+ s=smtp; t=1611819238; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=9W6Vf1R++yjjF3FxF3cPAfaLSdNa8uzt5rRAyBg4yjw=;
+ b=oQ9yAHQyoM8u+dAVxX9COsGEpAhJrBMIFUTPZX7NxAcWwNhPEio5zbs3OhKjcas2txZBENl5
+ 59jX+ESlvt9moJz4gquttJIMEb284FcohhmKdOmFjWxO7buzEgYeJmXCgTC7vOFqjsyWjitH
+ rnyje/PotrWiPR5qDlt3WhFSdC4=
 X-Mailgun-Sending-Ip: 198.61.254.60
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6012685e262adddd45401422 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 07:31:42
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 601268c1beacd1a252aa8e8f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 07:33:21
  GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 51072C433ED; Thu, 28 Jan 2021 07:31:42 +0000 (UTC)
+        id 35C1BC433ED; Thu, 28 Jan 2021 07:33:21 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D967EC433C6;
-        Thu, 28 Jan 2021 07:31:41 +0000 (UTC)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE25CC433C6;
+        Thu, 28 Jan 2021 07:33:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE25CC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Jan 2021 13:01:41 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] arm64: dts: qcom: Add basic devicetree support for
- SM8350 SoC
-In-Reply-To: <20210127153307.GC2771@vkoul-mobl>
-References: <20210127123054.263231-1-vkoul@kernel.org>
- <20210127123054.263231-6-vkoul@kernel.org>
- <194d2ebe26a9420f842c97738adb0443@codeaurora.org>
- <20210127153307.GC2771@vkoul-mobl>
-Message-ID: <bd1b9a6eeec94577e14d5c89c23ce9df@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Subject: Re: [PATCH] ath9k: Add separate entry for LED triggers to fix module
+ builds
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201227143034.1134829-1-krzk@kernel.org>
+References: <20201227143034.1134829-1-krzk@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        kernel test robot <lkp@intel.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210128073321.35C1BC433ED@smtp.codeaurora.org>
+Date:   Thu, 28 Jan 2021 07:33:21 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-On 2021-01-27 21:03, Vinod Koul wrote:
-> Hi Sai,
+> After commit 72cdab808714 ("ath9k: Do not select MAC80211_LEDS by
+> default") a configuration like:
+>  - MAC80211_LEDS=y
+>  - LEDS_CLASS=m
+>  - NEW_LEDS=y
+>  - ATH9K=y
+> leads to a build failure:
 > 
-> On 27-01-21, 18:37, Sai Prakash Ranjan wrote:
->> Hi Vinod,
->> 
->> On 2021-01-27 18:00, Vinod Koul wrote:
+>     /usr/bin/ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `ath_deinit_leds':
+>     drivers/net/wireless/ath/ath9k/gpio.c:69: undefined reference to `led_classdev_unregister'
+>     /usr/bin/ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `led_classdev_register':
+>     include/linux/leds.h:190: undefined reference to `led_classdev_register_ext'
 > 
->> > +	timer {
->> > +		compatible = "arm,armv8-timer";
->> > +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) |
->> > IRQ_TYPE_LEVEL_LOW)>,
->> > +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
->> > +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
->> > +			     <GIC_PPI 12 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
->> 
->> The last interrupt should be hypervisor physical interrupt(10) not 
->> 12(hyp
->> virtual).
->> It works currently with android bootloaders because the host linux 
->> kernel
->> will run
->> at EL1 and will use EL1 physical timer interrupt(14), but if we ever 
->> have
->> the host
->> kernel run in EL2(for example, chrome) then we will not receive any 
->> timer
->> interrupts.
+> To be able to use LED triggers, the LEDS_CLASS can only be a module
+> if ath9k driver is a module as well.
 > 
-> I got these values from downstream and used them as is. I will update
-> and also check documentation. Thanks for pointing out
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 72cdab808714 ("ath9k: Do not select MAC80211_LEDS by default")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Yes looks like lot of SoC dtsi entries in downstream got it wrong.
-I see upstream sm8250 also missed this. We learnt it the hard way
-spending lot of time debugging why we are not able to reach the
-console(because no timer interrupts) during bringup on a system
-with kernel running in EL2(with VHE). I will try to reach out to
-baseport guys to make sure they take care of it in future.
+I took Arnd's patch instead:
 
-Thanks,
-Sai
+https://patchwork.kernel.org/project/linux-wireless/patch/20210125113654.2408057-1-arnd@kernel.org/
+
+But I think we really need the cleanup Arnd proposes during the discussion so
+that we have consistent LED handling in wireless drivers. Patches very welcome.
+
+Patch set to Superseded.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+https://patchwork.kernel.org/project/linux-wireless/patch/20201227143034.1134829-1-krzk@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
