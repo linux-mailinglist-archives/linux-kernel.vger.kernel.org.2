@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AA7306892
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597EF306898
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhA1AVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:21:39 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:36342 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbhA1AUH (ORCPT
+        id S231913AbhA1AWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:22:31 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59406 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231669AbhA1AVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:20:07 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id A400A1F45620
-Received: by earth.universe (Postfix, from userid 1000)
-        id 383F73C0C97; Thu, 28 Jan 2021 01:19:23 +0100 (CET)
-Date:   Thu, 28 Jan 2021 01:19:23 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     angkery <angkery@163.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xinjian@yulong.com, Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH] power: supply: charger-manager: fix typo
-Message-ID: <20210128001923.pkj4verkqk7cy5jm@earth.universe>
-References: <20210120124553.751-1-angkery@163.com>
+        Wed, 27 Jan 2021 19:21:19 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10S0DxiY003231
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:20:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=qSl0hIbsWjbdFiMIHrNNvB79aitkeKbYCX0qUJKiMOg=;
+ b=nou/auOnrvK9wdWtTh5FEZxMFW7VjSk5o37UsPEVVVMrbMaFs2ra2jomWisZkD8N5R5k
+ LAvgH0u41xtLxsFdICpy/EYM2hSUVYntmvlMOM/9xBJ5wt/BfEYoQ8R5p6058WVxP+EK
+ 5tnnuty3bVWCu/ifefN3foimkCbQDt5Ppbc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36awcpp7jw-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:20:38 -0800
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 27 Jan 2021 16:20:35 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 8116762E0B6C; Wed, 27 Jan 2021 16:20:32 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>, <daniel@iogearbox.net>,
+        <kpsingh@chromium.org>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v3 bpf-next 0/4] bpf: enable task local storage for tracing programs
+Date:   Wed, 27 Jan 2021 16:19:44 -0800
+Message-ID: <20210128001948.1637901-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sj4vynfx4u6awy4a"
-Content-Disposition: inline
-In-Reply-To: <20210120124553.751-1-angkery@163.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_10:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 bulkscore=0 mlxlogscore=820 priorityscore=1501 spamscore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This set enables task local storage for non-BPF_LSM programs.
 
---sj4vynfx4u6awy4a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It is common for tracing BPF program to access per-task data. Currently,
+these data are stored in hash tables with pid as the key. In
+bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+hash table is not ideal for many use case. Task local storage provides
+better usability and performance for BPF programs. Please refer to 4/4 fo=
+r
+some performance comparison of task local storage vs. hash table.
 
-Hi,
+Changes v2 =3D> v3:
+1. Make the selftest more robust. (Andrii)
+2. Small changes with runqslower. (Andrii)
+3. Shortern CC list to make it easy for vger.
 
-On Wed, Jan 20, 2021 at 08:45:53PM +0800, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
->=20
-> Change 'exeeds' to 'exceeds'.
->=20
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-> ---
+Changes v1 =3D> v2:
+1. Do not allocate task local storage when the task is being freed.
+2. Revise the selftest and added a new test for a task being freed.
+3. Minor changes in runqslower.
 
-Thanks, queued.
+Song Liu (4):
+  bpf: enable task local storage for tracing programs
+  selftests/bpf: add non-BPF_LSM test for task local storage
+  bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+  bpf: runqslower: use task local storage
 
--- Sebastian
+ include/linux/bpf.h                           |  7 ++
+ include/linux/bpf_lsm.h                       | 22 ------
+ include/linux/bpf_types.h                     |  2 +-
+ include/linux/sched.h                         |  5 ++
+ kernel/bpf/Makefile                           |  3 +-
+ kernel/bpf/bpf_local_storage.c                | 28 +++++---
+ kernel/bpf/bpf_lsm.c                          |  4 --
+ kernel/bpf/bpf_task_storage.c                 | 34 +++------
+ kernel/fork.c                                 |  5 ++
+ kernel/trace/bpf_trace.c                      |  4 ++
+ tools/bpf/runqslower/Makefile                 |  5 +-
+ tools/bpf/runqslower/runqslower.bpf.c         | 33 +++++----
+ .../bpf/prog_tests/task_local_storage.c       | 69 +++++++++++++++++++
+ .../selftests/bpf/progs/task_local_storage.c  | 64 +++++++++++++++++
+ .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++++
+ 15 files changed, 239 insertions(+), 78 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+exit_creds.c
 
->  drivers/power/supply/charger-manager.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
-y/charger-manager.c
-> index 6fcebe4..731351d8 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -570,7 +570,7 @@ static int cm_get_target_status(struct charger_manage=
-r *cm)
->  		return POWER_SUPPLY_STATUS_DISCHARGING;
-> =20
->  	if (cm_check_thermal_status(cm)) {
-> -		/* Check if discharging duration exeeds limit. */
-> +		/* Check if discharging duration exceeds limit. */
->  		if (check_charging_duration(cm))
->  			goto charging_ok;
->  		return POWER_SUPPLY_STATUS_NOT_CHARGING;
-> @@ -578,7 +578,7 @@ static int cm_get_target_status(struct charger_manage=
-r *cm)
-> =20
->  	switch (cm->battery_status) {
->  	case POWER_SUPPLY_STATUS_CHARGING:
-> -		/* Check if charging duration exeeds limit. */
-> +		/* Check if charging duration exceeds limit. */
->  		if (check_charging_duration(cm))
->  			return POWER_SUPPLY_STATUS_FULL;
->  		fallthrough;
-> --=20
-> 1.9.1
->=20
->=20
-
---sj4vynfx4u6awy4a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmASAwsACgkQ2O7X88g7
-+porsQ//WeO1oSMnapNEbZWhqTOlk3L0zPhwScghWOEy57QTRucBX8gBf+afQke+
-eQk1rQD4GDMf56TXtXUJZtjSDnvfb9D6l+NTVDyHsYKwIfSVr4MTVTl89omOO2DT
-m0NiHOVJTUPlS9990Rx5VD7w8tgtRHKTq86JvlTbb6vgR/6QIW3cGRSOBggo8Lpp
-Lbh7OHRNrt5JaAu+qYQO+5YOfiVCaEg+DSw161Jbwtma5WSGZv0HD+4K7LAmwbsE
-nRui9iNbbTvFqNiEr3VnFKgLszxr3/w2QfU0Ftg84ER9v0FKpU0YMgDTNV8FifnX
-Xw3mBiI/KnLlwkjYodGCq5K8TlXmqFcAtakIfRfwC7qTWJf++2S9wXgAR4Vg3qK7
-TLvS2kIOOcxTvflBxhHXyoYJWa2OwWAxKdYdNSnNsT0Rh9T0+w7ODIjdOW6bp9Dr
-XuzsVViW57Dcy/OZVfL3D+8q3hgWsUkKOruLoJ8x7kg/7S+tE11LNXOh27wdzOpc
-53g3UL5Zi1492wAT2/9k4v4PyPkdrvpinHAHJ3UMsJ2thErqNkM+kbqh1+1lRWNE
-Tk2tTg9wR/yNFRi7hZ5DnKeXX7MOuBGUtCXCeHQKjMWPo5lt/x9tg82/ZcMf8K9H
-67uLkptnhHXdopIkBnkwAPqBYGkNXZFnj6l3EFTl+w5qLtl/TJI=
-=QyWT
------END PGP SIGNATURE-----
-
---sj4vynfx4u6awy4a--
+--
+2.24.1
