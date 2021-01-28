@@ -2,86 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC373077A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BF43077A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhA1OEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S231216AbhA1OGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhA1OE2 (ORCPT
+        with ESMTP id S231159AbhA1OGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:04:28 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771A4C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:03:48 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id y128so5516040ybf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:03:48 -0800 (PST)
+        Thu, 28 Jan 2021 09:06:05 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141E9C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:05:25 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id r14so6462161ljc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:05:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hR4maZAuuWcL/drVKqFCnOGFXfdfKTcsp0/MfidRU2I=;
-        b=us2AxaCL/UKIKygGo50I0lPwM8WiYg9XE9IvTiRNWsJqtVExnA8BaRs/AvctYbW9YI
-         K9z9ssHS9iPmp/+Jy4ryLq3LWrlgifcls4AF2QmNC0qLlZob7J26ktAE+AOGLDzBYt2C
-         bnsmlMq9mG/BIsKX1GOBlnLfIlaAPOG1DY2lJHeqq1SoZxOzdLAZp4G8a1xRtNJMVpPy
-         1dBE/4oaOLxfBqDDt5HrhtFAQFT9hWQmYtz3ul7DtpdsjCav3ESB4/H8Fa8wbpTKqX5f
-         VQQswPHpK0QeieAWezLQ1iLmJK6oyzw1++aMLQiLsAUJ04Bcsu34w/n/AVZPB1g1P2JT
-         d50A==
+        bh=y3gG47U5h6Z0ms3PRQUM8QBx0aKm7Kdbts1+blceg04=;
+        b=CfsrBQTGs0Esbt43WsOC7Vky4axjxTddmdc93F7OYhDFG0xRi8EFPzo+ljigoe2pot
+         nl08e50onWdGXMFNApzFBAnmpeofi5yYUDo1CTz9cqW42zyNQd9HH0L/9STRoEjZ5zJc
+         fTQNEKQF+kRCuFHnyz08L6kuBS11UhljPl/rF/qd+Dep7b9BbEiHXcPCIznldnx2v/az
+         YhUiFaD5ezD3+239rpnSr1++mcg29oPu7pI5YQLwKfPBN7dvfoXrUj0cu4J0tiwMoTNG
+         iQABFGbqct02pstWAwbScdjSu0GGO2jqtYNWDU9LQ7vjkegvI5234iUqZC4wfqsWXuRJ
+         Fycg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hR4maZAuuWcL/drVKqFCnOGFXfdfKTcsp0/MfidRU2I=;
-        b=o7Qwb6BO7fbR5dN8C+uqR0lz1O2SYRvnkLrPBm3EXxQ//2cweox808LeRWvHWmApof
-         bf+4tfjNlZVmztCmEblspXJFgsWV9ei4KEEITn0IPzSmIgKit4eAZA3rzf2Oo58m33P2
-         cZz83PZT5+Pcc1xxHyLKuyvYc60KPJrXwwo7EFUwT+AFIsEMjkDVub7jg2OThnqx2gmZ
-         Ij8c+tMaH5Qgh6tT1uQkHFxSMzEDA+gWt150GW5/7Z5/9Iy5p0Ef7cHHWC9HoKVsKytR
-         KbN8myQF/SX0u7HNhNDhNm+fdveaVsnJ3RZyf+0oJbrJEOtpsCUBlIsLZOIeQPEHt8W6
-         tdEA==
-X-Gm-Message-State: AOAM533MH7ji85R6Uoc53vqF9DhzyJzP89+jqJfl6cLfOP7zAMPgcX3c
-        JuDIcLsYYZcf7nKZdw8gUDQ2P/Z4a6azow7O8coUTWi5HhOR2A==
-X-Google-Smtp-Source: ABdhPJyUJ6yYIrlR9JlciEEm79Hfo3zRSFCZTicbbZ1kQusmGmxumoZi2jRLewggzh3rszdjFkUj047RsBNwG/BhrY8=
-X-Received: by 2002:a25:31c3:: with SMTP id x186mr22931121ybx.500.1611842627692;
- Thu, 28 Jan 2021 06:03:47 -0800 (PST)
+        bh=y3gG47U5h6Z0ms3PRQUM8QBx0aKm7Kdbts1+blceg04=;
+        b=K7OE2Bk7zqrEZWRahN8zjeDgewvdlLEycNSspMJz/ZAHBCoVB8rudEEK2sdT/yrr2Y
+         j+5NW1qcst+ZVVUUKLAJ457AyJfzT8wlRGo6VqSle0jIP2+ycuDsqEv8UmMZWlBXENQT
+         2La18/PhhtCkSkXY7NYm9UC7EmdmyEeRwv19EkH5eKs5H007swDpl27bTQlu5rvFAgm/
+         Di/qBJyqcDtS0EJ/lZQwhLBEa0EMt27Xz8xXtAus4iMXb5DhTyOktxGyO+gnLzgUUB0L
+         jfXxQOfyKq76zadbYp2Ws/+XUP1RB0yYey0dYPbCs+6IyTPmi38Scs/wLTJPSGLxBeDW
+         k7GQ==
+X-Gm-Message-State: AOAM531NwaSdP+tg8UdRyFEBXkN+c6GgljrfAXyYWq4aGRNxDVQtMVPe
+        u7HdpifZIx9uDWvWa++gHy3zVsnmz6UkOZfKWUVoSQ==
+X-Google-Smtp-Source: ABdhPJzmRLfShao52Wl8c2GnOI8Esxdu0gDu7Q4WjHT9JBMYe6CY6I8ohfbMaBXYGGmZSWG03007q03WUtavSFPY58o=
+X-Received: by 2002:a2e:9ed1:: with SMTP id h17mr8071290ljk.160.1611842723157;
+ Thu, 28 Jan 2021 06:05:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Thu, 28 Jan 2021 17:03:36 +0300
-Message-ID: <CADxRZqyjTU38J7qjTxZxy8qAjW_HLC3Bm7f1cS8j1tS2fGfxow@mail.gmail.com>
-Subject: Re: [PATCH 00/27] arch: syscalls: unifiy all syscalltbl.sh into scripts/syscalltbl.sh
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>
+References: <20210121122723.3446-1-rppt@kernel.org> <20210121122723.3446-9-rppt@kernel.org>
+ <20210125165451.GT827@dhcp22.suse.cz> <20210125213817.GM6332@kernel.org>
+ <20210126144838.GL308988@casper.infradead.org> <20210126150555.GU827@dhcp22.suse.cz>
+ <20210127184213.GA919963@carbon.dhcp.thefacebook.com> <YBJuwqItjCemDN5L@dhcp22.suse.cz>
+In-Reply-To: <YBJuwqItjCemDN5L@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 28 Jan 2021 06:05:11 -0800
+Message-ID: <CALvZod7YjXvaYoZ7HXq2sDkwvpjpLBA-jhrzxa48jEuBt6zLNQ@mail.gmail.com>
+Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Roman Gushchin <guro@fb.com>, Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro,
+On Wed, Jan 27, 2021 at 11:59 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 27-01-21 10:42:13, Roman Gushchin wrote:
+> > On Tue, Jan 26, 2021 at 04:05:55PM +0100, Michal Hocko wrote:
+> > > On Tue 26-01-21 14:48:38, Matthew Wilcox wrote:
+> > > > On Mon, Jan 25, 2021 at 11:38:17PM +0200, Mike Rapoport wrote:
+> > > > > I cannot use __GFP_ACCOUNT because cma_alloc() does not use gfp.
+> > > > > Besides, kmem accounting with __GFP_ACCOUNT does not seem
+> > > > > to update stats and there was an explicit request for statistics:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/CALo0P13aq3GsONnZrksZNU9RtfhMsZXGWhK1n=xYJWQizCd4Zw@mail.gmail.com/
+> > > > >
+> > > > > As for (ab)using NR_SLAB_UNRECLAIMABLE_B, as it was already discussed here:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/20201129172625.GD557259@kernel.org/
+> > > > >
+> > > > > I think that a dedicated stats counter would be too much at the moment and
+> > > > > NR_SLAB_UNRECLAIMABLE_B is the only explicit stat for unreclaimable memory.
+> > > >
+> > > > That's not true -- Mlocked is also unreclaimable.  And doesn't this
+> > > > feel more like mlocked memory than unreclaimable slab?  It's also
+> > > > Unevictable, so could be counted there instead.
+> > >
+> > > yes, that is indeed true, except the unreclaimable counter is tracking
+> > > the unevictable LRUs. These pages are not on any LRU and that can cause
+> > > some confusion. Maybe they shouldn't be so special and they should live
+> > > on unevistable LRU and get their stats automagically.
+> > >
+> > > I definitely do agree that this would be a better fit than NR_SLAB
+> > > abuse. But considering that this is somehow even more special than mlock
+> > > then a dedicated counter sounds as even better fit.
+> >
+> > I think it depends on how large these areas will be in practice.
+> > If they will be measured in single or double digits MBs, a separate entry
+> > is hardly a good choice: because of the batching the displayed value
+> > will be in the noise range, plus every new vmstat item adds to the
+> > struct mem_cgroup size.
+> >
+> > If it will be measured in GBs, of course, a separate counter is preferred.
+> > So I'd suggest to go with NR_SLAB (which should have been named NR_KMEM)
+> > as now and conditionally switch to a separate counter later.
+>
+> I really do not think the overall usage matters when it comes to abusing
+> other counters. Changing this in future will be always tricky and there
+> always be our favorite "Can this break userspace" question. Yes we dared
+> to change meaning of some counters but this is not generally possible.
+> Just have a look how accounting shmem as a page cache has turned out
+> being much more tricky than many like.
+>
+> Really if a separate counter is a big deal, for which I do not see any
+> big reason, then this should be accounted as unevictable (as suggested
+> by Matthew) and ideally pages of those mappings should be sitting in the
+> unevictable LRU as well unless there is a strong reason against.
+>
 
-wanted to test on sparc64, but I'm unable to cleanly apply your patch
-series to current master of
-git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
-
-saved in all patches from mutt MUA to mbox (syscalltbl-mbox) file
-format (except of 00/27) and tried to apply via git-am:
-
-$ git desc
-v5.11-rc5-40-g76c057c84d28
-
-$ git am < ~/syscalltbl-mbox
-Applying: xtensa: syscalls: switch to generic syscalltbl.sh
-error: patch failed: arch/xtensa/kernel/syscalls/Makefile:16
-error: arch/xtensa/kernel/syscalls/Makefile: patch does not apply
-Patch failed at 0001 xtensa: syscalls: switch to generic syscalltbl.sh
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
-
-But if take out body of the first patch (xtensa.patch) out of mbox, it
-does cleanly applies via "patch -p1"
-
-Can someone suggest how do i apply this patch series to my local git tree?
-Thanks.
+Why not decide based on the movability of these pages? If movable then
+unevictable LRU seems like the right way otherwise NR_SLAB.
