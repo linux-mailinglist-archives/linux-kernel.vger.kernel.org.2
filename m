@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DA5307458
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF82307456
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhA1LDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:03:24 -0500
-Received: from mga17.intel.com ([192.55.52.151]:57350 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229732AbhA1LDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:03:14 -0500
-IronPort-SDR: 7JjdeQuKJ6Xoq7YoTmsC3sqT5A5HXCj031UyXYWE+PvIuPJBoAdtANfilKeWeg4YJybXYvcSRh
- fh+E5qf2Mhtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159987851"
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="159987851"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:01:28 -0800
-IronPort-SDR: K0tKeK4UfSNJkw/XjLaLthlwZzyhhclERSL+T8p80z6yNHYhnmq5Dvu9sc2E2mJqaMmZ/uqeLz
- /Yo+ak94yk0w==
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="369811507"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:01:25 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 13:01:22 +0200
-Date:   Thu, 28 Jan 2021 13:01:22 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH V2 01/12] thunderbolt: dma_port: Check
- 'dma_port_flash_write_block()'s return value
-Message-ID: <20210128110122.GQ2542@lahna.fi.intel.com>
-References: <20210127112554.3770172-1-lee.jones@linaro.org>
- <20210127112554.3770172-2-lee.jones@linaro.org>
- <20210128085233.GE4774@dell>
+        id S231134AbhA1LDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:03:20 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11458 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhA1LDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:03:11 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRHbC3ftkzjCjk;
+        Thu, 28 Jan 2021 19:01:27 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
+ 19:02:18 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/rmap: fix obsolete comment in __page_check_anon_rmap()
+Date:   Thu, 28 Jan 2021 06:02:09 -0500
+Message-ID: <20210128110209.50857-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210128085233.GE4774@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 08:52:33AM +0000, Lee Jones wrote:
-> ... and take the error path if it fails.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/thunderbolt/dma_port.c: In function ‘dma_port_flash_write_block’:
->  drivers/thunderbolt/dma_port.c:331:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-> 
-> Cc: Andreas Noever <andreas.noever@gmail.com>
-> Cc: Michael Jamet <michael.jamet@intel.com>
-> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Cc: Yehezkel Bernat <YehezkelShB@gmail.com>
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Commit 21333b2b66b8 ("ksm: no debug in page_dup_rmap()") has reverted
+page_dup_rmap() to an inline atomic_inc of mapcount. So page_dup_rmap()
+does not call __page_check_anon_rmap() anymore.
 
-Applied, thanks!
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/rmap.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 46fdbf541b8e..c3f6e060d73f 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1086,8 +1086,7 @@ static void __page_check_anon_rmap(struct page *page,
+ 	 * be set up correctly at this point.
+ 	 *
+ 	 * We have exclusion against page_add_anon_rmap because the caller
+-	 * always holds the page locked, except if called from page_dup_rmap,
+-	 * in which case the page is already known to be setup.
++	 * always holds the page locked.
+ 	 *
+ 	 * We have exclusion against page_add_new_anon_rmap because those pages
+ 	 * are initially only visible via the pagetables, and the pte is locked
+-- 
+2.19.1
+
