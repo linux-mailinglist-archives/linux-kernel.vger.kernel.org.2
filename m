@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF93A30749F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B5E3074A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhA1LV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:21:26 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12039 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhA1LVY (ORCPT
+        id S229757AbhA1LXW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 06:23:22 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:37524 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhA1LXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:21:24 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DRHzd472wzMQvV;
-        Thu, 28 Jan 2021 19:19:09 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
- 19:20:36 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/hugetlb: Fix some comment typos
-Date:   Thu, 28 Jan 2021 06:20:28 -0500
-Message-ID: <20210128112028.64831-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        Thu, 28 Jan 2021 06:23:20 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id EA0A16083244;
+        Thu, 28 Jan 2021 12:22:37 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id mkb795HYT3tx; Thu, 28 Jan 2021 12:22:36 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5A5FE6083270;
+        Thu, 28 Jan 2021 12:22:36 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 9rn1BgoA46tL; Thu, 28 Jan 2021 12:22:36 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 363536083244;
+        Thu, 28 Jan 2021 12:22:36 +0100 (CET)
+Date:   Thu, 28 Jan 2021 12:22:36 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc:     menglong8 dong <menglong8.dong@gmail.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        yang yang29 <yang.yang29@zte.com.cn>,
+        stable <stable@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <95961161.337242.1611832956034.JavaMail.zimbra@nod.at>
+In-Reply-To: <b7d9d9db42d639aa143f6e6b98ca7b9f4dcfd46e.camel@infinera.com>
+References: <20210128105535.49479-1-yang.yang29@zte.com.cn> <b7d9d9db42d639aa143f6e6b98ca7b9f4dcfd46e.camel@infinera.com>
+Subject: Re: [PATCH] jffs2: check the validity of dstlen in
+ jffs2_zlib_compress()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: jffs2: check the validity of dstlen in jffs2_zlib_compress()
+Thread-Index: AQHW9WSdcQjTUgG4ZEOlNPQW4whXrao844+AZaZjKmc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typos sasitfy to satisfy, reservtion to reservation, hugegpage to
-hugepage and uniprocesor to uniprocessor in comments.
+----- Ursprüngliche Mail -----
+> Von: "Joakim Tjernlund" <Joakim.Tjernlund@infinera.com>
+> An: "menglong8 dong" <menglong8.dong@gmail.com>, "David Woodhouse" <dwmw2@infradead.org>
+> CC: "yang yang29" <yang.yang29@zte.com.cn>, "stable" <stable@vger.kernel.org>, "linux-kernel"
+> <linux-kernel@vger.kernel.org>, "richard" <richard@nod.at>, "linux-mtd" <linux-mtd@lists.infradead.org>
+> Gesendet: Donnerstag, 28. Januar 2021 12:17:34
+> Betreff: Re: [PATCH] jffs2: check the validity of dstlen in jffs2_zlib_compress()
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- include/linux/hugetlb.h | 2 +-
- mm/hugetlb.c            | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> On Thu, 2021-01-28 at 02:55 -0800, menglong8.dong@gmail.com wrote:
+>> From: Yang Yang <yang.yang29@zte.com.cn>
+>> 
+>> KASAN reports a BUG when download file in jffs2 filesystem.It is
+>> because when dstlen == 1, cpage_out will write array out of bounds.
+>> Actually, data will not be compressed in jffs2_zlib_compress() if
+>> data's length less than 4.
+> 
+> Ouch, data corruption will ensue. Good find!
+> I think this needs to go to stable as well.
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index ef5b144b8aac..95a5a239c8f2 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -37,7 +37,7 @@ struct hugepage_subpool {
- 	struct hstate *hstate;
- 	long min_hpages;	/* Minimum huge pages or -1 if no minimum. */
- 	long rsv_hpages;	/* Pages reserved against global pool to */
--				/* sasitfy minimum size. */
-+				/* satisfy minimum size. */
- };
- 
- struct resv_map {
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 53ea65d1c5ab..c42c61c2653e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1444,7 +1444,7 @@ static void __free_huge_page(struct page *page)
- 	 * reservation.  If the page was associated with a subpool, there
- 	 * would have been a page reserved in the subpool before allocation
- 	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
--	 * reservtion, do not call hugepage_subpool_put_pages() as this will
-+	 * reservation, do not call hugepage_subpool_put_pages() as this will
- 	 * remove the reserved page from the subpool.
- 	 */
- 	if (!restore_reserve) {
-@@ -3715,7 +3715,7 @@ static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
- /*
-  * We cannot handle pagefaults against hugetlb pages at all.  They cause
-  * handle_mm_fault() to try to instantiate regular-sized pages in the
-- * hugegpage VMA.  do_page_fault() is supposed to trap this, so BUG is we get
-+ * hugepage VMA.  do_page_fault() is supposed to trap this, so BUG is we get
-  * this far.
-  */
- static vm_fault_t hugetlb_vm_op_fault(struct vm_fault *vmf)
-@@ -4513,7 +4513,7 @@ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx)
- }
- #else
- /*
-- * For uniprocesor systems we always use a single mutex, so just
-+ * For uniprocessor systems we always use a single mutex, so just
-  * return 0 and avoid the hashing overhead.
-  */
- u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx)
--- 
-2.19.1
+Indeed! Do you know whether this is a regression?
+Seems to be like that since ever.
 
+Thanks,
+//richard
