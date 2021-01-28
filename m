@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE889307D83
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5688307D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhA1SLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:11:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhA1SHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:07:04 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B10564E1D;
-        Thu, 28 Jan 2021 18:06:23 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 13:06:21 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <xiexiuqi@huawei.com>, <naveen.n.rao@linux.ibm.com>,
-        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] kretprobe: avoid re-registration of the same
- kretprobe earlier
-Message-ID: <20210128130621.41d99638@gandalf.local.home>
-In-Reply-To: <20210128124427.2031088-1-bobo.shaobowang@huawei.com>
-References: <20210128124427.2031088-1-bobo.shaobowang@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231642AbhA1SOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhA1SH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:07:59 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B336CC061786;
+        Thu, 28 Jan 2021 10:07:19 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id u25so8818381lfc.2;
+        Thu, 28 Jan 2021 10:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HYqq0dEU1gtRG0YHpO7vLOo7MghFZ/pOcJQO5+wjdFA=;
+        b=m2LxK9ZO1ECm0zggJ9dlCcwA7DlzTwsQDPHCkFP6RPRrVcgLdWSqo1VWIf3I+uzGFQ
+         5jn9jdcuMmiR1sizs6hwVGEaspZ/C979xdTxt2CBXCrQ3cq8vrq6bl61LoESUX2fkwT4
+         RyNqejdsfr7cpNGOmsa7oXpbDaa+tMLmzRcvGQIt5X47dsb7LTw/cFqnhacgo5mUtqzP
+         9IJo8Lm33ymr11KVT7bLADiUFYK/6dHF6n5FFAoAO8fiFHehFVbToVJLH4712OCJjGpE
+         8Q6GekdE5qMGAcgqtCC0jt5KocmpCOGg74TTgAmBp7Eq/OCu57Kajdp/kriexEpa7qkF
+         +qyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HYqq0dEU1gtRG0YHpO7vLOo7MghFZ/pOcJQO5+wjdFA=;
+        b=QRkItdcejv6LgAgS453m8PqvE2XIWZ4SeVJYqmbJ618BAtJmg5yRY5WsfQAo1NN8k7
+         8CluaFwetxw5AOx7rnvy7njahVcaMhFLrGKV+teNJtWLhMdcjrldJ0qcMvXTeSZnhxUj
+         extw610tpQRbl0wKyFKFegTJrRoAuy47szftWCX5r/1bZefrNevv/h8YL339ZuOMQuSP
+         9coSz7cutze04Nx1Jx3dT7xeWfYr4x8Zc54A7z8rdH4evvsh/XrlviEuuD+KrZ6re04g
+         knZUomGX6SrI20miNSND4pNbWTqZH48RLJO07RUE8X8kHpksYmnBG6IFGPH1feViiAup
+         qvJQ==
+X-Gm-Message-State: AOAM530ZCo7JDO/tOalfiPhMRdjnUHy5iIHbDk2AbTWvLNLQZrHb6WoI
+        XkXdfkSSSNiLRMGCaDko/dHsXRK7aLEQUg==
+X-Google-Smtp-Source: ABdhPJyPb2gzXTkabvQU53TpHLVfZKqP+YokiLWcCr2zNJbC+3T57/fgXpla9W5YdAQhfqTToLL9lA==
+X-Received: by 2002:a05:6512:1156:: with SMTP id m22mr118641lfg.637.1611857238234;
+        Thu, 28 Jan 2021 10:07:18 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id u17sm2215456ljj.2.2021.01.28.10.07.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 10:07:08 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 28 Jan 2021 19:06:58 +0100
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/3] kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument
+ kvfree_rcu()
+Message-ID: <20210128180658.GB5144@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120162148.1973-2-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120162148.1973-2-urezki@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 20, 2021 at 05:21:47PM +0100, Uladzislau Rezki (Sony) wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
+> carried out by the single-argument variant of kvfree_rcu(), thus avoiding
+> this can-sleep code path from dipping into the emergency reserves.
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 2014fb22644d..454809514c91 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3491,7 +3491,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+>  		if (!bnode && can_alloc) {
+>  			krc_this_cpu_unlock(*krcp, *flags);
+>  			bnode = (struct kvfree_rcu_bulk_data *)
+> -				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
+> +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
+>  			*krcp = krc_this_cpu_lock(flags);
+>  		}
+>  
+> -- 
+> 2.20.1
+> 
+Please see below a V2:
 
-Masami,
+V1 -> V2:
+    - rebase on [PATCH v2 1/1] kvfree_rcu: Directly allocate page for single-argument
+    - add a comment about __GFP_NOMEMALLOC usage.
 
-Care to review?
+<snip>
+From 1427698cdbdced53d9b5eee60aa5d22bc223056d Mon Sep 17 00:00:00 2001
+From: "Paul E. McKenney" <paulmck@kernel.org>
+Date: Wed, 20 Jan 2021 17:21:47 +0100
+Subject: [PATCH v2 1/1] kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument
+ kvfree_rcu()
+
+This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
+carried out by the single-argument variant of kvfree_rcu(), thus avoiding
+this can-sleep code path from dipping into the emergency reserves.
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e450c17a06b2..e7b705155c92 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3496,11 +3496,14 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 			// view. Apart of that it forbids any OOM invoking what is
+ 			// also beneficial since we are about to release memory soon.
+ 			//
++			// __GFP_NOMEMALLOC - prevents from consuming of all the
++			// memory reserves. Please note we have a fallback path.
++			//
+ 			// __GFP_NOWARN - it is supposed that an allocation can
+ 			// be failed under low memory or high memory pressure
+ 			// scenarios.
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+-				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN);
++				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 			*krcp = krc_this_cpu_lock(flags);
+ 		}
+ 
+-- 
+2.20.1
+<snip>
 
 Thanks!
 
--- Steve
-
-
-On Thu, 28 Jan 2021 20:44:27 +0800
-Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
-
-> Our system encountered a re-init error when re-registering same kretprobe,
-> where the kretprobe_instance in rp->free_instances is illegally accessed
-> after re-init.
-> 
-> Implementation to avoid re-registration has been introduced for kprobe
-> before, but lags for register_kretprobe(). We must check if kprobe has
-> been re-registered before re-initializing kretprobe, otherwise it will
-> destroy the data struct of kretprobe registered, which can lead to memory
-> leak, system crash, also some unexpected behaviors.
-> 
-> We use check_kprobe_rereg() to check if kprobe has been re-registered
-> before running register_kretprobe()'s body, for giving a warning message
-> and terminate registration process.
-> 
-> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
-> ---
->  kernel/kprobes.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index f7fb5d135930..5c4a884953e9 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1978,6 +1978,10 @@ int register_kretprobe(struct kretprobe *rp)
->  	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
->  		return -EINVAL;
->  
-> +	/* If only rp->kp.addr is specified, check reregistering kprobes */
-> +	if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
-> +		return -EINVAL;
-> +
->  	if (kretprobe_blacklist_size) {
->  		addr = kprobe_addr(&rp->kp);
->  		if (IS_ERR(addr))
-
+--
+Vlad Rezki
