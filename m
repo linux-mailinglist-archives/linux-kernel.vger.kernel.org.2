@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A467730728B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC3930728C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhA1JWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232477AbhA1JRz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:17:55 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E97BC061574;
-        Thu, 28 Jan 2021 01:17:14 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id p15so4598536wrq.8;
-        Thu, 28 Jan 2021 01:17:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=YfpJeU+y4GXJaEx6ZFQPSBL50F7o8221y4mYWygliKw=;
-        b=tXnJQJvCXHk4nixwz8jy8I08rlCcJ2rziho0sjpf8e8roCzGzi3Ci4TssGlCkV5RC8
-         E46A4c6f4tQdiUvIz3bkepFr+coSfA2qu/uVD8ZMZdtGKJh3tweM2q+hHQOR5oosD694
-         DtFiJMstCxbKgXbcI2K6GTgs3falJinYhmsRPZtSb2WdhERXvy9l5nx9rpp0ul67v9RB
-         Ih/77QPO9lb85XgMLsAljwfHLNJkybwRP7NHWim/gZlxh2qhdOQ4szX//uMDqqeGhk+f
-         YoFeVXblBoC7JdtjCJONB3EyTwWc2xx3eZ7qeCK9Xr2UvL0uLF3g8ze9CmIsDdH5+zr7
-         KFZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=YfpJeU+y4GXJaEx6ZFQPSBL50F7o8221y4mYWygliKw=;
-        b=mCZ1VZgrEGKwZsH9qun/C5pXxSn8PJfQs1so4HCK9RLWGbE+b2A4yISXASjWeLsBrU
-         9sdu69VatzwEs077l/Pjf2IDw1UY5msxC+mH223WTkutQMRxBw19Z6d06C5rZShwN9x1
-         HL5v+tshKaaSXFvGBTNpI5wynW+F//u+tVpCcz/dxkmLzxd5abHVihSwb5qI8rX+nqd8
-         zFOmZWEKLd+hZRSaLyq+O3rwhRW2dfJdlE2+1e2fauGR9JCw1fXdMCLDDVGesFZD0w+b
-         485tLDZMtX+G9rMgpTieDMQRfiqPtb6Iurus/0EBZwzHZE8YG0UNFUm0h+EcHSplk1vY
-         mCTQ==
-X-Gm-Message-State: AOAM530p092rz5e8YyUmvr00BLK6UAqIs+WgsOEh/et0Q/uk2jwp3W2h
-        S7wt7lDNN/bma3AI+N2bRvH4shzShu8=
-X-Google-Smtp-Source: ABdhPJwnpibKPBXY446pPygiIr5DiwXavFn6aSEXwVKMlq03MXyi3GJ7SuZuNN3Q2YEE14ldlLEypg==
-X-Received: by 2002:adf:fb52:: with SMTP id c18mr14912024wrs.186.1611825432933;
-        Thu, 28 Jan 2021 01:17:12 -0800 (PST)
-Received: from [192.168.1.20] (5ec062a9.skybroadband.com. [94.192.98.169])
-        by smtp.googlemail.com with ESMTPSA id m184sm5747703wmf.12.2021.01.28.01.17.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 01:17:11 -0800 (PST)
-To:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Chris Clayton <chris2553@googlemail.com>
-Subject: linux-5.10.11 build failure
-Message-ID: <f141f12d-a5b9-1e60-2740-388bf350b631@googlemail.com>
-Date:   Thu, 28 Jan 2021 09:17:10 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232514AbhA1JWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:22:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232481AbhA1JSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:18:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF7764DD1;
+        Thu, 28 Jan 2021 09:17:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611825463;
+        bh=KLm4wo+HtSbrNHCKJ/zI7Q/uyUKm613jhpDefnBjTCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cXApo3jzimWIpxwBqGNdyQEybpPRBqHgQ9PZnSB4RjOhMTb4N/tuILK5r+HTkXCyP
+         rGax5AOP3ylP+wxTqxDpA15r0v+723HndGTP7+4La19gtxP4Iq52eNIlpztEOsEMga
+         oXLhQbKXndEgq5t/8JiB1moGaNFDs23OuBaFGoqBY/PyHFTJ03xAoFpCe5vSg4lJab
+         K+uvzi9o8FqIyLM1BmVaBOYweGroBUfAKC/5MYbnSsGU7E4TdCevBWyedTL6fVWsw0
+         iLxxgg5efWJwReY4IMO+ylkjyQRI9Q2y3kIDJrw/Ip3elfLV6qgZbQbwucXkxM7mSI
+         pPndFJUUeKEgA==
+Date:   Thu, 28 Jan 2021 10:17:41 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
+Message-ID: <20210128091741.GJ963@ninjato>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-5-djrscally@gmail.com>
+ <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
+ <CAJZ5v0hUELtKc9CK=z47XQvSAAx=wTWvoVwP-PaMqugaXaCgZQ@mail.gmail.com>
+ <20210128090053.GE963@ninjato>
+ <7e7a8614-3cdb-e160-b10f-8aa0e11b15e5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nywXBoy70X0GaB8B"
+Content-Disposition: inline
+In-Reply-To: <7e7a8614-3cdb-e160-b10f-8aa0e11b15e5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Building 5.10.11 fails on my (x86-64) laptop thusly:
-
-..
-
- AS      arch/x86/entry/thunk_64.o
-  CC      arch/x86/entry/vsyscall/vsyscall_64.o
-  AS      arch/x86/realmode/rm/header.o
-  CC      arch/x86/mm/pat/set_memory.o
-  CC      arch/x86/events/amd/core.o
-  CC      arch/x86/kernel/fpu/init.o
-  CC      arch/x86/entry/vdso/vma.o
-  CC      kernel/sched/core.o
-arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at offset 0x3e
-
-  AS      arch/x86/realmode/rm/trampoline_64.o
-make[2]: *** [scripts/Makefile.build:360: arch/x86/entry/thunk_64.o] Error 255
-make[2]: *** Deleting file 'arch/x86/entry/thunk_64.o'
-make[2]: *** Waiting for unfinished jobs....
-
-..
-
-Compiler is latest snapshot of gcc-10.
-
-Happy to test the fix but please cc me as I'm not subscribed
+--nywXBoy70X0GaB8B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-Thanks,
+> Just to clarify; "open-code" meaning inline it in the caller like
+> Laurent said, right?
 
-Chris
+Yes.
+
+
+--nywXBoy70X0GaB8B
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASgTUACgkQFA3kzBSg
+KbYp/Q/9F/nRbn3nFjrt5FM2/iCyVjGf2gclcksrI/3A5i31jDJYjPUOXw2f5kWH
+Viv6eRE1An7Obe8s3ia3ZkL2xVHI0AHK4KFwPDTOdN8svzXqeNAL96wSRowmCoPI
+jQoFthGD2Oq1/FyAPw/yOp1GSm+JwG+D0PNz6iJ1f7MgICd1INqyFd81B370RAyV
+SzKhKLNS5jZG3S25N+M/EWcs3sEz4/oeTvD8RX7Ir593o3fW7J/z2LJD/6YySpMX
+VypgMsMUn/1iAqOu5vA/Edc3ltiqMFRtjNgjTGlpCzSfsjEDv9hkI3/ZA6Q9XI39
+T6uRnzjRX0LWCO2GInKiRgJ9pFzS2EFrO+Rhr1SShALqdcbLoRCC7qX7ecA+F2bf
+488MZFAEURUnMaY6Yf7Iz2wIFE+EraToQsbW4OICydoqZpX2wfKonpT6JtPHjV3D
+eVYvwLMkIgDd3sNqAj6kt3qP76+DoYSCetryy0teyC6uDnt1Ql01QBn9hHljvhbF
+TCHzO0E/3MyOi1gwadmlQLTJSD+dyD45SYStpP1yTaURXLLV81DDeHZrGe3ao1PN
+AEgHP0XMXVdMMTo2z6gGc7kEtMhfK0Uy8UcWF6VhmsGFtXvtZCa9a/6oYKgky7rT
+99zeypU23JYVD3cfuGlm9hInMH+2Ed7n2F5RWKUbeQm9+H+b378=
+=RtKi
+-----END PGP SIGNATURE-----
+
+--nywXBoy70X0GaB8B--
