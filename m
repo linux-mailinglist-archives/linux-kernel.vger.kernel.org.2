@@ -2,95 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC99307C4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF701307C54
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhA1RZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:25:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233041AbhA1RWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:22:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14BA564E14;
-        Thu, 28 Jan 2021 17:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611854512;
-        bh=3wcbDXIsfKokQbmfUCYjGrgS3GF5z08Qdptdga5fUN4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QWOP7EPqmN6b3MiW9yEAgNNtNjSRtrXyFEpjaAGYBZII1sVNYI1YtSMwAvt9fuQBa
-         67CiLo3o5RvfcoATyHS1j02NITEEA3iqExwlLXezGs5RMp4QWJbqX9Dn+nc6m+I4rS
-         ryQ81C45k5DR4mIk6Zm2DTepJlJx7ughkR/Vt0AUwH3+rYDSQLjDOWM7DJGp0ETUnl
-         xurghfp/gRCwfqedNMDMPHZbg7F0alqw1H/gKUa0SjDmFnvopggMP4TjgUC2t6LP2S
-         1ujXulQBT2zqjOQLupxjXSsgT0HMqyI+WyoITl6y/0OvHf8iHp4HzyLmR4yVI/FSxp
-         yznAeENjD3n6w==
-Date:   Thu, 28 Jan 2021 09:21:51 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
-        linux-mm@kvack.org, axboe@kernel.dk, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
-        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
-        jaegeuk@kernel.org, ebiggers@kernel.org, shaggy@kernel.org,
-        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, damien.lemoal@wdc.com,
-        naohiro.aota@wdc.com, jth@kernel.org, rjw@rjwysocki.net,
-        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
-        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
-        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
-        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
-        bvanassche@acm.org, jefflexu@linux.alibaba.com
-Subject: Re: [RFC PATCH 27/34] xfs: use bio_new in xfs_buf_ioapply_map
-Message-ID: <20210128172151.GN7698@magnolia>
-References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
- <20210128071133.60335-28-chaitanya.kulkarni@wdc.com>
+        id S232777AbhA1R0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhA1RYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:24:02 -0500
+X-Greylist: delayed 5160 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Jan 2021 09:22:56 PST
+Received: from unicorn.mansr.com (unicorn.mansr.com [IPv6:2001:8b0:ca0d:8d8e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94441C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:22:56 -0800 (PST)
+Received: from raven.mansr.com (raven.mansr.com [81.2.72.235])
+        by unicorn.mansr.com (Postfix) with ESMTPS id 028AD15360;
+        Thu, 28 Jan 2021 17:22:54 +0000 (GMT)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+        id C69D121A3C6; Thu, 28 Jan 2021 17:22:53 +0000 (GMT)
+From:   Mans Rullgard <mans@mansr.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] serial: 8250: add option to disable registration of legacy ISA ports
+Date:   Thu, 28 Jan 2021 17:22:44 +0000
+Message-Id: <20210128172244.22859-1-mans@mansr.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128071133.60335-28-chaitanya.kulkarni@wdc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 11:11:26PM -0800, Chaitanya Kulkarni wrote:
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+On systems that do not have the traditional PC ISA serial ports, the
+8250 driver still creates non-functional device nodes.  This change
+makes only ports that actually exist (PCI, DT, ...) get device nodes.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ drivers/tty/serial/8250/8250_core.c | 26 ++++++++++++++++++++------
+ drivers/tty/serial/8250/Kconfig     |  5 +++++
+ 2 files changed, 25 insertions(+), 6 deletions(-)
 
---D
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+index cae61d1ebec5..49695dd3677c 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -555,6 +555,7 @@ static void __init serial8250_isa_init_ports(void)
+ 	}
+ }
+ 
++#ifdef CONFIG_SERIAL_8250_ISA
+ static void __init
+ serial8250_register_ports(struct uart_driver *drv, struct device *dev)
+ {
+@@ -575,6 +576,7 @@ serial8250_register_ports(struct uart_driver *drv, struct device *dev)
+ 		uart_add_one_port(drv, &up->port);
+ 	}
+ }
++#endif
+ 
+ #ifdef CONFIG_SERIAL_8250_CONSOLE
+ 
+@@ -797,6 +799,7 @@ void serial8250_resume_port(int line)
+ }
+ EXPORT_SYMBOL(serial8250_resume_port);
+ 
++#ifdef CONFIG_SERIAL_8250_ISA
+ /*
+  * Register a set of serial devices attached to a platform device.  The
+  * list is terminated with a zero flags entry, which means we expect
+@@ -907,6 +910,7 @@ static struct platform_driver serial8250_isa_driver = {
+  * in the table in include/asm/serial.h
+  */
+ static struct platform_device *serial8250_isa_devs;
++#endif
+ 
+ /*
+  * serial8250_register_8250_port and serial8250_unregister_port allows for
+@@ -1149,6 +1153,8 @@ void serial8250_unregister_port(int line)
+ 	}
+ 
+ 	uart_remove_one_port(&serial8250_reg, &uart->port);
++	uart->port.dev = NULL;
++#ifdef CONFIG_SERIAL_8250_ISA
+ 	if (serial8250_isa_devs) {
+ 		uart->port.flags &= ~UPF_BOOT_AUTOCONF;
+ 		uart->port.type = PORT_UNKNOWN;
+@@ -1156,9 +1162,8 @@ void serial8250_unregister_port(int line)
+ 		uart->capabilities = 0;
+ 		serial8250_apply_quirks(uart);
+ 		uart_add_one_port(&serial8250_reg, &uart->port);
+-	} else {
+-		uart->port.dev = NULL;
+ 	}
++#endif
+ 	mutex_unlock(&serial_mutex);
+ }
+ EXPORT_SYMBOL(serial8250_unregister_port);
+@@ -1188,6 +1193,7 @@ static int __init serial8250_init(void)
+ 	if (ret)
+ 		goto unreg_uart_drv;
+ 
++#ifdef CONFIG_SERIAL_8250_ISA
+ 	serial8250_isa_devs = platform_device_alloc("serial8250",
+ 						    PLAT8250_DEV_LEGACY);
+ 	if (!serial8250_isa_devs) {
+@@ -1202,26 +1208,33 @@ static int __init serial8250_init(void)
+ 	serial8250_register_ports(&serial8250_reg, &serial8250_isa_devs->dev);
+ 
+ 	ret = platform_driver_register(&serial8250_isa_driver);
+-	if (ret == 0)
+-		goto out;
++	if (ret)
++		goto del_dev;
++#endif
+ 
++out:
++	return ret;
++
++#ifdef CONFIG_SERIAL_8250_ISA
++del_dev:
+ 	platform_device_del(serial8250_isa_devs);
+ put_dev:
+ 	platform_device_put(serial8250_isa_devs);
+ unreg_pnp:
+ 	serial8250_pnp_exit();
++#endif
+ unreg_uart_drv:
+ #ifdef CONFIG_SPARC
+ 	sunserial_unregister_minors(&serial8250_reg, UART_NR);
+ #else
+ 	uart_unregister_driver(&serial8250_reg);
+ #endif
+-out:
+-	return ret;
++	goto out;
+ }
+ 
+ static void __exit serial8250_exit(void)
+ {
++#ifdef CONFIG_SERIAL_8250_ISA
+ 	struct platform_device *isa_dev = serial8250_isa_devs;
+ 
+ 	/*
+@@ -1233,6 +1246,7 @@ static void __exit serial8250_exit(void)
+ 
+ 	platform_driver_unregister(&serial8250_isa_driver);
+ 	platform_device_unregister(isa_dev);
++#endif
+ 
+ 	serial8250_pnp_exit();
+ 
+diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
+index 603137da4736..683f81675a77 100644
+--- a/drivers/tty/serial/8250/Kconfig
++++ b/drivers/tty/serial/8250/Kconfig
+@@ -52,6 +52,11 @@ config SERIAL_8250_DEPRECATED_OPTIONS
+ 	  If you did not notice yet and/or you have userspace from pre-3.7, it
+ 	  is safe (and recommended) to say N here.
+ 
++config SERIAL_8250_ISA
++	bool "8250/16550 ISA device support" if EXPERT
++	depends on SERIAL_8250
++	default y
++
+ config SERIAL_8250_PNP
+ 	bool "8250/16550 PNP device support" if EXPERT
+ 	depends on SERIAL_8250 && PNP
+-- 
+2.30.0
 
-> ---
->  fs/xfs/xfs_buf.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> index f8400bbd6473..3ff6235e4f94 100644
-> --- a/fs/xfs/xfs_buf.c
-> +++ b/fs/xfs/xfs_buf.c
-> @@ -1507,12 +1507,10 @@ xfs_buf_ioapply_map(
->  	atomic_inc(&bp->b_io_remaining);
->  	nr_pages = min(total_nr_pages, BIO_MAX_PAGES);
->  
-> -	bio = bio_alloc(GFP_NOIO, nr_pages);
-> -	bio_set_dev(bio, bp->b_target->bt_bdev);
-> -	bio->bi_iter.bi_sector = sector;
-> +	bio = bio_new(bp->b_target->bt_bdev, sector, op, 0, nr_pages,
-> +		      GFP_NOIO);
->  	bio->bi_end_io = xfs_buf_bio_end_io;
->  	bio->bi_private = bp;
-> -	bio->bi_opf = op;
->  
->  	for (; size && nr_pages; nr_pages--, page_index++) {
->  		int	rbytes, nbytes = PAGE_SIZE - offset;
-> -- 
-> 2.22.1
-> 
