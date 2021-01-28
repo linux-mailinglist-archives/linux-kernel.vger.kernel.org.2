@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF26A307D65
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C737A307D75
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhA1SGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
+        id S229627AbhA1SJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhA1SDx (ORCPT
+        with ESMTP id S231405AbhA1SEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:03:53 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E1DC061351
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:02:50 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id m2so5041392wmm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:02:50 -0800 (PST)
+        Thu, 28 Jan 2021 13:04:16 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA9BC061353
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:02:51 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id a1so6359562wrq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bM4mPrdGCmHIaP6sSEhqZR0ycPeA2MFnqRQ1Q2Z5NPg=;
-        b=QMd8ysJWDHZdQ5sbfXQG3sQzlvqAiSI5lr91/8U20X+H+I3kdNCkCJXHnQkgTYJu4l
-         2w2rQvHn6a4fdnfbV8+Sq1xUAQLlDGIKpCtw5Kj4LGJtUsqufzAhSG3iHsJfGDGD0ENO
-         FUYJ9UDZJOfwZ9CLljbkHF40uLscAogqmxILS11Y25FuP+g1mVCAq9n7zCg18V0HAOJZ
-         8/qc91mGfJC0uKQPpJAehuePNEq0Hd3iLBecOKhJesV4mjzuP+FxT+Hi1EDQTqPXrpjp
-         AR5qcxG8aIFT754quwEfLCi5oQn9mi2/HTVRDpoZiKkhbKZnELie6kUCvERc3c0kx75q
-         YT7Q==
+        bh=oz1ysPXY6dIT/8FVs8doLP4WQeUP6R82FsIHTFVdMfY=;
+        b=PCshDChF2psB5lznsc62jLqInBWsbrTH3AsmsS8j2tnSnEfifferJeJSlH4zGWQzsU
+         iC4RcRAUfGIvKi/vPDfg9w/x7etN9PzJkIi5f8VvJb7BPg47PRIDFpdylo4VvZ7Efd95
+         HfabLRFDScWwg8o7flnyeAymFkEGMwFNrtvna1xFnI3y2Vzwa+RXPJuyjZlbOV6JWJmJ
+         S3Au8Yxi1BJYHRunWw8lVec29AtpSKx/7UNsnmRMjW0D4RjcVyEfpKJVcb+2QZESr1rF
+         pSKAx2L2ObvxqaSlLGnZNsNXo1Mjp93Wq9aROO75mDXn3HH4Djc7Z9lbIQOiToyuGk/K
+         ICww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bM4mPrdGCmHIaP6sSEhqZR0ycPeA2MFnqRQ1Q2Z5NPg=;
-        b=K6+gUCoyPhelRVSaOd91H39g5PgHtVzfR0b7M2qdwcqdpBGKX83LYqeJXd1ViKAbIZ
-         vke4dCVzoalE+0kSwXyfbXh8R712sFzbAq+nEIt1MFv86q55iM2TkRWPmGPGSMhFyeEZ
-         v0hJg3aKF/JtQp7S8jII5i5xLMWhFIrmUR3YA6TinKIlTXoqomewgItqpp55e0NGUIEe
-         a8FSWV12+mQ0Pbj5kP2KKJaWMFZFTR7vcTWGtreE9nj3yQPDlBvS+TXdnL5+KRLW5KTX
-         GHbeiiAfzUFHTmNNG2YHlwkG2HYEOZUabzTEjvam29TSyBgHcfm/06kWBYUAASUZ+a6/
-         OTtA==
-X-Gm-Message-State: AOAM530ci5c8Bz4l3K4uhAWmR+LWr4d8hxID1x/sogTIUOAtfqGAIS5F
-        Abl9NYcZRU+JTauRTYgoMWwvfg==
-X-Google-Smtp-Source: ABdhPJzt+efXXKYitxJSG0qkBeBvxKXFSW53cPvWKdkouaGicDhbubEjfCFFyjhotrF0vhCXh1dV/A==
-X-Received: by 2002:a1c:3c04:: with SMTP id j4mr401685wma.177.1611856969662;
-        Thu, 28 Jan 2021 10:02:49 -0800 (PST)
+        bh=oz1ysPXY6dIT/8FVs8doLP4WQeUP6R82FsIHTFVdMfY=;
+        b=K4SpnXXri4UuBBadT7sLMkhpyiL9sokVu0HlnCznLJ2AU9PGNZYqTZcutFrFqIp5cd
+         oAhArjd8OmgCg8SmQHJdR2GHR7E7aiXbjJnJUC97cfKpWbpeOgP7Rl3/7nGUIXhXTQKT
+         IakGkFiDDC4PlmQUDflaAF9j/a69S93IW6MZzlwXjCJlYYNCObD8NKhH46Yb1UXPJcdr
+         Mi64OMEeBsHlovS21JO2gL7Le713SC6+dJiy8yfTA7nRouRD4YhCVs+7MlGeMwEN/oFD
+         aUMnNGsnWwLJY3pWDIEv4REcjmuxxsjftDGPYO50FMqdOvNz7e2l5FsYT9qU/3YX/ueQ
+         VP1Q==
+X-Gm-Message-State: AOAM530DH7u5PVilf8Tr7PuOB2sZvSfxkekfCiWz4JTSk+HbNdguk5nG
+        jz+pjf8JY+1n9CaVAB86/weJmg==
+X-Google-Smtp-Source: ABdhPJwjPI5OWXbhQTA/ivFPtXo+b03sqvS4hAl+8fbvpeLCkCYcA4RrTpzKqjyfPmdSuPmatlQZ2g==
+X-Received: by 2002:adf:e807:: with SMTP id o7mr331333wrm.308.1611856970720;
+        Thu, 28 Jan 2021 10:02:50 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.02.48
+        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.02.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:02:49 -0800 (PST)
+        Thu, 28 Jan 2021 10:02:50 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Tejun Heo <teheo@suse.de>, linux-ide@vger.kernel.org
-Subject: [PATCH 05/20] ata: libata-pmp: Fix misspelling of 'val'
-Date:   Thu, 28 Jan 2021 18:02:24 +0000
-Message-Id: <20210128180239.548512-6-lee.jones@linaro.org>
+        linux-ide@vger.kernel.org
+Subject: [PATCH 06/20] ata: ahci_mtk: Ignore -Woverride-init
+Date:   Thu, 28 Jan 2021 18:02:25 +0000
+Message-Id: <20210128180239.548512-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210128180239.548512-1-lee.jones@linaro.org>
 References: <20210128180239.548512-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some ATA drivers use the SCSI host template, a series of interwoven
+macros, to aid with initialisation.  Some of these macros conflict,
+resulting in the over-writing of previously set values.
+
+This is known behaviour and can be safely ignored.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/libata-pmp.c:76: warning: Function parameter or member 'val' not described in 'sata_pmp_write'
- drivers/ata/libata-pmp.c:76: warning: Excess function parameter 'r_val' description in 'sata_pmp_write'
+ In file included from drivers/ata/ahci_mtk.c:18:
+ drivers/ata/ahci.h:387:16: warning: initialized field overwritten [-Woverride-init]
+ drivers/ata/ahci_mtk.c:41:2: note: in expansion of macro ‘AHCI_SHT’
+ drivers/ata/ahci.h:387:16: note: (near initialization for ‘ahci_platform_sht.can_queue’)
+ drivers/ata/ahci_mtk.c:41:2: note: in expansion of macro ‘AHCI_SHT’
+ drivers/ata/ahci.h:391:17: warning: initialized field overwritten [-Woverride-init]
+ drivers/ata/ahci_mtk.c:41:2: note: in expansion of macro ‘AHCI_SHT’
+ drivers/ata/ahci.h:391:17: note: (near initialization for ‘ahci_platform_sht.sdev_attrs’)
+ drivers/ata/ahci_mtk.c:41:2: note: in expansion of macro ‘AHCI_SHT’
 
 Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Tejun Heo <teheo@suse.de>
 Cc: linux-ide@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/libata-pmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/ata/libata-pmp.c b/drivers/ata/libata-pmp.c
-index 79f2aeeb482ab..ba7be3f386171 100644
---- a/drivers/ata/libata-pmp.c
-+++ b/drivers/ata/libata-pmp.c
-@@ -62,7 +62,7 @@ static unsigned int sata_pmp_read(struct ata_link *link, int reg, u32 *r_val)
-  *	sata_pmp_write - write PMP register
-  *	@link: link to write PMP register for
-  *	@reg: register to write
-- *	@r_val: value to write
-+ *	@val: value to write
-  *
-  *	Write PMP register.
-  *
+diff --git a/drivers/ata/Makefile b/drivers/ata/Makefile
+index c7c26a0ef7632..79c59550c23a0 100644
+--- a/drivers/ata/Makefile
++++ b/drivers/ata/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ CFLAGS_ahci_dm816.o		= $(call cc-disable-warning, override-init)
++CFLAGS_ahci_mtk.o		= $(call cc-disable-warning, override-init)
+ CFLAGS_ahci_platform.o		= $(call cc-disable-warning, override-init)
+ 
+ obj-$(CONFIG_ATA)		+= libata.o
 -- 
 2.25.1
 
