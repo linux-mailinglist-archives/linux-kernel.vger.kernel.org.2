@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBED5307D8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91F3307D86
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhA1SNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:13:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36018 "EHLO mail.kernel.org"
+        id S231528AbhA1SMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:12:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231518AbhA1SJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:09:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E451F64E07;
-        Thu, 28 Jan 2021 18:08:21 +0000 (UTC)
+        id S231760AbhA1SJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:09:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A10D64E1C;
+        Thu, 28 Jan 2021 18:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611857301;
-        bh=OGnQjiAgDA+88msfO4WmhcYEeZS/bNwPrFTaeyzswjA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ms8PfZju4tvgssHZjkeqp4UYoYnlnNZQzQBsbyOk6GlaqF2fx6nuxVOxfCog4zU/y
-         SXH5QTCcEicGYmgE2RW2tuIzTyncvWwsPrcJ1YNWZG1wOsvoJTFg2tGekXm/aUq7XH
-         jfmE/5P1xTJWBdccnG5fZYKGsSl8TI5PeXsz/QxY6SwCveATCnCZLUmX7iqRMGAXvs
-         Wzl9hdegZSwG6+nbnzZNBJKf4Jt3d/L6E6LmEJWYZ67qTb0GiXEWe3ad6kxVvys/eJ
-         dkWaDtomrh+KXG2fOVGeb3LvszPiYwRYP0Ft00sQ8nwUAqmnxBu6EjU8KCSqtjvDrA
-         99OGszTo768+A==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 929E63523769; Thu, 28 Jan 2021 10:08:21 -0800 (PST)
-Date:   Thu, 28 Jan 2021 10:08:21 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@intel.com
-Subject: Re: [workqueue] d5bff968ea:
- WARNING:at_kernel/workqueue.c:#process_one_work
-Message-ID: <20210128180821.GA24510@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210126073925.1962-1-hdanton@sina.com>
- <20210127092128.2299-1-hdanton@sina.com>
- <20210128090905.1596-1-hdanton@sina.com>
+        s=k20201202; t=1611857352;
+        bh=I9b2CY9oG+7j/Q9+LnonZv0tg8jELW8RgIxY4SKAgPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h6cdOo6dNdavRRc1d40577CbEq9Qqz9G09q2/4hlPc8DLukSHRWlv4Dc2CYTCxJOl
+         nfv0op4q3Fe+JORysXvTXKyvEAHLwIW/VgwlkFyT3iPkTW2Gi1rz3mYx3jZU0PTWXj
+         iWXCKW1qDk+ivaxS7i2LPmqMipiuMriqVOSSvbjULFZBoA4ROstn0q0wMAN/VY/z1u
+         Dgda/l5Z5A2faJ7etE2Z3GbEHJGsud7dU2XAY8XC+ph61sn+BaE044NsVvsjsRaPXM
+         ju0yR9cDjUPL2/zkhveVojdpEBV/mbkHWbGphlUVoNXg7+puEx7LqGfaZqK7ZciRhn
+         ez5F8XCG5tqgg==
+Date:   Thu, 28 Jan 2021 18:09:07 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [next] mm/nommu.c:1671:6: error: conflicting types for
+ 'filemap_map_pages'
+Message-ID: <20210128180906.GA2678@willie-the-truck>
+References: <CA+G9fYta_uOLktmMnZHUTK9Uqx-rjtmQSSvHFCsvQsVdZDdm8A@mail.gmail.com>
+ <CAMuHMdUzCFuuUcgMwh+numoCnr_p0tfTucybytymUceyPV0TBQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210128090905.1596-1-hdanton@sina.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAMuHMdUzCFuuUcgMwh+numoCnr_p0tfTucybytymUceyPV0TBQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 05:09:05PM +0800, Hillf Danton wrote:
-> On Thu, 28 Jan 2021 15:52:40 +0800 Xing Zhengjun wrote:
+On Thu, Jan 28, 2021 at 04:26:09PM +0100, Geert Uytterhoeven wrote:
+> Hi Naresh,
+> 
+> On Thu, Jan 28, 2021 at 3:25 PM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> > arm, sh and riscv architecture build failed on today's Linux next tag 20210128.
+> >
+> > FYI,
+> > # CONFIG_MMU is not set on these failed configs.
+> > config file attached to this email.
+> >
+> > make --silent --keep-going --jobs=8 O=/home/tux  -
+> > build/.cache/tuxmake/builds/1/tmp ARCH=arm
+> > CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
+> > arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
+> > mm/nommu.c:1671:6: error: conflicting types for 'filemap_map_pages'
+> >  1671 | void filemap_map_pages(struct vm_fault *vmf,
+> >       |      ^~~~~~~~~~~~~~~~~
+> > In file included from mm/nommu.c:20:
+> > include/linux/mm.h:2578:19: note: previous declaration of
+> > 'filemap_map_pages' was here
+> >  2578 | extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+> >       |                   ^~~~~~~~~~~~~~~~~
+> 
+> Care to give "[PATCH -next] mm/nommu: Fix return type of
+> filemap_map_pages()" a try?
+> https://lore.kernel.org/lkml/20210128100626.2257638-1-geert@linux-m68k.org/
 
-[ . . . ]
+I'll go queue that now, cheers,
 
-> >I test the patch 4 times, no warning appears in the kernel log.
-> 
-> Thank you so much Zhengjun!
-> 
-> And the overall brain dump so far is
-> 
-> 1/ before and after d5bff968ea, changing the allowed ptr at online time
-> is the key to quiesce the warning in process_one_work().
-> 
-> 2/ marking pcpu before changing aptr in rebind_workers() is mandatory in
-> regards to cutting the risk of triggering such a warning.
-> 
-> 3/ we canot maintain such an order without quiescing the 508 warning for
-> kworkers. And we have a couple of excuses to do so, a) the number of
-> allowed CPUs is no longer checked in is_per_cpu_kthread() instead of
-> PF_NO_SETAFFINITY, b) there is always a followup act to change the aptr
-> in order to fix the number of aCPUs. 
-> 
-> 4/ same order is maintained also at rescue time.
-
-Just out of curiosity, does this test still fail on current mainline?
-
-							Thanx, Paul
+Will
