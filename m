@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D03D3078CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763943078CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhA1O4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:56:39 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:3334 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231836AbhA1Oul (ORCPT
+        id S232231AbhA1O4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231975AbhA1Ouv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:50:41 -0500
+        Thu, 28 Jan 2021 09:50:51 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD5CC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:50:11 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id jx18so4437495pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:50:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1611845441; x=1643381441;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=1J+oWCFFLm5nmI0jYaiMUix7ZpaSaKjUbOlvFe4ZQJM=;
-  b=OyXWkxyBWYWsCqItKjATmbTAdZHz4JZIp43H/irIZUlYQ2C8lvR0FrDK
-   d2bMkJI+1AbDv7rBADs3K9UFHaahtV4gkPgFI/zvSS914M91j5w7YDxO6
-   qAC/njQ0X/SnJQQHTHo1Af7dVV5DpGvukRnORw9/2aJ1bXU0erUoG5aol
-   c=;
-X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
-   d="scan'208";a="115397803"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 28 Jan 2021 14:49:58 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 1682FA22B8;
-        Thu, 28 Jan 2021 14:49:54 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 Jan 2021 14:49:53 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.239) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 Jan 2021 14:49:44 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <ttoukan.linux@gmail.com>
-CC:     <aams@amazon.de>, <borisp@mellanox.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <tariqt@mellanox.com>
-Subject: Re: [PATCH v4 net-next] net: Remove redundant calls of sk_tx_queue_clear().
-Date:   Thu, 28 Jan 2021 23:49:39 +0900
-Message-ID: <20210128144939.4477-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <fad76e94-ca1f-41f6-f1aa-f9853f64d36d@gmail.com>
-References: <fad76e94-ca1f-41f6-f1aa-f9853f64d36d@gmail.com>
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=s8pODfBWHaQpNWcashPUSkcAafUoNUPWcP3DPIUKTjU=;
+        b=WEdHchlcmcEhixyRtWmu1QEJe+qYqKJL5RByzSBG3oCvEcrj966ntlz2wQh8YQlE/r
+         OPgpkENuAH8x8AUBMgSQDX/nUcFGdSmSRxuHnr/Fut5VkWMdyewnfGM0jFfOeg6CHeJp
+         6y+cOI+pft++Xn0+4Zu3CyfIwZcY2y6hLtN5nTUVRuSosulO+q7Nevz/g+sqoYlf14ly
+         Eb3yAU75c9GRaxLFT/ZFvPjFXoY0eN0Gt1Hdqvns0skv7NSAw0S5RC0htinWznPqes5e
+         LG1E5C8lU8zsJ41wG9XMGobmauGanoucrPZpD3posk3tE8qsBOAkzYaMu6dct29G9tKx
+         RLtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s8pODfBWHaQpNWcashPUSkcAafUoNUPWcP3DPIUKTjU=;
+        b=hQigt8J95o7RiZSMH9v9/vu9ai0ilFoIX+z77eSfqzCWX6ruzWtBN5ynw7bhyKZLsG
+         zARC6vYlBur5fqpyyB7PEFvVBQMsBmnKyBs9omzoxc8Rk6GOOK3MGHsrijzQkFFOcZzj
+         qIXJU2m39UtY3BZxtwbz6fPjl4vrMuagqxQ0EaHunwQbWDhxngSkHP8mEU3VmvU3rjan
+         OyK5RQpzQQW9thYaQUA4TlTBULQRvnCUC6dHER46MCWxDtLeN5oUZKdjbMfYM1xBfVnW
+         y58VRqsnh/3fRSDP8IjDJaOsaNJ400OAb5gbCGKE3mykVWVg/X1aa80Zl/JvCA+U2OX4
+         WmmQ==
+X-Gm-Message-State: AOAM53287jd/Od/gC6sr7fUPoPvEXrdUl68aqMCwKz5Id6afoqDetZji
+        9PEY5XMztGxm86us4Kw/O8CgBQ==
+X-Google-Smtp-Source: ABdhPJzeNAvsJAgMGTnjBX0wSqo6KmbHl5OLS498tPt64M7TFXQ9deOeINAgiEEvunnFN89hD5rqJA==
+X-Received: by 2002:a17:90a:c7cc:: with SMTP id gf12mr11700787pjb.36.1611845411062;
+        Thu, 28 Jan 2021 06:50:11 -0800 (PST)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id i6sm6115206pgc.58.2021.01.28.06.50.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 06:50:10 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] Asynchronous passthrough ioctl
+To:     Kanchan Joshi <joshiiitr@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Kanchan Joshi <joshi.k@samsung.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Selvakumar S <selvakuma.s1@samsung.com>
+References: <CGME20210127150134epcas5p251fc1de3ff3581dd4c68b3fbe0b9dd91@epcas5p2.samsung.com>
+ <20210127150029.13766-1-joshi.k@samsung.com>
+ <489691ce-3b1e-30ce-9f72-d32389e33901@gmail.com>
+ <a287bd9e-3474-83a4-e5c2-98df17214dc7@gmail.com>
+ <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6d847f4a-65a5-bc62-1d36-52e222e3d142@kernel.dk>
+Date:   Thu, 28 Jan 2021 07:50:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.239]
-X-ClientProxiedBy: EX13D04UWB003.ant.amazon.com (10.43.161.231) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Date:   Thu, 28 Jan 2021 15:09:51 +0200
-> On 1/28/2021 2:42 PM, Kuniyuki Iwashima wrote:
-> > The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
-> > sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
-> > it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
-> > the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
-> > other hand, the original commit had already put sk_tx_queue_clear() in
-> > sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
-> > sk_tx_queue_clear() is called twice in each path.
-> > 
-> > If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
-> > currently works well because (i) sk_tx_queue_mapping is defined between
-> > sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
-> > sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
-> > However, if we move sk_tx_queue_mapping out of the no copy area, it
-> > introduces a bug unintentionally.
-> > 
-> > Therefore, this patch adds a compile-time check to take care of the order
-> > of sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
-> > sk_prot_alloc() so that it does the only allocation and its callers
-> > initialize fields.
-> > 
-> > v4:
-> > * Fix typo in the changelog (runtime -> compile-time)
-> > 
-> > v3: https://lore.kernel.org/netdev/20210128021905.57471-1-kuniyu@amazon.co.jp/
-> > * Remove Fixes: tag
-> > * Add BUILD_BUG_ON
-> > * Remove sk_tx_queue_clear() from sk_prot_alloc()
-> >    instead of sk_alloc() and sk_clone_lock()
-> > 
-> > v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
-> > * Remove Reviewed-by: tag
-> > 
-> > v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
-> > 
-> 
-> Sorry for not pointing this out earlier, but shouldn't the changelog 
-> come after the --- separator? Unless you want it to appear as part of 
-> the commit message.
-> 
-> Other than that, I think now I'm fine with the patch.
-> 
-> Acked-by: Tariq Toukan <tariqt@nvidia.com>
-> 
-> Thanks,
-> Tariq
+On 1/28/21 5:04 AM, Kanchan Joshi wrote:
+> And for some ioctls, driver may still need to use task-work to update
+> the user-space pointers (embedded in uring/ioctl cmd) during
+> completion.
 
-Oh, I didn't know that useful behaviour, thank you!
+For this use case, we should ensure that just io_uring handles this
+part. It's already got everything setup for it, and I'd rather avoid
+having drivers touch any of those parts. Could be done by having an
+io_uring helper ala:
 
-I will respin with your Acked-by tag.
+io_uring_cmd_complete_in_task(cmd, handler);
 
+which takes care of the nitty gritty details.
 
-> > CC: Tariq Toukan <tariqt@mellanox.com>
-> > CC: Boris Pismenny <borisp@mellanox.com>
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > ---
-> >   net/core/sock.c | 11 ++++++++++-
-> >   1 file changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/net/core/sock.c b/net/core/sock.c
-> > index bbcd4b97eddd..cfbd62a5e079 100644
-> > --- a/net/core/sock.c
-> > +++ b/net/core/sock.c
-> > @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
-> >   #ifdef CONFIG_SECURITY_NETWORK
-> >   	void *sptr = nsk->sk_security;
-> >   #endif
-> > +
-> > +	/* If we move sk_tx_queue_mapping out of the private section,
-> > +	 * we must check if sk_tx_queue_clear() is called after
-> > +	 * sock_copy() in sk_clone_lock().
-> > +	 */
-> > +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
-> > +		     offsetof(struct sock, sk_dontcopy_begin) ||
-> > +		     offsetof(struct sock, sk_tx_queue_mapping) >=
-> > +		     offsetof(struct sock, sk_dontcopy_end));
-> > +
-> >   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
-> >   
-> >   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
-> > @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
-> >   
-> >   		if (!try_module_get(prot->owner))
-> >   			goto out_free_sec;
-> > -		sk_tx_queue_clear(sk);
-> >   	}
-> >   
-> >   	return sk;
-> > 
+-- 
+Jens Axboe
+
