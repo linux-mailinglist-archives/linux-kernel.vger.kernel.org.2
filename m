@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DE2306BD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20497306BDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhA1EFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:05:06 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:27114 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhA1EEJ (ORCPT
+        id S231331AbhA1EGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:06:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhA1EFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:04:09 -0500
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 10S42Yie023770
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:02:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 10S42Yie023770
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611806554;
-        bh=UGFEFBZO6XyE53sikxcKH18p4Hi/bQ7cwfMaMlbekaw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p1GoLVJtc6WAUhXop6XjMbAfaAGuj2ucB7PePaZf8RjP7a/xAS7Y0Q+CtkCiiw7s7
-         hxPk7DMFZWb4JJ01ukPwfaouXxFRBXrLnRtVwYuoVnRp42F4jlzYin/7+hywIvHCv5
-         E20P7nNm5z69P3uklPsgHIteYVrsjyd88Z313r+myyhSyWKfo35ZBWDfg/rH0+Pdo1
-         gSQRHzsQsLG55mXJ1KEm6kqQpekjOqlKJcP17kAwSrz2DOtN0hqvRz5Ontyzlb8rev
-         SatdqeLJLJ/J01VfEwAFHIi9sLjdKGfXmVl7pkV949G+CGcaho3jkpXz4HbYpXx3Q4
-         rBsamdaS6IfEg==
-X-Nifty-SrcIP: [209.85.215.173]
-Received: by mail-pg1-f173.google.com with SMTP id c132so3429484pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:02:34 -0800 (PST)
-X-Gm-Message-State: AOAM53255KgiUyKi3VHyA0IaRYcMKfxBL0TgmQwC+PtHwdUiTbShBxsO
-        hUp2+rJ2b+fiSiDvVI9Qb56F0Zzq7K0QDMkSHeE=
-X-Google-Smtp-Source: ABdhPJydqxki6OSEnMrqa1NZ5TxUJLm2/BivHYqaw1ccMRHfmLbg3Xxtl5/PfyePwq4wmVGWu1nRz4xdTcu7k/HCCD8=
-X-Received: by 2002:aa7:8602:0:b029:1bb:4dfd:92fc with SMTP id
- p2-20020aa786020000b02901bb4dfd92fcmr14034248pfn.63.1611806553757; Wed, 27
- Jan 2021 20:02:33 -0800 (PST)
+        Wed, 27 Jan 2021 23:05:08 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9521EC0612F2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:04:28 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id f6so3961073ots.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:04:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbTyrwsOUFeBKx/wZBbc/RTueffgUmDZNCpk3OrcQUc=;
+        b=ChVoei/DhScC9Gpja9dK8cCUFgP0rOt5TK8HXznv4PXif/JHazoXu1SRciZogaw6P+
+         8Blg9wNWM945EsmAS9O6UKkFs+gK60+8YUo5VlXoLZXgdBYZe5S4XWFGWhekl4T1+C5g
+         ORJJr6EJjq8bU5i/uLm5MZPjnFTKBTgYAytEtl4xt470vwZSiU/Npmc39sCHwqm6/D1l
+         ZFXLtuMGqXxEiFf0ZGIsncdF61rMzsruJAS8OV0eUYwScC3taNYDguJAn/rGoJsOFzMS
+         MRo0cAw5FAdBKUgFCVxQX4hy1hO1Rd2l6Q31HPmu3IVVvZlGGble7L6Lc90OqOq+1a0y
+         3kbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbTyrwsOUFeBKx/wZBbc/RTueffgUmDZNCpk3OrcQUc=;
+        b=PPUWiY7vYnH/xGVnzRrQq7DYrmihxqS6uxVwHVFXe0nd4xnyRsXGNw33zY0wpzBsbX
+         dqOYI3jY+DRKrpMlsXqjHeM2qwdB5cIrUDk3ZxkBY0tvvhOPehvAdoviMKnn2GMsfb1I
+         MwKbtcfBKCACXcfcBG4kIawHmV+A5ntZfRhxDXVQbLkTK+LksIeL3uR81JYlbLqzZbn7
+         LjzFnDgFRTg5Pkz+t/D8Oxkt3nkuWLn/4qbnEkWpR6K2QHpZHJGlN6Cg6SzCRsTzG/C9
+         7uH6jG2IcZPDKmHjmgDYK7IugwpCH5+mgfmAz32Vs0Qe6aftQs5dugXFvUBXgyu9TSkG
+         0PZw==
+X-Gm-Message-State: AOAM532eBMQXqO8vrnuoWykZi0PCD0BFKa8h1c0mR/M8zGXG73i7BWj5
+        3ZmDtuHT+hTUXhlNs7hm6NeuNw==
+X-Google-Smtp-Source: ABdhPJxGfqVHUm+2Z5bAjtM7pk9jPcdyIL6KBmg3RYFwdLJHvzNMFduWntEiPNXss68vK/KeFyE03w==
+X-Received: by 2002:a05:6830:1d73:: with SMTP id l19mr9893373oti.245.1611806667872;
+        Wed, 27 Jan 2021 20:04:27 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g23sm810745otk.72.2021.01.27.20.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 20:04:27 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH] opp: Allow dev_pm_opp_set_opp() to be called without opp
+Date:   Wed, 27 Jan 2021 20:04:26 -0800
+Message-Id: <20210128040426.953529-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201223171142.707053-1-masahiroy@kernel.org> <20201223171142.707053-2-masahiroy@kernel.org>
-In-Reply-To: <20201223171142.707053-2-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 28 Jan 2021 13:01:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS_vvLwjBG=MSJv=-n-Y4-AgsiPsj2VpH7qO4KLkUA2dw@mail.gmail.com>
-Message-ID: <CAK7LNAS_vvLwjBG=MSJv=-n-Y4-AgsiPsj2VpH7qO4KLkUA2dw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] powerpc/vdso64: remove meaningless vgettimeofday.o
- build rule
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Greentime Hu <green.hu@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 2:12 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> VDSO64 is only built for the 64-bit kernel, hence vgettimeofday.o is
-> built by the generic rule in scripts/Makefile.build.
->
-> This line does not provide anything useful.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+a6xx_gmu_stop() calls dev_pm_opp_set_opp() with NULL as opp in order to
+drop its bandwidth request, which was valid with dev_pm_opp_set_bw().
+But after the transition to dev_pm_opp_set_opp() this leads to a NULL
+dereference before jumping into _set_opp(), which does disable the
+vote as expected.
 
+Fixes: a0d67b94e2ef ("opp: Implement dev_pm_opp_set_opp()")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/opp/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Michael, please take a  look at this too.
-
-
-
-> ---
->
->  arch/powerpc/kernel/vdso64/Makefile | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
-> index b50b39fedf74..422addf394c7 100644
-> --- a/arch/powerpc/kernel/vdso64/Makefile
-> +++ b/arch/powerpc/kernel/vdso64/Makefile
-> @@ -32,8 +32,6 @@ asflags-y := -D__VDSO64__ -s
->  targets += vdso64.lds
->  CPPFLAGS_vdso64.lds += -P -C -U$(ARCH)
->
-> -$(obj)/vgettimeofday.o: %.o: %.c FORCE
-> -
->  # link rule for the .so file, .lds has to be first
->  $(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday.o FORCE
->         $(call if_changed,vdso64ld_and_check)
-> --
-> 2.27.0
->
-
-
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 583bb1274df9..3ff05f40e443 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1157,7 +1157,7 @@ int dev_pm_opp_set_opp(struct device *dev, struct dev_pm_opp *opp)
+ 		return PTR_ERR(opp_table);
+ 	}
+ 
+-	ret = _set_opp(dev, opp_table, opp, opp->rate);
++	ret = _set_opp(dev, opp_table, opp, opp ? opp->rate : 0);
+ 	dev_pm_opp_put_opp_table(opp_table);
+ 
+ 	return ret;
 -- 
-Best Regards
-Masahiro Yamada
+2.29.2
+
