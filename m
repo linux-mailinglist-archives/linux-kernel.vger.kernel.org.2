@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13A4307D4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2C4307D4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhA1SCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:02:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbhA1SBP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:01:15 -0500
-Received: from smtp-bc0f.mail.infomaniak.ch (smtp-bc0f.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc0f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0282AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:00:29 -0800 (PST)
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DRSth2VGKzMqm0V;
-        Thu, 28 Jan 2021 19:00:28 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DRStg1w48zlh8TK;
-        Thu, 28 Jan 2021 19:00:27 +0100 (CET)
-Subject: Re: [PATCH v4 00/10] Enable root to update the blacklist keyring
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20210121155513.539519-1-mic@digikod.net>
- <3613306.1611852751@warthog.procyon.org.uk>
- <03ddd243-db25-a054-489d-e64ead4d6f59@digikod.net>
-Message-ID: <09376843-a55f-476a-7073-91aacc9ebdc8@digikod.net>
-Date:   Thu, 28 Jan 2021 19:00:33 +0100
-User-Agent: 
+        id S231543AbhA1SCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:02:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:36818 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231416AbhA1SBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:01:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8E9313A1;
+        Thu, 28 Jan 2021 10:01:02 -0800 (PST)
+Received: from [10.57.35.163] (unknown [10.57.35.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B34273F719;
+        Thu, 28 Jan 2021 10:00:59 -0800 (PST)
+Subject: Re: [PATCH 3/3] Adding device_dma_parameters->offset_preserve_mask to
+ NVMe driver.
+To:     Jianxiong Gao <jxgao@google.com>, erdemaktas@google.com,
+        marcorr@google.com, hch@lst.de, m.szyprowski@samsung.com,
+        gregkh@linuxfoundation.org, saravanak@google.com,
+        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
+        andriy.shevchenko@linux.intel.com, dan.j.williams@intel.com,
+        bgolaszewski@baylibre.com, jroedel@suse.de,
+        iommu@lists.linux-foundation.org, konrad.wilk@oracle.com,
+        kbusch@kernel.org, axboe@fb.com, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210128003829.1892018-1-jxgao@google.com>
+ <20210128003829.1892018-4-jxgao@google.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0550ca25-1389-ffc2-e738-8127ceb1712f@arm.com>
+Date:   Thu, 28 Jan 2021 18:00:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <03ddd243-db25-a054-489d-e64ead4d6f59@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210128003829.1892018-4-jxgao@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed that commits in your branch are not up to date with latest
-Jarkoo reviews on my patches (see changes since v2). There is no
-conflict if you replace conflicting patches from your branch by patches
-from this series. Could you replace your duplicate commits with this
-patch series?
+On 2021-01-28 00:38, Jianxiong Gao wrote:
+> NVMe driver relies on the address offset to function properly.
+> This patch adds the offset preserve mask to NVMe driver when mapping
+> via dma_map_sg_attrs and unmapping via nvme_unmap_sg. The mask
+> depends on the page size defined by CC.MPS register of NVMe
+> controller.
+> 
+> Signed-off-by: Jianxiong Gao <jxgao@google.com>
+> ---
+>   drivers/nvme/host/pci.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index 856aa31931c1..0b23f04068be 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -580,12 +580,15 @@ static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
+>   static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
+>   {
+>   	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+> -
+> +	if (dma_set_page_offset_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1))
+> +		dev_warn(dev->dev, "dma_set_page_offset_mask failed to set offset\n");
+>   	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+>   		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
+>   				    rq_dma_dir(req));
+>   	else
+>   		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
+> +	if (dma_set_page_offset_mask(dev->dev, 0))
+> +		dev_warn(dev->dev, "dma_set_page_offset_mask failed to reset offset\n");
+>   }
+>   
+>   static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
+> @@ -842,7 +845,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+>   {
+>   	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+>   	blk_status_t ret = BLK_STS_RESOURCE;
+> -	int nr_mapped;
+> +	int nr_mapped, offset_ret;
+>   
+>   	if (blk_rq_nr_phys_segments(req) == 1) {
+>   		struct bio_vec bv = req_bvec(req);
+> @@ -868,12 +871,24 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+>   	if (!iod->nents)
+>   		goto out_free_sg;
+>   
+> +	offset_ret = dma_set_page_offset_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1);
+> +	if (offset_ret) {
+> +		dev_warn(dev->dev, "dma_set_page_offset_mask failed to set offset\n");
+> +		goto out_free_sg;
+> +	}
+> +
+>   	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+>   		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
+>   				iod->nents, rq_dma_dir(req), DMA_ATTR_NO_WARN);
+>   	else
+>   		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
+>   					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
+> +
+> +	offset_ret = dma_set_page_offset_mask(dev->dev, 0);
+> +	if (offset_ret) {
+> +		dev_warn(dev->dev, "dma_set_page_offset_mask failed to reset offset\n");
+> +		goto out_free_sg;
 
+If it were possible for this to fail, you might leak the DMA mapping 
+here. However if dev->dma_parms somehow disappeared since a dozen lines 
+above then I think you've got far bigger problems anyway.
 
-On 28/01/2021 18:38, Mickaël Salaün wrote:
+That said, do you really need to keep toggling this back and forth all 
+the time? Even if the device does make other mappings elsewhere that 
+don't necessarily need the same strict alignment, would it be 
+significantly harmful just to set it once at probe and leave it in place 
+anyway?
+
+Robin.
+
+> +	}
+>   	if (!nr_mapped)
+>   		goto out_free_sg;
+>   
 > 
-> 
-> On 28/01/2021 17:52, David Howells wrote:
->>
->> Hi Mickaël,
-> Hi David,
-> 
->>
->> I could pull your patches (unless Jarkko wants to), but can you please drop
->> the patches that are also in my keys-misc branch lest one or other (or both)
->> of our branches get dropped in the next merge window due to conflicts?
->>
->> Ideally, can you base your branch on my keys-misc branch?
-> 
-> Sure, I'm rebasing and testing a new patch series.
-> 
->>
->> Thanks,
->> David
->>
