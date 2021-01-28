@@ -2,175 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B15307A65
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A5C307A79
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhA1QMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:12:30 -0500
-Received: from mga12.intel.com ([192.55.52.136]:54410 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232119AbhA1QLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:11:19 -0500
-IronPort-SDR: hUsK3BeZV+p9/7MpZbya0F0pJMLIIo7mqZqWG2aUVGmYZ5Zcbqlc2CeBQctepcBA/VbrQluL99
- S/NvxA9ULSag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="159432059"
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="159432059"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 08:10:36 -0800
-IronPort-SDR: /ENsKvpeYEdDIdPt8AcVMudMId0Wu6nsTAcBOV9E449hAgPNWL7XACpZ0DFCIEy5f5mB8DQdnt
- c+LJ2Xr+6StQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="473883681"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Jan 2021 08:10:36 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 28 Jan 2021 08:10:35 -0800
-Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 28 Jan 2021 08:10:35 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Thu, 28 Jan 2021 08:10:35 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 28 Jan 2021 08:10:35 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kiUp5tHHfqKjxtgyTKpBMxS00aF3PPE+edU8gZnMCzexTsCJxXN2oyVWbkj8lOWYLZ4ERaSDTkmQIN6m0Mya89ES0uhTt/W4hT6jidmGt5YFFniyyJINLSYgCmTmjlt7kpoSp7VhkU9J1Q7qdvwv+00T6K8ZO+6fNYohijMY5X/1EsvqcqYABeqrwjQod7ow6fTztUFPo5XqVeKHu0D5LCKIye1OsI7RjZDeztyGf5g9vYl/VM613YujEdm/JldWqEFS3w3oIK5VxFAJcS4fdUBRf4hzrISt2VQe0/d4Ib4HIBwuFpzRMgbKCI7loL/+bI8F2dgiCBPRexqu9YzftQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DFxJa1URClB+PuMmTUBmafauvXjz+oDimJtiC7QYd6k=;
- b=oCqkNjk3HJx9EZm0c97PBcvXATOZyejWZMHLtP9N0ex3IhTrLqvjwieOKiCaEHQWoKKRKA6F2gtstfFrQmNYkc+m7cHh9ejJf8fFOzrcOfw8LXFs/1rcmZwRh1BbaHnmM1whABMgxLbP5s9N8aB04018MSokSc6JOsQNgRS/jauqOOJf5wxiF/OUxDpXHNDQoVo2BF2Jx7BVt32kd5RAldSBTU/dPTPv4huiFVOULqSJeR6lEHzdKed32p319oB3u5pj3E9vRCIu6uVoY9l3clbvvgwiSlMPkILmehUiYtnas5EuGBDT9MztdUwti9Q2gQlAEPwyHoydT4M+4SeZhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DFxJa1URClB+PuMmTUBmafauvXjz+oDimJtiC7QYd6k=;
- b=B0vJ/8sbib3SaM/kLbRPJlE0yodHcEEK63aiDzSI5MYmrSOMjAkDpzH6PHFuYpC63PiqEVGwaxqu2jT2Lg+0dXMJWr50x/fMIWVFw3gy9nF+UMTYit9CzMfL6qbeRyOCKLHDFln3J57ExIJmdIezf++zbr4vlR+06JQRd5aANYE=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB4885.namprd11.prod.outlook.com (2603:10b6:510:35::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 28 Jan
- 2021 16:10:32 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::78e6:b455:ce90:fcb0]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::78e6:b455:ce90:fcb0%6]) with mapi id 15.20.3805.017; Thu, 28 Jan 2021
- 16:10:32 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Sun, Ning" <ning.sun@intel.com>,
-        "Dwarakanath, Kumar N" <kumar.n.dwarakanath@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/8] x86/power: Restore Key Locker internal key from
- the ACPI S3/4 sleep states
-Thread-Topic: [RFC PATCH 4/8] x86/power: Restore Key Locker internal key from
- the ACPI S3/4 sleep states
-Thread-Index: AQHW09NfsxUKqrZ4BEWmpCpTWD5ZDao9GrIAgABd2QA=
-Date:   Thu, 28 Jan 2021 16:10:32 +0000
-Message-ID: <E5AD5576-1E14-4B7A-AFF6-B3BB2E9335DC@intel.com>
-References: <20201216174146.10446-1-chang.seok.bae@intel.com>
- <20201216174146.10446-5-chang.seok.bae@intel.com>
- <CAJZ5v0jbz16DQg6CZr1hp-ZgUJ6gJOw=4AUaGeqeUk2UD7U_Fw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jbz16DQg6CZr1hp-ZgUJ6gJOw=4AUaGeqeUk2UD7U_Fw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.189.248.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ca8d7376-d1c6-417a-4071-08d8c3a73d0a
-x-ms-traffictypediagnostic: PH0PR11MB4885:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB48856F194919D902CDEA5FCED8BA9@PH0PR11MB4885.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DfufvBBM5t1o94a82g4aLVgDdq8NNzFdYoc3CHTCiDYCab4MaT9cS/aNCHAmVts+DSs6l3hCNc4jVp7k4tmxPfYOI+gL+MxktXqhsOe7+/kVi2VNpcz2U5Y4zJDAWYwGr39jXNj9ek6hogr1sEG81UQoZnacZvrlwStekQwyAO4D87uQ8vOF+BtgirVkMWKiapjMagMUTKMZy9ygvBlIwq05sIFObEjTc/OuVXBCzK0WWXJaJa+BoXVXwxE5tvUXAaks19QXrBc+c4J83EsR91SX2gn0Ugim4w+8HsMSmBl/8XxHHJ8ZKG4NFj1NNqUwETUSfCxqrCYneh41TLdXonV5p3OCCDns+TO0DejZnA7znyC7Q4VGtVT6SvozVsRQsJMKz9DKXukPPbVFBUa23i4B5JgoMkIGKxhAfFPDVX7tgc8H1iNZYEssmP8cBJY7wODhp3BZdfGTDLGztfZ7i+7F8X4sh/IsxzX/pU1pkPuFKjTvje1u9wdUvgl/yRbA7IXIwXPUt3Ijahvdaj52MdqJ5XCLLk88p/jJFpFqHzIMawaPEPY97N2nQ+z9+owkJiu8sFKLR8BU8ZT+ejYvIw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(396003)(346002)(136003)(6486002)(33656002)(91956017)(7416002)(186003)(2906002)(86362001)(8936002)(6512007)(6506007)(4744005)(5660300002)(71200400001)(478600001)(54906003)(36756003)(6916009)(4326008)(66556008)(66946007)(66476007)(64756008)(26005)(53546011)(2616005)(8676002)(66446008)(76116006)(83380400001)(316002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?v4EKn/yUojA22bhew1+J/K/2cW/JQB7r3XgPD4FHwmvrsgALkYUNJsZdSFgg?=
- =?us-ascii?Q?WV6EWodv6bFvRUublB++bnJf0hp+8e9aC9O+75hsr11OWp2G+BGQiSBD+JZJ?=
- =?us-ascii?Q?WOTQMLCkC3QGA501LlK3LfMjfTpbVCJEkRir72HwBzsMbvVKXy0CDNcxYW6d?=
- =?us-ascii?Q?f7zEjrS33Nwa1eN1SDps1Zi88L8xQZ9W1YqXqkGufnYbcag1SenSyx2Q5q8r?=
- =?us-ascii?Q?8aK/hATO87Brkyug7DYKYiO4pw2JGbNH72hY986mj+5+G4e6vANdvX5m9ck1?=
- =?us-ascii?Q?Jj/MXhGKETgcpuRlUe7VKJq7MVFoOoC+um8LiSlvL3TNRkRnxMRvdNkGdGnL?=
- =?us-ascii?Q?ZBCB0Uo8OkFbyQnPNwucjvxuPhi7giYCrNmfJjA1Vxgz/ddSmkk3VbZkoVUS?=
- =?us-ascii?Q?ZdNwDspCflP4ApFKvMVjEbWjhraMft2osAzC6F6aWumwHMCZ1YVuOVJ5tISa?=
- =?us-ascii?Q?8jVgOJeQe0TiBiVKttSs0AtuiCYrosHWcKuE8GMZUji769M2swb5DAFgOoAn?=
- =?us-ascii?Q?fL8qxfVKUQ4iq7A9xyiVK07qQ2grmYsnSjAx+T/cXxrPotXFSlNMISU4qtRE?=
- =?us-ascii?Q?KCikRum9dreLHUIRFOCBG7RTw1Z/qOXH+36Hf6tqk4XNNNt+pbX/sh29v6JB?=
- =?us-ascii?Q?qJ0S+GPselcSIn6qgPcr6Fwet1p4mN273NAMdElcuOjnDhhVd21y4xLqlpqT?=
- =?us-ascii?Q?BArzkTczJUxulw60rCE0AvrlqSHnTWo5uYpKV+/GVvk0K6QSf9K3j6ldU2PU?=
- =?us-ascii?Q?bapHTLdoAxJEbA/UZP1/Ek10e5xtI0aNBhf8O3U9w8Xqy6knxU/hGd2EsfPD?=
- =?us-ascii?Q?0m86wTyvlVug3uKYwBr3me8iTmQ5UJkBB0csvWE7DwYSRogz0SO5qB9pOjM5?=
- =?us-ascii?Q?ZvVyalmkI89IeMF2HebgA1FQ+mrMc/wb+jHGjRMEhypv7ztuh8n5NRCl9ipC?=
- =?us-ascii?Q?zPsiYY75v0m/FPkGCu6g3QEv3O57wnjrd4xOQ9NddazZnUlGRIirIDAbByYe?=
- =?us-ascii?Q?cY6aGJWSVMfjQxw3wqb0oIOeAy77MVT5XJzQQWAnrSWo2BS5T5h0gjamRw7X?=
- =?us-ascii?Q?aQ/JyNFTYB/9kLyERFyuk/BnaIiWjQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <80B41AF9BD59E748BAE5959E1CE4E76F@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232483AbhA1QOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:14:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232119AbhA1QMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:12:43 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FFBC061573;
+        Thu, 28 Jan 2021 08:12:02 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id i63so4281144pfg.7;
+        Thu, 28 Jan 2021 08:12:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JhffxInAUmhk1vMKR4ZZWJhUVenQfYY2F9vgS33QU2I=;
+        b=R0VbwrY5FF1Rd8U9NGDnZHjDj2j7uX2LgVsO7v+dobKrxw0CQUZBArvGfS93oXeZXW
+         u5/ep0FvCh1RURFnm/XA3xmPOXIDZeYI1nOZ9xx7pNJ7cW6he5UELPJqYjOBK42QQdqG
+         vpHYmnC4qXzjJVc7SLGrq6NJB7uBRThLPMeiX29znz6S8thIh1oMW3uTLmTYjU5ega8l
+         itAKS72kpJwEY2LiDEWSr0BkA5U1B6JGbM7z4bFMNBH5bw1aS9mR1dK/fA3S0nWUFTfW
+         DxP2BuaNQvoIJYfsg2Wrm7tcg+kDLL3Sn+yZMahU5QMeW6r4iUwbiBZ3YBNdqnJhZ/UH
+         hkiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JhffxInAUmhk1vMKR4ZZWJhUVenQfYY2F9vgS33QU2I=;
+        b=KL9j47ZB8HK10H6Y8qT2WZGhRF+eu4Wb9fgYaJ31fsnOLwe0x/R9KI6qycS8KOJ8Vd
+         2EL/Z6v8Q33yqHVGjVMz8oeywdGeBAN967XnJN4wBGsqS/kLYP7hQSfV5sI4u72alx0f
+         fc//Ba6FR5oqcyAobQzEiKWT/dq3vWWcIjTGHNWCuqnxboNi6+xYVB8xZohcod/O96VL
+         IFBWDj+eEXBPRrsl62qOclufH3X9dpE0mS7HqpgfkUiVBSRYhBY0bKifRt+Vf7BPT67W
+         yIeQnz0Db1l/edrwchx7XAci9iJmjkwTWm50JNC9H4x3RezsXnqfIFrHvBcOMCuA71Yj
+         OJJw==
+X-Gm-Message-State: AOAM533mCvEq+3lsIMnu2LtxAPRulxQxj3AI/PsjSxu2B40vXHIVnq3v
+        XdiYkbCW79MOSMxF1j9x32UOOshZXO8bM9iraOxFWfEuad4MJw==
+X-Google-Smtp-Source: ABdhPJyLIEPgXfLPuK6Sk/IsdGlM+NRp75V6FhxV6srXnxhiCt2Fw0fRstmuSp6Xg0xPHOx+wd6+E5t2G49pYjcF+rw=
+X-Received: by 2002:a62:5a86:0:b029:1ae:6b45:b6a9 with SMTP id
+ o128-20020a625a860000b02901ae6b45b6a9mr156514pfb.7.1611850322451; Thu, 28 Jan
+ 2021 08:12:02 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca8d7376-d1c6-417a-4071-08d8c3a73d0a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2021 16:10:32.2488
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0Wf/F19pqruWnryeeHwhd+kMTM85ukH5TPC6GvW9otMllUpBWMRqH/0C5PWpuszZDSdX4iYvNJwSHy5rSDsEAW99u8KuxOTz9r+NS7HeOgo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4885
-X-OriginatorOrg: intel.com
+References: <20210128122123.25341-1-nikita.shubin@maquefel.me> <20210128122123.25341-2-nikita.shubin@maquefel.me>
+In-Reply-To: <20210128122123.25341-2-nikita.shubin@maquefel.me>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 28 Jan 2021 18:11:46 +0200
+Message-ID: <CAHp75VfBb5+K9cSAzj9EBD+KtswkHSNMZWoCaU=bKvOO3fXRjw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] gpio: gpio-ep93xx: fix BUG_ON port F usage
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jan 28, 2021, at 02:34, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> On Wed, Dec 16, 2020 at 6:47 PM Chang S. Bae <chang.seok.bae@intel.com> w=
-rote:
->>=20
->> +       keybackup_status =3D read_keylocker_backup_status();
->> +       if (!(keybackup_status & BIT(0))) {
->> +               pr_err("x86/keylocker: internal key restoration failed w=
-ith %s\n",
->> +                      (keybackup_status & BIT(2)) ? "read error" : "inv=
-alid status");
->> +               WARN_ON(1);
->> +               goto disable_keylocker;
->> +       }
->=20
-> The above conditional could be consolidated a bit by using WARN():
->=20
-> if (WARN(!(keybackup_status & BIT(0)), "x86/keylocker: internal key
-> restoration failed with %s\n",
->        (keybackup_status & BIT(2)) ? "read error" : "invalid status")
->                goto disable_keylocker;
->=20
-> Apart from this the patch LGTM.
+On Thu, Jan 28, 2021 at 2:21 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+>
+> The port F is index 2 not 5.
+>
+> ------------[ cut here ]------------
+> kernel BUG at drivers/gpio/gpio-ep93xx.c:64!
 
-Thanks for the review! I will make this change on my next revision.
+Perhaps you missed my message, please cut this to have only related
+information and not be so noisy!
 
-Chang=
+> Internal error: Oops - BUG: 0 [#1] ARM
+> Modules linked in:
+> CPU: 0 PID: 403 Comm: gpio-event-mon Not tainted 5.9.10-00011-ge93e9618628b-dirty #19
+> Hardware name: Technologic Systems TS-72xx SBC
+> PC is at ep93xx_gpio_update_int_params+0x1c/0x80
+> LR is at ep93xx_gpio_update_int_params+0x14/0x80
+> pc : [<c03abc44>] lr : [<c03abc3c>] psr: 20000093
+> sp : c158de00 ip : 00000000 fp : 00000001
+> r10: c44154d4 r9 : 00000000 r8 : c4415020
+> r7 : c04ef884 r6 : c051c842 r5 : c4415020 r4 : 00000005
+> r3 : 00000000 r2 : 00000000 r1 : c04eb768 r0 : 00000008
+> Flags: nzCv IRQs off FIQs on Mode SVC_32 ISA ARM Segment none
+> Control: 0000717f Table: 01684000 DAC: 00000051
+> Process gpio-event-mon (pid: 403, stack limit = 0x(ptrval))
+> Stack: (0xc158de00 to 0xc158e000)
+> de00: 00000005 00000002 c051c842 c0238dc0 c0238c98 c0238c98 c04ef874 00000000
+> de20: 00000003 c04fcfcc 60000013 c04ef910 c04ef8d4 c00456f0 c04ef874 c15f1e00
+> de40: 00000000 00000000 00000001 c0045d40 c15f1e00 c4400160 c0044ca8 c04ef8a8
+> de60: 60000013 00000000 c15f1e00 c04ef874 c04ef884 00000001 c0235d70 c158b800
+> de80: be825f0f c0045ec8 00000003 c158b800 c440aa00 be825bc8 00000003 00000001
+> dea0: 00000000 c0236f00 c44ed3a0 c158b800 c45c2015 00000000 00000001 00000003
+> dec0: 6f697067 6576652d 6d2d746e 00006e6f 00000000 00000000 00000000 00000000
+> dee0: be825df4 c00abb0c c440c500 c00aabd4 c440c500 c528b840 c45c2010 c04e1228
+> df00: 00000ff0 c4478d28 c030b404 be825bc8 c1550e20 00000003 c1550e20 c00c3388
+> df20: c4478d28 c00c3d48 be825f0f c00abd00 c45c2000 c45c2000 c1550e20 c00bfea8
+> df40: 00000003 c00b0714 00000000 c4450000 00000004 00000100 00000001 c04e1228
+> df60: c158dfb0 ffffff9c 000231f8 00000003 00000142 c00b085c 00000000 c04e1228
+> df80: 00000000 be825f0f 00000003 00000003 00000036 c00083c4 c158c000 00000000
+> dfa0: be825f0f c00081e0 be825f0f 00000003 00000003 c030b404 be825bc8 00000000
+> dfc0: be825f0f 00000003 00000003 00000036 00000001 00000000 00022070 be825f0f
+> dfe0: b6f2e4e0 be825bac 00010acc b6f2e4ec 60000010 00000003 00000000 00000000
+> [<c03abc44>] (ep93xx_gpio_update_int_params) from [<c0238dc0>] (ep93xx_gpio_irq_type+0x128/0x1c0)
+> [<c0238dc0>] (ep93xx_gpio_irq_type) from [<c00456f0>] (__irq_set_trigger+0x6c/0x128)
+> [<c00456f0>] (__irq_set_trigger) from [<c0045d40>] (__setup_irq+0x594/0x678)
+> [<c0045d40>] (__setup_irq) from [<c0045ec8>] (request_threaded_irq+0xa4/0x128)
+> [<c0045ec8>] (request_threaded_irq) from [<c0236f00>] (gpio_ioctl+0x300/0x4d8)
+> [<c0236f00>] (gpio_ioctl) from [<c00c3388>] (vfs_ioctl+0x24/0x3c)
+> [<c00c3388>] (vfs_ioctl) from [<c00c3d48>] (sys_ioctl+0xbc/0x768)
+> [<c00c3d48>] (sys_ioctl) from [<c00081e0>] (ret_fast_syscall+0x0/0x50)
+> Exception stack(0xc158dfa8 to 0xc158dff0)
+> dfa0: be825f0f 00000003 00000003 c030b404 be825bc8 00000000
+> dfc0: be825f0f 00000003 00000003 00000036 00000001 00000000 00022070 be825f0f
+> dfe0: b6f2e4e0 be825bac 00010acc b6f2e4ec
+> Code: e59f0060 ebfff3e1 e3540002 9a000000 (e7f001f2)
+> ---[ end trace 3f6544e133e9f5ae ]---
+>
+> Fixes: fd935fc421e74 ("gpio: ep93xx: Do not pingpong irq numbers")
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+
+...
+
+> +/*
+> + * F Port index in GPIOCHIP'S array is 5
+> + * but we use index 2 for stored values and offsets
+> + */
+> +#define EP93XX_GPIO_F_PORT_INDEX 5
+
+Hmm... Why not to use an array with holes instead.
+
+...
+
+> +       if (port == EP93XX_GPIO_F_PORT_INDEX)
+> +               port = 2;
+
+Sorry, but I'm not in favour of this as it adds confusion.
+See above for the potential way to solve.
+
+-- 
+With Best Regards,
+Andy Shevchenko
