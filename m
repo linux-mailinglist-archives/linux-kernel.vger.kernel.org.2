@@ -2,311 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64047308031
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38E130803A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhA1VFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhA1VFC (ORCPT
+        id S231407AbhA1VG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:06:59 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60816 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231392AbhA1VGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:05:02 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03164C061793
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:45 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id f63so4802546pfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wM2/b7QFWaQQI4UJf7JjD4AI6NPu+8JRBfTf4GHnnsg=;
-        b=doC8UKoWa4GMZ92u8rldyh0wh50138AQWo3u4p2HuifyPY3rPX0T0RVm7hVy3y8L8+
-         ZyvfIhWN836wYF17L8Jh3ShPACzXnZy4/vX51GOSXEjB5UeUPn5xBgH7LTNLYqkIHl6w
-         WDQMHVl+hW86iOMw47NGgoKDLLeIsQ76zLNPIjuaIs2Pkhgpv0GLywLLQMSY69QN+Mog
-         aIKTiAkFVwpnv9hPp56OcNkD9S3HMKwI1JLF3mQ8+O/BFknY4gacckxg0jUnyUn76nGp
-         50KAuvE0NUoI1p6Pb2vF2jQ46LIj+6x9cii+TKPYNcvAR7SDmlsuXokeqS3r74Qrkf2E
-         n5sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wM2/b7QFWaQQI4UJf7JjD4AI6NPu+8JRBfTf4GHnnsg=;
-        b=eVm9If38HZSyenFtAWGtWvkl9X5D8KyT83zCkRAiBX2uCY6iIOoA1wdrUloZY+GxvC
-         PVuiDSLnZFzEoRPShkFBgj7RTuudwDgPpmyJ/oizk09wJM5/myWU6vGlyc2XWC9v50hw
-         NaiOndUTn8vwOxs8PVBTrCsRBRQc61ivrJRuItBxz5awCv0oK49j94Dqo4aLxl42BCFE
-         /ULketAQilk40sO7ojkBd0CeJsyiaUNjMVMbsBRziiZ/Q0jhnGT5XqkrmGxIrmQPComc
-         Spv2XJl9S48DIWz5HdvOo07H5xtZsvDVEaMq09dQaPfdGckpgyRQgxe8WgBzq0dMIMD3
-         BILA==
-X-Gm-Message-State: AOAM5310wNIMHrAMqjHZiitNjmAyHS9k5dFwpl1Ub1atK4Qnm92GtzWR
-        EVmHHrKiOufTzc8ovNjpeboeL1Tfk418S9RY
-X-Google-Smtp-Source: ABdhPJze8ftVIa3bHsD35Xx0ylWBIT4/Eb83ZaXV//7B+Jzg0MRyuN8BNExk16VtA7m097XshVzsIA==
-X-Received: by 2002:a63:5453:: with SMTP id e19mr1241358pgm.439.1611867824523;
-        Thu, 28 Jan 2021 13:03:44 -0800 (PST)
-Received: from wildbow.anholt.net ([75.164.105.146])
-        by smtp.gmail.com with ESMTPSA id l2sm6753295pga.65.2021.01.28.13.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 13:03:43 -0800 (PST)
-From:   Eric Anholt <eric@anholt.net>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>
-Subject: [PATCH v3 3/3] drm/msm: Clean up GMU OOB set/clear handling.
-Date:   Thu, 28 Jan 2021 13:03:32 -0800
-Message-Id: <20210128210332.1690609-4-eric@anholt.net>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210128210332.1690609-1-eric@anholt.net>
-References: <20210128210332.1690609-1-eric@anholt.net>
+        Thu, 28 Jan 2021 16:06:44 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10SL1dJf127066;
+        Thu, 28 Jan 2021 16:05:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=bpUTcXPeXWH0uCpR0CReuSqLBN7qKOd8RBfv7PAKG14=;
+ b=cgL4eeLInzOWENu3PUE8gW1uebW9ootUk9Cacy40GwqzTQAH7KOmGHlmRcO+gPDUjj8U
+ Ng8GA3Fi25GHsaCyIq8H+HQGpXWxvdbZgbr0KJOaaYsL0PUK876/2Puau7XeJTQCl4ZF
+ HqSzSURQMQLdj5pTQMeGVFnsNPLlCu4ZTsK/E4Df1N2bRndbeu6D7oid4Wmpf4UhhFKC
+ 5ohg2Jqb3Vz3a6ntiK5SjP38X1Gjkba8HCL8MVWE7N8kOEdjSKlWLU1BxfjjO05lS+Mv
+ Mdr+jdbupdB+frROL90k0GdYDEwzmPr0b6BmHf0aO51cF/o6+s5+hm+XhdWCvQkxwU7T ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36c3d3aa6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 16:05:15 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10SL2rJ7131704;
+        Thu, 28 Jan 2021 16:05:14 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36c3d3aa5d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 16:05:14 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10SKqhG1019569;
+        Thu, 28 Jan 2021 21:05:12 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03dal.us.ibm.com with ESMTP id 368be9t6w1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 21:05:12 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10SL5B3Y11862404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 21:05:11 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2882F7805C;
+        Thu, 28 Jan 2021 21:05:11 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EFAE78068;
+        Thu, 28 Jan 2021 21:05:04 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.85.133.159])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 28 Jan 2021 21:05:03 +0000 (GMT)
+Message-ID: <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Date:   Thu, 28 Jan 2021 13:05:02 -0800
+In-Reply-To: <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+         <20210121122723.3446-8-rppt@kernel.org>
+         <20210126114657.GL827@dhcp22.suse.cz>
+         <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
+         <20210126120823.GM827@dhcp22.suse.cz> <20210128092259.GB242749@kernel.org>
+         <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 mlxlogscore=911
+ impostorscore=0 priorityscore=1501 adultscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the bug is fixed in the minimal way for stable, go make the
-code table-driven.
+On Thu, 2021-01-28 at 14:01 +0100, Michal Hocko wrote:
+> On Thu 28-01-21 11:22:59, Mike Rapoport wrote:
+[...]
+> > I like the idea to have a pool as an optimization rather than a
+> > hard requirement but I don't see why would it need a careful access
+> > control. As the direct map fragmentation is not necessarily
+> > degrades the performance (and even sometimes it actually improves
+> > it) and even then the degradation is small, trying a PMD_ORDER
+> > allocation for a pool and then falling back to 4K page may be just
+> > fine.
+> 
+> Well, as soon as this is a scarce resource then an access control
+> seems like a first thing to think of. Maybe it is not really
+> necessary but then this should be really justified.
 
-Signed-off-by: Eric Anholt <eric@anholt.net>
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 124 +++++++++++++-------------
- drivers/gpu/drm/msm/adreno/a6xx_gmu.h |  55 ++++--------
- 2 files changed, 77 insertions(+), 102 deletions(-)
+The control for the resource is effectively the rlimit today.  I don't
+think dividing the world into people who can and can't use secret
+memory would be useful since the design is to be usable for anyone who
+might have a secret to keep; it would become like the kvm group
+permissions: something which is theoretically an access control but
+which in practise is given to everyone on the system.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index b3318f86aabc..9066e98eb8ef 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -245,47 +245,66 @@ static int a6xx_gmu_hfi_start(struct a6xx_gmu *gmu)
- 	return ret;
- }
- 
-+struct a6xx_gmu_oob_bits {
-+	int set, ack, set_new, ack_new;
-+	const char *name;
-+};
-+
-+/* These are the interrupt / ack bits for each OOB request that are set
-+ * in a6xx_gmu_set_oob and a6xx_clear_oob
-+ */
-+static const struct a6xx_gmu_oob_bits a6xx_gmu_oob_bits[] = {
-+	[GMU_OOB_GPU_SET] = {
-+		.name = "GPU_SET",
-+		.set = 16,
-+		.ack = 24,
-+		.set_new = 30,
-+		.ack_new = 31,
-+	},
-+
-+	[GMU_OOB_PERFCOUNTER_SET] = {
-+		.name = "PERFCOUNTER",
-+		.set = 17,
-+		.ack = 25,
-+		.set_new = 28,
-+		.ack_new = 30,
-+	},
-+
-+	[GMU_OOB_BOOT_SLUMBER] = {
-+		.name = "BOOT_SLUMBER",
-+		.set = 22,
-+		.ack = 30,
-+	},
-+
-+	[GMU_OOB_DCVS_SET] = {
-+		.name = "GPU_DCVS",
-+		.set = 23,
-+		.ack = 31,
-+	},
-+};
-+
- /* Trigger a OOB (out of band) request to the GMU */
- int a6xx_gmu_set_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
- {
- 	int ret;
- 	u32 val;
- 	int request, ack;
--	const char *name;
- 
--	switch (state) {
--	case GMU_OOB_GPU_SET:
--		if (gmu->legacy) {
--			request = GMU_OOB_GPU_SET_REQUEST;
--			ack = GMU_OOB_GPU_SET_ACK;
--		} else {
--			request = GMU_OOB_GPU_SET_REQUEST_NEW;
--			ack = GMU_OOB_GPU_SET_ACK_NEW;
--		}
--		name = "GPU_SET";
--		break;
--	case GMU_OOB_PERFCOUNTER_SET:
--		if (gmu->legacy) {
--			request = GMU_OOB_PERFCOUNTER_REQUEST;
--			ack = GMU_OOB_PERFCOUNTER_ACK;
--		} else {
--			request = GMU_OOB_PERFCOUNTER_REQUEST_NEW;
--			ack = GMU_OOB_PERFCOUNTER_ACK_NEW;
--		}
--		name = "PERFCOUNTER";
--		break;
--	case GMU_OOB_BOOT_SLUMBER:
--		request = GMU_OOB_BOOT_SLUMBER_REQUEST;
--		ack = GMU_OOB_BOOT_SLUMBER_ACK;
--		name = "BOOT_SLUMBER";
--		break;
--	case GMU_OOB_DCVS_SET:
--		request = GMU_OOB_DCVS_REQUEST;
--		ack = GMU_OOB_DCVS_ACK;
--		name = "GPU_DCVS";
--		break;
--	default:
-+	if (state >= ARRAY_SIZE(a6xx_gmu_oob_bits))
- 		return -EINVAL;
-+
-+	if (gmu->legacy) {
-+		request = a6xx_gmu_oob_bits[state].set;
-+		ack = a6xx_gmu_oob_bits[state].ack;
-+	} else {
-+		request = a6xx_gmu_oob_bits[state].set_new;
-+		ack = a6xx_gmu_oob_bits[state].ack_new;
-+		if (!request || !ack) {
-+			DRM_DEV_ERROR(gmu->dev,
-+				      "Invalid non-legacy GMU request %s\n",
-+				      a6xx_gmu_oob_bits[state].name);
-+			return -EINVAL;
-+		}
- 	}
- 
- 	/* Trigger the equested OOB operation */
-@@ -298,7 +317,7 @@ int a6xx_gmu_set_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
- 	if (ret)
- 		DRM_DEV_ERROR(gmu->dev,
- 			"Timeout waiting for GMU OOB set %s: 0x%x\n",
--				name,
-+				a6xx_gmu_oob_bits[state].name,
- 				gmu_read(gmu, REG_A6XX_GMU_GMU2HOST_INTR_INFO));
- 
- 	/* Clear the acknowledge interrupt */
-@@ -310,36 +329,17 @@ int a6xx_gmu_set_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
- /* Clear a pending OOB state in the GMU */
- void a6xx_gmu_clear_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
- {
--	if (!gmu->legacy) {
--		if (state == GMU_OOB_GPU_SET) {
--			gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET,
--				1 << GMU_OOB_GPU_SET_CLEAR_NEW);
--		} else {
--			WARN_ON(state != GMU_OOB_PERFCOUNTER_SET);
--			gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET,
--				1 << GMU_OOB_PERFCOUNTER_CLEAR_NEW);
--		}
-+	int bit;
-+
-+	if (state >= ARRAY_SIZE(a6xx_gmu_oob_bits))
- 		return;
--	}
- 
--	switch (state) {
--	case GMU_OOB_GPU_SET:
--		gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET,
--			1 << GMU_OOB_GPU_SET_CLEAR);
--		break;
--	case GMU_OOB_PERFCOUNTER_SET:
--		gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET,
--			1 << GMU_OOB_PERFCOUNTER_CLEAR);
--		break;
--	case GMU_OOB_BOOT_SLUMBER:
--		gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET,
--			1 << GMU_OOB_BOOT_SLUMBER_CLEAR);
--		break;
--	case GMU_OOB_DCVS_SET:
--		gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET,
--			1 << GMU_OOB_DCVS_CLEAR);
--		break;
--	}
-+	if (gmu->legacy)
-+		bit = a6xx_gmu_oob_bits[state].ack;
-+	else
-+		bit = a6xx_gmu_oob_bits[state].ack_new;
-+
-+	gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET, bit);
- }
- 
- /* Enable CPU control of SPTP power power collapse */
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-index 9fa278de2106..71dfa60070cc 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.h
-@@ -153,52 +153,27 @@ static inline void gmu_write_rscc(struct a6xx_gmu *gmu, u32 offset, u32 value)
-  */
- 
- enum a6xx_gmu_oob_state {
-+	/*
-+	 * Let the GMU know that a boot or slumber operation has started. The value in
-+	 * REG_A6XX_GMU_BOOT_SLUMBER_OPTION lets the GMU know which operation we are
-+	 * doing
-+	 */
- 	GMU_OOB_BOOT_SLUMBER = 0,
-+	/*
-+	 * Let the GMU know to not turn off any GPU registers while the CPU is in a
-+	 * critical section
-+	 */
- 	GMU_OOB_GPU_SET,
-+	/*
-+	 * Set a new power level for the GPU when the CPU is doing frequency scaling
-+	 */
- 	GMU_OOB_DCVS_SET,
-+	/*
-+	 * Used to keep the GPU on for CPU-side reads of performance counters.
-+	 */
- 	GMU_OOB_PERFCOUNTER_SET,
- };
- 
--/* These are the interrupt / ack bits for each OOB request that are set
-- * in a6xx_gmu_set_oob and a6xx_clear_oob
-- */
--
--/*
-- * Let the GMU know that a boot or slumber operation has started. The value in
-- * REG_A6XX_GMU_BOOT_SLUMBER_OPTION lets the GMU know which operation we are
-- * doing
-- */
--#define GMU_OOB_BOOT_SLUMBER_REQUEST	22
--#define GMU_OOB_BOOT_SLUMBER_ACK	30
--#define GMU_OOB_BOOT_SLUMBER_CLEAR	30
--
--/*
-- * Set a new power level for the GPU when the CPU is doing frequency scaling
-- */
--#define GMU_OOB_DCVS_REQUEST	23
--#define GMU_OOB_DCVS_ACK	31
--#define GMU_OOB_DCVS_CLEAR	31
--
--/*
-- * Let the GMU know to not turn off any GPU registers while the CPU is in a
-- * critical section
-- */
--#define GMU_OOB_GPU_SET_REQUEST	16
--#define GMU_OOB_GPU_SET_ACK	24
--#define GMU_OOB_GPU_SET_CLEAR	24
--
--#define GMU_OOB_GPU_SET_REQUEST_NEW	30
--#define GMU_OOB_GPU_SET_ACK_NEW		31
--#define GMU_OOB_GPU_SET_CLEAR_NEW	31
--
--#define GMU_OOB_PERFCOUNTER_REQUEST	17
--#define GMU_OOB_PERFCOUNTER_ACK		25
--#define GMU_OOB_PERFCOUNTER_CLEAR	25
--
--#define GMU_OOB_PERFCOUNTER_REQUEST_NEW	28
--#define GMU_OOB_PERFCOUNTER_ACK_NEW	30
--#define GMU_OOB_PERFCOUNTER_CLEAR_NEW	30
--
- void a6xx_hfi_init(struct a6xx_gmu *gmu);
- int a6xx_hfi_start(struct a6xx_gmu *gmu, int boot_state);
- void a6xx_hfi_stop(struct a6xx_gmu *gmu);
--- 
-2.30.0
+> I am also still not sure why this whole thing is not just a
+> ramdisk/ramfs which happens to unmap its pages from the direct
+> map. Wouldn't that be a much more easier model to work with? You
+> would get an access control for free as well.
+
+The original API was a memfd which does have this access control as
+well.  However, the decision was made after much discussion to go with
+a new system call instead.  Obviously the API choice could be revisited
+but do you have anything to add over the previous discussion, or is
+this just to get your access control?
+
+James
+
 
