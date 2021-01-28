@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404853072CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A263072C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbhA1JcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
+        id S232416AbhA1Jb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:31:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbhA1JWd (ORCPT
+        with ESMTP id S231758AbhA1JYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:22:33 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DE1C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:21:53 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id u14so5346105ybu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:21:52 -0800 (PST)
+        Thu, 28 Jan 2021 04:24:12 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA98C06174A;
+        Thu, 28 Jan 2021 01:23:31 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id h14so4550975otr.4;
+        Thu, 28 Jan 2021 01:23:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:mime-version:message-id:date:subject:from:to:cc;
-        bh=wIBUTVGHIg6gXpFBoxosuSvN89uYeSslgY6GnwvtvqM=;
-        b=oYgXl9L1NuQMmPwFJHZauMaZ3aglVOiQk6E5rY8VZ+7sDuvqU5XS8bo39C2cTCKUpr
-         XYLQGqHJpfy+kJy3yOL1Pw2DabJM7QchG3qD3hiqyrM0Nu1OQE9444i0GOI5I14SJPNP
-         CcJmpBGqJie+WuSQpjRaMGrEDk5xWDvlRyW/4q8iGS0/uCCNnelXvtwvx84g+vNeEJ+8
-         6rRhvK2UxvKH0DNPYnAxNmg2g/zpvAaS9lNhHQSiIZGKCgIXF2Yg/gpdFB8qw+1jb7vr
-         nitn/Vzf83uXjKx1XtIHhWvS3tD4GiBTk/XsG+ZZnKvfALHnJkZzG4nDQfa2y17uj8ES
-         ++Wg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fzG9aEwYmapgCOH2KyG9igHfhrZ1QTXlCJukfCUrBMo=;
+        b=o9jlNTCB+ccFOcp6th2nO+cPn3gKqqVyVNG78CieHLJugHqsTVQEplmiGXYuADxoEL
+         44xm3lN2DoIIazdqTjOU2CVEyd2EYLbJqFZGROciLpqoyiujpZ+W9w5p6YRqe+hztgQ9
+         llQbT+b75lYzyoCxFfrjjsnDrS9ik3NV44ki0xYVvu9IMxSc8NwsDBDFbx3cCHSk+0rn
+         we9LMscgrQb7ufg6gYz8X3TIjDs1uOykDO0KB7KiOX0h7Q+U7eDTsS0PNvdlAqyX+gae
+         O6GKMKPKbEZZJEPgV+AVrylpmiowMOzUaGle+2k859+MrEKc67cMt45VqMzj3+yTWGbD
+         NoeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
-         :to:cc;
-        bh=wIBUTVGHIg6gXpFBoxosuSvN89uYeSslgY6GnwvtvqM=;
-        b=ZtnOdDn7YCMHiIM9aC1MObV0JOlJrW38VFsw/wtH1gJvIXjKJv4Qtn5OYMSHLwLB6l
-         Eu4tDnuWeTo6QirAHgQ6ceffDfg9tTadRNi5ZeZClE91IEi13Sv4S0LUYo8s416EqKKN
-         1sM0zPP+qyjro60nCZg0ZyT2WwsLzImL4aeCLyE3B14aDukOny82RjL1RLKKYl4FQq8t
-         uB+J6Fkp8BY0R4NCu6Eq79YiddZrmUM4e58XuAStKRCZKV26qF0azTFlexBzJS/JNH8q
-         A/VJJDExVro9717gYBoom9SQZv8j/E3OiYAaaeCpK0gRGfwv/f+FAh0xByxwmSPeD+XD
-         9x3Q==
-X-Gm-Message-State: AOAM531s658GpmKOWKy6UBxXMkN4xkHaw/Hq1ssl1+KTJ31sV//rc9St
-        if5wGlJqa+YHbRNidvkAxGAz64d9y4Fy2QmF
-X-Google-Smtp-Source: ABdhPJySXiM69uvOnkpK2j2D4HX+QWmgqg6MD7iQEC+4H8MMXhJTem552VCGCX68HuZXc/Bq7t5i/3mefpqtdFWu
-Sender: "josephjang via sendgmr" 
-        <josephjang@josephjang-p920.ntc.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fzG9aEwYmapgCOH2KyG9igHfhrZ1QTXlCJukfCUrBMo=;
+        b=gLc8MCfgKzf1d9OMENvNFVLxFSeUXy//Dp8usLrt7R90a+B0m0lAZw5yoPlw6kgeKo
+         ob/IWLf+O4uTJqg7kcIJZ7AfrIDqbpY2wZqRQgLldfJXkhi6liEhtgMiAwrD8yj/Sx81
+         rxstCWSp3rh9hpOZCGOOurCYwMmNOrKMtlpP24Fy1lY+PTdk9+6zNocZuG+KmG0aD+7M
+         InXt/JT2Qi+AkwiHxEAm70OkO/w2qDDkZGTRLqn8ZPu4fXwibcOXSSHpaBnGMr1WJpJq
+         5GsowAEfhdoAHP5me1g8co2FNostwILZZFsotvdKnHqD+Ys38+wjZswDBgW9LEuwqL/l
+         ehVw==
+X-Gm-Message-State: AOAM532S3mjQhQH06eb+Io/9XuOW1mHkJw6xOK7E/Svat8t2nc+dw51y
+        64xW6tUAq/C6TeHGld3OFMvoK1x69h6ylhsK/QA=
+X-Google-Smtp-Source: ABdhPJzVCtYst8XioWO1oHO3P4jPB6/6QRUwZSDaP/Q9uIK+BdFPXUXk8IMy0RG/FM2Xs87InVFUSv/q4/pQ0qxx+Ls=
+X-Received: by 2002:a05:6830:230b:: with SMTP id u11mr10979450ote.184.1611825810833;
+ Thu, 28 Jan 2021 01:23:30 -0800 (PST)
 MIME-Version: 1.0
-X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:a5e2:e68a:ef67:8128])
- (user=josephjang job=sendgmr) by 2002:a25:3a04:: with SMTP id
- h4mr22140678yba.285.1611825712228; Thu, 28 Jan 2021 01:21:52 -0800 (PST)
-Message-ID: <00000000000004f27505b9f26bca@google.com>
-Date:   Thu, 28 Jan 2021 09:21:52 +0000
-Subject: Re: [PATCH v4] power: suspend: Move dpm_watchdog to suspend.c and
- enhance it
-From:   <josephjang@google.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, rafael@kernel.org,
-        gregkh@linuxfoundation.org, rjw@rjwysocki.net, pavel@ucw.cz,
-        len.brown@intel.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com,
-        josephjang@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <20210128084011.3270281-1-swboyd@chromium.org> <20210128084011.3270281-2-swboyd@chromium.org>
+In-Reply-To: <20210128084011.3270281-2-swboyd@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Thu, 28 Jan 2021 10:23:19 +0100
+Message-ID: <CAFqH_535nAFVev5PYMmk5BgEeUfByiHQPoiW5P1AOe+UVxpikg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] platform/chrome: cros_ec: Add SW_FRONT_PROXIMITY
+ MKBP define
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 867157311dc8..ecd988b4a838 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -7788,6 +7788,8 @@ F:        include/linux/freezer.h
-> >  F:     include/linux/pm.h
-> >  F:     include/linux/suspend.h
-> >  F:     kernel/power/
-> > +F:     kernel/power/suspend_watchdog.c
-> > +F:     kernel/power/suspend_watchdog.h
-> >
+Hi Stephen,
 
-> The kernel/power/ file entry already covers all files in that
-> directory, including suspend_watchdog.[ch].
+Thank you for your patch. Please cc'me for the patches related to the
+chrome/platform subsystem.
 
-> So, why do you think you need to add these two further entries explicitly  
-> here?
+Missatge de Stephen Boyd <swboyd@chromium.org> del dia dj., 28 de gen.
+2021 a les 9:48:
+>
+> Some cros ECs support a front proximity MKBP event via
+> 'EC_MKBP_FRONT_PROXIMITY'. Add this define so it can be used in a
+> future patch.
+>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-> >  HID CORE LAYER
-> >  M:     Jiri Kosina <jikos@kernel.org>
-> > @@ -16630,6 +16632,8 @@ F:      include/linux/freezer.h
-> >  F:     include/linux/pm.h
-> >  F:     include/linux/suspend.h
-> >  F:     kernel/power/
-> > +F:     kernel/power/suspend_watchdog.c
-> > +F:     kernel/power/suspend_watchdog.h
-> >
+Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-> Same here.
 
-> I think you can simply drop the changes in MAINTAINERS in this patch.
-
-Sure~
-I will drop the changes in MAINTAINERS and send PATCH#6 again.
-
-Thank you,
-Joseph.
+> ---
+>  include/linux/platform_data/cros_ec_commands.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+> index 86376779ab31..776e0b2be0e9 100644
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -3457,6 +3457,7 @@ struct ec_response_get_next_event_v1 {
+>  #define EC_MKBP_LID_OPEN       0
+>  #define EC_MKBP_TABLET_MODE    1
+>  #define EC_MKBP_BASE_ATTACHED  2
+> +#define EC_MKBP_FRONT_PROXIMITY        3
+>
+>  /* Run keyboard factory test scanning */
+>  #define EC_CMD_KEYBOARD_FACTORY_TEST 0x0068
+> --
+> https://chromeos.dev
+>
