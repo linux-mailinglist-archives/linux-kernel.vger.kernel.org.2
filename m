@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA803073CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E46B3073C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhA1Kbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:31:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232361AbhA1KbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232409AbhA1Kb1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 05:31:27 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:38335 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231615AbhA1KbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Jan 2021 05:31:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D733064DD8;
-        Thu, 28 Jan 2021 10:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611829836;
-        bh=5KExjknD5ROY6MJJH4AMpEpBg69K6IyRGy7DJFghQSU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MAYXKQPj7Phr0zKfdsdjR2NowUBYLccrkv2I6+gY2N6398NJOihK8JG+nh7rdDN8V
-         SAQ9k+8cyUM+Zco07Q03Q5gkTVDYH5k7z0yTlatTFg4YLRFRJqZsYWXzI1Jqp542mS
-         NLSHH7IrIPoBBOZ//T4vvZlkleINnEAFVTLK1gnFBP1aUqUWPqbaAmlPEpNcGRwQ0E
-         tk272i1ALAQnXZu07LkjIt+U7AQYw50nPr0lOeQCEMFWNxFLjCoJ5UzLX5LLUZb6R9
-         scnMfik+RQOt3rsjsv0X+OItouKYfbm6WDq4vq4Jr5RYKKMIxx6mqAfYYelMVo4M3Z
-         2CGguzMFcf1qg==
-Received: by mail-oo1-f41.google.com with SMTP id y72so1291889ooa.5;
-        Thu, 28 Jan 2021 02:30:35 -0800 (PST)
-X-Gm-Message-State: AOAM5324UhQmKWy2NI0HD3t2eUZSb4IWhlsxGagUNbE8jg0s8PttIeuy
-        66TcRrKqJVFqWjdGfQEHmm3DyPZR7QrybAvCBzM=
-X-Google-Smtp-Source: ABdhPJzHSC9XdWNrOQmX/yAuApqLH5pt/bDJz3I4uMWJFHE/10Ziwa+/MLdS5Z2Vg/1oxN0YXzDF1qdzso9mCWNhdLM=
-X-Received: by 2002:a4a:e1e4:: with SMTP id u4mr565755ood.41.1611829835089;
- Thu, 28 Jan 2021 02:30:35 -0800 (PST)
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 9520110000F;
+        Thu, 28 Jan 2021 10:30:27 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 11:30:26 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Richard Weinberger <richard@nod.at>
+Cc:     miklos@szeredi.hu, vigneshr@ti.com, boris.brezillon@collabora.com,
+        rminnich@google.com, sven@narfation.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        fuse-devel@lists.sourceforge.net
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
+Message-ID: <20210128113026.094b07b0@xps13>
+In-Reply-To: <20210124232007.21639-1-richard@nod.at>
+References: <20210124232007.21639-1-richard@nod.at>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
- <1611299395-675-5-git-send-email-yumeng18@huawei.com> <20210128050354.GA30874@gondor.apana.org.au>
-In-Reply-To: <20210128050354.GA30874@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 28 Jan 2021 11:30:23 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-Message-ID: <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Meng Yu <yumeng18@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 at 06:04, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Fri, Jan 22, 2021 at 03:09:52PM +0800, Meng Yu wrote:
-> > 1. Add ecc curves(P224, P384, P521) for ECDH;
->
-> OK I think this is getting unwieldy.
->
-> In light of the fact that we already have hardware that supports
-> a specific subset of curves, I think perhaps it would be better
-> to move the curve ID from the key into the algorithm name instead.
->
-> IOW, instead of allocating ecdh, you would allocate ecdh-nist-pXXX.
->
-> Any comments?
->
+Hi Richard,
 
-Agreed. Bluetooth appears to be the only in-kernel user at the moment,
-and it is hard coded to use p256, so it can be easily updated.
+Richard Weinberger <richard@nod.at> wrote on Mon, 25 Jan 2021 00:19:59
++0100:
 
-But this also begs the question which ecdh-nist-pXXX implementations
-we actually need? Why are we exposing these curves in the first place?
+> I'm happy to announce the first non-RFC version of this patch set.
+> Over the xmas holidays I found some time to experiment with various userspace
+> implementations of MTDs and gave the kernel side more fine-tuning.
+> 
+> Rationale:
+> ----------
+> 
+> When working with flash devices a common task is emulating them to run various
+> tests or inspect dumps from real hardware. To achieve that we have plenty of
+> emulators in the MTD subsystem: mtdram, block2mtd, nandsim.
+> 
+> Each of them implements an ad-hoc MTD and have various drawbacks.
+> Over the last years some developers tried to extend them but these attempts
+> often got rejected because they added just more adhoc feature instead of
+> addressing overall problems.
+> 
+> MUSE is a novel approach to address the need of advanced MTD emulators.
+> Advanced means in this context supporting different (vendor specific) image
+> formats, different ways for fault injection (fuzzing) and recoding/replaying
+> IOs to emulate power cuts.
+> 
+> The core goal of MUSE is having the complexity on the userspace side and
+> only a small MTD driver in kernelspace.
+> While playing with different approaches I realized that FUSE offers everything
+> we need. So MUSE is a little like CUSE except that it does not implement a
+> bare character device but an MTD.
+
+I can't tell if your MUSE implementation is right but it looks fine
+on the MTD side.
+
+This is following the right path, I look forward to merging it soon!
+
+Thanks for your contribution,
+Miquèl
