@@ -2,166 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A743079FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226C13079FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbhA1PnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
+        id S231793AbhA1Pnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:43:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhA1PnM (ORCPT
+        with ESMTP id S231631AbhA1Pn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:43:12 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AF7C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:42:32 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611848550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GjyJ1s0u9pZQ8U0DyoghF5Ylm9+uE6J2nI/0I3TOIYc=;
-        b=MBIHPEh73JU4bqLx//PmaQY1yEdY3bJb9K6qgHkOnmyMvCO0bN04d4vMLCC/ZZDgTlyMj0
-        uzPK/LD+oz1kjvBKp1oQYo1Q45M/5cCW7Jrp2AR8KxLNzA/x8HloDkmvLnydB3LwF3smWe
-        QPY6eGyTn2UUblnvmQaRTtRbjeK2MXueB/19dii2S+l1SOlKcEtNYGV4/u2oBbLnxUjuLi
-        3PxFo8/SrWBY+9PdRQddXqSzCAIWhi+Uud0gv70fYc2SN1Sa07hRW95bPQURkWjSHzVR9z
-        d3qOO6nLwd2inblKwn4nW3Xn+nsWOBfwAazrV2JGexYo7eMlyj9T+yVs87OJfQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611848550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GjyJ1s0u9pZQ8U0DyoghF5Ylm9+uE6J2nI/0I3TOIYc=;
-        b=OMwuoPSZufDsloA1iuwqy9Zy2PjlGzmWnZ5JRxdAFTlsNIuPK2O3XfnH0IgvAWstXP7Ni1
-        PoIxJ/fxlMqEe9BQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@linux.intel.com
-Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
-In-Reply-To: <YBLPhkHQ8cXFiY1X@alley>
-References: <20210122081311.GA12834@xsang-OptiPlex-9020> <YAr7d6A4CkMpgx+g@alley> <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain> <87bldaaxcc.fsf@jogness.linutronix.de> <YBJ2CjN2YntC1o3j@jagdpanzerIV.localdomain> <87czxpmhe1.fsf@jogness.linutronix.de> <YBLPhkHQ8cXFiY1X@alley>
-Date:   Thu, 28 Jan 2021 16:48:29 +0106
-Message-ID: <877dnxm5ju.fsf@jogness.linutronix.de>
+        Thu, 28 Jan 2021 10:43:27 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70389C061574;
+        Thu, 28 Jan 2021 07:42:47 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a10so8414254ejg.10;
+        Thu, 28 Jan 2021 07:42:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FWJ83HCQaL80L1ZnLvcN1K1leS0A03enGGNXNA1KTfI=;
+        b=ZtnjNsbblKPXOq5apWYlZ++0CNkJ4h6FSdOmIbrVU1ccVXi+sbet/pibDaPM7n/iM4
+         YplxVZkU2sqwkV05DDbJZxQj0JV6ZZ8EGupN1pRG1FRdrn/WX9OauU0hQsRtvTuWHGkr
+         5zhngchKpf2UiSPm19/2XOAduNGIYyJe43dfMBldWc/DlOlbNa1gT2kcV6digqN2Wtqx
+         M50NGKNS6F3faeF6xc5E2LEL+DPgZmirUMGWlTe/6TXn+ML/oWnAsAmSyyop6ogXFWOw
+         IljbmrQZwC/H9CFYiti4AVe1scu+PNvRlwwBTddTnJ77W7Vsu8bSTNRYgrL+pP7pmhq1
+         IEaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FWJ83HCQaL80L1ZnLvcN1K1leS0A03enGGNXNA1KTfI=;
+        b=F+fxvL/DgnYAC3W4xI1gJAVhaGsnQ23mFc/bnYUZSBuoipWFGj769V3k7c0caWk/Ln
+         /nhOVXIqQ5D6fHRgqF/I3nMe+JJheO+gxaRBH+/9F5lG9tV1Ti5hP+FXatCVmQ6zGEiq
+         KyS9ofZAc09CkdQCcHlXtHUW38lkZOiJeU7wWiJNGO1VXhp8iBTRmXZOy4rikVskwB0o
+         rYO2+v7hn+AvRs2GZzEIThLufqW9HUcyPZTOW22m5mgZscLHwOpKVH7Jwjj5B9VAKJea
+         g0OEEQrTy17i/H/bEEpT3lv7i90Misy1UftFVZGnpuswQPtjsS2UE2fGLpqpqo4Ysfsj
+         vJEA==
+X-Gm-Message-State: AOAM530L7eKtyaMc3oGjwlEGsDVud4Y+ic21Dqk/i+qNg4hz3+CCvSny
+        cbN3dF8Oy6tjyBIH2YAKolJKZMkL/0NjCoI9gOQ=
+X-Google-Smtp-Source: ABdhPJyEaOOD93nsEfBTGyV/t0Vi+UOzbqHsFiPvTBwA1P9TSs2+QpbeI1KCx+vt78Uj9BQlOK5nmNOyFJww/+g9Q3A=
+X-Received: by 2002:a17:906:5f9a:: with SMTP id a26mr12455912eju.87.1611848566214;
+ Thu, 28 Jan 2021 07:42:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210126215511.1056600-1-adrien.grassein@gmail.com> <YBK8hAxvjJBuMdl2@p1g2>
+In-Reply-To: <YBK8hAxvjJBuMdl2@p1g2>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Thu, 28 Jan 2021 16:42:35 +0100
+Message-ID: <CABkfQAEzuGB+5eufR0qQgJ2s_zzR56fB8cuGLF+ZLmaToMLnTw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mq-nitrogen: add USB support
+To:     Gary Bisson <gary.bisson@boundarydevices.com>
+Cc:     Troy Kisky <troy.kisky@boundarydevices.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28, Petr Mladek <pmladek@suse.com> wrote:
-> If you are able to reproduce this, it might be interesting to see
-> backtraces from all CPUs when RCU stall gets detected. Or even
-> printing all processes, even the sleeping ones.
+Hi Gary,
 
-OK, I now have lkp running on my intel core i5 machine and it reliably
-reproduces this. First let me say a word about lkp. The instructions in
-the report email are a bit misleading. There are lots of steps that it
-doesn't mention.
 
-First I needed to install lkp and its dependencies. I did all of this as
-root because lkp seems to get confused when sudo is involved.
+Le jeu. 28 janv. 2021 =C3=A0 14:30, Gary Bisson
+<gary.bisson@boundarydevices.com> a =C3=A9crit :
+>
+> Hi Adrien,
+>
+> Thanks for improving Nitrogen upstream, much appreciated.
+>
+> On Tue, Jan 26, 2021 at 10:55:11PM +0100, Adrien Grassein wrote:
+> > add USB support for imx8mq-nitrogen. It consists
+> > in 2 phys: OTG and host.
+> >
+> > The OTG port uses a dedicated regulator for vbus.
+> >
+> > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> > ---
+> >  .../boot/dts/freescale/imx8mq-nitrogen.dts    | 36 +++++++++++++++++++
+> >  1 file changed, 36 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts b/arch/a=
+rm64/boot/dts/freescale/imx8mq-nitrogen.dts
+> > index 81d269296610..fb8acd83a280 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
+> > @@ -34,6 +34,17 @@ power {
+> >               };
+> >       };
+> >
+> > +     reg_usb_otg_vbus: regulator-usb-otg-vbus {
+> > +             compatible =3D "regulator-fixed";
+> > +             pinctrl-names =3D "default";
+> > +             pinctrl-0 =3D <&pinctrl_reg_usbotg_vbus>;
+> > +             regulator-name =3D "usb_otg_vbus";
+> > +             regulator-min-microvolt =3D <5000000>;
+> > +             regulator-max-microvolt =3D <5000000>;
+> > +             gpio =3D <&gpio1 12 GPIO_ACTIVE_HIGH>;
+> > +             enable-active-high;
+> > +     };
+> > +
+> >       reg_vref_0v9: regulator-vref-0v9 {
+> >               compatible =3D "regulator-fixed";
+> >               regulator-name =3D "vref-0v9";
+> > @@ -190,6 +201,25 @@ &uart2 {
+> >       status =3D "okay";
+> >  };
+> >
+> > +&usb_dwc3_0 {
+> > +     dr_mode =3D "otg";
+> > +     status =3D "okay";
+>
+> Please add a pinctrl here to mux GPIO1_IO13 as over current pin.
+> But I confirm the port is working.
 
-# git clone https://github.com/intel/lkp-tests.git
-# cd lkp-tests
-# make install
-# lkp install
+OK, I will do a new version of the patch.
 
-Then I built the kernel and modules using a helper script to setup the
-environment for me:
+>
+> > +};
+> > +
+> > +&usb3_phy0 {
+> > +     vbus-supply =3D <&reg_usb_otg_vbus>;
+> > +     status =3D "okay";
+> > +};
+> > +
+> > +&usb_dwc3_1 {
+> > +     dr_mode =3D "host";
+> > +     status =3D "okay";
+> > +};
+>
+> The Host port doesn't work for me. This is because of the missing reset
+> signal. Maybe it's time to revive the gpio-reset driver [1]?
 
------ BEGIN /tmp/mk.sh -----
-#!/bin/sh
+On my side, all the ports are working correctly without any
+intervention from the user.
+(I have a Nitrogen 8M rev 3.0 and I test with a simple keyboard).
 
-export INSTALL_MOD_PATH=`pwd`
-export HOSTCC=gcc-9
-export CC=gcc-9
-export ARCH=x86_64
+>
+> Anyway, here is how to fix the USB Host ports:
+> # gpioset 0 14=3D1
+>
+> I guess it'd be best to have a proper reset solution before merging the
+> host port addition.
+>
 
-exec make "$@"
------ END /tmp/mk.sh -----
+Maybe I can add the reset signal to the DW3 driver?
+I guess that Boundary is not the only board maker to use a resettable USB H=
+UB.
 
-# cd linux
-# git checkout -b lkp b031a684bfd01d633c79d281bd0cf11c2f834ada
-# cp /tmp/config-5.10.0-rc5-gb031a684bfd0 .config
-# /tmp/mk.sh -j `nproc` olddefconfig prepare modules_prepare bzImage modules modules_install
 
-Then I created the modules.cgz:
+> Regards,
+> Gary
+>
+> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/137483438=
+4-8071-1-git-send-email-p.zabel@pengutronix.de/
 
-# find lib/modules | cpio -H newc -o | gzip -9c > modules.cgz
-
-I put kernel and modules in /tmp/:
-
-# cp arch/x86/boot/bzImage modules.cgz /tmp/
-
-And ran lkp inside script(1) so I have a logfile:
-
-# script
-# lkp qemu -k /tmp/bzImage -m /tmp/modules.cgz /tmp/job-script
-
-And reliably I see the first stall at about 925 seconds:
-
-[  926.386441][   T22] INFO: rcu_tasks detected stalls on tasks:
-[  926.387310][   T22] 0000000041eb5240: .. nvcsw: 0/0 holdout: 1 idle_cpu: -1/1
-[  926.388196][   T22] task:dmesg           state:R  running task     stack:    0 pid: 1752 ppid:   511 flags:0x2002000
-0
-[  926.389509][   T22] Call Trace:
-[  926.389962][   T22]  __schedule+0xa12/0xab5
-[  926.390534][   T22]  ? firmware_map_remove+0xd1/0xd1
-[  926.391190][   T22]  ? ksys_read+0x116/0x150
-[  926.391773][   T22]  schedule+0x16c/0x1df
-[  926.392317][   T22]  exit_to_user_mode_loop+0x28/0x84
-[  926.392977][   T22]  exit_to_user_mode_prepare+0x1d/0x4a
-[  926.393671][   T22]  syscall_exit_to_user_mode+0x41/0x4f
-[  926.394357][   T22]  entry_INT80_compat+0x71/0x76
-[  926.394982][   T22] RIP: 0023:0xf7f0fa02
-[  926.395528][   T22] RSP: 002b:00000000ff850364 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-[  926.396590][   T22] RAX: ffffffffffffffe0 RBX: 0000000000000004 RCX: 00000000565c8234
-[  926.397607][   T22] RDX: 0000000000001fff RSI: 00000000000001e0 RDI: 00000000565c8234
-[  926.398617][   T22] RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
-[  926.399629][   T22] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[  926.400643][   T22] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-But actually it is not the rcu stall that interests me so much. I am
-more interested in some bizarre console output I am seeing. Here is a
-snippet:
-
-[  903.008486][  T356] [  778.732883] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.008496][  T356]
-[  903.014733][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.030232][  T356] [  778.735197] [  655.203106] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.030242][  T356]
-[  903.040809][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.044327][  T356] [  778.746898] [  655.214214] [  531.584847] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.044337][  T356]
-[  903.048732][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.066039][  T356] [  778.751162] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.066050][  T356]
-[  903.070123][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.077137][  T356] [  778.768744] [  655.227204] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.077147][  T356]
-[  903.092792][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.095313][  T356] [  778.773836] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.095323][  T356]
-[  903.106788][  T356] [  778.781780] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.106798][  T356]
-[  903.121986][  T356] [  778.791183] [  655.230287] [  531.589973] [  407.116952] [  283.068815] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.121997][  T356]
-[  903.134120][  T356] [  778.797950] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.134130][  T356]
-[  903.148741][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.151626][  T356] [  778.805164] [  655.241173] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.151637][  T356]
-[  903.160126][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.166936][  T356] [  778.818740] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.166946][  T356]
-[  903.175785][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.185955][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-[  903.189448][  T356] [  778.825864] [  655.250559] [  531.607066] [  407.120936] tasks-torture:torture_onoff task: online 0 failed: errno -5
-
-These multi-timestamp lines are odd. And they are almost exactly 124
-seconds apart. What is going on there? The investigation continues...
-
-John Ogness
+Thanks,
+Adrien
