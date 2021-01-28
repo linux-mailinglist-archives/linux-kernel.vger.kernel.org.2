@@ -2,505 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF4B307628
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECFF30762B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbhA1M1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
+        id S231597AbhA1M3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:29:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhA1MZF (ORCPT
+        with ESMTP id S231462AbhA1M3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:25:05 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0778C061756;
-        Thu, 28 Jan 2021 04:24:24 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id y72so1361400ooa.5;
-        Thu, 28 Jan 2021 04:24:24 -0800 (PST)
+        Thu, 28 Jan 2021 07:29:12 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D4C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:28:26 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id w15so3787667pgt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 04:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=35ssVsxn75Z2ZkJPsI1hORY4xDk+LjLwz4eQia5uiHM=;
-        b=LAZMIhF5ZAWEv3DaEm8JDIlxNOaBPeYsqDxhX3jTgbRppxh1m0JL4luK69+2TJEyen
-         bc8LmYuy7IUbsya+yozYp8o/3Xsqa8WDZuUAUsBFi3+NCm95JNsDZkHAYi59WOCI06Qd
-         wmFILxhpqYB2Dkxr7DSDpPiwHuVjUY1f6G+YZvbJ0jP0tbvZ0aDWTbQtIEdrDfODeyGk
-         Yd96MsrHnvDLdhEhKivC5+D86JKxi+yPwZ2b1B8VWcHbBH3wEgWW2oXS9v2phbD5NRfh
-         vNkwMHVY3GFcli0Q+R1ZZS7POA5DpGnHXduuBgX7R2nUMsieKDxnndjMKMmZQRnfYGY7
-         LNXQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=KQRxmbkqnVfcFdMWoNI1FcaCAHf3VakR0zyATmOVZLg=;
+        b=NiEN2RXjNnyyA1aD6pItplvLFhcRqc0fl33qILL57dK8zoOLNNTnP9UJhpZPPhptgz
+         TDyuuRWmiCn4UDZ3P8NxBR1dCQwWvRwxYXDUx4Gk0cfn2ANsgZ1r5SVftz8ZnU+Ubnke
+         UXp2FTqwKUbv6dyU1fv1WhpWaV4LLFTzYWtxk3iJJt3eYHQux8BiuhlGGGp7+OjusUUx
+         e2OpJMrr6dZM8Q2Z44EmGpFlBZmbKEOa172YWfMvnFeLIIC2VHWpmVjzjru3TvvH+SkC
+         cQo1+6Z+Q84/bSj1JNMb66n7OV2UMv/4pv+RVlx1u4LrCMfMEWUcoOl6y1SC3nrJuJ2c
+         wTxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=35ssVsxn75Z2ZkJPsI1hORY4xDk+LjLwz4eQia5uiHM=;
-        b=SbPRQ/aLw+tX8542JO+AlalE971XVST8E9pVl795XdkStcv5atGJkfGu5oTJrQzVRu
-         JdAI7Zx6aVQTaWJEHQpviMThMLiVkly8ZBMPuz+dxPTEeWZ2tl6H5T0R6VLxAP8ptZCL
-         x3exgKPc+nRTwKuRpd894KwaofTnwyVrDtzpGgf86S38yc9efRuV5kZDSOSQg+3g7dmR
-         r1P7UTOgXE8rywhvzDN8VUQ34IpmhVRhvyYcSWzz3hrJxLX7/IiI6NPfg3HkraMAxHWT
-         2n+tG6OsNI9L5630U1xWAwAJ414UYGjoqLB+RzQWhiy4kN3df43F/cj5XFCvhYwe4j7Y
-         O2fQ==
-X-Gm-Message-State: AOAM532I8MyktGOVMEzn/p1p9ylAi6Jj0dePoAF9aECvkTF1DJxxFiRl
-        JFgPFEbnDL3ObAMdch3zE28fGegWuTliyo/ANH0=
-X-Google-Smtp-Source: ABdhPJyJezCXdgF8esgy/OD9XuWc18dKvS72elOWT2P4HtELfDMnO3qyRrbvcxsh2zz6D1mVRt1DUMsQkD0mB2lm+iM=
-X-Received: by 2002:a4a:d384:: with SMTP id i4mr11218423oos.14.1611836664065;
- Thu, 28 Jan 2021 04:24:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20210120202337.1481402-1-surenb@google.com>
-In-Reply-To: <20210120202337.1481402-1-surenb@google.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Thu, 28 Jan 2021 13:24:12 +0100
-Message-ID: <CAKgNAkgsQWL3QAyF6CQU=yifzA1tfp_E5kBBNKuAq_+sB4Amyw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] process_madvise.2: Add process_madvise man page
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>, jeffv@google.com,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, shakeelb@google.com,
-        David Rientjes <rientjes@google.com>, edgararriaga@google.com,
-        Tim Murray <timmurray@google.com>,
-        Linux-MM <linux-mm@kvack.org>, selinux@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=KQRxmbkqnVfcFdMWoNI1FcaCAHf3VakR0zyATmOVZLg=;
+        b=lTh6Jg9IrcK7RSnJb+us8QL6HFKJl0mtLnDZnhvakjI7+QoQRHqYyQpuLRymIUqZhi
+         f6ySPEAize1DecTa595bep+KHFUu2+S8Xbq7IOg2p/m2yz2Yv9haHoQzMLgCLgen0YUW
+         1Dhxv5bZPIojuolD1ouMbImnCCyKPDM1tQpHWPZr5Hxf/Qt5gbQuUIbb2ZNBEA0EKABE
+         HZoPM55200xj9BOD4iPQ43TR+/hJLaVvx8NFT16cRnD/IbB49mCMAa6wQB9+FpFL4FQX
+         AznJYcq8C/WTeCg+UxnrrBlv7upv6/TTs28VvzjvJO71YLuWva70KNXbNFowoC95jJ+u
+         wzTA==
+X-Gm-Message-State: AOAM532VlcWI3ZJwt4wQE+nSDmqKhQZTwKBjXKCAPsTHcYTswG4qjdPm
+        amU90J+DtCbinZmzhHCSJhnPwajqDhJQLBLa
+X-Google-Smtp-Source: ABdhPJzHPUJozEO9IhoK+J+fdPwIzudsS5MDpsiCcLzp30hVMfgHC1ekwqAWwALMnAPFd5DnNYROM+fFEfzz1YpP
+Sender: "victording via sendgmr" <victording@victording.c.googlers.com>
+X-Received: from victording.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:65c7])
+ (user=victording job=sendgmr) by 2002:a17:902:b212:b029:df:ec2e:6a1f with
+ SMTP id t18-20020a170902b212b02900dfec2e6a1fmr16016023plr.24.1611836905911;
+ Thu, 28 Jan 2021 04:28:25 -0800 (PST)
+Date:   Thu, 28 Jan 2021 12:27:54 +0000
+Message-Id: <20210128122311.1.I42c1001f8b0eaac973a99e1e5c2170788ee36c9c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH] PCI/ASPM: Disable ASPM when save/restore PCI state
+From:   Victor Ding <victording@google.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Victor Ding <victording@google.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Suren,
+Certain PCIe devices (e.g. GL9750) have high penalties (e.g. high Port
+T_POWER_ON) when exiting L1 but enter L1 aggressively. As a result,
+such devices enter and exit L1 frequently during pci_save_state and
+pci_restore_state; eventually causing poor suspend/resume performance.
 
-Thank you for writing this page! Some comments below.
+Based on the observation that PCI accesses dominance pci_save_state/
+pci_restore_state plus these accesses are fairly close to each other, the
+actual time the device could stay in low power states is negligible.
+Therefore, the little power-saving benefit from ASPM during suspend/resume
+does not overweight the performance degradation caused by high L1 exit
+penalties.
 
-On Wed, 20 Jan 2021 at 21:36, Suren Baghdasaryan <surenb@google.com> wrote:
->
-> Initial version of process_madvise(2) manual page. Initial text was
-> extracted from [1], amended after fix [2] and more details added using
-> man pages of madvise(2) and process_vm_read(2) as examples. It also
-> includes the changes to required permission proposed in [3].
->
-> [1] https://lore.kernel.org/patchwork/patch/1297933/
-> [2] https://lkml.org/lkml/2020/12/8/1282
-> [3] https://patchwork.kernel.org/project/selinux/patch/20210111170622.2613577-1-surenb@google.com/#23888311
->
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->
-> Adding the plane text version for ease of review:
+Therefore, this patch proposes to disable ASPM during a suspend/resume
+process.
 
-Thanks for adding the rendered version. I will make my comments
-against the source, below.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211187
+Signed-off-by: Victor Ding <victording@google.com>
 
-> NAME
->     process_madvise - give advice about use of memory to a process
->
-> SYNOPSIS
->     #include <sys/uio.h>
->
->     ssize_t process_madvise(int pidfd,
->                            const struct iovec *iovec,
->                            unsigned long vlen,
->                            int advice,
->                            unsigned int flags);
->
-> DESCRIPTION
->     The process_madvise() system call is used to give advice or directions to
->     the kernel about the address ranges from external process as well as local
->     process. It provides the advice to address ranges of process described by
->     iovec and vlen. The goal of such advice is to improve system or application
->     performance.
->
->     The pidfd selects the process referred to by the PID file descriptor
->     specified in pidfd. (see pidofd_open(2) for further information).
->
->     The pointer iovec points to an array of iovec structures, defined in
->     <sys/uio.h> as:
->
->     struct iovec {
->         void  *iov_base;    /* Starting address */
->         size_t iov_len;     /* Number of bytes to transfer */
->     };
->
->     The iovec describes address ranges beginning at iov_base address and with
->     the size of iov_len bytes.
->
->     The vlen represents the number of elements in iovec.
->
->     The advice can be one of the values listed below.
->
->   Linux-specific advice values
->     The following Linux-specific advice values have no counterparts in the
->     POSIX-specified posix_madvise(3), and may or may not have counterparts in
->     the madvise() interface available on other implementations.
->
->     MADV_COLD (since Linux 5.4.1)
->         Deactivate a given range of pages by moving them from active to
->         inactive LRU list. This is done to accelerate the reclaim of these
->         pages. The advice might be ignored for some pages in the range when it
->         is not applicable.
->     MADV_PAGEOUT (since Linux 5.4.1)
->         Reclaim a given range of pages. This is done to free up memory occupied
->         by these pages. If a page is anonymous it will be swapped out. If a
->         page is file-backed and dirty it will be written back into the backing
->         storage. The advice might be ignored for some pages in the range when
->         it is not applicable.
->
->     The flags argument is reserved for future use; currently, this argument must
->     be specified as 0.
->
->     The value specified in the vlen argument must be less than or equal to
->     IOV_MAX (defined in <limits.h> or accessible via the call
->     sysconf(_SC_IOV_MAX)).
->
->     The vlen and iovec arguments are checked before applying any hints. If the
->     vlen is too big, or iovec is invalid, an error will be returned
->     immediately.
->
->     Hint might be applied to a part of iovec if one of its elements points to
->     an invalid memory region in the remote process. No further elements will be
->     processed beyond that point.
->
->     Permission to provide a hint to external process is governed by a ptrace
->     access mode PTRACE_MODE_READ_REALCREDS check; see ptrace(2) and
->     CAP_SYS_ADMIN capability that caller should have in order to affect
->     performance of an external process.
->
-> RETURN VALUE
->     On success, process_madvise() returns the number of bytes advised. This
->     return value may be less than the total number of requested bytes, if an
->     error occurred. The caller should check return value to determine whether
->     a partial advice occurred.
+---
 
-So there are three return values possible,
-> ERRORS
->     EFAULT The memory described by iovec is outside the accessible address
->            space of the process pid.
+ drivers/pci/pci.c       | 18 +++++++++++++++---
+ drivers/pci/pci.h       |  6 ++++++
+ drivers/pci/pcie/aspm.c | 26 ++++++++++++++++++++++++++
+ include/linux/pci.h     |  1 +
+ 4 files changed, 48 insertions(+), 3 deletions(-)
 
-s/pid/
-of the process referred to by
-.IR pidfd .
-
->     EINVAL flags is not 0.
->     EINVAL The sum of the iov_len values of iovec overflows a ssize_t value.
->     EINVAL vlen is too large.
->     ENOMEM Could not allocate memory for internal copies of the iovec
->            structures.
->     EPERM The caller does not have permission to access the address space of
->           the process pidfd.
->     ESRCH No process with ID pidfd exists.
->
-> VERSIONS
->     Since Linux 5.10, support for this system call is optional, depending on
->     the setting of the CONFIG_ADVISE_SYSCALLS configuration option.
->
-> SEE ALSO
->     madvise(2), pidofd_open(2), process_vm_readv(2), process_vm_write(2)
->
->  man2/process_madvise.2 | 208 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 208 insertions(+)
->  create mode 100644 man2/process_madvise.2
->
-> diff --git a/man2/process_madvise.2 b/man2/process_madvise.2
-> new file mode 100644
-> index 000000000..9bb5cb5ed
-> --- /dev/null
-> +++ b/man2/process_madvise.2
-> @@ -0,0 +1,208 @@
-> +.\" Copyright (C) 2021 Suren Baghdasaryan <surenb@google.com>
-> +.\" and Copyright (C) 2021 Minchan Kim <minchan@kernel.org>
-> +.\"
-> +.\" %%%LICENSE_START(VERBATIM)
-> +.\" Permission is granted to make and distribute verbatim copies of this
-> +.\" manual provided the copyright notice and this permission notice are
-> +.\" preserved on all copies.
-> +.\"
-> +.\" Permission is granted to copy and distribute modified versions of this
-> +.\" manual under the conditions for verbatim copying, provided that the
-> +.\" entire resulting derived work is distributed under the terms of a
-> +.\" permission notice identical to this one.
-> +.\"
-> +.\" Since the Linux kernel and libraries are constantly changing, this
-> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-> +.\" responsibility for errors or omissions, or for damages resulting from
-> +.\" the use of the information contained herein.  The author(s) may not
-> +.\" have taken the same level of care in the production of this manual,
-> +.\" which is licensed free of charge, as they might when working
-> +.\" professionally.
-> +.\"
-> +.\" Formatted or processed versions of this manual, if unaccompanied by
-> +.\" the source, must acknowledge the copyright and authors of this work.
-> +.\" %%%LICENSE_END
-> +.\"
-> +.\" Commit ecb8ac8b1f146915aa6b96449b66dd48984caacc
-> +.\"
-> +.TH PROCESS_MADVISE 2 2021-01-12 "Linux" "Linux Programmer's Manual"
-> +.SH NAME
-> +process_madvise \- give advice about use of memory to a process
-> +.SH SYNOPSIS
-> +.nf
-> +.B #include <sys/uio.h>
-> +.PP
-> +.BI "ssize_t process_madvise(int " pidfd ,
-> +.BI "                       const struct iovec *" iovec ,
-> +.BI "                       unsigned long " vlen ,
-> +.BI "                       int " advice ,
-> +.BI "                       unsigned int " flags ");"
-> +.fi
-> +.SH DESCRIPTION
-> +The
-> +.BR process_madvise()
-> +system call is used to give advice or directions
-> +to the kernel about the address ranges from external process as well as
-
-s/from external/of other/
-
-> +local process. It provides the advice to address ranges of process
-
-s/local/of the calling/
-
-Please start new sentence on new lines. (See the discussion of
-semantic newlines in man-pages(7).)
-
-> +described by
-> +.I iovec
-> +and
-> +.I vlen\.
-> +The goal of such advice is to improve system or application performance.
-> +.PP
-> +The
-> +.I pidfd
-> +selects the process referred to by the PID file descriptor
-> +specified in pidfd. (see
-> +.BR pidofd_open(2)
-> +for further information).
-
-Rewrite the previous as:
-
-[[
-The
-.I pidfd
-argument is a PID file descriptor (see
-.BR pidofd_open (2))
-that specifies the process to which the advice is to be applied.
-
-> +.PP
-> +The pointer
-> +.I iovec
-> +points to an array of iovec structures, defined in
-
-"iovec" should be formatted as
-
-.I iovec
-
-> +.IR <sys/uio.h>
-> +as:
-> +.PP
-> +.in +4n
-> +.EX
-> +struct iovec {
-> +    void  *iov_base;    /* Starting address */
-> +    size_t iov_len;     /* Number of bytes to transfer */
-> +};
-> +.EE
-> +.in
-> +.PP
-> +The
-> +.I iovec
-> +describes address ranges beginning at
-
-s/describes/structure describes/
-
-> +.I iov_base
-> +address and with the size of
-> +.I iov_len
-> +bytes.
-> +.PP
-> +The
-> +.I vlen
-> +represents the number of elements in
-> +.I iovec\.
-
-==>
-the
-.IR iovec
-structure.
-> +.PP
-> +The
-> +.I advice
-> +can be one of the values listed below.
-
-s/can be/argument is/
-
-> +.\"
-> +.\" ======================================================================
-> +.\"
-> +.SS Linux-specific advice values
-> +The following Linux-specific
-> +.I advice
-> +values have no counterparts in the POSIX-specified
-> +.BR posix_madvise (3),
-> +and may or may not have counterparts in the
-> +.BR madvise ()
-> +interface available on other implementations.
-> +.TP
-> +.BR MADV_COLD " (since Linux 5.4.1)"
-> +.\" commit 9c276cc65a58faf98be8e56962745ec99ab87636
-> +Deactivate a given range of pages by moving them from active to inactive
-> +LRU list. This is done to accelerate the reclaim of these pages. The advice
-
-New sentences on new lines.
-
-> +might be ignored for some pages in the range when it is not applicable.
-> +.TP
-> +.BR MADV_PAGEOUT " (since Linux 5.4.1)"
-> +.\" commit 1a4e58cce84ee88129d5d49c064bd2852b481357
-> +Reclaim a given range of pages. This is done to free up memory occupied by
-> +these pages. If a page is anonymous it will be swapped out. If a page is
-> +file-backed and dirty it will be written back into the backing storage.
-
-s/into/to/
-
-> +The advice might be ignored for some pages in the range when it is not
-> +applicable.
-> +.PP
-> +The
-> +.I flags
-> +argument is reserved for future use; currently, this argument must be
-> +specified as 0.
-> +.PP
-> +The value specified in the
-> +.I vlen
-> +argument must be less than or equal to
-> +.BR IOV_MAX
-> +(defined in
-> +.I <limits.h>
-> +or accessible via the call
-> +.IR sysconf(_SC_IOV_MAX) ).
-> +.PP
-> +The
-> +.I vlen
-> +and
-> +.I iovec
-> +arguments are checked before applying any hints.
-> +If the
-> +.I vlen
-> +is too big, or
-> +.I iovec
-> +is invalid, an error will be returned immediately.
-> +.PP
-> +Hint might be applied to a part of
-
-s/Hint/The hint/
-
-> +.I iovec
-> +if one of its elements points to an invalid memory
-> +region in the remote process. No further elements will be
-> +processed beyond that point.
-> +.PP
-> +Permission to provide a hint to external process is governed by a
-> +ptrace access mode
-> +.B PTRACE_MODE_READ_REALCREDS
-> +check; see
-> +.BR ptrace (2)
-> +and
-> +.B CAP_SYS_ADMIN
-> +capability that caller should have in order to affect performance
-> +of an external process.
-
-The preceding sentence is garbled. Missing words?
-
-> +.SH RETURN VALUE
-> +On success, process_madvise() returns the number of bytes advised.
-> +This return value may be less than the total number of requested
-> +bytes, if an error occurred. The caller should check return value
-> +to determine whether a partial advice occurred.
-> +.SH ERRORS
-> +.TP
-> +.B EFAULT
-> +The memory described by
-> +.I iovec
-> +is outside the accessible address space of the process pid.
-
-s/process pid./
-the process referred to by
-.IR pidfd .
-/
-
-> +.TP
-> +.B EINVAL
-> +.I flags
-> +is not 0.
-> +.TP
-> +.B EINVAL
-> +The sum of the
-> +.I iov_len
-> +values of
-> +.I iovec
-> +overflows a ssize_t value.
-
-.I ssize_t
-
-> +.TP
-> +.B EINVAL
-> +.I vlen
-> +is too large.
-> +.TP
-> +.B ENOMEM
-> +Could not allocate memory for internal copies of the
-> +.I iovec
-> +structures.
-> +.TP
-> +.B EPERM
-> +The caller does not have permission to access the address space of the process
-> +.I pidfd.
-
-.IR pidfd .
-
-> +.TP
-> +.B ESRCH
-> +No process with ID
-> +.I pidfd
-> +exists.
-
-Should this maybe be:
-[[
-The target process does not exist (i.e., it has terminated and
-been waited on).
-]]
-
-See pidfd_send_signal(2).
-
-Also, is an EBADF error possible? Again, see pidfd_send_signal(2).
-
-> +.SH VERSIONS
-> +Since Linux 5.10,
-
-Better: This system call first appeared in Linux 5.10.
-
-> +.\" commit ecb8ac8b1f146915aa6b96449b66dd48984caacc
-> +support for this system call is optional,
-
-s/support/Support/
-
-> +depending on the setting of the
-> +.B CONFIG_ADVISE_SYSCALLS
-> +configuration option.
-> +.SH SEE ALSO
-> +.BR madvise (2),
-> +.BR pidofd_open(2),
-> +.BR process_vm_readv (2),
-> +.BR process_vm_write (2)
-
-Thanks,
-
-Michael
-
-
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 32011b7b4c04..a925a7075063 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1542,6 +1542,10 @@ static void pci_restore_ltr_state(struct pci_dev *dev)
+ int pci_save_state(struct pci_dev *dev)
+ {
+ 	int i;
++
++	pcie_save_aspm_control(dev);
++	pcie_disable_aspm(dev);
++
+ 	/* XXX: 100% dword access ok here? */
+ 	for (i = 0; i < 16; i++) {
+ 		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+@@ -1552,18 +1556,22 @@ int pci_save_state(struct pci_dev *dev)
+ 
+ 	i = pci_save_pcie_state(dev);
+ 	if (i != 0)
+-		return i;
++		goto Exit;
+ 
+ 	i = pci_save_pcix_state(dev);
+ 	if (i != 0)
+-		return i;
++		goto Exit;
+ 
+ 	pci_save_ltr_state(dev);
+ 	pci_save_aspm_l1ss_state(dev);
+ 	pci_save_dpc_state(dev);
+ 	pci_save_aer_state(dev);
+ 	pci_save_ptm_state(dev);
+-	return pci_save_vc_state(dev);
++	i = pci_save_vc_state(dev);
++
++Exit:
++	pcie_restore_aspm_control(dev);
++	return i;
+ }
+ EXPORT_SYMBOL(pci_save_state);
+ 
+@@ -1661,6 +1669,8 @@ void pci_restore_state(struct pci_dev *dev)
+ 	if (!dev->state_saved)
+ 		return;
+ 
++	pcie_disable_aspm(dev);
++
+ 	/*
+ 	 * Restore max latencies (in the LTR capability) before enabling
+ 	 * LTR itself (in the PCIe capability).
+@@ -1689,6 +1699,8 @@ void pci_restore_state(struct pci_dev *dev)
+ 	pci_enable_acs(dev);
+ 	pci_restore_iov_state(dev);
+ 
++	pcie_restore_aspm_control(dev);
++
+ 	dev->state_saved = false;
+ }
+ EXPORT_SYMBOL(pci_restore_state);
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index a81459159f6d..e074a0cbe73c 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -584,6 +584,9 @@ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+ void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+ void pci_save_aspm_l1ss_state(struct pci_dev *dev);
+ void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
++void pcie_save_aspm_control(struct pci_dev *dev);
++void pcie_restore_aspm_control(struct pci_dev *dev);
++void pcie_disable_aspm(struct pci_dev *pdev);
+ #else
+ static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+@@ -591,6 +594,9 @@ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+ static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
+ static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
++static inline void pcie_save_aspm_control(struct pci_dev *dev) { }
++static inline void pcie_restore_aspm_control(struct pci_dev *dev) { }
++static inline void pcie_disable_aspm(struct pci_dev *pdev) { }
+ #endif
+ 
+ #ifdef CONFIG_PCIE_ECRC
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index a08e7d6dc248..519b9f1b067a 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -105,6 +105,12 @@ static const char *policy_str[] = {
+ 
+ #define LINK_RETRAIN_TIMEOUT HZ
+ 
++void pcie_disable_aspm(struct pci_dev *pdev)
++{
++	pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
++						PCI_EXP_LNKCTL_ASPMC, 0);
++}
++
+ static int policy_to_aspm_state(struct pcie_link_state *link)
+ {
+ 	switch (aspm_policy) {
+@@ -680,6 +686,26 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+ 	}
+ }
+ 
++void pcie_save_aspm_control(struct pci_dev *dev)
++{
++	u16 lnkctl;
++
++	if (!pci_is_pcie(dev))
++		return;
++
++	pci_read_config_word(dev, PCI_EXP_LNKCTL, &lnkctl);
++	dev->saved_aspm_ctl = lnkctl & PCI_EXP_LNKCTL_ASPMC;
++}
++
++void pcie_restore_aspm_control(struct pci_dev *dev)
++{
++	if (!pci_is_pcie(dev))
++		return;
++
++	pcie_capability_clear_and_set_word(dev, PCI_EXP_LNKCTL,
++					PCI_EXP_LNKCTL_ASPMC, dev->saved_aspm_ctl);
++}
++
+ /* Configure the ASPM L1 substates */
+ static void pcie_config_aspm_l1ss(struct pcie_link_state *link, u32 state)
+ {
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index b32126d26997..a21bfd6e3f89 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -387,6 +387,7 @@ struct pci_dev {
+ 	unsigned int	ltr_path:1;	/* Latency Tolerance Reporting
+ 					   supported from root to here */
+ 	u16		l1ss;		/* L1SS Capability pointer */
++	u16		saved_aspm_ctl; /* ASPM Control saved at suspend time */
+ #endif
+ 	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
+ 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+2.30.0.280.ga3ce27912f-goog
+
