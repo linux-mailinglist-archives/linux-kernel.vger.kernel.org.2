@@ -2,249 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47258306B15
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C3B306B17
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhA1CY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 21:24:56 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41015 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229586AbhA1CYs (ORCPT
+        id S229667AbhA1CZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 21:25:56 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11522 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhA1CZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 21:24:48 -0500
-X-UUID: e63f9cbf18a9473392148c8ae8312bf9-20210128
-X-UUID: e63f9cbf18a9473392148c8ae8312bf9-20210128
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <nick.fan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1638558616; Thu, 28 Jan 2021 10:23:58 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 10:23:56 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 10:23:56 +0800
-From:   Nick Fan <Nick.Fan@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <nick.fan@mediatek.com>,
-        Nick Fan <Nick.Fan@mediatek.com>
-Subject: [PATCH v5 2/2] arm64: dts: mt8192: Add node for the Mali GPU
-Date:   Thu, 28 Jan 2021 10:23:42 +0800
-Message-ID: <20210128022342.6445-2-Nick.Fan@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210128022342.6445-1-Nick.Fan@mediatek.com>
-References: <20210128022342.6445-1-Nick.Fan@mediatek.com>
+        Wed, 27 Jan 2021 21:25:51 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DR46414W7zjFL8;
+        Thu, 28 Jan 2021 10:23:56 +0800 (CST)
+Received: from [10.174.179.117] (10.174.179.117) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 28 Jan 2021 10:25:07 +0800
+Subject: Re: [PATCH] mm, slub: remove slub_memcg_sysfs boot param and
+ CONFIG_SLUB_MEMCG_SYSFS_ON
+To:     Vlastimil Babka <vbabka@suse.cz>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210127124745.7928-1-vbabka@suse.cz>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <36b8a6fb-9b51-bd1b-d5b8-cb65b2be9c1a@huawei.com>
+Date:   Thu, 28 Jan 2021 10:25:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210127124745.7928-1-vbabka@suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic GPU node for mt8192.
+Hi:
+On 2021/1/27 20:47, Vlastimil Babka wrote:
+> The boot param and config determine the value of memcg_sysfs_enabled, which is
+> unused since commit 10befea91b61 ("mm: memcg/slab: use a single set of
+> kmem_caches for all allocations") as there are no per-memcg kmem caches
+> anymore.
+> 
 
-Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
----
-This patch depends on Mediatek power and regulator support.
+Good catch. Thanks.
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Listed as following.
-
-[1]https://lore.kernel.org/patchwork/patch/1336293/
-[2]https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
-[3]https://lore.kernel.org/patchwork/patch/1356037/
-[4]https://patchwork.kernel.org/project/linux-mediatek/list/?series=405777
-[5]https://lore.kernel.org/patchwork/patch/1356175/
-[6]https://patchwork.kernel.org/project/linux-mediatek/patch/1605700894-32699-6-git-send-email-hsin-hsiung.wang@mediatek.com/
-[7]https://patchwork.kernel.org/project/linux-mediatek/patch/1608104827-7937-10-git-send-email-hsin-hsiung.wang@mediatek.com/
----
----
- arch/arm64/boot/dts/mediatek/mt8192-evb.dts |   7 +
- arch/arm64/boot/dts/mediatek/mt8192.dtsi    | 140 ++++++++++++++++++++
- 2 files changed, 147 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-index 6c1e2b3e8a60..48c0e240dd92 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-@@ -5,6 +5,7 @@
-  */
- /dts-v1/;
- #include "mt8192.dtsi"
-+#include "mt6359.dtsi"
- 
- / {
- 	model = "MediaTek MT8192 evaluation board";
-@@ -70,6 +71,12 @@
- 	};
- };
- 
-+&gpu {
-+	supply-names = "mali","sram";
-+	mali-supply = <&mt6315_7_vbuck1>;
-+	sram-supply = <&mt6359_vsram_others_ldo_reg>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index d6a4ad242a33..d0e812791185 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -822,6 +822,146 @@
- 			#clock-cells = <1>;
- 		};
- 
-+		gpu: mali@13000000 {
-+			compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
-+			reg = <0 0x13000000 0 0x4000>;
-+			interrupts =
-+				<GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>;
-+			interrupt-names =
-+				"gpu",
-+				"mmu",
-+				"job";
-+
-+			clocks =
-+				<&apmixedsys CLK_APMIXED_MFGPLL>,
-+				<&topckgen CLK_TOP_MFG_PLL_SEL>,
-+				<&topckgen CLK_TOP_MFG_REF_SEL>,
-+				<&mfgcfg CLK_MFG_BG3D>;
-+			clock-names =
-+				"clk_main_parent",
-+				"clk_mux",
-+				"clk_sub_parent",
-+				"subsys_mfg_cg";
-+
-+			power-domains =
-+				<&spm MT8192_POWER_DOMAIN_MFG2>,
-+				<&spm MT8192_POWER_DOMAIN_MFG3>,
-+				<&spm MT8192_POWER_DOMAIN_MFG4>,
-+				<&spm MT8192_POWER_DOMAIN_MFG5>,
-+				<&spm MT8192_POWER_DOMAIN_MFG6>;
-+			power-domain-names = "core0",
-+					     "core1",
-+					     "core2",
-+					     "core3",
-+					     "core4";
-+
-+			operating-points-v2 = <&gpu_opp_table>;
-+			#cooling-cells = <2>;
-+
-+			gpu_opp_table: opp_table0 {
-+				compatible = "operating-points-v2";
-+				opp-shared;
-+
-+				opp-358000000 {
-+					opp-hz = /bits/ 64 <358000000>;
-+					opp-microvolt = <606250>,
-+							<750000>;
-+				};
-+
-+				opp-399000000 {
-+					opp-hz = /bits/ 64 <399000000>;
-+					opp-microvolt = <618750>,
-+							<750000>;
-+				};
-+
-+				opp-440000000 {
-+					opp-hz = /bits/ 64 <440000000>;
-+					opp-microvolt = <631250>,
-+							<750000>;
-+				};
-+
-+				opp-482000000 {
-+					opp-hz = /bits/ 64 <482000000>;
-+					opp-microvolt = <643750>,
-+							<750000>;
-+				};
-+
-+				opp-523000000 {
-+					opp-hz = /bits/ 64 <523000000>;
-+					opp-microvolt = <656250>,
-+							<750000>;
-+				};
-+
-+				opp-564000000 {
-+					opp-hz = /bits/ 64 <564000000>;
-+					opp-microvolt = <668750>,
-+							<750000>;
-+				};
-+
-+				opp-605000000 {
-+					opp-hz = /bits/ 64 <605000000>;
-+					opp-microvolt = <681250>,
-+							<750000>;
-+				};
-+
-+				opp-647000000 {
-+					opp-hz = /bits/ 64 <647000000>;
-+					opp-microvolt = <693750>,
-+							<750000>;
-+				};
-+
-+				opp-688000000 {
-+					opp-hz = /bits/ 64 <688000000>;
-+					opp-microvolt = <706250>,
-+							<750000>;
-+				};
-+
-+				opp-724000000 {
-+					opp-hz = /bits/ 64 <724000000>;
-+					opp-microvolt = <725000>,
-+							<750000>;
-+				};
-+
-+				opp-760000000 {
-+					opp-hz = /bits/ 64 <760000000>;
-+					opp-microvolt = <743750>,
-+							<750000>;
-+				};
-+
-+				opp-795000000 {
-+					opp-hz = /bits/ 64 <795000000>;
-+					opp-microvolt = <762500>,
-+							<762500>;
-+				};
-+
-+				opp-831000000 {
-+					opp-hz = /bits/ 64 <831000000>;
-+					opp-microvolt = <781250>,
-+							<781250>;
-+				};
-+
-+				opp-855000000 {
-+					opp-hz = /bits/ 64 <855000000>;
-+					opp-microvolt = <793750>,
-+							<793750>;
-+				};
-+
-+				opp-902000000 {
-+					opp-hz = /bits/ 64 <902000000>;
-+					opp-microvolt = <818750>,
-+							<818750>;
-+				};
-+
-+				opp-950000000 {
-+					opp-hz = /bits/ 64 <950000000>;
-+					opp-microvolt = <843750>,
-+							<843750>;
-+				};
-+			};
-+		};
-+
- 		mfgcfg: syscon@13fbf000 {
- 			compatible = "mediatek,mt8192-mfgcfg", "syscon";
- 			reg = <0 0x13fbf000 0 0x1000>;
--- 
-2.18.0
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt |  8 --------
+>  init/Kconfig                                    | 14 --------------
+>  mm/slub.c                                       | 16 ----------------
+>  3 files changed, 38 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index f4497faef266..7dc351da0005 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4892,14 +4892,6 @@
+>  			last alloc / free. For more information see
+>  			Documentation/vm/slub.rst.
+>  
+> -	slub_memcg_sysfs=	[MM, SLUB]
+> -			Determines whether to enable sysfs directories for
+> -			memory cgroup sub-caches. 1 to enable, 0 to disable.
+> -			The default is determined by CONFIG_SLUB_MEMCG_SYSFS_ON.
+> -			Enabling this can lead to a very high number of	debug
+> -			directories and files being created under
+> -			/sys/kernel/slub.
+> -
+>  	slub_max_order= [MM, SLUB]
+>  			Determines the maximum allowed order for slabs.
+>  			A high setting may cause OOMs due to memory
+> diff --git a/init/Kconfig b/init/Kconfig
+> index e4e2932da237..af454a51f3c5 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1851,20 +1851,6 @@ config SLUB_DEBUG
+>  	  SLUB sysfs support. /sys/slab will not exist and there will be
+>  	  no support for cache validation etc.
+>  
+> -config SLUB_MEMCG_SYSFS_ON
+> -	default n
+> -	bool "Enable memcg SLUB sysfs support by default" if EXPERT
+> -	depends on SLUB && SYSFS && MEMCG
+> -	help
+> -	  SLUB creates a directory under /sys/kernel/slab for each
+> -	  allocation cache to host info and debug files. If memory
+> -	  cgroup is enabled, each cache can have per memory cgroup
+> -	  caches. SLUB can create the same sysfs directories for these
+> -	  caches under /sys/kernel/slab/CACHE/cgroup but it can lead
+> -	  to a very high number of debug files being created. This is
+> -	  controlled by slub_memcg_sysfs boot parameter and this
+> -	  config option determines the parameter's default value.
+> -
+>  config COMPAT_BRK
+>  	bool "Disable heap randomization"
+>  	default y
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 1b5148747c64..88782727412c 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -5040,22 +5040,6 @@ enum slab_stat_type {
+>  #define SO_OBJECTS	(1 << SL_OBJECTS)
+>  #define SO_TOTAL	(1 << SL_TOTAL)
+>  
+> -#ifdef CONFIG_MEMCG
+> -static bool memcg_sysfs_enabled = IS_ENABLED(CONFIG_SLUB_MEMCG_SYSFS_ON);
+> -
+> -static int __init setup_slub_memcg_sysfs(char *str)
+> -{
+> -	int v;
+> -
+> -	if (get_option(&str, &v) > 0)
+> -		memcg_sysfs_enabled = v;
+> -
+> -	return 1;
+> -}
+> -
+> -__setup("slub_memcg_sysfs=", setup_slub_memcg_sysfs);
+> -#endif
+> -
+>  static ssize_t show_slab_objects(struct kmem_cache *s,
+>  				 char *buf, unsigned long flags)
+>  {
+> 
 
