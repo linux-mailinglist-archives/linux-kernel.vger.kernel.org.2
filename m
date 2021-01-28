@@ -2,158 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCA3307BE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C221307BEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhA1RMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S232741AbhA1RMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232866AbhA1RKM (ORCPT
+        with ESMTP id S232894AbhA1RKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:10:12 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76ABC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:09:31 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id b17so3687084plz.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:09:31 -0800 (PST)
+        Thu, 28 Jan 2021 12:10:30 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCFAC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:09:49 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id u14so4909587wml.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:09:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Caeg7nYwaddfpIiPW5mxXkI5Uu5RyM5KiedwozcikZE=;
-        b=kGtze5/3GwcFT/3AZJdHcIB/QLvFpXnGQDkmArbs1mPGaWFZbQVBP94u4R1R2EOsMP
-         TUdOJgh9WWTeeo+RaM/ooYtexVP4OhHdYheiJxnY3IK3NLZODE3Kgl+/eFaGEqgA9FLH
-         VqPClTFEwbTiPnCWg3pSt1Y4wX/fU/ApCQ/DY=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=s+5ZOcVrkMkSDksPoofX2PKXc6/0xVmgqp42EKYccvM=;
+        b=F5y20DXl129ee2eQSw/9seNHN8aCXuQmIKBxTzW9tg07g7vDWHQuTKd5OAELmL9SQ5
+         gOi46HrADo4Np9X0LoIVBD5X33F7im0SPICNfDmM8LP3HLtmBBY/Ah3Bc6m7Mek2x6dK
+         iVujCu2P22pDGHCoY2daFtkjoN4lOmQqxdM7FLMmju9BcuC0yd1EElh6IIGwkXqpgEWd
+         p5+a0oGyff1pP2PmK5x9kCuTf94kd0Fk3jHUwUhp9LRABKf0RZDTcRAO+zzRUrYL7v7f
+         be5/t/5ChEsZ61wjy8pKE8NQuXlwo6yTinRw5pAYyQ/xOrF3X0sDiz1PjREZ+0Ygvg/K
+         WwdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Caeg7nYwaddfpIiPW5mxXkI5Uu5RyM5KiedwozcikZE=;
-        b=FsSImBeim7lNShVSFALo30p9HYaTPkvc032G5+V+cvNW69dd+XvdQhD06oCPWvypsT
-         TUtGCAb2EUfbet16e1rBE7WS3FLtFW1u1llTv6i+PRWBmUeYwDM08Hm348Z7ec6lPobn
-         NQ4fC1T/ihbxENVeujTq7ph1I6YV3UiLmpDjuC5BheaFjdv6HszwGBiAfoCbaFO7gzor
-         Z6rGg8LnM3V8kN04wFJ79hUKrl3BlNIal++XVvRlk3hWu7W2s+T7vJEtsji9O7lopp2O
-         c/NmKvUcYneyJ8UjVgrIq+NDM9R6Gwv2CojOYUCdnMqK+Cvtakq13LBrYLggm4NiOdRg
-         woiA==
-X-Gm-Message-State: AOAM530BMvTxOoW8MYHBcsFNKFxlxgJJOlMGqWnf9L0Iralbd+xDAO87
-        Y6sOwYGx7uEn4lbhdiL/EX4wuA==
-X-Google-Smtp-Source: ABdhPJx8LgNkd+vhvNVmZP/hGk1wrPuOEDEr0UPTwSrG07Y/l+KC0OifbYbxPLWeRwD4h8M6vZSoYA==
-X-Received: by 2002:a17:902:a412:b029:db:cf5a:8427 with SMTP id p18-20020a170902a412b02900dbcf5a8427mr503854plq.48.1611853771413;
-        Thu, 28 Jan 2021 09:09:31 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:304c:5453:303a:8268])
-        by smtp.gmail.com with ESMTPSA id g22sm6206654pfu.200.2021.01.28.09.09.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=s+5ZOcVrkMkSDksPoofX2PKXc6/0xVmgqp42EKYccvM=;
+        b=lJPohcYJyHhWnV+E1ddOQRwhL+f+fZoWL1POwlNl7qPahFFt39eospMe0TezQ96jGP
+         9RdgRgGKck7waa/NwEfVDeVGPGL/9KUB6APUIkQdAGHZyvxWychby/2oxAGErAiPWkz2
+         WaW7IEb1ZXzM6voDfXr/Q7EuABqd7uHc6hdMqv95UY+mvCQkZeCXs6Ve4iVIfw20p4Bp
+         jzOq0MJFvMRU3ensikatqeDqCyHrAmUI3fL77kHy4zuNYDfgsqmXjtmKjkhN0oxAjg+W
+         5a4T84lT8TWt08HPpCueunjBr/k9MjzWXpeEqCkN3JW/eGmEIjb7if6+5JDgte9I6Kll
+         E9LA==
+X-Gm-Message-State: AOAM533XU4UqIpaE6eEXsZjWj4f9Buyu2FBBm0AtXSc3/q+fwVEdrk8m
+        UULrW8DVlp+E7AZJUliVQYNwQQ==
+X-Google-Smtp-Source: ABdhPJy2gfw2+pkkOOpwbCvQI6X4ajD5WkEe0lzZ6K6tNH0R/AQzszlGjHicUAqklPPfjLZZo7dmbg==
+X-Received: by 2002:a1c:3d56:: with SMTP id k83mr215079wma.25.1611853788018;
+        Thu, 28 Jan 2021 09:09:48 -0800 (PST)
+Received: from linaro.org ([2a00:23c5:6801:1801:40:2fca:953a:e6ba])
+        by smtp.gmail.com with ESMTPSA id p15sm7622355wrt.15.2021.01.28.09.09.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 09:09:30 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Krishna Manikandan <mkrishn@codeaurora.org>
-Subject: [PATCHv2] drm/msm/kms: Make a lock_class_key for each crtc mutex
-Date:   Thu, 28 Jan 2021 09:09:29 -0800
-Message-Id: <20210128170929.3339941-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Jan 2021 09:09:47 -0800 (PST)
+From:   Mike Leach <mike.leach@linaro.org>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mathieu.poirier@linaro.org, linux-doc@vger.kernel.org,
+        suzuki.poulose@arm.com
+Cc:     yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
+        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Mike Leach <mike.leach@linaro.org>
+Subject: [PATCH v4 03/10] coresight: config: Add configuration and feature generic functions
+Date:   Thu, 28 Jan 2021 17:09:29 +0000
+Message-Id: <20210128170936.9222-4-mike.leach@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210128170936.9222-1-mike.leach@linaro.org>
+References: <20210128170936.9222-1-mike.leach@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lockdep complains about an AA deadlock when rebooting the device.
+Adds a set of generic support functions that allow devices to set and save
+features values on the device, and enable and disable configurations.
 
-============================================
-WARNING: possible recursive locking detected
-5.4.91 #1 Not tainted
---------------------------------------------
-reboot/5213 is trying to acquire lock:
-ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+Additional functions for other common operations including feature
+reset.
 
-but task is already holding lock:
-ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
-
-other info that might help us debug this:
-Possible unsafe locking scenario:
-
-CPU0
-----
-lock(&kms->commit_lock[i]);
-lock(&kms->commit_lock[i]);
-
-*** DEADLOCK ***
-
-May be due to missing lock nesting notation
-
-6 locks held by reboot/5213:
-__arm64_sys_reboot+0x148/0x2a0
-device_shutdown+0x10c/0x2c4
-drm_atomic_helper_shutdown+0x48/0xfc
-modeset_lock+0x120/0x24c
-lock_crtcs+0x60/0xa4
-
-stack backtrace:
-CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
-Hardware name: Google Pompom (rev1) with LTE (DT)
-Call trace:
-dump_backtrace+0x0/0x1dc
-show_stack+0x24/0x30
-dump_stack+0xfc/0x1a8
-__lock_acquire+0xcd0/0x22b8
-lock_acquire+0x1ec/0x240
-__mutex_lock_common+0xe0/0xc84
-mutex_lock_nested+0x48/0x58
-lock_crtcs+0x60/0xa4
-msm_atomic_commit_tail+0x348/0x570
-commit_tail+0xdc/0x178
-drm_atomic_helper_commit+0x160/0x168
-drm_atomic_commit+0x68/0x80
-
-This is because lockdep thinks all the locks taken in lock_crtcs() are
-the same lock, when they actually aren't. That's because we call
-mutex_init() in msm_kms_init() and that assigns one static key for every
-lock initialized in this loop. Let's allocate a dynamic number of
-lock_class_keys and assign them to each lock so that lockdep can figure
-out an AA deadlock isn't possible here.
-
-Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
-Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
 ---
+ drivers/hwtracing/coresight/Makefile          |   2 +-
+ .../hwtracing/coresight/coresight-config.c    | 245 ++++++++++++++++++
+ .../hwtracing/coresight/coresight-config.h    |  14 +-
+ .../hwtracing/coresight/coresight-syscfg.c    |   5 +-
+ 4 files changed, 262 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/hwtracing/coresight/coresight-config.c
 
-Changes from v1:
- * Fixed typo in commit text
-
- drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index d8151a89e163..4735251a394d 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -157,6 +157,7 @@ struct msm_kms {
- 	 * from the crtc's pending_timer close to end of the frame:
- 	 */
- 	struct mutex commit_lock[MAX_CRTCS];
-+	struct lock_class_key commit_lock_keys[MAX_CRTCS];
- 	unsigned pending_crtc_mask;
- 	struct msm_pending_timer pending_timers[MAX_CRTCS];
- };
-@@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
- {
- 	unsigned i, ret;
- 
--	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
--		mutex_init(&kms->commit_lock[i]);
-+	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
-+		lockdep_register_key(&kms->commit_lock_keys[i]);
-+		__mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
-+			     &kms->commit_lock_keys[i]);
+diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+index 4ce854c434b1..daad9f103a78 100644
+--- a/drivers/hwtracing/coresight/Makefile
++++ b/drivers/hwtracing/coresight/Makefile
+@@ -4,7 +4,7 @@
+ #
+ obj-$(CONFIG_CORESIGHT) += coresight.o
+ coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+-		coresight-sysfs.o coresight-syscfg.o
++		coresight-sysfs.o coresight-syscfg.o coresight-config.o
+ obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
+ coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
+ 		      coresight-tmc-etr.o
+diff --git a/drivers/hwtracing/coresight/coresight-config.c b/drivers/hwtracing/coresight/coresight-config.c
+new file mode 100644
+index 000000000000..6cc4b213d9b6
+--- /dev/null
++++ b/drivers/hwtracing/coresight/coresight-config.c
+@@ -0,0 +1,245 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright(C) 2020 Linaro Limited. All rights reserved.
++ * Author: Mike Leach <mike.leach@linaro.org>
++ */
++
++#include <linux/sysfs.h>
++#include "coresight-config.h"
++#include "coresight-priv.h"
++
++/*
++ * Write the value held in the register structure into the driver internal memory
++ * location.
++ */
++static void cscfg_set_reg(struct cscfg_reg_csdev *reg)
++{
++	u32 *p_val32 = (u32 *)reg->drv_store;
++	u32 tmp32 = reg->value.val32;
++
++	if (reg->value.type & CS_CFG_REG_TYPE_VAL_64BIT) {
++		*((u64 *)reg->drv_store) = reg->value.val64;
++		return;
 +	}
++
++	if (reg->value.type & CS_CFG_REG_TYPE_VAL_MASK) {
++		tmp32 = *p_val32;
++		tmp32 &= ~reg->value.mask32;
++		tmp32 |= reg->value.val32 & reg->value.mask32;
++	}
++	*p_val32 = tmp32;
++}
++
++/*
++ * Read the driver value into the reg if this is marked as one we want to save.
++ */
++static void cscfg_save_reg(struct cscfg_reg_csdev *reg)
++{
++	if (!(reg->value.type & CS_CFG_REG_TYPE_VAL_SAVE))
++		return;
++	if (reg->value.type & CS_CFG_REG_TYPE_VAL_64BIT)
++		reg->value.val64 = *(u64 *)(reg->drv_store);
++	else
++		reg->value.val32 = *(u32 *)(reg->drv_store);
++}
++
++static void cscfg_init_reg_param(struct cscfg_parameter_csdev *param_csdev,
++				 struct cscfg_reg_csdev *reg_csdev)
++{
++	param_csdev->reg = reg_csdev;
++	param_csdev->val64 = reg_csdev->value.type & CS_CFG_REG_TYPE_VAL_64BIT;
++
++	if (param_csdev->val64)
++		param_csdev->reg->value.val64 = param_csdev->current_value;
++	else
++		param_csdev->reg->value.val32 = (u32)param_csdev->current_value;
++}
++
++/* set values into the driver locations referenced in cscfg_reg_csdev */
++static int cscfg_set_on_enable(struct cscfg_feature_csdev *feat)
++{
++	int i;
++
++	spin_lock(feat->csdev_spinlock);
++	for (i = 0; i < feat->nr_regs; i++)
++		cscfg_set_reg(&feat->regs[i]);
++	spin_unlock(feat->csdev_spinlock);
++	dev_dbg(&feat->csdev->dev, "Feature %s: %s", feat->desc->name, "set on enable");
++	return 0;
++}
++
++/* copy back values from the driver locations referenced in cscfg_reg_csdev */
++static void cscfg_save_on_disable(struct cscfg_feature_csdev *feat)
++{
++	int i;
++
++	spin_lock(feat->csdev_spinlock);
++	for (i = 0; i < feat->nr_regs; i++)
++		cscfg_save_reg(&feat->regs[i]);
++	spin_unlock(feat->csdev_spinlock);
++	dev_dbg(&feat->csdev->dev, "Feature %s: %s", feat->desc->name, "save on disable");
++}
++
++/* default reset - restore default values */
++void cscfg_reset_feat(struct cscfg_feature_csdev *feat)
++{
++	struct cscfg_parameter_csdev *param_csdev;
++	struct cscfg_regval_desc *reg_desc;
++	struct cscfg_reg_csdev *reg_csdev;
++	int i;
++
++	/*
++	 * set the default values for all parameters and regs from the
++	 * relevant static descriptors.
++	 */
++	for (i = 0; i < feat->nr_params; i++)
++		feat->params[i].current_value = feat->desc->params[i].value;
++
++	for (i = 0; i < feat->nr_regs; i++) {
++		reg_desc = &feat->desc->regs[i];
++		reg_csdev = &feat->regs[i];
++		reg_csdev->value.type = reg_desc->type;
++
++		/* check if reg set from a parameter otherwise desc default */
++		if (reg_desc->type & CS_CFG_REG_TYPE_VAL_PARAM) {
++			/* for param, reg_desc->val32 is an index */
++			param_csdev = &feat->params[reg_desc->val32];
++			cscfg_init_reg_param(param_csdev, reg_csdev);
++		} else
++			reg_csdev->value.val64 = reg_desc->val64;
++	}
++}
++
++static int cscfg_update_presets(struct cscfg_config_csdev *cfg, int preset)
++{
++	int i, j, line_offset = 0, val_idx = 0, max_idx;
++	struct cscfg_parameter_csdev *param;
++	struct cscfg_feature_csdev *feat;
++	const char *name;
++	u64 val;
++
++	if (preset > cfg->desc->nr_presets)
++		return -EINVAL;
++	/*
++	 * Go through the array of features, assigning preset values to
++	 * feature parameters in the order they appear.
++	 * There should be precisely the same number of preset values as the
++	 * sum of number of parameters over all the features - but we will
++	 * ensure there is no overrun.
++	 */
++	line_offset = (preset-1) * cfg->desc->nr_total_params;
++	max_idx = cfg->desc->nr_total_params;
++	for (i = 0; i < cfg->nr_feat; i++) {
++		feat = cfg->feats[i];
++		if (!feat->nr_params)
++			continue;
++
++		for (j = 0; j < feat->nr_params; j++) {
++			param = &feat->params[j];
++			name = feat->desc->params[j].name;
++			val = cfg->desc->presets[line_offset + val_idx++];
++			if (param->val64) {
++				dev_dbg(&cfg->csdev->dev,
++					"set param %s (%lld)", name, val);
++				param->reg->value.val64 = val;
++			} else {
++				param->reg->value.val32 = (u32)val;
++				dev_dbg(&cfg->csdev->dev,
++					"set param %s (%d)", name, (u32)val);
++			}
++			if (val_idx >= max_idx)
++				break;
++		}
++
++		/* don't overrun the preset array line */
++		if (val_idx >= max_idx)
++			break;
++	}
++	return 0;
++}
++
++/*
++ * if we are not using a preset, then need to update the feature params
++ * with current values.
++ */
++static int cscfg_update_curr_params(struct cscfg_config_csdev *cfg)
++{
++	int i, j;
++	struct cscfg_feature_csdev *feat;
++	struct cscfg_parameter_csdev *param;
++	const char *name;
++	u64 val;
++
++	for (i = 0; i < cfg->nr_feat; i++) {
++		feat = cfg->feats[i];
++		if (!feat->nr_params)
++			continue;
++		for (j = 0; j < feat->nr_params; j++) {
++			param = &feat->params[j];
++			name = feat->desc->params[j].name;
++			val = param->current_value;
++			if (param->val64) {
++				dev_dbg(&cfg->csdev->dev,
++					"set param %s (%lld)", name, val);
++				param->reg->value.val64 = val;
++			} else {
++				param->reg->value.val32 = (u32)val;
++				dev_dbg(&cfg->csdev->dev,
++					"set param %s (%d)", name, (u32)val);
++			}
++		}
++	}
++	return 0;
++}
++
++static int cscfg_prog_config(struct cscfg_config_csdev *cfg, bool enable)
++{
++	int i, err = 0;
++	struct cscfg_feature_csdev *feat;
++	struct coresight_device *csdev;
++
++	for (i = 0; i < cfg->nr_feat; i++) {
++		feat = cfg->feats[i];
++		csdev = feat->csdev;
++		dev_dbg(&csdev->dev, "cfg %s;  %s feature:%s", cfg->desc->name,
++			enable ? "enable" : "disable", feat->desc->name);
++
++		if (enable)
++			err = cscfg_set_on_enable(feat);
++		else
++			cscfg_save_on_disable(feat);
++
++		if (err)
++			break;
++	}
++	return err;
++}
++
++/**
++ * Enable configuration for the device.
++ *
++ * @cfg:	config_csdev to set.
++ * @preset:	preset values to use - 0 for default.
++ */
++int cscfg_csdev_enable_config(struct cscfg_config_csdev *cfg, int preset)
++{
++	int err = 0;
++
++	if (preset)
++		err = cscfg_update_presets(cfg, preset);
++	else
++		err = cscfg_update_curr_params(cfg);
++	if (!err)
++		err = cscfg_prog_config(cfg, true);
++	if (!err)
++		cfg->enabled = true;
++	return err;
++}
++
++void cscfg_csdev_disable_config(struct cscfg_config_csdev *cfg)
++{
++	if (cfg->enabled) {
++		cscfg_prog_config(cfg, false);
++		cfg->enabled = false;
++	}
++}
+diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+index 75ecdecf7013..9d66e0071f38 100644
+--- a/drivers/hwtracing/coresight/coresight-config.h
++++ b/drivers/hwtracing/coresight/coresight-config.h
+@@ -53,7 +53,10 @@ struct cscfg_parameter_desc {
+ };
  
- 	kms->funcs = funcs;
+ /**
+- * Representation of register value.
++ * Representation of register value and a descriptor of register usage.
++ *
++ * Used as a descriptor in the feature descriptors.
++ * Used as a value in when in a feature loading into a csdev.
+  *
+  * Supports full 64 bit register value, or 32 bit value with optional mask
+  * value.
+@@ -262,4 +265,13 @@ struct cscfg_csdev_feat_ops {
+ 			 struct cscfg_feature_csdev *feat);
+ };
  
-
-base-commit: 19c329f6808995b142b3966301f217c831e7cf31
++/* coresight config helper functions*/
++
++/* enable / disable config on a device - called with appropriate locks set.*/
++int cscfg_csdev_enable_config(struct cscfg_config_csdev *cfg, int preset);
++void cscfg_csdev_disable_config(struct cscfg_config_csdev *cfg);
++
++/* reset a feature to default values */
++void cscfg_reset_feat(struct cscfg_feature_csdev *feat);
++
+ #endif /* _CORESIGHT_CORESIGHT_CONFIG_H */
+diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+index c04cea0c1db2..4b8e4e35e3e7 100644
+--- a/drivers/hwtracing/coresight/coresight-syscfg.c
++++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+@@ -198,14 +198,15 @@ static int cscfg_load_feat_csdev(struct coresight_device *csdev,
+ 	if (!feat_csdev)
+ 		return -ENOMEM;
+ 
+-	/* load the feature into the device - may modify default ops*/
++	/* load the feature into the device */
+ 	err = ops->load_feat(csdev, feat_csdev);
+ 	if (err)
+ 		return err;
+ 
+-	/* add to internal csdev feature list */
++	/* add to internal csdev feature list & initialise using reset call */
+ 	mutex_lock(&cscfg_csdev_mutex);
+ 	list_add(&feat_csdev->node, &csdev->feature_csdev_list);
++	cscfg_reset_feat(feat_csdev);
+ 	mutex_unlock(&cscfg_csdev_mutex);
+ 
+ 	return 0;
 -- 
-https://chromeos.dev
+2.17.1
 
