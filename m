@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C2B30807C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10D330807E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhA1VZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231536AbhA1VZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhA1VZB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Jan 2021 16:25:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231439AbhA1VYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53CEE64DED
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611869053;
-        bh=Qsl4p6miI7eSEd2fPPqwxKkuNXr7EicxC031HxTIdm4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IU/7AcHAxrmz2NdnSCadDiHUu2Furi9m4Bd4WCzrto8haheh3TIFhnfzh/tv5inbX
-         r+Ir/2RHqqvL6bZzJhIG1k24PCxMiIlPZ4zECjT6C8YZGbwdTds0MWmN37NGzgZnwZ
-         tB0irp9OfCaKjlAVZZrJoFz16BZDInSJ3VTMIe5hJbDEsqA4KLEkddqLANidM6bbc1
-         sw4ArMHdBM9MoY+SmrTRJn7oXSJBcn5i/ikf36J2xTReKtX9rPlKbXKr84ItLB8Ds/
-         WYu+4tzH6vubg51eId7OILUn+lqTrqs/VEL2jtN1G4wZ/bQmg2yr1pOTBQqCtFg297
-         1D3MgbFdqGHww==
-Received: by mail-oi1-f176.google.com with SMTP id d18so7638007oic.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:24:13 -0800 (PST)
-X-Gm-Message-State: AOAM533tIEKDLSXRjBGyDCrLluDAIap8DBXQV+2jMnAuHh98nDZfqD1p
-        YO6/QWX3j1LA9odIuo2Vvzu4p5omqd6eKYnY4hU=
-X-Google-Smtp-Source: ABdhPJwOZ36pLEYdLYlkAVsv4oyAMtM4K8b9iTbU4fTV0A9CPlnRCJjIlHPKvSc+vvCtKSn3S3EsTyd4oNe0FfTdOQY=
-X-Received: by 2002:aca:e103:: with SMTP id y3mr785811oig.11.1611869052544;
- Thu, 28 Jan 2021 13:24:12 -0800 (PST)
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E465C061573;
+        Thu, 28 Jan 2021 13:24:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=fgxRB7yFY7ivAGOXupxroeHkNQGIObd0cjQLTaZyhYw=; b=0xac9ZqpnG1TWzljEEoZ/wy5f0
+        s3no8nu9lr1YAChnBgqDqZldibegK2qvbyuLNKk+3P4aBm+jdOdLvzpPozBLMgnTNMOi1Q5SbKvuu
+        3FhhakkPMyyPg13ELgjujFS/WeO59RFDxbsib2Qt4kmov1/FDnrfFpFPyUG1hGtb9dgdg1yMjGnbz
+        d2ilfP6+LHj8tZeg25mI1+Mpk/yZchNKMlotQfdlJhk6/YTeBfv6i7YdjImsiumrDcL+IU7gBYCWB
+        aA1BK+9koYJ19dRSgXK9PbjzUNHKoRAEMQ+rZtn7GS4c6sImuK2eyrIMUqReU0Sfw/hgDf2HZXIC0
+        ZxGGVHlA==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l5Elz-0000qH-SA; Thu, 28 Jan 2021 21:24:16 +0000
+Subject: Re: [PATCH v2 1/3] parser: add unsigned int parser
+To:     bingjingc <bingjingc@synology.com>, viro@zeniv.linux.org.uk,
+        jack@suse.com, jack@suse.cz, axboe@kernel.dk,
+        linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, cccheng@synology.com,
+        robbieko@synology.com, willy@infradead.org
+References: <1611817983-2892-1-git-send-email-bingjingc@synology.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9e867a74-89c0-e0da-b166-e9824372e181@infradead.org>
+Date:   Thu, 28 Jan 2021 13:24:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210128044356.38419-1-ndesaulniers@google.com>
- <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com> <CAKwvOd=ORiCsvv_XQ8By8ZUe0QnzH3T6pFEwnRy65tmUsQ2yQg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=ORiCsvv_XQ8By8ZUe0QnzH3T6pFEwnRy65tmUsQ2yQg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 28 Jan 2021 22:23:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2Jxj-aEe-kk+xsEX19mHOc6LQ8O=XXCrWowAP0Vo2Kew@mail.gmail.com>
-Message-ID: <CAK8P3a2Jxj-aEe-kk+xsEX19mHOc6LQ8O=XXCrWowAP0Vo2Kew@mail.gmail.com>
-Subject: Re: [PATCH] ARM: kprobes: rewrite in UAL
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1611817983-2892-1-git-send-email-bingjingc@synology.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 7:59 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
-> On Thu, Jan 28, 2021 at 8:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > Plus a lot of extra errors when building with CONFIG_THUMB2_KERNEL,
-> > as that uses tests in arch/arm/probes/kprobes/test-thumb.c.
->
-> Technically, that's a distinctly separate issue;
-> arch/arm/probes/kprobes/test-arm.c is not built with
-> CONFIG_THUMB2_KERNEL=y.  This patch doesn't introduce those warnings;
-> that file has the same issue but it is separate from test-arm.c.
->
-> Would you prefer to see a v2 with the swpvsb fix contain fixes for
-> test-thumb.c as well, or a separate patch for that?
+On 1/27/21 11:13 PM, bingjingc wrote:
+> From: BingJing Chang <bingjingc@synology.com>
+> 
+> Will be used by fs parsing options & fix kernel-doc typos
+> 
+> Reviewed-by: Robbie Ko<robbieko@synology.com>
+> Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+> Reviewed-by: Matthew Wilcox <willy@infradead.org>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-I think either way is fine. I'd probably go with a combined patch in
-this case, since you
-are addressing the same issue in two closely related files.
+You should drop my Reviewed-by: also, until I explicitly
+reply with that.
 
-       Arnd
+> Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> ---
+>  include/linux/parser.h |  1 +
+>  lib/parser.c           | 44 +++++++++++++++++++++++++++++++++-----------
+>  2 files changed, 34 insertions(+), 11 deletions(-)
+
+The kernel-doc changes do look good. :)
+
+thanks.
+-- 
+~Randy
+
