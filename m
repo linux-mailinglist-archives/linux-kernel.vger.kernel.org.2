@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714B33077B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8891E3077B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhA1OJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:09:37 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38574 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhA1OJd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:09:33 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10SE7dmn036400;
-        Thu, 28 Jan 2021 08:07:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611842859;
-        bh=Joh8wbXrLWIP1Hy17P32/2vZurrK6zODo5//hE9WZCw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=jeoHl9/r12fK9X7G8YmvcGysHWVV5KWqnfSebw6YbB73I2de8kW9RX3YAvJlT3c95
-         Q2xWDnDch6nJ8REwEDwjj15sdF8KSEKoBG6BwQqcbVnOHeK6Tg/OsMF56HEjkM79aV
-         Z9rPQlexPOzjsXH5YX1bf25fYNdJJ70r+N+VNf/o=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10SE7dl7075177
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Jan 2021 08:07:39 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- Jan 2021 08:07:39 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 Jan 2021 08:07:39 -0600
-Received: from [10.250.39.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10SE7c12064116;
-        Thu, 28 Jan 2021 08:07:38 -0600
-Subject: Re: [PATCH 2/2] iio:adc:ti-ads124s08: Fix packet read from the ADC
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     <linux-iio@vger.kernel.org>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>
-References: <20210121191431.12057-1-dmurphy@ti.com>
- <20210121191431.12057-2-dmurphy@ti.com> <20210124151242.285ce9c6@archlinux>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <2678d74d-5357-73fc-a152-f493e0e4f80e@ti.com>
-Date:   Thu, 28 Jan 2021 08:07:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231361AbhA1OJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:09:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231349AbhA1OJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:09:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4579264D92;
+        Thu, 28 Jan 2021 14:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611842899;
+        bh=QSDli4q81ZPENBHiSIxqH32K2P7ZjDli7F2BOv1/r9U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WqWHV57+phzaVBv77u51NcPbqZi/YOFjBMwRd2KxldHHJ7XFNYT5ed5VJkH4PPvAu
+         l9bQ5NNu6pbrc+vgPpVUmfD5xWv3HnprgGCuk4swf/sZCj9BQYsgcFFe7gs/Vv6Ea6
+         jrB2s9UsnUn6uH48aXrsLo5gTlhAaNBDyy7ksKGuNcJ3Z2/TkQ2OP0OHWBrohpozPc
+         zK5VAZcNOuKY+UtFusmh1kn+3fjsJppXYfMmz4zHluuxmlfy9DAKjtLvjloeHWSCeY
+         a5DfcrGiY9VyeNBi1Yei06EntAoq/olgB7Aewv6rj45FWZDqvR9vK1ixP/Jx//xx/F
+         SVHp9W7+JhSmA==
+Received: by mail-oi1-f182.google.com with SMTP id n7so6078635oic.11;
+        Thu, 28 Jan 2021 06:08:19 -0800 (PST)
+X-Gm-Message-State: AOAM53110fbfkeFxRtDUkdWHta/K7VWXxKu3PpsBFFM4AH0+7yWEcVb+
+        3utAZcmhVLJdN94djG/CDRBvAkQ1pg0JOWZjaBA=
+X-Google-Smtp-Source: ABdhPJzwEQxEnGH8Kd9EW4py7Vh8j/97czrumYSoCX4f5UnRR+EOHFO9iBqtwIJx05MPulf7muWpeVXN8Y1iYCWgGHI=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr84273oig.67.1611842898482;
+ Thu, 28 Jan 2021 06:08:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210124151242.285ce9c6@archlinux>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201208124641.1787-1-thunder.leizhen@huawei.com>
+ <20201208124641.1787-3-thunder.leizhen@huawei.com> <CAK8P3a3xie1-rLzKY+Y3Z2VKEJkDqAco6b75Af6FgyhsnzorsA@mail.gmail.com>
+ <6010B6DE.4060202@hisilicon.com>
+In-Reply-To: <6010B6DE.4060202@hisilicon.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 28 Jan 2021 15:08:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a31po51NtRhuMsruy2nbqhjguyGP8ZcXwPAwwEiGtLBkg@mail.gmail.com>
+Message-ID: <CAK8P3a31po51NtRhuMsruy2nbqhjguyGP8ZcXwPAwwEiGtLBkg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] arm64: dts: correct vendor prefix hisi to hisilicon
+To:     Wei Xu <xuwei5@hisilicon.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan
-
-On 1/24/21 9:12 AM, Jonathan Cameron wrote:
-> On Thu, 21 Jan 2021 13:14:31 -0600
-> Dan Murphy <dmurphy@ti.com> wrote:
+On Wed, Jan 27, 2021 at 1:42 AM Wei Xu <xuwei5@hisilicon.com> wrote:
+> On 2021/1/27 6:23, Arnd Bergmann wrote:
+> > On Tue, Dec 8, 2020 at 1:46 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >>
+> >> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
+> >> stated in "vendor-prefixes.yaml".
+> >>
+> >> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
+> >> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> Cc: Chen Feng <puck.chen@hisilicon.com>
+> >> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >
+> > I see this change in the pull request I got, but I'm a bit worried about the
+> > incompatible binding change. Wouldn't the correct path forward be to
+> > list both the correct and the incorrect properties, both in the dts file
+> > and in the driver that interprets the properties?
 >
->> Fix the spi_transfer array in the reading of the data from the ADC.
->>
->> Fixes: ("e717f8c6dfec iio: adc: Add the TI ads124s08 ADC code")
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> I'm not really following the changes below..
+> Thanks for the comment!
+> The reset driver will look for "hisilicon" firstly and fall back to "hisi".
+> And the DTS is shipped with the driver together.
+> So I think there is no compatible issue here.
+> Please let me know if missed anything. Thanks!
 
-I will have to dig into it deeper our HW team reported this.
+There are three things that can go wrong here, and this is only addressing
+one of them:
 
-Patch 1/2 is relevant and is not dependent on this patch
+1. Updating the kernel on a machine with a dtb provided by the firmware
+  is a problem if the new driver can not handle the old properties. This
+  is correctly handled by the driver's fallback as soon as both trees
+  are merged.
 
-Dan
+2. Updating the dtb while running an older kernel is now broken since
+  the driver can no longer read the property. This is less critical, but
+  it does seem easy enough to work around here by leaving both
+  properties in place.
 
+3. Bisecting through the git history across an incompatible change
+  means you can run into broken commits. We try hard to avoid that
+  if we are aware of a problem in advance. In this case it could be
+  avoided by only merging the incompatible DT change in a following
+  merge window after the driver change, or (better) by making it
+  a backward-compatible change the same way as addressing 2.
+
+         Arnd
