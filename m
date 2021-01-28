@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C88307A25
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D820F307A2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhA1P5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:57:32 -0500
-Received: from gentwo.org ([3.19.106.255]:44642 "EHLO gentwo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229885AbhA1P53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:57:29 -0500
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 70A813F4C1; Thu, 28 Jan 2021 15:56:36 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 6DA583F461;
-        Thu, 28 Jan 2021 15:56:36 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 15:56:36 +0000 (UTC)
-From:   Christoph Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Michal Hocko <mhocko@suse.com>
-cc:     Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-In-Reply-To: <YBLA7sEKn01HXd/U@dhcp22.suse.cz>
-Message-ID: <alpine.DEB.2.22.394.2101281549390.11861@www.lameter.com>
-References: <20210121122723.3446-1-rppt@kernel.org> <20210121122723.3446-8-rppt@kernel.org> <20210126114657.GL827@dhcp22.suse.cz> <303f348d-e494-e386-d1f5-14505b5da254@redhat.com> <20210126120823.GM827@dhcp22.suse.cz> <20210128092259.GB242749@kernel.org>
- <YBK1kqL7JA7NePBQ@dhcp22.suse.cz> <alpine.DEB.2.22.394.2101281326360.10563@www.lameter.com> <YBLA7sEKn01HXd/U@dhcp22.suse.cz>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S231859AbhA1P7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:59:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43675 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231245AbhA1P7o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 10:59:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611849498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Be25vmGqRhkmgPL4pLFQDcyJCsUHDsc9RcG0TdvFtds=;
+        b=BlX8AZwkW5F8HnXZbenM35tXQKisYp4hEIaaYStfLo1GQHKrjI/2ecBsVIb6GwA1dE/aZk
+        06cqWUcUOMstUtNvYBmVCJAOyJqdb0eYjg31Q/V748j8jrvx3Qiejt/U+7vgX11wi8CMcR
+        wclfhyfgiy61DOPGAPmLARWUdlas+Ek=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-zf5yUEjJOB2hIravAJ_WXA-1; Thu, 28 Jan 2021 10:58:14 -0500
+X-MC-Unique: zf5yUEjJOB2hIravAJ_WXA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D4AB180A096;
+        Thu, 28 Jan 2021 15:58:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 056845D9F4;
+        Thu, 28 Jan 2021 15:58:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <8f0c3b88-872a-bbae-eaa2-1467b6f386a0@linux.vnet.ibm.com>
+References: <8f0c3b88-872a-bbae-eaa2-1467b6f386a0@linux.vnet.ibm.com> <20210122181054.32635-1-eric.snowberg@oracle.com> <20210122181054.32635-2-eric.snowberg@oracle.com> <399024a1-59fb-12b8-9ea9-9bbee843dbc8@linux.vnet.ibm.com> <13EE0575-2F90-4C49-AF5D-365B63D2CB64@oracle.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>
+Cc:     dhowells@redhat.com, Eric Snowberg <eric.snowberg@oracle.com>,
+        dwmw2@infradead.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, zohar@linux.ibm.com, lszubowi@redhat.com,
+        javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v5 1/4] certs: Add EFI_CERT_X509_GUID support for dbx entries
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3579294.1611849483.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 28 Jan 2021 15:58:03 +0000
+Message-ID: <3579295.1611849483@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021, Michal Hocko wrote:
+Nayna <nayna@linux.vnet.ibm.com> wrote:
 
-> > > If you kill the allocating process then yes, it would work, but your
-> > > process might be the very last to be selected.
-> >
-> > OOMs are different if you have a "constrained allocation". In that case it
-> > is the fault of the process who wanted memory with certain conditions.
-> > That memory is not available. General memory is available though. In that
-> > case the allocating process is killed.
->
-> I do not see this implementation would do anything like that. Neither
-> anything like that implemented in the oom killer. Constrained
-> allocations (cpusets/memcg/mempolicy) only do restrict their selection
-> to processes which belong to the same domain. So I am not really sure
-> what you are referring to. The is only a global knob to _always_ kill
-> the allocating process on OOM.
+> Thanks Eric for clarifying. I was confusing it with with the broader mea=
+ning
+> of revocation i.e. certificate revocation list. To avoid similar confusi=
+on in
+> the future, I wonder if we should call it as 'blocklist' or 'denylist' a=
+s
+> suggested in the document. This is to avoid conflicts with actual CRL su=
+pport
+> if added in the future. I also wonder if we should add the clarification=
+ in
+> the patch description.
 
-Constrained allocations refer to allocations where the NUMA nodes are
-restricted or something else does not allow the use of arbitrary memory.
-The OOM killer changes its behavior. In the past we fell back to killing
-the calling process.
+Reject-list might be better.
 
-See constrained_alloc() in mm/oom_kill.c
-
-static const char * const oom_constraint_text[] = {
-        [CONSTRAINT_NONE] = "CONSTRAINT_NONE",
-        [CONSTRAINT_CPUSET] = "CONSTRAINT_CPUSET",
-        [CONSTRAINT_MEMORY_POLICY] = "CONSTRAINT_MEMORY_POLICY",
-        [CONSTRAINT_MEMCG] = "CONSTRAINT_MEMCG",
-};
-
-/*
- * Determine the type of allocation constraint.
- */
-static enum oom_constraint constrained_alloc(struct oom_control *oc)
-{
+David
 
