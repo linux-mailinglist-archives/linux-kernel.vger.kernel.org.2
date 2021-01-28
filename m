@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E173080AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B798B30809E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhA1Vmv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 16:42:51 -0500
-Received: from wnbcorp.com ([175.126.38.143]:49775 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229658AbhA1Vms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:42:48 -0500
-Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10SLZdc3005772;
-        Fri, 29 Jan 2021 06:37:51 +0900
-Message-Id: <202101282137.10SLZdc3005772@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Thu, 28 Jan 2021 22:37:31 +0100
-Reply-To: johnsonwilson389@gmail.com
+        id S231339AbhA1ViQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:38:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229677AbhA1ViP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 16:38:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C20F064DD8;
+        Thu, 28 Jan 2021 21:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1611869854;
+        bh=PduBNW8cMfaTTP3RvrDhtDpwFami5KR30wb6tkJcODI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p7GDh/fK8k5tGcOJocJr1cWChrHNE8GeXPhRP6prTO+tLEBZviBoh4SEpKEu0lOeM
+         cH4RFgVrc8J/fD7ukA+pDnIwi45bLagoKoeP72V7ldoACFGnX+cML3tD6l2+yGqIVQ
+         FChBUSsQnf2c+bA8amD1up7bWwCK77zcweeOXDMU=
+Date:   Thu, 28 Jan 2021 13:37:33 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: Re: [PATCH v3 3/5] hugetlb: only set HPageMigratable for migratable
+ hstates
+Message-Id: <20210128133733.ce1fb2eac98ab5696c08f288@linux-foundation.org>
+In-Reply-To: <20210128055221.GA3166@localhost.localdomain>
+References: <20210122195231.324857-1-mike.kravetz@oracle.com>
+        <20210122195231.324857-4-mike.kravetz@oracle.com>
+        <20210127103523.GI827@dhcp22.suse.cz>
+        <2196d93e-f573-7163-183e-0ad2cec7555e@oracle.com>
+        <20210128055221.GA3166@localhost.localdomain>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Thu, 28 Jan 2021 06:52:21 +0100 Oscar Salvador <osalvador@suse.de> wrote:
 
-Sir/Madam,
+> On Wed, Jan 27, 2021 at 03:36:41PM -0800, Mike Kravetz wrote:
+> > Yes, this patch is somewhat optional.  It should be a minor improvement
+> > in cases where we are dealing with hpages in a non-migratable hstate.
+> > Although, I do not believe this is the common case.
+> > 
+> > The real reason for even looking into this was a comment by Oscar.  With
+> > the name change to HPageMigratable, it implies that the page is migratable.
+> > However, this is not the case if the page's hstate does not support migration.
+> > So, if we check the hstate when setting the flag we can eliminate those
+> > cases where the page is certainly not migratable.
+> > 
+> > I don't really love this patch.  It has minimal functional value.
+> > 
+> > Oscar, what do you think about dropping this?
+> 
+> Yeah, I remember this topic arose during a discussion of patch#2 in the
+> early versions, about whether the renaming to HPageMigratable made
+> sense.
+> 
+> Back then I thought that we could have this in one place at fault-path [1],
+> which should have made this prettier, but it is not the case.
+> True is that the optimization is little, so I am fine with dropping this
+> patch.
 
-CONGRATULATIONS!!!
+I've dropped it.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+> unmap_and_move_huge_page() fences off pages belonging to non-migratable
+> hstates.
+> 
+> [1] https://patchwork.kernel.org/project/linux-mm/patch/20210120013049.311822-3-mike.kravetz@oracle.com/#23914033
 
