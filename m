@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663BA307586
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE87730758C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhA1MGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:06:07 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11460 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhA1MFY (ORCPT
+        id S231608AbhA1MHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:07:03 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12341 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhA1MFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:05:24 -0500
+        Thu, 28 Jan 2021 07:05:30 -0500
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRJz10xH6zjDM6;
-        Thu, 28 Jan 2021 20:03:41 +0800 (CST)
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DRJyr3n8Bz7cGb;
+        Thu, 28 Jan 2021 20:03:32 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
  14.3.498.0; Thu, 28 Jan 2021 20:04:34 +0800
@@ -26,9 +26,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <james.clark@arm.com>,
         <linuxarm@openeuler.org>, <nakamura.shun@fujitsu.com>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 1/4] perf vendor events arm64: Fix Ampere eMag event typo
-Date:   Thu, 28 Jan 2021 20:00:33 +0800
-Message-ID: <1611835236-34696-2-git-send-email-john.garry@huawei.com>
+Subject: [PATCH v2 2/4] perf vendor events arm64: Add common and uarch event JSON
+Date:   Thu, 28 Jan 2021 20:00:34 +0800
+Message-ID: <1611835236-34696-3-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1611835236-34696-1-git-send-email-john.garry@huawei.com>
 References: <1611835236-34696-1-git-send-email-john.garry@huawei.com>
@@ -40,27 +40,277 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "briefdescription" for event 0x35 has a typo - fix it.
+Add a common and microarch JSON, which can be referenced from CPU JSONs.
 
-Fixes: d35c595bf005 ("perf vendor events arm64: Revise core JSON events for eMAG")
+For now, brief and public description are as event brief event
+description from the ARMv8 ARM [0], D7-11.
+
+The list of events is not complete, as not all events will be referenced
+yet.
+
+Reference document is at the following:
+[0] https://documentation-service.arm.com/static/5fa3bd1eb209f547eebd4141?token=
+
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../arm64/armv8-common-and-microarch.json     | 248 ++++++++++++++++++
+ 1 file changed, 248 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
 
-diff --git a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-index 40010a8724b3..ce6e7e796057 100644
---- a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-+++ b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-@@ -114,7 +114,7 @@
-         "PublicDescription": "Level 2 access to instruciton TLB that caused a page table walk. This event counts on any instruciton access which causes L2I_TLB_REFILL to count",
-         "EventCode": "0x35",
-         "EventName": "L2I_TLB_ACCESS",
--        "BriefDescription": "L2D TLB access"
-+        "BriefDescription": "L2I TLB access"
-     },
-     {
-         "PublicDescription": "Branch target buffer misprediction",
+diff --git a/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+new file mode 100644
+index 000000000000..75376c7cc072
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+@@ -0,0 +1,248 @@
++[
++    {
++        "PublicDescription": "Instruction architecturally executed, Condition code check pass, software increment",
++        "EventCode": "0x00",
++        "EventName": "SW_INCR",
++        "BriefDescription": "Instruction architecturally executed, Condition code check pass, software increment"
++    },
++    {
++        "PublicDescription": "Level 1 instruction cache refill",
++        "EventCode": "0x01",
++        "EventName": "L1I_CACHE_REFILL",
++        "BriefDescription": "Level 1 instruction cache refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 instruction TLB refill",
++        "EventCode": "0x02",
++        "EventName": "L1I_TLB_REFILL",
++        "BriefDescription": "Attributable Level 1 instruction TLB refill"
++    },
++    {
++        "PublicDescription": "Level 1 data cache refill",
++        "EventCode": "0x03",
++        "EventName": "L1D_CACHE_REFILL",
++        "BriefDescription": "Level 1 data cache refill"
++    },
++    {
++        "PublicDescription": "Level 1 data cache access",
++        "EventCode": "0x04",
++        "EventName": "L1D_CACHE",
++        "BriefDescription": "Level 1 data cache access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 data TLB refill",
++        "EventCode": "0x05",
++        "EventName": "L1D_TLB_REFILL",
++        "BriefDescription": "Attributable Level 1 data TLB refill"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed",
++        "EventCode": "0x08",
++        "EventName": "INST_RETIRED",
++        "BriefDescription": "Instruction architecturally executed"
++    },
++    {
++        "PublicDescription": "Exception taken",
++        "EventCode": "0x09",
++        "EventName": "EXC_TAKEN",
++        "BriefDescription": "Exception taken"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, condition check pass, exception return",
++        "EventCode": "0x0a",
++        "EventName": "EXC_RETURN",
++        "BriefDescription": "Instruction architecturally executed, condition check pass, exception return"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, condition code check pass, write to CONTEXTIDR",
++        "EventCode": "0x0b",
++        "EventName": "CID_WRITE_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, condition code check pass, write to CONTEXTIDR"
++    },
++    {
++        "PublicDescription": "Mispredicted or not predicted branch speculatively executed",
++        "EventCode": "0x10",
++        "EventName": "BR_MIS_PRED",
++        "BriefDescription": "Mispredicted or not predicted branch speculatively executed"
++    },
++    {
++        "PublicDescription": "Cycle",
++        "EventCode": "0x11",
++        "EventName": "CPU_CYCLES",
++        "BriefDescription": "Cycle"
++    },
++    {
++        "PublicDescription": "Predictable branch speculatively executed",
++        "EventCode": "0x12",
++        "EventName": "BR_PRED",
++        "BriefDescription": "Predictable branch speculatively executed"
++    },
++    {
++        "PublicDescription": "Data memory access",
++        "EventCode": "0x13",
++        "EventName": "MEM_ACCESS",
++        "BriefDescription": "Data memory access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 instruction cache access",
++        "EventCode": "0x14",
++        "EventName": "L1I_CACHE",
++        "BriefDescription": "Attributable Level 1 instruction cache access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 data cache write-back",
++        "EventCode": "0x15",
++        "EventName": "L1D_CACHE_WB",
++        "BriefDescription": "Attributable Level 1 data cache write-back"
++    },
++    {
++        "PublicDescription": "Level 2 data cache access",
++        "EventCode": "0x16",
++        "EventName": "L2D_CACHE",
++        "BriefDescription": "Level 2 data cache access"
++    },
++    {
++        "PublicDescription": "Level 2 data refill",
++        "EventCode": "0x17",
++        "EventName": "L2D_CACHE_REFILL",
++        "BriefDescription": "Level 2 data refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data cache write-back",
++        "EventCode": "0x18",
++        "EventName": "L2D_CACHE_WB",
++        "BriefDescription": "Attributable Level 2 data cache write-back"
++    },
++    {
++        "PublicDescription": "Attributable Bus access",
++        "EventCode": "0x19",
++        "EventName": "BUS_ACCESS",
++        "BriefDescription": "Attributable Bus access"
++    },
++    {
++        "PublicDescription": "Local memory error",
++        "EventCode": "0x1a",
++        "EventName": "MEMORY_ERROR",
++        "BriefDescription": "Local memory error"
++    },
++    {
++        "PublicDescription": "Operation speculatively executed",
++        "EventCode": "0x1b",
++        "EventName": "INST_SPEC",
++        "BriefDescription": "Operation speculatively executed"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, Condition code check pass, write to TTBR",
++        "EventCode": "0x1c",
++        "EventName": "TTBR_WRITE_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, Condition code check pass, write to TTBR"
++    },
++    {
++        "PublicDescription": "Bus cycle",
++        "EventCode": "0x1D",
++        "EventName": "BUS_CYCLES",
++        "BriefDescription": "Bus cycle"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data cache allocation without refill",
++        "EventCode": "0x20",
++        "EventName": "L2D_CACHE_ALLOCATE",
++        "BriefDescription": "Attributable Level 2 data cache allocation without refill"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, branch",
++        "EventCode": "0x21",
++        "EventName": "BR_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, branch"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, mispredicted branch",
++        "EventCode": "0x22",
++        "EventName": "BR_MIS_PRED_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, mispredicted branch"
++    },
++    {
++        "PublicDescription": "No operation issued because of the frontend",
++        "EventCode": "0x23",
++        "EventName": "STALL_FRONTEND",
++        "BriefDescription": "No operation issued because of the frontend"
++    },
++    {
++        "PublicDescription": "No operation issued due to the backend",
++        "EventCode": "0x24",
++        "EventName": "STALL_BACKEND",
++        "BriefDescription": "No operation issued due to the backend"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 data or unified TLB access",
++        "EventCode": "0x25",
++        "EventName": "L1D_TLB",
++        "BriefDescription": "Attributable Level 1 data or unified TLB access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 instruction TLB access",
++        "EventCode": "0x26",
++        "EventName": "L1I_TLB",
++        "BriefDescription": "Attributable Level 1 instruction TLB access"
++    },
++    {
++        "PublicDescription": "Attributable Level 3 data cache allocation without refill",
++        "EventCode": "0x29",
++        "EventName": "L3D_CACHE_ALLOCATE",
++        "BriefDescription": "Attributable Level 3 data cache allocation without refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 3 data cache refill",
++        "EventCode": "0x2A",
++        "EventName": "L3D_CACHE_REFILL",
++        "BriefDescription": "Attributable Level 3 data cache refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 3 data cache access",
++        "EventCode": "0x2B",
++        "EventName": "L3D_CACHE",
++        "BriefDescription": "Attributable Level 3 data cache access"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data TLB refill",
++        "EventCode": "0x2D",
++        "EventName": "L2D_TLB_REFILL",
++        "BriefDescription": "Attributable Level 2 data TLB refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data or unified TLB access",
++        "EventCode": "0x2F",
++        "EventName": "L2D_TLB",
++        "BriefDescription": "Attributable Level 2 data or unified TLB access"
++    },
++    {
++        "PublicDescription": "Access to another socket in a multi-socket system",
++        "EventCode": "0x31",
++        "EventName": "REMOTE_ACCESS",
++        "BriefDescription": "Access to another socket in a multi-socket system"
++    },
++    {
++        "PublicDescription": "Access to data TLB causes a translation table walk",
++        "EventCode": "0x34",
++        "EventName": "DTLB_WALK",
++        "BriefDescription": "Access to data TLB causes a translation table walk"
++    },
++    {
++        "PublicDescription": "Access to instruction TLB that causes a translation table walk",
++        "EventCode": "0x35",
++        "EventName": "ITLB_WALK",
++        "BriefDescription": "Access to instruction TLB that causes a translation table walk"
++    },
++    {
++        "PublicDescription": "Attributable Last level cache memory read",
++        "EventCode": "0x36",
++        "EventName": "LL_CACHE_RD",
++        "BriefDescription": "Attributable Last level cache memory read"
++    },
++    {
++        "PublicDescription": "Last level cache miss, read",
++        "EventCode": "0x37",
++        "EventName": "LL_CACHE_MISS_RD",
++        "BriefDescription": "Last level cache miss, read"
++    }
++]
 -- 
 2.26.2
 
