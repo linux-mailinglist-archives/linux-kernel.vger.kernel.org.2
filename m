@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A835306B0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9679306B00
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhA1CWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 21:22:37 -0500
-Received: from m12-18.163.com ([220.181.12.18]:56237 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231230AbhA1CV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 21:21:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=jiZho
-        EVTW/lCYKd8Ruwn3xN+HZWEAkjKH956OKc2B44=; b=cqCqvLo1i7XaRCL3rDNOP
-        a5Cwbf3qY0fCfSAKD8ELLk8DOtvs92OIpMrhzhW7ryJTkMa0zQaH1suXFMv3Vi3f
-        LcnzjZPamR9PrGpr585HpGRnftUE2JxCB/Wis6fqDEr0qXvyoI5wtHMpWRUoOI4J
-        MHrBoswCkYXjygZGLAINo0=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowAD3z80cHxJgPpqARQ--.46368S2;
-        Thu, 28 Jan 2021 10:19:13 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     jic23@kernel.org, lars@metafoo.de, Michael.Hennerich@analog.com,
-        pmeerw@pmeerw.net
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] iio: fix typo
-Date:   Thu, 28 Jan 2021 10:19:05 +0800
-Message-Id: <20210128021905.963-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAD3z80cHxJgPpqARQ--.46368S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFWUXFyruF43GryDJw18Krg_yoW3WrbE9w
-        18AFn5WF1rurW0yrWaqrnxZr9a9a4UWrs7Z3Z2gayakFyUZFZ5Zrykur47Zr18XF4UGF1D
-        Zrn0gF9YyFnxGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe0tC5UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRQEoiVPAJzE6bQAAs3
+        id S231153AbhA1CUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 21:20:08 -0500
+Received: from mail.synology.com ([211.23.38.101]:48752 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229578AbhA1CUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 21:20:05 -0500
+Received: from localhost.localdomain (unknown [10.17.32.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by synology.com (Postfix) with ESMTPSA id DD728CE781CA;
+        Thu, 28 Jan 2021 10:19:23 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1611800363; bh=WxOuNU7pk5AdClNDp7CD6pHne9N33altWiuk+MKNGVY=;
+        h=From:To:Cc:Subject:Date;
+        b=RRGwCVTb4JAxGxIYaRwftgX86SR0CP+Q3Jg476yploIobhLHcPsKpEcrBHP2Nz2Hb
+         bOqMGffeQaRcu8qzlPPyK9sI8U0ew/4FffgM9gFiYLjmPe+8zOW5B1yv4yXYtlIwPp
+         ql+HWpS4fIIa9zRoRYGQaVVqbHWni9xuKRGnGCsg=
+From:   bingjingc <bingjingc@synology.com>
+To:     viro@zeniv.linux.org.uk, jack@suse.com, jack@suse.cz,
+        axboe@kernel.dk, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, cccheng@synology.com,
+        bingjingc@synology.com, robbieko@synology.com
+Subject: [PATCH 1/3] isofs: handle large user and group ID
+Date:   Thu, 28 Jan 2021 10:19:14 +0800
+Message-Id: <1611800354-9635-1-git-send-email-bingjingc@synology.com>
+X-Mailer: git-send-email 2.7.4
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+From: BingJing Chang <bingjingc@synology.com>
 
-change 'regster' to 'register'
+If uid or gid of mount options is larger than INT_MAX, isofs_fill_super
+will return -EINVAL.
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+The problem can be encountered by a domain user or reproduced via:
+mount -o loop,uid=2147483648 ubuntu-16.04.6-server-amd64.iso /mnt
+
+This can be fixed as commit 233a01fa9c4c ("fuse: handle large user and
+group ID").
+
+Reviewed-by: Robbie Ko <robbieko@synology.com>
+Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+Signed-off-by: BingJing Chang <bingjingc@synology.com>
 ---
- drivers/iio/dac/ad5791.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/isofs/inode.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/dac/ad5791.c b/drivers/iio/dac/ad5791.c
-index e3ffa4b..615d72c 100644
---- a/drivers/iio/dac/ad5791.c
-+++ b/drivers/iio/dac/ad5791.c
-@@ -76,7 +76,7 @@ struct ad5791_chip_info {
-  * @chip_info:		chip model specific constants
-  * @vref_mv:		actual reference voltage used
-  * @vref_neg_mv:	voltage of the negative supply
-- * @ctrl:		control regster cache
-+ * @ctrl:		control register cache
-  * @pwr_down_mode:	current power down mode
-  * @pwr_down:		true if device is powered down
-  * @data:		spi transfer buffers
+diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
+index ec90773..342ac19 100644
+--- a/fs/isofs/inode.c
++++ b/fs/isofs/inode.c
+@@ -335,10 +335,23 @@ static const match_table_t tokens = {
+ 	{Opt_err, NULL}
+ };
+ 
++static int isofs_match_uint(substring_t *s, unsigned int *res)
++{
++	int err = -ENOMEM;
++	char *buf = match_strdup(s);
++
++	if (buf) {
++		err = kstrtouint(buf, 10, res);
++		kfree(buf);
++	}
++	return err;
++}
++
+ static int parse_options(char *options, struct iso9660_options *popt)
+ {
+ 	char *p;
+ 	int option;
++	unsigned int uv;
+ 
+ 	popt->map = 'n';
+ 	popt->rock = 1;
+@@ -434,17 +447,17 @@ static int parse_options(char *options, struct iso9660_options *popt)
+ 		case Opt_ignore:
+ 			break;
+ 		case Opt_uid:
+-			if (match_int(&args[0], &option))
++			if (isofs_match_uint(&args[0], &uv))
+ 				return 0;
+-			popt->uid = make_kuid(current_user_ns(), option);
++			popt->uid = make_kuid(current_user_ns(), uv);
+ 			if (!uid_valid(popt->uid))
+ 				return 0;
+ 			popt->uid_set = 1;
+ 			break;
+ 		case Opt_gid:
+-			if (match_int(&args[0], &option))
++			if (isofs_match_uint(&args[0], &uv))
+ 				return 0;
+-			popt->gid = make_kgid(current_user_ns(), option);
++			popt->gid = make_kgid(current_user_ns(), uv);
+ 			if (!gid_valid(popt->gid))
+ 				return 0;
+ 			popt->gid_set = 1;
 -- 
-1.9.1
-
+2.7.4
 
