@@ -2,325 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B30430729E
+	by mail.lfdr.de (Postfix) with ESMTP id BBD5930729F
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhA1J01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:26:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
+        id S232570AbhA1J1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:27:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232539AbhA1JWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:22:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6711064DD1;
-        Thu, 28 Jan 2021 09:22:10 +0000 (UTC)
+        id S232046AbhA1JYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:24:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDB2664DBD;
+        Thu, 28 Jan 2021 09:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611825731;
-        bh=ruB+cuYFcpOSpt/iG3Ocvmwf2Zx1+L94SacAJeQm1QM=;
+        s=k20201202; t=1611825798;
+        bh=wFG5EhdlVFCwH+afpQDALNPmvIOm44hDKteic5pytDI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NOvmYdFsLdE3C8AQHednz7ER/IbwKHAlvBUxU0X5RsTEStTVPTUJ8B/n5fH6Eowi7
-         P9ceO/ukCoXxBuQabq2J5eAjMkGMihusqwY3/KO0Kufn4oUW5IeJiUzsVfQnL2Z+Yz
-         P7XRT55/ohk4MvHyaO13oga6hKodB4HeXWbCMq6orznAn9j/cFIYU/T7x+2m8gHpcK
-         taBBakuudZf/34Rqam15BW5gtZzOTD8TDDJb8YERGM4GviZ8evsX3AW0VQdmhD0xav
-         yAIRPcrYueNC2XlCNB3kt5uu3E66HRp/hOTxpY/AfEr/loLhqh6bZ/6IyAs87awG4D
-         pOpjKvq3KiEhw==
-Date:   Thu, 28 Jan 2021 10:22:08 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-i2c@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] i2c: mv64xxx: Add runtime PM support
-Message-ID: <20210128092208.GL963@ninjato>
-References: <20210103105146.33835-1-samuel@sholland.org>
+        b=rxsJaJjU3sN48PyjZmsBwjDAMzpV1mSDumbq6Vyhy1ylEqh17Y4BWGasGmEKM8wGb
+         FFiXgqi9YKa2UW585N4J/UJUUiMSsvRqdthQ8lWnluP+x5F7LzK94JTif6Q9PlN4Qp
+         0vTd4DdZTyxQs/VSO/swnV8HFYZgo19Bwx/Pip182+f3Fb3AxlbTFLjCdj8TdrjWSX
+         h/qZFSgYAfnmiXoEsb6t5X8uFqRtKIMlLzCTMEcmb/dlZipJDPSJ67u+u2XAzNKw+U
+         FwH99yq1Pt4VruScF6VwyzEABEVF5UHEXyz20348tQsQVXLyUoh3LOrNAXJp3tqz74
+         76PCZTZpxL6Hg==
+Date:   Thu, 28 Jan 2021 11:22:59 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20210128092259.GB242749@kernel.org>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-8-rppt@kernel.org>
+ <20210126114657.GL827@dhcp22.suse.cz>
+ <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
+ <20210126120823.GM827@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jtcAeju3WzRmRF+o"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210103105146.33835-1-samuel@sholland.org>
+In-Reply-To: <20210126120823.GM827@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 26, 2021 at 01:08:23PM +0100, Michal Hocko wrote:
+> On Tue 26-01-21 12:56:48, David Hildenbrand wrote:
+> > On 26.01.21 12:46, Michal Hocko wrote:
+> > > On Thu 21-01-21 14:27:19, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > Removing a PAGE_SIZE page from the direct map every time such page is
+> > > > allocated for a secret memory mapping will cause severe fragmentation of
+> > > > the direct map. This fragmentation can be reduced by using PMD-size pages
+> > > > as a pool for small pages for secret memory mappings.
+> > > > 
+> > > > Add a gen_pool per secretmem inode and lazily populate this pool with
+> > > > PMD-size pages.
+> > > > 
+> > > > As pages allocated by secretmem become unmovable, use CMA to back large
+> > > > page caches so that page allocator won't be surprised by failing attempt to
+> > > > migrate these pages.
+> > > > 
+> > > > The CMA area used by secretmem is controlled by the "secretmem=" kernel
+> > > > parameter. This allows explicit control over the memory available for
+> > > > secretmem and provides upper hard limit for secretmem consumption.
+> > > 
+> > > OK, so I have finally had a look at this closer and this is really not
+> > > acceptable. I have already mentioned that in a response to other patch
+> > > but any task is able to deprive access to secret memory to other tasks
+> > > and cause OOM killer which wouldn't really recover ever and potentially
+> > > panic the system. Now you could be less drastic and only make SIGBUS on
+> > > fault but that would be still quite terrible. There is a very good
+> > > reason why hugetlb implements is non-trivial reservation system to avoid
+> > > exactly these problems.
 
---jtcAeju3WzRmRF+o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So, if I understand your concerns correct this implementation has two
+issues:
+1) allocation failure at page fault that causes unrecoverable OOM and
+2) a possibility for an unprivileged user to deplete secretmem pool and
+cause (1) to others
 
-On Sun, Jan 03, 2021 at 04:51:46AM -0600, Samuel Holland wrote:
-> To save power, gate the clock when the bus is inactive, during system
-> sleep, and during shutdown. On some platforms, specifically Allwinner
-> A13/A20, gating the clock implicitly resets the module as well. Since
-> the module already needs to be reset after some suspend/resume cycles,
-> it is simple enough to reset it during every runtime suspend/resume.
->=20
-> Because the bus may be used by wakeup source IRQ threads, it needs to
-> be functional as soon as IRQs are enabled. Thus, its system PM hooks
-> need to run in the noirq phase.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+I'm not really familiar with OOM internals, but when I simulated an
+allocation failure in my testing only the allocating process and it's
+parent were OOM-killed and then the system continued normally. 
 
-Gregory, what do you think?
+You are right, it would be better if we SIGBUS instead of OOM but I don't
+agree SIGBUS is terrible. As we started to draw parallels with hugetlbfs
+even despite it's complex reservation system, hugetlb_fault() may fail to
+allocate pages from CMA and this still will cause SIGBUS.
 
-> ---
->  drivers/i2c/busses/i2c-mv64xxx.c | 120 ++++++++++++++++++++-----------
->  1 file changed, 78 insertions(+), 42 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv=
-64xxx.c
-> index 5cfe70aedced..b03c344323d1 100644
-> --- a/drivers/i2c/busses/i2c-mv64xxx.c
-> +++ b/drivers/i2c/busses/i2c-mv64xxx.c
-> @@ -18,6 +18,7 @@
->  #include <linux/mv643xx_i2c.h>
->  #include <linux/platform_device.h>
->  #include <linux/pinctrl/consumer.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
-> @@ -717,6 +718,10 @@ mv64xxx_i2c_xfer(struct i2c_adapter *adap, struct i2=
-c_msg msgs[], int num)
->  	struct mv64xxx_i2c_data *drv_data =3D i2c_get_adapdata(adap);
->  	int rc, ret =3D num;
-> =20
-> +	rc =3D pm_runtime_resume_and_get(&adap->dev);
-> +	if (rc)
-> +		return rc;
-> +
->  	BUG_ON(drv_data->msgs !=3D NULL);
->  	drv_data->msgs =3D msgs;
->  	drv_data->num_msgs =3D num;
-> @@ -732,6 +737,9 @@ mv64xxx_i2c_xfer(struct i2c_adapter *adap, struct i2c=
-_msg msgs[], int num)
->  	drv_data->num_msgs =3D 0;
->  	drv_data->msgs =3D NULL;
-> =20
-> +	pm_runtime_mark_last_busy(&adap->dev);
-> +	pm_runtime_put_autosuspend(&adap->dev);
-> +
->  	return ret;
->  }
-> =20
-> @@ -828,7 +836,6 @@ mv64xxx_of_config(struct mv64xxx_i2c_data *drv_data,
->  		rc =3D PTR_ERR(drv_data->rstc);
->  		goto out;
->  	}
-> -	reset_control_deassert(drv_data->rstc);
-> =20
->  	/* Its not yet defined how timeouts will be specified in device tree.
->  	 * So hard code the value to 1 second.
-> @@ -893,6 +900,32 @@ static int mv64xxx_i2c_init_recovery_info(struct mv6=
-4xxx_i2c_data *drv_data,
->  	return 0;
->  }
-> =20
-> +static int
-> +mv64xxx_i2c_runtime_suspend(struct device *dev)
-> +{
-> +	struct mv64xxx_i2c_data *drv_data =3D dev_get_drvdata(dev);
-> +
-> +	reset_control_assert(drv_data->rstc);
-> +	clk_disable_unprepare(drv_data->reg_clk);
-> +	clk_disable_unprepare(drv_data->clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int
-> +mv64xxx_i2c_runtime_resume(struct device *dev)
-> +{
-> +	struct mv64xxx_i2c_data *drv_data =3D dev_get_drvdata(dev);
-> +
-> +	clk_prepare_enable(drv_data->clk);
-> +	clk_prepare_enable(drv_data->reg_clk);
-> +	reset_control_reset(drv_data->rstc);
-> +
-> +	mv64xxx_i2c_hw_init(drv_data);
-> +
-> +	return 0;
-> +}
-> +
->  static int
->  mv64xxx_i2c_probe(struct platform_device *pd)
->  {
-> @@ -920,18 +953,22 @@ mv64xxx_i2c_probe(struct platform_device *pd)
-> =20
->  	/* Not all platforms have clocks */
->  	drv_data->clk =3D devm_clk_get(&pd->dev, NULL);
-> -	if (PTR_ERR(drv_data->clk) =3D=3D -EPROBE_DEFER)
-> -		return -EPROBE_DEFER;
-> -	if (!IS_ERR(drv_data->clk))
-> -		clk_prepare_enable(drv_data->clk);
-> +	if (IS_ERR(drv_data->clk)) {
-> +		if (PTR_ERR(drv_data->clk) =3D=3D -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		drv_data->clk =3D NULL;
-> +	}
-> =20
->  	drv_data->reg_clk =3D devm_clk_get(&pd->dev, "reg");
-> -	if (PTR_ERR(drv_data->reg_clk) =3D=3D -EPROBE_DEFER)
-> -		return -EPROBE_DEFER;
-> -	if (!IS_ERR(drv_data->reg_clk))
-> -		clk_prepare_enable(drv_data->reg_clk);
-> +	if (IS_ERR(drv_data->reg_clk)) {
-> +		if (PTR_ERR(drv_data->reg_clk) =3D=3D -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		drv_data->reg_clk =3D NULL;
-> +	}
-> =20
->  	drv_data->irq =3D platform_get_irq(pd, 0);
-> +	if (drv_data->irq < 0)
-> +		return drv_data->irq;
-> =20
->  	if (pdata) {
->  		drv_data->freq_m =3D pdata->freq_m;
-> @@ -942,16 +979,12 @@ mv64xxx_i2c_probe(struct platform_device *pd)
->  	} else if (pd->dev.of_node) {
->  		rc =3D mv64xxx_of_config(drv_data, &pd->dev);
->  		if (rc)
-> -			goto exit_clk;
-> -	}
-> -	if (drv_data->irq < 0) {
-> -		rc =3D drv_data->irq;
-> -		goto exit_reset;
-> +			return rc;
->  	}
-> =20
->  	rc =3D mv64xxx_i2c_init_recovery_info(drv_data, &pd->dev);
->  	if (rc =3D=3D -EPROBE_DEFER)
-> -		goto exit_reset;
-> +		return rc;
-> =20
->  	drv_data->adapter.dev.parent =3D &pd->dev;
->  	drv_data->adapter.algo =3D &mv64xxx_i2c_algo;
-> @@ -962,7 +995,14 @@ mv64xxx_i2c_probe(struct platform_device *pd)
->  	platform_set_drvdata(pd, drv_data);
->  	i2c_set_adapdata(&drv_data->adapter, drv_data);
-> =20
-> -	mv64xxx_i2c_hw_init(drv_data);
-> +	pm_runtime_set_autosuspend_delay(&pd->dev, MSEC_PER_SEC);
-> +	pm_runtime_use_autosuspend(&pd->dev);
-> +	pm_runtime_enable(&pd->dev);
-> +	if (!pm_runtime_enabled(&pd->dev)) {
-> +		rc =3D mv64xxx_i2c_runtime_resume(&pd->dev);
-> +		if (rc)
-> +			goto exit_disable_pm;
-> +	}
-> =20
->  	rc =3D request_irq(drv_data->irq, mv64xxx_i2c_intr, 0,
->  			 MV64XXX_I2C_CTLR_NAME, drv_data);
-> @@ -970,7 +1010,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
->  		dev_err(&drv_data->adapter.dev,
->  			"mv64xxx: Can't register intr handler irq%d: %d\n",
->  			drv_data->irq, rc);
-> -		goto exit_reset;
-> +		goto exit_disable_pm;
->  	} else if ((rc =3D i2c_add_numbered_adapter(&drv_data->adapter)) !=3D 0=
-) {
->  		dev_err(&drv_data->adapter.dev,
->  			"mv64xxx: Can't add i2c adapter, rc: %d\n", -rc);
-> @@ -981,54 +1021,50 @@ mv64xxx_i2c_probe(struct platform_device *pd)
-> =20
->  exit_free_irq:
->  	free_irq(drv_data->irq, drv_data);
-> -exit_reset:
-> -	reset_control_assert(drv_data->rstc);
-> -exit_clk:
-> -	clk_disable_unprepare(drv_data->reg_clk);
-> -	clk_disable_unprepare(drv_data->clk);
-> +exit_disable_pm:
-> +	pm_runtime_disable(&pd->dev);
-> +	if (!pm_runtime_status_suspended(&pd->dev))
-> +		mv64xxx_i2c_runtime_suspend(&pd->dev);
-> =20
->  	return rc;
->  }
-> =20
->  static int
-> -mv64xxx_i2c_remove(struct platform_device *dev)
-> +mv64xxx_i2c_remove(struct platform_device *pd)
->  {
-> -	struct mv64xxx_i2c_data		*drv_data =3D platform_get_drvdata(dev);
-> +	struct mv64xxx_i2c_data		*drv_data =3D platform_get_drvdata(pd);
-> =20
->  	i2c_del_adapter(&drv_data->adapter);
->  	free_irq(drv_data->irq, drv_data);
-> -	reset_control_assert(drv_data->rstc);
-> -	clk_disable_unprepare(drv_data->reg_clk);
-> -	clk_disable_unprepare(drv_data->clk);
-> +	pm_runtime_disable(&pd->dev);
-> +	if (!pm_runtime_status_suspended(&pd->dev))
-> +		mv64xxx_i2c_runtime_suspend(&pd->dev);
-> =20
->  	return 0;
->  }
-> =20
-> -#ifdef CONFIG_PM
-> -static int mv64xxx_i2c_resume(struct device *dev)
-> +static void
-> +mv64xxx_i2c_shutdown(struct platform_device *pd)
->  {
-> -	struct mv64xxx_i2c_data *drv_data =3D dev_get_drvdata(dev);
-> -
-> -	mv64xxx_i2c_hw_init(drv_data);
-> -
-> -	return 0;
-> +	pm_runtime_disable(&pd->dev);
-> +	if (!pm_runtime_status_suspended(&pd->dev))
-> +		mv64xxx_i2c_runtime_suspend(&pd->dev);
->  }
-> =20
-> -static const struct dev_pm_ops mv64xxx_i2c_pm =3D {
-> -	.resume =3D mv64xxx_i2c_resume,
-> +static const struct dev_pm_ops mv64xxx_i2c_pm_ops =3D {
-> +	SET_RUNTIME_PM_OPS(mv64xxx_i2c_runtime_suspend,
-> +			   mv64xxx_i2c_runtime_resume, NULL)
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-> +				      pm_runtime_force_resume)
->  };
-> =20
-> -#define mv64xxx_i2c_pm_ops (&mv64xxx_i2c_pm)
-> -#else
-> -#define mv64xxx_i2c_pm_ops NULL
-> -#endif
-> -
->  static struct platform_driver mv64xxx_i2c_driver =3D {
->  	.probe	=3D mv64xxx_i2c_probe,
->  	.remove	=3D mv64xxx_i2c_remove,
-> +	.shutdown =3D mv64xxx_i2c_shutdown,
->  	.driver	=3D {
->  		.name	=3D MV64XXX_I2C_CTLR_NAME,
-> -		.pm     =3D mv64xxx_i2c_pm_ops,
-> +		.pm     =3D &mv64xxx_i2c_pm_ops,
->  		.of_match_table =3D mv64xxx_i2c_of_match_table,
->  	},
->  };
-> --=20
-> 2.26.2
->=20
+And hugetlb pools may be also depleted by anybody by calling
+mmap(MAP_HUGETLB) and there is no any limiting knob for this, while
+secretmem has RLIMIT_MEMLOCK.
 
---jtcAeju3WzRmRF+o
-Content-Type: application/pgp-signature; name="signature.asc"
+That said, simply replacing VM_FAULT_OOM with VM_FAULT_SIGBUS makes
+secretmem at least as controllable and robust than hugeltbfs even without
+complex reservation at mmap() time.
 
------BEGIN PGP SIGNATURE-----
+> > > So unless I am really misreading the code
+> > > Nacked-by: Michal Hocko <mhocko@suse.com>
+> > > 
+> > > That doesn't mean I reject the whole idea. There are some details to
+> > > sort out as mentioned elsewhere but you cannot really depend on
+> > > pre-allocated pool which can fail at a fault time like that.
+> > 
+> > So, to do it similar to hugetlbfs (e.g., with CMA), there would have to be a
+> > mechanism to actually try pre-reserving (e.g., from the CMA area), at which
+> > point in time the pages would get moved to the secretmem pool, and a
+> > mechanism for mmap() etc. to "reserve" from these secretmem pool, such that
+> > there are guarantees at fault time?
+> 
+> yes, reserve at mmap time and use during the fault. But this all sounds
+> like a self inflicted problem to me. Sure you can have a pre-allocated
+> or more dynamic pool to reduce the direct mapping fragmentation but you
+> can always fall back to regular allocatios. In other ways have the pool
+> as an optimization rather than a hard requirement. With a careful access
+> control this sounds like a manageable solution to me.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASgkAACgkQFA3kzBSg
-Kbazlw//fVh8pNiVvWTo/Z8n+YDbOJieVqALDLg5Oh1/S44599DmPZg0cLvT+/rj
-ncryTkSdHxMqqp+m+mm7KLih7pZgL8Ni35lYtETuQwIhmMnMv1xjKkR4fgy3MgHP
-kCrmgqWTuC7svZH3lR+V/BuSdmU9qRoTM3rWmrWnk6T655HYFmQcr+iIPMi6aEJ4
-g7WBPeCHtT35f8wHludLJW1830DFw2DfljBiP9MEBWomTYBreh/b6cL0/DMA+uyL
-NWhHnsN9CHKvg5DM6eGtZk4/WJgBFbfgkf4rl3GzkMpucbyhBArl3f/G8/oYe+38
-0jddS7W7TskorFkraegSm7llPDfIonDk4D+4L6k5s7BvwvWvPKG7Kdrx1Q0wgyfy
-7GU2glHQVjyjvqLmlFRs+X/d/2wU7AZBDWmcyIphu41Wb0+J9jV61ntyix8tRoMd
-fYpi2XGKZAa9XPqP1/aMQPDl8f+lVQtG9X28w2+8d+FPg6DKZIxeA0wPBoC8Ce12
-UzyJZ6Tqsj1yKtlo8BjwVoc0VZ3lN3I6yiJCr+Pb5x0kNlHfwSY/CIG6kX/gZ8co
-C4t5DOvUALXlG5TfaWs7G8fLuuYmR12hQSIDl7se/bVi6pTDyR9fGqES+UzkAnUC
-2QP/WpyjCkxzF3TtTxq32a4nIPS2aBwrqwPIMBXChK1P/ReBfAE=
-=8hBj
------END PGP SIGNATURE-----
+I'd really wish we had this discussion for earlier spins of this series,
+but since this didn't happen let's refresh the history a bit.
 
---jtcAeju3WzRmRF+o--
+One of the major pushbacks on the first RFC [1] of the concept was about
+the direct map fragmentation. I tried really hard to find data that shows
+what is the performance difference with different page sizes in the direct
+map and I didn't find anything.
+
+So presuming that large pages do provide advantage the first implementation
+of secretmem used PMD_ORDER allocations to amortise the effect of the
+direct map fragmentation and then handed out 4k pages at each fault. In
+addition there was an option to reserve a finite pool at boot time and
+limit secretmem allocations only to that pool.
+
+At some point David suggested to use CMA to improve overall flexibility
+[3], so I switched secretmem to use CMA.
+
+Now, with the data we have at hand (my benchmarks and Intel's report David
+mentioned) I'm even not sure this whole pooling even required.
+
+I like the idea to have a pool as an optimization rather than a hard
+requirement but I don't see why would it need a careful access control. As
+the direct map fragmentation is not necessarily degrades the performance
+(and even sometimes it actually improves it) and even then the degradation
+is small, trying a PMD_ORDER allocation for a pool and then falling back to
+4K page may be just fine.
+
+I think we could have something like this (error handling is mostly
+omitted):
+
+static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+{
+	struct page *page = alloc_pages(gfp, PMD_PAGE_ORDER);
+
+	if (!page)
+		return -ENOMEM;
+
+	/* add large page to pool */
+	
+	return 0;
+}
+
+static struct page *secretmem_alloc_page(struct secretmem_ctx *ctx,
+					 gfp_t gfp)
+{
+	struct page *page;
+	...
+
+	if (gen_pool_avail(pool) < PAGE_SIZE) {
+		err = secretmem_pool_increase(ctx, gfp);
+		if (!err) {
+			addr = gen_pool_alloc(pool, PAGE_SIZE);
+			if (addr)
+				page = virt_to_page(addr);
+		}
+	}
+
+	if (!page)
+		page = alloc_page(gfp);
+
+	return page;	
+}
+
+[1] https://lore.kernel.org/lkml/1572171452-7958-1-git-send-email-rppt@kernel.org/
+[2] https://lore.kernel.org/lkml/20200720092435.17469-1-rppt@kernel.org/
+[3] https://lore.kernel.org/lkml/03ec586d-c00c-c57e-3118-7186acb7b823@redhat.com/#t
+
+-- 
+Sincerely yours,
+Mike.
