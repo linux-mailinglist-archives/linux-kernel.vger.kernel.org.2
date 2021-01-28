@@ -2,180 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9266E30768A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C40830765E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbhA1M4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:56:30 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:51896 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231465AbhA1M4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:56:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From;
-        bh=uSh/nbr5myWUoYd0uMZeNZLBjVL7y7b3A+YslUvvtUE=; b=cKLMOQl3QM9Mishfg+0O7Eezt5
-        tWRwm/N6Em/BWV+9gD19oZgOLHElxqIDC3WRe/JxIRWhq1VDSv1wlFIPwrD0tvSlCcatAOFhsLKBL
-        3UzxCH3Wb0mw6AAACZRCw7pK8kTDvZjvh/ztxI2d3VDX579/cuAeCnaVcICKx8OgAZpE=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1l56pk-0005n4-RK; Thu, 28 Jan 2021 12:55:36 +0000
-Received: from [54.239.6.190] (helo=localhost.localdomain)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1l56pk-000815-Dt; Thu, 28 Jan 2021 12:55:36 +0000
-From:   Paul Durrant <paul@xen.org>
-To:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        id S231753AbhA1Msc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:48:32 -0500
+Received: from mail-bn8nam12on2070.outbound.protection.outlook.com ([40.107.237.70]:7008
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231383AbhA1Msa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:48:30 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gbKQcUAkd9RIaTePq1ZAZfQh51SyirzOfiJbEPlQ4m/F8Qh+U5WCfIshCcBl4wFBimAHnoLXyHdNP9SAFUYORpNlah8zSfnUqFgX+Y3zpqs4wCr3beVfHIWrE4SP+CI+Us3GCtPytW69Pr0q3gUuqbgDIgOKdfGyTk5tgX50TQOAwixKLkSKbsrgPpYRzAFYOz5elx8BS81L3vgLdbBtDHQjvkTdHorOyDGt7VziUEMCVI9x+Ri0P7/woKOxpbYNkBI/5P1DJ8K1uP0RluE4X8OosSSdCmwB64gQi2cZCduQRng21yGKWzEbRCmmMxLniYBxY01+Y6Hi4tQiraDrNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zU2jx7A367zK2m85/TCsKEd2OcDpq26cvPV6cyLm7+I=;
+ b=PCScsJ3//d5ohf+LLD9t3mCbHScVtWqu2vyFLbOh+VR8fpNEPj6QAjKXGG/caVcr6jmX6Iq9VoOJt7iDR9BIicEuT4Spj1OTMXQSEM1xPI/toutGfdO1OEoz7fnhxSmwONdUpZbKUNLPuqXcOjP5YRnk8NsMyCYvP6hnCYGurxXCF7HuECj+8pgWtpLzdPr4j883ZuV4LEPsee7PU9TyZDj67WWTw6ErfjweECeHKpC1xIVCmscuhwl2nLYT2d728WrHhMnaKvgM4A6IwfIodHPzorYYFSTbE/pbOQtlfXc6ksveE4d8SLVBwXSlTXmamKHqVLeln1rnwqZoowMLBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zU2jx7A367zK2m85/TCsKEd2OcDpq26cvPV6cyLm7+I=;
+ b=bg6rVYDSzFPXCx+5Sh+aAtsCtBTc73KK6swFo/4O+PnGChyjs79f3SqSU+8oNLLcUOmZGTV8bxyrr90wYmUd/gmJoExiAS2hrswx4uLZMkC+1TUBFOr+s7szwOFdsxeViRD3zi/8hlrJxTDbfhfnLPJtVcma08i56Vm1AelOHm4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB5053.namprd11.prod.outlook.com (2603:10b6:a03:2af::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 28 Jan
+ 2021 12:47:15 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.017; Thu, 28 Jan 2021
+ 12:47:15 +0000
+From:   qiang.zhang@windriver.com
+To:     urezki@gmail.com
+Cc:     paulmck@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dongli Zhang <dongli.zhang@oracle.com>
-Subject: [PATCH] xen-blkback: fix compatibility bug with single page rings
-Date:   Thu, 28 Jan 2021 12:55:28 +0000
-Message-Id: <20210128125528.11695-1-paul@xen.org>
+Subject: [PATCH] kvfree_rcu: Release page cache under memory pressure
+Date:   Thu, 28 Jan 2021 21:05:09 +0800
+Message-Id: <20210128130509.35489-1-qiang.zhang@windriver.com>
 X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR03CA0113.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::29) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK0PR03CA0113.apcprd03.prod.outlook.com (2603:1096:203:b0::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 12:47:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 49bf4738-803c-4e63-b51c-08d8c38ad6cb
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB5053:
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB5053309D7B05BD8491B13BF2FFBA9@SJ0PR11MB5053.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:758;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ok3wO4JV6ZqUBs1Rqw3zosCTZBjuv0SD7rpRkMm+2sP5KNTiuRDZrQP2IutrWhr+7ezHdS0xHjQp/Zdwiyeav5gFT9RD4h+lr/nTdwlPc/lVk6D+vVeg+/rh/atEsky6bbyPJsBNF6wQmBaxfA26dxoQ5T5QnT20T1UA46Z8zvo6XguUUK8e591vEU/Uho5WSe+dyoQ9QazOCEmrfSjE2nkQCsDg4FyIFLv6yn+lyCkDuyrUNfacQliPur8ztW4pcAr6mmf7wm/HoDHSTnUaPs+FWquzZyKomW4btoEuHz+q1mIt9V6Rbmbst+jAigpV5A7Q0eScORPPfgAkc9pvVJ5bgK+oXqN8JwrGAsqEOlXRUqCGC+Z+eRZZHgAqGT7uLZP+hCvf+WXjZZjB9TsqaPaJrKpa/ntBZBoGCKZ0fBTL6tAj70982BmLgqAtt+AL9bGNwnrWhijsqX3aPIg98mTbhd2J9LdgOOXUyn3H0yitnu5GTNLaQyPdBVpVwyhnkuXvTyj7Y47f4zcr+MDixQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(366004)(136003)(346002)(396003)(66476007)(6666004)(66946007)(1076003)(5660300002)(6486002)(956004)(2616005)(66556008)(52116002)(6916009)(316002)(86362001)(8676002)(2906002)(26005)(186003)(16526019)(478600001)(36756003)(83380400001)(6506007)(8936002)(9686003)(4326008)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UosBjbRbldxcO211RxpunLqByyv3NQtPweAmkF4athASJ5Q0KC+CMCVOwh6O?=
+ =?us-ascii?Q?meLfmSVsDXEy6pa6P8Jl5YcVYteA3rTid6i6srZQccX0MBxMtekCjtifOI+M?=
+ =?us-ascii?Q?sNGumHrnmOWG5ozC/H+iqf2/c5gufoesoG+sssXZz14O6cwKCmCijx1TL832?=
+ =?us-ascii?Q?1pwo0lyXRPeY/ZMD3jgQEduacJXJUP2aKyNLwnq9IMgddnOyFlO+TROQ5xZr?=
+ =?us-ascii?Q?ffyJTiO/PGHPPhAgQxi6fqYlPSgisEa2S+nBbSPklywtevooSNzmly3BMxgN?=
+ =?us-ascii?Q?/+3r9PYxEPgrb3Fukro2FKTLPVn4ke2ftkhPRFcNOHlVMH6V/tkt0kr5M9NS?=
+ =?us-ascii?Q?PpsgNZXIt0XMTgkFJIK7beprmkYVaTXeSOnAEnRFosexyCcN1pv8uw9zsg5v?=
+ =?us-ascii?Q?cjvEpUfHIa1pWVFIRw/+DAgJshZKI5xHuee7ysuyfewNeZB3oWQe9F/rBm7r?=
+ =?us-ascii?Q?JWRlfLYzd1NdjsstVzhdrqOjfnyusI/OKpCPsvwvxATpapdmHkTRu3/Iy0MO?=
+ =?us-ascii?Q?9/3uqMw/sqEVhqRmSAOwAn2flPp46fqQcElpbInI9ET4spxH1PpmC7ShOzpA?=
+ =?us-ascii?Q?z0QX5ziZ6JNfthwkydELlE+hLD13y1rrcjOCiDXz9TO3c045yvrZyrekS5wG?=
+ =?us-ascii?Q?QVvYhf/I0Ij8sc6ss/mTPBN8GUaW2x8FEcu0f8GxXaFgDP5U/KoV95v5ke8w?=
+ =?us-ascii?Q?nvpgvHPiGzrrjChwO/BDt2+IS41V7OLo3PSioMgrBJtpx62UDKFfLhsTlbZh?=
+ =?us-ascii?Q?BrbbVP2bnkoUtTC6jH4BnsRc57uLRyFxxlbxi1xIbqd+U91Nzw7sds5GVwpf?=
+ =?us-ascii?Q?essG2fa/z+FmVvK9v0qT+xmSknFAsHNdUB82Ou1LDY6iSP3oF1riqxoAmMMM?=
+ =?us-ascii?Q?+D1hvZ8nzhlA3Evb2Pm9lizztLdNYpfqrVQCCL6VgBseetXVYlqW9GZ6NnSX?=
+ =?us-ascii?Q?8X+c9MLv70QoxI4ikd9hrjTjfWpjfDldHYi7YcRGbyKM6tBrMPSUok4vaOQc?=
+ =?us-ascii?Q?AoeeuNwAeNUcXZBeig9TW2zPuxhelfq2XglByxU3IyUSvBtctOY/3Z0stcRK?=
+ =?us-ascii?Q?M/hsk5p4?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49bf4738-803c-4e63-b51c-08d8c38ad6cb
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 12:47:15.2620
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3R8Efqa2GhkqZR1y3Ja1YaNz+gUU7uvJDoKCWtty3SY4d/JWFtClwD8w8kHF1Pzvy6TuDQTVYhQiT1K72Ig8tlQdnBADuVIo139hE+X6ZRw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Durrant <pdurrant@amazon.com>
+From: Zqiang <qiang.zhang@windriver.com>
 
-Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
-inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
-behaviour of xen-blkback when connecting to a frontend was:
+Add free per-cpu existing krcp's page cache operation, when
+the system is under memory pressure.
 
-- read 'ring-page-order'
-- if not present then expect a single page ring specified by 'ring-ref'
-- else expect a ring specified by 'ring-refX' where X is between 0 and
-  1 << ring-page-order
-
-This was correct behaviour, but was broken by the afforementioned commit to
-become:
-
-- read 'ring-page-order'
-- if not present then expect a single page ring (i.e. ring-page-order = 0)
-- expect a ring specified by 'ring-refX' where X is between 0 and
-  1 << ring-page-order
-- if that didn't work then see if there's a single page ring specified by
-  'ring-ref'
-
-This incorrect behaviour works most of the time but fails when a frontend
-that sets 'ring-page-order' is unloaded and replaced by one that does not
-because, instead of reading 'ring-ref', xen-blkback will read the stale
-'ring-ref0' left around by the previous frontend will try to map the wrong
-grant reference.
-
-This patch restores the original behaviour.
-
-Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid inconsistent xenstore 'ring-page-order' set by malicious blkfront")
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 ---
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: "Roger Pau Monné" <roger.pau@citrix.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Dongli Zhang <dongli.zhang@oracle.com>
+ kernel/rcu/tree.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-v2:
- - Remove now-spurious error path special-case when nr_grefs == 1
----
- drivers/block/xen-blkback/common.h |  1 +
- drivers/block/xen-blkback/xenbus.c | 38 +++++++++++++-----------------
- 2 files changed, 17 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
-index b0c71d3a81a0..524a79f10de6 100644
---- a/drivers/block/xen-blkback/common.h
-+++ b/drivers/block/xen-blkback/common.h
-@@ -313,6 +313,7 @@ struct xen_blkif {
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c1ae1e52f638..4e1c14b12bdd 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3571,17 +3571,41 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ }
+ EXPORT_SYMBOL_GPL(kvfree_call_rcu);
  
- 	struct work_struct	free_work;
- 	unsigned int 		nr_ring_pages;
-+	bool                    multi_ref;
- 	/* All rings for this device. */
- 	struct xen_blkif_ring	*rings;
- 	unsigned int		nr_rings;
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index 9860d4842f36..6c5e9373e91c 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -998,14 +998,17 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
- 	for (i = 0; i < nr_grefs; i++) {
- 		char ring_ref_name[RINGREF_NAME_LEN];
- 
--		snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-+		if (blkif->multi_ref)
-+			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-+		else {
-+			WARN_ON(i != 0);
-+			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref");
-+		}
++static inline int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
++{
++	unsigned long flags;
++	struct kvfree_rcu_bulk_data *bnode;
++	int i, num = 0;
 +
- 		err = xenbus_scanf(XBT_NIL, dir, ring_ref_name,
- 				   "%u", &ring_ref[i]);
++	for (i = 0; i < rcu_min_cached_objs; i++) {
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		bnode = get_cached_bnode(krcp);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		if (!bnode)
++			break;
++		free_page((unsigned long)bnode);
++		num++;
++	}
++
++	return num;
++}
++
+ static unsigned long
+ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ {
+ 	int cpu;
+ 	unsigned long count = 0;
++	unsigned long flags;
  
- 		if (err != 1) {
--			if (nr_grefs == 1)
--				break;
--
- 			err = -EINVAL;
- 			xenbus_dev_fatal(dev, err, "reading %s/%s",
- 					 dir, ring_ref_name);
-@@ -1013,18 +1016,6 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
- 		}
+ 	/* Snapshot count of all CPUs */
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count += READ_ONCE(krcp->count);
++
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		count += krcp->nr_bkv_objs;
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
  	}
  
--	if (err != 1) {
--		WARN_ON(nr_grefs != 1);
--
--		err = xenbus_scanf(XBT_NIL, dir, "ring-ref", "%u",
--				   &ring_ref[0]);
--		if (err != 1) {
--			err = -EINVAL;
--			xenbus_dev_fatal(dev, err, "reading %s/ring-ref", dir);
--			return err;
--		}
--	}
--
- 	err = -ENOMEM;
- 	for (i = 0; i < nr_grefs * XEN_BLKIF_REQS_PER_PAGE; i++) {
- 		req = kzalloc(sizeof(*req), GFP_KERNEL);
-@@ -1129,10 +1120,15 @@ static int connect_ring(struct backend_info *be)
- 		 blkif->nr_rings, blkif->blk_protocol, protocol,
- 		 blkif->vbd.feature_gnt_persistent ? "persistent grants" : "");
+ 	return count;
+@@ -3604,6 +3628,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		else
+ 			raw_spin_unlock_irqrestore(&krcp->lock, flags);
  
--	ring_page_order = xenbus_read_unsigned(dev->otherend,
--					       "ring-page-order", 0);
--
--	if (ring_page_order > xen_blkif_max_ring_order) {
-+	err = xenbus_scanf(XBT_NIL, dev->otherend, "ring-page-order", "%u",
-+			   &ring_page_order);
-+	if (err != 1) {
-+		blkif->nr_ring_pages = 1;
-+		blkif->multi_ref = false;
-+	} else if (ring_page_order <= xen_blkif_max_ring_order) {
-+		blkif->nr_ring_pages = 1 << ring_page_order;
-+		blkif->multi_ref = true;
-+	} else {
- 		err = -EINVAL;
- 		xenbus_dev_fatal(dev, err,
- 				 "requested ring page order %d exceed max:%d",
-@@ -1141,8 +1137,6 @@ static int connect_ring(struct backend_info *be)
- 		return err;
- 	}
++		count += free_krc_page_cache(krcp);
++
+ 		sc->nr_to_scan -= count;
+ 		freed += count;
  
--	blkif->nr_ring_pages = 1 << ring_page_order;
--
- 	if (blkif->nr_rings == 1)
- 		return read_per_ring_refs(&blkif->rings[0], dev->otherend);
- 	else {
 -- 
 2.17.1
 
