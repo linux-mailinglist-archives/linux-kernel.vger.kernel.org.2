@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B4D307B39
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE334307B3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhA1QmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:42:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
+        id S232148AbhA1Qog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbhA1QlV (ORCPT
+        with ESMTP id S232674AbhA1Qlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:41:21 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17B4C061574;
-        Thu, 28 Jan 2021 08:40:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=IgLKMIHvPUsI5zslyWKJePRUZ8hujDrhZLqTi4Dvd3Y=; b=fq8rlOT/6xIlLR2u/rhBooz06
-        Wt1ta3iLTSJK0QixGBc7B22AnR0Qd98C5t1ghF87/T2t/r6/0KGozlEy/j6lS4qXitgf7iE42AV0j
-        VMhlF7GoOIS5OAAPutNUyRJXqFlqcMEQuzwtGfn432ewPskUHig7jGnH6VKbPqPNHJQYQrQ9Erv/i
-        NzCikQltxQatXzgW1aqtT3RC+QAIzMbZxfiW0kJve0UUhidbibiefjuHx8nwIKNI6JHJqTSClMcRx
-        w7GZd/O3S0MluVNsmTu9TbkqjhQc8OnSTq+Gc5mVO+X/Aii7wW+xDQeYgmtYBUP76T0lEA86f1nSv
-        /qsY6e58g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53858)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l5ALG-0006s8-GW; Thu, 28 Jan 2021 16:40:22 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l5ALE-0005yW-8A; Thu, 28 Jan 2021 16:40:20 +0000
-Date:   Thu, 28 Jan 2021 16:40:20 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        David Miller <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "mw@semihalf.com" <mw@semihalf.com>, Andrew Lunn <andrew@lunn.ch>,
-        Antoine Tenart <atenart@kernel.org>
-Subject: Re: [EXT] Re: [PATCH v4 net-next 10/19] net: mvpp2: add FCA RXQ non
- occupied descriptor threshold
-Message-ID: <20210128164019.GR1551@shell.armlinux.org.uk>
-References: <1611747815-1934-1-git-send-email-stefanc@marvell.com>
- <1611747815-1934-11-git-send-email-stefanc@marvell.com>
- <CAF=yD-Lohx+1DRijK5=qgTj0uctBkS-Loh20zrMF7_Ditb2+pQ@mail.gmail.com>
- <CO6PR18MB3873573FA21D4B82A32948B3B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
+        Thu, 28 Jan 2021 11:41:55 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714C5C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:41:15 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id b11so6018101ybj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:41:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=zpVXkjmpPvMYixWcBVyiU1gl30nQDZLKt7VQqy8mNaU=;
+        b=PD6q3NMcJ9fU0pq7TGN3ZycvR5bIhBPc5efNbYdsjSpY9N/8vGXwl9QBd3gsrT/Cli
+         92R8gQj976qn4dLpVKWQYFgx/I5XOU43LSksCc8N5dA/FFRxWHG+J6uInDJWd9m/1J40
+         U/ji8TFQcs5kBbKTX47HM4EyyA4dQma4FvBfiP8wu4NA2Q1HbquTKW32XntNOOblLYvR
+         rWeNo7flUnW3d/dUH1/NFDAps1tSgq1K1Jw3HaFq832AQpnyvTPBG9yWhAQikXhcaDtc
+         Q+UqMzRKZjhEoy2et4NEOoEhQxWwDG48KzBNhqIQn9lz8I+7KkhxDzALDlXM2CM+zZjZ
+         vTeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=zpVXkjmpPvMYixWcBVyiU1gl30nQDZLKt7VQqy8mNaU=;
+        b=YQz0djroxeZDSf/8FXfd7r5S/bLnRBesgw7rMCk0c/3wLjDzf5LM7+Q4txQs2dhAFR
+         CaRbuRsFxhh/R1bQps/+/7A7upueeQsj2G0TxRno2W0RwqHKvfHgf1+f3MMQ0BsHc5nT
+         MOYZBUI4y1C3LmSfhjmJTjhDj2svdOAN2npCjDsmD9litlawfD3Q6dXG1FGAEaHW4Czx
+         S8o1C9ORrN5qULxStm3vkw/FHragOQroXjDhXLVRmzEAetsQ1Gc/Nrv/8n4rbcWEB08T
+         XawyJ8RKA8Z44rOM/CbIMVA1fq8gSQEteetB1Xg9zwMrJSgi5TJxSaTYBAqRQIsPsrC7
+         K9ZQ==
+X-Gm-Message-State: AOAM533230TmoVxKjVQI0fD7G+HCbD7RyGbJMEZW3o4JUcLSD78rNJF8
+        3gyd+93j7eM2hRnqAKgtNwtMIZ+P766ODMQN+Js=
+X-Google-Smtp-Source: ABdhPJwYnkLbB9UDrlrQn3WB4lk40JP/8wRCkjDVHsWcbOSEUuA1Lm3IMqgXG0vU4i1N5k6hG6WZ4Y2m243AmPy6R74=
+X-Received: by 2002:a25:ab6a:: with SMTP id u97mr13738760ybi.471.1611852074602;
+ Thu, 28 Jan 2021 08:41:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO6PR18MB3873573FA21D4B82A32948B3B0BB9@CO6PR18MB3873.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Received: by 2002:a05:6900:20a7:0:0:0:0 with HTTP; Thu, 28 Jan 2021 08:41:13
+ -0800 (PST)
+Reply-To: sroomf70@gmail.com
+From:   "Dr. Daiva Jokubas" <daivajokubas@gmail.com>
+Date:   Thu, 28 Jan 2021 17:41:13 +0100
+Message-ID: <CAH-c3Bxemz5i47dZLHrDt5HEnA1aKsZLp1WYy9BgMvQ7j5CfEg@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 06:41:32PM +0000, Stefan Chulski wrote:
-> 
->  >
-> > > From: Stefan Chulski <stefanc@marvell.com>
-> > >
-> > > RXQ non occupied descriptor threshold would be used by Flow Control
-> > > Firmware feature to move to the XOFF mode.
-> > > RXQ non occupied threshold would change interrupt cause that polled by
-> > > CM3 Firmware.
-> > > Actual non occupied interrupt masked and won't trigger interrupt.
-> > 
-> > Does this mean that this change enables a feature, but it is unused due to a
-> > masked interrupt?
-> 
-> Firmware poll RXQ non occupied cause register to indicate if number of registers bellow threshold.
-> We do not trigger any interrupt, just poll this bit in CM3. So this cause always masked.
-
-The functional spec for A8040 says that the register at 0xF2005520
-is "RX Exceptions Interrupt Mask" and the bit description talks about
-it controlling interrupt signal generation. However, the bit that
-allows RX Exceptions to be raised in MVPP2_ISR_RX_TX_MASK_REG is clear,
-so it won't proceed beyond the next level up.
-
-So, I think the commit description needs to say something like:
-
-"The firmware needs to monitor the RX Non-occupied descriptor bits for
- flow control to move to XOFF mode. These bits need to be unmasked to
- be functional, but they will not raise interrupts as we leave the
- RX exception summary bit in MVPP2_ISR_RX_TX_MASK_REG clear."
-
-I think that's essentially what you're trying to describe - please
-change if not.
-
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I'm Dr. Daiva Jokubas, did you Receive the (FUND), that was paid to
+you? please, do not hesitate to Let me know with your full name:.. for
+immediate verification notice,
+
+Thanks,
+Dr. Daiva Jokubas
+Foreign Remittance
+
+Sincerely Yours, Respectfully,
+
+Mr Bill T Winters,
+Group Chief Executive Officer & Executive Director,
