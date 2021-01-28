@@ -2,131 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7389307797
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93EA307799
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhA1OCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhA1OCe (ORCPT
+        id S229970AbhA1ODW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:03:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60525 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229677AbhA1ODU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:02:34 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79C9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:01:53 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id a1so5278940ilr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C80bQsEcnaePuA0JEDUFX5G4Fu9IWpgz8bhre8oY+Wk=;
-        b=YJRB0NzOhuGIf7X/tpXVaLJ11JAIZH+y9CtgerkGasPD16ONKCfqbohJb2Vygv2NTn
-         NnBiuE387xCBQHg6+gtLKYOMLro6+nm2Yq5+maax5YJcYItKdXE4tz9bUCO1A2uPEp/v
-         daBigDPnSc/JlCr7O+/eee/TNIiYXK5tUuJ1Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C80bQsEcnaePuA0JEDUFX5G4Fu9IWpgz8bhre8oY+Wk=;
-        b=pYTSe4SsauHaS5fXVLvQWbT/II19jvwT47NZZl6cHBMKkhPSr2RdrUpOqsmACFK7ey
-         S+7bjFAx+FOEqPBVtO0p3VyKWGFpRITC8GvcTodA2V9cDC5qh/Pe4f7K0JSbeSQF+eZp
-         r9I+KgTRytcdmHwqhOYGI4dcr1mPnkStGmj/a2vIqgUpwF0Iu7HAJo0hVoSQnjzOu8OG
-         roDIlN+eY2Zp6v+DOAWiSSXexyHYCTGFkKZTFmcHxdbrGSJFAakq4EOPXeeucQjBglQC
-         E3POTN/B45hXzxQSwAtX6FL0ZfYcLwAVZUN+d5BRCRfYhawiHIqXgGXG6LPPCCL2WjMp
-         jYCw==
-X-Gm-Message-State: AOAM531y5Y/CQKave+/eRx83RBBd6E0fkQAB915jwaMjT/C4hRUSrXuk
-        gRcjtthEX9ImDmGF1eR9M++EXAVn4OHzBZM5
-X-Google-Smtp-Source: ABdhPJzF8eR5z3HEwuCnX5akHUIMKqsV+09VMb22Q5GIMWzSwh3IH3GIj39Q1gRifOuKpEUhXKVm0w==
-X-Received: by 2002:a92:ca81:: with SMTP id t1mr12574723ilo.139.1611842513092;
-        Thu, 28 Jan 2021 06:01:53 -0800 (PST)
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
-        by smtp.gmail.com with ESMTPSA id l187sm2883532ill.84.2021.01.28.06.01.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 06:01:52 -0800 (PST)
-Received: by mail-io1-f49.google.com with SMTP id n2so5637467iom.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:01:52 -0800 (PST)
-X-Received: by 2002:a05:6602:20c9:: with SMTP id 9mr11194877ioz.51.1611842511627;
- Thu, 28 Jan 2021 06:01:51 -0800 (PST)
+        Thu, 28 Jan 2021 09:03:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611842513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbXYp+G2hIc1hJPA+EOCFA3CI2N+wB/voZbfXFSnlvA=;
+        b=SbwShjCNARPInuvA2+ldEG9SxVUQz8QS73q9GWr520ZN/x3P+9yR5a9HpJTpUrM7e/S5zQ
+        iL3wA76hWvZc/PJSTjQzNF7hYOZR9HIolzwfUzQveaD1lkWa85FEugT79Ti0CN6ISVDGhM
+        aCPaIL19ktsSp7B37dVPSMrxntVouAk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-j3bcSDrHN7mgzQimo5NYmg-1; Thu, 28 Jan 2021 09:01:51 -0500
+X-MC-Unique: j3bcSDrHN7mgzQimo5NYmg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71ACD1005313;
+        Thu, 28 Jan 2021 14:01:49 +0000 (UTC)
+Received: from [10.36.113.207] (ovpn-113-207.ams2.redhat.com [10.36.113.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D0ED5C1BB;
+        Thu, 28 Jan 2021 14:01:47 +0000 (UTC)
+Subject: Re: [PATCH v1 2/2] mm/page_alloc: count CMA pages per zone and print
+ them in /proc/zoneinfo
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20210127101813.6370-1-david@redhat.com>
+ <20210127101813.6370-3-david@redhat.com>
+ <20210128102234.GB5250@localhost.localdomain>
+ <2246d657-4f6d-c27d-4ae2-853a8437cda9@redhat.com>
+ <20210128134458.GA8136@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b423f7a4-ac2b-c325-8f5d-51fbcb733da5@redhat.com>
+Date:   Thu, 28 Jan 2021 15:01:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210128135923.638480-1-colin.king@canonical.com>
-In-Reply-To: <20210128135923.638480-1-colin.king@canonical.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 28 Jan 2021 15:01:40 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuBc1iSLUZzP1=h912EVCyzP0XGzmemw7q5hXYdYZszTw@mail.gmail.com>
-Message-ID: <CANiDSCuBc1iSLUZzP1=h912EVCyzP0XGzmemw7q5hXYdYZszTw@mail.gmail.com>
-Subject: Re: [PATCH][V2][next] media: uvcvideo: Fix memory leak when
- gpiod_to_irq fails
-To:     Colin King <colin.king@canonical.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128134458.GA8136@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the fix!
+On 28.01.21 14:44, Oscar Salvador wrote:
+> On Thu, Jan 28, 2021 at 11:43:41AM +0100, David Hildenbrand wrote:
+>>> My knowledge of CMA tends to be quite low, actually I though that CMA
+>>> was somehow tied to ZONE_MOVABLE.
+>>
+>> CMA is often placed into one of the kernel zones, but can also end up in the movable zone.
+> 
+> Ok good to know.
+> 
+>>> I see how tracking CMA pages per zona might give you a clue, but what do
+>>> you mean by "might behave differently - even after some of these pages might
+>>> already have been allocated"
+>>
+>> Assume you have 4GB in ZONE_NORMAL but 1GB is assigned for CMA. You actually only have 3GB available for random kernel allocations, not 4GB.
+>>
+>> Currently, you can only observe the free CMA pages, excluding any pages that are already allocated. Having that information how many CMA pages we have can be helpful - similar to what we already have in /proc/meminfo.
+> 
+> I see, I agree that it can provide some guidance.
+> 
+>>> I see that NR_FREE_CMA_PAGES is there even without CONFIG_CMA, as you
+>>> said, but I am not sure about adding size to a zone unconditionally.
+>>> I mean, it is not terrible as IIRC, the maximum MAX_NUMNODES can get
+>>> is 1024, and on x86_64 that would be (1024 * 4 zones) * 8 = 32K.
+>>> So not a big deal, but still.
+>>
+>> I'm asking myself how many such systems will run without
+>> CONFIG_CMA in the future.
+> 
+> I am not sure, my comment was just to point out that even the added size might
+> not be that large, hiding it under CONFIG_CMA seemed the right thing to
+> do.
+> 
+>>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>>> index 8ba0870ecddd..5757df4bfd45 100644
+>>> --- a/mm/vmstat.c
+>>> +++ b/mm/vmstat.c
+>>> @@ -1559,13 +1559,15 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+>>>                      "\n        spanned  %lu"
+>>>                      "\n        present  %lu"
+>>>                      "\n        managed  %lu",
+>>> +                  "\n        cma      %lu",
+>>>                      zone_page_state(zone, NR_FREE_PAGES),
+>>>                      min_wmark_pages(zone),
+>>>                      low_wmark_pages(zone),
+>>>                      high_wmark_pages(zone),
+>>>                      zone->spanned_pages,
+>>>                      zone->present_pages,
+>>> -                  zone->managed_pages);
+>>> +                  zone->managed_pages,
+>>> +                  IS_ENABLED(CONFIG_CMA) ? zone->cma_pages : 0);
+>>>           seq_printf(m,
+>>>                      "\n        protection: (%ld",
+>>>
+>>>
+>>> I do not see it that ugly, but just my taste.
+>>
+>> IIRC, that does not work. The compiler will still complain
+>> about a missing struct members. We would have to provide a
+>> zone_cma_pages() helper with some ifdefery.
+> 
+> Of course, it seems I switched off my brain.
+> 
+>> We could do something like this on top
+>>
+>> --- a/include/linux/mmzone.h
+>> +++ b/include/linux/mmzone.h
+>> @@ -530,7 +530,9 @@ struct zone {
+>>          atomic_long_t           managed_pages;
+>>          unsigned long           spanned_pages;
+>>          unsigned long           present_pages;
+>> +#ifdef CONFIG_CMA
+>>          unsigned long           cma_pages;
+>> +#endif
+>>          const char              *name;
+>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>> index 97fc32a53320..b753a64f099f 100644
+>> --- a/mm/vmstat.c
+>> +++ b/mm/vmstat.c
+>> @@ -1643,7 +1643,10 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+>>                     "\n        spanned  %lu"
+>>                     "\n        present  %lu"
+>>                     "\n        managed  %lu"
+>> -                  "\n        cma      %lu",
+>> +#ifdef CONFIG_CMA
+>> +                  "\n        cma      %lu"
+>> +#endif
+>> +                  "%s",
+>>                     zone_page_state(zone, NR_FREE_PAGES),
+>>                     min_wmark_pages(zone),
+>>                     low_wmark_pages(zone),
+>> @@ -1651,7 +1654,10 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+>>                     zone->spanned_pages,
+>>                     zone->present_pages,
+>>                     zone_managed_pages(zone),
+>> -                  zone->cma_pages);
+>> +#ifdef CONFIG_CMA
+>> +                  zone->cma_pages,
+>> +#endif
+>> +                  "");
+>>          seq_printf(m,
+>>                     "\n        protection: (%ld",
+> 
+> Looks good to me, but I can see how those #ifdef can raise some
+> eyebrows.
 
-On Thu, Jan 28, 2021 at 2:59 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently when the call to gpiod_to_irq fails the error return
-> path does not kfree the recently allocated object 'unit'. Fix this
-> swapping the order of the irq call and the allocation of unit.
->
-> Thanks to Ricardo Ribalda for suggesting this fix.
->
-> Addresses-Coverity: ("Resource leak")
-> Fixes: 2886477ff987 ("media: uvcvideo: Implement UVC_EXT_GPIO_UNIT")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+We could print it further above to avoid the "%s" ... "", or print it 
+separately below. Then we'd only need a single ifdef. Might make sense
 
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+> Let us see what other thinks as well.
+> 
+> Btw, should linux-uapi be CCed, as /proc/vmstat layout will change?
 
-> ---
->
-> V2: swap order of gpiod_to_irq call and allocation of unit to simplify
->     error cleanup.
->
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 1abc122a0977..f62e6cb66daf 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -1534,10 +1534,6 @@ static int uvc_gpio_parse(struct uvc_device *dev)
->         if (IS_ERR_OR_NULL(gpio_privacy))
->                 return PTR_ERR_OR_ZERO(gpio_privacy);
->
-> -       unit = uvc_alloc_entity(UVC_EXT_GPIO_UNIT, UVC_EXT_GPIO_UNIT_ID, 0, 1);
-> -       if (!unit)
-> -               return -ENOMEM;
-> -
->         irq = gpiod_to_irq(gpio_privacy);
->         if (irq < 0) {
->                 if (irq != EPROBE_DEFER)
-> @@ -1546,6 +1542,10 @@ static int uvc_gpio_parse(struct uvc_device *dev)
->                 return irq;
->         }
->
-> +       unit = uvc_alloc_entity(UVC_EXT_GPIO_UNIT, UVC_EXT_GPIO_UNIT_ID, 0, 1);
-> +       if (!unit)
-> +               return -ENOMEM;
-> +
->         unit->gpio.gpio_privacy = gpio_privacy;
->         unit->gpio.irq = irq;
->         unit->gpio.bControlSize = 1;
-> --
-> 2.29.2
->
+Is there a linux-uapi@ list? I know linux-api@ ("forum to discuss 
+changes that affect the Linux programming interface (API or ABI)".
 
+Good question, I can certainly cc linux-api@, although I doubt it's 
+strictly necessary when adding something here.
+
+Thanks!
 
 -- 
-Ricardo Ribalda
+Thanks,
+
+David / dhildenb
+
