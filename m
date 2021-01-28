@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E3A306957
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959E130695D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhA1BEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:04:49 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:29215 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhA1BC2 (ORCPT
+        id S231574AbhA1BFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:05:02 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:13893 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231643AbhA1BCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:02:28 -0500
-Date:   Thu, 28 Jan 2021 01:01:25 +0000
+        Wed, 27 Jan 2021 20:02:34 -0500
+Date:   Thu, 28 Jan 2021 01:01:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1611795691;
-        bh=Eol7AqptGXRCq7Rc+rswtBnbWlKzHKoDGHTqWwoCE5I=;
+        s=protonmail; t=1611795699;
+        bh=JpHvdf4WlWJrwuqfau82dS6nFbc1g8Q6OZk5049t/is=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=X7n/6bqX7We7pqDj0N0GCbNE6Kghj7DbC7BaBB4jVl/VD8NSG0lfuJBXqjO1sHVAp
-         2Ugww63W2CYO/4n/0RaXUMjBtnBfEUjrEsbae3//V3WuKubvweSs6eAE0dBroF4QhO
-         wuG4DkPmNSWARjyDR66QAfW+rAeql+R7gPeQRG0I=
+        b=tIvgqb/CKtYJzYMp0MVvjk+J93VS5UJxGzwCnutyRKWAVe63yUcsvZTyKnp3eUbwi
+         ZFa0oNibp/5rqgxqey62dM0mkAmygyIVmeoNdyRYj3sDlIawnx5whxSJJB3eJ0e/qp
+         Z2mDC1tPspo+Wp5jHJjw3kUeI/Htp6DvxJ2vir8s=
 To:     Jonathan Corbet <corbet@lwn.net>
 From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
         <nfraprado@protonmail.com>
@@ -31,8 +31,8 @@ Cc:     Randy Dunlap <rdunlap@infradead.org>,
         lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
 Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
           <nfraprado@protonmail.com>
-Subject: [PATCH 1/2] docs: Enable usage of relative paths to docs on automarkup
-Message-ID: <20210128010028.58541-2-nfraprado@protonmail.com>
+Subject: [PATCH 2/2] docs: Document cross-referencing using relative path
+Message-ID: <20210128010028.58541-3-nfraprado@protonmail.com>
 In-Reply-To: <20210128010028.58541-1-nfraprado@protonmail.com>
 References: <20210128010028.58541-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
@@ -47,53 +47,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, a cross-reference to another document could only be created
-by writing the full path to the document starting from the
-Documentation/ directory.
+Update the Cross-referencing section to explain how to create a
+cross-reference to a document using relative paths and with no
+additional syntax, by relying on automarkup.py.
 
-Extend this to also allow relative paths to be used. A relative path
-would be just the path, like ../filename.rst, while the absolute path
-still needs to start from Documentation, like Documentation/filename.rst.
-
-As part of this change, the .rst extension is now required for both
-types of paths, since not requiring it would cause the regex to be too
-generic.
-
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
 ---
- Documentation/sphinx/automarkup.py | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ Documentation/doc-guide/sphinx.rst | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/auto=
-markup.py
-index 953b24b6e2b4..4b6aef9b35db 100644
---- a/Documentation/sphinx/automarkup.py
-+++ b/Documentation/sphinx/automarkup.py
-@@ -51,7 +51,7 @@ RE_typedef =3D re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)'=
-, flags=3Dascii_p3)
- # Detects a reference to a documentation page of the form Documentation/..=
-. with
- # an optional extension
- #
--RE_doc =3D re.compile(r'\bDocumentation(/[\w\-_/]+)(\.\w+)*')
-+RE_doc =3D re.compile(r'(\bDocumentation/)?((\.\./)*[\w\-/]+)\.rst')
+diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/s=
+phinx.rst
+index 36ac2166ad67..ec3e71f56009 100644
+--- a/Documentation/doc-guide/sphinx.rst
++++ b/Documentation/doc-guide/sphinx.rst
+@@ -340,16 +340,26 @@ Rendered as:
+ Cross-referencing
+ -----------------
 =20
- RE_namespace =3D re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
+-Cross-referencing from one documentation page to another can be done by pa=
+ssing
+-the path to the file starting from the Documentation folder.
+-For example, to cross-reference to this page (the .rst extension is option=
+al)::
+-
+-    See Documentation/doc-guide/sphinx.rst.
+-
+-If you want to use a relative path, you need to use Sphinx's ``doc`` direc=
+tive.
+-For example, referencing this page from the same directory would be done a=
+s::
+-
+-    See :doc:`sphinx`.
++Cross-referencing from one documentation page to another can be done simpl=
+y by
++writing the path to the document file, no special syntax required. The pat=
+h can
++be either absolute or relative. For absolute paths, start it with
++"Documentation/". For example, to cross-reference to this page, all the
++following are valid options, depending on the current document's directory=
+ (note
++that the ``.rst`` extension is required)::
++
++    See Documentation/doc-guide/sphinx.rst. This always works.
++    Take a look at sphinx.rst, which is at this same directory.
++    Read ../sphinx.rst, which is one directory above.
++
++If you want the link to have a different rendered text other than the docu=
+ment's
++title, you need to use Sphinx's ``doc`` role. For example::
++
++    See :doc:`my custom link text for document sphinx <sphinx>`.
++
++For most use cases, the former is preferred, as it is cleaner and more sui=
+ted
++for people reading the source files. If you come across a ``:doc:`` usage =
+that
++isn't adding any value, please feel free to convert it to just the documen=
+t
++path.
 =20
-@@ -234,7 +234,10 @@ def markup_doc_ref(docname, app, match):
-     #
-     # Go through the dance of getting an xref out of the std domain
-     #
--    target =3D match.group(1)
-+    absolute =3D match.group(1)
-+    target =3D match.group(2)
-+    if absolute:
-+       target =3D "/" + target
-     xref =3D None
-     pxref =3D addnodes.pending_xref('', refdomain =3D 'std', reftype =3D '=
-doc',
-                                   reftarget =3D target, modname =3D None,
+ For information on cross-referencing to kernel-doc functions or types, see
+ Documentation/doc-guide/kernel-doc.rst.
 --=20
 2.30.0
 
