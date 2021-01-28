@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18173071E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E626F307201
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhA1Iq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:46:56 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58793 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhA1IqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:46:18 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRDbX4gcDz9sVF;
-        Thu, 28 Jan 2021 19:46:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611823592;
-        bh=I4nxG7IMxLIT36FSu452hCBmTP4QGyNgoR3QBLaSwIc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FnRy1OxEIFidI7/4Wq+6r5BZnTq8gaV7UrsY0w4uQ8qi2zxIdyqb9kZLgzttJyxOk
-         X9y0nmkr5O9TKA7ASr6cFioRpSm9O2UN7nm36Pgu1mc9kMJ1q0MTMIcWsgaEkI1D6h
-         DJt2LqNzKgzIo+0J6GV1Tvb8daXpNdzFq5Jccja0ULPsNwZ+lkgTlsEb0xFUodClFU
-         hR7f7taetVDpUQJ7en+/CLX+Wd114/Ksv74z+t8jEV6/tAYbgdtcmNCKOGx8cAsOo7
-         wMGl+wOZxJlOoMnQAhj0SvRd3g6J8OfFgqQ2leNaOl0TLVADP1cXlA+fW9zydrX3Cn
-         7oxfw1HjxuGtA==
-Date:   Thu, 28 Jan 2021 19:46:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the akpm tree
-Message-ID: <20210128194631.13e14818@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yAAHW/0L8Nk5t3QC=k5eK+V";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S231962AbhA1Iu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:50:29 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:40571 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232086AbhA1Iqv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 03:46:51 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UN7ZE16_1611823637;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN7ZE16_1611823637)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 Jan 2021 16:47:21 +0800
+From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
+To:     kvalo@codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, lee.jones@linaro.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Abaci Team <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] b43: Remove redundant code
+Date:   Thu, 28 Jan 2021 16:47:16 +0800
+Message-Id: <1611823636-18377-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yAAHW/0L8Nk5t3QC=k5eK+V
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Fix the following coccicheck warnings:
 
-Hi all,
+./drivers/net/wireless/broadcom/b43/phy_n.c:4640:2-4: WARNING: possible
+condition with no effect (if == else).
 
-After merging the akpm tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+./drivers/net/wireless/broadcom/b43/phy_n.c:4606:2-4: WARNING: possible
+condition with no effect (if == else).
 
-lib/stackdepot.c: In function 'is_stack_depot_disabled':
-lib/stackdepot.c:154:2: warning: ignoring return value of 'kstrtobool' decl=
-ared with attribute 'warn_unused_result' [-Wunused-result]
-  154 |  kstrtobool(str, &stack_depot_disable);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
+Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/net/wireless/broadcom/b43/phy_n.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-Introduced by commit
+diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
+index b669dff..39a335f 100644
+--- a/drivers/net/wireless/broadcom/b43/phy_n.c
++++ b/drivers/net/wireless/broadcom/b43/phy_n.c
+@@ -4601,16 +4601,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
+ 	if (nphy->hang_avoid)
+ 		b43_nphy_stay_in_carrier_search(dev, 1);
+ 
+-	if (nphy->gband_spurwar_en) {
+-		/* TODO: N PHY Adjust Analog Pfbw (7) */
+-		if (channel == 11 && b43_is_40mhz(dev)) {
+-			; /* TODO: N PHY Adjust Min Noise Var(2, tone, noise)*/
+-		} else {
+-			; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
+-		}
+-		/* TODO: N PHY Adjust CRS Min Power (0x1E) */
+-	}
+-
+ 	if (nphy->aband_spurwar_en) {
+ 		if (channel == 54) {
+ 			tone[0] = 0x20;
+@@ -4636,12 +4626,6 @@ static void b43_nphy_spur_workaround(struct b43_wldev *dev)
+ 			tone[0] = 0;
+ 			noise[0] = 0;
+ 		}
+-
+-		if (!tone[0] && !noise[0]) {
+-			; /* TODO: N PHY Adjust Min Noise Var(1, tone, noise)*/
+-		} else {
+-			; /* TODO: N PHY Adjust Min Noise Var(0, NULL, NULL)*/
+-		}
+ 	}
+ 
+ 	if (nphy->hang_avoid)
+-- 
+1.8.3.1
 
-  b9779abb09a8 ("lib: stackdepot: add support to disable stack depot")
-
-Interestingly, we have 2 declarations of kstrtobool - one in
-linux/kernel.h (which has __must_check) and one in linux/strings.h
-(which doesn't).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/yAAHW/0L8Nk5t3QC=k5eK+V
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmASeecACgkQAVBC80lX
-0GwzUwf+JHnkAnD5L8UG/gmcYHmmCw1l+2u5bzfriZS5ZTB2Vq3k4/7ZNXPHb+Xs
-xweotl4vZAJZu9Fp4cUwn+H8fXGzvEEGBjH0XAc/Swd0Q42ft0PlST1mUWCYGTkO
-jtMCinTDs0F+XS2jmMVYqMH8ckD7b1Yd73V5Gi26Nw7q9sdoolrRoSvZtWIdrhk4
-EDY9OpatS97PGHV5bwk7AlOAXPgqNzWlFlRh2fcnFr6ZV4uanoT+4PMuOrLnu0xQ
-NFQR439O2XRiBSJa0F936J2nMdIB5mxzG253vh0dVzCaJGNRAqjzdQlunPmVxadQ
-S0NdxcYw/Yr8lcsC5igDQ29u0cIesw==
-=DVIS
------END PGP SIGNATURE-----
-
---Sig_/yAAHW/0L8Nk5t3QC=k5eK+V--
