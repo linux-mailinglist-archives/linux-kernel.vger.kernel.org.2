@@ -2,149 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDBC306B0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D22F306B09
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhA1CWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 21:22:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbhA1CVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 21:21:10 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F893C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 18:20:30 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id s2so3804347otp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 18:20:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WaWfUsxlwLjtJJJs7BCjaV3recgbn4DsBXlNrfMz+oo=;
-        b=saVXRoDxBhtwjjEtBk2HabAxNFKMEVhPljlcyyH0GwrH+q8TICzDWdY3SaYxc38oH9
-         Pv1Fw9vG0xUXjxezCkklUNGxZ7Gm5ExDHgbB+GHD3MQZaLwt/XZbx8IJjOdl8T8NrArm
-         nDB6kSOaONxbI3tAboDMfz7RGL+tk46gIncXAJDcGiuoWsn7qC3G+yqIrj5TO2qYq1EE
-         yf2gMyivcRViM57zTQ04U6OsGxhoXsdIp/yNn+6Qwfis5YZErsV5IQ1vhKxSuh3Ztr3p
-         4Ph6WA4XvPV4fCWUP0WxFkZ0w9lPyPs1Lvs2S8UqsFflgTWvUOFunDseoEdKCuwF1dy7
-         Jmag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WaWfUsxlwLjtJJJs7BCjaV3recgbn4DsBXlNrfMz+oo=;
-        b=hdZo8u81VuKDr5E7umChz+L6wRsy/eb+p2ixDOspIQNkE/hgylMxQ2XKimXMyxsZXv
-         VwyyZY/HlcAKy4zoOmryCOvhDoB+06Xt4+KUKKiEDGJIk7GZ+IYL/FHOoV2rd0tGycSr
-         ImimGhBubqL3TyTiQUNYs73+q1CdyEOhLMDcXzpC2QLVKw9S/olpwi0G0bVntJBRrbLg
-         F1W1ZaEAha2k+wO/e/sUwf371LbMrgAPEIYYESPS7DB1q8ulOF3CKV6v/IaDRKaBoP/e
-         bzjBYx2tFPStY2iio2SVb3I4WY5gcv8ysv6TfD73kE5pxfTjz0jAVW/sHKJv6ua9I/47
-         RZxQ==
-X-Gm-Message-State: AOAM533P0hbsXgWrbJVwv28Uyk9RR3AHhrXTbrwM1nE0+uQurK1DQwgR
-        X4rbSeu/b1jO4624Qbab+JA=
-X-Google-Smtp-Source: ABdhPJz8AWLveugxt8Vw+jfjDoAFWZOcLN/f5niUp0wrxR0UbOYISJvgKpGp5cnvecembCJTwQdczA==
-X-Received: by 2002:a05:6830:2f3:: with SMTP id r19mr9873087ote.299.1611800429873;
-        Wed, 27 Jan 2021 18:20:29 -0800 (PST)
-Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id m10sm731246otp.19.2021.01.27.18.20.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 18:20:29 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     david@redhat.com, vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH 3/3] printk: dump full information of page flags in pGp
-Date:   Thu, 28 Jan 2021 10:19:47 +0800
-Message-Id: <20210128021947.22877-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210128021947.22877-1-laoar.shao@gmail.com>
-References: <20210128021947.22877-1-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231234AbhA1CV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 21:21:28 -0500
+Received: from mail.synology.com ([211.23.38.101]:51962 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231204AbhA1CUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 21:20:53 -0500
+Received: from localhost.localdomain (unknown [10.17.32.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by synology.com (Postfix) with ESMTPSA id 98DD3CE781CA;
+        Thu, 28 Jan 2021 10:20:11 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1611800411; bh=Ml/b5oOFCX4UpBoR+iFec6zbr09wPprtwU9FAP+aKdI=;
+        h=From:To:Cc:Subject:Date;
+        b=ZrXDdAiFalHJUNRDweURhwaRuqqU/ys6eDz7Uv2GGmnpL0hpu1/RjCOibBDii99In
+         /XuVgt4Vbtl+eqdNVXllQxXukeEDpkGlTroleHLep5j9P9hYylPkR6R7K2589ktglA
+         Z3XRb4TUp9fu4WTyU7/cVG0RvD1MVvvEuKprslNM=
+From:   bingjingc <bingjingc@synology.com>
+To:     viro@zeniv.linux.org.uk, jack@suse.com, jack@suse.cz,
+        axboe@kernel.dk, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, cccheng@synology.com,
+        bingjingc@synology.com, robbieko@synology.com
+Subject: [PATCH 3/3] parser: add unsigned int parser
+Date:   Thu, 28 Jan 2021 10:20:01 +0800
+Message-Id: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
+X-Mailer: git-send-email 2.7.4
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the pGp only shows the names of page flags, rather than
-the full information including section, node, zone, last cpupid and
-kasan tag. While it is not easy to parse these information manually
-because there're so many flavors. Let's interpret them in pGp as well.
+From: BingJing Chang <bingjingc@synology.com>
 
-- Before the patch,
-[ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
+Will be used by fs parsing options
 
-- After the patch,
-[ 6315.235783] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(Node 0x0,Zone 0x2,Lastcpupid 0x1fffff,slab|head)
-
-Cc: David Hildenbrand <david@redhat.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Reviewed-by: Robbie Ko<robbieko@synology.com>
+Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+Signed-off-by: BingJing Chang <bingjingc@synology.com>
 ---
- lib/vsprintf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+ fs/isofs/inode.c       | 16 ++--------------
+ fs/udf/super.c         | 16 ++--------------
+ include/linux/parser.h |  1 +
+ lib/parser.c           | 22 ++++++++++++++++++++++
+ 4 files changed, 27 insertions(+), 28 deletions(-)
 
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 3b53c73580c5..bd809f4f1b82 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1916,6 +1916,46 @@ char *format_flags(char *buf, char *end, unsigned long flags,
- 	return buf;
- }
+diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
+index 342ac19..21edc42 100644
+--- a/fs/isofs/inode.c
++++ b/fs/isofs/inode.c
+@@ -335,18 +335,6 @@ static const match_table_t tokens = {
+ 	{Opt_err, NULL}
+ };
  
-+struct page_flags_layout {
-+	int width;
-+	int shift;
-+	int mask;
-+	char *name;
-+};
-+
-+struct page_flags_layout pfl[] = {
-+	{SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK, "Section "},
-+	{NODES_WIDTH, NODES_PGSHIFT, NODES_MASK, "Node "},
-+	{ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK, "Zone "},
-+	{LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK, "Lastcpupid "},
-+	{KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK, "Kasantag "},
-+};
-+
-+static
-+char *format_layout(char *buf, char *end, unsigned long flags)
+-static int isofs_match_uint(substring_t *s, unsigned int *res)
+-{
+-	int err = -ENOMEM;
+-	char *buf = match_strdup(s);
+-
+-	if (buf) {
+-		err = kstrtouint(buf, 10, res);
+-		kfree(buf);
+-	}
+-	return err;
+-}
+-
+ static int parse_options(char *options, struct iso9660_options *popt)
+ {
+ 	char *p;
+@@ -447,7 +435,7 @@ static int parse_options(char *options, struct iso9660_options *popt)
+ 		case Opt_ignore:
+ 			break;
+ 		case Opt_uid:
+-			if (isofs_match_uint(&args[0], &uv))
++			if (match_uint(&args[0], &uv))
+ 				return 0;
+ 			popt->uid = make_kuid(current_user_ns(), uv);
+ 			if (!uid_valid(popt->uid))
+@@ -455,7 +443,7 @@ static int parse_options(char *options, struct iso9660_options *popt)
+ 			popt->uid_set = 1;
+ 			break;
+ 		case Opt_gid:
+-			if (isofs_match_uint(&args[0], &uv))
++			if (match_uint(&args[0], &uv))
+ 				return 0;
+ 			popt->gid = make_kgid(current_user_ns(), uv);
+ 			if (!gid_valid(popt->gid))
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index efeac8c..2f83c12 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -454,18 +454,6 @@ static const match_table_t tokens = {
+ 	{Opt_err,	NULL}
+ };
+ 
+-static int udf_match_uint(substring_t *s, unsigned int *res)
+-{
+-	int err = -ENOMEM;
+-	char *buf = match_strdup(s);
+-
+-	if (buf) {
+-		err = kstrtouint(buf, 10, res);
+-		kfree(buf);
+-	}
+-	return err;
+-}
+-
+ static int udf_parse_options(char *options, struct udf_options *uopt,
+ 			     bool remount)
+ {
+@@ -521,7 +509,7 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
+ 			uopt->flags &= ~(1 << UDF_FLAG_USE_SHORT_AD);
+ 			break;
+ 		case Opt_gid:
+-			if (udf_match_uint(args, &uv))
++			if (match_uint(args, &uv))
+ 				return 0;
+ 			uopt->gid = make_kgid(current_user_ns(), uv);
+ 			if (!gid_valid(uopt->gid))
+@@ -529,7 +517,7 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
+ 			uopt->flags |= (1 << UDF_FLAG_GID_SET);
+ 			break;
+ 		case Opt_uid:
+-			if (udf_match_uint(args, &uv))
++			if (match_uint(args, &uv))
+ 				return 0;
+ 			uopt->uid = make_kuid(current_user_ns(), uv);
+ 			if (!uid_valid(uopt->uid))
+diff --git a/include/linux/parser.h b/include/linux/parser.h
+index 89e2b23..dd79f45 100644
+--- a/include/linux/parser.h
++++ b/include/linux/parser.h
+@@ -29,6 +29,7 @@ typedef struct {
+ 
+ int match_token(char *, const match_table_t table, substring_t args[]);
+ int match_int(substring_t *, int *result);
++int match_uint(substring_t *s, unsigned int *result);
+ int match_u64(substring_t *, u64 *result);
+ int match_octal(substring_t *, int *result);
+ int match_hex(substring_t *, int *result);
+diff --git a/lib/parser.c b/lib/parser.c
+index f5b3e5d..2ec9c4f 100644
+--- a/lib/parser.c
++++ b/lib/parser.c
+@@ -189,6 +189,28 @@ int match_int(substring_t *s, int *result)
+ EXPORT_SYMBOL(match_int);
+ 
+ /**
++ * match_uint: - scan a decimal representation of an integer from a substring_t
++ * @s: substring_t to be scanned
++ * @result: resulting integer on success
++ *
++ * Description: Attempts to parse the &substring_t @s as a decimal integer. On
++ * success, sets @result to the integer represented by the string and returns 0.
++ * Returns -ENOMEM, -EINVAL, or -ERANGE on failure.
++ */
++int match_uint(substring_t *s, unsigned int *result)
 +{
-+	int i;
++	int err = -ENOMEM;
++	char *buf = match_strdup(s);
 +
-+	for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
-+		if (pfl[i].width == 0)
-+			continue;
-+
-+		buf = string(buf, end, pfl[i].name, default_str_spec);
-+
-+		if (buf >= end)
-+			break;
-+		buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
-+			     default_flag_spec);
-+
-+		if (buf >= end)
-+			break;
-+		*buf = ',';
-+		buf++;
++	if (buf) {
++		err = kstrtouint(buf, 10, result);
++		kfree(buf);
 +	}
-+
-+	return buf;
++	return err;
 +}
++EXPORT_SYMBOL(match_uint);
 +
- static noinline_for_stack
- char *flags_string(char *buf, char *end, void *flags_ptr,
- 		   struct printf_spec spec, const char *fmt)
-@@ -1929,7 +1969,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
- 	switch (fmt[1]) {
- 	case 'p':
- 		flags = *(unsigned long *)flags_ptr;
--		/* Remove zone id */
-+		buf = format_layout(buf, end, flags & ~((1UL << NR_PAGEFLAGS) - 1));
- 		flags &= (1UL << NR_PAGEFLAGS) - 1;
- 		names = pageflag_names;
- 		break;
++/**
+  * match_u64: - scan a decimal representation of a u64 from
+  *                  a substring_t
+  * @s: substring_t to be scanned
 -- 
-2.17.1
+2.7.4
 
