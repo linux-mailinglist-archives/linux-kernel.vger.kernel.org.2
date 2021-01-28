@@ -2,54 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9793068BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B49BF3068C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhA1Ajt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:39:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhA1Aiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:38:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE8D60C3D;
-        Thu, 28 Jan 2021 00:38:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611794293;
-        bh=tYOqKlJNe68s8knlGa09rULG0afNwiuJ8DHiuRlHmT8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MqxoCWHWBToX8n2PKuDZL0FSQLgOPv5IP+N92erMGtwiG0DlSq8DwNq7nDpqO2XWS
-         GJ7YXMmF7U3YdCkQSRlewfIQdpEoq9teIVAt4LHElICHxgdUGPO13XbOoUI7RYcwFR
-         3BF3UX3natIy4CnJJEB8hhEfaNXcZrR+AAkBUsZEFTZCkHfEvYiYEgqXSZ9X8f+omv
-         ipVloD6ll/9qHwUPBSszg8o5e39gcBL+A7tJwjgvMr3BI0GD6WoQCyf3MNP9PbjCWZ
-         2GehUitnv12Y+YLku91DonZME7aTw1ndMSfDROO+/5N7gapIMVry3qLjVYgO/3/1EJ
-         fTlJZk6JJ72Zw==
-Date:   Wed, 27 Jan 2021 16:38:12 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     netdev@vger.kernel.org, jiri@nvidia.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net-next] net: core: devlink: add 'dropped' stats
- field for DROP trap action
-Message-ID: <20210127163812.76fa0411@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210125123121.1540-1-oleksandr.mazur@plvision.eu>
-References: <20210125123121.1540-1-oleksandr.mazur@plvision.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231709AbhA1AlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhA1AjY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:39:24 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00EEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:38:42 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id l17so2374791pff.17
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to;
+        bh=jmVH+B5byuoeCWBByF+rlgs1IXxlR3I67Dpk6zRz3g4=;
+        b=ika8x4rgJdL4GFh0YJshUwWatHQjTXQ6jtilrMjzjB5sX9mt0EINzDY8IG5gykxg+V
+         gtt0xZreieN+Cl9Zk4vH0z+L75qd0s7an5EkYb64eAua3UBdHun+3RuVtNay74rRmljF
+         w5FPFyJlgdiwd0MdSbvafLRju/MC00+cfc/WbLCEtHZUfpqz6G5N0GL3pImWJyq728PK
+         YpGO0gtXK2jnCNQoOP//2fEhqOtPi8l/Kif+ts7PTih+MaXF9ASUVT2b7QL1viThPJSu
+         nBl/vQz8MYZ+b63p0HxtEj+3y1yHtHp8vbQsXi2xfJj8uwDwMO5ETL38SDXURD71ibF7
+         ChIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to;
+        bh=jmVH+B5byuoeCWBByF+rlgs1IXxlR3I67Dpk6zRz3g4=;
+        b=hcBBdjZtIPH/NpZaOz+DRDGBGD7FOqVpwk3PbiOQaKkF8+U3IYOkPEF+H0/KJB12VM
+         5r1zNuryAblj8Nmc00DbqrjUGfz9OwqrdoZoYwmfTV2kdJFi5fJDrxgidfD/paNMvSFt
+         dlY4QFNrOE7cT99W8DN3gLO6/N7Fn4s0XW27d9RAxUHkyBHZoMNfMISjwZEb5sveh6KJ
+         f2Rd7yXkbN+He1dDGN+vIpNM0UoFob51ug4ruY57QOqCqvxOZeh2fRnogL2ZC6Yf4zq/
+         byZRaYmJOT0D7VCH//PNZbQHyDBh9woUgHPK1PEopYzLEojdGBJzK99+Aq8QU4J82Zow
+         ZwBw==
+X-Gm-Message-State: AOAM5306X9aq583PpNr6c2HZ67aHJ2ZWz++x+k42/uqu6i4SR6WUxe9E
+        L8hEVRr/VRZtG5LL71C+CuAcuvdumw==
+X-Google-Smtp-Source: ABdhPJxZSrbWZzQDr55mdPo+6c30/Ybjdp+n6lXqVs1jxzQEstypPUxE0mNfzMHFA3Zn+gC3p6cqscaGjw==
+Sender: "jxgao via sendgmr" <jxgao@jxgao.kir.corp.google.com>
+X-Received: from jxgao.kir.corp.google.com ([2620:0:1008:11:4d90:620d:7a68:ffc5])
+ (user=jxgao job=sendgmr) by 2002:a17:902:67:b029:de:c5e0:87ca with SMTP id
+ 94-20020a1709020067b02900dec5e087camr13986024pla.64.1611794321730; Wed, 27
+ Jan 2021 16:38:41 -0800 (PST)
+Date:   Wed, 27 Jan 2021 16:38:26 -0800
+Message-Id: <20210128003829.1892018-1-jxgao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH 0/3] Adding offset keeping option when mapping data via SWIOTLB.*
+From:   Jianxiong Gao <jxgao@google.com>
+To:     jxgao@google.com, erdemaktas@google.com, marcorr@google.com,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        gregkh@linuxfoundation.org, saravanak@google.com,
+        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
+        andriy.shevchenko@linux.intel.com, dan.j.williams@intel.com,
+        bgolaszewski@baylibre.com, jroedel@suse.de,
+        iommu@lists.linux-foundation.org, konrad.wilk@oracle.com,
+        kbusch@kernel.org, axboe@fb.com, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 14:31:21 +0200 Oleksandr Mazur wrote:
-> Whenever query statistics is issued for trap with DROP action,
-> devlink subsystem would also fill-in statistics 'dropped' field.
-> In case if device driver did't register callback for hard drop
-> statistics querying, 'dropped' field will be omitted and not filled.
-> Add trap_drop_counter_get callback implementation to the netdevsim.
-> Add new test cases for netdevsim, to test both the callback
-> functionality, as well as drop statistics alteration check.
-> 
-> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+NVMe driver and other applications may depend on the data offset
+to operate correctly. Currently when unaligned data is mapped via
+SWIOTLB, the data is mapped as slab aligned with the SWIOTLB. This
+patch adds an option to make sure the mapped data preserves its
+offset of the orginal addrss.
 
-Please stick to RFC since there is no upstream user for this (if you
-need to repost).
+Without the patch when creating xfs formatted disk on NVMe backends,
+with swiotlb=force in kernel boot option, creates the following error:
+meta-data=/dev/nvme2n1           isize=512    agcount=4, agsize=131072 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=0, rmapbt=0, refl
+ink=0
+data     =                       bsize=4096   blocks=524288, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+mkfs.xfs: pwrite failed: Input/output error
+
+Jianxiong Gao (3):
+  Adding page_offset_mask to device_dma_parameters
+  Add swiotlb offset preserving mapping when
+    dma_dma_parameters->page_offset_mask is non zero.
+  Adding device_dma_parameters->offset_preserve_mask to NVMe driver.
+
+ drivers/nvme/host/pci.c     |  4 ++++
+ include/linux/device.h      |  1 +
+ include/linux/dma-mapping.h | 17 +++++++++++++++++
+ kernel/dma/swiotlb.c        | 16 +++++++++++++++-
+ 4 files changed, 37 insertions(+), 1 deletion(-)
+
+-- 
+2.27.0
+
