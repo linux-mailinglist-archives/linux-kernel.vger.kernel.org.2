@@ -2,93 +2,629 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E854A306D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3627D306D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhA1Ffv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 00:35:51 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:64787 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229446AbhA1Ffr (ORCPT
+        id S229783AbhA1FhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 00:37:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhA1FhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 00:35:47 -0500
-X-UUID: a3577d1d7c8f48b4af7fe2e225f717d2-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=XxO6FR8xvA123ZiF/PL7oeET5mcxrQ+uDd5Kof3HnYk=;
-        b=Ie1P9uZwXh8+lYMLj0x7CUUyWRunYZy+TESyg342tpr2RhB/dwlAomiEuKz81hr9qyXJKN+866q9ZjDkJSgFWK8YX1p2MFPPKbAhTxSdr1Er5ZTJGtVSlbYk8ioPt0ConaJ5MaO0G36Oa+32ABtdpYRFuzvpigauxZzpzyoCcYQ=;
-X-UUID: a3577d1d7c8f48b4af7fe2e225f717d2-20210128
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1382939228; Thu, 28 Jan 2021 13:35:03 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 13:34:53 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 13:34:53 +0800
-Message-ID: <1611812093.28312.1.camel@mtksdaap41>
-Subject: Re: [PATCH v10 6/9] drm/mediatek: add has_dither private data for
- gamma
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Thu, 28 Jan 2021 13:34:53 +0800
-In-Reply-To: <20210127045422.2418917-7-hsinyi@chromium.org>
-References: <20210127045422.2418917-1-hsinyi@chromium.org>
-         <20210127045422.2418917-7-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 28 Jan 2021 00:37:05 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB9BC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:36:24 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id i187so6016461lfd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:36:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H0+SPb1sGIQ7OykhjNh+84iIy2kpzbYQSbjIAaYgVj8=;
+        b=TkVUz1NsQfWLA1R32Ao5MUji8JRLJ+lMBTeWYm5MHE05qxHDOU0drY/PaKBdJSzmZy
+         Uaaikv5N1TuyXlecwH9rh/z1kj7YSa+TVdh/O1HJk5kxJK9sJ1MpdugMjbvvwJwIvk81
+         TUF5YLXbqP3Vkumup8u5+LqUFWI/zrUpdEEfywArYkZ5ZAcrkKHo0jmJ0ncui3OzZDuv
+         y42/+2Tgk60O5wX7gpvYGY56jE+Gbh7IvOj1osQWiA8CIn8dwT1SES38AdRcZ8GqwA0j
+         jkUxK28De28b1HxQGgkdXt80qFu96bdMto+JYdEhl95H6GLGuAKNmIzlWm0gL+Rs9YOW
+         M6+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H0+SPb1sGIQ7OykhjNh+84iIy2kpzbYQSbjIAaYgVj8=;
+        b=Svh/uIuy4L7NQn3cqvHgTOUpzGsptYK2rYROYQUqE0rzzRMHiDKKQzUn4XHE4zeN1I
+         il1zP9khmZfCSDyqeN7pYxTYB5gsA+PkyLD+tXAhD4kwQArS2wsI5aBqtXBXd1N+pyUt
+         x4rUdOB0expNm41QtOarSO7eDPHdPE3Inv7D1I+EtGbFpVxCGNXQ854DP3KJ2DyWH8+k
+         7jwNn5RU5nigRYpQD05myA2B0YhU6eH6D/l9+vHa1L7+J2YAsZzsYKCwtSVf7aUk9Vlk
+         6AvKp868gLbrWsURiY+tpt41pbcfwd9vBPuNC5DypGoeaW4AXhUsZbUBQg3eyj6dxgvO
+         j83Q==
+X-Gm-Message-State: AOAM531OMELB29stQzp2AIboGfqT/VuiZcE/oKB7pYL/O/A/R4CdVI4+
+        F/wv7DF2dBSd1O3dJubepcpvFGrxOKXmPhpuK7nHeQ==
+X-Google-Smtp-Source: ABdhPJwv1kiHbydD6QOO6nDMuRgJRt+l/XxHFBf6N1PlJh4qH8DcUACV6FIZk3Zz6o2L44bvvp3YZgsAzm31R+uO6GU=
+X-Received: by 2002:a19:4006:: with SMTP id n6mr6563925lfa.194.1611812182985;
+ Wed, 27 Jan 2021 21:36:22 -0800 (PST)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 47C7AAB9C7C5D61CCA99EDA13880D171FB27A2778886A43D53DF0D0E9A7BDD962000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <1611584985-12479-1-git-send-email-sumit.garg@linaro.org> <20210125204316.cwhr2nxrg77f35ud@maple.lan>
+In-Reply-To: <20210125204316.cwhr2nxrg77f35ud@maple.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 28 Jan 2021 11:06:11 +0530
+Message-ID: <CAFA6WYPDXA252kTWZ2py+kGMVBfGL=7LUDvBJzaBbAVRpqpCJw@mail.gmail.com>
+Subject: Re: [PATCH] kdb: Refactor env variables get/set code
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk9uIFdlZCwgMjAyMS0wMS0yNyBhdCAxMjo1NCArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
-dGVrLmNvbT4NCj4gDQo+IE5vdCBhbGwgU29DIGhhcyBkaXRoZXIgZnVuY3Rpb24gaW4gZ2FtbWEg
-bW9kdWxlLg0KPiBBZGQgcHJpdmF0ZSBkYXRhIHRvIGNvbnRyb2wgdGhpcyBmdW5jdGlvbiBzZXR0
-aW5nLg0KDQpSZXZpZXdlZC1ieTogQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNvbT4NCg0KPiANCj4g
-U2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+
-DQo+IFNpZ25lZC1vZmYtYnk6IEhzaW4tWWkgV2FuZyA8aHNpbnlpQGNocm9taXVtLm9yZz4NCj4g
-LS0tDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZ2FtbWEuYyB8IDEyICsr
-KysrKysrKy0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rp
-c3BfZ2FtbWEuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9nYW1tYS5jDQo+
-IGluZGV4IGI1YTQ5OWQ3ZTQ3MmMuLmM5OGZlMjg0MjY1ZDAgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
-cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9nYW1tYS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1
-L2RybS9tZWRpYXRlay9tdGtfZGlzcF9nYW1tYS5jDQo+IEBAIC0yNSw3ICsyNSw3IEBADQo+ICAj
-ZGVmaW5lIExVVF8xMEJJVF9NQVNLCQkJCTB4MDNmZg0KPiAgDQo+ICBzdHJ1Y3QgbXRrX2Rpc3Bf
-Z2FtbWFfZGF0YSB7DQo+IC0JdTMyIHJlc2VydmVkOw0KPiArCWJvb2wgaGFzX2RpdGhlcjsNCj4g
-IH07DQo+ICANCj4gIC8qKg0KPiBAQCAtOTEsNyArOTEsOCBAQCB2b2lkIG10a19nYW1tYV9jb25m
-aWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4gIA0KPiAgCW10a19kZHBf
-d3JpdGUoY21kcV9wa3QsIGggPDwgMTYgfCB3LCAmZ2FtbWEtPmNtZHFfcmVnLCBnYW1tYS0+cmVn
-cywNCj4gIAkJICAgICAgRElTUF9HQU1NQV9TSVpFKTsNCj4gLQltdGtfZGl0aGVyX3NldF9jb21t
-b24oZ2FtbWEtPnJlZ3MsICZnYW1tYS0+Y21kcV9yZWcsIGJwYywgRElTUF9HQU1NQV9DRkcsIGNt
-ZHFfcGt0KTsNCj4gKwlpZiAoZ2FtbWEtPmRhdGEgJiYgZ2FtbWEtPmRhdGEtPmhhc19kaXRoZXIp
-DQo+ICsJCW10a19kaXRoZXJfc2V0X2NvbW1vbihnYW1tYS0+cmVncywgJmdhbW1hLT5jbWRxX3Jl
-ZywgYnBjLCBESVNQX0dBTU1BX0NGRywgY21kcV9wa3QpOw0KPiAgfQ0KPiAgDQo+ICB2b2lkIG10
-a19nYW1tYV9zdGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+IEBAIC0xNzEsOCArMTcyLDEzIEBA
-IHN0YXRpYyBpbnQgbXRrX2Rpc3BfZ2FtbWFfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
-KnBkZXYpDQo+ICAJcmV0dXJuIDA7DQo+ICB9DQo+ICANCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
-bXRrX2Rpc3BfZ2FtbWFfZGF0YSBtdDgxNzNfZ2FtbWFfZHJpdmVyX2RhdGEgPSB7DQo+ICsJLmhh
-c19kaXRoZXIgPSB0cnVlLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9k
-ZXZpY2VfaWQgbXRrX2Rpc3BfZ2FtbWFfZHJpdmVyX2R0X21hdGNoW10gPSB7DQo+IC0JeyAuY29t
-cGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtZGlzcC1nYW1tYSJ9LA0KPiArCXsgLmNvbXBhdGli
-bGUgPSAibWVkaWF0ZWssbXQ4MTczLWRpc3AtZ2FtbWEiLA0KPiArCSAgLmRhdGEgPSAmbXQ4MTcz
-X2dhbW1hX2RyaXZlcl9kYXRhfSwNCj4gIAl7fSwNCj4gIH07DQo+ICBNT0RVTEVfREVWSUNFX1RB
-QkxFKG9mLCBtdGtfZGlzcF9nYW1tYV9kcml2ZXJfZHRfbWF0Y2gpOw0KDQo=
+On Tue, 26 Jan 2021 at 02:13, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Mon, Jan 25, 2021 at 07:59:45PM +0530, Sumit Garg wrote:
+> > Move kdb environment related get/set APIs to a separate file in order
+> > to provide an abstraction for environment variables access and hence
+> > enhances code readability.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  kernel/debug/kdb/Makefile      |   2 +-
+> >  kernel/debug/kdb/kdb_env.c     | 229 +++++++++++++++++++++++++++++++++++++++++
+> >  kernel/debug/kdb/kdb_main.c    | 201 +-----------------------------------
+>
+> So... a couple of things bother me about this.
+>
+> 1. This patch mixes together real changes (new functions for example) and
+>    code motion. That makes is needlessly difficult to review. Code
+>    motion and changes should always be different patches.
+>
 
+Agree.
+
+> 2. I'm rather unconvinced by the premise that removing a continuous
+>    block of functions from one file to another has a particularly big
+>    impact on readabiity. The existing environment functions are not
+>    scattered in many difference places so I think any gain from
+>    moving them is lost (and then some) by the potential for painful
+>    merge conflicts, especially if anything needs backporting.
+>
+
+There is another aspect here as well regarding users of environment
+access functions which are spread across multiple files:
+- kdb_main.c
+- kdb_io.c
+- kdb_support.c
+
+So having a separate file for common functions enhances modularity as
+well. But if you still think pains from code motion are more than the
+gains then I will drop it.
+
+> I *think* I like the new functions (though I agree with Doug about the
+> naming) although it is hard to be entirely sure since they are tangled
+> in with the code motion.
+>
+> Basically I'd rather see the patch without the code motion...
+> something that just extracts some of the ad-hoc environmental scans
+> into functions and puts the functions near the existing env
+> manipulation functions.
+
+Okay.
+
+-Sumit
+
+>
+>
+> Daniel.
+>
+> >  kernel/debug/kdb/kdb_private.h |   3 +
+> >  4 files changed, 235 insertions(+), 200 deletions(-)
+> >  create mode 100644 kernel/debug/kdb/kdb_env.c
+> >
+> > diff --git a/kernel/debug/kdb/Makefile b/kernel/debug/kdb/Makefile
+> > index efac857..b76aebe 100644
+> > --- a/kernel/debug/kdb/Makefile
+> > +++ b/kernel/debug/kdb/Makefile
+> > @@ -6,7 +6,7 @@
+> >  # Copyright (c) 2009 Wind River Systems, Inc. All Rights Reserved.
+> >  #
+> >
+> > -obj-y := kdb_io.o kdb_main.o kdb_support.o kdb_bt.o gen-kdb_cmds.o kdb_bp.o kdb_debugger.o
+> > +obj-y := kdb_io.o kdb_main.o kdb_support.o kdb_bt.o gen-kdb_cmds.o kdb_bp.o kdb_debugger.o kdb_env.o
+> >  obj-$(CONFIG_KDB_KEYBOARD)    += kdb_keyboard.o
+> >
+> >  clean-files := gen-kdb_cmds.c
+> > diff --git a/kernel/debug/kdb/kdb_env.c b/kernel/debug/kdb/kdb_env.c
+> > new file mode 100644
+> > index 0000000..33ab5e6
+> > --- /dev/null
+> > +++ b/kernel/debug/kdb/kdb_env.c
+> > @@ -0,0 +1,229 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Kernel Debugger Architecture Independent Environment Functions
+> > + *
+> > + * Copyright (c) 1999-2004 Silicon Graphics, Inc.  All Rights Reserved.
+> > + * Copyright (c) 2009 Wind River Systems, Inc.  All Rights Reserved.
+> > + * 03/02/13    added new 2.5 kallsyms <xavier.bru@bull.net>
+> > + */
+> > +
+> > +#include <linux/kdb.h>
+> > +#include <linux/string.h>
+> > +#include "kdb_private.h"
+> > +
+> > +/*
+> > + * Initial environment.   This is all kept static and local to
+> > + * this file.   We don't want to rely on the memory allocation
+> > + * mechanisms in the kernel, so we use a very limited allocate-only
+> > + * heap for new and altered environment variables.  The entire
+> > + * environment is limited to a fixed number of entries (add more
+> > + * to __env[] if required) and a fixed amount of heap (add more to
+> > + * KDB_ENVBUFSIZE if required).
+> > + */
+> > +static char *__env[] = {
+> > +#if defined(CONFIG_SMP)
+> > +     "PROMPT=[%d]kdb> ",
+> > +#else
+> > +     "PROMPT=kdb> ",
+> > +#endif
+> > +     "MOREPROMPT=more> ",
+> > +     "RADIX=16",
+> > +     "MDCOUNT=8",            /* lines of md output */
+> > +     KDB_PLATFORM_ENV,
+> > +     "DTABCOUNT=30",
+> > +     "NOSECT=1",
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +     (char *)0,
+> > +};
+> > +
+> > +static const int __nenv = ARRAY_SIZE(__env);
+> > +
+> > +/*
+> > + * kdbgetenv - This function will return the character string value of
+> > + *   an environment variable.
+> > + * Parameters:
+> > + *   match   A character string representing an environment variable.
+> > + * Returns:
+> > + *   NULL    No environment variable matches 'match'
+> > + *   char*   Pointer to string value of environment variable.
+> > + */
+> > +char *kdbgetenv(const char *match)
+> > +{
+> > +     char **ep = __env;
+> > +     int matchlen = strlen(match);
+> > +     int i;
+> > +
+> > +     for (i = 0; i < __nenv; i++) {
+> > +             char *e = *ep++;
+> > +
+> > +             if (!e)
+> > +                     continue;
+> > +
+> > +             if ((strncmp(match, e, matchlen) == 0)
+> > +              && ((e[matchlen] == '\0')
+> > +                || (e[matchlen] == '='))) {
+> > +                     char *cp = strchr(e, '=');
+> > +
+> > +                     return cp ? ++cp : "";
+> > +             }
+> > +     }
+> > +     return NULL;
+> > +}
+> > +
+> > +/*
+> > + * kdballocenv - This function is used to allocate bytes for
+> > + *   environment entries.
+> > + * Parameters:
+> > + *   match   A character string representing a numeric value
+> > + * Outputs:
+> > + *   *value  the unsigned long representation of the env variable 'match'
+> > + * Returns:
+> > + *   Zero on success, a kdb diagnostic on failure.
+> > + * Remarks:
+> > + *   We use a static environment buffer (envbuffer) to hold the values
+> > + *   of dynamically generated environment variables (see kdb_set).  Buffer
+> > + *   space once allocated is never free'd, so over time, the amount of space
+> > + *   (currently 512 bytes) will be exhausted if env variables are changed
+> > + *   frequently.
+> > + */
+> > +static char *kdballocenv(size_t bytes)
+> > +{
+> > +#define      KDB_ENVBUFSIZE  512
+> > +     static char envbuffer[KDB_ENVBUFSIZE];
+> > +     static int envbufsize;
+> > +     char *ep = NULL;
+> > +
+> > +     if ((KDB_ENVBUFSIZE - envbufsize) >= bytes) {
+> > +             ep = &envbuffer[envbufsize];
+> > +             envbufsize += bytes;
+> > +     }
+> > +     return ep;
+> > +}
+> > +
+> > +/*
+> > + * kdbgetulenv - This function will return the value of an unsigned
+> > + *   long-valued environment variable.
+> > + * Parameters:
+> > + *   match   A character string representing a numeric value
+> > + * Outputs:
+> > + *   *value  the unsigned long represntation of the env variable 'match'
+> > + * Returns:
+> > + *   Zero on success, a kdb diagnostic on failure.
+> > + */
+> > +int kdbgetulenv(const char *match, unsigned long *value)
+> > +{
+> > +     char *ep;
+> > +
+> > +     ep = kdbgetenv(match);
+> > +     if (!ep)
+> > +             return KDB_NOTENV;
+> > +     if (strlen(ep) == 0)
+> > +             return KDB_NOENVVALUE;
+> > +
+> > +     *value = simple_strtoul(ep, NULL, 0);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/*
+> > + * kdbgetintenv - This function will return the value of an
+> > + *   integer-valued environment variable.
+> > + * Parameters:
+> > + *   match   A character string representing an integer-valued env variable
+> > + * Outputs:
+> > + *   *value  the integer representation of the environment variable 'match'
+> > + * Returns:
+> > + *   Zero on success, a kdb diagnostic on failure.
+> > + */
+> > +int kdbgetintenv(const char *match, int *value)
+> > +{
+> > +     unsigned long val;
+> > +     int diag;
+> > +
+> > +     diag = kdbgetulenv(match, &val);
+> > +     if (!diag)
+> > +             *value = (int) val;
+> > +     return diag;
+> > +}
+> > +
+> > +/*
+> > + * kdb_setenv - Alter an existing environment variable or create a new one.
+> > + * Parameters:
+> > + *   var     name of the variable
+> > + *   val     value of the variable
+> > + * Returns:
+> > + *   Zero on success, a kdb diagnostic on failure.
+> > + */
+> > +int kdb_setenv(const char *var, const char *val)
+> > +{
+> > +     int i;
+> > +     char *ep;
+> > +     size_t varlen, vallen;
+> > +
+> > +     varlen = strlen(var);
+> > +     vallen = strlen(val);
+> > +     ep = kdballocenv(varlen + vallen + 2);
+> > +     if (ep == (char *)0)
+> > +             return KDB_ENVBUFFULL;
+> > +
+> > +     sprintf(ep, "%s=%s", var, val);
+> > +
+> > +     ep[varlen+vallen+1] = '\0';
+> > +
+> > +     for (i = 0; i < __nenv; i++) {
+> > +             if (__env[i]
+> > +              && ((strncmp(__env[i], var, varlen) == 0)
+> > +                && ((__env[i][varlen] == '\0')
+> > +                 || (__env[i][varlen] == '=')))) {
+> > +                     __env[i] = ep;
+> > +                     return 0;
+> > +             }
+> > +     }
+> > +
+> > +     /*
+> > +      * Wasn't existing variable.  Fit into slot.
+> > +      */
+> > +     for (i = 0; i < __nenv-1; i++) {
+> > +             if (__env[i] == (char *)0) {
+> > +                     __env[i] = ep;
+> > +                     return 0;
+> > +             }
+> > +     }
+> > +
+> > +     return KDB_ENVFULL;
+> > +}
+> > +
+> > +/*
+> > + * kdb_prienv - Display the current environment variables.
+> > + */
+> > +void kdb_prienv(void)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < __nenv; i++) {
+> > +             if (__env[i])
+> > +                     kdb_printf("%s\n", __env[i]);
+> > +     }
+> > +}
+> > diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> > index a0989a0..03ba161 100644
+> > --- a/kernel/debug/kdb/kdb_main.c
+> > +++ b/kernel/debug/kdb/kdb_main.c
+> > @@ -129,57 +129,6 @@ static kdbmsg_t kdbmsgs[] = {
+> >
+> >  static const int __nkdb_err = ARRAY_SIZE(kdbmsgs);
+> >
+> > -
+> > -/*
+> > - * Initial environment.   This is all kept static and local to
+> > - * this file.   We don't want to rely on the memory allocation
+> > - * mechanisms in the kernel, so we use a very limited allocate-only
+> > - * heap for new and altered environment variables.  The entire
+> > - * environment is limited to a fixed number of entries (add more
+> > - * to __env[] if required) and a fixed amount of heap (add more to
+> > - * KDB_ENVBUFSIZE if required).
+> > - */
+> > -
+> > -static char *__env[] = {
+> > -#if defined(CONFIG_SMP)
+> > - "PROMPT=[%d]kdb> ",
+> > -#else
+> > - "PROMPT=kdb> ",
+> > -#endif
+> > - "MOREPROMPT=more> ",
+> > - "RADIX=16",
+> > - "MDCOUNT=8",                        /* lines of md output */
+> > - KDB_PLATFORM_ENV,
+> > - "DTABCOUNT=30",
+> > - "NOSECT=1",
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > - (char *)0,
+> > -};
+> > -
+> > -static const int __nenv = ARRAY_SIZE(__env);
+> > -
+> >  struct task_struct *kdb_curr_task(int cpu)
+> >  {
+> >       struct task_struct *p = curr_task(cpu);
+> > @@ -211,113 +160,6 @@ static inline bool kdb_check_flags(kdb_cmdflags_t flags, int permissions,
+> >  }
+> >
+> >  /*
+> > - * kdbgetenv - This function will return the character string value of
+> > - *   an environment variable.
+> > - * Parameters:
+> > - *   match   A character string representing an environment variable.
+> > - * Returns:
+> > - *   NULL    No environment variable matches 'match'
+> > - *   char*   Pointer to string value of environment variable.
+> > - */
+> > -char *kdbgetenv(const char *match)
+> > -{
+> > -     char **ep = __env;
+> > -     int matchlen = strlen(match);
+> > -     int i;
+> > -
+> > -     for (i = 0; i < __nenv; i++) {
+> > -             char *e = *ep++;
+> > -
+> > -             if (!e)
+> > -                     continue;
+> > -
+> > -             if ((strncmp(match, e, matchlen) == 0)
+> > -              && ((e[matchlen] == '\0')
+> > -                || (e[matchlen] == '='))) {
+> > -                     char *cp = strchr(e, '=');
+> > -                     return cp ? ++cp : "";
+> > -             }
+> > -     }
+> > -     return NULL;
+> > -}
+> > -
+> > -/*
+> > - * kdballocenv - This function is used to allocate bytes for
+> > - *   environment entries.
+> > - * Parameters:
+> > - *   match   A character string representing a numeric value
+> > - * Outputs:
+> > - *   *value  the unsigned long representation of the env variable 'match'
+> > - * Returns:
+> > - *   Zero on success, a kdb diagnostic on failure.
+> > - * Remarks:
+> > - *   We use a static environment buffer (envbuffer) to hold the values
+> > - *   of dynamically generated environment variables (see kdb_set).  Buffer
+> > - *   space once allocated is never free'd, so over time, the amount of space
+> > - *   (currently 512 bytes) will be exhausted if env variables are changed
+> > - *   frequently.
+> > - */
+> > -static char *kdballocenv(size_t bytes)
+> > -{
+> > -#define      KDB_ENVBUFSIZE  512
+> > -     static char envbuffer[KDB_ENVBUFSIZE];
+> > -     static int envbufsize;
+> > -     char *ep = NULL;
+> > -
+> > -     if ((KDB_ENVBUFSIZE - envbufsize) >= bytes) {
+> > -             ep = &envbuffer[envbufsize];
+> > -             envbufsize += bytes;
+> > -     }
+> > -     return ep;
+> > -}
+> > -
+> > -/*
+> > - * kdbgetulenv - This function will return the value of an unsigned
+> > - *   long-valued environment variable.
+> > - * Parameters:
+> > - *   match   A character string representing a numeric value
+> > - * Outputs:
+> > - *   *value  the unsigned long represntation of the env variable 'match'
+> > - * Returns:
+> > - *   Zero on success, a kdb diagnostic on failure.
+> > - */
+> > -static int kdbgetulenv(const char *match, unsigned long *value)
+> > -{
+> > -     char *ep;
+> > -
+> > -     ep = kdbgetenv(match);
+> > -     if (!ep)
+> > -             return KDB_NOTENV;
+> > -     if (strlen(ep) == 0)
+> > -             return KDB_NOENVVALUE;
+> > -
+> > -     *value = simple_strtoul(ep, NULL, 0);
+> > -
+> > -     return 0;
+> > -}
+> > -
+> > -/*
+> > - * kdbgetintenv - This function will return the value of an
+> > - *   integer-valued environment variable.
+> > - * Parameters:
+> > - *   match   A character string representing an integer-valued env variable
+> > - * Outputs:
+> > - *   *value  the integer representation of the environment variable 'match'
+> > - * Returns:
+> > - *   Zero on success, a kdb diagnostic on failure.
+> > - */
+> > -int kdbgetintenv(const char *match, int *value)
+> > -{
+> > -     unsigned long val;
+> > -     int diag;
+> > -
+> > -     diag = kdbgetulenv(match, &val);
+> > -     if (!diag)
+> > -             *value = (int) val;
+> > -     return diag;
+> > -}
+> > -
+> > -/*
+> >   * kdbgetularg - This function will convert a numeric string into an
+> >   *   unsigned long value.
+> >   * Parameters:
+> > @@ -374,10 +216,6 @@ int kdbgetu64arg(const char *arg, u64 *value)
+> >   */
+> >  int kdb_set(int argc, const char **argv)
+> >  {
+> > -     int i;
+> > -     char *ep;
+> > -     size_t varlen, vallen;
+> > -
+> >       /*
+> >        * we can be invoked two ways:
+> >        *   set var=value    argv[1]="var", argv[2]="value"
+> > @@ -422,37 +260,7 @@ int kdb_set(int argc, const char **argv)
+> >        * Tokenizer squashed the '=' sign.  argv[1] is variable
+> >        * name, argv[2] = value.
+> >        */
+> > -     varlen = strlen(argv[1]);
+> > -     vallen = strlen(argv[2]);
+> > -     ep = kdballocenv(varlen + vallen + 2);
+> > -     if (ep == (char *)0)
+> > -             return KDB_ENVBUFFULL;
+> > -
+> > -     sprintf(ep, "%s=%s", argv[1], argv[2]);
+> > -
+> > -     ep[varlen+vallen+1] = '\0';
+> > -
+> > -     for (i = 0; i < __nenv; i++) {
+> > -             if (__env[i]
+> > -              && ((strncmp(__env[i], argv[1], varlen) == 0)
+> > -                && ((__env[i][varlen] == '\0')
+> > -                 || (__env[i][varlen] == '=')))) {
+> > -                     __env[i] = ep;
+> > -                     return 0;
+> > -             }
+> > -     }
+> > -
+> > -     /*
+> > -      * Wasn't existing variable.  Fit into slot.
+> > -      */
+> > -     for (i = 0; i < __nenv-1; i++) {
+> > -             if (__env[i] == (char *)0) {
+> > -                     __env[i] = ep;
+> > -                     return 0;
+> > -             }
+> > -     }
+> > -
+> > -     return KDB_ENVFULL;
+> > +     return kdb_setenv(argv[1], argv[2]);
+> >  }
+> >
+> >  static int kdb_check_regs(void)
+> > @@ -2056,12 +1864,7 @@ static int kdb_lsmod(int argc, const char **argv)
+> >
+> >  static int kdb_env(int argc, const char **argv)
+> >  {
+> > -     int i;
+> > -
+> > -     for (i = 0; i < __nenv; i++) {
+> > -             if (__env[i])
+> > -                     kdb_printf("%s\n", __env[i]);
+> > -     }
+> > +     kdb_prienv();
+> >
+> >       if (KDB_DEBUG(MASK))
+> >               kdb_printf("KDBDEBUG=0x%x\n",
+> > diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+> > index 4b2f79e..ae43a13 100644
+> > --- a/kernel/debug/kdb/kdb_private.h
+> > +++ b/kernel/debug/kdb/kdb_private.h
+> > @@ -105,6 +105,9 @@ extern int kdb_putword(unsigned long, unsigned long, size_t);
+> >  extern int kdbgetularg(const char *, unsigned long *);
+> >  extern int kdbgetu64arg(const char *, u64 *);
+> >  extern char *kdbgetenv(const char *);
+> > +extern int kdbgetulenv(const char *match, unsigned long *value);
+> > +extern int kdb_setenv(const char *var, const char *val);
+> > +extern void kdb_prienv(void);
+> >  extern int kdbgetaddrarg(int, const char **, int*, unsigned long *,
+> >                        long *, char **);
+> >  extern int kdbgetsymval(const char *, kdb_symtab_t *);
+> > --
+> > 2.7.4
+> >
