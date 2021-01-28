@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A89306D57
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C4B306D6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhA1GE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
+        id S231332AbhA1GG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:06:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhA1GEV (ORCPT
+        with ESMTP id S231191AbhA1GGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:04:21 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9F9C061756;
-        Wed, 27 Jan 2021 22:03:41 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DR8zT16k5z9sCD;
-        Thu, 28 Jan 2021 17:03:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611813817;
-        bh=JaUncBF/71yCM2cUZVv1OMD7g2Tr5z/tA6Ku1wEyQ/E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bnJHfCG+/Pvd2eHiBvcZGhvG8Zt1AIekwiBwlK9MAJVY7DkGBE7wkL37GWotSWHVM
-         FGqTczb3WgzZH3Rh6ojVRfdG4hIkoVl8n2U1g01OavrluvZFcvE5S9Y6j1PIT/+XvV
-         reCXqYPjnmFc3XXvoB+EvVCzjhkZ/qRbWvm/ngK2s/GCl/LNKIlXz4P0p7Vq7xt/E9
-         FMIrbwSlLgx7prJR+ljjZAqngIHgKCPvudXlvz1dkg+a1cZS1tWN2jYkyg3fMzQ0jT
-         7flOEtTey4cahNit/ufgCAVStmeSYt0NdvHI9dnT3RhoFNkEpX0PBVs9K0OtCvd8sz
-         VQu7PdyN8PeIQ==
-Date:   Thu, 28 Jan 2021 17:03:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: linux-next: manual merge of the gpio-brgl tree with the arm-soc
- tree
-Message-ID: <20210128170331.4f2ac87b@canb.auug.org.au>
+        Thu, 28 Jan 2021 01:06:08 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B86C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:05:28 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id c132so3603590pga.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:05:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Il8qZNLJiUnVs1yENR7U+/PHj95Y8fthqxWVAqkzlPM=;
+        b=FOBAuUwtS7jVTeXxIChL9bNsz+Er77qc8WeJTUw3A9nq5VmzNwUAKBriJKft/2FquC
+         lZ1AHyh5KOkJj9MCdwK+uRaOkDxeiWtZsQ5uhyci9WKjrgU878iPVblmqSfMotl3qqsZ
+         AadDpgG2cJ01V8kMSBtXZ7XoVEWtzV5RpOGlc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Il8qZNLJiUnVs1yENR7U+/PHj95Y8fthqxWVAqkzlPM=;
+        b=hVI9JUbMC+xRXI8g/XXC0SmdRvjcHeQxOvza0k4QlkqOPVnbdcb4ycAdXX+R1501eN
+         T9Wjf2yX18rE0xm60hmYEQ8c38jFm+q9PnB/OmW/Roe7CElb4qkEE9kfTi+1LExX4J9o
+         9dqlKFnaxeOrBl6/bmxgPunAsvT6LDL/QXDwk4l3NXyaZcBzVdSll2JCLunLU86cS4QM
+         WcIxSeCKdPFwYabsnCEcGPY1BDDZmABhgUHq8N+0bIHXTDmhx4QTaYF7XIP5rk/ITwg/
+         k+DbvANfwxHR6glslIjhsxUixLGCwwpQf2ZZePjOvH/lBGvaZrSs93W68ZkTYf0pGoiH
+         KHnQ==
+X-Gm-Message-State: AOAM531wHxS2KKIiXGbf08Q0jZpZFeFwCrUYd2w7qACuG5bDT9xnPjo8
+        fLsktMm+ElwrxH4oQbDKVE170g==
+X-Google-Smtp-Source: ABdhPJxidwWhR7mlBTuFlylUNvopLRyxeu+Iq8ZjCqlH84G6RemXi1bI0gdxZW+QAPoQaFarpqDzPg==
+X-Received: by 2002:a62:1690:0:b029:1c6:fdac:3438 with SMTP id 138-20020a6216900000b02901c6fdac3438mr6879262pfw.43.1611813927818;
+        Wed, 27 Jan 2021 22:05:27 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:919f:d6:7815:52bc])
+        by smtp.gmail.com with ESMTPSA id z6sm4345903pfr.133.2021.01.27.22.05.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 22:05:27 -0800 (PST)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Stevens <stevensd@google.com>
+Subject: [PATCH v3 0/2] KVM: x86/mmu: Skip mmu_notifier changes when possible
+Date:   Thu, 28 Jan 2021 15:05:13 +0900
+Message-Id: <20210128060515.1732758-1-stevensd@google.com>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MVycaLEgYb5eMOse.wqg9Yv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MVycaLEgYb5eMOse.wqg9Yv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+These patches reduce how often mmu_notifier updates block guest page
+faults. The primary benefit of this is the reduction in the likelihood
+of extreme latency when handling a page fault due to another thread
+having been preempted while modifying host virtual addresses.
 
-Hi all,
+v2 -> v3:
+ - Added patch to skip check for MMIO page faults
+ - Style changes
 
-Today's linux-next merge of the gpio-brgl tree got a conflict in:
+David Stevens (1):
+  KVM: x86/mmu: Consider the hva in mmu_notifier retry
 
-  arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+Sean Christopherson (1):
+  KVM: x86/mmu: Skip mmu_notifier check when handling MMIO page fault
 
-between commit:
+ arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
+ arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
+ arch/x86/kvm/mmu/mmu.c                 | 16 ++++++++------
+ arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
+ include/linux/kvm_host.h               | 25 +++++++++++++++++++++-
+ virt/kvm/kvm_main.c                    | 29 ++++++++++++++++++++++----
+ 6 files changed, 65 insertions(+), 16 deletions(-)
 
-  4fd18fc38757 ("arm64: dts: visconti: Add watchdog support for TMPV7708 So=
-C")
+-- 
+2.30.0.280.ga3ce27912f-goog
 
-from the arm-soc tree and commit:
-
-  08bc3941b6a4 ("arm: dts: visconti: Add DT support for Toshiba Visconti5 G=
-PIO driver")
-
-from the gpio-brgl tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-index 37da418393e0,950010a290f0..000000000000
---- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-@@@ -42,7 -42,6 +42,11 @@@
-  	clock-names =3D "apb_pclk";
-  };
- =20
- +&wdt {
- +	status =3D "okay";
- +	clocks =3D <&wdt_clk>;
- +};
-++
-+ &gpio {
-+ 	status =3D "okay";
-+ };
-
---Sig_/MVycaLEgYb5eMOse.wqg9Yv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmASU7MACgkQAVBC80lX
-0GyHRgf+PxzTZwdzbhhLHVFIuTL/GAZZelHBnqy5oZ/Le/41mQmFOaHG6VDubIOv
-E61/MqfdonL237Uki3sTUrWMMa1SCxzDO5dsazJeO/zEBIltwac0WCZm2TV+USSw
-59Cfqfv3vm97e/gMCNsUnS8YDE0Mq2PHutiGMkka/jnH+/3VMTnBVtyUJFXuiUva
-rGGX89OhITXGUSDAahzIocFDVF4IwvYdY5f3HsXO+LDTxtGHvw4i8pgLCupbQP/R
-Xc3tmObyawj1cEYl5zFzkRtbz77NzpuLJnVPvNmep2DlYeMIQmKdUZeZfNld9ue/
-HETv5oief/ny2A9ttxIKWjf07FydMQ==
-=ksyq
------END PGP SIGNATURE-----
-
---Sig_/MVycaLEgYb5eMOse.wqg9Yv--
