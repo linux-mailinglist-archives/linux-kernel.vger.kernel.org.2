@@ -2,173 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61D530717B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D617430717C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhA1IaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:30:09 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:57628 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231639AbhA1I3u (ORCPT
+        id S231761AbhA1Iah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229709AbhA1I34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:29:50 -0500
-X-UUID: 5397cb3bff6a4caaa801396a2e088ba8-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xXCb6L2ZXCrCP94s27k1hE1RsAxmrD2LYXcFbF5uA0E=;
-        b=RiyGXxxpZEBLKoq9ur0bn2LeFudUXgsHBCNRK+Lk6nZ9IUh9+8lTPzaIKrrNTaSdj7hfGjEVMb0aLX9W3I7Vx+KfDDdjh+hJuKqIxCEMYYZBcF+wNGhoPFRR8XA1TwLqFs7huugE14N1BOpLDqJYRH7QTxR7QpU+ILMZPxGKFpw=;
-X-UUID: 5397cb3bff6a4caaa801396a2e088ba8-20210128
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1201663129; Thu, 28 Jan 2021 16:28:50 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 16:28:45 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 16:28:44 +0800
-Message-ID: <1611822524.23925.4.camel@mtksdaap41>
-Subject: Re: [PATCH v11 7/9] drm/mediatek: enable dither function
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 28 Jan 2021 16:28:44 +0800
-In-Reply-To: <CAJMQK-h1_d1+SpxMC8LGPJK=X9HHoJ_ueFzV2Sq44buCiaXFUA@mail.gmail.com>
-References: <20210128072802.830971-1-hsinyi@chromium.org>
-         <20210128072802.830971-8-hsinyi@chromium.org>
-         <1611819766.16091.4.camel@mtksdaap41> <1611820770.1947.8.camel@mhfsdcap03>
-         <1611821233.18369.4.camel@mtksdaap41> <1611821396.1947.10.camel@mhfsdcap03>
-         <CAJMQK-h1_d1+SpxMC8LGPJK=X9HHoJ_ueFzV2Sq44buCiaXFUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 28 Jan 2021 03:29:56 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1612C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:28:57 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id N8Up2400H4C55Sk068UpAC; Thu, 28 Jan 2021 09:28:55 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l52fY-001JNE-RG; Thu, 28 Jan 2021 09:28:48 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l52fY-009Fsb-6J; Thu, 28 Jan 2021 09:28:48 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Magnus Damm <magnus.damm@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] soc: renesas: rcar-sysc: Mark device node OF_POPULATED after init
+Date:   Thu, 28 Jan 2021 09:28:47 +0100
+Message-Id: <20210128082847.2205950-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 16FFF3C473B8505D6216BE76A3CFAA9D7D5ECBF80795522F50D2FF9FE06560AF2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE2OjE4ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
-IE9uIFRodSwgSmFuIDI4LCAyMDIxIGF0IDQ6MTAgUE0gWW9uZ3FpYW5nIE5pdQ0KPiA8eW9uZ3Fp
-YW5nLm5pdUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gVGh1LCAyMDIxLTAxLTI4
-IGF0IDE2OjA3ICswODAwLCBDSyBIdSB3cm90ZToNCj4gPiA+IE9uIFRodSwgMjAyMS0wMS0yOCBh
-dCAxNTo1OSArMDgwMCwgWW9uZ3FpYW5nIE5pdSB3cm90ZToNCj4gPiA+ID4gT24gVGh1LCAyMDIx
-LTAxLTI4IGF0IDE1OjQyICswODAwLCBDSyBIdSB3cm90ZToNCj4gPiA+ID4gPiBIaSwgSHNpbi1Z
-aToNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IE9uIFRodSwgMjAyMS0wMS0yOCBhdCAxNToyOCArMDgw
-MCwgSHNpbi1ZaSBXYW5nIHdyb3RlOg0KPiA+ID4gPiA+ID4gRnJvbTogWW9uZ3FpYW5nIE5pdSA8
-eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gZm9y
-IDUgb3IgNiBicGMgcGFuZWwsIHdlIG5lZWQgZW5hYmxlIGRpdGhlciBmdW5jdGlvbg0KPiA+ID4g
-PiA+ID4gdG8gaW1wcm92ZSB0aGUgZGlzcGxheSBxdWFsaXR5DQo+ID4gPiA+ID4gPg0KPiA+ID4g
-PiA+ID4gU2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRl
-ay5jb20+DQo+ID4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBj
-aHJvbWl1bS5vcmc+DQo+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ICBkcml2ZXJzL2dwdS9k
-cm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jIHwgNDQgKysrKysrKysrKysrKysrKysrKyst
-DQo+ID4gPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDQzIGluc2VydGlvbnMoKyksIDEgZGVsZXRp
-b24oLSkNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
-ay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gPiA+ID4gPiA+IGluZGV4IDgxNzNmNzA5MjcyYmUuLmU4
-NTYyNTcwNGQ2MTEgMTAwNjQ0DQo+ID4gPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2dwdS9k
-cm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiA+ID4gPiBAQCAtNTMsNyArNTMs
-OSBAQA0KPiA+ID4gPiA+ID4gICNkZWZpbmUgRElUSEVSX0VOICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgQklUKDApDQo+ID4gPiA+ID4gPiAgI2RlZmluZSBESVNQX0RJVEhFUl9DRkcgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAyMA0KPiA+ID4gPiA+ID4gICNkZWZpbmUg
-RElUSEVSX1JFTEFZX01PREUgICAgICAgICAgICAgICAgICAgICAgQklUKDApDQo+ID4gPiA+ID4g
-PiArI2RlZmluZSBESVRIRVJfRU5HSU5FX0VOICAgICAgICAgICAgICAgICAgICAgICBCSVQoMSkN
-Cj4gPiA+ID4gPiA+ICAjZGVmaW5lIERJU1BfRElUSEVSX1NJWkUgICAgICAgICAgICAgICAgICAg
-ICAgIDB4MDAzMA0KPiA+ID4gPiA+ID4gKyNkZWZpbmUgRElUSEVSX1JFRyhpZHgpICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAoMHgxMDAgKyAoaWR4KSAqIDQpDQo+ID4gPiA+ID4gPg0K
-PiA+ID4gPiA+ID4gICNkZWZpbmUgTFVUXzEwQklUX01BU0sgICAgICAgICAgICAgICAgICAgICAg
-ICAgMHgwM2ZmDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gQEAgLTMxMyw4ICszMTUsNDggQEAg
-c3RhdGljIHZvaWQgbXRrX2RpdGhlcl9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25l
-ZCBpbnQgdywNCj4gPiA+ID4gPiA+ICB7DQo+ID4gPiA+ID4gPiAgICAgICAgIHN0cnVjdCBtdGtf
-ZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gPiA+ID4gPg0K
-PiA+ID4gPiA+ID4gKyAgICAgICBib29sIGVuYWJsZSA9IGZhbHNlOw0KPiA+ID4gPiA+ID4gKw0K
-PiA+ID4gPiA+ID4gKyAgICAgICAvKiBkZWZhdWx0IHZhbHVlIGZvciBkaXRoZXIgcmVnIDUgdG8g
-MTQgKi8NCj4gPiA+ID4gPiA+ICsgICAgICAgY29uc3QgdTMyIGRpdGhlcl9zZXR0aW5nW10gPSB7
-DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgMHgwMDAwMDAwMCwgLyogNSAqLw0KPiA+ID4g
-PiA+ID4gKyAgICAgICAgICAgICAgIDB4MDAwMDMwMDIsIC8qIDYgKi8NCj4gPiA+ID4gPiA+ICsg
-ICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiA3ICovDQo+ID4gPiA+ID4gPiArICAgICAgICAg
-ICAgICAgMHgwMDAwMDAwMCwgLyogOCAqLw0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIDB4
-MDAwMDAwMDAsIC8qIDkgKi8NCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAw
-LCAvKiAxMCAqLw0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIDB4MDAwMDAwMDAsIC8qIDEx
-ICovDQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgMHgwMDAwMDAxMSwgLyogMTIgKi8NCj4g
-PiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiAxMyAqLw0KPiA+ID4gPiA+
-ID4gKyAgICAgICAgICAgICAgIDB4MDAwMDAwMDAsIC8qIDE0ICovDQo+ID4gPiA+ID4NCj4gPiA+
-ID4gPiBDb3VsZCB5b3UgZXhwbGFpbiB3aGF0IGlzIHRoaXM/DQo+ID4gPiA+DQo+ID4gPiA+IHRo
-aXMgaXMgZGl0aGVyIDUgdG8gZGl0aGVyIDE0IHNldHRpbmcNCj4gPiA+ID4gdGhpcyB3aWxsIGJl
-IHVzZWxlc3MsIHdlIGp1c3QgbmVlZCBzZXQgZGl0aGVyIDUgYW5kIGRpdGhlciA3IGxpa2UNCj4g
-PiA+ID4gbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgMCwgY29tcCwgRElTUF9ESVRIRVJfNSk7DQo+
-ID4gPiA+IG10a19kZHBfd3JpdGUoY21kcV9wa3QsIDAsIGNvbXAsIERJU1BfRElUSEVSXzcpOw0K
-PiA+ID4gPiBvdGhlciB2YWx1ZSBpcyBzYW1lIHdpdGggaGFyZHdhcmUgZGVmYXVsdCB2YWx1ZS4N
-Cj4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gKyAgICAgICB9Ow0KPiA+
-ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gKyAgICAgICBpZiAoYnBjID09IDUgfHwgYnBjID09IDYp
-IHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICBlbmFibGUgPSB0cnVlOw0KPiA+ID4gPiA+
-ID4gKyAgICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsDQo+ID4gPiA+ID4gPiAr
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfTFNCX0VSUl9TSElGVF9SKE1US19N
-QVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBESVRIRVJfQUREX0xTSElGVF9SKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ID4gPiAr
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfTkVXX0JJVF9NT0RFLA0KPiA+ID4g
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2
-LT5yZWdzLCBESVRIRVJfUkVHKDE1KSk7DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgbXRr
-X2RkcF93cml0ZShjbWRxX3BrdCwNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIERJVEhFUl9MU0JfRVJSX1NISUZUX0IoTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+
-ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX0Io
-TVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIERJVEhFUl9MU0JfRVJSX1NISUZUX0coTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+
-ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX0co
-TVRLX01BWF9CUEMgLSBicGMpLA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gVGhpcyByZXN1bHQgaW4g
-MHg1MDUwNTA1MCwgYnV0IHByZXZpb3VzIHZlcnNpb24gaXMgMHg1MDUwNDA0MCwgc28gdGhpcw0K
-PiA+ID4gPiA+IHZlcnNpb24gaXMgY29ycmVjdCBhbmQgcHJldmlvdXMgdmVyc2lvbiBpcyBpbmNv
-cnJlY3Q/DQo+ID4gPiA+DQo+ID4gPiA+IHRoZSBuZXcgdmVyc2lvbiBzZXQgciBnIGIgMyBjaGFu
-bmVsIHNhbWUsIHNlYW1zIG1vcmUgcmVhc29uYWJsZQ0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4N
-Cj4gPiA+IFNvIGFsbCB0aGUgc2V0dGluZyBvZiBESVNQX0RJVEhFUl81LCBESVNQX0RJVEhFUl83
-LCBESVNQX0RJVEhFUl8xNSwNCj4gPiA+IERJU1BfRElUSEVSXzE2IGlzIGlkZW50aWNhbCB0byBt
-dGtfZGl0aGVyX3NldCgpLCBzbyBjYWxsDQo+ID4gPiBtdGtfZGl0aGVyX3NldCgpIGluc3RlYWQg
-b2YgZHVwbGljYXRpb24gaGVyZS4NCj4gPiA+DQo+ID4NCj4gPiBkaXRoZXIgZW5hYmxlIHNldCBp
-biBtdGtfZGl0aGVyX3NldCBpcw0KPiA+IG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJU1BfRElU
-SEVSSU5HLCBjb21wLCBDRkcpOw0KPiA+DQo+ID4gdGhhdCBpcyBkaWZmZXJlbnQgODE4MyBhbmQg
-bXQ4MTkyLg0KPiA+IG10ODE3MyBkaXRoZXIgZW5hYmxlIGluIGdhbW1hIGlzIGJpdDINCj4gPiBt
-dDgxODMgYW5kIG10ODE5MiBkaXRoZXIgZW5naW5lIGVuYWJsZSBpcyBiaXQgMQ0KPiA+DQo+ID4N
-Cj4gDQo+IFdlIGNhbiBzdGlsbCBjYWxsIG10a19kaXRoZXJfc2V0KCkgZm9yIGJwYyBpcyA1IG9y
-IDYgaGVyZSwgdGhvdWdoIGl0DQo+IHdpbGwgYmUgc2V0IHRvIGJpdDIsDQo+IGJ1dCBsYXRlciBp
-biBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBlbmFibGUgPyBESVRIRVJfRU5HSU5FX0VOIDoNCj4g
-RElUSEVSX1JFTEFZX01PREUsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9ESVRI
-RVJfQ0ZHKTsgaXQNCj4gd2lsbCBiZSBjb3JyZWN0IGJhY2sgdG8gYml0IDEuDQo+IA0KPiBJcyB0
-aGlzIHJlYXNvbmFibGU/DQoNCkxvb2tzIHdlaXJkLiBNYXliZSBwYXNzIHNvbWUgaW5mb3JtYXRp
-b24gaW50byBtdGtfZGl0aGVyX3NldCgpIHRvIHNldA0KRElTUF9ESVRIRVJJTkcgY29ycmVjdGx5
-LiANCg0KSSBmaW5kIG9uZSB0aGluZyBuZWVkIHRvIGJlIGZpeGVkLiBDRkcgc2hvdWxkIGJlIGxv
-d2VyIGNhc2UuDQoNClJlZ2FyZHMsDQpDSw0KDQo+IA0KPiA+ID4gUmVnYXJkcywNCj4gPiA+IENL
-DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBSZWdhcmRzLA0KPiA+ID4gPiA+IENLDQo+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZwcml2LT5jbWRxX3Jl
-ZywgcHJpdi0+cmVncywgRElUSEVSX1JFRygxNikpOw0KPiA+ID4gPiA+ID4gKyAgICAgICB9DQo+
-ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArICAgICAgIGlmIChlbmFi
-bGUpIHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICB1MzIgaWR4Ow0KPiA+ID4gPiA+ID4g
-Kw0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIGZvciAoaWR4ID0gMDsgaWR4IDwgQVJSQVlf
-U0laRShkaXRoZXJfc2V0dGluZyk7IGlkeCsrKQ0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgZGl0aGVyX3NldHRpbmdbaWR4XSwgJnBy
-aXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLA0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBESVRIRVJfUkVHKGlkeCArIDUpKTsNCj4gPiA+ID4gPiA+ICsg
-ICAgICAgfQ0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gICAgICAgICBtdGtfZGRwX3dyaXRl
-KGNtZHFfcGt0LCBoIDw8IDE2IHwgdywgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQ
-X0RJVEhFUl9TSVpFKTsNCj4gPiA+ID4gPiA+IC0gICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3Br
-dCwgRElUSEVSX1JFTEFZX01PREUsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9E
-SVRIRVJfQ0ZHKTsNCj4gPiA+ID4gPiA+ICsgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3Qs
-IGVuYWJsZSA/IERJVEhFUl9FTkdJTkVfRU4gOiBESVRIRVJfUkVMQVlfTU9ERSwgJnByaXYtPmNt
-ZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl9DRkcpOw0KPiA+ID4gPiA+ID4gIH0NCj4g
-PiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAgc3RhdGljIHZvaWQgbXRrX2RpdGhlcl9zdGFydChzdHJ1
-Y3QgZGV2aWNlICpkZXYpDQo+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4gPg0K
-PiA+ID4NCj4gPiA+DQo+ID4NCg0K
+The R-Car System Controller (SYSC) driver registers PM domains from an
+early_initcall().  It does not use a platform driver, as secondary CPU
+startup on R-Car H1 needs to control the CPU power domains, before
+initialization of the driver framework.
+
+As fw_devlink only considers devices, it does not know that the System
+Controller is ready.  Hence probing of on-chip devices that are part of
+the SYSC PM domain fails if fw_devlink is enabled:
+
+    probe deferral - supplier e6180000.system-controller not ready
+
+Fix this by setting the OF_POPULATED flag for the SYSC device node after
+successful initialization.  This will make of_link_to_phandle() ignore
+the SYSC device node as a dependency, and consumer devices will be
+probed again.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+---
+As this seems to be harmless if commit e590474768f1cc04 ("driver core:
+Set fw_devlink=on by default") won't make v5.12, I plan to queue this in
+renesas-devel for v5.12.
+
+v2:
+  - Add Reviewed-by,
+  - s/platform devices/devices/,
+  - Drop Fixes tag,
+  - Drop RFC.
+---
+ drivers/soc/renesas/rcar-sysc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sysc.c
+index d51ddc7d5232b9db..53387a72ca00ce79 100644
+--- a/drivers/soc/renesas/rcar-sysc.c
++++ b/drivers/soc/renesas/rcar-sysc.c
+@@ -434,6 +434,8 @@ static int __init rcar_sysc_pd_init(void)
+ 	}
+ 
+ 	error = of_genpd_add_provider_onecell(np, &domains->onecell_data);
++	if (!error)
++		of_node_set_flag(np, OF_POPULATED);
+ 
+ out_put:
+ 	of_node_put(np);
+-- 
+2.25.1
 
