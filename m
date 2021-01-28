@@ -2,144 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F059307BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFADA307BDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhA1RKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:10:12 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:56095 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhA1RJI (ORCPT
+        id S232802AbhA1RLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:11:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232835AbhA1RJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:09:08 -0500
-Received: by mail-io1-f72.google.com with SMTP id h25so4689535ioh.22
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:08:49 -0800 (PST)
+        Thu, 28 Jan 2021 12:09:32 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9361CC061756;
+        Thu, 28 Jan 2021 09:08:52 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id h15so3677477pli.8;
+        Thu, 28 Jan 2021 09:08:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Eo7YqWQBCcFkdPqhZVQNavqepeQ68HEN5jwH3Pe06LY=;
+        b=PSXZPV2PGcYCORh03LAExDRm//dtpbmlQdkRnLGm2IHokgcmx/QVBMHljq9G6ugOwp
+         8PWkma942L0sD2iGqORCSebADuGEs6zh11Ybm6fYmcxTHwPeIYvcEx2PqmnqIVf6/DVP
+         gZ+Im/L6FSpMXdIZAywTMTde+PeRKoHPWMeXO1YKhpb6MP9/hxDXbB648KP/7pZHXoMM
+         x/fcs9SZpdnydL09qPO4Q1ioWAhkq/ZEL/Kug/HkEzIMKlfMsDm3OvlA+vP86bTMN3We
+         Zj9zq3N74jYJQOUEtsb7BzybJHhFW9H2xWivWv+SVubo0/yR7VlWjcDC9WIWwg/mTJJU
+         vybw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iMgiKRg70Lra0mXCP8D8J7CuBwTc7mN0HC1eg964rfM=;
-        b=QxsIxJv5eyYzks+gzAknylimr6LpofDPZOwd1xdf4K5V7CFRNIfODdJf4fDNKhCNj9
-         fBC17WjUhjjONh0cP+8DAPqWzJDX75aJterZp0QVq6IuiMCx0JAiauqlWcOB5xgdrS8c
-         ZTZmIQpL50a2BYW5BYuJQACRqTRJHtiw8+/T2Z355zcIBqj4R1iXev+G0SprVGfi94OF
-         FS0TeQfjmQBDXuBdZBZ1vRkpOnlJCR2RklTreGDsUVv232YaZGdonLHV6oS8FBNvVcwP
-         hiSdtt2xeFmJgZZ0nyz2S7qH5/R6dq8jOzD7zgrDZvPbgLgsYWv0aGXQCgVz7AlyD6pm
-         /DYA==
-X-Gm-Message-State: AOAM5335CFJMDPmcYCPeUf+l3maea3Fz9DBQjtbuMG+HNq165QPfJ+Jb
-        GDm+/8+sa9hVEgAe3GSrzbuGr2p3qC3pCoRXevwtKMeCDXsd
-X-Google-Smtp-Source: ABdhPJyiCvEMLhyd4shG27KcjlKed0JOuIyzGEKC8RgNeJt4kNEMTQBd1FwXL06gMOjDe8qbxMuhM9g1x33o3JGzEsAg84wlBJ1d
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Eo7YqWQBCcFkdPqhZVQNavqepeQ68HEN5jwH3Pe06LY=;
+        b=mx2VF/Npr4ZExK/TUjI22FZfR/8SSR1GphIdhQK73Fh3yPEm9h7ifqOE9o4IFlHWo6
+         l07x1dxgUFzLIFZWQf6FZUw435jiFuugX70M6MS/PiUVjxKK7GeBySMnlVjP/TRneDDh
+         45jfK9CNMhfJt6dDtjwvJzdiBow94YmXahBbuy5FUkHIn1ZyQWjWdUXVFi9HvEdJbc69
+         kEe/l9n7VrMUFrVxv56yuKQX8RJopIrVDYdI9PEKmNOpzF1xMN2cHYNpUX6SwQ5yLcJH
+         Gsyron+QqCndiApHiGkqYvqijvI+B6kCwddM1/pvO/n9bQnUDI/BPWKsuPseiwD40tWp
+         vRNA==
+X-Gm-Message-State: AOAM532NpRJQTPCcXAV8ZXDS8E1gMffVMfQMEya9wc5JlgaTC0QilpQG
+        NFatx3E89R15971jyjsbPKnvQT8fO2A=
+X-Google-Smtp-Source: ABdhPJz4EpdYvJlBEH+NWTvyfVz9S8QAVVeQdtDe17ipA/RvnjUUbiwi5CKQafnbLQn2vN2XBw98jg==
+X-Received: by 2002:a17:90a:f98c:: with SMTP id cq12mr299869pjb.191.1611853732155;
+        Thu, 28 Jan 2021 09:08:52 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:885b:c20e:b832:f82])
+        by smtp.gmail.com with ESMTPSA id x21sm6432373pgi.75.2021.01.28.09.08.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 09:08:50 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 28 Jan 2021 09:08:48 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, viro@zeniv.linux.org.uk,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Laura Abbott <lauraa@codeaurora.org>
+Subject: Re: [PATCH v4] fs/buffer.c: Revoke LRU when trying to drop buffers
+Message-ID: <YBLvoBC1iNmZ7eTD@google.com>
+References: <cover.1611642038.git.cgoldswo@codeaurora.org>
+ <e8f3e042b902156467a5e978b57c14954213ec59.1611642039.git.cgoldswo@codeaurora.org>
+ <YBCexclveGV2KH1G@google.com>
+ <20210127025922.GS308988@casper.infradead.org>
+ <4d034ea4228be568db62243bfe238e0d@codeaurora.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1447:: with SMTP id p7mr994ilo.93.1611853704127;
- Thu, 28 Jan 2021 09:08:24 -0800 (PST)
-Date:   Thu, 28 Jan 2021 09:08:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000076ecf305b9f8efb1@google.com>
-Subject: KASAN: slab-out-of-bounds Read in add_adv_patterns_monitor
-From:   syzbot <syzbot+3ed6361bf59830ca9138@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d034ea4228be568db62243bfe238e0d@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jan 28, 2021 at 12:28:37AM -0800, Chris Goldsworthy wrote:
+> On 2021-01-26 18:59, Matthew Wilcox wrote:
+> > On Tue, Jan 26, 2021 at 02:59:17PM -0800, Minchan Kim wrote:
+> > > The release buffer_head in LRU is great improvement for migration
+> > > point of view.
+> > > 
+> > > A question:
+> 
+> Hey guys,
+> 
+> > > Can't we invalidate(e.g., invalidate_bh_lrus) bh_lru in migrate_prep
+> > > or
+> > > elsewhere when migration found the failure and is about to retry?
+> > > 
+> > > Migration has done such a way for other per-cpu stuffs for a long
+> > > time,
+> > > which would be more consistent with others and might be faster
+> > > sometimes
+> > > with reducing IPI calls for page.
+> > Should lru_add_drain_all() also handle draining the buffer lru for all
+> > callers?  A quick survey ...
+> > 
+> > invalidate_bdev() already calls invalidate_bh_lrus()
+> > compact_nodes() would probably benefit from the BH LRU being invalidated
+> > POSIX_FADV_DONTNEED would benefit if the underlying filesystem uses BHs
+> > check_and_migrate_cma_pages() would benefit
+> > khugepaged_do_scan() doesn't need it today
+> > scan_get_next_rmap_item() looks like it only works on anon pages (?) so
+> > 	doesn't need it
+> > mem_cgroup_force_empty() probably needs it
+> > mem_cgroup_move_charge() ditto
+> > memfd_wait_for_pins() doesn't need it
+> > shake_page() might benefit
+> > offline_pages() would benefit
+> > alloc_contig_range() would benefit
+> > 
+> > Seems like most would benefit and a few won't care.  I think I'd lean
+> > towards having lru_add_drain_all() call invalidate_bh_lrus(), just to
+> > simplify things.
+> 
+> 
+> Doing this sounds like a good idea.  We would still need a call to
+> invalidate_bh_lrus() inside of drop_buffers() in the event that we find
+> busy buffers, since they can be re-added back into the BH LRU - I believe
+> it isn't until this point that a BH can't be added back into the BH LRU,
+> when we acquire the private_lock for the mapping:
+> 
+> https://elixir.bootlin.com/linux/v5.10.10/source/fs/buffer.c#L3240
 
-syzbot found the following issue on:
+I am not sure it's good deal considering IPI overhead per page release
+at worst case.
 
-HEAD commit:    b491e6a7 net: lapb: Add locking to the lapb module
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ba0f2cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be33d8015c9de024
-dashboard link: https://syzkaller.appspot.com/bug?extid=3ed6361bf59830ca9138
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10628ae8d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12964b80d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3ed6361bf59830ca9138@syzkaller.appspotmail.com
-
-IPVS: ftp: loaded support on port[0] = 21
-==================================================================
-BUG: KASAN: slab-out-of-bounds in add_adv_patterns_monitor+0x91f/0xa90 net/bluetooth/mgmt.c:4266
-Read of size 1 at addr ffff888013251b29 by task syz-executor387/8480
-
-CPU: 1 PID: 8480 Comm: syz-executor387 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- add_adv_patterns_monitor+0x91f/0xa90 net/bluetooth/mgmt.c:4266
- hci_mgmt_cmd net/bluetooth/hci_sock.c:1603 [inline]
- hci_sock_sendmsg+0x1b98/0x21d0 net/bluetooth/hci_sock.c:1738
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- sock_write_iter+0x289/0x3c0 net/socket.c:999
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x1ee/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x447579
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 0e fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe0f4194b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000447579
-RDX: 0000000000000009 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00000000018e1914 R08: 00000000018e1914 R09: 00007ffe0f4194a0
-R10: 00007ffe0f4194c0 R11: 0000000000000246 R12: 0000000000000004
-R13: 0000000000000072 R14: 00000000018e1914 R15: 0000000000000000
-
-Allocated by task 8480:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kmalloc include/linux/slab.h:557 [inline]
- hci_mgmt_cmd net/bluetooth/hci_sock.c:1508 [inline]
- hci_sock_sendmsg+0x9b8/0x21d0 net/bluetooth/hci_sock.c:1738
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- sock_write_iter+0x289/0x3c0 net/socket.c:999
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x1ee/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888013251b20
- which belongs to the cache kmalloc-16 of size 16
-The buggy address is located 9 bytes inside of
- 16-byte region [ffff888013251b20, ffff888013251b30)
-The buggy address belongs to the page:
-page:00000000a4467645 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13251
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 ffffea00004ed440 0000000300000003 ffff888010041b40
-raw: 0000000000000000 0000000080800080 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888013251a00: fb fb fc fc fb fb fc fc 00 00 fc fc fb fb fc fc
- ffff888013251a80: 00 00 fc fc 00 00 fc fc fb fb fc fc 00 00 fc fc
->ffff888013251b00: 00 00 fc fc 00 01 fc fc fb fb fc fc fa fb fc fc
-                                  ^
- ffff888013251b80: 00 00 fc fc fa fb fc fc fa fb fc fc 00 00 fc fc
- ffff888013251c00: fa fb fc fc fa fb fc fc 00 00 fc fc fa fb fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+A idea is to disable bh_lrus in migrate_prep and enable it when
+migration is done(need to introduce "migrate_done".
+It's similar approach with marking pageblock MIGRATE_ISOLATE to
+disable pcp during the migration.
