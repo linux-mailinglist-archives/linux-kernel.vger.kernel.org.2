@@ -2,166 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DB7306B45
+	by mail.lfdr.de (Postfix) with ESMTP id CD179306B46
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhA1Cwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 21:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhA1Cwk (ORCPT
+        id S231193AbhA1Cw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 21:52:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11209 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhA1Cwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 21:52:40 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E529BC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 18:51:59 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id a14so4895942edu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 18:51:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SpQaqfgxd7HJasSj0lTbCtNGSUTspubqoBTb1LMXVRM=;
-        b=NnGpVeSqtPgrJgZIm930ZFHJoqoTXILyr0S82daUWTGBNJaaiM327+reTyu7uBvBmj
-         Z8xjmu2Fy/SAUf2zI2rW4yt1AB9R4gmZQ5vKMqg+7Z7kiDhxsMEEh13MGIfSTgocfCiK
-         FJ2llM/eYKEK++Bc7K7k9DiJov12Fptz89vTPOf86EaBD33OGm/CgsNjkypRCo8vYY+C
-         c6zzT6VfEiJSk/dcd6pW8/XqNS4zZiYtLT9mL8FkH6wkoF9AxWEPLaU6GmXzW+4dggWh
-         t+Fmk6/m3Yi6bI0WwKHQesQbEsviHMjbPDplLIuiSikTp6UtQ/3XYWNiNsOo1JTHBhjW
-         GX5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SpQaqfgxd7HJasSj0lTbCtNGSUTspubqoBTb1LMXVRM=;
-        b=tTCDLoZ9zD7muuOPRS+p3FaJtpVU773yn1O0GH8Z2pQD7D+NJ4ttgsA/dbWvi8U55V
-         rjnAOGy3kbwyweb6iFnKA1eig3XCto3POEQaQkC/ThSJGSD3R6imhETJC6c9o0CSj0ov
-         23zrQsVibCqp5GMwUqomnTpmfhg7YEkXhmoexmekcojs7OJBLsEBkopBGHHO95oI5OF5
-         EuxHxstIRGmtOT5/M6HdOns8o24K2UvPy5LTXvEqFfQRAvxP/lN9Iv3GCi/kdpuuD+g5
-         i/imzFWP29hmiielkdUJJgGddkm9ZwwnYUw7XdyctHZ9SHy7LAtRvigb/Fep8Sfbk4xM
-         azSw==
-X-Gm-Message-State: AOAM5333HUzD8IEK9gp52PXPNb7G2gm2z/MXqKhTzyaVV1hzKR6jBN1j
-        uSJ21WJEEXFVy4e4V5Bue0+P3+jDdHojiYzIjmBXEteclVWIxnI=
-X-Google-Smtp-Source: ABdhPJyNf5vAnk4XFxWjzPoVjPvkYX+ygHKOJ+fk+XCk8eH+ZWou3fZkEEhhHv/CtO2hTnpY5zc82GD11WjV3xXgQMg=
-X-Received: by 2002:a05:6402:1bcd:: with SMTP id ch13mr11572381edb.31.1611802318522;
- Wed, 27 Jan 2021 18:51:58 -0800 (PST)
+        Wed, 27 Jan 2021 21:52:55 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DR4hw2sMNzlBqG;
+        Thu, 28 Jan 2021 10:50:40 +0800 (CST)
+Received: from [10.174.179.117] (10.174.179.117) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 28 Jan 2021 10:52:11 +0800
+Subject: Re: [PATCH 3/3] printk: dump full information of page flags in pGp
+To:     Yafang Shao <laoar.shao@gmail.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <david@redhat.com>, <vbabka@suse.cz>, <cl@linux.com>,
+        <penberg@kernel.org>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>,
+        <pmladek@suse.com>, <rostedt@goodmis.org>,
+        <sergey.senozhatsky@gmail.com>,
+        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>
+References: <20210128021947.22877-1-laoar.shao@gmail.com>
+ <20210128021947.22877-4-laoar.shao@gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <27e53062-7b0e-42e8-6f44-4eba44832805@huawei.com>
+Date:   Thu, 28 Jan 2021 10:52:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <202101242104019221924@zte.com.cn>
-In-Reply-To: <202101242104019221924@zte.com.cn>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 27 Jan 2021 21:51:47 -0500
-Message-ID: <CAHC9VhQR2+Zz8pzaCp4YJ-r8Tk-RBOuUhXNU=VJaWOw3sbeN+w@mail.gmail.com>
-Subject: Re: [RFC,v3,1/1] audit: speed up syscall rule filtering
-To:     yang.yang29@zte.com.cn
-Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128021947.22877-4-laoar.shao@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 8:04 AM <yang.yang29@zte.com.cn> wrote:
->
-> From 85b3eccf7f12b091b78cc5ba8abfaf759cf0334e Mon Sep 17 00:00:00 2001
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> Date: Sun, 24 Jan 2021 20:40:50 +0800
-> Subject: [PATCH] audit: speed up syscall rule filtering
-> audit_filter_syscall() traverses struct list_head audit_filter_list to find
-> out whether current syscall match one rule. This takes o(n), which is not
-> necessary, specially for user who add a very few syscall rules. On the other
-> hand, user may not much care about rule add/delete speed. So do o(n)
-> calculates when rule changes, and ease the burden of audit_filter_syscall().
->
-> Define audit_rule_syscall_mask[NR_syscalls], every element stands for
-> one syscall.audit_rule_syscall_mask[n] == 0 indicates no rule cares about
-> syscall n, so we can avoid unnecessary calling audit_filter_syscall().
-> audit_rule_syscall_mask[n] > 0 indicates at least one rule cares about
-> syscall n, then calls audit_filter_syscall(). Update
-> audit_rule_syscall_mask[n] when syscall rule changes.
->
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Hi:
+On 2021/1/28 10:19, Yafang Shao wrote:
+> Currently the pGp only shows the names of page flags, rather than
+> the full information including section, node, zone, last cpupid and
+> kasan tag. While it is not easy to parse these information manually
+> because there're so many flavors. Let's interpret them in pGp as well.
+> 
+> - Before the patch,
+> [ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
+> 
+> - After the patch,
+> [ 6315.235783] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(Node 0x0,Zone 0x2,Lastcpupid 0x1fffff,slab|head)
+> 
+
+Thanks. This really helps!
+
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > ---
->  include/linux/audit.h |  3 +++
->  kernel/auditfilter.c  |  4 ++++
->  kernel/auditsc.c      | 36 ++++++++++++++++++++++++++++++++----
->  3 files changed, 39 insertions(+), 4 deletions(-)
+>  lib/vsprintf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 3b53c73580c5..bd809f4f1b82 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -1916,6 +1916,46 @@ char *format_flags(char *buf, char *end, unsigned long flags,
+>  	return buf;
+>  }
+>  
+> +struct page_flags_layout {
+> +	int width;
+> +	int shift;
+> +	int mask;
+> +	char *name;
 
-...
+Should we add const for name ?
 
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index ce8c9e2..1b8ff4e 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -1627,8 +1653,9 @@ void __audit_free(struct task_struct *tsk)
->                 context->return_valid = AUDITSC_INVALID;
->                 context->return_code = 0;
+> +};
+> +
+> +struct page_flags_layout pfl[] = {
+
+Should we add static const for pfl[] as we won't change its value and use it outside this file ?
+
+> +	{SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK, "Section "},
+> +	{NODES_WIDTH, NODES_PGSHIFT, NODES_MASK, "Node "},
+> +	{ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK, "Zone "},
+> +	{LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK, "Lastcpupid "},
+> +	{KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK, "Kasantag "},
+> +};
+> +
+> +static
+> +char *format_layout(char *buf, char *end, unsigned long flags)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
+
+I think we can use ARRAY_SIZE here.
+
+> +		if (pfl[i].width == 0)
+> +			continue;
+> +
+> +		buf = string(buf, end, pfl[i].name, default_str_spec);
+> +
+> +		if (buf >= end)
+> +			break;
+> +		buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
+> +			     default_flag_spec);
+> +
+> +		if (buf >= end)
+> +			break;
+> +		*buf = ',';
+> +		buf++;
+> +	}
+> +
+> +	return buf;
+> +}
+> +
+>  static noinline_for_stack
+>  char *flags_string(char *buf, char *end, void *flags_ptr,
+>  		   struct printf_spec spec, const char *fmt)
+> @@ -1929,7 +1969,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
+>  	switch (fmt[1]) {
+>  	case 'p':
+>  		flags = *(unsigned long *)flags_ptr;
+> -		/* Remove zone id */
+> +		buf = format_layout(buf, end, flags & ~((1UL << NR_PAGEFLAGS) - 1));
+>  		flags &= (1UL << NR_PAGEFLAGS) - 1;
+>  		names = pageflag_names;
+>  		break;
 >
-> -               audit_filter_syscall(tsk, context,
-> -                                    &audit_filter_list[AUDIT_FILTER_EXIT]);
-> +               if (unlikely(audit_rule_syscall_mask[context->major]))
-> +                       audit_filter_syscall(tsk, context,
-> +                                            &audit_filter_list[AUDIT_FILTER_EXIT]);
->                 audit_filter_inodes(tsk, context);
->                 if (context->current_state == AUDIT_RECORD_CONTEXT)
->                         audit_log_exit();
-> @@ -1735,8 +1762,9 @@ void __audit_syscall_exit(int success, long return_code)
->                 else
->                         context->return_code  = return_code;
->
-> -               audit_filter_syscall(current, context,
-> -                                    &audit_filter_list[AUDIT_FILTER_EXIT]);
-> +               if (unlikely(audit_rule_syscall_mask[context->major]))
-> +                       audit_filter_syscall(current, context,
-> +                                            &audit_filter_list[AUDIT_FILTER_EXIT]);
->                 audit_filter_inodes(current, context);
->                 if (context->current_state == AUDIT_RECORD_CONTEXT)
->                         audit_log_exit();
-
-Looking at this revision I believe I may not have been as clear as I
-should have been with my last suggestion.  Let me try to do better
-here.
-
-Thus far I'm not very happy with the audit_rule_syscall_mask[]
-additions; it looks both wasteful and inelegant to me at the moment.
-I would much rather see if we can improve the existing code by fixing
-inefficiencies in how we handle the rule filtering.  This is why my
-previous comments suggested looking at the audit_filter_syscall() and
-audit_filter_inodes() calls in __audit_free() and
-__audit_syscall_exit(), the latter of course being more important due
-to its frequency.
-
-In both cases an audit_filter_inode() AUDIT_RECORD_CONTEXT decision
-takes precedence over any audit_filter_syscall() decision due to the
-code being structured as so:
-
-  audit_filter_syscall(...);
-  audit_filter_inodes(...);
-  if (state == AUDIT_RECORD_CONTEXT)
-    audit_log_exit();
-
-... my suggestion is to investigate what performance benefits might be
-had by leveraging this precedence, for example:
-
-  audit_filter_inodes(...);
-  if (state != AUDIT_RECORD_CONTEXT)
-    audit_filter_syscall(...);
-  if (state == AUDIT_RECORD_CONTEXT)
-    audit_log_exit();
-
-... of course I would expect the performance to be roughly the same
-when there is no matching rule, but I think there would be a
-performance when in those cases where a watched inode triggers an
-audit rule.
-
-Beyond that, there is probably work we could do to combine some
-aspects of audit_filter_syscall() and audit_filter_inodes() to
-eliminate some redundancy, e.g. reduce the number of audit_in_mask()
-calls.  Actually looking a bit closer there are a number of
-improvements that could likely be made, some might have some
-performance impacts.
-
-Let me know if you are going to pursue the suggestion above about
-reordering the audit_filter_*() functions as I'll hold off on the
-other changes.
-
--- 
-paul moore
-www.paul-moore.com
+Many thanks.
