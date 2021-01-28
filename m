@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BE5306858
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FDB30685E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhA1AB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:01:59 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:35188 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhA1ABs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:01:48 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l4uk5-002wYP-7G; Thu, 28 Jan 2021 01:00:57 +0100
-Date:   Thu, 28 Jan 2021 01:00:57 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Mike Looijmans <mike.looijmans@topic.nl>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: mdiobus: Prevent spike on MDIO bus reset signal
-Message-ID: <YBH+uUUatjfwqFWq@lunn.ch>
-References: <20210126073337.20393-1-mike.looijmans@topic.nl>
- <YBAVwFlLsfVEHd+E@lunn.ch>
- <20210126134937.GI1551@shell.armlinux.org.uk>
+        id S231415AbhA1AHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhA1AHF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:07:05 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51920C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:06:22 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611792380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8wQs09UxnIAmjkNJYFTvqoZyZzqz9vFMoRAGLU2pUY=;
+        b=PrDorPv8xSDZ+KmnFtt1+Tr8fBbhrZ/zimEIAbpJNu5wcdidAnLI13JUSBLb5NUUQQ8nWn
+        cetHbjKqkCYXTBvUmN0Q8pcZocP27C7BUik9pHfuUFWQVZ7OzutB32W9qeXFsVmHwvH5qJ
+        QDjP/FT3FYhqaoPrz2n9g/LD/beeuknktw04JUsXZ0fCp5u752U1EQahYBZjUkUSSoTzsh
+        cvhyXu14YFdZL7zBvrEnAi/1bq5qQLp2eEn6EM8lUcdR7UlIDh/vAo8xmNG9aLdyAWsL9d
+        1pJpQXd9Q+GU5cXGMA7iod+HVbVJ7n3ESqxwS3S1iv+GK5N+y5mMcLSK40Edcg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611792380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8wQs09UxnIAmjkNJYFTvqoZyZzqz9vFMoRAGLU2pUY=;
+        b=k+8j1nMwbBXmLiWcxrgrgtHJ9XwN26Un8X7D+ib+Pl63S6R8/o5n25cwjQaphJSCSjtcSJ
+        NRz9wP4M2jMICcAg==
+To:     Liu Chao <liuchao173@huawei.com>, linux-kernel@vger.kernel.org
+Cc:     hushiyuan@huawei.com, hewenliang4@huawei.com,
+        Ming Lei <ming.lei@redhat.com>, Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH] genirq: Limit irq_calc_affinity_vectors to housekeeping CPUs
+In-Reply-To: <20210122084746.3407372-1-liuchao173@huawei.com>
+References: <20210122084746.3407372-1-liuchao173@huawei.com>
+Date:   Thu, 28 Jan 2021 01:06:20 +0100
+Message-ID: <87ft2mdiwz.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126134937.GI1551@shell.armlinux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 01:49:38PM +0000, Russell King - ARM Linux admin wrote:
-> On Tue, Jan 26, 2021 at 02:14:40PM +0100, Andrew Lunn wrote:
-> > On Tue, Jan 26, 2021 at 08:33:37AM +0100, Mike Looijmans wrote:
-> > > The mdio_bus reset code first de-asserted the reset by allocating with
-> > > GPIOD_OUT_LOW, then asserted and de-asserted again. In other words, if
-> > > the reset signal defaulted to asserted, there'd be a short "spike"
-> > > before the reset.
-> > > 
-> > > Instead, directly assert the reset signal using GPIOD_OUT_HIGH, this
-> > > removes the spike and also removes a line of code since the signal
-> > > is already high.
-> > 
-> > Hi Mike
-> > 
-> > This however appears to remove the reset pulse, if the reset line was
-> > already low to start with. Notice you left
-> > 
-> > fsleep(bus->reset_delay_us);
-> > 
-> > without any action before it? What are we now waiting for?  Most data
-> > sheets talk of a reset pulse. Take the reset line high, wait for some
-> > time, take the reset low, wait for some time, and then start talking
-> > to the PHY. I think with this patch, we have lost the guarantee of a
-> > low to high transition.
-> > 
-> > Is this spike, followed by a pulse actually causing you problems? If
-> > so, i would actually suggest adding another delay, to stretch the
-> > spike. We have no control over the initial state of the reset line, it
-> > is how the bootloader left it, we have to handle both states.
-> 
-> Andrew, I don't get what you're saying.
-> 
-> Here is what happens depending on the pre-existing state of the
-> reset signal:
-> 
-> Reset (previously asserted):   ~~~|_|~~~~|_______
-> Reset (previously deasserted): _____|~~~~|_______
->                                   ^ ^    ^
->                                   A B    C
-> 
-> At point A, the low going transition is because the reset line is
-> requested using GPIOD_OUT_LOW. If the line is successfully requested,
-> the first thing we do is set it high _without_ any delay. This is
-> point B. So, a glitch occurs between A and B.
-> 
-> We then fsleep() and finally set the GPIO low at point C.
-> 
-> Requesting the line using GPIOD_OUT_HIGH eliminates the A and B
-> transitions. Instead we get:
-> 
-> Reset (previously asserted)  : ~~~~~~~~~~|______
-> Reset (previously deasserted): ____|~~~~~|______
->                                    ^     ^
->                                    A     C
-> 
-> Where A and C are the points described above in the code. Point B
-> has been eliminated.
-> 
-> Therefore, to me the patch looks entirely reasonable and correct.
+Liu,
 
-I wonder if there are any PHYs which actually need a pulse? Would it
-be better to have:
+On Fri, Jan 22 2021 at 08:47, Liu Chao wrote:
+> Replace the cpumask used in irq_calc_affinity_vectors from all possible
+> CPUs to only housekeeping CPUs.
+>
+> When we have isolated CPUs used by real-time tasks, IRQs will be move to
+> housekeeping CPUs.
 
- Reset (previously asserted):   ~~~|____|~~~~|_______
- Reset (previously deasserted): ________|~~~~|_______
-                                   ^    ^    ^    ^
-                                   A    B    C    D
+No.
 
-Point D is where we actually start talking to the PHY. C-D is
-reset-post-delay-us, and defaults to 0, but can be set via DT.  B-C is
-reset-delay-us, and defaults to 10us, but can be set via DT.
-Currently A-B is '0', so we get the glitch. But should we make A-B the
-same as B-C, so we get a real pulse?
+> If there are too many IRQ vectors, moving the all to housekeeping CPUs may
+> exceed per-CPU vector limits. For example, when I only have two
+> housekeeping CPUs, there are dozens of IRQs on two CPUs, but actually one
+> IRQ per housekeeping CPU is enough.
 
-     Andrew
+This does not make any sense.
+
+Assumed a system has 256 possible CPUs and the device allows 256 queues
+then each possible CPU will have ONE queue and ONE associated
+interrupt. Nothing will change the affinity of any of those interrupts
+ever.
+
+The only way how the housekeeping mask interacts with multiqueue
+affinities is when there are less queues and therefore less interrupts
+than CPUs which means that one queue and it's interrupt is associated to
+multiple CPUs. So the resulting affinity mask might spawn housekeeping
+and isolated CPUs. When the affinity is set up for the interrupt in
+hardware then the selection logic which choses a target CPU based on the
+interrupt affinity mask will prefer the housekeeping CPUs and avoid the
+isolated ones. But that does not cause vector exhaustion except you have
+more devices than vectors.
+
+So for a single multiqueue device a housekeeping CPU will not have more
+than one managed queue interrupt ever.
+
+I'm not understanding which problem are you trying to solve.
+
+Thanks,
+
+        tglx
