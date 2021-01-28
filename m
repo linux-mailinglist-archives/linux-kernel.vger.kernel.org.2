@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82474307278
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F0A30727D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhA1JUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:20:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
+        id S232457AbhA1JVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbhA1JOq (ORCPT
+        with ESMTP id S232440AbhA1JQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:14:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED19FC061574;
-        Thu, 28 Jan 2021 01:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0uM6CSHsoomGeS1Xbh30DG0XHearH5v0HhHcSqmaAA0=; b=eMEfug9Ko1GEW3QSpqtQTs4ghg
-        lm4hl37I9rSX9kMhJV2f1K//5qmFBwK1ShKO8/xyMypbfACYddH2ZEaAy9qdpkvCPKNFEG6RpBC07
-        M7DF+lp8d6vo9wYJQBeOINb4pld07XKtOlDZiJkCDHRzgyUWj78+cEVUPbMdi2D0Q44tTgLo4Sj9t
-        8Gpf0WL+cE/wsY0YVazPZhuuBR8Yddj0aZYQ7t9hYs/6//NP+cusgBqBdtCK4eJjxMtF5iVMDpuHl
-        QGa38DMHZL79VQh5C/K6og7DvVJtZwLQKbh4iNYy59nOn/TqUhPugkTqiD29l+/GJZyW8iOOT7gOs
-        cMkkfugA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l53N6-008FCm-Sp; Thu, 28 Jan 2021 09:13:49 +0000
-Date:   Thu, 28 Jan 2021 09:13:48 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     sumit.semwal@linaro.org, benjamin.gaignard@linaro.org,
-        lmark@codeaurora.org, labbott@redhat.com, Brian.Starkey@arm.com,
-        john.stultz@linaro.org, christian.koenig@amd.com,
-        cgoldswo@codeaurora.org, orjan.eide@arm.com, robin.murphy@arm.com,
-        jajones@nvidia.com, minchan@kernel.org, hridya@google.com,
-        sspatil@google.com, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
- linux vm
-Message-ID: <20210128091348.GA1962975@infradead.org>
-References: <20210128083817.314315-1-surenb@google.com>
+        Thu, 28 Jan 2021 04:16:34 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA92DC061573;
+        Thu, 28 Jan 2021 01:15:53 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id z6so4561034wrq.10;
+        Thu, 28 Jan 2021 01:15:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=sze6ftSu2R04b/pFQqFUbK9JRo3vVs8lhsThJVykhuU=;
+        b=Kz1SzCcFxFfU/+p7TVw0lYH2n1/3LdPdJMZo2I/giUbu+VAum/FsN3FYEWubn7Nj2n
+         mjuVaW/JTmGnzcNKPEgwglMvDWY+5bM+kFWjE8+yDntfkNLJ28vZ7JXopo6eSxJqjMqS
+         u4X1KFYEFgf5QM4Gt9zhb568oVr43cUM2OHBtUwr13Gm39clVVCUHariJVrO0bjlrV4u
+         Q3MTNYYIkbpG3NkVmFTeOnYqoIT2pEQw9jpx7RC+8TiSNXmmxQv9CMPGA/CehNUObV3Y
+         aSIoU0g4u52c0BAKgG1oRoY3SkI+wVux/vikrZBf6jfzCv91EVs5GjJI8JnLjEUcj3xE
+         YHvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=sze6ftSu2R04b/pFQqFUbK9JRo3vVs8lhsThJVykhuU=;
+        b=aPAYDX+xYyjOq15AKLICs8V/44V4VBgkWtmViPhJtng909RNmSck1Eyt4RPXhNV3UY
+         TxAreacd1iC4bLb1R1D+pPd5r3KAm+TF7ZMXOO30PXSYO1Otc4bXAuNBngZI1FNs/Fnx
+         Z1EnoNb6hrQtx89Rn6PE30G/PwECX9asCbuz5EE/9M2KKQwN/i4pVXirDG8qXp3vCtO6
+         2RwnI2sf9Qo1mp/oQgxVwwjiWyA1Sv3oTrnnHdRmj5F5n/fkaUVaG9kI3/1Yf66VF2Yb
+         mpfFt0I1hsQC3sbdLetWvzSSBrEGiuWgpDs05q/XdWYP7zk68wztn2X6yK0NMN0nAB5v
+         t0Gg==
+X-Gm-Message-State: AOAM531FMbkZ0KSRkAoadSvVvfFXHUFMps8dJC+y/q90BfWy0BP6E5xu
+        rMU3G/1RkOMOjiqNG2FLNKk=
+X-Google-Smtp-Source: ABdhPJyuYcZGQH1R98zFUCdwbLKku7gcClCnDjmmhPRmoU1i9/BT5M24RJfDdh3etoEAER2Sbpu4YQ==
+X-Received: by 2002:a5d:5549:: with SMTP id g9mr16132993wrw.244.1611825352697;
+        Thu, 28 Jan 2021 01:15:52 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id k131sm5481598wmb.37.2021.01.28.01.15.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 01:15:52 -0800 (PST)
+Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
+To:     Wolfram Sang <wsa@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-5-djrscally@gmail.com>
+ <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
+ <CAJZ5v0hUELtKc9CK=z47XQvSAAx=wTWvoVwP-PaMqugaXaCgZQ@mail.gmail.com>
+ <20210128090053.GE963@ninjato>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <7e7a8614-3cdb-e160-b10f-8aa0e11b15e5@gmail.com>
+Date:   Thu, 28 Jan 2021 09:15:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128083817.314315-1-surenb@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210128090053.GE963@ninjato>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:38:17AM -0800, Suren Baghdasaryan wrote:
-> Currently system heap maps its buffers with VM_PFNMAP flag using
-> remap_pfn_range. This results in such buffers not being accounted
-> for in PSS calculations because vm treats this memory as having no
-> page structs. Without page structs there are no counters representing
-> how many processes are mapping a page and therefore PSS calculation
-> is impossible.
-> Historically, ION driver used to map its buffers as VM_PFNMAP areas
-> due to memory carveouts that did not have page structs [1]. That
-> is not the case anymore and it seems there was desire to move away
-> from remap_pfn_range [2].
-> Dmabuf system heap design inherits this ION behavior and maps its
-> pages using remap_pfn_range even though allocated pages are backed
-> by page structs.
-> Clear VM_IO and VM_PFNMAP flags when mapping memory allocated by the
-> system heap and replace remap_pfn_range with vm_insert_page, following
-> Laura's suggestion in [1]. This would allow correct PSS calculation
-> for dmabufs.
-> 
-> [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
-> [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
-> (sorry, could not find lore links for these discussions)
-> 
-> Suggested-by: Laura Abbott <labbott@kernel.org>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> index 17e0e9a68baf..0e92e42b2251 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -200,11 +200,13 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
->  	struct sg_page_iter piter;
->  	int ret;
->  
-> +	/* All pages are backed by a "struct page" */
-> +	vma->vm_flags &= ~VM_PFNMAP;
-
-Why do we clear this flag?  It shouldn't even be set here as far as I
-can tell.
+On 28/01/2021 09:00, Wolfram Sang wrote:
+>>> There's a real danger of a memory leak, as the function name sounds very
+>>> similar to dev_name() or acpi_dev_name() and those don't allocate
+>>> memory. I'm not sure what a better name would be, but given that this
+>>> function is only used in patch 6/7 and not in the I2C subsystem itself,
+>>> I wonder if we should inline this kasprintf() call in the caller and
+>>> drop this patch.
+>> IMO if this is a one-off usage, it's better to open-code it.
+> Sounds reasonable to me, too.
+>
+Just to clarify; "open-code" meaning inline it in the caller like
+Laurent said, right?
