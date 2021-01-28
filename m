@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFC1306FF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD062306FF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhA1Hoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:44:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35342 "EHLO mail.kernel.org"
+        id S232113AbhA1HoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:44:05 -0500
+Received: from mga12.intel.com ([192.55.52.136]:7515 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232034AbhA1HmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:42:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D815064DD1;
-        Thu, 28 Jan 2021 07:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611819689;
-        bh=UIZAl1ypNxIx0VC4863WBaN/fRN2pw975WDiM1ldZGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bXuKnZrNYpxXInKGae/o3bmzevQexIN83M+3UnxY8xgDrBJRnYGrfEMs2pKdOLMke
-         1A/LQeDq0t99Hwa1TuLGNrAPTD355YKPfzazqeg85TyoVXyVxu++UCgN2Uco9EBDR+
-         STnAyFRkCoI9UMSiMGJfm6xrrYEC1pqVuooxeT8k=
-Date:   Thu, 28 Jan 2021 08:41:25 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     Howard Yen <howardyen@google.com>,
-        Mathias Nyman <mathias.nyman@intel.com>, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] add xhci hooks for USB offload
-Message-ID: <YBJqpbspmXZknX4n@kroah.com>
-References: <20210119101044.1637023-1-howardyen@google.com>
- <af91bbf1-6731-3e87-4086-de0dbba22c22@intel.com>
- <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
- <ca442ca7-a434-2527-9945-861dafa685cc@linux.intel.com>
- <YBAk795ccXBPgJWp@kroah.com>
- <CAJDAHvZ2CCm9tT+C=hNc_U1CaYJg3ZjifsYLik3UqfXwUm++Lg@mail.gmail.com>
- <f77d1149-7bd1-3914-8841-439cb67397fd@linux.intel.com>
+        id S232155AbhA1Hmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:42:35 -0500
+IronPort-SDR: lN+enLqQGaB3i+P6jDN8tOEPh8TRgsCXJtw2NZsfJCObFAeDYTqOv+UveUl4goHVDMyXYiMWWn
+ XoKlxxPZQ3NA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159365697"
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="159365697"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 23:41:52 -0800
+IronPort-SDR: il97ZBtLZZ16htD7yIEr/euNmrdjpq+PF6kjIc7GM3AwgtmwrGa81BegQxuBNAf76I9juvwfP3
+ /SDgzjOg+YFQ==
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="388649122"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.104]) ([10.239.13.104])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 23:41:48 -0800
+Subject: Re: [RESEND PATCH 1/2] KVM: X86: Add support for the emulation of
+ DR6_BUS_LOCK bit
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210108064924.1677-1-chenyi.qiang@intel.com>
+ <20210108064924.1677-2-chenyi.qiang@intel.com>
+ <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
+ <5f3089a2-5a5c-a839-9ed9-471c404738a3@intel.com>
+ <6bf8fc0d-ad7d-0282-9dcc-695f16af0715@redhat.com>
+ <ec623f67-d7b7-2d9a-1610-4da7702288b1@intel.com>
+ <b4d66085-3cf9-afaf-97d0-3df2b5eb4a3c@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <0de5aad4-231b-e55b-2f2d-e121954742f9@intel.com>
+Date:   Thu, 28 Jan 2021 15:41:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f77d1149-7bd1-3914-8841-439cb67397fd@linux.intel.com>
+In-Reply-To: <b4d66085-3cf9-afaf-97d0-3df2b5eb4a3c@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 08:31:14AM +0200, Mathias Nyman wrote:
-> On 28.1.2021 5.38, Howard Yen wrote:
-> > On Tue, Jan 26, 2021 at 10:19 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >>
-> >> On Fri, Jan 22, 2021 at 05:32:58PM +0200, Mathias Nyman wrote:
-> >>>
-> >>> Ok, before adding hooks like this I think we need to see how they are used.
-> >>> Do you have the rest of the patches that go on top of this series?
-> >>>
-> >>> Maybe it could make sense to use overrides for the functions in struct hc_driver
-> >>> instead in some cases? There is support for that already.
-> >>
-> >> What overrides could be done for these changes?  At first glance that
-> >> would seem to require a lot of duplicated code in whatever override
-> >> happens to be needed.
-> >>
-> >> thanks,
-> >>
-> >> greg k-h
-> > 
-> > This patch series is all the changes for the offload hooks currently.
-> > 
-> > I thought about this, but if I tried to override the functions in
-> > struct hc_driver, that'll need to
-> > copy many code to the override function, and it won't follow the
-> > latest change in the core
-> > xhci driver.
-> > 
-> > 
-> > - Howard
+On 1/28/2021 3:25 PM, Paolo Bonzini wrote:
+> On 28/01/21 08:17, Xiaoyao Li wrote:
+>>>
+>>> "Active low" means that the bit is usually 1 and goes to 0 when the 
+>>> condition (such as RTM or bus lock) happens.  For almost all those 
+>>> DR6 bits the value is in fact always 1, but if they are defined in 
+>>> the future it will require no code change.
+>>
+>> Why not keep use DR6_INIT, or DR6_RESET_VALUE? or any other better name.
+>>
+>> It's just the default clear value of DR6 that no debug condition is hit.
 > 
-> Ok, I see. 
+> I preferred "DR6_ACTIVE_LOW" because the value is used only once or 
+> twice to initialize dr6, and many times to invert those bits.  For example:
 > 
-> The point I'm trying to make is that there is no way for me to know if
-> these hooks are the right solution before I see any code using them.
+> vcpu->arch.dr6 &= ~DR_TRAP_BITS;
+> vcpu->arch.dr6 |= DR6_ACTIVE_LOW;
+> vcpu->arch.dr6 |= payload;
+> vcpu->arch.dr6 ^= payload & DR6_ACTIVE_LOW;
 > 
-> Is the offloading code ready and public somewhere?
+> payload = vcpu->arch.dr6;
+> payload &= ~DR6_BT;
+> payload ^= DR6_ACTIVE_LOW;
+> 
+> The name conveys that it's not just the initialization value; it's also 
+> the XOR mask between the #DB exit qualification (which we also use as 
+> the "payload") and DR6.
 
-There is offload code published in the last few Samsung phone kernels, I
-want to get that ported to these hooks to see if that works properly.
+Fair enough.
 
-Give me a few days and I'll see if I can get it working, I had a
-half-finished port around here somewhere...
-
-thanks,
-
-greg k-h
