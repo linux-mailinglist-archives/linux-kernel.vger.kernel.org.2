@@ -2,330 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A4B307A6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B15307A65
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhA1QNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:13:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31724 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232395AbhA1QMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:12:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611850237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q3+GaWOJcVoS280BO4ZTgt8MtsvmJpeZvLy5xokg2jk=;
-        b=QJTPhyV1S5iQa5g7hOkXF/Fn6ZuDq+5txppfBjVBydJzkAxdDt81jbxK2pN9+B14vvEnbP
-        ajn0aOjoTBG0fj2oe8S66tq7Bf8gWhZLDmFcuOzBR7T/9R4cE5S/P8sL4lHtA6Sqh1Mfrt
-        Gv5wCV4eLLzRKKDm4HPnNe7HG/veMVw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-Kv6Lv3U9Ma-HgiUsHc-4Vw-1; Thu, 28 Jan 2021 11:10:34 -0500
-X-MC-Unique: Kv6Lv3U9Ma-HgiUsHc-4Vw-1
-Received: by mail-wr1-f71.google.com with SMTP id j8so3330991wrx.17
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 08:10:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q3+GaWOJcVoS280BO4ZTgt8MtsvmJpeZvLy5xokg2jk=;
-        b=nyx21fkj1Kg8WXpdlAzJOI8yFrZfQy0lUa1pJBLELGTmb4clOeeUsate6IQm/AIGv8
-         X3Sm0Mrj90nlKI70kp8Xvp0Cvppndax5i1qt05ywLh0Bs50FkdZLj2TGBDbHrJTvow7B
-         86v9sKMW1FQdSxfTH3doC6QRcqDfwhDtkM+ZPCDEDheVYou8GPOoP2p2Iwp0TkflUPqB
-         +mJ6iVhMInyL2siFPxcS/q6F6ksd3ejiHnuwWAoLqecCmFzD1prdDr1SjWNvX8J5BLao
-         UPo9LsfVESm05c4kD4qi6TPepj13LXSCWh4Rvy4OvYVtYh+bBHmnBA/XmNufe1cxaOaG
-         XveQ==
-X-Gm-Message-State: AOAM533pfr8iijo4HVcVJHqmr/Mdo/Xq1iVUid9XpVp3e3dZBgHdZZLN
-        9a3n3NqispGTW62yi5C7yKYTr4Ee+0cwxGiBOueR6LjnKnVE+TO2l97l4OGfGW00RJRQAb+f1hY
-        JZVbJYAzxd2LyiLs6RYgM9+mn
-X-Received: by 2002:a5d:5910:: with SMTP id v16mr17858694wrd.29.1611850233400;
-        Thu, 28 Jan 2021 08:10:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCJxet7P/Zrk9KZEMXq8X1p9C2h5zi7JFYpLswRvkfkQWra6ZTD64HKpdUGYoJqTRtuXS7kQ==
-X-Received: by 2002:a5d:5910:: with SMTP id v16mr17858644wrd.29.1611850233122;
-        Thu, 28 Jan 2021 08:10:33 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id l10sm7495512wro.4.2021.01.28.08.10.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 08:10:32 -0800 (PST)
-Date:   Thu, 28 Jan 2021 17:10:29 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v3 01/13] af_vsock: prepare for SOCK_SEQPACKET support
-Message-ID: <20210128161029.a53la6e3dv5bzazn@steredhat>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210125111131.597930-1-arseny.krasnov@kaspersky.com>
+        id S229728AbhA1QMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:12:30 -0500
+Received: from mga12.intel.com ([192.55.52.136]:54410 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232119AbhA1QLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:11:19 -0500
+IronPort-SDR: hUsK3BeZV+p9/7MpZbya0F0pJMLIIo7mqZqWG2aUVGmYZ5Zcbqlc2CeBQctepcBA/VbrQluL99
+ S/NvxA9ULSag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="159432059"
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="159432059"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 08:10:36 -0800
+IronPort-SDR: /ENsKvpeYEdDIdPt8AcVMudMId0Wu6nsTAcBOV9E449hAgPNWL7XACpZ0DFCIEy5f5mB8DQdnt
+ c+LJ2Xr+6StQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
+   d="scan'208";a="473883681"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jan 2021 08:10:36 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 28 Jan 2021 08:10:35 -0800
+Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 28 Jan 2021 08:10:35 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Thu, 28 Jan 2021 08:10:35 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 28 Jan 2021 08:10:35 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kiUp5tHHfqKjxtgyTKpBMxS00aF3PPE+edU8gZnMCzexTsCJxXN2oyVWbkj8lOWYLZ4ERaSDTkmQIN6m0Mya89ES0uhTt/W4hT6jidmGt5YFFniyyJINLSYgCmTmjlt7kpoSp7VhkU9J1Q7qdvwv+00T6K8ZO+6fNYohijMY5X/1EsvqcqYABeqrwjQod7ow6fTztUFPo5XqVeKHu0D5LCKIye1OsI7RjZDeztyGf5g9vYl/VM613YujEdm/JldWqEFS3w3oIK5VxFAJcS4fdUBRf4hzrISt2VQe0/d4Ib4HIBwuFpzRMgbKCI7loL/+bI8F2dgiCBPRexqu9YzftQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DFxJa1URClB+PuMmTUBmafauvXjz+oDimJtiC7QYd6k=;
+ b=oCqkNjk3HJx9EZm0c97PBcvXATOZyejWZMHLtP9N0ex3IhTrLqvjwieOKiCaEHQWoKKRKA6F2gtstfFrQmNYkc+m7cHh9ejJf8fFOzrcOfw8LXFs/1rcmZwRh1BbaHnmM1whABMgxLbP5s9N8aB04018MSokSc6JOsQNgRS/jauqOOJf5wxiF/OUxDpXHNDQoVo2BF2Jx7BVt32kd5RAldSBTU/dPTPv4huiFVOULqSJeR6lEHzdKed32p319oB3u5pj3E9vRCIu6uVoY9l3clbvvgwiSlMPkILmehUiYtnas5EuGBDT9MztdUwti9Q2gQlAEPwyHoydT4M+4SeZhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DFxJa1URClB+PuMmTUBmafauvXjz+oDimJtiC7QYd6k=;
+ b=B0vJ/8sbib3SaM/kLbRPJlE0yodHcEEK63aiDzSI5MYmrSOMjAkDpzH6PHFuYpC63PiqEVGwaxqu2jT2Lg+0dXMJWr50x/fMIWVFw3gy9nF+UMTYit9CzMfL6qbeRyOCKLHDFln3J57ExIJmdIezf++zbr4vlR+06JQRd5aANYE=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB4885.namprd11.prod.outlook.com (2603:10b6:510:35::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 28 Jan
+ 2021 16:10:32 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0%6]) with mapi id 15.20.3805.017; Thu, 28 Jan 2021
+ 16:10:32 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Sun, Ning" <ning.sun@intel.com>,
+        "Dwarakanath, Kumar N" <kumar.n.dwarakanath@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/8] x86/power: Restore Key Locker internal key from
+ the ACPI S3/4 sleep states
+Thread-Topic: [RFC PATCH 4/8] x86/power: Restore Key Locker internal key from
+ the ACPI S3/4 sleep states
+Thread-Index: AQHW09NfsxUKqrZ4BEWmpCpTWD5ZDao9GrIAgABd2QA=
+Date:   Thu, 28 Jan 2021 16:10:32 +0000
+Message-ID: <E5AD5576-1E14-4B7A-AFF6-B3BB2E9335DC@intel.com>
+References: <20201216174146.10446-1-chang.seok.bae@intel.com>
+ <20201216174146.10446-5-chang.seok.bae@intel.com>
+ <CAJZ5v0jbz16DQg6CZr1hp-ZgUJ6gJOw=4AUaGeqeUk2UD7U_Fw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jbz16DQg6CZr1hp-ZgUJ6gJOw=4AUaGeqeUk2UD7U_Fw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.189.248.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ca8d7376-d1c6-417a-4071-08d8c3a73d0a
+x-ms-traffictypediagnostic: PH0PR11MB4885:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB48856F194919D902CDEA5FCED8BA9@PH0PR11MB4885.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DfufvBBM5t1o94a82g4aLVgDdq8NNzFdYoc3CHTCiDYCab4MaT9cS/aNCHAmVts+DSs6l3hCNc4jVp7k4tmxPfYOI+gL+MxktXqhsOe7+/kVi2VNpcz2U5Y4zJDAWYwGr39jXNj9ek6hogr1sEG81UQoZnacZvrlwStekQwyAO4D87uQ8vOF+BtgirVkMWKiapjMagMUTKMZy9ygvBlIwq05sIFObEjTc/OuVXBCzK0WWXJaJa+BoXVXwxE5tvUXAaks19QXrBc+c4J83EsR91SX2gn0Ugim4w+8HsMSmBl/8XxHHJ8ZKG4NFj1NNqUwETUSfCxqrCYneh41TLdXonV5p3OCCDns+TO0DejZnA7znyC7Q4VGtVT6SvozVsRQsJMKz9DKXukPPbVFBUa23i4B5JgoMkIGKxhAfFPDVX7tgc8H1iNZYEssmP8cBJY7wODhp3BZdfGTDLGztfZ7i+7F8X4sh/IsxzX/pU1pkPuFKjTvje1u9wdUvgl/yRbA7IXIwXPUt3Ijahvdaj52MdqJ5XCLLk88p/jJFpFqHzIMawaPEPY97N2nQ+z9+owkJiu8sFKLR8BU8ZT+ejYvIw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(396003)(346002)(136003)(6486002)(33656002)(91956017)(7416002)(186003)(2906002)(86362001)(8936002)(6512007)(6506007)(4744005)(5660300002)(71200400001)(478600001)(54906003)(36756003)(6916009)(4326008)(66556008)(66946007)(66476007)(64756008)(26005)(53546011)(2616005)(8676002)(66446008)(76116006)(83380400001)(316002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?v4EKn/yUojA22bhew1+J/K/2cW/JQB7r3XgPD4FHwmvrsgALkYUNJsZdSFgg?=
+ =?us-ascii?Q?WV6EWodv6bFvRUublB++bnJf0hp+8e9aC9O+75hsr11OWp2G+BGQiSBD+JZJ?=
+ =?us-ascii?Q?WOTQMLCkC3QGA501LlK3LfMjfTpbVCJEkRir72HwBzsMbvVKXy0CDNcxYW6d?=
+ =?us-ascii?Q?f7zEjrS33Nwa1eN1SDps1Zi88L8xQZ9W1YqXqkGufnYbcag1SenSyx2Q5q8r?=
+ =?us-ascii?Q?8aK/hATO87Brkyug7DYKYiO4pw2JGbNH72hY986mj+5+G4e6vANdvX5m9ck1?=
+ =?us-ascii?Q?Jj/MXhGKETgcpuRlUe7VKJq7MVFoOoC+um8LiSlvL3TNRkRnxMRvdNkGdGnL?=
+ =?us-ascii?Q?ZBCB0Uo8OkFbyQnPNwucjvxuPhi7giYCrNmfJjA1Vxgz/ddSmkk3VbZkoVUS?=
+ =?us-ascii?Q?ZdNwDspCflP4ApFKvMVjEbWjhraMft2osAzC6F6aWumwHMCZ1YVuOVJ5tISa?=
+ =?us-ascii?Q?8jVgOJeQe0TiBiVKttSs0AtuiCYrosHWcKuE8GMZUji769M2swb5DAFgOoAn?=
+ =?us-ascii?Q?fL8qxfVKUQ4iq7A9xyiVK07qQ2grmYsnSjAx+T/cXxrPotXFSlNMISU4qtRE?=
+ =?us-ascii?Q?KCikRum9dreLHUIRFOCBG7RTw1Z/qOXH+36Hf6tqk4XNNNt+pbX/sh29v6JB?=
+ =?us-ascii?Q?qJ0S+GPselcSIn6qgPcr6Fwet1p4mN273NAMdElcuOjnDhhVd21y4xLqlpqT?=
+ =?us-ascii?Q?BArzkTczJUxulw60rCE0AvrlqSHnTWo5uYpKV+/GVvk0K6QSf9K3j6ldU2PU?=
+ =?us-ascii?Q?bapHTLdoAxJEbA/UZP1/Ek10e5xtI0aNBhf8O3U9w8Xqy6knxU/hGd2EsfPD?=
+ =?us-ascii?Q?0m86wTyvlVug3uKYwBr3me8iTmQ5UJkBB0csvWE7DwYSRogz0SO5qB9pOjM5?=
+ =?us-ascii?Q?ZvVyalmkI89IeMF2HebgA1FQ+mrMc/wb+jHGjRMEhypv7ztuh8n5NRCl9ipC?=
+ =?us-ascii?Q?zPsiYY75v0m/FPkGCu6g3QEv3O57wnjrd4xOQ9NddazZnUlGRIirIDAbByYe?=
+ =?us-ascii?Q?cY6aGJWSVMfjQxw3wqb0oIOeAy77MVT5XJzQQWAnrSWo2BS5T5h0gjamRw7X?=
+ =?us-ascii?Q?aQ/JyNFTYB/9kLyERFyuk/BnaIiWjQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <80B41AF9BD59E748BAE5959E1CE4E76F@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210125111131.597930-1-arseny.krasnov@kaspersky.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca8d7376-d1c6-417a-4071-08d8c3a73d0a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2021 16:10:32.2488
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0Wf/F19pqruWnryeeHwhd+kMTM85ukH5TPC6GvW9otMllUpBWMRqH/0C5PWpuszZDSdX4iYvNJwSHy5rSDsEAW99u8KuxOTz9r+NS7HeOgo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4885
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think the patch title should be more explicit, so something like
+On Jan 28, 2021, at 02:34, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On Wed, Dec 16, 2020 at 6:47 PM Chang S. Bae <chang.seok.bae@intel.com> w=
+rote:
+>>=20
+>> +       keybackup_status =3D read_keylocker_backup_status();
+>> +       if (!(keybackup_status & BIT(0))) {
+>> +               pr_err("x86/keylocker: internal key restoration failed w=
+ith %s\n",
+>> +                      (keybackup_status & BIT(2)) ? "read error" : "inv=
+alid status");
+>> +               WARN_ON(1);
+>> +               goto disable_keylocker;
+>> +       }
+>=20
+> The above conditional could be consolidated a bit by using WARN():
+>=20
+> if (WARN(!(keybackup_status & BIT(0)), "x86/keylocker: internal key
+> restoration failed with %s\n",
+>        (keybackup_status & BIT(2)) ? "read error" : "invalid status")
+>                goto disable_keylocker;
+>=20
+> Apart from this the patch LGTM.
 
-vsock: generalize function to manage connectible sockets
+Thanks for the review! I will make this change on my next revision.
 
-On Mon, Jan 25, 2021 at 02:11:28PM +0300, Arseny Krasnov wrote:
->This prepares af_vsock.c for SEQPACKET support:
->1) As both stream and seqpacket sockets are connection oriented, add
->   check for SOCK_SEQPACKET to conditions where SOCK_STREAM is checked.
->2) Some functions such as setsockopt(), getsockopt(), connect(),
->   recvmsg(), sendmsg() are shared between both types of sockets, so
->   rename them in general manner and create entry points for each type
->   of socket to call these functions(for stream in this patch, for
->   seqpacket in further patches).
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 91 +++++++++++++++++++++++++++++-----------
-> 1 file changed, 67 insertions(+), 24 deletions(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index b12d3a322242..c9ce57db9554 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -604,8 +604,8 @@ static void vsock_pending_work(struct work_struct *work)
->
-> /**** SOCKET OPERATIONS ****/
->
->-static int __vsock_bind_stream(struct vsock_sock *vsk,
->-			       struct sockaddr_vm *addr)
->+static int __vsock_bind_connectible(struct vsock_sock *vsk,
->+				    struct sockaddr_vm *addr)
-> {
-> 	static u32 port;
-> 	struct sockaddr_vm new_addr;
->@@ -685,7 +685,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
-> 	switch (sk->sk_socket->type) {
-> 	case SOCK_STREAM:
-> 		spin_lock_bh(&vsock_table_lock);
->-		retval = __vsock_bind_stream(vsk, addr);
->+		retval = __vsock_bind_connectible(vsk, addr);
-> 		spin_unlock_bh(&vsock_table_lock);
-> 		break;
->
->@@ -767,6 +767,11 @@ static struct sock *__vsock_create(struct net *net,
-> 	return sk;
-> }
->
->+static bool sock_type_connectible(u16 type)
->+{
->+	return (type == SOCK_STREAM || type == SOCK_SEQPACKET);
->+}
->+
-
-I think it's okay to add this function in this patch, but until 
-SOCK_SEQPACKET is not supported, I would check only SOCK_STREAM and add 
-SOCK_SEQPACKET only when you add 'vsock_seqpacket_ops' later.
-
-> static void __vsock_release(struct sock *sk, int level)
-> {
-> 	if (sk) {
->@@ -785,7 +790,7 @@ static void __vsock_release(struct sock *sk, int level)
->
-> 		if (vsk->transport)
-> 			vsk->transport->release(vsk);
->-		else if (sk->sk_type == SOCK_STREAM)
->+		else if (sock_type_connectible(sk->sk_type))
-> 			vsock_remove_sock(vsk);
->
-> 		sock_orphan(sk);
->@@ -945,7 +950,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
-> 	sk = sock->sk;
-> 	if (sock->state == SS_UNCONNECTED) {
-> 		err = -ENOTCONN;
->-		if (sk->sk_type == SOCK_STREAM)
->+		if (sock_type_connectible(sk->sk_type))
-> 			return err;
-> 	} else {
-> 		sock->state = SS_DISCONNECTING;
->@@ -960,7 +965,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
-> 		sk->sk_state_change(sk);
-> 		release_sock(sk);
->
->-		if (sk->sk_type == SOCK_STREAM) {
->+		if (sock_type_connectible(sk->sk_type)) {
-> 			sock_reset_flag(sk, SOCK_DONE);
-> 			vsock_send_shutdown(sk, mode);
-> 		}
->@@ -1013,7 +1018,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
-> 		if (!(sk->sk_shutdown & SEND_SHUTDOWN))
-> 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
->
->-	} else if (sock->type == SOCK_STREAM) {
->+	} else if (sock_type_connectible(sk->sk_type)) {
-> 		const struct vsock_transport *transport = vsk->transport;
-> 		lock_sock(sk);
->
->@@ -1259,8 +1264,8 @@ static void vsock_connect_timeout(struct work_struct *work)
-> 	sock_put(sk);
-> }
->
->-static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
->-				int addr_len, int flags)
->+static int vsock_connect(struct socket *sock, struct sockaddr *addr,
->+			 int addr_len, int flags)
-> {
-> 	int err;
-> 	struct sock *sk;
->@@ -1395,6 +1400,12 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
-> 	return err;
-> }
->
->+static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
->+				int addr_len, int flags)
->+{
->+	return vsock_connect(sock, addr, addr_len, flags);
->+}
->+
-
-I think you can directly use vsock_connect in 'vsock_stream_ops'.
-
-> static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
-> 			bool kern)
-> {
->@@ -1410,7 +1421,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
->
-> 	lock_sock(listener);
->
->-	if (sock->type != SOCK_STREAM) {
->+	if (!sock_type_connectible(sock->type)) {
-> 		err = -EOPNOTSUPP;
-> 		goto out;
-> 	}
->@@ -1487,7 +1498,7 @@ static int vsock_listen(struct socket *sock, int 
->backlog)
->
-> 	lock_sock(sk);
->
->-	if (sock->type != SOCK_STREAM) {
->+	if (!sock_type_connectible(sk->sk_type)) {
-> 		err = -EOPNOTSUPP;
-> 		goto out;
-> 	}
->@@ -1531,11 +1542,11 @@ static void vsock_update_buffer_size(struct vsock_sock *vsk,
-> 	vsk->buffer_size = val;
-> }
->
->-static int vsock_stream_setsockopt(struct socket *sock,
->-				   int level,
->-				   int optname,
->-				   sockptr_t optval,
->-				   unsigned int optlen)
->+static int vsock_connectible_setsockopt(struct socket *sock,
->+					int level,
->+					int optname,
->+					sockptr_t optval,
->+					unsigned int optlen)
-> {
-> 	int err;
-> 	struct sock *sk;
->@@ -1612,10 +1623,20 @@ static int vsock_stream_setsockopt(struct socket *sock,
-> 	return err;
-> }
->
->-static int vsock_stream_getsockopt(struct socket *sock,
->-				   int level, int optname,
->-				   char __user *optval,
->-				   int __user *optlen)
->+static int vsock_stream_setsockopt(struct socket *sock,
->+				   int level,
->+				   int optname,
->+				   sockptr_t optval,
->+				   unsigned int optlen)
->+{
->+	return vsock_connectible_setsockopt(sock, level, optname, optval,
->+					    optlen);
->+}
-
-As before, I think you can directly use vsock_connectible_setsockopt in 
-'vsock_stream_ops'.
-
->+
->+static int vsock_connectible_getsockopt(struct socket *sock,
->+					int level, int optname,
->+					char __user *optval,
->+					int __user *optlen)
-> {
-> 	int err;
-> 	int len;
->@@ -1683,8 +1704,17 @@ static int vsock_stream_getsockopt(struct socket *sock,
-> 	return 0;
-> }
->
->-static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
->-				size_t len)
->+static int vsock_stream_getsockopt(struct socket *sock,
->+				   int level, int optname,
->+				   char __user *optval,
->+				   int __user *optlen)
->+{
->+	return vsock_connectible_getsockopt(sock, level, optname, optval,
->+					    optlen);
->+}
->+
-
-Ditto.
-
->+static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->+				     size_t len)
-> {
-> 	struct sock *sk;
-> 	struct vsock_sock *vsk;
->@@ -1822,10 +1852,16 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	return err;
-> }
->
->+static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
->+				size_t len)
->+{
->+	return vsock_connectible_sendmsg(sock, msg, len);
->+}
->+
-
-Ditto.
-
->
-> static int
->-vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->-		     int flags)
->+vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->+			  int flags)
-> {
-> 	struct sock *sk;
-> 	struct vsock_sock *vsk;
->@@ -1995,6 +2031,13 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 	return err;
-> }
->
->+static int
->+vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->+		     int flags)
->+{
->+	return vsock_connectible_recvmsg(sock, msg, len, flags);
->+}
->+
-
-Ditto.
-
-> static const struct proto_ops vsock_stream_ops = {
-> 	.family = PF_VSOCK,
-> 	.owner = THIS_MODULE,
->-- 
->2.25.1
->
-
+Chang=
