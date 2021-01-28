@@ -2,62 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B9E3075D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B442B3075F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhA1MTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:19:55 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:38598 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhA1MTq (ORCPT
+        id S231819AbhA1MYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:24:16 -0500
+Received: from forward105p.mail.yandex.net ([77.88.28.108]:47485 "EHLO
+        forward105p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231508AbhA1MWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:19:46 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l56GN-0001Zy-Hp; Thu, 28 Jan 2021 12:19:03 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] Input: iqs5xx: Ensure error_bl is initialized on error exit path
-Date:   Thu, 28 Jan 2021 12:19:03 +0000
-Message-Id: <20210128121903.636652-1-colin.king@canonical.com>
+        Thu, 28 Jan 2021 07:22:24 -0500
+Received: from sas1-2c02ca35cfae.qloud-c.yandex.net (sas1-2c02ca35cfae.qloud-c.yandex.net [IPv6:2a02:6b8:c14:3992:0:640:2c02:ca35])
+        by forward105p.mail.yandex.net (Yandex) with ESMTP id AF0554D41D0B;
+        Thu, 28 Jan 2021 15:21:35 +0300 (MSK)
+Received: from sas1-27140bb19246.qloud-c.yandex.net (sas1-27140bb19246.qloud-c.yandex.net [2a02:6b8:c08:1803:0:640:2714:bb1])
+        by sas1-2c02ca35cfae.qloud-c.yandex.net (mxback/Yandex) with ESMTP id DOD2zEoBkr-LZGO4aYo;
+        Thu, 28 Jan 2021 15:21:35 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1611836495;
+        bh=yxUd7GW+52WO9gCx62QYkoMSITctOlyet8SNAIkbEtU=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=HJZ/xqQLwdo10VJQKXQVa/T3kIhYUxoSgB7hWqarTvhxjD2yb0Fe/sp8mIp5r2oi7
+         8xPfAANeUzFv6E9/YWFHIECNFTK+yVIzgfi1YoZLqLTPoh1kSLxaC0sWX4fH8n/WKe
+         xapbkTMlt/NHZQFYjcfZ+tAgZmsU3437Ych8hA0k=
+Authentication-Results: sas1-2c02ca35cfae.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by sas1-27140bb19246.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id dVFT85naok-LYn8A8ge;
+        Thu, 28 Jan 2021 15:21:34 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/7] gpio: ep93xx: fixes series patch
+Date:   Thu, 28 Jan 2021 15:21:16 +0300
+Message-Id: <20210128122123.25341-1-nikita.shubin@maquefel.me>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+v2: 
+https://lore.kernel.org/linux-gpio/20210127104617.1173-1-nikita.shubin@maquefel.me/
 
-Currently if the call to qs5xx_fw_file_parse fails the error return
-exit path will read the uninitialized variable error_bl. Fix this
-by ensuring error_bl is initialized to zero.
+v2->v3 changes
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 2539da6677b6 ("Input: iqs5xx - preserve bootloader errors")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/input/touchscreen/iqs5xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[PATCH v3 1/7] gpio: ep93xx: fix BUG_ON port F usage
+As suggested Andy Shevchenko dropped  most of commit message
 
-diff --git a/drivers/input/touchscreen/iqs5xx.c b/drivers/input/touchscreen/iqs5xx.c
-index 05e0c6ff217b..54f30038dca4 100644
---- a/drivers/input/touchscreen/iqs5xx.c
-+++ b/drivers/input/touchscreen/iqs5xx.c
-@@ -852,7 +852,7 @@ static int iqs5xx_fw_file_parse(struct i2c_client *client,
- static int iqs5xx_fw_file_write(struct i2c_client *client, const char *fw_file)
- {
- 	struct iqs5xx_private *iqs5xx = i2c_get_clientdata(client);
--	int error, error_bl;
-+	int error, error_bl = 0;
- 	u8 *pmap;
- 
- 	if (iqs5xx->bl_status == IQS5XX_BL_STATUS_NONE)
--- 
-2.29.2
+[PATCH v3 2/7] gpio: ep93xx: Fix single irqchip with multi
+ gpiochips
+- Andy Shevchenko:
+	- added coma
+- Alexander Sverdlin:
+	- changed to fixes commit d2b091961510
 
+[PATCH v2 6/9] gpio: ep93xx: refactor ep93xx_gpio_add_bank
+- Alexander Sverdlin:
+	- use ->num_parents instead of ARRAY_SIZE()
+
+Alexander - i think you are right about these two patches
+they have no meaning currently, so i dropped them.
+
+[PATCH v2 7/9] gpio: ep93xx: separate IRQ's setup
+- Alexander Sverdlin:
+	- drop patch entirely
+
+[PATCH v2 9/9] gpio: ep93xx: replace bools with idx for IRQ ports
+- Alexander Sverdlin:
+	- drop patch entirely
