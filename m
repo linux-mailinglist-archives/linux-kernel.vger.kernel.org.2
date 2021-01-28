@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26650308028
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC6C308027
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhA1VEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S231290AbhA1VE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhA1VEQ (ORCPT
+        with ESMTP id S229802AbhA1VEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:04:16 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C956C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:36 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id i187so9505169lfd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:36 -0800 (PST)
+        Thu, 28 Jan 2021 16:04:22 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC2DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:42 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id q20so4821060pfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jdDuCRzkz9xp+XJsVq7mYn0DfZeI0K4LQW2Z/nEcmQg=;
-        b=CuBesJ1LP2UaDvKAEEK9ty4JNIugW6e5APVFSm9E7fiJHWA1KPAf2iH8izI6RoPs65
-         G836VUTI89SC+kl1ZPl9l4OgX/cECS+G1kYkfmV/UQBF0i1mf5GuGzIwbuCYArHK+FB6
-         knl7IYoNkyPRHrFhmo03wZoUvIqYUTzW/LwZg=
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3WONUXtOBA+aimidJBvuVmUVV583MRFRwJEB2kxrPYs=;
+        b=YBojJS9p5xbUaHKy2Lz2exq+I/GlOwWsVyMzlakgcN5k6/BM6757RCUFuEhsw8dCfB
+         9UEEpZeZj1zog1T/mkmttEZM8l3dbQVyYDv6LBQdB/UPJOe03VCWXD5VBq0BRQX4KiLH
+         ma3VCoVUws7V3pu4w1LfWsKEv02ZUmn/UfmGg4GY77V1wJvPlaOdIRlro9d6Dp9PopvF
+         kM5Qmt/lRx5kDPtA06kkMyG3RDp0Pu3B/eGPIRRA9JzNr98Sey/KnZuJbIt1nh8oIh5l
+         SHsqgSF3FTXSJpCCzOoNGuU48b99UVXx/HwVY7lwCRKEnfBuDbIIZ09OjEDuXF+ikVee
+         C3rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jdDuCRzkz9xp+XJsVq7mYn0DfZeI0K4LQW2Z/nEcmQg=;
-        b=sCAPiC4ORsODWzRtXwuouPZ2ws+73fN9xkWLSdHICpZNW+GqD+0b68DsocdXemjgFN
-         lzwK4Rkf8Zqr3fDwnK0thev9a7R1uAY+1+/UUVt7oty1TB7XWmiT5bpUQtswFd/AiIqS
-         TXvF+cyvZqJwAh5079EHmSEItXkabj4LKxTBQ9ajyTXi4F5rmgfkj6YSGoovwr5JxGdG
-         ++Cw3jt4bxlFj5poR21PHkQMxxdNJ9L2Ha1GcCJI9snaG11CApsR53JEG2LtUBZSq6So
-         Fs5L2pPNrhvLlnHFbkVQWgEjc46zKYynEbG58OuD1zzpZ+gUa8bTUCMbhOoRGju+mowr
-         HGtg==
-X-Gm-Message-State: AOAM533Ad0X0NrgphY4yl5vq/Y+BjWvAwzR0UcVNAJDVVEPL7q5FLqaL
-        5GBHZ3eDh75hh9KrV9ha/g7YdwQtHRgmOw==
-X-Google-Smtp-Source: ABdhPJyIrOyNhtl/RzUH5RxlmIFOqN5g5TppnU6N3n2aPwVbSQZvqpceRlejnFn8nasAsw6+QZ8YeA==
-X-Received: by 2002:a05:6512:6f:: with SMTP id i15mr480030lfo.426.1611867814235;
-        Thu, 28 Jan 2021 13:03:34 -0800 (PST)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id m18sm1024851ljb.138.2021.01.28.13.03.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 13:03:33 -0800 (PST)
-Received: by mail-lf1-f51.google.com with SMTP id f1so9515453lfu.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:03:32 -0800 (PST)
-X-Received: by 2002:ac2:420a:: with SMTP id y10mr424761lfh.377.1611867812567;
- Thu, 28 Jan 2021 13:03:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3WONUXtOBA+aimidJBvuVmUVV583MRFRwJEB2kxrPYs=;
+        b=p5TIN6xEZe380/fEtxw+AXDfMYTGd+npsquMiA4j6Tx0BkF6IZFuC1hn/3vShfyfg2
+         1nq4IHTDqq0qotlO11bGEkwVOXLh4m6X58pMrZvMVDmeS1pDvoKQSZnl4GyJkjtHdzTZ
+         SmWJEefMQgsALv+Pb9H86v5U+BpGxHlH/JqaAEYrOCRbd9TtvqoPBFZ5BPqK6+MRSegC
+         csR3QH2E+NZf6vLS7H3otOndZWlDbnlaxd90fXNbXYjrdXBtw/q2U5MKS79W/hABJLcp
+         8i5JAiE06UOWtd8gRdPw6HLmW2+nO38KsZ6x6P1ct+NxDmOuvVW6nsEOXdABGzY24Do4
+         YpoQ==
+X-Gm-Message-State: AOAM533JLjen332ey5AmZZhHvBNU31dlncPD09/L4szVHRF2lZf1EsLu
+        vNjxpJ1O8+dOdDZkQCv+cSzXPA==
+X-Google-Smtp-Source: ABdhPJyjDHTf5cZ2T8LWCexxoeNi+YORZrAIIvHkgQ9CukxkleXU959cZ4xsh58LnwRvlkSO+tlCgw==
+X-Received: by 2002:a65:62d3:: with SMTP id m19mr1313991pgv.180.1611867821498;
+        Thu, 28 Jan 2021 13:03:41 -0800 (PST)
+Received: from wildbow.anholt.net ([75.164.105.146])
+        by smtp.gmail.com with ESMTPSA id l2sm6753295pga.65.2021.01.28.13.03.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 13:03:40 -0800 (PST)
+From:   Eric Anholt <eric@anholt.net>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>
+Subject: [PATCH v3 0/3] drm/msm: fix for "Timeout waiting for GMU OOB set GPU_SET: 0x0"
+Date:   Thu, 28 Jan 2021 13:03:29 -0800
+Message-Id: <20210128210332.1690609-1-eric@anholt.net>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
- <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com> <20210128205207.awdbh4bmx56pxxjl@treble>
-In-Reply-To: <20210128205207.awdbh4bmx56pxxjl@treble>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 Jan 2021 13:03:15 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
-Message-ID: <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
-Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external modules
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        David Laight <David.Laight@aculab.com>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:52 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> Huh?  Why would you do a "make oldconfig" on a distro-released kernel
-> before building an OOT module?
+Updated commit messages over v2, no code changes.
 
-I guarantee you that this patch will *make* people do that.
+Eric Anholt (3):
+  drm/msm: Fix race of GPU init vs timestamp power management.
+  drm/msm: Fix races managing the OOB state for timestamp vs timestamps.
+  drm/msm: Clean up GMU OOB set/clear handling.
 
-> Hm?  Are you saying the check is too strict, since GCC9 binaries _might_
-> be compatible with GCC10?
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 105 +++++++++++++++-----------
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.h |  49 ++++--------
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c |   8 +-
+ 3 files changed, 84 insertions(+), 78 deletions(-)
 
-I'm saying that your argument about minor and major versions is bogus.
+-- 
+2.30.0
 
-There is absolutely nothing that makes gcc9 object files not
-compatible with gcc10.
-
-And this is not just some theoretical issue: this is a fundamental
-fact of EVERY SINGLE LIBRARY OUT THERE.
-
-Do you think that when you compile your binaries with gcc-10, you need
-to link against a standard library that has been compiled with gcc-10?
-
-I really think the whole compiler version check is purely voodoo programming.
-
-                 Linus
