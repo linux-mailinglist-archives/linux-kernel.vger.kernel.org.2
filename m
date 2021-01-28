@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B716130822A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD9330821E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhA1X6h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 18:58:37 -0500
-Received: from wnbcorp.com ([175.126.38.143]:44674 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229866AbhA1X6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:58:36 -0500
-Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10SNhiWw023391;
-        Fri, 29 Jan 2021 08:50:20 +0900
-Message-Id: <202101282350.10SNhiWw023391@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S231209AbhA1Xwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:52:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhA1Xwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:52:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00AB564DEF;
+        Thu, 28 Jan 2021 23:51:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611877912;
+        bh=+06htxCvAjj5N6kbjTFvZE9GRROzfGZvJul1Zorpiqw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=aLuUyOXiYz8sI5W33RFHmVm/DfbYr4c9bzWiWoGf45k/LB6vVTwehmweJ199sxZhl
+         j1Z2lk88BEx5smN3mtFyLtkZRyKVZ3AjMFUWpTXgLU99DaOdGGFCFv8oTk3N1BAWxt
+         uYMgFCzqgxok4+0ktXjgjGHDTafNZAKLGLhi/xzv7oqXsdsLtLd9eGOM9W1q6hwxlo
+         TgAoVzLGqsxu5E3fI9BoIdEHk5RptCrfo73ElcIpBf+IS0lZ10a+2alfS1lfkon5/m
+         vjfo/VMmArgCmXX3EsQvnsthss1HnhIrhXWR8GiArz9p/ermLFRmAkbK5GkOiejuaw
+         /xRRa66GBSeuQ==
+Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth
+ notification"
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Alexandru Gagniuc <alex_gagniuc@dellteam.com>,
+        Keith Busch <keith.busch@intel.com>
+Cc:     Jan Vesely <jano.vesely@gmail.com>, Lukas Wunner <lukas@wunner.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Austin Bolen <austin_bolen@dell.com>,
+        Shyam Iyer <Shyam_Iyer@dell.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Dave Airlie <airlied@gmail.com>,
+        Ben Skeggs <skeggsb@gmail.com>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        "A. Vladimirov" <vladimirov.atanas@gmail.com>
+References: <20210128233929.GA39660@bjorn-Precision-5520>
+From:   Sinan Kaya <okaya@kernel.org>
+Message-ID: <6bfe3128-4f4d-6447-ab91-1bc54a02e16f@kernel.org>
+Date:   Thu, 28 Jan 2021 18:51:49 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 29 Jan 2021 00:49:47 +0100
-Reply-To: johnsonwilson389@gmail.com
+In-Reply-To: <20210128233929.GA39660@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On 1/28/2021 6:39 PM, Bjorn Helgaas wrote:
+> AFAICT, this thread petered out with no resolution.
+> 
+> If the bandwidth change notifications are important to somebody,
+> please speak up, preferably with a patch that makes the notifications
+> disabled by default and adds a parameter to enable them (or some other
+> strategy that makes sense).
+> 
+> I think these are potentially useful, so I don't really want to just
+> revert them, but if nobody thinks these are important enough to fix,
+> that's a possibility.
 
-Sir/Madam,
-
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+Hide behind debug or expert option by default? or even mark it as BROKEN
+until someone fixes it?
