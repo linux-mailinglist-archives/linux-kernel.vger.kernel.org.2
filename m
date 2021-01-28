@@ -2,106 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0E230718C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E71307176
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhA1IbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:31:25 -0500
-Received: from mga01.intel.com ([192.55.52.88]:37734 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231665AbhA1I3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229811AbhA1I3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 28 Jan 2021 03:29:54 -0500
-IronPort-SDR: 5OriQUQGZc7M18PzjwlJW9sDFkrlaIC0NTcDBMv93ErkBQlZRrulJEuRJoqqPVvqI+GwpL8c8T
- OFoGIReOgmnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="199029920"
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="199029920"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 00:27:49 -0800
-IronPort-SDR: 5KIutGBVdEdhwcBIZJmBienU2TfniqqJ6ZndXU7wtRG79bNzvox4j9KUuhfE7N/7Boh2IVkazP
- g4kzSZ3HuOcw==
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="430433640"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 00:27:46 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 10:27:43 +0200
-Date:   Thu, 28 Jan 2021 10:27:43 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH 05/12] thunderbolt: pa: Demote non-conformant kernel-doc
- headers
-Message-ID: <20210128082743.GP2542@lahna.fi.intel.com>
-References: <20210127112554.3770172-1-lee.jones@linaro.org>
- <20210127112554.3770172-6-lee.jones@linaro.org>
- <CAHp75VcFSQqDqjKCiCxdWyRpDDeMo4H6ELMHX15JSPfpt7nGHQ@mail.gmail.com>
- <20210127161320.GK4903@dell>
- <20210127170035.GG2542@lahna.fi.intel.com>
- <20210128082330.GC4774@dell>
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59724 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229709AbhA1I3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 03:29:32 -0500
+X-UUID: a9e73fc880d84326a83f29bee8eadb6d-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=xuMAXwo6AmkpKMd7GIWUbcpQOz0B7oib5M57arUVcdY=;
+        b=ODT4aWplJCcUN+8IAk/DRmMTo3FCEb8CmoBGmeHhorpfjRPMe5K8ClwTdqKTvtxDbtHhoVl023FebbqAb6lyTKKMFl6oTiXFQx9BbtE4oonwhwOvGgCKNJW8wfI7Fbof2DMmxncui0Gkcofa8gw4TSrroQBO6bPxdyt9+qOTAJ8=;
+X-UUID: a9e73fc880d84326a83f29bee8eadb6d-20210128
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1238747793; Thu, 28 Jan 2021 16:28:44 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n2.mediatek.inc
+ (172.21.101.140) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
+ 2021 16:28:43 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 16:28:42 +0800
+Message-ID: <1611822522.1947.12.camel@mhfsdcap03>
+Subject: Re: [PATCH v11 7/9] drm/mediatek: enable dither function
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 28 Jan 2021 16:28:42 +0800
+In-Reply-To: <CAJMQK-h1_d1+SpxMC8LGPJK=X9HHoJ_ueFzV2Sq44buCiaXFUA@mail.gmail.com>
+References: <20210128072802.830971-1-hsinyi@chromium.org>
+         <20210128072802.830971-8-hsinyi@chromium.org>
+         <1611819766.16091.4.camel@mtksdaap41> <1611820770.1947.8.camel@mhfsdcap03>
+         <1611821233.18369.4.camel@mtksdaap41> <1611821396.1947.10.camel@mhfsdcap03>
+         <CAJMQK-h1_d1+SpxMC8LGPJK=X9HHoJ_ueFzV2Sq44buCiaXFUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128082330.GC4774@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 08:23:30AM +0000, Lee Jones wrote:
-> On Wed, 27 Jan 2021, Mika Westerberg wrote:
-> 
-> > On Wed, Jan 27, 2021 at 04:13:20PM +0000, Lee Jones wrote:
-> > > On Wed, 27 Jan 2021, Andy Shevchenko wrote:
-> > > 
-> > > > On Wednesday, January 27, 2021, Lee Jones <lee.jones@linaro.org> wrote:
-> > > > 
-> > > > > Fixes the following W=1 kernel build warning(s):
-> > > > >
-> > > > >  drivers/thunderbolt/path.c:476: warning: Function parameter or member
-> > > > > 'path' not described in 'tb_path_activate'
-> > > > >  drivers/thunderbolt/path.c:568: warning: Function parameter or member
-> > > > > 'path' not described in 'tb_path_is_invalid'
-> > > > >
-> > > > >
-> > > > I think the intention was to describe them in kernel doc format, perhaps
-> > > > you need to add descriptions of the fields?
-> > > 
-> > > For changes like this, I've been working to the following rule:
-> > > 
-> > >  - I'll provide fix-ups; if and only if the author has had a
-> > >  reasonable attempt at providing a conformant kernel-doc header.
-> > > 
-> > > So if the headers are just suffering from a little doc-rot i.e. the
-> > > API has changed, but the doc update was omitted, or most of the
-> > > parameters/members are documented, but some were forgotten about etc,
-> > > or if there are formatting issues, I'll happily take up the slack and
-> > > polish those up a bit.
-> > > 
-> > > However, if no attempt was made, then they get demoted.
-> > > 
-> > > I don't want to get into a situation where authors delicately provide
-> > > weak documentation with the expectation that someone else will come
-> > > along and turn them into conformant docs.
-> > > 
-> > > If authors wish to come back, provide proper descriptions &
-> > > formatting and subsequently re-promote them again, then all power to
-> > > them.
-> > 
-> > Thanks for pointing these out. I prefer we fix the kernel-docs (add what
-> > is missing) instead. I'll take care of that.
-> 
-> Are you planning on actually using this?
+T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE2OjE4ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
+IE9uIFRodSwgSmFuIDI4LCAyMDIxIGF0IDQ6MTAgUE0gWW9uZ3FpYW5nIE5pdQ0KPiA8eW9uZ3Fp
+YW5nLm5pdUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gVGh1LCAyMDIxLTAxLTI4
+IGF0IDE2OjA3ICswODAwLCBDSyBIdSB3cm90ZToNCj4gPiA+IE9uIFRodSwgMjAyMS0wMS0yOCBh
+dCAxNTo1OSArMDgwMCwgWW9uZ3FpYW5nIE5pdSB3cm90ZToNCj4gPiA+ID4gT24gVGh1LCAyMDIx
+LTAxLTI4IGF0IDE1OjQyICswODAwLCBDSyBIdSB3cm90ZToNCj4gPiA+ID4gPiBIaSwgSHNpbi1Z
+aToNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IE9uIFRodSwgMjAyMS0wMS0yOCBhdCAxNToyOCArMDgw
+MCwgSHNpbi1ZaSBXYW5nIHdyb3RlOg0KPiA+ID4gPiA+ID4gRnJvbTogWW9uZ3FpYW5nIE5pdSA8
+eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gZm9y
+IDUgb3IgNiBicGMgcGFuZWwsIHdlIG5lZWQgZW5hYmxlIGRpdGhlciBmdW5jdGlvbg0KPiA+ID4g
+PiA+ID4gdG8gaW1wcm92ZSB0aGUgZGlzcGxheSBxdWFsaXR5DQo+ID4gPiA+ID4gPg0KPiA+ID4g
+PiA+ID4gU2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRl
+ay5jb20+DQo+ID4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBj
+aHJvbWl1bS5vcmc+DQo+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ICBkcml2ZXJzL2dwdS9k
+cm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jIHwgNDQgKysrKysrKysrKysrKysrKysrKyst
+DQo+ID4gPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDQzIGluc2VydGlvbnMoKyksIDEgZGVsZXRp
+b24oLSkNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
+ZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
+ay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gPiA+ID4gPiA+IGluZGV4IDgxNzNmNzA5MjcyYmUuLmU4
+NTYyNTcwNGQ2MTEgMTAwNjQ0DQo+ID4gPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVk
+aWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2dwdS9k
+cm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiA+ID4gPiBAQCAtNTMsNyArNTMs
+OSBAQA0KPiA+ID4gPiA+ID4gICNkZWZpbmUgRElUSEVSX0VOICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgQklUKDApDQo+ID4gPiA+ID4gPiAgI2RlZmluZSBESVNQX0RJVEhFUl9DRkcgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAyMA0KPiA+ID4gPiA+ID4gICNkZWZpbmUg
+RElUSEVSX1JFTEFZX01PREUgICAgICAgICAgICAgICAgICAgICAgQklUKDApDQo+ID4gPiA+ID4g
+PiArI2RlZmluZSBESVRIRVJfRU5HSU5FX0VOICAgICAgICAgICAgICAgICAgICAgICBCSVQoMSkN
+Cj4gPiA+ID4gPiA+ICAjZGVmaW5lIERJU1BfRElUSEVSX1NJWkUgICAgICAgICAgICAgICAgICAg
+ICAgIDB4MDAzMA0KPiA+ID4gPiA+ID4gKyNkZWZpbmUgRElUSEVSX1JFRyhpZHgpICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoMHgxMDAgKyAoaWR4KSAqIDQpDQo+ID4gPiA+ID4gPg0K
+PiA+ID4gPiA+ID4gICNkZWZpbmUgTFVUXzEwQklUX01BU0sgICAgICAgICAgICAgICAgICAgICAg
+ICAgMHgwM2ZmDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gQEAgLTMxMyw4ICszMTUsNDggQEAg
+c3RhdGljIHZvaWQgbXRrX2RpdGhlcl9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25l
+ZCBpbnQgdywNCj4gPiA+ID4gPiA+ICB7DQo+ID4gPiA+ID4gPiAgICAgICAgIHN0cnVjdCBtdGtf
+ZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gPiA+ID4gPg0K
+PiA+ID4gPiA+ID4gKyAgICAgICBib29sIGVuYWJsZSA9IGZhbHNlOw0KPiA+ID4gPiA+ID4gKw0K
+PiA+ID4gPiA+ID4gKyAgICAgICAvKiBkZWZhdWx0IHZhbHVlIGZvciBkaXRoZXIgcmVnIDUgdG8g
+MTQgKi8NCj4gPiA+ID4gPiA+ICsgICAgICAgY29uc3QgdTMyIGRpdGhlcl9zZXR0aW5nW10gPSB7
+DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgMHgwMDAwMDAwMCwgLyogNSAqLw0KPiA+ID4g
+PiA+ID4gKyAgICAgICAgICAgICAgIDB4MDAwMDMwMDIsIC8qIDYgKi8NCj4gPiA+ID4gPiA+ICsg
+ICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiA3ICovDQo+ID4gPiA+ID4gPiArICAgICAgICAg
+ICAgICAgMHgwMDAwMDAwMCwgLyogOCAqLw0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIDB4
+MDAwMDAwMDAsIC8qIDkgKi8NCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAw
+LCAvKiAxMCAqLw0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIDB4MDAwMDAwMDAsIC8qIDEx
+ICovDQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgMHgwMDAwMDAxMSwgLyogMTIgKi8NCj4g
+PiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiAxMyAqLw0KPiA+ID4gPiA+
+ID4gKyAgICAgICAgICAgICAgIDB4MDAwMDAwMDAsIC8qIDE0ICovDQo+ID4gPiA+ID4NCj4gPiA+
+ID4gPiBDb3VsZCB5b3UgZXhwbGFpbiB3aGF0IGlzIHRoaXM/DQo+ID4gPiA+DQo+ID4gPiA+IHRo
+aXMgaXMgZGl0aGVyIDUgdG8gZGl0aGVyIDE0IHNldHRpbmcNCj4gPiA+ID4gdGhpcyB3aWxsIGJl
+IHVzZWxlc3MsIHdlIGp1c3QgbmVlZCBzZXQgZGl0aGVyIDUgYW5kIGRpdGhlciA3IGxpa2UNCj4g
+PiA+ID4gbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgMCwgY29tcCwgRElTUF9ESVRIRVJfNSk7DQo+
+ID4gPiA+IG10a19kZHBfd3JpdGUoY21kcV9wa3QsIDAsIGNvbXAsIERJU1BfRElUSEVSXzcpOw0K
+PiA+ID4gPiBvdGhlciB2YWx1ZSBpcyBzYW1lIHdpdGggaGFyZHdhcmUgZGVmYXVsdCB2YWx1ZS4N
+Cj4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gKyAgICAgICB9Ow0KPiA+
+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gKyAgICAgICBpZiAoYnBjID09IDUgfHwgYnBjID09IDYp
+IHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICBlbmFibGUgPSB0cnVlOw0KPiA+ID4gPiA+
+ID4gKyAgICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsDQo+ID4gPiA+ID4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfTFNCX0VSUl9TSElGVF9SKE1US19N
+QVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBESVRIRVJfQUREX0xTSElGVF9SKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ID4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfTkVXX0JJVF9NT0RFLA0KPiA+ID4g
+PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2
+LT5yZWdzLCBESVRIRVJfUkVHKDE1KSk7DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgbXRr
+X2RkcF93cml0ZShjbWRxX3BrdCwNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIERJVEhFUl9MU0JfRVJSX1NISUZUX0IoTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+
+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX0Io
+TVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIERJVEhFUl9MU0JfRVJSX1NISUZUX0coTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+
+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX0co
+TVRLX01BWF9CUEMgLSBicGMpLA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gVGhpcyByZXN1bHQgaW4g
+MHg1MDUwNTA1MCwgYnV0IHByZXZpb3VzIHZlcnNpb24gaXMgMHg1MDUwNDA0MCwgc28gdGhpcw0K
+PiA+ID4gPiA+IHZlcnNpb24gaXMgY29ycmVjdCBhbmQgcHJldmlvdXMgdmVyc2lvbiBpcyBpbmNv
+cnJlY3Q/DQo+ID4gPiA+DQo+ID4gPiA+IHRoZSBuZXcgdmVyc2lvbiBzZXQgciBnIGIgMyBjaGFu
+bmVsIHNhbWUsIHNlYW1zIG1vcmUgcmVhc29uYWJsZQ0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4N
+Cj4gPiA+IFNvIGFsbCB0aGUgc2V0dGluZyBvZiBESVNQX0RJVEhFUl81LCBESVNQX0RJVEhFUl83
+LCBESVNQX0RJVEhFUl8xNSwNCj4gPiA+IERJU1BfRElUSEVSXzE2IGlzIGlkZW50aWNhbCB0byBt
+dGtfZGl0aGVyX3NldCgpLCBzbyBjYWxsDQo+ID4gPiBtdGtfZGl0aGVyX3NldCgpIGluc3RlYWQg
+b2YgZHVwbGljYXRpb24gaGVyZS4NCj4gPiA+DQo+ID4NCj4gPiBkaXRoZXIgZW5hYmxlIHNldCBp
+biBtdGtfZGl0aGVyX3NldCBpcw0KPiA+IG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJU1BfRElU
+SEVSSU5HLCBjb21wLCBDRkcpOw0KPiA+DQo+ID4gdGhhdCBpcyBkaWZmZXJlbnQgODE4MyBhbmQg
+bXQ4MTkyLg0KPiA+IG10ODE3MyBkaXRoZXIgZW5hYmxlIGluIGdhbW1hIGlzIGJpdDINCj4gPiBt
+dDgxODMgYW5kIG10ODE5MiBkaXRoZXIgZW5naW5lIGVuYWJsZSBpcyBiaXQgMQ0KPiA+DQo+ID4N
+Cj4gDQo+IFdlIGNhbiBzdGlsbCBjYWxsIG10a19kaXRoZXJfc2V0KCkgZm9yIGJwYyBpcyA1IG9y
+IDYgaGVyZSwgdGhvdWdoIGl0DQo+IHdpbGwgYmUgc2V0IHRvIGJpdDIsDQo+IGJ1dCBsYXRlciBp
+biBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBlbmFibGUgPyBESVRIRVJfRU5HSU5FX0VOIDoNCj4g
+RElUSEVSX1JFTEFZX01PREUsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9ESVRI
+RVJfQ0ZHKTsgaXQNCj4gd2lsbCBiZSBjb3JyZWN0IGJhY2sgdG8gYml0IDEuDQo+IA0KPiBJcyB0
+aGlzIHJlYXNvbmFibGU/DQoNCnRoZSByZXN1bHQgaXMgb2suDQo+IA0KPiA+ID4gUmVnYXJkcywN
+Cj4gPiA+IENLDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBSZWdhcmRzLA0KPiA+ID4gPiA+IENLDQo+
+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZwcml2
+LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElUSEVSX1JFRygxNikpOw0KPiA+ID4gPiA+ID4gKyAg
+ICAgICB9DQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiArICAgICAg
+IGlmIChlbmFibGUpIHsNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICB1MzIgaWR4Ow0KPiA+
+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIGZvciAoaWR4ID0gMDsgaWR4
+IDwgQVJSQVlfU0laRShkaXRoZXJfc2V0dGluZyk7IGlkeCsrKQ0KPiA+ID4gPiA+ID4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgZGl0aGVyX3NldHRpbmdb
+aWR4XSwgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLA0KPiA+ID4gPiA+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfUkVHKGlkeCArIDUpKTsNCj4gPiA+
+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ID4gICAgICAgICBtdGtf
+ZGRwX3dyaXRlKGNtZHFfcGt0LCBoIDw8IDE2IHwgdywgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5y
+ZWdzLCBESVNQX0RJVEhFUl9TSVpFKTsNCj4gPiA+ID4gPiA+IC0gICAgICAgbXRrX2RkcF93cml0
+ZShjbWRxX3BrdCwgRElUSEVSX1JFTEFZX01PREUsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVn
+cywgRElTUF9ESVRIRVJfQ0ZHKTsNCj4gPiA+ID4gPiA+ICsgICAgICAgIG10a19kZHBfd3JpdGUo
+Y21kcV9wa3QsIGVuYWJsZSA/IERJVEhFUl9FTkdJTkVfRU4gOiBESVRIRVJfUkVMQVlfTU9ERSwg
+JnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl9DRkcpOw0KPiA+ID4gPiA+
+ID4gIH0NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAgc3RhdGljIHZvaWQgbXRrX2RpdGhlcl9z
+dGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4gPg0K
+PiA+ID4gPg0KPiA+ID4NCj4gPiA+DQo+ID4NCg0K
 
-Yes, eventually :)
-
-> I don't see a Doc link for these functions in Mainline:
-> 
->   `git grep kernel-doc:: | grep thunderbolt`
-
-There is not one now but I would like to have the kernel-docs at least
-in correct format so we can add the link later.
