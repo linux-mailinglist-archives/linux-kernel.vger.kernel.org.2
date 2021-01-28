@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEBD307E7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E83307EB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 20:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhA1Sy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:54:26 -0500
-Received: from mga12.intel.com ([192.55.52.136]:5650 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232596AbhA1SwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:52:17 -0500
-IronPort-SDR: JEPUnOtOPZVwglaFeN9jY1RTw/TrIjKbQYejRklWPeEBCvnrUaUCMsX9dQv9V4woMf57hbvYtp
- GbOZngsE4Y2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="159464520"
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="159464520"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 10:50:05 -0800
-IronPort-SDR: ZDYtK5zINq59RqmmhpdHKlSKybeGQ3sXCDCl261ndYRPxzt4QmZBKhMF0yTaDPwKM+6SXmMvHH
- HRWX6yLZlO8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,383,1602572400"; 
-   d="scan'208";a="357541050"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga006.jf.intel.com with SMTP; 28 Jan 2021 10:50:03 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 28 Jan 2021 20:50:02 +0200
-Date:   Thu, 28 Jan 2021 20:50:02 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Steve French <smfrench@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: regression in drm_blank.c?
-Message-ID: <YBMHWg9Bx0UEthe3@intel.com>
-References: <CAH2r5mu+yZv2W26dhqE2mL1JZfTuK+=8hgLZTv6TVYLwmF8aqA@mail.gmail.com>
+        id S232298AbhA1Stu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:49:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34057 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232285AbhA1SqO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:46:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611859487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=09rgXsilTnae6yAI2+7X50tmB4yjigjLFKTbsUMux9E=;
+        b=bvYmjmb1DmlKtjx6Prm5RVb3Wl3u7ivb/AOOOnIaRVJvcb0Amn9kdSHxYzBgWMrLyeaktg
+        0iV/4svvQjBLaYcVMkSL41fXbAUvt3UunRcB9Ly9/M/6kxPMFYf0E+sBM3buKxadZpoiTB
+        vvto6lbSvpefzFi6YZzqm8QPoITyEMw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-CUuh-d1UNh2BVbeJQyxPzQ-1; Thu, 28 Jan 2021 13:44:45 -0500
+X-MC-Unique: CUuh-d1UNh2BVbeJQyxPzQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E71408144E2;
+        Thu, 28 Jan 2021 18:44:42 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B06D36085D;
+        Thu, 28 Jan 2021 18:44:42 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id E45104178900; Thu, 28 Jan 2021 15:44:20 -0300 (-03)
+Message-ID: <20210128184346.748987586@fuller.cnet>
+User-Agent: quilt/0.66
+Date:   Thu, 28 Jan 2021 15:40:49 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [patch 1/3] nohz: only wakeup a single target cpu when kicking a task
+References: <20210128184048.287626221@fuller.cnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH2r5mu+yZv2W26dhqE2mL1JZfTuK+=8hgLZTv6TVYLwmF8aqA@mail.gmail.com>
-X-Patchwork-Hint: comment
+Content-Type: text/plain; charset=UTF-8
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:12:50AM -0600, Steve French wrote:
-> For the last month my logs have been flooded many times a second with:
-> 
-> "nouveau 0000:01:00.0: [drm] *ERROR* crtc 50: Can't calculate
-> constants, dotclock = 0!"
+When adding a tick dependency to a task, its necessary to
+wakeup the CPU where the task resides to reevaluate tick
+dependencies on that CPU.
 
-Would indicate someone has a bogus adjusted_mode in their state struct.
-Assuming this is one of those atomic nouveaus of course. No idea what
-goes on with any of the older(?) stuff.
+However the current code wakes up all nohz_full CPUs, which 
+is unnecessary.
 
-Sadly it's an error and not a WARN so we don't get a backtrace to
-see who is calling it.
+Switch to waking up a single CPU, by using ordering of writes
+to task->cpu and task->tick_dep_mask.
 
-The only related changes around the atomic helpers I remember were
-commit 441959ebc905 ("drm/atomic-helper: Remove the timestamping constant update from drm_atomic_helper_update_legacy_modeset_state()")
-commit 4b31a9c77bf8 ("drm/atomic-helper: Extract drm_atomic_helper_calc_timestamping_constants()")
-but those should be a nop for nouveau.
+From: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-So no idea really. I'd suggest changing it to a WARN to see where it's
-coming from and then adding more debugs to figure out why the mode
-is garbage.
+Index: linux-2.6/kernel/time/tick-sched.c
+===================================================================
+--- linux-2.6.orig/kernel/time/tick-sched.c
++++ linux-2.6/kernel/time/tick-sched.c
+@@ -322,6 +322,31 @@ void tick_nohz_full_kick_cpu(int cpu)
+ 	irq_work_queue_on(&per_cpu(nohz_full_kick_work, cpu), cpu);
+ }
+ 
++static void tick_nohz_kick_task(struct task_struct *tsk)
++{
++	int cpu = task_cpu(tsk);
++
++	/*
++	 * If the task concurrently migrates to another cpu,
++	 * we guarantee it sees the new tick dependency upon
++	 * schedule.
++	 *
++	 *
++	 * set_task_cpu(p, cpu);
++	 *   STORE p->cpu = @cpu
++	 * __schedule() (switch to task 'p')
++	 *   LOCK rq->lock
++	 *   smp_mb__after_spin_lock()          STORE p->tick_dep_mask
++	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
++	 *      LOAD p->tick_dep_mask           LOAD p->cpu
++	 */
++
++	preempt_disable();
++	if (cpu_online(cpu))
++		tick_nohz_full_kick_cpu(cpu);
++	preempt_enable();
++}
++
+ /*
+  * Kick all full dynticks CPUs in order to force these to re-evaluate
+  * their dependency on the tick and restart it if necessary.
+@@ -404,19 +429,8 @@ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_cp
+  */
+ void tick_nohz_dep_set_task(struct task_struct *tsk, enum tick_dep_bits bit)
+ {
+-	if (!atomic_fetch_or(BIT(bit), &tsk->tick_dep_mask)) {
+-		if (tsk == current) {
+-			preempt_disable();
+-			tick_nohz_full_kick();
+-			preempt_enable();
+-		} else {
+-			/*
+-			 * Some future tick_nohz_full_kick_task()
+-			 * should optimize this.
+-			 */
+-			tick_nohz_full_kick_all();
+-		}
+-	}
++	if (!atomic_fetch_or(BIT(bit), &tsk->tick_dep_mask))
++		tick_nohz_kick_task(tsk);
+ }
+ EXPORT_SYMBOL_GPL(tick_nohz_dep_set_task);
+ 
 
-> 
-> (see line 641 of drm_vblank.c) which is distracting for debugging all
-> other kernel problems (since dmesg entries on this system are 99+%
-> this message).
-> 
-> Am running current kernel ie 5.11-rc5 (although it also was very very
-> noisty in 5.10), Ubuntu mainline kernel builds, Lenovo P52 Thinkpad
-> laptop.  Could it be due to one of the more recent changes to
-> drivers/gpu/drm/drm_vblank.c?
-> 
-> Ideas how to workaround this?
-> 
-> -- 
-> Thanks,
-> 
-> Steve
 
--- 
-Ville Syrjälä
-Intel
