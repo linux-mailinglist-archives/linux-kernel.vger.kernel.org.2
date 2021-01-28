@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E07E306B3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EF3306B40
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhA1Cul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 21:50:41 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:9011 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhA1Cuk (ORCPT
+        id S231143AbhA1Cuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 21:50:51 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12037 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhA1Cuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 21:50:40 -0500
-IronPort-SDR: 2sNbPidodBN2gNdDYfObTCZnXuaOBe6XCpOihijVU/rwrUmQI6sheUlzAiiTANg/bA4HhnaU+m
- UaZkW7b+fQfPgsOXF3kol5bJoAqLtfjee2bi/27DYCWuVqIElC49mzTmaMaYOFCER+baecIQ6L
- 9yJRBImIuoi2HCjS+LMZn6ZcVYSxpQ+0HcivhiMB/iTQY0zw5cwqLxd6Se1pbxxV1AzSQEzIyI
- KIO8Iocx35OlY9wnWbR/05mhwpwB6GRHM30PW90nS0TCceg911kom+sbccOM2dpfN7Pfwhndc/
- XL8=
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="47715404"
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by labrats.qualcomm.com with ESMTP; 27 Jan 2021 18:50:00 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg02-sd.qualcomm.com with ESMTP; 27 Jan 2021 18:49:59 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 9BA38219A2; Wed, 27 Jan 2021 18:49:59 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        bjorn.andersson@linaro.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] scsi: ufs: Give clk scaling min gear a value
-Date:   Wed, 27 Jan 2021 18:49:27 -0800
-Message-Id: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 27 Jan 2021 21:50:50 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DR4fV0jsKzMR49;
+        Thu, 28 Jan 2021 10:48:34 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 28 Jan
+ 2021 10:50:05 +0800
+Subject: Re: [f2fs-dev] [PATCH v3 1/5] f2fs: compress: add compress_inode to
+ cache compressed blocks
+From:   Chao Yu <yuchao0@huawei.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <X/0DxG+AcX54730W@google.com>
+ <160f2cf9-73ca-18cd-6ad0-2498821b8db6@huawei.com>
+ <X/4kYf11oyoMY8P+@google.com>
+ <abc09f9f-561d-df8a-b835-6b5d7a15232c@huawei.com>
+ <X/8UtJU9Dy30kC7I@google.com>
+ <37ba41db-2589-e155-c416-d0c8832026cb@huawei.com>
+ <X//DPI10+ZXvHkYH@google.com>
+ <8e88b1e2-0176-9487-b925-9c7a31a7e5cd@huawei.com>
+ <YAGt0i244dWXym4H@google.com>
+ <20a1dbd3-808e-e62a-53f3-7f1e2a316b3c@kernel.org>
+ <YAdSTzYF8Hvxdcqy@google.com>
+ <068da0d3-18c9-53f7-0f24-63b07e1af272@huawei.com>
+Message-ID: <9b982458-57e1-a04d-c5d4-f5ca775af1e7@huawei.com>
+Date:   Thu, 28 Jan 2021 10:50:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <068da0d3-18c9-53f7-0f24-63b07e1af272@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The initialization of clk_scaling.min_gear was removed by mistake. This
-change adds it back, otherwise clock scaling down would fail.
+On 2021/1/22 10:17, Chao Yu wrote:
+>> No, it seems this is not the case.
+> Oops, could you please help to remove all below codes and do the test again
+> to check whether they are the buggy codes? as I doubt there is use-after-free
+> bug.
 
-Fixes: 4543d9d78227 ("scsi: ufs: Refactor ufshcd_init/exit_clk_scaling/gating()")
+Any test result? :)
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 36bcbb3..8ef6796 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1602,6 +1602,9 @@ static void ufshcd_init_clk_scaling(struct ufs_hba *hba)
- 	if (!ufshcd_is_clkscaling_supported(hba))
- 		return;
- 
-+	if (!hba->clk_scaling.min_gear)
-+		hba->clk_scaling.min_gear = UFS_HS_G1;
-+
- 	INIT_WORK(&hba->clk_scaling.suspend_work,
- 		  ufshcd_clk_scaling_suspend_work);
- 	INIT_WORK(&hba->clk_scaling.resume_work,
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Thanks,
