@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C878130741D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8123307415
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhA1KuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:50:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32486 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231266AbhA1KuN (ORCPT
+        id S231415AbhA1Ktr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhA1Ktm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:50:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611830922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=G4xP0TbwxS9wJ8k/dclQcOGAebS4EKugZ0baeO2h2DA=;
-        b=F/XNMmOLkldWnb76qQM5b845hcq2duoNADLgBFQEhGSrxrsIri2EyB5U/oEHixyO98fJJm
-        ywMuK1egZMlmczkkoXp7kDVqrYlcIQjSMVNxVKdC6fuex4E0W1N5oSB5M2ZzBpHdL6tJtV
-        OkHZpXlLTIscbwwae78HLZ+ZUQg7zG0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-JbzL2-39NKWyF2aNsQz8zw-1; Thu, 28 Jan 2021 05:48:40 -0500
-X-MC-Unique: JbzL2-39NKWyF2aNsQz8zw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09808107ACE6;
-        Thu, 28 Jan 2021 10:48:39 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D33A060C13;
-        Thu, 28 Jan 2021 10:48:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net] rxrpc: Fix memory leak in rxrpc_lookup_local
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Takeshi Misawa <jeliantsurux@gmail.com>,
-        syzbot+305326672fed51b205f7@syzkaller.appspotmail.com,
-        dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 28 Jan 2021 10:48:36 +0000
-Message-ID: <161183091692.3506637.3206605651502458810.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 28 Jan 2021 05:49:42 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F660C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:49:02 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id j2so2378251pgl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v8tY7xOSVL8TKmu23l5iwSWLMDTVdZzvIWOkVTMFGtE=;
+        b=GOVFFIZleKeu/u0ClRM2qZBnFQcwtfJ8rA2iqIzKh4pprvawvMHg+/qykqmwoO4Qv6
+         wx5VoD8JLCNalnmcuv46OFtu0o96/BWOseUB+v/QBLExW4R3c2nq2iA1VA2xUTYZbu5r
+         Rd6vqPsDA6dhwCO3+h4J4lGF7AkGQ4jl3FGuvCNyniC6VwNLOWVtUcJ2X/OLD6RHs9g2
+         mzkLcdThwlY++oad1iemBQy65e0FdneukoyiNpD7I6+9tC7m0Bn2pfwtZ7j5A41pNufT
+         xzw9TUQVwy5Qdz6My0hZ6zqsN1wz2VUNLJTJN/2l+9yX2gJRBUTmvdiJ2m37syVS/mC6
+         HNaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v8tY7xOSVL8TKmu23l5iwSWLMDTVdZzvIWOkVTMFGtE=;
+        b=VACxXMw0oBruJBWgQGUSt2/IC3bKVKjVb4t7jorrq45caVMENJzcAS+/nDIQZ6X4Ma
+         vG8hNoR4nXrC2Jr7J5stpWEclZTwie5vcjouWiNGO6btQikljkfpIH4etLzZJzf3BWRM
+         cWmo+nG2XifGmEK9W1ILH4n/LY8vm/+QgMgia23IcH4ADg/nOmXSJqrT6HABYfywO2ht
+         XLGZDor8PqoSdj+Nnhzxaoe8WoY5FIFg5uF0gl2RNnQS8Cq6gKZYX1zm3kSmetbRPKfr
+         Dhz38K4DkKE6/wiPeAityrfovp/afjPo2PxZu+xrftDf+X2sYF8DSQ+RZOq/+7xMoW+0
+         COEw==
+X-Gm-Message-State: AOAM53045L6LiZ+XTG4SSCU7dUeUrQ4ur5GBqiYFzmDWfzo8Q/X0NxHb
+        QDkX4kQwdVGAqQ12TmoWvLS/BA==
+X-Google-Smtp-Source: ABdhPJwa+ZzBlBpHuDnGeZby0eouiQdqpT0URVUu78gQU8t16ZFZ3MV/GorfSzD1iZ9T/VN5tnBVxQ==
+X-Received: by 2002:a63:1a48:: with SMTP id a8mr16032597pgm.257.1611830942070;
+        Thu, 28 Jan 2021 02:49:02 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id a30sm5378756pfh.66.2021.01.28.02.49.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Jan 2021 02:49:01 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH V3 0/2] cpufreq: cppc: Add support for frequency invariance
+Date:   Thu, 28 Jan 2021 16:18:54 +0530
+Message-Id: <cover.1611829953.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takeshi Misawa <jeliantsurux@gmail.com>
+Hello,
 
-Commit 9ebeddef58c4 ("rxrpc: rxrpc_peer needs to hold a ref on the rxrpc_local record")
-Then release ref in __rxrpc_put_peer and rxrpc_put_peer_locked.
+CPPC cpufreq driver is used for ARM servers and this patch series tries
+to provide counter-based frequency invariance support for them in the
+absence for architecture specific counters (like AMUs).
 
-	struct rxrpc_peer *rxrpc_alloc_peer(struct rxrpc_local *local, gfp_t gfp)
-	-               peer->local = local;
-	+               peer->local = rxrpc_get_local(local);
+This is tested with some hacks, as I didn't have access to the right
+hardware, on the ARM64 hikey board to check the overall functionality
+and that works fine.
 
-rxrpc_discard_prealloc also need ref release in discarding.
+Vincent/Ionela, it would be nice if you guys can give this a shot on
+some real hardware where counters work.
 
-syzbot report:
-BUG: memory leak
-unreferenced object 0xffff8881080ddc00 (size 256):
-  comm "syz-executor339", pid 8462, jiffies 4294942238 (age 12.350s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 0a 00 00 00 00 c0 00 08 81 88 ff ff  ................
-  backtrace:
-    [<000000002b6e495f>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000002b6e495f>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000002b6e495f>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
-    [<000000002b6e495f>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
-    [<000000006b43a77b>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
-    [<00000000fd447a55>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
-    [<000000007fd8867c>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
-    [<0000000063d80ec1>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
-    [<00000000073c5efa>] setup_net+0xde/0x2d0 net/core/net_namespace.c:342
-    [<00000000a6744d5b>] copy_net_ns+0x19f/0x3e0 net/core/net_namespace.c:483
-    [<0000000017d3aec3>] create_new_namespaces+0x199/0x4f0 kernel/nsproxy.c:110
-    [<00000000186271ef>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:226
-    [<000000002de7bac4>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2957
-    [<00000000349b12ba>] __do_sys_unshare kernel/fork.c:3025 [inline]
-    [<00000000349b12ba>] __se_sys_unshare kernel/fork.c:3023 [inline]
-    [<00000000349b12ba>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3023
-    [<000000006d178ef7>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000637076d4>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This is based of pm/linux-next (need some stuff from the arm64 tree).
+These patches should get merged via the arm64 tree only for the same
+reason.
 
-Fixes: 9ebeddef58c4 ("rxrpc: rxrpc_peer needs to hold a ref on the rxrpc_local record")
-Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Reported-and-tested-by: syzbot+305326672fed51b205f7@syzkaller.appspotmail.com
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+Changes since V2:
+- Not sending as an RFC anymore.
+- Several renames, reordering of code in 1/2 based on Ionela's comments.
+- Several rebase changes for 2/2.
+- The freq_scale calculations are optimized a bit.
+- Better overall commenting and commit logs.
 
- net/rxrpc/call_accept.c |    1 +
- 1 file changed, 1 insertion(+)
+Changes since V1:
+- The interface for setting the callbacks is improved, so different
+  parts looking to provide their callbacks don't need to think about
+  each other.
 
-diff --git a/net/rxrpc/call_accept.c b/net/rxrpc/call_accept.c
-index 382add72c66f..1ae90fb97936 100644
---- a/net/rxrpc/call_accept.c
-+++ b/net/rxrpc/call_accept.c
-@@ -197,6 +197,7 @@ void rxrpc_discard_prealloc(struct rxrpc_sock *rx)
- 	tail = b->peer_backlog_tail;
- 	while (CIRC_CNT(head, tail, size) > 0) {
- 		struct rxrpc_peer *peer = b->peer_backlog[tail];
-+		rxrpc_put_local(peer->local);
- 		kfree(peer);
- 		tail = (tail + 1) & (size - 1);
- 	}
+- Moved to per-cpu storage for storing the callback related data, AMU
+  counters have higher priority with this.
 
+--
+viresh
+
+Viresh Kumar (2):
+  topology: Allow multiple entities to provide sched_freq_tick()
+    callback
+  cpufreq: cppc: Add support for frequency invariance
+
+ arch/arm64/include/asm/topology.h |  10 +-
+ arch/arm64/kernel/topology.c      |  89 +++++++--------
+ drivers/base/arch_topology.c      |  56 +++++++++-
+ drivers/cpufreq/cppc_cpufreq.c    | 179 ++++++++++++++++++++++++++++--
+ include/linux/arch_topology.h     |  15 ++-
+ kernel/sched/core.c               |   1 +
+ 6 files changed, 274 insertions(+), 76 deletions(-)
+
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
