@@ -2,119 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584B7307F18
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D26A6307F22
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhA1UDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:03:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhA1UAk (ORCPT
+        id S231230AbhA1UF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:05:59 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:59830 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231294AbhA1UCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:00:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4ABAC06178C;
-        Thu, 28 Jan 2021 11:54:38 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611863676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=9HND6RS6xGWx9b14oroKV6AbAvA8WEnG8PXrA56Lq8E=;
-        b=gq/vEEpOy9fi9IRRJvQyC71duAyLnuKadJHMd2ViK2/u5Hf1E+eucj8facYi2x5JFg57eM
-        Q1BmcVCPFLwex7pbSXJ2p/r0Vg9Iu6jUE8UeGuknXhmcKSHnV2yU6klZK7d5nFMdtavsvs
-        yKPWL70MhV3HzSzNlrP5zSTe2P7oK+oGk5GBevv/9SYM7xMdohVoThzrs7draaGjiYNjFG
-        seQZU3qPNAhj5RUaZy6SbTYtbz9MAz+VNcAFF0ilbjJeVnR2Gu4mwrK2DU93Qksan16FVN
-        6knFrA3Z1bAhLSY1nbiTdd7hEToSFGe/I3KGRjwOP0v+9qLKpVlJhRxAK/iB+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611863676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=9HND6RS6xGWx9b14oroKV6AbAvA8WEnG8PXrA56Lq8E=;
-        b=2Gzs4L2Mw/ok6mCuOvcd9UUGEordfF5v8yL5hsE44duh1naltMArJW0vF01Y8+EqC/OJBY
-        NjpiYgRXJNiPq8AA==
-To:     Barry Song <song.bao.hua@hisilicon.com>, dmitry.torokhov@gmail.com,
-        maz@kernel.org, gregkh@linuxfoundation.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linuxarm@openeuler.org, Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH v3 01/12] genirq: add IRQF_NO_AUTOEN for request_irq
-In-Reply-To: <20210107223926.35284-2-song.bao.hua@hisilicon.com>
-Date:   Thu, 28 Jan 2021 20:54:36 +0100
-Message-ID: <87k0rwdegz.fsf@nanos.tec.linutronix.de>
+        Thu, 28 Jan 2021 15:02:34 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l5DUC-009GeF-Mv; Thu, 28 Jan 2021 13:01:48 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l5DUB-00Cis1-GO; Thu, 28 Jan 2021 13:01:48 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, tyhicks@linux.microsoft.com,
+        pmladek@suse.com, keescook@chromium.org, anton@enomsg.org,
+        ccross@android.com, tony.luck@intel.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210126204125.313820-1-pasha.tatashin@soleen.com>
+        <20210126204125.313820-2-pasha.tatashin@soleen.com>
+Date:   Thu, 28 Jan 2021 14:00:28 -0600
+In-Reply-To: <20210126204125.313820-2-pasha.tatashin@soleen.com> (Pavel
+        Tatashin's message of "Tue, 26 Jan 2021 15:41:25 -0500")
+Message-ID: <87lfcczvab.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
+X-XM-SPF: eid=1l5DUB-00Cis1-GO;;;mid=<87lfcczvab.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX194r404La2QKiPvYCt3+fRZW3Di1W4x6TY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_XM_PhishingBody,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01,XMSubLong,XM_B_Phish66 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Pavel Tatashin <pasha.tatashin@soleen.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 608 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 10 (1.7%), b_tie_ro: 9 (1.5%), parse: 1.28 (0.2%),
+         extract_message_metadata: 29 (4.8%), get_uri_detail_list: 2.6 (0.4%),
+        tests_pri_-1000: 26 (4.3%), tests_pri_-950: 1.66 (0.3%),
+        tests_pri_-900: 1.35 (0.2%), tests_pri_-90: 63 (10.4%), check_bayes:
+        61 (10.0%), b_tokenize: 8 (1.3%), b_tok_get_all: 8 (1.3%),
+        b_comp_prob: 2.0 (0.3%), b_tok_touch_all: 40 (6.5%), b_finish: 0.92
+        (0.2%), tests_pri_0: 447 (73.4%), check_dkim_signature: 0.58 (0.1%),
+        check_dkim_adsp: 6 (0.9%), poll_dns_idle: 3.7 (0.6%), tests_pri_10:
+        3.6 (0.6%), tests_pri_500: 20 (3.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 1/1] kexec: dump kmessage before machine_kexec
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Barry,
+Pavel Tatashin <pasha.tatashin@soleen.com> writes:
 
-On Fri, Jan 08 2021 at 11:39, Barry Song wrote:
-> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-> index ab8567f32501..2b28314e2572 100644
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -1693,6 +1693,9 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
->  			irqd_set(&desc->irq_data, IRQD_NO_BALANCING);
->  		}
+> kmsg_dump(KMSG_DUMP_SHUTDOWN) is called before
+> machine_restart(), machine_halt(), machine_power_off(), the only one that
+> is missing is  machine_kexec().
+>
+> The dmesg output that it contains can be used to study the shutdown
+> performance of both kernel and systemd during kexec reboot.
+>
+> Here is example of dmesg data collected after kexec:
+
+As long was we keep kmsg_dump out of the crash_kexec path where
+it completely breaks kexec on panic this seems a reasonable thing to do.
+On the ordinary kernel_kexec path everything is expected to be working.
+
+Is kmsg_dump expected to work after all of the device drivers
+are shut down?  Otherwise this placement of kmsg_dump is too late.
+
+Eric
+
+> root@dplat-cp22:~# cat /sys/fs/pstore/dmesg-ramoops-0 | tail
+> ...
+> <6>[   70.914592] psci: CPU3 killed (polled 0 ms)
+> <5>[   70.915705] CPU4: shutdown
+> <6>[   70.916643] psci: CPU4 killed (polled 4 ms)
+> <5>[   70.917715] CPU5: shutdown
+> <6>[   70.918725] psci: CPU5 killed (polled 0 ms)
+> <5>[   70.919704] CPU6: shutdown
+> <6>[   70.920726] psci: CPU6 killed (polled 4 ms)
+> <5>[   70.921642] CPU7: shutdown
+> <6>[   70.922650] psci: CPU7 killed (polled 0 ms)
+>
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
+> ---
+>  kernel/kexec_core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+> index 4f8efc278aa7..e253c8b59145 100644
+> --- a/kernel/kexec_core.c
+> +++ b/kernel/kexec_core.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/compiler.h>
+>  #include <linux/hugetlb.h>
+>  #include <linux/objtool.h>
+> +#include <linux/kmsg_dump.h>
 >  
-> +		if (new->flags & IRQF_NO_AUTOEN)
-> +			irq_settings_set_noautoen(desc);
-
-If we move this to request time flags, then setting the noautoen bit on
-the irq descriptor is pretty pointless. See below.
-
-I rather get rid of the irq_settings magic for NOAUTOEN completely.
-
-Thanks,
-
-        tglx
----
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -61,6 +61,8 @@
-  *                interrupt handler after suspending interrupts. For system
-  *                wakeup devices users need to implement wakeup detection in
-  *                their interrupt handlers.
-+ * IRQF_NO_AUTOEN - Don't enable IRQ automatically when users request it. Users
-+ *                will enable it explicitly by enable_irq() later.
-  */
- #define IRQF_SHARED		0x00000080
- #define IRQF_PROBE_SHARED	0x00000100
-@@ -74,6 +76,7 @@
- #define IRQF_NO_THREAD		0x00010000
- #define IRQF_EARLY_RESUME	0x00020000
- #define IRQF_COND_SUSPEND	0x00040000
-+#define IRQF_NO_AUTOEN		0x00080000
- 
- #define IRQF_TIMER		(__IRQF_TIMER | IRQF_NO_SUSPEND | IRQF_NO_THREAD)
- 
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1693,7 +1693,8 @@ static int
- 			irqd_set(&desc->irq_data, IRQD_NO_BALANCING);
- 		}
- 
--		if (irq_settings_can_autoenable(desc)) {
-+		if (!(new->flags & IRQF_NO_AUTOEN) &&
-+		    irq_settings_can_autoenable(desc)) {
- 			irq_startup(desc, IRQ_RESEND, IRQ_START_COND);
- 		} else {
- 			/*
-@@ -2086,10 +2087,15 @@ int request_threaded_irq(unsigned int ir
- 	 * which interrupt is which (messes up the interrupt freeing
- 	 * logic etc).
- 	 *
-+	 * Also shared interrupts do not go well with disabling auto enable.
-+	 * The sharing interrupt might request it while it's still disabled
-+	 * and then wait for interrupts forever.
-+	 *
- 	 * Also IRQF_COND_SUSPEND only makes sense for shared interrupts and
- 	 * it cannot be set along with IRQF_NO_SUSPEND.
- 	 */
- 	if (((irqflags & IRQF_SHARED) && !dev_id) ||
-+	    ((irqflags & IRQF_SHARED) && (irqflags & IRQF_NO_AUTOEN)) ||
- 	    (!(irqflags & IRQF_SHARED) && (irqflags & IRQF_COND_SUSPEND)) ||
- 	    ((irqflags & IRQF_NO_SUSPEND) && (irqflags & IRQF_COND_SUSPEND)))
- 		return -EINVAL;
-
+>  #include <asm/page.h>
+>  #include <asm/sections.h>
+> @@ -1180,6 +1181,7 @@ int kernel_kexec(void)
+>  		machine_shutdown();
+>  	}
+>  
+> +	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+>  	machine_kexec(kexec_image);
+>  
+>  #ifdef CONFIG_KEXEC_JUMP
