@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024653070C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887EE3070C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhA1IKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:10:46 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:55038 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhA1IJm (ORCPT
+        id S231833AbhA1IL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:11:28 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:46378 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229652AbhA1IKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:09:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611821358; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/o88EhhP0c4dq6yUyZ8eKopV10aGp5VPu/c4f/R2ei8=;
- b=u3kUXs89sUKHRIlOC+6exM+7LSRGEKO8SVtx9nHS7pSHIjfhKlbq/0eig3M2selVNC8jtfpd
- RDTpNFJMh0ag+gNePU0yf2sayDpoJ55SoptCnrCWSjLs7MfY3Jzr2gy4EwdSjJtutWR8IhFR
- O0Y4pVkTj7Xwokn8CIXUAUeD+qs=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6012710fe32560064279c7a2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 08:08:47
- GMT
-Sender: youghand=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C921BC43462; Thu, 28 Jan 2021 08:08:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: youghand)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1F1EBC433CA;
-        Thu, 28 Jan 2021 08:08:46 +0000 (UTC)
+        Thu, 28 Jan 2021 03:10:46 -0500
+X-UUID: c59e218c88054f03b15ebad6fd6f3928-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=3avhCwfwHncHem81Q76+RbeX5Zom5hg2AKdmxBBvpRI=;
+        b=I7FXhgSs9DXCVcT6lyLI4GxsAlOt/F1GssHQWojcFhi7ngp2wb+8NIrtjq3njP6Q3/P++wePLz+mUOBh6xOi3Tui7SDmpBwvqPaR+Xg1Xy0lgf7ycRsJxVmA9Zl9YdZmndMfe5LaFuaLJSuVMhSWv7zT29vYLx5F3jH+enhdw0I=;
+X-UUID: c59e218c88054f03b15ebad6fd6f3928-20210128
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 783501041; Thu, 28 Jan 2021 16:09:59 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n1.mediatek.inc
+ (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
+ 2021 16:09:58 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 16:09:57 +0800
+Message-ID: <1611821396.1947.10.camel@mhfsdcap03>
+Subject: Re: [PATCH v11 7/9] drm/mediatek: enable dither function
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 28 Jan 2021 16:09:56 +0800
+In-Reply-To: <1611821233.18369.4.camel@mtksdaap41>
+References: <20210128072802.830971-1-hsinyi@chromium.org>
+         <20210128072802.830971-8-hsinyi@chromium.org>
+         <1611819766.16091.4.camel@mtksdaap41> <1611820770.1947.8.camel@mhfsdcap03>
+         <1611821233.18369.4.camel@mtksdaap41>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 28 Jan 2021 13:38:46 +0530
-From:   youghand@codeaurora.org
-To:     Felix Fietkau <nbd@nbd.name>
-Cc:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
-        dianders@chromium.org, briannorris@chromium.org,
-        pillair@codeaurora.org
-Subject: Re: [PATCH 2/3] mac80211: Add support to trigger sta disconnect on
- hardware restart
-In-Reply-To: <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
-References: <20201215172352.5311-1-youghand@codeaurora.org>
- <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
-Message-ID: <ba0e6a3b783722c22715ae21953b1036@codeaurora.org>
-X-Sender: youghand@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-15 23:10, Felix Fietkau wrote:
-> On 2020-12-15 18:23, Youghandhar Chintala wrote:
->> Currently in case of target hardware restart, we just reconfig and
->> re-enable the security keys and enable the network queues to start
->> data traffic back from where it was interrupted.
->> 
->> Many ath10k wifi chipsets have sequence numbers for the data
->> packets assigned by firmware and the mac sequence number will
->> restart from zero after target hardware restart leading to mismatch
->> in the sequence number expected by the remote peer vs the sequence
->> number of the frame sent by the target firmware.
->> 
->> This mismatch in sequence number will cause out-of-order packets
->> on the remote peer and all the frames sent by the device are dropped
->> until we reach the sequence number which was sent before we restarted
->> the target hardware
->> 
->> In order to fix this, we trigger a sta disconnect, for the targets
->> which expose this corresponding wiphy flag, in case of target hw
->> restart. After this there will be a fresh connection and thereby
->> avoiding the dropping of frames by remote peer.
->> 
->> The right fix would be to pull the entire data path into the host
->> which is not feasible or would need lots of complex changes and
->> will still be inefficient.
-> How about simply tracking which tids have aggregation enabled and send
-> DELBA frames for those after the restart?
-> It would mean less disruption for affected stations and less ugly hacks
-> in the stack for unreliable hardware.
-> 
-> - Felix
+T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE2OjA3ICswODAwLCBDSyBIdSB3cm90ZToNCj4gT24gVGh1
+LCAyMDIxLTAxLTI4IGF0IDE1OjU5ICswODAwLCBZb25ncWlhbmcgTml1IHdyb3RlOg0KPiA+IE9u
+IFRodSwgMjAyMS0wMS0yOCBhdCAxNTo0MiArMDgwMCwgQ0sgSHUgd3JvdGU6DQo+ID4gPiBIaSwg
+SHNpbi1ZaToNCj4gPiA+IA0KPiA+ID4gT24gVGh1LCAyMDIxLTAxLTI4IGF0IDE1OjI4ICswODAw
+LCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+ID4gPiA+IEZyb206IFlvbmdxaWFuZyBOaXUgPHlvbmdx
+aWFuZy5uaXVAbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiANCj4gPiA+ID4gZm9yIDUgb3IgNiBicGMg
+cGFuZWwsIHdlIG5lZWQgZW5hYmxlIGRpdGhlciBmdW5jdGlvbg0KPiA+ID4gPiB0byBpbXByb3Zl
+IHRoZSBkaXNwbGF5IHF1YWxpdHkNCj4gPiA+ID4gDQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFlv
+bmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiBTaWduZWQt
+b2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+ID4gPiA+IC0tLQ0K
+PiA+ID4gPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyB8IDQ0
+ICsrKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDQzIGluc2Vy
+dGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiA+ID4gDQo+ID4gPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jIGIvZHJpdmVycy9ncHUv
+ZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYw0KPiA+ID4gPiBpbmRleCA4MTczZjcwOTI3
+MmJlLi5lODU2MjU3MDRkNjExIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2Ry
+bS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gPiA+ID4gQEAgLTUzLDcgKzUzLDkgQEAN
+Cj4gPiA+ID4gICNkZWZpbmUgRElUSEVSX0VOCQkJCUJJVCgwKQ0KPiA+ID4gPiAgI2RlZmluZSBE
+SVNQX0RJVEhFUl9DRkcJCQkJMHgwMDIwDQo+ID4gPiA+ICAjZGVmaW5lIERJVEhFUl9SRUxBWV9N
+T0RFCQkJQklUKDApDQo+ID4gPiA+ICsjZGVmaW5lIERJVEhFUl9FTkdJTkVfRU4JCQlCSVQoMSkN
+Cj4gPiA+ID4gICNkZWZpbmUgRElTUF9ESVRIRVJfU0laRQkJCTB4MDAzMA0KPiA+ID4gPiArI2Rl
+ZmluZSBESVRIRVJfUkVHKGlkeCkJCQkJKDB4MTAwICsgKGlkeCkgKiA0KQ0KPiA+ID4gPiAgDQo+
+ID4gPiA+ICAjZGVmaW5lIExVVF8xMEJJVF9NQVNLCQkJCTB4MDNmZg0KPiA+ID4gPiAgDQo+ID4g
+PiA+IEBAIC0zMTMsOCArMzE1LDQ4IEBAIHN0YXRpYyB2b2lkIG10a19kaXRoZXJfY29uZmlnKHN0
+cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IHcsDQo+ID4gPiA+ICB7DQo+ID4gPiA+ICAJ
+c3RydWN0IG10a19kZHBfY29tcF9kZXYgKnByaXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4g
+PiA+ID4gIA0KPiA+ID4gPiArCWJvb2wgZW5hYmxlID0gZmFsc2U7DQo+ID4gPiA+ICsNCj4gPiA+
+ID4gKwkvKiBkZWZhdWx0IHZhbHVlIGZvciBkaXRoZXIgcmVnIDUgdG8gMTQgKi8NCj4gPiA+ID4g
+Kwljb25zdCB1MzIgZGl0aGVyX3NldHRpbmdbXSA9IHsNCj4gPiA+ID4gKwkJMHgwMDAwMDAwMCwg
+LyogNSAqLw0KPiA+ID4gPiArCQkweDAwMDAzMDAyLCAvKiA2ICovDQo+ID4gPiA+ICsJCTB4MDAw
+MDAwMDAsIC8qIDcgKi8NCj4gPiA+ID4gKwkJMHgwMDAwMDAwMCwgLyogOCAqLw0KPiA+ID4gPiAr
+CQkweDAwMDAwMDAwLCAvKiA5ICovDQo+ID4gPiA+ICsJCTB4MDAwMDAwMDAsIC8qIDEwICovDQo+
+ID4gPiA+ICsJCTB4MDAwMDAwMDAsIC8qIDExICovDQo+ID4gPiA+ICsJCTB4MDAwMDAwMTEsIC8q
+IDEyICovDQo+ID4gPiA+ICsJCTB4MDAwMDAwMDAsIC8qIDEzICovDQo+ID4gPiA+ICsJCTB4MDAw
+MDAwMDAsIC8qIDE0ICovDQo+ID4gPiANCj4gPiA+IENvdWxkIHlvdSBleHBsYWluIHdoYXQgaXMg
+dGhpcz8NCj4gPiANCj4gPiB0aGlzIGlzIGRpdGhlciA1IHRvIGRpdGhlciAxNCBzZXR0aW5nDQo+
+ID4gdGhpcyB3aWxsIGJlIHVzZWxlc3MsIHdlIGp1c3QgbmVlZCBzZXQgZGl0aGVyIDUgYW5kIGRp
+dGhlciA3IGxpa2UgDQo+ID4gbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgMCwgY29tcCwgRElTUF9E
+SVRIRVJfNSk7DQo+ID4gbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgMCwgY29tcCwgRElTUF9ESVRI
+RVJfNyk7DQo+ID4gb3RoZXIgdmFsdWUgaXMgc2FtZSB3aXRoIGhhcmR3YXJlIGRlZmF1bHQgdmFs
+dWUuDQo+ID4gDQo+ID4gDQo+ID4gPiANCj4gPiA+ID4gKwl9Ow0KPiA+ID4gPiArDQo+ID4gPiA+
+ICsJaWYgKGJwYyA9PSA1IHx8IGJwYyA9PSA2KSB7DQo+ID4gPiA+ICsJCWVuYWJsZSA9IHRydWU7
+DQo+ID4gPiA+ICsJCW10a19kZHBfd3JpdGUoY21kcV9wa3QsDQo+ID4gPiA+ICsJCQkgICAgICBE
+SVRIRVJfTFNCX0VSUl9TSElGVF9SKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ICsJCQkg
+ICAgICBESVRIRVJfQUREX0xTSElGVF9SKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ICsJ
+CQkgICAgICBESVRIRVJfTkVXX0JJVF9NT0RFLA0KPiA+ID4gPiArCQkJICAgICAgJnByaXYtPmNt
+ZHFfcmVnLCBwcml2LT5yZWdzLCBESVRIRVJfUkVHKDE1KSk7DQo+ID4gPiA+ICsJCW10a19kZHBf
+d3JpdGUoY21kcV9wa3QsDQo+ID4gPiA+ICsJCQkgICAgICBESVRIRVJfTFNCX0VSUl9TSElGVF9C
+KE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ICsJCQkgICAgICBESVRIRVJfQUREX0xTSElG
+VF9CKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ICsJCQkgICAgICBESVRIRVJfTFNCX0VS
+Ul9TSElGVF9HKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ICsJCQkgICAgICBESVRIRVJf
+QUREX0xTSElGVF9HKE1US19NQVhfQlBDIC0gYnBjKSwNCj4gPiA+IA0KPiA+ID4gVGhpcyByZXN1
+bHQgaW4gMHg1MDUwNTA1MCwgYnV0IHByZXZpb3VzIHZlcnNpb24gaXMgMHg1MDUwNDA0MCwgc28g
+dGhpcw0KPiA+ID4gdmVyc2lvbiBpcyBjb3JyZWN0IGFuZCBwcmV2aW91cyB2ZXJzaW9uIGlzIGlu
+Y29ycmVjdD8NCj4gPiANCj4gPiB0aGUgbmV3IHZlcnNpb24gc2V0IHIgZyBiIDMgY2hhbm5lbCBz
+YW1lLCBzZWFtcyBtb3JlIHJlYXNvbmFibGUNCj4gPiANCj4gPiANCj4gDQo+IFNvIGFsbCB0aGUg
+c2V0dGluZyBvZiBESVNQX0RJVEhFUl81LCBESVNQX0RJVEhFUl83LCBESVNQX0RJVEhFUl8xNSwN
+Cj4gRElTUF9ESVRIRVJfMTYgaXMgaWRlbnRpY2FsIHRvIG10a19kaXRoZXJfc2V0KCksIHNvIGNh
+bGwNCj4gbXRrX2RpdGhlcl9zZXQoKSBpbnN0ZWFkIG9mIGR1cGxpY2F0aW9uIGhlcmUuDQo+IA0K
+DQpkaXRoZXIgZW5hYmxlIHNldCBpbiBtdGtfZGl0aGVyX3NldCBpcw0KbXRrX2RkcF93cml0ZShj
+bWRxX3BrdCwgRElTUF9ESVRIRVJJTkcsIGNvbXAsIENGRyk7DQoNCnRoYXQgaXMgZGlmZmVyZW50
+IDgxODMgYW5kIG10ODE5Mi4NCm10ODE3MyBkaXRoZXIgZW5hYmxlIGluIGdhbW1hIGlzIGJpdDIN
+Cm10ODE4MyBhbmQgbXQ4MTkyIGRpdGhlciBlbmdpbmUgZW5hYmxlIGlzIGJpdCAxDQoNCg0KPiBS
+ZWdhcmRzLA0KPiBDSw0KPiA+ID4gDQo+ID4gPiBSZWdhcmRzLA0KPiA+ID4gQ0sNCj4gPiA+IA0K
+PiA+ID4gPiArCQkJICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVRIRVJfUkVH
+KDE2KSk7DQo+ID4gPiA+ICsJfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICsNCj4gPiA+ID4gKwlpZiAo
+ZW5hYmxlKSB7DQo+ID4gPiA+ICsJCXUzMiBpZHg7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwkJZm9y
+IChpZHggPSAwOyBpZHggPCBBUlJBWV9TSVpFKGRpdGhlcl9zZXR0aW5nKTsgaWR4KyspDQo+ID4g
+PiA+ICsJCQltdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBkaXRoZXJfc2V0dGluZ1tpZHhdLCAmcHJp
+di0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsDQo+ID4gPiA+ICsJCQkJICAgICAgRElUSEVSX1JFRyhp
+ZHggKyA1KSk7DQo+ID4gPiA+ICsJfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICAJbXRrX2RkcF93cml0
+ZShjbWRxX3BrdCwgaCA8PCAxNiB8IHcsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElT
+UF9ESVRIRVJfU0laRSk7DQo+ID4gPiA+IC0JbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgRElUSEVS
+X1JFTEFZX01PREUsICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9ESVRIRVJfQ0ZH
+KTsNCj4gPiA+ID4gKyAgICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgZW5hYmxlID8gRElU
+SEVSX0VOR0lORV9FTiA6IERJVEhFUl9SRUxBWV9NT0RFLCAmcHJpdi0+Y21kcV9yZWcsIHByaXYt
+PnJlZ3MsIERJU1BfRElUSEVSX0NGRyk7DQo+ID4gPiA+ICB9DQo+ID4gPiA+ICANCj4gPiA+ID4g
+IHN0YXRpYyB2b2lkIG10a19kaXRoZXJfc3RhcnQoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ID4g
+DQo+ID4gPiANCj4gPiANCj4gPiANCj4gDQo+IA0KDQo=
 
-Hi Felix,
-
-We did try to send an ADDBA frame to the AP once the SSR happened. The 
-AP ack’ed the frame and the new BA session with renewed sequence number 
-was established. But still, the AP did not respond to the ping requests 
-with the new sequence number. It did not respond until one of the two 
-happened.
-1.	The sequence number was more than the sequence number that DUT had 
-used before SSR happened
-2.	DUT disconnected and then reconnected.
-The other option is to send a DELBA frame to the AP and make the AP also 
-force to establish the BA session from its side. This we feel can have 
-some interoperability issues as some of the AP’s may not honour the 
-DELBA frame and will continue to use the earlier BA session that it had 
-established. Given that re-negotiating the BA session is prone to IOT 
-issues, we feel that it would be good to go with the 
-Disconnect/Reconnect solution which is foolproof and will work in all 
-scenarios.
-
-Regards,
-Youghandhar
