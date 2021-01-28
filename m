@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A691307228
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 986CD30720C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhA1Izj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:55:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24484 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232272AbhA1Ip3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:45:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611823391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hvtYOjdDfkZyk+lFGoUR0j8cdav/9WreRA8ZjtvAe/E=;
-        b=aq11F+aKjJmltl/6mE+VbDfzDj0YYzA+eJOjBDpZMx5gy/9/aLBRg2h+c96/b26AZB8K23
-        CAxDRw9WnW33CQbTSBi0M1d1ZeulxCYyxq5kGWtGMnJu7Vg1/tXJCoqgdklB28SWCvcFZ9
-        sw7HyTkd0w8ASTOWTkOSXoKoxuPKkeg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-JIRGo9ysORKU_tPEtVoxkw-1; Thu, 28 Jan 2021 03:43:09 -0500
-X-MC-Unique: JIRGo9ysORKU_tPEtVoxkw-1
-Received: by mail-ej1-f69.google.com with SMTP id z2so1869621ejf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:43:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hvtYOjdDfkZyk+lFGoUR0j8cdav/9WreRA8ZjtvAe/E=;
-        b=AFiwvVhzmtcYh2lpyFqI4eSyx1KtP50VeZwvTDsHmbzKrBv9ZcaYSnoi5i/uXOJw1p
-         i7zh48sQNCJyBP6ZLpm0MBv1xoBUqs7/e+WWNnP9GU9XKs3ctwL+73aJ0VkrxGjBFYyl
-         vinSGVCaxwP7NX18phj8VOzEhNdtkjc04ujDfqw7QIuJiRaLMtBX40Dw54tAhAQcs1Wx
-         m9UQhqvFTS/wwHfKA+08GJhOpdSjzF0DXuOKQdgxVUkID2jQLu1xBGQXxR/MMlBZ/rLn
-         UZu+9T3QUl0BKBhsahRjYDKq4Aydl+Dqe4O8o6sP8S/spCTNB3BM6yCzQHskdL7ATxHl
-         0xDQ==
-X-Gm-Message-State: AOAM532Y+aaNy2IgGW7AVc4dDC6F528hLgpsRlzi2qJPpna67zoamelA
-        Z3IQGgpm9CWo6ogbI1MmyZQl0e7uBnfsPTjCD9WeWE8DGgfIDHbglPBsac0W0i+rswtTLNlfHnI
-        0LzXwpNuY6nYTTRrRHTKok+Ja
-X-Received: by 2002:a17:906:d781:: with SMTP id pj1mr9602417ejb.329.1611823388326;
-        Thu, 28 Jan 2021 00:43:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz1a78u8FKvTZXcVbcIA+2MiZd1VLUiatKlWwSCjuWctKG+Uxffs2RgHxBspXvhfk93fwJVgg==
-X-Received: by 2002:a17:906:d781:: with SMTP id pj1mr9602401ejb.329.1611823388180;
-        Thu, 28 Jan 2021 00:43:08 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id qk1sm1931282ejb.86.2021.01.28.00.43.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 00:43:07 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86: fix CPUID entries returned by KVM_GET_CPUID2
- ioctl
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Roth <michael.roth@amd.com.com>
-References: <20210128024451.1816770-1-michael.roth@amd.com>
- <87a6st31c6.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <304bd6db-4c67-a4bd-3b79-74c0474edefa@redhat.com>
-Date:   Thu, 28 Jan 2021 09:43:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232333AbhA1Iv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:51:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231433AbhA1Itx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 03:49:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE0664DBD;
+        Thu, 28 Jan 2021 08:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611823450;
+        bh=+rgbJKufy26IHZu23xm+S6i1LOemte3QUajMr6KqkX8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NKjBgvzoxwUeYfuVdsae2f4pSsudS2RzYlOG2GwZDxFdNqrQci7EspyenbiEdJTAl
+         8+sjOAlak3fxb31H992DwFPIVzWrHDF6UI4bOOmt/53IV/takh96anpHF2jSVlCYpz
+         v4yiIGFqZFKsfVCpQT/5Z0Z+Y007uYt+791ztFBtUK4D+EMgult6jpa2DnLnGhGf0B
+         1uvRi7tKQCNhII8ojEV3OD4JWft7hCFXSc9m1V8ewS3Epr2WCooWC2rIybHuHYgmSk
+         1OQjALtGG6kR9JEC6WtwR+fLICJuqUYQISgwBHJXZPtYQhJhEsfHUusaAMhmr4BTeH
+         3V6KZRM4R/N5A==
+Date:   Thu, 28 Jan 2021 09:44:05 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v5 10/20] dt-bindings: i2c: mv64xxx: Add H616 compatible
+ string
+Message-ID: <20210128084405.GA963@ninjato>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-11-andre.przywara@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <87a6st31c6.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
+Content-Disposition: inline
+In-Reply-To: <20210127172500.13356-11-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/21 09:36, Vitaly Kuznetsov wrote:
-> This is embarrassing but I have a (possible) excuse: copy_to_user's
-> argument is 'void *' so no warning was produced. Surprisingly, no test
-> caught the breakage. Thanks for debugging and fixing!
 
-So who writes the test:
+--BXVAT5kNtrzKuDFl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- the author of the buggy patch
+On Wed, Jan 27, 2021 at 05:24:50PM +0000, Andre Przywara wrote:
+> Add the obvious compatible name to the existing I2C binding, and pair
+> it with the existing A31 fallback compatible string, as the devices
+> are compatible.
+>=20
+> On the way use enums to group all compatible devices together.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Wolfram Sang <wsa@kernel.org>
 
-- the maintainer who failed to spot it
+Applied to for-next, thanks!
 
-- the poor sod who fixed the issue
 
-?
+--BXVAT5kNtrzKuDFl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-(Just kidding, it will of course be either me or a fourth person :)).
+-----BEGIN PGP SIGNATURE-----
 
-Paolo
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASeVEACgkQFA3kzBSg
+KbYF1w/+MCKCR5WY8DgISyJtBI5LweEOVDKugSqgJOKJzX7kBGj28nw6YeTFmYx0
+wPb5LjgKr45odH3Gq5IGXJFd+zD4UgNNYnIUV6ThymiVZCVOrfD64wES5Kijj0wb
+4WfkcCTVDXwR6Y0FGvwrBR6nix+y55xgWkIeMrfX8+Do31NO/u6Ovoj0+7+xJdbg
+9n0jdAy1ooatJgrNcWJZlAWYyXAk/ziRyFIkGNWKe2Thpa9aGBWRrKLw4lLqSzpZ
+uBq7VMm8SRLAlLVQr819psInJsbIawer9EocIlAPkooaB0hcGig7hv5PCjRexf/f
+7yALoXT6S7SEUhZQPl7Jl748DnVAlS1hEGZUUWb7whnpqL6jYWSvuNbr51igb5C7
+GsIv40s6NbsZnL9uTk0sDWx/MfwZHPJo7ZoItW0WBDEQ72ymJDQzRPqNy+qE2s0y
+2bsea+u459iEtZKoVij8XSNp7kPVi7jTCDw+cDtkRU8UYAgt/6pFX1CwiefNZ9Ce
+0blfjhr5do2/pTvzfKZ26GBOPAIHkIsPYqtOvkWG2a0Fo2EUanIJV0RkOuP3YV8s
+ruXDyAvTuX0uRac4Oy//NNSCYdDLsOr/AZny7Ub9jkRLTDfdQns8YgVzmH6Xr2qh
+ydsfuaCcrUyUml25TOMBc3ta78kCuKjpkJsFrb5adUd+1JuRapg=
+=PojC
+-----END PGP SIGNATURE-----
 
+--BXVAT5kNtrzKuDFl--
