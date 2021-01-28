@@ -2,253 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10F8306C53
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FE9306C57
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhA1Eg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:36:59 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59612 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231195AbhA1Eg5 (ORCPT
+        id S229830AbhA1ElV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:41:21 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:24214 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229545AbhA1ElU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:36:57 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10S4ZlN2023543
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:36:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=SwVCKp0r6gFACJfftCN8eNHYhdZ14H/iWTTsEWW7dR0=;
- b=bL7oHlEy7rAoZgLpc9MSeXObIJYztgo5JVUGXfr1vAORE3aMUhFZvqKDUT+pAhkcMRc2
- 7e48kVu7S6YQust/F8OF1T5CvQb0tAfe0OhGfwl92MVybjs4JAny+U7Fuwlc8stasY/X
- 3xs7W9luHpsYfZ6XJvQdCvIWOv9r0iXFUCM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36adeu4hbd-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:36:17 -0800
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 27 Jan 2021 20:36:14 -0800
-Received: from devvm1945.atn0.facebook.com (localhost [127.0.0.1])
-        by devvm1945.atn0.facebook.com (Postfix) with ESMTP id 17EE1257233B;
-        Wed, 27 Jan 2021 20:36:12 -0800 (PST)
-Received: (from saravanand@localhost)
-        by devvm1945.atn0.facebook.com (8.15.2/8.15.2/Submit) id 10S4a9Uj1561314;
-        Wed, 27 Jan 2021 20:36:09 -0800
-X-Authentication-Warning: devvm1945.atn0.facebook.com: saravanand set sender to saravanand@fb.com using -f
-From:   Saravanan D <saravanand@fb.com>
-To:     <x86@kernel.org>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <corbet@lwn.net>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <linux-doc@vger.kernel.org>, Saravanan D <saravanand@fb.com>
-Subject: [PATCH V4] x86/mm: Tracking linear mapping split events
-Date:   Wed, 27 Jan 2021 20:35:47 -0800
-Message-ID: <20210128043547.1560435-1-saravanand@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <a936a943-9d8f-7e3c-af38-1c99ae176e1f@intel.com>
-References: <a936a943-9d8f-7e3c-af38-1c99ae176e1f@intel.com>
+        Wed, 27 Jan 2021 23:41:20 -0500
+X-UUID: afd8b3a6c81349ff9dd899a845fd7306-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=uGuQXo0nW5O+T24o3iGb5azbkRv5Uvu1w62Cl/E1ZV4=;
+        b=n+xVLo9+Xjv+3ab7ohdxJPB6QeZodUWiwe0QzNnK3xicikxTiplqDBFQFMHT9b3KDrbwJNkSHkNMdRTKUJ05DG9qRXYKFMtcDb1r1n2FqJTa86MmxMFTx+LD7EvY+VsWSO7qy4owUzkjLmoKaDDsTm7k/KaT9D78HhKjvG2STdE=;
+X-UUID: afd8b3a6c81349ff9dd899a845fd7306-20210128
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 483608009; Thu, 28 Jan 2021 12:39:22 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 28 Jan 2021 12:39:13 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 12:39:13 +0800
+Message-ID: <1611808753.19104.2.camel@mtksdaap41>
+Subject: Re: [PATCH v10 4/9] drm/mediatek: generalize mtk_dither_set()
+ function
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Date:   Thu, 28 Jan 2021 12:39:13 +0800
+In-Reply-To: <20210127045422.2418917-5-hsinyi@chromium.org>
+References: <20210127045422.2418917-1-hsinyi@chromium.org>
+         <20210127045422.2418917-5-hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_01:2021-01-27,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280021
-X-FB-Internal: deliver
+X-TM-SNTS-SMTP: 2CBAB08F8393E6009EF02E9C4BAE18DDBE683539EF00AE0CC0DA31C1C09ABFBB2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To help with debugging the sluggishness caused by TLB miss/reload,
-we introduce monotonic lifetime hugepage split event counts since
-system state: SYSTEM_RUNNING to be displayed as part of
-/proc/vmstat in x86 servers
-
-The lifetime split event information will be displayed at the bottom of
-/proc/vmstat
-....
-swap_ra 0
-swap_ra_hit 0
-direct_map_level2_splits 94
-direct_map_level3_splits 4
-nr_unstable 0
-....
-
-One of the many lasting (as we don't coalesce back) sources for huge page
-splits is tracing as the granular page attribute/permission changes would
-force the kernel to split code segments mapped to huge pages to smaller
-ones thereby increasing the probability of TLB miss/reload even after
-tracing has been stopped.
-
-Documentation regarding linear mapping split events added to admin-guide
-as requested in V3 of the patch.
-
-Signed-off-by: Saravanan D <saravanand@fb.com>
----
- .../admin-guide/mm/direct_mapping_splits.rst  | 59 +++++++++++++++++++
- Documentation/admin-guide/mm/index.rst        |  1 +
- arch/x86/mm/pat/set_memory.c                  | 13 ++++
- include/linux/vm_event_item.h                 |  4 ++
- mm/vmstat.c                                   |  4 ++
- 5 files changed, 81 insertions(+)
- create mode 100644 Documentation/admin-guide/mm/direct_mapping_splits.rs=
-t
-
-diff --git a/Documentation/admin-guide/mm/direct_mapping_splits.rst b/Doc=
-umentation/admin-guide/mm/direct_mapping_splits.rst
-new file mode 100644
-index 000000000000..298751391deb
---- /dev/null
-+++ b/Documentation/admin-guide/mm/direct_mapping_splits.rst
-@@ -0,0 +1,59 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+Direct Mapping Splits
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+Kernel maps all of physical memory in linear/direct mapped pages with
-+translation of virtual kernel address to physical address is achieved
-+through a simple subtraction of offset. CPUs maintain a cache of these
-+translations on fast caches called TLBs. CPU architectures like x86 allo=
-w
-+direct mapping large portions of memory into hugepages (2M, 1G, etc) in
-+various page table levels.
-+
-+Maintaining huge direct mapped pages greatly reduces TLB miss pressure.
-+The splintering of huge direct pages into smaller ones does result in
-+a measurable performance hit caused by frequent TLB miss and reloads.
-+
-+One of the many lasting (as we don't coalesce back) sources for huge pag=
-e
-+splits is tracing as the granular page attribute/permission changes woul=
-d
-+force the kernel to split code segments mapped to hugepages to smaller
-+ones thus increasing the probability of TLB miss/reloads even after
-+tracing has been stopped.
-+
-+On x86 systems, we can track the splitting of huge direct mapped pages
-+through lifetime event counters in ``/proc/vmstat``
-+
-+	direct_map_level2_splits xxx
-+	direct_map_level3_splits yyy
-+
-+where:
-+
-+direct_map_level2_splits
-+	are 2M/4M hugepage split events
-+direct_map_level3_splits
-+	are 1G hugepage split events
-+
-+The distribution of direct mapped system memory in various page sizes
-+post splits can be viewed through ``/proc/meminfo`` whose output
-+will include the following lines depending upon supporting CPU
-+architecture
-+
-+	DirectMap4k:    xxxxx kB
-+	DirectMap2M:    yyyyy kB
-+	DirectMap1G:    zzzzz kB
-+
-+where:
-+
-+DirectMap4k
-+	is the total amount of direct mapped memory (in kB)
-+	accessed through 4k pages
-+DirectMap2M
-+	is the total amount of direct mapped memory (in kB)
-+	accessed through 2M pages
-+DirectMap1G
-+	is the total amount of direct mapped memory (in kB)
-+	accessed through 1G pages
-+
-+
-+-- Saravanan D, Jan 27, 2021
-diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin=
--guide/mm/index.rst
-index 4b14d8b50e9e..9439780f3f07 100644
---- a/Documentation/admin-guide/mm/index.rst
-+++ b/Documentation/admin-guide/mm/index.rst
-@@ -38,3 +38,4 @@ the Linux memory management.
-    soft-dirty
-    transhuge
-    userfaultfd
-+   direct_mapping_splits
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index 16f878c26667..767cade53bdc 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -16,6 +16,8 @@
- #include <linux/pci.h>
- #include <linux/vmalloc.h>
- #include <linux/libnvdimm.h>
-+#include <linux/vmstat.h>
-+#include <linux/kernel.h>
-=20
- #include <asm/e820/api.h>
- #include <asm/processor.h>
-@@ -85,12 +87,23 @@ void update_page_count(int level, unsigned long pages=
-)
- 	spin_unlock(&pgd_lock);
- }
-=20
-+void update_split_page_event_count(int level)
-+{
-+	if (system_state =3D=3D SYSTEM_RUNNING) {
-+		if (level =3D=3D PG_LEVEL_2M)
-+			count_vm_event(DIRECT_MAP_LEVEL2_SPLIT);
-+		else if (level =3D=3D PG_LEVEL_1G)
-+			count_vm_event(DIRECT_MAP_LEVEL3_SPLIT);
-+	}
-+}
-+
- static void split_page_count(int level)
- {
- 	if (direct_pages_count[level] =3D=3D 0)
- 		return;
-=20
- 	direct_pages_count[level]--;
-+	update_split_page_event_count(level);
- 	direct_pages_count[level - 1] +=3D PTRS_PER_PTE;
- }
-=20
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.=
-h
-index 18e75974d4e3..7c06c2bdc33b 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -120,6 +120,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOU=
-T,
- #ifdef CONFIG_SWAP
- 		SWAP_RA,
- 		SWAP_RA_HIT,
-+#endif
-+#ifdef CONFIG_X86
-+		DIRECT_MAP_LEVEL2_SPLIT,
-+		DIRECT_MAP_LEVEL3_SPLIT,
- #endif
- 		NR_VM_EVENT_ITEMS
- };
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index f8942160fc95..a43ac4ac98a2 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1350,6 +1350,10 @@ const char * const vmstat_text[] =3D {
- 	"swap_ra",
- 	"swap_ra_hit",
- #endif
-+#ifdef CONFIG_X86
-+	"direct_map_level2_splits",
-+	"direct_map_level3_splits",
-+#endif
- #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
- };
- #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG =
-*/
---=20
-2.24.1
+SGksIEhzaW4tWWk6DQoNCk9uIFdlZCwgMjAyMS0wMS0yNyBhdCAxMjo1NCArMDgwMCwgSHNpbi1Z
+aSBXYW5nIHdyb3RlOg0KPiBUaGVyZSBtYXkgYmUgZGF0YSBzdHJ1Y3R1cmUgb3RoZXIgdGhhbiBt
+dGtfZGRwX2NvbXBfZGV2IHRoYXQgd291bGQgY2FsbA0KPiBtdGtfZGl0aGVyX3NldCgpLCBzbyB1
+c2UgcmVncyBhcyBwYXJhbWV0ZXIgaW5zdGVhZCBvZiBkZXZpY2UuDQoNCllvdSBkb2VzIG5vdCBj
+aGFuZ2UgdGhlIGludGVyZmFjZSBvZiBtdGtfZGl0aGVyX3NldCgpLiBZb3UgbW92ZSB0aGUNCmNv
+bW1vbiBwYXJ0IGluIG10a19kaXRoZXJfc2V0KCkgdG8gYSBuZXcgZnVuY3Rpb24gd2hpY2ggY291
+bGQgYmUgY2FsbGVkDQpieSBhbm90aGVyIGNhbGxlci4NCg0KUmVnYXJkcywNCkNLLg0KDQo+IA0K
+PiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+IC0t
+LQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Rydi5oICAgICB8ICA0ICsr
+KysNCj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMgfCAyNSAr
+KysrKysrKysrKysrLS0tLS0tLS0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgMjAgaW5zZXJ0aW9ucygr
+KSwgOSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVk
+aWF0ZWsvbXRrX2Rpc3BfZHJ2LmggYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bf
+ZHJ2LmgNCj4gaW5kZXggNDZkMTk5YjdiNGEyOS4uYzUwZDVmYzlmZDM0OSAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Rydi5oDQo+ICsrKyBiL2RyaXZl
+cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9kcnYuaA0KPiBAQCAtMTcsNiArMTcsMTAgQEAg
+dm9pZCBtdGtfY29sb3JfY29uZmlnKHN0cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IHcs
+DQo+ICAJCSAgICAgIHVuc2lnbmVkIGludCBicGMsIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9wa3Qp
+Ow0KPiAgdm9pZCBtdGtfY29sb3Jfc3RhcnQoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gIA0KPiAr
+dm9pZCBtdGtfZGl0aGVyX3NldF9jb21tb24odm9pZCBfX2lvbWVtICpyZWdzLCBzdHJ1Y3QgY21k
+cV9jbGllbnRfcmVnICpjbWRxX3JlZywNCj4gKwkJCSAgIHVuc2lnbmVkIGludCBicGMsIHVuc2ln
+bmVkIGludCBDRkcsDQo+ICsJCQkgICBzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0KTsNCj4gKw0K
+PiAgdm9pZCBtdGtfZHBpX3N0YXJ0KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ICB2b2lkIG10a19k
+cGlfc3RvcChzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiAgDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jIGIvZHJpdmVycy9ncHUvZHJtL21l
+ZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYw0KPiBpbmRleCA3YjUyOTM0Mjk0MjZkLi41M2QyNTgy
+M2EzN2NjIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9k
+ZHBfY29tcC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9j
+b21wLmMNCj4gQEAgLTE1MSwzMyArMTUxLDQwIEBAIHN0YXRpYyB2b2lkIG10a19kZHBfY2xrX2Rp
+c2FibGUoc3RydWN0IGRldmljZSAqZGV2KQ0KPiAgCWNsa19kaXNhYmxlX3VucHJlcGFyZShwcml2
+LT5jbGspOw0KPiAgfQ0KPiAgDQo+IC1zdGF0aWMgdm9pZCBtdGtfZGl0aGVyX3NldChzdHJ1Y3Qg
+ZGV2aWNlICpkZXYsIHVuc2lnbmVkIGludCBicGMsDQo+IC0JCSAgICB1bnNpZ25lZCBpbnQgQ0ZH
+LCBzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0KPiAtew0KPiAtCXN0cnVjdCBtdGtfZGRwX2Nv
+bXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICANCj4gK3ZvaWQgbXRrX2Rp
+dGhlcl9zZXRfY29tbW9uKHZvaWQgX19pb21lbSAqcmVncywgc3RydWN0IGNtZHFfY2xpZW50X3Jl
+ZyAqY21kcV9yZWcsDQo+ICsJCQkgICB1bnNpZ25lZCBpbnQgYnBjLCB1bnNpZ25lZCBpbnQgQ0ZH
+LCBzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0KPiArew0KPiAgCS8qIElmIGJwYyBlcXVhbCB0
+byAwLCB0aGUgZGl0aGVyaW5nIGZ1bmN0aW9uIGRpZG4ndCBiZSBlbmFibGVkICovDQo+ICAJaWYg
+KGJwYyA9PSAwKQ0KPiAgCQlyZXR1cm47DQo+ICANCj4gIAlpZiAoYnBjID49IE1US19NSU5fQlBD
+KSB7DQo+IC0JCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIDAsICZwcml2LT5jbWRxX3JlZywgcHJp
+di0+cmVncywgRElTUF9ESVRIRVJfNSk7DQo+IC0JCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIDAs
+ICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9ESVRIRVJfNyk7DQo+ICsJCW10a19k
+ZHBfd3JpdGUoY21kcV9wa3QsIDAsIGNtZHFfcmVnLCByZWdzLCBESVNQX0RJVEhFUl81KTsNCj4g
+KwkJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgMCwgY21kcV9yZWcsIHJlZ3MsIERJU1BfRElUSEVS
+XzcpOw0KPiAgCQltdGtfZGRwX3dyaXRlKGNtZHFfcGt0LA0KPiAgCQkJICAgICAgRElUSEVSX0xT
+Ql9FUlJfU0hJRlRfUihNVEtfTUFYX0JQQyAtIGJwYykgfA0KPiAgCQkJICAgICAgRElUSEVSX0FE
+RF9MU0hJRlRfUihNVEtfTUFYX0JQQyAtIGJwYykgfA0KPiAgCQkJICAgICAgRElUSEVSX05FV19C
+SVRfTU9ERSwNCj4gLQkJCSAgICAgICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9E
+SVRIRVJfMTUpOw0KPiArCQkJICAgICAgY21kcV9yZWcsIHJlZ3MsIERJU1BfRElUSEVSXzE1KTsN
+Cj4gIAkJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwNCj4gIAkJCSAgICAgIERJVEhFUl9MU0JfRVJS
+X1NISUZUX0IoTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gIAkJCSAgICAgIERJVEhFUl9BRERfTFNI
+SUZUX0IoTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gIAkJCSAgICAgIERJVEhFUl9MU0JfRVJSX1NI
+SUZUX0coTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gIAkJCSAgICAgIERJVEhFUl9BRERfTFNISUZU
+X0coTVRLX01BWF9CUEMgLSBicGMpLA0KPiAtCQkJICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2
+LT5yZWdzLCBESVNQX0RJVEhFUl8xNik7DQo+IC0JCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJ
+U1BfRElUSEVSSU5HLCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIENGRyk7DQo+ICsJCQkg
+ICAgICBjbWRxX3JlZywgcmVncywgRElTUF9ESVRIRVJfMTYpOw0KPiArCQltdGtfZGRwX3dyaXRl
+KGNtZHFfcGt0LCBESVNQX0RJVEhFUklORywgY21kcV9yZWcsIHJlZ3MsIENGRyk7DQo+ICAJfQ0K
+PiAgfQ0KPiAgDQo+ICtzdGF0aWMgdm9pZCBtdGtfZGl0aGVyX3NldChzdHJ1Y3QgZGV2aWNlICpk
+ZXYsIHVuc2lnbmVkIGludCBicGMsDQo+ICsJCSAgICB1bnNpZ25lZCBpbnQgQ0ZHLCBzdHJ1Y3Qg
+Y21kcV9wa3QgKmNtZHFfcGt0KQ0KPiArew0KPiArCXN0cnVjdCBtdGtfZGRwX2NvbXBfZGV2ICpw
+cml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsNCj4gKwltdGtfZGl0aGVyX3NldF9jb21t
+b24ocHJpdi0+cmVncywgJnByaXYtPmNtZHFfcmVnLCBicGMsIENGRywgY21kcV9wa3QpOw0KPiAr
+fQ0KPiArDQo+ICBzdGF0aWMgdm9pZCBtdGtfb2RfY29uZmlnKHN0cnVjdCBkZXZpY2UgKmRldiwg
+dW5zaWduZWQgaW50IHcsDQo+ICAJCQkgIHVuc2lnbmVkIGludCBoLCB1bnNpZ25lZCBpbnQgdnJl
+ZnJlc2gsDQo+ICAJCQkgIHVuc2lnbmVkIGludCBicGMsIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9w
+a3QpDQoNCg==
 
