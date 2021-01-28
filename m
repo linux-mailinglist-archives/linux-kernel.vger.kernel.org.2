@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B97306BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FC5306BBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhA1Dfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:35:41 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:29326 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhA1Dfg (ORCPT
+        id S231131AbhA1D62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231262AbhA1DjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:35:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611804918; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=k799vAWQKhIKDzFLTFOrNxO82k2RAuyDNRkNXxXXN5A=;
- b=lOigCKwb4wo951H1cs7oNrpD8r985p0JGIaKfLm5ivrTlzBUSBJQB8wh4FA+sjtCBZbBJ2/Z
- 6B8fVcqODSSZ/lWuwnZ5wp8dp3ZLFW8CJ6Gsju6r3MXzFXyxsn3BLXzgyErDGGDQQbXgCR/A
- +LYpQUsWOzkzOLQV9WN7Bexeb0o=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 601230d7d75e1218e355a531 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 03:34:47
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39673C43462; Thu, 28 Jan 2021 03:34:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 565E7C433CA;
-        Thu, 28 Jan 2021 03:34:45 +0000 (UTC)
+        Wed, 27 Jan 2021 22:39:02 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE91C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:38:21 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id u17so4209821iow.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jr6oZPut6R5xADAqmuwrtlULXRHD5ex1ji/nfSHLdjI=;
+        b=VwegR629zsG5eWgMolbdrVoWKF5kPCL2ZDQZ81vzE4H7W4ea+7lL1d1NEA5CTFJy2e
+         lhByZQy/GPod8TIk7DU2hSBCD74OchArhHoaxO4pIXI04rWcfGDHuQy4aMgXC3IRHtiy
+         S/AbetCzzXy/XMJg5uHlir5dxTgjxFoSsi8C6eMDBFfEPPkjQ5VTR3eU5END04lAgcXy
+         SUNWO/yDDhOcByiHH2T3FTjkXqZRypiab+XbQ5yORXTO7kBeDQqlYkjd4uVH0aNbl40z
+         a3CoCweDW/7S3EgVjIgQLDySV6uufuzaATnOdTgXQvoRmKvXIJGpunFKOgaamYwPb/7U
+         Llmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jr6oZPut6R5xADAqmuwrtlULXRHD5ex1ji/nfSHLdjI=;
+        b=ohmGWlPWAM9U+CApo9Zj1vPXzWSPXeoKeInnPs+KDtMFgtHX0hG3L1skzjLnBoqo4g
+         tj0Hp7pgwnLRXDhzp01laTzwvmwLCX3wAivDePQQ7pttpCwjwQlWTaOfMFy8lJMnhgXF
+         Z17iQPAHzLcRONP/I//RHKvYm/BnRp0iyymuEy6bBNTHI8skAbPH6iPn7GRwmNhAf6aD
+         eABBN4cBdQpIr3LorVo4LAW1mln9xhNuga/nNzrt5GMt5lQ9l8LQn39dLZe6KlOKJjno
+         k1y0JOka7dU6VJgfYs+Sf/bQjgKJw9x7+67RY2ivVsONMqi9dw3AcEgzavu/ugbpq514
+         eQqw==
+X-Gm-Message-State: AOAM532jajt75Bj2H7llksKjT2YcFs8PdSp3LfYNiuV/3HCvcV4U4Y/K
+        DHCGMMYPWvOXFMTbKDxA2MWeKRYZRPUOQr7IOwXO8g==
+X-Google-Smtp-Source: ABdhPJw7IsVFdtYI2WAojkBUPfX6pfS0VhA6v3+fiPYaEPumQIbqvS7kGPBha0bAGSmg93kPegsmbxZc9a845c2LZLU=
+X-Received: by 2002:a02:6a50:: with SMTP id m16mr11376167jaf.129.1611805100433;
+ Wed, 27 Jan 2021 19:38:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Jan 2021 11:34:45 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] scsi: ufs: Give clk scaling min gear a value
-In-Reply-To: <20210128032807.GA5254@yoga>
-References: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
- <20210128032807.GA5254@yoga>
-Message-ID: <8c0d0edebbfaa0fdd47acb6d180fa84d@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210119101044.1637023-1-howardyen@google.com>
+ <af91bbf1-6731-3e87-4086-de0dbba22c22@intel.com> <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
+ <ca442ca7-a434-2527-9945-861dafa685cc@linux.intel.com> <YBAk795ccXBPgJWp@kroah.com>
+In-Reply-To: <YBAk795ccXBPgJWp@kroah.com>
+From:   Howard Yen <howardyen@google.com>
+Date:   Thu, 28 Jan 2021 11:38:09 +0800
+Message-ID: <CAJDAHvZ2CCm9tT+C=hNc_U1CaYJg3ZjifsYLik3UqfXwUm++Lg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] add xhci hooks for USB offload
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28 11:28, Bjorn Andersson wrote:
-> On Wed 27 Jan 20:49 CST 2021, Can Guo wrote:
-> 
->> The initialization of clk_scaling.min_gear was removed by mistake. 
->> This
->> change adds it back, otherwise clock scaling down would fail.
->> 
-> 
-> Thanks for the patch Can, it solves the problem I'm seeing!
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
-> 
-> And perhaps a:
-> 
-> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
+On Tue, Jan 26, 2021 at 10:19 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Jan 22, 2021 at 05:32:58PM +0200, Mathias Nyman wrote:
+> > On 20.1.2021 12.04, Howard Yen wrote:
+> > > On Tue, Jan 19, 2021 at 8:47 PM Mathias Nyman <mathias.nyman@intel.com> wrote:
+> > >>
+> > >> On 19.1.2021 12.10, Howard Yen wrote:
+> > >>> To let the xhci driver support USB offload, add hooks for vendor to have
+> > >>> customized behavior for the initialization, memory allocation, irq work, and
+> > >>> device context synchronization. Detail is in each patch commit message.
+> > >>
+> > >> Is this related to the usb audio sideband capability that was added to the xHCI specification?
+> > >> If yes, then we should probably implement the generic parts first, and then add
+> > >> the vendor specific hooks.
+> > >>
+> > >> -Mathias
+> > >>
+> > >>
+> > >
+> > > This is for offloading, no matter what type of offloading.
+> > > I made the hooks generically and can be used for usb audio on the xhci
+> > > which is not including the usb audio sideband capability.
+> > >
+> >
+> > Ok, before adding hooks like this I think we need to see how they are used.
+> > Do you have the rest of the patches that go on top of this series?
+> >
+> > Maybe it could make sense to use overrides for the functions in struct hc_driver
+> > instead in some cases? There is support for that already.
+>
+> What overrides could be done for these changes?  At first glance that
+> would seem to require a lot of duplicated code in whatever override
+> happens to be needed.
+>
+> thanks,
+>
+> greg k-h
 
-I missed the two lines due to I was not working on the latest
-scsi code tip - I should have tested it based on commit 29b87e92a216
-("scsi: ufs: Stop hardcoding the scale down gear"), my bad.
+This patch series is all the changes for the offload hooks currently.
 
-Anyways, thanks for the test!
+I thought about this, but if I tried to override the functions in
+struct hc_driver, that'll need to
+copy many code to the override function, and it won't follow the
+latest change in the core
+xhci driver.
 
-Regards,
-Can Guo.
 
-> Regards,
-> Bjorn
-> 
->> Fixes: 4543d9d78227 ("scsi: ufs: Refactor 
->> ufshcd_init/exit_clk_scaling/gating()")
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 3 +++
->>  1 file changed, 3 insertions(+)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 36bcbb3..8ef6796 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -1602,6 +1602,9 @@ static void ufshcd_init_clk_scaling(struct 
->> ufs_hba *hba)
->>  	if (!ufshcd_is_clkscaling_supported(hba))
->>  		return;
->> 
->> +	if (!hba->clk_scaling.min_gear)
->> +		hba->clk_scaling.min_gear = UFS_HS_G1;
->> +
->>  	INIT_WORK(&hba->clk_scaling.suspend_work,
->>  		  ufshcd_clk_scaling_suspend_work);
->>  	INIT_WORK(&hba->clk_scaling.resume_work,
->> --
->> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
->> Linux Foundation Collaborative Project.
->> 
+- Howard
