@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE3D30759D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B9E3075A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhA1MLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:11:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51000 "EHLO mail.kernel.org"
+        id S231324AbhA1MNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:13:35 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60572 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229594AbhA1MLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:11:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 717BD64DD8;
-        Thu, 28 Jan 2021 12:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611835864;
-        bh=Du3i/MIjsEBw9r6WpsGYm+IoqI+N+Q9qrB1wqlHYf7Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VELdSdodtS3aOmj1dV3scBaogmg6gV1SNf0v4JpJaRVQKTBBjRfYBLdR+uqoIEZji
-         bACorVj66FWALMBG/RwqP3ZxvD3Qax9W1Qr+dwLdR+duiQdpjIxwrY2URI2eVBO63Z
-         BuWA9F7h/8uscwRNmU8+7etZjQE6n2k6wjIH5mFGP0R1hmgVxHjU2xpQ/wUIrghkT2
-         xoSfLXpu7JsIXdhMxi1qtinzV/SCyXmz8gLZJiTN1caQL8nBH8ZHxNHoadA65zbOIa
-         jIPYNTTBJ0mkEpWiZl4VAO8oY7Yb0+hzGgR4V7OYPpNCTZY4BKR6diX3EeaghxD6yY
-         vLzFXocuEJ1Ag==
-Date:   Thu, 28 Jan 2021 12:10:19 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "angelogioacchino.delregno@somainline.org" 
-        <angelogioacchino.delregno@somainline.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: short-circuit and over-current IRQs
-Message-ID: <20210128121019.GB4537@sirena.org.uk>
-References: <6046836e22b8252983f08d5621c35ececb97820d.camel@fi.rohmeurope.com>
- <20210127122733.GC4387@sirena.org.uk>
- <6d60af3516161bd04332cd60b50aa4becf92e17a.camel@fi.rohmeurope.com>
- <c10cf8d6-f36a-60f4-93cc-807e11a7cec9@somainline.org>
- <20210127163218.GD4387@sirena.org.uk>
- <5bf8b75f3a2f9db5fc200a9418ece5dfa2f91ab5.camel@fi.rohmeurope.com>
+        id S231140AbhA1MNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:13:32 -0500
+IronPort-SDR: KQIsxC6qVn1epKINX0oSYHeNswnC3vLgAQLF++Z0xBUVjxL5TMWSec1TNEBxTmd0yjfD45tp9d
+ el4eFuosvdSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="177659408"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="177659408"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 04:11:46 -0800
+IronPort-SDR: NRqnpaZs94Xm3cujH/NE9gw1GH+XGQjSV20xB4tNWEun0KolGuhZUcsDT4D7p9erKY9u4+5HAD
+ JS9W9saPI1Hw==
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="394393288"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 04:11:43 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l569E-0002OU-0x; Thu, 28 Jan 2021 14:11:40 +0200
+Date:   Thu, 28 Jan 2021 14:11:40 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     david@redhat.com, vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] printk: dump full information of page flags in pGp
+Message-ID: <YBKp/NHanaN4e0im@smile.fi.intel.com>
+References: <20210128021947.22877-1-laoar.shao@gmail.com>
+ <20210128021947.22877-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="St7VIuEGZ6dlpu13"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5bf8b75f3a2f9db5fc200a9418ece5dfa2f91ab5.camel@fi.rohmeurope.com>
-X-Cookie: Do not pick the flowers.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210128021947.22877-4-laoar.shao@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28, 2021 at 10:19:47AM +0800, Yafang Shao wrote:
+> Currently the pGp only shows the names of page flags, rather than
+> the full information including section, node, zone, last cpupid and
+> kasan tag. While it is not easy to parse these information manually
+> because there're so many flavors. Let's interpret them in pGp as well.
+> 
+> - Before the patch,
+> [ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
+> 
+> - After the patch,
+> [ 6315.235783] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(Node 0x0,Zone 0x2,Lastcpupid 0x1fffff,slab|head)
 
---St7VIuEGZ6dlpu13
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> +	int i;
+> +
+> +	for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
 
-On Thu, Jan 28, 2021 at 09:23:08AM +0000, Vaittinen, Matti wrote:
-> On Wed, 2021-01-27 at 16:32 +0000, Mark Brown wrote:
+'buf < end' is redundant.
 
-> > Note that the events the API currently has are expected to be for the
-> > actual error conditions, not for the warning ones - indicating that
-> > the
-> > voltage is out of regulation for example.
+> +		if (pfl[i].width == 0)
+> +			continue;
+> +
+> +		buf = string(buf, end, pfl[i].name, default_str_spec);
 
-> I am unsure how to interpret this. What is the criteria of issue being
-> an error/warning. When I was talking about warning I meant that the
-> issue which is detected is unexpected and abnormal (error?) - but might
-> still be recoverable (warning?). I understand the regulator framework
-> must not signal same events for different purposes - but I don't really
-> know what the current events are used for - I am grateful for any
-> guidance!
+> +		if (buf >= end)
+> +			break;
 
-What the majority of hardware interrupts on is situations where things
-have already gone out of spec and there are actual problems with the
-output - for example with current limiting there's often an actual
-limiter in there so the regulator simply won't supply any more current
-than is configured.  With a warning everything is still working fine but
-getting close to not doing so.
+Can you rather use usual patter, i.e.
 
-> > Well, if these things are kicking in the hardware is in serious
-> > trouble
-> > anyway so it's unclear what the system would be likely to do in
-> > software, and also unclear how safe it is to rely on software to be
-> > able
-> > to take that action given that it let things get into such a bad
-> > state
-> > in the first place.
+	if (buf < end) {
+		...do something...
+	}
+	buf++; // or whatever increase should be done
 
-> Actually, bear with me but I am unsure why we have these notifications
-> if we don't expect SW to be able to do anything? Wouldn't the panic
-> print be all that is needed then? I think that setups which have dual
+Moreover, number() and string() IIRC have the proper checks embedded into them.
 
-You'll notice that there aren't any actual users of this stuff in tree
-at the minute - people don't generally put much effort into software
-recovery as they're not expecting to be anywhere near limiting in normal
-operation.  What I'd expect people to do where they do implement
-handling is something like shutting down all other supplies on the
-device, possibly also trying to shut down the system as a whole.  Things
-more about preventing physical damage rather than being part of the
-normal operation of the system.
+> +		buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
+> +			     default_flag_spec);
 
-For thermal issues systems generally try to apply software limits well
-before an individual component starts flagging things up with an
-interrupt, the limits that devices have are generally super high and
-often there'll be issues at a system level (eg, a case getting unusably
-hot) earlier and it can take a while for responses to have an impact.
+> +		if (buf >= end)
+> +			break;
+> +		*buf = ',';
+> +		buf++;
 
-> limits (one for initiating potential SW recovery - other for HW to
-> forcing protection) actually make sense. So does implementing notifiers
-> / error statuses for events where SW recovery is potentially helpful.
-> But whether the existing event notifications / error flags are correct
-> for these is something I can't decide :) Here I ask guidance for Mark &
-> others who know what is the idea behind existing error-flags/events.
+Here is a very standard pattern can be used, see code around
 
-It's not that we shouldn't implement support for warnings, it's that
-they're not the common case for hardware and so won't line up with
-behaviour for other users.
+		if (buf < end)
+			*buf = ',';
+		buf++;
 
---St7VIuEGZ6dlpu13
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	}
 
------BEGIN PGP SIGNATURE-----
+-- 
+With Best Regards,
+Andy Shevchenko
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmASqasACgkQJNaLcl1U
-h9AUGQf/SYv+mp40PK5S/9ba3hjppNcVtO5NzzSsCEGHicALnTmMNBIiruYaOtEF
-oJMyC/SSxR2usFAUhiu1C3L3vUJm08t5Izg9cCv22BpinWTy8DjhUhFFFA5H7mMi
-/B29ZHlDgZI8bvGGABDqq43ZgX8H/0Nj2FGsrqudUnHoJ0q+yQf5EhKXfVtBiRjE
-zzOnExp5Muw99fGFmItQQCO+1LB8Rp/yEJFjnORaWhCD6dFMpLgk1f6lEBr37HG7
-dU67XghSEk60t5Zxw1FTpUVovf2UNrgB93AaNPpoyakyF8FTqo7uvdMcwURq5Abc
-/xxopA8+wjHB4fge+d+5MElX+9gk2g==
-=jgri
------END PGP SIGNATURE-----
 
---St7VIuEGZ6dlpu13--
