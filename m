@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343B7306BAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09ED306BAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhA1D3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:29:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43382 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231144AbhA1D3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:29:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D9ED6ABDA;
-        Thu, 28 Jan 2021 03:28:57 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de
-Date:   Thu, 28 Jan 2021 14:28:51 +1100
-Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
+        id S231258AbhA1DcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:32:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhA1DcA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:32:00 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6E0C061573;
+        Wed, 27 Jan 2021 19:31:19 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id v3so3199955qtw.4;
+        Wed, 27 Jan 2021 19:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VOw4mJ4y43ELleH9R6vau/EgvTWH40V/X9BffSOccpQ=;
+        b=JRELr5pJ/BHYdN461dpHR9FbEXmyaPZ8n28FutnjSzyXAQ9PhSgQP/kt8xKM8gi7qP
+         3MOY8cwEC0iCFfb7aCC1GbD1AjF16oMDTFJdt0ii8dJgmTugQn3g/D/8mUY7vZep5chy
+         NQsA7BNIhfvs4TuB7gwJCLYJflgU43lFBxvVCbWGXk8ROXBkOfw3cXHw/wpdq0qPy0I4
+         uIq8EUOHgwagyl1w8wl+zkUehJblW+qiGs3+BYGaOARMQvyhn+Jusx+FQ6h0zR9KKuHU
+         CsiZVj5j+gjPPCMRdmaGkmNdk9hv1BFIKPZZBF54QIBlTfvB4naW6nkA6eelg9jN1Hc1
+         jWmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=VOw4mJ4y43ELleH9R6vau/EgvTWH40V/X9BffSOccpQ=;
+        b=ba13vkIDnwGhcHNe1k5unmqb6Wz2gpZf+14svhgt+x4TiIp7oh0wtUopyEaUsmX9j+
+         Q2gtqGNiXWv9GFBhXs8jXBDYj3q0PeS2n1u3sOddqPpzb0PEfdVYfuWzDMYZyguZxKQw
+         iUFF87/5DCnpZa98zHSdJk4ioIiX7L5zZXrKl5BJQwK7V4HbHtbzemJINMiJIaW5ZZEJ
+         GzJWaC1PWl/LI40BHJ1SgEuk8mX3rBu+AWLEe1hriGh2x8qEOyZBifgknLO+d4LDkSSu
+         0rxsw4SNkn3De7lscajEWuXKYnEMLE/U/z/oSTEYEEtT78T3H28CcWIING/CWguAIZ9f
+         uIYQ==
+X-Gm-Message-State: AOAM5312z/U6HTX3Q8zr4NDackzQbvPZTdX5cV/U5/86dZuvO8MiXizr
+        wkhUWeDhiqYPabsxCX3GN1BqUaAcEYw=
+X-Google-Smtp-Source: ABdhPJxfo/qHEKGK9edZWfVE+b8jJEBU5mSEhGBSikskdl6KBcBbZTlhO/Ifpk32Id1cSo8skzx+AA==
+X-Received: by 2002:ac8:6b10:: with SMTP id w16mr12721215qts.354.1611804678911;
+        Wed, 27 Jan 2021 19:31:18 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id i18sm2581275qkg.66.2021.01.27.19.31.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 19:31:17 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 27 Jan 2021 22:31:05 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     axboe@kernel.dk, joseph.qi@linux.alibaba.com,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/12] docs: path-lookup: update path_mountpoint() part
-In-Reply-To: <20210126072443.33066-4-foxhlchen@gmail.com>
-References: <20210126072443.33066-1-foxhlchen@gmail.com>
- <20210126072443.33066-4-foxhlchen@gmail.com>
-Message-ID: <87bld9hh8s.fsf@notabene.neil.brown.name>
+Subject: Re: [PATCH v2] blk-cgroup: Use cond_resched() when destroy blkgs
+Message-ID: <YBIv+fG6jleTxOTh@slm.duckdns.org>
+References: <8e8a0c4644d5eb01b7f79ec9b67c2b240f4a6434.1611798287.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8e8a0c4644d5eb01b7f79ec9b67c2b240f4a6434.1611798287.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 28, 2021 at 11:22:00AM +0800, Baolin Wang wrote:
+> On !PREEMPT kernel, we can get below softlockup when doing stress
+> testing with creating and destroying block cgroup repeatly. The
+> reason is it may take a long time to acquire the queue's lock in
+> the loop of blkcg_destroy_blkgs(), or the system can accumulate a
+> huge number of blkgs in pathological cases. We can add a need_resched()
+> check on each loop and release locks and do cond_resched() if true
+> to avoid this issue, since the blkcg_destroy_blkgs() is not called
+> from atomic contexts.
+> 
+> [ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
+> [ 4757.010698] Call trace:
+> [ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
+> [ 4757.010701]  cgwb_release_workfn+0x104/0x158
+> [ 4757.010702]  process_one_work+0x1bc/0x3f0
+> [ 4757.010704]  worker_thread+0x164/0x468
+> [ 4757.010705]  kthread+0x108/0x138
+> 
+> Suggested-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-On Tue, Jan 26 2021, Fox Chen wrote:
+Acked-by: Tejun Heo <tj@kernel.org>
 
-> path_mountpoint() doesn't exist anymore. Have been folded
-> into path_lookup_at when flag is set with LOOKUP_MOUNTPOINT.
-> check out commit:161aff1d93abf0e5b5e9dbca88928998c155f677
->
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/filesystems/path-lookup.rst | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index 2ad96e1e3c49..4e77c8520fa9 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -492,7 +492,8 @@ not try to revalidate the mounted filesystem.  It eff=
-ectively
->  contains, through a call to ``mountpoint_last()``, an alternate
->  implementation of ``lookup_slow()`` which skips that step.  This is
->  important when unmounting a filesystem that is inaccessible, such as
-> -one provided by a dead NFS server.
-> +one provided by a dead NFS server.  In the current kernel, path_mountpoi=
-nt
-> +has been merged into ``path_lookup_at()`` with a new flag LOOKUP_MOUNTPO=
-INT.
+Thanks.
 
-You've taken a very different approach here.  Rather than re-telling the
-story you have added a note (like a foot-note) that the details have
-changed, withouy trying to re-weave the story.  The is easier to get
-right, but doesn't produce as nice a result.
-
-Maybe this is a good approach, it depends on how much effort you are
-willing/able to spend on the task.
-
-IF you do stick with this approach:  it is "path_lookupat", not
-"path_lookup_at".
-
-NeilBrown
-
-
->=20=20
->  Finally ``path_openat()`` is used for the ``open()`` system call; it
->  contains, in support functions starting with "``do_last()``", all the
-> --=20
-> 2.30.0
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmASL3QOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbk7LBAAoHzg9hUgx9WXb5zNozeNQKVpGYXIKC4XWwAW
-E6DABgVNaeeh7KCzuInQ2LJocXyAejC4oPd6D45yEQSZJ90VBMicsnYYnQ7QphFL
-g4ahxIWyow8AGNZDRsWbnkZ3qOu9ebnPj+o5q5KzOIyvv/e20zfDAK5sLJSfzByt
-RSvNh2p/IQQC+onb7GlSUFWz38Vjw06+UrOajJGxVVTE8epN2xQT8ZGpsQC04O+h
-nGy/DVPvuTxWH4gHbolqCuh51sRERRZmNs9RHA3SCFYNcwXf+fMDnogOuAhNPiDM
-ZaubUJhGbQuYoGwN+AJnnXK5lagCj4+FkLkM54aleIhvPp1wCyJReZh82ORvEyie
-+Eyw6d61xInhfz0OgWNylqS30VA8i3L006yId5oILJt2nj94QC02LO/v9khRw8wG
-SKMWwvgvMJDotcy+SH1dM40QsPFewp5tt+hjlbLabVcNamPt+gV57NVrmpkDaeyS
-qzUv7liyKcTx0BIyh/1awIJtE5Wlla0HgQRvYAHGCMYc3XtjlPPGc1tzzHUGyFZN
-xsaczIAJnbqndcWUjPqbkpfBmrLEilB6bt6E+/2efrFV7i8759h6P4QSsnF3VrNo
-/o/DvRlf58eiJxzVhhgiVIqiYll+g4+Wn2IdVLXE5IFY2XuR0ykvd0wTsSmYPYuw
-srTvWCY=
-=DlKb
------END PGP SIGNATURE-----
---=-=-=--
+-- 
+tejun
