@@ -2,114 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959E130695D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A083069A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhA1BFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:05:02 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:13893 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhA1BCe (ORCPT
+        id S231942AbhA1BJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:09:22 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:34320 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhA1BHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:02:34 -0500
-Date:   Thu, 28 Jan 2021 01:01:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1611795699;
-        bh=JpHvdf4WlWJrwuqfau82dS6nFbc1g8Q6OZk5049t/is=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=tIvgqb/CKtYJzYMp0MVvjk+J93VS5UJxGzwCnutyRKWAVe63yUcsvZTyKnp3eUbwi
-         ZFa0oNibp/5rqgxqey62dM0mkAmygyIVmeoNdyRYj3sDlIawnx5whxSJJB3eJ0e/qp
-         Z2mDC1tPspo+Wp5jHJjw3kUeI/Htp6DvxJ2vir8s=
-To:     Jonathan Corbet <corbet@lwn.net>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [PATCH 2/2] docs: Document cross-referencing using relative path
-Message-ID: <20210128010028.58541-3-nfraprado@protonmail.com>
-In-Reply-To: <20210128010028.58541-1-nfraprado@protonmail.com>
-References: <20210128010028.58541-1-nfraprado@protonmail.com>
+        Wed, 27 Jan 2021 20:07:03 -0500
+X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 20:03:33 EST
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 10S12TSn031297;
+        Thu, 28 Jan 2021 10:02:29 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 10S12TSn031297
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611795750;
+        bh=kQBsC8DD1I5pmWkAr2jPmQQNw1PckPFdZPVIdpQVYdo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=X2YfGmKV6JyqV6skhwNlBN5EndPUYjWcNkOTo404Y6vE/VjuzQzR3Hwre1o9jMX7P
+         t3pE8Eb/agEN1+SaB5WdhX3qLWKgeotk+EENxzm+2r79cEMgEquohGT/DZdc81+USy
+         n577YnXPqvQTSLbcIfGIwlXir96y4XYna6GbZ8JMehDKy3q1du6FKs+xB6Ee7gryFW
+         8fZJW0K2rhzEg2LE1IdBsw1wzN8ed4VgNVCiOpTvAQkAVq2uvVboz8HiD/Bu/u7vRJ
+         Dx8w8fXdYSaprH/rcXQNKd/WA9Z42fXEQaKNyPcCBPduv5pMUUnZ/FcS8rZF2bdrdk
+         Arf+3kYeRwbDg==
+X-Nifty-SrcIP: [209.85.215.180]
+Received: by mail-pg1-f180.google.com with SMTP id o63so3128254pgo.6;
+        Wed, 27 Jan 2021 17:02:29 -0800 (PST)
+X-Gm-Message-State: AOAM533NiyidxTcQRno3xFKXmT4J72EvPvtC6QBfPw/D/lsRzvvE3KZI
+        npM5tlDCLeHTVzX6nFJRn71lR0FVvwTVxuNSo2o=
+X-Google-Smtp-Source: ABdhPJx2qrnkZf85rd51ifbo3/yHH3r4r1ZqUYd8szq6YngeUvtL91K9BCWmJopJwX8xwD3QAcfaeKREyWnPk27LDQ4=
+X-Received: by 2002:a63:575e:: with SMTP id h30mr13844879pgm.7.1611795748589;
+ Wed, 27 Jan 2021 17:02:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210128005110.2613902-1-masahiroy@kernel.org> <20210128005110.2613902-2-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-2-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 28 Jan 2021 10:01:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASxQkX9R3g+r2mwKGE11oFLkNVPwsTezgHFzLgHjzcjdw@mail.gmail.com>
+Message-ID: <CAK7LNASxQkX9R3g+r2mwKGE11oFLkNVPwsTezgHFzLgHjzcjdw@mail.gmail.com>
+Subject: Re: [PATCH 01/27] scripts: add generic syscalltbl.sh
+To:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-alpha@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um@lists.infradead.org,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the Cross-referencing section to explain how to create a
-cross-reference to a document using relative paths and with no
-additional syntax, by relying on automarkup.py.
+On Thu, Jan 28, 2021 at 9:51 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Most of architectures generate syscall headers at the compile time
+> in the almost same way.
+>
+> The syscall table has the same format for all architectures. Each line
+> has 3, 4 or 5 fields; syscall number, ABI, syscall name, native entry
+> point, and compat entry point. The syscall table is processed by
+> syscalltbl.sh script into header files.
+>
+> Despite the same pattern, scripts are maintained per architecture,
+> which results in code duplication and bad maintainability.
+>
+> As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
+>
+>   $ find arch -name syscalltbl.sh | sort
+>   arch/alpha/kernel/syscalls/syscalltbl.sh
+>   arch/arm/tools/syscalltbl.sh
+>   arch/ia64/kernel/syscalls/syscalltbl.sh
+>   arch/m68k/kernel/syscalls/syscalltbl.sh
+>   arch/microblaze/kernel/syscalls/syscalltbl.sh
+>   arch/mips/kernel/syscalls/syscalltbl.sh
+>   arch/parisc/kernel/syscalls/syscalltbl.sh
+>   arch/powerpc/kernel/syscalls/syscalltbl.sh
+>   arch/sh/kernel/syscalls/syscalltbl.sh
+>   arch/sparc/kernel/syscalls/syscalltbl.sh
+>   arch/x86/entry/syscalls/syscalltbl.sh
+>   arch/xtensa/kernel/syscalls/syscalltbl.sh
+>
+> My goal is to unify them into a single file, scripts/syscalltbl.sh.
+>
+> For example, the i386 syscall table looks like this:
+>
+>   0  i386  restart_syscall  sys_restart_syscall
+>   1  i386  exit             sys_exit
+>   2  i386  fork             sys_fork
+>   3  i386  read             sys_read
+>   4  i386  write            sys_write
+>   5  i386  open             sys_open              compat_sys_open
+>   ...
+>
+> scripts/syscalltbl.sh generates the following code:
+>
+>   __SYSCALL(0, sys_restart_syscall)
+>   __SYSCALL(1, sys_exit)
+>   __SYSCALL(2, sys_fork)
+>   __SYSCALL(3, sys_read)
+>   __SYSCALL(4, sys_write)
+>   __SYSCALL_WITH_COMPAT(5, sys_open, compat_sys_open)
+>   ...
+>
+> Then, the i386 kernel will do:
+>
+>   #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, native)
+>
+> and the x86_64 kernel will do:
+>
+>   #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, compat)
+>
+> I noticed all 32/64 bit architectures can be covered by the same
+> pattern. Having an arch-specific script is fine if there is a good
+> reason to do so, but a single generic script should work for this case.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  scripts/syscalltbl.sh | 52 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 scripts/syscalltbl.sh
+>
+> diff --git a/scripts/syscalltbl.sh b/scripts/syscalltbl.sh
+> new file mode 100644
+> index 000000000000..15bf4e09f88c
+> --- /dev/null
+> +++ b/scripts/syscalltbl.sh
+> @@ -0,0 +1,52 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Usage:
+> +#  scripts/syscalltbl.sh INFILE OUTFILE [ABIS] [OFFSET]
+> +#
+> +# INFILE: input syscall table
+> +# OUTFILE: output file
+> +# ABIS (optional): specify the ABIs to handle.
+> +#                  If omitted, all lines are handled.
+> +# OFFSET (optinal): spefify the offset of the syscall numbers.
+> +#                   If omitted, the offset is zero.
+> +#
+> +# The syscall table format:
+> +# nr abi name native [compat]
 
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
----
- Documentation/doc-guide/sphinx.rst | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/s=
-phinx.rst
-index 36ac2166ad67..ec3e71f56009 100644
---- a/Documentation/doc-guide/sphinx.rst
-+++ b/Documentation/doc-guide/sphinx.rst
-@@ -340,16 +340,26 @@ Rendered as:
- Cross-referencing
- -----------------
-=20
--Cross-referencing from one documentation page to another can be done by pa=
-ssing
--the path to the file starting from the Documentation folder.
--For example, to cross-reference to this page (the .rst extension is option=
-al)::
--
--    See Documentation/doc-guide/sphinx.rst.
--
--If you want to use a relative path, you need to use Sphinx's ``doc`` direc=
-tive.
--For example, referencing this page from the same directory would be done a=
-s::
--
--    See :doc:`sphinx`.
-+Cross-referencing from one documentation page to another can be done simpl=
-y by
-+writing the path to the document file, no special syntax required. The pat=
-h can
-+be either absolute or relative. For absolute paths, start it with
-+"Documentation/". For example, to cross-reference to this page, all the
-+following are valid options, depending on the current document's directory=
- (note
-+that the ``.rst`` extension is required)::
-+
-+    See Documentation/doc-guide/sphinx.rst. This always works.
-+    Take a look at sphinx.rst, which is at this same directory.
-+    Read ../sphinx.rst, which is one directory above.
-+
-+If you want the link to have a different rendered text other than the docu=
-ment's
-+title, you need to use Sphinx's ``doc`` role. For example::
-+
-+    See :doc:`my custom link text for document sphinx <sphinx>`.
-+
-+For most use cases, the former is preferred, as it is cleaner and more sui=
-ted
-+for people reading the source files. If you come across a ``:doc:`` usage =
-that
-+isn't adding any value, please feel free to convert it to just the documen=
-t
-+path.
-=20
- For information on cross-referencing to kernel-doc functions or types, see
- Documentation/doc-guide/kernel-doc.rst.
---=20
-2.30.0
+This line should be
+
+ nr abi name [native] [compat]
 
 
+because the native entry point is also optional.
+(if it is missing, sys_ni_syscall is used)
+
+
+
+
+> +#
+> +# nr: syscall number
+> +# abi: ABI name
+> +# name: syscall name
+> +# native: native entry point
+
+native (optional): native entry point
+
+
+> +# compat (optional): compat entry point
+> +
+> +set -e
+> +
+> +in="$1"
+> +out="$2"
+> +abis=$(echo "($3)" | tr ',' '|')
+> +offset="${4:-0}"
+> +
+> +nxt=$offset
+> +
+> +grep -E "^[0-9]+[[:space:]]+${abis}" "$in" | sort -n | {
+> +
+> +       while read nr abi name native compat ; do
+> +
+> +               nr=$((nr + $offset))
+> +
+> +               while [ $nxt -lt $nr ]; do
+> +                       echo "__SYSCALL($nxt, sys_ni_syscall)"
+> +                       nxt=$((nxt + 1))
+> +               done
+> +
+> +               if [ -n "$compat" ]; then
+> +                       echo "__SYSCALL_WITH_COMPAT($nr, $native, $compat)"
+> +               elif [ -n "$native" ]; then
+> +                       echo "__SYSCALL($nr, $native)"
+> +               else
+> +                       echo "__SYSCALL($nr, sys_ni_syscall)"
+> +               fi
+> +               nxt=$((nr + 1))
+> +       done
+> +} > "$out"
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
