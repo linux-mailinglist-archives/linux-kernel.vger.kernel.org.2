@@ -2,207 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92B8306D86
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3364F306D8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhA1GRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhA1GQy (ORCPT
+        id S229900AbhA1GS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:18:56 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:41619 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229646AbhA1GSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:16:54 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC26EC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:16:13 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e1so4233724ilu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:16:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/KzLZrIlj2KEusKb+DCyZQltguwX4cquIABSWZ+YWu8=;
-        b=HqmGgkXeKHV92s/9MhA3TQIkVUpzUw0v86uHHPVMKwq0rTqQWTi/SuEW9e5RKbe+RZ
-         wyr+Y5vvEj436caCaAH80No/ZuRzT1uCqHhnL2It/OvCuK2BrPQ+fgZRdObo7Z4n7wXZ
-         9p/I9NGSQLTfabyk/sU+R+5u6KivXtcIsIREg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/KzLZrIlj2KEusKb+DCyZQltguwX4cquIABSWZ+YWu8=;
-        b=Sd9jQE0pdr+7vxOylL6z9zVnINuxJDigdkVBlQEVu0Dsx5b0cth3iIG4o2V7OytOP5
-         DQLARWfmnubT3zoPhxXlrX6g7pb0i6BMldvOTnLL1vTr2m0fw+EIVxwtKSI2o5yQleeD
-         LPv6yTKzuHtLDdbO8+nVQ7q6C0VxXjnlblncJwakzHGxpKaVzw95jynliy8aoCpSSmBZ
-         B5HFkg1c9snX4vGuUI/zzSb/RlR9M/61U4DXsizqI4OlEmCv+5A2QJvX0tM4USSAk0qa
-         fIgFo2LoAj2anSZF2bc0c1xmV6r/7nYQN6L02INOGFMwWfcZr8vxGKnEJ12YvOmwgRIP
-         galg==
-X-Gm-Message-State: AOAM532+luzrFsO0otMAWrD+NzoTN18M0qhsEfB6XemjTtzrm0HMtLLV
-        U2HxydtMYvgFN4gJoqHE6Jz4qmCw124odJMm0M0pvg==
-X-Google-Smtp-Source: ABdhPJzBqhKTHMlI5tApnzJW0pJjO1n8CMr+sbfm3OGH0z5XL/nYsEZM5Ecpax4npwyGOI9nkuewCcEWRxOv827+6J4=
-X-Received: by 2002:a92:15c6:: with SMTP id 67mr11242319ilv.283.1611814573141;
- Wed, 27 Jan 2021 22:16:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20210127045422.2418917-1-hsinyi@chromium.org> <20210127045422.2418917-9-hsinyi@chromium.org>
- <1611814421.28312.9.camel@mtksdaap41>
-In-Reply-To: <1611814421.28312.9.camel@mtksdaap41>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 28 Jan 2021 14:15:47 +0800
-Message-ID: <CAJMQK-gHjmm-BaG83EXMOkT6KeCyJJN4ZqRDdT75BcED53bREw@mail.gmail.com>
-Subject: Re: [PATCH v10 8/9] drm/mediatek: add DDP support for MT8183
-To:     CK Hu <ck.hu@mediatek.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Thu, 28 Jan 2021 01:18:54 -0500
+X-UUID: 26fb992c177d4546a7bdb87eef1d8683-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=yH+gBipO9hOQRZvMiK6UDJurGb4rGh2uSo1RfKfHNr4=;
+        b=KAEmOXWsiUFzjz1k1G+8SjHI61P1odTYjNHHVllO0qdkV7zEm1Fci1PfuWVgkZi05rgRjgXSLKgKFdRGGqMTFcPyo7dfcaIBMM2Q1GbF8sgkU0FQY727rRT+f3LR11GHF7IQ9JQIu9B8G1OqcKyRlo3mEYNtsYMc9Fj++Pu1s5Q=;
+X-UUID: 26fb992c177d4546a7bdb87eef1d8683-20210128
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1174722291; Thu, 28 Jan 2021 14:17:59 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 28 Jan 2021 14:17:53 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 14:17:53 +0800
+Message-ID: <1611814673.28312.10.camel@mtksdaap41>
+Subject: Re: [PATCH v10 9/9] drm/mediatek: add support for mediatek SOC
+ MT8183
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
         <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Yongqiang Niu <yongqiang.niu@mediatek.com>
+Date:   Thu, 28 Jan 2021 14:17:53 +0800
+In-Reply-To: <20210127045422.2418917-10-hsinyi@chromium.org>
+References: <20210127045422.2418917-1-hsinyi@chromium.org>
+         <20210127045422.2418917-10-hsinyi@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: C777708033CD168A1AAC5B786F1DFA5848CB97E50C292601B42893BA975571EC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 2:13 PM CK Hu <ck.hu@mediatek.com> wrote:
->
-> Hi, Hsin-Yi:
->
-> Modify the title's prefix to 'soc: mediatek:'
->
-> On Wed, 2021-01-27 at 12:54 +0800, Hsin-Yi Wang wrote:
-> > From: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> >
-> > Add DDP support for MT8183 SoC.
-> >
-> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> >  drivers/soc/mediatek/mtk-mutex.c | 50 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >
-> > diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
-> > index f531b119da7a9..f64e9c33e85ad 100644
-> > --- a/drivers/soc/mediatek/mtk-mutex.c
-> > +++ b/drivers/soc/mediatek/mtk-mutex.c
-> > @@ -14,6 +14,8 @@
-> >
-> >  #define MT2701_MUTEX0_MOD0                   0x2c
-> >  #define MT2701_MUTEX0_SOF0                   0x30
-> > +#define MT8183_DISP_MUTEX0_MOD0                      0x30
-> > +#define MT8183_DISP_MUTEX0_SOF0                      0x2c
->
-> Modify 'DISP_MUTEX' to 'MUTEX'
->
-> >
-> >  #define DISP_REG_MUTEX_EN(n)                 (0x20 + 0x20 * (n))
-> >  #define DISP_REG_MUTEX(n)                    (0x24 + 0x20 * (n))
-> > @@ -37,6 +39,18 @@
-> >  #define MT8167_MUTEX_MOD_DISP_DITHER         15
-> >  #define MT8167_MUTEX_MOD_DISP_UFOE           16
-> >
-> > +#define MT8183_MUTEX_MOD_DISP_RDMA0          0
-> > +#define MT8183_MUTEX_MOD_DISP_RDMA1          1
-> > +#define MT8183_MUTEX_MOD_DISP_OVL0           9
-> > +#define MT8183_MUTEX_MOD_DISP_OVL0_2L                10
-> > +#define MT8183_MUTEX_MOD_DISP_OVL1_2L                11
-> > +#define MT8183_MUTEX_MOD_DISP_WDMA0          12
-> > +#define MT8183_MUTEX_MOD_DISP_COLOR0         13
-> > +#define MT8183_MUTEX_MOD_DISP_CCORR0         14
-> > +#define MT8183_MUTEX_MOD_DISP_AAL0           15
-> > +#define MT8183_MUTEX_MOD_DISP_GAMMA0         16
-> > +#define MT8183_MUTEX_MOD_DISP_DITHER0                17
-> > +
-> >  #define MT8173_MUTEX_MOD_DISP_OVL0           11
-> >  #define MT8173_MUTEX_MOD_DISP_OVL1           12
-> >  #define MT8173_MUTEX_MOD_DISP_RDMA0          13
-> > @@ -87,6 +101,12 @@
-> >  #define MT2712_MUTEX_SOF_DSI3                        6
-> >  #define MT8167_MUTEX_SOF_DPI0                        2
-> >  #define MT8167_MUTEX_SOF_DPI1                        3
-> > +#define MT8183_MUTEX_SOF_DSI0                        1
-> > +#define MT8183_MUTEX_SOF_DPI0                        2
-> > +
-> > +/* Add EOF setting so overlay hardware can receive frame done irq */
-> > +#define MT8183_MUTEX_EOF_DSI0                        (MT8183_MUTEX_SOF_DSI0 << 6)
-> > +#define MT8183_MUTEX_EOF_DPI0                        (MT8183_MUTEX_SOF_DPI0 << 6)
-> >
+SGksIEhzaW4tWWk6DQoNCk9uIFdlZCwgMjAyMS0wMS0yNyBhdCAxMjo1NCArMDgwMCwgSHNpbi1Z
+aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
+dGVrLmNvbT4NCj4gDQo+IDEuIGFkZCBvdmwgcHJpdmF0ZSBkYXRhDQo+IDIuIGFkZCByZG1hIHBy
+aXZhdGUgZGF0YQ0KPiAzLiBhZGQgZ2FtbWEgcHJpdnRlIGRhdGENCj4gNC4gYWRkIG1haW4gYW5k
+IGV4dGVybmFsIHBhdGggbW9kdWxlIGZvciBjcnRjIGNyZWF0ZQ0KDQpSZXZpZXdlZC1ieTogQ0sg
+SHUgPGNrLmh1QG1lZGlhdGVrLmNvbT4NCg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5n
+IE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEhzaW4t
+WWkgV2FuZyA8aHNpbnlpQGNocm9taXVtLm9yZz4NCj4gLS0tDQo+ICBkcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2Rpc3BfZ2FtbWEuYyB8ICAxICsNCj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRp
+YXRlay9tdGtfZGlzcF9vdmwuYyAgIHwgMTggKysrKysrKysrDQo+ICBkcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2Rpc3BfcmRtYS5jICB8ICA2ICsrKw0KPiAgZHJpdmVycy9ncHUvZHJtL21l
+ZGlhdGVrL210a19kcm1fZHJ2LmMgICAgfCA0NSArKysrKysrKysrKysrKysrKysrKysrKw0KPiAg
+NCBmaWxlcyBjaGFuZ2VkLCA3MCBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMgYi9kcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2Rpc3BfZ2FtbWEuYw0KPiBpbmRleCBjOThmZTI4NDI2NWQwLi45M2FkNzZh
+MmRkYTVlIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bf
+Z2FtbWEuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZ2FtbWEu
+Yw0KPiBAQCAtMTc5LDYgKzE3OSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2Rpc3BfZ2Ft
+bWFfZGF0YSBtdDgxNzNfZ2FtbWFfZHJpdmVyX2RhdGEgPSB7DQo+ICBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IG9mX2RldmljZV9pZCBtdGtfZGlzcF9nYW1tYV9kcml2ZXJfZHRfbWF0Y2hbXSA9IHsNCj4g
+IAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kaXNwLWdhbW1hIiwNCj4gIAkgIC5k
+YXRhID0gJm10ODE3M19nYW1tYV9kcml2ZXJfZGF0YX0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJt
+ZWRpYXRlayxtdDgxODMtZGlzcC1nYW1tYSJ9LA0KPiAgCXt9LA0KPiAgfTsNCj4gIE1PRFVMRV9E
+RVZJQ0VfVEFCTEUob2YsIG10a19kaXNwX2dhbW1hX2RyaXZlcl9kdF9tYXRjaCk7DQo+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMgYi9kcml2ZXJz
+L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMNCj4gaW5kZXggMWMyOTVjNThhNWU4Mi4u
+ZGE3ZTM4YTI4NzU5YiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
+a19kaXNwX292bC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9v
+dmwuYw0KPiBAQCAtNDI0LDExICs0MjQsMjkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlz
+cF9vdmxfZGF0YSBtdDgxNzNfb3ZsX2RyaXZlcl9kYXRhID0gew0KPiAgCS5mbXRfcmdiNTY1X2lz
+XzAgPSB0cnVlLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9v
+dmxfZGF0YSBtdDgxODNfb3ZsX2RyaXZlcl9kYXRhID0gew0KPiArCS5hZGRyID0gRElTUF9SRUdf
+T1ZMX0FERFJfTVQ4MTczLA0KPiArCS5nbWNfYml0cyA9IDEwLA0KPiArCS5sYXllcl9uciA9IDQs
+DQo+ICsJLmZtdF9yZ2I1NjVfaXNfMCA9IHRydWUsDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29u
+c3Qgc3RydWN0IG10a19kaXNwX292bF9kYXRhIG10ODE4M19vdmxfMmxfZHJpdmVyX2RhdGEgPSB7
+DQo+ICsJLmFkZHIgPSBESVNQX1JFR19PVkxfQUREUl9NVDgxNzMsDQo+ICsJLmdtY19iaXRzID0g
+MTAsDQo+ICsJLmxheWVyX25yID0gMiwNCj4gKwkuZm10X3JnYjU2NV9pc18wID0gdHJ1ZSwNCj4g
+K307DQo+ICsNCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19kaXNwX292
+bF9kcml2ZXJfZHRfbWF0Y2hbXSA9IHsNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
+MjcwMS1kaXNwLW92bCIsDQo+ICAJICAuZGF0YSA9ICZtdDI3MDFfb3ZsX2RyaXZlcl9kYXRhfSwN
+Cj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kaXNwLW92bCIsDQo+ICAJICAu
+ZGF0YSA9ICZtdDgxNzNfb3ZsX2RyaXZlcl9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1l
+ZGlhdGVrLG10ODE4My1kaXNwLW92bCIsDQo+ICsJICAuZGF0YSA9ICZtdDgxODNfb3ZsX2RyaXZl
+cl9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLW92bC0y
+bCIsDQo+ICsJICAuZGF0YSA9ICZtdDgxODNfb3ZsXzJsX2RyaXZlcl9kYXRhfSwNCj4gIAl7fSwN
+Cj4gIH07DQo+ICBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdGtfZGlzcF9vdmxfZHJpdmVyX2R0
+X21hdGNoKTsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlz
+cF9yZG1hLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcmRtYS5jDQo+IGlu
+ZGV4IDA0Yjk1NDIwMTBiMDAuLjI5ZmE1ZjNhMDVjMzAgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
+Z3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9yZG1hLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJt
+L21lZGlhdGVrL210a19kaXNwX3JkbWEuYw0KPiBAQCAtMzU1LDExICszNTUsMTcgQEAgc3RhdGlj
+IGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9yZG1hX2RhdGEgbXQ4MTczX3JkbWFfZHJpdmVyX2RhdGEg
+PSB7DQo+ICAJLmZpZm9fc2l6ZSA9IFNaXzhLLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0
+IHN0cnVjdCBtdGtfZGlzcF9yZG1hX2RhdGEgbXQ4MTgzX3JkbWFfZHJpdmVyX2RhdGEgPSB7DQo+
+ICsJLmZpZm9fc2l6ZSA9IDUgKiBTWl8xSywNCj4gK307DQo+ICsNCj4gIHN0YXRpYyBjb25zdCBz
+dHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19kaXNwX3JkbWFfZHJpdmVyX2R0X21hdGNoW10gPSB7DQo+
+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3MDEtZGlzcC1yZG1hIiwNCj4gIAkgIC5k
+YXRhID0gJm10MjcwMV9yZG1hX2RyaXZlcl9kYXRhfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1l
+ZGlhdGVrLG10ODE3My1kaXNwLXJkbWEiLA0KPiAgCSAgLmRhdGEgPSAmbXQ4MTczX3JkbWFfZHJp
+dmVyX2RhdGF9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtcmRt
+YSIsDQo+ICsJICAuZGF0YSA9ICZtdDgxODNfcmRtYV9kcml2ZXJfZGF0YX0sDQo+ICAJe30sDQo+
+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXRrX2Rpc3BfcmRtYV9kcml2ZXJfZHRf
+bWF0Y2gpOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
+ZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiBpbmRleCAy
+NzlkM2U2ZjExNTYzLi40ODZlNzNlNjc1YWQ1IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9k
+cm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
+ZWsvbXRrX2RybV9kcnYuYw0KPiBAQCAtMTI5LDYgKzEyOSwyNCBAQCBzdGF0aWMgY29uc3QgZW51
+bSBtdGtfZGRwX2NvbXBfaWQgbXQ4MTczX210a19kZHBfZXh0W10gPSB7DQo+ICAJRERQX0NPTVBP
+TkVOVF9EUEkwLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0IGVudW0gbXRrX2RkcF9jb21w
+X2lkIG10ODE4M19tdGtfZGRwX21haW5bXSA9IHsNCj4gKwlERFBfQ09NUE9ORU5UX09WTDAsDQo+
+ICsJRERQX0NPTVBPTkVOVF9PVkxfMkwwLA0KPiArCUREUF9DT01QT05FTlRfUkRNQTAsDQo+ICsJ
+RERQX0NPTVBPTkVOVF9DT0xPUjAsDQo+ICsJRERQX0NPTVBPTkVOVF9DQ09SUiwNCj4gKwlERFBf
+Q09NUE9ORU5UX0FBTDAsDQo+ICsJRERQX0NPTVBPTkVOVF9HQU1NQSwNCj4gKwlERFBfQ09NUE9O
+RU5UX0RJVEhFUiwNCj4gKwlERFBfQ09NUE9ORU5UX0RTSTAsDQo+ICt9Ow0KPiArDQo+ICtzdGF0
+aWMgY29uc3QgZW51bSBtdGtfZGRwX2NvbXBfaWQgbXQ4MTgzX210a19kZHBfZXh0W10gPSB7DQo+
+ICsJRERQX0NPTVBPTkVOVF9PVkxfMkwxLA0KPiArCUREUF9DT01QT05FTlRfUkRNQTEsDQo+ICsJ
+RERQX0NPTVBPTkVOVF9EUEkwLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBt
+dGtfbW1zeXNfZHJpdmVyX2RhdGEgbXQyNzAxX21tc3lzX2RyaXZlcl9kYXRhID0gew0KPiAgCS5t
+YWluX3BhdGggPSBtdDI3MDFfbXRrX2RkcF9tYWluLA0KPiAgCS5tYWluX2xlbiA9IEFSUkFZX1NJ
+WkUobXQyNzAxX210a19kZHBfbWFpbiksDQo+IEBAIC0xNjEsNiArMTc5LDEzIEBAIHN0YXRpYyBj
+b25zdCBzdHJ1Y3QgbXRrX21tc3lzX2RyaXZlcl9kYXRhIG10ODE3M19tbXN5c19kcml2ZXJfZGF0
+YSA9IHsNCj4gIAkuZXh0X2xlbiA9IEFSUkFZX1NJWkUobXQ4MTczX210a19kZHBfZXh0KSwNCj4g
+IH07DQo+ICANCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX21tc3lzX2RyaXZlcl9kYXRhIG10
+ODE4M19tbXN5c19kcml2ZXJfZGF0YSA9IHsNCj4gKwkubWFpbl9wYXRoID0gbXQ4MTgzX210a19k
+ZHBfbWFpbiwNCj4gKwkubWFpbl9sZW4gPSBBUlJBWV9TSVpFKG10ODE4M19tdGtfZGRwX21haW4p
+LA0KPiArCS5leHRfcGF0aCA9IG10ODE4M19tdGtfZGRwX2V4dCwNCj4gKwkuZXh0X2xlbiA9IEFS
+UkFZX1NJWkUobXQ4MTgzX210a19kZHBfZXh0KSwNCj4gK307DQo+ICsNCj4gIHN0YXRpYyBpbnQg
+bXRrX2RybV9rbXNfaW5pdChzdHJ1Y3QgZHJtX2RldmljZSAqZHJtKQ0KPiAgew0KPiAgCXN0cnVj
+dCBtdGtfZHJtX3ByaXZhdGUgKnByaXZhdGUgPSBkcm0tPmRldl9wcml2YXRlOw0KPiBAQCAtMzc1
+LDEyICs0MDAsMjAgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2RkcF9j
+b21wX2R0X2lkc1tdID0gew0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX09WTCB9LA0K
+PiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRpc3Atb3ZsIiwNCj4gIAkgIC5k
+YXRhID0gKHZvaWQgKilNVEtfRElTUF9PVkwgfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlh
+dGVrLG10ODE4My1kaXNwLW92bCIsDQo+ICsJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfT1ZM
+IH0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1vdmwtMmwiLA0K
+PiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX09WTF8yTCB9LA0KPiAgCXsgLmNvbXBhdGli
+bGUgPSAibWVkaWF0ZWssbXQyNzAxLWRpc3AtcmRtYSIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICop
+TVRLX0RJU1BfUkRNQSB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRp
+c3AtcmRtYSIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfUkRNQSB9LA0KPiArCXsg
+LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtcmRtYSIsDQo+ICsJICAuZGF0YSA9
+ICh2b2lkICopTVRLX0RJU1BfUkRNQSB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWss
+bXQ4MTczLWRpc3Atd2RtYSIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfV0RNQSB9
+LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtY2NvcnIiLA0KPiAr
+CSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX0NDT1JSIH0sDQo+ICAJeyAuY29tcGF0aWJsZSA9
+ICJtZWRpYXRlayxtdDI3MDEtZGlzcC1jb2xvciIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRL
+X0RJU1BfQ09MT1IgfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kaXNw
+LWNvbG9yIiwNCj4gQEAgLTM4OSwyMiArNDIyLDMyIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2Zf
+ZGV2aWNlX2lkIG10a19kZHBfY29tcF9kdF9pZHNbXSA9IHsNCj4gIAkgIC5kYXRhID0gKHZvaWQg
+KilNVEtfRElTUF9BQUx9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRp
+c3AtZ2FtbWEiLA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX0dBTU1BLCB9LA0KPiAr
+CXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtZ2FtbWEiLA0KPiArCSAgLmRh
+dGEgPSAodm9pZCAqKU1US19ESVNQX0dBTU1BLCB9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVk
+aWF0ZWssbXQ4MTgzLWRpc3AtZGl0aGVyIiwNCj4gKwkgIC5kYXRhID0gKHZvaWQgKilNVEtfRElT
+UF9ESVRIRVIgfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kaXNwLXVm
+b2UiLA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX1VGT0UgfSwNCj4gIAl7IC5jb21w
+YXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS1kc2kiLA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1U
+S19EU0kgfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kc2kiLA0KPiAg
+CSAgLmRhdGEgPSAodm9pZCAqKU1US19EU0kgfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlh
+dGVrLG10ODE4My1kc2kiLA0KPiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19EU0kgfSwNCj4gIAl7
+IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS1kcGkiLA0KPiAgCSAgLmRhdGEgPSAodm9p
+ZCAqKU1US19EUEkgfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kcGki
+LA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19EUEkgfSwNCj4gKwl7IC5jb21wYXRpYmxlID0g
+Im1lZGlhdGVrLG10ODE4My1kcGkiLA0KPiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19EUEkgfSwN
+Cj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS1kaXNwLW11dGV4IiwNCj4gIAkg
+IC5kYXRhID0gKHZvaWQgKilNVEtfRElTUF9NVVRFWCB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAi
+bWVkaWF0ZWssbXQyNzEyLWRpc3AtbXV0ZXgiLA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19E
+SVNQX01VVEVYIH0sDQo+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtZGlzcC1t
+dXRleCIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfTVVURVggfSwNCj4gKwl7IC5j
+b21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLW11dGV4IiwNCj4gKwkgIC5kYXRhID0g
+KHZvaWQgKilNVEtfRElTUF9NVVRFWCB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWss
+bXQyNzAxLWRpc3AtcHdtIiwNCj4gIAkgIC5kYXRhID0gKHZvaWQgKilNVEtfRElTUF9CTFMgfSwN
+Cj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kaXNwLXB3bSIsDQo+IEBAIC00
+MjMsNiArNDY2LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2RybV9v
+Zl9pZHNbXSA9IHsNCj4gIAkgIC5kYXRhID0gJm10MjcxMl9tbXN5c19kcml2ZXJfZGF0YX0sDQo+
+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtbW1zeXMiLA0KPiAgCSAgLmRhdGEg
+PSAmbXQ4MTczX21tc3lzX2RyaXZlcl9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlh
+dGVrLG10ODE4My1tbXN5cyIsDQo+ICsJICAuZGF0YSA9ICZtdDgxODNfbW1zeXNfZHJpdmVyX2Rh
+dGF9LA0KPiAgCXsgfQ0KPiAgfTsNCj4gIA0KDQo=
 
-Hi CK, comment is added here. I can move to mt8183_mutex_sof if preferred.
-
-> >  struct mtk_mutex {
-> >       int id;
-> > @@ -181,6 +201,20 @@ static const unsigned int mt8173_mutex_mod[DDP_COMPONENT_ID_MAX] = {
-> >       [DDP_COMPONENT_WDMA1] = MT8173_MUTEX_MOD_DISP_WDMA1,
-> >  };
-> >
-> > +static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
-> > +     [DDP_COMPONENT_AAL0] = MT8183_MUTEX_MOD_DISP_AAL0,
-> > +     [DDP_COMPONENT_CCORR] = MT8183_MUTEX_MOD_DISP_CCORR0,
-> > +     [DDP_COMPONENT_COLOR0] = MT8183_MUTEX_MOD_DISP_COLOR0,
-> > +     [DDP_COMPONENT_DITHER] = MT8183_MUTEX_MOD_DISP_DITHER0,
-> > +     [DDP_COMPONENT_GAMMA] = MT8183_MUTEX_MOD_DISP_GAMMA0,
-> > +     [DDP_COMPONENT_OVL0] = MT8183_MUTEX_MOD_DISP_OVL0,
-> > +     [DDP_COMPONENT_OVL_2L0] = MT8183_MUTEX_MOD_DISP_OVL0_2L,
-> > +     [DDP_COMPONENT_OVL_2L1] = MT8183_MUTEX_MOD_DISP_OVL1_2L,
-> > +     [DDP_COMPONENT_RDMA0] = MT8183_MUTEX_MOD_DISP_RDMA0,
-> > +     [DDP_COMPONENT_RDMA1] = MT8183_MUTEX_MOD_DISP_RDMA1,
-> > +     [DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
-> > +};
-> > +
-> >  static const unsigned int mt2712_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
-> >       [MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
-> >       [MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
-> > @@ -198,6 +232,12 @@ static const unsigned int mt8167_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
-> >       [MUTEX_SOF_DPI1] = MT8167_MUTEX_SOF_DPI1,
-> >  };
-> >
-> > +static const unsigned int mt8183_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
-> > +     [MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
-> > +     [MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
-> > +     [MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
->
-> According to discussion in [1], add comment for the odd EOF setting.
->
-> [1]
-> https://patchwork.kernel.org/project/linux-mediatek/patch/1595469798-3824-8-git-send-email-yongqiang.niu@mediatek.com/
->
-> Regards,
-> CK.
->
->
-> > +};
-> > +
-> >  static const struct mtk_mutex_data mt2701_mutex_driver_data = {
-> >       .mutex_mod = mt2701_mutex_mod,
-> >       .mutex_sof = mt2712_mutex_sof,
-> > @@ -227,6 +267,14 @@ static const struct mtk_mutex_data mt8173_mutex_driver_data = {
-> >       .mutex_sof_reg = MT2701_MUTEX0_SOF0,
-> >  };
-> >
-> > +static const struct mtk_mutex_data mt8183_mutex_driver_data = {
-> > +     .mutex_mod = mt8183_mutex_mod,
-> > +     .mutex_sof = mt8183_mutex_sof,
-> > +     .mutex_mod_reg = MT8183_DISP_MUTEX0_MOD0,
-> > +     .mutex_sof_reg = MT8183_DISP_MUTEX0_SOF0,
-> > +     .no_clk = true,
-> > +};
-> > +
-> >  struct mtk_mutex *mtk_mutex_get(struct device *dev)
-> >  {
-> >       struct mtk_mutex_ctx *mtx = dev_get_drvdata(dev);
-> > @@ -457,6 +505,8 @@ static const struct of_device_id mutex_driver_dt_match[] = {
-> >         .data = &mt8167_mutex_driver_data},
-> >       { .compatible = "mediatek,mt8173-disp-mutex",
-> >         .data = &mt8173_mutex_driver_data},
-> > +     { .compatible = "mediatek,mt8183-disp-mutex",
-> > +       .data = &mt8183_mutex_driver_data},
-> >       {},
-> >  };
-> >  MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
->
