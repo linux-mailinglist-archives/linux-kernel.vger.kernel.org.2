@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D56830767A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1D5307682
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbhA1MyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:54:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59218 "EHLO mail.kernel.org"
+        id S231910AbhA1My6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:54:58 -0500
+Received: from www.zeus03.de ([194.117.254.33]:33212 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhA1MxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:53:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A92D64DDD;
-        Thu, 28 Jan 2021 12:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611838348;
-        bh=dpEoeKfLT6HgV0RyHq6DTmjg9VIT96dBb+fWM5H3JtA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Mor5yOfrUuJgYUtqrtR6BOrxZbsJu791BkMxIcEUXSSuNsHf5L8uybQDY9RXTnGGB
-         zegZWqB1tT/+/MuPZmZMv19LIXeqa8Qpls+yKU+3Pt7vUqTq2h4VeKPcT/8etaObqd
-         Gf/nXF7WP0r5kxENIPzyOTSqRE4+jtPzmkb5Rjw5PsMITu5RVdANNu5uKB8bPJxHfS
-         AUHrKiD9gZBg1MgCfVFzdg5ZuCL5SKuSd6kPIoc5Px18LUYa3EftLyRZ3vTexCzWxE
-         jlFVJRgoN8u7VbawWeRsXIoYF2DAGryIZY4Fx2s4i5CfmZUze0JUvpHzSB1Hxn9T04
-         wLF6iqKu3Llwg==
-Message-ID: <2301cde67ae7aa54d860fc3962aeb8ed85744c75.camel@kernel.org>
-Subject: Re: [PATCH 0/6] ceph: convert to new netfs read helpers
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     Ceph Development <ceph-devel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-cachefs@redhat.com
-Date:   Thu, 28 Jan 2021 07:52:27 -0500
-In-Reply-To: <CAOi1vP-3Ma4LdCcu6sPpwVbmrto5HnOAsJ6r9_973hYY3ODBUQ@mail.gmail.com>
-References: <20210126134103.240031-1-jlayton@kernel.org>
-         <CAOi1vP-3Ma4LdCcu6sPpwVbmrto5HnOAsJ6r9_973hYY3ODBUQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        id S231156AbhA1Myd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:54:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=oRO8WDf/5KnXgWQXEksy1rdyBQlS
+        PoX/B1tkUPaXezo=; b=36kAZjzCJ3A0h7EPAsHt0+R7/4W+QfBUjwBAmcfaP+91
+        9oG3pGi3RaJ8lLto0GjT+nHBfgPA7iwQqfM0CaWz067qKZdj8KVnwAV5rTg1n2/0
+        8WX5TbIrV1+UpdZX+i/nkxlHw3tCPeKi/4pG1NX23HfG7OsLfjhzwGf5Z814yB4=
+Received: (qmail 240619 invoked from network); 28 Jan 2021 13:53:50 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 Jan 2021 13:53:50 +0100
+X-UD-Smtp-Session: l3s3148p1@FHQSYfW58pggAwDPXyX1AEdA8SGgn5QT
+Date:   Thu, 28 Jan 2021 13:53:50 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Corey Minyard <cminyard@mvista.com>
+Cc:     linux-i2c@vger.kernel.org, Asmaa Mnebhi <asmaa@nvidia.com>,
+        Corey Minyard <minyard@acm.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] ipmi: remove open coded version of SMBus block
+ write
+Message-ID: <20210128125350.GP963@ninjato>
+References: <20210128085544.7609-1-wsa+renesas@sang-engineering.com>
+ <20210128123757.GW21462@minyard.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="R3SAtXwgGp429mN7"
+Content-Disposition: inline
+In-Reply-To: <20210128123757.GW21462@minyard.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-27 at 23:50 +0100, Ilya Dryomov wrote:
-> On Tue, Jan 26, 2021 at 2:41 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > 
-> > This patchset converts ceph to use the new netfs readpage, write_begin,
-> > and readahead helpers to handle buffered reads. This is a substantial
-> > reduction in code in ceph, but shouldn't really affect functionality in
-> > any way.
-> > 
-> > Ilya, if you don't have any objections, I'll plan to let David pull this
-> > series into his tree to be merged with the netfs API patches themselves.
-> 
-> Sure, that works for me.
-> 
-> I would have expected that the new netfs infrastructure is pushed
-> to a public branch that individual filesystems could peruse, but since
-> David's set already includes patches for AFS and NFS, let's tag along.
-> 
-> Thanks,
-> 
->                 Ilya
 
-David has a fscache-netfs-lib branch that has all of the infrastructure
-changes. See:
+--R3SAtXwgGp429mN7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-netfs-lib
+On Thu, Jan 28, 2021 at 06:37:57AM -0600, Corey Minyard wrote:
+> Looks good, do you want this in the IPMI tree or are you handling this
+> another way?
 
--- 
-Jeff Layton <jlayton@kernel.org>
+I can take it but would prefer the IPMI tree.
 
+Thanks!
+
+
+--R3SAtXwgGp429mN7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASs9oACgkQFA3kzBSg
+KbbxVxAAsnkVAMU3qhmK/nVCKJwyEIime7+1Z71ZVZUxscez4zCtHGvhzLOleaxh
+GLz8+0qsB6GBZGO6xZkHEdSbuP7dhwCBIqWG398Plu/wL8NKF/TzMI67KR0iDZCV
+BS8zHaB+WMB1KwpUAYEsn2abtD0wJTrgeMRET/JXDRp3jcmsPCVExafSQ9TS+cXK
+pTpaiZ06SzMArMxd+t30RD60qQPdLCOkHc1v+vYeAv7nElfhF/ndhL+k95Axzbf5
+X8VsNmSM8dk8MWWAuCNjVZnS2sfzA/9G+i2xgESs8UCNfDNcKAxPiNnDa4G7AGRN
+qidR7iRGlTL21rctXcpbRqylKi9X/Zo7Ql8LrOPRuFlb64ptMApVglYjvqCYsB4+
+qkWZZDdL372mD9Osf6pUS+BajbBFreo9gvUtKHY5iWj6zPkSjgkVgxfPKlhPxrhc
+xRYUNEf+rGS6sbZeV9yQFG9w1Vt08Z2Pa8TVd9T0s8dEBiwfXLxURuY5DWRmV3dt
+17xoAkek+GHr9xEEDjskAXbnncb4W0m3+60vmWthpTRKZH9p0UglzzYzmHseTby9
+17xN3I4OORhaAk49O63Jlz4dd5Mf0FgQQFi+a8fbeYiIX+2fM8JY5U0nYzRRYc+y
+iuSR7rs3udXJi22hQbDyk14GlwF0dNpyEhGFM0WZV7lqj3hcGZI=
+=uUBv
+-----END PGP SIGNATURE-----
+
+--R3SAtXwgGp429mN7--
