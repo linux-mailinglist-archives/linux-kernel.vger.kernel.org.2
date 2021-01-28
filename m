@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8083074BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AA53074C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhA1L0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhA1LZa (ORCPT
+        id S231425AbhA1L0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:26:47 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:12635 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhA1LZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:25:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2F5C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 03:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rJfsZC10DtX/X6ISTdommQGwbP35fqo+dYyjfZM/n40=; b=PSh+1DRNdsV9NnyPn8WkHBPUbL
-        E9fDvku6c7X8gr9oOUq3REKBUP1d0B/rrQp1tqccicXx9gAB7lquVWFoFuEL8dvmvWop0mSohIB0f
-        qcaL31Ve37hcT4ncVnhsMvbKW9LkVS525rffDe3Sk/Rha86cVkUQTlJk3WZkz8d5f29cpFKxibiU4
-        L7huGJl+XU8yuCHHzdqWKzub7ry6Tg0i+gAbtbaBqbTV98ywehrNHKv2z2Lr6E2vowIuyYQe49Iwz
-        xVTwEcPxoiauwAT6AcMvqEpKBtxT12NcyhhTzLgm2h+NeudvgkSeELP8zpVr0eri8YV304wP9K8Ro
-        l+1VoUWw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l55Pg-008Ns9-QK; Thu, 28 Jan 2021 11:24:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B704E3059C6;
-        Thu, 28 Jan 2021 12:24:34 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EAC6A21A78F53; Thu, 28 Jan 2021 12:24:33 +0100 (CET)
-Date:   Thu, 28 Jan 2021 12:24:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] qspinlock: Ensure writes are pushed out of core
- write buffer
-Message-ID: <YBKe8SVOqLdu+vEf@hirez.programming.kicks-ass.net>
-References: <20210127200109.16412-1-alexander.sverdlin@nokia.com>
- <20210127222158.GB848@willie-the-truck>
- <c932770e-8a19-ab32-7b4e-33fc36981b77@nokia.com>
+        Thu, 28 Jan 2021 06:25:41 -0500
+Date:   Thu, 28 Jan 2021 11:24:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tmb.nu;
+        s=protonmail; t=1611833091;
+        bh=nMo99p1zsBQ7qgU/WQffiE/LABS3uMEgG5nQn6ZvKR8=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=HTsblzOMyfn21uBXlL1657KKVZp+HuHAvwKKVKQRrZwOw//+pZhZaaFgRjcySTXf4
+         qNbd3NzrUcRgzdPkqwsCBEbJ+jWiato5y2Mgbl5qSf+iOtYdOnwTRfvHRIQZUTHtAx
+         gLYmJjBPePEq7u4goxKmgSCewDbAgimiN2VyCAno=
+To:     Chris Clayton <chris2553@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Thomas Backlund <tmb@tmb.nu>
+Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Reply-To: Thomas Backlund <tmb@tmb.nu>
+Subject: Re: linux-5.10.11 build failure
+Message-ID: <8b3e9d93-1381-b415-9ece-a10fb098b896@tmb.nu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c932770e-8a19-ab32-7b4e-33fc36981b77@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 08:36:24AM +0100, Alexander Sverdlin wrote:
+Den 28.1.2021 kl. 12:05, skrev Chris Clayton:
+>=20
+> On 28/01/2021 09:34, Greg Kroah-Hartman wrote:
+>> On Thu, Jan 28, 2021 at 09:17:10AM +0000, Chris Clayton wrote:
+>>> Hi,
+>>>
+>>> Building 5.10.11 fails on my (x86-64) laptop thusly:
+>>>
+>>> ..
+>>>
+>>>   AS      arch/x86/entry/thunk_64.o
+>>>    CC      arch/x86/entry/vsyscall/vsyscall_64.o
+>>>    AS      arch/x86/realmode/rm/header.o
+>>>    CC      arch/x86/mm/pat/set_memory.o
+>>>    CC      arch/x86/events/amd/core.o
+>>>    CC      arch/x86/kernel/fpu/init.o
+>>>    CC      arch/x86/entry/vdso/vma.o
+>>>    CC      kernel/sched/core.o
+>>> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at=
+ offset 0x3e
+>>>
+>>>    AS      arch/x86/realmode/rm/trampoline_64.o
+>>> make[2]: *** [scripts/Makefile.build:360: arch/x86/entry/thunk_64.o] Er=
+ror 255
+>>> make[2]: *** Deleting file 'arch/x86/entry/thunk_64.o'
+>>> make[2]: *** Waiting for unfinished jobs....
+>>>
+>>> ..
+>>>
+>>> Compiler is latest snapshot of gcc-10.
+>>>
+>>> Happy to test the fix but please cc me as I'm not subscribed
+>>
+>> Can you do 'git bisect' to track down the offending commit?
+>>
+>=20
+> Sure, but I'll hold that request for a while. I updated to binutils-2.36 =
+on Monday and I'm pretty sure that is a feature
+> of this build fail. I've reverted binutils to 2.35.1, and the build succe=
+eds. Updated to 2.36 again and, surprise,
+> surprise, the kernel build fails again.
+>=20
+> I've had a glance at the binutils ML and there are all sorts of issues be=
+ing reported, but it's beyond my knowledge to
+> assess if this build error is related to any of them.
+>=20
+> I'll stick with binutils-2.35.1 for the time being.
+>=20
+>> And what exact gcc version are you using?
+>>
+>=20
+>   It's built from the 10-20210123 snapshot tarball.
+>=20
+> I can report this to the binutils folks, but might it be better if the ob=
+jtool maintainer looks at it first? The
+> binutils change might just have opened the gate to a bug in objtool.
+>=20
+>> thanks,
+>>
+>> greg k-h
+>>
+>=20
 
-> >> diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
-> >> index 5e10153..10e497a 100644
-> >> --- a/kernel/locking/mcs_spinlock.h
-> >> +++ b/kernel/locking/mcs_spinlock.h
-> >> @@ -89,6 +89,11 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
-> >>  		return;
-> >>  	}
-> >>  	WRITE_ONCE(prev->next, node);
-> >> +	/*
-> >> +	 * This is necessary to make sure that the corresponding "while" in the
-> >> +	 * mcs_spin_unlock() doesn't loop forever
-> >> +	 */
-> >> +	smp_wmb();
-> > If it loops forever, that's broken hardware design; store buffers need to
-> > drain. I don't think we should add unconditional barriers to bodge this.
-> 
-> The comment is a bit exaggerating the situation, but it's undeterministic and you see the
-> measurements above. Something is wrong in the qspinlocks code, please consider this patch
-> "RFC", but something has to be done here.
 
-The qspinlock code has been TLA+ modelled and has had extensive memory
-ordering analysis. It has had lots of runtime on extremely large x86,
-arm64, and Power machines. I'm fairly confident there is nothing wrong.
+AFAIK you need this in stable trees:
 
-What I do think is more likely is that your platform is broken, it
-wouldn't be the first MIPS that's got store-buffers completely wrong,
-see commit:
+ From 1d489151e9f9d1647110277ff77282fe4d96d09b Mon Sep 17 00:00:00 2001
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Date: Thu, 14 Jan 2021 16:14:01 -0600
+Subject: [PATCH] objtool: Don't fail on missing symbol table
 
-  a30718868915 ("MIPS: Change definition of cpu_relax() for Loongson-3")
 
-Working around micro arch store-buffer issues is not something the
-generic code is for.
+--
+Thomas
+
