@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF2B30770E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA193076FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbhA1N2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhA1N2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:28:07 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F469C061573;
-        Thu, 28 Jan 2021 05:27:26 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id f2so6281007ljp.11;
-        Thu, 28 Jan 2021 05:27:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8tvqUEPKnNcrsTtiavlBzi2ibquYTuocPU0umzSH5LI=;
-        b=seuMePA/mnST1btiw896yyME8C3fNYkPM9VYQKEh5feuJ0tmW65ic7NwAqM8r4VvHL
-         B8fsdPAnb/cScDv8Ssd+A9XUEMiL6377sCP9TdyE+PEVosdYRHqtNLU0ZM4dv4H3eSim
-         ALVOjNb3MGsOSpoz+cC4dZ9JqL8b4g5kq21kbUDf1+7IPkKy1KI4ISsZIVY3u8LQLiq1
-         aomzPReExT48wDC2D+NCQwR31C0Lpb3zBv+alWb2Cavgvg1bBdfGITu1q1FF4zfNvN+H
-         oanqmAxu6vym2j5hj4tXflpFFxiso4swJOHAkzvanW0ncMu7fgKgZywToqfZ16A4Pdoq
-         Okeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8tvqUEPKnNcrsTtiavlBzi2ibquYTuocPU0umzSH5LI=;
-        b=bl5cr92OUU6UvAts03azeC7ne2sNmKdTeUoQenXn1Hgb2nIZAx856W2kO2thTj4c9E
-         75UIvky0jL4ycWWUnEOzhBuxfGv5suloZ5DXcOVQT+JIvnpebGejmoU2hicYY6exctRC
-         MOXcbE8BxhL85G7gbNks93Ds+1dEVsbR/FOg6Ckq9KEKk+ZDf00PaGrhhqOsBeGxKrjN
-         tgPZsFVEI/R5LF7Uel8Nbgxkxz18Yom+nnHJKa2BvRB85L1tespEH7UIaB1yVVkoPqq9
-         OANRGO8WPd17Z9TEtzOCT7s41RObMNEL+ul2mS8IFaMiXfSgP+fV6aHxkdN59Qi3YG4y
-         FY8Q==
-X-Gm-Message-State: AOAM532HOro1Taj22vP80RggyhvTf+VchjTaK0weawEHGPUlBt7YPE0P
-        jCsQXfgxn2CtZxBWBBK0C9Y=
-X-Google-Smtp-Source: ABdhPJzsiPTIa9b1AXsJ61Sto0REoDpd643CbZjruyzw88VOao4q8PSyQdxcyJbrPgiMAgAc5UFZjg==
-X-Received: by 2002:a05:651c:2112:: with SMTP id a18mr8568028ljq.341.1611840445011;
-        Thu, 28 Jan 2021 05:27:25 -0800 (PST)
-Received: from localhost.localdomain ([5.76.199.233])
-        by smtp.googlemail.com with ESMTPSA id d12sm1610387lfm.163.2021.01.28.05.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 05:27:24 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     penguin-kernel@i-love.sakura.ne.jp
-Cc:     andreyknvl@google.com, casey@schaufler-ca.com, jmorris@namei.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, mhocko@suse.com,
-        serge@hallyn.com, snovitoll@gmail.com,
-        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] smackfs: restrict bytes count in smackfs write functions
-Date:   Thu, 28 Jan 2021 19:27:21 +0600
-Message-Id: <20210128132721.1111920-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <5271074f-930a-46e9-8ece-2cc65d45dc19@i-love.sakura.ne.jp>
-References: <5271074f-930a-46e9-8ece-2cc65d45dc19@i-love.sakura.ne.jp>
+        id S231792AbhA1N0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:26:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:59068 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231383AbhA1N0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:26:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AF8413A1;
+        Thu, 28 Jan 2021 05:25:31 -0800 (PST)
+Received: from [10.37.12.15] (unknown [10.37.12.15])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B58E73F719;
+        Thu, 28 Jan 2021 05:25:28 -0800 (PST)
+Subject: Re: KASAN: invalid-access Read in kmem_cache_destroy
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        syzbot <syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com>,
+        Amit Kachhap <amit.kachhap@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>
+References: <0000000000008d396205b9e4adee@google.com>
+ <CACT4Y+ZisDCO0w9O57tOp+7FL6VqJiFdxaRJ739rjW5z52PeXg@mail.gmail.com>
+ <20210127174322.GH4387@sirena.org.uk>
+ <CAAeHK+yW_GCbKAdLEdQpFsjfBKy8_nkFKpBydg3icpb5rbA69g@mail.gmail.com>
+ <bf5e0465-2935-a3a0-f003-de2b837dadf6@arm.com>
+ <CACT4Y+bwbHpp4H0UuEd41xfiPSBqrw7KUSKLAqR_fusP8hDHAw@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <aa1336d9-88d7-0d67-8eb4-8fb63ed181ee@arm.com>
+Date:   Thu, 28 Jan 2021 13:29:23 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACT4Y+bwbHpp4H0UuEd41xfiPSBqrw7KUSKLAqR_fusP8hDHAw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >  	/*
-> > +	 * No partial write.
-> >  	 * Enough data must be present.
-> >  	 */
-> >  	if (*ppos != 0)
-> >  		return -EINVAL;
-> > +	if (count == 0 || count > PAGE_SIZE)
-> > +		return -EINVAL;
-> >  
-> >  	data = memdup_user_nul(buf, count);
-> >  	if (IS_ERR(data))
-> > 
-> 
-> Doesn't this change break legitimate requests like
-> 
->   char buffer[20000];
-> 
->   memset(buffer, ' ', sizeof(buffer));
->   memcpy(buffer + sizeof(buffer) - 10, "foo", 3);
->   write(fd, buffer, sizeof(buffer));
-> 
-> ?
 
-It does, in this case. Then I need to patch another version with
-whitespace stripping before, after label. I just followed the same thing
-that I see in security/selinux/selinuxfs.c sel_write_enforce() etc.
 
-It has the same memdup_user_nul() and count >= PAGE_SIZE check prior to that.
+On 1/28/21 12:43 PM, Dmitry Vyukov wrote:
+> On Thu, Jan 28, 2021 at 1:30 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>>
+>> On 1/27/21 7:50 PM, Andrey Konovalov wrote:
+>>> On Wed, Jan 27, 2021 at 6:44 PM Mark Brown <broonie@kernel.org> wrote:
+>>>>
+>>>> On Wed, Jan 27, 2021 at 06:14:13PM +0100, Dmitry Vyukov wrote:
+>>>>> On Wed, Jan 27, 2021 at 5:58 PM syzbot
+>>>>> <syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com> wrote:
+>>>>>>
+>>>>>> Hello,
+>>>>>>
+>>>>>> syzbot found the following issue on:
+>>>>>>
+>>>>>> HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
+>>>>>> git tree:       upstream
+>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12eb4ad8d00000
+>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=ad43be24faf1194c
+>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=2a52b6c31dbefb1e9d9f
+>>>>>> userspace arch: arm64
+>>>>>>
+>>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>>
+>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>>> Reported-by: syzbot+2a52b6c31dbefb1e9d9f@syzkaller.appspotmail.com
+>>>>>
+>>>>> This happens on arm64 instance with MTE enabled.
+>>>>> I don't see any corresponding reports on x86_64. So I would assume
+>>>>> it's a generic latent bug, or probably more likely a bug in MTE
+>>>>> support.
+>>>>
+>>>> Copying in Vincenso who's done a bunch of MTE stuff recently.
+>>>
+>>> Could be the same issue as:
+>>>
+>>> https://lkml.org/lkml/2021/1/27/1109
+>>>
+>>
+>> I had a look at the trace and I agree with Andrey it seems the same issue.
+> 
+> 
+> #syz fix: Revert "mm/slub: fix a memory leak in sysfs_slab_add()"
+> 
+
+Thanks for the confirmation.
+
+-- 
+Regards,
+Vincenzo
