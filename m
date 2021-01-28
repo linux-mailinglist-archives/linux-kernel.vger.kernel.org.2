@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4278A3075B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317773075B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhA1MOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:14:51 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54601 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231363AbhA1MOZ (ORCPT
+        id S231580AbhA1MPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:15:33 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34692 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA1MOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:14:25 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=56;SR=0;TI=SMTPD_---0UN8ZMkY_1611836008;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UN8ZMkY_1611836008)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 28 Jan 2021 20:13:29 +0800
-Subject: Re: [RFC PATCH 25/34] ocfs/cluster: use bio_new in dm-log-writes
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     axboe@kernel.dk, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
-        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
-        jaegeuk@kernel.org, ebiggers@kernel.org, djwong@kernel.org,
-        shaggy@kernel.org, konishi.ryusuke@gmail.com, mark@fasheh.com,
-        jlbec@evilplan.org, damien.lemoal@wdc.com, naohiro.aota@wdc.com,
-        jth@kernel.org, rjw@rjwysocki.net, len.brown@intel.com,
-        pavel@ucw.cz, akpm@linux-foundation.org, hare@suse.de,
-        gustavoars@kernel.org, tiwai@suse.de, alex.shi@linux.alibaba.com,
-        asml.silence@gmail.com, ming.lei@redhat.com, tj@kernel.org,
-        osandov@fb.com, bvanassche@acm.org, jefflexu@linux.alibaba.com
-References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
- <20210128071133.60335-26-chaitanya.kulkarni@wdc.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <8ba2c461-6042-757d-a3c1-0490932e749e@linux.alibaba.com>
-Date:   Thu, 28 Jan 2021 20:13:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Thu, 28 Jan 2021 07:14:31 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611836029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1rfB/IZ4d07bQ4kaZK+SNMWZnaf6ZtvArs5ezTl/PSc=;
+        b=vJsf/NU9N6V1aNC54ZJA0dRiWDFy20a0Z9N6u/dxzqmbirOA6xS7gRUYKg67d+wTWLMlww
+        7TDyz/jzYQ94WMc/DtX/JGjJZTgXkxEjpYhwd9SE+9xbnxHWC4S59UgBE2wUQgiMzEcLgE
+        AIB5ZSsParAfxPgZQB58/040YYli9AXxh7IiCr0FuivsfgVNTVA677TDFKhBYxXKnz1zHm
+        XWz46jpyiMGmyKctZQnfEBpIFlrGyFu67khdqV1NDyid6BZU9+Y1kUFKFINUZlGsTu9KxF
+        yqCczWoSTxSC/KAt+G238rlxcm8miEu89ywYn0UDJSeYrjagKIlRkf4nM6gvTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611836029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1rfB/IZ4d07bQ4kaZK+SNMWZnaf6ZtvArs5ezTl/PSc=;
+        b=YVxBRhQUGQCQALNBhxM/OEiYwbSUV3fnFR7i+H+r7iw1F3RotZd5mFqr+p2dFC1CX3mkF7
+        CpxQYZspOXFTdcBA==
+To:     kernel test robot <lkp@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [tip:locking/core 10/10] sclp_early_core.c:undefined reference to `warn_bogus_irq_restore'
+In-Reply-To: <202101281628.n32qBmXh-lkp@intel.com>
+References: <202101281628.n32qBmXh-lkp@intel.com>
+Date:   Thu, 28 Jan 2021 13:13:49 +0100
+Message-ID: <871re5dzsy.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210128071133.60335-26-chaitanya.kulkarni@wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think you send a wrong subject by mistake.
+On Thu, Jan 28 2021 at 16:29, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+> head:   997acaf6b4b59c6a9c259740312a69ea549cc684
+> commit: 997acaf6b4b59c6a9c259740312a69ea549cc684 [10/10] lockdep: report broken irq restoration
+> config: s390-randconfig-r035-20210128 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 48bdd676a1d1338c10541460bf5beb69ac17e451)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install s390 cross compiling tool for clang build
+>         # apt-get install binutils-s390x-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=997acaf6b4b59c6a9c259740312a69ea549cc684
+>         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+>         git fetch --no-tags tip locking/core
+>         git checkout 997acaf6b4b59c6a9c259740312a69ea549cc684
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=s390 
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    s390x-linux-gnu-ld: arch/s390/boot/sclp_early_core.o: in function `sclp_early_cmd':
+>>> sclp_early_core.c:(.text+0x18c): undefined reference to `warn_bogus_irq_restore'
+>    s390x-linux-gnu-ld: arch/s390/boot/sclp_early_core.o: in function `sclp_early_set_event_mask':
+>    sclp_early_core.c:(.text+0x376): undefined reference to `warn_bogus_irq_restore'
+>    s390x-linux-gnu-ld: arch/s390/boot/sclp_early_core.o: in function `__sclp_early_printk':
+>    sclp_early_core.c:(.text+0xa90): undefined reference to `warn_bogus_irq_restore'
+>>> s390x-linux-gnu-ld: sclp_early_core.c:(.text+0xa9a): undefined reference to `warn_bogus_irq_restore'
 
-Thanks,
-Joseph
-
-On 1/28/21 3:11 PM, Chaitanya Kulkarni wrote:
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> ---
->  fs/ocfs2/cluster/heartbeat.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
-> index 0179a73a3fa2..b34518036446 100644
-> --- a/fs/ocfs2/cluster/heartbeat.c
-> +++ b/fs/ocfs2/cluster/heartbeat.c
-> @@ -515,12 +515,13 @@ static struct bio *o2hb_setup_one_bio(struct o2hb_region *reg,
->  	unsigned int cs = *current_slot;
->  	struct bio *bio;
->  	struct page *page;
-> +	sector_t sect = (reg->hr_start_block + cs) << (bits - 9);
->  
->  	/* Testing has shown this allocation to take long enough under
->  	 * GFP_KERNEL that the local node can get fenced. It would be
->  	 * nicest if we could pre-allocate these bios and avoid this
->  	 * all together. */
-> -	bio = bio_alloc(GFP_ATOMIC, 16);
-> +	bio = bio_new(reg->hr_bdev, sect, op, op_flags, 16, GFP_ATOMIC);
->  	if (!bio) {
->  		mlog(ML_ERROR, "Could not alloc slots BIO!\n");
->  		bio = ERR_PTR(-ENOMEM);
-> @@ -528,11 +529,8 @@ static struct bio *o2hb_setup_one_bio(struct o2hb_region *reg,
->  	}
->  
->  	/* Must put everything in 512 byte sectors for the bio... */
-> -	bio->bi_iter.bi_sector = (reg->hr_start_block + cs) << (bits - 9);
-> -	bio_set_dev(bio, reg->hr_bdev);
->  	bio->bi_private = wc;
->  	bio->bi_end_io = o2hb_bio_end_io;
-> -	bio_set_op_attrs(bio, op, op_flags);
->  
->  	vec_start = (cs << bits) % PAGE_SIZE;
->  	while(cs < max_slots) {
-> 
+That's S390 early boot code which lacks a stub function ....
