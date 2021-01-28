@@ -2,72 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10A5307391
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18931307397
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhA1KVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:21:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhA1KVH (ORCPT
+        id S232356AbhA1KV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:21:57 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44671 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231467AbhA1KVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:21:07 -0500
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D37C061574;
-        Thu, 28 Jan 2021 02:20:26 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4DRGgM42CczQlXk;
-        Thu, 28 Jan 2021 11:19:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:message-id:from:from:date:date:received; s=
-        mail20150812; t=1611829196; bh=TIyoCrhlhokOiMepVtkuSZ0ldVFGFR3T+
-        LN6c67DmIA=; b=aNyJUYfdbBX4f4I5kP8TjVn8vN4FTXIiWcMtaEXLn+04DkSUo
-        JuaBnJ+fFWjUvcAYc/pgPn1LYvV901x0IihYK3wX+XMqHDcSZASOwGRFEb5BFr3i
-        v4fi04xfApk9tOSMsxzov3qis6opWvV5OI/+zEuklSUHPPkS7LtOWtbZOQ0e98Px
-        T6SiPR+sOa9qyC4mTYOne7GjU/NCr6zp147fX33ZxKaxAXMopzaSiQ4i+ZTj2Qj8
-        RUCEgxYZZRQjWFbm1JCA935yXHbFhs+IEB4yEfiD05gs+zCVcP6L6o4UEVrxqosz
-        LJ/8ix1YlCpsHs7P/WWb044Ak189VsG5oWaOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1611829197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TIyoCrhlhokOiMepVtkuSZ0ldVFGFR3T+LN6c67DmIA=;
-        b=aEchQkDenNiCI6gNxFmdAV/niV/9z13mSzTgA3+8CEi8vrd5DRPvbDqsnOO5OBNVSIxSKi
-        w03xBmbdGqM8ZtflYgGKutb5d6b5Vu3UDhMpqVW0awslFe5KHakoYL2Q/dGemUnxjXX405
-        thoFRpK7zSLzEzwM9Vx1wltkV49YKO0nNz45l0Z2yWZRfXEzz4ntYjAfSSgJJsMWgWalT/
-        R3rq3i4vexxB5Rh28Fdbf0OiF+b/IUEA7ebVWYOgjRH/xJvn0HesGVq+VjPHTqxX6dgYmX
-        SC1jm8bc7ER7196bn7/1b22S3tlclE8btxg6ZUEe2uL+bJ5yyWc1ewb4QyBsjg==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id GhJyJ65iZTU8; Thu, 28 Jan 2021 11:19:56 +0100 (CET)
-Date:   Thu, 28 Jan 2021 11:19:54 +0100 (CET)
-From:   torvic9@mailbox.org
-To:     "chris2553@googlemail.com" <chris2553@googlemail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Message-ID: <916742573.14775.1611829195075@office.mailbox.org>
-Subject: Re: linux-5.10.11 build failure
+        Thu, 28 Jan 2021 05:21:45 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0508358078E;
+        Thu, 28 Jan 2021 05:20:59 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 28 Jan 2021 05:20:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=CRTbXfYqvKWX3kel+Vs7SqRwF7f
+        OlDjsuYHVRUyeCgk=; b=GIIdik2Osy/HhZsywf3vX/nRSBZJWHTnGGcXaQMLe1y
+        cnrLgPq511VVzDgPONvt11VyiaK4fIOc8AvYiAm0qFKNhjbCbgVkq6JDYdUTjZ6B
+        B2KxIP7IF1+0YaP8EACI+GeXwQ9cwFJlt0HtTfYGknD2zHRd6VU2G3CldkYl97hJ
+        y0Akm19earaH7fzAmMSafryq8v/ZNdh/KKy3B51L41U952jKXnX6a57gIqqiKaRR
+        1rwhZxnAQ2+tqljOtVa3+qAneetYMsLsDE/BL0z8dGfencleCdISDnp3/WCzyZfo
+        ALgPuHrJ/uB92gKR4ZWLz8e6rnxU5IFd3nkuyVtglCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=CRTbXf
+        YqvKWX3kel+Vs7SqRwF7fOlDjsuYHVRUyeCgk=; b=HuxbcbrFVRexXJigy/yQuG
+        4cPx3liYHAUmEr4DmbzTnCDmIjweRrWkMpWmFLaauPK9qGxv84l16wTpkjq4rQRF
+        T7RVLgQML6iRrAgPss60mojJMwaILM6GHMGSY2Phri67X6Re531BEeOqxrMIOkte
+        vaHTpFqABWMaCIMix/lj3zmwrbnO0PahrMvCYzUnSXAJVRHaQbIj0V/EfH6PGXuT
+        zGHrO3u1LDOVwKOawUPFs6VHmtmQ2EwmqcXcWKw55mTKjgbaz1INPhlVBITr4VfM
+        bvgrC0kFXaVSvAi3CVLTm3hTak8ggRgcTtQPLf/EXFZbGHbZAjxKspyuZwNIbopw
+        ==
+X-ME-Sender: <xms:CZASYLxwR9Ix6N83sXoZyTNmJZUB4VHb57c5LJuU1nIewspx52mGgQ>
+    <xme:CZASYDfeTOFzy9RL_N-egyeQ-tSdK0OXZ1lCaIblNUJ2ztnvjVoTlbnG6fNcN3pPx
+    AUDNzy6PAuRBwBGo6w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgddufecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:CZASYHJQ7rHU0WzX1AczKxK5MbLwPAsEwj2TL2l4m3DS_tTOovaHDQ>
+    <xmx:CZASYEEqnc3f4cW4mAQTx0alIV-Q2a-IWiCCpmrccXder6qWNZdCdA>
+    <xmx:CZASYBpPZa8iD8GZ6qZahS036Rtgn8Kt5vhExlXkry0nIh3IImSGWA>
+    <xmx:CpASYMn8l25_GBW84wzcQFIaNTbozh3kyuBxvjq_47rGWK3pfsbSXw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 57826108005F;
+        Thu, 28 Jan 2021 05:20:57 -0500 (EST)
+Date:   Thu, 28 Jan 2021 11:20:56 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v5 12/20] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+Message-ID: <20210128102056.x4c2uaxcwsrvoytx@gilmour>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-13-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.11 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 4A30917CC
-X-Rspamd-UID: 57d376
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="curbrw5osjzzvr6w"
+Content-Disposition: inline
+In-Reply-To: <20210127172500.13356-13-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe you need something like this: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/entry&id=5e6dca82bcaa49348f9e5fcb48df4881f6d6c4ae
 
-Greetings,
-Tor
+--curbrw5osjzzvr6w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jan 27, 2021 at 05:24:52PM +0000, Andre Przywara wrote:
+> Add the obvious compatible name to the existing RTC binding, and pair
+> it with the existing H6 fallback compatible string, as the devices are
+> compatible.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+maxime
+
+--curbrw5osjzzvr6w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBKQBwAKCRDj7w1vZxhR
+xaHIAP9KN+jjyAubOGQwD7yj/7RXCjNlFSCjG7LtNiWtYNPkBgD+Oitnci5gG2Gm
+t/e0gXDcs9EM0zfZajBtr83FXHZwqwk=
+=7H6K
+-----END PGP SIGNATURE-----
+
+--curbrw5osjzzvr6w--
