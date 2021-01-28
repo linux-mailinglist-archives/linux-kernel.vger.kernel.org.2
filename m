@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66143307B64
+	by mail.lfdr.de (Postfix) with ESMTP id D79EB307B65
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhA1QxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:53:00 -0500
-Received: from mail.v3.sk ([167.172.186.51]:37166 "EHLO shell.v3.sk"
+        id S232660AbhA1QxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:53:05 -0500
+Received: from mail.v3.sk ([167.172.186.51]:37202 "EHLO shell.v3.sk"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231373AbhA1Qw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:52:57 -0500
+        id S231634AbhA1Qw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:52:58 -0500
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 67CD3E0B17;
-        Thu, 28 Jan 2021 16:48:08 +0000 (UTC)
+        by zimbra.v3.sk (Postfix) with ESMTP id 0BA8DE0B2E;
+        Thu, 28 Jan 2021 16:48:10 +0000 (UTC)
 Received: from shell.v3.sk ([127.0.0.1])
         by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id tb_MY8o7gQd8; Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
+        with ESMTP id upg9um6BP9nN; Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 6090EE0B2A;
+        by zimbra.v3.sk (Postfix) with ESMTP id D2DD6E0B2B;
         Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at zimbra.v3.sk
 Received: from shell.v3.sk ([127.0.0.1])
         by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id a2rOAFCqqtQ1; Thu, 28 Jan 2021 16:48:06 +0000 (UTC)
+        with ESMTP id PQ1EsHMStgVC; Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
 Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id C4F67E0B17;
-        Thu, 28 Jan 2021 16:48:06 +0000 (UTC)
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 3F529E0B28;
+        Thu, 28 Jan 2021 16:48:07 +0000 (UTC)
 From:   Lubomir Rintel <lkundrak@v3.sk>
 To:     Andrzej Hajda <a.hajda@samsung.com>
 Cc:     Neil Armstrong <narmstrong@baylibre.com>,
@@ -38,29 +38,173 @@ Cc:     Neil Armstrong <narmstrong@baylibre.com>,
         Rob Herring <robh+dt@kernel.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 0/2] Add a Himax HX8837 display controller driver
-Date:   Thu, 28 Jan 2021 17:52:07 +0100
-Message-Id: <20210128165209.59903-1-lkundrak@v3.sk>
+        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 1/2] dt-bindings: display: himax,hx8837: Add Himax HX8837 bindings
+Date:   Thu, 28 Jan 2021 17:52:08 +0100
+Message-Id: <20210128165209.59903-2-lkundrak@v3.sk>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210128165209.59903-1-lkundrak@v3.sk>
+References: <20210128165209.59903-1-lkundrak@v3.sk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Himax HX8837 is a secondary display controller used to drive the panel
+on OLPC platforms.
 
-please take a look at the patches chained to this messages and consider
-applying them. They add support for the controller that drives the panel
-on the OLPC XO laptops.
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Compared to v7, points risen in review by Laurent Pinchart have been
-addressed. Details in change log of patch 1/2.
+---
+Changes since v6:
+(All based on feedback from Laurent Pinchart)
+- Add power supplies
+- Make load/stat-gpios optional
+- Fix whitespace errors
+- Use decimal constants instead of hex in example where appropriate
+- Terminate the bindings with "..." end-of-document marker
 
-Tested on an OLPC XO-1.75 laptop.
+Changes since v4:
+- Rob's Reviewed-by
 
-Thank you
-Lubo
+Changes since v3:
+- Moved to bindings/display/
+- Added the ports
+- Converted to YAML
+- Removed Pavel's Ack, because the changes are substantial
 
+Changes since v2:
+- s/betweend/between/
+
+Changes since v1:
+- s/load-gpio/load-gpios/
+- Use interrupt bindings instead of gpio for the IRQ
+
+ .../bindings/display/bridge/himax,hx8837.yaml | 108 ++++++++++++++++++
+ 1 file changed, 108 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/hima=
+x,hx8837.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/himax,hx883=
+7.yaml b/Documentation/devicetree/bindings/display/bridge/himax,hx8837.ya=
+ml
+new file mode 100644
+index 0000000000000..e9e21a3447088
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/himax,hx8837.yaml
+@@ -0,0 +1,108 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2018,2019,2020,2021 Lubomir Rintel <lkundrak@v3.sk>
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/himax,hx8837.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: HX8837 Display Controller Device Tree Bindings
++
++maintainers:
++  - Lubomir Rintel <lkundrak@v3.sk>
++
++properties:
++  compatible:
++    const: himax,hx8837
++
++  reg:
++    const: 0xd
++
++  load-gpios:
++    maxItems: 1
++    description: GPIO specifier of DCON_LOAD pin (active high)
++
++  stat-gpios:
++    minItems: 2
++    description: GPIO specifier of DCON_STAT0 and DCON_STAT1 pins (activ=
+e high)
++
++  interrupts:
++    maxItems: 1
++    description: Interrupt specifier of DCON_IRQ pin (edge falling)
++
++  vddp18-supply:
++    description: Regulator for 1.8V display interface I/O power.
++
++  vddm25-supply:
++    description: Regulator for 2.5V SDRAM I/O power.
++
++  vdd33-supply:
++    description: Regulator for 3.3V digital I/O power.
++
++  vddk18-supply:
++    description: Regulator for 1.8V internal core power.
++
++  ports:
++    type: object
++
++    properties:
++      port@0:
++        type: object
++        description: |
++          Video port for RGB input.
++
++      port@1:
++        type: object
++        description: |
++          Video port connected to the panel.
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells =3D <1>;
++        #size-cells =3D <0>;
++
++        lcd-controller@d {
++            compatible =3D "himax,hx8837";
++            reg =3D <0x0d>;
++            stat-gpios =3D <&gpio 100 GPIO_ACTIVE_HIGH>,
++                         <&gpio 101 GPIO_ACTIVE_HIGH>;
++            load-gpios =3D <&gpio 142 GPIO_ACTIVE_HIGH>;
++            interrupts =3D <&gpio 124 IRQ_TYPE_EDGE_FALLING>;
++
++            ports {
++                #address-cells =3D <1>;
++                #size-cells =3D <0>;
++
++                port@0 {
++                    reg =3D <0>;
++                    dcon_rgb_in: endpoint {
++                        remote-endpoint =3D <&lcd0_rgb_out>;
++                    };
++                };
++
++                port@1 {
++                    reg =3D <1>;
++                    dcon_gettl_out: endpoint {
++                        remote-endpoint =3D <&panel_dettl_in>;
++                    };
++                };
++            };
++        };
++    };
++
++...
+--=20
+2.29.2
 
