@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E613307F52
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F261D307F67
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhA1UQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhA1UQ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:16:26 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F1DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 12:15:45 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id rv9so9628417ejb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 12:15:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8KYRxCq+VijaHyGm3nspszs6+isH7KSG4Ik6j3Av93c=;
-        b=B58P+9oOAaIsSpBC4lg74dzWJKJ3ybSV89M2L0Mp9OjaJ3bTLg3t6Az7ItGGNz0wFz
-         lBdFpDS2UvNVVdTxyUf55Gm1rnuSCuf2KHNBzO34+YUYI6z8pl4eqTYZMGNIdObs1G0R
-         9hgnwmYVSGshMAzPNxInKmudVEP5kdMlo059wq7Gs3y+BxnRP1JioJbuUjTatu/PGO0D
-         5w+8ImILu00Uc1gM/mmV863bVzkc0JTXRr/SNyHFkgxhQCNf/U2iGonexjT37/G1SZJy
-         15kYwJbkM+GXn6OeO87JLuJuG0xuw5E/tZnkqsJQxWZ2wLK3p/bTqg0R6EDQr6rlAOiH
-         LDhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8KYRxCq+VijaHyGm3nspszs6+isH7KSG4Ik6j3Av93c=;
-        b=ZAaX322me3k+QMMO9BYZiwp/1lzc1uJRpuNDnh5E01vR3C67x9fpkTKygWLk6UQciy
-         3M7+VfYNSPGf3YR5lyq1N1EFq6W4Hl4n4Q4l2DHH5TUvI6oQgl3tRsKpSHA1xY5n+k//
-         lgJmtriN8zWB375sLs/ckPzESy5V7aIYCeeL0mSmdtOkpqdhrX/JFviXfDQrMb032mEr
-         64RxdOykCooROpnkB8hiEgYU/MkGzmkdvRTpdfoEW1myqjiqwLDZCP4ctQRnzSkxwaFe
-         jzrMabBMq+murzHnCQ7iAv/tmCe/PFOUT4o7jUO+cBz7Bmp5QqdfEiZlq6+r563zmIX0
-         +qEQ==
-X-Gm-Message-State: AOAM531cHdadVm8RyULNfRPBnuyb1Sg0MVQz/02xTQzq5SoEVkJEVlEM
-        sLD9E9bSfRuLJMlPDWKrf1OZtQv+DgXKxo5j3nRTEg==
-X-Google-Smtp-Source: ABdhPJzrAjJJP8ciZP1YuWUVcouJS1kYbZeC3mzFP3+/fTGLdsLLmBkGaDddFt2JuDlToQ2cA6VFjKPoHC8UKp4Pefk=
-X-Received: by 2002:a17:906:9342:: with SMTP id p2mr1214159ejw.300.1611864944451;
- Thu, 28 Jan 2021 12:15:44 -0800 (PST)
+        id S229808AbhA1UR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:17:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231215AbhA1UQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 15:16:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B014C64DFF;
+        Thu, 28 Jan 2021 20:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611864971;
+        bh=gAzHBedr8hQIaRX+X9TrS9kGg87gd7QPQ+5CLuBJpt8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j64T3tCnPHFXVd9UDcO3ZTOfla2mufg7J90/bA6o9GttXehR+PXluGg1N8SsLHc64
+         hYIqClK4YqioUGbBUn5E0/LTUEXZoeydUuBy7C/jJzkWZI3kN4zZyF9bE1w6rjadeL
+         mFvFp17Lp762yM1kjCdiPwqwpuP+o08YKXdW1XGD6D16WT4KuYfBIzUjXVdZ6co/bD
+         xxK0jkI9gi8qVehzDyDQIdu6ZXozGMk3aJIBF1md2koHrZErBvJ60OUW6zl2Eq+TKp
+         Qhv5ViBWNI8ZidtGf4nMqCWpWfPV23xNl6fU0tLWQ9r76Y/LCT/GkpY2UhfD19GJWk
+         Tfputr0lYAqiw==
+Date:   Thu, 28 Jan 2021 12:16:09 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc:     herbert@gondor.apana.org.au, Jarkko Sakkinen <jarkko@kernel.org>,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com,
+        linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+        simo@redhat.com
+Subject: Re: [PATCH v2 6/7] fs: use HKDF implementation from kernel crypto API
+Message-ID: <YBMbiQ/OonYxgzJE@sol.localdomain>
+References: <1772794.tdWV9SEqCh@positron.chronox.de>
+ <3577027.kQq0lBPeGt@positron.chronox.de>
 MIME-Version: 1.0
-References: <CAP045Arw973KWCiHqXmRJ3QxH8o84on-t8Nm6NyEYXDpicF7JA@mail.gmail.com>
- <CAHk-=wiVj-0zV8ePHZ2rGFErJAYkRb3FZ8K9aYus6is0bALL5A@mail.gmail.com>
-In-Reply-To: <CAHk-=wiVj-0zV8ePHZ2rGFErJAYkRb3FZ8K9aYus6is0bALL5A@mail.gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Thu, 28 Jan 2021 12:15:32 -0800
-Message-ID: <CAP045ApuTzezCto0sqqeyPsgXOtrY9pgWvVk2k4ptmcDjYL=jA@mail.gmail.com>
-Subject: Re: [PATCH] ptrace: restore the previous single step reporting behavior
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>, kernel@collabora.com,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yshuiv7@gmail.com, "Robert O'Callahan" <rocallahan@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3577027.kQq0lBPeGt@positron.chronox.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:10 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> You should have pointed to the actual patch.
+Please prefix the commit subject with "fscrypt: " rather than "fs: ".
 
-Sorry, I broke the reply threading in my mail client.
+On Sun, Jan 24, 2021 at 03:04:31PM +0100, Stephan Müller wrote:
+> diff --git a/fs/crypto/hkdf.c b/fs/crypto/hkdf.c
+> index e0ec21055505..ae236b42b1f0 100644
+> --- a/fs/crypto/hkdf.c
+> +++ b/fs/crypto/hkdf.c
+> @@ -9,7 +9,7 @@
+>   * Copyright 2019 Google LLC
+>   */
+>  
+> -#include <crypto/hash.h>
+> +#include <crypto/hkdf.h>
+>  #include <crypto/sha2.h>
+>  
+>  #include "fscrypt_private.h"
+> @@ -37,23 +37,7 @@
+>   * unnecessarily long master keys.  Thus fscrypt still does HKDF-Extract.  No
+>   * salt is used, since fscrypt master keys should already be pseudorandom and
+>   * there's no way to persist a random salt per master key from kernel mode.
+> - */
+> -
+> -/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
+> -static int hkdf_extract(struct crypto_shash *hmac_tfm, const u8 *ikm,
+> -			unsigned int ikmlen, u8 prk[HKDF_HASHLEN])
+> -{
+> -	static const u8 default_salt[HKDF_HASHLEN];
+> -	int err;
+> -
+> -	err = crypto_shash_setkey(hmac_tfm, default_salt, HKDF_HASHLEN);
+> -	if (err)
+> -		return err;
+> -
+> -	return crypto_shash_tfm_digest(hmac_tfm, ikm, ikmlen, prk);
+> -}
+> -
+> -/*
+> + *
+>   * Compute HKDF-Extract using the given master key as the input keying material,
+>   * and prepare an HMAC transform object keyed by the resulting pseudorandom key.
+>   *
 
-- Kyle
+I don't think this comment should be joined with the one above it.  The earlier
+comment describes the general approach taken with fscrypt and HKDF (including
+all steps), while the one beginning with "Compute HKDF-Extract" describes
+fscrypt_init_hkdf() specifically.
+
+- Eric
