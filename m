@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B2C30723F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C117307267
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhA1JGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:06:07 -0500
-Received: from sauhun.de ([88.99.104.3]:36168 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231652AbhA1JFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:05:46 -0500
-Received: from localhost (p54b33782.dip0.t-ipconnect.de [84.179.55.130])
-        by pokefinder.org (Postfix) with ESMTPSA id A2D202C04D8;
-        Thu, 28 Jan 2021 10:05:01 +0100 (CET)
-Date:   Thu, 28 Jan 2021 10:05:01 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] i2c: tegra: Use threaded interrupt
-Message-ID: <20210128090501.GF963@ninjato>
-References: <20210112131709.1711-1-digetx@gmail.com>
+        id S232425AbhA1JPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:15:01 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:56377 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231980AbhA1JLe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:11:34 -0500
+X-Greylist: delayed 144579 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 04:11:34 EST
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l53K2-00069M-EB; Thu, 28 Jan 2021 10:10:38 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l53K1-0006X5-6C; Thu, 28 Jan 2021 10:10:37 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 1/2] i3c: Handle drivers without probe or remove callback
+Date:   Thu, 28 Jan 2021 10:10:31 +0100
+Message-Id: <20210128091032.16952-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gdTfX7fkYsEEjebm"
-Content-Disposition: inline
-In-Reply-To: <20210112131709.1711-1-digetx@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A registered driver without a probe callback doesn't make sense, so
+refuse to register such a driver. (Otherwise i3c_device_probe() yields a
+NULL pointer exception.)
 
---gdTfX7fkYsEEjebm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A driver without remove is possible, e.g. when all resources are freed
+using devm callbacks. So guard the call to driver->remove by a check
+for being non-NULL.
 
-On Tue, Jan 12, 2021 at 04:17:09PM +0300, Dmitry Osipenko wrote:
-> Switch to use threaded interrupt context in order to avoid checking of
-> "are we in interrupt?" for the code that may sleep in the IRQ handler.
-> I2C doesn't require a very low interrupt-handling latency, hence this
-> change doesn't introduce any noticeable effects.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Note that the only in-tree i3c driver
+(drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_i3c.c) doesn't have a remove
+callback.
 
-Applied to for-next, thanks!
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/i3c/device.c |  5 +++++
+ drivers/i3c/master.c | 10 ++++++----
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/i3c/device.c b/drivers/i3c/device.c
+index bb8e60dff988..e92d3e9a52bd 100644
+--- a/drivers/i3c/device.c
++++ b/drivers/i3c/device.c
+@@ -262,6 +262,11 @@ int i3c_driver_register_with_owner(struct i3c_driver *drv, struct module *owner)
+ 	drv->driver.owner = owner;
+ 	drv->driver.bus = &i3c_bus_type;
+ 
++	if (!drv->probe) {
++		pr_err("Trying to register an i3c driver without probe callback\n");
++		return -EINVAL;
++	}
++
+ 	return driver_register(&drv->driver);
+ }
+ EXPORT_SYMBOL_GPL(i3c_driver_register_with_owner);
+diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+index b61bf53ec07a..57a4f699eb8d 100644
+--- a/drivers/i3c/master.c
++++ b/drivers/i3c/master.c
+@@ -326,11 +326,13 @@ static int i3c_device_remove(struct device *dev)
+ {
+ 	struct i3c_device *i3cdev = dev_to_i3cdev(dev);
+ 	struct i3c_driver *driver = drv_to_i3cdrv(dev->driver);
+-	int ret;
++	int ret = 0;
+ 
+-	ret = driver->remove(i3cdev);
+-	if (ret)
+-		return ret;
++	if (driver->remove) {
++		ret = driver->remove(i3cdev);
++		if (ret)
++			return ret;
++	}
+ 
+ 	i3c_device_free_ibi(i3cdev);
+ 
+-- 
+2.29.2
 
---gdTfX7fkYsEEjebm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASfj0ACgkQFA3kzBSg
-KbbYAg/+OLhhpEe21w2YYDrVVUpJPXZGZlB1FVXtSq6K33nZT0HgJWBzJ8B2k+W7
-5i16Zs4zue4Fe7lE15/BBrkzHpiU+CAawOZE+jkH/BOgPgpsJqKkdJcc55EPwYyq
-kTDm6rLCqU2ZtTEMQsEdhVOS/Vuza9zi5fbNvzU3K3O9xXtn9/Y6btEqchz9yJrI
-VyReBjRjpPyLHl/xJw0GXKj+FVRikw1HoleIvJhPGX/tN5yyyLpse6eDktz+cI9e
-bk3hPkjmvgjihe5GEQcEyM2tCSG/RGLFnqVu9cXut0hg7qQMrub89OA2JantW8gJ
-ynzUyj02v8/QBfkd8x2+ZJ8PUgmaawbMcUnC4ayrtZPfU9vGbLjlTBzr3pYk6BJr
-PVyYpIWQmjF1vhreW0WeGfLtXvPmy7E6ueQv0kN4MVULRsyd4Nc2zb33fJpqsOCF
-yiiL1EC9qsj940OZO+ZmoKfo0P+nNr2FkvNFzXyprOMkfk23DxBeO0uNxE6KC/md
-7IpOieecScGRMtplU/xyRyW2Lv3hrsugHunTA17z5AtBk4jLlhiSJ9xrRmZ4W247
-D3CxUQQR5nW970NyPdoQXV6t7P06UXUlvW505vglyOE/a2W/xgqNGpa7nM3ch3Em
-327fRmQutYCOhlehBdjv09Win2eS927afXM9C2WQpkXBNMTfJa0=
-=o/jo
------END PGP SIGNATURE-----
-
---gdTfX7fkYsEEjebm--
