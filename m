@@ -2,432 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D326030702B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3389D30703D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhA1HvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:51:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
+        id S232024AbhA1Hwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbhA1Hsq (ORCPT
+        with ESMTP id S232281AbhA1Hv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:48:46 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88773C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:48:06 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id c132so3752537pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:48:06 -0800 (PST)
+        Thu, 28 Jan 2021 02:51:27 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6E0C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:50:03 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id cq1so3378497pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:50:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PGqjfQqxznB2yU+RCpzc780tLLtAThmAuUjiL+zRtfo=;
-        b=uVTKkSyt2BZzkjX1mF6Gr1hy0iVERFRFojGPoS1+8DoMYVbPv/ezRyaoNQw+in6tdv
-         0JWBO0nBtpLG51/y/wb7cdE5J9BdB3OMHqxP5M83n9eqUGMzOFrqgJdfjBjQjviXLiMM
-         uNhXUX8L2VofFKkpDW6Gk+R5wsO2M3RdiTf89v6O2nn34v66oUSKfrzvbiUxfBHukXjh
-         kL2eJEfWYYHihCOhh+4G4TIx2jpy5Mhxb6kkHQFIHJWt2i/yqIeNEKJEd+1FQ/LmB7HJ
-         wFt6bP9T07Ya/uGlgP1txpcrA1kwOC5Yl6XzWFhIC6KyJVvl9031EPaWelcMXbMb4G8w
-         djVA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hT80TtmG5OwKagfHit/H5eiRj+ThJh8wbDF2bWBnIXM=;
+        b=az/eVNzirGkm+vaBPFwmPpvXG6bhWkMbG2rX4mFSKcr/ho897PJj/i6JnS0QgXKZUC
+         yvzERcT9VoyZga4VqkSFxe8U27587u7mkQTxkQFjFmihBlNMAZy5iFs2F43XYL8vnedm
+         kaDtoFn2jfYmP1XpArxUPn+6NbKfnByo/8CR1wvzD50f5iqfnFaCN56iePihTSpj9sBV
+         an6zm1rnQtNJpqHNM3z/2u9c/WaRtwIDBw0b0dWFcAjWxZFhL/1EmkoMMkZFEpnjjsu+
+         7mP69nDkLp36vgU55Be+iRjTnnuYv1P35XFVYlLfkJhBruQMiJlArrtA7ZEN+gYQqzPO
+         t1wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PGqjfQqxznB2yU+RCpzc780tLLtAThmAuUjiL+zRtfo=;
-        b=es/ZhZ8Z7086Clewdh890q9M/UuRDFG1TFxI/9lnNSF5jTcRiubHPQiNF2pbS6ltjn
-         fHCwriA4PsnoRd+w08M7rTSakPTo6wWUuV1mLaWpdjwFBzioF02Gbgch3CgBdBtJjaqi
-         6QMZCPqQGkzN2HBGGZONQ8cwzhPkOMIQQUyDUKUgT9nDj+fmiWhc46+t4yHyt03U6pJL
-         0RpW66FM9j+SdCn/T/QzQIqB/PxHBcjrdm7WoIEqNm0Slhh4AmtgRMOgdHHZs8+l3kRA
-         6vR9smjjptIydf5TVtl1COLO2TiSwd57PCtO0Nme5Xo6vvOsDiUKvpWRuFGvKP2cNaBJ
-         /qSA==
-X-Gm-Message-State: AOAM530AZMS2jQ/whXHClSIChwmSiIiFBNbXHlB5PyfIeT6z5uMNYaSx
-        H+J89NwDHxvIS1DRc0RZQsK8Jg==
-X-Google-Smtp-Source: ABdhPJxB5RholxOLvm3sUAkXJorZEvmi6DJDqvOMFYD1YJtfkbQgAgNXSIi1llCrkIzOQiwRNnZKzQ==
-X-Received: by 2002:a63:5014:: with SMTP id e20mr15256612pgb.152.1611820086020;
-        Wed, 27 Jan 2021 23:48:06 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id n2sm4893908pfu.129.2021.01.27.23.48.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hT80TtmG5OwKagfHit/H5eiRj+ThJh8wbDF2bWBnIXM=;
+        b=piQ2BbcP3YDnsMDWyakO1Dgu33CBverD4eqTL8EVXGqmVLNgK4HPC0HkraJEbfl3IR
+         vPt62aP/mViqrUFh/EMpnTbAV80fkAkCqMGd521hs0U64FatKELNmJeCU+2drxlHrL/U
+         0UX8k7uTq76B5Jry14H/4uaA5O68FPei+ueVn0qf9KXtzyz9Rq2ECK27EwGStUeVmiKU
+         Ll2AJQjbeHxjOpemU0ZDTbhkWcmQN18cyE5j8+qbKt7pl475ftPk0aLYGkT7oEAns5WO
+         ig6G1PC3m6cm7XJkbbViPnh73i76/B5TeUWVCbdqNktPHAiMDjlCzeOm0IsQDFGSDkzb
+         dv0A==
+X-Gm-Message-State: AOAM530kxlI+NJDzpwLX/EX7tj6i5T3cIxRvDP+eke8E+rQB8OIWFGAa
+        uM4boqUR+YUUGq/++Ov1ANw=
+X-Google-Smtp-Source: ABdhPJwjPsSkUYriKV0MMeAuZLm1Tb6hXi6QweSfRjTG6GQaQW9NWwDvbZ0OjRk9YvfC0gaGm+BDiw==
+X-Received: by 2002:a17:903:1cc:b029:de:98bb:d46d with SMTP id e12-20020a17090301ccb02900de98bbd46dmr15423814plh.54.1611820202819;
+        Wed, 27 Jan 2021 23:50:02 -0800 (PST)
+Received: from localhost.localdomain ([125.227.22.95])
+        by smtp.gmail.com with ESMTPSA id q15sm4514816pgk.11.2021.01.27.23.50.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Jan 2021 23:48:04 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] opp: Allow lazy-linking of required-opps
-Date:   Thu, 28 Jan 2021 13:18:00 +0530
-Message-Id: <46e877258bd2779efb186eaf944263ea6a981ab9.1611820046.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 27 Jan 2021 23:50:02 -0800 (PST)
+From:   Stephen Zhang <stephenzhangzsd@gmail.com>
+To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, gustavoars@kernel.org
+Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Stephen Zhang <stephenzhangzsd@gmail.com>
+Subject: [PATCH v2] kdb: kdb_support: Fix debugging information problem
+Date:   Thu, 28 Jan 2021 15:49:50 +0800
+Message-Id: <1611820190-12559-1-git-send-email-stephenzhangzsd@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OPP core currently requires the required opp tables to be available
-before the dependent OPP table is added, as it needs to create links
-from the dependent OPP table to the required ones. This may not be
-convenient for all the platforms though, as this requires strict
-ordering for probing the drivers.
+There are several common patterns.
 
-This patch allows lazy-linking of the required-opps. The OPP tables for
-which the required-opp-tables aren't available at the time of their
-initialization, are added to a special list of OPP tables:
-lazy_opp_tables. Later on, whenever a new OPP table is registered with
-the OPP core, we check if it is required by an OPP table in the pending
-list; if yes, then we complete the linking then and there.
+0:
+	kdb_printf("...",...);
 
-An OPP table is marked unusable until the time all its required-opp
-tables are available. And if lazy-linking fails for an OPP table, the
-OPP core disables all of its OPPs to make sure no one can use them.
+which is the normal one.
 
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+1:
+	kdb_printf("%s: "...,__func__,...)
+
+We could improve '1' to this :
+
+	#define kdb_func_printf(format, args...) \
+		   kdb_printf("%s: " format, __func__, ## args)
+
+2:
+	if(KDB_DEBUG(AR))
+		kdb_printf("%s "...,__func__,...);
+
+We could improve '2' to this :
+	#define kdb_dbg_printf(mask, format, args...) \
+			   do { \
+					if (KDB_DEBUG(mask)) \
+						kdb_func_printf(format, ## args); \
+			   } while (0)
+
+In additon, we changed the format code of size_t to %zu.
+
+Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
 ---
- drivers/opp/core.c |  45 +++++++++++++----
- drivers/opp/of.c   | 122 +++++++++++++++++++++++++++++++++++++++++++--
- drivers/opp/opp.h  |  10 +++-
- 3 files changed, 161 insertions(+), 16 deletions(-)
+v1->v2 Changelog:
+- Add 'mask' parameter in kdb_dbg_printf()
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 6958a5cd2fd8..e03600547b98 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -27,6 +27,10 @@
-  * various states of availability.
+Thanks to Daniel and Doug's suggestions and review.
+
+ kernel/debug/kdb/kdb_private.h | 10 ++++++++
+ kernel/debug/kdb/kdb_support.c | 56 +++++++++++++++++++-----------------------
+ 2 files changed, 35 insertions(+), 31 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index a4281fb..0a56d35 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -254,4 +254,14 @@ extern unsigned long kdb_task_state(const struct task_struct *p,
+ #define	KDB_WORD_SIZE	((int)sizeof(unsigned long))
+ 
+ #endif /* CONFIG_KGDB_KDB */
++
++#define kdb_func_printf(format, args...) \
++	kdb_printf("%s: " format, __func__, ## args)
++
++#define kdb_dbg_printf(mask, format, args...) \
++	do { \
++		if (KDB_DEBUG(mask)) \
++			kdb_func_printf(format, ## args); \
++	} while (0)
++
+ #endif	/* !_KDBPRIVATE_H */
+diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+index 6226502..0f6fc77 100644
+--- a/kernel/debug/kdb/kdb_support.c
++++ b/kernel/debug/kdb/kdb_support.c
+@@ -39,20 +39,17 @@
   */
- LIST_HEAD(opp_tables);
-+
-+/* OPP tables with uninitialized required OPPs */
-+LIST_HEAD(lazy_opp_tables);
-+
- /* Lock to allow exclusive modification to the device and opp lists */
- DEFINE_MUTEX(opp_table_lock);
- /* Flag indicating that opp_tables list is being updated at the moment */
-@@ -163,6 +167,10 @@ unsigned int dev_pm_opp_get_required_pstate(struct dev_pm_opp *opp,
- 		return 0;
- 	}
- 
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(opp->opp_table))
-+		return 0;
-+
- 	return opp->required_opps[index]->pstate;
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_get_required_pstate);
-@@ -885,6 +893,10 @@ static int _set_required_opps(struct device *dev,
- 	if (!required_opp_tables)
- 		return 0;
- 
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(opp_table))
-+		return -EBUSY;
-+
- 	/* Single genpd case */
- 	if (!genpd_virt_devs)
- 		return _set_required_opp(dev, dev, opp, 0);
-@@ -1181,6 +1193,7 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
- 	mutex_init(&opp_table->lock);
- 	mutex_init(&opp_table->genpd_virt_dev_lock);
- 	INIT_LIST_HEAD(&opp_table->dev_list);
-+	INIT_LIST_HEAD(&opp_table->lazy);
- 
- 	/* Mark regulator count uninitialized */
- 	opp_table->regulator_count = -1;
-@@ -1632,6 +1645,21 @@ static int _opp_is_duplicate(struct device *dev, struct dev_pm_opp *new_opp,
- 	return 0;
- }
- 
-+void _required_opps_available(struct dev_pm_opp *opp, int count)
-+{
-+	int i;
-+
-+	for (i = 0; i < count; i++) {
-+		if (opp->required_opps[i]->available)
-+			continue;
-+
-+		opp->available = false;
-+		pr_warn("%s: OPP not supported by required OPP %pOF (%lu)\n",
-+			 __func__, opp->required_opps[i]->np, opp->rate);
-+		return;
-+	}
-+}
-+
- /*
-  * Returns:
-  * 0: On success. And appropriate error message for duplicate OPPs.
-@@ -1646,7 +1674,6 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
- 	     struct opp_table *opp_table, bool rate_not_available)
+ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
  {
- 	struct list_head *head;
--	unsigned int i;
- 	int ret;
- 
- 	mutex_lock(&opp_table->lock);
-@@ -1672,15 +1699,11 @@ int _opp_add(struct device *dev, struct dev_pm_opp *new_opp,
- 			 __func__, new_opp->rate);
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbgetsymval: symname=%s, symtab=%px\n", symname,
+-			   symtab);
++	kdb_dbg_printf(AR, "symname=%s, symtab=%px\n", symname,
++		symtab);
+ 	memset(symtab, 0, sizeof(*symtab));
+ 	symtab->sym_start = kallsyms_lookup_name(symname);
+ 	if (symtab->sym_start) {
+-		if (KDB_DEBUG(AR))
+-			kdb_printf("kdbgetsymval: returns 1, "
+-				   "symtab->sym_start=0x%lx\n",
+-				   symtab->sym_start);
++		kdb_dbg_printf(AR, "returns 1, "
++			"symtab->sym_start=0x%lx\n",
++			symtab->sym_start);
+ 		return 1;
  	}
- 
--	for (i = 0; i < opp_table->required_opp_count; i++) {
--		if (new_opp->required_opps[i]->available)
--			continue;
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(opp_table))
-+		return 0;
- 
--		new_opp->available = false;
--		dev_warn(dev, "%s: OPP not supported by required OPP %pOF (%lu)\n",
--			 __func__, new_opp->required_opps[i]->np, new_opp->rate);
--		break;
--	}
-+	_required_opps_available(new_opp, opp_table->required_opp_count);
- 
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbgetsymval: returns 0\n");
++	kdb_dbg_printf(AR, "returns 0\n");
  	return 0;
  }
-@@ -2388,6 +2411,10 @@ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table,
- 	if (!src_table || !src_table->required_opp_count)
- 		return pstate;
+ EXPORT_SYMBOL(kdbgetsymval);
+@@ -87,15 +84,14 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ #define knt1_size 128		/* must be >= kallsyms table size */
+ 	char *knt1 = NULL;
  
-+	/* required-opps not fully initialized yet */
-+	if (lazy_linking_pending(src_table))
-+		return -EBUSY;
-+
- 	for (i = 0; i < src_table->required_opp_count; i++) {
- 		if (src_table->required_opp_tables[i]->np == dst_table->np)
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbnearsym: addr=0x%lx, symtab=%px\n", addr, symtab);
++	kdb_dbg_printf(AR, "addr=0x%lx, symtab=%px\n", addr, symtab);
+ 	memset(symtab, 0, sizeof(*symtab));
+ 
+ 	if (addr < 4096)
+ 		goto out;
+ 	knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
+ 	if (!knt1) {
+-		kdb_printf("kdbnearsym: addr=0x%lx cannot kmalloc knt1\n",
++		kdb_func_printf("addr=0x%lx cannot kmalloc knt1\n",
+ 			   addr);
+ 		goto out;
+ 	}
+@@ -147,11 +143,10 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ 
+ 	if (symtab->mod_name == NULL)
+ 		symtab->mod_name = "kernel";
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbnearsym: returns %d symtab->sym_start=0x%lx, "
+-		   "symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
+-		   symtab->sym_start, symtab->mod_name, symtab->sym_name,
+-		   symtab->sym_name);
++	kdb_dbg_printf(AR, "returns %d symtab->sym_start=0x%lx, "
++		"symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
++		symtab->sym_start, symtab->mod_name, symtab->sym_name,
++		symtab->sym_name);
+ 
+ out:
+ 	debug_kfree(knt1);
+@@ -328,7 +323,7 @@ int kdb_getarea_size(void *res, unsigned long addr, size_t size)
+ 	int ret = copy_from_kernel_nofault((char *)res, (char *)addr, size);
+ 	if (ret) {
+ 		if (!KDB_STATE(SUPPRESS)) {
+-			kdb_printf("kdb_getarea: Bad address 0x%lx\n", addr);
++			kdb_func_printf("Bad address 0x%lx\n", addr);
+ 			KDB_STATE_SET(SUPPRESS);
+ 		}
+ 		ret = KDB_BADADDR;
+@@ -353,7 +348,7 @@ int kdb_putarea_size(unsigned long addr, void *res, size_t size)
+ 	int ret = copy_from_kernel_nofault((char *)addr, (char *)res, size);
+ 	if (ret) {
+ 		if (!KDB_STATE(SUPPRESS)) {
+-			kdb_printf("kdb_putarea: Bad address 0x%lx\n", addr);
++			kdb_func_printf("Bad address 0x%lx\n", addr);
+ 			KDB_STATE_SET(SUPPRESS);
+ 		}
+ 		ret = KDB_BADADDR;
+@@ -435,7 +430,7 @@ int kdb_getphysword(unsigned long *word, unsigned long addr, size_t size)
+ 		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+-		kdb_printf("kdb_getphysword: bad width %ld\n", (long) size);
++		kdb_func_printf("bad width %zu\n", size);
+ 	}
+ 	return diag;
+ }
+@@ -484,7 +479,7 @@ int kdb_getword(unsigned long *word, unsigned long addr, size_t size)
+ 		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+-		kdb_printf("kdb_getword: bad width %ld\n", (long) size);
++		kdb_func_printf("bad width %zu\n", size);
+ 	}
+ 	return diag;
+ }
+@@ -528,7 +523,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
+ 		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+-		kdb_printf("kdb_putword: bad width %ld\n", (long) size);
++		kdb_func_printf("bad width %zu\n", size);
+ 	}
+ 	return diag;
+ }
+@@ -602,8 +597,7 @@ unsigned long kdb_task_state_string(const char *s)
+ 			res = ~0UL;
  			break;
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 20ccdaab9384..f480c10e6314 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -144,7 +144,7 @@ static void _opp_table_free_required_tables(struct opp_table *opp_table)
- 
- 	for (i = 0; i < opp_table->required_opp_count; i++) {
- 		if (IS_ERR_OR_NULL(required_opp_tables[i]))
--			break;
-+			continue;
- 
- 		dev_pm_opp_put_opp_table(required_opp_tables[i]);
- 	}
-@@ -153,6 +153,7 @@ static void _opp_table_free_required_tables(struct opp_table *opp_table)
- 
- 	opp_table->required_opp_count = 0;
- 	opp_table->required_opp_tables = NULL;
-+	list_del(&opp_table->lazy);
- }
- 
- /*
-@@ -165,6 +166,7 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
- {
- 	struct opp_table **required_opp_tables;
- 	struct device_node *required_np, *np;
-+	bool lazy = false;
- 	int count, i;
- 
- 	/* Traversing the first OPP node is all we need */
-@@ -195,8 +197,10 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
- 		required_opp_tables[i] = _find_table_of_opp_np(required_np);
- 		of_node_put(required_np);
- 
--		if (IS_ERR(required_opp_tables[i]))
--			goto free_required_tables;
-+		if (IS_ERR(required_opp_tables[i])) {
-+			lazy = true;
-+			continue;
-+		}
- 
- 		/*
- 		 * We only support genpd's OPPs in the "required-opps" for now,
-@@ -210,6 +214,10 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
+ 		default:
+-			  kdb_printf("%s: unknown flag '%c' ignored\n",
+-				     __func__, *s);
++			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
+ 			  break;
  		}
+ 		++s;
+@@ -884,18 +878,18 @@ void debug_kusage(void)
+ 	if (!debug_kusage_one_time)
+ 		goto out;
+ 	debug_kusage_one_time = 0;
+-	kdb_printf("%s: debug_kmalloc memory leak dah_first %d\n",
+-		   __func__, dah_first);
++	kdb_func_printf("debug_kmalloc memory leak dah_first %d\n",
++		dah_first);
+ 	if (dah_first) {
+ 		h_used = (struct debug_alloc_header *)debug_alloc_pool;
+-		kdb_printf("%s: h_used %px size %d\n", __func__, h_used,
++		kdb_func_printf("h_used %px size %d\n", h_used,
+ 			   h_used->size);
  	}
- 
-+	/* Let's do the linking later on */
-+	if (lazy)
-+		list_add(&opp_table->lazy, &lazy_opp_tables);
-+
- 	goto put_np;
- 
- free_required_tables:
-@@ -278,14 +286,14 @@ void _of_opp_free_required_opps(struct opp_table *opp_table,
- 
- 	for (i = 0; i < opp_table->required_opp_count; i++) {
- 		if (!required_opps[i])
--			break;
-+			continue;
- 
- 		/* Put the reference back */
- 		dev_pm_opp_put(required_opps[i]);
- 	}
- 
--	kfree(required_opps);
- 	opp->required_opps = NULL;
-+	kfree(required_opps);
+ 	do {
+ 		h_used = (struct debug_alloc_header *)
+ 			  ((char *)h_free + dah_overhead + h_free->size);
+-		kdb_printf("%s: h_used %px size %d caller %px\n",
+-			   __func__, h_used, h_used->size, h_used->caller);
++		kdb_func_printf("h_used %px size %d caller %px\n",
++			  h_used, h_used->size, h_used->caller);
+ 		h_free = (struct debug_alloc_header *)
+ 			  (debug_alloc_pool + h_free->next);
+ 	} while (h_free->next);
+@@ -903,8 +897,8 @@ void debug_kusage(void)
+ 		  ((char *)h_free + dah_overhead + h_free->size);
+ 	if ((char *)h_used - debug_alloc_pool !=
+ 	    sizeof(debug_alloc_pool_aligned))
+-		kdb_printf("%s: h_used %px size %d caller %px\n",
+-			   __func__, h_used, h_used->size, h_used->caller);
++		kdb_func_printf("h_used %px size %d caller %px\n",
++			   h_used, h_used->size, h_used->caller);
+ out:
+ 	spin_unlock(&dap_lock);
  }
- 
- /* Populate all required OPPs which are part of "required-opps" list */
-@@ -309,6 +317,10 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
- 	for (i = 0; i < count; i++) {
- 		required_table = opp_table->required_opp_tables[i];
- 
-+		/* Required table not added yet, we will link later */
-+		if (IS_ERR_OR_NULL(required_table))
-+			continue;
-+
- 		np = of_parse_required_opp(opp->np, i);
- 		if (unlikely(!np)) {
- 			ret = -ENODEV;
-@@ -334,6 +346,104 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
- 	return ret;
- }
- 
-+/* Link required OPPs for an individual OPP */
-+static int lazy_link_required_opps(struct opp_table *opp_table,
-+				   struct opp_table *new_table, int index)
-+{
-+	struct device_node *required_np;
-+	struct dev_pm_opp *opp;
-+
-+	list_for_each_entry(opp, &opp_table->opp_list, node) {
-+		required_np = of_parse_required_opp(opp->np, index);
-+		if (unlikely(!required_np))
-+			return -ENODEV;
-+
-+		opp->required_opps[index] = _find_opp_of_np(new_table, required_np);
-+		of_node_put(required_np);
-+
-+		if (!opp->required_opps[index]) {
-+			pr_err("%s: Unable to find required OPP node: %pOF (%d)\n",
-+			       __func__, opp->np, index);
-+			return -ENODEV;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Link required OPPs for all OPPs of the newly added OPP table */
-+static void lazy_link_required_opp_table(struct opp_table *new_table)
-+{
-+	struct opp_table *opp_table, *temp, **required_opp_tables;
-+	struct device_node *required_np, *opp_np, *required_table_np;
-+	struct dev_pm_opp *opp;
-+	int i, ret;
-+
-+	/*
-+	 * We only support genpd's OPPs in the "required-opps" for now,
-+	 * as we don't know much about other cases.
-+	 */
-+	if (!new_table->is_genpd)
-+		return;
-+
-+	mutex_lock(&opp_table_lock);
-+
-+	list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
-+		bool lazy = false;
-+
-+		/* opp_np can't be invalid here */
-+		opp_np = of_get_next_available_child(opp_table->np, NULL);
-+
-+		for (i = 0; i < opp_table->required_opp_count; i++) {
-+			required_opp_tables = opp_table->required_opp_tables;
-+
-+			/* Required opp-table is already parsed */
-+			if (!IS_ERR(required_opp_tables[i]))
-+				continue;
-+
-+			/* required_np can't be invalid here */
-+			required_np = of_parse_required_opp(opp_np, i);
-+			required_table_np = of_get_parent(required_np);
-+
-+			of_node_put(required_table_np);
-+			of_node_put(required_np);
-+
-+			/*
-+			 * Newly added table isn't the required opp-table for
-+			 * opp_table.
-+			 */
-+			if (required_table_np != new_table->np) {
-+				lazy = true;
-+				continue;
-+			}
-+
-+			required_opp_tables[i] = new_table;
-+			_get_opp_table_kref(new_table);
-+
-+			/* Link OPPs now */
-+			ret = lazy_link_required_opps(opp_table, new_table, i);
-+			if (ret) {
-+				/* The OPPs will be marked unusable */
-+				lazy = false;
-+				break;
-+			}
-+		}
-+
-+		of_node_put(opp_np);
-+
-+		/* All required opp-tables found, remove from lazy list */
-+		if (!lazy) {
-+			list_del(&opp_table->lazy);
-+			INIT_LIST_HEAD(&opp_table->lazy);
-+
-+			list_for_each_entry(opp, &opp_table->opp_list, node)
-+				_required_opps_available(opp, opp_table->required_opp_count);
-+		}
-+	}
-+
-+	mutex_unlock(&opp_table_lock);
-+}
-+
- static int _bandwidth_supported(struct device *dev, struct opp_table *opp_table)
- {
- 	struct device_node *np, *opp_np;
-@@ -889,6 +999,8 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
- 		}
- 	}
- 
-+	lazy_link_required_opp_table(opp_table);
-+
- 	return 0;
- 
- remove_static_opp:
-diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-index 372df68e185b..9b9daf83b074 100644
---- a/drivers/opp/opp.h
-+++ b/drivers/opp/opp.h
-@@ -26,7 +26,7 @@ struct regulator;
- /* Lock to allow exclusive modification to the device and opp lists */
- extern struct mutex opp_table_lock;
- 
--extern struct list_head opp_tables;
-+extern struct list_head opp_tables, lazy_opp_tables;
- 
- /*
-  * Internal data structure organization with the OPP layer library is as
-@@ -168,7 +168,7 @@ enum opp_table_access {
-  * meant for book keeping and private to OPP library.
-  */
- struct opp_table {
--	struct list_head node;
-+	struct list_head node, lazy;
- 
- 	struct blocking_notifier_head head;
- 	struct list_head dev_list;
-@@ -229,6 +229,12 @@ int _opp_add_v1(struct opp_table *opp_table, struct device *dev, unsigned long f
- void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask, int last_cpu);
- struct opp_table *_add_opp_table_indexed(struct device *dev, int index, bool getclk);
- void _put_opp_list_kref(struct opp_table *opp_table);
-+void _required_opps_available(struct dev_pm_opp *opp, int count);
-+
-+static inline bool lazy_linking_pending(struct opp_table *opp_table)
-+{
-+	return unlikely(!list_empty(&opp_table->lazy));
-+}
- 
- #ifdef CONFIG_OF
- void _of_init_opp_table(struct opp_table *opp_table, struct device *dev, int index);
 -- 
-2.25.0.rc1.19.g042ed3e048af
+1.8.3.1
 
