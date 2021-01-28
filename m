@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0447930805B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0F430805E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhA1VR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:17:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhA1VRf (ORCPT
+        id S231453AbhA1VTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:19:21 -0500
+Received: from st43p00im-ztbu10073601.me.com ([17.58.63.184]:60936 "EHLO
+        st43p00im-ztbu10073601.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229596AbhA1VTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:17:35 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32FEC061574;
-        Thu, 28 Jan 2021 13:16:54 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id j13so8303806edp.2;
-        Thu, 28 Jan 2021 13:16:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Bn/uZbi53prTbKMwEZWHXl6XCtApRQIRtzYnDibrEI=;
-        b=M1Xs1mWrpvwVSmNxKUfVObBna2/o8jikxGlcqEeHhf0DSudNj8QY6OAX3C7uy2Dpx/
-         1MZMRcZeq4VuYtZTJjUVrNOseOr8M/B75LrHOC+GhGpocyFVVJRDP7TdB09LgRzkIvZM
-         By9mh5EVAdU0FegixQb+tT5mLFvocEcYinNP5sBPh25nKxAwSZvDdbzX5VoG0zMcTUK9
-         LBYCgT62MIreVF/Ke+S7X1DhrrxB+SKiJ72osOSrGkg790v42NGClbocqMbpYCFWoARD
-         VmgwKYP4Aq1VGBmw/tAhIGRAsE899bCnYJ8Kf3HdmPScPV4Dx3xBHBlJDVFL88vm1f28
-         dxgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Bn/uZbi53prTbKMwEZWHXl6XCtApRQIRtzYnDibrEI=;
-        b=tQtq2v8PbdGVZdA1izCOrgNR56zs+NQaXV/pWkZZ/jYoMZk3z+bWeyHcTjlxmQ6oZ9
-         9aODpY4LZCz6gzGXXhRRL5DK+2RnOoYa4KscTjFPTiAuebUJSZG1hxmAf4VIqpvNQ8hJ
-         NADy7mc+54AYw9ewXCGkOlUAbSnIYepSzNg0eMKQ0FskV5csdTgME3rKPj4qaZTuiemR
-         WcYnxiF+3ZFGsqEh+U/m6acnvl8TCsmDv+TO0aqNEZNaxYsjmWGEjnoqQetkuT06tQ/R
-         WzRpRsNfA8ElccLYX4m9PrFyhwV9/infZ8GPnlkZB6tXD8NvrKPeLHqosbyJFI/DCKeR
-         ESmg==
-X-Gm-Message-State: AOAM5317/v+UITeXvTqt32ri0IisNzMm44zJFgc2hqauMgaKQtt090Fl
-        gWBX9CXGkrlYwb0MPuK8nE8jtRHcFLEubGo9NFg=
-X-Google-Smtp-Source: ABdhPJy9bs5zjsAcg8AJRyenRTcYrzHPwabscBl9E9PA/LMnOGH2QrK37cEXMePa86ZjH47zlOt/oZjVyiAUvhdIHHc=
-X-Received: by 2002:a05:6402:312e:: with SMTP id dd14mr1780887edb.366.1611868613546;
- Thu, 28 Jan 2021 13:16:53 -0800 (PST)
+        Thu, 28 Jan 2021 16:19:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1611868696; bh=ciV1++1D+OLCgxRRqznQGe+RYOrt49WBPH7f6XfbotU=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=ZQg5ltqK84t/9xNXnvyu4NFbQU1yTz8VaClkIymGEG2sVUziMyLeKFsbxKsO/dJlh
+         8W7XULtR9wf/ToLNn9E8mP2ksLyvIqBssNnOBqJLAGO84Mi+iGYpQlxb2kQN7BynJd
+         01H8JcWW3jDIlLZsShPzGQZP2BTCdDJqJlSAMKEq3Ao2llovf/E/Kgvo5Te39zHCnQ
+         vw4H/2y6KFAzrTIpBvG7bUo7bgS7Qr4ojhoxuBnkhf6SsZrbfzvxmRsI/oh0UGkuYS
+         N2NLstugYbmqhuizC/1E10DtthMGemgxxRZR/qpBGKVxV1BZfZogMGH+n1gY6Axdx5
+         Bb2vdV2Io848w==
+Received: from gnbcxl0029.gnb.st.com (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-ztbu10073601.me.com (Postfix) with ESMTPSA id 979AF8201B8;
+        Thu, 28 Jan 2021 21:18:12 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 22:18:08 +0100
+From:   Alain Volmat <avolmat@me.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ARM: dts: sti: Introduce 4KOpen (stih418-b2264) board
+Message-ID: <20210128211807.GA15542@gnbcxl0029.gnb.st.com>
+Mail-Followup-To: Arnd Bergmann <arnd@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210128075825.10368-1-avolmat@me.com>
+ <CAK8P3a2TxPHc60c7+FoLm831rTPvyftRixL+BQfeVf3p_szopA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-3-shy828301@gmail.com>
- <4b0a6d22-e29b-fb85-b05f-b9f9f62ca8ea@suse.cz>
-In-Reply-To: <4b0a6d22-e29b-fb85-b05f-b9f9f62ca8ea@suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 28 Jan 2021 13:16:41 -0800
-Message-ID: <CAHbLzkoW_vQNgfwrVRy4hXaJkqW+era885dFQZfZy-OHZOOZdg@mail.gmail.com>
-Subject: Re: [v5 PATCH 02/11] mm: vmscan: consolidate shrinker_maps handling code
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2TxPHc60c7+FoLm831rTPvyftRixL+BQfeVf3p_szopA@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2101280104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 8:10 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 1/28/21 12:33 AM, Yang Shi wrote:
-> > The shrinker map management is not purely memcg specific, it is at the intersection
-> > between memory cgroup and shrinkers.  It's allocation and assignment of a structure,
-> > and the only memcg bit is the map is being stored in a memcg structure.  So move the
-> > shrinker_maps handling code into vmscan.c for tighter integration with shrinker code,
-> > and remove the "memcg_" prefix.  There is no functional change.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
-> Nits below:
->
-> > @@ -1581,10 +1581,10 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
-> >       return false;
-> >  }
-> >
-> > -extern int memcg_expand_shrinker_maps(int new_id);
-> > -
-> > -extern void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
-> > -                                int nid, int shrinker_id);
-> > +extern int alloc_shrinker_maps(struct mem_cgroup *memcg);
-> > +extern void free_shrinker_maps(struct mem_cgroup *memcg);
-> > +extern void set_shrinker_bit(struct mem_cgroup *memcg,
-> > +                          int nid, int shrinker_id);
->
-> "extern" is unnecessary and people seem to be removing them nowadays when
-> touching the code
+Hi Arnd,
 
-OK, will fix in v6.
+thanks for the comments and sorry for the large 'To' list. In my v2 I'll
+limit to Patrice Chotard (STi maintainer).
 
->
-> >  /*
-> >   * We allow subsystems to populate their shrinker-related
-> >   * LRU lists before register_shrinker_prepared() is called
-> > @@ -212,7 +338,7 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >               goto unlock;
+On Thu, Jan 28, 2021 at 02:08:51PM +0100, Arnd Bergmann wrote:
+> On Thu, Jan 28, 2021 at 8:58 AM Alain Volmat <avolmat@me.com> wrote:
 > >
-> >       if (id >= shrinker_nr_max) {
-> > -             if (memcg_expand_shrinker_maps(id)) {
-> > +             if (expand_shrinker_maps(id)) {
-> >                       idr_remove(&shrinker_idr, id);
-> >                       goto unlock;
-> >               }
-> > @@ -601,7 +727,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->
-> Above this is a comment about barriers in memcg_set_shrinker_bit() that should
-> be updated.
+> > 4KOpen (B2264) is a board based on the STMicroelectronics STiH418 soc:
+> >   - 2GB DDR
+> >   - HDMI
+> >   - Ethernet 1000-BaseT
+> >   - PCIe (mini PCIe connector)
+> >   - MicroSD slot
+> >   - USB2 and USB3 connectors
+> >   - Sata
+> >   - 40 pins GPIO header
+> >
+> > Signed-off-by: Alain Volmat <avolmat@me.com>
+> 
+> The changelog text seems fine here.
+> 
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Copyright (C) 2021 STMicroelectronics
+> > + * Author: Alain Volmat <avolmat@me.com>
+> > + */
+> > +/dts-v1/;
+> > +#include "stih418.dtsi"
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +/ {
+> > +       model = "STiH418 B2264";
+> > +       compatible = "st,stih418-b2264", "st,stih418";
+> > +
+> > +       chosen {
+> > +               bootargs = "console=ttyAS0,115200 clk_ignore_unused";
+> > +               stdout-path = &sbc_serial0;
+> > +       };
+> 
+> I don't think the bootargs should be there, both are just hacks
+> when things don't work correctly. If they don't, then try to fix them
+> first, by making sure that all clocks are properly listed, and that the
+> stdou-path points the working console.
 
-Thanks for catching this. Will fix in v6.
+Indeed, bootargs can be cleaned up. console is not necessary, however
+it's going to be hard to get rid of the clk_ignore_unused now and I'd
+prefer to keep it now, in the same way as for the other sti DTs.
 
->
-> >                       if (ret == SHRINK_EMPTY)
-> >                               ret = 0;
-> >                       else
-> > -                             memcg_set_shrinker_bit(memcg, nid, i);
-> > +                             set_shrinker_bit(memcg, nid, i);
-> >               }
-> >               freed += ret;
-> >
-> >
->
+> 
+> > +&rng11 {
+> > +       status = "disabled";
+> > +};
+> 
+> Why do you disable the random number generator?
+
+I shouldn't have putted this within the board DT. This rng11 is not
+available on the STiH418.
+In the v2 serie I'll had a separate commit to fix the stih418.dtsi instead.
+
+Alain
+
+> 
+>        Arnd
+
