@@ -2,45 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C18307987
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D030307999
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhA1PUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:20:42 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11467 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhA1PTr (ORCPT
+        id S232010AbhA1PYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:24:15 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11530 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232178AbhA1PWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:19:47 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRPH86F54zjDTK;
-        Thu, 28 Jan 2021 23:17:56 +0800 (CST)
+        Thu, 28 Jan 2021 10:22:15 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DRPKs1ZVgzjFdr;
+        Thu, 28 Jan 2021 23:20:17 +0800 (CST)
 Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 28 Jan 2021 23:18:46 +0800
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
-References: <20201126034230.777-1-thunder.leizhen@huawei.com>
- <20210122125132.GB24102@willie-the-truck>
- <aac11411-f6cd-f990-fe53-db0d8c07f3a0@huawei.com>
- <1bfd1ca0-953e-e943-f87e-144d5537bd0c@arm.com>
- <20210126101230.GA29204@willie-the-truck>
- <8a9685ec-67aa-824f-5429-f408bf79c5ab@huawei.com>
- <32f4752f-6954-183a-a0c1-b5d719c85b67@huawei.com>
- <319e3532-4555-7431-9d6f-3c3b7c11a5d9@arm.com>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 28 Jan 2021 23:21:20 +0800
+Subject: Re: [PATCH v3 2/2] vfio/iommu_type1: Fix some sanity checks in detach
+ group
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20210122092635.19900-1-zhukeqian1@huawei.com>
+ <20210122092635.19900-3-zhukeqian1@huawei.com>
+ <20210127164641.36e17bf5@omen.home.shazbot.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
 From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <d3aaa7e7-edb0-f867-0519-9a4e0bee35d2@huawei.com>
-Date:   Thu, 28 Jan 2021 23:18:46 +0800
+Message-ID: <5093dace-4b8a-d455-ba16-d0c2da755573@huawei.com>
+Date:   Thu, 28 Jan 2021 23:21:20 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
  Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <319e3532-4555-7431-9d6f-3c3b7c11a5d9@arm.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210127164641.36e17bf5@omen.home.shazbot.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.184.42]
 X-CFilter-Loop: Reflected
@@ -50,60 +59,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/1/27 17:39, Robin Murphy wrote:
-> On 2021-01-27 07:36, Keqian Zhu wrote:
->>
->>
->> On 2021/1/27 10:01, Leizhen (ThunderTown) wrote:
->>>
->>>
->>> On 2021/1/26 18:12, Will Deacon wrote:
->>>> On Mon, Jan 25, 2021 at 08:23:40PM +0000, Robin Murphy wrote:
->>>>> Now we probably will need some degreee of BBML feature awareness for the
->>>>> sake of SVA if and when we start using it for CPU pagetables, but I still
->>>>> cannot see any need to consider it in io-pgtable.
->>>>
->>>> Agreed; I don't think this is something that io-pgtable should have to care
->>>> about.
->> Hi,
->>
->> I have a question here :-).
->> If the old table is not live, then the break procedure seems unnecessary. Do I miss something?
+On 2021/1/28 7:46, Alex Williamson wrote:
+> On Fri, 22 Jan 2021 17:26:35 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
 > 
-> The MMU is allowed to prefetch translations at any time, so not following the proper update procedure could still potentially lead to a TLB conflict, even if there's no device traffic to worry about disrupting.
+>> vfio_sanity_check_pfn_list() is used to check whether pfn_list and
+>> notifier are empty when remove the external domain, so it makes a
+>> wrong assumption that only external domain will use the pinning
+>> interface.
+>>
+>> Now we apply the pfn_list check when a vfio_dma is removed and apply
+>> the notifier check when all domains are removed.
+>>
+>> Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++-----------------------
+>>  1 file changed, 10 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 161725395f2f..d8c10f508321 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -957,6 +957,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
+>>  
+>>  static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
+>>  {
+>> +	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
+>>  	vfio_unmap_unpin(iommu, dma, true);
+>>  	vfio_unlink_dma(iommu, dma);
+>>  	put_task_struct(dma->task);
+>> @@ -2250,23 +2251,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
+>>  	}
+>>  }
+>>  
+>> -static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
+>> -{
+>> -	struct rb_node *n;
+>> -
+>> -	n = rb_first(&iommu->dma_list);
+>> -	for (; n; n = rb_next(n)) {
+>> -		struct vfio_dma *dma;
+>> -
+>> -		dma = rb_entry(n, struct vfio_dma, node);
+>> -
+>> -		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
+>> -			break;
+>> -	}
+>> -	/* mdev vendor driver must unregister notifier */
+>> -	WARN_ON(iommu->notifier.head);
+>> -}
+>> -
+>>  /*
+>>   * Called when a domain is removed in detach. It is possible that
+>>   * the removed domain decided the iova aperture window. Modify the
+>> @@ -2366,10 +2350,10 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  			kfree(group);
+>>  
+>>  			if (list_empty(&iommu->external_domain->group_list)) {
+>> -				vfio_sanity_check_pfn_list(iommu);
+>> -
+>> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
+>> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)) {
+>> +					WARN_ON(iommu->notifier.head);
+>>  					vfio_iommu_unmap_unpin_all(iommu);
+>> +				}
+>>  
+>>  				kfree(iommu->external_domain);
+>>  				iommu->external_domain = NULL;
+>> @@ -2403,10 +2387,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  		 */
+>>  		if (list_empty(&domain->group_list)) {
+>>  			if (list_is_singular(&iommu->domain_list)) {
+>> -				if (!iommu->external_domain)
+>> +				if (!iommu->external_domain) {
+>> +					WARN_ON(iommu->notifier.head);
+>>  					vfio_iommu_unmap_unpin_all(iommu);
+>> -				else
+>> +				} else {
+>>  					vfio_iommu_unmap_unpin_reaccount(iommu);
+>> +				}
+>>  			}
+>>  			iommu_domain_free(domain->domain);
+>>  			list_del(&domain->next);
+>> @@ -2488,9 +2474,10 @@ static void vfio_iommu_type1_release(void *iommu_data)
+>>  	struct vfio_iommu *iommu = iommu_data;
+>>  	struct vfio_domain *domain, *domain_tmp;
+>>  
+>> +	WARN_ON(iommu->notifier.head);
 > 
-> Robin.
+> I don't see that this does any harm, but isn't it actually redundant?
+> It seems vfio-core only calls the iommu backend release function after
+> removing all the groups, so the tests in _detach_group should catch all
+> cases.  We're expecting the vfio bus/mdev driver to remove the notifier
+> when a device is closed, which necessarily occurs before detaching the
+> group.  Thanks,
+> 
+> Alex
+Hi Alex,
 
-Thanks. Does the MMU you mention here includes MMU and SMMU? I know that at SMMU side, ATS can prefetch translation.
+Sorry that today I was busy at sending the smmu HTTU based dma dirty log tracking.
+I will reply you tomorrow. Thanks!
 
-Keqian
+Keqian.
+
 > 
->> Thanks,
->> Keqian
->>
->>>
->>> Yes, the SVA works in stall mode, and the failed device access requests are not
->>> discarded.
->>>
->>> Let me look for examples. The BBML usage scenario was told by a former colleague.
->>>
->>>>
->>>> Will
->>>>
->>>> .
->>>>
->>>
->>>
->>> _______________________________________________
->>> linux-arm-kernel mailing list
->>> linux-arm-kernel@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>> .
->>>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
->>
+>> +
+>>  	if (iommu->external_domain) {
+>>  		vfio_release_domain(iommu->external_domain, true);
+>> -		vfio_sanity_check_pfn_list(iommu);
+>>  		kfree(iommu->external_domain);
+>>  	}
+>>  
+> 
 > .
 > 
