@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAA630811A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679FB30811F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhA1W3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:29:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhA1W3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:29:06 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2FCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:28:26 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id j11so1548856plt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:28:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=EU8Tm3K3oBlbbIeULtvbxU5p2tn0TQtZedwnNIY0Y84=;
-        b=BgZAIzU4NSonuhxkBzNY3c7VaB8jSmmWONbtZOdYQ2id+Zm4dBNl3Td000Ay/R2Vka
-         HZz13NCZDH7whsxHvmb0YNyd6VBfj3CYEfI2Y3wx7D41QkClnROSyUaMEVU4IWrmn8QN
-         sOA4U26j0xUAErYAkMHrfo+uMIfEiPCQL9JXLbglEzeXG1qXZvH2jHSVQaEAc3b6xZRY
-         LkKp6X1lRRi8pLYyIWcIL1+kjTiR/nF2DKWS4cwbJ1Rv385gkQz33y13ihw+dcBs3i7Y
-         z4wAaYzPpICf5r2Uq09E59pO12nEXLdMArTYcW4Kf9e0jPIzP4WTDs1LAg4ANYYnrMZV
-         Xrww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=EU8Tm3K3oBlbbIeULtvbxU5p2tn0TQtZedwnNIY0Y84=;
-        b=a9oQFzwMT1EGJG/j/bVo+pOlG3mdXe6h045/F0dqMnKpNrPUqsldq34EyWrDYX1uMK
-         rJqyystMcz9egVA2RqAKOW8XWc48V4TVnvU2jNLB77jo8JAZrrgiSUZkurdMDnYzaxvR
-         1Yl7LwvshnkYrBbjnYdUYGBlShhL67X6prJGWMopgrAp22M8Rf5PiNIjODeK7NFNKbI2
-         f3CF7TpM8xqcdpbE+nnhgEJ5856tekcworI8Qtorb9DaKDnh+kMI9ddtXcjgTXhw6A5W
-         D1ncMukJYRsKWl1tmvJBW6xA1b/i+jSM3AckPaHth2TVMScbm8wLpqq4H4Szy93tbsja
-         soVQ==
-X-Gm-Message-State: AOAM531SxIZHp+xjhRI/FKihqzYKlV9ONvZ6NzkiGwkquOL27hMxm3s+
-        k6Av5YBT12GzN/WRpIx0HEKuSpWCpkun2g==
-X-Google-Smtp-Source: ABdhPJzFe2/P5brnc2ev5Q8HoSO/uUHvj6D6QO6jxHq4qeewaCtN9jvyrggp2amIDjiWjiU/RgsauA==
-X-Received: by 2002:a17:90b:fc9:: with SMTP id gd9mr1429601pjb.107.1611872905499;
-        Thu, 28 Jan 2021 14:28:25 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id r30sm6872643pfq.12.2021.01.28.14.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 14:28:24 -0800 (PST)
-Date:   Thu, 28 Jan 2021 14:28:23 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
+        id S231405AbhA1W3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:29:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52292 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231185AbhA1W3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 17:29:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C239FAC60;
+        Thu, 28 Jan 2021 22:29:10 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 23:29:06 +0100
+From:   Oscar Salvador <osalvador@suse.de>
 To:     David Hildenbrand <david@redhat.com>
-cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v2] mm/page_alloc: count CMA pages per zone and print
- them in /proc/zoneinfo
-In-Reply-To: <F1BB7F6F-DD08-4D97-A79A-CC7CA6A579E2@redhat.com>
-Message-ID: <89e1dbcd-605d-6a7b-361-c130f7eb9d8c@google.com>
-References: <6d9cff33-39c1-ef8e-a18e-c865b95240b6@google.com> <F1BB7F6F-DD08-4D97-A79A-CC7CA6A579E2@redhat.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com,
+        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
+ associated with each HugeTLB page
+Message-ID: <20210128222906.GA3826@localhost.localdomain>
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com>
+ <20210126092942.GA10602@linux>
+ <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
+ <20210126145819.GB16870@linux>
+ <259b9669-0515-01a2-d714-617011f87194@redhat.com>
+ <20210126153448.GA17455@linux>
+ <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
+ <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="1482994552-507496633-1611872904=:323143"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---1482994552-507496633-1611872904=:323143
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 28 Jan 2021, David Hildenbrand wrote:
-
-> > ﻿On Thu, 28 Jan 2021, David Hildenbrand wrote:
-> > 
-> >> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> >> index 7758486097f9..957680db41fa 100644
-> >> --- a/mm/vmstat.c
-> >> +++ b/mm/vmstat.c
-> >> @@ -1650,6 +1650,11 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
-> >>           zone->spanned_pages,
-> >>           zone->present_pages,
-> >>           zone_managed_pages(zone));
-> >> +#ifdef CONFIG_CMA
-> >> +    seq_printf(m,
-> >> +           "\n        cma      %lu",
-> >> +           zone->cma_pages);
-> >> +#endif
-> >> 
-> >>    seq_printf(m,
-> >>           "\n        protection: (%ld",
-> > 
-> > Hmm, not sure about this.  If cma is only printed for CONFIG_CMA, we can't 
-> > distinguish between (1) a kernel without your patch without including some 
-> > version checking and (2) a kernel without CONFIG_CMA enabled.  IOW, 
-> > "cma 0" carries value: we know immediately that we do not have any CMA 
-> > pages on this zone, period.
-> > 
-> > /proc/zoneinfo is also not known for its conciseness so I think printing 
-> > "cma 0" even for !CONFIG_CMA is helpful :)
-> > 
-> > I think this #ifdef should be removed and it should call into a 
-> > zone_cma_pages(struct zone *zone) which returns 0UL if disabled.
-> > 
+On Wed, Jan 27, 2021 at 11:36:15AM +0100, David Hildenbrand wrote:
+> Extending on that, I just discovered that only x86-64, ppc64, and arm64
+> really support hugepage migration.
 > 
-> Yeah, that’s also what I proposed in a sub-thread here.
-> 
+> Maybe one approach with the "magic switch" really would be to disable
+> hugepage migration completely in hugepage_migration_supported(), and
+> consequently making hugepage_movable_supported() always return false.
 
-Ah, I certainly think your original intuition was correct.
+Ok, so migration would not fork for these pages, and since them would
+lay in !ZONE_MOVABLE there is no guarantee we can unplug the memory.
+Well, we really cannot unplug it unless the hugepage is not used
+(it can be dissolved at least).
 
-> The last option would be going the full mile and not printing nr_free_cma. Code might get a bit uglier though, but we could also remove that stats counter ;)
-> 
-> I don‘t particularly care, while printing „0“ might be easier, removing nr_free_cma might be cleaner.
-> 
-> But then, maybe there are tools that expect that value to be around on any kernel?
-> 
+Now to the allocation-when-freeing.
+Current implementation uses GFP_ATOMIC(or wants to use) + forever loop.
+One of the problems I see with GFP_ATOMIC is that gives you access
+to memory reserves, but there are more users using those reserves.
+Then, worst-scenario case we need to allocate 16MB order-0 pages
+to free up 1GB hugepage, so the question would be whether reserves
+really scale to 16MB + more users accessing reserves.
 
-Yeah, that's probably undue risk, the ship has sailed and there's no 
-significant upside.
+As I said, if anything I would go for an optimistic allocation-try
+, if we fail just refuse to shrink the pool.
+User can always try to shrink it later again via /sys interface.
 
-I still think "cma 0" in /proc/zoneinfo carries value, though, especially 
-for NUMA and it looks like this is how it's done in linux-next.  With a 
-single read of the file, userspace can make the determination what CMA 
-pages exist on this node.
+Since hugepages would not be longer in ZONE_MOVABLE/CMA and are not
+expected to be migratable, is that ok?
 
-In general, I think the rule-of-thumb is that the fewer ifdefs in 
-/proc/zoneinfo, the easier it is for userspace to parse it.
+Using the hugepage for the vmemmap array was brought up several times,
+but that would imply fragmenting memory over time.
 
-(I made that change to /proc/zoneinfo to even print non-existant zones for 
-each node because otherwise you cannot determine what the indices of 
-things like vm.lowmem_reserve_ratio represent.)
---1482994552-507496633-1611872904=:323143--
+All in all seems to be overly complicated (I might be wrong).
+
+
+> Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
+> migrated. The problem I describe would apply (careful with using
+> ZONE_MOVABLE), but well, it can at least be documented.
+
+I am not a page allocator expert but cannot the allocation fallback
+to ZONE_MOVABLE under memory shortage on other zones?
+
+
+-- 
+Oscar Salvador
+SUSE L3
