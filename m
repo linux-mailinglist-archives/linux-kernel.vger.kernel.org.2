@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8891E3077B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B725D3077BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhA1OJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:09:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231349AbhA1OJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:09:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4579264D92;
-        Thu, 28 Jan 2021 14:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611842899;
-        bh=QSDli4q81ZPENBHiSIxqH32K2P7ZjDli7F2BOv1/r9U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WqWHV57+phzaVBv77u51NcPbqZi/YOFjBMwRd2KxldHHJ7XFNYT5ed5VJkH4PPvAu
-         l9bQ5NNu6pbrc+vgPpVUmfD5xWv3HnprgGCuk4swf/sZCj9BQYsgcFFe7gs/Vv6Ea6
-         jrB2s9UsnUn6uH48aXrsLo5gTlhAaNBDyy7ksKGuNcJ3Z2/TkQ2OP0OHWBrohpozPc
-         zK5VAZcNOuKY+UtFusmh1kn+3fjsJppXYfMmz4zHluuxmlfy9DAKjtLvjloeHWSCeY
-         a5DfcrGiY9VyeNBi1Yei06EntAoq/olgB7Aewv6rj45FWZDqvR9vK1ixP/Jx//xx/F
-         SVHp9W7+JhSmA==
-Received: by mail-oi1-f182.google.com with SMTP id n7so6078635oic.11;
-        Thu, 28 Jan 2021 06:08:19 -0800 (PST)
-X-Gm-Message-State: AOAM53110fbfkeFxRtDUkdWHta/K7VWXxKu3PpsBFFM4AH0+7yWEcVb+
-        3utAZcmhVLJdN94djG/CDRBvAkQ1pg0JOWZjaBA=
-X-Google-Smtp-Source: ABdhPJzwEQxEnGH8Kd9EW4py7Vh8j/97czrumYSoCX4f5UnRR+EOHFO9iBqtwIJx05MPulf7muWpeVXN8Y1iYCWgGHI=
-X-Received: by 2002:aca:d908:: with SMTP id q8mr84273oig.67.1611842898482;
- Thu, 28 Jan 2021 06:08:18 -0800 (PST)
+        id S231217AbhA1ONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:13:51 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45074 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhA1ONt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:13:49 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10SEC2pA032804;
+        Thu, 28 Jan 2021 08:12:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611843122;
+        bh=AudpKSlaZboe1uf2RLBPZd0j5l8pLIG2KQCVcoHb/Pk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=uPJ7p4RKAidWFI38PN1NVSopf6Q7AB8r16q1edIU8BR6ItGm+4Fdt1N/Y0DtJXhvi
+         q4K257lDVAD5/IKRGm5H8F/CauOzOtcX1Ac6+XDTM5ToStp5yrE69X1RJEFqxm5lw4
+         GBgIKOUbMCy0nGkR07Nk0IT2mcN8fYDJN6RbIFFY=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10SEC2n4026339
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 Jan 2021 08:12:02 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
+ Jan 2021 08:12:02 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 28 Jan 2021 08:12:02 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10SEBwH7081595;
+        Thu, 28 Jan 2021 08:11:59 -0600
+Subject: Re: [PATCH v2 1/3] PCI: endpoint: Add 'started' to pci_epc to set
+ whether the controller is started
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+References: <1611500977-24816-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1611500977-24816-2-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <1253c4c9-4e5e-1456-6475-0334f3bb8634@ti.com>
+Date:   Thu, 28 Jan 2021 19:41:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201208124641.1787-1-thunder.leizhen@huawei.com>
- <20201208124641.1787-3-thunder.leizhen@huawei.com> <CAK8P3a3xie1-rLzKY+Y3Z2VKEJkDqAco6b75Af6FgyhsnzorsA@mail.gmail.com>
- <6010B6DE.4060202@hisilicon.com>
-In-Reply-To: <6010B6DE.4060202@hisilicon.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 28 Jan 2021 15:08:01 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a31po51NtRhuMsruy2nbqhjguyGP8ZcXwPAwwEiGtLBkg@mail.gmail.com>
-Message-ID: <CAK8P3a31po51NtRhuMsruy2nbqhjguyGP8ZcXwPAwwEiGtLBkg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] arm64: dts: correct vendor prefix hisi to hisilicon
-To:     Wei Xu <xuwei5@hisilicon.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1611500977-24816-2-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 1:42 AM Wei Xu <xuwei5@hisilicon.com> wrote:
-> On 2021/1/27 6:23, Arnd Bergmann wrote:
-> > On Tue, Dec 8, 2020 at 1:46 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >>
-> >> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
-> >> stated in "vendor-prefixes.yaml".
-> >>
-> >> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
-> >> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> Cc: Chen Feng <puck.chen@hisilicon.com>
-> >> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >
-> > I see this change in the pull request I got, but I'm a bit worried about the
-> > incompatible binding change. Wouldn't the correct path forward be to
-> > list both the correct and the incorrect properties, both in the dts file
-> > and in the driver that interprets the properties?
->
-> Thanks for the comment!
-> The reset driver will look for "hisilicon" firstly and fall back to "hisi".
-> And the DTS is shipped with the driver together.
-> So I think there is no compatible issue here.
-> Please let me know if missed anything. Thanks!
+Hi Kunihiko,
 
-There are three things that can go wrong here, and this is only addressing
-one of them:
+On 24/01/21 8:39 pm, Kunihiko Hayashi wrote:
+> This adds a member 'started' as a boolean value to struct pci_epc to set
+> whether the controller is started, and also adds a function to get the
+> value.
+> 
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  drivers/pci/endpoint/pci-epc-core.c | 2 ++
+>  include/linux/pci-epc.h             | 7 +++++++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> index cc8f9eb..2904175 100644
+> --- a/drivers/pci/endpoint/pci-epc-core.c
+> +++ b/drivers/pci/endpoint/pci-epc-core.c
+> @@ -174,6 +174,7 @@ void pci_epc_stop(struct pci_epc *epc)
+>  
+>  	mutex_lock(&epc->lock);
+>  	epc->ops->stop(epc);
+> +	epc->started = false;
+>  	mutex_unlock(&epc->lock);
+>  }
+>  EXPORT_SYMBOL_GPL(pci_epc_stop);
+> @@ -196,6 +197,7 @@ int pci_epc_start(struct pci_epc *epc)
+>  
+>  	mutex_lock(&epc->lock);
+>  	ret = epc->ops->start(epc);
+> +	epc->started = true;
+>  	mutex_unlock(&epc->lock);
+>  
+>  	return ret;
+> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
+> index b82c9b1..5808952 100644
+> --- a/include/linux/pci-epc.h
+> +++ b/include/linux/pci-epc.h
+> @@ -131,6 +131,7 @@ struct pci_epc_mem {
+>   * @lock: mutex to protect pci_epc ops
+>   * @function_num_map: bitmap to manage physical function number
+>   * @notifier: used to notify EPF of any EPC events (like linkup)
+> + * @started: true if this EPC is started
+>   */
+>  struct pci_epc {
+>  	struct device			dev;
+> @@ -145,6 +146,7 @@ struct pci_epc {
+>  	struct mutex			lock;
+>  	unsigned long			function_num_map;
+>  	struct atomic_notifier_head	notifier;
+> +	bool				started;
+>  };
+>  
+>  /**
+> @@ -191,6 +193,11 @@ pci_epc_register_notifier(struct pci_epc *epc, struct notifier_block *nb)
+>  	return atomic_notifier_chain_register(&epc->notifier, nb);
+>  }
+>  
+> +static inline bool pci_epc_is_started(struct pci_epc *epc)
+> +{
+> +	return epc->started;
+> +}
 
-1. Updating the kernel on a machine with a dtb provided by the firmware
-  is a problem if the new driver can not handle the old properties. This
-  is correctly handled by the driver's fallback as soon as both trees
-  are merged.
+This should also be protected.
 
-2. Updating the dtb while running an older kernel is now broken since
-  the driver can no longer read the property. This is less critical, but
-  it does seem easy enough to work around here by leaving both
-  properties in place.
-
-3. Bisecting through the git history across an incompatible change
-  means you can run into broken commits. We try hard to avoid that
-  if we are aware of a problem in advance. In this case it could be
-  avoided by only merging the incompatible DT change in a following
-  merge window after the driver change, or (better) by making it
-  a backward-compatible change the same way as addressing 2.
-
-         Arnd
+Thanks
+Kishon
+> +
+>  struct pci_epc *
+>  __devm_pci_epc_create(struct device *dev, const struct pci_epc_ops *ops,
+>  		      struct module *owner);
+> 
