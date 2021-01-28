@@ -2,154 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38E130803A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EDE308041
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhA1VG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:06:59 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60816 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231392AbhA1VGo (ORCPT
+        id S231261AbhA1VJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:09:26 -0500
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:36672 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229692AbhA1VJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:06:44 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10SL1dJf127066;
-        Thu, 28 Jan 2021 16:05:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=bpUTcXPeXWH0uCpR0CReuSqLBN7qKOd8RBfv7PAKG14=;
- b=cgL4eeLInzOWENu3PUE8gW1uebW9ootUk9Cacy40GwqzTQAH7KOmGHlmRcO+gPDUjj8U
- Ng8GA3Fi25GHsaCyIq8H+HQGpXWxvdbZgbr0KJOaaYsL0PUK876/2Puau7XeJTQCl4ZF
- HqSzSURQMQLdj5pTQMeGVFnsNPLlCu4ZTsK/E4Df1N2bRndbeu6D7oid4Wmpf4UhhFKC
- 5ohg2Jqb3Vz3a6ntiK5SjP38X1Gjkba8HCL8MVWE7N8kOEdjSKlWLU1BxfjjO05lS+Mv
- Mdr+jdbupdB+frROL90k0GdYDEwzmPr0b6BmHf0aO51cF/o6+s5+hm+XhdWCvQkxwU7T ag== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36c3d3aa6m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 16:05:15 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10SL2rJ7131704;
-        Thu, 28 Jan 2021 16:05:14 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36c3d3aa5d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 16:05:14 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10SKqhG1019569;
-        Thu, 28 Jan 2021 21:05:12 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 368be9t6w1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 21:05:12 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10SL5B3Y11862404
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 21:05:11 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2882F7805C;
-        Thu, 28 Jan 2021 21:05:11 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2EFAE78068;
-        Thu, 28 Jan 2021 21:05:04 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.133.159])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Jan 2021 21:05:03 +0000 (GMT)
-Message-ID: <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Thu, 28 Jan 2021 13:05:02 -0800
-In-Reply-To: <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
-         <20210121122723.3446-8-rppt@kernel.org>
-         <20210126114657.GL827@dhcp22.suse.cz>
-         <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
-         <20210126120823.GM827@dhcp22.suse.cz> <20210128092259.GB242749@kernel.org>
-         <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 28 Jan 2021 16:09:23 -0500
+Received: from localhost.localdomain ([92.131.99.25])
+        by mwinf5d73 with ME
+        id NM7e240070Ys01Y03M7ear; Thu, 28 Jan 2021 22:07:41 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 28 Jan 2021 22:07:41 +0100
+X-ME-IP: 92.131.99.25
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, aaron.f.brown@intel.com
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH resend] e100: switch from 'pci_' to 'dma_' API
+Date:   Thu, 28 Jan 2021 22:07:36 +0100
+Message-Id: <20210128210736.749724-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- lowpriorityscore=0 spamscore=0 suspectscore=0 mlxlogscore=911
- impostorscore=0 priorityscore=1501 adultscore=0 phishscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280099
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 14:01 +0100, Michal Hocko wrote:
-> On Thu 28-01-21 11:22:59, Mike Rapoport wrote:
-[...]
-> > I like the idea to have a pool as an optimization rather than a
-> > hard requirement but I don't see why would it need a careful access
-> > control. As the direct map fragmentation is not necessarily
-> > degrades the performance (and even sometimes it actually improves
-> > it) and even then the degradation is small, trying a PMD_ORDER
-> > allocation for a pool and then falling back to 4K page may be just
-> > fine.
-> 
-> Well, as soon as this is a scarce resource then an access control
-> seems like a first thing to think of. Maybe it is not really
-> necessary but then this should be really justified.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The control for the resource is effectively the rlimit today.  I don't
-think dividing the world into people who can and can't use secret
-memory would be useful since the design is to be usable for anyone who
-might have a secret to keep; it would become like the kvm group
-permissions: something which is theoretically an access control but
-which in practise is given to everyone on the system.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-> I am also still not sure why this whole thing is not just a
-> ramdisk/ramfs which happens to unmap its pages from the direct
-> map. Wouldn't that be a much more easier model to work with? You
-> would get an access control for free as well.
+When memory is allocated in 'e100_alloc()', GFP_KERNEL can be used because
+it is only called from the probe function and no lock is acquired.
 
-The original API was a memfd which does have this access control as
-well.  However, the decision was made after much discussion to go with
-a new system call instead.  Obviously the API choice could be revisited
-but do you have anything to add over the previous discussion, or is
-this just to get your access control?
 
-James
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+
+First sent on 18 Jul. 2020, see:
+    https://lore.kernel.org/lkml/20200718115546.358240-1-christophe.jaillet@wanadoo.fr/
+It still applies cleanly with latest linux-next
+
+Tested tag, see:
+   https://lore.kernel.org/lkml/DM6PR11MB289001E5538E536F0CB60A1FBC070@DM6PR11MB2890.namprd11.prod.outlook.com/
+
+---
+ drivers/net/ethernet/intel/e100.c | 92 ++++++++++++++++---------------
+ 1 file changed, 49 insertions(+), 43 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index 91c64f91a835..ec6b1024cd8a 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -1739,10 +1739,10 @@ static int e100_xmit_prepare(struct nic *nic, struct cb *cb,
+ 	dma_addr_t dma_addr;
+ 	cb->command = nic->tx_command;
+ 
+-	dma_addr = pci_map_single(nic->pdev,
+-				  skb->data, skb->len, PCI_DMA_TODEVICE);
++	dma_addr = dma_map_single(&nic->pdev->dev, skb->data, skb->len,
++				  DMA_TO_DEVICE);
+ 	/* If we can't map the skb, have the upper layer try later */
+-	if (pci_dma_mapping_error(nic->pdev, dma_addr)) {
++	if (dma_mapping_error(&nic->pdev->dev, dma_addr)) {
+ 		dev_kfree_skb_any(skb);
+ 		skb = NULL;
+ 		return -ENOMEM;
+@@ -1828,10 +1828,10 @@ static int e100_tx_clean(struct nic *nic)
+ 			dev->stats.tx_packets++;
+ 			dev->stats.tx_bytes += cb->skb->len;
+ 
+-			pci_unmap_single(nic->pdev,
+-				le32_to_cpu(cb->u.tcb.tbd.buf_addr),
+-				le16_to_cpu(cb->u.tcb.tbd.size),
+-				PCI_DMA_TODEVICE);
++			dma_unmap_single(&nic->pdev->dev,
++					 le32_to_cpu(cb->u.tcb.tbd.buf_addr),
++					 le16_to_cpu(cb->u.tcb.tbd.size),
++					 DMA_TO_DEVICE);
+ 			dev_kfree_skb_any(cb->skb);
+ 			cb->skb = NULL;
+ 			tx_cleaned = 1;
+@@ -1855,10 +1855,10 @@ static void e100_clean_cbs(struct nic *nic)
+ 		while (nic->cbs_avail != nic->params.cbs.count) {
+ 			struct cb *cb = nic->cb_to_clean;
+ 			if (cb->skb) {
+-				pci_unmap_single(nic->pdev,
+-					le32_to_cpu(cb->u.tcb.tbd.buf_addr),
+-					le16_to_cpu(cb->u.tcb.tbd.size),
+-					PCI_DMA_TODEVICE);
++				dma_unmap_single(&nic->pdev->dev,
++						 le32_to_cpu(cb->u.tcb.tbd.buf_addr),
++						 le16_to_cpu(cb->u.tcb.tbd.size),
++						 DMA_TO_DEVICE);
+ 				dev_kfree_skb(cb->skb);
+ 			}
+ 			nic->cb_to_clean = nic->cb_to_clean->next;
+@@ -1925,10 +1925,10 @@ static int e100_rx_alloc_skb(struct nic *nic, struct rx *rx)
+ 
+ 	/* Init, and map the RFD. */
+ 	skb_copy_to_linear_data(rx->skb, &nic->blank_rfd, sizeof(struct rfd));
+-	rx->dma_addr = pci_map_single(nic->pdev, rx->skb->data,
+-		RFD_BUF_LEN, PCI_DMA_BIDIRECTIONAL);
++	rx->dma_addr = dma_map_single(&nic->pdev->dev, rx->skb->data,
++				      RFD_BUF_LEN, DMA_BIDIRECTIONAL);
+ 
+-	if (pci_dma_mapping_error(nic->pdev, rx->dma_addr)) {
++	if (dma_mapping_error(&nic->pdev->dev, rx->dma_addr)) {
+ 		dev_kfree_skb_any(rx->skb);
+ 		rx->skb = NULL;
+ 		rx->dma_addr = 0;
+@@ -1941,8 +1941,10 @@ static int e100_rx_alloc_skb(struct nic *nic, struct rx *rx)
+ 	if (rx->prev->skb) {
+ 		struct rfd *prev_rfd = (struct rfd *)rx->prev->skb->data;
+ 		put_unaligned_le32(rx->dma_addr, &prev_rfd->link);
+-		pci_dma_sync_single_for_device(nic->pdev, rx->prev->dma_addr,
+-			sizeof(struct rfd), PCI_DMA_BIDIRECTIONAL);
++		dma_sync_single_for_device(&nic->pdev->dev,
++					   rx->prev->dma_addr,
++					   sizeof(struct rfd),
++					   DMA_BIDIRECTIONAL);
+ 	}
+ 
+ 	return 0;
+@@ -1961,8 +1963,8 @@ static int e100_rx_indicate(struct nic *nic, struct rx *rx,
+ 		return -EAGAIN;
+ 
+ 	/* Need to sync before taking a peek at cb_complete bit */
+-	pci_dma_sync_single_for_cpu(nic->pdev, rx->dma_addr,
+-		sizeof(struct rfd), PCI_DMA_BIDIRECTIONAL);
++	dma_sync_single_for_cpu(&nic->pdev->dev, rx->dma_addr,
++				sizeof(struct rfd), DMA_BIDIRECTIONAL);
+ 	rfd_status = le16_to_cpu(rfd->status);
+ 
+ 	netif_printk(nic, rx_status, KERN_DEBUG, nic->netdev,
+@@ -1981,9 +1983,9 @@ static int e100_rx_indicate(struct nic *nic, struct rx *rx,
+ 
+ 			if (ioread8(&nic->csr->scb.status) & rus_no_res)
+ 				nic->ru_running = RU_SUSPENDED;
+-		pci_dma_sync_single_for_device(nic->pdev, rx->dma_addr,
+-					       sizeof(struct rfd),
+-					       PCI_DMA_FROMDEVICE);
++		dma_sync_single_for_device(&nic->pdev->dev, rx->dma_addr,
++					   sizeof(struct rfd),
++					   DMA_FROM_DEVICE);
+ 		return -ENODATA;
+ 	}
+ 
+@@ -1995,8 +1997,8 @@ static int e100_rx_indicate(struct nic *nic, struct rx *rx,
+ 		actual_size = RFD_BUF_LEN - sizeof(struct rfd);
+ 
+ 	/* Get data */
+-	pci_unmap_single(nic->pdev, rx->dma_addr,
+-		RFD_BUF_LEN, PCI_DMA_BIDIRECTIONAL);
++	dma_unmap_single(&nic->pdev->dev, rx->dma_addr, RFD_BUF_LEN,
++			 DMA_BIDIRECTIONAL);
+ 
+ 	/* If this buffer has the el bit, but we think the receiver
+ 	 * is still running, check to see if it really stopped while
+@@ -2097,22 +2099,25 @@ static void e100_rx_clean(struct nic *nic, unsigned int *work_done,
+ 			(struct rfd *)new_before_last_rx->skb->data;
+ 		new_before_last_rfd->size = 0;
+ 		new_before_last_rfd->command |= cpu_to_le16(cb_el);
+-		pci_dma_sync_single_for_device(nic->pdev,
+-			new_before_last_rx->dma_addr, sizeof(struct rfd),
+-			PCI_DMA_BIDIRECTIONAL);
++		dma_sync_single_for_device(&nic->pdev->dev,
++					   new_before_last_rx->dma_addr,
++					   sizeof(struct rfd),
++					   DMA_BIDIRECTIONAL);
+ 
+ 		/* Now that we have a new stopping point, we can clear the old
+ 		 * stopping point.  We must sync twice to get the proper
+ 		 * ordering on the hardware side of things. */
+ 		old_before_last_rfd->command &= ~cpu_to_le16(cb_el);
+-		pci_dma_sync_single_for_device(nic->pdev,
+-			old_before_last_rx->dma_addr, sizeof(struct rfd),
+-			PCI_DMA_BIDIRECTIONAL);
++		dma_sync_single_for_device(&nic->pdev->dev,
++					   old_before_last_rx->dma_addr,
++					   sizeof(struct rfd),
++					   DMA_BIDIRECTIONAL);
+ 		old_before_last_rfd->size = cpu_to_le16(VLAN_ETH_FRAME_LEN
+ 							+ ETH_FCS_LEN);
+-		pci_dma_sync_single_for_device(nic->pdev,
+-			old_before_last_rx->dma_addr, sizeof(struct rfd),
+-			PCI_DMA_BIDIRECTIONAL);
++		dma_sync_single_for_device(&nic->pdev->dev,
++					   old_before_last_rx->dma_addr,
++					   sizeof(struct rfd),
++					   DMA_BIDIRECTIONAL);
+ 	}
+ 
+ 	if (restart_required) {
+@@ -2134,8 +2139,9 @@ static void e100_rx_clean_list(struct nic *nic)
+ 	if (nic->rxs) {
+ 		for (rx = nic->rxs, i = 0; i < count; rx++, i++) {
+ 			if (rx->skb) {
+-				pci_unmap_single(nic->pdev, rx->dma_addr,
+-					RFD_BUF_LEN, PCI_DMA_BIDIRECTIONAL);
++				dma_unmap_single(&nic->pdev->dev,
++						 rx->dma_addr, RFD_BUF_LEN,
++						 DMA_BIDIRECTIONAL);
+ 				dev_kfree_skb(rx->skb);
+ 			}
+ 		}
+@@ -2177,8 +2183,8 @@ static int e100_rx_alloc_list(struct nic *nic)
+ 	before_last = (struct rfd *)rx->skb->data;
+ 	before_last->command |= cpu_to_le16(cb_el);
+ 	before_last->size = 0;
+-	pci_dma_sync_single_for_device(nic->pdev, rx->dma_addr,
+-		sizeof(struct rfd), PCI_DMA_BIDIRECTIONAL);
++	dma_sync_single_for_device(&nic->pdev->dev, rx->dma_addr,
++				   sizeof(struct rfd), DMA_BIDIRECTIONAL);
+ 
+ 	nic->rx_to_use = nic->rx_to_clean = nic->rxs;
+ 	nic->ru_running = RU_SUSPENDED;
+@@ -2377,8 +2383,8 @@ static int e100_loopback_test(struct nic *nic, enum loopback loopback_mode)
+ 
+ 	msleep(10);
+ 
+-	pci_dma_sync_single_for_cpu(nic->pdev, nic->rx_to_clean->dma_addr,
+-			RFD_BUF_LEN, PCI_DMA_BIDIRECTIONAL);
++	dma_sync_single_for_cpu(&nic->pdev->dev, nic->rx_to_clean->dma_addr,
++				RFD_BUF_LEN, DMA_BIDIRECTIONAL);
+ 
+ 	if (memcmp(nic->rx_to_clean->skb->data + sizeof(struct rfd),
+ 	   skb->data, ETH_DATA_LEN))
+@@ -2751,16 +2757,16 @@ static int e100_do_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
+ 
+ static int e100_alloc(struct nic *nic)
+ {
+-	nic->mem = pci_alloc_consistent(nic->pdev, sizeof(struct mem),
+-		&nic->dma_addr);
++	nic->mem = dma_alloc_coherent(&nic->pdev->dev, sizeof(struct mem),
++				      &nic->dma_addr, GFP_KERNEL);
+ 	return nic->mem ? 0 : -ENOMEM;
+ }
+ 
+ static void e100_free(struct nic *nic)
+ {
+ 	if (nic->mem) {
+-		pci_free_consistent(nic->pdev, sizeof(struct mem),
+-			nic->mem, nic->dma_addr);
++		dma_free_coherent(&nic->pdev->dev, sizeof(struct mem),
++				  nic->mem, nic->dma_addr);
+ 		nic->mem = NULL;
+ 	}
+ }
+@@ -2853,7 +2859,7 @@ static int e100_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto err_out_disable_pdev;
+ 	}
+ 
+-	if ((err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++	if ((err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)))) {
+ 		netif_err(nic, probe, nic->netdev, "No usable DMA configuration, aborting\n");
+ 		goto err_out_free_res;
+ 	}
+-- 
+2.25.1
 
