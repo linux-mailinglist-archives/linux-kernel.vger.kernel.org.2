@@ -2,137 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B725D3077BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5993077BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhA1ONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:13:51 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45074 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhA1ONt (ORCPT
+        id S231280AbhA1OQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229569AbhA1OQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:13:49 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10SEC2pA032804;
-        Thu, 28 Jan 2021 08:12:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611843122;
-        bh=AudpKSlaZboe1uf2RLBPZd0j5l8pLIG2KQCVcoHb/Pk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=uPJ7p4RKAidWFI38PN1NVSopf6Q7AB8r16q1edIU8BR6ItGm+4Fdt1N/Y0DtJXhvi
-         q4K257lDVAD5/IKRGm5H8F/CauOzOtcX1Ac6+XDTM5ToStp5yrE69X1RJEFqxm5lw4
-         GBgIKOUbMCy0nGkR07Nk0IT2mcN8fYDJN6RbIFFY=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10SEC2n4026339
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Jan 2021 08:12:02 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- Jan 2021 08:12:02 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 Jan 2021 08:12:02 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10SEBwH7081595;
-        Thu, 28 Jan 2021 08:11:59 -0600
-Subject: Re: [PATCH v2 1/3] PCI: endpoint: Add 'started' to pci_epc to set
- whether the controller is started
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-References: <1611500977-24816-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1611500977-24816-2-git-send-email-hayashi.kunihiko@socionext.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <1253c4c9-4e5e-1456-6475-0334f3bb8634@ti.com>
-Date:   Thu, 28 Jan 2021 19:41:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 28 Jan 2021 09:16:05 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D520CC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:15:24 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id s7so2566710wru.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=82FN5PNqEoj/mvZFSbez/zX7p4CTgWs6rdhQWNIXhYA=;
+        b=fBFFUMgej6bbidDQptcu9Q3KBDcJw5K4oNkt3fFuGYXBfgfPL7NCJrKqqzWvrGMiEz
+         lVi8tPTgd0l166n3CSUvawgWXcHgDeNe41+ZbvCyBHvyXFyLmYRrzZcGLFeB88Ynz/oz
+         cPoSGXqwl0HHD0Ji2Gh3vHc0qe0w/WRlBBMqsOrJUGLjFLRqIk1h5uRNtOR/ncuGTwj+
+         byp7Ha4hwg9Yg+Jw1UbvEeJdKfBqpsmtJxvjHWVTTPohDf5awl07UBsbtmqvJtc7hRzU
+         5OGuLZy8Rr/a7Vc+ZJekDhj/RpkJEQf7VGsz5IqgmXyiACEym25qyXh0U3mLnjXz7WX2
+         i8aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=82FN5PNqEoj/mvZFSbez/zX7p4CTgWs6rdhQWNIXhYA=;
+        b=nAc0zZxbU+AphBPF3/vUnIi8EQK6zJ059l92Fp8sFyAj+FyoGcgDoqf4oPHFjUywxR
+         5SmYsT4m0/mneJNp8KatOMdXchWHRLTaou9X2BP9NFhAVymc1ux0/jY8rg4MG+jolG5F
+         +0gx9rdMPOhB2hZtqII7NXxA1890T1TIduPPbeyOgmGrcR7BSWUGuCQd1rgmcHI4m7UR
+         b/zlOcvW92nH86ijS+2bKh5Xlf6RioRFH4Q4Y+h4UZKkpmW6LsckVHVopd1rkuzcxRS7
+         RJIQkMny3HWgdCrtMMxKkdfO44ssis8RlGfVK8713Ryn1T3IJqKdKbnWnB02/AoTACQa
+         /5yw==
+X-Gm-Message-State: AOAM531mRdzpmtZpfUZsrHWACRuTMuH3psKg1wcTgYUb+G9nNIY3ZnUh
+        Ji3aq733Wyw0eI2OUf7fHtr8gQ==
+X-Google-Smtp-Source: ABdhPJyXYqeZ3302QBKgfqK55u3wRvF3uxxr3cTTMdkXJZ+7oxjyCPXDqpbSOjhzBtVfBpdxKSPzlA==
+X-Received: by 2002:a5d:664c:: with SMTP id f12mr16450473wrw.61.1611843323446;
+        Thu, 28 Jan 2021 06:15:23 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:a080:4cd9:70a6:2d2])
+        by smtp.gmail.com with ESMTPSA id l14sm6792371wrq.87.2021.01.28.06.15.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 06:15:22 -0800 (PST)
+Date:   Thu, 28 Jan 2021 14:15:21 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     qxy <qxy65535@gmail.com>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
+ fuse device
+Message-ID: <YBLG+QlXqVB/bo/u@google.com>
+References: <20210125153057.3623715-1-balsini@android.com>
+ <20210125153057.3623715-3-balsini@android.com>
+ <CAMAHBGzkfEd9-1u0iKXp65ReJQgUi_=4sMpmfkwEOaMp6Ux7pg@mail.gmail.com>
+ <YBFtXqgvcXW5fFCR@google.com>
+ <CAMAHBGwpKW+30kNQ_Apt8A-FTmr94hBOzkT21cjEHHW+t7yUMQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1611500977-24816-2-git-send-email-hayashi.kunihiko@socionext.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMAHBGwpKW+30kNQ_Apt8A-FTmr94hBOzkT21cjEHHW+t7yUMQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kunihiko,
+Hi all,
 
-On 24/01/21 8:39 pm, Kunihiko Hayashi wrote:
-> This adds a member 'started' as a boolean value to struct pci_epc to set
-> whether the controller is started, and also adds a function to get the
-> value.
-> 
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> ---
->  drivers/pci/endpoint/pci-epc-core.c | 2 ++
->  include/linux/pci-epc.h             | 7 +++++++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> index cc8f9eb..2904175 100644
-> --- a/drivers/pci/endpoint/pci-epc-core.c
-> +++ b/drivers/pci/endpoint/pci-epc-core.c
-> @@ -174,6 +174,7 @@ void pci_epc_stop(struct pci_epc *epc)
->  
->  	mutex_lock(&epc->lock);
->  	epc->ops->stop(epc);
-> +	epc->started = false;
->  	mutex_unlock(&epc->lock);
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_stop);
-> @@ -196,6 +197,7 @@ int pci_epc_start(struct pci_epc *epc)
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->start(epc);
-> +	epc->started = true;
->  	mutex_unlock(&epc->lock);
->  
->  	return ret;
-> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-> index b82c9b1..5808952 100644
-> --- a/include/linux/pci-epc.h
-> +++ b/include/linux/pci-epc.h
-> @@ -131,6 +131,7 @@ struct pci_epc_mem {
->   * @lock: mutex to protect pci_epc ops
->   * @function_num_map: bitmap to manage physical function number
->   * @notifier: used to notify EPF of any EPC events (like linkup)
-> + * @started: true if this EPC is started
->   */
->  struct pci_epc {
->  	struct device			dev;
-> @@ -145,6 +146,7 @@ struct pci_epc {
->  	struct mutex			lock;
->  	unsigned long			function_num_map;
->  	struct atomic_notifier_head	notifier;
-> +	bool				started;
->  };
->  
->  /**
-> @@ -191,6 +193,11 @@ pci_epc_register_notifier(struct pci_epc *epc, struct notifier_block *nb)
->  	return atomic_notifier_chain_register(&epc->notifier, nb);
->  }
->  
-> +static inline bool pci_epc_is_started(struct pci_epc *epc)
-> +{
-> +	return epc->started;
-> +}
+I'm more than happy to change the interface into something that is
+objectively better and accepted by everyone.
+I would really love to reach the point at which we have a "stable-ish"
+UAPI as soon as possible.
 
-This should also be protected.
+I've been thinking about a few possible approaches to fix the issue, yet
+to preserve its flexibility. These are mentioned below.
 
-Thanks
-Kishon
-> +
->  struct pci_epc *
->  __devm_pci_epc_create(struct device *dev, const struct pci_epc_ops *ops,
->  		      struct module *owner);
+
+  Solution 1: Size
+
+As mentioned in my previous email, one solution could be to introduce
+the "size" field to allow the structure to grow in the future.
+
+struct fuse_passthrough_out {
+    uint32_t        size;   // Size of this data structure
+    uint32_t        fd;
+};
+
+The problem here is that we are making the promise that all the upcoming
+fields are going to be maintained forever and at the offsets they were
+originally defined.
+
+
+  Solution 2: Version
+
+Another solution could be to s/size/version, where for every version of
+FUSE passthrough we reserve the right to modifying the fields over time,
+casting them to the right data structure according to the version.
+
+
+  Solution 3: Type
+
+Using an enumerator to define the data structure content and purpose is
+the most flexible solution I can think of.  This would for example allow
+us to substitute FUSE_DEV_IOC_PASSTHROUGH_OPEN with the generic
+FUSE_DEV_IOC_PASSTHROUGH and having a single ioctl for any eventually
+upcoming passthrough requests.
+
+enum fuse_passthrough_type {
+    FUSE_PASSTHROUGH_OPEN
+};
+
+struct fuse_passthrough_out {
+    uint32_t type; /* as defined by enum fuse_passthrough_type */
+    union {
+        uint32_t fd;
+    };
+};
+
+This last is my favorite, as regardless the minimal logic required to
+detect the size and content of the struct (not required now as we only
+have a single option), it would also allow to do some kind of interface
+versioning (e.g., in case we want to implement
+FUSE_PASSTHROUGH_OPEN_V2).
+
+What do you think?
+
+Thanks,
+Alessio
+
+P.S.
+Sorry if you received a duplicate email. I first sent this in reply to an email
+without realizing it was a private message.
+
+On Thu, Jan 28, 2021 at 11:01:59AM +0800, qxy wrote:
+> Hi Alessio,
 > 
+> I have received a failure from the Mail Delivery System for times and feel
+> really sorry if you have already received the duplicate message...
+> 
+> Thank you for your reply.
+> I think it's wonderful to remove *vec from the data structure fields since
+> we consider that it is not a good idea to use pointer when there is a need
+> for cross-platform.
+> Do you have a plan to modify the kernel fuse_passthrough_out data structure
+> the same way as you mentioned?
+> 
+> Thanks!
+> qixiaoyu
