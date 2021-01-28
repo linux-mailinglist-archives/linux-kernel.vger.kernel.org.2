@@ -2,144 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28208307C8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F3A307C9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhA1RcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:32:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233109AbhA1R0f (ORCPT
+        id S233140AbhA1Rdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233080AbhA1R0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:26:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611854709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EvzLnQV83UjGmhjL45DZ7eCVOKze42prwXNVTupzJKM=;
-        b=J3S+2mAv8ehNUSmOVpy0bIPTy+iG3u8v0OP1IBuwkkDIQDIRmwFnC8uKUcwYul0wBEbmBi
-        TEUPggWL0iTW8jHbfg0BlG1EAaNA3nCqKEPt0IDi8EUKbTbYxQZ0QIvmMn8PcDnv8VbuLW
-        W86dqKTbR5RQLjkg2TVOQArNqF3z27g=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-19hXtrA4Ml-iI7kuLElWSA-1; Thu, 28 Jan 2021 12:25:07 -0500
-X-MC-Unique: 19hXtrA4Ml-iI7kuLElWSA-1
-Received: by mail-ej1-f72.google.com with SMTP id x22so2494829ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:25:07 -0800 (PST)
+        Thu, 28 Jan 2021 12:26:23 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A74C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:25:42 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id e9so4728956pjj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:25:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5yVwM4UHL0nLSJMEu4SR8QYX3bM5QYXnhGMceAQjA6U=;
+        b=uZS+4qQAtMzCLRNFXkB4Y07EZcr5oJ3ZhhYS7dcVJzZG4PUEEvOr7HO+4VeObyABDa
+         SIo8usrHRJS+oiRB2N1I4Cfd5eRKwcYMDG0nJR2jzbRMSrvLCLucI0T3bGjbM5D9nxtH
+         /V2swBq5IFsFwQScP+3fgFkidqE92r5DpIcZZeNsyT7nm7ufu7DUemWeetEWSc5S45aV
+         10juggFzX/uRCiEoHNEIMlZqrsdWmf2lpDIXlqJRv0c4LJCkvt7O6QURlUhQPy04cAp8
+         FhIENlLUoe6EPPnAcmLdIIwx/dNVU8q2t2SpLA+sWnHqjZsrdsxwobwbNQXw03+eIjZZ
+         FF1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EvzLnQV83UjGmhjL45DZ7eCVOKze42prwXNVTupzJKM=;
-        b=lQYB65V4UjpUa32cgJmT7EcVIFg6smzsivSzjlVQg3bhCQrhKwyZidLu9Z0ASM65Vc
-         CB18ca0baF6gZFVMg09rnt7yGlB8C17cZ5q8ejwI0KWz+acYCrf+5waEWAwd6w0jD11T
-         2UJRSx5yPaIK+y3tWihedr9dfUbFrOc/TAoXLsB3Zrun8zllI71eKgduszCw2qKtvHzm
-         UpcBTKdAyh/TEOclDXjMONJgk1p+H2imdUiNPM+k5Kea+euTR8P43QvPNP6jVYEWi2XJ
-         luujGoljjOgVBI7vUZy7ebuiJ1+nSfvdPWnjgTQhRY4G8iW3i/U9XsiCMZty4u+t5zmf
-         rLdA==
-X-Gm-Message-State: AOAM530kzrhgLc/VsyR2pIK1+GWnzFbdqaZNqMY88zr8q1uqLF4gpfN+
-        FWyt5xpU9yKmQMxIkp5WDmGacOaUeh0I6S5LSYi9YawCy5Gz1FpdKtgNlZYhOQC3uEvgEICK5QH
-        CzzTYjZQmJGl3FrpP51mzHXOA
-X-Received: by 2002:a05:6402:26d3:: with SMTP id x19mr703855edd.0.1611854706493;
-        Thu, 28 Jan 2021 09:25:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxtOL/S/cD3z5oCNOg2PKmdtIyy9IJN3TBOI+ONGmeMo6ik2bjQtL6XiRo14sQPPNELnEDn5g==
-X-Received: by 2002:a05:6402:26d3:: with SMTP id x19mr703832edd.0.1611854706290;
-        Thu, 28 Jan 2021 09:25:06 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h12sm3180823edb.16.2021.01.28.09.25.04
+        bh=5yVwM4UHL0nLSJMEu4SR8QYX3bM5QYXnhGMceAQjA6U=;
+        b=F5VOdUAUFmpn/wcJ5IHHKZ1sfqu/9xYzPVEeITK+/zdDHZuXs0v+ZFEvMG+XATLuzb
+         mEIvxLkG4GWggQqzR+DoYYTfwuFXryvL+T5zociCO1Mb64tb4qIISYBwJkeFKZZ+C2zB
+         VmoMuYjPMK0v6KlC0/4I8pZnKmrchYAbt2yW7Nwtu5JrOR2FkN39vhu5GDUWaOCiUrDk
+         U3ZSiaxu4zfI+nYHUNaaPIh03bjqGap2MD2/PPlx93ZTT7YXIxra3sFsjDP8dn2j9XIh
+         DWUGWkeIhKf8QU2mioTPtu9k8DkNy3mmScWPT3sdHAglQ5aRgXbMfulUQHV+LsU3yegq
+         P7oA==
+X-Gm-Message-State: AOAM532Yo/hzFoGad/S5hVMJlFhZtTepj1dXpapxBLJQCkKoh3oK/Nnm
+        uzTNtiCc+NQLkPH2V2ZYm+Cvyg==
+X-Google-Smtp-Source: ABdhPJyCkrcPDvEyZjpYU7mZ6x+GvZJaOPMDuA4z7M/0GhU0CEAhIcu2N5Or42HVk5YqHxXymjDi6g==
+X-Received: by 2002:a17:902:6543:b029:e1:1758:649f with SMTP id d3-20020a1709026543b02900e11758649fmr580270pln.38.1611854741667;
+        Thu, 28 Jan 2021 09:25:41 -0800 (PST)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id z29sm6300607pfk.67.2021.01.28.09.25.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 09:25:05 -0800 (PST)
-Subject: Re: [PATCH v2 05/14] KVM: x86: Override reported SME/SEV feature
- flags with host mask
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-6-seanjc@google.com>
- <74642db3-14dc-4e13-3130-dc8abe1a2b6e@redhat.com>
- <YBLvvpeEORjVd2IP@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8fa5e165-6f93-572f-81d5-07cdeb23b590@redhat.com>
-Date:   Thu, 28 Jan 2021 18:25:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 28 Jan 2021 09:25:41 -0800 (PST)
+Subject: Re: BUG: corrupted list in io_file_get
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        syzbot <syzbot+6879187cf57845801267@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <000000000000ab74fb05b9f8cb0a@google.com>
+ <944c4b9b-9c83-3167-fd43-d5118fdc2e0e@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7dfb62b3-0821-5203-b34f-4400e0b1152d@kernel.dk>
+Date:   Thu, 28 Jan 2021 10:25:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YBLvvpeEORjVd2IP@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <944c4b9b-9c83-3167-fd43-d5118fdc2e0e@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/21 18:09, Sean Christopherson wrote:
-> On Thu, Jan 28, 2021, Paolo Bonzini wrote:
->> On 14/01/21 01:36, Sean Christopherson wrote:
->>> Add a reverse-CPUID entry for the memory encryption word, 0x8000001F.EAX,
->>> and use it to override the supported CPUID flags reported to userspace.
->>> Masking the reported CPUID flags avoids over-reporting KVM support, e.g.
->>> without the mask a SEV-SNP capable CPU may incorrectly advertise SNP
->>> support to userspace.
->>>
->>> Cc: Brijesh Singh <brijesh.singh@amd.com>
->>> Cc: Tom Lendacky <thomas.lendacky@amd.com>
->>> Signed-off-by: Sean Christopherson <seanjc@google.com>
->>> ---
->>>    arch/x86/kvm/cpuid.c | 2 ++
->>>    arch/x86/kvm/cpuid.h | 1 +
->>>    2 files changed, 3 insertions(+)
->>>
->>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->>> index 13036cf0b912..b7618cdd06b5 100644
->>> --- a/arch/x86/kvm/cpuid.c
->>> +++ b/arch/x86/kvm/cpuid.c
->>> @@ -855,6 +855,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->>>    	case 0x8000001F:
->>>    		if (!boot_cpu_has(X86_FEATURE_SEV))
->>>    			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
->>> +		else
->>> +			cpuid_entry_override(entry, CPUID_8000_001F_EAX);
->>>    		break;
->>>    	/*Add support for Centaur's CPUID instruction*/
->>>    	case 0xC0000000:
->>> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
->>> index dc921d76e42e..8b6fc9bde248 100644
->>> --- a/arch/x86/kvm/cpuid.h
->>> +++ b/arch/x86/kvm/cpuid.h
->>> @@ -63,6 +63,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
->>>    	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
->>>    	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
->>>    	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
->>> +	[CPUID_8000_001F_EAX] = {0x8000001f, 1, CPUID_EAX},
->>>    };
->>>    /*
->>>
+On 1/28/21 10:12 AM, Pavel Begunkov wrote:
+> On 28/01/2021 16:58, syzbot wrote:
+>> Hello,
 >>
->> I don't understand, wouldn't this also need a kvm_cpu_cap_mask call
->> somewhere else?  As it is, it doesn't do anything.
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    76c057c8 Merge branch 'parisc-5.11-2' of git://git.kernel...
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=11959454d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=96b123631a6700e9
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=6879187cf57845801267
+>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a3872cd00000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ab17a4d00000
+>>
+>> The issue was bisected to:
+>>
+>> commit 02a13674fa0e8dd326de8b9f4514b41b03d99003
+>> Author: Jens Axboe <axboe@kernel.dk>
+>> Date:   Sat Jan 23 22:49:31 2021 +0000
+>>
+>>     io_uring: account io_uring internal files as REQ_F_INFLIGHT
+>>
+>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14d1bf44d00000
+>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16d1bf44d00000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=12d1bf44d00000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+6879187cf57845801267@syzkaller.appspotmail.com
+>> Fixes: 02a13674fa0e ("io_uring: account io_uring internal files as REQ_F_INFLIGHT")
+>>
+>> list_add double add: new=ffff888017eaa080, prev=ffff88801a9cb520, next=ffff888017eaa080.
+>> ------------[ cut here ]------------
+>> kernel BUG at lib/list_debug.c:29!
+>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>> CPU: 0 PID: 8481 Comm: syz-executor556 Not tainted 5.11.0-rc5-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
+>> Code: 04 c3 fb fa 4c 89 e1 48 c7 c7 e0 de 9e 89 e8 9e 43 f3 ff 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 20 e0 9e 89 e8 87 43 f3 ff <0f> 0b 48 89 f1 48 c7 c7 a0 df 9e 89 4c 89 e6 e8 73 43 f3 ff 0f 0b
+>> RSP: 0018:ffffc90000fef938 EFLAGS: 00010086
+>> RAX: 0000000000000058 RBX: ffff888017eaa000 RCX: 0000000000000000
+>> RDX: ffff88801f3ed340 RSI: ffffffff815b6285 RDI: fffff520001fdf19
+>> RBP: ffff888017eaa080 R08: 0000000000000058 R09: 0000000000000000
+>> R10: ffffffff815af45e R11: 0000000000000000 R12: ffff888017eaa080
+>> R13: ffff888014901900 R14: ffff88801a9cb000 R15: ffff88801a9cb520
+>> FS:  0000000002395880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007ff04f95b6c0 CR3: 000000001a4f2000 CR4: 0000000000350ef0
+>> Call Trace:
+>>  __list_add include/linux/list.h:67 [inline]
+>>  list_add include/linux/list.h:86 [inline]
+>>  io_file_get+0x8cc/0xdb0 fs/io_uring.c:6466
+>>  __io_splice_prep+0x1bc/0x530 fs/io_uring.c:3866
+>>  io_splice_prep fs/io_uring.c:3920 [inline]
+>>  io_req_prep+0x3546/0x4e80 fs/io_uring.c:6081
+>>  io_queue_sqe+0x609/0x10d0 fs/io_uring.c:6628
+>>  io_submit_sqe fs/io_uring.c:6705 [inline]
+>>  io_submit_sqes+0x1495/0x2720 fs/io_uring.c:6953
+>>  __do_sys_io_uring_enter+0x107d/0x1f30 fs/io_uring.c:9353
+>>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> RIP: 0033:0x440569
+>> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+>> RSP: 002b:00007ffe38c5c5a8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+>> RAX: ffffffffffffffda RBX: 0000000000401e00 RCX: 0000000000440569
+>> RDX: 0000000000000000 RSI: 000000000000450c RDI: 0000000000000004
+>> RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+>> R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000401d70
+>> R13: 0000000000401e00 R14: 0000000000000000 R15: 0000000000000000
+>> Modules linked in:
+>> ---[ end trace 3c68392a0f24e7a0 ]---
+>> RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
+>> Code: 04 c3 fb fa 4c 89 e1 48 c7 c7 e0 de 9e 89 e8 9e 43 f3 ff 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 20 e0 9e 89 e8 87 43 f3 ff <0f> 0b 48 89 f1 48 c7 c7 a0 df 9e 89 4c 89 e6 e8 73 43 f3 ff 0f 0b
+>> RSP: 0018:ffffc90000fef938 EFLAGS: 00010086
+>> RAX: 0000000000000058 RBX: ffff888017eaa000 RCX: 0000000000000000
+>> RDX: ffff88801f3ed340 RSI: ffffffff815b6285 RDI: fffff520001fdf19
+>> RBP: ffff888017eaa080 R08: 0000000000000058 R09: 0000000000000000
+>> R10: ffffffff815af45e R11: 0000000000000000 R12: ffff888017eaa080
+>> R13: ffff888014901900 R14: ffff88801a9cb000 R15: ffff88801a9cb520
+>> FS:  0000000002395880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007ff04f95b6c0 CR3: 000000001a4f2000 CR4: 0000000000350ef0
 > 
-> Ugh, yes, apparently I thought the kernel would magically clear bits it doesn't
-> care about.
+> This one is simple
 > 
-> Looking at this again, I think the kvm_cpu_cap_mask() invocation should always
-> mask off X86_FEATURE_SME.  SME cannot be virtualized, and AFAIK it's not
-> emulated by KVM.  This would fix an oddity where SME would be advertised if SEV
-> is also supported.
-> 
-> Boris has queue the kernel change to tip/x86/cpu, I'll spin v4 against that.
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index ae388cc52843..39ae1f821cef 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -6460,7 +6460,8 @@ static struct file *io_file_get(struct io_submit_state *state,
+>  		file = __io_file_get(state, fd);
+>  	}
+>  
+> -	if (file && file->f_op == &io_uring_fops) {
+> +	if (file && file->f_op == &io_uring_fops &&
+> +	    !(req->flags & REQ_F_INFLIGHT)) {
+>  		io_req_init_async(req);
+>  		req->flags |= REQ_F_INFLIGHT;
 
-You can send it after the 5.12 merge window.
+Curious, how is it marked in-flight already? Ah it's splice... Pavel,
+can you send the fix for this one?
 
-Paolo
+-- 
+Jens Axboe
 
