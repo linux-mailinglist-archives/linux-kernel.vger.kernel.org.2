@@ -2,171 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D353081FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2EF3081FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhA1Xea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:34:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51072 "EHLO mail.kernel.org"
+        id S231349AbhA1Xef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:34:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhA1Xca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:32:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA82364DFA;
-        Thu, 28 Jan 2021 23:31:48 +0000 (UTC)
+        id S231283AbhA1Xcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:32:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C911464DFB;
+        Thu, 28 Jan 2021 23:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611876709;
-        bh=JSf3KXQzZzdKJi8SkvGxvcdaO3L0ednDXW8ZLuAudRI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=j47gCH5EXzb2Zwh3Z5CKZPEPOr7WUx6QyfDxD4l3TMVBroKWRdS08yi+aGiYkqIjc
-         S6mZFZMg4/D6uavjuhpN3LpLc7HOO+zRi9x6CMcZxIDZXPkiFyvRDQr6VexDbuDAC6
-         SlZUdTYBFHVPdmIhbsnO/fLOS5Wa0B5AcByJCmH7+WI4iOfkIraT+VBB6gK4Pc3LTB
-         lBjtb4D0OeKP6OOwRbNVYHROnSI1Y4RW3DTXWM8rvpMGIPXvG56YqxL4y5v15Z3l2z
-         rv9kL+Hx1m3lRSIuJfbmI51EUQJFQgA2rKUuDdP99NnpcTMPZ39ICRiAjdonYXRqGU
-         fCauzqY4le1eQ==
-Date:   Thu, 28 Jan 2021 17:31:47 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        mark.rutland@arm.com, Jon Masters <jcm@jonmasters.org>,
-        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-Message-ID: <20210128233147.GA28434@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
+        s=k20201202; t=1611876715;
+        bh=1ZHNqO1UVnXHD7zWMMeGJ5BViV0QetJ/PwxVHeTnLcs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=dy70nCEt67A0ucPyBBqIdqtQJeqG/m6/58QiCedwTxZJiF4I6AgA5sdyjirpLWzWJ
+         XWFKSR+kYtefx1WV2rAX9hK0Emg7Jm8k98TGYqkjcA73Ub5nO3g6QIxe+BgOrs97wq
+         4XHJZSdEtRBQYl4wGUWim0CVqH0ADTOkujxZGqfObqxMl6gbANkqfBW4L7cavXqxp0
+         xy19Y3UuRxEwJ/QLt3tIgQtdcvGk04gyG3wlUWVKzqXseExf5P4xTkl+J28wnXPbYK
+         u1kQ2ud8zV0zpKqrLXFmrXD4DgVMFb1v1+0kn6/mU07hgDxVPILkPyqQHkI6V+/USB
+         TYMDnmpe5dKyA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B8B3A65307;
+        Thu, 28 Jan 2021 23:31:55 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.11-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210128232210.1524674-1-kuba@kernel.org>
+References: <20210128232210.1524674-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210128232210.1524674-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.11-rc6
+X-PR-Tracked-Commit-Id: b8323f7288abd71794cd7b11a4c0a38b8637c8b5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 909b447dcc45db2f9bd5f495f1d16c419812e6df
+Message-Id: <161187671567.10016.10214640642636140545.pr-tracker-bot@kernel.org>
+Date:   Thu, 28 Jan 2021 23:31:55 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:46:04AM -0600, Jeremy Linton wrote:
-> On 1/22/21 1:48 PM, Will Deacon wrote:
-> > On Fri, Jan 08, 2021 at 10:32:16AM +0000, Lorenzo Pieralisi wrote:
-> > > On Thu, Jan 07, 2021 at 04:05:48PM -0500, Jon Masters wrote:
-> > > > On 1/7/21 1:14 PM, Will Deacon wrote:
-> > > > > On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
-> > > > > > Given that most arm64 platform's PCI implementations needs quirks
-> > > > > > to deal with problematic config accesses, this is a good place to
-> > > > > > apply a firmware abstraction. The ARM PCI SMMCCC spec details a
-> > > > > > standard SMC conduit designed to provide a simple PCI config
-> > > > > > accessor. This specification enhances the existing ACPI/PCI
-> > > > > > abstraction and expects power, config, etc functionality is handled
-> > > > > > by the platform. It also is very explicit that the resulting config
-> > > > > > space registers must behave as is specified by the pci specification.
-> > > > > > 
-> > > > > > Lets hook the normal ACPI/PCI config path, and when we detect
-> > > > > > missing MADT data, attempt to probe the SMC conduit. If the conduit
-> > > > > > exists and responds for the requested segment number (provided by the
-> > > > > > ACPI namespace) attach a custom pci_ecam_ops which redirects
-> > > > > > all config read/write requests to the firmware.
-> > > > > > 
-> > > > > > This patch is based on the Arm PCI Config space access document @
-> > > > > > https://developer.arm.com/documentation/den0115/latest
-> > > > > 
-> > > > > Why does firmware need to be involved with this at all? Can't we just
-> > > > > quirk Linux when these broken designs show up in production? We'll need
-> > > > > to modify Linux _anyway_ when the firmware interface isn't implemented
-> > > > > correctly...
-> > > > 
-> > > > I agree with Will on this. I think we want to find a way to address some
-> > > > of the non-compliance concerns through quirks in Linux. However...
-> > > 
-> > > I understand the concern and if you are asking me if this can be fixed
-> > > in Linux it obviously can. The point is, at what cost for SW and
-> > > maintenance - in Linux and other OSes, I think Jeremy summed it up
-> > > pretty well:
-> > > 
-> > > https://lore.kernel.org/linux-pci/61558f73-9ac8-69fe-34c1-2074dec5f18a@arm.com
-> > > 
-> > > The issue here is that what we are asked to support on ARM64 ACPI is a
-> > > moving target and the target carries PCI with it.
-> > > 
-> > > This potentially means that all drivers in:
-> > > 
-> > > drivers/pci/controller
-> > > 
-> > > may require an MCFG quirk and to implement it we may have to:
-> > > 
-> > > - Define new ACPI bindings (that may need AML and that's already a
-> > >    showstopper for some OSes)
-> > > - Require to manage clocks in the kernel (see link-up checks)
-> > > - Handle PCI config space faults in the kernel
-> > > 
-> > > Do we really want to do that ? I don't think so. Therefore we need
-> > > to have a policy to define what constitutes a "reasonable" quirk and
-> > > that's not objective I am afraid, however we slice it (there is no
-> > > such a thing as eg 90% ECAM).
-> > 
-> > Without a doubt, I would much prefer to see these quirks and workarounds
-> > in Linux than hidden behind a firmware interface. Every single time.
-> > 
-> > This isn't like the usual fragmentation problems, where firmware swoops in
-> > to save the day; CPU onlining, spectre mitigations, early entropy etc. All
-> > of these problems exist because there isn't a standard method to implement
-> > them outside of firmware, and so adding a layer of abstraction there makes
-> > sense.
+The pull request you sent on Thu, 28 Jan 2021 15:22:10 -0800:
 
-> > But PCIe is already a standard!
-> 
-> And it says that ECAM is optional, particularly if there are
-> firmware/platform standardized ways of accessing the config space.
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.11-rc6
 
-This is really a tangent to the main discussion, but I don't read it
-quite that way.  PCIe r5.0, sec 7.2.2 says:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/909b447dcc45db2f9bd5f495f1d16c419812e6df
 
-  For systems that are PC-compatible, or that do not implement a
-  processor-architecture-specific firmware interface standard that
-  allows access to the Configuration Space, the Enhanced Configuration
-  Access Mechanism (ECAM) is required as defined in this section.
+Thank you!
 
-I read that as "ECAM is *required* unless you have a standard firmware
-interface."  I think the firmware interface originally referred to
-ia64 SAL, but I would say this new ARM thing also qualifies.
-
-But the bottom line is we all want to make it so new hardware works
-with old kernels.  Nobody wants to ask distros to release updates just
-to boot a new platform.  That means a generic host bridge driver (like
-the ACPI pci_root.c) and generic config access (like ECAM or SAL).
-
-> > I appreciate the sentiment, but you're not solving the problem
-> > here. You're moving it somewhere else. Somewhere where you don't
-> > have to deal with it (and I honestly can't blame you for that),
-> > but also somewhere where you _can't_ necessarily deal with it. The
-> > inevitable outcome is an endless succession of crappy,
-> > non-compliant machines which only appear to operate correctly with
-> > particularly kernel/firmware combinations. Imagine trying to use
-> > something like that?
-> > 
-> > The approach championed here actively discourages vendors from
-> > building spec-compliant hardware and reduces our ability to work
-> > around problems on such hardware at the same time.
-
-That's a pretty good argument.  And it's true that there are
-subtleties even in seemingly trivial interface like this.
-Synchronization and error handling are common problem areas.
-
-> Does that mean its open season for ECAM quirks, and we can expect
-> them to start being merged now?
-
-"Open season" makes me cringe because it suggests we have a license to
-use quirks indiscriminately forever, and I hope that's not the case.
-
-Lorenzo is closer to this issue than I am and has much better insight
-into the mess this could turn into.  From my point of view, it's
-shocking how much of a hassle this is compared to x86.  There just
-aren't ECAM quirks, in-kernel clock management, or any of that crap.
-I don't know how they do it on x86 and I don't have to care.  Whatever
-they need to do, they apparently do in AML.  Eventually ARM64 has to
-get there as well if vendors want distro support.
-
-I don't want to be in the position of enforcing a draconian "no more
-quirks ever" policy.  The intent -- to encourage/force vendors to
-develop spec-compliant machines -- is good, but it seems like the
-reward of having compliant machines "just work" vs the penalty of
-having to write quirks and shepherd them upstream and into distros
-will probably be more effective and not much slower.
-
-Bjorn
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
