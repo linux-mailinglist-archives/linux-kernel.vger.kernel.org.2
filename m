@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319703074D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FF03074E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhA1LaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:30:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11211 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhA1L32 (ORCPT
+        id S231265AbhA1LeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhA1LeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:29:28 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DRJ8n6DgtzlBxV;
-        Thu, 28 Jan 2021 19:27:05 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
- 19:28:33 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <torvalds@linux-foundation.org>, <cl@linux.com>,
-        <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>,
-        <vbabka@suse.cz>
-CC:     <asmadeus@codewreck.org>, <davem@davemloft.net>,
-        <ericvh@gmail.com>, <kuba@kernel.org>, <lucho@ionkov.net>,
-        <netdev@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
-        <v9fs-developer@lists.sourceforge.net>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <syzbot+d0bd96b4696c1ef67991@syzkaller.appspotmail.com>
-Subject: [PATCH] Revert "mm/slub: fix a memory leak in sysfs_slab_add()"
-Date:   Thu, 28 Jan 2021 19:32:50 +0800
-Message-ID: <20210128113250.60078-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 28 Jan 2021 06:34:15 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D55C061573;
+        Thu, 28 Jan 2021 03:33:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IUujPNoLJPhaulCTunLzVc+aMIY9llkn0PPsho9EbXg=; b=q3UUj0cFxO4alOPCMS3cjAmR2u
+        wKGu2iv+3Xuhu5QxISZ9ZZJOS0pQ2GtYBzM2WVMeV/OjggbcOPiwNYxDFIMtyPTaQQNEfDT3TiBRa
+        T2jqi9yZtEYNpyo8eWXOLUxU7qpevo/JsbDXxfyfVkLMIGRwvjs2vWY/xyZ4uxlb5nBRtnoEeY/Vz
+        fNXHgwNNCn0CkkC50pTDfRy/lp82nWMy/ehsqAnHAvFgetp5EfxO9fCtX3g4dO9VR1FE8nvUlZ7sr
+        Bn2IZGGGDInHvCbndLjrJ6PQb82695qmeQv5WYiqTsI+D4GBDKWySAoA5Hwf+wgeENaCSuuQq68TP
+        +CCtbJiQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l55YF-0003Z2-KG; Thu, 28 Jan 2021 11:33:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E9BF300B22;
+        Thu, 28 Jan 2021 12:33:26 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF281200D4EEC; Thu, 28 Jan 2021 12:33:25 +0100 (CET)
+Date:   Thu, 28 Jan 2021 12:33:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] MIPS: Octeon: Implement __smp_store_release()
+Message-ID: <YBKhBQQ97f/J6L+u@hirez.programming.kicks-ass.net>
+References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+ <20210127203627.47510-2-alexander.sverdlin@nokia.com>
+ <YBHp4139X+p+4IZ+@hirez.programming.kicks-ass.net>
+ <aace6ff1-9ddf-15af-3c0a-378c53c59acb@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aace6ff1-9ddf-15af-3c0a-378c53c59acb@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit dde3c6b72a16c2db826f54b2d49bdea26c3534a2.
+On Thu, Jan 28, 2021 at 08:27:29AM +0100, Alexander Sverdlin wrote:
 
-syzbot report a double-free bug. The following case can cause this bug.
- - mm/slab_common.c: create_cache(): if the __kmem_cache_create()
-fails, it does:
+> >> +#define __smp_store_release(p, v)					\
+> >> +do {									\
+> >> +	compiletime_assert_atomic_type(*p);				\
+> >> +	__smp_wmb();							\
+> >> +	__smp_rmb();							\
+> >> +	WRITE_ONCE(*p, v);						\
+> >> +} while (0)
+> > This is wrong in general since smp_rmb() will only provide order between
+> > two loads and smp_store_release() is a store.
+> > 
+> > If this is correct for all MIPS, this needs a giant comment on exactly
+> > how that smp_rmb() makes sense here.
+> 
+> ... the macro is provided for Octeon only, and __smp_rmb() is actually a NOP
+> there, but I thought to "document" the flow of thoughts from the discussion
+> above by including it anyway.
 
-	out_free_cache:
-		kmem_cache_free(kmem_cache, s);
+Random discussions on the internet do not absolve you from having to
+write coherent comments. Especially so where memory ordering is
+concerned.
 
- - but __kmem_cache_create() - at least for slub() - will have done
+This, from commit 6b07d38aaa52 ("MIPS: Octeon: Use optimized memory
+barrier primitives."):
 
-	sysfs_slab_add(s)
-		-> sysfs_create_group() .. fails ..
-		-> kobject_del(&s->kobj); .. which frees s ...
+	#define smp_mb__before_llsc() smp_wmb()
+	#define __smp_mb__before_llsc() __smp_wmb()
 
-We can't remove the kmem_cache_free() in create_cache(), because
-other error cases of __kmem_cache_create() do not free this.
+is also dodgy as hell and really wants a comment too. I'm not buying the
+Changelog of that commit either, __smp_mb__before_llsc should also
+ensure the LL cannot happen earlier, but SYNCW has no effect on loads.
+So what stops the load from being speculated?
 
-So, revert the commit dde3c6b72a16 ("mm/slub: fix a memory leak in
-sysfs_slab_add()") to fix this.
-
-Reported-by: syzbot+d0bd96b4696c1ef67991@syzkaller.appspotmail.com
-Fixes: dde3c6b72a16 ("mm/slub: fix a memory leak in sysfs_slab_add()")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- mm/slub.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 69742ab9a21d..7ecbbbe5bc0c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5625,10 +5625,8 @@ static int sysfs_slab_add(struct kmem_cache *s)
- 
- 	s->kobj.kset = kset;
- 	err = kobject_init_and_add(&s->kobj, &slab_ktype, NULL, "%s", name);
--	if (err) {
--		kobject_put(&s->kobj);
-+	if (err)
- 		goto out;
--	}
- 
- 	err = sysfs_create_group(&s->kobj, &slab_attr_group);
- 	if (err)
--- 
-2.17.1
 
