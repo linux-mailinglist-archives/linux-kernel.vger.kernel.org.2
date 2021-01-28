@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439DD3068BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317B73068C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhA1Akn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
+        id S231797AbhA1Alj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:41:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhA1AjY (ORCPT
+        with ESMTP id S231648AbhA1Ajb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:39:24 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71D9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:38:43 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id y16so2379352pfp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:38:43 -0800 (PST)
+        Wed, 27 Jan 2021 19:39:31 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94075C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:38:45 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 8so2666444pgn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:38:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to;
-        bh=4W4Mz7FARh9nT3HFppHTQnTZcP4AiXiO2tmblYeh7WE=;
-        b=Eb4iPku8cZ0Vn7Ei3aQgJpwqmbI/1Jr3DYPfQ13tzINxjrf9Ulm40ki5zV8pC9Yap9
-         Yyx8MrkyRbwP9IyEhZZDYoXDExVmMYlIO4/QGrvet29VCDBr8Fo5W0XG1xpkCGb9O04K
-         xPmVNDYGnaIhJadfgRiSdMkQKEL5jhQvVV+lnkcKlMlTnrSZc32FxCZ/3//vMJGZNUOj
-         mRLa6hTfO8o/ei9CRZnNDxeT6NAfg8gLjKprLbSIk6CeI+rj6RW0JrVknZEcq2liQnb4
-         F90qbiiR8ek5wnxSA8hUomCWoPKIyyueIiGtYwSWRTLU00HKIXkQSrTuuOtjJnqopyl3
-         fZNg==
+        bh=qnjnlmt/aDtctSbauuE/youvqobwVlPzhUiWyRCjmfE=;
+        b=qJxdZcF/2iL7L7BpzsbCYhi4F1nBavg4WlPlFpgXDOY5JnypjMuB5Jl8F1glrX+A4C
+         n5cFVsxGI6pfe/w0G7OBYdhPN9oZnZgnLpywUZwj5ri8PaSP2OWVp0agQOBxmWy3mIvz
+         KSFd69aDCb0KQBfTmnJ62PQ3um4VDyswVGzu5SPQyhwapIATIv82EijymGjd/0268xT2
+         wv/zpLEU0J95cFOqUQnbGni/pwRmqfy6nQ96Wx3eJcvOVyYCLU49ayvU8D/1YZcpSmEQ
+         cQVhVPIIf6skPQ09HLkASCP/JwRrVQzdGPjF5JYdynrGeqJ4Xp2kxKWvkcG5Zs6dpAi0
+         huSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to;
-        bh=4W4Mz7FARh9nT3HFppHTQnTZcP4AiXiO2tmblYeh7WE=;
-        b=c7lT7QBvWX5fBrX6lFkINURNFEvLEhML5lJfcQpXnmKuiHw/e/YY/Iu42iTO2bO/bA
-         BfZ9jY9k1UdRckxglpKrU8jCVegQSgGCZ4xNZPRz22QGOcYhV2uSlt1o3FPqawaqAYdB
-         otOlhHMeUmQQwanBz2hK+q1rmQrnl3gnNx7fOLFHrHMWBpAXXKPMSWz6HKna98pKt3Sx
-         Apd3CF3wDwzwD5QE7B4gMXkDnkjo+5hgG/041Y4weF02+YXvnUC+rOyF6NRisSOctfq2
-         lNHqxpL4Kg0LQIVdIxbmm1mWpXeEUUpq+lA+6z0GKOz1am45iLdK8o4/13VYwWG8/iVW
-         bnxA==
-X-Gm-Message-State: AOAM532O/MxKAkQLu7bnPiryGpQwNwraSxSFS35Rhax/lirDd/3boDIN
-        RTOmGh1VDEvk15bUpzTm9wDod6a6gw==
-X-Google-Smtp-Source: ABdhPJxLTPQsZ3ALIjHtj1aD58QbrBkOE/Y0s5GW7Sn3xRBoflafftwJdJ89PE1InRUmNhSb23g5V+c0sg==
+        bh=qnjnlmt/aDtctSbauuE/youvqobwVlPzhUiWyRCjmfE=;
+        b=r/bDYhF19T7rzxSGXfM1qcUq6ikNe+so7k2i9cRhUxAs+7UsQ+cj0q8F2hDypRYYfh
+         7mTYN4MDQRbazW3HLA3Mdhl6fRYqIbA+LvzKJ9mMXndOnHa7UjzKHv+kLD9NJhpL0oDp
+         eBBx+z8AxTj1yeV6eHBWb5cKAggK5sHga5LPYXPwnJ7JNd3Bz4uZioMxVhsbt4D2s1rt
+         bMHMZWuU2y/34AgjnHjNIkqbu0KQ41JfL6arx+t0jLD2vjCCUjSBMhOkEOSMCeyoj6u4
+         R2d0OYCFx1/vbfFWk8KCCcLi8prD5siJJYBQRt2we99ivxbWWv6pIcBtoX7Q1XUnr2XJ
+         HypA==
+X-Gm-Message-State: AOAM530YgNuG46AifaN91rj/887EMDr+5U5nc6SxJ2hmZX/7BO6A5cBZ
+        FIOulfoxF0EnF169BzHHM4a4TA6mRQ==
+X-Google-Smtp-Source: ABdhPJxItXQ1+mD1tytZkMFhh6fWETP78nnpd+zRsRgJzoZEVagoHzp8VktIvxmKZTm1x9AHDy922qsZ4Q==
 Sender: "jxgao via sendgmr" <jxgao@jxgao.kir.corp.google.com>
 X-Received: from jxgao.kir.corp.google.com ([2620:0:1008:11:4d90:620d:7a68:ffc5])
- (user=jxgao job=sendgmr) by 2002:a05:6a00:851:b029:1b3:fbb3:faed with SMTP id
- q17-20020a056a000851b02901b3fbb3faedmr13331958pfk.18.1611794323323; Wed, 27
- Jan 2021 16:38:43 -0800 (PST)
-Date:   Wed, 27 Jan 2021 16:38:27 -0800
+ (user=jxgao job=sendgmr) by 2002:a17:90a:d181:: with SMTP id
+ fu1mr8266312pjb.188.1611794325104; Wed, 27 Jan 2021 16:38:45 -0800 (PST)
+Date:   Wed, 27 Jan 2021 16:38:28 -0800
 In-Reply-To: <20210128003829.1892018-1-jxgao@google.com>
-Message-Id: <20210128003829.1892018-2-jxgao@google.com>
+Message-Id: <20210128003829.1892018-3-jxgao@google.com>
 Mime-Version: 1.0
 References: <20210128003829.1892018-1-jxgao@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH 1/3] Adding page_offset_mask to device_dma_parameters
+Subject: [PATCH 2/3] Add swiotlb offset preserving mapping when
+ dma_dma_parameters->page_offset_mask is non zero.
 From:   Jianxiong Gao <jxgao@google.com>
 To:     jxgao@google.com, erdemaktas@google.com, marcorr@google.com,
         hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
@@ -69,58 +69,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices rely on the address offset in a page to function
-correctly (NVMe driver as an example). These devices may use
-a different page size than the Linux kernel. The address offset
-has to be preserved upon mapping, and in order to do so, we
-need to record the page_offset_mask first.
+For devices that need to preserve address offset on mapping through
+swiotlb, this patch adds offset preserving based on page_offset_mask
+and keeps the offset if the mask is non zero. This is needed for
+device drivers like NVMe.
 
 Signed-off-by: Jianxiong Gao <jxgao@google.com>
 ---
- include/linux/device.h      |  1 +
- include/linux/dma-mapping.h | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+)
+ kernel/dma/swiotlb.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 1779f90eeb4c..f44e0659fc66 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -292,6 +292,7 @@ struct device_dma_parameters {
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 7c42df6e6100..4cab35f2c9bc 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -468,7 +468,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
+ 	dma_addr_t tbl_dma_addr = phys_to_dma_unencrypted(hwdev, io_tlb_start);
+ 	unsigned long flags;
+ 	phys_addr_t tlb_addr;
+-	unsigned int nslots, stride, index, wrap;
++	unsigned int nslots, stride, index, wrap, page_offset_mask, page_offset;
+ 	int i;
+ 	unsigned long mask;
+ 	unsigned long offset_slots;
+@@ -500,12 +500,16 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
+ 		    ? ALIGN(mask + 1, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT
+ 		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
+ 
++	page_offset_mask = dma_get_page_offset_mask(hwdev);
++	page_offset = orig_addr & page_offset_mask;
++	alloc_size += page_offset;
++
+ 	/*
+ 	 * For mappings greater than or equal to a page, we limit the stride
+ 	 * (and hence alignment) to a page size.
  	 */
- 	unsigned int max_segment_size;
- 	unsigned long segment_boundary_mask;
-+	unsigned int page_offset_mask;
- };
- 
- /**
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 2e49996a8f39..5529a31fefba 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -500,6 +500,23 @@ static inline int dma_set_seg_boundary(struct device *dev, unsigned long mask)
- 	return -EIO;
- }
- 
-+static inline unsigned int dma_get_page_offset_mask(struct device *dev)
-+{
-+	if (dev->dma_parms)
-+		return dev->dma_parms->page_offset_mask;
-+	return 0;
-+}
-+
-+static inline int dma_set_page_offset_mask(struct device *dev,
-+		unsigned int page_offset_mask)
-+{
-+	if (dev->dma_parms) {
-+		dev->dma_parms->page_offset_mask = page_offset_mask;
-+		return 0;
-+	}
-+	return -EIO;
-+}
-+
- static inline int dma_get_cache_alignment(void)
+ 	nslots = ALIGN(alloc_size, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
+-	if (alloc_size >= PAGE_SIZE)
++	if ((alloc_size >= PAGE_SIZE) || (page_offset_mask > (1 << IO_TLB_SHIFT)))
+ 		stride = (1 << (PAGE_SHIFT - IO_TLB_SHIFT));
+ 	else
+ 		stride = 1;
+@@ -583,6 +587,11 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
+ 	 */
+ 	for (i = 0; i < nslots; i++)
+ 		io_tlb_orig_addr[index+i] = orig_addr + (i << IO_TLB_SHIFT);
++	/*
++	 * When keeping the offset of the original data, we need to advance
++	 * the tlb_addr by the offset of orig_addr.
++	 */
++	tlb_addr += page_offset;
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+ 	    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
+ 		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_TO_DEVICE);
+@@ -598,7 +607,9 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
+ 			      enum dma_data_direction dir, unsigned long attrs)
  {
- #ifdef ARCH_DMA_MINALIGN
+ 	unsigned long flags;
+-	int i, count, nslots = ALIGN(alloc_size, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
++	unsigned int num_page_offset_slabs, page_offset_mask = dma_get_page_offset_mask(hwdev);
++	int i, count;
++	int nslots = ALIGN(alloc_size + tlb_addr & page_offset_mask, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
+ 	int index = (tlb_addr - io_tlb_start) >> IO_TLB_SHIFT;
+ 	phys_addr_t orig_addr = io_tlb_orig_addr[index];
+ 
+@@ -610,6 +621,14 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
+ 	    ((dir == DMA_FROM_DEVICE) || (dir == DMA_BIDIRECTIONAL)))
+ 		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_FROM_DEVICE);
+ 
++	/*
++	 * When dma_get_page_offset_mask is used, we may have padded more slabs
++	 * when padding exceeds one slab. We need to move index back to the
++	 * beginning of the padding.
++	 */
++	num_page_offset_slabs =  (tlb_addr & page_offset_mask) / (1 << IO_TLB_SHIFT);
++	index -= num_page_offset_slabs;
++
+ 	/*
+ 	 * Return the buffer to the free list by setting the corresponding
+ 	 * entries to indicate the number of contiguous entries available.
 -- 
 2.27.0
 
