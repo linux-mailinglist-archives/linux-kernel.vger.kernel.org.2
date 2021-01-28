@@ -2,163 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E993076C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73A73076CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhA1NIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
+        id S231998AbhA1NKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:10:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhA1NIb (ORCPT
+        with ESMTP id S231927AbhA1NKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:08:31 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A817FC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:07:51 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id x21so5447782iog.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:07:51 -0800 (PST)
+        Thu, 28 Jan 2021 08:10:35 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A32C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:55 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id s18so6230655ljg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:09:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LGb1aq9paqdFYSvD64IBXTiYrmqFFnd0vb6R7QmmNTg=;
-        b=p70H8AQQYZzDm0nS+E3kN9R09LzpmxMwRxrpvEccPjOUfvFXBjt1q4JBdbWzJSvcYc
-         ksDiAUoEjSre7VFBYg+r1ryjHI+2Iab1RNWdZ/fkHU2q9BcrAqtSQKeTQIFxO2SEBy6e
-         yKf/UFaaIQ7RpbM/eYiaeGnjFBmudkayLm9jBbee+Pm9Y/Paf4UDgBN5rFcfp4bqvBtY
-         dYQGsoj/+GA5/GssZIpTHEONshpef72WaRgEdDMgO/qD8llT9nKvhJAcmb8OBiRk4j2T
-         Dd5fXexd00IypeSHicTLDu8zefeGoxqkDzAddmqIJMGBqBEJbUkQr6u4+7ck3YRKsbp3
-         B4kw==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=d7LZ22+oyphnUi5mVFQCXWwH/H/OEMXyG0FmJuE7rMk=;
+        b=1NaX3Fx5vR3LylPGpehoAVK9/R5LQc1yFDM+xUNseADsOEUXVW5Q9LXSQ2+IdagFWT
+         g17CQRs0VwFP0a2tL1bXhujKOqEM6lkUZDVODU6Hw2R7p2QCqsBUETrCvjQymrwYUahS
+         nfxtjx/NVhn+h5LYjNPtGBROa2P10ty/VpG8g0XIO7HmIXaz6pt1auwsFavdNz/gl79a
+         +tQk2xmBhQw3M0eMvwVbWXv+494isqb6hUZK9WaCrGlqMCdU4c/npKP0+UucOuOWSFce
+         GaLbtmUHIYAlUNkZThHrs9x+SlYFzHSQxudMKdLs5XCeIdBvAboJ1LqE/6aI9N/ud6qf
+         SViA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LGb1aq9paqdFYSvD64IBXTiYrmqFFnd0vb6R7QmmNTg=;
-        b=A0x28Cshb1t5wTCGYt8/nw7jkn7EL21Empn2lIWghsbilKn1S7Vphurr9CK+yXFhDt
-         KMVBBd+/I3Nk+w2li5H07I6KNRYeJ0dASMQg9+qJKOqG8wYga47jMnOnv2p33lKBTJLJ
-         oXeP8zAhaVSLkVGT6swjeIV9RAhS8skkeJdy5BNtIY7aMjd7QOPkVZp5ATt3nOpLqu+B
-         /Wk1KxLSRcC1cA/XKdr05GmxoiX+vFk8QO6c76ODGkpPRiggVc1MLzl7AfyAk5hzeulG
-         f1yaCXXMVhfi2VfMbgehuYojEjejDiNWEj8YCd2J8wBHLt9ziJ+BAO9hCvv9cDibG+6I
-         4r7Q==
-X-Gm-Message-State: AOAM532Yh8D/moag/dg5ZNB6rfM1uT/cfxuN+93aiANYWAWFrpbMc/Rg
-        jhOGsF7sflM0NNsoIq2m1Z61bImJgQO9Ked9+5E=
-X-Google-Smtp-Source: ABdhPJzYt0hhRe2II8tIYn5i7WwQtuPiA4qyA1CTx26ZsMNxFrtmWv3RFGMlg5hB1jiiDdgjmLpWq1FRlyDWjXSxs04=
-X-Received: by 2002:a5e:9612:: with SMTP id a18mr10938738ioq.13.1611839271227;
- Thu, 28 Jan 2021 05:07:51 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=d7LZ22+oyphnUi5mVFQCXWwH/H/OEMXyG0FmJuE7rMk=;
+        b=byE7gOIh+9VCQ0OzdTEM8845nqRC7MKmGZ737sf+gQRQ9GCuPFzRtu6aeNjkUINMPE
+         rhJB5X01k6JQG1ZjiVNsJejpFcQmnbeiqPsPeqM8NDNRem5zv4FEiTiNGD3vjr87/lRL
+         5yId8vz0Gd/BTp5XWbbmWva4pd3mUUxOYYX+czGj/ATajyS32Xg9YSdnXzWKN0OAga8n
+         FFkxihmI//tgrZuHW2dFzPOKNyuxZZ9An+joe6N5L/NKvDGbJhZEIMcjSjZ7LHrsQgZs
+         pLYfb2iBW11xa5HyyicMO96Ppfkdc7Xhu5cYsaOGIkbtKj+Cc/SQHxYPie9c+fho7mHT
+         RfnQ==
+X-Gm-Message-State: AOAM532YZcB39leTpmu8UJ7ZcGyLXTL9Ec0KzB96GSXw0Od0+UuRE45f
+        CTPVnormoj2JFcGz0+u3ofsomQ==
+X-Google-Smtp-Source: ABdhPJwX9m/KtjKAA/+SzyVBGo91thnSD/C7o9Qt3wssfmXp+di+H9MEh0o1WqvjA7v9uFmxgxaNPA==
+X-Received: by 2002:a2e:9055:: with SMTP id n21mr4142030ljg.377.1611839393676;
+        Thu, 28 Jan 2021 05:09:53 -0800 (PST)
+Received: from localhost.localdomain (89-70-221-122.dynamic.chello.pl. [89.70.221.122])
+        by smtp.gmail.com with ESMTPSA id m10sm1632458lfk.2.2021.01.28.05.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 05:09:52 -0800 (PST)
+From:   Lukasz Majczak <lma@semihalf.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+Subject: [PATCH v2] tpm_tis: Add missing tpm_request/relinquish_locality calls
+Date:   Thu, 28 Jan 2021 14:07:53 +0100
+Message-Id: <20210128130753.1283534-1-lma@semihalf.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210123014247.989368-1-lma@semihalf.com>
+References: <20210123014247.989368-1-lma@semihalf.com>
 MIME-Version: 1.0
-References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-4-laoar.shao@gmail.com>
- <894d55e7-d723-3a03-7a33-10b3ad8f66e8@suse.cz>
-In-Reply-To: <894d55e7-d723-3a03-7a33-10b3ad8f66e8@suse.cz>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 28 Jan 2021 21:07:15 +0800
-Message-ID: <CALOAHbCDCdBpC0iODyvEEuui4uVindnKE+7f0E8CrUYhsgEPDQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] printk: dump full information of page flags in pGp
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        andriy.shevchenko@linux.intel.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 6:42 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 1/28/21 3:19 AM, Yafang Shao wrote:
-> > Currently the pGp only shows the names of page flags, rather than
-> > the full information including section, node, zone, last cpupid and
-> > kasan tag. While it is not easy to parse these information manually
-> > because there're so many flavors. Let's interpret them in pGp as well.
-> >
-> > - Before the patch,
-> > [ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
-> >
-> > - After the patch,
-> > [ 6315.235783] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(Node 0x0,Zone 0x2,Lastcpupid 0x1fffff,slab|head)
->
-> node, zone could be decimal?
+There is a missing call to tpm_request_locality before the call to
+the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
+approach might work for tpm2, it fails for tpm1.x - in that case
+call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
+without locality fails and in turn causes tpm_tis_core_init() to fail.
+Tested on Samsung Chromebook Pro (Caroline).
 
-Make sense to me. Will change it.
+Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+---
+Jarkko, James, Guenter
 
->
-> >
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  lib/vsprintf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 41 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> > index 3b53c73580c5..bd809f4f1b82 100644
-> > --- a/lib/vsprintf.c
-> > +++ b/lib/vsprintf.c
-> > @@ -1916,6 +1916,46 @@ char *format_flags(char *buf, char *end, unsigned long flags,
-> >       return buf;
-> >  }
-> >
-> > +struct page_flags_layout {
-> > +     int width;
-> > +     int shift;
-> > +     int mask;
-> > +     char *name;
-> > +};
-> > +
-> > +struct page_flags_layout pfl[] = {
-> > +     {SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK, "Section "},
-> > +     {NODES_WIDTH, NODES_PGSHIFT, NODES_MASK, "Node "},
-> > +     {ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK, "Zone "},
-> > +     {LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK, "Lastcpupid "},
-> > +     {KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK, "Kasantag "},
-> > +};
-> > +
-> > +static
-> > +char *format_layout(char *buf, char *end, unsigned long flags)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
-> > +             if (pfl[i].width == 0)
-> > +                     continue;
-> > +
-> > +             buf = string(buf, end, pfl[i].name, default_str_spec);
-> > +
-> > +             if (buf >= end)
-> > +                     break;
-> > +             buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
-> > +                          default_flag_spec);
-> > +
-> > +             if (buf >= end)
-> > +                     break;
-> > +             *buf = ',';
-> > +             buf++;
-> > +     }
-> > +
-> > +     return buf;
-> > +}
-> > +
-> >  static noinline_for_stack
-> >  char *flags_string(char *buf, char *end, void *flags_ptr,
-> >                  struct printf_spec spec, const char *fmt)
-> > @@ -1929,7 +1969,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
-> >       switch (fmt[1]) {
-> >       case 'p':
-> >               flags = *(unsigned long *)flags_ptr;
-> > -             /* Remove zone id */
-> > +             buf = format_layout(buf, end, flags & ~((1UL << NR_PAGEFLAGS) - 1));
-> >               flags &= (1UL << NR_PAGEFLAGS) - 1;
-> >               names = pageflag_names;
-> >               break;
-> >
->
+I’m aware about the other thread, but it seems to be dead for a few months.
+Here is the small patch as fixing this specific issue
+would allow us to unblock the ChromeOs development. 
+We want to upstream all of our patches,
+so the ChromeOs will not diverge even more,
+so I'm hoping this could be applied, if you see it neat enough.
 
+Best regards,
+Lukasz
 
+v1 -> v2:
+ - fixed typos
+ - as there is no need to enable clock, switched to
+   use only tpm_request/relinquish_locality calls
+ - narrowed down boundaries of tpm_request/relinquish_locality calls
+ 
+ drivers/char/tpm/tpm-chip.c      |  4 ++--
+ drivers/char/tpm/tpm-interface.c | 11 +++++++++--
+ drivers/char/tpm/tpm.h           |  2 ++
+ drivers/char/tpm/tpm_tis_core.c  | 12 ++++++++++--
+ 4 files changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index ddaeceb7e109..5351963a4b19 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -32,7 +32,7 @@ struct class *tpm_class;
+ struct class *tpmrm_class;
+ dev_t tpm_devt;
+ 
+-static int tpm_request_locality(struct tpm_chip *chip)
++int tpm_request_locality(struct tpm_chip *chip)
+ {
+ 	int rc;
+ 
+@@ -47,7 +47,7 @@ static int tpm_request_locality(struct tpm_chip *chip)
+ 	return 0;
+ }
+ 
+-static void tpm_relinquish_locality(struct tpm_chip *chip)
++void tpm_relinquish_locality(struct tpm_chip *chip)
+ {
+ 	int rc;
+ 
+diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
+index 1621ce818705..69309b2bea6a 100644
+--- a/drivers/char/tpm/tpm-interface.c
++++ b/drivers/char/tpm/tpm-interface.c
+@@ -243,8 +243,15 @@ int tpm_get_timeouts(struct tpm_chip *chip)
+ 
+ 	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+ 		return tpm2_get_timeouts(chip);
+-	else
+-		return tpm1_get_timeouts(chip);
++	else {
++		ssize_t ret = tpm_request_locality(chip);
++
++		if (ret)
++			return ret;
++		ret = tpm1_get_timeouts(chip);
++		tpm_relinquish_locality(chip);
++		return ret;
++	}
+ }
+ EXPORT_SYMBOL_GPL(tpm_get_timeouts);
+ 
+diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
+index 947d1db0a5cc..8c13008437dd 100644
+--- a/drivers/char/tpm/tpm.h
++++ b/drivers/char/tpm/tpm.h
+@@ -193,6 +193,8 @@ static inline void tpm_msleep(unsigned int delay_msec)
+ 
+ int tpm_chip_start(struct tpm_chip *chip);
+ void tpm_chip_stop(struct tpm_chip *chip);
++int tpm_request_locality(struct tpm_chip *chip);
++void tpm_relinquish_locality(struct tpm_chip *chip);
+ struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
+ __must_check int tpm_try_get_ops(struct tpm_chip *chip);
+ void tpm_put_ops(struct tpm_chip *chip);
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 92c51c6cfd1b..0ae675e8cf2f 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -754,9 +754,17 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *chip)
+ 
+ 	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+ 		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
+-	else
+-		return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
++	else {
++		ssize_t ret = tpm_request_locality(chip);
++
++		if (ret)
++			return ret;
++		ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
+ 				  0);
++		tpm_relinquish_locality(chip);
++		return ret;
++	}
++
+ }
+ 
+ /* Register the IRQ and issue a command that will cause an interrupt. If an
 -- 
-Thanks
-Yafang
+2.25.1
+
