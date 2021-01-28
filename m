@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E6F307339
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A19E307358
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhA1JzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:55:05 -0500
-Received: from sauhun.de ([88.99.104.3]:49816 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhA1JzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:55:00 -0500
-Received: from localhost (p54b33782.dip0.t-ipconnect.de [84.179.55.130])
-        by pokefinder.org (Postfix) with ESMTPSA id 6C95F2C04D8;
-        Thu, 28 Jan 2021 10:54:18 +0100 (CET)
-Date:   Thu, 28 Jan 2021 10:54:18 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Qii Wang <qii.wang@mediatek.com>
-Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-Subject: Re: [RESEND, V2] i2c: mediatek: Move suspend and resume handling to
- NOIRQ phase
-Message-ID: <20210128095418.GM963@ninjato>
-References: <1610180990-23496-1-git-send-email-qii.wang@mediatek.com>
- <1611661020.15158.4.camel@mhfsdcap03>
+        id S232306AbhA1KCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:02:33 -0500
+Received: from mail.netline.ch ([148.251.143.178]:39202 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232290AbhA1KCL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 05:02:11 -0500
+X-Greylist: delayed 458 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 05:02:10 EST
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 2BE462A6042;
+        Thu, 28 Jan 2021 10:53:47 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id KohtHMM_GZh1; Thu, 28 Jan 2021 10:53:46 +0100 (CET)
+Received: from kaveri (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id D85C02A6016;
+        Thu, 28 Jan 2021 10:53:46 +0100 (CET)
+Received: from daenzer by kaveri with local (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1l53zm-0000dq-A5; Thu, 28 Jan 2021 10:53:46 +0100
+From:   =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel@daenzer.net>
+To:     Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/ttm: Use __GFP_NOWARN for huge pages in ttm_pool_alloc_page
+Date:   Thu, 28 Jan 2021 10:53:46 +0100
+Message-Id: <20210128095346.2421-1-michel@daenzer.net>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yaap9KN+GmBP785v"
-Content-Disposition: inline
-In-Reply-To: <1611661020.15158.4.camel@mhfsdcap03>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Michel Dänzer <mdaenzer@redhat.com>
 
---yaap9KN+GmBP785v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Without __GFP_NOWARN, attempts at allocating huge pages can trigger
+dmesg splats like below (which are essentially noise, since TTM falls
+back to normal pages if it can't get a huge one).
 
-On Tue, Jan 26, 2021 at 07:37:00PM +0800, Qii Wang wrote:
-> Hi Wolfram,
->=20
-> On Sat, 2021-01-09 at 16:29 +0800, qii.wang@mediatek.com wrote:
-> > From: Qii Wang <qii.wang@mediatek.com>
-> >=20
-> > Some i2c device driver indirectly uses I2C driver when it is now
-> > being suspended. The i2c devices driver is suspended during the
-> > NOIRQ phase and this cannot be changed due to other dependencies.
-> > Therefore, we also need to move the suspend handling for the I2C
-> > controller driver to the NOIRQ phase as well.
-> >=20
-> > Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+[ 9556.710241] clinfo: page allocation failure: order:9, mode:0x194dc2(GFP_HIGHUSER|__GFP_RETRY_MAYFAIL|__GFP_NORETRY|__GFP_ZERO|__GFP_NOMEMALLOC), nodemask=(null),cpuset=user.slice,mems_allowed=0
+[ 9556.710259] CPU: 1 PID: 470821 Comm: clinfo Tainted: G            E     5.10.10+ #4
+[ 9556.710264] Hardware name: Micro-Star International Co., Ltd. MS-7A34/B350 TOMAHAWK (MS-7A34), BIOS 1.OR 11/29/2019
+[ 9556.710268] Call Trace:
+[ 9556.710281]  dump_stack+0x6b/0x83
+[ 9556.710288]  warn_alloc.cold+0x7b/0xdf
+[ 9556.710297]  ? __alloc_pages_direct_compact+0x137/0x150
+[ 9556.710303]  __alloc_pages_slowpath.constprop.0+0xc1b/0xc50
+[ 9556.710312]  __alloc_pages_nodemask+0x2ec/0x320
+[ 9556.710325]  ttm_pool_alloc+0x2e4/0x5e0 [ttm]
+[ 9556.710332]  ? kvmalloc_node+0x46/0x80
+[ 9556.710341]  ttm_tt_populate+0x37/0xe0 [ttm]
+[ 9556.710350]  ttm_bo_handle_move_mem+0x142/0x180 [ttm]
+[ 9556.710359]  ttm_bo_validate+0x11d/0x190 [ttm]
+[ 9556.710391]  ? drm_vma_offset_add+0x2f/0x60 [drm]
+[ 9556.710399]  ttm_bo_init_reserved+0x2a7/0x320 [ttm]
+[ 9556.710529]  amdgpu_bo_do_create+0x1b8/0x500 [amdgpu]
+[ 9556.710657]  ? amdgpu_bo_subtract_pin_size+0x60/0x60 [amdgpu]
+[ 9556.710663]  ? get_page_from_freelist+0x11f9/0x1450
+[ 9556.710789]  amdgpu_bo_create+0x40/0x270 [amdgpu]
+[ 9556.710797]  ? _raw_spin_unlock+0x16/0x30
+[ 9556.710927]  amdgpu_gem_create_ioctl+0x123/0x310 [amdgpu]
+[ 9556.711062]  ? amdgpu_gem_force_release+0x150/0x150 [amdgpu]
+[ 9556.711098]  drm_ioctl_kernel+0xaa/0xf0 [drm]
+[ 9556.711133]  drm_ioctl+0x20f/0x3a0 [drm]
+[ 9556.711267]  ? amdgpu_gem_force_release+0x150/0x150 [amdgpu]
+[ 9556.711276]  ? preempt_count_sub+0x9b/0xd0
+[ 9556.711404]  amdgpu_drm_ioctl+0x49/0x80 [amdgpu]
+[ 9556.711411]  __x64_sys_ioctl+0x83/0xb0
+[ 9556.711417]  do_syscall_64+0x33/0x80
+[ 9556.711421]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Applied to for-current, thanks!
+Fixes: bf9eee249ac2 ("drm/ttm: stop using GFP_TRANSHUGE_LIGHT")
+Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
+---
+ drivers/gpu/drm/ttm/ttm_pool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+index 8c762a03ad8a..a264760cb2cd 100644
+--- a/drivers/gpu/drm/ttm/ttm_pool.c
++++ b/drivers/gpu/drm/ttm/ttm_pool.c
+@@ -84,7 +84,7 @@ static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+ 	 * put_page() on a TTM allocated page is illegal.
+ 	 */
+ 	if (order)
+-		gfp_flags |= __GFP_NOMEMALLOC | __GFP_NORETRY |
++		gfp_flags |= __GFP_NOMEMALLOC | __GFP_NORETRY | __GFP_NOWARN |
+ 			__GFP_KSWAPD_RECLAIM;
+ 
+ 	if (!pool->use_dma_alloc) {
+-- 
+2.30.0
 
---yaap9KN+GmBP785v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASicUACgkQFA3kzBSg
-Kbb1SxAAkdlzqRe2g/+FlrSwbUlvm/+2tdGA2oq/oRPw5uUiSeSC860KEdWS6q0b
-eF3cQLo3iiPFeUO0bUc/JPpQn6ItaFDVfbvbBLX2hRJswUPXmVJxHqTQqOKuHgrM
-rsCyXohNdxdT40Bf7+0VteZydDXFbcnStJyCKdn2RjjOXnpX4Y5kQmsqkMxKY4bd
-4LXYyvKsuqfTSPqdvSKozOuspmNDI+/Vq8x/IZHccR27y2vz8vg7b6yRjiRQp2tc
-0dwXzzIUYvMhKEK0ivfNe1uPMI9Sw7SD5i6wFzkT5DIuKfWRpiQxd304nExOvdoI
-xe244OgI6WUCXgTax2UwtOnUdscIrP0Edc3wwf7ewdmCAqirUKsZenWbpBOcvdDn
-lz5IGU5WOQjjds6rL/dYyUlhQRghhRpsmyiF65vFQ/80h0sEMP/g+CAq7GfuAXw2
-rqNkOw4YGCqTy5oidT9s4g+69G8i6alQZ+p1GE0B/2KIzMgwPwcKS3NmIrwcrYEE
-+lszyWcK2o3kkcyYls5hvniLK5zSoJomdfqwwRnCNeJng3GqAUaD34Lq5k7lmaIv
-IgT3vOzUWN5V/gCtGg6SPEUzkalEhcQ3Z3eu/+nAOj518SLroSdHfWWqwkpktfjs
-8KQgg+hYgQxHq5qvs9X12mbYiRI3ZlSnNISA7/k47w3US6BmlLE=
-=eBay
------END PGP SIGNATURE-----
-
---yaap9KN+GmBP785v--
