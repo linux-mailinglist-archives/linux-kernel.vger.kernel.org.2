@@ -2,117 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D04D306A63
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFEB1306A6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhA1BbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 20:31:20 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11520 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA1BbO (ORCPT
+        id S231392AbhA1Bbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA1BbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:31:14 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DR2tz28RSzjFLZ;
-        Thu, 28 Jan 2021 09:29:15 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
- 09:30:18 +0800
-Subject: Re: [PATCH v5 0/4] ARM: Add support for Hisilicon Kunpeng L3 cache
- controller
-To:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210116032740.873-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <036c026a-f6ec-e029-95b4-e715c93f2c21@huawei.com>
-Date:   Thu, 28 Jan 2021 09:30:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 27 Jan 2021 20:31:23 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4993C061574;
+        Wed, 27 Jan 2021 17:30:42 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id d6so3767519ilo.6;
+        Wed, 27 Jan 2021 17:30:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=fPG3ZtOj2gQfse8nMNhqlz0mkZ3a1oBf9GMrWLJa6Uw=;
+        b=VEpiSbCfBHRjrYMXVDVzhvZaq3Fya3QXYX3Mnv16nS6eiz4QeRUhmYabQSu1s55uWW
+         mv2qIFBTcWnahAyw57iv7H36EjT6r+DQcm3zu+JOxjmXwby1bJXDfci1OC3f32C0jgeA
+         4CuxyElvATsJN6/Nl0w08jLW/q3anrx6MWnFeFGuurqMN+YSYqjsN1mZDU3mdj10Yjge
+         xBjTJm3Li37rT025VYsZR2gVSmQbkQWEWTed6oxSNZOiyYsSIluTEzATbO13BmTrTHY+
+         edUD+LSQMr3jzDy9mtKzSiLHo21O8dNFQqzoCv6Rnand7LKpygt8pbf3zSXFY8ZaurK5
+         DItg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=fPG3ZtOj2gQfse8nMNhqlz0mkZ3a1oBf9GMrWLJa6Uw=;
+        b=MtvTT1Su8cc7roCZQumCvFTYxN/ifHeLcWfbvI1Y4XmWmVZkznOTpBIMzjpWjJGCUF
+         OMWbQXoi8bWFXmVcuzJi1BotrS5adyAMKXB9AQpaw+T5BsNEc+JgrusjfN6tsaQNcBsC
+         0lqp/NMJDmauOpy4IgJhef2UyxoAD8F/DrpfFCV5IJi9KiGKVV1Gs+jKPoAeFbOXUb5D
+         d2xO4IBgc7cjgxyiJxdZzHn6azdbXON8AEQiIrdCaLwTPiCdFAGwxhhZ6YJyMgnEDrBE
+         zAjsGsZQmdcTsPhDSPYsaXakiSZgFHZNSO0RBm5n5wcfD/8Bifc4/yEFqOrFuqGJTwnq
+         bCjg==
+X-Gm-Message-State: AOAM5339Vu8JVXaYvf61eRiZPcnK9VjOcYg5RaMVl8CIArNN9wynBSYk
+        jajoteQQlE2O8tG+l+CSyrKHp1MfQ9VkAxJSJRA=
+X-Google-Smtp-Source: ABdhPJwdEphmKobHvxoyBdy2MHBTBf5d+UdRGpsBvjwEuXoe21Yxd0ll1mCPdgOEe32y68Yt6XtqRP/zrcAAPcgYw9U=
+X-Received: by 2002:a92:c80b:: with SMTP id v11mr10864577iln.215.1611797441911;
+ Wed, 27 Jan 2021 17:30:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210116032740.873-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+References: <20210122003235.77246-1-sedat.dilek@gmail.com> <CAEf4Bzb+fXZy1+337zRFA9v8x+Mt7E3YOZRhG8xnXeRN4_oCRA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb+fXZy1+337zRFA9v8x+Mt7E3YOZRhG8xnXeRN4_oCRA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 28 Jan 2021 02:30:29 +0100
+Message-ID: <CA+icZUWVGHqM00qd7-+Hrb9=rkL6AvEQ7Aj8zBK=VPpEi+LTmg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2] tools: Factor Clang, LLC and LLVM utils definitions
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Briana Oursler <briana.oursler@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell and Arnd:
-  Do you have time to review it?
+On Thu, Jan 28, 2021 at 2:27 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jan 21, 2021 at 4:32 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
+> >
+> > While looking into the source code I found duplicate assignments
+> > in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
+> >
+> > Move the Clang, LLC and/or LLVM utils definitions to
+> > tools/scripts/Makefile.include file and add missing
+> > includes where needed.
+> > Honestly, I was inspired by commit c8a950d0d3b9
+> > ("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
+> >
+> > I tested with bpftool and perf on Debian/testing AMD64 and
+> > LLVM/Clang v11.1.0-rc1.
+> >
+> > Build instructions:
+> >
+> > [ make and make-options ]
+> > MAKE="make V=1"
+> > MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
+> > MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
+> >
+> > [ clean-up ]
+> > $MAKE $MAKE_OPTS -C tools/ clean
+> >
+> > [ bpftool ]
+> > $MAKE $MAKE_OPTS -C tools/bpf/bpftool/
+> >
+> > [ perf ]
+> > PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
+> >
+> > I was careful with respecting the user's wish to override custom compiler,
+> > linker, GNU/binutils and/or LLVM utils settings.
+> >
+> > Some personal notes:
+> > 1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
+> > 2. This patch is on top of Linux v5.11-rc4.
+> >
+> > I hope to get some feedback from especially Linux-bpf folks.
+> >
+> > Acked-by: Jiri Olsa <jolsa@redhat.com> # tools/build and tools/perf
+> > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > ---
+>
+> Hi Sedat,
+>
+> If no one objects, we'll take this through bpf-next tree. Can you
+> please re-send this as a non-RFC patch against the bpf-next tree? Feel
+> free to add my ack. Thanks.
+>
 
+I am OK with that and will add your ACK.
+Is [1] bpf-next Git?
 
-On 2021/1/16 11:27, Zhen Lei wrote:
-> v4 --> v5:
-> 1. Add SoC macro ARCH_KUNPENG50X, and the Kunpeng L3 cache controller only enabled
->    on that platform.
-> 2. Require the compatible string of the Kunpeng L3 cache controller must have a
->    relevant name on a specific SoC. For example:
->    compatible = "hisilicon,kunpeng509-l3cache", "hisilicon,kunpeng-l3cache";
-> 
-> v3 --> v4:
-> Rename the compatible string from "hisilicon,l3cache" to "hisilicon,kunpeng-l3cache".
-> Then adjust the file name, configuration option name, and description accordingly.
-> 
-> v2 --> v3:
-> Add Hisilicon L3 cache controller driver and its document. That's: patch 2-3.
-> 
-> v1 --> v2:
-> Discard the middle-tier functions and do silent narrowing cast in the outcache
-> hook functions. For example:
-> -static void l2c220_inv_range(unsigned long start, unsigned long end)
-> +static void l2c220_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
->  {
-> +	unsigned long start = pa_start;
-> +	unsigned long end = pa_end;
-> 
-> 
-> v1:
-> Do cast phys_addr_t to unsigned long by adding a middle-tier function.
-> For example:
-> -static void l2c220_inv_range(unsigned long start, unsigned long end)
-> +static void __l2c220_inv_range(unsigned long start, unsigned long end)
->  {
->  	...
->  }
-> +static void l2c220_inv_range(phys_addr_t start, phys_addr_t end)
-> +{
-> +  __l2c220_inv_range(start, end);
-> +}
-> 
-> 
-> Zhen Lei (4):
->   ARM: LPAE: Use phys_addr_t instead of unsigned long in outercache
->     hooks
->   ARM: hisi: add support for Kunpeng50x SoC
->   dt-bindings: arm: hisilicon: Add binding for Kunpeng L3 cache
->     controller
->   ARM: Add support for Hisilicon Kunpeng L3 cache controller
-> 
->  .../arm/hisilicon/kunpeng-l3cache.yaml        |  40 +++++
->  arch/arm/include/asm/outercache.h             |   6 +-
->  arch/arm/mach-hisi/Kconfig                    |   8 +
->  arch/arm/mm/Kconfig                           |  10 ++
->  arch/arm/mm/Makefile                          |   1 +
->  arch/arm/mm/cache-feroceon-l2.c               |  15 +-
->  arch/arm/mm/cache-kunpeng-l3.c                | 153 ++++++++++++++++++
->  arch/arm/mm/cache-kunpeng-l3.h                |  30 ++++
->  arch/arm/mm/cache-l2x0.c                      |  50 ++++--
->  arch/arm/mm/cache-tauros2.c                   |  15 +-
->  arch/arm/mm/cache-uniphier.c                  |   6 +-
->  arch/arm/mm/cache-xsc3l2.c                    |  12 +-
->  12 files changed, 317 insertions(+), 29 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/kunpeng-l3cache.yaml
->  create mode 100644 arch/arm/mm/cache-kunpeng-l3.c
->  create mode 100644 arch/arm/mm/cache-kunpeng-l3.h
-> 
+- Sedat -
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/
+
+> > Changelog RFC v1->v2:
+> > - Add Jiri's ACK
+> > - Adapt to fit Linux v5.11-rc4
+> >
+>
+> [...]
