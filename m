@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E3D3073B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729D53073BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhA1K2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231322AbhA1K23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:28:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B72D264DCC;
-        Thu, 28 Jan 2021 10:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611829667;
-        bh=wwU8OFYVzVt6se2+5ttQHLkgGL1oe+PguRgfDyMdE8U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=r6s7h71cZEf8v0T33BJHaYr8sEWAa5f+39oqWVHc+YY/VhQsjDXNcX/LcROuqXYat
-         ovuT9Mc598WuBQDHdQSWQ42FhEm4FtWphQmhU6tlghWyVy/1b85ue9oo838pSzNinB
-         SZ4nFfS9omPLPMg4b9Uc8QZog6ejSYRYhHUvqOVZiz9jQxS8FZWYmrBHwJOck3vq8w
-         /6V2xQr5CN9Nj9ahn6IXatOzdpi8ALTaM79YnaBqBvioo3e4rUSGRORUofRivPCfZC
-         G/W6P/F/cFSBiUt+ubwkF8q9ehQt0fitWSdWi3SWWSakDsHGUoqoL3zAAXiXvVWUcR
-         Sgx/CA0Z7C3yg==
-Date:   Thu, 28 Jan 2021 11:27:38 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL for v5.11-rc6] media fixes
-Message-ID: <20210128112738.67242607@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232043AbhA1K3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhA1K2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 05:28:53 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE264C061573;
+        Thu, 28 Jan 2021 02:28:12 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id c2so5953078edr.11;
+        Thu, 28 Jan 2021 02:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jQ5Hlu/ZfdYUm4Mstk8XMC0psWWUDqeKF2vH90g7FI0=;
+        b=sm8mLVrrlk3rdtTrwvsW4NGujP3HAlJZlmofB65pxL5iNBh8s/6G2gfxIIjIR9/fzn
+         8X6rkeR0NP3Redik3XApoPkjp+1aWf/gmecBUxOvjLqNQ7RLxumhKUhtsqZVuhJ66Bg2
+         klCWRlh0QtlkeXa3LnmHlGOiKj0yMvNJF4wWBzlq+9PPMAnfh5m2dOBJC4SwVsesyCfE
+         JukSQpf/QCjpQFzZAK/7mz6v9h6RwgrUaC1JVxSuO9eh9AymygsGMqLcPrfNMAAsuzey
+         QB2K6T4g023tUEzzG7yCyll3l+ZRKsetJx6YIohdMB5wXzV9QFoJ9Y+KkJnU1Usnzo5U
+         /XxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jQ5Hlu/ZfdYUm4Mstk8XMC0psWWUDqeKF2vH90g7FI0=;
+        b=FiBAXp7jfsJEVbFR37j2P+obuAwoffxm4ULoB4nihLQy/HkxXa2MHc7+DFvQ6WX/6j
+         y7q1WTljJ06ZUSrkajcyHt9pEXPTmrk9IG34FSS4CdFi+UkJ3qhh4RQu85klskRfOHxL
+         3QpK4gdH542qPkc8U6bEOBJkfurKCnQKmN63+KTzwK6ma/Q0NK5uT+Ntc35xtk+4sdUG
+         9t4OFPm530BeLWe9C9+micjT11TwcnTjcSZHteK5in22s7z9iWMfnTcnbStFhKCXoNxp
+         fZ0pN6gYWzs3vzbnaUBtlVk0TWjlOY5LcdEUK8Z1OkoFkhVWi9C6K1Sei8tWVNoBEYAi
+         /1Bg==
+X-Gm-Message-State: AOAM533GPHE9dEPyI/rdjjH3agVvcINFlRuxhkX5aAcSZSEbhOY2AwGD
+        EdsVYm5uG/7G5m0kNULFW8Cb2ssFvFg=
+X-Google-Smtp-Source: ABdhPJypo1mcpMMpDB4PqZKFmSy/mCBuuqGMWZhFqSfRu0ZmlaavYLQoxiSuoBENI6C97sV3WkXjLA==
+X-Received: by 2002:a50:f288:: with SMTP id f8mr13159540edm.388.1611829691430;
+        Thu, 28 Jan 2021 02:28:11 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
+        by smtp.googlemail.com with ESMTPSA id l1sm2054762eje.12.2021.01.28.02.28.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 28 Jan 2021 02:28:10 -0800 (PST)
+Message-ID: <7436d052ddf9e59cfa7358069d3e0f3a84f89777.camel@gmail.com>
+Subject: Re: [PATCH v2] scsi: ufs: Give clk scaling min gear a value
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, jaegeuk@kernel.org,
+        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, bjorn.andersson@linaro.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Thu, 28 Jan 2021 11:28:08 +0100
+In-Reply-To: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
+References: <1611802172-37802-1-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, 2021-01-27 at 18:49 -0800, Can Guo wrote:
+> The initialization of clk_scaling.min_gear was removed by mistake.
+> This
+> change adds it back, otherwise clock scaling down would fail.
+> 
+> Fixes: 4543d9d78227 ("scsi: ufs: Refactor
+> ufshcd_init/exit_clk_scaling/gating()")
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
 
-Please pull from:
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.11-2
-
-For:
-  - a V4L2 core regression at videobuf2 when checking for single-plane
-    dmabuf;
-  - a change at uAPI header v4l2-subdev.h, fixing a breakage
-    as BIT() macro is not available in userspace;
-  - fix some regressions at RC core due to the usage of microseconds
-    everywhere on it;
-  - a fix for a race condition at RC core;
-  - a rename on a newly-introduced kAPI symbol (v4l2_get_link_rate),
-    currently used only by a single driver.
-  - Regression fixes at rcar-vin, cedrus, ite-cir, hantro, css, venus 
-    and cec drivers.
-
-Regards,
-Mauro
-
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.11-2
-
-for you to fetch changes up to e081863ab48d9b2eee9e899cbd05752a2a30308d:
-
-  media: hantro: Fix reset_raw_fmt initialization (2021-01-26 19:16:27 +0100)
-
-----------------------------------------------------------------
-media fixes for v5.11-rc6
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      media: rcar-vin: fix return, use ret instead of zero
-
-Hans Verkuil (1):
-      media: v4l2-subdev.h: BIT() is not available in userspace
-
-Jernej Skrabec (1):
-      media: cedrus: Fix H264 decoding
-
-Matthias Reichl (2):
-      media: rc: fix timeout handling after switch to microsecond durations
-      media: rc: ite-cir: fix min_timeout calculation
-
-Naushir Patuck (1):
-      media: Revert "media: videobuf2: Fix length check for single plane dmabuf queueing"
-
-Ricardo Ribalda (1):
-      media: hantro: Fix reset_raw_fmt initialization
-
-Sakari Ailus (3):
-      media: ccs-pll: Fix link frequency for C-PHY
-      media: ccs: Get static data version minor correctly
-      media: v4l: common: Fix naming of v4l2_get_link_rate
-
-Sean Young (1):
-      media: rc: ensure that uevent can be read directly after rc device register
-
-Stanimir Varbanov (1):
-      media: venus: core: Fix platform driver shutdown
-
-Yannick Fertre (1):
-      media: cec: add stm32 driver
-
- drivers/media/cec/platform/Makefile              | 1 +
- drivers/media/common/videobuf2/videobuf2-v4l2.c  | 3 +--
- drivers/media/i2c/ccs-pll.c                      | 8 +-------
- drivers/media/i2c/ccs/ccs-data.c                 | 2 +-
- drivers/media/pci/intel/ipu3/ipu3-cio2.c         | 2 +-
- drivers/media/platform/qcom/venus/core.c         | 2 ++
- drivers/media/platform/rcar-vin/rcar-core.c      | 2 +-
- drivers/media/rc/ir-mce_kbd-decoder.c            | 2 +-
- drivers/media/rc/ite-cir.c                       | 2 +-
- drivers/media/rc/rc-main.c                       | 8 ++++----
- drivers/media/rc/serial_ir.c                     | 2 +-
- drivers/media/v4l2-core/v4l2-common.c            | 4 ++--
- drivers/staging/media/hantro/hantro_v4l2.c       | 2 +-
- drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 2 +-
- include/media/v4l2-common.h                      | 4 ++--
- include/uapi/linux/v4l2-subdev.h                 | 2 +-
- 16 files changed, 22 insertions(+), 26 deletions(-)
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Tested-by: Bean Huo <beanhuo@micron.com>
 
