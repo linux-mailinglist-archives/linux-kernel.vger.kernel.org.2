@@ -2,279 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97903072DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5583072CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhA1Jft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:35:49 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14920 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232605AbhA1Jcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:32:48 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10S9Vuj4091082;
-        Thu, 28 Jan 2021 04:31:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=3Q2qmiEifmRSPBb1Bip1Gm9i9vcD47f/XUqE1pAP5QA=;
- b=mBwEYkbLLBX6CkFNL3AOe7+yTQgPflpMqs9mH77s9zNyk121NSGoaOb7B5IZUTakj+RP
- HBvZX7oCT2quPLp+7K0hYCoFVuwaFtFILv1HCYVto/bH/lU0XDa8eJFRSWFmIVsN3HH2
- kY+c6NprCmqqPQ0VjBF6mCgSyeY0yfsRT1/j2iVEiGIqhY//AwgFCaAI5jGG3wrd2cOk
- 2yPEYeK5pf7WO8bhHxyTolNcuIJKa7duu7QjaOkbRzZm0uOVPpnvBLkNcpvS+Vd7/AFr
- EdNcVOoS48TpQgwljkLTsHs1X2NtKAJpvW3NBadZbMl0COhKAY5nZAwRv72bBMb+KSyi XQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36brxgu4qt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 04:31:57 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10S91vVK166493;
-        Thu, 28 Jan 2021 04:31:40 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36brxgu4ph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 04:31:40 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10S9HNv3024670;
-        Thu, 28 Jan 2021 09:31:34 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 368b2h4np4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 09:31:34 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10S9VW4f44433778
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 09:31:32 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A796A4053;
-        Thu, 28 Jan 2021 09:31:32 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BADA0A4051;
-        Thu, 28 Jan 2021 09:31:29 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.187.107])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 28 Jan 2021 09:31:29 +0000 (GMT)
-Date:   Thu, 28 Jan 2021 11:31:27 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>,
-        Guenter Roeck <groeck@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
-Subject: Re: PROBLEM: Crash after mm: fix initialization of struct page for
- holes in memory layout
-Message-ID: <20210128093127.GB299309@linux.ibm.com>
-References: <CAFJ_xbqT8h2Exix3S6AGgB7W1N0u-=WKffAyb7Hk9-8K8FBwKA@mail.gmail.com>
- <20210127100454.GK196782@linux.ibm.com>
- <CAFJ_xboaFNQ9NuZ1rhH8WdejoFRzvez9cp2AQ59rKY6T_xZ-_w@mail.gmail.com>
- <20210127111858.GA273567@linux.ibm.com>
- <CAFJ_xbo8Zv9VdJibC106sFOqoYsVhifm0eh=VWtMzeoUE4KVWA@mail.gmail.com>
- <CAFJ_xbrwLwgDfCyHA=PmJ8j_3dJXqVNxmv7e+ATQAAa9n3de2w@mail.gmail.com>
- <20210127182651.GA281042@linux.ibm.com>
- <20210128024549.GA3693@MiWiFi-R3L-srv>
+        id S232493AbhA1JfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:35:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:55196 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232566AbhA1Jc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:32:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C7F01042;
+        Thu, 28 Jan 2021 01:31:42 -0800 (PST)
+Received: from [10.57.45.249] (unknown [10.57.45.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 318AA3F766;
+        Thu, 28 Jan 2021 01:31:40 -0800 (PST)
+Subject: Re: [PATCH V3 09/14] arm64: Add TRBE definitions
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        lcherian@marvell.com, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-10-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <bb249b84-cafd-b65c-118d-34322c1aabac@arm.com>
+Date:   Thu, 28 Jan 2021 09:31:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210128024549.GA3693@MiWiFi-R3L-srv>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_05:2021-01-27,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
- spamscore=0 phishscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280046
+In-Reply-To: <1611737738-1493-10-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:45:49AM +0800, Baoquan He wrote:
-> On 01/27/21 at 08:26pm, Mike Rapoport wrote:
-> > Hi Lukasz,
-> > 
-> > On Wed, Jan 27, 2021 at 02:15:53PM +0100, Łukasz Majczak wrote:
-> > > Hi Mike,
-> > > 
-> > > I have started bisecting your patch and I have figured out that there
-> > > might be something wrong with clamping - with comments out these lines
-> > > it started to work.
-> > > The full log (with logs from below patch) can be found here:
-> > > https://gist.github.com/semihalf-majczak-lukasz/3cecbab0ddc59a6c3ce11ddc29645725
-> > > it's fresh - I haven't analyze it yet, just sharing with hope it will help.
-> > 
-> > Thanks, that helps!
-> > 
-> > The first page is never considered by the kernel as memory and so
-> > arch_zone_lowest_possible_pfn[ZONE_DMA] is set to 0x1000. As the result,
-> > init_unavailable_mem() skips pfn 0 and then __SetPageReserved(page) in
-> > reserve_bootmem_region() panics because the struct page for pfn 0 remains
-> > poisoned.
+On 1/27/21 8:55 AM, Anshuman Khandual wrote:
+> This adds TRBE related registers and corresponding feature macros.
 > 
-> It's a great finding and quick fix.
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Unfortunately it's only a partial fix as it does not address the problem of
-having pfn 0 outside any zone. It gets ZONE_DMA link at
-init_unavailable_mem(), but zones[ZONE_DMA]->zone_start_pfn is 1.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Will Deacon <will@kernel.org>
 
-I'm looking now how to fix this as well, hopefully I'll have a patch Real
-Soon (tm) :)
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
->  Previously I tested my cleanup patches based on Mike's commit
->  9ebeee59af4cdd4d ("mm: fix initialization of struct page for holes in
->  memory layout") on a hardware system, didn't meet this crash. But this
->  crash seems to be a always reproduced issue, wondering why I didn't
->  reproduce it.
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-This crash is reproducible on systems that do not report pfn 0 as usable,
-e.g for Chromebook Lukasz is using it is 'type 16':
-
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x0000000000000fff] type 16
-[    0.000000] BIOS-e820: [mem 0x0000000000001000-0x000000000009ffff] usable
-
-And on my laptop and on a bunch of other systems I have it is usable:
-
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009cfff] usable
-[    0.000000] BIOS-e820: [mem 0x000000000009d000-0x000000000009ffff] reserved
-
- 
-> > 
-> > Can you please try the below patch on top of v5.11-rc5?
-> > 
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 783913e41f65..3ce9ef238dfc 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -7083,10 +7083,11 @@ void __init free_area_init_memoryless_node(int nid)
-> >  static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
-> >  					 int zone, int nid)
-> >  {
-> > -	unsigned long pfn, zone_spfn, zone_epfn;
-> > +	unsigned long pfn, zone_spfn = 0, zone_epfn;
-> >  	u64 pgcnt = 0;
-> >  
-> > -	zone_spfn = arch_zone_lowest_possible_pfn[zone];
-> > +	if (zone > 0)
-> > +		zone_spfn = arch_zone_highest_possible_pfn[zone - 1];
-> >  	zone_epfn = arch_zone_highest_possible_pfn[zone];
-> >  
-> >  	spfn = clamp(spfn, zone_spfn, zone_epfn);
-> > 
-> >  
-> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > index eed54ce26ad1..9f4468c413a1 100644
-> > > --- a/mm/page_alloc.c
-> > > +++ b/mm/page_alloc.c
-> > > @@ -7093,9 +7093,11 @@ static u64 __init
-> > > init_unavailable_range(unsigned long spfn, unsigned long epfn,
-> > >         zone_spfn = arch_zone_lowest_possible_pfn[zone];
-> > >         zone_epfn = arch_zone_highest_possible_pfn[zone];
-> > > 
-> > > -       spfn = clamp(spfn, zone_spfn, zone_epfn);
-> > > -       epfn = clamp(epfn, zone_spfn, zone_epfn);
-> > > -
-> > > +       //spfn = clamp(spfn, zone_spfn, zone_epfn);
-> > > +       //epfn = clamp(epfn, zone_spfn, zone_epfn);
-> > > +       pr_info("LMA DBG: zone_spfn: %llx, zone_epfn %llx\n",
-> > > zone_spfn, zone_epfn);
-> > > +       pr_info("LMA DBG: spfn: %llx, epfn %llx\n", spfn, epfn);
-> > > +       pr_info("LMA DBG: clamp_spfn: %llx, clamp_epfn %llx\n",
-> > > clamp(spfn, zone_spfn, zone_epfn), clamp(epfn, zone_spfn, zone_epfn));
-> > >         for (pfn = spfn; pfn < epfn; pfn++) {
-> > >                 if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-> > >                         pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-> > > 
-> > > Best regards,
-> > > Lukasz
-> > > 
-> > > 
-> > > śr., 27 sty 2021 o 13:15 Łukasz Majczak <lma@semihalf.com> napisał(a):
-> > > >
-> > > > Unfortunately nothing :( my current kernel command line contains:
-> > > > console=ttyS0,115200n8 debug earlyprintk=serial loglevel=7
-> > > >
-> > > > I was thinking about using earlycon, but it seems to be blocked.
-> > > > (I think the lack of earlycon might be related to Chromebook HW
-> > > > security design. There is an EC controller which is a part of AP ->
-> > > > serial chain as kernel messages are considered sensitive from a
-> > > > security standpoint.)
-> > > >
-> > > > Best regards,
-> > > > Lukasz
-> > > >
-> > > > śr., 27 sty 2021 o 12:19 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
-> > > > >
-> > > > > On Wed, Jan 27, 2021 at 11:08:17AM +0100, Łukasz Majczak wrote:
-> > > > > > Hi Mike,
-> > > > > >
-> > > > > > Actually I have a serial console attached (via servo device), but
-> > > > > > there is no output :( and also the reboot/crash is very fast/immediate
-> > > > > > after power on.
-> > > > >
-> > > > > If you boot with earlyprintk=serial are there any messages?
-> > > > >
-> > > > > > Best regards
-> > > > > > Lukasz
-> > > > > >
-> > > > > > śr., 27 sty 2021 o 11:05 Mike Rapoport <rppt@linux.ibm.com> napisał(a):
-> > > > > > >
-> > > > > > > Hi Lukasz,
-> > > > > > >
-> > > > > > > On Wed, Jan 27, 2021 at 10:22:29AM +0100, Łukasz Majczak wrote:
-> > > > > > > > Crash after mm: fix initialization of struct page for holes in memory layout
-> > > > > > > >
-> > > > > > > > Hi,
-> > > > > > > > I was trying to run v5.11-rc5 on my Samsung Chromebook Pro (Caroline),
-> > > > > > > > but I've noticed it has crashed - unfortunately it seems to happen at
-> > > > > > > > a very early stage - No output to the console nor to the screen, so I
-> > > > > > > > have started a bisect (between 5.11-rc4 - which works just find - and
-> > > > > > > > 5.11-rc5),
-> > > > > > > > bisect results points to:
-> > > > > > > >
-> > > > > > > > d3921cb8be29 mm: fix initialization of struct page for holes in memory layout
-> > > > > > > >
-> > > > > > > > Reproduction is just to build and load the kernel.
-> > > > > > > >
-> > > > > > > > If it will help any how I am attaching:
-> > > > > > > > - /proc/cpuinfo (from healthy system):
-> > > > > > > > https://gist.github.com/semihalf-majczak-lukasz/3517867bf39f07377c1a785b64a97066
-> > > > > > > > - my .config file (for a broken system):
-> > > > > > > > https://gist.github.com/semihalf-majczak-lukasz/584b329f1bf3e43b53efe8e18b5da33c
-> > > > > > > >
-> > > > > > > > If there is anything I could add/do/test to help fix this please let me know.
-> > > > > > >
-> > > > > > > Chris Wilson also reported boot failures on several Chromebooks:
-> > > > > > >
-> > > > > > > https://lore.kernel.org/lkml/161160687463.28991.354987542182281928@build.alporthouse.com
-> > > > > > >
-> > > > > > > I presume serial console is not an option, so if you could boot with
-> > > > > > > earlyprintk=vga and see if there is anything useful printed on the screen
-> > > > > > > it would be really helpful.
-> > > > > > >
-> > > > > > > > Best regards
-> > > > > > > > Lukasz
-> > > > > > >
-> > > > > > > --
-> > > > > > > Sincerely yours,
-> > > > > > > Mike.
-> > > > >
-> > > > > --
-> > > > > Sincerely yours,
-> > > > > Mike.
-> > 
-> > -- 
-> > Sincerely yours,
-> > Mike.
-> > 
+> ---
+> Changes in V3:
+> 
+> - ID_AA64DFR0_TRBE_SHIFT has been moved here from the TRBE driver
+> - Changed TRBLIMITR_TRIG_MODE_SHIFT as 3
+> 
+>   arch/arm64/include/asm/sysreg.h | 50 +++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 50 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 4acff97..85ae4db 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -329,6 +329,55 @@
+>   
+>   /*** End of Statistical Profiling Extension ***/
+>   
+> +/*
+> + * TRBE Registers
+> + */
+> +#define SYS_TRBLIMITR_EL1		sys_reg(3, 0, 9, 11, 0)
+> +#define SYS_TRBPTR_EL1			sys_reg(3, 0, 9, 11, 1)
+> +#define SYS_TRBBASER_EL1		sys_reg(3, 0, 9, 11, 2)
+> +#define SYS_TRBSR_EL1			sys_reg(3, 0, 9, 11, 3)
+> +#define SYS_TRBMAR_EL1			sys_reg(3, 0, 9, 11, 4)
+> +#define SYS_TRBTRG_EL1			sys_reg(3, 0, 9, 11, 6)
+> +#define SYS_TRBIDR_EL1			sys_reg(3, 0, 9, 11, 7)
+> +
+> +#define TRBLIMITR_LIMIT_MASK		GENMASK_ULL(51, 0)
+> +#define TRBLIMITR_LIMIT_SHIFT		12
+> +#define TRBLIMITR_NVM			BIT(5)
+> +#define TRBLIMITR_TRIG_MODE_MASK	GENMASK(1, 0)
+> +#define TRBLIMITR_TRIG_MODE_SHIFT	3
+> +#define TRBLIMITR_FILL_MODE_MASK	GENMASK(1, 0)
+> +#define TRBLIMITR_FILL_MODE_SHIFT	1
+> +#define TRBLIMITR_ENABLE		BIT(0)
+> +#define TRBPTR_PTR_MASK			GENMASK_ULL(63, 0)
+> +#define TRBPTR_PTR_SHIFT		0
+> +#define TRBBASER_BASE_MASK		GENMASK_ULL(51, 0)
+> +#define TRBBASER_BASE_SHIFT		12
+> +#define TRBSR_EC_MASK			GENMASK(5, 0)
+> +#define TRBSR_EC_SHIFT			26
+> +#define TRBSR_IRQ			BIT(22)
+> +#define TRBSR_TRG			BIT(21)
+> +#define TRBSR_WRAP			BIT(20)
+> +#define TRBSR_ABORT			BIT(18)
+> +#define TRBSR_STOP			BIT(17)
+> +#define TRBSR_MSS_MASK			GENMASK(15, 0)
+> +#define TRBSR_MSS_SHIFT			0
+> +#define TRBSR_BSC_MASK			GENMASK(5, 0)
+> +#define TRBSR_BSC_SHIFT			0
+> +#define TRBSR_FSC_MASK			GENMASK(5, 0)
+> +#define TRBSR_FSC_SHIFT			0
+> +#define TRBMAR_SHARE_MASK		GENMASK(1, 0)
+> +#define TRBMAR_SHARE_SHIFT		8
+> +#define TRBMAR_OUTER_MASK		GENMASK(3, 0)
+> +#define TRBMAR_OUTER_SHIFT		4
+> +#define TRBMAR_INNER_MASK		GENMASK(3, 0)
+> +#define TRBMAR_INNER_SHIFT		0
+> +#define TRBTRG_TRG_MASK			GENMASK(31, 0)
+> +#define TRBTRG_TRG_SHIFT		0
+> +#define TRBIDR_FLAG			BIT(5)
+> +#define TRBIDR_PROG			BIT(4)
+> +#define TRBIDR_ALIGN_MASK		GENMASK(3, 0)
+> +#define TRBIDR_ALIGN_SHIFT		0
+> +
+>   #define SYS_PMINTENSET_EL1		sys_reg(3, 0, 9, 14, 1)
+>   #define SYS_PMINTENCLR_EL1		sys_reg(3, 0, 9, 14, 2)
+>   
+> @@ -831,6 +880,7 @@
+>   #define ID_AA64MMFR2_CNP_SHIFT		0
+>   
+>   /* id_aa64dfr0 */
+> +#define ID_AA64DFR0_TRBE_SHIFT		44
+>   #define ID_AA64DFR0_TRACE_FILT_SHIFT	40
+>   #define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
+>   #define ID_AA64DFR0_PMSVER_SHIFT	32
 > 
 
--- 
-Sincerely yours,
-Mike.
