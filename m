@@ -2,183 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3814C307B21
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F98307B20
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 17:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhA1QiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 11:38:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32878 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232616AbhA1Qha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 11:37:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611851801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WybSJxoHdYVCgie3d8jjobcsCEqTYehyaUtKcLMGQYU=;
-        b=tjlLPuZ7K6NqI5z4hap845+6arO6Hc+HKwT3dhjlBDUI9z+//7UkI9hZfL252ARrlc56wr
-        UNNTcpDFOMf2ROzPwstMGcsrb4jT+phJvMAK77jaqZkEx0u1K/PTOJYkvQ3G2tzl45RuO5
-        cQfazOl9fLb1DdieeSSQUQGRjFewvmA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 80238AF0E;
-        Thu, 28 Jan 2021 16:36:41 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 17:36:40 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@linux.intel.com
-Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
-Message-ID: <YBLoGNQNMkFivh34@alley>
-References: <20210122081311.GA12834@xsang-OptiPlex-9020>
- <YAr7d6A4CkMpgx+g@alley>
- <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
- <87bldaaxcc.fsf@jogness.linutronix.de>
- <YBJ2CjN2YntC1o3j@jagdpanzerIV.localdomain>
- <87czxpmhe1.fsf@jogness.linutronix.de>
- <YBLPhkHQ8cXFiY1X@alley>
- <877dnxm5ju.fsf@jogness.linutronix.de>
+        id S232571AbhA1QiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 11:38:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232643AbhA1QhU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 11:37:20 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E3BC061756;
+        Thu, 28 Jan 2021 08:36:39 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id m13so6040310wro.12;
+        Thu, 28 Jan 2021 08:36:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J2pSAMeacjhYY4VRhMqQHxTTL1fklZ6z+iWFWs9oc44=;
+        b=DfyF+mGipz5IdxF0ZOYjV1X5y0NhM+SOJq5KMmh/tOITvOfGsVqH7mnosOyCJImEZd
+         FtBe1YewLQdbLECZtW/y9+LdRAzEKft/cvY+VcT2aa3dYM9QGb+Y9Ug/tuNe8kTsQ4G6
+         4OENy1oWjIETJvqYS+t3BZhEx9hK+mtD1RChRRV7z1uXewJcUJwuan6e2AmcKLfUaPEp
+         YpnfAr4m15Xk9hO/dpbw1yHiIkPKA3P4zBfCjIjwaohZkcv4f3Lf/PwULvA8kkdhHFWt
+         AyjECcPpT6pYecRegWNU+T/M1VkQrxl5I3N4yEtazuUBjfixPBvspwgEYB/T1H1GMNKe
+         KYsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J2pSAMeacjhYY4VRhMqQHxTTL1fklZ6z+iWFWs9oc44=;
+        b=CnHqY0UeM7zGZX69E5drSKHZd4hYSkB86J0FDYOtsI4f6Fl0BGUWzduyRtGUpszIT4
+         tDV33twz3OYModXPaLniDV7QNbocSJuyvkt+324JAWCHvjgJ++6nnSSeUu5ltf1H3PIF
+         hr17q1rrGKjVTSaeqVuVrPTzT+V38VJNUPP3wM1NddWA3TcMrokbM3Iw6SvbEvz50rPE
+         zsVmQW8Sh/C16P9aaQ6RaDRjdN6BWclf8hW+thYxRhZU5UT1K1TWT3UqlKuxQqxZaBeu
+         dUqZnbuzMua/QJ1VC3k0keSmhooltH6rRX+BiSicp6Omw+AOvsr+DC3Bk6QgXPg+4+q1
+         Bwyg==
+X-Gm-Message-State: AOAM5307tWHGNDVumesW373sabuDdgBTvfXmIfYtVmjPrzC+frir4LbR
+        oqBo/THkmh4jSxz3KDG+Q5E0wPoTY8ytW5tWMfPr9i2GePE=
+X-Google-Smtp-Source: ABdhPJzjtBIb9f3OwWrVVcmu1w4hFEFvKvi6v9SGkeHvpkhMmefwW5PwFRm8PwjbmSGh1qpzbdv0JI+bmeA6hVyKa/w=
+X-Received: by 2002:adf:dd07:: with SMTP id a7mr17587399wrm.83.1611851797734;
+ Thu, 28 Jan 2021 08:36:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dnxm5ju.fsf@jogness.linutronix.de>
+References: <20210125234901.2730699-1-swboyd@chromium.org>
+In-Reply-To: <20210125234901.2730699-1-swboyd@chromium.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 28 Jan 2021 08:39:12 -0800
+Message-ID: <CAF6AEGu1WHbzV5pazm2w7t7XzSeHJgTvip4FHdpqTm+SnLEpLQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-01-28 16:48:29, John Ogness wrote:
-> On 2021-01-28, Petr Mladek <pmladek@suse.com> wrote:
-> > If you are able to reproduce this, it might be interesting to see
-> > backtraces from all CPUs when RCU stall gets detected. Or even
-> > printing all processes, even the sleeping ones.
-> 
-> OK, I now have lkp running on my intel core i5 machine and it reliably
-> reproduces this. First let me say a word about lkp. The instructions in
-> the report email are a bit misleading. There are lots of steps that it
-> doesn't mention.
-> 
-> First I needed to install lkp and its dependencies. I did all of this as
-> root because lkp seems to get confused when sudo is involved.
-> 
-> # git clone https://github.com/intel/lkp-tests.git
-> # cd lkp-tests
-> # make install
-> # lkp install
-> 
-> Then I built the kernel and modules using a helper script to setup the
-> environment for me:
-> 
-> ----- BEGIN /tmp/mk.sh -----
-> #!/bin/sh
-> 
-> export INSTALL_MOD_PATH=`pwd`
-> export HOSTCC=gcc-9
-> export CC=gcc-9
-> export ARCH=x86_64
-> 
-> exec make "$@"
-> ----- END /tmp/mk.sh -----
-> 
-> # cd linux
-> # git checkout -b lkp b031a684bfd01d633c79d281bd0cf11c2f834ada
-> # cp /tmp/config-5.10.0-rc5-gb031a684bfd0 .config
-> # /tmp/mk.sh -j `nproc` olddefconfig prepare modules_prepare bzImage modules modules_install
-> 
-> Then I created the modules.cgz:
-> 
-> # find lib/modules | cpio -H newc -o | gzip -9c > modules.cgz
-> 
-> I put kernel and modules in /tmp/:
-> 
-> # cp arch/x86/boot/bzImage modules.cgz /tmp/
-> 
-> And ran lkp inside script(1) so I have a logfile:
-> 
-> # script
-> # lkp qemu -k /tmp/bzImage -m /tmp/modules.cgz /tmp/job-script
-> 
-> And reliably I see the first stall at about 925 seconds:
-> 
-> [  926.386441][   T22] INFO: rcu_tasks detected stalls on tasks:
-> [  926.387310][   T22] 0000000041eb5240: .. nvcsw: 0/0 holdout: 1 idle_cpu: -1/1
-> [  926.388196][   T22] task:dmesg           state:R  running task     stack:    0 pid: 1752 ppid:   511 flags:0x2002000
-> 0
-> [  926.389509][   T22] Call Trace:
-> [  926.389962][   T22]  __schedule+0xa12/0xab5
-> [  926.390534][   T22]  ? firmware_map_remove+0xd1/0xd1
-> [  926.391190][   T22]  ? ksys_read+0x116/0x150
-> [  926.391773][   T22]  schedule+0x16c/0x1df
-> [  926.392317][   T22]  exit_to_user_mode_loop+0x28/0x84
-> [  926.392977][   T22]  exit_to_user_mode_prepare+0x1d/0x4a
-> [  926.393671][   T22]  syscall_exit_to_user_mode+0x41/0x4f
-> [  926.394357][   T22]  entry_INT80_compat+0x71/0x76
-> [  926.394982][   T22] RIP: 0023:0xf7f0fa02
-> [  926.395528][   T22] RSP: 002b:00000000ff850364 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-> [  926.396590][   T22] RAX: ffffffffffffffe0 RBX: 0000000000000004 RCX: 00000000565c8234
-> [  926.397607][   T22] RDX: 0000000000001fff RSI: 00000000000001e0 RDI: 00000000565c8234
-> [  926.398617][   T22] RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000000
-> [  926.399629][   T22] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> [  926.400643][   T22] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> 
-> But actually it is not the rcu stall that interests me so much. I am
-> more interested in some bizarre console output I am seeing. Here is a
-> snippet:
-> 
-> [  903.008486][  T356] [  778.732883] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.008496][  T356]
-> [  903.014733][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.030232][  T356] [  778.735197] [  655.203106] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.030242][  T356]
-> [  903.040809][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.044327][  T356] [  778.746898] [  655.214214] [  531.584847] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.044337][  T356]
-> [  903.048732][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.066039][  T356] [  778.751162] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.066050][  T356]
-> [  903.070123][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.077137][  T356] [  778.768744] [  655.227204] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.077147][  T356]
-> [  903.092792][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.095313][  T356] [  778.773836] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.095323][  T356]
-> [  903.106788][  T356] [  778.781780] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.106798][  T356]
-> [  903.121986][  T356] [  778.791183] [  655.230287] [  531.589973] [  407.116952] [  283.068815] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.121997][  T356]
-> [  903.134120][  T356] [  778.797950] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.134130][  T356]
-> [  903.148741][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.151626][  T356] [  778.805164] [  655.241173] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.151637][  T356]
-> [  903.160126][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.166936][  T356] [  778.818740] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.166946][  T356]
-> [  903.175785][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.185955][  T528] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> [  903.189448][  T356] [  778.825864] [  655.250559] [  531.607066] [  407.120936] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> 
-> These multi-timestamp lines are odd. And they are almost exactly 124
-> seconds apart.
+On Mon, Jan 25, 2021 at 3:49 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Lockdep complains about an AA deadlock when rebooting the device.
+>
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.4.91 #1 Not tainted
+> --------------------------------------------
+> reboot/5213 is trying to acquire lock:
+> ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+>
+> but task is already holding lock:
+> ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+>
+> other info that might help us debug this:
+> Possible unsafe locking scenario:
+>
+> CPU0
+> ----
+> lock(&kms->commit_lock[i]);
+> lock(&kms->commit_lock[i]);
+>
+> *** DEADLOCK ***
+>
+> May be due to missing lock nesting notation
+>
+> 6 locks held by reboot/5213:
+> __arm64_sys_reboot+0x148/0x2a0
+> device_shutdown+0x10c/0x2c4
+> drm_atomic_helper_shutdown+0x48/0xfc
+> modeset_lock+0x120/0x24c
+> lock_crtcs+0x60/0xa4
+>
+> stack backtrace:
+> CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
+> Hardware name: Google Pompom (rev1) with LTE (DT)
+> Call trace:
+> dump_backtrace+0x0/0x1dc
+> show_stack+0x24/0x30
+> dump_stack+0xfc/0x1a8
+> __lock_acquire+0xcd0/0x22b8
+> lock_acquire+0x1ec/0x240
+> __mutex_lock_common+0xe0/0xc84
+> mutex_lock_nested+0x48/0x58
+> lock_crtcs+0x60/0xa4
+> msm_atomic_commit_tail+0x348/0x570
+> commit_tail+0xdc/0x178
+> drm_atomic_helper_commit+0x160/0x168
+> drm_atomic_commit+0x68/0x80
+>
+> This is because lockdep thinks all the locks taken in lock_crtcs() are
+> the same lock, when they actually aren't. That's because we call
+> mutex_init() in msm_kms_init() and that assigns on static key for every
 
-Yup, this looks suspicious.
+nit, s/on/one/ ?
 
-Here are my few ideas. Feel free to ignore them and do your own
-debugging. I do not want to distract you.
+BR,
+-R
 
-The test produces the same messages over and over again. It is
-possible that something has overflown after some amount of messages.
-And the regular intervals are just a coincidence.
-
-Are all messages broken this way?
-Or does it start later?
-Are this exact messages printed correctly at some points?
-
-Is this console output? Or dmesg?
-
-Are you able to reproduce it with the current Linus's master.
-I wonder if it is something that we have already fixed.
-
-Best Regards,
-Petr
+> lock initialized in this loop. Let's allocate a dynamic number of
+> lock_class_keys and assign them to each lock so that lockdep can figure
+> out an AA deadlock isn't possible here.
+>
+> Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
+> Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+> index d8151a89e163..4735251a394d 100644
+> --- a/drivers/gpu/drm/msm/msm_kms.h
+> +++ b/drivers/gpu/drm/msm/msm_kms.h
+> @@ -157,6 +157,7 @@ struct msm_kms {
+>          * from the crtc's pending_timer close to end of the frame:
+>          */
+>         struct mutex commit_lock[MAX_CRTCS];
+> +       struct lock_class_key commit_lock_keys[MAX_CRTCS];
+>         unsigned pending_crtc_mask;
+>         struct msm_pending_timer pending_timers[MAX_CRTCS];
+>  };
+> @@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
+>  {
+>         unsigned i, ret;
+>
+> -       for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
+> -               mutex_init(&kms->commit_lock[i]);
+> +       for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
+> +               lockdep_register_key(&kms->commit_lock_keys[i]);
+> +               __mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
+> +                            &kms->commit_lock_keys[i]);
+> +       }
+>
+>         kms->funcs = funcs;
+>
+>
+> base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+> --
+> https://chromeos.dev
+>
