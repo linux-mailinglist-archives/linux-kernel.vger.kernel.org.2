@@ -2,150 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB02E30793F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5943E307940
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhA1PMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:12:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41168 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232566AbhA1PL5 (ORCPT
+        id S231474AbhA1PM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:12:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232172AbhA1PMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:11:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611846630;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b+wQuziv7z+Yh3SvyIM831IdGc6/wY1UoY9rflWt+jk=;
-        b=QoUhuoG6if0xbFmgw8R1ycsEZGT15oLq+1AcV/ZY0233Tjz5HH2bVl5pE/VLZKu4NnHhfn
-        P0CXqj5K5pB6Ej3yYcrBEWcmhf773BRX9UKW7UzaOFTjc3MyAqU2+DzS8FXbdbhepdj1eC
-        mExOgS03J3v2Vl9keM6KlZKbk/3k1bI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-LtSV5G8oM7O8ArywYF7Tjw-1; Thu, 28 Jan 2021 10:10:28 -0500
-X-MC-Unique: LtSV5G8oM7O8ArywYF7Tjw-1
-Received: by mail-ej1-f70.google.com with SMTP id f1so2303474ejq.20
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:10:28 -0800 (PST)
+        Thu, 28 Jan 2021 10:12:38 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8775FC061573;
+        Thu, 28 Jan 2021 07:11:57 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id b2so8071474lfq.0;
+        Thu, 28 Jan 2021 07:11:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jYUwfR//UNM7rH1VOEkn/K+30W18z8yGULkJIiL5QLc=;
+        b=l2nO/0WO6oAnUY51rYxsB80i8T+XJ1gLQiINbegvpfOtC6kmQjay/cnYY4IuSUNMUP
+         98iplaDKdkkr/kUAhU0fOs+7KJ90XM10QkoW/+12cbf4L8U1/tpHGTh5sJw4TCW63tD+
+         Yny9zus3jnEzGzobQj2N8jm2iUM9rpeY7ncdGsDrGS7Bjl/9A3r3TmIpCuYw1P0izAdR
+         wBO3ZbxMMEyxQePSZ3O4tmgdqQLypLSQn65vSxZfq/bR0pLbKZ2UbbIDG53XfmbQqtL0
+         Mw4B7vSS84cXDmx6D00cNu0TWtLx4JrQbLGOFhKA37atT/puMLJlKJjRgz+DQvWTYAN/
+         A3Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b+wQuziv7z+Yh3SvyIM831IdGc6/wY1UoY9rflWt+jk=;
-        b=V65+mr2xs+N90IvRZIfcIdiY8zamqGoI2rTMqO7sxOLcog/pcVilHpqRjsX+1+7QCx
-         hqioZ8FygUv12NWRak4C2IsFwifdQTjL15AwW5EoM0dPKHCupViudNIhA6kASYXu8lYY
-         aAD+ODPV1jol+jS1Ufpmycj4bgBZngNZzscWPO92OJvCVR47Plqj6KHOHaJhcNVDILBT
-         uNrkP50MQ5UAsPeo3u4XJ8cUl+eGBQBc8AVVkxyORCh65r6O/VsATR4XZIt6kM8XrJD+
-         BQmneKuG8A9e/dTnzOlnX3lSieoNbUtb8K8gxwY/NRNkVYGyE1KMoSrqClAMExXophnK
-         8N8Q==
-X-Gm-Message-State: AOAM531T5/WxQIrFe8tddYRrEAOgqb2KYlMwQ5LtqTGadu5by0Q/uF5N
-        nWdYrkpMoMGQ0UIVv8B4H9ykNw8scHbx6bAJjIdArVFse0JXX6JspDvGNUym5P5aRQuhgBZnxCN
-        qildNPe7tv6IMBbA+Nmtu4aHP
-X-Received: by 2002:aa7:c60a:: with SMTP id h10mr14463143edq.263.1611846627225;
-        Thu, 28 Jan 2021 07:10:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxvrLkS9YX15WjbJzHD3ylCnm409ccs+e5aYflwjJrItwYKGebUACH43o772Xm79wLkpepznQ==
-X-Received: by 2002:aa7:c60a:: with SMTP id h10mr14463129edq.263.1611846627073;
-        Thu, 28 Jan 2021 07:10:27 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r11sm3119537edt.58.2021.01.28.07.10.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 07:10:26 -0800 (PST)
-Subject: Re: [PATCH v2 14/14] KVM: SVM: Skip SEV cache flush if no ASIDs have
- been used
-To:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210114003708.3798992-1-seanjc@google.com>
- <20210114003708.3798992-15-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <55a63dfb-94a4-6ba2-31d1-c9b6830ff791@redhat.com>
-Date:   Thu, 28 Jan 2021 16:10:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jYUwfR//UNM7rH1VOEkn/K+30W18z8yGULkJIiL5QLc=;
+        b=pCx3CK080MOtlTl9bm84s3RabPQ1Ui+EFRG3N/szVEWUfwDCdBQIaC68G6qBv0e5f+
+         kaFbdqXGFR537pXS9Xshqi3nJegFdfIzP+5LYx1I0PKyAQYL6rbEtIkg4bZJzSus9QJo
+         4BljgxB2nnK9BlNQHYSOUv1lVbnS28R0D50gq696W1PixPjuLcTee/1HugnZjERlK/zw
+         nYp6L3qQk/o2EuwXYC5fLRAnf4WK4rHSlsiNnM3v2EKuyraagwYsZYfRm0ZzUPExj8I5
+         52pNyeL4PN+KxKrxGDf1PRnd2W7wsVv31g+pMfqUKmejktScjufXTOPPaN38pRNhadVZ
+         3mVw==
+X-Gm-Message-State: AOAM532pS6g5Z3KERsOJNN7rkT9MNCRGAc/kyhTt9iuf/r4e7VxvfHnP
+        voGIcJyTu9QZ4VEoOhi5BWc=
+X-Google-Smtp-Source: ABdhPJwwTqEF9wklNavo3L5y9Lt1QHNJzWUHVrPrxHKvLTIpS8M1c2jhRmWPLrV/DjXEe9IItQyP3w==
+X-Received: by 2002:a05:6512:49b:: with SMTP id v27mr8223299lfq.220.1611846716011;
+        Thu, 28 Jan 2021 07:11:56 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id r26sm1708382lfe.137.2021.01.28.07.11.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 07:11:55 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 28 Jan 2021 16:11:52 +0100
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210128151152.GA1867@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
+ <20210125143150.GA2282@pc638.lan>
+ <20210125153943.GN827@dhcp22.suse.cz>
+ <20210125162559.GA52712@pc638.lan>
 MIME-Version: 1.0
-In-Reply-To: <20210114003708.3798992-15-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125162559.GA52712@pc638.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/01/21 01:37, Sean Christopherson wrote:
-> Skip SEV's expensive WBINVD and DF_FLUSH if there are no SEV ASIDs
-> waiting to be reclaimed, e.g. if SEV was never used.  This "fixes" an
-> issue where the DF_FLUSH fails during hardware teardown if the original
-> SEV_INIT failed.  Ideally, SEV wouldn't be marked as enabled in KVM if
-> SEV_INIT fails, but that's a problem for another day.
+On Mon, Jan 25, 2021 at 05:25:59PM +0100, Uladzislau Rezki wrote:
+> On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
+> > On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
+> > > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> > > > > For a single argument we can directly request a page from a caller
+> > > > > context when a "carry page block" is run out of free spots. Instead
+> > > > > of hitting a slow path we can request an extra page by demand and
+> > > > > proceed with a fast path.
+> > > > > 
+> > > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > > > > and that its fallback is the relatively high latency synchronize_rcu().
+> > > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > > > > to allow limited sleeping within the memory allocator.
+> > > > 
+> > > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+> > > > way to allocate without triggering the OOM killer. Is this really what
+> > > > you need/want? Is __GFP_NORETRY too weak?
+> > > > 
+> > > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
+> > > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
+> > > point: https://www.spinics.net/lists/rcu/msg02856.html
+> > > 
+> > > <snip>
+> > >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
+> > >     further decisions based on instrumentation of the success rates of
+> > >     these opportunistic allocations.
+> > > <snip>
+> > 
+> > I completely agree with Johannes here.
+> > 
+> > > but for some reason, i can't find a tail or head of it, we introduced
+> > > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
+> > > What we would like to avoid.
+> > 
+> > Not that I object to this use but I think it would be much better to use
+> > it based on actual data. Going along with it right away might become a
+> > future burden to make any changes in this aspect later on due to lack of 
+> > exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
+> > try as hard as it can get without being really disruptive (like OOM
+> > killing something). And your wording didn't really give me that
+> > impression.
+> > 
+> Initially i proposed just to go with GFP_NOWAIT flag. But later on there
+> was a discussion about a fallback path, that uses synchronize_rcu() can be
+> slow, thus minimizing its hitting would be great. So, here we go with a
+> trade off.
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/svm/sev.c | 22 ++++++++++------------
->   1 file changed, 10 insertions(+), 12 deletions(-)
+> Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
+> light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 23a4bead4a82..e71bc742d8da 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -56,9 +56,14 @@ struct enc_region {
->   	unsigned long size;
->   };
->   
-> -static int sev_flush_asids(void)
-> +static int sev_flush_asids(int min_asid, int max_asid)
->   {
-> -	int ret, error = 0;
-> +	int ret, pos, error = 0;
-> +
-> +	/* Check if there are any ASIDs to reclaim before performing a flush */
-> +	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-> +	if (pos >= max_asid)
-> +		return -EBUSY;
->   
->   	/*
->   	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-> @@ -80,14 +85,7 @@ static int sev_flush_asids(void)
->   /* Must be called with the sev_bitmap_lock held */
->   static bool __sev_recycle_asids(int min_asid, int max_asid)
->   {
-> -	int pos;
-> -
-> -	/* Check if there are any ASIDs to reclaim before performing a flush */
-> -	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-> -	if (pos >= max_asid)
-> -		return false;
-> -
-> -	if (sev_flush_asids())
-> +	if (sev_flush_asids(min_asid, max_asid))
->   		return false;
->   
->   	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
-> @@ -1323,10 +1321,10 @@ void sev_hardware_teardown(void)
->   	if (!sev_enabled)
->   		return;
->   
-> +	sev_flush_asids(0, max_sev_asid);
-> +
->   	bitmap_free(sev_asid_bitmap);
->   	bitmap_free(sev_reclaim_asid_bitmap);
-> -
-> -	sev_flush_asids();
->   }
->   
->   int sev_cpu_init(struct svm_cpu_data *sd)
+> There were simple criterias we discussed which we would like to achieve:
 > 
+> a) minimize a fallback hitting;
+> b) avoid of OOM involving;
+> c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+> 
+One question here. Since the code that triggers a page request can be
+directly invoked from reclaim context as well as outside of it. We had
+a concern about if any recursion is possible, but what i see it is safe.
+The context that does it can not enter it twice:
 
-I can't find 00/14 in my inbox, so: queued 1-3 and 6-14, thanks.
+<snip>
+    /* Avoid recursion of direct reclaim */
+    if (current->flags & PF_MEMALLOC)
+        goto nopage;
+<snip>
 
-Paolo
+What about any deadlocking in regards to below following flags?
 
+GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
+
+Thanks!
+
+--
+Vlad Rezki
