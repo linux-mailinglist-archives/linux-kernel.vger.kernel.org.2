@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682C7307478
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295DD307480
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhA1LKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:10:07 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2442 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhA1LJ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:09:59 -0500
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DRHhN5xclz67hBF;
-        Thu, 28 Jan 2021 19:05:56 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 28 Jan 2021 12:09:17 +0100
-Received: from localhost (10.47.74.140) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 28 Jan
- 2021 11:09:17 +0000
-Date:   Thu, 28 Jan 2021 11:08:33 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Linuxarm]  Re: [PATCH v3 00/12] add IRQF_NO_AUTOEN for
- request_irq
-Message-ID: <20210128110833.00000c43@Huawei.com>
-In-Reply-To: <YBHC6SzXAOSNoQnI@google.com>
-References: <20210107223926.35284-1-song.bao.hua@hisilicon.com>
-        <848fb07c3073401bbbe15db71f5922c9@hisilicon.com>
-        <YBFvYStmGeChUJlO@kroah.com>
-        <YBHC6SzXAOSNoQnI@google.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S231218AbhA1LLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:11:14 -0500
+Received: from mga06.intel.com ([134.134.136.31]:58317 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231156AbhA1LK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:10:59 -0500
+IronPort-SDR: DFQBtcOw5+BAGZfTiQ3jiETQcG5ISXr8zLS69GvPIUtBxm+Yaq2gG4GccZBoX0PXI7vMjtBkaq
+ o1+i3iN5PmJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241742155"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="241742155"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:09:11 -0800
+IronPort-SDR: oLTOeHJAxZveY+y0cspU8swh3mUykqlmfDB8CBvJ7nLRG4fyjW6mcagPZOo5rs3vUPhbqZP1K6
+ kC7ATHgNjRPw==
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="473506403"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:09:07 -0800
+Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 13:09:04 +0200
+Date:   Thu, 28 Jan 2021 13:09:04 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-usb@vger.kernel.org, Michael Jamet <michael.jamet@intel.com>,
+        netdev@vger.kernel.org, Yehezkel Bernat <YehezkelShB@gmail.com>
+Subject: Re: [PATCH 00/12] Rid W=1 warnings from Thunderbolt
+Message-ID: <20210128110904.GR2542@lahna.fi.intel.com>
+References: <20210127112554.3770172-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.74.140]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127112554.3770172-1-lee.jones@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 11:45:45 -0800
-"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com> wrote:
+Hi Lee,
 
-> On Wed, Jan 27, 2021 at 02:49:21PM +0100, gregkh@linuxfoundation.org wrote:
-> > On Thu, Jan 21, 2021 at 09:38:28PM +0000, Song Bao Hua (Barry Song) wrote:  
-> > > Hi Thomas, Greg, Dmitry, Marc,
-> > > Any further comment on this new API?   
-> > 
-> > It's not my subsystem, I'll let the irq maintainers handle it :)  
+On Wed, Jan 27, 2021 at 11:25:42AM +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
-> Not my subsystem either, but I would like to have this feature
-> available. I do not like calling irq_set_status_flags() before
-> request_irq() as at that time we are not ensured of irq ownership, and
-> using disable_irq() afterwards is indeed awkward.
+> Only 1 small set required for Thunderbolt.  Pretty good!
 > 
+> Lee Jones (12):
+>   thunderbolt: dma_port: Remove unused variable 'ret'
+>   thunderbolt: cap: Fix kernel-doc formatting issue
+>   thunderbolt: ctl: Demote non-conformant kernel-doc headers
+>   thunderbolt: eeprom: Demote non-conformant kernel-doc headers to
+>     standard comment blocks
+>   thunderbolt: pa: Demote non-conformant kernel-doc headers
+>   thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv'
+>     param
+>   thunderbolt: nhi: Demote some non-conformant kernel-doc headers
+>   thunderbolt: tb: Kernel-doc function headers should document their
+>     parameters
+>   thunderbolt: swit: Demote a bunch of non-conformant kernel-doc headers
+>   thunderbolt: icm: Fix a couple of formatting issues
+>   thunderbolt: tunnel: Fix misspelling of 'receive_path'
+>   thunderbolt: swit: Fix function name in the header
 
-Likewise, keen on having this available.
+I applied all of the changes that touch static functions. For non-static
+functions I will send a patch set shortly that adds the missing bits for
+the kernel-doc descriptions. I also fixed $subject lines of few patches
+("switch:" instead of "swit:").
 
-Jonathan
+Please check that I got everything correct in
 
-> Thanks.
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git next
 
+Thanks!
