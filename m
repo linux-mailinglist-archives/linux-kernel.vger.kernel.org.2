@@ -2,97 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D473D30809A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E173080AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhA1VfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:35:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229596AbhA1Ve4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:34:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A03364DE8;
-        Thu, 28 Jan 2021 21:34:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611869655;
-        bh=wN2rpturJmJM7GiWuXK4eGf/ciS8iKIQ7U1Snpc7h5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JlQ6Mob8h88NUFo2916XCe1b7Pg4y+SDol2GTmf927YbnmzDCGBET8sTUw4TztMgR
-         SRxhfcpWttg2KHdNjs2ByrJf5CUinlE016Mma8lazXGhVuiaftS++DKM/Kc3oq6XU0
-         kuKiWPtXNQPpgNlzf7Pce08IRxlm3lukvwQ3qjhUzf4eed3Agt3bLDoluKxaQvk8x/
-         mYY0FJ4R28dtd7MjeMagjK48b0xCUYuhnOPjE+JlvfPjZ7as0d96FRnzy1+JSgKFhI
-         lSuBcfZJ3T46Qh4dY2+mBE6l/tNSKPJ9RgErdkzAM7bFRmt/iHyrAA721QwG1apRvT
-         jt2HZA989mKyw==
-Date:   Thu, 28 Jan 2021 22:34:13 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 04/16] rcu/nocb: Only (re-)initialize segcblist when
- needed on CPU up
-Message-ID: <20210128213413.GC122776@lothringen>
-References: <20210128171222.131380-1-frederic@kernel.org>
- <20210128171222.131380-5-frederic@kernel.org>
- <20210128191228.GQ2743@paulmck-ThinkPad-P72>
+        id S231494AbhA1Vmv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 16:42:51 -0500
+Received: from wnbcorp.com ([175.126.38.143]:49775 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229658AbhA1Vms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 16:42:48 -0500
+Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10SLZdc3005772;
+        Fri, 29 Jan 2021 06:37:51 +0900
+Message-Id: <202101282137.10SLZdc3005772@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128191228.GQ2743@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Thu, 28 Jan 2021 22:37:31 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:12:28AM -0800, Paul E. McKenney wrote:
-> On Thu, Jan 28, 2021 at 06:12:10PM +0100, Frederic Weisbecker wrote:
-> > Simply checking if the segcblist is enabled is enough to know if we
-> > need to initialize it or not. It's safe to check within hotplug
-> > machine.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> 
-> Hmmm...
-> 
-> At the start of a CPU-hotplug operation, an incoming CPU's callback
-> list can be in a number of states:
-> 
-> 1.	Disabled and empty.  This is the case when the boot CPU has
-> 	not done call_rcu(), when a non-boot CPU first comes online,
-> 	and when a non-offloaded CPU comes back online.  In this case,
-> 	it is permissible to initialize ->cblist.  Because either the
-> 	CPU is currently running with interrupts disabled (boot CPU)
-> 	or is not yet running at all (other CPUs), it is not necessary
-> 	to acquire ->nocb_lock.
-> 
-> 2.	Disabled and non-empty.  This is the case when the boot CPU has
-> 	done call_rcu().  It is not permissible to initialize ->cblist
-> 	because doing so will leak any callbacks posted by early boot
-> 	invocations of call_rcu().
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-I don't think that's possible. In this case __call_rcu() has called
-rcu_segcblist_init() and has enabled the segcblist.
+Sir/Madam,
 
-> 
-> 	Test for the possibility of leaking by building with
-> 	CONFIG_PROVE_RCU=y and booting with rcupdate.rcu_self_test=1.
-> 
-> 3.	Enabled, whether empty or not.  This is the case when an
-> 	offloaded CPU comes back online.  This is the only case where
-> 	the ->nocb_lock must be held to modify ->cblist.  However,
-> 	it is not necessarily to modify ->cblist because the rcuoc
-> 	kthread is on the job.
-> 
-> So I believe that it is necessary to check for both disabled and empty.
-> But don't take my word for it!  Build with CONFIG_PROVE_RCU=y and boot
-> with rcupdate.rcu_self_test=1.  ;-)
+CONGRATULATIONS!!!
 
-I'm trying that :-)
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
