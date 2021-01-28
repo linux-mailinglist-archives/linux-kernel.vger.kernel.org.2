@@ -2,248 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198EA307BD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D829D307BC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbhA1RJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:09:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232824AbhA1RGA (ORCPT
+        id S232591AbhA1RHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:07:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232838AbhA1RGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:06:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611853473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LvcQzCTMhw0EZfzlSb3F515FxbS4cvGqc8hLzWtIraw=;
-        b=JcDnJh5pewXv5NoDV+Wsn4MLDtPKTQJHuCf1YH3OcwfNxXwsCoImJLW1YdIKyib2q8nluV
-        a2hg3Pb7mAujnj0zj8AKS6UrscBXebqoLA06j/BJ9LDOVqJQ7WeUwy67X7YcuFrLIfDo97
-        dld42Mua92RJOIDALSNiLBW9n+aEwgc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-pDY4RnDlM7ak02jp2OvygQ-1; Thu, 28 Jan 2021 12:04:31 -0500
-X-MC-Unique: pDY4RnDlM7ak02jp2OvygQ-1
-Received: by mail-wr1-f69.google.com with SMTP id x12so3434898wrw.21
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:04:31 -0800 (PST)
+        Thu, 28 Jan 2021 12:06:16 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9641BC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:05:35 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id i141so6146812yba.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:05:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZU1E+hwpvXYdTh/qIiNM8VSWMHxSs6gIkqcZKacaSJk=;
+        b=hMon+a8pCGyQX1TKt2MYK5I3raPQgYl51+v7F+rYC1j4LnbNfSMIGlit5el71iyTzg
+         L7wF2BfV0lHSzLa1rhuEyq5b5q8MH4egbQKzk/E9DcA1wnjj4U0thuNpqrnvsCOuKVXG
+         aJrMyGKZbpKWpICk0d8V6EFKUw3QXG/APqW0Fi+IMkO0dyEmh4+iQGwfDNNmitWtg1DS
+         nnA6K/WLX0ysU0SJXkfKK0ExIc1W9fzmDrxCLx1I/Wo/yF22EHv2wlMqpd9SL/xBXYHB
+         6g5MfG4sezXYC0kefJWJT+0AEYqY1g+xl6t/uzvSuu288GE21AYepcLtTcXrUIGfrkmK
+         YOVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LvcQzCTMhw0EZfzlSb3F515FxbS4cvGqc8hLzWtIraw=;
-        b=I45xR4aJ8MVFGxD5LqY2l0pdyDUIQa/x85prPdqCQQSilK9Byx4oD6fzAtCrX0IH6C
-         xhOL+p1xuNzFRQ8WLkkFeE1RgWxt8Ck2U9wQbqg45Gd6ePaAktrkCNmBkevQ4CCrBsUc
-         gSLvwKUlchSe26NqiMkhz8hNZrKRhyntk8XQMnGW3OsMVDMsunRUTregKZcOmEp8DXn2
-         i0GHuN5l4aCb9Ad3mmIradqefXF7r5xd+gy0kd+YDQwkTaz81PEE4X68T7dm65I48gS1
-         meK5GFZ31Q2Zlu5frFyUTeFIbu0eHziIXEMlVnfLEQZXrrodUZ4apvS4dlcI59mtkeqU
-         gxLQ==
-X-Gm-Message-State: AOAM531wVKTHWia8qBcf8ADbAiTzcf63ZxhXV+gSMmNL033DCssCm2F+
-        kMjytll+/bW1rs/+VXYHvmM/QoViSDIL6FS/nfdD74aGoNKiE6y5S8zJxJng904uEutu1fhv6Ix
-        qxc6ZFLTnCIWDsTYJnabpNJOR
-X-Received: by 2002:adf:9148:: with SMTP id j66mr47596wrj.28.1611853470441;
-        Thu, 28 Jan 2021 09:04:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyFXNXAEEeUISjmsj6o5JuE/Q8ctqnwUsP41thgGGDQLpC8xK5225WjWWJKnBOg3AVOH+RIYQ==
-X-Received: by 2002:adf:9148:: with SMTP id j66mr47572wrj.28.1611853470215;
-        Thu, 28 Jan 2021 09:04:30 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id v4sm8574382wrw.42.2021.01.28.09.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 09:04:29 -0800 (PST)
-Date:   Thu, 28 Jan 2021 18:04:26 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v3 05/13] af_vsock: rest of SEQPACKET support
-Message-ID: <20210128170426.522mpkocdd35bt2e@steredhat>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210125111321.598653-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZU1E+hwpvXYdTh/qIiNM8VSWMHxSs6gIkqcZKacaSJk=;
+        b=LMfgJ8WoylVLWkevJYkGP8gW6jFbBAljMlxslfEDKijR3W6BTyu3GjR4p4U2dQUBcb
+         4Jb9jo9K7wLAUfW32t2lo7f751ZMmxklDj1cEBqHc+m1EKtUuppYEpUUPck2aNqTKDNX
+         EVVmG3riiyWsBWx4/rDMC9Q9CbsssEe+rq1Lug4yg2sjDEZGxMTQV1jc/eEdUAC5wpvq
+         iTh6OSx2+g7ieNQr1UTxT+oeCdOxK04fxmVq56BNyRs3cGqdgrVlhSYp6E3a/dr6xTMw
+         wjD21J0eR1XaydSsGeQIELWDRmciz7e5irwywENiwJH8gBxbVDRsQ673ako4D3L5mVmO
+         kH2Q==
+X-Gm-Message-State: AOAM532eGrp9GtR3XTNm4oHcER8jRM7w/3dRLCN74sjmf/5GO1jR6tb2
+        5vZRUGIhYy8tIwMdfgg5eF5ifK7WWjk1PBqx9H6nAg==
+X-Google-Smtp-Source: ABdhPJzjk3EwCrbDets63MKERWUm51YIKaub5GTzoMd8q8rnmWTtHgYBA8eGrfBsHJyhg/WhEf9ZPqinY2NNjIZVRf8=
+X-Received: by 2002:a25:718b:: with SMTP id m133mr196558ybc.412.1611853534659;
+ Thu, 28 Jan 2021 09:05:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210125111321.598653-1-arseny.krasnov@kaspersky.com>
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <20201218031703.3053753-6-saravanak@google.com> <6ca35fea-3c67-127d-2190-a34c0318a5a3@microchip.com>
+ <CAGETcx-sZC4nKi9VKYUgaBnH4Kf3FraKEe+CMXxm_-DWjz9t5w@mail.gmail.com> <97a1fe96-ee2c-43cf-58fe-6ed910d3fb2c@microchip.com>
+In-Reply-To: <97a1fe96-ee2c-43cf-58fe-6ed910d3fb2c@microchip.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 28 Jan 2021 09:04:57 -0800
+Message-ID: <CAGETcx-GbSEYxWTB+sDQCh9-sQmKi=ejcBf=036YeQhY-DQu9A@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
+To:     Tudor.Ambarus@microchip.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nicolas.Ferre@microchip.com, Ludovic.Desroches@microchip.com,
+        alexandre.belloni@bootlin.com, Claudiu.Beznea@microchip.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:13:18PM +0300, Arseny Krasnov wrote:
->This does rest of SOCK_SEQPACKET support:
->1) Adds socket ops for SEQPACKET type.
->2) Allows to create socket with SEQPACKET type.
+On Thu, Jan 28, 2021 at 2:59 AM <Tudor.Ambarus@microchip.com> wrote:
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 71 ++++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 71 insertions(+)
+> Hi, Saravana,
 >
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 4600c1ec3bb3..bbc3c31085aa 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 		new_transport = transport_dgram;
-> 		break;
-> 	case SOCK_STREAM:
->+	case SOCK_SEQPACKET:
-> 		if (vsock_use_local_transport(remote_cid))
-> 			new_transport = transport_local;
-> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
->@@ -459,6 +460,13 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 			new_transport = transport_g2h;
-> 		else
-> 			new_transport = transport_h2g;
->+
->+		if (sk->sk_type == SOCK_SEQPACKET) {
+> On 1/25/21 8:16 PM, Saravana Kannan wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >
+> > On Mon, Jan 25, 2021 at 9:05 AM <Tudor.Ambarus@microchip.com> wrote:
+> >>
+> >> Hi, Saravana,
+> >>
+> >> On 12/18/20 5:17 AM, Saravana Kannan wrote:
+> >>> Cyclic dependencies in some firmware was one of the last remaining
+> >>> reasons fw_devlink=on couldn't be set by default. Now that cyclic
+> >>> dependencies don't block probing, set fw_devlink=on by default.
+> >>>
+> >>> Setting fw_devlink=on by default brings a bunch of benefits (currently,
+> >>> only for systems with device tree firmware):
+> >>> * Significantly cuts down deferred probes.
+> >>> * Device probe is effectively attempted in graph order.
+> >>> * Makes it much easier to load drivers as modules without having to
+> >>>   worry about functional dependencies between modules (depmod is still
+> >>>   needed for symbol dependencies).
+> >>>
+> >>> If this patch prevents some devices from probing, it's very likely due
+> >>> to the system having one or more device drivers that "probe"/set up a
+> >>> device (DT node with compatible property) without creating a struct
+> >>> device for it.  If we hit such cases, the device drivers need to be
+> >>> fixed so that they populate struct devices and probe them like normal
+> >>> device drivers so that the driver core is aware of the devices and their
+> >>> status. See [1] for an example of such a case.
+> >>>
+> >>> [1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
+> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>
+> >> next-20210125 fails to boot on at91 sama5d2 platforms. No output is
+> >> seen, unless earlyprintk is enabled.
+> >>
+> >> I have bisected this to commit e590474768f1cc04 ("driver core: Set
+> >> fw_devlink=on by default").
+> >>
+> >> I've attached a log that I'm seeing on a sama5d2_xplained (sama5_defconfig
+> >> and arch/arm/boot/dts/at91-sama5d2_xplained.dts). I enabled the
+> >> following logs:
+> >> 1. The ones in device_links_check_suppliers()
+> >> 2. The ones in device_link_add()
+> >> 3. initcall_debug=1
+> >>
+> >> There seem to be some probe fails due to the pmc supplier not being ready:
+> >> calling  at_xdmac_init+0x0/0x18 @ 1
+> >> platform f0010000.dma-controller: probe deferral - supplier f0014000.pmc not ready
+> >> platform f0004000.dma-controller: probe deferral - supplier f0014000.pmc not ready
+> >> initcall at_xdmac_init+0x0/0x18 returned -19 after 19531 usecs
+> >>
+> >> calling  udc_driver_init+0x0/0x18 @ 1
+> >> platform 300000.gadget: probe deferral - supplier f0014000.pmc not ready
+> >> initcall udc_driver_init+0x0/0x18 returned -19 after 7524 usecs
+> >>
+> >> There are others too. I'm checking them.
+> >
+> > Thanks Tudor. I'll look into this within a few days. I'm also looking
+> > into coming up with a more generic solution.
+> >
+>
+> I've sent a patch addressing this at:
+> https://lore.kernel.org/lkml/20210128104446.164269-1-tudor.ambarus@microchip.com/T/#u
+>
+> Can you please take a look?
 
-I think you must also check that new_transport is not NULL.
+Thanks for taking a look at this. I responded in that thread.
 
->+			if (!new_transport->seqpacket_seq_send_len ||
->+			    !new_transport->seqpacket_seq_get_len ||
->+			    !new_transport->seqpacket_dequeue)
->+				return -ENODEV;
-
-I'm not sure about ENODEV is the better choice in this case, since the 
-transport exists, but it doesn't support SOCK_SEQPACKET, so maybe is 
-better ESOCKTNOSUPPORT.
-
->+		}
-> 		break;
-> 	default:
-> 		return -ESOCKTNOSUPPORT;
->@@ -684,6 +692,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
->
-> 	switch (sk->sk_socket->type) {
-> 	case SOCK_STREAM:
->+	case SOCK_SEQPACKET:
-> 		spin_lock_bh(&vsock_table_lock);
-> 		retval = __vsock_bind_connectible(vsk, addr);
-> 		spin_unlock_bh(&vsock_table_lock);
->@@ -1406,6 +1415,12 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
-> 	return vsock_connect(sock, addr, addr_len, flags);
-> }
->
->+static int vsock_seqpacket_connect(struct socket *sock, struct sockaddr *addr,
->+				   int addr_len, int flags)
->+{
->+	return vsock_connect(sock, addr, addr_len, flags);
->+}
->+
-> static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
-> 			bool kern)
-> {
->@@ -1633,6 +1648,16 @@ static int vsock_stream_setsockopt(struct socket *sock,
-> 					    optlen);
-> }
->
->+static int vsock_seqpacket_setsockopt(struct socket *sock,
->+				      int level,
->+				      int optname,
->+				      sockptr_t optval,
->+				      unsigned int optlen)
->+{
->+	return vsock_connectible_setsockopt(sock, level, optname, optval,
->+					    optlen);
->+}
->+
-> static int vsock_connectible_getsockopt(struct socket *sock,
-> 					int level, int optname,
-> 					char __user *optval,
->@@ -1713,6 +1738,15 @@ static int vsock_stream_getsockopt(struct socket *sock,
-> 					    optlen);
-> }
->
->+static int vsock_seqpacket_getsockopt(struct socket *sock,
->+				      int level, int optname,
->+				      char __user *optval,
->+				      int __user *optlen)
->+{
->+	return vsock_connectible_getsockopt(sock, level, optname, optval,
->+					    optlen);
->+}
->+
-> static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 				     size_t len)
-> {
->@@ -1870,6 +1904,12 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	return vsock_connectible_sendmsg(sock, msg, len);
-> }
->
->+static int vsock_seqpacket_sendmsg(struct socket *sock, struct msghdr *msg,
->+				   size_t len)
->+{
->+	return vsock_connectible_sendmsg(sock, msg, len);
->+}
->+
-> static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
-> 			   long timeout,
-> 			   struct vsock_transport_recv_notify_data *recv_data,
->@@ -2184,6 +2224,13 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 	return vsock_connectible_recvmsg(sock, msg, len, flags);
-> }
->
->+static int
->+vsock_seqpacket_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->+			int flags)
->+{
->+	return vsock_connectible_recvmsg(sock, msg, len, flags);
->+}
->+
-
-As I said, I think you don't need to implement all of this helpers and 
-you can directly assign the vsock_connectible_* functions in the 
-'vsock_seqpacket_ops'.
-
-> static const struct proto_ops vsock_stream_ops = {
-> 	.family = PF_VSOCK,
-> 	.owner = THIS_MODULE,
->@@ -2205,6 +2252,27 @@ static const struct proto_ops vsock_stream_ops = {
-> 	.sendpage = sock_no_sendpage,
-> };
->
->+static const struct proto_ops vsock_seqpacket_ops = {
->+	.family = PF_VSOCK,
->+	.owner = THIS_MODULE,
->+	.release = vsock_release,
->+	.bind = vsock_bind,
->+	.connect = vsock_seqpacket_connect,
->+	.socketpair = sock_no_socketpair,
->+	.accept = vsock_accept,
->+	.getname = vsock_getname,
->+	.poll = vsock_poll,
->+	.ioctl = sock_no_ioctl,
->+	.listen = vsock_listen,
->+	.shutdown = vsock_shutdown,
->+	.setsockopt = vsock_seqpacket_setsockopt,
->+	.getsockopt = vsock_seqpacket_getsockopt,
->+	.sendmsg = vsock_seqpacket_sendmsg,
->+	.recvmsg = vsock_seqpacket_recvmsg,
->+	.mmap = sock_no_mmap,
->+	.sendpage = sock_no_sendpage,
->+};
->+
-> static int vsock_create(struct net *net, struct socket *sock,
-> 			int protocol, int kern)
-> {
->@@ -2225,6 +2293,9 @@ static int vsock_create(struct net *net, struct socket *sock,
-> 	case SOCK_STREAM:
-> 		sock->ops = &vsock_stream_ops;
-> 		break;
->+	case SOCK_SEQPACKET:
->+		sock->ops = &vsock_seqpacket_ops;
->+		break;
-> 	default:
-> 		return -ESOCKTNOSUPPORT;
-> 	}
->-- 
->2.25.1
->
-
+-Saravana
