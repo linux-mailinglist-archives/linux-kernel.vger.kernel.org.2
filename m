@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE22830692B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C64E306954
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 02:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhA1A7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:59:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231191AbhA1A5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:57:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 861D164DD1;
-        Thu, 28 Jan 2021 00:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611795363;
-        bh=GNeySK//oA5sSbdd0ASJJufb+YqjhGpqsI7+o18dH+Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KV8nM1tkterFMMGncJ0Ouxe4+T5HViuwIQ2K5oG4Utk4wUb7ltOcwvTlnTlOh8KF0
-         yObQHQQsddU9FAY3V5CbzZLhccNdraiSNaeJd6IRgZGrEccSRAJJ04di/C3cUhJ99I
-         wi60vC3HxxKklMlCA7F8f4IUbsjyvJj4ILtJpbdt8LaVdT3Vw5wqZ2YkoKn9nykEb1
-         6g8XNqhCWvwklTEBQNBVX/ga5B32J94KF+Ed6dTyc7f1L/m1Ev9G2TEE8yLgb8sJuc
-         TEQnUtvS3ANKrUNHnTTtMducM1cK9E+wgQwU7iljWtURwv399DKsbH94hEV3XZroNZ
-         GGx7RTTy7E8Sw==
-Date:   Wed, 27 Jan 2021 16:56:02 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     xiyou.wangcong@gmail.com
-Cc:     Slava Bacherikov <mail@slava.cc>, willemb@google.com,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Subject: Re: BUG: Incorrect MTU on GRE device if remote is unspecified
-Message-ID: <20210127165602.610b10c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <e2dde066-44b2-6bb3-a359-6c99b0a812ea@slava.cc>
-References: <e2dde066-44b2-6bb3-a359-6c99b0a812ea@slava.cc>
+        id S229810AbhA1BDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 20:03:37 -0500
+Received: from conuserg-12.nifty.com ([210.131.2.79]:29702 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229732AbhA1A5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:57:44 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIi024172;
+        Thu, 28 Jan 2021 09:52:02 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIi024172
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611795123;
+        bh=8LKOeh8wDSb8BIof2AfD5uB6wjyW5KsgSaXh3UzQGfw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=htPDLFVT7not9OIuRM8Kjohlj92lfUtnbdhEW6VzKx0VFC8HiM8Rq9o7l3aX0IEw+
+         M7xgK2j911+JdwM6qhXKVoW0nNsXY+JOPUSzkC1MayyWjx84O8FOBbbtliysKYFdAz
+         N0aoPM1TUzftvX0G3FbNm6c9YhkP9Fs4Hoegcz5iRyZP+5skPM9IK9BApMFTLYQ71x
+         jxsA8v77jwtjW7v82lcmEClQ7TTz/gEzUDyrL1FJMzPtLBWN0MqR3TOGr5CSQpbKd9
+         4BT+aD+caamfV6skUJH96yjSo/GFairUwhYTqK91JYxXyZaDahld2KKqEd6owy2+mt
+         P8X/wxmEaopmA==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-arch@vger.kernel.org, x86@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 13/27] microblaze: add missing FORCE and fix 'targets' to make if_changed work
+Date:   Thu, 28 Jan 2021 09:50:55 +0900
+Message-Id: <20210128005110.2613902-14-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 22:10:10 +0200 Slava Bacherikov wrote:
-> Hi, I'd like to report a regression. Currently, if you create GRE
-> interface on the latest stable or LTS kernel (5.4 branch) with
-> unspecified remote destination it's MTU will be adjusted for header size
-> twice. For example:
-> 
-> $ ip link add name test type gre local 127.0.0.32
-> $ ip link show test | grep mtu
-> 27: test@NONE: <NOARP> mtu 1452 qdisc noop state DOWN mode DEFAULT group
-> default qlen 1000
-> 
-> or with FOU
-> 
-> $ ip link add name test2   type gre local 127.0.0.32 encap fou
-> encap-sport auto encap-dport 6666
-> $ ip link show test2 | grep mtu
-> 28: test2@NONE: <NOARP> mtu 1436 qdisc noop state DOWN mode DEFAULT
-> group default qlen 1000
-> 
-> The same happens with GUE too (MTU is 1428 instead of 1464).
-> As you can see that MTU in first case is 1452 (1500 - 24 - 24) and with
-> FOU it's 1436 (1500 - 32 - 32), GUE 1428 (1500 - 36 - 36). If remote
-> address is specified MTU is correct.
-> 
-> This regression caused by fdafed459998e2be0e877e6189b24cb7a0183224 commit.
+The rules in this Makefile cannot detect the command line change because
+the prerequisite 'FORCE' is missing.
 
-Cong is this one on your radar?
+Adding 'FORCE' will result in the headers being rebuilt every time
+because the 'targets' addition is also wrong; the file paths in
+'targets' must be relative to the current Makefile.
+
+Fix all of them so the if_changed rules work correctly.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/microblaze/kernel/syscalls/Makefile | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/arch/microblaze/kernel/syscalls/Makefile b/arch/microblaze/kernel/syscalls/Makefile
+index 659faefdcb1d..1c42d2d2926d 100644
+--- a/arch/microblaze/kernel/syscalls/Makefile
++++ b/arch/microblaze/kernel/syscalls/Makefile
+@@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
+ 		   '$(systbl_abi_$(basetarget))'		\
+ 		   '$(systbl_offset_$(basetarget))'
+ 
+-$(uapi)/unistd_32.h: $(syscall) $(syshdr)
++$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-$(kapi)/syscall_table.h: $(syscall) $(systbl)
++$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ uapisyshdr-y		+= unistd_32.h
+ kapisyshdr-y		+= syscall_table.h
+ 
+-targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
++uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
++kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
++targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
+ 
+ PHONY += all
+-all: $(addprefix $(uapi)/,$(uapisyshdr-y))
+-all: $(addprefix $(kapi)/,$(kapisyshdr-y))
++all: $(uapisyshdr-y) $(kapisyshdr-y)
+ 	@:
+-- 
+2.27.0
+
