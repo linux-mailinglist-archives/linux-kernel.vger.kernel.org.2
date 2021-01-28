@@ -2,184 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C06307194
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25B3307197
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhA1Idl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:33:41 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:53804 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231350AbhA1Ic4 (ORCPT
+        id S232127AbhA1IfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:35:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231963AbhA1Idi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:32:56 -0500
-X-UUID: fb5a23f0169b43ddbe1bf112a2d12fc9-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=1Sbm2bZx8k7nPtcDPxuTnvVWvjkL3PfNcHBHr0kDrP4=;
-        b=XgOom+NZuSw6GbO1v+oy48NVP6zKz/qGNZGx9JElnks5YNK7LMOm57zCVGGpM0Hkxvws+VGWjA2XxuxzjEY60hFEZTmZXp2WXh9jM3vv6WgdqO6ct0ZYFrjqmWmdq5I2f4obfazqtTyCbzS/DK5Itf4DrKuh7nXCHwANKWBGrjg=;
-X-UUID: fb5a23f0169b43ddbe1bf112a2d12fc9-20210128
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1102789290; Thu, 28 Jan 2021 16:32:11 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n1.mediatek.inc
- (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 28 Jan
- 2021 16:32:10 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 16:32:09 +0800
-Message-ID: <1611822729.1947.14.camel@mhfsdcap03>
-Subject: Re: [PATCH v11 7/9] drm/mediatek: enable dither function
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 28 Jan 2021 16:32:09 +0800
-In-Reply-To: <1611822524.23925.4.camel@mtksdaap41>
-References: <20210128072802.830971-1-hsinyi@chromium.org>
-         <20210128072802.830971-8-hsinyi@chromium.org>
-         <1611819766.16091.4.camel@mtksdaap41> <1611820770.1947.8.camel@mhfsdcap03>
-         <1611821233.18369.4.camel@mtksdaap41> <1611821396.1947.10.camel@mhfsdcap03>
-         <CAJMQK-h1_d1+SpxMC8LGPJK=X9HHoJ_ueFzV2Sq44buCiaXFUA@mail.gmail.com>
-         <1611822524.23925.4.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 28 Jan 2021 03:33:38 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598B0C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:32:58 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id n18so2576813vsa.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:32:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RYzJJ+GDoVT+oxwms9uCAe+M5WMBmADotrwHjh34zKA=;
+        b=KVbix2aDBGlz8oq/L1j44y4bFJvMxmMkjnjAj4TOJmVVIFxxmWLM2EVez23JnHzOL4
+         AvLJgvU6QlQphxeeO5piGo3ZD0GY7yD9kwmDr8N7IDe75eOiJelG6xfrSinMS4EqmZWl
+         /8Lx0h4xwa3yEOWKt4Dsmf8MFI+AtODjuAGlI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RYzJJ+GDoVT+oxwms9uCAe+M5WMBmADotrwHjh34zKA=;
+        b=rmCzjEzKUV2ddIiEoHdd2j6k7mi1UwA5JsUA52E5nzETUV+JSFFiokcTK9/qMlwmZJ
+         XStnWZtpOk8ED8xXQnVyrZS3WjWfeD4yLzPc3BMoxgTowpL6F4AXN+3YzvBqsBxM4Fbg
+         wfUF4NDMYdlD7593vBZocPTLSD/uKRc/k0N9A6ZpWXzSoIvasoNhoKuFcEF2ffc1EOVR
+         jhru9AgDEwPNNw9+CRqA7gJWad2OR3RoPWQnJVH+P3VH0anWyTsRmcXbssVVTWSvhfRB
+         fpKiyPKLwVNV4tgJY2VBQXF5ij0UV1HH84z66BinfnzIxF13VgcMXjLYgHxoTs9ouC70
+         UQYw==
+X-Gm-Message-State: AOAM530TfNRN72SZYl9EDnJcF3KXWx4hVNamDOWsEixL/Ws8vT+x5eMx
+        LG5gMbAjSR0Obp9kfpf4EAcUioXEFXZDypMG2Xv70g==
+X-Google-Smtp-Source: ABdhPJynZ/gSFd6TRD0z5IRxsB8lpPJ+iK3ni4FWpPdpVggGM9VvATV6wqo8FB8tBKwZ3Hl6uM1rQQhtnOj8tjZF56w=
+X-Received: by 2002:a67:ea05:: with SMTP id g5mr10799454vso.47.1611822777582;
+ Thu, 28 Jan 2021 00:32:57 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
+In-Reply-To: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 28 Jan 2021 09:32:47 +0100
+Message-ID: <CAJfpegtDbDzSCgv-D66-5dAA=pDxMGN_aMTVcNPzWNibt2smLw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] parser: add unsigned int parser
+To:     bingjingc <bingjingc@synology.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cccheng@synology.com, robbieko@synology.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE2OjI4ICswODAwLCBDSyBIdSB3cm90ZToNCj4gT24gVGh1
-LCAyMDIxLTAxLTI4IGF0IDE2OjE4ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+ID4gT24g
-VGh1LCBKYW4gMjgsIDIwMjEgYXQgNDoxMCBQTSBZb25ncWlhbmcgTml1DQo+ID4gPHlvbmdxaWFu
-Zy5uaXVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiA+DQo+ID4gPiBPbiBUaHUsIDIwMjEtMDEt
-MjggYXQgMTY6MDcgKzA4MDAsIENLIEh1IHdyb3RlOg0KPiA+ID4gPiBPbiBUaHUsIDIwMjEtMDEt
-MjggYXQgMTU6NTkgKzA4MDAsIFlvbmdxaWFuZyBOaXUgd3JvdGU6DQo+ID4gPiA+ID4gT24gVGh1
-LCAyMDIxLTAxLTI4IGF0IDE1OjQyICswODAwLCBDSyBIdSB3cm90ZToNCj4gPiA+ID4gPiA+IEhp
-LCBIc2luLVlpOg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IE9uIFRodSwgMjAyMS0wMS0yOCBh
-dCAxNToyOCArMDgwMCwgSHNpbi1ZaSBXYW5nIHdyb3RlOg0KPiA+ID4gPiA+ID4gPiBGcm9tOiBZ
-b25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiA+ID4gZm9yIDUgb3IgNiBicGMgcGFuZWwsIHdlIG5lZWQgZW5hYmxlIGRpdGhl
-ciBmdW5jdGlvbg0KPiA+ID4gPiA+ID4gPiB0byBpbXByb3ZlIHRoZSBkaXNwbGF5IHF1YWxpdHkN
-Cj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5p
-dSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPiA+ID4gPiA+IFNpZ25lZC1vZmYt
-Ynk6IEhzaW4tWWkgV2FuZyA8aHNpbnlpQGNocm9taXVtLm9yZz4NCj4gPiA+ID4gPiA+ID4gLS0t
-DQo+ID4gPiA+ID4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29t
-cC5jIHwgNDQgKysrKysrKysrKysrKysrKysrKystDQo+ID4gPiA+ID4gPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgNDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+ID4gPiA+ID4gPg0KPiA+
-ID4gPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
-ZGRwX2NvbXAuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMN
-Cj4gPiA+ID4gPiA+ID4gaW5kZXggODE3M2Y3MDkyNzJiZS4uZTg1NjI1NzA0ZDYxMSAxMDA2NDQN
-Cj4gPiA+ID4gPiA+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRw
-X2NvbXAuYw0KPiA+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X2RybV9kZHBfY29tcC5jDQo+ID4gPiA+ID4gPiA+IEBAIC01Myw3ICs1Myw5IEBADQo+ID4gPiA+
-ID4gPiA+ICAjZGVmaW5lIERJVEhFUl9FTiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJJ
-VCgwKQ0KPiA+ID4gPiA+ID4gPiAgI2RlZmluZSBESVNQX0RJVEhFUl9DRkcgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIDB4MDAyMA0KPiA+ID4gPiA+ID4gPiAgI2RlZmluZSBESVRIRVJf
-UkVMQVlfTU9ERSAgICAgICAgICAgICAgICAgICAgICBCSVQoMCkNCj4gPiA+ID4gPiA+ID4gKyNk
-ZWZpbmUgRElUSEVSX0VOR0lORV9FTiAgICAgICAgICAgICAgICAgICAgICAgQklUKDEpDQo+ID4g
-PiA+ID4gPiA+ICAjZGVmaW5lIERJU1BfRElUSEVSX1NJWkUgICAgICAgICAgICAgICAgICAgICAg
-IDB4MDAzMA0KPiA+ID4gPiA+ID4gPiArI2RlZmluZSBESVRIRVJfUkVHKGlkeCkgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICgweDEwMCArIChpZHgpICogNCkNCj4gPiA+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiA+ID4gICNkZWZpbmUgTFVUXzEwQklUX01BU0sgICAgICAgICAgICAgICAgICAg
-ICAgICAgMHgwM2ZmDQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IEBAIC0zMTMsOCArMzE1
-LDQ4IEBAIHN0YXRpYyB2b2lkIG10a19kaXRoZXJfY29uZmlnKHN0cnVjdCBkZXZpY2UgKmRldiwg
-dW5zaWduZWQgaW50IHcsDQo+ID4gPiA+ID4gPiA+ICB7DQo+ID4gPiA+ID4gPiA+ICAgICAgICAg
-c3RydWN0IG10a19kZHBfY29tcF9kZXYgKnByaXYgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4g
-PiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gKyAgICAgICBib29sIGVuYWJsZSA9IGZhbHNlOw0K
-PiA+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiA+ICsgICAgICAgLyogZGVmYXVsdCB2YWx1ZSBm
-b3IgZGl0aGVyIHJlZyA1IHRvIDE0ICovDQo+ID4gPiA+ID4gPiA+ICsgICAgICAgY29uc3QgdTMy
-IGRpdGhlcl9zZXR0aW5nW10gPSB7DQo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAw
-MDAwMDAwLCAvKiA1ICovDQo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAzMDAy
-LCAvKiA2ICovDQo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiA3
-ICovDQo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiA4ICovDQo+
-ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiA5ICovDQo+ID4gPiA+
-ID4gPiA+ICsgICAgICAgICAgICAgICAweDAwMDAwMDAwLCAvKiAxMCAqLw0KPiA+ID4gPiA+ID4g
-PiArICAgICAgICAgICAgICAgMHgwMDAwMDAwMCwgLyogMTEgKi8NCj4gPiA+ID4gPiA+ID4gKyAg
-ICAgICAgICAgICAgIDB4MDAwMDAwMTEsIC8qIDEyICovDQo+ID4gPiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAweDAwMDAwMDAwLCAvKiAxMyAqLw0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAg
-ICAgMHgwMDAwMDAwMCwgLyogMTQgKi8NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBDb3VsZCB5
-b3UgZXhwbGFpbiB3aGF0IGlzIHRoaXM/DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiB0aGlzIGlzIGRp
-dGhlciA1IHRvIGRpdGhlciAxNCBzZXR0aW5nDQo+ID4gPiA+ID4gdGhpcyB3aWxsIGJlIHVzZWxl
-c3MsIHdlIGp1c3QgbmVlZCBzZXQgZGl0aGVyIDUgYW5kIGRpdGhlciA3IGxpa2UNCj4gPiA+ID4g
-PiBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCAwLCBjb21wLCBESVNQX0RJVEhFUl81KTsNCj4gPiA+
-ID4gPiBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCAwLCBjb21wLCBESVNQX0RJVEhFUl83KTsNCj4g
-PiA+ID4gPiBvdGhlciB2YWx1ZSBpcyBzYW1lIHdpdGggaGFyZHdhcmUgZGVmYXVsdCB2YWx1ZS4N
-Cj4gPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiArICAgICAg
-IH07DQo+ID4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ID4gKyAgICAgICBpZiAoYnBjID09IDUg
-fHwgYnBjID09IDYpIHsNCj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIGVuYWJsZSA9IHRy
-dWU7DQo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0
-LA0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfTFNC
-X0VSUl9TSElGVF9SKE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX1IoTVRLX01BWF9CUEMgLSBi
-cGMpIHwNCj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRElUSEVS
-X05FV19CSVRfTU9ERSwNCj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVRIRVJfUkVHKDE1KSk7DQo+ID4gPiA+
-ID4gPiA+ICsgICAgICAgICAgICAgICBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LA0KPiA+ID4gPiA+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBESVRIRVJfTFNCX0VSUl9TSElGVF9C
-KE1US19NQVhfQlBDIC0gYnBjKSB8DQo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIERJVEhFUl9BRERfTFNISUZUX0IoTVRLX01BWF9CUEMgLSBicGMpIHwNCj4gPiA+
-ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRElUSEVSX0xTQl9FUlJfU0hJ
-RlRfRyhNVEtfTUFYX0JQQyAtIGJwYykgfA0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBESVRIRVJfQUREX0xTSElGVF9HKE1US19NQVhfQlBDIC0gYnBjKSwNCj4g
-PiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBUaGlzIHJlc3VsdCBpbiAweDUwNTA1MDUwLCBidXQgcHJl
-dmlvdXMgdmVyc2lvbiBpcyAweDUwNTA0MDQwLCBzbyB0aGlzDQo+ID4gPiA+ID4gPiB2ZXJzaW9u
-IGlzIGNvcnJlY3QgYW5kIHByZXZpb3VzIHZlcnNpb24gaXMgaW5jb3JyZWN0Pw0KPiA+ID4gPiA+
-DQo+ID4gPiA+ID4gdGhlIG5ldyB2ZXJzaW9uIHNldCByIGcgYiAzIGNoYW5uZWwgc2FtZSwgc2Vh
-bXMgbW9yZSByZWFzb25hYmxlDQo+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4g
-PiBTbyBhbGwgdGhlIHNldHRpbmcgb2YgRElTUF9ESVRIRVJfNSwgRElTUF9ESVRIRVJfNywgRElT
-UF9ESVRIRVJfMTUsDQo+ID4gPiA+IERJU1BfRElUSEVSXzE2IGlzIGlkZW50aWNhbCB0byBtdGtf
-ZGl0aGVyX3NldCgpLCBzbyBjYWxsDQo+ID4gPiA+IG10a19kaXRoZXJfc2V0KCkgaW5zdGVhZCBv
-ZiBkdXBsaWNhdGlvbiBoZXJlLg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IGRpdGhlciBlbmFibGUg
-c2V0IGluIG10a19kaXRoZXJfc2V0IGlzDQo+ID4gPiBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBE
-SVNQX0RJVEhFUklORywgY29tcCwgQ0ZHKTsNCj4gPiA+DQo+ID4gPiB0aGF0IGlzIGRpZmZlcmVu
-dCA4MTgzIGFuZCBtdDgxOTIuDQo+ID4gPiBtdDgxNzMgZGl0aGVyIGVuYWJsZSBpbiBnYW1tYSBp
-cyBiaXQyDQo+ID4gPiBtdDgxODMgYW5kIG10ODE5MiBkaXRoZXIgZW5naW5lIGVuYWJsZSBpcyBi
-aXQgMQ0KPiA+ID4NCj4gPiA+DQo+ID4gDQo+ID4gV2UgY2FuIHN0aWxsIGNhbGwgbXRrX2RpdGhl
-cl9zZXQoKSBmb3IgYnBjIGlzIDUgb3IgNiBoZXJlLCB0aG91Z2ggaXQNCj4gPiB3aWxsIGJlIHNl
-dCB0byBiaXQyLA0KPiA+IGJ1dCBsYXRlciBpbiBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBlbmFi
-bGUgPyBESVRIRVJfRU5HSU5FX0VOIDoNCj4gPiBESVRIRVJfUkVMQVlfTU9ERSwgJnByaXYtPmNt
-ZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl9DRkcpOyBpdA0KPiA+IHdpbGwgYmUgY29y
-cmVjdCBiYWNrIHRvIGJpdCAxLg0KPiA+IA0KPiA+IElzIHRoaXMgcmVhc29uYWJsZT8NCj4gDQo+
-IExvb2tzIHdlaXJkLiBNYXliZSBwYXNzIHNvbWUgaW5mb3JtYXRpb24gaW50byBtdGtfZGl0aGVy
-X3NldCgpIHRvIHNldA0KPiBESVNQX0RJVEhFUklORyBjb3JyZWN0bHkuIA0KPiANCj4gSSBmaW5k
-IG9uZSB0aGluZyBuZWVkIHRvIGJlIGZpeGVkLiBDRkcgc2hvdWxkIGJlIGxvd2VyIGNhc2UuDQoN
-CndlIGNvdWxkIG1vZGlmeSB0aGlzIGxpa2UgdGhpczoNCg0Kdm9pZCBtdGtfZGl0aGVyX3NldChz
-dHJ1Y3QgbXRrX2RkcF9jb21wICpjb21wLCB1bnNpZ25lZCBpbnQgYnBjLA0KCQkgICAgdW5zaWdu
-ZWQgaW50IGNmZywgdTMyIGRpdGhlcl9lbmFibGUsIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9wa3Qp
-DQoNCgkJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgZGl0aGVyX2VuYWJsZSwgY29tcCwgY2ZnKTsN
-Cg0KDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IENLDQo+IA0KPiA+IA0KPiA+ID4gPiBSZWdhcmRzLA0K
-PiA+ID4gPiBDSw0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFJlZ2FyZHMsDQo+ID4gPiA+ID4g
-PiBDSw0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVRIRVJfUkVHKDE2KSk7DQo+ID4g
-PiA+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiA+ICsNCj4g
-PiA+ID4gPiA+ID4gKyAgICAgICBpZiAoZW5hYmxlKSB7DQo+ID4gPiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICB1MzIgaWR4Ow0KPiA+ID4gPiA+ID4gPiArDQo+ID4gPiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICBmb3IgKGlkeCA9IDA7IGlkeCA8IEFSUkFZX1NJWkUoZGl0aGVyX3NldHRpbmcpOyBp
-ZHgrKykNCj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgbXRrX2RkcF93cml0
-ZShjbWRxX3BrdCwgZGl0aGVyX3NldHRpbmdbaWR4XSwgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5y
-ZWdzLA0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IERJVEhFUl9SRUcoaWR4ICsgNSkpOw0KPiA+ID4gPiA+ID4gPiArICAgICAgIH0NCj4gPiA+ID4g
-PiA+ID4gKw0KPiA+ID4gPiA+ID4gPiAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIGgg
-PDwgMTYgfCB3LCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfRElUSEVSX1NJWkUp
-Ow0KPiA+ID4gPiA+ID4gPiAtICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9S
-RUxBWV9NT0RFLCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfRElUSEVSX0NGRyk7
-DQo+ID4gPiA+ID4gPiA+ICsgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIGVuYWJsZSA/
-IERJVEhFUl9FTkdJTkVfRU4gOiBESVRIRVJfUkVMQVlfTU9ERSwgJnByaXYtPmNtZHFfcmVnLCBw
-cml2LT5yZWdzLCBESVNQX0RJVEhFUl9DRkcpOw0KPiA+ID4gPiA+ID4gPiAgfQ0KPiA+ID4gPiA+
-ID4gPg0KPiA+ID4gPiA+ID4gPiAgc3RhdGljIHZvaWQgbXRrX2RpdGhlcl9zdGFydChzdHJ1Y3Qg
-ZGV2aWNlICpkZXYpDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPg0KPiA+ID4g
-PiA+DQo+ID4gPiA+DQo+ID4gPiA+DQo+ID4gPg0KPiANCj4gDQoNCg==
+On Thu, Jan 28, 2021 at 3:21 AM bingjingc <bingjingc@synology.com> wrote:
+>
+> From: BingJing Chang <bingjingc@synology.com>
+>
+> Will be used by fs parsing options
+>
+> Reviewed-by: Robbie Ko<robbieko@synology.com>
+> Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+> Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> ---
+>  fs/isofs/inode.c       | 16 ++--------------
+>  fs/udf/super.c         | 16 ++--------------
+>  include/linux/parser.h |  1 +
+>  lib/parser.c           | 22 ++++++++++++++++++++++
+>  4 files changed, 27 insertions(+), 28 deletions(-)
+>
+> diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
+> index 342ac19..21edc42 100644
+> --- a/fs/isofs/inode.c
+> +++ b/fs/isofs/inode.c
+> @@ -335,18 +335,6 @@ static const match_table_t tokens = {
+>         {Opt_err, NULL}
+>  };
+>
+> -static int isofs_match_uint(substring_t *s, unsigned int *res)
+> -{
+> -       int err = -ENOMEM;
+> -       char *buf = match_strdup(s);
+> -
+> -       if (buf) {
+> -               err = kstrtouint(buf, 10, res);
+> -               kfree(buf);
+> -       }
+> -       return err;
+> -}
 
+I don't see how adding this function and removing it in the same
+series makes any sense.
+
+Why not make this the first patch in the series, simplifying everything?
+
+And while at it the referenced fuse implementation can also be
+converted (as a separate patch).
+
+Thanks,
+Miklos
