@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0108307F69
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677F6307F6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhA1UTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47474 "EHLO mail.kernel.org"
+        id S230523AbhA1UTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:19:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229900AbhA1USr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:18:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F148B64E02;
-        Thu, 28 Jan 2021 20:18:04 +0000 (UTC)
+        id S229854AbhA1USz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 15:18:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF7364E01;
+        Thu, 28 Jan 2021 20:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611865086;
-        bh=4MV8U7BKs4OER2nUzMgvslPs/0iUhgS+km8aEV68Rdg=;
+        s=k20201202; t=1611865094;
+        bh=tf8zGLnljkCRKGs4eAElVNeZDxD9yB+2IhOiwey7nNM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iTkRwqrwkBWprGP4mzn5VQEdEoYBNgHdSQmN3WfqApIz8UVAJydpf4GsCXAWn2AqA
-         YDbnB9el+lTt2QtKAYfm5KBTySdOyNgAiIiq4OtUayYu2lIfUiVid+WYfRKOBC9JSH
-         soh7KlnpxsQibd60gSKEIOpBiHV2etXg5xnwxFe9EgVXvMl3b/2H2sS4eBJfd51Cuk
-         RXa22+o8Nl6aZi1lJ7B7+sZEH3IgWCaDkU066mwJFuxLHOJcqQY+PodEw0Qg7y8Wdh
-         czVnkkXyU9F55uHOeuNO0RGTjheP6+H2gRJcP/NCVXoPQyoXHooVcYNJH/D1BNcZb8
-         qzCX2WqoUaLeA==
-Date:   Thu, 28 Jan 2021 20:18:01 +0000
-From:   Will Deacon <will@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     mathieu.poirier@linaro.org, leo.yan@linaro.org, acme@kernel.org,
-        mark.rutland@arm.com, jolsa@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        james.clark@arm.com, linuxarm@openeuler.org,
-        nakamura.shun@fujitsu.com
-Subject: Re: [PATCH v2 0/4] perf vendor events arm64: Some tidy-up/refactoring
-Message-ID: <20210128201801.GC3016@willie-the-truck>
-References: <1611835236-34696-1-git-send-email-john.garry@huawei.com>
+        b=QJdCJ/F0rR9XucpltdUINHRLSbmiX5iqPf5dbBdx4vw1aiAv7ipxMWIzsESeuO27U
+         JRqrO5tXHH7SFFbVZo0HoVNLgTmdu+7IrdLOouRFyZuRY6d0O0mbJOXun32KAeh9Io
+         9PiPeCZ5inPVFcYX0uRDXXVgRpx+l3S76UMLIYhKZQZd14xS9MEsF+jfJfpod/EdAB
+         XPEB7EknNm7DkDHbL9Za8/TbbW8pzijNUOtdt0vG/wRlZhioDugX6iiOiGdjBtNr0V
+         Emg8XoYwJvELE/+gfJERLbULX2UU49XuejAxboXIrhRfa2uDBZXrQ4rY/kdZhxoZMV
+         IDffJwTrtbi3w==
+Date:   Thu, 28 Jan 2021 12:18:12 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc:     herbert@gondor.apana.org.au, Jarkko Sakkinen <jarkko@kernel.org>,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com,
+        linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+        simo@redhat.com
+Subject: Re: [PATCH v2 6/7] fs: use HKDF implementation from kernel crypto API
+Message-ID: <YBMcBPXrKswTyiMC@sol.localdomain>
+References: <1772794.tdWV9SEqCh@positron.chronox.de>
+ <3577027.kQq0lBPeGt@positron.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1611835236-34696-1-git-send-email-john.garry@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3577027.kQq0lBPeGt@positron.chronox.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 08:00:32PM +0800, John Garry wrote:
-> There is much event duplication in the common and uarch events for A76
-> and Ampere eMag support, so factor out into a common JSON.
-> 
-> Since the wording for events may differ between CPU datasheet and
-> the architecture reference manual, the current wording is kept. This
-> is unless there are minor differences. In addition, event names are
-> renamed to be same as architecture reference manual, to keep commonality.
-> 
-> Also a minor fix is included for the Ampere eMag JSON.
-> 
-> Differences to v1:
-> - tidy some ',' misplaced
-> 
-> John Garry (4):
->   perf vendor events arm64: Fix Ampere eMag event typo
->   perf vendor events arm64: Add common and uarch event JSON
->   perf vendor events arm64: Reference common and uarch events for Ampere
->     eMag
->   perf vendor events arm64: Reference common and uarch events for A76
+On Sun, Jan 24, 2021 at 03:04:31PM +0100, Stephan Müller wrote:
+> @@ -74,16 +57,14 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+>  		return PTR_ERR(hmac_tfm);
+>  	}
+>  
+> -	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != sizeof(prk))) {
+> +	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != HKDF_HASHLEN)) {
+>  		err = -EINVAL;
+>  		goto err_free_tfm;
+>  	}
+>  
+> -	err = hkdf_extract(hmac_tfm, master_key, master_key_size, prk);
+> -	if (err)
+> -		goto err_free_tfm;
+> -
+> -	err = crypto_shash_setkey(hmac_tfm, prk, sizeof(prk));
+> +	/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
+> +	err = crypto_hkdf_extract(hmac_tfm, NULL, 0,
+> +				  master_key, master_key_size);
+>  	if (err)
+>  		goto err_free_tfm;
+>  
+> @@ -93,7 +74,6 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
+>  err_free_tfm:
+>  	crypto_free_shash(hmac_tfm);
+>  out:
+> -	memzero_explicit(prk, sizeof(prk));
+>  	return err;
+>  }
 
-For the series:
+The 'out' label isn't needed anymore.  'goto out' should be replaced with
+'return 0'.
 
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+- Eric
