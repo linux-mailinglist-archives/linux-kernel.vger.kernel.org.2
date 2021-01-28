@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E061B307475
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 682C7307478
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhA1LJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:09:06 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:37357 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231202AbhA1LJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:09:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611832118; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7S5azOzwX8e049MI5M6Veu02TXu2AvF+W2vCd/OZNWw=;
- b=j0WwNGovY43otpZHyNRgHrKNaYI9vwtCLjBN+ZC9iz/CNFQK25DmUzT0U+yg11kAHRLqb22a
- 8DVdDCpl3LXt78SC3t3NIIjod8Zy5D92XTZ0nHrXw73KfD83nj+nmAJmFNBYY8RMLdAeTbtO
- JGMKmq85wwKl4UMiDYEwy1rV0PQ=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60129b1583b274b0af07cef7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 11:08:05
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EE464C43463; Thu, 28 Jan 2021 11:08:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27706C433CA;
-        Thu, 28 Jan 2021 11:08:04 +0000 (UTC)
+        id S229728AbhA1LKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:10:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2442 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229594AbhA1LJ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:09:59 -0500
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DRHhN5xclz67hBF;
+        Thu, 28 Jan 2021 19:05:56 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 28 Jan 2021 12:09:17 +0100
+Received: from localhost (10.47.74.140) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 28 Jan
+ 2021 11:09:17 +0000
+Date:   Thu, 28 Jan 2021 11:08:33 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Linuxarm]  Re: [PATCH v3 00/12] add IRQF_NO_AUTOEN for
+ request_irq
+Message-ID: <20210128110833.00000c43@Huawei.com>
+In-Reply-To: <YBHC6SzXAOSNoQnI@google.com>
+References: <20210107223926.35284-1-song.bao.hua@hisilicon.com>
+        <848fb07c3073401bbbe15db71f5922c9@hisilicon.com>
+        <YBFvYStmGeChUJlO@kroah.com>
+        <YBHC6SzXAOSNoQnI@google.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Jan 2021 16:38:04 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] watchdog: qcom: Remove incorrect usage of
- QCOM_WDT_ENABLE_IRQ
-In-Reply-To: <20210128081924.GA30289@trex>
-References: <20210126150241.10009-1-saiprakash.ranjan@codeaurora.org>
- <20210128081924.GA30289@trex>
-Message-ID: <72cdf644c431b7b605f9d15a4a7fb7b8@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.47.74.140]
+X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28 13:49, Jorge Ramirez-Ortiz, Foundries wrote:
-> On 26/01/21, Sai Prakash Ranjan wrote:
->> As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
->> of watchdog control register is wakeup interrupt enable bit and
->> not related to bark interrupt at all, BIT(0) is used for that.
->> So remove incorrect usage of this bit when supporting bark irq for
->> pre-timeout notification. Currently with this bit set and bark
->> interrupt specified, pre-timeout notification and/or watchdog
->> reset/bite does not occur.
->> 
->> Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the 
->> bark irq is available")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->> 
->> Reading the conversations from when qcom pre-timeout support was
->> added [1], Bjorn already had mentioned it was not right to touch this
->> bit, not sure which SoC the pre-timeout was tested on at that time,
->> but I have tested this on SDM845, SM8150, SC7180 and watchdog bark
->> and bite does not occur with enabling this bit with the bark irq
->> specified in DT.
+On Wed, 27 Jan 2021 11:45:45 -0800
+"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com> wrote:
+
+> On Wed, Jan 27, 2021 at 02:49:21PM +0100, gregkh@linuxfoundation.org wrote:
+> > On Thu, Jan 21, 2021 at 09:38:28PM +0000, Song Bao Hua (Barry Song) wrote:  
+> > > Hi Thomas, Greg, Dmitry, Marc,
+> > > Any further comment on this new API?   
+> > 
+> > It's not my subsystem, I'll let the irq maintainers handle it :)  
 > 
-> this was tested on QCS404. have you validated there? unfortunately I
-> no longer have access to that hardware or the documentation
+> Not my subsystem either, but I would like to have this feature
+> available. I do not like calling irq_set_status_flags() before
+> request_irq() as at that time we are not ensured of irq ownership, and
+> using disable_irq() afterwards is indeed awkward.
 > 
 
-I didn't validate on qcs404 yet since I didn't have access to it.
-But now that you mention it, let me arrange for a setup and test it
-there as well. Note: I did not see bark irq entry in upstream qcs404
-dtsi, so you must have had some local change when you tested?
+Likewise, keen on having this available.
 
-Thanks,
-Sai
+Jonathan
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+> Thanks.
+> 
+
