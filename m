@@ -2,228 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B913068CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFDD3068CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhA1ArV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:47:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        id S231296AbhA1Asx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbhA1Aq5 (ORCPT
+        with ESMTP id S231177AbhA1Asm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:46:57 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715ACC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:46:16 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id u27so1402927uaa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:46:16 -0800 (PST)
+        Wed, 27 Jan 2021 19:48:42 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDB3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:48:02 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id u7so3845413iol.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:48:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VYCvTwZJOS57yUVnxbUMBR/ZIyqJvL3EdTrVvMpFbLk=;
-        b=Joshxx+/UN08Fz/VhlZjoQZ3rW/0jAS6jOzE308XrIuaxjAGCuLnnSzC3c84ol+PgH
-         KVdgT7XRiCLCn2/ZMnW4rC/FBZgkIjhJsl+byYiXmzxGbI59MV/+9yHqhcoKLqCc4s8N
-         P9T/qplfRzID6kBC6+Rl0wu/pf5f2AiEcJwwg=
+        bh=nqhWuPJQWzxcYd51zOTBBe32ajnLh+ur9OS99sopons=;
+        b=sFkN5dQvyK6yJYdEfBoJcRZzCVAr1MiZyViMHcaSUMRI6ow86O+L29R7KPwHQsi2QP
+         St9izOKpm8nyZmLbh2W2ea1B2vNK0DmE7nmJPs6S9M3NxO4bA8U7IRoMws82A9IA+Xha
+         J34F7FUNPaB3Xt0IFfCPc/JEsEm6j9C3wE6Uw3L8u6BZ4DVpGiOBSbRqLvQvYA5cRc+C
+         Ce3O4auwngGU6jEJttPduHN9mvIb3fxpd+xfD+e59kb22sw2hvD/mQHEEjCVsI/jz4vQ
+         4TnUucD4F/aBygGXgRMtKTPgBlSzya+Z/Wtp7x46ajWBm9twUjFNx13HFV6WiRNxFojL
+         vyFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VYCvTwZJOS57yUVnxbUMBR/ZIyqJvL3EdTrVvMpFbLk=;
-        b=LOGHsRajiKH2oFcmra8EW70sxqGdM0uE+CV5vhLoH/Rusi+34PJ7NUyy5YT0z7EQph
-         k5CERUs66pe+JNX1PL5nOJbwWVBNZVBd2gSzzHGKSUKzbwcrVOM9vbthqNPKXGuTp+l6
-         pm6mHA7meodTNeA21HjIsMBqWJHZmQc+G9VA76MPfbL16CE5xo8JOaBkXUrNOwnr8TUA
-         CIrj7OTHAgUvWL+9ZlkQSnWx8liWzkjEkvPHx6MTEv0fDB7xXPXFoRgBlxKLduOjpKTl
-         xec3G25EAwgd+Q34a81LiVP2bl4sn5sBr5VBAJ6cTfBryPTPIiZiy2GXtfb2O7aGyhLR
-         af7Q==
-X-Gm-Message-State: AOAM53126ZBmGpF7jKJHrbMWs+oaTuJjDAdRy8Lg26YHha2px505D5Um
-        pJlDvdiXoPVFSFKMFgQeOcG9dzm4Gpb4DEGVSj9j6w==
-X-Google-Smtp-Source: ABdhPJzuDZxh+qw/MvtjGYzB6+oogsiyhUApdtCsLfVil7mXOTri3nULuLziCbS7F51cuR8bn2X4VcCJbwbnM/xaW00=
-X-Received: by 2002:ab0:3043:: with SMTP id x3mr10083307ual.88.1611794775533;
- Wed, 27 Jan 2021 16:46:15 -0800 (PST)
+        bh=nqhWuPJQWzxcYd51zOTBBe32ajnLh+ur9OS99sopons=;
+        b=kXhnw0GyCVH/LeDrB4xsF+68sxNZs3uxONgaw5q8f0d6wUuggpozXotCw3tAfnArps
+         YK2EngX6rmKyfK9N+VgLOS0t5A7qkUrZmQqAkmkXNScMXOKU+apxkdVJNRnw3MXzUGwl
+         Bbnl1WauhSYnNOalc83hljfq/2jWr+sWya/rNHZ6Fpftl+GFbBmFspXzNJIUsLPhjbAc
+         7SSsm+BWu9FCXgj5ser5aqc/p1MzdIEp+XN1kpe28CRNV2c07ll5nYiRN2kUQrftp5Qh
+         URyQq7LY8dTLRu8okQiijnZ2LJgBAcT09R4Ab/fpeXi5pj2XpgGw6+Wtcb1RNdvO/cTT
+         3Ctw==
+X-Gm-Message-State: AOAM530CnWVov6c+eo3wmKBE23q0tiW08x0yCrCHWIXe4yzc3aDr4KOt
+        2AqchwvNdYBLpRQBaqbCt085PqrurnHXno2U1q8=
+X-Google-Smtp-Source: ABdhPJxtZMc3G20lQKXkp9oNrQpfNPo285rwLEOWBEkrxL+XMTBOnCDrMr4P98gwhooUW9UVrxJMwd1qCarEDkLVq1Y=
+X-Received: by 2002:a05:6602:122b:: with SMTP id z11mr9458563iot.210.1611794881571;
+ Wed, 27 Jan 2021 16:48:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid>
- <20210126233840.GG4626@dread.disaster.area>
-In-Reply-To: <20210126233840.GG4626@dread.disaster.area>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Thu, 28 Jan 2021 08:46:04 +0800
-Message-ID: <CANMq1KBcs+S02T=76V6YMwTprUx6ucTK8d+ZKG2VmekbXPBZnA@mail.gmail.com>
-Subject: Re: [PATCH] fs: generic_copy_file_checks: Do not adjust count based
- on file size
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J . Wong" <djwong@kernel.org>,
-        Luis Lozano <llozano@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
+ <20210126171141.122639-4-paul.gortmaker@windriver.com> <YBCGqfW0hKSgo9Rl@smile.fi.intel.com>
+ <20210127080206.GE23530@windriver.com>
+In-Reply-To: <20210127080206.GE23530@windriver.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Wed, 27 Jan 2021 16:47:50 -0800
+Message-ID: <CAAH8bW-tWRJ4m3pP37YBVrferOa9CwMZGdZkSDC+GXvBfC=Uhw@mail.gmail.com>
+Subject: Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lizefan@huawei.com, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, josh@joshtriplett.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, fweisbec@gmail.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 7:38 AM Dave Chinner <david@fromorbit.com> wrote:
+On Wed, Jan 27, 2021 at 12:02 AM Paul Gortmaker
+<paul.gortmaker@windriver.com> wrote:
 >
-> On Tue, Jan 26, 2021 at 01:50:22PM +0800, Nicolas Boichat wrote:
-> > copy_file_range (which calls generic_copy_file_checks) uses the
-> > inode file size to adjust the copy count parameter. This breaks
-> > with special filesystems like procfs/sysfs, where the file size
-> > appears to be zero, but content is actually returned when a read
-> > operation is performed.
+> [Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct] On 26/01/2021 (Tue 23:16) Andy Shevchenko wrote:
+>
+> > On Tue, Jan 26, 2021 at 12:11:36PM -0500, Paul Gortmaker wrote:
+> > > This will reduce parameter passing and enable using nbits as part
+> > > of future dynamic region parameter parsing.
 > >
-> > This commit ignores the source file size, and makes copy_file_range
-> > match the end of file behaviour documented in POSIX's "read",
-> > where 0 is returned to mark EOF. This would allow "cp" and other
-> > standard tools to make use of copy_file_range with the exact same
-> > behaviour as they had in the past.
+> > One nit below, nevertheless
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > >
-> > Fixes: 96e6e8f4a68d ("vfs: add missing checks to copy_file_range")
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
->
-> Nack.
-
-Thanks Dave and Al for the detailed explanations.
-
->
-> As I've explained, this is intentional and bypassing it is not a
-> work around for enabling cfr on filesystems that produce ephemeral,
-> volatile read-once data using seq-file pipes that masquerade as
-> regular files with zero size. These files are behaving like pipes
-> and only work because the VFS has to support read() and friends from
-> pipes that don't publish the amount of data they contain to the VFS
-> inode.
->
-> copy_file_range() does not support such behaviour.
->
-> copy_file_range() -writes- data, so we have to check that those
-> writes do not extend past boundaries that the destination inode
-> imposes on the operation. e.g. maximum offset limits, whether the
-> ranges overlap in the same file, etc.
->
-> Hence we need to know how much data there is present to copy before
-> we can check if it is safe to perform the -write- of the data we are
-> going to read. Hence we cannot safely support data sources that
-> cannot tell us how much data is present before we start the copy
-> operation.
->
-> IOWs, these source file EOF restrictions are required by the write
-> side of copy_file_range(), not the read side.
->
-> > ---
-> > This can be reproduced with this simple test case:
-> >  #define _GNU_SOURCE
-> >  #include <fcntl.h>
-> >  #include <stdio.h>
-> >  #include <stdlib.h>
-> >  #include <sys/stat.h>
-> >  #include <unistd.h>
+> > > Cc: Yury Norov <yury.norov@gmail.com>
+> > > Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Suggested-by: Yury Norov <yury.norov@gmail.com>
+> > > Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> > > ---
+> > >  lib/bitmap.c | 19 ++++++++++---------
+> > >  1 file changed, 10 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/lib/bitmap.c b/lib/bitmap.c
+> > > index 75006c4036e9..162e2850c622 100644
+> > > --- a/lib/bitmap.c
+> > > +++ b/lib/bitmap.c
+> > > @@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+> > >
+> > >  /*
+> > >   * Region 9-38:4/10 describes the following bitmap structure:
+> > > - * 0          9  12    18                  38
+> > > - * .........****......****......****......
+> > > - *     ^  ^     ^                   ^
+> > > - *      start  off   group_len            end
+> > > + * 0          9  12    18                  38           N
+> > > + * .........****......****......****..................
+> > > + *     ^  ^     ^                   ^           ^
+> > > + *      start  off   group_len            end       nbits
+> > >   */
+> > >  struct region {
+> > >     unsigned int start;
+> > >     unsigned int off;
+> > >     unsigned int group_len;
+> > >     unsigned int end;
+> > > +   unsigned int nbits;
+> > >  };
+> > >
+> > > -static int bitmap_set_region(const struct region *r,
+> > > -                           unsigned long *bitmap, int nbits)
+> > > +static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
+> > >  {
+> > >     unsigned int start;
+> > >
+> > > -   if (r->end >= nbits)
+> > > +   if (r->end >= r->nbits)
+> > >             return -ERANGE;
+> > >
+> > >     for (start = r->start; start <= r->end; start += r->group_len)
+> > > @@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+> > >     struct region r;
+> > >     long ret;
+> > >
+> > > -   bitmap_zero(maskp, nmaskbits);
+> > > +   r.nbits = nmaskbits;
 > >
-> >  int
-> >  main(int argc, char **argv)
-> >  {
-> >    int fd_in, fd_out;
-> >    loff_t ret;
+> > > +   bitmap_zero(maskp, r.nbits);
 > >
-> >    fd_in = open("/proc/version", O_RDONLY);
-> >    fd_out = open("version", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-> >
-> >    do {
-> >      ret = copy_file_range(fd_in, NULL, fd_out, NULL, 1024, 0);
-> >      printf("%d bytes copied\n", (int)ret);
-> >    } while (ret > 0);
-> >
-> >    return 0;
-> >  }
-> >
-> > Without this patch, `version` output file is empty, and no bytes
-> > are copied:
-> > 0 bytes copied
+> > This sounds not right from style perspective.
+> > You have completely uninitialized r on stack, then you assign only one value
+> > for immediate use here and...
 >
-> $ ls -l /proc/version
-> -r--r--r-- 1 root root 0 Jan 20 17:25 /proc/version
-> $
+> So, this change was added because Yury suggested that I "..store
+> nmaskbits in the struct region, and avoid passing nmaskbits as a
+> parameter."
 >
-> It's a zero length file.
->
-> sysfs does this just fine - it's regular files have a size of
-> at least PAGE_SIZE rather than zero, and so copy_file_range works
-> just fine on them:
->
-> $ ls -l /sys/block/nvme0n1/capability
-> -r--r--r-- 1 root root 4096 Jan 27 08:41 /sys/block/nvme0n1/capability
-> $ cat /sys/block/nvme0n1/capability
-> 50
-> $ xfs_io -f -c "copy_range -s 0 -d 0 -l 4096 /sys/block/nvme0n1/capability" /tmp/foo
-> $ sudo cat /tmp/foo
-> 50
->
-> And the behaviour is exactly as you'd expect a read() loop to copy
-> the file to behave:
->
-> openat(AT_FDCWD, "/tmp/foo", O_RDWR|O_CREAT, 0600) = 3
-> ....
-> openat(AT_FDCWD, "/sys/block/nvme0n1/capability", O_RDONLY) = 4
-> copy_file_range(4, [0], 3, [0], 4096, 0) = 3
-> copy_file_range(4, [3], 3, [3], 4093, 0) = 0
-> close(4)
->
-> See? Inode size of 4096 means there's a maximum of 4kB of data that
-> can be read from this file.  copy_file_range() now behaves exactly
-> as read() would, returning a short copy and then 0 bytes to indicate
-> EOF.
+> To which I originally noted "I considered that and went with the param
+> so as to not open the door to someone possibly using an uninitialized
+> struct value later."
 
-Unless the content happens to be larger than PAGE_SIZE, then
-copy_file_range would only copy the beginning of the file. And as Al
-explained, this will still break in case of short writes.
+struct region is purely internal structure. It's declared on stack and filled
+field-by-field using helpers. 'Someone' misusing the structure doesn't exist
+because the structure doesn't exist out of the scope.
 
+> https://lore.kernel.org/lkml/20210122044357.GS16838@windriver.com/
 >
-> If you want ephemeral data pipes masquerading as regular files to
-> work with copy_file_range, then the filesystem implementation needs
-> to provide the VFS with a data size that indicates the maximum
-> amount of data that the pipe can produce in a continuous read loop.
-> Otherwise we cannot validate the range of the write we may be asked
-> to perform...
+> Looking back, I had a similar thought as to yours, it seems...
 >
-> > Under the hood, Go 1.15 uses `copy_file_range` syscall to optimize the
-> > copy operation. However, that fails to copy any content when the input
-> > file is from sysfs/tracefs, with an apparent size of 0 (but there is
-> > still content when you `cat` it, of course).
+> I am also thinking more and more that nbits doesn't belong in the
+> region anyway - yes, a region gets validated against a specific nbits
+> eventually, but it doesn't need an nbits field to be a complete
+> specification.  The region "0-3" is a complete specification for "the
+> 1st four cores" and is as valid on a 4 core machine as it is on a 64 core
+> machine -- a validation we do when we deploy the region on that machine.
 >
-> Libraries using copy_file_range() must be prepared for it to fail
-> and fall back to normal copy mechanisms.
+> I will set this change aside and get the nbits value to getnum() another
+> way, and leave the region struct as it was -- without a nbits field.
+>
+> This will also resolve having the macro handling of region that you were
+> not really liking.
+>
+> Paul.
 
-How is userspace suppose to detect that? (checking for 0 file size
-won't work with the example above)
+Region is a convenient structure. Adding nbits into it helps to remove
+validation
+logic from bitmap_set_region(), so it's worth doing this.
 
-> Of course, with these
-> special zero length files that contain ephemeral data, userspace can't
-> actually tell that they contain data from userspace using stat(). So
-> as far as userspace is concerned, copy_file_range() correctly
-> returned zero bytes copied from a zero byte long file and there's
-> nothing more to do.
->
-> This zero length file behaviour is, fundamentally, a kernel
-> filesystem implementation bug, not a copy_file_range() bug.
-
-Okay, so, based on this and Al's reply, I see 2 things we can do:
- 1. Go should probably not use copy_file_range in a common library
-function, as I don't see any easy way to detect this scenario
-currently (detect 0 size? sure, but that won't work with the example
-you provide above). And the man page should document this behaviour
-more explicitly to prevent further incorrect usage.
- 2. Can procfs/sysfs/debugfs and friends explicitly prevent usage of
-copy_file_range? (based on Al's reply, there seems to be no way to
-implement it correctly as seeking in such files will not work in case
-of short writes)
+Can you please have it unchanged?
 
 Thanks,
-
->
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+Yury
