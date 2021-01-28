@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF6C30780A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A22307815
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhA1O3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:29:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
+        id S231168AbhA1Oaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:30:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231159AbhA1O26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:28:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E8A464DDF;
-        Thu, 28 Jan 2021 14:28:17 +0000 (UTC)
+        id S231563AbhA1OaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:30:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AB4764DE1;
+        Thu, 28 Jan 2021 14:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611844097;
-        bh=g+svnb872V2gEjrQRAURCdMhmMC6P1ol879JHGB4ztA=;
+        s=k20201202; t=1611844169;
+        bh=KBjN8q3mMJRlZhvQryfNCm4f61GPKpVCwN7pH9ADCTU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vN44u2RVR6z3VYYZVmETECBL9mFFYHCPI66S1E6Fx7OaPfcP+k8+mIs3ofK9ArU5O
-         Lnrm8zUEWm+iDJadxDTrLMc57zKbhkju+ztz1+sCjI14lonOE8Hb/XmCfftMFffSge
-         TcfoBIlLhORP8UQSuOwM/1e63MOcvkWUfXpnhAjqOjI/S0kUEXWCkCdoBKzRlXCgAa
-         5kwmKuhpyKTgJE11VQOznqRNNDAVViKMHXVk7khF+3/24ZQmrvblJtprHyF/Vr0ECS
-         +T2Fhm67x6nB0ejgBze5G77sgEDPaSLeV1tSTlEXo/59z0AvwgV9xVb8W9wh96u0QZ
-         htnvnRenHajiw==
-Received: by mail-oi1-f179.google.com with SMTP id k25so6148114oik.13;
-        Thu, 28 Jan 2021 06:28:17 -0800 (PST)
-X-Gm-Message-State: AOAM530gDYYX47X8hvX6bSYvBwRdw+s0X1DUrH0hn+8ClTGkMaFuO4Uw
-        NSlgxf2+h0kv52mNBbZU4WfklGsYd9aS8Pych9I=
-X-Google-Smtp-Source: ABdhPJzvR965chipjx26jhgmeWtunUplGEZ9LYudt2xG6T6psgopbevW0CweYJAmTen4xv/AOVDG+rkdGPAwQdSS/Zc=
-X-Received: by 2002:aca:d908:: with SMTP id q8mr137434oig.67.1611844096571;
- Thu, 28 Jan 2021 06:28:16 -0800 (PST)
+        b=uKvkO3BhkTD4e3twptTdvfucYn/gg1Eq3X0d74Ssnoy8K3sz5T0Qn55Cqa5O01rCX
+         lca4aua3exXDpXxMvSuyaJWvUgpXlZV3T03tm7jP6/yn5L+oIulmidg0RBsYy6kheV
+         DXAa7uECMlzAjeiSoozTbcttuC7YZE4dnUjwrEvqnCKv1N83hmWuqLFAnWxNjloSWe
+         gYttDKbcVvyW6tye1TF6JejXhsHxAr2T3/CHBT8fUMh32gn0wI+m0N2ZX0xXRyxZk2
+         sPd5iqtCKMIN0Ot5gMOiYtDfRHwM5EbQt8jwuXiFbFwS0b1p3Vwm63XKRLWiQmg4xp
+         EJVY9WvDVk12w==
+Received: by mail-oo1-f42.google.com with SMTP id n127so1444305ooa.13;
+        Thu, 28 Jan 2021 06:29:29 -0800 (PST)
+X-Gm-Message-State: AOAM532ZgZcs5W4sSz5AJb3asI8vZYWdqvilXbhKNN2UE1V9/L3gxbUR
+        admRTk83738PQwFB3oj0EDIqRm1znFV4PKRC3n4=
+X-Google-Smtp-Source: ABdhPJyE7pTmoGSVWTeD0pXYBDZ0WFZf158irr7xUNd6Z1QRS7e2GGFcwq87tnobHzsruRxDsYVrcHKFSvxe9Ys1CbQ=
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr11511239ooj.15.1611844168744;
+ Thu, 28 Jan 2021 06:29:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20210116032740.873-1-thunder.leizhen@huawei.com> <20210116032740.873-3-thunder.leizhen@huawei.com>
-In-Reply-To: <20210116032740.873-3-thunder.leizhen@huawei.com>
+References: <20210116032740.873-1-thunder.leizhen@huawei.com> <20210116032740.873-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20210116032740.873-2-thunder.leizhen@huawei.com>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 28 Jan 2021 15:28:00 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1biznW80EjZLK-LKDVgs0iZ6oiqXOjgU_rctcxRWj1qA@mail.gmail.com>
-Message-ID: <CAK8P3a1biznW80EjZLK-LKDVgs0iZ6oiqXOjgU_rctcxRWj1qA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] ARM: hisi: add support for Kunpeng50x SoC
+Date:   Thu, 28 Jan 2021 15:29:12 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a09ypz4HjJUofFaV2NZd_3=0woC6es6w+E1_cvE=9K4UQ@mail.gmail.com>
+Message-ID: <CAK8P3a09ypz4HjJUofFaV2NZd_3=0woC6es6w+E1_cvE=9K4UQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] ARM: LPAE: Use phys_addr_t instead of unsigned
+ long in outercache hooks
 To:     Zhen Lei <thunder.leizhen@huawei.com>
 Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -54,38 +55,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 4:32 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+On Sat, Jan 16, 2021 at 4:27 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 >
-> Enable support for the Hisilicon Kunpeng506 and Kunpeng509 SoC.
+> The outercache of some Hisilicon SOCs support physical addresses wider
+> than 32-bits. The unsigned long datatype is not sufficient for mapping
+> physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
+> use phys_addr_t instead of unsigned long in outercache functions") has
+> already modified the outercache functions. But the parameters of the
+> outercache hooks are not changed. This patch use phys_addr_t instead of
+> unsigned long in outercache hooks: inv_range, clean_range, flush_range.
+>
+> To ensure the outercache that does not support LPAE works properly, do
+> cast phys_addr_t to unsigned long by adding a group of temporary
+> variables. For example:
+> -static void l2c220_inv_range(unsigned long start, unsigned long end)
+> +static void l2c220_inv_range(phys_addr_t pa_start, phys_addr_t pa_end)
+>  {
+> +       unsigned long start = pa_start;
+> +       unsigned long end = pa_end;
+>
+> Note that the outercache functions have been doing this cast before this
+> patch. So now, the cast is just moved into the outercache hook functions.
+>
+> No functional change.
 >
 > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  arch/arm/mach-hisi/Kconfig | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/arch/arm/mach-hisi/Kconfig b/arch/arm/mach-hisi/Kconfig
-> index 2e980f834a6aa1b..c724acc5c642b97 100644
-> --- a/arch/arm/mach-hisi/Kconfig
-> +++ b/arch/arm/mach-hisi/Kconfig
-> @@ -55,6 +55,14 @@ config ARCH_HIX5HD2
->         help
->           Support for Hisilicon HIX5HD2 SoC family
->
-> +config ARCH_KUNPENG50X
-> +       bool "Hisilicon Kunpeng50x family"
-> +       depends on ARCH_MULTI_V7
-> +       select ARCH_FLATMEM_ENABLE
-> +       select ARCH_HAS_HOLES_MEMORYMODEL if SPARSEMEM
 
-I think the two 'select' statements are both wrong, though for
-different reasons:
-
-- ARCH_FLATMEM_ENABLE is already selected by ARCH_MULTIPLATFORM,
-  and is something that should not be platform specific
-
-- ARCH_HAS_HOLES_MEMORYMODEL was removed in v5.11,
-  and should also not be selected by a platform.
-
-Otherwise, this seems fine.
-
-         Arnd
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
