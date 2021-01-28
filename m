@@ -2,176 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA935306FB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF03306FD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhA1HiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:38:06 -0500
-Received: from mail-vi1eur05on2105.outbound.protection.outlook.com ([40.107.21.105]:40800
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232014AbhA1HhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:37:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z3/X2hBQm+4bcjQikWuvR1vgaS7sj60fH9AIr6ApYSF91FV3Vaihl2D6/lJn+0ymwVnAYAd5YAai9vKqIokcT0G/vTH6ybrMwPSXvFyB7dxLyP8yUNrEc/qgWofKJizz7GnVGVUgCwvjAYBxw4FTNUU7vvrXTXl1BOTg8+GKMyv/tk2WQgzuC1nOInGKXJDXI/6Q8FQuxMNtV48ykR2w8+YsjbQZgTEvaWwi4SSdgjLyBNI5LaA1wdH6Gso4C7SmU0veAwGhYETW4f6yU52ejRzukEBDq436Q6EKrGVVFkuhA+vF/Mx23Mc0X9vwKZmvDL8yyKWm88gPxIZn3w/e7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iL13ODPs4W+ymXpahJMDU2VwtYyuHAJswRQqzrpX/KI=;
- b=QOyLuzlUMMIYkwh/QuPheu2MEvU9d5R84cym+RIvCevhnPQqQYsn6jWh2mgtzMEgp9eslYwh9PVb7uOjpyd/PvSw+AAWpfEEdnjZJJdU2Qyhz58e7D2zmjs/0wT73JJk1FEkhGS/tXPGZnSkbRk9MSmYGO9j8OgTdDW5NA3uUHR53AoTveYAL51QaFmqFrAQM0Gx+ltrUCImA4ZFmnCqOxaEZFoO7GY8H7DFDe4NOoUs8hfmjR1FfWCXAQuyroytT6bPCVbpmgoDrnL0jlqmOao9RM4Kb64OmK0FnndCOpFf1VLZXac//9ljkjniS+xcvmWCC7mzb+BbsOCjbKRrSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iL13ODPs4W+ymXpahJMDU2VwtYyuHAJswRQqzrpX/KI=;
- b=v5oVmlAgipzGCMhupYVQxZ1SKeJXWscmRMHD/q11DkfUdut2wS1p6reeKYGLiPfbw4qK8EAVZbghMupfhDEsy801KeKPhyR8rcB4o6SQTuQYpE/Roqx3r4FiaBBflYw5cKOiAXVQT6P7y5ulp8X1+7coegwU6gsRT5YBEO7KvpQ=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nokia.com;
-Received: from (2603:10a6:208:6e::15) by
- AM8PR07MB7393.eurprd07.prod.outlook.com (2603:10a6:20b:246::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.7; Thu, 28 Jan
- 2021 07:36:27 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3825.008; Thu, 28 Jan 2021
- 07:36:27 +0000
-Subject: Re: [PATCH 1/2] qspinlock: Ensure writes are pushed out of core write
- buffer
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210127200109.16412-1-alexander.sverdlin@nokia.com>
- <20210127222158.GB848@willie-the-truck>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <c932770e-8a19-ab32-7b4e-33fc36981b77@nokia.com>
-Date:   Thu, 28 Jan 2021 08:36:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20210127222158.GB848@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.168]
-X-ClientProxiedBy: AM0PR04CA0055.eurprd04.prod.outlook.com
- (2603:10a6:208:1::32) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+        id S231491AbhA1Hks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:40:48 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:18000 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232080AbhA1HkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:40:14 -0500
+X-UUID: 5ab0d80cf6a1473d88016470d4d4767f-20210128
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5Sfop1PtYGQUduRyL0SKK4UxMHpv4G8/L7ZQ91LlTok=;
+        b=YdrKKkQ4E8A0QUr7Q/gR/rA/wT9E2fYe9jmo8ofz1/64vV0rE3Iomv3EuA1mMJVvBPlIjq1CAK/5p0nPLA/NwG8io2mMC3ropOhcUnjgD1Fv8co5Z+ayjOpmZ2ZE90kE9YDc0GC/P04C/4A7tSyven+eg8c5tVnKGxbZT7hcWu8=;
+X-UUID: 5ab0d80cf6a1473d88016470d4d4767f-20210128
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1987687882; Thu, 28 Jan 2021 15:39:20 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 28 Jan 2021 15:39:12 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Jan 2021 15:39:12 +0800
+Message-ID: <1611819552.16091.1.camel@mtksdaap41>
+Subject: Re: [PATCH v11 4/9] drm/mediatek: add mtk_dither_set_common()
+ function
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Date:   Thu, 28 Jan 2021 15:39:12 +0800
+In-Reply-To: <20210128072802.830971-5-hsinyi@chromium.org>
+References: <20210128072802.830971-1-hsinyi@chromium.org>
+         <20210128072802.830971-5-hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.168) by AM0PR04CA0055.eurprd04.prod.outlook.com (2603:10a6:208:1::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 07:36:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5e9e0bea-5f49-49ae-226d-08d8c35f6bab
-X-MS-TrafficTypeDiagnostic: AM8PR07MB7393:
-X-Microsoft-Antispam-PRVS: <AM8PR07MB7393A59DBE99709D203F647488BA9@AM8PR07MB7393.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zjAKS4htau/AFMtwOYOFjS2Qpoxb4Yh2xMDTJqQBVg0JtbwcRIx7YVMn3Kb27dR8RmBD0Ev0ExhoQJWBW7Wfv1WtlW+lqhV7lRqEcNj+ZNkw41O0N/ZHNLYz/iSotEmsfEnUstzTuJo5Vk/obPV3KCqxq/wje7BBG7xKhmajytDGNifdxIAB2N06B8vYsmGFkTx00fgeL4AjxunppK4YmHFPHIDYSKR8VqgNgGpFh0Fw/bVh+O0+mHhch2oEU5FkfEGcwDsAvfk6NJRXQ8pF21GwnPxv8J2j09qqiHCJzWqz1rte+kEHr/fvzDTOyOD9+l58ThtSG85gLXpAPda/KxGVUdbwRDrlkHgxyJ55FtvRFzgyOEbMqjXWsTL1s0NtH7ORirzov7vyE2dhf3jVVzvU1uN3ixeDr+c3NGOXGTKpba5bqaQc4PK4CmwuEfmgJEHjTYlZEPq3NrGy59EVTyeFjQj7qRm0YIG9JqebzbKgQsqXJDBNnmsfOPsevxpGQ3eWLX4zVr3PO0YfbWD1ZbRjm3E1mb5Ra9tRbHtDkkcDAsGq9PHGvBtsZPp/GfuSaXB6TkR/zRncaSQNYrfg5zm7EC3qt+YmamWalJryva7dFHNd1/eSy2X5yf8SzF5zrySjsukKDODK579QAp4S7RM2RH7KiacxQnTh1C/fbBKYgAz2GLMT93kX4FH3+lhJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(8676002)(186003)(956004)(16526019)(2616005)(36756003)(26005)(86362001)(478600001)(966005)(316002)(31696002)(2906002)(6512007)(53546011)(6506007)(6486002)(5660300002)(4326008)(31686004)(66946007)(8936002)(66556008)(66476007)(83380400001)(52116002)(54906003)(44832011)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RlBMclFEVjlQdGxQMHRwbFdDdU8rOFp0VkNUckVXUG5CN0VaL0RkOXdoQjc4?=
- =?utf-8?B?YzE1SzhXeGMrSUlrTm4vdk9FemVqZkVZZWxtalY0Q3ZWeVRyK2QwckVsd0Jp?=
- =?utf-8?B?cUpkZXBVT20xU1NnTU1DUVkyTEFSQnJRblR3NzdBM0hoZWYzbWxXRUhrZ2Ns?=
- =?utf-8?B?UmIzdzJQcE04RmZNcmN3RHRndU9HM3JYdXppRDdMY050bW5YVDM0anhoaHMy?=
- =?utf-8?B?ME9sNGwwSXR1dTYzeDlOc3U4SWNVMEhmdXVvcW5aaEpIWE52RklldGNXMmw0?=
- =?utf-8?B?dmUvM0ZPTituWHJ0Q0RaWkdMdVVFa0ovSDdWc1VITXZaNFFIdWNSR0Zhd0xk?=
- =?utf-8?B?SmRYTXovZWhyZ1ZDZ3NaU1JqSWxsQjBtUk52TEFZNDR6ZmQrYXRrNGVNanlH?=
- =?utf-8?B?KzMrNHF6TWtZZ21XRmdwekZ1L1NmQmpSeW5nM3NyMmlZbUlzckhkdnMvUmxv?=
- =?utf-8?B?QjB2bGwxUlhjeVJoVGpXcWJ0SHhMclNjVWt2Sm1ibzdIN0QvYnZnQ3R4S09s?=
- =?utf-8?B?SjlxckVDWFhnU1hKRWJaeVNFVFBydmVrNE4vRHplU1FVUEhnUmxIWHpqUStw?=
- =?utf-8?B?VXh3RlY0bDBtK2dMUVo1SzFaUWFqVUlRRmdpbXpCM2xXQmlvVXJrNFluM3Rn?=
- =?utf-8?B?N1FwcFZWOEJxcXJ1eGVBVGpDS211Z2tSNWx4cndQVzk3c0dpczBYQ250SHh0?=
- =?utf-8?B?ZndpSm82ck5URUlhdW92dUVRNUJOYjZaa3VJUm1LRzJhalZpL0RTNlRYTEpx?=
- =?utf-8?B?UDR6TEtOeVRqVkpteFBHL1dOeWZzd2VNUDFONWFGT281aUdlalhTMlE0cUVm?=
- =?utf-8?B?TmNHTEYrckFnejJSUVpNWHVyejFDVkZDcW5oQlBsQ1liR3VUVDNZYm9RZVZU?=
- =?utf-8?B?ekllQjg1N3dUNG5KZjEvS0tQendXT0pkNU1hK0lNVkw4VkV2VlNGTTdQbjI5?=
- =?utf-8?B?bjU4b0pLVkNTdHM2NVNDN0duck01WlVYTkljSXg4blkySVZsMGp2MEVYMkZX?=
- =?utf-8?B?UDZZTlBsUzBBZTMrM0FIcnBiaElyMks5SUxkcWZ6SCthWVE3TU5OalJSV3Jy?=
- =?utf-8?B?ZjlXS3NpNTJoK2xSTm5OMzgzcHdycmhNMW1vK1Q1OWd1T204cjhIakplL0Zq?=
- =?utf-8?B?aTFiTHZuUml3T1BvS1VlUVI5ZHVFVkYwSGl6RHdhN3NJdXFtYmZIRE1zQnc1?=
- =?utf-8?B?WkZKR1hHS1h1VHVOemZXWlNxRHhJMnRSeWxsYWdtbmlIUjhWNFl3U3FHRWVQ?=
- =?utf-8?B?ZWFPNElJM3dqMlZNRWNxR2dGRWtsUWxITHY3dU81czNLTVM0VTVNT2VFUlhQ?=
- =?utf-8?B?S0o5a09pSW45bTl5blNQMDY2TTdoR1QwRGJzQ3AvWVNveWNXU080ejZxZDBX?=
- =?utf-8?B?US91Q0xrNG5jVEU2VmlvTXlBdjB6cmk0bkthY05vb2l0cjI2bGYrNVpkaUt5?=
- =?utf-8?Q?590zhqdh?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e9e0bea-5f49-49ae-226d-08d8c35f6bab
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 07:36:27.0101
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e+pf8FIP7xQYOacD4V9Ah1U2Psr0uwf4Qxw2tOkvzi4SAYsTG+jRxWaoFZvcQ/+UuBjz8PGG4r1b/2NuUfEEupo/VviN2QNMACnb5HdWNek=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR07MB7393
+X-TM-SNTS-SMTP: 079BE8C6A619A54B65635DC05D10741DADDEA17ADE9AC0EA5D43112F5A34835F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE1OjI3ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
+IEN1cnJlbnQgaW1wbGVtZW50YXRpb24gb2YgbXRrX2RpdGhlcl9zZXQoKSBjYXN0IGRldiBkYXRh
+IHRvDQo+IHN0cnVjdCBtdGtfZGRwX2NvbXBfZGV2LiBCdXQgb3RoZXIgZGV2aWNlcyB3aXRoIGRp
+ZmZlcmVudCBkZXYgZGF0YQ0KPiB3b3VsZCBhbHNvIGNhbGwgdGhpcyBmdW5jdGlvbi4NCj4gDQo+
+IFNlcGFyYXRlIG5lY2Vzc2FyeSBwYXJhbWV0ZXJzIG91dCBzbyBvdGhlciBkZXZpY2UgY29tcG9u
+ZW50cyAoZGl0aGVyLA0KPiBnYW1tYSkgY2FuIGNhbGwgdGhpcyBmdW5jdGlvbi4NCg0KUmV2aWV3
+ZWQtYnk6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6
+IEhzaW4tWWkgV2FuZyA8aHNpbnlpQGNocm9taXVtLm9yZz4NCj4gLS0tDQo+ICBkcml2ZXJzL2dw
+dS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZHJ2LmggICAgIHwgIDQgKysrKw0KPiAgZHJpdmVycy9n
+cHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyB8IDI1ICsrKysrKysrKysrKystLS0t
+LS0tLQ0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygt
+KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9k
+cnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9kcnYuaA0KPiBpbmRleCA0
+NmQxOTliN2I0YTI5Li5jNTBkNWZjOWZkMzQ5IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9k
+cm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZHJ2LmgNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlh
+dGVrL210a19kaXNwX2Rydi5oDQo+IEBAIC0xNyw2ICsxNywxMCBAQCB2b2lkIG10a19jb2xvcl9j
+b25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4gIAkJICAgICAgdW5z
+aWduZWQgaW50IGJwYywgc3RydWN0IGNtZHFfcGt0ICpjbWRxX3BrdCk7DQo+ICB2b2lkIG10a19j
+b2xvcl9zdGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiAgDQo+ICt2b2lkIG10a19kaXRoZXJf
+c2V0X2NvbW1vbih2b2lkIF9faW9tZW0gKnJlZ3MsIHN0cnVjdCBjbWRxX2NsaWVudF9yZWcgKmNt
+ZHFfcmVnLA0KPiArCQkJICAgdW5zaWduZWQgaW50IGJwYywgdW5zaWduZWQgaW50IENGRywNCj4g
+KwkJCSAgIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9wa3QpOw0KPiArDQo+ICB2b2lkIG10a19kcGlf
+c3RhcnQoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gIHZvaWQgbXRrX2RwaV9zdG9wKHN0cnVjdCBk
+ZXZpY2UgKmRldik7DQo+ICANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
+ay9tdGtfZHJtX2RkcF9jb21wLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9k
+ZHBfY29tcC5jDQo+IGluZGV4IDdiNTI5MzQyOTQyNmQuLjUzZDI1ODIzYTM3Y2MgMTAwNjQ0DQo+
+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gKysr
+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYw0KPiBAQCAtMTUx
+LDMzICsxNTEsNDAgQEAgc3RhdGljIHZvaWQgbXRrX2RkcF9jbGtfZGlzYWJsZShzdHJ1Y3QgZGV2
+aWNlICpkZXYpDQo+ICAJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHByaXYtPmNsayk7DQo+ICB9DQo+
+ICANCj4gLXN0YXRpYyB2b2lkIG10a19kaXRoZXJfc2V0KHN0cnVjdCBkZXZpY2UgKmRldiwgdW5z
+aWduZWQgaW50IGJwYywNCj4gLQkJICAgIHVuc2lnbmVkIGludCBDRkcsIHN0cnVjdCBjbWRxX3Br
+dCAqY21kcV9wa3QpDQo+IC17DQo+IC0Jc3RydWN0IG10a19kZHBfY29tcF9kZXYgKnByaXYgPSBk
+ZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gIA0KPiArdm9pZCBtdGtfZGl0aGVyX3NldF9jb21tb24o
+dm9pZCBfX2lvbWVtICpyZWdzLCBzdHJ1Y3QgY21kcV9jbGllbnRfcmVnICpjbWRxX3JlZywNCj4g
+KwkJCSAgIHVuc2lnbmVkIGludCBicGMsIHVuc2lnbmVkIGludCBDRkcsIHN0cnVjdCBjbWRxX3Br
+dCAqY21kcV9wa3QpDQo+ICt7DQo+ICAJLyogSWYgYnBjIGVxdWFsIHRvIDAsIHRoZSBkaXRoZXJp
+bmcgZnVuY3Rpb24gZGlkbid0IGJlIGVuYWJsZWQgKi8NCj4gIAlpZiAoYnBjID09IDApDQo+ICAJ
+CXJldHVybjsNCj4gIA0KPiAgCWlmIChicGMgPj0gTVRLX01JTl9CUEMpIHsNCj4gLQkJbXRrX2Rk
+cF93cml0ZShjbWRxX3BrdCwgMCwgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJ
+VEhFUl81KTsNCj4gLQkJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgMCwgJnByaXYtPmNtZHFfcmVn
+LCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl83KTsNCj4gKwkJbXRrX2RkcF93cml0ZShjbWRxX3Br
+dCwgMCwgY21kcV9yZWcsIHJlZ3MsIERJU1BfRElUSEVSXzUpOw0KPiArCQltdGtfZGRwX3dyaXRl
+KGNtZHFfcGt0LCAwLCBjbWRxX3JlZywgcmVncywgRElTUF9ESVRIRVJfNyk7DQo+ICAJCW10a19k
+ZHBfd3JpdGUoY21kcV9wa3QsDQo+ICAJCQkgICAgICBESVRIRVJfTFNCX0VSUl9TSElGVF9SKE1U
+S19NQVhfQlBDIC0gYnBjKSB8DQo+ICAJCQkgICAgICBESVRIRVJfQUREX0xTSElGVF9SKE1US19N
+QVhfQlBDIC0gYnBjKSB8DQo+ICAJCQkgICAgICBESVRIRVJfTkVXX0JJVF9NT0RFLA0KPiAtCQkJ
+ICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl8xNSk7DQo+ICsJ
+CQkgICAgICBjbWRxX3JlZywgcmVncywgRElTUF9ESVRIRVJfMTUpOw0KPiAgCQltdGtfZGRwX3dy
+aXRlKGNtZHFfcGt0LA0KPiAgCQkJICAgICAgRElUSEVSX0xTQl9FUlJfU0hJRlRfQihNVEtfTUFY
+X0JQQyAtIGJwYykgfA0KPiAgCQkJICAgICAgRElUSEVSX0FERF9MU0hJRlRfQihNVEtfTUFYX0JQ
+QyAtIGJwYykgfA0KPiAgCQkJICAgICAgRElUSEVSX0xTQl9FUlJfU0hJRlRfRyhNVEtfTUFYX0JQ
+QyAtIGJwYykgfA0KPiAgCQkJICAgICAgRElUSEVSX0FERF9MU0hJRlRfRyhNVEtfTUFYX0JQQyAt
+IGJwYyksDQo+IC0JCQkgICAgICAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfRElU
+SEVSXzE2KTsNCj4gLQkJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgRElTUF9ESVRIRVJJTkcsICZw
+cml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgQ0ZHKTsNCj4gKwkJCSAgICAgIGNtZHFfcmVnLCBy
+ZWdzLCBESVNQX0RJVEhFUl8xNik7DQo+ICsJCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJU1Bf
+RElUSEVSSU5HLCBjbWRxX3JlZywgcmVncywgQ0ZHKTsNCj4gIAl9DQo+ICB9DQo+ICANCj4gK3N0
+YXRpYyB2b2lkIG10a19kaXRoZXJfc2V0KHN0cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50
+IGJwYywNCj4gKwkJICAgIHVuc2lnbmVkIGludCBDRkcsIHN0cnVjdCBjbWRxX3BrdCAqY21kcV9w
+a3QpDQo+ICt7DQo+ICsJc3RydWN0IG10a19kZHBfY29tcF9kZXYgKnByaXYgPSBkZXZfZ2V0X2Ry
+dmRhdGEoZGV2KTsNCj4gKw0KPiArCW10a19kaXRoZXJfc2V0X2NvbW1vbihwcml2LT5yZWdzLCAm
+cHJpdi0+Y21kcV9yZWcsIGJwYywgQ0ZHLCBjbWRxX3BrdCk7DQo+ICt9DQo+ICsNCj4gIHN0YXRp
+YyB2b2lkIG10a19vZF9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywN
+Cj4gIAkJCSAgdW5zaWduZWQgaW50IGgsIHVuc2lnbmVkIGludCB2cmVmcmVzaCwNCj4gIAkJCSAg
+dW5zaWduZWQgaW50IGJwYywgc3RydWN0IGNtZHFfcGt0ICpjbWRxX3BrdCkNCg0K
 
-On 27/01/2021 23:21, Will Deacon wrote:
-> On Wed, Jan 27, 2021 at 09:01:08PM +0100, Alexander A Sverdlin wrote:
->> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
->>
->> Ensure writes are pushed out of core write buffer to prevent waiting code
->> on another cores from spinning longer than necessary.
->>
->> 6 threads running tight spinlock loop competing for the same lock
->> on 6 cores on MIPS/Octeon do 1000000 iterations...
->>
->> before the patch in:	4.3 sec
->> after the patch in:	1.2 sec
-> If you only have 6 cores, I'm not sure qspinlock makes any sense...
-
-That's my impression as well and I even proposed to revert qspinlocks for MIPS:
-https://lore.kernel.org/linux-mips/20170610002644.8434-1-paul.burton@imgtec.com/T/#ma1506c80472129b2ac41554cc2d863c9a24518c0
-
->> Same 6-core Octeon machine:
->> sysbench --test=mutex --num-threads=64 --memory-scope=local run
->>
->> w/o patch:	1.53s
->> with patch:	1.28s
->>
->> This will also allow to remove the smp_wmb() in
->> arch/arm/include/asm/mcs_spinlock.h (was it actually addressing the same
->> issue?).
->>
->> Finally our internal quite diverse test suite of different IPC/network
->> aspects didn't detect any regressions on ARM/ARM64/x86_64.
->>
->> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
->> ---
->>  kernel/locking/mcs_spinlock.h | 5 +++++
->>  kernel/locking/qspinlock.c    | 6 ++++++
->>  2 files changed, 11 insertions(+)
->>
->> diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
->> index 5e10153..10e497a 100644
->> --- a/kernel/locking/mcs_spinlock.h
->> +++ b/kernel/locking/mcs_spinlock.h
->> @@ -89,6 +89,11 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
->>  		return;
->>  	}
->>  	WRITE_ONCE(prev->next, node);
->> +	/*
->> +	 * This is necessary to make sure that the corresponding "while" in the
->> +	 * mcs_spin_unlock() doesn't loop forever
->> +	 */
->> +	smp_wmb();
-> If it loops forever, that's broken hardware design; store buffers need to
-> drain. I don't think we should add unconditional barriers to bodge this.
-
-The comment is a bit exaggerating the situation, but it's undeterministic and you see the
-measurements above. Something is wrong in the qspinlocks code, please consider this patch
-"RFC", but something has to be done here.
-
--- 
-Best regards,
-Alexander Sverdlin.
