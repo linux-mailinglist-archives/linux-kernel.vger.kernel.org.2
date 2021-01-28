@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B18308208
+	by mail.lfdr.de (Postfix) with ESMTP id 797EE308209
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhA1Xme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:42:34 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:56262 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhA1Xmc (ORCPT
+        id S231192AbhA1XnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:43:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhA1XnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:42:32 -0500
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 10SNfR4S019763
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 08:41:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 10SNfR4S019763
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611877287;
-        bh=U8WI1PblpLQ8kRIiaOsyO7MfjeKiLsJ+sPEUCHqKY3A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jga4CQgL5m1r4f0nD/1K5+6ZPDWeaX1WCnWKGU6BM2ZyINyXa4JUFhLCjoYxGEkQY
-         ZWxZEKqLThkWAQhHATVaNBuqTw4UPTIuMcujq4YfabaCf7+a29nxpkBQkONNJGhvUA
-         hkz8ELJtVLqAJB6q+esw+moky3dkAd+zd/q8MrF3dWRrLULPjxLzUpJTOhpQ5Q9l03
-         LCZYVb8xFK27K2TnJ4aiBq1UroK31e09AMv3ZUtBNMQaRsvbhk5aN9tJcJ+Uk/h/8V
-         BmJ95qmIP2m/kp5SIZZWPCTwls4I9tBz5bRN26cUB3f9PfhNH5ZlGSxIOKKAcVZTzJ
-         l6TEOJ5d1R2Xg==
-X-Nifty-SrcIP: [209.85.215.174]
-Received: by mail-pg1-f174.google.com with SMTP id s23so4098249pgh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 15:41:27 -0800 (PST)
-X-Gm-Message-State: AOAM530AIafc70OU6Tzvc0MnxBPz/OLwWFETGc5e0Qac6Hhvk5LmXaf9
-        AJpAUIgwB04LtX2xpdDwkGflvgv0z/r/8BsGIBY=
-X-Google-Smtp-Source: ABdhPJzYPqVVeZn+Z1nOiwM0CA8GpjFl20AW4NmdQbMIfSAPXdqNt1LuQQNaomMEmorZCvtFjy8v8mnAWKxX4wSd5FE=
-X-Received: by 2002:a63:ff09:: with SMTP id k9mr1751007pgi.175.1611877286857;
- Thu, 28 Jan 2021 15:41:26 -0800 (PST)
+        Thu, 28 Jan 2021 18:43:08 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4C8C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 15:42:28 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id n3so3678798qvf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 15:42:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=88m+q95nUn6HzzgeiCXX4W5ncIMh64ZtHe7euOuMD0k=;
+        b=WQnn3c0jSE0t2Cb5s3R24Sa0z+5ZqJnzkHpWW7AOTXOt2rs8glv1Nwpj2pMj3KygFY
+         ER9kHZHS2Er+6m4D0YppDAbD6GckxAaauLfprzky6NEPx4HS9thT2bL3L4/MsDBMMXeY
+         gqP2a7zz8nLkzuZkaHLtkmZREsrZnkRMtlX9xLwz7itp5gewQRM5UmYwGyUdKNLWIZ+u
+         bnjZmYrUT8I3adYP9GjByuDOReAvKlSsgW6pvEChinJ3BQurF/vXBSjcvhz3NKtFlPbU
+         2CWDX7Kzlk13wGO6V1AMPp741pe4t68pxR6QawNMDpBABEXWlGlWOY13R4T6O3nTqBKP
+         xMYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=88m+q95nUn6HzzgeiCXX4W5ncIMh64ZtHe7euOuMD0k=;
+        b=rXUeU71q+EQIzkWy6h5wH2YJlC3w3vM2U9j4wKgBZqfvLC038G4E9CBFO8tvhB03Mj
+         s2e3z26Ibjbg532rUld6Di2xcMAT1YMDbG5fmJhvgScdMfhpgkDaRn7E7vQQYSQ45M/T
+         oLhtECsFKCa8J6aLeOJjwfdOcAWaxyhEnCj1NLTBv3JSYLf8dooH0YsQVasYanwjhWqx
+         xCrCDaL2/vLR/UoK5DX8mLd5rJrrIno/coePucJsWCKnYAoWKT30rjXzdtrHD+pSwX6+
+         N3aVUUdYMuozCJa13JVMzdmePgpbWGo6xbIJH5fxLxvmwTiA0bFWzT4qWnOiktzu+Bgs
+         EeCg==
+X-Gm-Message-State: AOAM533SnTluy7LXINlhLQW0WdagT3fvq0Stb0v5OpkWx6fSJBE7XIRu
+        yyxaJ7MCGTVqY0APJD1tMR6678iFbLg=
+X-Google-Smtp-Source: ABdhPJx+YPrFP4QWmDosZNRQSw/GsbcFXYZ4lHrBU3+7m+vb7tSoCdHfpp8GIxJnDwI4VWs4FpvwUg==
+X-Received: by 2002:a0c:9ccb:: with SMTP id j11mr1715339qvf.44.1611877347303;
+        Thu, 28 Jan 2021 15:42:27 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:86fa])
+        by smtp.gmail.com with ESMTPSA id w28sm4394354qtv.93.2021.01.28.15.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 15:42:26 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 28 Jan 2021 18:41:34 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Saravanan D <saravanand@fb.com>
+Cc:     x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, willy@infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        linux-mm@kvack.org, songliubraving@fb.com, hannes@cmpxchg.org
+Subject: Re: [PATCH V6] x86/mm: Tracking linear mapping split events
+Message-ID: <YBNLrg1CI4yGBOyB@mtj.duckdns.org>
+References: <20210128212048.oopcyfdf4j2lc663@devvm1945.atn0.facebook.com>
+ <20210128233430.1460964-1-saravanand@fb.com>
 MIME-Version: 1.0
-References: <20210128005110.2613902-1-masahiroy@kernel.org> <CADxRZqyjTU38J7qjTxZxy8qAjW_HLC3Bm7f1cS8j1tS2fGfxow@mail.gmail.com>
-In-Reply-To: <CADxRZqyjTU38J7qjTxZxy8qAjW_HLC3Bm7f1cS8j1tS2fGfxow@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 29 Jan 2021 08:40:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATPGR9b5ganamfP2t1xPL6rrq6a8-JWYR83KGzLJXs7NA@mail.gmail.com>
-Message-ID: <CAK7LNATPGR9b5ganamfP2t1xPL6rrq6a8-JWYR83KGzLJXs7NA@mail.gmail.com>
-Subject: Re: [PATCH 00/27] arch: syscalls: unifiy all syscalltbl.sh into scripts/syscalltbl.sh
-To:     Anatoly Pugachev <matorola@gmail.com>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128233430.1460964-1-saravanand@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:03 PM Anatoly Pugachev <matorola@gmail.com> wrote:
->
-> Masahiro,
->
-> wanted to test on sparc64, but I'm unable to cleanly apply your patch
-> series to current master of
-> git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
->
-> saved in all patches from mutt MUA to mbox (syscalltbl-mbox) file
-> format (except of 00/27) and tried to apply via git-am:
->
-> $ git desc
-> v5.11-rc5-40-g76c057c84d28
->
-> $ git am < ~/syscalltbl-mbox
-> Applying: xtensa: syscalls: switch to generic syscalltbl.sh
+On Thu, Jan 28, 2021 at 03:34:30PM -0800, Saravanan D wrote:
+> To help with debugging the sluggishness caused by TLB miss/reload,
+> we introduce monotonic hugepage [direct mapped] split event counts since
+> system state: SYSTEM_RUNNING to be displayed as part of
+> /proc/vmstat in x86 servers
+...
+> Signed-off-by: Saravanan D <saravanand@fb.com>
 
-Hmm? Are you applying only xtensa one (27/27) ?
+Acked-by: Tejun Heo <tj@kernel.org>
 
+Thanks.
 
-> error: patch failed: arch/xtensa/kernel/syscalls/Makefile:16
-> error: arch/xtensa/kernel/syscalls/Makefile: patch does not apply
-> Patch failed at 0001 xtensa: syscalls: switch to generic syscalltbl.sh
-> hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
->
-> But if take out body of the first patch (xtensa.patch) out of mbox, it
-
-This is the last one, not the first.
-
-
-> does cleanly applies via "patch -p1"
->
-> Can someone suggest how do i apply this patch series to my local git tree?
-> Thanks.
-
-
-I do not know.
-
-I can apply this series on top of the current Linus tree cleanly.
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+-- 
+tejun
