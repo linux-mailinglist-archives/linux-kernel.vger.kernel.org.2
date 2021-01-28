@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69792307DB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E197307D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhA1SSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:18:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        id S231826AbhA1SLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbhA1SGv (ORCPT
+        with ESMTP id S231636AbhA1SG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:06:51 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89099C0611BD
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:04 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id c4so3632889wru.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:04 -0800 (PST)
+        Thu, 28 Jan 2021 13:06:58 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB414C061A10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:05 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id d16so6299254wro.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:03:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BlJPa4weJ+jes2vrsBZmFk9aHoMXb6b/UAhdjjLI1xw=;
-        b=tIoUH1MMZgHPgcFm1H5xu5GhnyoOc6pk1LknTNWKf1oRwOVc068CLd4D+hvcZXd3Dt
-         ZWekkNvjydaiLPrxtaSjQZWwB6pworR01AK+cB7oEEL5CfA9vfOx3l2cYwFWPEmGD5WX
-         /XUfMWHAgo+JLnjCquaGOUWO0E3+vodO+gsmcFkAWrLPeF+8MEPEDMGH9yg5HEp9GXQ+
-         pNWuR1mkrY1sscEUp1LswyjfN6lD84DZp0la7v5j7tIuyACn7j2ddg4MpbihmbuX7Zim
-         RnZxc6rXRoC14A6KgxJbyA2TXVc2x8e+Gh2mNWBEWqhnzwEMJKWV+Iep3OU9jqog7yQb
-         +2fA==
+        bh=uUtjn0S2LB1hEBiPsRyILzvTGxsfFgJnwAguVJkwf8M=;
+        b=VOWAoFI7f87mmQpF61/B6XhrpLRiOTDKRgEzgQUruqg8nla/mCupvO58MKBvSqkMGg
+         FCrwCgcHxom4YbO8EwoZlPubu2t9ejuP33iBOTlNe+632hC+nrhvzfROOAV0YUscqN4W
+         ISmw/4ebKvXCCw5NgyawYbvhPd93k/VZ1bFBOGt+uv+BVbZ6DUnQ5KnQeZNmvfjlKpCy
+         gJVhcZwkDBs2PWCHnFn9yo6716dRaWTOXvjY15FcC3PiYWhz4784EPLhTD+x4TwERxhA
+         sxYlwlNERTo6gO3curiKUdKz4Egu2R4wdK3MnMBr0nS9F8YVS2Jm5RgqVuqxHQXQi6DT
+         Xbcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BlJPa4weJ+jes2vrsBZmFk9aHoMXb6b/UAhdjjLI1xw=;
-        b=IwzZhnebzErQayYOhPcyeCCNPmMoLBOf/ofiyjo5t0TGLZ4daNs9RyyhABBfe5++Uz
-         qKP1PljewHGQPzU60wzP4B2uYh49DiaBlIpIa3RB/vj/Mv9yv29WOldzo7WgUttoykzB
-         ClBiBeNkIa4sjEgJpJtprFXwBH1TkVw5u37nzuNbX7xlKZ3a54PXbey+3OJkDGALgJ6u
-         mPl4nMuiuC+HC5JNe7PUlp42i+P+Z9X6oEAiRysk9MJDcKcPViXgoHKTSHvyfbhfXC/x
-         BfpNuKae/QaFZ1Su8UUi8b5UJlCmyeOExv/pcPHf/zbS/pxliYplf6rBXgM3LUgRlpeU
-         cKFg==
-X-Gm-Message-State: AOAM531M4/PZ36SzopaaVy7EQPKFdtO6bV+g2qxSxiGNu37pu0uD4sAl
-        lepQiNJhnKbKittkN8h/p5WMOw==
-X-Google-Smtp-Source: ABdhPJzCh/6Len5XnN+iFyPGMOmxw2mV+V4tO818WFPny0PyiE6vtR+TA1iztn7KqE0i9aOnTYVTwQ==
-X-Received: by 2002:adf:80c3:: with SMTP id 61mr357970wrl.100.1611856983215;
-        Thu, 28 Jan 2021 10:03:03 -0800 (PST)
+        bh=uUtjn0S2LB1hEBiPsRyILzvTGxsfFgJnwAguVJkwf8M=;
+        b=iA2aLZ+1uhJNpYaYK+lEtoExcPZoBJ9/VnOMNY7qNzeQXD8+HlN23IIBTRJHc2MtW4
+         MMx6dKyuYkXeDF23v+AWegbWX0imT7Kf7cla89Q3iN0HEL85m32cEqaSO+e72p7ucGf8
+         CiS/e3PagEEqWRzSznDaft8LsuUg2bZkKdteOH2Iv57spB0a0PblgT/nKqlfe7x6JZl9
+         VfxxdDO8Y1uYUcGTGRM6yA7Ua+OZeMVs/2lbLIj3/nRhh6cEBsvLmrPt94zy7v3OyQRd
+         cQDdOK3p3zTPGSSAU3/CFQ8x0khNnWNCgMbzO03MeZEaV4Z/05jphPLI+L5kY0yqy4Rc
+         VSpw==
+X-Gm-Message-State: AOAM531/Je6KHr5fPeh6ulzdeVNwX4L5caiWW6/3F9dNMMpCbl6DF/O1
+        F8jQ1ewsTm8QbF6crFZlluwwtg==
+X-Google-Smtp-Source: ABdhPJxPzc0IA9xahgijtPLfT9dZqdD9ejn57gN/lqF5wwV6CnFzhmlrLK3RGRvHy7StR5WPLMJ2jg==
+X-Received: by 2002:adf:c109:: with SMTP id r9mr255640wre.261.1611856984478;
+        Thu, 28 Jan 2021 10:03:04 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.03.02
+        by smtp.gmail.com with ESMTPSA id u6sm8280794wro.75.2021.01.28.10.03.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 10:03:02 -0800 (PST)
+        Thu, 28 Jan 2021 10:03:03 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Loc Ho <lho@apm.com>, Tuan Phan <tphan@apm.com>,
-        Suman Tripathi <stripathi@apm.com>, linux-ide@vger.kernel.org
-Subject: [PATCH 17/20] ata: ahci_xgene: Fix incorrect naming of 'xgene_ahci_handle_broken_edge_irq()'s 'host' param
-Date:   Thu, 28 Jan 2021 18:02:36 +0000
-Message-Id: <20210128180239.548512-18-lee.jones@linaro.org>
+        Mark Lord <mlord@pobox.com>,
+        ALWAYS copy <linux-ide@vger.kernel.org>
+Subject: [PATCH 18/20] ata: sata_mv: Fix worthy headers and demote others
+Date:   Thu, 28 Jan 2021 18:02:37 +0000
+Message-Id: <20210128180239.548512-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210128180239.548512-1-lee.jones@linaro.org>
 References: <20210128180239.548512-1-lee.jones@linaro.org>
@@ -67,32 +67,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/ahci_xgene.c:564: warning: Function parameter or member 'host' not described in 'xgene_ahci_handle_broken_edge_irq'
- drivers/ata/ahci_xgene.c:564: warning: Excess function parameter 'ata_host' description in 'xgene_ahci_handle_broken_edge_irq'
+ drivers/ata/sata_mv.c:1162: warning: Function parameter or member 'ap' not described in 'mv_start_edma'
+ drivers/ata/sata_mv.c:1162: warning: Function parameter or member 'port_mmio' not described in 'mv_start_edma'
+ drivers/ata/sata_mv.c:1162: warning: Function parameter or member 'protocol' not described in 'mv_start_edma'
+ drivers/ata/sata_mv.c:1162: warning: Excess function parameter 'base' description in 'mv_start_edma'
+ drivers/ata/sata_mv.c:1535: warning: Function parameter or member 'enable_bmdma' not described in 'mv_bmdma_enable_iie'
+ drivers/ata/sata_mv.c:1535: warning: expecting prototype for mv_bmdma_enable(). Prototype was for mv_bmdma_enable_iie() instead
+ drivers/ata/sata_mv.c:1930: warning: Function parameter or member 'ap' not described in 'mv_bmdma_stop_ap'
+ drivers/ata/sata_mv.c:1930: warning: expecting prototype for mv_bmdma_stop(). Prototype was for mv_bmdma_stop_ap() instead
+ drivers/ata/sata_mv.c:2228: warning: Function parameter or member 'ap' not described in 'mv_send_fis'
+ drivers/ata/sata_mv.c:3263: warning: Function parameter or member 'hpriv' not described in 'mv6_reset_hc'
+ drivers/ata/sata_mv.c:3263: warning: Function parameter or member 'n_hc' not described in 'mv6_reset_hc'
+ drivers/ata/sata_mv.c:3541: warning: Function parameter or member 'hpriv' not described in 'soc_is_65n'
+ drivers/ata/sata_mv.c:3541: warning: expecting prototype for soc_is_65(). Prototype was for soc_is_65n() instead
 
 Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Loc Ho <lho@apm.com>
-Cc: Tuan Phan <tphan@apm.com>
-Cc: Suman Tripathi <stripathi@apm.com>
+Cc: Mark Lord <mlord@pobox.com>
+Cc: ALWAYS copy <linux-ide@vger.kernel.org>
 Cc: linux-ide@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/ahci_xgene.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/sata_mv.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/ata/ahci_xgene.c b/drivers/ata/ahci_xgene.c
-index 16246c843365e..dffc432b9d54a 100644
---- a/drivers/ata/ahci_xgene.c
-+++ b/drivers/ata/ahci_xgene.c
-@@ -537,7 +537,7 @@ static int xgene_ahci_softreset(struct ata_link *link, unsigned int *class,
+diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+index 664ef658a955f..eafca46d8feb4 100644
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -1146,9 +1146,8 @@ static void mv_set_irq_coalescing(struct ata_host *host,
+ 	spin_unlock_irqrestore(&host->lock, flags);
+ }
+ 
+-/**
++/*
+  *      mv_start_edma - Enable eDMA engine
+- *      @base: port base address
+  *      @pp: port private data
+  *
+  *      Verify the local cache of the eDMA state is accurate with a
+@@ -1519,7 +1518,7 @@ static void mv_60x1_errata_sata25(struct ata_port *ap, int want_ncq)
+ 		writel(new, hpriv->base + GPIO_PORT_CTL);
+ }
+ 
+-/**
++/*
+  *	mv_bmdma_enable - set a magic bit on GEN_IIE to allow bmdma
+  *	@ap: Port being initialized
+  *
+@@ -1919,7 +1918,7 @@ static void mv_bmdma_start(struct ata_queued_cmd *qc)
  
  /**
-  * xgene_ahci_handle_broken_edge_irq - Handle the broken irq.
-- * @ata_host: Host that recieved the irq
-+ * @host: Host that recieved the irq
-  * @irq_masked: HOST_IRQ_STAT value
+  *	mv_bmdma_stop - Stop BMDMA transfer
+- *	@qc: queued command to stop DMA on.
++ *	@ap: port to stop
   *
-  * For hardware with broken edge trigger latch
+  *	Clears the ATA_DMA_START flag in the bmdma control register
+  *
+@@ -2221,6 +2220,7 @@ static u8 mv_sff_check_status(struct ata_port *ap)
+ 
+ /**
+  *	mv_send_fis - Send a FIS, using the "Vendor-Unique FIS" register
++ *	@ap: ATA port to send a FIS
+  *	@fis: fis to be sent
+  *	@nwords: number of 32-bit words in the fis
+  */
+@@ -3249,7 +3249,7 @@ static void mv6_reset_flash(struct mv_host_priv *hpriv, void __iomem *mmio)
+ 	writel(tmp, mmio + GPIO_PORT_CTL);
+ }
+ 
+-/**
++/*
+  *      mv6_reset_hc - Perform the 6xxx global soft reset
+  *      @mmio: base address of the HBA
+  *
+@@ -3530,7 +3530,7 @@ static void mv_soc_65n_phy_errata(struct mv_host_priv *hpriv,
+ 	writel(reg, port_mmio + PHY_MODE9_GEN1);
+ }
+ 
+-/**
++/*
+  *	soc_is_65 - check if the soc is 65 nano device
+  *
+  *	Detect the type of the SoC, this is done by reading the PHYCFG_OFS
 -- 
 2.25.1
 
