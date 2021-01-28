@@ -2,137 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99D2307807
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4767C30780C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhA1O1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhA1O0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:26:48 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94393C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:26:06 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id h15so3405296pli.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 06:26:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z7kqvyeMLdKmefmrsRuOiNzWs95rHzmAWApehWIZvbU=;
-        b=kUXcyEUll4Sos7hXPsc4WW3FtQRlfqJTQ46JUCN7+Z8kfZmWvPZ/V1eXI8wszpXTAD
-         FdRPlqnCCTzsCMcJoeY4Z1dj+VL/CJX0vhuzAIlCYbXCGzJolmzJ8yKAYr0Ywg/FifXx
-         inTvJ1K5yVAjeNHUgo6u57u7AE6cn176WrEPSYlSdpqsTf0OUuSXVX38g3lndD2BLmpS
-         R1eD+G3PL+IWzDleJk2PEcZ3R/9GEuRCe8aukWy+CCjMS47mmpCguLR0UjV6CfsJOBOP
-         fg1WT0yfBCSQdCod4vwcftGKrusWjGaDtwG1qGCXLcEw7Kd+YWv43xL4Brnh1eETjkQZ
-         YrpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z7kqvyeMLdKmefmrsRuOiNzWs95rHzmAWApehWIZvbU=;
-        b=jNmgt6FC8pOhYN06AKOnpF+ATsaVPiiH45F33Lnmbp9zw7YpWNkERXTNQILPaoPnQl
-         rnL8kj8YlXBrJxMi/P2BSWLg8tP6kUq4Js0fYFcMsEoKoE2AFfp2pljbUxQDvM8tWUbe
-         g/DaGh2qhIpVs6ldISqL7/db79ezhapAV3qmgrPUBQ8rqczkw6zpr9DDDqMheHhc+0x+
-         IHURCymXlK5+JS4tD1gbsLReePvj0YMugmWv355+BV1ZsEqkP5FgW+1es3Lg7mHr51gF
-         +uy9NIeh6Mp485CJry+UkIUYpbbDe+kzdCVDxn8Zksb9YJv5g5Bnrf5d+rzMZG/IO5w+
-         cszw==
-X-Gm-Message-State: AOAM533OqfA5ys4/N8LBuRwX5pGaNgY5PEHnUBUE5/MRY6wqeP/9X/48
-        GWPGXqfOCq9epnCJN/6wUziHVXR2rCaNVsky1EHicliILfc=
-X-Google-Smtp-Source: ABdhPJx+eqeR3gAs6wxz78K3LKIpQfzJbcd1pJ1H1dJmKLg8lttFsBNi4ViSEi6wnCCISU2VBYv3TVhzzsy1bmdB8v0=
-X-Received: by 2002:a17:90a:d913:: with SMTP id c19mr11614350pjv.19.1611843966025;
- Thu, 28 Jan 2021 06:26:06 -0800 (PST)
+        id S231652AbhA1O3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:29:38 -0500
+Received: from mga17.intel.com ([192.55.52.151]:46518 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231586AbhA1O3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:29:34 -0500
+IronPort-SDR: TiWbAe8k6q2U7d3uPWM4lSyp+yrMTMsx9986JilPAGwQ3owBNfQSPO2wB88gv4g1SZAGFnq4BC
+ p2Yx656S6ybA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="160012376"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="160012376"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 06:27:48 -0800
+IronPort-SDR: +PFPIvlRjek6MWrX9uP9iaFFhGEDkOin/OloFocOFfpB2UombOfcu9lElfPgCPSR9ahsCgLNZN
+ pBm+PFjtZHqw==
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="363775047"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 06:27:44 -0800
+Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 16:27:42 +0200
+Date:   Thu, 28 Jan 2021 16:27:42 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     mingchuang.qiao@mediatek.com
+Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
+        lambert.wang@mediatek.com, kerun.zhu@mediatek.com,
+        alex.williamson@redhat.com, rjw@rjwysocki.net,
+        utkarsh.h.patel@intel.com
+Subject: Re: [v2] PCI: Avoid unsync of LTR mechanism configuration
+Message-ID: <20210128142742.GV2542@lahna.fi.intel.com>
+References: <20210128100531.2694-1-mingchuang.qiao@mediatek.com>
 MIME-Version: 1.0
-References: <20210120120847.1505143-1-robert.foss@linaro.org>
-In-Reply-To: <20210120120847.1505143-1-robert.foss@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 28 Jan 2021 15:25:54 +0100
-Message-ID: <CAG3jFytO5N7u6URVVC_AHG9C9PAcFAX=8mv1SVRdi0SCoXz5Xw@mail.gmail.com>
-Subject: Re: [PATCH v5] media: ov8856: Configure sensor for GRBG Bayer for all modes
-To:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@linux.intel.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Tomasz Figa <tfiga@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128100531.2694-1-mingchuang.qiao@mediatek.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping. I think this patch is ready to be merged.
+Hi,
 
-On Wed, 20 Jan 2021 at 13:09, Robert Foss <robert.foss@linaro.org> wrote:
->
-> The previously added modes 3264x2448 & 1632x1224 are actually
-> configuring the sensor for BGGR mode, this is an issue since
-> the mode that is exposed through V4L incorrectly is set as GRBG.
->
-> This patch fixes the issue by moving the output crop window of
-> internal sensor ISP uses by one row, which means that the Bayer
-> pattern of the output is changed.
->
-> From:
-> row 1: B G B G B G ...
-> row 2: G R G R G R ...
-> row 3: B G B G B G ...
-> ...
->
-> To:
-> row 2: G R G R G R ...
-> row 3: B G B G B G ...
-> ...
->
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> Suggested-by: Andrey Konovalov <andrey.konovalov@linaro.org>
-> Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+On Thu, Jan 28, 2021 at 06:05:31PM +0800, mingchuang.qiao@mediatek.com wrote:
+> From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> 
+> In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2 register is
+> configured in pci_configure_ltr(). If device and bridge both support LTR
+> mechanism, the "LTR Mechanism Enable" bit of device and bridge will be
+> enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as 1.
+> 
+> If PCIe link goes down when device resets, the "LTR Mechanism Enable" bit
+> of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16. However,
+> the pci_dev->ltr_path value of bridge is still 1.
+> 
+> For following conditions, check and re-configure "LTR Mechanism Enable" bit
+> of bridge to make "LTR Mechanism Enable" bit mtach ltr_path value.
+>    -before configuring device's LTR for hot-remove/hot-add
+>    -before restoring device's DEVCTL2 register when restore device state
+> 
+> Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
 > ---
->
-> Changes since v1:
->  - Sakari: Added mode information to ov8856_mode struct
->  - Sakari: enum_mbus_code updated
->
-> Changes since v2:
->  - Andrey: Switched approach to changing the sensor configuration
->    to yield identical Bayer modes for all modes
->
-> Changes since v3:
->  - Andrey: Improve commit msg to explain Bayer shift better
->
-> Changes since v4:
->  - Andrey: Fix typ-o
->  - Andrey: Add r-b
->
->
->  drivers/media/i2c/ov8856.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
-> index 2f4ceaa80593..8a355135c7db 100644
-> --- a/drivers/media/i2c/ov8856.c
-> +++ b/drivers/media/i2c/ov8856.c
-> @@ -428,7 +428,7 @@ static const struct ov8856_reg mode_3264x2448_regs[] = {
->         {0x3810, 0x00},
->         {0x3811, 0x04},
->         {0x3812, 0x00},
-> -       {0x3813, 0x02},
-> +       {0x3813, 0x01},
->         {0x3814, 0x01},
->         {0x3815, 0x01},
->         {0x3816, 0x00},
-> @@ -821,7 +821,7 @@ static const struct ov8856_reg mode_1632x1224_regs[] = {
->         {0x3810, 0x00},
->         {0x3811, 0x02},
->         {0x3812, 0x00},
-> -       {0x3813, 0x02},
-> +       {0x3813, 0x01},
->         {0x3814, 0x03},
->         {0x3815, 0x01},
->         {0x3816, 0x00},
-> --
-> 2.27.0
->
+> changes of v2
+>  -modify patch description
+>  -reconfigure bridge's LTR before restoring device DEVCTL2 register
+> ---
+>  drivers/pci/pci.c   | 25 +++++++++++++++++++++++++
+>  drivers/pci/probe.c | 19 ++++++++++++++++---
+>  2 files changed, 41 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index b9fecc25d213..88b4eb70c252 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1437,6 +1437,24 @@ static int pci_save_pcie_state(struct pci_dev *dev)
+>  	return 0;
+>  }
+>  
+> +static void pci_reconfigure_bridge_ltr(struct pci_dev *dev)
+> +{
+> +#ifdef CONFIG_PCIEASPM
+> +	struct pci_dev *bridge;
+> +	u32 ctl;
+> +
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (bridge && bridge->ltr_path) {
+> +		pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
+> +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
+> +			pci_dbg(bridge, "re-enabling LTR\n");
+> +			pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
+> +						 PCI_EXP_DEVCTL2_LTR_EN);
+> +		}
+> +	}
+> +#endif
+> +}
+> +
+>  static void pci_restore_pcie_state(struct pci_dev *dev)
+>  {
+>  	int i = 0;
+> @@ -1447,6 +1465,13 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
+>  	if (!save_state)
+>  		return;
+>  
+> +	/*
+> +	 * Downstream ports reset the LTR enable bit when link goes down.
+> +	 * Check and re-configure the bit here before restoring device.
+> +	 * PCIe r5.0, sec 7.5.3.16.
+> +	 */
+> +	pci_reconfigure_bridge_ltr(dev);
+> +
+>  	cap = (u16 *)&save_state->cap.data[0];
+>  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
+>  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 953f15abc850..4ad172517fd2 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2132,9 +2132,22 @@ static void pci_configure_ltr(struct pci_dev *dev)
+>  	 * Complex and all intermediate Switches indicate support for LTR.
+>  	 * PCIe r4.0, sec 6.18.
+>  	 */
+> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    ((bridge = pci_upstream_bridge(dev)) &&
+> -	      bridge->ltr_path)) {
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+> +		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+> +					 PCI_EXP_DEVCTL2_LTR_EN);
+> +		dev->ltr_path = 1;
+> +		return;
+> +	}
+> +
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (bridge && bridge->ltr_path) {
+> +		pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
+> +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
+> +			pci_dbg(bridge, "re-enabling LTR\n");
+> +			pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
+> +						 PCI_EXP_DEVCTL2_LTR_EN);
+> +		}
+> +
+
+Can't you use pci_reconfigure_bridge_ltr() here too?
+
+Otherwise looks good.
