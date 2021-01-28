@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C063308202
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AE1308205
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhA1Xjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:39:49 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34816 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhA1Xjq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:39:46 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10SNbRjW112815;
-        Thu, 28 Jan 2021 17:37:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611877047;
-        bh=/MrmXZnJhILLVxTLG9TIOQfLEmcFnf1oQVNpPlc4Ma8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dIWpzg/e4uiI9K9VIWGoFFB26UJIE8BZWdUiV1wuASwXvCzYPWTbpoSaoQv5A5gId
-         4+VmVxAyx5uGN3WLbhp1Z+gddjgT0d1LxG3E/Qf44sRZ7EOHmCciQ6LOiNv2v1UoqQ
-         poh0UOy975bzSvO0WaFns9hdkRRxEv8v7j866c1k=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10SNbRvL081986
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Jan 2021 17:37:27 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 28
- Jan 2021 17:37:26 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 28 Jan 2021 17:37:26 -0600
-Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10SNbQYB079173;
-        Thu, 28 Jan 2021 17:37:26 -0600
-Subject: Re: [PATCH] remoteproc: pru: future-proof PRU ID matching
-To:     David Lechner <david@lechnology.com>,
-        <linux-remoteproc@vger.kernel.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210104211816.420602-1-david@lechnology.com>
- <ccc1ee4b-ed73-f7c8-ca1e-f15eedeeb84b@ti.com>
- <e2a0a40d-f720-8139-29f3-39a473c69119@ti.com>
- <5fed434e-1569-ab9f-b1a4-475aa820ef47@lechnology.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <ecc74a7c-8d79-709d-cf77-8f1fabf11f39@ti.com>
-Date:   Thu, 28 Jan 2021 17:37:21 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231477AbhA1XkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:40:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229828AbhA1XkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 18:40:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E778364DE2;
+        Thu, 28 Jan 2021 23:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611877171;
+        bh=uCYlOxWFyGqfzsCOjgAMNaqNNqAKRulWHpgwkwEgtJ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=RQNMLRsXqregPQH2liQAw5L0gRasHqMLwn0Bz9kiNzAqOK0GMBn/pUCkD/S/iIv5k
+         rltYgHbPb8y4r+8on6aa+T8GqVHL2CsYQhzzyenOwKqfLbof30U6FheCKJgyZW46Fc
+         D+s1Xb+qcCbjYSNQ7XrcRKZCEvrbsNBdkT2Y6RRUxtqT6t1DKJmWXtRFy7oC1WSozc
+         zd23P1uiAF9dkA8yQQAaTswCZ/Fo+U6IFokq7IxTQWf8GyFDTuEGMf9kf7LyZmWj+R
+         as+D/W8BBFiCROZtd+kN9ZQH/yGtBf5ysvyHYPLjgDgu4AD8EXmgbKlIsp8cRkfZ1I
+         bAL/Czktx315A==
+Date:   Thu, 28 Jan 2021 17:39:29 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Alexandru Gagniuc <alex_gagniuc@dellteam.com>,
+        Keith Busch <keith.busch@intel.com>
+Cc:     Jan Vesely <jano.vesely@gmail.com>, Lukas Wunner <lukas@wunner.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Austin Bolen <austin_bolen@dell.com>,
+        Shyam Iyer <Shyam_Iyer@dell.com>,
+        Sinan Kaya <okaya@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Dave Airlie <airlied@gmail.com>,
+        Ben Skeggs <skeggsb@gmail.com>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        "A. Vladimirov" <vladimirov.atanas@gmail.com>
+Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth
+ notification"
+Message-ID: <20210128233929.GA39660@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <5fed434e-1569-ab9f-b1a4-475aa820ef47@lechnology.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200222165840.GA214760@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 5:21 PM, David Lechner wrote:
-> On 1/28/21 4:55 PM, Suman Anna wrote:
->> Hi David,
->>
->> On 1/15/21 6:53 PM, Suman Anna wrote:
->>> On 1/4/21 3:18 PM, David Lechner wrote:
->>>>   static int pru_rproc_probe(struct platform_device *pdev)
->>>> @@ -825,20 +808,28 @@ static int pru_rproc_remove(struct platform_device *pdev)
->>>>     static const struct pru_private_data pru_data = {
->>>>       .type = PRU_TYPE_PRU,
->>>> +    .pru0_iram_offset = 0x4000,
->>>> +    .pru1_iram_offset = 0x8000,
->>
->> The offsets for the PRU cores are actually 0x34000 and 0x38000 respectively from
->> the base of the PRUSS on non-Davinci SoCs.
->>
->> If we were to use this static data approach, then we might as well continue to
->> use the current address masking logic with the appropriate masks for Davinci
->> (0x38000 and 0x3C000, not true offsets but as masks they would work). Davinci
->> PRUSS is the only one with its differences being the first PRUSS IP, and I would
->> prefer to keep the logic aligned to the IPs on all the recent SoCs on 3
->> different TI SoC families (OMAP, Keystone 2 and K3).
->>
->> Let me know what you think.
-> 
-> I'm not too picky as long as it works. :-)
-> 
-> If keeping the static data to a minimum is really important, I suppose we could
-> introduce a new type = PRU_TYPE_PRU_V1 for these PRUSSs instead. It sounds like
-> this information might be useful elsewhere anyway.
+[+cc Atanas -- thank you very much for the bug report!]
 
-Yeah, let me look into this further and see if there is any other way possible
-as well. I had some patches for DA850 lying around on some older kernels, and I
-know that I definitely needed to introduce a variable to distinguish the
-programmability of certain CONST registers (C26 and C27 are fixed on Davinci
-IIRC). Will need that variable with the current PRU consumer series. Perhaps,
-the same PRU type variable can be used for that as well.
+On Sat, Feb 22, 2020 at 10:58:40AM -0600, Bjorn Helgaas wrote:
+> On Wed, Jan 15, 2020 at 04:10:08PM -0600, Bjorn Helgaas wrote:
+> > I think we have a problem with link bandwidth change notifications
+> > (see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pcie/bw_notification.c).
+> > 
+> > Here's a recent bug report where Jan reported "_tons_" of these
+> > notifications on an nvme device:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=206197
+> 
+> AFAICT, this thread petered out with no resolution.
+> 
+> If the bandwidth change notifications are important to somebody,
+> please speak up, preferably with a patch that makes the notifications
+> disabled by default and adds a parameter to enable them (or some other
+> strategy that makes sense).
+> 
+> I think these are potentially useful, so I don't really want to just
+> revert them, but if nobody thinks these are important enough to fix,
+> that's a possibility.
 
-regards
-Suman
+Atanas is also seeing this problem and went to the trouble of digging
+up this bug report:
+https://bugzilla.kernel.org/show_bug.cgi?id=206197#c8
+
+I'm actually a little surprised that we haven't seen more reports of
+this.  I don't think distros enable CONFIG_PCIE_BW, but even so, I
+would think more people running upstream kernels would trip over it.
+But maybe people just haven't turned CONFIG_PCIE_BW on.
+
+I don't have a suggestion; just adding Atanas to this old thread.
+
+> > There was similar discussion involving GPU drivers at
+> > https://lore.kernel.org/r/20190429185611.121751-2-helgaas@kernel.org
+> > 
+> > The current solution is the CONFIG_PCIE_BW config option, which
+> > disables the messages completely.  That option defaults to "off" (no
+> > messages), but even so, I think it's a little problematic.
+> > 
+> > Users are not really in a position to figure out whether it's safe to
+> > enable.  All they can do is experiment and see whether it works with
+> > their current mix of devices and drivers.
+> > 
+> > I don't think it's currently useful for distros because it's a
+> > compile-time switch, and distros cannot predict what system configs
+> > will be used, so I don't think they can enable it.
+> > 
+> > Does anybody have proposals for making it smarter about distinguishing
+> > real problems from intentional power management, or maybe interfaces
+> > drivers could use to tell us when we should ignore bandwidth changes?
+> > 
+> > Bjorn
