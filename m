@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B073307FE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31F9307FEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhA1UvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:51:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhA1UvH (ORCPT
+        id S231208AbhA1UwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:52:18 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31758 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229831AbhA1UwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:51:07 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8AAC061573;
-        Thu, 28 Jan 2021 12:50:27 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 190so5342351wmz.0;
-        Thu, 28 Jan 2021 12:50:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3On79yt/ogpOXZmRquUWRYpKWHvhXFj1EOlDrRJaacA=;
-        b=EKkldwFsnT54HxqRIn5pmq7P+Z9ErTIPYpfjgGLZws9ENBzlFH48eqRX2S6YfGzJDW
-         +oqKq9E4k04t/wZ9Nzj287mtjKqKo3qbAPdau5r+K2+o8Sv9ppYlWFBPXU1FAUj1MNpF
-         NV4YE8kReYSejwqnTTglI4Pj4Iu0uPgBdlIdEf/cWqZsZs/PDNtkhNvIWnMHPWaBproK
-         BLKxHh99AwE7OFoB/tW5vbXfYMSeYOYPHhFreyCM/KeU+A3j3s/O4MebmXBBygjZT+Op
-         nrSXLDRJ4lY5fxaJBfZCjgkCAVTK2kW5R6CKcxi5hBoGwOo6Mdw775tgEd655O/NGyOU
-         WkIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3On79yt/ogpOXZmRquUWRYpKWHvhXFj1EOlDrRJaacA=;
-        b=ozWWaZMtBa5mtli4nruvTSxDkBrPiRqFrbGK9VNv1C1rrLt4mUzWMxkXxGqIOxmFgO
-         lAAJsh8xatwGxEf4XObJklsL/eSqtNgSUWyYWRYlY5mrrm5ixOV+VGfV+F7WlXaeqzvm
-         J+QdQzRTpEmpAmLgHShIuUCsuwBGsSE5EgZjrty2slHlnRF+kC+fOVdj087CHgG55uKm
-         3L0/6cJucM0jflBU1OzpjmXk3Lbkmwxez0kyxakJWFEIsmCfmhGp3oHaNNb5ZchP3TB/
-         JRrbQqSfThO3SsHKHbnVPIDHrtABd9EqsxRpB4kUyT62+dbQ5pTLjjegBayKDUys5UWm
-         EUgg==
-X-Gm-Message-State: AOAM532evKR5ppOcUgaC7sdDtuuUQq7WznlSnyG4NOT7AjM/vcLYJEx4
-        RIpJV3l1SK0TC5Zx/lzWdIIeB9ksmK0=
-X-Google-Smtp-Source: ABdhPJzUvupS7lIYlOlVMFhIRc+8rrw2AhPsangPLc9V1N3Lf5ojVdX18q9FjEwOBDAMKz8XRU8pug==
-X-Received: by 2002:a1c:21c6:: with SMTP id h189mr858347wmh.173.1611867025854;
-        Thu, 28 Jan 2021 12:50:25 -0800 (PST)
-Received: from ?IPv6:2a02:2455:e0:e000:3005:efab:c884:ced0? ([2a02:2455:e0:e000:3005:efab:c884:ced0])
-        by smtp.gmail.com with ESMTPSA id z15sm7962448wrs.25.2021.01.28.12.50.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 12:50:25 -0800 (PST)
-Cc:     mtk.manpages@gmail.com,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] close_range.2: new page documenting close_range(2)
-To:     Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>
-References: <20210123161154.29332-1-steve@sk2.org>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
-Date:   Thu, 28 Jan 2021 21:50:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 28 Jan 2021 15:52:13 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10SKVcpg023361;
+        Thu, 28 Jan 2021 15:51:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=pPg1XBrZNOKt8PfRp2cpKYCHVhYVgYATSuz8a5k9sWs=;
+ b=s/l0pmVJBeGfhLJGM9iTfiQoVbA/zJnyD9eZBqmBkrJsTkZ5ibP8rglrttvRBSJ2rWqC
+ VegDJ4kmPIvKZ7zh+i42gtnv6ereyfJEOfXjA1EJJjouLOAxeL8Wu7sdFp2kaaV/oC5L
+ 0bRfDr0n3n6Ce2PtVwfT7K8X7ahWKVjb6rU9xh3OCwKu/sY1jcDdwAJ+9fN+/0tzmwHg
+ Z/6Q+Y7JCWhJH/daaz4NJ9GkJKNHemPLI+uWgo7PHEcyV1c/FWoPCS9UyXuO9L6ncyb+
+ xKhbBiZEJMePet4Al5qjHZoPW8BVl9ivby8bodas04NDxBMjvtRoM60rMYHWOP8Gezwq iw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36c3b6sxe8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 15:51:05 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10SKW4IC027685;
+        Thu, 28 Jan 2021 15:51:05 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36c3b6sxdx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 15:51:05 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10SKgio5020310;
+        Thu, 28 Jan 2021 20:51:04 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02dal.us.ibm.com with ESMTP id 36a4mccqkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 20:51:04 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10SKp3ln28901864
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 20:51:03 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2FFFFAE05F;
+        Thu, 28 Jan 2021 20:51:03 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF93EAE060;
+        Thu, 28 Jan 2021 20:50:58 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.85.160.249])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Thu, 28 Jan 2021 20:50:58 +0000 (GMT)
+References: <20210128181421.2279-1-hch@lst.de>
+ <20210128181421.2279-5-hch@lst.de>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        live-patching@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 04/13] module: use RCU to synchronize find_module
+In-reply-to: <20210128181421.2279-5-hch@lst.de>
+Date:   Thu, 28 Jan 2021 17:50:56 -0300
+Message-ID: <874kj023bj.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210123161154.29332-1-steve@sk2.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ suspectscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999 clxscore=1011
+ bulkscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101280097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stephen, (and CHristian, please!)
 
+Hi Christoph,
 
-Thanks for your patch revision. I've merged it, and have
-done some light editing, but I still have a question:
+Christoph Hellwig <hch@lst.de> writes:
 
-On 1/23/21 5:11 PM, Stephen Kitt wrote:
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 981302f616b411..6772fb2680eb3e 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -668,7 +668,6 @@ static struct module *find_module_all(const char *name, size_t len,
+>  
+>  struct module *find_module(const char *name)
+>  {
+> -	module_assert_mutex();
 
-[...]
+Does it make sense to replace the assert above with the warn below (untested)?
 
-> +.SH ERRORS
+     RCU_LOCKDEP_WARN(rcu_read_lock_sched_held());
 
-> +.TP
-> +.B EMFILE
-> +The per-process limit on the number of open file descriptors has been reached
-> +(see the description of
-> +.B RLIMIT_NOFILE
-> +in
-> +.BR getrlimit (2)).
-
-I think there was already a question about this error, but
-I still have a doubt.
-
-A glance at the code tells me that indeed EMFILE can occur.
-But how can the reason be because the limit on the number
-of open file descriptors has been reached? I mean: no new
-FDs are being opened, so how can we go over the limit. I think
-the cause of this error is something else, but what is it?
-
-Thanks,
-
-Michael
-
+>  	return find_module_all(name, strlen(name), false);
+>  }
 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Thiago Jung Bauermann
+IBM Linux Technology Center
