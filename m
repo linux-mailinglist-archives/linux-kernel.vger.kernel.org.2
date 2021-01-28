@@ -2,172 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8324307D38
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12318307D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhA1R6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhA1R5n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:57:43 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EA6C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:57:01 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id jx18so4779725pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:57:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gcQo9DlTrKPUw2TM/2+qTxye/Ipd7oPvbrj/DrgbKNs=;
-        b=V5eOiBkPxLowtQCwFGZnLKykhH0E5j34s2WU7DG8yQWMdmhxRK0riR9KJCB656eWMC
-         EGTZhybyoIPJyzpC0AoakhrWy31rYn4AeXM7+rqMP09U+4UQRsdjWpQtOFia87IYugXp
-         qp8l5PidvWzKDyoDx2tEQuQ+eHcHnWil2tPdrDX4XCWBtlOeiv9KzsUTF1swsBho1dqe
-         DvkKAYFmJW+JmM9F/nMIB5IwDaXuM0X+Hp4zXAhyd6vbBOlpZdDFQUJbU1TjMzQvsmWd
-         DFSAA2B78/6pw5Z+ndIhqlgN+5dozTsvvd/YLQi5ftES3f+Bgo2Hq6HgGGqelKTUYjq0
-         K9Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gcQo9DlTrKPUw2TM/2+qTxye/Ipd7oPvbrj/DrgbKNs=;
-        b=IhaA/S2Gxo76Pph70NtRyQ0eHdVSCwq8pSm4rTOR4mvTbH/WJFEEqrGZtJbnl8YPx2
-         bYr2vLw5CwsDsMdm3EbG4io8WrtaFANuTvt9Fx4g1vVr+JBPoTQnV6nde3ebpfxrrPqn
-         Yo5LpBpKRetTl4aHv62YMdoU2IQMK7C0DkggIFKkJ3e8vLkQiDzKzT8oSr28zfWfAq/B
-         AbMkvkg/YjGgKV3UvHrZfIK9ijh1nnsvVQbxkrzLoWCMOc6P/hganW50gnqVdfAUi9jY
-         LEsn3F22Xhx+Fb4f57rJ3/VW6oGfTcPWE01AveICw+cjFu2H1oWFEztkJ+y11HFFD4ky
-         OdEQ==
-X-Gm-Message-State: AOAM530HVgEotWfayfehQjhlEHnYKvpXOACirsT+0uiNcCuwqGLcGD8F
-        grzZ0hQ7Ba7IThTFCz470MoIqg==
-X-Google-Smtp-Source: ABdhPJxiv/0uKPxi8S+EooAgHxt4JtUqVj2xI9hV2qCJFVLcLPlamDT7ovBKC462uGHeU5BqTED91Q==
-X-Received: by 2002:a17:90a:5c81:: with SMTP id r1mr524096pji.175.1611856620790;
-        Thu, 28 Jan 2021 09:57:00 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:91fd:c415:8a8b:ccc4])
-        by smtp.gmail.com with ESMTPSA id z16sm6552063pgj.51.2021.01.28.09.56.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 09:57:00 -0800 (PST)
-Date:   Thu, 28 Jan 2021 09:56:54 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jmattson@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even if
- tsx=off
-Message-ID: <YBL65uIZggTjGO7F@google.com>
-References: <20210128170800.1783502-1-pbonzini@redhat.com>
+        id S231267AbhA1R7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:59:47 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:47428 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229593AbhA1R63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:58:29 -0500
+Received: from zn.tnic (p200300ec2f0a4b00db608beaaba2adee.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4b00:db60:8bea:aba2:adee])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9486D1EC058C;
+        Thu, 28 Jan 2021 18:57:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611856661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=T/dOLZHqyfSXT8UHCHdkk516q/7r513CDtEdL9VJMe0=;
+        b=JVi7ocDa2q2IATomaId3fpoiN/LDhxvbpNFODzgUofJsUdv9XlHFcEs2yeCpx2aVfSnBT6
+        kYv3Ge/CN1jzCfqg4JiD295LveLTvw/HA+3dytSHBOA7eVQQ+2UhIVJPZKreVrvGSFqbPU
+        Eqn3p/nu89ZAnYf7vFUSR3thif+aylg=
+Date:   Thu, 28 Jan 2021 18:57:35 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v5] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210128175735.GB2120@zn.tnic>
+References: <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
+ <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
+ <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
+ <20210119105632.GF27433@zn.tnic>
+ <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
+ <20210120121812.GF825@zn.tnic>
+ <20210121210959.GA10304@agluck-desk2.amr.corp.intel.com>
+ <20210125225509.GA7149@agluck-desk2.amr.corp.intel.com>
+ <20210126110314.GC6514@zn.tnic>
+ <20210126223605.GA14355@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210128170800.1783502-1-pbonzini@redhat.com>
+In-Reply-To: <20210126223605.GA14355@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021, Paolo Bonzini wrote:
-> Userspace that does not know about KVM_GET_MSR_FEATURE_INDEX_LIST will
-> generally use the default value for MSR_IA32_ARCH_CAPABILITIES.
-> When this happens and the host has tsx=on, it is possible to end up
-> with virtual machines that have HLE and RTM disabled, but TSX_CTRL
-> disabled.
+On Tue, Jan 26, 2021 at 02:36:05PM -0800, Luck, Tony wrote:
+> In some cases Linux might context switch to something else. Perhaps
+> this task even gets picked up by another CPU to run the task work
+> queued functions.  But I imagine that the context switch should act
+> as a barrier ... shouldn't it?
 
-Thos wording is confusing the heck out of me.  I think what you're saying is
-"but TSX disabled in the guest via TSX_CTRL".  I read "but TSX_CTRL disabled" as
-saying the the TSX_CTRL itself was disabled/unsupported.
+I'm given to understand that the #MC from user is likely to schedule and
+a context switch has a barrier character.
 
-> If the fleet is then switched to tsx=off, kvm_get_arch_capabilities()
-> will clear the ARCH_CAP_TSX_CTRL_MSR bit and it will not be possible
-> to use the tsx=off as migration destinations, even though the guests
-> indeed do not have TSX enabled.
+> After a few cycles of the test injection to user mode, I saw an
+> overflow in the machine check bank. As if it hadn't been cleared
+> from the previous iteration ...
+
+This sounds weird. As if something else is happening which we haven't
+thought of yet...
+
+> When the tests were failing, code was on top of v5.11-rc3. Latest
+> experiments moved to -rc5.  There's just a tracing fix from
+> PeterZ between rc3 and rc5 to mce/core.c:
 > 
-> When tsx=off is used, however, we know that guests will not have
-> HLE and RTM (or if userspace sets bogus CPUID data, we do not
-> expect HLE and RTM to work in guests).  Therefore we can keep
-> TSX_CTRL_RTM_DISABLE set for the entire life of the guests and
-> save MSR reads and writes on KVM_RUN and in the user return
-> notifiers.
+> 737495361d44 ("x86/mce: Remove explicit/superfluous tracing")
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: cbbaa2727aa3 ("KVM: x86: fix presentation of TSX feature in ARCH_CAPABILITIES")
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 12 +++++++++++-
->  arch/x86/kvm/x86.c     |  2 +-
->  2 files changed, 12 insertions(+), 2 deletions(-)
+> which doesn't appear to be a candidate for the problems I saw.
+
+Doesn't look like it.
+
+> This is the bit that changed during my detour using atomic_t mce_count.
+> I added the local variable to capture value from atomic_inc_return(), then
+> used it later, instead of a bunch of atomic_read() calls.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index cc60b1fc3ee7..80491a729408 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6863,8 +6863,18 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  			 * No need to pass TSX_CTRL_CPUID_CLEAR through, so
->  			 * let's avoid changing CPUID bits under the host
->  			 * kernel's feet.
-> +			 *
-> +			 * If the host disabled RTM, we may still need TSX_CTRL
-> +			 * to be supported in the guest; for example the guest
-> +			 * could have been created on a tsx=on host with hle=0,
-> +			 * rtm=0, tsx_ctrl=1 and later migrate to a tsx=off host.
-> +			 * In that case however do not change the value on the host,
-> +			 * so that TSX remains always disabled.
+> I kept it this way because "if (count == 1)" is marginally easier to read
+> than "if (current->mce_count++ == 0)"
 
-Oof, can you reword this to clarify what "the value" refers to?  The previous
-paragraphs talks about TSX_CTRL_CPUID_CLEAR, and the obvious "value" in the code
-is also TSX_CTRL_CPUID_CLEAR, and so I thought the comment was saying "don't
-change the value of CPUID_CLEAR", which is non-sensical because that's the the
-RTM-enabled case does...
+Right.
 
->  			 */
-> -			vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-> +			if (boot_cpu_has(X86_FEATURE_RTM))
-> +				vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-> +			else
-> +				vmx->guest_uret_msrs[j].mask = 0;
+So still no explanation why it would fail before. ;-\
 
-IMO, this is an unnecessarily confusing way to "remove" the user return MSR.
-Changing the ordering to do a 'continue' would also provide a separate chunk of
-code for the new comment.  And maybe replace the switch with an if-statement to
-avoid a 'continue' buried in a switch?
+Crazy idea: if you still can reproduce on -rc3, you could bisect: i.e.,
+if you apply the patch on -rc3 and it explodes and if you apply the same
+patch on -rc5 and it works, then that could be a start... Yeah, don't
+have a better idea here. :-\
 
-		vmx->guest_uret_msrs[j].slot = i;
-		vmx->guest_uret_msrs[j].data = 0;
-		if (index == MSR_IA32_TSX_CTRL) {
-			/* Fancy new comment here. */
-			if (!boot_cpu_has(X86_FEATURE_RTM))
-				continue;
+-- 
+Regards/Gruss,
+    Boris.
 
-			/*
-			 * No need to pass TSX_CTRL_CPUID_CLEAR through, so
-			 * let's avoid changing CPUID bits under the host
-			 * kernel's feet.
-			 */
-			vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-		} else {
-			vmx->guest_uret_msrs[j].mask = -1ull;
-
-		}
-
->  			break;
->  		default:
->  			vmx->guest_uret_msrs[j].mask = -1ull;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 76bce832cade..15733013b266 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1401,7 +1401,7 @@ static u64 kvm_get_arch_capabilities(void)
-
-This comments needs to be rewritten, it reflects the old behavior of exposing
-the feature iff RTM/TSC is supported by the host.
-
->  	 *	  This lets the guest use VERW to clear CPU buffers.
->  	 */
->  	if (!boot_cpu_has(X86_FEATURE_RTM))
-> -		data &= ~(ARCH_CAP_TAA_NO | ARCH_CAP_TSX_CTRL_MSR);
-> +		data &= ~ARCH_CAP_TAA_NO;
->  	else if (!boot_cpu_has_bug(X86_BUG_TAA))
->  		data |= ARCH_CAP_TAA_NO;
->  
-> -- 
-> 2.26.2
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
