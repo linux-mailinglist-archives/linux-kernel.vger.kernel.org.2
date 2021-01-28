@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6CA307273
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82474307278
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbhA1JRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:17:05 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:56188 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232416AbhA1JOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:14:32 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L01gBJg0l0OAA--.21898S2;
-        Thu, 28 Jan 2021 17:13:25 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next] MAINTAINERS: BPF: Update web-page bpf.io to ebpf.io to avoid redirects
-Date:   Thu, 28 Jan 2021 17:13:24 +0800
-Message-Id: <1611825204-14887-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx6L01gBJg0l0OAA--.21898S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF4rZry7WFWDWFWDJry5Arb_yoWDAFX_Cr
-        4fCrWxX395GF1rua1kGrnayr1rK3yUAFnay3W2gr43Aa4jyr98JrWfK3sayay5Xr1kGrZI
-        qa43Grn8Zr43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JU4BT5UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S232378AbhA1JUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232421AbhA1JOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:14:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED19FC061574;
+        Thu, 28 Jan 2021 01:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0uM6CSHsoomGeS1Xbh30DG0XHearH5v0HhHcSqmaAA0=; b=eMEfug9Ko1GEW3QSpqtQTs4ghg
+        lm4hl37I9rSX9kMhJV2f1K//5qmFBwK1ShKO8/xyMypbfACYddH2ZEaAy9qdpkvCPKNFEG6RpBC07
+        M7DF+lp8d6vo9wYJQBeOINb4pld07XKtOlDZiJkCDHRzgyUWj78+cEVUPbMdi2D0Q44tTgLo4Sj9t
+        8Gpf0WL+cE/wsY0YVazPZhuuBR8Yddj0aZYQ7t9hYs/6//NP+cusgBqBdtCK4eJjxMtF5iVMDpuHl
+        QGa38DMHZL79VQh5C/K6og7DvVJtZwLQKbh4iNYy59nOn/TqUhPugkTqiD29l+/GJZyW8iOOT7gOs
+        cMkkfugA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l53N6-008FCm-Sp; Thu, 28 Jan 2021 09:13:49 +0000
+Date:   Thu, 28 Jan 2021 09:13:48 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     sumit.semwal@linaro.org, benjamin.gaignard@linaro.org,
+        lmark@codeaurora.org, labbott@redhat.com, Brian.Starkey@arm.com,
+        john.stultz@linaro.org, christian.koenig@amd.com,
+        cgoldswo@codeaurora.org, orjan.eide@arm.com, robin.murphy@arm.com,
+        jajones@nvidia.com, minchan@kernel.org, hridya@google.com,
+        sspatil@google.com, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
+ linux vm
+Message-ID: <20210128091348.GA1962975@infradead.org>
+References: <20210128083817.314315-1-surenb@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128083817.314315-1-surenb@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I open https://bpf.io/, it seems too slow.
+On Thu, Jan 28, 2021 at 12:38:17AM -0800, Suren Baghdasaryan wrote:
+> Currently system heap maps its buffers with VM_PFNMAP flag using
+> remap_pfn_range. This results in such buffers not being accounted
+> for in PSS calculations because vm treats this memory as having no
+> page structs. Without page structs there are no counters representing
+> how many processes are mapping a page and therefore PSS calculation
+> is impossible.
+> Historically, ION driver used to map its buffers as VM_PFNMAP areas
+> due to memory carveouts that did not have page structs [1]. That
+> is not the case anymore and it seems there was desire to move away
+> from remap_pfn_range [2].
+> Dmabuf system heap design inherits this ION behavior and maps its
+> pages using remap_pfn_range even though allocated pages are backed
+> by page structs.
+> Clear VM_IO and VM_PFNMAP flags when mapping memory allocated by the
+> system heap and replace remap_pfn_range with vm_insert_page, following
+> Laura's suggestion in [1]. This would allow correct PSS calculation
+> for dmabufs.
+> 
+> [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
+> [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
+> (sorry, could not find lore links for these discussions)
+> 
+> Suggested-by: Laura Abbott <labbott@kernel.org>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 17e0e9a68baf..0e92e42b2251 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -200,11 +200,13 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+>  	struct sg_page_iter piter;
+>  	int ret;
+>  
+> +	/* All pages are backed by a "struct page" */
+> +	vma->vm_flags &= ~VM_PFNMAP;
 
-$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{time_redirect}\n'
-2.373
-
-$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{url_effective}\n'
-https://ebpf.io/
-
-$ curl -s -S -L https://ebpf.io/ -o /dev/null -w '%{time_redirect}\n'
-0.000
-
-So update https://bpf.io/ to https://ebpf.io/ to avoid redirects.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1df56a3..09314ce 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3260,7 +3260,7 @@ R:	KP Singh <kpsingh@kernel.org>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Supported
--W:	https://bpf.io/
-+W:	https://ebpf.io/
- Q:	https://patchwork.kernel.org/project/netdevbpf/list/?delegate=121173
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
--- 
-2.1.0
-
+Why do we clear this flag?  It shouldn't even be set here as far as I
+can tell.
