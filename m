@@ -2,128 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AF030758D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3463B30759A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 13:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhA1MHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhA1MFz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:05:55 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FFBC061573;
-        Thu, 28 Jan 2021 04:05:15 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id c4so2424028wru.9;
-        Thu, 28 Jan 2021 04:05:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FvPd5ifPVoBtRVnaGQOlqp/tByyxR4FiQHLJy7BycmA=;
-        b=FxGiNKqvyueMB/lnAWyUND5sS13WlwGLefVHBucluxwpfTiLTiB/tqj2CEBOCAXLa6
-         5z15i3J/sJAdQD0DyjNpqcBY+mfNIzkeryFwpejOq3p21irD1hy5eLoncofJX3N7VZyM
-         qup1Glfv1Bohk6ivde403LQE10t2+FZy/qti/s/H+fqCeOO5XJj0eP0hiEzaets9d3oQ
-         skh/3y7ZAX1y4BzRWT13oucubWLb6TgW0/dOt0m6MdEhok52ok0sbVAwq/ZX3eOL8jPw
-         jKF+Ge1YdnFYtM9zRMxwUYAAyBeZow6YfMyrOAc8YGH5rVSvUe9r/AB/Eva+M0JGjGXN
-         ZuYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FvPd5ifPVoBtRVnaGQOlqp/tByyxR4FiQHLJy7BycmA=;
-        b=O/DIa04k7pf+9jRM+2Q9jaJh4hK+ttv51ztizPBBdfTS7QQJwIuDg9YeaEZpvTPKh2
-         xSVUFsCIBxaHaVrA1xLgjIdiw3XVXG1QstN6/+tyf8OaR7uIwO6u6G0lMytQv+jN9/KV
-         Xi73IWgL2yQBCuQJyCxPqUJP9obeLMFQsXuAT2RDST5HcOdqvxwNAirRdV5PaOa5iESc
-         jB8ZygL2QvnB5d1STAxka8Nn0/0p1GDzbMbHLlS6ehHZ0BqmbHqxEnygfF1Ilo4uRZAA
-         J+VNXH3FQOX73Slzym+5gSQHQjiE+A6qw8QVQKu61CdmZ+82CUrnL53K735ZDwgKEDu+
-         IG6w==
-X-Gm-Message-State: AOAM531xlF5b+AA/GVAjcIxv4hbrAxg/lhFDSunsy1O9r/0PVSM8PXhv
-        mVvzZxjf+Uj/iUwR+Xh+LdrGu+KkZ8HFq807mHI=
-X-Google-Smtp-Source: ABdhPJwNKo9SgZ9Tw1csbr5dfyG4j+Gv4mh1lZYbpPwxkNVOWelF2qV1h2YZAKH8JyH5w+J7D7mZ0eXfhFXPOnnld+I=
-X-Received: by 2002:adf:f182:: with SMTP id h2mr15937080wro.355.1611835513892;
- Thu, 28 Jan 2021 04:05:13 -0800 (PST)
+        id S231232AbhA1MKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:10:34 -0500
+Received: from mail-eopbgr30136.outbound.protection.outlook.com ([40.107.3.136]:28577
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229817AbhA1MKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:10:30 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PpT1IzfNJuIYFNoZ3CeuZENx+1qzbuTtYsjBmtP0oi5cpQEUkKcd4YaQ0NGIY+bRIgW1T/EOMlfC7pmr9l5XNQ39XQFiAjAeTdLIHTgWNybEcMOBXcUwJNBO1mdCSH+ZsNgclW/iw5GGf9EH0FyRkcz4c+PWBOK3eAG5V+m7l1zPGTp2YpM9kXntJPBRLBHFHUOIu637WC2qiCtWUUVwTiDxLINWKVWce/kwjsmwJ7EtJKl7E6t7+ggWgR2hiCqRLdwFRjT/cLIUYmXJjDl3Gl13XzmO1xpqRfUqVJ7njf18++GSb2kasG81dQ0YmDvJYwA+eh8gQOeiuNJnQAwALg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZO9z5G/GuaoXIA6nSx8XgTqSNFDo5kkVO5YgyaiCM04=;
+ b=If38DSwDGE1OabxziKhk3fHG77s2HCsq2zVlHUNLw3TiG1bPXdEdsqCH99xxQHSG4Cytkio6kTFdWDhDSPQOzGYC8rg7ks+xdlqrUsqzehv5IFCcWHKTOz2L9T2CvDcxmIVTuDrLbBOZdlMu7xWq9pkNO1EJ+TAGxxHprFeI2LwZoo7fu3xfLs8HIgAVp7VFPswp0vyUhAAlXgiWaabDuFnrzTqhAn1rqbnFuzciBF6PykPMxggETKCZwjNEU4z/h3nNdtpyFWFyazascCFlVjnLv114q9sdF2y1ME3C/8sX6Eotvi2p0x93UAn2VWxMYAqs9Ijf5HIKJj6zmLPDkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZO9z5G/GuaoXIA6nSx8XgTqSNFDo5kkVO5YgyaiCM04=;
+ b=ckccAzoX1Z6Xc069CTq8I2EGJnwf6hnpWHu0bZnqDUD57odw11vExtkglX2OPnPEiODc45u10oTXBTDJ8TdXKj52bALnlQOg7jrtJIj9NpXpo5vdBvqyR5uahYYvT235RAaqd8Dpyx0VWxVgcNXjq2OQWITxhmzlvESRBXrKESU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
+Received: from (2603:10a6:208:6e::15) by
+ AM0PR07MB4033.eurprd07.prod.outlook.com (2603:10a6:208:3f::26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.6; Thu, 28 Jan 2021 12:09:42 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3825.008; Thu, 28 Jan 2021
+ 12:09:42 +0000
+Subject: Re: [PATCH 1/6] MIPS: Octeon: Implement __smp_store_release()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+ <20210127203627.47510-2-alexander.sverdlin@nokia.com>
+ <YBHp4139X+p+4IZ+@hirez.programming.kicks-ass.net>
+ <aace6ff1-9ddf-15af-3c0a-378c53c59acb@nokia.com>
+ <YBKhBQQ97f/J6L+u@hirez.programming.kicks-ass.net>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <3c0165d9-1814-df1d-7ec9-bf515a3996b3@nokia.com>
+Date:   Thu, 28 Jan 2021 13:09:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <YBKhBQQ97f/J6L+u@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [131.228.32.168]
+X-ClientProxiedBy: AM0P190CA0029.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::39) To AM0PR07MB4531.eurprd07.prod.outlook.com
+ (2603:10a6:208:6e::15)
 MIME-Version: 1.0
-References: <CGME20210127150134epcas5p251fc1de3ff3581dd4c68b3fbe0b9dd91@epcas5p2.samsung.com>
- <20210127150029.13766-1-joshi.k@samsung.com> <489691ce-3b1e-30ce-9f72-d32389e33901@gmail.com>
- <a287bd9e-3474-83a4-e5c2-98df17214dc7@gmail.com>
-In-Reply-To: <a287bd9e-3474-83a4-e5c2-98df17214dc7@gmail.com>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Thu, 28 Jan 2021 17:34:47 +0530
-Message-ID: <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] Asynchronous passthrough ioctl
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Selvakumar S <selvakuma.s1@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.168) by AM0P190CA0029.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 12:09:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 01c6ded0-f484-4d03-e821-08d8c38597ee
+X-MS-TrafficTypeDiagnostic: AM0PR07MB4033:
+X-Microsoft-Antispam-PRVS: <AM0PR07MB403304BAF84E39E63DB5FFA388BA9@AM0PR07MB4033.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:446;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L1c2XhArCsXn/0zbQwga6kaf3FS/obzXHR1+yvhrMChuRtmNyUlowvLqKaJGKDehG40q+AQazoc5rGevEUClZxx8aKH9KtzOazN546JSiAECzQJ7+Ck2ZNfV925BYrGpecUxlsaDDKUO9RaNvvbu94vLZswM+c1QiF80ifPPhU3ti7CL+O2aNA3JOjwLvdIiPavLCWOHsdvrxxEVF7f7SAIveJfVOO6PeJiNynH+8a/lRPKwwLJ7SJtNfqfPxzeNJVwHniOAZcgQDo8Lfp3akRaZopSq4qeN6BEtRYIg5CoGR/GfcQsH4Mdp6+HXE2sW26eiHqqyJJqsiyX6b0eJCPafcq+hGkEmoelsqzjgSjMLX3g8WtR1mIjZI3anMq220CdHHrPZtXizqFIgigVnL004KbpVkKzP10z/KkgTXE7AdHFU0e59ekMAGNH7OYUYX0TNYhGShVeo0lgTW4X/W6NGZD9SkBehJunJzeEJ2J1rUfQe7SalhefwGHw5pmhi1t5jB7/vhBVbqd3ruRZLk/z1NzlglpU2H7O+9P8JnwM6+pJ1zJJrGsRo1mpRjFsWjT6E2UDsHZHJJK03QNVKGrqXv+lF4yncrsBvot3s968y+SeXQzLd6oaXuFqCGgKmLLYAUbCTWH1/+27OZS309ZYE3LpALtj5xq5+lxQ5SHEmRKVfhdoLXJEAAEVrvhO6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(346002)(136003)(39860400002)(66946007)(4326008)(66574015)(478600001)(186003)(66476007)(66556008)(956004)(316002)(2616005)(86362001)(54906003)(52116002)(2906002)(16526019)(8936002)(44832011)(6486002)(8676002)(31686004)(83380400001)(966005)(26005)(6506007)(53546011)(6512007)(5660300002)(36756003)(6916009)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K2pQTjc1Qk1rTVA4SXc2Q1JoeUh2TjFPN011V1JLUUI2VGxnR0d3ZVkwcG0z?=
+ =?utf-8?B?azdnUWhwMHdvUGlZd0JwdWZiVnhPbXVPU2kwS0FzaHNpT2ZzUi9kcytWbDZa?=
+ =?utf-8?B?ek5Ub1hHdHRVQVQveVFYR2I4Qjc2em03ZkdTZVhqa1kweGJ5RFE1ZUJuZ3lz?=
+ =?utf-8?B?ZUM4UnNRcDBRV2JJbWY2SUtWU2VYUi9udjd4RVk5V1NtZzBHNTlFNG0xUDZv?=
+ =?utf-8?B?dFpaaW1WLytpVTNkRjVYUzhVcDk1bWR0UXlOaU4vQmNxZk9oeUtwM3VLWG5H?=
+ =?utf-8?B?T0g4blNlQ1ZMUXRJUHYwODliMklvYkpoVW51bnBTakcwYzNmR3Y3VysrYlZQ?=
+ =?utf-8?B?T1JtNksxM1N1RzRyUXEzRnBLS0t5cjdJNDZsSGRyU1c2aW8rMWdDRytCaUVT?=
+ =?utf-8?B?YTB6VUV6ZVNHMU0rcDlEbjN1SVNMQy9mMHdQenlxcHhNVERweTRHSVNWcmFk?=
+ =?utf-8?B?NnRqZmNOS292aGpoWHZyN05aRjdoVHpuS2RQVjU1dzlzYmFjQ1dseUNHK1l6?=
+ =?utf-8?B?b3htNUp4MGsxQk12L3JwWU1jTyt4TTRNNTRDL3djS0E5Ym4yK2lMbm5VWjJs?=
+ =?utf-8?B?clpnZXpCS0FDVGlzaHB3WVF5QXRtMngrcDNLT2JCZXJRLzNTbldtaGI2YjBl?=
+ =?utf-8?B?emc5SDlQUitJbjhlVlN1eWJOS2h5bFlVQVhFb2ZxNTBpcUs3L2NRQ2IveVdr?=
+ =?utf-8?B?RXRBWkdMcVQxQXZIb1c4WEZQNTlKbFdSR2F6WnJPUTZxRTQrbkExTmk3Vmxx?=
+ =?utf-8?B?Y3BiQ2NGZmdtZnNpSm9CcjdFVXFIOGhOVkpCdW1WZXRFN0ZOSmEvQmFmODhW?=
+ =?utf-8?B?dE9EVjhlbVZaTDV3TStzM0EyRU1OZTQxZVFaSmJxRk5BTDR4THBYdlNrekhk?=
+ =?utf-8?B?aUgzcTVsZ1A2OXMvTWp0elNTUlJlNzdOaE0rNm5DSTVKYkpscHo4TmVlWEdq?=
+ =?utf-8?B?bDVrQWdUVHFlbUhRdzQvMHpaZ1FpSjBzY3B0UjUwUDAybmJoa2RicUh2VkRq?=
+ =?utf-8?B?Uko0dFNaZFF1YTJsSWhNOEhPSVE4UG1IbGcrY2gvUjhWZ1VZNDNrNjR5aWlw?=
+ =?utf-8?B?MjZLaDVrOTNuU1E5cEN2dm9EbW9Gb1FwRVhNOUxZNzlrbzVuZ3RCM1IyR1pX?=
+ =?utf-8?B?QUMyNTE4c3o5MVRZa0NtZTVMTzFBSTFuWVZxTC9RNFRhdWFOWEV3NTA3YWR2?=
+ =?utf-8?B?R1ROOU1WYi95UDlNWlhkZVVMN2ZZOU1lcjJFMzJMYURrbkROWFZ0cjFsS2NK?=
+ =?utf-8?B?cEFrWFlMNjF0ZmVHR3o4ak5OVTJaRUJpTDdDVjV4Z29aYXhYK0Q3cjlYbWVo?=
+ =?utf-8?B?Y1hLem5mcWRUZDhLWDNZbnYrWXFBT0theFFyaGxZMC9JN044Y3QwV1BNSVlR?=
+ =?utf-8?B?NS9JMFM0L3prdDZkWlVpa3JGZ2EzV1YrSFRDTjlxN00wMHRBK0Zhazhiam50?=
+ =?utf-8?Q?AInEwA4u?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01c6ded0-f484-4d03-e821-08d8c38597ee
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 12:09:42.1407
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tyTtZLB5hR8nT2elAX/6I7nhH6H0q5DczNveF5KhZmxBYPNhUYMOBJArrKlJY3FL2PqTfXHD87iHwv33ECQKfUDBkswvc7JWhbLw3VsvYHM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 9:32 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 27/01/2021 15:42, Pavel Begunkov wrote:
-> > On 27/01/2021 15:00, Kanchan Joshi wrote:
-> >> This RFC patchset adds asynchronous ioctl capability for NVMe devices.
-> >> Purpose of RFC is to get the feedback and optimize the path.
-> >>
-> >> At the uppermost io-uring layer, a new opcode IORING_OP_IOCTL_PT is
-> >> presented to user-space applications. Like regular-ioctl, it takes
-> >> ioctl opcode and an optional argument (ioctl-specific input/output
-> >> parameter). Unlike regular-ioctl, it is made to skip the block-layer
-> >> and reach directly to the underlying driver (nvme in the case of this
-> >> patchset). This path between io-uring and nvme is via a newly
-> >> introduced block-device operation "async_ioctl". This operation
-> >> expects io-uring to supply a callback function which can be used to
-> >> report completion at later stage.
-> >>
-> >> For a regular ioctl, NVMe driver submits the command to the device and
-> >> the submitter (task) is made to wait until completion arrives. For
-> >> async-ioctl, completion is decoupled from submission. Submitter goes
-> >> back to its business without waiting for nvme-completion. When
-> >> nvme-completion arrives, it informs io-uring via the registered
-> >> completion-handler. But some ioctls may require updating certain
-> >> ioctl-specific fields which can be accessed only in context of the
-> >> submitter task. For that reason, NVMe driver uses task-work infra for
-> >> that ioctl-specific update. Since task-work is not exported, it cannot
-> >> be referenced when nvme is compiled as a module. Therefore, one of the
-> >> patch exports task-work API.
-> >>
-> >> Here goes example of usage (pseudo-code).
-> >> Actual nvme-cli source, modified to issue all ioctls via this opcode
-> >> is present at-
-> >> https://github.com/joshkan/nvme-cli/commit/a008a733f24ab5593e7874cfbc69ee04e88068c5
-> >
-> > see https://git.kernel.dk/cgit/linux-block/log/?h=io_uring-fops
-> >
-> > Looks like good time to bring that branch/discussion back
->
-> a bit more context:
-> https://github.com/axboe/liburing/issues/270
+Hi!
 
-Thanks, it looked good. It seems key differences (compared to
-uring-patch that I posted) are -
-1. using file-operation instead of block-dev operation.
-2. repurpose the sqe memory for ioctl-cmd. If an application does
-ioctl with <=40 bytes of cmd, it does not have to allocate ioctl-cmd.
-That's nifty. We still need to support passing larger-cmd (e.g.
-nvme-passthru ioctl takes 72 bytes) but that shouldn't get too
-difficult I suppose.
+On 28/01/2021 12:33, Peter Zijlstra wrote:
+> On Thu, Jan 28, 2021 at 08:27:29AM +0100, Alexander Sverdlin wrote:
+> 
+>>>> +#define __smp_store_release(p, v)					\
+>>>> +do {									\
+>>>> +	compiletime_assert_atomic_type(*p);				\
+>>>> +	__smp_wmb();							\
+>>>> +	__smp_rmb();							\
+>>>> +	WRITE_ONCE(*p, v);						\
+>>>> +} while (0)
+>>> This is wrong in general since smp_rmb() will only provide order between
+>>> two loads and smp_store_release() is a store.
+>>>
+>>> If this is correct for all MIPS, this needs a giant comment on exactly
+>>> how that smp_rmb() makes sense here.
+>>
+>> ... the macro is provided for Octeon only, and __smp_rmb() is actually a NOP
+>> there, but I thought to "document" the flow of thoughts from the discussion
+>> above by including it anyway.
+> 
+> Random discussions on the internet do not absolve you from having to
+> write coherent comments. Especially so where memory ordering is
+> concerned.
 
-And for some ioctls, driver may still need to use task-work to update
-the user-space pointers (embedded in uring/ioctl cmd) during
-completion.
+I actually hoped you will remember the discussion you've participated 5 years
+ago and (in my understanding) actually already agreed that the solution itself
+is not broken:
 
-@Jens - will it be fine if I start looking at plumbing nvme-part of
-this series on top of your work?
+https://lore.kernel.org/lkml/20151112180003.GE17308@twins.programming.kicks-ass.net/
 
+Could you please just suggest the proper comment you expect to be added here,
+because there is no doubts, you have much more experience here than me?
 
-Thanks,
+> This, from commit 6b07d38aaa52 ("MIPS: Octeon: Use optimized memory
+> barrier primitives."):
+> 
+> 	#define smp_mb__before_llsc() smp_wmb()
+> 	#define __smp_mb__before_llsc() __smp_wmb()
+> 
+> is also dodgy as hell and really wants a comment too. I'm not buying the
+> Changelog of that commit either, __smp_mb__before_llsc should also
+> ensure the LL cannot happen earlier, but SYNCW has no effect on loads.
+> So what stops the load from being speculated?
+> 
+> 
+
+-- 
+Best regards,
+Alexander Sverdlin.
