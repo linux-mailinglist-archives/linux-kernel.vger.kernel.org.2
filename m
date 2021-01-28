@@ -2,194 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D87E30769A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E9E307692
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhA1M7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:59:43 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:62208 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbhA1M7R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:59:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1611838756; x=1643374756;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=B56E1Awf7VEQPdUFQmhu23n9pP7LJrGNglTlfuHed+U=;
-  b=ERdJQ3q0L8dvF3APuLnziiKfn9NEKDpQpubh+o8HN7qA+Y+m5tQ3eLN1
-   3nfh847FpF1czOV4xRQu6/YTw8MIGNz+qhdLFcOtzXhlf95sZmPujaqcc
-   w7HXqVpJNWioN8ECo+IFIdgdl9Nk45NFKEyQx8R5rJm5GdFG4Mc+e3nAc
-   4=;
-X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
-   d="scan'208";a="82178107"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 28 Jan 2021 12:58:25 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 6DE2AC0600;
-        Thu, 28 Jan 2021 12:58:22 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 Jan 2021 12:58:21 +0000
-Received: from Alexanders-MacBook-Air.local (10.43.162.125) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 28 Jan 2021 12:58:14 +0000
-Subject: Re: [PATCH v4 0/2] System Generation ID driver and VMGENID backend
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>
-CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "Jason@zx2c4.com" <Jason@zx2c4.com>,
-        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "areber@redhat.com" <areber@redhat.com>,
-        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>
-References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
- <20210112074658-mutt-send-email-mst@kernel.org>
- <9952EF0C-CD1D-4EDB-BAB8-21F72C0BF90D@amazon.com>
- <20210127074549-mutt-send-email-mst@kernel.org>
-From:   Alexander Graf <graf@amazon.de>
-Message-ID: <7bcd1cf3-d055-db46-95ea-5c023df2f184@amazon.de>
-Date:   Thu, 28 Jan 2021 13:58:12 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        id S231896AbhA1M7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 07:59:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231882AbhA1M7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 07:59:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0770564D9D;
+        Thu, 28 Jan 2021 12:58:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611838700;
+        bh=C4qSykV9Ua8Po/5N13FLIU468aGWyLm2jJyx3ABSln4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xz8HtbVrbtSfTv+ggNZOODBQQWdtWmHrkQ4XFzInDN4B6llxh8K2hJ5RG5O7rTw6I
+         PQmQV0gSCm9jRUfrvDw0yUH+t+j/LJFJ4mHNbdTfUn26ZZqDLArhJHbv8+sV3z0Dg4
+         NuKkWCYeOYZ4iKAlECxevvtTsd/XvYX4T74MV4qc=
+Date:   Thu, 28 Jan 2021 13:58:17 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Carlis <zhangxuezhi3@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
+        mh12gx2825@gmail.com, oliver.graute@kococonnector.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        sbrivio@redhat.com, colin.king@canonical.com,
+        zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v12] staging: fbtft: add tearing signal detect
+Message-ID: <YBK06WnVg7xQ1H8a@kroah.com>
+References: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210127074549-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.125]
-X-ClientProxiedBy: EX13D02UWC002.ant.amazon.com (10.43.162.6) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611838435-151774-1-git-send-email-zhangxuezhi3@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Michael!
+On Thu, Jan 28, 2021 at 08:53:55PM +0800, Carlis wrote:
+> From: zhangxuezhi <zhangxuezhi1@yulong.com>
+> 
+> For st7789v ic,when we need continuous full screen refresh, it is best to
+> wait for the TE signal arrive to avoid screen tearing
+> 
+> Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+> ---
+> v12: change dev_err to dev_err_probe and add space in comments start, and
+>      delete te_mutex, change te wait logic
+> v11: remove devm_gpio_put and change a dev_err to dev_info
+> v10: additional notes
+> v9: change pr_* to dev_*
+> v8: delete a log line
+> v7: return error value when request fail
+> v6: add te gpio request fail deal logic
+> v5: fix log print
+> v4: modify some code style and change te irq set function name
+> v3: modify author and signed-off-by name
+> v2: add release te gpio after irq request fail
+> ---
+>  drivers/staging/fbtft/fb_st7789v.c | 116 +++++++++++++++++++++++++++++++++++++
+>  drivers/staging/fbtft/fbtft.h      |   1 +
+>  2 files changed, 117 insertions(+)
+> 
+> diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
+> index 3a280cc..f08e9da 100644
+> --- a/drivers/staging/fbtft/fb_st7789v.c
+> +++ b/drivers/staging/fbtft/fb_st7789v.c
+> @@ -9,7 +9,11 @@
+>  #include <linux/delay.h>
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/completion.h>
+>  #include <linux/module.h>
+> +#include <linux/gpio/consumer.h>
+> +
+>  #include <video/mipi_display.h>
+>  
+>  #include "fbtft.h"
+> @@ -66,6 +70,15 @@ enum st7789v_command {
+>  #define MADCTL_MX BIT(6) /* bitmask for column address order */
+>  #define MADCTL_MY BIT(7) /* bitmask for page address order */
+>  
+> +#define SPI_PANEL_TE_TIMEOUT	400 /* msecs */
+> +static struct completion spi_panel_te;
 
-On 27.01.21 13:47, Michael S. Tsirkin wrote:
-> =
+Doesn't this structure have to be per-device?  How can it be global for
+all devices in the system controlled by this driver?
 
-> On Thu, Jan 21, 2021 at 10:28:16AM +0000, Catangiu, Adrian Costin wrote:
->> On 12/01/2021, 14:49, "Michael S. Tsirkin" <mst@redhat.com> wrote:
->>
->>      On Tue, Jan 12, 2021 at 02:15:58PM +0200, Adrian Catangiu wrote:
->>      > The first patch in the set implements a device driver which expos=
-es a
->>      > read-only device /dev/sysgenid to userspace, which contains a
->>      > monotonically increasing u32 generation counter. Libraries and
->>      > applications are expected to open() the device, and then call rea=
-d()
->>      > which blocks until the SysGenId changes. Following an update, rea=
-d()
->>      > calls no longer block until the application acknowledges the new
->>      > SysGenId by write()ing it back to the device. Non-blocking read()=
- calls
->>      > return EAGAIN when there is no new SysGenId available. Alternativ=
-ely,
->>      > libraries can mmap() the device to get a single shared page which
->>      > contains the latest SysGenId at offset 0.
->>
->>      Looking at some specifications, the gen ID might actually be located
->>      at an arbitrary address. How about instead of hard-coding the offse=
-t,
->>      we expose it e.g. in sysfs?
->>
->> The functionality is split between SysGenID which exposes an internal u32
->> counter to userspace, and an (optional) VmGenID backend which drives
->> SysGenID generation changes based on hw vmgenid updates.
->>
->> The hw UUID you're referring to (vmgenid) is not mmap-ed to userspace or
->> otherwise exposed to userspace. It is only used internally by the vmgenid
->> driver to find out about VM generation changes and drive the more generic
->> SysGenID.
->>
->> The SysGenID u32 monotonic increasing counter is the one that is mmaped =
-to
->> userspace, but it is a software counter. I don't see any value in using =
-a dynamic
->> offset in the mmaped page. Offset 0 is fast and easy and most importantl=
-y it is
->> static so no need to dynamically calculate or find it at runtime.
-> =
+thanks,
 
-> Well you are burning a whole page on it, using an offset the page
-> can be shared with other functionality.
-
-Currently, the SysGenID lives is one page owned by Linux that we share =
-
-out to multiple user space clients. So yes, we burn a single page of the =
-
-system here.
-
-If we put more data in that same page, what data would you put there? =
-
-Random other bits from other subsystems? At that point, we'd be =
-
-reinventing vdso all over again, no? Probably with the same problems.
-
-Which gets me to the second alternative: Reuse VDSO. The problem there =
-
-is that the VDSO is an extremely architecture specific mechanism. Any =
-
-new architecture we'd want to support would need multiple layers of =
-
-changes in multiple layers of both kernel and libc. I'd like to avoid =
-
-that if we can :).
-
-So that leaves us with either wasting a page per system or not having an =
-
-mmap() interface in the first place.
-
-The reason we have the mmap() interface is that it's be easier to =
-
-consume for libraries, that are not hooked into the main event loop.
-
-So, uh, what are you suggesting? :)
-
-
-Alex
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+greg k-h
