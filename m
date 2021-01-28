@@ -2,194 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1303080A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 331893080A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhA1VkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhA1Vjx (ORCPT
+        id S231499AbhA1Vk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:40:57 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:32154 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhA1VkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:39:53 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF8BC061573;
-        Thu, 28 Jan 2021 13:39:12 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id y19so7193030iov.2;
-        Thu, 28 Jan 2021 13:39:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=/CjtAu+M0Wiwb7WvO8Hl9jt0o2jkZcEdDdnm/nslick=;
-        b=cNJfHShSZNqv2p1/RS1cbidNNc1ZHk7+hWQ/pXoPuGzIFWn7//JcP9pjRelwaPuM8n
-         8MtbrLmWlBBmlRTFa6II47YAzv8VnDcyJlOCcKNukl66+mn6MkFCQ2494/2o9BFbbQPT
-         cVbWsDKdnEB/oJ4jeZL9gZfLTnGo6HgPAWJZ10nCxf3swM0pilVP4C217MqUiPSgIM3w
-         RcKPHbVuhHPmIYVlN0S+OmnUB1d/h0N/s9/vsiIghA9g4QZyM/QeYYDKU8sBuqy0qep2
-         9X/oDW1TfnK85pI/mnfDIQDOxWkJWyO7GaE6ziQVokC4TFiZ98JNvk/FYWe5zUUTCxZF
-         jh8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=/CjtAu+M0Wiwb7WvO8Hl9jt0o2jkZcEdDdnm/nslick=;
-        b=nRs4x8g2s0UGkw3T1NwjO1um6jqvt60UGofH9zSKCj8pVw76C7YSHPxNsd30XfhkUl
-         ihtqRU60Z2IfzDDecN7kp+4b7OtH1VEp0viO+ZpqC7/6+SmwS/yhxqiAv438E7GOAWiY
-         amOWZxw8dMouRZPFbjZlLWJqeweTd42+VCjH8ocFDnPzuBFFbNjQf6q5KIv4AV/A5FI+
-         MDV9Oy/rxGR8JZLAtFFVnLepq4+OHLU0cq7B/Df+u1++nl4TIe6NeOmPCGyAhhU5rKVE
-         Q4Osk2AnTAJhq3yRmFWpT+eJWDdKAMnOdyvDhJtiWyKVYULv6iykwnLnCBYs8FQBngQE
-         N+vQ==
-X-Gm-Message-State: AOAM531YQLDMTeQL0jXkP+lw7Wo4RcuAY6xj0ZPLbdfotQxbIfaK0PCQ
-        RPeLMVenuYcwq7TLIKYgdy0QGB6rsr4FfaEV+1N1O3osT20b8kGf
-X-Google-Smtp-Source: ABdhPJzMFqDbTyZ0mbvOAHSV8w+9kchEZ3F2bXMGeWdudZ253jzU13J5Bx3IMtxekV7DyA8uNTmcBV9o3a9ji+LKnAk=
-X-Received: by 2002:a05:6602:2b01:: with SMTP id p1mr1647556iov.156.1611869951999;
- Thu, 28 Jan 2021 13:39:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20210121082451.2240540-1-morbo@google.com> <20210122101156.3257143-1-morbo@google.com>
- <CAKwvOdm+3o8z2GivPjSJRa=c=UKdfkiY-79s6yn2BxJkFnoFTw@mail.gmail.com>
- <CA+icZUU=XfwqMcXYonQKcD4QgqTBW-mA+d_84b7cU2R3HYPOSQ@mail.gmail.com>
- <CAKwvOdnUm2FqC0CEF3qFuMCaWoqiUMqr7ddMjA2UNsJugA9DNQ@mail.gmail.com>
- <CA+icZUWJu0FWdRY0DMQxpYwjqq1WTB87y9u1-6t3YMmkR3UsBQ@mail.gmail.com> <CAKwvOdnVic2MiVSkiTQGGKPFKtJrf=kt1LgjWejOK6mMtMiX3Q@mail.gmail.com>
-In-Reply-To: <CAKwvOdnVic2MiVSkiTQGGKPFKtJrf=kt1LgjWejOK6mMtMiX3Q@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 28 Jan 2021 22:39:00 +0100
-Message-ID: <CA+icZUUVpUban7Fka6xE9fXzgZT+SuFWeMfLELMNdKVD4O0TXA@mail.gmail.com>
-Subject: Re: [PATCH v7] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Bill Wendling <morbo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 28 Jan 2021 16:40:24 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 28 Jan 2021 13:39:42 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Jan 2021 13:39:41 -0800
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 29 Jan 2021 03:09:24 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id C16CE2192C; Fri, 29 Jan 2021 03:09:23 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     miquel.raynal@bootlin.com, boris.brezillon@collabora.com,
+        manivannan.sadhasivam@linaro.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, vigneshr@ti.com
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
+Subject: [PATCH V4] mtd: rawnand: qcom: update last code word register
+Date:   Fri, 29 Jan 2021 03:09:19 +0530
+Message-Id: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:24 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Jan 28, 2021 at 1:19 PM Sedat Dilek <sedat.dilek@gmail.com> wrote=
-:
-> >
-> > On Thu, Jan 28, 2021 at 10:12 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > On Thu, Jan 28, 2021 at 12:46 PM Sedat Dilek <sedat.dilek@gmail.com> =
-wrote:
-> > > >
-> > > > [ LLVM ]
-> > > >
-> > > > Today, I switched over to LLVM version 12.0.0-rc1.
-> > > >
-> > > >
-> > > > [ Step #1: 5.11.0-rc5-5-amd64-clang12-pgo ]
-> > > >
-> > > > My first kernel was built with CONFIG_PGO_CLANG=3Dy and LLVM=3D1 pl=
-us LLVM_IAS=3D1.
-> > > >
-> > > > [ start-build_5.11.0-rc5-5-amd64-clang12-pgo.txt ]
-> > > > dileks    193090  193065  0 06:54 pts/2    00:00:00 /usr/bin/perf_5=
-.10
-> > > > stat make V=3D1 -j4 HOSTCC=3Dclang HOSTCXX=3Dclang++ HOSTLD=3Dld.ll=
-d CC=3Dclang
-> > > > LD=3Dld.lld LLVM=3D1 LLVM_IAS=3D1 PAHOLE=3D/opt/pahole/bin/pahole
-> > > > LOCALVERSION=3D-5-amd64-clang12-pgo KBUILD_VERBOSE=3D1
-> > > > KBUILD_BUILD_HOST=3Diniza KBUILD_BUILD_USER=3Dsedat.dilek@gmail.com
-> > > > KBUILD_BUILD_TIMESTAMP=3D2021-01-28 bindeb-pkg
-> > > > KDEB_PKGVERSION=3D5.11.0~rc5-5~bullseye+dileks1
-> > > >
-> > > > Config: config-5.11.0-rc5-5-amd64-clang12-pgo
-> > > >
-> > > >
-> > > > [ Step #2: x86-64 defconfig & vmlinux.profdata ]
-> > > >
-> > > > Booted into 5.11.0-rc5-5-amd64-clang12-pgo and built an x86-64
-> > > > defconfig to generate/merge a vmlinux.profdata file.
-> > > >
-> > > > [ start-build_x86-64-defconfig.txt ]
-> > > > dileks     18430   15640  0 11:15 pts/2    00:00:00 make V=3D1 -j4
-> > > > HOSTCC=3Dclang HOSTCXX=3Dclang++ HOSTLD=3Dld.lld CC=3Dclang LD=3Dld=
-.lld LLVM=3D1
-> > > > LLVM_IAS=3D1
-> > > >
-> > > > Script: profile_clang-pgo.sh
-> > > > Config: dot-config.x86-64-defconfig
-> > > >
-> > > >
-> > > > [ Step #3.1: 5.11.0-rc5-6-amd64-clang12-pgo & GNU-AS ]
-> > > >
-> > > > The first rebuild with CONFIG_PGO_CLANG=3Dn and "LLVM=3D1
-> > > > KCFLAGS=3D-fprofile-use=3Dvmlinux.profdata".
-> > > > I was able to boot into this one.
-> > > > Used assembler: GNU-AS 2.35.1
-> > > >
-> > > > [ start-build_5.11.0-rc5-6-amd64-clang12-pgo.txt ]
-> > > > dileks     65734   65709  0 11:54 pts/2    00:00:00 /usr/bin/perf_5=
-.10
-> > > > stat make V=3D1 -j4 HOSTCC=3Dclang HOSTCXX=3Dclang++ HOSTLD=3Dld.ll=
-d CC=3Dclang
-> > > > LD=3Dld.lld PAHOLE=3D/opt/pahole/bin/pahole
-> > > > LOCALVERSION=3D-6-amd64-clang12-pgo KBUILD_VERBOSE=3D1
-> > > > KBUILD_BUILD_HOST=3Diniza KBUILD_BUILD_USER=3Dsedat.dilek@gmail.com
-> > > > KBUILD_BUILD_TIMESTAMP=3D2021-01-28 bindeb-pkg
-> > > > KDEB_PKGVERSION=3D5.11.0~rc5-6~bullseye+dileks1 LLVM=3D1
-> > > > KCFLAGS=3D-fprofile-use=3Dvmlinux.profdata
-> > > >
-> > > > Config: config-5.11.0-rc5-6-amd64-clang12-pgo
-> > > >
-> > > >
-> > > > [ Step #3.2: 5.11.0-rc5-7-amd64-clang12-pgo & Clang-IAS ]
-> > > >
-> > > > The second rebuild with CONFIG_PGO_CLANG=3Dn and "LLVM=3D1
-> > > > KCFLAGS=3D-fprofile-use=3Dvmlinux.profdata" plus LLVM_IAS=3D1.
-> > > > Compilable but NOT bootable in QEMU and on bare metal.
-> > > > Used assembler: Clang-IAS v12.0.0-rc1
-> > > >
-> > > > [ start-build_5.11.0-rc5-7-amd64-clang12-pgo.txt ]
-> > > > dileks      6545    6520  0 16:31 pts/2    00:00:00 /usr/bin/perf_5=
-.10
-> > > > stat make V=3D1 -j4 HOSTCC=3Dclang HOSTCXX=3Dclang++ HOSTLD=3Dld.ll=
-d CC=3Dclang
-> > > > LD=3Dld.lld PAHOLE=3D/opt/pahole/bin/pahole
-> > > > LOCALVERSION=3D-7-amd64-clang12-pgo KBUILD_VERBOSE=3D1
-> > > > KBUILD_BUILD_HOST=3Diniza KBUILD_BUILD_USER=3Dsedat.dilek@gmail.com
-> > > > KBUILD_BUILD_TIMESTAMP=3D2021-01-28 bindeb-pkg
-> > > > KDEB_PKGVERSION=3D5.11.0~rc5-7~bullseye+dileks1 LLVM=3D1
-> > > > KCFLAGS=3D-fprofile-use=3Dvmlinux.profdata LLVM_IAS=3D1
-> > > >
-> > > > Config: config-5.11.0-rc5-7-amd64-clang12-pgo
-> > > >
-> > > >
-> > > > [ Conclusion ]
-> > > >
-> > > > The only statement I can tell you is a "PGO optimized" rebuild with
-> > > > LLVM_IAS=3D1 is compilable but NOT bootable.
-> > >
-> > > Thanks for the extensive testing and report. Can you compress, upload=
-,
-> > > and post a link to your kernel image? I would like to take it for a
-> > > spin in QEMU and see if I can find what it's doing, then work
-> > > backwards from there.
-> > >
-> >
-> > Which files do you need?
-> > For QEMU: bzImage and initrd.img enough?
->
-> bzImage should be enough; I'll use my own initrd.  If that boots for
-> me, maybe then I'll take a look with the initrd added.
->
+From QPIC version 2.0 onwards new register got added to
+read last codeword. This change will add the READ_LOCATION_LAST_CW_n
+register.
 
-You should receive an email with a link to my dropbox shared-folder
-"clang-pgo > for-nick".
-Please let me know if you were able to download.
+For first three code word READ_LOCATION_n register will be
+use.For last code word READ_LOCATION_LAST_CW_n register will be
+use.
 
-Thanks, Sedat
-=EF=BF=BC
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+[V4]
+ * Modified condition for nandc_set_read_loc_last() in qcom_nandc_read_cw_raw().
+ * Added one additional argument "last_cw" to the function config_nand_cw_read()
+   to handle last code word condition.
+ * Changed total number of last code word register "NAND_READ_LOCATION_LAST_CW_0" to 4
+   while doing code word configuration.
+ drivers/mtd/nand/raw/qcom_nandc.c | 110 +++++++++++++++++++++++++++++---------
+ 1 file changed, 84 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 667e4bf..9484be8 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -48,6 +48,10 @@
+ #define	NAND_READ_LOCATION_1		0xf24
+ #define	NAND_READ_LOCATION_2		0xf28
+ #define	NAND_READ_LOCATION_3		0xf2c
++#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
++#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
++#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
++#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
+ 
+ /* dummy register offsets, used by write_reg_dma */
+ #define	NAND_DEV_CMD1_RESTORE		0xdead
+@@ -187,6 +191,12 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
+ 	      ((size) << READ_LOCATION_SIZE) |			\
+ 	      ((is_last) << READ_LOCATION_LAST))
+ 
++#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
++nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
++	      ((offset) << READ_LOCATION_OFFSET) |		\
++	      ((size) << READ_LOCATION_SIZE) |			\
++	      ((is_last) << READ_LOCATION_LAST))
++
+ /*
+  * Returns the actual register address for all NAND_DEV_ registers
+  * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and NAND_DEV_CMD_VLD)
+@@ -316,6 +326,10 @@ struct nandc_regs {
+ 	__le32 read_location1;
+ 	__le32 read_location2;
+ 	__le32 read_location3;
++	__le32 read_location_last0;
++	__le32 read_location_last1;
++	__le32 read_location_last2;
++	__le32 read_location_last3;
+ 
+ 	__le32 erased_cw_detect_cfg_clr;
+ 	__le32 erased_cw_detect_cfg_set;
+@@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+ 		return &regs->read_location2;
+ 	case NAND_READ_LOCATION_3:
+ 		return &regs->read_location3;
++	case NAND_READ_LOCATION_LAST_CW_0:
++		return &regs->read_location_last0;
++	case NAND_READ_LOCATION_LAST_CW_1:
++		return &regs->read_location_last1;
++	case NAND_READ_LOCATION_LAST_CW_2:
++		return &regs->read_location_last2;
++	case NAND_READ_LOCATION_LAST_CW_3:
++		return &regs->read_location_last3;
+ 	default:
+ 		return NULL;
+ 	}
+@@ -719,9 +741,14 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+ 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+ 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ 
+-	if (read)
+-		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+-				   host->cw_data : host->cw_size, 1);
++	if (read) {
++		if (nandc->props->qpic_v2)
++			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
++					host->cw_data : host->cw_size, 1);
++		else
++			nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
++					host->cw_data : host->cw_size, 1);
++	}
+ }
+ 
+ /*
+@@ -1094,11 +1121,16 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
+  * before reading each codeword in NAND page.
+  */
+ static void
+-config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
++config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc, bool last_cw)
+ {
+-	if (nandc->props->is_bam)
+-		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+-			      NAND_BAM_NEXT_SGL);
++	if (nandc->props->is_bam) {
++		if (nandc->props->qpic_v2 && last_cw)
++			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0, 4,
++				      NAND_BAM_NEXT_SGL);
++		else
++			write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
++				      NAND_BAM_NEXT_SGL);
++	}
+ 
+ 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+ 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+@@ -1118,10 +1150,10 @@ config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+  */
+ static void
+ config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
+-				bool use_ecc)
++				bool use_ecc, bool last_cw)
+ {
+ 	config_nand_page_read(nandc);
+-	config_nand_cw_read(nandc, use_ecc);
++	config_nand_cw_read(nandc, use_ecc, last_cw);
+ }
+ 
+ /*
+@@ -1215,7 +1247,7 @@ static int nandc_param(struct qcom_nand_host *host)
+ 	nandc->buf_count = 512;
+ 	memset(nandc->data_buffer, 0xff, nandc->buf_count);
+ 
+-	config_nand_single_cw_page_read(nandc, false);
++	config_nand_single_cw_page_read(nandc, false, false);
+ 
+ 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
+ 		      nandc->buf_count, 0);
+@@ -1633,19 +1665,32 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	}
+ 
+ 	if (nandc->props->is_bam) {
+-		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+-		read_loc += data_size1;
++		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1)) {
++			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
++			read_loc += data_size1;
++
++			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
++			read_loc += oob_size1;
+ 
+-		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+-		read_loc += oob_size1;
++			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
++			read_loc += data_size2;
+ 
+-		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+-		read_loc += data_size2;
++			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 1);
++		} else {
++			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
++			read_loc += data_size1;
++
++			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
++			read_loc += oob_size1;
+ 
+-		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
++			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
++			read_loc += data_size2;
++
++			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
++		}
+ 	}
+ 
+-	config_nand_cw_read(nandc, false);
++	config_nand_cw_read(nandc, false, cw == ecc->steps - 1 ? true : false);
+ 
+ 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+ 	reg_off += data_size1;
+@@ -1873,18 +1918,31 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 
+ 		if (nandc->props->is_bam) {
+ 			if (data_buf && oob_buf) {
+-				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+-				nandc_set_read_loc(nandc, 1, data_size,
+-						   oob_size, 1);
++				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
++					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
++					nandc_set_read_loc_last(nandc, 1, data_size,
++								oob_size, 1);
++				} else {
++					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
++					nandc_set_read_loc(nandc, 1, data_size,
++							   oob_size, 1);
++				}
+ 			} else if (data_buf) {
+-				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
++				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
++					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
++				else
++					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+ 			} else {
+-				nandc_set_read_loc(nandc, 0, data_size,
+-						   oob_size, 1);
++				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
++					nandc_set_read_loc_last(nandc, 0, data_size,
++								oob_size, 1);
++				else
++					nandc_set_read_loc(nandc, 0, data_size,
++							   oob_size, 1);
+ 			}
+ 		}
+ 
+-		config_nand_cw_read(nandc, true);
++		config_nand_cw_read(nandc, true, i == ecc->steps - 1 ? true : false);
+ 
+ 		if (data_buf)
+ 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+@@ -1946,7 +2004,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
+ 	set_address(host, host->cw_size * (ecc->steps - 1), page);
+ 	update_rw_regs(host, 1, true);
+ 
+-	config_nand_single_cw_page_read(nandc, host->use_ecc);
++	config_nand_single_cw_page_read(nandc, host->use_ecc, true);
+ 
+ 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
+ 
+-- 
+2.7.4
+
