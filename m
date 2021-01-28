@@ -2,62 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36C53078BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D03D3078CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhA1Owo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:52:44 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:42271 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhA1OuT (ORCPT
+        id S231959AbhA1O4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:56:39 -0500
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:3334 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231836AbhA1Oul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:50:19 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l58c4-0004GU-6X; Thu, 28 Jan 2021 14:49:36 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] nfsd: fix check of statid returned from call to find_stateid_by_type
-Date:   Thu, 28 Jan 2021 14:49:35 +0000
-Message-Id: <20210128144935.640026-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 28 Jan 2021 09:50:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1611845441; x=1643381441;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=1J+oWCFFLm5nmI0jYaiMUix7ZpaSaKjUbOlvFe4ZQJM=;
+  b=OyXWkxyBWYWsCqItKjATmbTAdZHz4JZIp43H/irIZUlYQ2C8lvR0FrDK
+   d2bMkJI+1AbDv7rBADs3K9UFHaahtV4gkPgFI/zvSS914M91j5w7YDxO6
+   qAC/njQ0X/SnJQQHTHo1Af7dVV5DpGvukRnORw9/2aJ1bXU0erUoG5aol
+   c=;
+X-IronPort-AV: E=Sophos;i="5.79,382,1602547200"; 
+   d="scan'208";a="115397803"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 28 Jan 2021 14:49:58 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 1682FA22B8;
+        Thu, 28 Jan 2021 14:49:54 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 14:49:53 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.160.239) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 28 Jan 2021 14:49:44 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <ttoukan.linux@gmail.com>
+CC:     <aams@amazon.de>, <borisp@mellanox.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <tariqt@mellanox.com>
+Subject: Re: [PATCH v4 net-next] net: Remove redundant calls of sk_tx_queue_clear().
+Date:   Thu, 28 Jan 2021 23:49:39 +0900
+Message-ID: <20210128144939.4477-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <fad76e94-ca1f-41f6-f1aa-f9853f64d36d@gmail.com>
+References: <fad76e94-ca1f-41f6-f1aa-f9853f64d36d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.239]
+X-ClientProxiedBy: EX13D04UWB003.ant.amazon.com (10.43.161.231) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Date:   Thu, 28 Jan 2021 15:09:51 +0200
+> On 1/28/2021 2:42 PM, Kuniyuki Iwashima wrote:
+> > The commit 41b14fb8724d ("net: Do not clear the sock TX queue in
+> > sk_set_socket()") removes sk_tx_queue_clear() from sk_set_socket() and adds
+> > it instead in sk_alloc() and sk_clone_lock() to fix an issue introduced in
+> > the commit e022f0b4a03f ("net: Introduce sk_tx_queue_mapping"). On the
+> > other hand, the original commit had already put sk_tx_queue_clear() in
+> > sk_prot_alloc(): the callee of sk_alloc() and sk_clone_lock(). Thus
+> > sk_tx_queue_clear() is called twice in each path.
+> > 
+> > If we remove sk_tx_queue_clear() in sk_alloc() and sk_clone_lock(), it
+> > currently works well because (i) sk_tx_queue_mapping is defined between
+> > sk_dontcopy_begin and sk_dontcopy_end, and (ii) sock_copy() called after
+> > sk_prot_alloc() in sk_clone_lock() does not overwrite sk_tx_queue_mapping.
+> > However, if we move sk_tx_queue_mapping out of the no copy area, it
+> > introduces a bug unintentionally.
+> > 
+> > Therefore, this patch adds a compile-time check to take care of the order
+> > of sock_copy() and sk_tx_queue_clear() and removes sk_tx_queue_clear() from
+> > sk_prot_alloc() so that it does the only allocation and its callers
+> > initialize fields.
+> > 
+> > v4:
+> > * Fix typo in the changelog (runtime -> compile-time)
+> > 
+> > v3: https://lore.kernel.org/netdev/20210128021905.57471-1-kuniyu@amazon.co.jp/
+> > * Remove Fixes: tag
+> > * Add BUILD_BUG_ON
+> > * Remove sk_tx_queue_clear() from sk_prot_alloc()
+> >    instead of sk_alloc() and sk_clone_lock()
+> > 
+> > v2: https://lore.kernel.org/netdev/20210127132215.10842-1-kuniyu@amazon.co.jp/
+> > * Remove Reviewed-by: tag
+> > 
+> > v1: https://lore.kernel.org/netdev/20210127125018.7059-1-kuniyu@amazon.co.jp/
+> > 
+> 
+> Sorry for not pointing this out earlier, but shouldn't the changelog 
+> come after the --- separator? Unless you want it to appear as part of 
+> the commit message.
+> 
+> Other than that, I think now I'm fine with the patch.
+> 
+> Acked-by: Tariq Toukan <tariqt@nvidia.com>
+> 
+> Thanks,
+> Tariq
 
-The call to find_stateid_by_type is setting the return value in *stid
-yet the NULL check of the return is checking stid instead of *stid.
-Fix this by adding in the missing pointer * operator.
+Oh, I didn't know that useful behaviour, thank you!
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: 6cdaa72d4dde ("nfsd: find_cpntf_state cleanup")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/nfsd/nfs4state.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I will respin with your Acked-by tag.
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index f554e3480bb1..423fd6683f3a 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -5824,7 +5824,7 @@ static __be32 find_cpntf_state(struct nfsd_net *nn, stateid_t *st,
- 
- 	*stid = find_stateid_by_type(found, &cps->cp_p_stateid,
- 			NFS4_DELEG_STID|NFS4_OPEN_STID|NFS4_LOCK_STID);
--	if (stid)
-+	if (*stid)
- 		status = nfs_ok;
- 	else
- 		status = nfserr_bad_stateid;
--- 
-2.29.2
 
+> > CC: Tariq Toukan <tariqt@mellanox.com>
+> > CC: Boris Pismenny <borisp@mellanox.com>
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > ---
+> >   net/core/sock.c | 11 ++++++++++-
+> >   1 file changed, 10 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/core/sock.c b/net/core/sock.c
+> > index bbcd4b97eddd..cfbd62a5e079 100644
+> > --- a/net/core/sock.c
+> > +++ b/net/core/sock.c
+> > @@ -1657,6 +1657,16 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
+> >   #ifdef CONFIG_SECURITY_NETWORK
+> >   	void *sptr = nsk->sk_security;
+> >   #endif
+> > +
+> > +	/* If we move sk_tx_queue_mapping out of the private section,
+> > +	 * we must check if sk_tx_queue_clear() is called after
+> > +	 * sock_copy() in sk_clone_lock().
+> > +	 */
+> > +	BUILD_BUG_ON(offsetof(struct sock, sk_tx_queue_mapping) <
+> > +		     offsetof(struct sock, sk_dontcopy_begin) ||
+> > +		     offsetof(struct sock, sk_tx_queue_mapping) >=
+> > +		     offsetof(struct sock, sk_dontcopy_end));
+> > +
+> >   	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
+> >   
+> >   	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
+> > @@ -1690,7 +1700,6 @@ static struct sock *sk_prot_alloc(struct proto *prot, gfp_t priority,
+> >   
+> >   		if (!try_module_get(prot->owner))
+> >   			goto out_free_sec;
+> > -		sk_tx_queue_clear(sk);
+> >   	}
+> >   
+> >   	return sk;
+> > 
