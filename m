@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09830306C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C25306CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 06:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhA1FLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 00:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        id S229885AbhA1FML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 00:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhA1FLK (ORCPT
+        with ESMTP id S229819AbhA1FMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 00:11:10 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973EBC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:10:29 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id v15so1834293ljk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:10:29 -0800 (PST)
+        Thu, 28 Jan 2021 00:12:07 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3338BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:11:26 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id a25so4848839ljn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 21:11:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sbySH8XGPeHypTQ5quW2/0H5BDl8PiMEsgfEVwoeeI4=;
-        b=v0WZgt/3pzp9gQrGDilRFIBE1VUrEj5i/gJgcppmH3N0+htGlb9glkmXh3fwsYmhuP
-         R6ECXFmWEz2+t1PvqYqX/zbAXF8r4adCx76XaHJ58SkfJBZv1a37Opmw51U3trAcpIVa
-         lieq/+F1l/t+XzOMWdb4kHGdt5Zb9iNi1y5n6hypaEiM4Xg6SBpEWhfMbjaazGgPAsep
-         QxaQmDK+zITPVJazdV73+6W/LKHoL0yqrYMQFOM5kO0dWKCMatbPTDyu7tztCEyGu1it
-         Zb4/Tx7o02upoGqTw3eVhy0wLaOnB/J6f3dENS44UJtFqQnTtCt2tnNREYGnxahSLvBe
-         e26A==
+        bh=Yz4dvbWilv+59+sGvg7GlreEXmLYHQWRQqY4rHmQdj8=;
+        b=DA1aho4knu8EGzj179+534CVs3VecnJZBpLja6mPhWG/xBuAx9rDxzXSUifoEgPTs5
+         Ph9OLQDunZxUpZO6gnUjM2AdExHmh4vrgf1Zet00XwJMirfurIp9uZQvjp2wc/d6UkrU
+         Z38rRoKRhyo3jsNYTk3f8PQadKp3/Rh9TiuPKJFJUea2i5UF4/ZRtMkqohBsvYR4mLBJ
+         A3H0xXUdHCEcTqkDnJ4gfzj9bOX+d4Hf+An/guf1uSx+cv89bkGXnvgKBln8/N3sL+TU
+         4OI51WtZfUYE/g99NT1XeiM7s1d/ZqgQLJVMUUZPvN3EelapRn7aNrKjze/PVaDacAaI
+         VtZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sbySH8XGPeHypTQ5quW2/0H5BDl8PiMEsgfEVwoeeI4=;
-        b=GdVn4mitBpZvOkBR5Bo8utoN29J3aCaC39JB2KFLoqDVe0fDWHG37tJW2PA3SVMe+X
-         F9X1S4jC5Z/5tpvk7MBKXQGBgeABSyYna0QjK/DCH52/dBMuB+EaNhvGDjMQronxCE+m
-         I4HicZCl0GcSPc5BoinRUAGHHjdHfnWosd4wtjmuwIbkU+jjhCIgVf82lvPglGeEQ5Zg
-         o/QVTSX4A/Wzq6nS0XSX8v32Z/iWhZ3/nEVQRLy3eUMtZYov77fFaIhiERjVso/Lz5ir
-         n+u4/4EoT0NPVl8bw+gKzjI2YIagNPijIw3hqAwmUN0TLb0/WDJAu1ZExw29c02lvuEl
-         uwGQ==
-X-Gm-Message-State: AOAM533JGdP6/zLF6BgLw0flSkZkcq4kP9HlvVCZ1wkd35qJFdUEmCIA
-        UVF2WU7AEPFClHVGtraMK58GmnUMvANAXzfKGTITjQ==
-X-Google-Smtp-Source: ABdhPJznnuALUFQ1RiOUQHbEpehWn9tdXxnoDjOzm3PmzFN7h8qtoK4IQ8LF9kFVl7tGyMalI6DJbeyAdOeLxNsPcCI=
-X-Received: by 2002:a2e:3018:: with SMTP id w24mr7835128ljw.333.1611810627528;
- Wed, 27 Jan 2021 21:10:27 -0800 (PST)
+        bh=Yz4dvbWilv+59+sGvg7GlreEXmLYHQWRQqY4rHmQdj8=;
+        b=giNqYfAsmbLf7rl6+/dWahqsiTKP0a8CRHCnwjOx6Y7soAhAO9Kdw+57KnAn8nF/F9
+         vYsvGQVmseiMqqgI+hJDjeKv6PjaXRsZvQr3KjuIQ5X4LXbwP0PibKdQFXJsSG89xXMV
+         NCVw5IpU3+xmTZCRti8mht3VDHSzVXT5v/U8BiiNo9R0AwxW58KV6W+ZiBkE6nemSYIU
+         Kkzjvnde8UNC5QVuqsEJPQ3QIuQAfVK89Y2pAl2ESpHp9QXAOs5uov6OFILYxo6Apx3p
+         tWj3KrY43BK5vd9QIISP9w7zjxgSbfE7gwio3oo97GqaXl5ZGI1Vrho5T/XMjt8Ym53y
+         V/kQ==
+X-Gm-Message-State: AOAM5318vFFRGZ3pDVLX5iaREtEOomXhXQ/dUZHeaoSHp07znfALOIVO
+        vnd4x0HWfh7Eq4DbE8wvGSs9Vwo11rf9hIMZZEEWpevw9lOpNQ==
+X-Google-Smtp-Source: ABdhPJx1h6w8r4GuWW2pMTFX/gJji2VtuNCQtzxOgmz9AZ9wjQFJUaHAmSpPueSwlFMNk5huWj533XG+GxZ9oZbGbsY=
+X-Received: by 2002:a2e:97cc:: with SMTP id m12mr7313826ljj.343.1611810684701;
+ Wed, 27 Jan 2021 21:11:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210123034655.102813-1-john.stultz@linaro.org>
- <20210123034655.102813-2-john.stultz@linaro.org> <CAE2F3rA3a-MWBHPZhGP9dMhEUqMkkvm6wXYYh6LDZ1zF9CAyUg@mail.gmail.com>
-In-Reply-To: <CAE2F3rA3a-MWBHPZhGP9dMhEUqMkkvm6wXYYh6LDZ1zF9CAyUg@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 27 Jan 2021 21:10:15 -0800
-Message-ID: <CALAqxLWkTQwQ8Xqnc+PAMWUO_C84jaGzOLqKFqkuk3=AFNHD6g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dma-buf: system_heap: Add pagepool support to
- system heap
-To:     Daniel Mentz <danielmentz@google.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <1611313556-4004-1-git-send-email-sumit.garg@linaro.org>
+ <CAD=FV=V8HwhdhpCoiZx4XbTMWug0CAxhsnPR+5V9rB0W7QXFTQ@mail.gmail.com> <20210125081855.gfq3n6urcmght3ef@maple.lan>
+In-Reply-To: <20210125081855.gfq3n6urcmght3ef@maple.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 28 Jan 2021 10:41:12 +0530
+Message-ID: <CAFA6WYN8dOScFg8txFFis+kTm9qLU95XO4JO6uqZ4o=SfZeJGg@mail.gmail.com>
+Subject: Re: [PATCH v3] kdb: Make memory allocations more robust
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 4.0+" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:21 PM Daniel Mentz <danielmentz@google.com> wrote:
+On Mon, 25 Jan 2021 at 13:48, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
 >
-> On Fri, Jan 22, 2021 at 7:47 PM John Stultz <john.stultz@linaro.org> wrote:
-> > +static int system_heap_clear_pages(struct page **pages, int num, pgprot_t pgprot)
-> > +{
-> > +       void *addr = vmap(pages, num, VM_MAP, pgprot);
-> > +
-> > +       if (!addr)
-> > +               return -ENOMEM;
-> > +       memset(addr, 0, PAGE_SIZE * num);
-> > +       vunmap(addr);
-> > +       return 0;
-> > +}
+> On Fri, Jan 22, 2021 at 09:25:44AM -0800, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Fri, Jan 22, 2021 at 3:06 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > Currently kdb uses in_interrupt() to determine whether its library
+> > > code has been called from the kgdb trap handler or from a saner calling
+> > > context such as driver init.  This approach is broken because
+> > > in_interrupt() alone isn't able to determine kgdb trap handler entry from
+> > > normal task context. This can happen during normal use of basic features
+> > > such as breakpoints and can also be trivially reproduced using:
+> > > echo g > /proc/sysrq-trigger
+> >
+> > I guess an alternative to your patch is to fully eliminate GFP_KDB.
+> > It always strikes me as a sub-optimal design to choose between
+> > GFP_ATOMIC and GFP_KERNEL like this.  Presumably others must agree
+> > because otherwise I'd expect that the overall kernel would have
+> > something like "GFP_AUTOMATIC"?
+> >
+> > It doesn't feel like it'd be that hard to do something more explicit.
+> > From a quick glance:
+> >
+> > * I think kdb_defcmd() and kdb_defcmd2() are always called in response
+> > to a user typing something on the kdb command line.  Those should
+> > always be GFP_ATOMIC, right?
 >
-> I thought that vmap/vunmap are expensive, and I am wondering if
-> there's a faster way that avoids vmap.
+> No. I'm afraid not. The kdb parser is also used to execute
+> kernel/debug/kdb/kdb_cmds as part of the kdb initialization. This
+> initialization happens from the init calls rather than from the kgdb
+> trap handler code.
 >
-> How about lifting this code from lib/iov_iter.c
-> static void memzero_page(struct page *page, size_t offset, size_t len)
-> {
->         char *addr = kmap_atomic(page);
->         memset(addr + offset, 0, len);
->         kunmap_atomic(addr);
-> }
+> When I first looked at Sumit's patch I had a similar reaction to you
+> but, whilst it is clearly it's not impossible to pass flags into the
+> kdb parser and all its subcommands, I concluded that GFP_KDB is a
+> better approach.
 >
-> Or what about lifting that code from the old ion_cma_heap.c
+> BTW the reason I insisted on getting rid of the in_atomic() was to make
+> it clear that GFP_KDB discriminates between exactly two calling contexts
+> (normal and kgdb trap handler). I was didn't want any hints that imply
+> GFP_KDB is a (broken) implementation of something like GFP_AUTOMATIC!
 >
-> if (PageHighMem(pages)) {
->         unsigned long nr_clear_pages = nr_pages;
->         struct page *page = pages;
->
->         while (nr_clear_pages > 0) {
->                 void *vaddr = kmap_atomic(page);
->
->                 memset(vaddr, 0, PAGE_SIZE);
->                 kunmap_atomic(vaddr);
->                 page++;
->                 nr_clear_pages--;
->         }
-> } else {
->         memset(page_address(pages), 0, size);
-> }
 
-Though, this last memset only works since CMA is contiguous, so it
-probably needs to always do the kmap_atomic for each page, right?
+Ah, I see the reasoning to keep GFP_KDB. So we don't need any further
+refactoring and can go ahead with this patch only.
 
-I'm still a little worried if this is right, as the current
-implementation with the vmap comes from the old ion_heap_sglist_zero
-logic, which similarly tries to batch the vmaps  32 pages at at time,
-but I'll give it a try.
+-Sumit
 
-thanks
--john
+>
+> Daniel.
