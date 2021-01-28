@@ -2,62 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D11B307DE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47592307DD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhA1S0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:26:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhA1SUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:20:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id CA90B64E28;
-        Thu, 28 Jan 2021 18:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611857815;
-        bh=EdUwL/QDhFhONKjS8Ixd/ah7+ex2+S6R0CxzmeI3nis=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=RqLZT9MSQ5F9QJHn3EGf0dwq8hOxg5YF/NyPJ9pjd8HhPLK6JKeU0WZ8iyGoUDZ7v
-         wDRnaBe38PTGY3TWGO58QCqwNiJpIboD4bNCKeLE44gnxtN7tjFoTYppELZXSp3Fz6
-         FJiY6yw32xgEl/3Tqerz3p/pNhwn76xTyaMzQqX8KnnsIxibBtx0o71djWzHRPMA64
-         No0PdCCAKwe22aZ5L6NWbf4+DeJuhhB1Xy2I7hIazyPamtE3w3jOM7B/uXQQur1dLe
-         F9ItytYZheqLvM0NK6ks88iZo1vYAH7671S194PVl5FRSAOmsp1nxkHn3o8TwxiqZF
-         KqP9V8JBUUsmg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C32E965307;
-        Thu, 28 Jan 2021 18:16:55 +0000 (UTC)
-Subject: Re: [GIT PULL] asm-generic/ia64 fixes, mark as orphaned
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK8P3a2+tvr6O7LxF8M6sJ-e-NmbijAmXt13FPEvOXtY_PSgPQ@mail.gmail.com>
-References: <CAK8P3a2+tvr6O7LxF8M6sJ-e-NmbijAmXt13FPEvOXtY_PSgPQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK8P3a2+tvr6O7LxF8M6sJ-e-NmbijAmXt13FPEvOXtY_PSgPQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/asm-generic-fixes-v5.11
-X-PR-Tracked-Commit-Id: 96ec72a3425d1515b69b7f9dc34a4a6ce5862a37
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 228345bf98cd78f91d007478a51f9a471489e44a
-Message-Id: <161185781579.19532.14632163617295027701.pr-tracker-bot@kernel.org>
-Date:   Thu, 28 Jan 2021 18:16:55 +0000
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ia64@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-arch <linux-arch@vger.kernel.org>
+        id S231765AbhA1SWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231947AbhA1SUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:20:21 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37D4C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:17:32 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id l18so4825170pji.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eeNqR1SgKoX2yrJH2AARxzXA+IiTrltJp5YlpMldo3I=;
+        b=RTFYj+vBo7GZF9Iw+gy7c3NF8+kMoyUMZFro01arhFKPjFw51xDdfNRUNRGeaM6wmN
+         X7KMQwwinygUL4uLMkVcrrh7/yebqMdidTDkNgsPBqPzboIb4H6/EIpKV1pZtJB5Hu6g
+         2k2Lm5eXDAkFN+OELOMeCthTkNgWWyWdFUXsHAP2trcddzIDA4ooK5adgBjWZszDT4F0
+         Cut0N9r3JfTVFAFBF3H+QmOPjeIgZ2gYzNPWiUot9Wrlb70IIcuuyIopX2QLaryCjoka
+         8qxgxoPBmx4lRJ1lW7hs/jb9me/kTCJW9hQLsvGEii+H2HMP4j3X9jkavU4SNZAwu/Yo
+         w9sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eeNqR1SgKoX2yrJH2AARxzXA+IiTrltJp5YlpMldo3I=;
+        b=ElijJZijYX6vYDMWVKL1ToMV1CIyGmLYA+jyewb1kMSvUXUW1yIqaEm+5cgAB8UWxs
+         Sw733uQO6ojsAH5lUl7JaIwXL52I8faulija6jaczh4bOA4uyofSXaUvYwRGBRZN3LVU
+         G/+ymJU9bbrOoeTOGFST3vV7JKhB9ytYPkQnxIyO6ULW83R+mh7vWNRhmgoCrMgFpmjn
+         oIMpYL9LaCdX4yO1XP5p6g6kkP1YFl3I+DhUYIGtG3d4/QE9EUOo8XRQePaz2BXF4TZV
+         RHFctJA+KJonY19yBNM3mYxIljWA2YX3CjisQJbwdksdzxGj1bg7WIJlWaiqWXKPQKKY
+         c0pw==
+X-Gm-Message-State: AOAM533AmM0WBa1SXq7+GmeCkGB/sdcUfKdl+eNRhoxOtswXUx7NOcbT
+        oQhF+NXhgD13HpYAm4y7be5OFQ==
+X-Google-Smtp-Source: ABdhPJxmFPN5I6HOXWpjnyHjEPpVDXehxIdjosN6rFNAZjAkjyvNcm6wWH66gxGvKNIFWrxuTngTcg==
+X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr623939pjb.166.1611857852356;
+        Thu, 28 Jan 2021 10:17:32 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:91fd:c415:8a8b:ccc4])
+        by smtp.gmail.com with ESMTPSA id gw20sm5757106pjb.55.2021.01.28.10.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 10:17:31 -0800 (PST)
+Date:   Thu, 28 Jan 2021 10:17:25 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        jmattson@google.com, stable@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even if
+ tsx=off
+Message-ID: <YBL/tTHHwDW6+vTd@google.com>
+References: <20210128170800.1783502-1-pbonzini@redhat.com>
+ <YBL65uIZggTjGO7F@google.com>
+ <79f0ecab-3521-5df8-0a2e-8a344918b8a8@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79f0ecab-3521-5df8-0a2e-8a344918b8a8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 28 Jan 2021 16:35:55 +0100:
+On Thu, Jan 28, 2021, Paolo Bonzini wrote:
+> On 28/01/21 18:56, Sean Christopherson wrote:
+> > On Thu, Jan 28, 2021, Paolo Bonzini wrote:
+> > > -			vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
+> > > +			if (boot_cpu_has(X86_FEATURE_RTM))
+> > > +				vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
+> > > +			else
+> > > +				vmx->guest_uret_msrs[j].mask = 0;
+> > 
+> > IMO, this is an unnecessarily confusing way to "remove" the user return MSR.
+> > Changing the ordering to do a 'continue' would also provide a separate chunk of
+> > code for the new comment.  And maybe replace the switch with an if-statement to
+> > avoid a 'continue' buried in a switch?
+> 
+> You still need the slot in vmx->guest_uret_msrs to store the guest value,
+> even though the two available bits are both no-ops.  It's ugly but it makes
+> sense: you don't want to ever re-enable TSX, so you use the ignore the guest
+> value and run unconditionally with the host value.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/asm-generic-fixes-v5.11
+Ugh, didn't think about the guest wanting to read back the value it wrote.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/228345bf98cd78f91d007478a51f9a471489e44a
+> I'll rephrase everything and resend.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks!
