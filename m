@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45840307FE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B073307FE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 21:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhA1Uvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 15:51:47 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:57024 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhA1Uvi (ORCPT
+        id S229783AbhA1UvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 15:51:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhA1UvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 15:51:38 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l5EFk-002oc7-0l; Thu, 28 Jan 2021 13:50:56 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1l5EFi-0007vO-Nl; Thu, 28 Jan 2021 13:50:55 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <20210119162204.2081137-1-mszeredi@redhat.com>
-        <20210119162204.2081137-3-mszeredi@redhat.com>
-        <8735yw8k7a.fsf@x220.int.ebiederm.org>
-        <20210128165852.GA20974@mail.hallyn.com>
-        <87o8h8x1a6.fsf@x220.int.ebiederm.org>
-        <CAJfpegv8e5+xn2X8-QrNnu0QJbe=CoK-DWNOdTV9EdrHrJvtEg@mail.gmail.com>
-Date:   Thu, 28 Jan 2021 14:49:35 -0600
-In-Reply-To: <CAJfpegv8e5+xn2X8-QrNnu0QJbe=CoK-DWNOdTV9EdrHrJvtEg@mail.gmail.com>
-        (Miklos Szeredi's message of "Thu, 28 Jan 2021 21:38:00 +0100")
-Message-ID: <87tur0vlb4.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 28 Jan 2021 15:51:07 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8AAC061573;
+        Thu, 28 Jan 2021 12:50:27 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 190so5342351wmz.0;
+        Thu, 28 Jan 2021 12:50:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3On79yt/ogpOXZmRquUWRYpKWHvhXFj1EOlDrRJaacA=;
+        b=EKkldwFsnT54HxqRIn5pmq7P+Z9ErTIPYpfjgGLZws9ENBzlFH48eqRX2S6YfGzJDW
+         +oqKq9E4k04t/wZ9Nzj287mtjKqKo3qbAPdau5r+K2+o8Sv9ppYlWFBPXU1FAUj1MNpF
+         NV4YE8kReYSejwqnTTglI4Pj4Iu0uPgBdlIdEf/cWqZsZs/PDNtkhNvIWnMHPWaBproK
+         BLKxHh99AwE7OFoB/tW5vbXfYMSeYOYPHhFreyCM/KeU+A3j3s/O4MebmXBBygjZT+Op
+         nrSXLDRJ4lY5fxaJBfZCjgkCAVTK2kW5R6CKcxi5hBoGwOo6Mdw775tgEd655O/NGyOU
+         WkIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3On79yt/ogpOXZmRquUWRYpKWHvhXFj1EOlDrRJaacA=;
+        b=ozWWaZMtBa5mtli4nruvTSxDkBrPiRqFrbGK9VNv1C1rrLt4mUzWMxkXxGqIOxmFgO
+         lAAJsh8xatwGxEf4XObJklsL/eSqtNgSUWyYWRYlY5mrrm5ixOV+VGfV+F7WlXaeqzvm
+         J+QdQzRTpEmpAmLgHShIuUCsuwBGsSE5EgZjrty2slHlnRF+kC+fOVdj087CHgG55uKm
+         3L0/6cJucM0jflBU1OzpjmXk3Lbkmwxez0kyxakJWFEIsmCfmhGp3oHaNNb5ZchP3TB/
+         JRrbQqSfThO3SsHKHbnVPIDHrtABd9EqsxRpB4kUyT62+dbQ5pTLjjegBayKDUys5UWm
+         EUgg==
+X-Gm-Message-State: AOAM532evKR5ppOcUgaC7sdDtuuUQq7WznlSnyG4NOT7AjM/vcLYJEx4
+        RIpJV3l1SK0TC5Zx/lzWdIIeB9ksmK0=
+X-Google-Smtp-Source: ABdhPJzUvupS7lIYlOlVMFhIRc+8rrw2AhPsangPLc9V1N3Lf5ojVdX18q9FjEwOBDAMKz8XRU8pug==
+X-Received: by 2002:a1c:21c6:: with SMTP id h189mr858347wmh.173.1611867025854;
+        Thu, 28 Jan 2021 12:50:25 -0800 (PST)
+Received: from ?IPv6:2a02:2455:e0:e000:3005:efab:c884:ced0? ([2a02:2455:e0:e000:3005:efab:c884:ced0])
+        by smtp.gmail.com with ESMTPSA id z15sm7962448wrs.25.2021.01.28.12.50.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 12:50:25 -0800 (PST)
+Cc:     mtk.manpages@gmail.com,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] close_range.2: new page documenting close_range(2)
+To:     Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>
+References: <20210123161154.29332-1-steve@sk2.org>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
+Date:   Thu, 28 Jan 2021 21:50:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1l5EFi-0007vO-Nl;;;mid=<87tur0vlb4.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19ay7DlYNZuYViioRwECggdIxy8OTBSDAk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Miklos Szeredi <miklos@szeredi.hu>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 494 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 8 (1.6%), b_tie_ro: 6 (1.3%), parse: 0.81 (0.2%),
-        extract_message_metadata: 13 (2.7%), get_uri_detail_list: 0.97 (0.2%),
-        tests_pri_-1000: 14 (2.8%), tests_pri_-950: 1.30 (0.3%),
-        tests_pri_-900: 0.97 (0.2%), tests_pri_-90: 92 (18.6%), check_bayes:
-        90 (18.2%), b_tokenize: 5 (1.1%), b_tok_get_all: 6 (1.2%),
-        b_comp_prob: 1.88 (0.4%), b_tok_touch_all: 74 (15.0%), b_finish: 0.82
-        (0.2%), tests_pri_0: 153 (30.9%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 2.1 (0.4%), poll_dns_idle: 194 (39.3%), tests_pri_10:
-        1.75 (0.4%), tests_pri_500: 207 (41.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/2] security.capability: fix conversions on getxattr
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20210123161154.29332-1-steve@sk2.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> writes:
+Hello Stephen, (and CHristian, please!)
 
-> On Thu, Jan 28, 2021 at 9:24 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
->> <aside>
->> From our previous discussions I would also argue it would be good
->> if there was a bypass that skipped all conversions if the reader
->> and the filesystem are in the same user namespace.
->> </aside>
->
-> That's however just an optimization (AFAICS) that only makes sense if
-> it helps a read world workload.   I'm not convinced that that's the
-> case.
 
-It is definitely a different issue.
+Thanks for your patch revision. I've merged it, and have
+done some light editing, but I still have a question:
 
-From previous conversations with Serge, there is a concern with a
-sysadmin wanting to see what is actually on disk.  In case there are
-bugs that care about the different layout.  Just passing everything
-through when no translation is necessary will allow that kind of
-diagnosis.
+On 1/23/21 5:11 PM, Stephen Kitt wrote:
 
-As your patch demonstrates we already have had bugs in this area
-so being able to get at the raw data may help people if they get into a
-situation where bugs matter.
+[...]
 
-Eric
+> +.SH ERRORS
+
+> +.TP
+> +.B EMFILE
+> +The per-process limit on the number of open file descriptors has been reached
+> +(see the description of
+> +.B RLIMIT_NOFILE
+> +in
+> +.BR getrlimit (2)).
+
+I think there was already a question about this error, but
+I still have a doubt.
+
+A glance at the code tells me that indeed EMFILE can occur.
+But how can the reason be because the limit on the number
+of open file descriptors has been reached? I mean: no new
+FDs are being opened, so how can we go over the limit. I think
+the cause of this error is something else, but what is it?
+
+Thanks,
+
+Michael
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
