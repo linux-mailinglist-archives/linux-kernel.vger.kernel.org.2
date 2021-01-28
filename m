@@ -2,103 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12318307D3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E86307D40
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhA1R7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:59:47 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:47428 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhA1R63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:58:29 -0500
-Received: from zn.tnic (p200300ec2f0a4b00db608beaaba2adee.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4b00:db60:8bea:aba2:adee])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9486D1EC058C;
-        Thu, 28 Jan 2021 18:57:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611856661;
+        id S231318AbhA1SAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:00:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59078 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231437AbhA1R6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:58:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611856628;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=T/dOLZHqyfSXT8UHCHdkk516q/7r513CDtEdL9VJMe0=;
-        b=JVi7ocDa2q2IATomaId3fpoiN/LDhxvbpNFODzgUofJsUdv9XlHFcEs2yeCpx2aVfSnBT6
-        kYv3Ge/CN1jzCfqg4JiD295LveLTvw/HA+3dytSHBOA7eVQQ+2UhIVJPZKreVrvGSFqbPU
-        Eqn3p/nu89ZAnYf7vFUSR3thif+aylg=
-Date:   Thu, 28 Jan 2021 18:57:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v5] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <20210128175735.GB2120@zn.tnic>
-References: <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
- <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
- <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
- <20210119105632.GF27433@zn.tnic>
- <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
- <20210120121812.GF825@zn.tnic>
- <20210121210959.GA10304@agluck-desk2.amr.corp.intel.com>
- <20210125225509.GA7149@agluck-desk2.amr.corp.intel.com>
- <20210126110314.GC6514@zn.tnic>
- <20210126223605.GA14355@agluck-desk2.amr.corp.intel.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oUrhpiGGbTD0gAMn83fBLzGBVoI9/BE/KMSqjcuvSN0=;
+        b=SEM+b+8HtQPXk9o09qoniH0a3ymhX4ZJ/cZyg4caKFs7CT/OlbO4x7nQGJlsy9cyigljIL
+        TTk5J+YV2m9fSJEXzQ67D9PqfOtq5It1xGs1vVTczXjoIHCvo0Mmanx3OtWEcEkb5N04t5
+        xm3Hv4fhThNTnhfvwbDg9KFCITKvckE=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-560-fGk89nGmPwOgaNY1XFADhQ-1; Thu, 28 Jan 2021 12:57:05 -0500
+X-MC-Unique: fGk89nGmPwOgaNY1XFADhQ-1
+Received: by mail-ed1-f72.google.com with SMTP id f4so3560195eds.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:57:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oUrhpiGGbTD0gAMn83fBLzGBVoI9/BE/KMSqjcuvSN0=;
+        b=ei47FLK3h9VbWwJNgFp3C505RnJS52SGc/CAEcSOxykpbt2CZ2q3wN1miVI3htuiId
+         gcCln9L1d0qk85qzlOY+4tupMdC5AO2FogoQknbVCaHU1JlSjXhE4Owrw3J7k0NwZIrl
+         sytUNVF7Zaboqq5cCHJHXGY1/yW3afC7ijzoTWEcac539T3pevbsePDAOL6BCTDuknIa
+         +Q6CZTWOEOgQYxJCA1+L+UCfV4fdZ56G19CeLCiY5TtsAC1DOdk2F0lOwtQCZ9tFXHB2
+         7V0M1v6v3AAH94dXqeTBxeNpO8iY6azsuaphG0KjG1is+3we6ZL/EsD5l9nr7giO3KJa
+         WU3w==
+X-Gm-Message-State: AOAM530MErQR4tKBbg4IWgunFtR0kYfyQmzg73lc4Gb8iNx4sOo6WcEF
+        m8SWmIAFIc4FpnMbZuciGbEU0yGGuoJwnUJv7WFTkoUuBz2w3nY8AtXMh1siXORCXwdaf54v4k/
+        jBCbIeYPaog8GDaGvx0ZTE4t9
+X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr830454edb.202.1611856624121;
+        Thu, 28 Jan 2021 09:57:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzhv5xdUV2+d83mJyPr/00SecV4xuLtdToo7JnM2GR2etJ9J2KmSq5DkCGTyEAmpBCetgZsEA==
+X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr830432edb.202.1611856623910;
+        Thu, 28 Jan 2021 09:57:03 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h12sm3219173edb.16.2021.01.28.09.57.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 09:57:02 -0800 (PST)
+Subject: Re: [PATCH v14 00/13] Introduce support for guest CET feature
+To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jmattson@google.com,
+        Sean Christopherson <seanjc@google.com>
+Cc:     yu.c.zhang@linux.intel.com
+References: <20201106011637.14289-1-weijiang.yang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c6e87502-6443-62f7-5df8-d7fcee0bca58@redhat.com>
+Date:   Thu, 28 Jan 2021 18:57:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210126223605.GA14355@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20201106011637.14289-1-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 02:36:05PM -0800, Luck, Tony wrote:
-> In some cases Linux might context switch to something else. Perhaps
-> this task even gets picked up by another CPU to run the task work
-> queued functions.  But I imagine that the context switch should act
-> as a barrier ... shouldn't it?
-
-I'm given to understand that the #MC from user is likely to schedule and
-a context switch has a barrier character.
-
-> After a few cycles of the test injection to user mode, I saw an
-> overflow in the machine check bank. As if it hadn't been cleared
-> from the previous iteration ...
-
-This sounds weird. As if something else is happening which we haven't
-thought of yet...
-
-> When the tests were failing, code was on top of v5.11-rc3. Latest
-> experiments moved to -rc5.  There's just a tracing fix from
-> PeterZ between rc3 and rc5 to mce/core.c:
+On 06/11/20 02:16, Yang Weijiang wrote:
+> Control-flow Enforcement Technology (CET) provides protection against
+> Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
+> sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
+> SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
 > 
-> 737495361d44 ("x86/mce: Remove explicit/superfluous tracing")
+> Several parts in KVM have been updated to provide VM CET support, including:
+> CPUID/XSAVES config, MSR pass-through, user space MSR access interface,
+> vmentry/vmexit config, nested VM etc. These patches have dependency on CET
+> kernel patches for xsaves support and CET definitions, e.g., MSR and related
+> feature flags.
 > 
-> which doesn't appear to be a candidate for the problems I saw.
-
-Doesn't look like it.
-
-> This is the bit that changed during my detour using atomic_t mce_count.
-> I added the local variable to capture value from atomic_inc_return(), then
-> used it later, instead of a bunch of atomic_read() calls.
+> CET kernel patches are here:
+> SHSTK: https://lkml.kernel.org/r/20201012153850.26996-1-yu-cheng.yu@intel.com/
+> IBT: https://lkml.kernel.org/r/20201012154530.28382-1-yu-cheng.yu@intel.com/
 > 
-> I kept it this way because "if (count == 1)" is marginally easier to read
-> than "if (current->mce_count++ == 0)"
+> CET QEMU patch:
+> https://patchwork.ozlabs.org/project/qemu-devel/patch/20201013051935.6052-2-weijiang.yang@intel.com/
+> KVM Unit test:
+> https://patchwork.kernel.org/project/kvm/patch/20200506082110.25441-12-weijiang.yang@intel.com/
+> 
+> v14:
+> - Sean refactored v13 patchset then came out v14-rc1, this version is
+>    rebased on top of 5.10-rc1 and tested on TGL.
+> - Fixed a few minor issues found during test, such as nested CET broken,
+>    call-trace and guest reboot failure etc.
+> - Original v14-rc1 is here: https://github.com/sean-jc/linux/tree/vmx/cet.
+> 
+> v13:
+> - Added CET definitions as a separate patch to facilitate KVM test.
+> - Disabled CET support in KVM if unrestricted_guest is turned off since
+>    in this case CET related instructions/infrastructure cannot be emulated
+>    well.
+> 
+> v12:
+> - Fixed a few issues per Sean and Paolo's review feeback.
+> - Refactored patches to make them properly arranged.
+> - Removed unnecessary hard-coded CET states for host/guest.
+> - Added compile-time assertions for vmcs_field_to_offset_table to detect
+>    mismatch of the field type and field encoding number.
+> - Added a custom MSR MSR_KVM_GUEST_SSP for guest active SSP save/restore.
+> - Rebased patches to 5.7-rc3.
+> 
+> v11:
+> - Fixed a guest vmentry failure issue when guest reboots.
+> - Used vm_xxx_control_{set, clear}bit() to avoid side effect, it'll
+>    clear cached data instead of pure VMCS field bits.
+> - Added vcpu->arch.guest_supported_xss dedidated for guest runtime mask,
+>    this avoids supported_xss overwritten issue caused by an old qemu.
+> - Separated vmentry/vmexit state setting with CR0/CR4 dependency check
+>    to make the patch more clear.
+> - Added CET VMCS states in dump_vmcs() for debugging purpose.
+> - Other refactor based on testing.
+> - This patch serial is built on top of below branch and CET kernel patches
+>    for seeking xsaves support.
+> 
+> v10:
+> - Refactored code per Sean's review feedback.
+> - Added CET support for nested VM.
+> - Removed fix-patch for CPUID(0xd,N) enumeration as this part is done
+>    by Paolo and Sean.
+> - This new patchset is based on Paolo's queued cpu_caps branch.
+> - Modified patch per XSAVES related change.
+> - Consolidated KVM unit-test patch with KVM patches.
+> 
+> v9:
+> - Refactored msr-check functions per Sean's feedback.
+> - Fixed a few issues per Sean's suggestion.
+> - Rebased patch to kernel-v5.4.
+> - Moved CET CPUID feature bits and CR4.CET to last patch.
+> 
+> v8:
+> - Addressed Jim and Sean's feedback on: 1) CPUID(0xD,i) enumeration. 2)
+>    sanity check when configure guest CET. 3) function improvement.
+> - Added more sanity check functions.
+> - Set host vmexit default status so that guest won't leak CET status to
+>    host when vmexit.
+> - Added CR0.WP vs. CR4.CET mutual constrains.
+> 
+> v7:
+> - Rebased patch to kernel v5.3
+> - Sean suggested to change CPUID(0xd, n) enumeration code as alined with
+>    existing one, and I think it's better to make the fix as an independent patch
+>    since XSS MSR are being used widely on X86 platforms.
+> - Check more host and guest status before configure guest CET
+>    per Sean's feedback.
+> - Add error-check before guest accesses CET MSRs per Sean's feedback.
+> - Other minor fixes suggested by Sean.
+> 
+> v6:
+> - Rebase patch to kernel v5.2.
+> - Move CPUID(0xD, n>=1) helper to a seperate patch.
+> - Merge xsave size fix with other patch.
+> - Other minor fixes per community feedback.
+> 
+> v5:
+> - Rebase patch to kernel v5.1.
+> - Wrap CPUID(0xD, n>=1) code to a helper function.
+> - Pass through MSR_IA32_PL1_SSP and MSR_IA32_PL2_SSP to Guest.
+> - Add Co-developed-by expression in patch description.
+> - Refine patch description.
+> 
+> v4:
+> - Add Sean's patch for loading Guest fpu state before access XSAVES
+>    managed CET MSRs.
+> - Melt down CET bits setting into CPUID configuration patch.
+> - Add VMX interface to query Host XSS.
+> - Check Host and Guest XSS support bits before set Guest XSS.
+> - Make Guest SHSTK and IBT feature enabling independent.
+> - Do not report CET support to Guest when Host CET feature is Disabled.
+> 
+> v3:
+> - Modified patches to make Guest CET independent to Host enabling.
+> - Added patch 8 to add user space access for Guest CET MSR access.
+> - Modified code comments and patch description to reflect changes.
+> 
+> v2:
+> - Re-ordered patch sequence, combined one patch.
+> - Added more description for CET related VMCS fields.
+> - Added Host CET capability check while enabling Guest CET loading bit.
+> - Added Host CET capability check while reporting Guest CPUID(EAX=7, EXC=0).
+> - Modified code in reporting Guest CPUID(EAX=D,ECX>=1), make it clearer.
+> - Added Host and Guest XSS mask check while setting bits for Guest XSS.
+> 
+> 
+> Sean Christopherson (2):
+>    KVM: x86: Report XSS as an MSR to be saved if there are supported features
+>    KVM: x86: Load guest fpu state when accessing MSRs managed by XSAVES
+> 
+> Yang Weijiang (11):
+>    KVM: x86: Refresh CPUID on writes to MSR_IA32_XSS
+>    KVM: x86: Add #CP support in guest exception dispatch
+>    KVM: VMX: Introduce CET VMCS fields and flags
+>    KVM: x86: Add fault checks for CR4.CET
+>    KVM: VMX: Emulate reads and writes to CET MSRs
+>    KVM: VMX: Add a synthetic MSR to allow userspace VMM to access GUEST_SSP
+>    KVM: x86: Report CET MSRs as to-be-saved if CET is supported
+>    KVM: x86: Enable CET virtualization for VMX and advertise CET to userspace
+>    KVM: VMX: Pass through CET MSRs to the guest when supported
+>    KVM: nVMX: Add helper to check the vmcs01 MSR bitmap for MSR pass-through
+>    KVM: nVMX: Enable CET support for nested VMX
+> 
+>   arch/x86/include/asm/kvm_host.h      |   4 +-
+>   arch/x86/include/asm/vmx.h           |   8 ++
+>   arch/x86/include/uapi/asm/kvm.h      |   1 +
+>   arch/x86/include/uapi/asm/kvm_para.h |   1 +
+>   arch/x86/kvm/cpuid.c                 |  26 +++-
+>   arch/x86/kvm/vmx/capabilities.h      |   5 +
+>   arch/x86/kvm/vmx/nested.c            |  57 ++++++--
+>   arch/x86/kvm/vmx/vmcs12.c            |   6 +
+>   arch/x86/kvm/vmx/vmcs12.h            |  14 +-
+>   arch/x86/kvm/vmx/vmx.c               | 207 ++++++++++++++++++++++++++-
+>   arch/x86/kvm/x86.c                   |  56 +++++++-
+>   arch/x86/kvm/x86.h                   |  10 +-
+>   12 files changed, 370 insertions(+), 25 deletions(-)
+> 
 
-Right.
+I reviewed the patch and it is mostly okay.  However, if I understand it 
+correctly, it will not do anything until host support materializes, 
+because otherwise XSS will be 0.
 
-So still no explanation why it would fail before. ;-\
+If this is the case, I plan to apply locally v15 and hold on it until 
+the host code is committed.
 
-Crazy idea: if you still can reproduce on -rc3, you could bisect: i.e.,
-if you apply the patch on -rc3 and it explodes and if you apply the same
-patch on -rc5 and it works, then that could be a start... Yeah, don't
-have a better idea here. :-\
+Paolo
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
