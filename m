@@ -2,249 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B0D3081AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 699F73081B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 00:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhA1XH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 18:07:58 -0500
-Received: from hmm.wantstofly.org ([213.239.204.108]:50856 "EHLO
-        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA1XHz (ORCPT
+        id S231656AbhA1XJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 18:09:37 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:19751 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbhA1XJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:07:55 -0500
-Received: by mail.wantstofly.org (Postfix, from userid 1000)
-        id EB62C7F45D; Fri, 29 Jan 2021 01:07:10 +0200 (EET)
-Date:   Fri, 29 Jan 2021 01:07:10 +0200
-From:   Lennert Buytenhek <buytenh@wantstofly.org>
-To:     David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
-Message-ID: <20210128230710.GA190469@wantstofly.org>
-References: <20210123114152.GA120281@wantstofly.org>
- <a99467bab6d64a7f9057181d979ec563@AcuMS.aculab.com>
+        Thu, 28 Jan 2021 18:09:33 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611875349; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=O8kFXrZt93Vjk8mo2c8C6NAXhyoA4VuHGdA2XbbyiBY=; b=MhhOzyzAuVadQmnjh7wV8Uc+FFbIkz0lh+tsNJwggUt32CeJDYwehbPnrMwJilBHW43vKuZF
+ kHHJ3aQXFVWOr6qEYL8PIk/k2e/qo4mHfxci7Ku5Aug3iXxIg/27Zu7Sx5LpCeNqsqmPHy1I
+ 9RaB5aELFz8GiZIHHKINjX0YQiQ=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 601343f8bcde412162da6a39 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Jan 2021 23:08:40
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 97D82C43461; Thu, 28 Jan 2021 23:08:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.127.29] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A11AC433C6;
+        Thu, 28 Jan 2021 23:08:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A11AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
+        jackp@codeaurora.org
+References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
+ <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
+ <YAsHbj/mITeiY5Cq@builder.lan>
+ <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
+ <20210126015543.GB1241218@yoga>
+ <99dd9419-a8fd-9eb2-9582-d24f865ecf70@codeaurora.org>
+ <YA+lVFWlBDvN4MTF@builder.lan>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <dec42f26-6b67-56ec-74a5-feae5e5c5df5@codeaurora.org>
+Date:   Thu, 28 Jan 2021 15:08:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a99467bab6d64a7f9057181d979ec563@AcuMS.aculab.com>
+In-Reply-To: <YA+lVFWlBDvN4MTF@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 10:21:38PM +0000, David Laight wrote:
 
-> > One open question is whether IORING_OP_GETDENTS64 should be more like
-> > pread(2) and allow passing in a starting offset to read from the
-> > directory from.  (This would require some more surgery in fs/readdir.c.)
+
+On 1/25/2021 9:15 PM, Bjorn Andersson wrote:
+> On Mon 25 Jan 22:32 CST 2021, Wesley Cheng wrote:
+>> On 1/25/2021 5:55 PM, Bjorn Andersson wrote:
+>>> On Mon 25 Jan 19:14 CST 2021, Wesley Cheng wrote:
+>>>
+>>>>
+>>>>
+>>>> On 1/22/2021 9:12 AM, Bjorn Andersson wrote:
+>>>>> On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
+>>>>>
+>>>>
+>>>> Hi Bjorn,
+>>>>>
+>>>>> Under what circumstances should we specify this? And in particular are
+>>>>> there scenarios (in the Qualcomm platforms) where this must not be set?
+>>>>> The TXFIFO dynamic allocation is actually a feature within the DWC3
+>>>> controller, and isn't specifically for QCOM based platforms.  It won't
+>>>> do any harm functionally if this flag is not set, as this is meant for
+>>>> enhancing performance/bandwidth.
+>>>>
+>>>>> In particular, the composition can be changed in runtime, so should we
+>>>>> set this for all Qualcomm platforms?
+>>>>>
+>>>> Ideally yes, if we want to increase bandwith for situations where SS
+>>>> endpoint bursting is set to a higher value.
+>>>>
+>>>>> And if that's the case, can we not just set it from the qcom driver?
+>>>>>
+>>>> Since this is a common DWC3 core feature, I think it would make more
+>>>> sense to have it in DWC3 core instead of a vendor's DWC3 glue driver.
+>>>>
+>>>
+>>> I don't have any objections to implementing it in the core driver, but
+>>> my question is can we just skip the DT binding and just enable it from
+>>> the vendor driver?
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>
+>> Hi Bjorn,
+>>
+>> I see.  I think there are some designs which don't have a DWC3 glue
+>> driver, so assuming there may be other platforms using this, there may
+>> not always be a vendor driver to set this.
+>>
 > 
-> Since directories are seekable this ought to work.
-> Modulo horrid issues with 32bit file offsets.
+> You mean that there are implementations of dwc3 without an associated
+> glue driver that haven't yet realized that they need this feature?
+> 
+> I would suggest then that we implement the core code necessary, we
+> enable it from the Qualcomm glue layer and when someone realize that
+> they need this without a glue driver it's going to be trivial to add the
+> DT binding.
+>>
+> The alternative is that we're lugging around a requirement to specify
+> this property in all past, present and future Qualcomm dts files - and
+> then we'll need to hard code it for ACPI anyways.
+> 
+Hi Bjorn,
 
-The incremental patch below does this.  (It doesn't apply cleanly on
-top of v1 of the IORING_OP_GETDENTS patch as I have other changes in
-my tree -- I'm including it just to illustrate the changes that would
-make this work.)
+Can we utilize the of_add_property() call to add the "tx-fifo-resize"
+property from the dwc3_qcom_register_core() API?  That way at least the
+above concern would be addressed.
 
-This change seems to work, and makes IORING_OP_GETDENTS take an
-explicitly specified directory offset (instead of using the file's
-->f_pos), making it more like pread(2), and I like the change from
-a conceptual point of view, but it's a bit ugly around
-iterate_dir_use_ctx_pos().  Any thoughts on how to do this more
-cleanly (without breaking iterate_dir() semantics)?
+I'm not too familiar with the ACPI design, but I do see that the
+dwc3-qcom does have an array carrying some DWC3 core properties.  Looks
+like we can add the tx-fifo-resize property here too.
 
-
-> You'd need to return the final offset to allow another
-> read to continue from the end position.
-
-We can use the ->d_off value as returned in the last struct
-linux_dirent64 as the directory offset to continue reading from
-with the next IORING_OP_GETDENTS call, illustrated by the patch
-to uringfind.c at the bottom.
-
-
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 13dd29f8ebb3..0f9707ed9294 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -576,6 +576,7 @@ struct io_getdents {
- 	struct file			*file;
- 	struct linux_dirent64 __user	*dirent;
- 	unsigned int			count;
-+	loff_t				pos;
- };
- 
- struct io_completion {
-@@ -4584,9 +4585,10 @@ static int io_getdents_prep(struct io_kiocb *req,
- 
- 	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
- 		return -EINVAL;
--	if (sqe->ioprio || sqe->off || sqe->rw_flags || sqe->buf_index)
-+	if (sqe->ioprio || sqe->rw_flags || sqe->buf_index)
- 		return -EINVAL;
- 
-+	getdents->pos = READ_ONCE(sqe->off);
- 	getdents->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
- 	getdents->count = READ_ONCE(sqe->len);
- 	return 0;
-@@ -4601,7 +4603,8 @@ static int io_getdents(struct io_kiocb *req, bool force_nonblock)
- 	if (force_nonblock)
- 		return -EAGAIN;
- 
--	ret = vfs_getdents(req->file, getdents->dirent, getdents->count);
-+	ret = vfs_getdents(req->file, getdents->dirent, getdents->count,
-+			   &getdents->pos);
- 	if (ret < 0) {
- 		if (ret == -ERESTARTSYS)
- 			ret = -EINTR;
-diff --git a/fs/readdir.c b/fs/readdir.c
-index f52167c1eb61..d6bd78f6350a 100644
---- a/fs/readdir.c
-+++ b/fs/readdir.c
-@@ -37,7 +37,7 @@
- } while (0)
- 
- 
--int iterate_dir(struct file *file, struct dir_context *ctx)
-+int iterate_dir_use_ctx_pos(struct file *file, struct dir_context *ctx)
- {
- 	struct inode *inode = file_inode(file);
- 	bool shared = false;
-@@ -60,12 +60,10 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 
- 	res = -ENOENT;
- 	if (!IS_DEADDIR(inode)) {
--		ctx->pos = file->f_pos;
- 		if (shared)
- 			res = file->f_op->iterate_shared(file, ctx);
- 		else
- 			res = file->f_op->iterate(file, ctx);
--		file->f_pos = ctx->pos;
- 		fsnotify_access(file);
- 		file_accessed(file);
- 	}
-@@ -76,6 +74,17 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- out:
- 	return res;
- }
-+
-+int iterate_dir(struct file *file, struct dir_context *ctx)
-+{
-+	int res;
-+
-+	ctx->pos = file->f_pos;
-+	res = iterate_dir_use_ctx_pos(file, ctx);
-+	file->f_pos = ctx->pos;
-+
-+	return res;
-+}
- EXPORT_SYMBOL(iterate_dir);
- 
- /*
-@@ -349,16 +358,18 @@ static int filldir64(struct dir_context *ctx, const char *name, int namlen,
- }
- 
- int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
--		 unsigned int count)
-+		 unsigned int count, loff_t *pos)
- {
- 	struct getdents_callback64 buf = {
- 		.ctx.actor = filldir64,
-+		.ctx.pos = *pos,
- 		.count = count,
- 		.current_dir = dirent
- 	};
- 	int error;
- 
--	error = iterate_dir(file, &buf.ctx);
-+	error = iterate_dir_use_ctx_pos(file, &buf.ctx);
-+	*pos = buf.ctx.pos;
- 	if (error >= 0)
- 		error = buf.error;
- 	if (buf.prev_reclen) {
-@@ -384,7 +395,7 @@ SYSCALL_DEFINE3(getdents64, unsigned int, fd,
- 	if (!f.file)
- 		return -EBADF;
- 
--	error = vfs_getdents(f.file, dirent, count);
-+	error = vfs_getdents(f.file, dirent, count, &f.file->f_pos);
- 	fdput_pos(f);
- 	return error;
- }
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 114885d3f6c4..4d9d96163f92 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3107,11 +3107,12 @@ const char *simple_get_link(struct dentry *, struct inode *,
- 			    struct delayed_call *);
- extern const struct inode_operations simple_symlink_inode_operations;
- 
-+extern int iterate_dir_use_ctx_pos(struct file *, struct dir_context *);
- extern int iterate_dir(struct file *, struct dir_context *);
- 
- struct linux_dirent64;
- int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
--		 unsigned int count);
-+		 unsigned int count, loff_t *pos);
- 
- int vfs_fstatat(int dfd, const char __user *filename, struct kstat *stat,
- 		int flags);
+static const struct property_entry dwc3_qcom_acpi_properties[] = {
+	PROPERTY_ENTRY_STRING("dr_mode", "host"),
+	{}
+};
 
 
+Thanks
+Wesley Cheng
 
-Corresponding uringfind.c change:
+> Regards,
+> Bjorn
+> 
 
-diff --git a/uringfind.c b/uringfind.c
-index 4282296..e140388 100644
---- a/uringfind.c
-+++ b/uringfind.c
-@@ -22,9 +22,10 @@ struct linux_dirent64 {
- };
- 
- static inline void io_uring_prep_getdents(struct io_uring_sqe *sqe, int fd,
--					  void *buf, unsigned int count)
-+					  void *buf, unsigned int count,
-+					  uint64_t off)
- {
--	io_uring_prep_rw(IORING_OP_GETDENTS, sqe, fd, buf, count, 0);
-+	io_uring_prep_rw(IORING_OP_GETDENTS, sqe, fd, buf, count, off);
- }
- 
- 
-@@ -38,6 +39,7 @@ struct dir {
- 
- 	struct dir	*parent;
- 	int		fd;
-+	uint64_t	off;
- 	uint8_t		buf[16384];
- 	char		name[0];
- };
-@@ -131,7 +133,8 @@ static void schedule_readdir(struct dir *dir)
- 	struct io_uring_sqe *sqe;
- 
- 	sqe = get_sqe();
--	io_uring_prep_getdents(sqe, dir->fd, dir->buf, sizeof(dir->buf));
-+	io_uring_prep_getdents(sqe, dir->fd, dir->buf, sizeof(dir->buf),
-+			       dir->off);
- 	io_uring_sqe_set_data(sqe, dir);
- }
- 
-@@ -145,6 +148,7 @@ static void opendir_completion(struct dir *dir, int ret)
- 	}
- 
- 	dir->fd = ret;
-+	dir->off = 0;
- 	schedule_readdir(dir);
- }
- 
-@@ -179,6 +183,7 @@ static void readdir_completion(struct dir *dir, int ret)
- 				schedule_opendir(dir, dent->d_name);
- 		}
- 
-+		dir->off = dent->d_off;
- 		bufp += dent->d_reclen;
- 	}
- 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
