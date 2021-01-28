@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09ED306BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EF3306BB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhA1DcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:32:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhA1DcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:32:00 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6E0C061573;
-        Wed, 27 Jan 2021 19:31:19 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id v3so3199955qtw.4;
-        Wed, 27 Jan 2021 19:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VOw4mJ4y43ELleH9R6vau/EgvTWH40V/X9BffSOccpQ=;
-        b=JRELr5pJ/BHYdN461dpHR9FbEXmyaPZ8n28FutnjSzyXAQ9PhSgQP/kt8xKM8gi7qP
-         3MOY8cwEC0iCFfb7aCC1GbD1AjF16oMDTFJdt0ii8dJgmTugQn3g/D/8mUY7vZep5chy
-         NQsA7BNIhfvs4TuB7gwJCLYJflgU43lFBxvVCbWGXk8ROXBkOfw3cXHw/wpdq0qPy0I4
-         uIq8EUOHgwagyl1w8wl+zkUehJblW+qiGs3+BYGaOARMQvyhn+Jusx+FQ6h0zR9KKuHU
-         CsiZVj5j+gjPPCMRdmaGkmNdk9hv1BFIKPZZBF54QIBlTfvB4naW6nkA6eelg9jN1Hc1
-         jWmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=VOw4mJ4y43ELleH9R6vau/EgvTWH40V/X9BffSOccpQ=;
-        b=ba13vkIDnwGhcHNe1k5unmqb6Wz2gpZf+14svhgt+x4TiIp7oh0wtUopyEaUsmX9j+
-         Q2gtqGNiXWv9GFBhXs8jXBDYj3q0PeS2n1u3sOddqPpzb0PEfdVYfuWzDMYZyguZxKQw
-         iUFF87/5DCnpZa98zHSdJk4ioIiX7L5zZXrKl5BJQwK7V4HbHtbzemJINMiJIaW5ZZEJ
-         GzJWaC1PWl/LI40BHJ1SgEuk8mX3rBu+AWLEe1hriGh2x8qEOyZBifgknLO+d4LDkSSu
-         0rxsw4SNkn3De7lscajEWuXKYnEMLE/U/z/oSTEYEEtT78T3H28CcWIING/CWguAIZ9f
-         uIYQ==
-X-Gm-Message-State: AOAM5312z/U6HTX3Q8zr4NDackzQbvPZTdX5cV/U5/86dZuvO8MiXizr
-        wkhUWeDhiqYPabsxCX3GN1BqUaAcEYw=
-X-Google-Smtp-Source: ABdhPJxfo/qHEKGK9edZWfVE+b8jJEBU5mSEhGBSikskdl6KBcBbZTlhO/Ifpk32Id1cSo8skzx+AA==
-X-Received: by 2002:ac8:6b10:: with SMTP id w16mr12721215qts.354.1611804678911;
-        Wed, 27 Jan 2021 19:31:18 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id i18sm2581275qkg.66.2021.01.27.19.31.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 19:31:17 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 27 Jan 2021 22:31:05 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     axboe@kernel.dk, joseph.qi@linux.alibaba.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] blk-cgroup: Use cond_resched() when destroy blkgs
-Message-ID: <YBIv+fG6jleTxOTh@slm.duckdns.org>
-References: <8e8a0c4644d5eb01b7f79ec9b67c2b240f4a6434.1611798287.git.baolin.wang@linux.alibaba.com>
+        id S231130AbhA1DdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:33:23 -0500
+Received: from mga06.intel.com ([134.134.136.31]:64683 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229530AbhA1DdV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:33:21 -0500
+IronPort-SDR: 4GAoTuFXJmimnhVoeJMHbsuMuW6d78TNmCrjuwRnvnOmEg3LADJ8t8JYPJ400v1wAVVGLsKDw/
+ CgaqsMUhCbQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241701780"
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="241701780"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 19:31:33 -0800
+IronPort-SDR: /Jc3c5jYCj7kC1arPXYY9H/0QUKyDtq7ivr/H3f0v0YmkuXskfIvnjXSTUxpWD03sHZaOGpmQX
+ QKdh4vvviHnQ==
+X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
+   d="scan'208";a="388577104"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 19:31:28 -0800
+Subject: Re: [PATCH 1/2] perf script: Support filtering by hex address
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210124232750.19170-1-yao.jin@linux.intel.com>
+ <20210127222905.GD284633@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <60d102fa-d98a-6182-0a1d-b78122fed574@linux.intel.com>
+Date:   Thu, 28 Jan 2021 11:31:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e8a0c4644d5eb01b7f79ec9b67c2b240f4a6434.1611798287.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <20210127222905.GD284633@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:22:00AM +0800, Baolin Wang wrote:
-> On !PREEMPT kernel, we can get below softlockup when doing stress
-> testing with creating and destroying block cgroup repeatly. The
-> reason is it may take a long time to acquire the queue's lock in
-> the loop of blkcg_destroy_blkgs(), or the system can accumulate a
-> huge number of blkgs in pathological cases. We can add a need_resched()
-> check on each loop and release locks and do cond_resched() if true
-> to avoid this issue, since the blkcg_destroy_blkgs() is not called
-> from atomic contexts.
+Hi Jiri,
+
+On 1/28/2021 7:13 AM, Jiri Olsa wrote:
+>> @@ -709,6 +725,26 @@ int machine__resolve(struct machine *machine, struct addr_location *al,
+>>   			ret = strlist__has_entry(symbol_conf.sym_list,
+>>   						al_addr_str);
+>>   		}
+>> +		if (!ret && al->map) {
+>> +			snprintf(al_addr_str, sz, "0x%"PRIx64,
+>> +				al->map->unmap_ip(al->map, al->addr));
+>> +			ret = strlist__has_entry(symbol_conf.sym_list,
+>> +						 al_addr_str);
+>> +			if (!ret) {
+>> +				/* Check for hex without "0x" prefix */
+>> +				snprintf(al_addr_str, sz, "%"PRIx64,
+>> +					al->map->unmap_ip(al->map, al->addr));
+>> +				ret = strlist__has_entry(symbol_conf.sym_list,
+>> +							 al_addr_str);
+>> +			}
+> that seems tricky.. what if user specify more leading zeros,
+> I think it'd be better to search intlist instead
 > 
-> [ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
-> [ 4757.010698] Call trace:
-> [ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
-> [ 4757.010701]  cgwb_release_workfn+0x104/0x158
-> [ 4757.010702]  process_one_work+0x1bc/0x3f0
-> [ 4757.010704]  worker_thread+0x164/0x468
-> [ 4757.010705]  kthread+0x108/0x138
+> we could move all 'address' entries from sym_list to
+> new intlist (in symbol__init) and use it for this search
 > 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> jirka
+> 
 
-Acked-by: Tejun Heo <tj@kernel.org>
+intlist now only supports 'int' type.
 
-Thanks.
+I'm considering to use 'long' to replace original 'int' in struct int_node.
 
--- 
-tejun
+struct int_node {
+	struct rb_node rb_node;
+-	int i;
++	long i;
+	void *priv;
+};
+
+On 32 bits platform, sizeof(long) is 4, and on 64 bits platform, sizeof(long) is 8. So that should 
+be OK for storing the values such as pid/tid and address.
+
+I'm not very clear why currently it uses 'int' for i in struct int_node, maybe something I don't 
+understand correctly. Please correct me if my understanding is wrong.
+
+Thanks
+Jin Yao
+
+
+
+
+
