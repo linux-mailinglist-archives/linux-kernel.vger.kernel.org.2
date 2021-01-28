@@ -2,130 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FD1307A19
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26790307A17
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhA1PyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:54:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229786AbhA1Pxz (ORCPT
+        id S231151AbhA1Pxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229885AbhA1Pxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:53:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611849148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dB3JIX9113VONKdVfV6NlxQN80Cb3wMNjDS3PJIHsUU=;
-        b=h/yLiErlrqWXMf98NDJ9X76xMNiRycVKcgOlKijbkOMcjIxbEUzYV3z+hrqAyVZcAPy3Ly
-        yXSFFO8gU/zmeB2tOuddxI9h4ykmSfmSP/4s51YZfGuWg3Q282j1BuLEQIQqf37NhWkUI2
-        sUXKDeXlmOc7BhdJdvBEjKu2YV3QTLM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-XcJUl8L6PCadxoA9h56X8A-1; Thu, 28 Jan 2021 10:52:26 -0500
-X-MC-Unique: XcJUl8L6PCadxoA9h56X8A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FA0D1015C84;
-        Thu, 28 Jan 2021 15:52:25 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E1185D720;
-        Thu, 28 Jan 2021 15:52:24 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 09:52:22 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Thomas Backlund <tmb@tmb.nu>
-Cc:     Chris Clayton <chris2553@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: linux-5.10.11 build failure
-Message-ID: <20210128155222.eu35xflfqlcinu7g@treble>
-References: <8b3e9d93-1381-b415-9ece-a10fb098b896@tmb.nu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8b3e9d93-1381-b415-9ece-a10fb098b896@tmb.nu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Thu, 28 Jan 2021 10:53:30 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55A3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:52:49 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 11so5573560ybl.21
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 07:52:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=bFlfFxExoP+T7uD5u0dP5DT6ACFMtzqiCrzF6r4rSzw=;
+        b=Ec94lJS+bCj3aaejQFC8FxQfhMx9FPQoE9aoIeYMmD8lpwJ2TYXNRYfvWRXREJXKGb
+         9DUiIjwKodL1rRPmgGG2bQBl9dL97cUCGZtfl67XkT60Nb8gCCsn4KYB9tro3NPpfWye
+         sTkajKmFUmZXY8+tIWaVJQvafFEV9n+mhoCFaDxO72djUzptYje/DjGpT90Y1yCZIgvM
+         qP96ZEHgMkSOXea7+yDtZiobKdP8qBNVUUr/KfwRXKy68f3QU/yLSTiurPo8a58EGyiv
+         /xVzwofhbrA24QGjeLqiPyULLXsl1K3Efn+WWdAeZkaNDvGLNQpsadRaIMBL7Vtzf+cd
+         pjNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=bFlfFxExoP+T7uD5u0dP5DT6ACFMtzqiCrzF6r4rSzw=;
+        b=ewAUeWNm4uSsCXY5ZvS7jbTKXbWRCJE7mrlc9wH9KtMDprVbtclfELKgD4PWbuI77U
+         gHMP8zGPjSzN/lfLFitzKdPchLbOtYqwYDh7sk3EpNFSwIAh6nGoB2FwQ5wqnyAthDLR
+         Vq6klNuYdz/m7AuSrHOkkIRJVvHDkTQd4VaqLipTsGOVk7ms3qxs7XY4awqdd7q2j7Yk
+         EtcXTHTx/per2DPiQYVG9PIyhzaSdqk3jpg8CZADzSNFVqMpviFToHzRLUEGe7+HP8Cv
+         8WZEnHYkkjxlFay+c7hGESAYdsuLUgjZka2xL5ScYyvWVUcbgA2gL8YnE23xBCK5AUgI
+         wUJg==
+X-Gm-Message-State: AOAM533dl/S1xyu30UsAeZ9eE6ylxm9cnvPfNn7qelS9T0fujhZtJzgf
+        kQ3QcvE6az0oZxbQFzDqrBm+1gSIn110aIqS
+X-Google-Smtp-Source: ABdhPJy1hTEk/Mwopo0IgkxsLRQWHo/tNwR21dmvZx1FY3dDUfkStKEAAh4AHkF69Ltyk1Fxeq8pDctjdrOMrtV0
+Sender: "victording via sendgmr" <victording@victording.c.googlers.com>
+X-Received: from victording.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:65c7])
+ (user=victording job=sendgmr) by 2002:a25:d2c8:: with SMTP id
+ j191mr23967268ybg.279.1611849168928; Thu, 28 Jan 2021 07:52:48 -0800 (PST)
+Date:   Thu, 28 Jan 2021 15:52:42 +0000
+Message-Id: <20210128155237.v2.1.I42c1001f8b0eaac973a99e1e5c2170788ee36c9c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH v2] PCI/ASPM: Disable ASPM when save/restore PCI state
+From:   Victor Ding <victording@google.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Victor Ding <victording@google.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:24:47AM +0000, Thomas Backlund wrote:
-> Den 28.1.2021 kl. 12:05, skrev Chris Clayton:
-> > 
-> > On 28/01/2021 09:34, Greg Kroah-Hartman wrote:
-> >> On Thu, Jan 28, 2021 at 09:17:10AM +0000, Chris Clayton wrote:
-> >>> Hi,
-> >>>
-> >>> Building 5.10.11 fails on my (x86-64) laptop thusly:
-> >>>
-> >>> ..
-> >>>
-> >>>   AS      arch/x86/entry/thunk_64.o
-> >>>    CC      arch/x86/entry/vsyscall/vsyscall_64.o
-> >>>    AS      arch/x86/realmode/rm/header.o
-> >>>    CC      arch/x86/mm/pat/set_memory.o
-> >>>    CC      arch/x86/events/amd/core.o
-> >>>    CC      arch/x86/kernel/fpu/init.o
-> >>>    CC      arch/x86/entry/vdso/vma.o
-> >>>    CC      kernel/sched/core.o
-> >>> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at offset 0x3e
-> >>>
-> >>>    AS      arch/x86/realmode/rm/trampoline_64.o
-> >>> make[2]: *** [scripts/Makefile.build:360: arch/x86/entry/thunk_64.o] Error 255
-> >>> make[2]: *** Deleting file 'arch/x86/entry/thunk_64.o'
-> >>> make[2]: *** Waiting for unfinished jobs....
-> >>>
-> >>> ..
-> >>>
-> >>> Compiler is latest snapshot of gcc-10.
-> >>>
-> >>> Happy to test the fix but please cc me as I'm not subscribed
-> >>
-> >> Can you do 'git bisect' to track down the offending commit?
-> >>
-> > 
-> > Sure, but I'll hold that request for a while. I updated to binutils-2.36 on Monday and I'm pretty sure that is a feature
-> > of this build fail. I've reverted binutils to 2.35.1, and the build succeeds. Updated to 2.36 again and, surprise,
-> > surprise, the kernel build fails again.
-> > 
-> > I've had a glance at the binutils ML and there are all sorts of issues being reported, but it's beyond my knowledge to
-> > assess if this build error is related to any of them.
-> > 
-> > I'll stick with binutils-2.35.1 for the time being.
-> > 
-> >> And what exact gcc version are you using?
-> >>
-> > 
-> >   It's built from the 10-20210123 snapshot tarball.
-> > 
-> > I can report this to the binutils folks, but might it be better if the objtool maintainer looks at it first? The
-> > binutils change might just have opened the gate to a bug in objtool.
-> > 
-> >> thanks,
-> >>
-> >> greg k-h
-> >>
-> > 
-> 
-> 
-> AFAIK you need this in stable trees:
-> 
->  From 1d489151e9f9d1647110277ff77282fe4d96d09b Mon Sep 17 00:00:00 2001
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
-> Date: Thu, 14 Jan 2021 16:14:01 -0600
-> Subject: [PATCH] objtool: Don't fail on missing symbol table
+Certain PCIe devices (e.g. GL9750) have high penalties (e.g. high Port
+T_POWER_ON) when exiting L1 but enter L1 aggressively. As a result,
+such devices enter and exit L1 frequently during pci_save_state and
+pci_restore_state; eventually causing poor suspend/resume performance.
 
-Actually I think you need:
+Based on the observation that PCI accesses dominance pci_save_state/
+pci_restore_state plus these accesses are fairly close to each other, the
+actual time the device could stay in low power states is negligible.
+Therefore, the little power-saving benefit from ASPM during suspend/resume
+does not overweight the performance degradation caused by high L1 exit
+penalties.
 
-  5e6dca82bcaa ("x86/entry: Emit a symbol for register restoring thunk")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211187
+Signed-off-by: Victor Ding <victording@google.com>
 
-I submitted a patch to stable list a few days ago.
+---
 
-(Though it's possible you need both commits, I'm not sure if binutils
- 2.36 has the symbol stripping stuff)
+Changes in v2:
+- Updated commit message to remove unnecessary information
+- Fixed a bug reading wrong register in pcie_save_aspm_control
+- Updated to reuse existing pcie_config_aspm_dev where possible
+- Fixed goto label style
 
+ drivers/pci/pci.c       | 18 +++++++++++++++---
+ drivers/pci/pci.h       |  6 ++++++
+ drivers/pci/pcie/aspm.c | 27 +++++++++++++++++++++++++++
+ include/linux/pci.h     |  1 +
+ 4 files changed, 49 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 32011b7b4c04..9ea88953f90b 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1542,6 +1542,10 @@ static void pci_restore_ltr_state(struct pci_dev *dev)
+ int pci_save_state(struct pci_dev *dev)
+ {
+ 	int i;
++
++	pcie_save_aspm_control(dev);
++	pcie_disable_aspm(dev);
++
+ 	/* XXX: 100% dword access ok here? */
+ 	for (i = 0; i < 16; i++) {
+ 		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+@@ -1552,18 +1556,22 @@ int pci_save_state(struct pci_dev *dev)
+ 
+ 	i = pci_save_pcie_state(dev);
+ 	if (i != 0)
+-		return i;
++		goto exit;
+ 
+ 	i = pci_save_pcix_state(dev);
+ 	if (i != 0)
+-		return i;
++		goto exit;
+ 
+ 	pci_save_ltr_state(dev);
+ 	pci_save_aspm_l1ss_state(dev);
+ 	pci_save_dpc_state(dev);
+ 	pci_save_aer_state(dev);
+ 	pci_save_ptm_state(dev);
+-	return pci_save_vc_state(dev);
++	i = pci_save_vc_state(dev);
++
++exit:
++	pcie_restore_aspm_control(dev);
++	return i;
+ }
+ EXPORT_SYMBOL(pci_save_state);
+ 
+@@ -1661,6 +1669,8 @@ void pci_restore_state(struct pci_dev *dev)
+ 	if (!dev->state_saved)
+ 		return;
+ 
++	pcie_disable_aspm(dev);
++
+ 	/*
+ 	 * Restore max latencies (in the LTR capability) before enabling
+ 	 * LTR itself (in the PCIe capability).
+@@ -1689,6 +1699,8 @@ void pci_restore_state(struct pci_dev *dev)
+ 	pci_enable_acs(dev);
+ 	pci_restore_iov_state(dev);
+ 
++	pcie_restore_aspm_control(dev);
++
+ 	dev->state_saved = false;
+ }
+ EXPORT_SYMBOL(pci_restore_state);
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index a81459159f6d..e074a0cbe73c 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -584,6 +584,9 @@ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+ void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+ void pci_save_aspm_l1ss_state(struct pci_dev *dev);
+ void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
++void pcie_save_aspm_control(struct pci_dev *dev);
++void pcie_restore_aspm_control(struct pci_dev *dev);
++void pcie_disable_aspm(struct pci_dev *pdev);
+ #else
+ static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+@@ -591,6 +594,9 @@ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+ static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
+ static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
++static inline void pcie_save_aspm_control(struct pci_dev *dev) { }
++static inline void pcie_restore_aspm_control(struct pci_dev *dev) { }
++static inline void pcie_disable_aspm(struct pci_dev *pdev) { }
+ #endif
+ 
+ #ifdef CONFIG_PCIE_ECRC
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index a08e7d6dc248..e1e97db32e8b 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -784,6 +784,33 @@ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+ 					   PCI_EXP_LNKCTL_ASPMC, val);
+ }
+ 
++void pcie_disable_aspm(struct pci_dev *pdev)
++{
++	if (!pci_is_pcie(pdev))
++		return;
++
++	pcie_config_aspm_dev(pdev, 0);
++}
++
++void pcie_save_aspm_control(struct pci_dev *pdev)
++{
++	u16 lnkctl;
++
++	if (!pci_is_pcie(pdev))
++		return;
++
++	pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &lnkctl);
++	pdev->saved_aspm_ctl = lnkctl & PCI_EXP_LNKCTL_ASPMC;
++}
++
++void pcie_restore_aspm_control(struct pci_dev *pdev)
++{
++	if (!pci_is_pcie(pdev))
++		return;
++
++	pcie_config_aspm_dev(pdev, pdev->saved_aspm_ctl);
++}
++
+ static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+ {
+ 	u32 upstream = 0, dwstream = 0;
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index b32126d26997..a21bfd6e3f89 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -387,6 +387,7 @@ struct pci_dev {
+ 	unsigned int	ltr_path:1;	/* Latency Tolerance Reporting
+ 					   supported from root to here */
+ 	u16		l1ss;		/* L1SS Capability pointer */
++	u16		saved_aspm_ctl; /* ASPM Control saved at suspend time */
+ #endif
+ 	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
+ 
 -- 
-Josh
+2.30.0.280.ga3ce27912f-goog
 
