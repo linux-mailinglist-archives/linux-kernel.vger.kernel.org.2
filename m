@@ -2,171 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6972306FF1
+	by mail.lfdr.de (Postfix) with ESMTP id 463A7306FF0
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhA1Hnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:43:41 -0500
-Received: from mail-eopbgr140094.outbound.protection.outlook.com ([40.107.14.94]:19164
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232157AbhA1Hm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:42:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dEQAP0Vw7JRvhf4L3Imj8GBLOnU4Yfe41BP3Dw62SkqBPlkTZ+6W/Os2ltfYBwbCsaYnodW+P6vDlGt1sSjFU6io8/PmKoqX1RvR2Z7OyZHSwr6rgixf8WtyA9jRwca1lyuIaqWyu+gGIhTDvCV3SV7tae3gocrHmqEugImGLZR1FOgHKOUN2G/6rp8nuA5pq7NT2T79wRzQEdpR0jIjnfjo6ARX/pxu9GjuWcZLrXHg/TwNt4nr/lEcQc2mNdSRtn9Y3ddqebl0o7x7tMidswnlKFAqc5mvPjDozHtWeWAupUcea8dCb9tnjz4R7wm+fLNlkmDdginTwoc7zbLBKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+1qrNaxGVEWfE9scEi3H0Ue1HoQ0Gc3oxkVySoNh7yk=;
- b=JU42O6zxy5WvSl0ZgNu5srGrRXKSCr9CjgMjgaR465j42SxG0qmn5wnthYmxw6tBi5oeD3/bBn/xfYhptFMH17/FoORS7vej7PylVDmcDgGWauD+NHwoS8NwgG2Fn0s09u5odyx+KzKHJ5J3RbjXMTc7sBvqQmnVWg37crFukQZnet1Xbfp1C/diFj1i8sj2siQjpGUXNIjWVXlaI1pUzGQdOBP3kGc9d6p+dgFfzBm2f1fwHj4/Z1vFfxy/6ir2B5Qd5RZnL3ulpo+pIAtzeQRPAGG07BiqC6X5jsFduLj6pGbR+IDtpBRnK297Ltx/6V8YFMca6L7wgT5BT3i2CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+1qrNaxGVEWfE9scEi3H0Ue1HoQ0Gc3oxkVySoNh7yk=;
- b=r2LEU5kKZ1Ekd4xH++oivg1LEqJH/QJ+0iEnhKatX5Ax3qplLkUpjcf/0dZ/a7HyZ4sX35sj/32v8Fqe0Su2RwxDFGOcSMLwaUczFh1HsymUxLxZ/rW9ClI8D/Jg9Bu4MPOhwAgurczJbCswloOqSzK4H4Z5bl4B0Y6GANXjUh8=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nokia.com;
-Received: from (2603:10a6:208:6e::15) by
- AM0PR07MB4036.eurprd07.prod.outlook.com (2603:10a6:208:50::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.8; Thu, 28 Jan 2021 07:42:05 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3825.008; Thu, 28 Jan 2021
- 07:42:05 +0000
-Subject: Re: [PATCH 1/2] qspinlock: Ensure writes are pushed out of core write
- buffer
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210127200109.16412-1-alexander.sverdlin@nokia.com>
- <YBHsqIjop6X0Z+1c@hirez.programming.kicks-ass.net>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <f1070b0f-7e3e-0f51-da7b-2ad9269b2ee6@nokia.com>
-Date:   Thu, 28 Jan 2021 08:42:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <YBHsqIjop6X0Z+1c@hirez.programming.kicks-ass.net>
+        id S231558AbhA1HnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:43:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:53190 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232151AbhA1Hmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:42:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71D6631B;
+        Wed, 27 Jan 2021 23:42:07 -0800 (PST)
+Received: from [10.163.92.92] (unknown [10.163.92.92])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FBE83F68F;
+        Wed, 27 Jan 2021 23:42:03 -0800 (PST)
+Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+To:     David Hildenbrand <david@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
+ <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
+ <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
+ <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
+ <4c7a92f3-4c5a-c3c6-7fed-befed2f3d3cb@arm.com>
+ <8ad7d1d2-6d0a-1c3c-5c18-3d5b8ca5feb8@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <05db75d4-f5ec-4481-19fa-5fb622f97969@arm.com>
+Date:   Thu, 28 Jan 2021 13:12:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <8ad7d1d2-6d0a-1c3c-5c18-3d5b8ca5feb8@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.169]
-X-ClientProxiedBy: AM0PR04CA0116.eurprd04.prod.outlook.com
- (2603:10a6:208:55::21) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.169) by AM0PR04CA0116.eurprd04.prod.outlook.com (2603:10a6:208:55::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 07:42:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b1c2db44-68e6-42e4-a989-08d8c3603585
-X-MS-TrafficTypeDiagnostic: AM0PR07MB4036:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB403638F18227E387C57E34DD88BA9@AM0PR07MB4036.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Id7VHBsMUwvScsFEl1wrGNG9TIWFlG2XDwGSQa1qcOHzSawxvWpCwvcMCVuw7ZBoHbZ0dGNbf2IC7LaekYxuKocjb8KFYbAwIQw1w2nRaCX1Vl149OmAJ6Jd8FbCPRmf4YquJljaHQpKnbIpttQ/h7HFHq7BW4Bpi4bNrVIwYbdMs1Y2UFOjrdxmTWzFHUwBzL4MUMgFVU0MJLgQCTyYjRrvJ9kbKw2OJMKccjXKw9Sj3rzwHv8GgGQFSoYEJ++Mtq6BCZyMbbvLHrpkYYEJK5WgkbDKAJeoD66riMX5K4bLiYjtPgD15DWTx8QuKmrzVDrxLwO1QyKMJiriJ/BzIbgtsvPOOc0Fypz8mNnJoutKWX3/cO7QruaRpSjCsTKW4AGl5CGg7arp/L8yw0TNb4Ab/HfkmbAAqKe1iITU3jvFymFoG1AtOFVIBSAfCZW+RLLQ+2N+hWzwvu+Ye/fBD+WQlhkvdqakg/NELIkOA4aVUVb6RKmuBYwyckmyO/sxMLeF7bp5z8cUVH56aCaAnYyuu1Xvb9IubOfkR+9LFhX3LUpyJMLZjtWSVI8Ha97RyLE2P45knIAUalHf8yFr2kFXKFBxi7Onuc+prVEy7p0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(316002)(31686004)(8936002)(36756003)(54906003)(31696002)(83380400001)(956004)(44832011)(186003)(2906002)(2616005)(86362001)(52116002)(16526019)(53546011)(6486002)(8676002)(6916009)(6506007)(6512007)(4326008)(66476007)(66556008)(26005)(5660300002)(478600001)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ai9COXl5RFZFUUg2NFJsTUtBVEtiKzE5aTJmblpDNTMzWDcxOWVlWFNBVmg4?=
- =?utf-8?B?cHlJL0pkYXYrYXFxdVZObzNJbjl3S1JOL3Q0ajNvSU5jcVBCanRRcHBLQnc2?=
- =?utf-8?B?dXYweFdabmlCaFJQZm8vOE9ISzlkR2gzd2JjODNrcXZJSURLZ3BOQ3ZWenBr?=
- =?utf-8?B?Y1h0ZUsxVzRvdjJITDNyQVcxMEpJWk90QlRDVGNKRitTNHYvV29EZWExZzZv?=
- =?utf-8?B?bWV2M3F2bVR5UUtBUm9JcXd2NTlYd2FPcHlYZkNYZHRnNENNcEpEZk1mdEQy?=
- =?utf-8?B?anI1NFRua0NNajJjOXFWMjNVOFNvMWhFV3lTeHBRemRkUUo3RU8xMStFeEZ6?=
- =?utf-8?B?QmgrUTlpcFgyUnpiQlE0dHVOQkcvN3B6cVovMjdIQ3JEbjFhVU9uZ0Q0am4x?=
- =?utf-8?B?aks2cDJJa1h5bC9PVUwwTWhpYVMzaS9SYS80bEU4Q2V6ditJWll0ZEY0bXBt?=
- =?utf-8?B?TFYrSVFxcU51TDdkU1lFdUN1T2h0NXp2T2tJN3JaV1pqMzFRVkhsNjMrK0JR?=
- =?utf-8?B?YmhZQ2Z2SU0xYzVjZ2ptVmxQSkpFcEpKTTVvL2lqZDh0KzA3UkZXdFpXQVF0?=
- =?utf-8?B?T2Rubk12U2dDTFo0QXVQczVXZlN4bTdJbXdSS2pnc3Q1dFdQQ2VVaW9LUVh6?=
- =?utf-8?B?OE0wTVRNSGZQSHNZMkRvUTJBTEljOWsvbXJRMDVBMmdsZE90aVBjUi8zRVA3?=
- =?utf-8?B?Z1ZlRkVraHRldDJ4YnFIQVlReXhXcWVmTWl4eFZhMGNmd0JFNzh3Mnl6Szdo?=
- =?utf-8?B?S29hdUJscW9jdURLc25iZ0gydUZLSmxGVWNYQ1JBaklydDA3dGdUcUxCRXBr?=
- =?utf-8?B?L0dKeU9CL28yelFvWGlUNjJYeFVNdTRnSExEQnBkQW16aVUzSmRBZkd2cGU2?=
- =?utf-8?B?aXh4cmNiOGtsUXZOVHV6aUJ4WlpERzVYRVBJWGtjVy9EcE94ZUY5SExhRVl3?=
- =?utf-8?B?TVRuNlEwUU5BdGdWRkxJRG12YjFzVFFkRzdPUnJtS3FRMW1qU2xtc0NDRzRZ?=
- =?utf-8?B?VXJmRFVRNjJNcHRGV2RFU3cyWjRla0FVOHE5anNsVWFIaGZpM3dsbFRaWSth?=
- =?utf-8?B?amswdUpsYnFPb2YzbmhUOWZpRGZBT2JqdjRxdGJVNUZvdnRYZEVsQkxUMzhV?=
- =?utf-8?B?cVpOU3ZpR3lobTNDSU0xNGRzOGsrc2JNV05yRFIxUmx0WEJTZzFjWXR0YUlj?=
- =?utf-8?B?Sm05YUlOQ2xMeHRVQWFpUEFHWHFOSzVFRWtyZm9MYUdXTzVGdzZaeGY3K0hJ?=
- =?utf-8?B?N1FiTXVvc1UzWS93VEEwaEtNamx4cERBUjZ0aGdoSUw2R2Rsb3NuYzJ3R0Q3?=
- =?utf-8?B?aEVZNXpGZHNZc1JscExNYVprOEFDNkYzMnRKa3N2UEx4a1loOXdMMmtPb2ww?=
- =?utf-8?B?RXlSUGM2RjBHbCtFeXpma2pTNWdRZytCTkZuZWsvWE5MbmdyOTBzbWVPTUNx?=
- =?utf-8?Q?DWd2Co+T?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1c2db44-68e6-42e4-a989-08d8c3603585
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 07:42:05.6623
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y2X+tD1PxL892siw+tocDwzjYwbdenwcJlD9Hvo+0+WpE9X3pRVcfKmx5sojkg7fHg3g/LitJQo+BYMifTKHeHh4D1UzEVlIEyfHVK2+l1k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4036
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
 
-On 27/01/2021 23:43, Peter Zijlstra wrote:
-> On Wed, Jan 27, 2021 at 09:01:08PM +0100, Alexander A Sverdlin wrote:
->> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On 1/27/21 2:59 PM, David Hildenbrand wrote:
+> On 27.01.21 05:06, Anshuman Khandual wrote:
 >>
->> Ensure writes are pushed out of core write buffer to prevent waiting code
->> on another cores from spinning longer than necessary.
-> Our smp_wmb() as defined does not have that property. You're relying on
-> some arch specific details which do not belong in common code.
-
-Yes, my intention was SYNCW on Octeon, which by accident is smp_wmb().
-Do you think that the core write buffer is only Octeon feature and there
-will be no others?
-
-Should I re-implement arch_mcs_spin_lock_contended() for Octeon only,
-as it has been done for ARM?
-
->> diff --git a/kernel/locking/mcs_spinlock.h b/kernel/locking/mcs_spinlock.h
->> index 5e10153..10e497a 100644
->> --- a/kernel/locking/mcs_spinlock.h
->> +++ b/kernel/locking/mcs_spinlock.h
->> @@ -89,6 +89,11 @@ void mcs_spin_lock(struct mcs_spinlock **lock, struct mcs_spinlock *node)
->>  		return;
->>  	}
->>  	WRITE_ONCE(prev->next, node);
->> +	/*
->> +	 * This is necessary to make sure that the corresponding "while" in the
->> +	 * mcs_spin_unlock() doesn't loop forever
->> +	 */
-> This comment is utterly inadequate, since it does not describe an
-> explicit ordering between two (or more) stores.
+>>
+>> On 1/25/21 2:43 PM, David Hildenbrand wrote:
+>>> On 25.01.21 07:22, Anshuman Khandual wrote:
+>>>>
+>>>> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
+>>>>> pfn_valid() asserts that there is a memblock entry for a given pfn without
+>>>>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
+>>>>> that they do not have memblock entries. Hence memblock_is_map_memory() will
+>>>>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
+>>>>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
+>>>>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
+>>>>> into the system via memremap_pages() called from a driver, their respective
+>>>>> memory sections will not have SECTION_IS_EARLY set.
+>>>>>
+>>>>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
+>>>>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
+>>>>> for firmware reserved memory regions. memblock_is_map_memory() can just be
+>>>>> skipped as its always going to be positive and that will be an optimization
+>>>>> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
+>>>>> normal memory too will not have SECTION_IS_EARLY set for their sections.
+>>>>>
+>>>>> Skipping memblock_is_map_memory() for all non early memory sections would
+>>>>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
+>>>>> performance for normal hotplug memory as well.
+>>>>>
+>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>>> Cc: Will Deacon <will@kernel.org>
+>>>>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>>>>> Cc: Robin Murphy <robin.murphy@arm.com>
+>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
+>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>
+>>>> Hello David/Mike,
+>>>>
+>>>> Given that we would need to rework early sections, memblock semantics via a
+>>>> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
+>>>> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
+>>>> which fixes a problem (and improves performance) can be merged first. After
+>>>> that, I could start working on the proposed rework. Could you please let me
+>>>> know your thoughts on this. Thank you.
+>>>
+>>> As I said, we might have to throw in an pfn_section_valid() check, to
+>>> catch not-section-aligned ZONE_DEVICE ranges (I assume this is possible
+>>> on arm64 as well, no?).
+>>
+>> pfn_section_valid() should be called only for !early_section() i.e normal
+>> hotplug and ZONE_DEVICE memory ? Because early boot memory should always
+>> be section aligned.
 > 
->> +	smp_wmb();
->>  
->>  	/* Wait until the lock holder passes the lock down. */
->>  	arch_mcs_spin_lock_contended(&node->locked);
->> diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
->> index cbff6ba..577fe01 100644
->> --- a/kernel/locking/qspinlock.c
->> +++ b/kernel/locking/qspinlock.c
->> @@ -469,6 +469,12 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
->>  
->>  		/* Link @node into the waitqueue. */
->>  		WRITE_ONCE(prev->next, node);
->> +		/*
->> +		 * This is necessary to make sure that the corresponding
->> +		 * smp_cond_load_relaxed() below (running on another core)
->> +		 * doesn't spin forever.
->> +		 */
->> +		smp_wmb();
-> That's insane, cache coherency should not allow that to happen in the
-> first place. Our smp_wmb() cannot help with that.
+> Well, at least not on x86-64 you can have early sections intersect with ZONE_DEVICE memory.
 > 
+> E.g., have 64MB boot memory in a section. Later, we add ZONE_DEVICE memory which might cover the remaining 64MB. For pfn_valid() on x86-64, we always return "true" for such sections, because we always have the memmap for the whole early section allocated during boot. So, there it's "simple".
 
--- 
-Best regards,
-Alexander Sverdlin.
+This is the generic pfn_valid() used on X86. As you mentioned this
+does not test pfn_section_valid() if the section is early assuming
+that vmemmap coverage is complete.
+
+#ifndef CONFIG_HAVE_ARCH_PFN_VALID
+static inline int pfn_valid(unsigned long pfn)
+{
+        struct mem_section *ms;
+
+        if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+                return 0;
+        ms = __nr_to_section(pfn_to_section_nr(pfn));
+        if (!valid_section(ms))
+                return 0;
+        /*
+         * Traditionally early sections always returned pfn_valid() for
+         * the entire section-sized span.
+         */
+        return early_section(ms) || pfn_section_valid(ms, pfn);
+}
+#endif
+
+Looking at the code, seems like early sections get initialized via
+sparse_init() only in section granularity but then please correct
+me otherwise.
+
+> 
+> Now, arm64 seems to discard some parts of the vmemmap, so the remaining 64MB in such an early section might not have a memmap anymore? TBH, I don't know.
+
+Did not get that. Could you please be more specific on how arm64 discards
+parts of the vmemmap.
+
+> 
+> Most probably only performing the check for
+> !early_section() is sufficient on arm64, but I really can't tell as I don't know what we're actually discarding and if something as described for x86-64 is even possible on arm64.
+
+Seems like direct users for arch_add_memory() and __add_pages() like
+pagemap_range() can cause subsection hotplug and vmemmap mapping. So
+pfn_section_valid() should be applicable only for !early_sections().
+
+Although a simple test on arm64 shows that both boot memory and
+traditional memory hotplug gets entire subsection_map populated. But
+that might not be always true for ZONE_DEVICE memory.
+
+> 
+> We should really try to take the magic out of arm64 vmemmap handling.
+
+I would really like to understand more about this.
+
+> 
+>>
+>>>
+>>> Apart from that, I'm fine with a simple fix upfront, that can be more
+>>> easily backported if needed. (Q: do we? is this stable material?)
+>>>
+>>
+>> Right, an upfront fix here would help in backporting. AFAICS it should be
+>> backported to the stable as pte_devmap and ZONE_DEVICE have been around
+>> for some time now. Do you have a particular stable version which needs to
+>> be tagged in the patch ?
+> 
+> I haven't looked yet TBH. I guess it is broken since ZONE_DEVICE was enabled on arm64?
+> 
+Sure, will figure this out.
