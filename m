@@ -2,171 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463A7306FF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A17E306FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhA1HnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:43:17 -0500
-Received: from foss.arm.com ([217.140.110.172]:53190 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232151AbhA1Hmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:42:55 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71D6631B;
-        Wed, 27 Jan 2021 23:42:07 -0800 (PST)
-Received: from [10.163.92.92] (unknown [10.163.92.92])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FBE83F68F;
-        Wed, 27 Jan 2021 23:42:03 -0800 (PST)
-Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-To:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
- <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
- <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
- <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
- <4c7a92f3-4c5a-c3c6-7fed-befed2f3d3cb@arm.com>
- <8ad7d1d2-6d0a-1c3c-5c18-3d5b8ca5feb8@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <05db75d4-f5ec-4481-19fa-5fb622f97969@arm.com>
-Date:   Thu, 28 Jan 2021 13:12:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232073AbhA1HpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232157AbhA1Hnz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:43:55 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EF7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:43:15 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id p15so3666647ilq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 23:43:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R34wmap4SlZQiVdkg4GoUNHYognsPIau3/lAsDGw4ww=;
+        b=JuwSz00A+EuJFHf+7JP6WRl7/DURYn5ADwiJCNhLZzTHtNOFDXGVP0o8+5yGgHIhB0
+         xoDpPwv7XvdNxjkpyYQloIf8k15L19G6Tf4XCXIwoZKzoM/6lAy0CF2AL/b2ICrVZbzY
+         ZLczipoHHHL9Z7EC/5ZY26L2JNlBO0ctsouL7sITUMzq4PwcDQT52UuRItUqobhGn5Fs
+         UbHNMDjBkBbkAxh2jV3oDoIib7kH+8Iv1+02uRUBnwBRmEemKLsxwo0AlBHC3RsIkNtL
+         4zgeDBlQ3qOvwzsYRSTxX5zKLbOJ91nCEllpeLsxXXu8LdejczL+K3m/FpyEDbxPwAMZ
+         FTMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R34wmap4SlZQiVdkg4GoUNHYognsPIau3/lAsDGw4ww=;
+        b=ZP9fq5mJJlLYYkMzX3GQzHhIk1T2XJis9HGO4SvU/SrZhVQxM65mjD25hCFEU1StMB
+         /KdPIZnOxjyRruHzfaWZxKY8OhfEDu+xBVXpCz6LYix2SmZdyxG/L8cvRMVKaAv/vzJJ
+         jPO6iuT8v6iv4HuxBfMbW2S3g3He+mdUFIRuNZVAlREzhib68er8d6sDYS2b0+d9WK2a
+         9bCckjKH+3jKI9Mck4nhmsG72vnR/5r0t88djoD7/i7oUdNpVmWOk9YCNlUHTMt8sU6q
+         WMiCYpgwVv006yphUGIXGNwr8p+U5jNnF+e9SWZ/2r79tfuILCu/kkH60eJT+VU+dtf3
+         1ZOQ==
+X-Gm-Message-State: AOAM5303ODr1nXh+Cq9xfO3F2b1ZE5yfzX5V/OVWMotZIWgkLzNZXIOR
+        rMOniN5aRTVoGgObYaUhvz4osgG5NByzxUynUFs=
+X-Google-Smtp-Source: ABdhPJxfPmtA//UDL6jbaBgYGr0yMcusgQaCXh5P1cB6yZXF4048HMIeXPZjLU+v01hQMHmgzwsfGqjp0Jq37WEBIfM=
+X-Received: by 2002:a92:5bc2:: with SMTP id c63mr11989709ilg.142.1611819794700;
+ Wed, 27 Jan 2021 23:43:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8ad7d1d2-6d0a-1c3c-5c18-3d5b8ca5feb8@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-4-laoar.shao@gmail.com>
+ <e5ea9e8b1190c2a397a1b84dd55bb9c706dc7058.camel@perches.com>
+In-Reply-To: <e5ea9e8b1190c2a397a1b84dd55bb9c706dc7058.camel@perches.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 28 Jan 2021 15:42:38 +0800
+Message-ID: <CALOAHbC+-BqQtXx3Miqa_6VboNA=5gsgTWzwJvk_uH_A+4SFAw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] printk: dump full information of page flags in pGp
+To:     Joe Perches <joe@perches.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        andriy.shevchenko@linux.intel.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28, 2021 at 10:35 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Thu, 2021-01-28 at 10:19 +0800, Yafang Shao wrote:
+> > Currently the pGp only shows the names of page flags, rather than
+> > the full information including section, node, zone, last cpupid and
+> > kasan tag. While it is not easy to parse these information manually
+> > because there're so many flavors. Let's interpret them in pGp as well.
+> []
+> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> []
+> > @@ -1916,6 +1916,46 @@ char *format_flags(char *buf, char *end, unsigned long flags,
+> >       return buf;
+> >  }
+> >
+> > +struct page_flags_layout {
+> > +     int width;
+> > +     int shift;
+> > +     int mask;
+> > +     char *name;
+> > +};
+> > +
+> > +struct page_flags_layout pfl[] = {
+>
+> static const struct page_flags_layout pfl[] = {
 
-On 1/27/21 2:59 PM, David Hildenbrand wrote:
-> On 27.01.21 05:06, Anshuman Khandual wrote:
->>
->>
->> On 1/25/21 2:43 PM, David Hildenbrand wrote:
->>> On 25.01.21 07:22, Anshuman Khandual wrote:
->>>>
->>>> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
->>>>> pfn_valid() asserts that there is a memblock entry for a given pfn without
->>>>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->>>>> that they do not have memblock entries. Hence memblock_is_map_memory() will
->>>>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->>>>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->>>>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->>>>> into the system via memremap_pages() called from a driver, their respective
->>>>> memory sections will not have SECTION_IS_EARLY set.
->>>>>
->>>>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->>>>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->>>>> for firmware reserved memory regions. memblock_is_map_memory() can just be
->>>>> skipped as its always going to be positive and that will be an optimization
->>>>> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
->>>>> normal memory too will not have SECTION_IS_EARLY set for their sections.
->>>>>
->>>>> Skipping memblock_is_map_memory() for all non early memory sections would
->>>>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->>>>> performance for normal hotplug memory as well.
->>>>>
->>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>>> Cc: Will Deacon <will@kernel.org>
->>>>> Cc: Ard Biesheuvel <ardb@kernel.org>
->>>>> Cc: Robin Murphy <robin.murphy@arm.com>
->>>>> Cc: linux-arm-kernel@lists.infradead.org
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
->>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>
->>>> Hello David/Mike,
->>>>
->>>> Given that we would need to rework early sections, memblock semantics via a
->>>> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
->>>> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
->>>> which fixes a problem (and improves performance) can be merged first. After
->>>> that, I could start working on the proposed rework. Could you please let me
->>>> know your thoughts on this. Thank you.
->>>
->>> As I said, we might have to throw in an pfn_section_valid() check, to
->>> catch not-section-aligned ZONE_DEVICE ranges (I assume this is possible
->>> on arm64 as well, no?).
->>
->> pfn_section_valid() should be called only for !early_section() i.e normal
->> hotplug and ZONE_DEVICE memory ? Because early boot memory should always
->> be section aligned.
-> 
-> Well, at least not on x86-64 you can have early sections intersect with ZONE_DEVICE memory.
-> 
-> E.g., have 64MB boot memory in a section. Later, we add ZONE_DEVICE memory which might cover the remaining 64MB. For pfn_valid() on x86-64, we always return "true" for such sections, because we always have the memmap for the whole early section allocated during boot. So, there it's "simple".
+Sure.
 
-This is the generic pfn_valid() used on X86. As you mentioned this
-does not test pfn_section_valid() if the section is early assuming
-that vmemmap coverage is complete.
+>
+> > +     {SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK, "Section "},
+> > +     {NODES_WIDTH, NODES_PGSHIFT, NODES_MASK, "Node "},
+> > +     {ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK, "Zone "},
+> > +     {LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK, "Lastcpupid "},
+> > +     {KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK, "Kasantag "},
+> > +};
+> > +
+> > +static
+> > +char *format_layout(char *buf, char *end, unsigned long flags)
+>
+> poor name.  perhaps format_page_flags
+>
 
-#ifndef CONFIG_HAVE_ARCH_PFN_VALID
-static inline int pfn_valid(unsigned long pfn)
-{
-        struct mem_section *ms;
+Thanks for the suggestion.
 
-        if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
-                return 0;
-        ms = __nr_to_section(pfn_to_section_nr(pfn));
-        if (!valid_section(ms))
-                return 0;
-        /*
-         * Traditionally early sections always returned pfn_valid() for
-         * the entire section-sized span.
-         */
-        return early_section(ms) || pfn_section_valid(ms, pfn);
-}
-#endif
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
+>
+>         for (i = 0; i < ARRAY_SIZE(pfl) && buf < end; i++) {
+>
 
-Looking at the code, seems like early sections get initialized via
-sparse_init() only in section granularity but then please correct
-me otherwise.
+Sure.
 
-> 
-> Now, arm64 seems to discard some parts of the vmemmap, so the remaining 64MB in such an early section might not have a memmap anymore? TBH, I don't know.
 
-Did not get that. Could you please be more specific on how arm64 discards
-parts of the vmemmap.
+>
+> > @@ -1929,7 +1969,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
+> >       switch (fmt[1]) {
+> >       case 'p':
+> >               flags = *(unsigned long *)flags_ptr;
+> > -             /* Remove zone id */
+> > +             buf = format_layout(buf, end, flags & ~((1UL << NR_PAGEFLAGS) - 1));
+> >               flags &= (1UL << NR_PAGEFLAGS) - 1;
+>
+> Perhaps store the bitshift into a temp and use the temp twice
+>
+>                 foo = BIT(NR_PAGEFLAGS) - 1;
+>
+>                 buf = format_layout(buf, end, flags & ~foo);
+>                 flags &= foo;
+>
+>
 
-> 
-> Most probably only performing the check for
-> !early_section() is sufficient on arm64, but I really can't tell as I don't know what we're actually discarding and if something as described for x86-64 is even possible on arm64.
+Thanks for the suggestion. I will change them all.
 
-Seems like direct users for arch_add_memory() and __add_pages() like
-pagemap_range() can cause subsection hotplug and vmemmap mapping. So
-pfn_section_valid() should be applicable only for !early_sections().
 
-Although a simple test on arm64 shows that both boot memory and
-traditional memory hotplug gets entire subsection_map populated. But
-that might not be always true for ZONE_DEVICE memory.
-
-> 
-> We should really try to take the magic out of arm64 vmemmap handling.
-
-I would really like to understand more about this.
-
-> 
->>
->>>
->>> Apart from that, I'm fine with a simple fix upfront, that can be more
->>> easily backported if needed. (Q: do we? is this stable material?)
->>>
->>
->> Right, an upfront fix here would help in backporting. AFAICS it should be
->> backported to the stable as pte_devmap and ZONE_DEVICE have been around
->> for some time now. Do you have a particular stable version which needs to
->> be tagged in the patch ?
-> 
-> I haven't looked yet TBH. I guess it is broken since ZONE_DEVICE was enabled on arm64?
-> 
-Sure, will figure this out.
+-- 
+Thanks
+Yafang
