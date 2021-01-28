@@ -2,141 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954B5306B80
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E406306B87
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhA1DTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhA1DTC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:19:02 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99617C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Cc:Subject:From:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=UbhnRtk3/xl9K6cgMxwhQrXHAzvl/Xj/tYjyM/UDYBk=; b=wuOVJ5Yat7ok6Vs6Jw5azV5SDN
-        UEevjhfIqyHHgdM9OkizgrI3OLZC63BmKbb6uttRLr3nVRLpx2vXmCVUIjUb7TDjdC8X7Jz2mepEa
-        j6mxpLp0n1zO5V3AcA0H1QLI/UKyq+Yr2tumEgShzs1v0fQYQelvkX1X+kweKUx+Z3HWwO8MiyIb8
-        5VBwFd3L5AeDXTrYWtunhFWmIFUBpAeUjAgDDJz/9Og81ukvr+fW/Stq7e10zYeMnr7XBaWRD3T+j
-        GVpX07tJ6t8ZLzQZOuGwbIUywlCR3sEjWcyVND8Y/R+fcNfb0ea3xuvGSZ7AKD3epGVW149/jssFH
-        J/aa6i6A==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4xp3-0005Kk-3E; Thu, 28 Jan 2021 03:18:17 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv@lists.infradead.org
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: Kconfig-induced build errors: CONFIG_PAGE_OFFSET
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Message-ID: <b67f8941-6624-d814-e6d3-2ddfdfbdf7dd@infradead.org>
-Date:   Wed, 27 Jan 2021 19:18:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S231138AbhA1DVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:21:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41626 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229528AbhA1DVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:21:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99583ACB7;
+        Thu, 28 Jan 2021 03:21:06 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
+        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, grandmaster@al2klimov.de
+Date:   Thu, 28 Jan 2021 14:20:59 +1100
+Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/12] docs: path-lookup: update follow_managed() part
+In-Reply-To: <20210126072443.33066-2-foxhlchen@gmail.com>
+References: <20210126072443.33066-1-foxhlchen@gmail.com>
+ <20210126072443.33066-2-foxhlchen@gmail.com>
+Message-ID: <87h7n1hhlw.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I took a riscv-32 .config from kernel test robot (it was for a clang build)
-and did a "make olddefconfig" (using gcc tools) and got build errors
-due to this config item from arch/riscv/Kconfig;
+On Tue, Jan 26 2021, Fox Chen wrote:
 
+> No follow_managed() anymore, handle_mounts(),
+> traverse_mounts(), will do the job.
+> see commit: 9deed3ebca244663530782631834e706a86a8c8f
+>
+> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
+> ---
+>  Documentation/filesystems/path-lookup.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
+lesystems/path-lookup.rst
+> index c482e1619e77..e778db767120 100644
+> --- a/Documentation/filesystems/path-lookup.rst
+> +++ b/Documentation/filesystems/path-lookup.rst
+> @@ -448,8 +448,8 @@ described.  If it finds a ``LAST_NORM`` component it =
+first calls
+>  filesystem to revalidate the result if it is that sort of filesystem.
+>  If that doesn't get a good result, it calls "``lookup_slow()``" which
+>  takes ``i_rwsem``, rechecks the cache, and then asks the filesystem
+> -to find a definitive answer.  Each of these will call
+> -``follow_managed()`` (as described below) to handle any mount points.
+> +to find a definitive answer.  In ``step_into()``, ``handle_mount()`` wil=
+l be=20
+> +called to handle any mount point.
 
-config PAGE_OFFSET
-	hex
-	default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
-	default 0x80000000 if 64BIT && !MMU
-	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
-	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+The text now introduces step_into() without any hint as to why that is
+relevant at this point.
+It is a bit awkward to explain succinctly because while lookup_fast and
+lookup_slow return a dentry which is passed to step_into(), handle_dots()
+calls step_into() itself.
 
-PAGE_OFFSET is undefined for the case of 32BIT && MAXPHYSMEM_2GB.
-That causes lots of errors when _AC() is used to paste
-CONFIG_PAGE_OFFSET to "UL", like these:
+This is a general problem with this sort of documentation.  It weaves a
+story and when the code changes, you might need to completely re-weave
+the story.
 
-In file included from ../include/vdso/const.h:5,
-                 from ../include/linux/const.h:4,
-                 from ../include/linux/bits.h:5,
-                 from ../include/linux/bitops.h:6,
-                 from ../include/linux/kernel.h:11,
-                 from ../init/do_mounts_initrd.c:3:
-../arch/riscv/include/asm/uaccess.h: In function '__access_ok':
-../arch/riscv/include/asm/page.h:34:46: error: 'UL' undeclared (first use in this function)
-   34 | #define PAGE_OFFSET  _AC(CONFIG_PAGE_OFFSET, UL)
-      |                                              ^~
-../include/uapi/linux/const.h:20:23: note: in definition of macro '__AC'
-   20 | #define __AC(X,Y) (X##Y)
-      |                       ^
-../arch/riscv/include/asm/page.h:34:22: note: in expansion of macro '_AC'
-   34 | #define PAGE_OFFSET  _AC(CONFIG_PAGE_OFFSET, UL)
-      |                      ^~~
-../arch/riscv/include/asm/pgtable.h:26:27: note: in expansion of macro 'PAGE_OFFSET'
-   26 | #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
-      |                           ^~~~~~~~~~~
-../arch/riscv/include/asm/pgtable.h:41:24: note: in expansion of macro 'VMALLOC_START'
-   41 | #define VMEMMAP_START (VMALLOC_START - VMEMMAP_SIZE)
-      |                        ^~~~~~~~~~~~~
-../arch/riscv/include/asm/pgtable.h:50:26: note: in expansion of macro 'VMEMMAP_START'
-   50 | #define PCI_IO_END       VMEMMAP_START
-      |                          ^~~~~~~~~~~~~
-../arch/riscv/include/asm/pgtable.h:51:27: note: in expansion of macro 'PCI_IO_END'
-   51 | #define PCI_IO_START     (PCI_IO_END - PCI_IO_SIZE)
-      |                           ^~~~~~~~~~
-../arch/riscv/include/asm/pgtable.h:53:26: note: in expansion of macro 'PCI_IO_START'
-   53 | #define FIXADDR_TOP      PCI_IO_START
-      |                          ^~~~~~~~~~~~
-../arch/riscv/include/asm/pgtable.h:59:27: note: in expansion of macro 'FIXADDR_TOP'
-   59 | #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
-      |                           ^~~~~~~~~~~
-../arch/riscv/include/asm/pgtable.h:471:19: note: in expansion of macro 'FIXADDR_START'
-  471 | #define TASK_SIZE FIXADDR_START
-      |                   ^~~~~~~~~~~~~
-../arch/riscv/include/asm/uaccess.h:56:17: note: in expansion of macro 'TASK_SIZE'
-   56 |  return size <= TASK_SIZE && addr <= TASK_SIZE - size;
+I don't have a good suggestion for how to fix this text, but at the
+least it needs to be made clear the walk_component() calls step_into(),
+either directly or via handle_dots().
 
+>=20=20
+>  In the absence of symbolic links, ``walk_component()`` creates a new
+>  ``struct path`` containing a counted reference to the new dentry and a
+> @@ -536,7 +536,7 @@ tree, but a few notes specifically related to path lo=
+okup are in order
+>  here.
+>=20=20
+>  The Linux VFS has a concept of "managed" dentries which is reflected
+> -in function names such as "``follow_managed()``".  There are three
+> +in function names such as "``traverse_mounts()``".  There are three
 
-I suppose that it wants something like this, but someone else can
-fix/use the correct default value here:
+Here you've completely broken the story.  Saying
 
----
+  The VFS has a concept of "managed" dentries which is reflected in
+  function names like "traverse_mounts()"
 
-From: Randy Dunlap <rdunlap@infradead.org>
+makes no sense at all.
+Again, I cannot offer any quick fix.
 
-Provide a default value for PAGE_OFFSET for the case of
-32BIT and MAXPHYSMEM_2GB.
-
-Fixes many build errors.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
- arch/riscv/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20210125.orig/arch/riscv/Kconfig
-+++ linux-next-20210125/arch/riscv/Kconfig
-@@ -143,6 +143,7 @@ config PA_BITS
- config PAGE_OFFSET
- 	hex
- 	default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
-+	default 0x80000000 if 32BIT && MAXPHYSMEM_2GB
- 	default 0x80000000 if 64BIT && !MMU
- 	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
- 	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+NeilBrown
 
 
+>  potentially interesting things about these dentries corresponding
+>  to three different flags that might be set in ``dentry->d_flags``:
+>=20=20
+> --=20
+> 2.30.0
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmASLZsOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigblPYQ//Y6coOk2lqWxVQzOZwNT9+fpXG+LxEuX1qLqy
+YvXoCrdMBlTb3w9zZtarnlp7OkxdsgIGmxMfJGSbJcCSsTQ9FlATnG2S5Ch7Y3wD
+8iBx5mZZPKPzwTwMwRQ9GwSFTP5+oWHQ9yy94ywOylzZTjrQw13kp8eN+aLXnt6Q
+ZzKz86wXanc7uo+nNeX6zuVsLB41T5C7s5AqXaiLJ3XL4YiiH+LyuGsNCpbKXbEm
+xOtmbsWhEB5kg0GwkiuWd2zRazhpIK9pal1JID3K2fyh2MEu26CNR0/ZBLeaamHM
+I5Vy5N2IZfPVCTTUw9ta1nCW8x+NIh7ybvGYsQ2hsG1CYJzTM+KDv4nlgk4cZOOu
+qztXFopoUTcOBAlEhUFCkwS7VfYilw2ybgk6AJwauljdzF5PPNoc4nOB2o+ysZoo
+7rmdQ9WZx98zdace4JvqcOXzr+qytalZ8h/oFtasfV7PiuDmGp/O0INmuvVXOcqj
+F8Arz70IDtzEwPhc9liTDPcqJL/NBx6Bcmns3EKSPMZ00hWaozLTlKXkL0UVHz/E
+7k3TJdimeO8HvFpTw2j8oEMkuJqAolutxGuSnSkqfDJZ6Iqcy0+c8Z5m9Hs6JJ6R
+MdN4oejU7RuHgG1VVhjrc4QrBmSN0axS2kbAszYtTjAZslN58AyA8k67bLMKVoaV
+friCJks=
+=d1+s
+-----END PGP SIGNATURE-----
+--=-=-=--
