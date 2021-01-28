@@ -2,154 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A54D306D8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08258306D94
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 07:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhA1GU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 01:20:56 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:57824 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229791AbhA1GUx (ORCPT
+        id S231324AbhA1GWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 01:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhA1GWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:20:53 -0500
-X-UUID: 71f90608ce97483dad8d04b71034504f-20210128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9l/3qxAZieqX345ryvbLhbIWYhgxrPRb06fzhqIsH4I=;
-        b=d7v5tLSxniZ5xBAoXnZJQv8bRx0TJIQBoyfXzNGUDXFsg6J8Jaqv0Avr/h8yiLqMy6XUOuVZG6bE1LVb80xeKxrXsOmS1v6xECZkv+b42I+C5kdJ4lMaFV6mji8NhwuyHyScDjFput8Euf/1dXzIeRik2+8VbJTio6e0eQrCWTw=;
-X-UUID: 71f90608ce97483dad8d04b71034504f-20210128
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1227452633; Thu, 28 Jan 2021 14:19:54 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Jan 2021 14:19:51 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Jan 2021 14:19:52 +0800
-Message-ID: <1611814791.28312.12.camel@mtksdaap41>
-Subject: Re: [PATCH v10 8/9] drm/mediatek: add DDP support for MT8183
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
+        Thu, 28 Jan 2021 01:22:34 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6812C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:21:53 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id j2so1963229pgl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 22:21:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lQKUqtdrTcnk28eLZN1LLjXCJVs6RFMKJof9ORakdfg=;
+        b=hQQ08eHKvLiu1ciqXdW1aU5ubNGq3+Tetvb4GALagIfNAte6aBzyC3IhEBnPE6pex7
+         kSokfDhJfDNk+vABz4WUjsqX8DC6fAcdNVRDyNyAeLXhnEoU5ErLSIzy2LVF80jOG+tU
+         kSrgZnQtQhgoP52x9JdH6T6BqPgP0oZmbdZxKyqrpoDipA2VikJBhqcNy0ypG7wQK6r1
+         0xLPUC1xWyyAYX+31KDv7eW/NTaBOivqGh7kiNRvYmh6k8+uBmBM+y0IquoLsdXvRfR8
+         5Hn2J/kM5oIUgPCX8Vl4GNXqeVH2KaZtoYYu2addeJ2Jy+nHK76nuSHpXnQR2CjMwG/p
+         UIwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lQKUqtdrTcnk28eLZN1LLjXCJVs6RFMKJof9ORakdfg=;
+        b=J4Bs61r8s44UO2y58DGGjj2uQ2FH6ro1S5xONQ8HKZC6DDIIWVLPatmxe8QWtC6ZVY
+         WYDsUOPyMarYP9CLwkcD/cdOIuvp7e5KNIUvyn09RgndwzMbS42mPDVmmGdwVRId3oYB
+         xjW/MSfpoLfpUfgWhW8pPmw9TbVvMCKKDJ9xEXfK6T0vOTNrLLqETZOhLiZBY3kGNfWF
+         LpyHH0omJIyggWqVng1Dccf3x1u6yrOmS+2gUSLzN808vy+jz0KQQnYbFZmhTofw4Po1
+         zpO+tw9pnxeUEamL5ehC/3CHiEdn8cyHn6mBtwRhbsSkrSMiQK+DKYXC8s5+AKujXiTx
+         HNgg==
+X-Gm-Message-State: AOAM5338IyYGaLkOip2RubzmA118L/ebmTpFYjC1F1dCzz0//qLhuQ7g
+        M1ag3ysmL6XNLfLRm8UjCvXA7ufAOkylFw==
+X-Google-Smtp-Source: ABdhPJy/ut8GXR1xnCqoqBQZgh1s59pOYgtSESRYPfXiKBQUppgnZwc78djE5ADIKzx8uD9PczCdIg==
+X-Received: by 2002:a62:18c5:0:b029:1bd:e72c:b4f2 with SMTP id 188-20020a6218c50000b02901bde72cb4f2mr14598918pfy.50.1611814912953;
+        Wed, 27 Jan 2021 22:21:52 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id s9sm4477765pfd.38.2021.01.27.22.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 22:21:51 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Thu, 28 Jan 2021 14:19:51 +0800
-In-Reply-To: <1611814421.28312.9.camel@mtksdaap41>
-References: <20210127045422.2418917-1-hsinyi@chromium.org>
-         <20210127045422.2418917-9-hsinyi@chromium.org>
-         <1611814421.28312.9.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v3 1/3] dma-buf: heaps: Add deferred-free-helper library code
+Date:   Thu, 28 Jan 2021 06:21:45 +0000
+Message-Id: <20210128062147.438413-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 6B1B6152A535CF41E1E99F1F5C98B01A2969156BDD91B00DC1A7E800C4434FCC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE0OjEzICswODAwLCBDSyBIdSB3cm90ZToNCj4gSGksIEhz
-aW4tWWk6DQo+IA0KPiBNb2RpZnkgdGhlIHRpdGxlJ3MgcHJlZml4IHRvICdzb2M6IG1lZGlhdGVr
-OicNCg0KTW9kaWZ5IG1vcmUsIHRoZSB0aXRsZSBzaG91bGQgYmUgJ3NvYzogbWVkaWF0ZWs6IGFk
-ZCBtdGsgbXV0ZXggc3VwcG9ydA0KZm9yIE1UODE4MycNCg0KPiANCj4gT24gV2VkLCAyMDIxLTAx
-LTI3IGF0IDEyOjU0ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+ID4gRnJvbTogWW9uZ3Fp
-YW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gDQo+ID4gQWRkIEREUCBz
-dXBwb3J0IGZvciBNVDgxODMgU29DLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFu
-ZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEhz
-aW4tWWkgV2FuZyA8aHNpbnlpQGNocm9taXVtLm9yZz4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9z
-b2MvbWVkaWF0ZWsvbXRrLW11dGV4LmMgfCA1MCArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNTAgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYyBiL2RyaXZlcnMvc29j
-L21lZGlhdGVrL210ay1tdXRleC5jDQo+ID4gaW5kZXggZjUzMWIxMTlkYTdhOS4uZjY0ZTljMzNl
-ODVhZCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYw0K
-PiA+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+ID4gQEAgLTE0LDYg
-KzE0LDggQEANCj4gPiAgDQo+ID4gICNkZWZpbmUgTVQyNzAxX01VVEVYMF9NT0QwCQkJMHgyYw0K
-PiA+ICAjZGVmaW5lIE1UMjcwMV9NVVRFWDBfU09GMAkJCTB4MzANCj4gPiArI2RlZmluZSBNVDgx
-ODNfRElTUF9NVVRFWDBfTU9EMAkJCTB4MzANCj4gPiArI2RlZmluZSBNVDgxODNfRElTUF9NVVRF
-WDBfU09GMAkJCTB4MmMNCj4gDQo+IE1vZGlmeSAnRElTUF9NVVRFWCcgdG8gJ01VVEVYJw0KPiAN
-Cj4gPiAgDQo+ID4gICNkZWZpbmUgRElTUF9SRUdfTVVURVhfRU4obikJCQkoMHgyMCArIDB4MjAg
-KiAobikpDQo+ID4gICNkZWZpbmUgRElTUF9SRUdfTVVURVgobikJCQkoMHgyNCArIDB4MjAgKiAo
-bikpDQo+ID4gQEAgLTM3LDYgKzM5LDE4IEBADQo+ID4gICNkZWZpbmUgTVQ4MTY3X01VVEVYX01P
-RF9ESVNQX0RJVEhFUgkJMTUNCj4gPiAgI2RlZmluZSBNVDgxNjdfTVVURVhfTU9EX0RJU1BfVUZP
-RQkJMTYNCj4gPiAgDQo+ID4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX1JETUEwCQkw
-DQo+ID4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX1JETUExCQkxDQo+ID4gKyNkZWZp
-bmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAJCTkNCj4gPiArI2RlZmluZSBNVDgxODNfTVVU
-RVhfTU9EX0RJU1BfT1ZMMF8yTAkJMTANCj4gPiArI2RlZmluZSBNVDgxODNfTVVURVhfTU9EX0RJ
-U1BfT1ZMMV8yTAkJMTENCj4gPiArI2RlZmluZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfV0RNQTAJ
-CTEyDQo+ID4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0NPTE9SMAkJMTMNCj4gPiAr
-I2RlZmluZSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ0NPUlIwCQkxNA0KPiA+ICsjZGVmaW5lIE1U
-ODE4M19NVVRFWF9NT0RfRElTUF9BQUwwCQkxNQ0KPiA+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9N
-T0RfRElTUF9HQU1NQTAJCTE2DQo+ID4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX0RJ
-VEhFUjAJCTE3DQo+ID4gKw0KPiA+ICAjZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9PVkww
-CQkxMQ0KPiA+ICAjZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9PVkwxCQkxMg0KPiA+ICAj
-ZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9SRE1BMAkJMTMNCj4gPiBAQCAtODcsNiArMTAx
-LDEyIEBADQo+ID4gICNkZWZpbmUgTVQyNzEyX01VVEVYX1NPRl9EU0kzCQkJNg0KPiA+ICAjZGVm
-aW5lIE1UODE2N19NVVRFWF9TT0ZfRFBJMAkJCTINCj4gPiAgI2RlZmluZSBNVDgxNjdfTVVURVhf
-U09GX0RQSTEJCQkzDQo+ID4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX1NPRl9EU0kwCQkJMQ0KPiA+
-ICsjZGVmaW5lIE1UODE4M19NVVRFWF9TT0ZfRFBJMAkJCTINCj4gPiArDQo+ID4gKy8qIEFkZCBF
-T0Ygc2V0dGluZyBzbyBvdmVybGF5IGhhcmR3YXJlIGNhbiByZWNlaXZlIGZyYW1lIGRvbmUgaXJx
-ICovDQo+ID4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX0VPRl9EU0kwCQkJKE1UODE4M19NVVRFWF9T
-T0ZfRFNJMCA8PCA2KQ0KPiA+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9FT0ZfRFBJMAkJCShNVDgx
-ODNfTVVURVhfU09GX0RQSTAgPDwgNikNCj4gPiAgDQo+ID4gIHN0cnVjdCBtdGtfbXV0ZXggew0K
-PiA+ICAJaW50IGlkOw0KPiA+IEBAIC0xODEsNiArMjAxLDIwIEBAIHN0YXRpYyBjb25zdCB1bnNp
-Z25lZCBpbnQgbXQ4MTczX211dGV4X21vZFtERFBfQ09NUE9ORU5UX0lEX01BWF0gPSB7DQo+ID4g
-IAlbRERQX0NPTVBPTkVOVF9XRE1BMV0gPSBNVDgxNzNfTVVURVhfTU9EX0RJU1BfV0RNQTEsDQo+
-ID4gIH07DQo+ID4gIA0KPiA+ICtzdGF0aWMgY29uc3QgdW5zaWduZWQgaW50IG10ODE4M19tdXRl
-eF9tb2RbRERQX0NPTVBPTkVOVF9JRF9NQVhdID0gew0KPiA+ICsJW0REUF9DT01QT05FTlRfQUFM
-MF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQUFMMCwNCj4gPiArCVtERFBfQ09NUE9ORU5UX0ND
-T1JSXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9DQ09SUjAsDQo+ID4gKwlbRERQX0NPTVBPTkVO
-VF9DT0xPUjBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX0NPTE9SMCwNCj4gPiArCVtERFBfQ09N
-UE9ORU5UX0RJVEhFUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfRElUSEVSMCwNCj4gPiArCVtE
-RFBfQ09NUE9ORU5UX0dBTU1BXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9HQU1NQTAsDQo+ID4g
-KwlbRERQX0NPTVBPTkVOVF9PVkwwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwwLA0KPiA+
-ICsJW0REUF9DT01QT05FTlRfT1ZMXzJMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8y
-TCwNCj4gPiArCVtERFBfQ09NUE9ORU5UX09WTF8yTDFdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQ
-X09WTDFfMkwsDQo+ID4gKwlbRERQX0NPTVBPTkVOVF9SRE1BMF0gPSBNVDgxODNfTVVURVhfTU9E
-X0RJU1BfUkRNQTAsDQo+ID4gKwlbRERQX0NPTVBPTkVOVF9SRE1BMV0gPSBNVDgxODNfTVVURVhf
-TU9EX0RJU1BfUkRNQTEsDQo+ID4gKwlbRERQX0NPTVBPTkVOVF9XRE1BMF0gPSBNVDgxODNfTVVU
-RVhfTU9EX0RJU1BfV0RNQTAsDQo+ID4gK307DQo+ID4gKw0KPiA+ICBzdGF0aWMgY29uc3QgdW5z
-aWduZWQgaW50IG10MjcxMl9tdXRleF9zb2ZbTVVURVhfU09GX0RTSTMgKyAxXSA9IHsNCj4gPiAg
-CVtNVVRFWF9TT0ZfU0lOR0xFX01PREVdID0gTVVURVhfU09GX1NJTkdMRV9NT0RFLA0KPiA+ICAJ
-W01VVEVYX1NPRl9EU0kwXSA9IE1VVEVYX1NPRl9EU0kwLA0KPiA+IEBAIC0xOTgsNiArMjMyLDEy
-IEBAIHN0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4MTY3X211dGV4X3NvZltNVVRFWF9TT0Zf
-RFNJMyArIDFdID0gew0KPiA+ICAJW01VVEVYX1NPRl9EUEkxXSA9IE1UODE2N19NVVRFWF9TT0Zf
-RFBJMSwNCj4gPiAgfTsNCj4gPiAgDQo+ID4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4
-MTgzX211dGV4X3NvZltNVVRFWF9TT0ZfRFNJMyArIDFdID0gew0KPiA+ICsJW01VVEVYX1NPRl9T
-SU5HTEVfTU9ERV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01PREUsDQo+ID4gKwlbTVVURVhfU09GX0RT
-STBdID0gTVVURVhfU09GX0RTSTAgfCBNVDgxODNfTVVURVhfRU9GX0RTSTAsDQo+ID4gKwlbTVVU
-RVhfU09GX0RQSTBdID0gTVQ4MTgzX01VVEVYX1NPRl9EUEkwIHwgTVQ4MTgzX01VVEVYX0VPRl9E
-UEkwLA0KPiANCj4gQWNjb3JkaW5nIHRvIGRpc2N1c3Npb24gaW4gWzFdLCBhZGQgY29tbWVudCBm
-b3IgdGhlIG9kZCBFT0Ygc2V0dGluZy4NCj4gDQo+IFsxXQ0KPiBodHRwczovL3BhdGNod29yay5r
-ZXJuZWwub3JnL3Byb2plY3QvbGludXgtbWVkaWF0ZWsvcGF0Y2gvMTU5NTQ2OTc5OC0zODI0LTgt
-Z2l0LXNlbmQtZW1haWwteW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20vDQo+IA0KPiBSZWdhcmRz
-LA0KPiBDSy4NCj4gDQo+IA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBtdGtfbXV0ZXhfZGF0YSBtdDI3MDFfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7DQo+ID4gIAkubXV0
-ZXhfbW9kID0gbXQyNzAxX211dGV4X21vZCwNCj4gPiAgCS5tdXRleF9zb2YgPSBtdDI3MTJfbXV0
-ZXhfc29mLA0KPiA+IEBAIC0yMjcsNiArMjY3LDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRr
-X211dGV4X2RhdGEgbXQ4MTczX211dGV4X2RyaXZlcl9kYXRhID0gew0KPiA+ICAJLm11dGV4X3Nv
-Zl9yZWcgPSBNVDI3MDFfTVVURVgwX1NPRjAsDQo+ID4gIH07DQo+ID4gIA0KPiA+ICtzdGF0aWMg
-Y29uc3Qgc3RydWN0IG10a19tdXRleF9kYXRhIG10ODE4M19tdXRleF9kcml2ZXJfZGF0YSA9IHsN
-Cj4gPiArCS5tdXRleF9tb2QgPSBtdDgxODNfbXV0ZXhfbW9kLA0KPiA+ICsJLm11dGV4X3NvZiA9
-IG10ODE4M19tdXRleF9zb2YsDQo+ID4gKwkubXV0ZXhfbW9kX3JlZyA9IE1UODE4M19ESVNQX01V
-VEVYMF9NT0QwLA0KPiA+ICsJLm11dGV4X3NvZl9yZWcgPSBNVDgxODNfRElTUF9NVVRFWDBfU09G
-MCwNCj4gPiArCS5ub19jbGsgPSB0cnVlLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgc3RydWN0IG10
-a19tdXRleCAqbXRrX211dGV4X2dldChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gIHsNCj4gPiAg
-CXN0cnVjdCBtdGtfbXV0ZXhfY3R4ICptdHggPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gPiBA
-QCAtNDU3LDYgKzUwNSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG11dGV4
-X2RyaXZlcl9kdF9tYXRjaFtdID0gew0KPiA+ICAJICAuZGF0YSA9ICZtdDgxNjdfbXV0ZXhfZHJp
-dmVyX2RhdGF9LA0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtZGlzcC1t
-dXRleCIsDQo+ID4gIAkgIC5kYXRhID0gJm10ODE3M19tdXRleF9kcml2ZXJfZGF0YX0sDQo+ID4g
-Kwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLW11dGV4IiwNCj4gPiArCSAg
-LmRhdGEgPSAmbXQ4MTgzX211dGV4X2RyaXZlcl9kYXRhfSwNCj4gPiAgCXt9LA0KPiA+ICB9Ow0K
-PiA+ICBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdXRleF9kcml2ZXJfZHRfbWF0Y2gpOw0KPiAN
-Cg0K
+This patch provides infrastructure for deferring buffer frees.
+
+This is a feature ION provided which when used with some form
+of a page pool, provides a nice performance boost in an
+allocation microbenchmark. The reason it helps is it allows the
+page-zeroing to be done out of the normal allocation/free path,
+and pushed off to a kthread.
+
+As not all heaps will find this useful, its implemented as
+a optional helper library that heaps can utilize.
+
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+v2:
+* Fix sleep in atomic issue from using a mutex, by switching
+  to a spinlock as Reported-by: kernel test robot <oliver.sang@intel.com>
+* Cleanup API to use a reason enum for clarity and add some documentation
+  comments as suggested by Suren Baghdasaryan.
+
+v3:
+* Minor tweaks so it can be built as a module
+* A few small fixups suggested by Daniel Mentz
+---
+ drivers/dma-buf/heaps/Kconfig                |   3 +
+ drivers/dma-buf/heaps/Makefile               |   1 +
+ drivers/dma-buf/heaps/deferred-free-helper.c | 138 +++++++++++++++++++
+ drivers/dma-buf/heaps/deferred-free-helper.h |  55 ++++++++
+ 4 files changed, 197 insertions(+)
+ create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.c
+ create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.h
+
+diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
+index a5eef06c4226..f7aef8bc7119 100644
+--- a/drivers/dma-buf/heaps/Kconfig
++++ b/drivers/dma-buf/heaps/Kconfig
+@@ -1,3 +1,6 @@
++config DMABUF_HEAPS_DEFERRED_FREE
++	tristate
++
+ config DMABUF_HEAPS_SYSTEM
+ 	bool "DMA-BUF System Heap"
+ 	depends on DMABUF_HEAPS
+diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-buf/heaps/Makefile
+index 974467791032..4e7839875615 100644
+--- a/drivers/dma-buf/heaps/Makefile
++++ b/drivers/dma-buf/heaps/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_DMABUF_HEAPS_DEFERRED_FREE) += deferred-free-helper.o
+ obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)	+= system_heap.o
+ obj-$(CONFIG_DMABUF_HEAPS_CMA)		+= cma_heap.o
+diff --git a/drivers/dma-buf/heaps/deferred-free-helper.c b/drivers/dma-buf/heaps/deferred-free-helper.c
+new file mode 100644
+index 000000000000..941608319a94
+--- /dev/null
++++ b/drivers/dma-buf/heaps/deferred-free-helper.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Deferred dmabuf freeing helper
++ *
++ * Copyright (C) 2020 Linaro, Ltd.
++ *
++ * Based on the ION page pool code
++ * Copyright (C) 2011 Google, Inc.
++ */
++
++#include <linux/freezer.h>
++#include <linux/list.h>
++#include <linux/slab.h>
++#include <linux/swap.h>
++#include <linux/sched/signal.h>
++
++#include "deferred-free-helper.h"
++
++static LIST_HEAD(free_list);
++static size_t list_size;
++wait_queue_head_t freelist_waitqueue;
++struct task_struct *freelist_task;
++static DEFINE_SPINLOCK(free_list_lock);
++
++void deferred_free(struct deferred_freelist_item *item,
++		   void (*free)(struct deferred_freelist_item*,
++				enum df_reason),
++		   size_t size)
++{
++	unsigned long flags;
++
++	INIT_LIST_HEAD(&item->list);
++	item->size = size;
++	item->free = free;
++
++	spin_lock_irqsave(&free_list_lock, flags);
++	list_add(&item->list, &free_list);
++	list_size += size;
++	spin_unlock_irqrestore(&free_list_lock, flags);
++	wake_up(&freelist_waitqueue);
++}
++EXPORT_SYMBOL_GPL(deferred_free);
++
++static size_t free_one_item(enum df_reason reason)
++{
++	unsigned long flags;
++	size_t size = 0;
++	struct deferred_freelist_item *item;
++
++	spin_lock_irqsave(&free_list_lock, flags);
++	if (list_empty(&free_list)) {
++		spin_unlock_irqrestore(&free_list_lock, flags);
++		return 0;
++	}
++	item = list_first_entry(&free_list, struct deferred_freelist_item, list);
++	list_del(&item->list);
++	size = item->size;
++	list_size -= size;
++	spin_unlock_irqrestore(&free_list_lock, flags);
++
++	item->free(item, reason);
++	return size;
++}
++
++static unsigned long get_freelist_size(void)
++{
++	unsigned long size;
++	unsigned long flags;
++
++	spin_lock_irqsave(&free_list_lock, flags);
++	size = list_size;
++	spin_unlock_irqrestore(&free_list_lock, flags);
++	return size;
++}
++
++static unsigned long freelist_shrink_count(struct shrinker *shrinker,
++					   struct shrink_control *sc)
++{
++	return get_freelist_size();
++}
++
++static unsigned long freelist_shrink_scan(struct shrinker *shrinker,
++					  struct shrink_control *sc)
++{
++	unsigned long total_freed = 0;
++
++	if (sc->nr_to_scan == 0)
++		return 0;
++
++	while (total_freed < sc->nr_to_scan) {
++		size_t freed = free_one_item(DF_UNDER_PRESSURE);
++
++		if (!freed)
++			break;
++
++		total_freed += freed;
++	}
++
++	return total_freed;
++}
++
++static struct shrinker freelist_shrinker = {
++	.count_objects = freelist_shrink_count,
++	.scan_objects = freelist_shrink_scan,
++	.seeks = DEFAULT_SEEKS,
++	.batch = 0,
++};
++
++static int deferred_free_thread(void *data)
++{
++	while (true) {
++		wait_event_freezable(freelist_waitqueue,
++				     get_freelist_size() > 0);
++
++		free_one_item(DF_NORMAL);
++	}
++
++	return 0;
++}
++
++static int deferred_freelist_init(void)
++{
++	list_size = 0;
++
++	init_waitqueue_head(&freelist_waitqueue);
++	freelist_task = kthread_run(deferred_free_thread, NULL,
++				    "%s", "dmabuf-deferred-free-worker");
++	if (IS_ERR(freelist_task)) {
++		pr_err("Creating thread for deferred free failed\n");
++		return -1;
++	}
++	sched_set_normal(freelist_task, 19);
++
++	return register_shrinker(&freelist_shrinker);
++}
++module_init(deferred_freelist_init);
++MODULE_LICENSE("GPL v2");
++
+diff --git a/drivers/dma-buf/heaps/deferred-free-helper.h b/drivers/dma-buf/heaps/deferred-free-helper.h
+new file mode 100644
+index 000000000000..18b44ac86ef6
+--- /dev/null
++++ b/drivers/dma-buf/heaps/deferred-free-helper.h
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef DEFERRED_FREE_HELPER_H
++#define DEFERRED_FREE_HELPER_H
++
++/**
++ * df_reason - enum for reason why item was freed
++ *
++ * This provides a reason for why the free function was called
++ * on the item. This is useful when deferred_free is used in
++ * combination with a pagepool, so under pressure the page can
++ * be immediately freed.
++ *
++ * DF_NORMAL:         Normal deferred free
++ *
++ * DF_UNDER_PRESSURE: Free was called because the system
++ *                    is under memory pressure. Usually
++ *                    from a shrinker. Avoid allocating
++ *                    memory in the free call, as it may
++ *                    fail.
++ */
++enum df_reason {
++	DF_NORMAL,
++	DF_UNDER_PRESSURE,
++};
++
++/**
++ * deferred_freelist_item - item structure for deferred freelist
++ *
++ * This is to be added to the structure for whatever you want to
++ * defer freeing on.
++ *
++ * @size: size of the item to be freed
++ * @free: function pointer to be called when freeing the item
++ * @list: list entry for the deferred list
++ */
++struct deferred_freelist_item {
++	size_t size;
++	void (*free)(struct deferred_freelist_item *i,
++		     enum df_reason reason);
++	struct list_head list;
++};
++
++/**
++ * deferred_free - call to add item to the deferred free list
++ *
++ * @item: Pointer to deferred_freelist_item field of a structure
++ * @free: Function pointer to the free call
++ * @size: Size of the item to be freed
++ */
++void deferred_free(struct deferred_freelist_item *item,
++		   void (*free)(struct deferred_freelist_item *i,
++				enum df_reason reason),
++		   size_t size);
++#endif
+-- 
+2.25.1
 
