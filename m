@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABECC307757
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048AC30775F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhA1Nmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:42:42 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3770 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232234AbhA1NmX (ORCPT
+        id S231748AbhA1NpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:45:21 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:45540 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhA1NpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:42:23 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6012bf160000>; Thu, 28 Jan 2021 05:41:42 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 13:41:42 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 28 Jan 2021 13:41:40 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>, <elic@nvidia.com>
-Subject: [PATCH 2/2] vdpa/mlx5: Restore the hardware used index after change map
-Date:   Thu, 28 Jan 2021 15:41:30 +0200
-Message-ID: <20210128134130.3051-3-elic@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210128134130.3051-1-elic@nvidia.com>
-References: <20210128134130.3051-1-elic@nvidia.com>
+        Thu, 28 Jan 2021 08:45:18 -0500
+Received: by mail-wr1-f44.google.com with SMTP id m13so5434924wro.12;
+        Thu, 28 Jan 2021 05:45:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5L/q64E5zQnOnsRdaZ3AFP3jIIvq5gFQ6Mm7DceN5AY=;
+        b=n3FIVIg+hxpFYFKsblUZ+k9XwfNjfc0WAoSDl1okNHTVxY767LT2Bp6OvPiDU+wnKj
+         oO7oviHDzHMGK0JszXNuSD8UvjQm9CeWdLnj5BBsmanoA7nrgLcpjN906DGzIroNVULu
+         JBCFIfMBzVkRyRWBRXkUt8TbUnvlFUpCB/0LYA33fXZ+S/VPw/W3l1hRLfAUS1/PahxB
+         olR2zwu5j1y3x7OccbH1FPa4wv1edHTWGlEVH1901ooRYVuimHKzbV+bPNQs+zuuc0lG
+         vJfizNCi+kGxUqFrnzPd5ELuoBZL8QEqLfw1p+MevGUIqeuJD4jaQtzI6Whwp3kINghI
+         Nf3Q==
+X-Gm-Message-State: AOAM532hBjVvdNcrq68YiEGC0z6jh6V2Ux+SCQjlgWNLGxQ/EDljevas
+        Guc5hZIw+W8YStFiuqeM/kdPYdDPkkVz6kxH
+X-Google-Smtp-Source: ABdhPJygC+zgGvU4QWQf1g9gsoO94MvNzy2kjnFGMjaMUF7o2rgDxP+DYC8yhFb41oSjUkzbWCzAaw==
+X-Received: by 2002:adf:dd81:: with SMTP id x1mr16493158wrl.249.1611841475365;
+        Thu, 28 Jan 2021 05:44:35 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id b3sm6959838wme.32.2021.01.28.05.44.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 05:44:34 -0800 (PST)
+Date:   Thu, 28 Jan 2021 14:44:33 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Victor Ding <victording@google.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Subject: Re: [PATCH] PCI/ASPM: Disable ASPM when save/restore PCI state
+Message-ID: <YBK/wa2AuwYJ/zTp@rocinante>
+References: <20210128122311.1.I42c1001f8b0eaac973a99e1e5c2170788ee36c9c@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611841302; bh=IFlMDEIxvzjHdYWrKcoi8vXYhv/8Yu71KrZqCZIncug=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        b=BvxHkqofYHLBx3nnZ/Il4gN/fHXyqJqrCB7fd0ksfLgQAp5P2lqsyCtngdXnRlxNM
-         E5KXQ+W8AoA5DifxVlYN3Bp6aa+HBduqvJc2F7oLVQBzJvS6b+xwyuVLoP6ctHolrf
-         nbzVGTjLRw6i9GQKh7uHCxK/XWKUteYu+bReucImwwp/G2mBLg9SW8M0RLhxRv16Dq
-         tQjhu0Zswd4YkyPhgLdmsUMtTPs3GD8/LF76qpgI+TrBtJPJISriJKwJr1iLOpJUHT
-         PcCQzBMCuF4UhHQwm5oCOmrhXKELhvBOEEvPKd5p4CVTM1mAtKniRbrD7trJbgiryv
-         EyL5rVxFgSIxw==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210128122311.1.I42c1001f8b0eaac973a99e1e5c2170788ee36c9c@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a change of memory map occurs, the hardware resources are destroyed
-and then re-created again with the new memory map. In such case, we need
-to restore the hardware available and used indices. The driver failed to
-restore the used index which is added here.
+Hi Victor,
 
-Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices"=
-)
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Thank you for working on this!
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index 549ded074ff3..3fc8588cecae 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
- 	u64 device_addr;
- 	u64 driver_addr;
- 	u16 avail_index;
-+	u16 used_index;
- 	bool ready;
- 	struct vdpa_callback cb;
- 	bool restore;
-@@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
- 	u32 virtq_id;
- 	struct mlx5_vdpa_net *ndev;
- 	u16 avail_idx;
-+	u16 used_idx;
- 	int fw_state;
-=20
- 	/* keep last in the struct */
-@@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev,=
- struct mlx5_vdpa_virtque
-=20
- 	obj_context =3D MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
- 	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail=
-_idx);
-+	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
- 	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
- 		 get_features_12_3(ndev->mvdev.actual_features));
- 	vq_ctx =3D MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_contex=
-t);
-@@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, st=
-ruct mlx5_vdpa_virtqueue *m
- struct mlx5_virtq_attr {
- 	u8 state;
- 	u16 available_index;
-+	u16 used_index;
- };
-=20
- static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_vi=
-rtqueue *mvq,
-@@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev=
-, struct mlx5_vdpa_virtqueu
- 	memset(attr, 0, sizeof(*attr));
- 	attr->state =3D MLX5_GET(virtio_net_q_object, obj_context, state);
- 	attr->available_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_a=
-vailable_index);
-+	attr->used_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_used_i=
-ndex);
- 	kfree(out);
- 	return 0;
-=20
-@@ -1602,6 +1607,7 @@ static int save_channel_info(struct mlx5_vdpa_net *nd=
-ev, struct mlx5_vdpa_virtqu
- 		return err;
-=20
- 	ri->avail_index =3D attr.available_index;
-+	ri->used_index =3D attr.used_index;
- 	ri->ready =3D mvq->ready;
- 	ri->num_ent =3D mvq->num_ent;
- 	ri->desc_addr =3D mvq->desc_addr;
-@@ -1646,6 +1652,7 @@ static void restore_channels_info(struct mlx5_vdpa_ne=
-t *ndev)
- 			continue;
-=20
- 		mvq->avail_idx =3D ri->avail_index;
-+		mvq->used_idx =3D ri->used_index;
- 		mvq->ready =3D ri->ready;
- 		mvq->num_ent =3D ri->num_ent;
- 		mvq->desc_addr =3D ri->desc_addr;
---=20
-2.29.2
+[...]
+>  	i = pci_save_pcie_state(dev);
+>  	if (i != 0)
+> -		return i;
+> +		goto Exit;
+>  
+>  	i = pci_save_pcix_state(dev);
+>  	if (i != 0)
+> -		return i;
+> +		goto Exit;
+[...]
+> +Exit:
+> +	pcie_restore_aspm_control(dev);
+> +	return i;
+>  }
+[...]
 
+A silly thing, but the goto labels are customary lower-case.
+
+Nonetheless, this is probably something that can be corrected when
+applying, so that you don't need to unnecessarily send a new version
+(unless you will eventually following other reviews, then don't forget
+about it).
+
+Krzysztof
