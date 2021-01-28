@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A263072C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78173072C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhA1Jb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:31:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhA1JYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:24:12 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA98C06174A;
-        Thu, 28 Jan 2021 01:23:31 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id h14so4550975otr.4;
-        Thu, 28 Jan 2021 01:23:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fzG9aEwYmapgCOH2KyG9igHfhrZ1QTXlCJukfCUrBMo=;
-        b=o9jlNTCB+ccFOcp6th2nO+cPn3gKqqVyVNG78CieHLJugHqsTVQEplmiGXYuADxoEL
-         44xm3lN2DoIIazdqTjOU2CVEyd2EYLbJqFZGROciLpqoyiujpZ+W9w5p6YRqe+hztgQ9
-         llQbT+b75lYzyoCxFfrjjsnDrS9ik3NV44ki0xYVvu9IMxSc8NwsDBDFbx3cCHSk+0rn
-         we9LMscgrQb7ufg6gYz8X3TIjDs1uOykDO0KB7KiOX0h7Q+U7eDTsS0PNvdlAqyX+gae
-         O6GKMKPKbEZZJEPgV+AVrylpmiowMOzUaGle+2k859+MrEKc67cMt45VqMzj3+yTWGbD
-         NoeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fzG9aEwYmapgCOH2KyG9igHfhrZ1QTXlCJukfCUrBMo=;
-        b=gLc8MCfgKzf1d9OMENvNFVLxFSeUXy//Dp8usLrt7R90a+B0m0lAZw5yoPlw6kgeKo
-         ob/IWLf+O4uTJqg7kcIJZ7AfrIDqbpY2wZqRQgLldfJXkhi6liEhtgMiAwrD8yj/Sx81
-         rxstCWSp3rh9hpOZCGOOurCYwMmNOrKMtlpP24Fy1lY+PTdk9+6zNocZuG+KmG0aD+7M
-         InXt/JT2Qi+AkwiHxEAm70OkO/w2qDDkZGTRLqn8ZPu4fXwibcOXSSHpaBnGMr1WJpJq
-         5GsowAEfhdoAHP5me1g8co2FNostwILZZFsotvdKnHqD+Ys38+wjZswDBgW9LEuwqL/l
-         ehVw==
-X-Gm-Message-State: AOAM532S3mjQhQH06eb+Io/9XuOW1mHkJw6xOK7E/Svat8t2nc+dw51y
-        64xW6tUAq/C6TeHGld3OFMvoK1x69h6ylhsK/QA=
-X-Google-Smtp-Source: ABdhPJzVCtYst8XioWO1oHO3P4jPB6/6QRUwZSDaP/Q9uIK+BdFPXUXk8IMy0RG/FM2Xs87InVFUSv/q4/pQ0qxx+Ls=
-X-Received: by 2002:a05:6830:230b:: with SMTP id u11mr10979450ote.184.1611825810833;
- Thu, 28 Jan 2021 01:23:30 -0800 (PST)
+        id S232512AbhA1Jb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:31:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53970 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232395AbhA1JY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:24:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6CE71AE12;
+        Thu, 28 Jan 2021 09:23:43 +0000 (UTC)
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Chao Leng <lengchao@huawei.com>, Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, Sagi Grimberg <sagi@grimberg.me>,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <8704038d-0b71-5c9c-2d2b-a9ff2166dbe4@suse.de>
+Date:   Thu, 28 Jan 2021 10:23:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210128084011.3270281-1-swboyd@chromium.org> <20210128084011.3270281-2-swboyd@chromium.org>
-In-Reply-To: <20210128084011.3270281-2-swboyd@chromium.org>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Thu, 28 Jan 2021 10:23:19 +0100
-Message-ID: <CAFqH_535nAFVev5PYMmk5BgEeUfByiHQPoiW5P1AOe+UVxpikg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] platform/chrome: cros_ec: Add SW_FRONT_PROXIMITY
- MKBP define
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On 1/28/21 10:18 AM, Chao Leng wrote:
+> 
+> 
+> On 2021/1/28 15:58, Daniel Wagner wrote:
+>> On Thu, Jan 28, 2021 at 09:31:30AM +0800, Chao Leng wrote:
+>>>> --- a/drivers/nvme/host/multipath.c
+>>>> +++ b/drivers/nvme/host/multipath.c
+>>>> @@ -221,7 +221,7 @@ static struct nvme_ns 
+>>>> *nvme_round_robin_path(struct nvme_ns_head *head,
+>>>>        }
+>>>>        for (ns = nvme_next_ns(head, old);
+>>>> -         ns != old;
+>>>> +         ns && ns != old;
+>>> nvme_round_robin_path just be called when !"old".
+>>> nvme_next_ns should not return NULL when !"old".
+>>> It seems unnecessary to add checking "ns".
+>>
+>> The problem is when we enter nvme_round_robin_path() and there is no
+>> path available. In this case the initialization ns = nvme_next_ns(head,
+>> old) could return a NULL pointer."old" should not be NULL, so there is 
+>> at least one path that is "old".
+> It is impossible to return NULL for nvme_next_ns(head, old).
 
-Thank you for your patch. Please cc'me for the patches related to the
-chrome/platform subsystem.
+No. list_next_or_null_rcu()/list_first_or_null_rcu() will return NULL 
+when then end of the list is reached.
 
-Missatge de Stephen Boyd <swboyd@chromium.org> del dia dj., 28 de gen.
-2021 a les 9:48:
->
-> Some cros ECs support a front proximity MKBP event via
-> 'EC_MKBP_FRONT_PROXIMITY'. Add this define so it can be used in a
-> future patch.
->
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Cheers,
 
-Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-
-> ---
->  include/linux/platform_data/cros_ec_commands.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-> index 86376779ab31..776e0b2be0e9 100644
-> --- a/include/linux/platform_data/cros_ec_commands.h
-> +++ b/include/linux/platform_data/cros_ec_commands.h
-> @@ -3457,6 +3457,7 @@ struct ec_response_get_next_event_v1 {
->  #define EC_MKBP_LID_OPEN       0
->  #define EC_MKBP_TABLET_MODE    1
->  #define EC_MKBP_BASE_ATTACHED  2
-> +#define EC_MKBP_FRONT_PROXIMITY        3
->
->  /* Run keyboard factory test scanning */
->  #define EC_CMD_KEYBOARD_FACTORY_TEST 0x0068
-> --
-> https://chromeos.dev
->
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
