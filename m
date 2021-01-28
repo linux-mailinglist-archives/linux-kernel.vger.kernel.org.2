@@ -2,131 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96FB30706F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8A030706C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhA1H6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:58:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44126 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231454AbhA1HF5 (ORCPT
+        id S231991AbhA1H5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:57:38 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:22235 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhA1HM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:05:57 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10S73u1Q006151;
-        Thu, 28 Jan 2021 02:05:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=i3eZX5wLKqAPu+8nGiutxBBktIA4YknOw5zLE/RzlT4=;
- b=OUzHzo0KS/x7kn/OClE1VUW8HY6wByBHktB5dJTmTSn5KTpjXwxOSScVqvMWhTtlz/pK
- RRhL9/OD3UUIBtr02Bo4f73kEsaTC9DOz2hhMeXVOXset6YaWbTo3FfxF74Q0SX2zQY6
- mtEPl8sUwz+OopXKsyUfEbO77vFCkDhuMym3v4Ob9afbeW9ZSzo9X/tel3QlpR1ax75/
- h49FRqcW/pvHzWWkAQGMkdZU5g3mcS43lQyiaNPE0QbaRL5tM2RdH8UDgazUZzVgxF17
- 2lZr+HTVN7HkAXRbQ14KsiynPAYroDofNRXlJ73g4nScPd0xi1aBHdOD8IZaVXv+DYYP 4A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36bqekhmu2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 02:05:11 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10S74HJ5008113;
-        Thu, 28 Jan 2021 02:05:11 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36bqekhmt1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 02:05:11 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10S721Mv031282;
-        Thu, 28 Jan 2021 07:05:09 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 368be82c42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 07:05:09 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10S756Fn44564974
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 07:05:06 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 42C0811C054;
-        Thu, 28 Jan 2021 07:05:06 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E88CA11C05C;
-        Thu, 28 Jan 2021 07:05:05 +0000 (GMT)
-Received: from oc6887364776.ibm.com (unknown [9.145.32.177])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Jan 2021 07:05:05 +0000 (GMT)
-Subject: Re: [abaci-bugfix@linux.alibaba.com: [PATCH] s390: Simplify the
- calculation of variables]
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>
-References: <your-ad-here.call-01611751928-ext-4146@work.hours>
-From:   Vineeth Vijayan <vneethv@linux.ibm.com>
-Message-ID: <7cb0b636-35b2-21d9-af92-37431f1d0e2e@linux.ibm.com>
-Date:   Thu, 28 Jan 2021 08:05:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 28 Jan 2021 02:12:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611817976; x=1643353976;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BWhCtPmFmY8SRwjALXcTfESKnsKfTCmOrzddkgcZe24=;
+  b=faLGKvi9FFV57Q0dVYgonwYrSTczxE9mFzdDUiyH3A743tinm8FHpmYz
+   E84KWYZzllaXLzXqmEQ3vDkz3D8fsHBtSi4Hmv/1R+AeQBknTP0ot2Svv
+   rnDYlpCWtEJ2+q1R44DxVzeuA5GnmFibXE1B6D+5DQso/hdAwQoFVa5pT
+   CLQn2gu7AeGLEYqMTzcoV59mbnaInDk5X20SLVrY6g8oA6DjKhe5i6x2+
+   WTW7Ce2WfoH/L9CLkjXMJ2Ixf1nQnpqJivqFH3mN0W6kUljS2DJh2UW3A
+   Q25yxzK7UVPZBNsUgpZo4nVvY5QMoYY170OhpNR7KneK5MlK1nUkKKU7H
+   A==;
+IronPort-SDR: VT21les7nQG03JqHJ+I6EARWf5lMn66DxTi2QYbOMs2YfDOw2AniSPT+pjejA5tq7xp1aaI8NN
+ IJyHOrnvEj1JtURy8HGmu0MgaB3qFyIEUADD5Ek4rL9/qSDzGRwHO6xyMdhO+CtZpDm/nh3433
+ uqgijKjcu6L3970RM639kqqPrmUmIl7WoTjb0NNVH7bhLYWGI4IDe794zDrJ4IASxPghSaTjLe
+ TOkBT9TLksFi3mVkIqXo6YzEuM9Kaiezl7crmDupPQhL0bBL9PWXidnupZGcR3WjWU0VGSuTZw
+ LNA=
+X-IronPort-AV: E=Sophos;i="5.79,381,1602518400"; 
+   d="scan'208";a="158517186"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jan 2021 15:11:38 +0800
+IronPort-SDR: w5IsHUigPS/mWpQBf9qBrfSIaakaFZLRWoHP6+aNWprDyks+eKEz/GYBDl9uDW4vjngYTV/B2D
+ IFvxlHDM6q/6/9nde34O8UYBh6I0uIn3r+BtZNG8Q1Tp2UBHT91nGmc+bRVSX0vH6wYM+9iszA
+ F/KYhmG/TW8AEVRLeQEnipOU8wNqnajsU2fYF/lAkiJR/GA7ObRI9w0PiHGbcZOSAzOETqvDL8
+ hpZV/LAw9Bj86sme5bSbMQqxe65yf8vYoskZfjC3ApT6ZscD9accTAHZbY6UsQpC8kRLHHWojB
+ s+1/3Wcsa3O5HFCg61j2s/8m
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 22:55:58 -0800
+IronPort-SDR: 61Jf/0E9AfrbFBR+VL+aX9SYCVB0aW8ut/7/jLtTqvhkleWzu7b9JjkuOaGgMYwgMXw5C5Sybl
+ VeNQs3LEjTqxDsR0ZyK8GA/cVYEZNMX2maaVF3ljBoeSQOO/ApbWgebfLMlSCkYd12pl+6neKj
+ zn8nHOcIOMnNA2IBKV67KMXVLkXTllokNu+jCcdgoa5YFwfQecWL2vYSP5hgldmlqCiXple2ew
+ fybG/wLzJMKvqPxvYQ59ATt+ZGQv1DjVDDtxXyNp0NJ+IswNbwLOu8d1uiq12NaSa1/W79MYTO
+ wq8=
+WDCIronportException: Internal
+Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
+  by uls-op-cesaip02.wdc.com with ESMTP; 27 Jan 2021 23:11:38 -0800
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     axboe@kernel.dk, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
+        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
+        chaitanya.kulkarni@wdc.com, martin.petersen@oracle.com,
+        viro@zeniv.linux.org.uk, tytso@mit.edu, jaegeuk@kernel.org,
+        ebiggers@kernel.org, djwong@kernel.org, shaggy@kernel.org,
+        konishi.ryusuke@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
+        joseph.qi@linux.alibaba.com, damien.lemoal@wdc.com,
+        naohiro.aota@wdc.com, jth@kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
+        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
+        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
+        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
+        bvanassche@acm.org, jefflexu@linux.alibaba.com
+Subject: [RFC PATCH 00/34] block: introduce bio_new()
+Date:   Wed, 27 Jan 2021 23:10:59 -0800
+Message-Id: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-In-Reply-To: <your-ad-here.call-01611751928-ext-4146@work.hours>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_02:2021-01-27,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 adultscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 clxscore=1011 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101280034
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Tue, 26 Jan 2021 17:09:12 +0800
-> From: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-> To: hca@linux.ibm.com
-> Cc: , Jiapeng Zhong
-> 	<abaci-bugfix@linux.alibaba.com>
-> Subject: [PATCH] s390: Simplify the calculation of variables
-> Message-Id: <1611652152-58139-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-> X-Mailer: git-send-email 1.8.3.1
->
-> Fix the following coccicheck warnings:
->
-> ./arch/s390/include/asm/scsw.h:528:48-50: WARNING !A || A && B is
-> equivalent to !A || B.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-> ---
->   arch/s390/include/asm/scsw.h | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/s390/include/asm/scsw.h b/arch/s390/include/asm/scsw.h
-> index c00f7b0..a7c3ccf 100644
-> --- a/arch/s390/include/asm/scsw.h
-> +++ b/arch/s390/include/asm/scsw.h
-> @@ -525,8 +525,7 @@ static inline int scsw_cmd_is_valid_pno(union scsw *scsw)
->   	return (scsw->cmd.fctl != 0) &&
->   	       (scsw->cmd.stctl & SCSW_STCTL_STATUS_PEND) &&
->   	       (!(scsw->cmd.stctl & SCSW_STCTL_INTER_STATUS) ||
-> -		 ((scsw->cmd.stctl & SCSW_STCTL_INTER_STATUS) &&
-> -		  (scsw->cmd.actl & SCSW_ACTL_SUSPENDED)));
-> +		  (scsw->cmd.actl & SCSW_ACTL_SUSPENDED));
->   }
->   
->   /**
+Hi,
 
-Thank you.
+This is a *compile only RFC* which adds a generic helper to initialize
+the various fields of the bio that is repeated all the places in
+file-systems, block layer, and drivers.
 
-Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+The new helper allows callers to initialize non-optional members of bio
+such as bdev, sector, op, opflags, max_bvecs and gfp_mask by
+encapsulating new bio allocation with bio alloc with initialization
+at one place.
 
-this will go via next s390-tree upstream-release.
+The objective of this RFC is to only start a discussion, this it not 
+completely tested at all.
 
-Regards
-Vineeth Vijayan.
+-ck                         
 
+Chaitanya Kulkarni (34):
+  block: move common code into blk_next_bio()
+  block: introduce and use bio_new
+  drdb: use bio_new in drdb
+  drdb: use bio_new() in submit_one_flush
+  xen-blkback: use bio_new
+  zram: use bio_new
+  dm: use bio_new in dm-log-writes
+  dm-zoned: use bio_new in get_mblock_slow
+  dm-zoned: use bio_new in dmz_write_mblock
+  dm-zoned: use bio_new in dmz_rdwr_block
+  nvmet: use bio_new in nvmet_bdev_execute_rw
+  scsi: target/iblock: use bio_new
+  block: use bio_new in __blkdev_direct_IO
+  fs/buffer: use bio_new in submit_bh_wbc
+  fscrypt: use bio_new in fscrypt_zeroout_range
+  fs/direct-io: use bio_new in dio_bio_alloc
+  iomap: use bio_new in iomap_dio_zero
+  iomap: use bio_new in iomap_dio_bio_actor
+  fs/jfs/jfs_logmgr.c: use bio_new in lbmRead
+  fs/jfs/jfs_logmgr.c: use bio_new in lbmStartIO
+  fs/jfs/jfs_metapage.c: use bio_new in metapage_writepage
+  fs/jfs/jfs_metapage.c: use bio_new in metapage_readpage
+  fs/mpage.c: use bio_new mpage_alloc
+  fs/nilfs: use bio_new nilfs_alloc_seg_bio
+  ocfs/cluster: use bio_new in dm-log-writes
+  xfs: use bio_new in xfs_rw_bdev
+  xfs: use bio_new in xfs_buf_ioapply_map
+  zonefs: use bio_new
+  power/swap: use bio_new in hib_submit_io
+  hfsplus: use bio_new in hfsplus_submit_bio()
+  iomap: use bio_new in iomap_readpage_actor
+  mm: use bio_new in __swap_writepage
+  mm: use bio_new in swap_readpage
+  mm: add swap_bio_new common bio helper
 
+ block/blk-lib.c                     | 34 ++++++++++-------------------
+ block/blk-zoned.c                   |  4 +---
+ block/blk.h                         |  5 +++--
+ drivers/block/drbd/drbd_receiver.c  | 12 +++++-----
+ drivers/block/xen-blkback/blkback.c | 20 +++++++++++------
+ drivers/block/zram/zram_drv.c       |  5 ++---
+ drivers/md/dm-log-writes.c          | 30 +++++++++----------------
+ drivers/md/dm-zoned-metadata.c      | 18 +++++----------
+ drivers/nvme/target/io-cmd-bdev.c   |  9 +++-----
+ drivers/target/target_core_iblock.c |  5 ++---
+ fs/block_dev.c                      |  6 ++---
+ fs/buffer.c                         | 16 ++++++--------
+ fs/crypto/bio.c                     |  5 ++---
+ fs/direct-io.c                      |  6 ++---
+ fs/hfsplus/wrapper.c                |  5 +----
+ fs/iomap/buffered-io.c              | 12 +++++-----
+ fs/iomap/direct-io.c                | 11 ++++------
+ fs/jfs/jfs_logmgr.c                 | 13 ++++-------
+ fs/jfs/jfs_metapage.c               | 15 +++++--------
+ fs/mpage.c                          | 18 +++++----------
+ fs/nilfs2/segbuf.c                  | 10 ++-------
+ fs/ocfs2/cluster/heartbeat.c        |  6 ++---
+ fs/xfs/xfs_bio_io.c                 |  7 ++----
+ fs/xfs/xfs_buf.c                    |  6 ++---
+ fs/zonefs/super.c                   |  6 ++---
+ include/linux/bio.h                 | 25 +++++++++++++++++++++
+ kernel/power/swap.c                 |  7 +++---
+ mm/page_io.c                        | 30 +++++++++++++------------
+ 28 files changed, 151 insertions(+), 195 deletions(-)
+
+-- 
+2.22.1
 
