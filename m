@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243C73071A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7250E3071A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhA1Ihu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:37:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33609 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231686AbhA1Ihl (ORCPT
+        id S231585AbhA1IjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231148AbhA1IjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:37:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611822974;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nf0jnBmR9S7kgQakgFuMWWnzgzSE4QHvRdW36PL6dL8=;
-        b=A2RrV93+HpUtkrWHL/7JqR1MXmF7QS01lfgek5Dcy7SAPJfLxXE7zD5fog83HqwVN9PVlm
-        oCNC9Qpj2WT6YIgXSBctW1tdrhtHEfUuU7e//CvI8uHf1GKkotEcpZrNU3ONJSFapCAye8
-        Ni2fu4jV9gZbNSLL8+gXiooJth09UJ4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-SrV_yv-sOaGv1HOC4dkSRA-1; Thu, 28 Jan 2021 03:36:12 -0500
-X-MC-Unique: SrV_yv-sOaGv1HOC4dkSRA-1
-Received: by mail-ed1-f71.google.com with SMTP id u19so2853931edr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:36:12 -0800 (PST)
+        Thu, 28 Jan 2021 03:39:01 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8458C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:38:20 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id t5so2989001qti.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:38:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=5FeqogviNew+o0VUZFdW9/7nJCLDRVT518/ol39sXus=;
+        b=feBp+DyLNzzD8X0Ce+CXsFWPnXv2fHlzLphroxefIAqmT+JpM/kjRlXM0jYBO49OB0
+         aMbLpNbmmnzAi/9UeA27rngoE2YSbQbINyQmGOFdRSu2UFqfJfcUTP9rtzwGZ0L9HHw1
+         SLgaBIz5JXj7JZm7XM2mrrlUWog1w7vMp3s/b7pJWhtCPqMKtE2nJL/jRLrXPTPbn31z
+         NRBRmnHuYUqXhpQd+fV4beEmz8wBrUtAqV/TWS+n4934YebWuxgTEbyF/6L/nmSyr4IJ
+         9noMeixTlrdTmBRDYfZr6AQTZ/a3enLlsVIh9lINb2G/9c4Eh6AqXwaIRNl65hidPi1T
+         Q6cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Nf0jnBmR9S7kgQakgFuMWWnzgzSE4QHvRdW36PL6dL8=;
-        b=L2zt5RIQDhBaigITftInJJNgQ5nUzYE0xvH6tprYgXsV9riMJ1eipez6iY6EuTtTyt
-         o0jHN1mhHNdzHWJhs71G5Qu2n6DBIOVKC+t48Ihk6HQzjyvjbgfrPfENN8WB7VzQP0TG
-         WzPvubAg4oLfyTXzcUKIlPMHFefLGwTrbxE/XEhBNHk/Mb5wBw/I3vndebaKRc76BvPQ
-         fOWC88O0joaR4FFndfMcJ6myMNILFExjAdr+qMDu+gq+AcvB1K/+dTyAXoCCMEN8+m3c
-         VAxpnlePIefIHtoDLxJITE7VHUxw+w/oX0Wu2/8ix7HcEDcXErNLcnaTSr9Eta6dCFse
-         B6sA==
-X-Gm-Message-State: AOAM530BVP/vaMNzejJU0XIsmxevPn9YIIflmMj7bLVZwv43qYM9A8xx
-        PFdgdNXTPau+jxzZCONE6sfwlXuKlBULnXO7wOkLmDAQhSUwcDNx830XqUCoqvlPkd7mkfboPoX
-        rPPnhNx5gSuY+HoqnOnVZncM3
-X-Received: by 2002:a05:6402:32c:: with SMTP id q12mr12910430edw.145.1611822971045;
-        Thu, 28 Jan 2021 00:36:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzWIui6+vrd5seJH5yGW9okKQwFC1Coh5JWb1vPz0BXTa+I+8gBtJNVZkGffRelSALyWXX+kw==
-X-Received: by 2002:a05:6402:32c:: with SMTP id q12mr12910413edw.145.1611822970812;
-        Thu, 28 Jan 2021 00:36:10 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id m5sm1933153eja.11.2021.01.28.00.36.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 00:36:10 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Roth <michael.roth@amd.com.com>
-Subject: Re: [PATCH] KVM: x86: fix CPUID entries returned by KVM_GET_CPUID2
- ioctl
-In-Reply-To: <20210128024451.1816770-1-michael.roth@amd.com>
-References: <20210128024451.1816770-1-michael.roth@amd.com>
-Date:   Thu, 28 Jan 2021 09:36:09 +0100
-Message-ID: <87a6st31c6.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=5FeqogviNew+o0VUZFdW9/7nJCLDRVT518/ol39sXus=;
+        b=C8Ya4XOc5ZaBj5YVFgR3eMq6d95M7QGZfyqi4HRfIpDJI/s58OMy0Ax1Q17QvqyhwR
+         FhW8g1C2FYrgQJcjZVF3kB6wSgZ5OOq/7EUC+7jmFtivZv9pFORU+vZckcwACjxW2AdA
+         ef9oQ8zFNDrAWvBwbubANgJOtzix/bVYWfu52W+uiucJF5OD1/hREVa9z8B4/73+RPwL
+         trx6eUL+DJN2GuyEgzgPx3GBWFRgECLdLDc8BaIePS6sWGYLHXIfZxsiUYe3kY0lqTtk
+         AcosT1ZS4kM2n5s9taIiG5s7fx9vuAm4KbysvYlyGHh7XDA206snw3mXwJf+EoMfjaVd
+         LxoQ==
+X-Gm-Message-State: AOAM530WrTT5D5Tch4W3LlGjMCyj9aa4xu6uRFEvpuXZvbat6i8gXQVm
+        AvwO7HL31/Yi+wmiqMwrWnXFT8nzOyk=
+X-Google-Smtp-Source: ABdhPJxf8gcn/0Ccf1D2y+uKA7hjFIYYcMpDgFIBoM7I4ge4xPQw0/SKpxYwLJkEQuwnNCB8GYEYaWvd2vQ=
+Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f693:9fff:fef4:2055])
+ (user=surenb job=sendgmr) by 2002:ad4:4d4c:: with SMTP id m12mr14286593qvm.6.1611823099629;
+ Thu, 28 Jan 2021 00:38:19 -0800 (PST)
+Date:   Thu, 28 Jan 2021 00:38:17 -0800
+Message-Id: <20210128083817.314315-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by linux vm
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     sumit.semwal@linaro.org
+Cc:     benjamin.gaignard@linaro.org, lmark@codeaurora.org,
+        labbott@redhat.com, Brian.Starkey@arm.com, john.stultz@linaro.org,
+        christian.koenig@amd.com, cgoldswo@codeaurora.org,
+        orjan.eide@arm.com, robin.murphy@arm.com, jajones@nvidia.com,
+        minchan@kernel.org, hridya@google.com, sspatil@google.com,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Roth <michael.roth@amd.com> writes:
+Currently system heap maps its buffers with VM_PFNMAP flag using
+remap_pfn_range. This results in such buffers not being accounted
+for in PSS calculations because vm treats this memory as having no
+page structs. Without page structs there are no counters representing
+how many processes are mapping a page and therefore PSS calculation
+is impossible.
+Historically, ION driver used to map its buffers as VM_PFNMAP areas
+due to memory carveouts that did not have page structs [1]. That
+is not the case anymore and it seems there was desire to move away
+from remap_pfn_range [2].
+Dmabuf system heap design inherits this ION behavior and maps its
+pages using remap_pfn_range even though allocated pages are backed
+by page structs.
+Clear VM_IO and VM_PFNMAP flags when mapping memory allocated by the
+system heap and replace remap_pfn_range with vm_insert_page, following
+Laura's suggestion in [1]. This would allow correct PSS calculation
+for dmabufs.
 
-> Recent commit 255cbecfe0 modified struct kvm_vcpu_arch to make
-> 'cpuid_entries' a pointer to an array of kvm_cpuid_entry2 entries
-> rather than embedding the array in the struct. KVM_SET_CPUID and
-> KVM_SET_CPUID2 were updated accordingly, but KVM_GET_CPUID2 was missed.
->
-> As a result, KVM_GET_CPUID2 currently returns random fields from struct
-> kvm_vcpu_arch to userspace rather than the expected CPUID values. Fix
-> this by treating 'cpuid_entries' as a pointer when copying its
-> contents to userspace buffer.
->
-> Fixes: 255cbecfe0c9 ("KVM: x86: allocate vcpu->arch.cpuid_entries dynamically")
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com.com>
-> ---
->  arch/x86/kvm/cpuid.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 13036cf0b912..38172ca627d3 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -321,7 +321,7 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
->  	if (cpuid->nent < vcpu->arch.cpuid_nent)
->  		goto out;
->  	r = -EFAULT;
-> -	if (copy_to_user(entries, &vcpu->arch.cpuid_entries,
-> +	if (copy_to_user(entries, vcpu->arch.cpuid_entries,
->  			 vcpu->arch.cpuid_nent * sizeof(struct kvm_cpuid_entry2)))
->  		goto out;
->  	return 0;
+[1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
+[2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
+(sorry, could not find lore links for these discussions)
 
-This is embarrassing but I have a (possible) excuse: copy_to_user's
-argument is 'void *' so no warning was produced. Surprisingly, no test
-caught the breakage. Thanks for debugging and fixing!
+Suggested-by: Laura Abbott <labbott@kernel.org>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 17e0e9a68baf..0e92e42b2251 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -200,11 +200,13 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+ 	struct sg_page_iter piter;
+ 	int ret;
+ 
++	/* All pages are backed by a "struct page" */
++	vma->vm_flags &= ~VM_PFNMAP;
++
+ 	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
+ 		struct page *page = sg_page_iter_page(&piter);
+ 
+-		ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
+-				      vma->vm_page_prot);
++		ret = vm_insert_page(vma, addr, page);
+ 		if (ret)
+ 			return ret;
+ 		addr += PAGE_SIZE;
 -- 
-Vitaly
+2.30.0.280.ga3ce27912f-goog
 
