@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D8E30792A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BC9307919
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbhA1PIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 10:08:52 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11666 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhA1PEI (ORCPT
+        id S232144AbhA1PGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 10:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232425AbhA1PFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 10:04:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6012d2400000>; Thu, 28 Jan 2021 07:03:28 -0800
-Received: from [10.26.73.116] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 15:03:24 +0000
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Saravana Kannan <saravanak@google.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20201218031703.3053753-1-saravanak@google.com>
- <56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com>
- <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
- <17939709-f6f4-fa9c-836f-9779081c4087@nvidia.com>
- <CAGETcx_1x7LFprsEM+-X8Y42-sbajBav5Bik4U=s4Z5XCSZtUg@mail.gmail.com>
- <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com>
-Message-ID: <6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com>
-Date:   Thu, 28 Jan 2021 15:03:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 28 Jan 2021 10:05:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60816C061573;
+        Thu, 28 Jan 2021 07:04:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7yfcW39MtfJaiXZmnoAPjncfhf53DYwxvJyT9fBnDYM=; b=2Em3igleeT54NYBZl4CeE7uOzz
+        Nh1wAmPWL+Hu81DHl2mLRb+Qx2NIocJ0DFIITJmvJAUQrXrPlOGKxaNfWgh0JlVEf1G00FNVZDwam
+        f+98RKYRU/gPDw69vlS34mCV9BPzpPfKwfSL5wXq2vUMkxwKP+u1NxbEP3HQ004Kx3iUelv4ze7BK
+        iRk67oz91z5U4FMInA/69CSQqcI5BTo4a8fnt1IGkOXDEpsJu/qLLno+4ZwTr5DFcNDs/cgTTtjBY
+        5NGQS1mwnIszzBMBEH8Ob0cNQcUk8BQ6VvtEqCb6+JUhhgXoUK1CFJzv4cI9ws4zXzvJFsFw8UQiR
+        U1Xww8Og==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l58qf-0002ax-4P; Thu, 28 Jan 2021 15:04:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C65323059C6;
+        Thu, 28 Jan 2021 16:04:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B7400213FC4B8; Thu, 28 Jan 2021 16:04:39 +0100 (CET)
+Date:   Thu, 28 Jan 2021 16:04:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] MIPS: Octeon: Implement __smp_store_release()
+Message-ID: <YBLShyGWOXYVZCH8@hirez.programming.kicks-ass.net>
+References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+ <20210127203627.47510-2-alexander.sverdlin@nokia.com>
+ <YBHp4139X+p+4IZ+@hirez.programming.kicks-ass.net>
+ <aace6ff1-9ddf-15af-3c0a-378c53c59acb@nokia.com>
+ <YBKhBQQ97f/J6L+u@hirez.programming.kicks-ass.net>
+ <3c0165d9-1814-df1d-7ec9-bf515a3996b3@nokia.com>
 MIME-Version: 1.0
-In-Reply-To: <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611846208; bh=xyVB/nXmGqUdKAurlytAs4Ivga7O+JRNlwLBfje94Ik=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=JCa4Snojg2M2xuT8hrJ5OITwTtTwVwvCbBTiUPNEHk06ADPCS3Y6ymFxjU5pUqZmr
-         qqvUbPaq98TqvG59ORl1ejijao6OywKJjENLEEC+/o1x7MKDNtHpEIpjyCeeq6/Gu1
-         doz4wGc+hQQR48Lz7E96oJ/ftj7i1xinxIe5++TUiJu7iH/v+j6dcCehe1apNiN2Bx
-         ldumRsA5OuYiA2GJkYkaim2Rr4Kbz8NZDsv+HyJy0CsLiLb2HVtmhotEQ9+g5HH/P+
-         2qjKYk+lezLKvBPaTBymUccWzypSh+nCYS5RJatDDGb4PAwutGr2U+NmB9c/pTfRFi
-         cPaDSCiB3Yqsw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c0165d9-1814-df1d-7ec9-bf515a3996b3@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28, 2021 at 01:09:39PM +0100, Alexander Sverdlin wrote:
+> On 28/01/2021 12:33, Peter Zijlstra wrote:
+> > On Thu, Jan 28, 2021 at 08:27:29AM +0100, Alexander Sverdlin wrote:
+> > 
+> >>>> +#define __smp_store_release(p, v)					\
+> >>>> +do {									\
+> >>>> +	compiletime_assert_atomic_type(*p);				\
+> >>>> +	__smp_wmb();							\
+> >>>> +	__smp_rmb();							\
+> >>>> +	WRITE_ONCE(*p, v);						\
+> >>>> +} while (0)
 
-On 14/01/2021 16:56, Jon Hunter wrote:
+> I actually hoped you will remember the discussion you've participated 5 years
+> ago and (in my understanding) actually already agreed that the solution itself
+> is not broken:
 > 
-> On 14/01/2021 16:47, Saravana Kannan wrote:
-> 
-> ...
-> 
->>> Yes this is the warning shown here [0] and this is coming from
->>> the 'Generic PHY stmmac-0:00' device.
->>
->> Can you print the supplier and consumer device when this warning is
->> happening and let me know? That'd help too. I'm guessing the phy is
->> the consumer.
-> 
-> 
-> Sorry I should have included that. I added a print to dump this on
-> another build but failed to include here.
-> 
-> WARNING KERN Generic PHY stmmac-0:00: supplier 2200000.gpio (status 1)
-> 
-> The status is the link->status and looks like the supplier is the
-> gpio controller. I have verified that the gpio controller is probed
-> before this successfully.
-> 
->> So the warning itself isn't a problem -- it's not breaking anything or
->> leaking memory or anything like that. But the device link is jumping
->> states in an incorrect manner. With enough context of this code (why
->> the device_bind_driver() is being called directly instead of going
->> through the normal probe path), it should be easy to fix (I'll just
->> need to fix up the device link state).
-> 
-> Correct, the board seems to boot fine, we just get this warning.
+> https://lore.kernel.org/lkml/20151112180003.GE17308@twins.programming.kicks-ass.net/
 
+My memory really isn't that good. I can barely remember what I did 5
+weeks ago, 5 years ago might as well have never happened.
 
-Have you had chance to look at this further?
+> Could you please just suggest the proper comment you expect to be added here,
+> because there is no doubts, you have much more experience here than me?
 
-The following does appear to avoid the warning, but I am not sure if
-this is the correct thing to do ...
+So for store_release I'm not too worried, and provided no read
+speculation, wmb is indeed sufficient. This is because our store_release
+is RCpc.
 
-index 9179825ff646..095aba84f7c2 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -456,6 +456,10 @@ int device_bind_driver(struct device *dev)
- {
-        int ret;
+Something like:
 
-+       ret = device_links_check_suppliers(dev);
-+       if (ret)
-+               return ret;
-+
-        ret = driver_sysfs_add(dev);
-        if (!ret)
-                driver_bound(dev);
-
-
-Cheers
-Jon
-
--- 
-nvpublic
+/*
+ * Because Octeon does not do read speculation, an smp_wmb()
+ * is sufficient to ensure {load,store}->{store} order.
+ */
+#define __smp_store_release(p, v) \
+do { \
+	compiletime_assert_atomic_type(*p); \
+	__smp_wmb(); \
+	WRITE_ONCE(*p, v); \
+} while (0)
