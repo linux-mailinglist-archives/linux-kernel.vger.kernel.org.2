@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC5A307695
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A731A30769F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhA1M7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 07:59:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231880AbhA1M7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 07:59:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B15764DD8;
-        Thu, 28 Jan 2021 12:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611838709;
-        bh=+X6/S8TIzROyCscNL2Zpna/HXn70q3+ajUjZ7HNRiAU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RGWcjlLIWrGovksSstY30JmqTRfZCBscviaxR4kslvyFkhO8bCAtHDB2WUjsYZzcv
-         MutNhdGi36yfC/dc4S28cWOtdWPd37n2sW8o/oFY9mvvUBDHGwmql7zRm2vOf0hwdk
-         Nkf2K9jItce47ytcpxq0QWGqcn9i9QsiPjv5Ha7+Qil6wiUnlER3rY+fUdLiGxizhg
-         a2f/urXpywgTwFsHm++rY6YjbyNYOHXN3269HrLtqI6jYhtGcsKfPS7gXW5nft/iqO
-         RRLZHsYkfZr9Gfev44tEmL2xdoL7Vwd9bVvPkHdwet9nmSJtoTE3GNELBQCyh+XBF6
-         nuebD84od3Zyw==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     dave.hansen@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] x86/sgx: Fix use-after-free in sgx_mmu_notifier_release()
-Date:   Thu, 28 Jan 2021 14:58:23 +0200
-Message-Id: <20210128125823.18660-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        id S231790AbhA1NBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:01:39 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59640 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231717AbhA1NBe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:01:34 -0500
+Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10SCxYc6075273;
+        Thu, 28 Jan 2021 21:59:34 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
+ Thu, 28 Jan 2021 21:59:34 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10SCxY3q075270
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 28 Jan 2021 21:59:34 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v2] smackfs: restrict bytes count in smackfs write
+ functions
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     andreyknvl@google.com, casey@schaufler-ca.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mhocko@suse.com,
+        serge@hallyn.com,
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+References: <3c35f7cc-1c8d-2fa0-6bc9-bde4e96017ce@i-love.sakura.ne.jp>
+ <20210128115801.1096425-1-snovitoll@gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5271074f-930a-46e9-8ece-2cc65d45dc19@i-love.sakura.ne.jp>
+Date:   Thu, 28 Jan 2021 21:59:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210128115801.1096425-1-snovitoll@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The most trivial example of a race condition can be demonstrated by this
-sequence where mm_list contains just one entry:
+On 2021/01/28 20:58, Sabyrzhan Tasbolatov wrote:
+> @@ -2005,6 +2009,9 @@ static ssize_t smk_write_onlycap(struct file *file, const char __user *buf,
+>  	if (!smack_privileged(CAP_MAC_ADMIN))
+>  		return -EPERM;
+>  
+> +	if (count > PAGE_SIZE)
+> +		return -EINVAL;
+> +
+>  	data = memdup_user_nul(buf, count);
+>  	if (IS_ERR(data))
+>  		return PTR_ERR(data);
+> @@ -2740,10 +2754,13 @@ static ssize_t smk_write_relabel_self(struct file *file, const char __user *buf,
+>  		return -EPERM;
+>  
+>  	/*
+> +	 * No partial write.
+>  	 * Enough data must be present.
+>  	 */
+>  	if (*ppos != 0)
+>  		return -EINVAL;
+> +	if (count == 0 || count > PAGE_SIZE)
+> +		return -EINVAL;
+>  
+>  	data = memdup_user_nul(buf, count);
+>  	if (IS_ERR(data))
+> 
 
-CPU A                           CPU B
--> sgx_release()
-                                -> sgx_mmu_notifier_release()
-                                -> list_del_rcu()
-                                <- list_del_rcu()
--> kref_put()
--> sgx_encl_release()
-                                -> synchronize_srcu()
--> cleanup_srcu_struct()
+Doesn't this change break legitimate requests like
 
-A sequence similar to this has also been spotted in tests under high
-stress:
+  char buffer[20000];
 
-[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
+  memset(buffer, ' ', sizeof(buffer));
+  memcpy(buffer + sizeof(buffer) - 10, "foo", 3);
+  write(fd, buffer, sizeof(buffer));
 
-Albeit not spotted in the tests, it's also entirely possible that the
-following scenario could happen:
-
-CPU A                           CPU B
--> sgx_release()
-                                -> sgx_mmu_notifier_release()
-                                -> list_del_rcu()
--> kref_put()
--> sgx_encl_release()
--> cleanup_srcu_struct()
-<- cleanup_srcu_struct()
-                                -> synchronize_srcu()
-
-This scenario would lead into use-after free in cleaup_srcu_struct().
-
-Fix this by taking a reference to the enclave in
-sgx_mmu_notifier_release().
-
-Cc: stable@vger.kernel.org
-Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v5:
-- To make sure that the instance does not get deleted use kref_get()
-  kref_put(). This also removes the need for additional
-  synchronize_srcu().
-v4:
-- Rewrite the commit message.
-- Just change the call order. *_expedited() is out of scope for this
-  bug fix.
-v3: Fine-tuned tags, and added missing change log for v2.
-v2: Switch to synchronize_srcu_expedited().
- arch/x86/kernel/cpu/sgx/encl.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index ee50a5010277..5ecbcf94ec2a 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -465,6 +465,7 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
- 	spin_lock(&encl_mm->encl->mm_lock);
- 	list_for_each_entry(tmp, &encl_mm->encl->mm_list, list) {
- 		if (tmp == encl_mm) {
-+			kref_get(&encl_mm->encl->refcount);
- 			list_del_rcu(&encl_mm->list);
- 			break;
- 		}
-@@ -474,6 +475,7 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
- 	if (tmp == encl_mm) {
- 		synchronize_srcu(&encl_mm->encl->srcu);
- 		mmu_notifier_put(mn);
-+		kref_put(&encl_mm->encl->refcount, sgx_encl_release);
- 	}
- }
- 
--- 
-2.30.0
-
+?
