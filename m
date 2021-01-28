@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BED307389
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70BD30738F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhA1KSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:18:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S231966AbhA1KUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhA1KSj (ORCPT
+        with ESMTP id S231467AbhA1KU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:18:39 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E4CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:17:58 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id j21so3061497pls.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 02:17:58 -0800 (PST)
+        Thu, 28 Jan 2021 05:20:29 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6712FC061573;
+        Thu, 28 Jan 2021 02:19:47 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 190so3847385wmz.0;
+        Thu, 28 Jan 2021 02:19:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDnJWOkOFmVooLwW3iLEaR7P3zzZQ3ejRFAmfGsUQr4=;
-        b=nm5BKmFVtD4KaRt5cIVds+MA9Jot7JyVBBQlKOiIydPan7p4oiIckxq+KyaLJB00Nb
-         02R7FW7Nhwv0hq5iOD6LJ17h0XWvm06qIGYbm2WmtO/Tn09MR7c4tndTq442s5RDB+XL
-         DnHE25BG6MFgiA/H3jKqZmu1WufG3BwQdn6/K29IdWiUv+DlMRPnNb4pTRQyPyMRbK2Y
-         4moat9o9wHsLX58rBcoiAhwVAmQEK2ApkBRK57UX5tn8YgMAzkxXhrhGIxOP4Adxooog
-         J1i1Htj7RYZdVMSvZem232qaUb8MU1QencicHcQRxb3ALwwy7I6WbB7G9VakU1HYxCHh
-         wRgA==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=RCvbfOIW3W6+aeDvZc0GOFXEO64imNVS6UzVUBooVvA=;
+        b=gDH+qqevZvp+YOTzuVNfH/WWzmLLtKA02Ef0OixWBJS9dL8ZayTkiDoP5o2D9f2EP6
+         cCPLwlEc7wJZmlWzuc3XUxB8WXh5Tyv2IxBPDbWY1mzr8bCJU3VEweBkLnmyX4oN0J9E
+         77szUfS9PU51+nZlO/74WZBGMtxogZAsG/oY+Lo4uHcqV9QOAWOs/Zve+L2jY6/CQAcd
+         gyMxKtw402tBi3+vbnaF3BqeobtyK2dHfnyzApou2RAbzSBmulmM8pqpyJ9uxwD0lfxa
+         iHaI3sdKDycgkHYebIXRCnt/W5ACJmHCfEVm34AQ/nqyYEjKzfCQgoCSEhr5q8KdviR8
+         gcMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDnJWOkOFmVooLwW3iLEaR7P3zzZQ3ejRFAmfGsUQr4=;
-        b=UG5tD8Dot5vXV1iJTjMVF+WZlPpckcYGHxohZyDK9D9LFxN9nscc31IrKzk399jh0z
-         pdaQwKkp/hu/Ba9UsyHld4kiMfOkcS9ROo/uLEm1uz4myPx78/Rn7h9nIIfrd2eoOnPu
-         2+8xIYZaCdST3T53Hcid6365vgPLvl7tuC9Q/zU8aY1mRZYWOeRjKl6yrPErgBBtv4fG
-         SOzv0AC/gpNSBktETbxWWVbenLway/UXjWAl3zJ8KbguJa6138C0Fl88TK+B4BLEsy7d
-         rcxZPSX85axBOgzg8NEuBBu3fsDHoriE2oPZAZjK7DF0TWTQeDm+3tn+rBmf0QSFi5Fe
-         U2cQ==
-X-Gm-Message-State: AOAM530tlhqlstqLDZDXygRzAN+9HNh6fWJeEk2URBoUlDixFj4n9/I5
-        CRX8SwgimaO7PoJszSTag0PmbW4ZyKl2bsmhzZIIMZviJw8=
-X-Google-Smtp-Source: ABdhPJwZttZrIE3JNDITk20YCw6r0SSowSi64TFkgJO4Bj4z6Sxlets3GP6LC967Csjl1E7M1uOThPS9zr5pI86h8uU=
-X-Received: by 2002:a17:90a:644a:: with SMTP id y10mr10741619pjm.129.1611829078364;
- Thu, 28 Jan 2021 02:17:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
- <20210126171141.122639-4-paul.gortmaker@windriver.com> <YBCGqfW0hKSgo9Rl@smile.fi.intel.com>
- <20210127080206.GE23530@windriver.com> <CAAH8bW-tWRJ4m3pP37YBVrferOa9CwMZGdZkSDC+GXvBfC=Uhw@mail.gmail.com>
-In-Reply-To: <CAAH8bW-tWRJ4m3pP37YBVrferOa9CwMZGdZkSDC+GXvBfC=Uhw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 Jan 2021 12:17:42 +0200
-Message-ID: <CAHp75VcZvZrF=YGjQ7Jt2nHguo+kOLNuvrDUV9vHoLom4q+d6Q@mail.gmail.com>
-Subject: Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=RCvbfOIW3W6+aeDvZc0GOFXEO64imNVS6UzVUBooVvA=;
+        b=gX+3cItMRFUV30RP6M2JDAf7G/iXyRl+jAoHlH7vni5DRkTrB1z4fOQ4+DDpLe90xf
+         IbDTGLrmZcK6ZFCR2QmP1kD7kjwLh+kppG9qmRsh4ubZ7FjN1IBTUPW0SuSWWIkmo/5K
+         2BYCkpYHJ3W9UgT3bRzaS/t4gUy+C6yybMX27SQdPSQ4qNlGeZNYkXFFmpbVXzfdtKzE
+         TQGa79G18Btw9TGw2tFufA7PZqfu2dfHXqjiAEohATcTJpbqvhGmM4paZL6TRCO1uguW
+         ugJoHA411VzXdXdk3+ICYY1eS/5BOa60QkpIquieWH79cO2WM5TMtUWXZXfYiCPRKGLU
+         NNVQ==
+X-Gm-Message-State: AOAM533VqT2Ir5WEnBGk4UevnxeH7gs3O6bC8ZwaEGHC+N+HrsdtI+/N
+        W9y99jnF3HS4km+8nAozznyTa+6CRCg=
+X-Google-Smtp-Source: ABdhPJya78+1iHpwjhDOcKpysAKfE75nsJFoAa7lIRekMjsv0tA0yHfR22bgt11xuP25wrph+IQz/Q==
+X-Received: by 2002:a05:600c:21c1:: with SMTP id x1mr8365797wmj.48.1611829186171;
+        Thu, 28 Jan 2021 02:19:46 -0800 (PST)
+Received: from [192.168.1.21] ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id e11sm6275009wrx.14.2021.01.28.02.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 02:19:45 -0800 (PST)
+Message-ID: <7b932babfe5ad5756eed70effe32bdc03b901d84.camel@gmail.com>
+Subject: Re: [PATCH v2 0/9] gpio: ep93xx: fixes series patch
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 28 Jan 2021 11:19:44 +0100
+In-Reply-To: <CACRpkdYPYua-NuxVC7aBxJtLYFEECL-60jr4pYgK4=fd5Mb-6g@mail.gmail.com>
+References: <20201228150052.2633-1-nikita.shubin@maquefel.me>
+         <20210127104617.1173-1-nikita.shubin@maquefel.me>
+         <CACRpkdYPYua-NuxVC7aBxJtLYFEECL-60jr4pYgK4=fd5Mb-6g@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 2:52 AM Yury Norov <yury.norov@gmail.com> wrote:
-> On Wed, Jan 27, 2021 at 12:02 AM Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
+Hello Linus,
 
-...
+On Wed, 2021-01-27 at 22:54 +0100, Linus Walleij wrote:
+> > Series of patches to fix ep93xx gpio driver to make IRQ's working.
+> > 
+> > The following are fix patches (these are enough to get gpio-ep93xx
+> > working with modern kernel):
+> 
+> I see that there is a strange level of attention to patches to this
+> platform!
+> 
+> Since you fix all my mistakes made in converting this driver
+> in the past I will just say:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> For all of them.
+> 
+> There are some nitpicks from the reviewers to fix up but
+> overall this looks very very good.
 
-> > So, this change was added because Yury suggested that I "..store
-> > nmaskbits in the struct region, and avoid passing nmaskbits as a
-> > parameter."
-> >
-> > To which I originally noted "I considered that and went with the param
-> > so as to not open the door to someone possibly using an uninitialized
-> > struct value later."
->
-> struct region is purely internal structure. It's declared on stack and filled
-> field-by-field using helpers. 'Someone' misusing the structure doesn't exist
-> because the structure doesn't exist out of the scope.
->
-> > https://lore.kernel.org/lkml/20210122044357.GS16838@windriver.com/
-> >
-> > Looking back, I had a similar thought as to yours, it seems...
-> >
-> > I am also thinking more and more that nbits doesn't belong in the
-> > region anyway - yes, a region gets validated against a specific nbits
-> > eventually, but it doesn't need an nbits field to be a complete
-> > specification.  The region "0-3" is a complete specification for "the
-> > 1st four cores" and is as valid on a 4 core machine as it is on a 64 core
-> > machine -- a validation we do when we deploy the region on that machine.
-> >
-> > I will set this change aside and get the nbits value to getnum() another
-> > way, and leave the region struct as it was -- without a nbits field.
-> >
-> > This will also resolve having the macro handling of region that you were
-> > not really liking.
-
-> Region is a convenient structure. Adding nbits into it helps to remove
-> validation
-> logic from bitmap_set_region(), so it's worth doing this.
->
-> Can you please have it unchanged?
-
-I have a compromise proposal here, i.e. why not to create a wrapper
-structure like
-
-struct bitmap_region {
-  unsigned int nbits;
-  struct region r;
-};
-
-?
-
-At least it will solve my concern and still be a local structure on
-the stack without adding new parameters to called functions.
+as we don't have a dedicated EP93xx tree, would you like to take
+the series in one of your trees?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Alexander Sverdlin.
+
+
