@@ -2,242 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999A2307E03
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E7E307E04
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhA1Sas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:30:48 -0500
-Received: from smtp4-g21.free.fr ([212.27.42.4]:7370 "EHLO smtp4-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231130AbhA1S14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:27:56 -0500
-Received: from bender.morinfr.org (unknown [82.64.86.27])
-        by smtp4-g21.free.fr (Postfix) with ESMTPS id F098B19F522;
-        Thu, 28 Jan 2021 19:26:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-        ; s=20170427; h=Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=LKVtayENhbBaYgJkcyuMgpLDKcWLp3QuefsmiDs3Y98=; b=aSoN3k/4APCopmx7ZsAJMJp01k
-        PcPnvTNUZo32UNcCuXuegZXfkswOqGfSxrLhHfJGzyINO5mlwMKgIZBUrjPBwFoHRkAGMWuV4ZvdT
-        tZog6QQeNslQgxaCQHmDCqomUmbDmAxQgJrOQw8WKxyW/Zg3HQNScazH6RBQwll0K+4E=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
-        (envelope-from <guillaume@morinfr.org>)
-        id 1l5C0A-00009M-Gg; Thu, 28 Jan 2021 19:26:42 +0100
-Date:   Thu, 28 Jan 2021 19:26:42 +0100
-From:   Guillaume Morin <guillaume@morinfr.org>
-To:     rafael.j.wysocki@intel.com
-Cc:     linux-kernel@vger.kernel.org, guillaume@morinfr.org
-Subject: [BUG] incorrect scaling_max_freq with intel_pstate after
- offline/online
-Message-ID: <20210128182642.GA28568@bender.morinfr.org>
-Mail-Followup-To: rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org,
-        guillaume@morinfr.org
+        id S231310AbhA1SbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231861AbhA1S15 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 13:27:57 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04803C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:27:17 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id m2so5091059wmm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:27:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FHRjyjYE89qGrg3Y3Q4173ZyrozQfcKIJRYji1qkDFM=;
+        b=nRD5KHmNsZcktF/igWymXoXQ/aOFphiF4N1QJKg5TLO8qOtCZ0IkUi3Y829Z4//4dc
+         yFMj16HxlEFCQ6bVR34sYJaUq1DTTpNttjF8DuOoO81iBfehJOVVpHv6bYdI+K3tQiGH
+         jTcYrSETFLLNcMeB2Z6/rFr3009PbTB5xWqYQOKlrlKlxV+4hf46LIRvtrclyv+KF5tg
+         dfUu6RX/D3/x4wm+FXnVxm7Zuci9Mxg+KbRX4lPrcXNu01abyB7fhXbEikwCRNNXfiQf
+         aNKF5PH0xIu3V0A+fYH7YldMGhrkbzYSsUSFWXC5X0P3Pbt4il4vKA8dpCWiLBdah0X1
+         CSVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FHRjyjYE89qGrg3Y3Q4173ZyrozQfcKIJRYji1qkDFM=;
+        b=sAM2+WLDzs+U/bdVutmuN/j0LrZ15QtDsqHTKHwSMO+aIx60d7KySP3LOjIg8Hm9DZ
+         F37xEB0Ra0WakG61+GGYwWAczt6yZgmo3UdyDe2OFscyBQqmG64G8u1jibI/2qeOguUm
+         +KLxRTs5PjDtlwTkF34Zjc0tizoeRpEV6L4zaiE8ZRdw6TvvZt7PF3vD8lbeWVjY749H
+         WDF5fC47TZ8uNF8Z4IZKmVKiAHvTyaou9tEVVOX0AsAbXUZWBUtDoPv9epkhuTe2IESj
+         VVHGUwB64O+s19WP1fJITLrGjUc3SVSMpInNHI8ztZ/kWP7tFwa3hEhXYYDYeLnErQ/k
+         X9cA==
+X-Gm-Message-State: AOAM530uEizYcgtLDtV/Tx/dPfdYxWQJ3DvZF5+V3Ei23LnPWyWMngHL
+        +LL4Xktq+srbvozq4hRfh0NtrencZDRwB40n
+X-Google-Smtp-Source: ABdhPJxBSl6KKb9jx4AcBh1+S1MdD8ooOlSLI5Je5HBovcwouAW5yWRC5WCMBZBaHxfab8wvPNYfFQ==
+X-Received: by 2002:a1c:a406:: with SMTP id n6mr509739wme.53.1611858435697;
+        Thu, 28 Jan 2021 10:27:15 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id l84sm6827558wmf.17.2021.01.28.10.27.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 10:27:15 -0800 (PST)
+Date:   Thu, 28 Jan 2021 18:27:13 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org
+Subject: Re: [PATCH 01/20] ata: ahci_dm816: Ignore -Woverride-init
+Message-ID: <20210128182713.GM4774@dell>
+References: <20210128180239.548512-1-lee.jones@linaro.org>
+ <20210128180239.548512-2-lee.jones@linaro.org>
+ <20210128181903.GA2099675@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210128181903.GA2099675@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rafael,
+On Thu, 28 Jan 2021, Christoph Hellwig wrote:
 
-I am chasing an issue on 5.4.x+ where scaling_max_freq is decreased to
-the first entry in the _PSS table after doing an offline/online of the
-cpu (to be 100% clear: scaling_max_freq is fine right after booting).
+> On Thu, Jan 28, 2021 at 06:02:20PM +0000, Lee Jones wrote:
+> > Some ATA drivers use the SCSI host template, a series of interwoven
+> > macros, to aid with initialisation.  Some of these macros conflict,
+> > resulting in the over-writing of previously set values.
+> 
+> Please just disable this warning globally.  This is a sensible
+> patter and we should not sprinkle per-file options for something
+> that fundamental.
 
-During intel_pstate_cpu_init(), acpi_processor_get_platform_limit() is
-called. That updates FREQ_QOS_MAX constraint *if* perflib_req is not
-NULL.  At that point though, the states[0].core_frequency in that table
-is "incorrect" because it does not contain the turbo freq range.
-states[0].core_frequency is later fixed up by
-intel_pstate_init_acpi_perf_limits() after returning from
-acpi_processor_get_platform_limit().
-
-During boot, the first call to acpi_processor_get_platform_limit()
-happens in the intel_pstate_cpu_init() *before* perflib_req is
-initialized. That happens later down cpufreq_online():
-acpi_processor_notifier() is called from
-blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
-CPUFREQ_CREATE_POLICY, policy).
-
-So at that point acpi_processor_get_platform_limit() is not
-adding/updating the FREQ_QOS_MAX constraint.  When cpufreq_set_policy()
-is called, freq_qos_read_value() for FREQ_QOS_MAX returns the proper
-frequency.
-
-However, after an offline/online, the policy is not recreated.
-Therefore, perflib_req is != NULL in
-acpi_processor_get_platform_limit(), the FREQ_QOS_MAX constraint is then
-updated with the "incorrect" states[0].core_frequency. cpufreq_set_policy()
-is then called and policy->max is set to that value.
-
-I have not tried to run the current master but my reading of Linus' tree
-is that the problem is still present in current kernels. Please let me
-know if I am wrong.
-
-ignore_ppc=1 would workaround the issue but that does not seem it was
-intended for that purpose since all users of intel_pstate would have to
-set it...
-
-I made a simple test patch on top of the 5.4 branch to verify my theory
-and it does fix what I am seeing. I am not familiar with this code and
-ACPI at all so it might not be the right approach but I am including it
-in case it helps:
-
-diff --git a/drivers/acpi/processor_perflib.c b/drivers/acpi/processor_perflib.c
-index 5909e8fa4013..aaef29bc3952 100644
---- a/drivers/acpi/processor_perflib.c
-+++ b/drivers/acpi/processor_perflib.c
-@@ -393,7 +393,10 @@ static int acpi_processor_get_performance_states(struct acpi_processor *pr)
- 	return result;
- }
- 
--int acpi_processor_get_performance_info(struct acpi_processor *pr)
-+
-+
-+static int __acpi_processor_get_performance_info(struct acpi_processor *pr,
-+					         u64 override_pss0_freq)
- {
- 	int result = 0;
- 
-@@ -414,6 +417,9 @@ int acpi_processor_get_performance_info(struct acpi_processor *pr)
- 	if (result)
- 		goto update_bios;
- 
-+	if (override_pss0_freq)
-+		pr->performance->states[0].core_frequency = override_pss0_freq;
-+
- 	/* We need to call _PPC once when cpufreq starts */
- 	if (ignore_ppc != 1)
- 		result = acpi_processor_get_platform_limit(pr);
-@@ -434,6 +440,11 @@ int acpi_processor_get_performance_info(struct acpi_processor *pr)
- #endif
- 	return result;
- }
-+
-+int acpi_processor_get_performance_info(struct acpi_processor *pr)
-+{
-+	return __acpi_processor_get_performance_info(pr, 0);
-+}
- EXPORT_SYMBOL_GPL(acpi_processor_get_performance_info);
- 
- int acpi_processor_pstate_control(void)
-@@ -723,8 +734,9 @@ int acpi_processor_preregister_performance(
- EXPORT_SYMBOL(acpi_processor_preregister_performance);
- 
- int
--acpi_processor_register_performance(struct acpi_processor_performance
--				    *performance, unsigned int cpu)
-+__acpi_processor_register_performance(struct acpi_processor_performance
-+					*performance, unsigned int cpu,
-+					u64 override_pss0_freq)
- {
- 	struct acpi_processor *pr;
- 
-@@ -748,7 +760,7 @@ acpi_processor_register_performance(struct acpi_processor_performance
- 
- 	pr->performance = performance;
- 
--	if (acpi_processor_get_performance_info(pr)) {
-+	if (__acpi_processor_get_performance_info(pr, override_pss0_freq)) {
- 		pr->performance = NULL;
- 		mutex_unlock(&performance_mutex);
- 		return -EIO;
-@@ -758,7 +770,7 @@ acpi_processor_register_performance(struct acpi_processor_performance
- 	return 0;
- }
- 
--EXPORT_SYMBOL(acpi_processor_register_performance);
-+EXPORT_SYMBOL(__acpi_processor_register_performance);
- 
- void acpi_processor_unregister_performance(unsigned int cpu)
- {
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 8280fb38cd53..fdf3e90e5f42 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -401,6 +401,7 @@ static void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
- 	struct cpudata *cpu;
- 	int ret;
- 	int i;
-+	u64 override_max_freq = 0;
- 
- 	if (hwp_active) {
- 		intel_pstate_set_itmt_prio(policy->cpu);
-@@ -412,8 +413,23 @@ static void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
- 
- 	cpu = all_cpu_data[policy->cpu];
- 
--	ret = acpi_processor_register_performance(&cpu->acpi_perf_data,
--						  policy->cpu);
-+	/*
-+	 * The _PSS table doesn't contain whole turbo frequency range.
-+	 * This just contains +1 MHZ above the max non turbo frequency,
-+	 * with control value corresponding to max turbo ratio. But
-+	 * when cpufreq set policy is called, it will call with this
-+	 * max frequency, which will cause a reduced performance as
-+	 * this driver uses real max turbo frequency as the max
-+	 * frequency. So correct this frequency in _PSS table to
-+	 * correct max turbo frequency based on the turbo state.
-+	 * Also need to convert to MHz as _PSS freq is in MHz.
-+	 */
-+	if (!global.turbo_disabled)
-+		override_max_freq = policy->cpuinfo.max_freq / 1000;
-+
-+	ret = __acpi_processor_register_performance(&cpu->acpi_perf_data,
-+						  policy->cpu,
-+						  override_max_freq);
- 	if (ret)
- 		return;
- 
-@@ -442,20 +458,6 @@ static void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
- 			 (u32) cpu->acpi_perf_data.states[i].control);
- 	}
- 
--	/*
--	 * The _PSS table doesn't contain whole turbo frequency range.
--	 * This just contains +1 MHZ above the max non turbo frequency,
--	 * with control value corresponding to max turbo ratio. But
--	 * when cpufreq set policy is called, it will call with this
--	 * max frequency, which will cause a reduced performance as
--	 * this driver uses real max turbo frequency as the max
--	 * frequency. So correct this frequency in _PSS table to
--	 * correct max turbo frequency based on the turbo state.
--	 * Also need to convert to MHz as _PSS freq is in MHz.
--	 */
--	if (!global.turbo_disabled)
--		cpu->acpi_perf_data.states[0].core_frequency =
--					policy->cpuinfo.max_freq / 1000;
- 	cpu->valid_pss_table = true;
- 	pr_debug("_PPC limits will be enforced\n");
- 
-diff --git a/include/acpi/processor.h b/include/acpi/processor.h
-index 683e124ad517..4b2ce80ffbec 100644
---- a/include/acpi/processor.h
-+++ b/include/acpi/processor.h
-@@ -250,8 +250,15 @@ extern int acpi_processor_preregister_performance(struct
- 						  acpi_processor_performance
- 						  __percpu *performance);
- 
--extern int acpi_processor_register_performance(struct acpi_processor_performance
--					       *performance, unsigned int cpu);
-+extern int __acpi_processor_register_performance(
-+					struct acpi_processor_performance
-+				        *performance, unsigned int cpu,
-+				        u64 override_pss0_freq);
-+static inline int acpi_processor_register_performance(
-+					struct acpi_processor_performance
-+				       *performance, unsigned int cpu) {
-+	return __acpi_processor_register_performance(performance, cpu, 0);
-+}
- extern void acpi_processor_unregister_performance(unsigned int cpu);
- 
- int acpi_processor_pstate_control(void);
-
+Will do.  Just as soon as I've figured out how. :)
 
 -- 
-Guillaume Morin <guillaume@morinfr.org>
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
