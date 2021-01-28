@@ -2,151 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4767C30780C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF6C30780A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhA1O3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:29:38 -0500
-Received: from mga17.intel.com ([192.55.52.151]:46518 "EHLO mga17.intel.com"
+        id S231553AbhA1O3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:29:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231586AbhA1O3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:29:34 -0500
-IronPort-SDR: TiWbAe8k6q2U7d3uPWM4lSyp+yrMTMsx9986JilPAGwQ3owBNfQSPO2wB88gv4g1SZAGFnq4BC
- p2Yx656S6ybA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="160012376"
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="160012376"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 06:27:48 -0800
-IronPort-SDR: +PFPIvlRjek6MWrX9uP9iaFFhGEDkOin/OloFocOFfpB2UombOfcu9lElfPgCPSR9ahsCgLNZN
- pBm+PFjtZHqw==
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="363775047"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 06:27:44 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 16:27:42 +0200
-Date:   Thu, 28 Jan 2021 16:27:42 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     mingchuang.qiao@mediatek.com
-Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
-        lambert.wang@mediatek.com, kerun.zhu@mediatek.com,
-        alex.williamson@redhat.com, rjw@rjwysocki.net,
-        utkarsh.h.patel@intel.com
-Subject: Re: [v2] PCI: Avoid unsync of LTR mechanism configuration
-Message-ID: <20210128142742.GV2542@lahna.fi.intel.com>
-References: <20210128100531.2694-1-mingchuang.qiao@mediatek.com>
+        id S231159AbhA1O26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:28:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E8A464DDF;
+        Thu, 28 Jan 2021 14:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611844097;
+        bh=g+svnb872V2gEjrQRAURCdMhmMC6P1ol879JHGB4ztA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vN44u2RVR6z3VYYZVmETECBL9mFFYHCPI66S1E6Fx7OaPfcP+k8+mIs3ofK9ArU5O
+         Lnrm8zUEWm+iDJadxDTrLMc57zKbhkju+ztz1+sCjI14lonOE8Hb/XmCfftMFffSge
+         TcfoBIlLhORP8UQSuOwM/1e63MOcvkWUfXpnhAjqOjI/S0kUEXWCkCdoBKzRlXCgAa
+         5kwmKuhpyKTgJE11VQOznqRNNDAVViKMHXVk7khF+3/24ZQmrvblJtprHyF/Vr0ECS
+         +T2Fhm67x6nB0ejgBze5G77sgEDPaSLeV1tSTlEXo/59z0AvwgV9xVb8W9wh96u0QZ
+         htnvnRenHajiw==
+Received: by mail-oi1-f179.google.com with SMTP id k25so6148114oik.13;
+        Thu, 28 Jan 2021 06:28:17 -0800 (PST)
+X-Gm-Message-State: AOAM530gDYYX47X8hvX6bSYvBwRdw+s0X1DUrH0hn+8ClTGkMaFuO4Uw
+        NSlgxf2+h0kv52mNBbZU4WfklGsYd9aS8Pych9I=
+X-Google-Smtp-Source: ABdhPJzvR965chipjx26jhgmeWtunUplGEZ9LYudt2xG6T6psgopbevW0CweYJAmTen4xv/AOVDG+rkdGPAwQdSS/Zc=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr137434oig.67.1611844096571;
+ Thu, 28 Jan 2021 06:28:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128100531.2694-1-mingchuang.qiao@mediatek.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210116032740.873-1-thunder.leizhen@huawei.com> <20210116032740.873-3-thunder.leizhen@huawei.com>
+In-Reply-To: <20210116032740.873-3-thunder.leizhen@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 28 Jan 2021 15:28:00 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1biznW80EjZLK-LKDVgs0iZ6oiqXOjgU_rctcxRWj1qA@mail.gmail.com>
+Message-ID: <CAK8P3a1biznW80EjZLK-LKDVgs0iZ6oiqXOjgU_rctcxRWj1qA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] ARM: hisi: add support for Kunpeng50x SoC
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jan 28, 2021 at 06:05:31PM +0800, mingchuang.qiao@mediatek.com wrote:
-> From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
-> 
-> In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2 register is
-> configured in pci_configure_ltr(). If device and bridge both support LTR
-> mechanism, the "LTR Mechanism Enable" bit of device and bridge will be
-> enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as 1.
-> 
-> If PCIe link goes down when device resets, the "LTR Mechanism Enable" bit
-> of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16. However,
-> the pci_dev->ltr_path value of bridge is still 1.
-> 
-> For following conditions, check and re-configure "LTR Mechanism Enable" bit
-> of bridge to make "LTR Mechanism Enable" bit mtach ltr_path value.
->    -before configuring device's LTR for hot-remove/hot-add
->    -before restoring device's DEVCTL2 register when restore device state
-> 
-> Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+On Sat, Jan 16, 2021 at 4:32 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>
+> Enable support for the Hisilicon Kunpeng506 and Kunpeng509 SoC.
+>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
-> changes of v2
->  -modify patch description
->  -reconfigure bridge's LTR before restoring device DEVCTL2 register
-> ---
->  drivers/pci/pci.c   | 25 +++++++++++++++++++++++++
->  drivers/pci/probe.c | 19 ++++++++++++++++---
->  2 files changed, 41 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index b9fecc25d213..88b4eb70c252 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1437,6 +1437,24 @@ static int pci_save_pcie_state(struct pci_dev *dev)
->  	return 0;
->  }
->  
-> +static void pci_reconfigure_bridge_ltr(struct pci_dev *dev)
-> +{
-> +#ifdef CONFIG_PCIEASPM
-> +	struct pci_dev *bridge;
-> +	u32 ctl;
-> +
-> +	bridge = pci_upstream_bridge(dev);
-> +	if (bridge && bridge->ltr_path) {
-> +		pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
-> +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
-> +			pci_dbg(bridge, "re-enabling LTR\n");
-> +			pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
-> +						 PCI_EXP_DEVCTL2_LTR_EN);
-> +		}
-> +	}
-> +#endif
-> +}
-> +
->  static void pci_restore_pcie_state(struct pci_dev *dev)
->  {
->  	int i = 0;
-> @@ -1447,6 +1465,13 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
->  	if (!save_state)
->  		return;
->  
-> +	/*
-> +	 * Downstream ports reset the LTR enable bit when link goes down.
-> +	 * Check and re-configure the bit here before restoring device.
-> +	 * PCIe r5.0, sec 7.5.3.16.
-> +	 */
-> +	pci_reconfigure_bridge_ltr(dev);
-> +
->  	cap = (u16 *)&save_state->cap.data[0];
->  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
->  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 953f15abc850..4ad172517fd2 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2132,9 +2132,22 @@ static void pci_configure_ltr(struct pci_dev *dev)
->  	 * Complex and all intermediate Switches indicate support for LTR.
->  	 * PCIe r4.0, sec 6.18.
->  	 */
-> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
-> -	    ((bridge = pci_upstream_bridge(dev)) &&
-> -	      bridge->ltr_path)) {
-> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
-> +		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
-> +					 PCI_EXP_DEVCTL2_LTR_EN);
-> +		dev->ltr_path = 1;
-> +		return;
-> +	}
-> +
-> +	bridge = pci_upstream_bridge(dev);
-> +	if (bridge && bridge->ltr_path) {
-> +		pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
-> +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
-> +			pci_dbg(bridge, "re-enabling LTR\n");
-> +			pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
-> +						 PCI_EXP_DEVCTL2_LTR_EN);
-> +		}
-> +
+>  arch/arm/mach-hisi/Kconfig | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/arch/arm/mach-hisi/Kconfig b/arch/arm/mach-hisi/Kconfig
+> index 2e980f834a6aa1b..c724acc5c642b97 100644
+> --- a/arch/arm/mach-hisi/Kconfig
+> +++ b/arch/arm/mach-hisi/Kconfig
+> @@ -55,6 +55,14 @@ config ARCH_HIX5HD2
+>         help
+>           Support for Hisilicon HIX5HD2 SoC family
+>
+> +config ARCH_KUNPENG50X
+> +       bool "Hisilicon Kunpeng50x family"
+> +       depends on ARCH_MULTI_V7
+> +       select ARCH_FLATMEM_ENABLE
+> +       select ARCH_HAS_HOLES_MEMORYMODEL if SPARSEMEM
 
-Can't you use pci_reconfigure_bridge_ltr() here too?
+I think the two 'select' statements are both wrong, though for
+different reasons:
 
-Otherwise looks good.
+- ARCH_FLATMEM_ENABLE is already selected by ARCH_MULTIPLATFORM,
+  and is something that should not be platform specific
+
+- ARCH_HAS_HOLES_MEMORYMODEL was removed in v5.11,
+  and should also not be selected by a platform.
+
+Otherwise, this seems fine.
+
+         Arnd
