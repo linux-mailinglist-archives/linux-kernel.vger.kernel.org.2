@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B24B307498
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF93A30749F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 12:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhA1LT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 06:19:26 -0500
-Received: from relay2.uni-heidelberg.de ([129.206.119.212]:58996 "EHLO
-        relay2.uni-heidelberg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhA1LTY (ORCPT
+        id S231207AbhA1LV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 06:21:26 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12039 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhA1LVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:19:24 -0500
-X-IPAS-Result: =?us-ascii?q?A2D1AwCNnBJg/1BqzoFiHAEBAQEBAQcBARIBAQQEAQFAg?=
- =?us-ascii?q?U+DDGtlg3pGriMBAQEBAQEBAQEJLAECBAEBhEqBegIlOBMCAwEBAQMCAwEBA?=
- =?us-ascii?q?QEGAQEBAQEGBIZfhXQGI1YQJQImAgIUKDSGLbUTgTKJIoEtgQ4qixuCSYIbh?=
- =?us-ascii?q?GiEBVYwgkw0giwEgkeBDoEDgh2PKgkXpmGCBgeeXwINIpMdj2eRX4Vlnm6Bb?=
- =?us-ascii?q?YF6Mz6DOFAZDZxrQzA3AgYKAQEDCVkBAYh0gkYBAQ?=
-X-IronPort-Anti-Spam-Filtered: true
-Received: from lemon.iwr.uni-heidelberg.de ([129.206.106.80])
-  by relay2.uni-heidelberg.de with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Jan 2021 12:18:43 +0100
-Received: from hlauer by lemon.iwr.uni-heidelberg.de with local (Exim 4.92)
-        (envelope-from <hlauer@lemon.iwr.uni-heidelberg.de>)
-        id 1l55Jy-00037W-KT; Thu, 28 Jan 2021 12:18:42 +0100
-Date:   Thu, 28 Jan 2021 12:18:42 +0100
-From:   Hermann.Lauer@uni-heidelberg.de
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] ARM: dts: sun7i: a20: bananapro: Fix ethernet phy-mode
-Message-ID: <20210128111842.GA11919@lemon.iwr.uni-heidelberg.de>
-References: <20210121170836.GA4948@lemon.iwr.uni-heidelberg.de>
- <20210128094040.GD11559@lemon.iwr.uni-heidelberg.de>
+        Thu, 28 Jan 2021 06:21:24 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DRHzd472wzMQvV;
+        Thu, 28 Jan 2021 19:19:09 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
+ 19:20:36 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/hugetlb: Fix some comment typos
+Date:   Thu, 28 Jan 2021 06:20:28 -0500
+Message-ID: <20210128112028.64831-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210128094040.GD11559@lemon.iwr.uni-heidelberg.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPi Pro needs TX and RX delay for Gbit to work reliable and avoid high
-packet loss rates. The realtek phy driver overrides the settings of the
-pull ups for the delays, so fix this for BananaPro.
-    
-Fix the phy-mode description to correctly reflect this so that the
-implementation doesn't reconfigure the delays incorrectly. This
-happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-rx/tx delay config").
+Fix typos sasitfy to satisfy, reservtion to reservation, hugegpage to
+hugepage and uniprocesor to uniprocessor in comments.
 
-Fixes: 10662a33dcd9 ("ARM: dts: sun7i: Add dts file for Bananapro board")
-Signed-off-by: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- arch/arm/boot/dts/sun7i-a20-bananapro.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/hugetlb.h | 2 +-
+ mm/hugetlb.c            | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20-bananapro.dts b/arch/arm/boot/dts/sun7i-a20-bananapro.dts
---- a/arch/arm/boot/dts/sun7i-a20-bananapro.dts
-+++ b/arch/arm/boot/dts/sun7i-a20-bananapro.dts
-@@ -110,7 +110,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gmac_rgmii_pins>;
- 	phy-handle = <&phy1>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	phy-supply = <&reg_gmac_3v3>;
- 	status = "okay";
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index ef5b144b8aac..95a5a239c8f2 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -37,7 +37,7 @@ struct hugepage_subpool {
+ 	struct hstate *hstate;
+ 	long min_hpages;	/* Minimum huge pages or -1 if no minimum. */
+ 	long rsv_hpages;	/* Pages reserved against global pool to */
+-				/* sasitfy minimum size. */
++				/* satisfy minimum size. */
  };
+ 
+ struct resv_map {
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 53ea65d1c5ab..c42c61c2653e 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1444,7 +1444,7 @@ static void __free_huge_page(struct page *page)
+ 	 * reservation.  If the page was associated with a subpool, there
+ 	 * would have been a page reserved in the subpool before allocation
+ 	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
+-	 * reservtion, do not call hugepage_subpool_put_pages() as this will
++	 * reservation, do not call hugepage_subpool_put_pages() as this will
+ 	 * remove the reserved page from the subpool.
+ 	 */
+ 	if (!restore_reserve) {
+@@ -3715,7 +3715,7 @@ static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+ /*
+  * We cannot handle pagefaults against hugetlb pages at all.  They cause
+  * handle_mm_fault() to try to instantiate regular-sized pages in the
+- * hugegpage VMA.  do_page_fault() is supposed to trap this, so BUG is we get
++ * hugepage VMA.  do_page_fault() is supposed to trap this, so BUG is we get
+  * this far.
+  */
+ static vm_fault_t hugetlb_vm_op_fault(struct vm_fault *vmf)
+@@ -4513,7 +4513,7 @@ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx)
+ }
+ #else
+ /*
+- * For uniprocesor systems we always use a single mutex, so just
++ * For uniprocessor systems we always use a single mutex, so just
+  * return 0 and avoid the hashing overhead.
+  */
+ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx)
+-- 
+2.19.1
+
