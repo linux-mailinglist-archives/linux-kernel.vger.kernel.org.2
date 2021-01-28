@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4621E307270
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6CA307273
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbhA1JQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:16:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231975AbhA1JNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:13:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAB2D64DBD;
-        Thu, 28 Jan 2021 09:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611825185;
-        bh=nCoc08hyKcJ5vfOd6TzDee2uuvisAAk6p0qjWq14A2o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kzlWs2Dcyzckg43G6RflwpFzr0VJqgFzXsVPvlb8RNe76r9kWJudG65uiq+lraOdc
-         G9g2Z3woBHci3VOmC6wOEUfwNUzjYtKCkHkPmEOvZ8TvJYRzMtwTxCbW60JZEW7AEY
-         /fdFNCGGBdR75gw0Yj7UyPfah1Z2hQQ9wwCEDyQxujoesiGAZNVgpQ0HZfTD1M+EiI
-         zKJCg5FsSlODr9FwmmCZ1fsPQXPhxQVSgpZVGShuEhIsuommTcA/WJt6/JY5CvC9Vz
-         0yFhbAK8s+5psQXd1xSpgO4oxjffyvvPTENStWhlNtEGLMWWjz/d/cCmELYsMXLJqa
-         B4hTktMgNxSuw==
-Date:   Thu, 28 Jan 2021 10:13:02 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] dt-bindings: i2c: qcom,i2c-qup: Document noise
- rejection properties
-Message-ID: <20210128091302.GG963@ninjato>
-References: <20210114180415.404418-1-angelogioacchino.delregno@somainline.org>
- <20210114180415.404418-4-angelogioacchino.delregno@somainline.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gm5TwAJMO0F2iVRz"
-Content-Disposition: inline
-In-Reply-To: <20210114180415.404418-4-angelogioacchino.delregno@somainline.org>
+        id S232461AbhA1JRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:17:05 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:56188 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232416AbhA1JOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:14:32 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L01gBJg0l0OAA--.21898S2;
+        Thu, 28 Jan 2021 17:13:25 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next] MAINTAINERS: BPF: Update web-page bpf.io to ebpf.io to avoid redirects
+Date:   Thu, 28 Jan 2021 17:13:24 +0800
+Message-Id: <1611825204-14887-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx6L01gBJg0l0OAA--.21898S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4rZry7WFWDWFWDJry5Arb_yoWDAFX_Cr
+        4fCrWxX395GF1rua1kGrnayr1rK3yUAFnay3W2gr43Aa4jyr98JrWfK3sayay5Xr1kGrZI
+        qa43Grn8Zr43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JU4BT5UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When I open https://bpf.io/, it seems too slow.
 
---gm5TwAJMO0F2iVRz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{time_redirect}\n'
+2.373
 
+$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{url_effective}\n'
+https://ebpf.io/
 
-> +  qcom,noise-reject-sda:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Noise rejection level for the SDA line.
-> +    minimum: 0
-> +    maximum: 3
-> +    default: 0
+$ curl -s -S -L https://ebpf.io/ -o /dev/null -w '%{time_redirect}\n'
+0.000
 
-What does this u32 describe? I wonder if we can introduce a generic
-property instead of a vendor-specific one.
+So update https://bpf.io/ to https://ebpf.io/ to avoid redirects.
 
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---gm5TwAJMO0F2iVRz
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1df56a3..09314ce 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3260,7 +3260,7 @@ R:	KP Singh <kpsingh@kernel.org>
+ L:	netdev@vger.kernel.org
+ L:	bpf@vger.kernel.org
+ S:	Supported
+-W:	https://bpf.io/
++W:	https://ebpf.io/
+ Q:	https://patchwork.kernel.org/project/netdevbpf/list/?delegate=121173
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+-- 
+2.1.0
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASgB4ACgkQFA3kzBSg
-Kbav/BAAoZZxCeFm2JgyZX5Iyv10zaVI7zevlrKrhcHrYWLaAQux2y2c+b4UCz7r
-nR2SLFgjRWELz2oomSb25ckMaNtBohgQurjk+lisKJoaar41C9mkFxFiQpWuFm8r
-QnTuwScs1CXAxK2zETbZNRrkoHtC4zSeVM9ut6q0hMl2Apfz8NDIZnySrz13AAjC
-UDGlZi3aqaa0iypPeRiuqABOlJ+0IGz72ZzlicH3RDazX4u6s51paxM59XessQQ5
-QnBMWpcO8H1aeLGhFsuJtk8LH8wx7PP5jxl1dq8h4JpGRX84ge1itFytwBBfiBHl
-q14hxVGg1bmCyTjJfnhWOANxi/wSdfYhnR/IVILAqJtjhxVeZp3Ry+QjqQpZBzHb
-uTwUF+mz6MtK3a0bsl57d7z76519Lk4Pdh0PyXUm2s8IAjpjSmMiYUZP/GkSNf2a
-7CZ0VjcqYA8RXs4nszb35HEY9hRCR3of11ZDDWtDCfm9VQonIYt1xTqG9mi+cTAy
-AylaZ+4rsKCLbp52Ik38uFGwwsdLw68TkLI5Teq5gXnQJZSpQz6Otdrdaxb6/K0f
-GZEQxOfFzoAiL08ejQ0vYub4vloDorZFVRLRCoYyDPtClIBcxkj6eNHR7KXqR26v
-Ij/6kxBNFSu6cZxtfwjXHa5NF6J+Sv8dvJ1C19sN6xrt76HnWjM=
-=dkAk
------END PGP SIGNATURE-----
-
---gm5TwAJMO0F2iVRz--
