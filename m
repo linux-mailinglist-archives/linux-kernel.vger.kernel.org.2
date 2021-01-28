@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEEB307E76
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFD8307E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhA1StM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:49:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232222AbhA1SqO (ORCPT
+        id S232392AbhA1Sqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:46:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhA1Sm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:46:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611859486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=5vne8wHUq5hbUZWHYRODtXy1278qohKUG5a1mgyB57Q=;
-        b=ZWmIqxDjepU7gb0ORP9yTfFgbHbHtIVpIhYF46Oh5Rrc508NDIcQSvmgqWHG8gD7q3oUVd
-        OV5YVqUVpLvis5XZDPmBYV0fWSjkbTTZXoIGBk1iXP0fHKHkzdiAbeSTBFf8Wlzlab6RTw
-        9c5fflh3HzNrkg7Lj7W4OQr5Wj+c5xg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-3mUEV99JOU2B8Sm7kA9n-Q-1; Thu, 28 Jan 2021 13:44:45 -0500
-X-MC-Unique: 3mUEV99JOU2B8Sm7kA9n-Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E61FF1005504;
-        Thu, 28 Jan 2021 18:44:42 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A3D076064B;
-        Thu, 28 Jan 2021 18:44:42 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id EB8394178902; Thu, 28 Jan 2021 15:44:20 -0300 (-03)
-Message-ID: <20210128184346.813609683@fuller.cnet>
-User-Agent: quilt/0.66
-Date:   Thu, 28 Jan 2021 15:40:51 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 3/3] nohz: tick_nohz_kick_task: only IPI if remote task is running
-References: <20210128184048.287626221@fuller.cnet>
+        Thu, 28 Jan 2021 13:42:26 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACABC061573;
+        Thu, 28 Jan 2021 10:41:45 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id s24so5680735wmj.0;
+        Thu, 28 Jan 2021 10:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=IeQk9Bm5UHRTKeS6UO8qKp6fU92/FzG/Ja1mgTxLr/g=;
+        b=f9PSDkn4r+FpnxeZSoYeL4NHDYtFAcyjzFI4e6WZRjwQA0/x3w4kgwhT9PRw8W5tS6
+         UE5NMWgtmD7/3JSKGA9MU4SNSGCM43aaiP3CWfBBwMV2cM2TzBN6T1ow65ztCkLe2Oeg
+         Om1qmk1CofznNOVmyCW+ClT+dZNdib2REsCbwilcLlnPpCkA+t6TFLJV77u2gLRmPkrJ
+         6q60mTQZUBglktPVOc+141lSbBdoFtICTYcEXiRUbSXh4C+7v2hNtLHqcABay93IuBgx
+         WKbWBfvgVzxmg+kB+gomc89UfpZ54YK2TWT69xRtrNtJOxj2ZQOWPLTfsDRWxE8UDzb9
+         buNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=IeQk9Bm5UHRTKeS6UO8qKp6fU92/FzG/Ja1mgTxLr/g=;
+        b=Xlh6bj+8tev6oHnK9tudA87jsvbrXYmnVqMG+pV+qNfsY2/MykXzde3wVd0BBYySNL
+         /s53vOxVlgXNfqG54YwLTCnMHFU7s4X/g9o87IIrX1qxhMKIPj0WN66NZa8/W5xV2din
+         xS5wmzznut4KavoAJ4s0agGS1s1YJY/bGc30/cJ9NNEGsMBdcXCi2xi5ZheiSdnNrOP3
+         3GtvKg8owe9HpGApXa1NcotMpelSkYp0ef5gXQ07Eem5VhikoM7TbGbIu+/uqPtyXskZ
+         IvOnYoBtbyFtKFIqqGaDo4mrihvhDewv2rniOqu5KN6Thlt+WnrtZEe9krAoxCAQBMJg
+         SzXw==
+X-Gm-Message-State: AOAM531rTBe6DPvE6cgmLtLsJVDLG3vAeeBFIz2Hrdw35Cy1wsRtw/sh
+        zZssak1FBR0SJnfWCKvYQNQ=
+X-Google-Smtp-Source: ABdhPJwKEqtsLdnSZd5ExGb+mla7qwP7gvmwItzDK60Op/TOUH2pp2IrYI+NjBWkxsFspxe42N4vEw==
+X-Received: by 2002:a7b:cd0f:: with SMTP id f15mr593147wmj.20.1611859304521;
+        Thu, 28 Jan 2021 10:41:44 -0800 (PST)
+Received: from [192.168.1.21] ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id 36sm8217645wrj.97.2021.01.28.10.41.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 10:41:43 -0800 (PST)
+Message-ID: <9f9fa52ea829c0d09d186c45f93aa165ecc18a12.camel@gmail.com>
+Subject: Re: [PATCH v3 4/7] gpio: ep93xx: drop to_irq binding
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 28 Jan 2021 19:41:43 +0100
+In-Reply-To: <20210128122123.25341-5-nikita.shubin@maquefel.me>
+References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
+         <20210128122123.25341-5-nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the task is not running, run_posix_cpu_timers has nothing
-to elapsed, so spare IPI in that case.
+Hi!
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+On Thu, 2021-01-28 at 15:21 +0300, Nikita Shubin wrote:
+> As ->to_irq is redefined in gpiochip_add_irqchip, having it defined
+> in
+> driver is useless, so let's drop it.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Index: linux-2.6/kernel/sched/core.c
-===================================================================
---- linux-2.6.orig/kernel/sched/core.c
-+++ linux-2.6/kernel/sched/core.c
-@@ -9182,3 +9182,9 @@ void call_trace_sched_update_nr_running(
- {
-         trace_sched_update_nr_running_tp(rq, count);
- }
-+
-+bool task_on_rq(struct task_struct *p)
-+{
-+	return p->on_rq == TASK_ON_RQ_QUEUED;
-+}
-+
-Index: linux-2.6/include/linux/sched.h
-===================================================================
---- linux-2.6.orig/include/linux/sched.h
-+++ linux-2.6/include/linux/sched.h
-@@ -232,6 +232,8 @@ extern void io_schedule_finish(int token
- extern long io_schedule_timeout(long timeout);
- extern void io_schedule(void);
- 
-+extern bool task_on_rq(struct task_struct *p);
-+
- /**
-  * struct prev_cputime - snapshot of system and user cputime
-  * @utime: time spent in user mode
-Index: linux-2.6/kernel/time/tick-sched.c
-===================================================================
---- linux-2.6.orig/kernel/time/tick-sched.c
-+++ linux-2.6/kernel/time/tick-sched.c
-@@ -324,8 +324,6 @@ void tick_nohz_full_kick_cpu(int cpu)
- 
- static void tick_nohz_kick_task(struct task_struct *tsk)
- {
--	int cpu = task_cpu(tsk);
--
- 	/*
- 	 * If the task concurrently migrates to another cpu,
- 	 * we guarantee it sees the new tick dependency upon
-@@ -340,6 +338,23 @@ static void tick_nohz_kick_task(struct t
- 	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
- 	 *      LOAD p->tick_dep_mask           LOAD p->cpu
- 	 */
-+	int cpu = task_cpu(tsk);
-+
-+	/*
-+	 * If the task is not running, run_posix_cpu_timers
-+	 * has nothing to elapsed, can spare IPI in that
-+	 * case.
-+	 *
-+	 * activate_task()                      STORE p->tick_dep_mask
-+	 * STORE p->task_on_rq
-+	 * __schedule() (switch to task 'p')    smp_mb() (atomic_fetch_or())
-+	 * LOCK rq->lock                        LOAD p->task_on_rq
-+	 * smp_mb__after_spin_lock()
-+	 * tick_nohz_task_switch()
-+	 *	LOAD p->tick_dep_mask
-+	 */
-+	if (!task_on_rq(tsk))
-+		return;
- 
- 	preempt_disable();
- 	if (cpu_online(cpu))
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
+> ---
+>  drivers/gpio/gpio-ep93xx.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+> index dc88115e34da..ee1cb3b894db 100644
+> --- a/drivers/gpio/gpio-ep93xx.c
+> +++ b/drivers/gpio/gpio-ep93xx.c
+> @@ -337,11 +337,6 @@ static int ep93xx_gpio_set_config(struct
+> gpio_chip *gc, unsigned offset,
+>         return 0;
+>  }
+>  
+> -static int ep93xx_gpio_f_to_irq(struct gpio_chip *gc, unsigned
+> offset)
+> -{
+> -       return EP93XX_GPIO_F_IRQ_BASE + offset;
+> -}
+> -
+>  static void ep93xx_init_irq_chips(struct ep93xx_gpio *epg)
+>  {
+>         int i;
+> @@ -429,7 +424,6 @@ static int ep93xx_gpio_add_bank(struct gpio_chip
+> *gc,
+>                 }
+>                 girq->default_type = IRQ_TYPE_NONE;
+>                 girq->handler = handle_level_irq;
+> -               gc->to_irq = ep93xx_gpio_f_to_irq;
+>                 girq->first = EP93XX_GPIO_F_IRQ_BASE;
+>         }
+>  
+
+-- 
+Alexander Sverdlin.
 
 
