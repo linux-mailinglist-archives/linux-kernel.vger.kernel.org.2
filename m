@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD062306FF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239B7306FE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 08:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhA1HoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 02:44:05 -0500
-Received: from mga12.intel.com ([192.55.52.136]:7515 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232155AbhA1Hmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:42:35 -0500
-IronPort-SDR: lN+enLqQGaB3i+P6jDN8tOEPh8TRgsCXJtw2NZsfJCObFAeDYTqOv+UveUl4goHVDMyXYiMWWn
- XoKlxxPZQ3NA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159365697"
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="159365697"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 23:41:52 -0800
-IronPort-SDR: il97ZBtLZZ16htD7yIEr/euNmrdjpq+PF6kjIc7GM3AwgtmwrGa81BegQxuBNAf76I9juvwfP3
- /SDgzjOg+YFQ==
-X-IronPort-AV: E=Sophos;i="5.79,381,1602572400"; 
-   d="scan'208";a="388649122"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.104]) ([10.239.13.104])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 23:41:48 -0800
-Subject: Re: [RESEND PATCH 1/2] KVM: X86: Add support for the emulation of
- DR6_BUS_LOCK bit
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210108064924.1677-1-chenyi.qiang@intel.com>
- <20210108064924.1677-2-chenyi.qiang@intel.com>
- <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
- <5f3089a2-5a5c-a839-9ed9-471c404738a3@intel.com>
- <6bf8fc0d-ad7d-0282-9dcc-695f16af0715@redhat.com>
- <ec623f67-d7b7-2d9a-1610-4da7702288b1@intel.com>
- <b4d66085-3cf9-afaf-97d0-3df2b5eb4a3c@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <0de5aad4-231b-e55b-2f2d-e121954742f9@intel.com>
-Date:   Thu, 28 Jan 2021 15:41:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232144AbhA1HmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 02:42:15 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11904 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231158AbhA1HlQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:41:16 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DRC5y5JP5z7cFJ;
+        Thu, 28 Jan 2021 15:39:18 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 28 Jan 2021
+ 15:40:21 +0800
+From:   Sun Ke <sunke32@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <sunke32@huawei.com>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] nbd: Fix NULL pointer in flush_workqueue
+Date:   Thu, 28 Jan 2021 02:41:53 -0500
+Message-ID: <20210128074153.1633374-1-sunke32@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <b4d66085-3cf9-afaf-97d0-3df2b5eb4a3c@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/2021 3:25 PM, Paolo Bonzini wrote:
-> On 28/01/21 08:17, Xiaoyao Li wrote:
->>>
->>> "Active low" means that the bit is usually 1 and goes to 0 when the 
->>> condition (such as RTM or bus lock) happens.  For almost all those 
->>> DR6 bits the value is in fact always 1, but if they are defined in 
->>> the future it will require no code change.
->>
->> Why not keep use DR6_INIT, or DR6_RESET_VALUE? or any other better name.
->>
->> It's just the default clear value of DR6 that no debug condition is hit.
-> 
-> I preferred "DR6_ACTIVE_LOW" because the value is used only once or 
-> twice to initialize dr6, and many times to invert those bits.  For example:
-> 
-> vcpu->arch.dr6 &= ~DR_TRAP_BITS;
-> vcpu->arch.dr6 |= DR6_ACTIVE_LOW;
-> vcpu->arch.dr6 |= payload;
-> vcpu->arch.dr6 ^= payload & DR6_ACTIVE_LOW;
-> 
-> payload = vcpu->arch.dr6;
-> payload &= ~DR6_BT;
-> payload ^= DR6_ACTIVE_LOW;
-> 
-> The name conveys that it's not just the initialization value; it's also 
-> the XOR mask between the #DB exit qualification (which we also use as 
-> the "payload") and DR6.
+Open /dev/nbdX first, the config_refs will be 1 and
+the pointers in nbd_device are still null. Disconnect
+/dev/nbdX, then reference a null recv_workq. The
+protection by config_refs in nbd_genl_disconnect is useless.
 
-Fair enough.
+[  656.366194] BUG: kernel NULL pointer dereference, address: 0000000000000020
+[  656.368943] #PF: supervisor write access in kernel mode
+[  656.369844] #PF: error_code(0x0002) - not-present page
+[  656.370717] PGD 10cc87067 P4D 10cc87067 PUD 1074b4067 PMD 0
+[  656.371693] Oops: 0002 [#1] SMP
+[  656.372242] CPU: 5 PID: 7977 Comm: nbd-client Not tainted 5.11.0-rc5-00040-g76c057c84d28 #1
+[  656.373661] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+[  656.375904] RIP: 0010:mutex_lock+0x29/0x60
+[  656.376627] Code: 00 0f 1f 44 00 00 55 48 89 fd 48 83 05 6f d7 fe 08 01 e8 7a c3 ff ff 48 83 05 6a d7 fe 08 01 31 c0 65 48 8b 14 25 00 6d 01 00 <f0> 48 0f b1 55 d
+[  656.378934] RSP: 0018:ffffc900005eb9b0 EFLAGS: 00010246
+[  656.379350] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[  656.379915] RDX: ffff888104cf2600 RSI: ffffffffaae8f452 RDI: 0000000000000020
+[  656.380473] RBP: 0000000000000020 R08: 0000000000000000 R09: ffff88813bd6b318
+[  656.381039] R10: 00000000000000c7 R11: fefefefefefefeff R12: ffff888102710b40
+[  656.381599] R13: ffffc900005eb9e0 R14: ffffffffb2930680 R15: ffff88810770ef00
+[  656.382166] FS:  00007fdf117ebb40(0000) GS:ffff88813bd40000(0000) knlGS:0000000000000000
+[  656.382806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  656.383261] CR2: 0000000000000020 CR3: 0000000100c84000 CR4: 00000000000006e0
+[  656.383819] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  656.384370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  656.384927] Call Trace:
+[  656.385111]  flush_workqueue+0x92/0x6c0
+[  656.385395]  nbd_disconnect_and_put+0x81/0xd0
+[  656.385716]  nbd_genl_disconnect+0x125/0x2a0
+[  656.386034]  genl_family_rcv_msg_doit.isra.0+0x102/0x1b0
+[  656.386422]  genl_rcv_msg+0xfc/0x2b0
+[  656.386685]  ? nbd_ioctl+0x490/0x490
+[  656.386954]  ? genl_family_rcv_msg_doit.isra.0+0x1b0/0x1b0
+[  656.387354]  netlink_rcv_skb+0x62/0x180
+[  656.387638]  genl_rcv+0x34/0x60
+[  656.387874]  netlink_unicast+0x26d/0x590
+[  656.388162]  netlink_sendmsg+0x398/0x6c0
+[  656.388451]  ? netlink_rcv_skb+0x180/0x180
+[  656.388750]  ____sys_sendmsg+0x1da/0x320
+[  656.389038]  ? ____sys_recvmsg+0x130/0x220
+[  656.389334]  ___sys_sendmsg+0x8e/0xf0
+[  656.389605]  ? ___sys_recvmsg+0xa2/0xf0
+[  656.389889]  ? handle_mm_fault+0x1671/0x21d0
+[  656.390201]  __sys_sendmsg+0x6d/0xe0
+[  656.390464]  __x64_sys_sendmsg+0x23/0x30
+[  656.390751]  do_syscall_64+0x45/0x70
+[  656.391017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+To fix it, just add a check for a non null task_recv in
+nbd_genl_disconnect.
+
+Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
+Signed-off-by: Sun Ke <sunke32@huawei.com>
+---
+ drivers/block/nbd.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 6727358e147d..4f7885966d32 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -2011,12 +2011,20 @@ static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
+ 		       index);
+ 		return -EINVAL;
+ 	}
++	mutex_lock(&nbd->config_lock);
+ 	if (!refcount_inc_not_zero(&nbd->refs)) {
+ 		mutex_unlock(&nbd_index_mutex);
++		mutex_unlock(&nbd->config_lock);
+ 		printk(KERN_ERR "nbd: device at index %d is going down\n",
+ 		       index);
+ 		return -EINVAL;
+ 	}
++	if (!nbd->recv_workq) {
++		mutex_unlock(&nbd->config_lock);
++		mutex_unlock(&nbd_index_mutex);
++		return -EINVAL;
++	}
++	mutex_unlock(&nbd->config_lock);
+ 	mutex_unlock(&nbd_index_mutex);
+ 	if (!refcount_inc_not_zero(&nbd->config_refs)) {
+ 		nbd_put(nbd);
+-- 
+2.25.4
 
