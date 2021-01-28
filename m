@@ -2,201 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3061B30806C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DED2308071
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhA1VWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:22:22 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:17066 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231429AbhA1VVz (ORCPT
+        id S231501AbhA1VXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:23:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhA1VXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:21:55 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10SLFHuH005474;
-        Thu, 28 Jan 2021 13:21:02 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=CdMacxditgD6YwVTPpBxnkNWyowFxcQx+XVxJPDijyg=;
- b=GmrktdYFbJwAJST8IqAWFVw6XDYrlB/pQrXaPG8NCkCVdp+lQV7WlsH2i4N/xRWK6etj
- GrQ0JH6ir7TgaaWH7PCWor1mZ+vmFlcXASypNGX8oXeDAvvswT2WKAVjRLyH2LaEpkqi
- 24ndYILFaWIhXTamYr2ucYDEo1d2M4TVha4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36b82t96hv-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 28 Jan 2021 13:21:02 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 28 Jan 2021 13:21:01 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g5Ro5hyZSr/D8fyWugIxpGhc3bFfL8y+ISBUo1j5XAGSyQ2G0vNszn9fMfoj1/Ry3elc5V7udScyEPJT42aQk/mCBhEMSnD2ih52HpAPoqpeXj1cRvm9Jc1DEY0WXM/8rJWxTdQ/MmqlYrblJT2j9ro3mfECJ3ZZ6vIqxnSuaiSO7GwAwo3QT3vm/oTHXMhoXbp2CZyWgftBmCk/8TESC9BusqniV6XdxkGZOxWOVcM6j1TfpilWWdkE4dObVufqkpbGmfkD/4Wx78+i265IXnndaUg8buma4XkJc/ByC26KyHMxJKH3xLd7nW7r8TVAhPDl8i+txYCLbbWM5O43Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CdMacxditgD6YwVTPpBxnkNWyowFxcQx+XVxJPDijyg=;
- b=l/u2/tS2EBv700IZyNW46Y2JBvg3nHH339+U2GAHhZi1NEqlHwa6DSgX95qrrWQujcVeUxtz+DVMW66jKeoxCPflfAIC8CKVkOJYloxCPmIGuYnvVvFheoLXaKq4iiI8Sht1Y1am1xA1wpNTBjqNJyD85NVcaWK8E41aPKLgbkMNYGZ6wEmh4gbaANEXR69swmrYGYC0YchKfq20I+KK7INuLrLfVKe/Bl7AJWsjWxzBrbXll5tOkTXJOXlS9M6RJV4TxkHmkQ3zxqB20x/oph4QiDHulAfIfd3UP7WzhdRxAYE0oo3MtCCHE2h4voM7UCyKblvAvzuMq8PI3GAUXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CdMacxditgD6YwVTPpBxnkNWyowFxcQx+XVxJPDijyg=;
- b=OkrW7sv0kM7zS1BBsUuobSBri3i/Oh2hjairQcB6LyAwgbI/XMyH36XaoCuACOuTzFBCHvFyIgAfz8WlK995KQQ1nQQywTrCkDgUtPTfcR2rWGF7YrHlbe2wXb6TwHNatLKB0VjurAFfL87joy6cBcXzU1KVzvq/i0fsLJNHjsA=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2126.namprd15.prod.outlook.com (2603:10b6:805:5::14)
- by SN6PR1501MB2031.namprd15.prod.outlook.com (2603:10b6:805:8::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 28 Jan
- 2021 21:20:57 +0000
-Received: from SN6PR1501MB2126.namprd15.prod.outlook.com
- ([fe80::e814:36cb:5723:8bf8]) by SN6PR1501MB2126.namprd15.prod.outlook.com
- ([fe80::e814:36cb:5723:8bf8%4]) with mapi id 15.20.3805.017; Thu, 28 Jan 2021
- 21:20:57 +0000
-Date:   Thu, 28 Jan 2021 13:20:48 -0800
-From:   Saravanan D <saravanand@fb.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-CC:     <x86@kernel.org>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <corbet@lwn.net>, <willy@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
-        <songliubraving@fb.com>
-Subject: Re: [PATCH V5] x86/mm: Tracking linear mapping split events
-Message-ID: <20210128212048.oopcyfdf4j2lc663@devvm1945.atn0.facebook.com>
-References: <20210128045153.GW308988@casper.infradead.org>
- <20210128104934.2916679-1-saravanand@fb.com>
- <3aec2d10-f4c3-d07a-356f-6f1001679181@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3aec2d10-f4c3-d07a-356f-6f1001679181@intel.com>
-X-Originating-IP: [2620:10d:c090:400::5:7429]
-X-ClientProxiedBy: CO2PR04CA0081.namprd04.prod.outlook.com
- (2603:10b6:102:1::49) To SN6PR1501MB2126.namprd15.prod.outlook.com
- (2603:10b6:805:5::14)
+        Thu, 28 Jan 2021 16:23:17 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28831C061573;
+        Thu, 28 Jan 2021 13:22:37 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id g1so8299013edu.4;
+        Thu, 28 Jan 2021 13:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iky+DugOhX1hDNU3AWl/82OLUGd7e4uUQOiW57Oek80=;
+        b=USzLlpmi1mBOqEu9XY81zRzzf+qzbqJv194UHN5m5M+QpQ0uKDo+sBGdT0gQy8jNMK
+         o5vc0IP99E2JOhGR/e8aBVRdzRET0CJa3NQIZok5SKcuNYvr/kLx1FYUpMbeg6yDBcsy
+         8XC6N3guc2KshmE+DF/+3hfJJiEEULacyTThIoOb7FN1IdoSOGmo4CiN3SUkPyyYGFb2
+         z4J5ZSG+5kra4ru8YMsy9SKz+2IML0VPlOhMFdNI0PgJndwmxFVqX+UMu7b+lXNy7+Px
+         dh0Ujyy65MmDvQrtN4rHwAYIIGz3vHAn6uJEJuhCFLi7Czc3nv3D2NCszIewnk1vxBHJ
+         y/6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iky+DugOhX1hDNU3AWl/82OLUGd7e4uUQOiW57Oek80=;
+        b=XRKxhTWieu0gspZFMq0NiKneqj0tUpoMAV9THr9fNjeJ0Y5u4ehQJU3gJVzCu+mAmj
+         FxBSflY4PDxzdv5TcZiU57BFvYP2LILudjwQUp2Fhwxlzl+r0C2/CMB8nvMF8+ITmYvt
+         3BDJdGerEpVDMhaEPzvACMqlCiuXSCDOSp2uO0abQGrrFQfSre/VJfpZn2UcE1xc+FtJ
+         tcVwi++ygvcKZ4yET3UxRHDNwQZEwoMCifwiwx0/XPMpOIMi+HyFaGBYT62n6Sna1PgP
+         cFVPWdWH9Rbq0Y3AMSJyLsuys90uFyEMuFnmE7xv0luAbuDXxbBfjGunnxF0u3Xqq9SV
+         LK+Q==
+X-Gm-Message-State: AOAM531il807MsZp3VsJnx8U9AYHoRAsnUGeRQGsHPbTNcHo66rfDpTi
+        w3YcStDPmJ37qo92F04Atq+Id5bWOq2RaiwYKUA=
+X-Google-Smtp-Source: ABdhPJwbu0bZDCE0LMnecgpA/vbNy1VOG2Gthhi97YaSV3LvX82i39z8aXTCyggUdueGOuBBwISGHCnSt9U8RpOtrVY=
+X-Received: by 2002:a05:6402:312e:: with SMTP id dd14mr1801362edb.366.1611868955853;
+ Thu, 28 Jan 2021 13:22:35 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from devvm1945.atn0.facebook.com (2620:10d:c090:400::5:7429) by CO2PR04CA0081.namprd04.prod.outlook.com (2603:10b6:102:1::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 21:20:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 78eeafc7-f9d0-4159-7f69-08d8c3d29a48
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2031:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB2031B8A3AFB838D4B29A3FA1A2BA9@SN6PR1501MB2031.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dWfusrQtflQRYEGjEcjz29OlRDRGrMhINYLt5ORaGTMxjPK9xdVSw0Bqp/hVrub/5HjFHgkmu9hR8HJ+8rHZxuN83FkC0ogNT3NqYBpMs7FEnp+fi08jKVArOryojC0HXasLUV6xJfhi6turT2KyQ6ufL5dkKH7qU9JthkpCGvtEZ5itUjs81AQwSU2uR8PIpM/P6cHZidUpYyrlWeXvztIPIw4XFSVhZschO/0uq/Mhbr4cnEXqqTLMyyNggy6vNzEtqlHq8i/ziLbAqZqYxbP3WNMxzLjgORQW4eUzkQktQ5yDFUoc25MVDBVt5SRuXEKFvCvFSTZjyafQHipzYIvTNuHAxoEMj33D8UtZkCjLIpCRHHYlNQciGVhmdZLLxqo4nbUUQ0eiFhvG+6rZ5NgxBP3IxX8Hfegp5vxEJ5LEh3nyfAas9q4vHK3LnU3s09/YtaYhGTUiAv3TLUu8SC5TpyJ0QoeXgx7RUlBRK74FucmxdauOC0IUcHu6joiRxIPa72Nzz/VrEeBbpufBHA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2126.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(366004)(39860400002)(396003)(55016002)(7416002)(8936002)(6916009)(5660300002)(4326008)(83380400001)(86362001)(1076003)(6666004)(6506007)(16526019)(8676002)(2906002)(66946007)(66476007)(9686003)(316002)(66556008)(478600001)(7696005)(52116002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?8Tz/3P8VyTNjdoKGSCGPLOndrk1BGJxcLy/5iqA+HyI7H9CUbKHoTzWx4Llm?=
- =?us-ascii?Q?n4oWc/QqBmFzUU71VDi5/QCtvPmRjtq6Jq4rsGOlBxvt51kLFo+Ot1mVYM8l?=
- =?us-ascii?Q?t7L0fHcbM98G4uNFHZdJzaCfJChBPe1AK1AvIqSXqxei9dt0MT8IXNSCDY4v?=
- =?us-ascii?Q?G1mMkKy1qSEIOKsN7u81qMApj9crhBWATbN95uRDVQSJkuLUSKMO22jzfngg?=
- =?us-ascii?Q?pQStlPcjmRANDwQUwAKoFaEc6cGj2oVWjXNYQSTe66Jzgz86Y6YqlpdsWYk2?=
- =?us-ascii?Q?GEpNy3Y7KUrp6wjcRVhHKG9XP5DFJbh5rfegCjWj8Lng6VfspX5fYeybweQl?=
- =?us-ascii?Q?0I7Qdut4ozeqcdQlmJSAitp98ybve87YvY9xlEUojlwWzVW206bcrcH6PmXw?=
- =?us-ascii?Q?9KNJXPt3UduKS4gbHViqVxJcCdW2MbbKIqrhzYmr4nzZzjbc8stLGdmSm5zx?=
- =?us-ascii?Q?Gp3hUHvg4vGfxQ2B4eaxOy/Zb7Nxz5cYW6eLYwRkCLhrN4523kV/NJa6xgH0?=
- =?us-ascii?Q?1RTi/Up5PBwGiYcxuj3iKCNKUavgu3WXoBd6HpMTYHO+fhsc94C5wkoOIyc/?=
- =?us-ascii?Q?pj36NOA+DfC5D0K7T81KQZjT2kjPspOS3J+VQMtb6dCgCyj5llC5xztK4C35?=
- =?us-ascii?Q?mfIWEFU3pIvPtB+zgBmJXRrDOEZNejy4A5GUTsKyA9MaDPGctPII1qaaf3dk?=
- =?us-ascii?Q?3MSIPRg781L03LwPNw+sqVnF6gjMvfjO95EVmbPsO1Rz2ybTMNpizyJK6S/M?=
- =?us-ascii?Q?G2VKam9m3W6VrE7j4WGC9anB+WxthoXiQGGzn5FiPdpFpfEtWe7X3Ocp6Wdk?=
- =?us-ascii?Q?r13Qo9sLNAnt6leOFHfCrhWljZ4duyONbX1IXAJ0+TjY1iAs5WZ2F6MD0gQh?=
- =?us-ascii?Q?tCz9is/85rJEKOSEVTIKKVtuLjlRyCRpfIN8yYVBaLjNLHNrvAUlp1/vIRQx?=
- =?us-ascii?Q?OpmUpMXmE2w4pszlGnl6B5cRgDe2SSbIXdSe3qNTmAx5FLB9LKDTOXCspoNH?=
- =?us-ascii?Q?IEb0R6foPkfsNCEOqnJnHptdhFhaT5nhHPoVzu/7XnPun8w1oIojN13sPvcw?=
- =?us-ascii?Q?frLs5uztoszG5UrIcL796L1NhNaxYEa1TBsF7OcLa3mrubOPquY=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78eeafc7-f9d0-4159-7f69-08d8c3d29a48
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2126.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 21:20:57.4734
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e28s1yYgHKvflHiTvarwp2SpmKAG8xewb8GGEDyeM5zWCwVHrG28vO6p6A93e7GYKTRtD1vbIf99xanuifK2EA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2031
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280104
-X-FB-Internal: deliver
+References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-5-shy828301@gmail.com>
+ <255b9236-3e0b-f6f6-4a72-5e69351a979a@suse.cz>
+In-Reply-To: <255b9236-3e0b-f6f6-4a72-5e69351a979a@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 28 Jan 2021 13:22:23 -0800
+Message-ID: <CAHbLzkrN2aW03TUrC3sOANS7YV6+KMisDtsXDH2W42-1tOJziw@mail.gmail.com>
+Subject: Re: [v5 PATCH 04/11] mm: vmscan: remove memcg_shrinker_map_size
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
-> 
-> Eek.  There really doesn't appear to be a place in Documentation/ that
-> we've documented vmstat entries.
-> 
-> Maybe you can start:
-> 
-> 	Documentation/admin-guide/mm/vmstat.rst
-> 
-I was also very surprised that there does not exist documentation for
-vmstat, that lead me to add a page in admin-guide which now requires lot
-of caveats.
+On Thu, Jan 28, 2021 at 8:53 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/28/21 12:33 AM, Yang Shi wrote:
+> > Both memcg_shrinker_map_size and shrinker_nr_max is maintained, but actually the
+> > map size can be calculated via shrinker_nr_max, so it seems unnecessary to keep both.
+> > Remove memcg_shrinker_map_size since shrinker_nr_max is also used by iterating the
+> > bit map.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/vmscan.c | 18 ++++++++----------
+> >  1 file changed, 8 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index d3f3701dfcd2..847369c19775 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -185,8 +185,7 @@ static LIST_HEAD(shrinker_list);
+> >  static DECLARE_RWSEM(shrinker_rwsem);
+> >
+> >  #ifdef CONFIG_MEMCG
+> > -
+> > -static int memcg_shrinker_map_size;
+> > +static int shrinker_nr_max;
+> >
+> >  static void free_shrinker_map_rcu(struct rcu_head *head)
+> >  {
+> > @@ -248,7 +247,7 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
+> >               return 0;
+> >
+> >       down_write(&shrinker_rwsem);
+> > -     size = memcg_shrinker_map_size;
+> > +     size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> >       for_each_node(nid) {
+> >               map = kvzalloc_node(sizeof(*map) + size, GFP_KERNEL, nid);
+> >               if (!map) {
+> > @@ -266,12 +265,13 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
+> >  static int expand_shrinker_maps(int new_id)
+> >  {
+> >       int size, old_size, ret = 0;
+> > +     int new_nr_max = new_id + 1;
+> >       struct mem_cgroup *memcg;
+> >
+> > -     size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
+> > -     old_size = memcg_shrinker_map_size;
+> > +     size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> > +     old_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+>
+> What's wrong with using DIV_ROUND_UP() here?
 
-Starting a new documentation for vmstat goes beyond the scope of this patch.
-I am inclined to remove Documentation from the next version [V6] of the patch.
+I don't think there is anything wrong with DIV_ROUND_UP. Should be
+just different taste and result in shorter statement.
 
-I presume that a detailed commit log [V6] explaining why direct mapped kernel
-page splis will never coalesce, how kernel tracing causes some of those
-splits and why it is worth tracking them can do the job.
+>
+> >       if (size <= old_size)
+> > -             return 0;
+> > +             goto out;
+>
+> Can this even happen? Seems to me it can't, so just remove this?
 
-Proposed [V6] Commit Log:
->>>
-To help with debugging the sluggishness caused by TLB miss/reload,
-we introduce monotonic hugepage [direct mapped] split event counts since
-system state: SYSTEM_RUNNING to be displayed as part of
-/proc/vmstat in x86 servers
+Yes, it can. The maps use unsigned long value for bitmap, so any
+shrinker ID < 31 would fall into the same unsigned long, so we may see
+size <= old_size, but we need increase shrinker_nr_max since
+expand_shrinker_maps() is called iff id >= shrinker_nr_max.
 
-The lifetime split event information will be displayed at the bottom of
-/proc/vmstat
-....
-swap_ra 0
-swap_ra_hit 0
-direct_map_level2_splits 94
-direct_map_level3_splits 4
-nr_unstable 0
-....
-
-One of the many lasting sources of direct hugepage splits is kernel
-tracing (kprobes, tracepoints).
-
-Note that the kernel's code segment [512 MB] points to the same 
-physical addresses that have been already mapped in the kernel's 
-direct mapping range.
-
-Source : Documentation/x86/x86_64/mm.rst
-
-When we enable kernel tracing, the kernel has to modify attributes/permissions
-of the text segment hugepages that are direct mapped causing them to split.
-
-Kernel's direct mapped hugepages do not coalesce back after split and
-remain in place for the remainder of the lifetime.
-
-An instance of direct page splits when we turn on
-dynamic kernel tracing
-....
-cat /proc/vmstat | grep -i direct_map_level
-direct_map_level2_splits 784
-direct_map_level3_splits 12
-bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @ [pid, comm] =
-count(); }'
-cat /proc/vmstat | grep -i
-direct_map_level
-direct_map_level2_splits 789
-direct_map_level3_splits 12
-....
-<<<
-
-Thanks,
-Saravanan D
+>
+> >
+> >       if (!root_mem_cgroup)
+> >               goto out;
+> > @@ -286,9 +286,10 @@ static int expand_shrinker_maps(int new_id)
+> >                       goto out;
+> >               }
+> >       } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+> > +
+> >  out:
+> >       if (!ret)
+> > -             memcg_shrinker_map_size = size;
+> > +             shrinker_nr_max = new_nr_max;
+> >
+> >       return ret;
+> >  }
+> > @@ -321,7 +322,6 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+> >  #define SHRINKER_REGISTERING ((struct shrinker *)~0UL)
+> >
+> >  static DEFINE_IDR(shrinker_idr);
+> > -static int shrinker_nr_max;
+> >
+> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >  {
+> > @@ -338,8 +338,6 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >                       idr_remove(&shrinker_idr, id);
+> >                       goto unlock;
+> >               }
+> > -
+> > -             shrinker_nr_max = id + 1;
+> >       }
+> >       shrinker->id = id;
+> >       ret = 0;
+> >
+>
