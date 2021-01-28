@@ -2,168 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DED2308071
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEBF308077
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 22:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhA1VXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 16:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S231512AbhA1VYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 16:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhA1VXR (ORCPT
+        with ESMTP id S231281AbhA1VYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 16:23:17 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28831C061573;
-        Thu, 28 Jan 2021 13:22:37 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id g1so8299013edu.4;
-        Thu, 28 Jan 2021 13:22:37 -0800 (PST)
+        Thu, 28 Jan 2021 16:24:11 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBD8C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:23:31 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id i187so9574486lfd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:23:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iky+DugOhX1hDNU3AWl/82OLUGd7e4uUQOiW57Oek80=;
-        b=USzLlpmi1mBOqEu9XY81zRzzf+qzbqJv194UHN5m5M+QpQ0uKDo+sBGdT0gQy8jNMK
-         o5vc0IP99E2JOhGR/e8aBVRdzRET0CJa3NQIZok5SKcuNYvr/kLx1FYUpMbeg6yDBcsy
-         8XC6N3guc2KshmE+DF/+3hfJJiEEULacyTThIoOb7FN1IdoSOGmo4CiN3SUkPyyYGFb2
-         z4J5ZSG+5kra4ru8YMsy9SKz+2IML0VPlOhMFdNI0PgJndwmxFVqX+UMu7b+lXNy7+Px
-         dh0Ujyy65MmDvQrtN4rHwAYIIGz3vHAn6uJEJuhCFLi7Czc3nv3D2NCszIewnk1vxBHJ
-         y/6w==
+        bh=Jge7+SvmIdKe+EfDsylHdHVfqtQTNyBnCxA66lMfr8Q=;
+        b=GKpFrPZDfYQUHeDe8AiNPoLglZsvu3aI1Sjxe1zQpscy0OefqeOSO7vpuRBjPUHgch
+         uZa9un2c41uGZ1Ypv2M8fQ1YK2gfkNTOb006i65jGkgUDz1VqOtBn3I8eOsRirlffDrr
+         KWsmj8ulLnPpn448pe29K+RrQ+xS9kL9Bh3v4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iky+DugOhX1hDNU3AWl/82OLUGd7e4uUQOiW57Oek80=;
-        b=XRKxhTWieu0gspZFMq0NiKneqj0tUpoMAV9THr9fNjeJ0Y5u4ehQJU3gJVzCu+mAmj
-         FxBSflY4PDxzdv5TcZiU57BFvYP2LILudjwQUp2Fhwxlzl+r0C2/CMB8nvMF8+ITmYvt
-         3BDJdGerEpVDMhaEPzvACMqlCiuXSCDOSp2uO0abQGrrFQfSre/VJfpZn2UcE1xc+FtJ
-         tcVwi++ygvcKZ4yET3UxRHDNwQZEwoMCifwiwx0/XPMpOIMi+HyFaGBYT62n6Sna1PgP
-         cFVPWdWH9Rbq0Y3AMSJyLsuys90uFyEMuFnmE7xv0luAbuDXxbBfjGunnxF0u3Xqq9SV
-         LK+Q==
-X-Gm-Message-State: AOAM531il807MsZp3VsJnx8U9AYHoRAsnUGeRQGsHPbTNcHo66rfDpTi
-        w3YcStDPmJ37qo92F04Atq+Id5bWOq2RaiwYKUA=
-X-Google-Smtp-Source: ABdhPJwbu0bZDCE0LMnecgpA/vbNy1VOG2Gthhi97YaSV3LvX82i39z8aXTCyggUdueGOuBBwISGHCnSt9U8RpOtrVY=
-X-Received: by 2002:a05:6402:312e:: with SMTP id dd14mr1801362edb.366.1611868955853;
- Thu, 28 Jan 2021 13:22:35 -0800 (PST)
+        bh=Jge7+SvmIdKe+EfDsylHdHVfqtQTNyBnCxA66lMfr8Q=;
+        b=AtvHCbL9XMnZ7ghfVnViRfE2kUjjrz3Rzjeq/d7f3BXOnVcQHDvs+t4ISfxANAkZ9w
+         jG2yggYavlw+xQ4EIiLOU6FRCGNUrGjjeJw2bwcHb6bUElTg7cSnfiUt1yeslkZAsQCi
+         bIYCEEkVxOUOeVng/rHZtJTPZ+yJiRZBNo+7ZavQbIojtmvkp7DNnhDEGtBXsn9eVhQv
+         JdFohFW8Xob+dY4rwlgh6W0mJTTNOrPqafWD6cLr5s8haWeAheaxB1VAR6nh933B5Bk5
+         sXMqpgFvpZkGqeU42PI8IRB6R5j6W9tkV6pNQOoRzBm8A4i6eAZxeJ88SEHJzhZl326Q
+         gDsw==
+X-Gm-Message-State: AOAM53299t5LjK2iL4U8euanq38RUeMuhirHPY07xkjG/Hr2YDpMa54B
+        VJk1tauKDdBbSjsRMNNMBkjOrMfhCxrR4w==
+X-Google-Smtp-Source: ABdhPJzOctWCElzm7gRe4euEZk2DFvTAbxXaQ9VvxtwJfhWc31xazgR+U3aYN+dCEFoWXRYMUk+aSw==
+X-Received: by 2002:a19:c56:: with SMTP id 83mr494950lfm.325.1611869009520;
+        Thu, 28 Jan 2021 13:23:29 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id s3sm2258879ljo.41.2021.01.28.13.23.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 13:23:28 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id p21so9555456lfu.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 13:23:28 -0800 (PST)
+X-Received: by 2002:a05:6512:516:: with SMTP id o22mr109829lfb.487.1611869007726;
+ Thu, 28 Jan 2021 13:23:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-5-shy828301@gmail.com>
- <255b9236-3e0b-f6f6-4a72-5e69351a979a@suse.cz>
-In-Reply-To: <255b9236-3e0b-f6f6-4a72-5e69351a979a@suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 28 Jan 2021 13:22:23 -0800
-Message-ID: <CAHbLzkrN2aW03TUrC3sOANS7YV6+KMisDtsXDH2W42-1tOJziw@mail.gmail.com>
-Subject: Re: [v5 PATCH 04/11] mm: vmscan: remove memcg_shrinker_map_size
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
+ <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com>
+ <20210128205207.awdbh4bmx56pxxjl@treble> <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
+In-Reply-To: <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 28 Jan 2021 13:23:11 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
+Message-ID: <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
+Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external modules
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Jessica Yu <jeyu@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 8:53 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+On Thu, Jan 28, 2021 at 1:03 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On 1/28/21 12:33 AM, Yang Shi wrote:
-> > Both memcg_shrinker_map_size and shrinker_nr_max is maintained, but actually the
-> > map size can be calculated via shrinker_nr_max, so it seems unnecessary to keep both.
-> > Remove memcg_shrinker_map_size since shrinker_nr_max is also used by iterating the
-> > bit map.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/vmscan.c | 18 ++++++++----------
-> >  1 file changed, 8 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index d3f3701dfcd2..847369c19775 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -185,8 +185,7 @@ static LIST_HEAD(shrinker_list);
-> >  static DECLARE_RWSEM(shrinker_rwsem);
-> >
-> >  #ifdef CONFIG_MEMCG
-> > -
-> > -static int memcg_shrinker_map_size;
-> > +static int shrinker_nr_max;
-> >
-> >  static void free_shrinker_map_rcu(struct rcu_head *head)
-> >  {
-> > @@ -248,7 +247,7 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
-> >               return 0;
-> >
-> >       down_write(&shrinker_rwsem);
-> > -     size = memcg_shrinker_map_size;
-> > +     size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> >       for_each_node(nid) {
-> >               map = kvzalloc_node(sizeof(*map) + size, GFP_KERNEL, nid);
-> >               if (!map) {
-> > @@ -266,12 +265,13 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
-> >  static int expand_shrinker_maps(int new_id)
-> >  {
-> >       int size, old_size, ret = 0;
-> > +     int new_nr_max = new_id + 1;
-> >       struct mem_cgroup *memcg;
-> >
-> > -     size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
-> > -     old_size = memcg_shrinker_map_size;
-> > +     size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> > +     old_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
->
-> What's wrong with using DIV_ROUND_UP() here?
+> I really think the whole compiler version check is purely voodoo programming.
 
-I don't think there is anything wrong with DIV_ROUND_UP. Should be
-just different taste and result in shorter statement.
+.. but there are obviously potentially things we - in the kernel - do
+that may make certain compiler versions incompatible. We long long ago
+used to have things like "you can't have an empty struct because gcc
+version x.y.z doesn't support it", so even a UP spinlock would be
 
->
-> >       if (size <= old_size)
-> > -             return 0;
-> > +             goto out;
->
-> Can this even happen? Seems to me it can't, so just remove this?
+       typedef struct { int gcc_is_buggy; } raw_spinlock_t;
 
-Yes, it can. The maps use unsigned long value for bitmap, so any
-shrinker ID < 31 would fall into the same unsigned long, so we may see
-size <= old_size, but we need increase shrinker_nr_max since
-expand_shrinker_maps() is called iff id >= shrinker_nr_max.
+but only if you compiled it with a version of gcc older than 3.0. So
+compiling one file with one compiler, and another with a newer one,
+would result in the data structures simply not having the same layout.
 
->
-> >
-> >       if (!root_mem_cgroup)
-> >               goto out;
-> > @@ -286,9 +286,10 @@ static int expand_shrinker_maps(int new_id)
-> >                       goto out;
-> >               }
-> >       } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
-> > +
-> >  out:
-> >       if (!ret)
-> > -             memcg_shrinker_map_size = size;
-> > +             shrinker_nr_max = new_nr_max;
-> >
-> >       return ret;
-> >  }
-> > @@ -321,7 +322,6 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
-> >  #define SHRINKER_REGISTERING ((struct shrinker *)~0UL)
-> >
-> >  static DEFINE_IDR(shrinker_idr);
-> > -static int shrinker_nr_max;
-> >
-> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >  {
-> > @@ -338,8 +338,6 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >                       idr_remove(&shrinker_idr, id);
-> >                       goto unlock;
-> >               }
-> > -
-> > -             shrinker_nr_max = id + 1;
-> >       }
-> >       shrinker->id = id;
-> >       ret = 0;
-> >
->
+That's not because of compiler versions per se, it's because of our
+version checks.
+
+THAT workaround is long gone, but I didn't check what other ones we
+might have now. But the gcc version checks we _do_ have are not
+necessarily about major versions at all (ie I trivially found checks
+for 4.9, 4.9.2, 5.1, 7.2 and 9.1).
+
+               Linus
