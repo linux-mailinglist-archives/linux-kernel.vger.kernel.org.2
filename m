@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEB2306B4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 03:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369B3306B55
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhA1C6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 21:58:44 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:58804 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhA1C6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 21:58:43 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 76752200B57;
-        Thu, 28 Jan 2021 03:57:56 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 67FC1200D88;
-        Thu, 28 Jan 2021 03:57:52 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EFCF8402A9;
-        Thu, 28 Jan 2021 03:57:46 +0100 (CET)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     mark.rutland@arm.com, leoyang.li@nxp.com, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, ran.wang_1@nxp.com,
-        Biwen Li <biwen.li@nxp.com>
-Subject: [v3] irqchip: ls-extirq: add IRQCHIP_SKIP_SET_WAKE to the irqchip flags
-Date:   Thu, 28 Jan 2021 11:06:27 +0800
-Message-Id: <20210128030627.41022-1-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231187AbhA1DA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229739AbhA1DAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:00:54 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650D5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:00:14 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id z22so4907556edb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 19:00:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AP3tGQs6s5P8wm/ejXQRcsMvZE63wwCDiLfyGUDNGfs=;
+        b=WohYZJxnkJWs7NUVxkokLpSvh3aAHm2vQIXOj9GWvPnRR5T21Lg8BGQhEbGdVR2vVm
+         2oxfZ9l8wkZqomdDEA9hoK61SjNAlGoDAFsUyiY1xkNrmhXePZ1Sr5mvv41ARAWPYS7u
+         GbbFV/towIWajZDXdKWz/4MlrN0665aWjhpQSLsKrLCtw5+V4rdA9JgNWgODMrojrDD8
+         A7XKdvcYEHwy4hquJ/wG5xNRSrzs71yTDDursIPIC5MixJXC1j0knZNQlF8ZFbhz2hZ+
+         /il6MsyYVgig7FrlcGMB7ZwUemtPb8ZYRy6iUuKTnYage2YlZpj326CCKhlpn2xCFrma
+         77Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AP3tGQs6s5P8wm/ejXQRcsMvZE63wwCDiLfyGUDNGfs=;
+        b=YqLB3BeeV0L9Bncso1LUR6F53AxRVVDLrf/ql/GG/nuLElzlPK9iAey4omq7KTPH2S
+         PeafhS4t2nZYPQ7dmu0zhNqg6RSsoA5+o+AUNirZU3wUtPu7NHdr58VcPIM+KDEfkJpu
+         0T6n0ttYanSeYsIwGwmsX9pQcV6rZMN3M3TwyzYmG9ToTci43yX2h4QT45eqvFoMIBGZ
+         lZ79YHU+ARK/kziMfNfAnHlWSiSNtlXB0dtaHa8PjtRHkI6DHbioScWqCox6362JY5OQ
+         HO8xyOg11Ie3BlD5qQuit4/u0COD+xgMhfYEiqBREUl7P+w0TAtTWO1mD7a6gPvDspZ4
+         QFHw==
+X-Gm-Message-State: AOAM532xSsCNweOAyhaerjOekSJPTyfRGZq73H0KEUrj1YzEWURDQuv5
+        ghaokdimPyPwdpXcC0ZewruEr13V5HboUvxxa8Sw
+X-Google-Smtp-Source: ABdhPJyGUyWZpntm+TS64e45JgJCqkq+loUyRGPu4UOhP92e5dbVN00ikHNfAurqWEkwaMzIrKqGJDgoiCAg37Ck3qs=
+X-Received: by 2002:a05:6402:54d:: with SMTP id i13mr11785340edx.12.1611802811444;
+ Wed, 27 Jan 2021 19:00:11 -0800 (PST)
+MIME-Version: 1.0
+References: <20210127025144.24253-1-yang.yang29@zte.com.cn>
+In-Reply-To: <20210127025144.24253-1-yang.yang29@zte.com.cn>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 27 Jan 2021 22:00:00 -0500
+Message-ID: <CAHC9VhTsQ4j8EYd4H-PXmZeFhqHeyV2GDpNikU-tw2qMtbFyUw@mail.gmail.com>
+Subject: Re: [PATCH v2] audit: Make audit_filter_syscall() return void
+To:     menglong8.dong@gmail.com
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>,
+        Richard Guy Briggs <rgb@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+On Tue, Jan 26, 2021 at 9:52 PM <menglong8.dong@gmail.com> wrote:
+>
+> From: Yang Yang <yang.yang29@zte.com.cn>
+>
+> No invoker uses the return value of audit_filter_syscall().
+> So make it return void, and amend the comment of
+> audit_filter_syscall().
+>
+> Changes since v1:
+> - amend the comment of audit_filter_syscall().
+>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+> Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+>  kernel/auditsc.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 
-The ls-extirq driver doesn't implement the irq_set_wake()
-callback, while being wake-up capable. This results in
-ugly behaviours across suspend/resume cycles.
+This is a simple enough patch so I think merging it during -rc5 should
+be okay; merged into audit/next - thanks!
 
-Advertise this by adding IRQCHIP_SKIP_SET_WAKE to
-the irqchip flags
-
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
----
-Change in v3:
-	- update description
-
-Change in v2:
-	- Update description
-
- drivers/irqchip/irq-ls-extirq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
-index 564e6de0bd8e..3c6ed7b4744d 100644
---- a/drivers/irqchip/irq-ls-extirq.c
-+++ b/drivers/irqchip/irq-ls-extirq.c
-@@ -65,7 +65,7 @@ static struct irq_chip ls_extirq_chip = {
- 	.irq_set_type		= ls_extirq_set_type,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_affinity	= irq_chip_set_affinity_parent,
--	.flags                  = IRQCHIP_SET_TYPE_MASKED,
-+	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
- };
- 
- static int
 -- 
-2.17.1
-
+paul moore
+www.paul-moore.com
