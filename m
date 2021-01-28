@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7775307DF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F51307DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 19:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhA1S2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 13:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        id S232105AbhA1S3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 13:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhA1S0M (ORCPT
+        with ESMTP id S231806AbhA1S0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 13:26:12 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F562C061354
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:24:54 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id k24so2402214qtc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:24:54 -0800 (PST)
+        Thu, 28 Jan 2021 13:26:05 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C9CC061356
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:25:02 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id cq1so4335247pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 10:25:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=WO1Ps+Nvd/JhtfCCjwBjp1ZIkFI1epnqyV7iKoI3o6M=;
-        b=kRyxNq1z6aP1oLR+T1rDCvOOEGgGBd0NT0WYQCd9JMMaGJ9KZ64ABn23wgetcIYIqk
-         UgxIRZh2IxqO8TLPZAYS8UscufK7YBfdmAnzf6Thg7OwTRAEIGh+lDriUPVXWyxVBiTP
-         vSV+VOHOKLatUnPHfVn57s9k68KhZe3ouL0kZrzVPeKvib0crdbJF5QcUQ1R/vr/lvxZ
-         5FoHOJuQQruMx2fhUaWETT1ilWgTRt+Oqxwg68GfvRRZWi93epDFMlQxz0rY8QA5fdyj
-         Y+WmVV46ZuoEnJrUkdOejUENnnnRes25LJGmKOMoa3ThqhEgE87zWQ8qkxgyvDzhhRdC
-         5vGg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lg+DTCcbBZLKqzRlWlD6ac7iinsWBA/mKJ1HztBD7pM=;
+        b=H0cf+d26CVi2apbOt03UHpB51v4eg7npvkj3EZdTXEl8GgrPJPKNHc7c8ZFswyPrL/
+         Syz9wOfVGOjo2j/UZDQneF8yguCZ7yNLbAOg84WAPtiZLX6N/6P5XMwRB7r+SD/HxW0M
+         nXr46/oc4DH0QE8+qaiOV3mFjfZ2wT18cUWJfWrPm9mKPkzyqH40p8egkZYcs7SR0yW+
+         gpGG4w/z3zHf0PvvUA3IEnm6qsneYWVB8+CdjkzOw4N6PZSisWz25HhKPBDpUhnl0pRy
+         MAldBhRm+YKEemIJQuKGtlvv15Yieiwnu3cWoMPEnQL3g67ma+f//ZlD5KlFgXDwdPSK
+         Zx3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=WO1Ps+Nvd/JhtfCCjwBjp1ZIkFI1epnqyV7iKoI3o6M=;
-        b=CPeusdhGGB10dGbbR9QECToG6RIdLWhgjg82N02/IA9kKUK+p96hSY8PvtzYoGYyVG
-         +WlYuk/6sLIjK4LH+8Hv+3RU1yP1pTW2TEaP5asryVcMhyEdIaBpcBClr3Vuv1K6+qLJ
-         ZS4jfYCul/oHMSjjVh9ZiZJ2S1AxibGN+ATPX3ZW6WCHBqSfvZ0rMYxCCYO0nMGs3yHM
-         OLEhkLwItPreindPGNrECOETbTMqBq2BbhOuhTuo1VT1WOElhGbwJO8hcVBdL6q3D4Cf
-         4VRkTOtmt0gz+JPD42ZFFkxRbdnD9xPP6KGOSmnK9zUtvayz4IYwUtTPCDe2XEq+ZG/6
-         4/fg==
-X-Gm-Message-State: AOAM532dVG3ufwxGt+fpIkUCsmEMc1LjNJ+OUITr06l2dwXqD/7LO4HI
-        jaj5FkIUiS3ZwnShMNds2jYqBqTekUdYnJSiMQ==
-X-Google-Smtp-Source: ABdhPJxHCqtX2ZHgnqn1x3DYKD86aE5WR934LTPVMRYPiTVg9KKNFMi3ScBW4vQ0zl65Lu8rIgzHGPhMjlBRyKwGrA==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:ad4:4b6d:: with SMTP id
- m13mr614841qvx.56.1611858293408; Thu, 28 Jan 2021 10:24:53 -0800 (PST)
-Date:   Thu, 28 Jan 2021 18:24:31 +0000
-In-Reply-To: <20210128182432.2216573-1-kaleshsingh@google.com>
-Message-Id: <20210128182432.2216573-3-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20210128182432.2216573-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH 2/2] dmabuf: Add dmabuf inode no to fdinfo
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lg+DTCcbBZLKqzRlWlD6ac7iinsWBA/mKJ1HztBD7pM=;
+        b=TtW+ElMCx6k3cru5GCHs6N+vRXPfs01Ym/MOVVeyRv8JIPbTneAwCqwgmCsvzlqSCN
+         Npu+H2RtO6ZnlNBFS4OfKyJDakWy3tmHzxIIu9Fu1QdXuBZo4b38J/YaQpS3W7RHK/Xe
+         N/ly9eb7tAzE9tKxPoqV6lGszYY21cIe0rXFW4wUhlCQ7piWXVokKIW1u5t9NfOYr2vb
+         Ij3lCBn9aEvS/33esVl1pADM6TplLKEZsHbrP4HdJ3Rv2G2m0xa5tOUlr16nFbACW6H5
+         tmXcuBeLnad+2+k5JgBx9TaaslTZTpV3ldaveo2GxJ25fVWE6oXNGiAad2rXOVce/zX1
+         hlCQ==
+X-Gm-Message-State: AOAM532g2DmojpqVjT8sjj5VZ10ltWHz9JhvB8qAjY+ScqzK5d1PJ5I5
+        CYQQuQcQryxqKnKTJm1vj9Pf6g==
+X-Google-Smtp-Source: ABdhPJyHZw8H5G05+qZC5J0iLc18ovAaIr+j/mnygSmuXhCai9rRyOhchLqaQr5LzNjqN/W/T+ALEA==
+X-Received: by 2002:a17:90a:bf06:: with SMTP id c6mr618123pjs.220.1611858301894;
+        Thu, 28 Jan 2021 10:25:01 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:91fd:c415:8a8b:ccc4])
+        by smtp.gmail.com with ESMTPSA id 21sm6034852pfh.56.2021.01.28.10.25.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 10:25:01 -0800 (PST)
+Date:   Thu, 28 Jan 2021 10:24:55 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jmattson@google.com,
+        yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v14 00/13] Introduce support for guest CET feature
+Message-ID: <YBMBd1qxvQh47zcB@google.com>
+References: <20201106011637.14289-1-weijiang.yang@intel.com>
+ <c6e87502-6443-62f7-5df8-d7fcee0bca58@redhat.com>
+ <YBL8wOsgzTtKWXgU@google.com>
+ <32c9cdf7-7432-1212-2fe4-fe35ad27105a@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32c9cdf7-7432-1212-2fe4-fe35ad27105a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dmabuf inode number allows userspace to uniquely identify the buffer
-and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
-DMA buffer sizes.
+On Thu, Jan 28, 2021, Paolo Bonzini wrote:
+> On 28/01/21 19:04, Sean Christopherson wrote:
+> > On Thu, Jan 28, 2021, Paolo Bonzini wrote:
+> > > On 06/11/20 02:16, Yang Weijiang wrote:
+> > > > Control-flow Enforcement Technology (CET) provides protection against
+> > > > Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
+> > > > sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
+> > > > SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
+> > 
+> > ...
+> > 
+> > > I reviewed the patch and it is mostly okay.  However, if I understand it
+> > > correctly, it will not do anything until host support materializes, because
+> > > otherwise XSS will be 0.
+> > 
+> > IIRC, it won't even compile due to the X86_FEATURE_SHSTK and X86_FEATURE_IBT
+> > dependencies.
+> 
+> Of course, but if that was the only issue I would sort it out with Boris as
+> usual.  OTOH if it is dead code I won't push it to Linus.
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- drivers/dma-buf/dma-buf.c | 1 +
- 1 file changed, 1 insertion(+)
+Yes, at best it's dead code.  At worst, if it somehow became undead, the guest
+state would bleed into the host and wouldn't be migrated as the kernel wouldn't
+touch CET state when doing XSAVES/XRSTORS.
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 9ad6397aaa97..d869099ede83 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -414,6 +414,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
- {
- 	struct dma_buf *dmabuf = file->private_data;
- 
-+	seq_printf(m, "dmabuf_inode_no:\t%lu\n", file_inode(file)->i_ino);
- 	seq_printf(m, "size:\t%zu\n", dmabuf->size);
- 	/* Don't count the temporary reference taken inside procfs seq_show */
- 	seq_printf(m, "count:\t%ld\n", file_count(dmabuf->file) - 1);
--- 
-2.30.0.365.g02bc693789-goog
+I floated the idea of pulling in just enough of the kernel bits to enable KVM,
+but that didn't go anywhere.
 
+https://lkml.kernel.org/r/20200723162531.GF21891@linux.intel.com
