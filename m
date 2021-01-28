@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E903076E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CD23076EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhA1NQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S232286AbhA1NRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbhA1NQY (ORCPT
+        with ESMTP id S232045AbhA1NRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:16:24 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E49AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:15:43 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id w124so5942150oia.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:15:43 -0800 (PST)
+        Thu, 28 Jan 2021 08:17:04 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE3AC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:16:04 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id s24so5141675wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:16:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mvista-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MYMnyq9aiAmBgXk76odK/uDrbX7yILPvUUSs8LZrwNw=;
-        b=IrqLAPLLRuH0l4zw49WppVMRW/uuhP+xUXxPF5F03JoXE2uuZIb7JjcGukwqFJSOoB
-         QqWi7pzjDoTKGgr8tvvC4aFJRRnNkmU4bNtm2Hm69x74jOKWbX53nJ2WtkXkWh3DWyN+
-         3kNpYa3krMenE9ZmZSni+cwGd+QLZYxeX9kMZB7AlhN+yYdw7/wQZpvjn6BR8zRCoSP2
-         TAyqZz7snRci/1ibTTtOPPHqYMHEKcj00+4JAjyCnr95XXh6iGemuOQheMmthiBji68l
-         RiTmDSgSbNh+6jr2wCZh5GxRGeit5wWjPnns+8FJO3meZ5wmfRMu3eRX0YgX8PWahwZm
-         p/wA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=a7Kay7oniLiASWWlX9LUAiXElA2SneepAxnVvZ1j9Bg=;
+        b=wm0m6q9c7pI2ykqugyIea0bijD0AIdx00BSXxbwNf9QgYWvNFw8u7g0iVVYt98tN+R
+         rjUkKmn08QsrSjMYYgeB/BE1Z1aUcapp6QCqdf7hvy5gUsofxEMHByci4Zfw9lL29/yX
+         oERUPPJs1zliyHYpPI9tgDdQ0U+aR/L6LMdXAFCyGjUEwkh375xDDu0Y0Bv4A4fL7iLF
+         WKss8uZbIloYg2uibFiXWPDP07PR9t8pLYs6U7cPey3J49wkb2Z0K5VlUIsjNVzOJEjJ
+         ODqonk+oM9Rgkn7zZM8koJsQ5l0anC8Mqu4tvy1VyRhac92NyvLy31OJvRvDCWk1V+ok
+         /jUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=MYMnyq9aiAmBgXk76odK/uDrbX7yILPvUUSs8LZrwNw=;
-        b=M0vnweoxqqB3x+orcd5KtSpg6tXAOFmbjAIfNXWqOa/1WXb4q18FbFgPR77wzhmst3
-         XovvqF0UX3d37nsguD19WYCFmfPfm0CXXO0UtNSph8sit+251MrYY+eqa7kasGhdiaJg
-         jXb/dwyh209KgHFpFrSAED32pSvuFP5P8gkGviVkN3AM03E+wc/n0j0JuHTHFsYADyiP
-         2dTQqqlIAsFjcWMUg/WBhldu5XfBYGHkotRxIegBryaMdJ/m8oRT77Hml/YZieyGrZPc
-         P6BfkxU3UYUpAaoGX9A/NWD7wIQl9Gf4J2pVko9czQEzT0o8UcocQOmZjcBpQ9a57FvN
-         7Iag==
-X-Gm-Message-State: AOAM531lJUU02pRO6//PBDTpEwQrlcuvpPrlg0JgMU8lTcEKUd6jy4O8
-        Y9fFhQEyY5TxkMQi0fFIM1jqEDicxLDnRw==
-X-Google-Smtp-Source: ABdhPJxX+uVsYKsI7NArfnD5+TrBoPQkjiuV59z9z5sB/J1DULJ3nl/+98FxbrC939C6MWUm6vJ2LQ==
-X-Received: by 2002:aca:57c8:: with SMTP id l191mr6478760oib.23.1611839742940;
-        Thu, 28 Jan 2021 05:15:42 -0800 (PST)
-Received: from minyard.net ([2001:470:b8f6:1b:d0e0:7e1d:debb:57fe])
-        by smtp.gmail.com with ESMTPSA id h18sm983785otk.26.2021.01.28.05.15.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=a7Kay7oniLiASWWlX9LUAiXElA2SneepAxnVvZ1j9Bg=;
+        b=Na58E+wEjrWsrGj4A2BpgXushHWYiHsWkePFzGr3v2yuo+R2wX09+YFGXh6rjIckk6
+         93LBJNB60g6EC7xRXVb4vGLQzrLb+0RHGPdchTC+YpHHCIJYOhzgoMt62HaQ2jYbObPe
+         yoPuxYE8WYoYsboo/DRav3cR5PxK4uuahlglV0BGW1aAezUCTM5b6bWvFfMXQsRSLXNT
+         S5TGIwMo0S0TYY2OnwvJ7OjMzGx6aiYZEP03Q4Bc/mPCmMEG+YrlD5mXdmUJeiQyyKvx
+         CQap1q1FGoL2ptLIJfR5JTFGZydnwQbDAk/+3rVhGseCXXO0ubmFSFDtF5X2ESGM9q4a
+         19ng==
+X-Gm-Message-State: AOAM532SBJS+XgUP7zAGRH+a0PttsdCwXBY5GeNp9DFZlzu4VmRuucw5
+        6/iGdmkD5KJQgoG0F+KCmXqIthlgdlNdcd0w
+X-Google-Smtp-Source: ABdhPJy/2U8YYV4YNHpz7d82RHXpW6/38q6C4Nxk6SHw0fG6egfg8QiynFbs+Y23UmRWLv4Pm6w1rw==
+X-Received: by 2002:a05:600c:19cc:: with SMTP id u12mr8573435wmq.26.1611839763291;
+        Thu, 28 Jan 2021 05:16:03 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id s25sm5861961wmj.24.2021.01.28.05.16.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 05:15:42 -0800 (PST)
-Date:   Thu, 28 Jan 2021 07:15:40 -0600
-From:   Corey Minyard <cminyard@mvista.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org, Asmaa Mnebhi <asmaa@nvidia.com>,
-        Corey Minyard <minyard@acm.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] ipmi: remove open coded version of SMBus block
- write
-Message-ID: <20210128131540.GY21462@minyard.net>
-Reply-To: cminyard@mvista.com
-References: <20210128085544.7609-1-wsa+renesas@sang-engineering.com>
- <20210128123757.GW21462@minyard.net>
- <20210128125350.GP963@ninjato>
+        Thu, 28 Jan 2021 05:16:02 -0800 (PST)
+Date:   Thu, 28 Jan 2021 13:16:00 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-usb@vger.kernel.org, Michael Jamet <michael.jamet@intel.com>,
+        netdev@vger.kernel.org, Yehezkel Bernat <YehezkelShB@gmail.com>
+Subject: Re: [PATCH 00/12] Rid W=1 warnings from Thunderbolt
+Message-ID: <20210128131600.GK4774@dell>
+References: <20210127112554.3770172-1-lee.jones@linaro.org>
+ <20210128110904.GR2542@lahna.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210128125350.GP963@ninjato>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210128110904.GR2542@lahna.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 01:53:50PM +0100, Wolfram Sang wrote:
-> On Thu, Jan 28, 2021 at 06:37:57AM -0600, Corey Minyard wrote:
-> > Looks good, do you want this in the IPMI tree or are you handling this
-> > another way?
+On Thu, 28 Jan 2021, Mika Westerberg wrote:
+
+> Hi Lee,
 > 
-> I can take it but would prefer the IPMI tree.
+> On Wed, Jan 27, 2021 at 11:25:42AM +0000, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > Only 1 small set required for Thunderbolt.  Pretty good!
+> > 
+> > Lee Jones (12):
+> >   thunderbolt: dma_port: Remove unused variable 'ret'
+> >   thunderbolt: cap: Fix kernel-doc formatting issue
+> >   thunderbolt: ctl: Demote non-conformant kernel-doc headers
+> >   thunderbolt: eeprom: Demote non-conformant kernel-doc headers to
+> >     standard comment blocks
+> >   thunderbolt: pa: Demote non-conformant kernel-doc headers
+> >   thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv'
+> >     param
+> >   thunderbolt: nhi: Demote some non-conformant kernel-doc headers
+> >   thunderbolt: tb: Kernel-doc function headers should document their
+> >     parameters
+> >   thunderbolt: swit: Demote a bunch of non-conformant kernel-doc headers
+> >   thunderbolt: icm: Fix a couple of formatting issues
+> >   thunderbolt: tunnel: Fix misspelling of 'receive_path'
+> >   thunderbolt: swit: Fix function name in the header
+> 
+> I applied all of the changes that touch static functions. For non-static
+> functions I will send a patch set shortly that adds the missing bits for
+> the kernel-doc descriptions. I also fixed $subject lines of few patches
+> ("switch:" instead of "swit:").
 
-Ok, it's queued for next merge window.
+Oh, that's odd.  This must be a bug in my script.
 
--corey
+As I strip [ch], as in *.c and *.h.
 
+Thanks for noticing.
+
+> Please check that I got everything correct in
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git next
 > 
 > Thanks!
-> 
 
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
