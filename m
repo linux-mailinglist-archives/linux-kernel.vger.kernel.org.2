@@ -2,46 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1936308123
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D40308125
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhA1WbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:31:11 -0500
-Received: from hmm.wantstofly.org ([213.239.204.108]:50768 "EHLO
-        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhA1WbG (ORCPT
+        id S229791AbhA1WcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:32:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38110 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229561AbhA1WcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:31:06 -0500
-Received: by mail.wantstofly.org (Postfix, from userid 1000)
-        id 129A07F45D; Fri, 29 Jan 2021 00:30:20 +0200 (EET)
-Date:   Fri, 29 Jan 2021 00:30:20 +0200
-From:   Lennert Buytenhek <buytenh@wantstofly.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
-Message-ID: <20210128223020.GG186627@wantstofly.org>
-References: <20210123114152.GA120281@wantstofly.org>
- <20210123232754.GA308988@casper.infradead.org>
- <39a9b1da-bbcc-daa0-12e9-3eb776658564@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39a9b1da-bbcc-daa0-12e9-3eb776658564@kernel.dk>
+        Thu, 28 Jan 2021 17:32:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611873040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BWdKaMuCZ+HHzjgfktT+jouFy+6VZ9GcHMswE44Yles=;
+        b=GcK7HA8G8YoKFt3jnY8AymagcawFwQks6ljOBXFZp4/smQd5uhQ8hRHONpGtK0P8It0AXT
+        LVLlYErwQGnPX30uYFjYM7eMniZV89irwDbZv/muu7WjlQluqs0Rfhup3fcQ5+/QaLTHiL
+        eBWhd7UH0sN3oABQnsIadrPVQvEsHI8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-ymhRbMjpMfiFgQ-kfgcD3w-1; Thu, 28 Jan 2021 17:30:37 -0500
+X-MC-Unique: ymhRbMjpMfiFgQ-kfgcD3w-1
+Received: by mail-wm1-f72.google.com with SMTP id 5so2636308wmq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:30:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=BWdKaMuCZ+HHzjgfktT+jouFy+6VZ9GcHMswE44Yles=;
+        b=qBBUEik3UPjoqT/5pyYErlH/x+JQeZ1BSLoN5h5SQx+LgU3k4CP4wIx/VLff43kmsG
+         T5/VFTnjvodKLA9C/8YDzGyHCTuc+CY+QXFyixGieR+TVUQyi8r+5pjCBUFD/Vii6NQl
+         s1Xs9LOOlzSid5GOZbFR5QZR10ge87ADgFh3uJMSyjDHdpIlEWbjffJX60FI0NJEW1UG
+         bD1IrPzHTyJ3XDtq9lf+3Yh2Cy1G+3eYCrkEMweC8VeoeHN+oNhgvuud1SJkfpGBVouC
+         pjTu83AShEevZ+9NyYJ5kd3yY7itjNMOHK2jslCMOFF42d05cHM7Rge4FRXpIopIV8me
+         oaQQ==
+X-Gm-Message-State: AOAM531saO5ZJUODF83JV4uGsdB9ipWga6TS2Je4PHQrW1vp+FwIFrjm
+        QGuky0cEdKdJNdlQq8l0C7y5f8gRzQ68aY8Mfo7rw8J3gLKpxCGC9M2hox/I+0joHv+MZeKLWV8
+        PBNun2Y7hYDAvgdOScXTIfrMN
+X-Received: by 2002:a5d:4b0b:: with SMTP id v11mr1283867wrq.226.1611873035355;
+        Thu, 28 Jan 2021 14:30:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxn3h5kinNtCU52JfJLJu32fgDwMUJMEY0AZ7dz8O2wBaHcZtwyYlApVZxRXD7DfG+kujRu9A==
+X-Received: by 2002:a5d:4b0b:: with SMTP id v11mr1283854wrq.226.1611873035174;
+        Thu, 28 Jan 2021 14:30:35 -0800 (PST)
+Received: from [192.168.3.108] (p5b0c66c6.dip0.t-ipconnect.de. [91.12.102.198])
+        by smtp.gmail.com with ESMTPSA id y18sm8653691wrt.19.2021.01.28.14.30.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 14:30:34 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] mm/page_alloc: count CMA pages per zone and print them in /proc/zoneinfo
+Date:   Thu, 28 Jan 2021 23:30:33 +0100
+Message-Id: <2CF5220A-5452-4913-AFCB-41E1C642E521@redhat.com>
+References: <89e1dbcd-605d-6a7b-361-c130f7eb9d8c@google.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-api@vger.kernel.org
+In-Reply-To: <89e1dbcd-605d-6a7b-361-c130f7eb9d8c@google.com>
+To:     David Rientjes <rientjes@google.com>
+X-Mailer: iPhone Mail (18C66)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 04:33:34PM -0700, Jens Axboe wrote:
 
-> >> IORING_OP_GETDENTS64 behaves like getdents64(2) and takes the same
-> > 
-> > Could we drop the '64'?  We don't, for example, have IOURING_OP_FADVISE64
-> > even though that's the name of the syscall.
-> 
-> Agreed, only case we do mimic the names are for things like
-> IORING_OP_OPENAT2 where it does carry meaning. For this one, it should
-> just be IORING_OP_GETDENTS.
+> Am 28.01.2021 um 23:28 schrieb David Rientjes <rientjes@google.com>:
+>=20
+> =EF=BB=BFOn Thu, 28 Jan 2021, David Hildenbrand wrote:
+>=20
+>>> =EF=BB=BFOn Thu, 28 Jan 2021, David Hildenbrand wrote:
+>>>=20
+>>>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>>>> index 7758486097f9..957680db41fa 100644
+>>>> --- a/mm/vmstat.c
+>>>> +++ b/mm/vmstat.c
+>>>> @@ -1650,6 +1650,11 @@ static void zoneinfo_show_print(struct seq_file *=
+m, pg_data_t *pgdat,
+>>>>          zone->spanned_pages,
+>>>>          zone->present_pages,
+>>>>          zone_managed_pages(zone));
+>>>> +#ifdef CONFIG_CMA
+>>>> +    seq_printf(m,
+>>>> +           "\n        cma      %lu",
+>>>> +           zone->cma_pages);
+>>>> +#endif
+>>>>=20
+>>>>   seq_printf(m,
+>>>>          "\n        protection: (%ld",
+>>>=20
+>>> Hmm, not sure about this.  If cma is only printed for CONFIG_CMA, we can=
+'t=20
+>>> distinguish between (1) a kernel without your patch without including so=
+me=20
+>>> version checking and (2) a kernel without CONFIG_CMA enabled.  IOW,=20
+>>> "cma 0" carries value: we know immediately that we do not have any CMA=20=
 
-OK, I've made this change.
+>>> pages on this zone, period.
+>>>=20
+>>> /proc/zoneinfo is also not known for its conciseness so I think printing=
+=20
+>>> "cma 0" even for !CONFIG_CMA is helpful :)
+>>>=20
+>>> I think this #ifdef should be removed and it should call into a=20
+>>> zone_cma_pages(struct zone *zone) which returns 0UL if disabled.
+>>>=20
+>>=20
+>> Yeah, that=E2=80=99s also what I proposed in a sub-thread here.
+>>=20
+>=20
+> Ah, I certainly think your original intuition was correct.
+>=20
+>> The last option would be going the full mile and not printing nr_free_cma=
+. Code might get a bit uglier though, but we could also remove that stats co=
+unter ;)
+>>=20
+>> I don=E2=80=98t particularly care, while printing =E2=80=9E0=E2=80=9C mig=
+ht be easier, removing nr_free_cma might be cleaner.
+>>=20
+>> But then, maybe there are tools that expect that value to be around on an=
+y kernel?
+>>=20
+>=20
+> Yeah, that's probably undue risk, the ship has sailed and there's no=20
+> significant upside.
+>=20
+> I still think "cma 0" in /proc/zoneinfo carries value, though, especially=20=
+
+> for NUMA and it looks like this is how it's done in linux-next.  With a=20=
+
+> single read of the file, userspace can make the determination what CMA=20
+> pages exist on this node.
+>=20
+> In general, I think the rule-of-thumb is that the fewer ifdefs in=20
+> /proc/zoneinfo, the easier it is for userspace to parse it.
+
+Makes sense, I=E2=80=98ll send an updated version tomorrow - thanks!
+
+
+>=20
+> (I made that change to /proc/zoneinfo to even print non-existant zones for=
+=20
+> each node because otherwise you cannot determine what the indices of=20
+> things like vm.lowmem_reserve_ratio represent.)
+
