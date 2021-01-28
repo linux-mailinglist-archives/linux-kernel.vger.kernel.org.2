@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C117307267
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54A3307266
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhA1JPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:15:01 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:56377 "EHLO
+        id S232414AbhA1JOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:14:20 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:59289 "EHLO
         metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbhA1JLe (ORCPT
+        with ESMTP id S232164AbhA1JLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Jan 2021 04:11:34 -0500
-X-Greylist: delayed 144579 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Jan 2021 04:11:34 EST
 Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1l53K2-00069M-EB; Thu, 28 Jan 2021 10:10:38 +0100
+        id 1l53KF-0006C2-KP; Thu, 28 Jan 2021 10:10:51 +0100
 Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1l53K1-0006X5-6C; Thu, 28 Jan 2021 10:10:37 +0100
+        id 1l53KF-00071V-BB; Thu, 28 Jan 2021 10:10:51 +0100
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel@pengutronix.de
 Subject: [PATCH 1/2] i3c: Handle drivers without probe or remove callback
-Date:   Thu, 28 Jan 2021 10:10:31 +0100
-Message-Id: <20210128091032.16952-1-u.kleine-koenig@pengutronix.de>
+Date:   Thu, 28 Jan 2021 10:10:47 +0100
+Message-Id: <20210128091048.17006-1-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
