@@ -2,97 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC3930728C
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6A830728D
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhA1JWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:22:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232481AbhA1JSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:18:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF7764DD1;
-        Thu, 28 Jan 2021 09:17:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611825463;
-        bh=KLm4wo+HtSbrNHCKJ/zI7Q/uyUKm613jhpDefnBjTCc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cXApo3jzimWIpxwBqGNdyQEybpPRBqHgQ9PZnSB4RjOhMTb4N/tuILK5r+HTkXCyP
-         rGax5AOP3ylP+wxTqxDpA15r0v+723HndGTP7+4La19gtxP4Iq52eNIlpztEOsEMga
-         oXLhQbKXndEgq5t/8JiB1moGaNFDs23OuBaFGoqBY/PyHFTJ03xAoFpCe5vSg4lJab
-         K+uvzi9o8FqIyLM1BmVaBOYweGroBUfAKC/5MYbnSsGU7E4TdCevBWyedTL6fVWsw0
-         iLxxgg5efWJwReY4IMO+ylkjyQRI9Q2y3kIDJrw/Ip3elfLV6qgZbQbwucXkxM7mSI
-         pPndFJUUeKEgA==
-Date:   Thu, 28 Jan 2021 10:17:41 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH v2 4/7] i2c: i2c-core-acpi: Add i2c_acpi_dev_name()
-Message-ID: <20210128091741.GJ963@ninjato>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-5-djrscally@gmail.com>
- <YAVSf7+iTPNYf5XS@pendragon.ideasonboard.com>
- <CAJZ5v0hUELtKc9CK=z47XQvSAAx=wTWvoVwP-PaMqugaXaCgZQ@mail.gmail.com>
- <20210128090053.GE963@ninjato>
- <7e7a8614-3cdb-e160-b10f-8aa0e11b15e5@gmail.com>
+        id S232542AbhA1JW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:22:59 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2567 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232532AbhA1JTr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:19:47 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DRFGf5zyKzW2PM;
+        Thu, 28 Jan 2021 17:16:58 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 28 Jan 2021 17:18:58 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Thu, 28
+ Jan 2021 17:18:57 +0800
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     <linux-nvme@lists.infradead.org>, Sagi Grimberg <sagi@grimberg.me>,
+        <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@fb.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+Date:   Thu, 28 Jan 2021 17:18:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nywXBoy70X0GaB8B"
-Content-Disposition: inline
-In-Reply-To: <7e7a8614-3cdb-e160-b10f-8aa0e11b15e5@gmail.com>
+In-Reply-To: <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nywXBoy70X0GaB8B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-
-> Just to clarify; "open-code" meaning inline it in the caller like
-> Laurent said, right?
-
-Yes.
-
-
---nywXBoy70X0GaB8B
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmASgTUACgkQFA3kzBSg
-KbYp/Q/9F/nRbn3nFjrt5FM2/iCyVjGf2gclcksrI/3A5i31jDJYjPUOXw2f5kWH
-Viv6eRE1An7Obe8s3ia3ZkL2xVHI0AHK4KFwPDTOdN8svzXqeNAL96wSRowmCoPI
-jQoFthGD2Oq1/FyAPw/yOp1GSm+JwG+D0PNz6iJ1f7MgICd1INqyFd81B370RAyV
-SzKhKLNS5jZG3S25N+M/EWcs3sEz4/oeTvD8RX7Ir593o3fW7J/z2LJD/6YySpMX
-VypgMsMUn/1iAqOu5vA/Edc3ltiqMFRtjNgjTGlpCzSfsjEDv9hkI3/ZA6Q9XI39
-T6uRnzjRX0LWCO2GInKiRgJ9pFzS2EFrO+Rhr1SShALqdcbLoRCC7qX7ecA+F2bf
-488MZFAEURUnMaY6Yf7Iz2wIFE+EraToQsbW4OICydoqZpX2wfKonpT6JtPHjV3D
-eVYvwLMkIgDd3sNqAj6kt3qP76+DoYSCetryy0teyC6uDnt1Ql01QBn9hHljvhbF
-TCHzO0E/3MyOi1gwadmlQLTJSD+dyD45SYStpP1yTaURXLLV81DDeHZrGe3ao1PN
-AEgHP0XMXVdMMTo2z6gGc7kEtMhfK0Uy8UcWF6VhmsGFtXvtZCa9a/6oYKgky7rT
-99zeypU23JYVD3cfuGlm9hInMH+2Ed7n2F5RWKUbeQm9+H+b378=
-=RtKi
------END PGP SIGNATURE-----
-
---nywXBoy70X0GaB8B--
+On 2021/1/28 15:58, Daniel Wagner wrote:
+> On Thu, Jan 28, 2021 at 09:31:30AM +0800, Chao Leng wrote:
+>>> --- a/drivers/nvme/host/multipath.c
+>>> +++ b/drivers/nvme/host/multipath.c
+>>> @@ -221,7 +221,7 @@ static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
+>>>    	}
+>>>    	for (ns = nvme_next_ns(head, old);
+>>> -	     ns != old;
+>>> +	     ns && ns != old;
+>> nvme_round_robin_path just be called when !"old".
+>> nvme_next_ns should not return NULL when !"old".
+>> It seems unnecessary to add checking "ns".
+> 
+> The problem is when we enter nvme_round_robin_path() and there is no
+> path available. In this case the initialization ns = nvme_next_ns(head,
+> old) could return a NULL pointer."old" should not be NULL, so there is at least one path that is "old".
+It is impossible to return NULL for nvme_next_ns(head, old).
+> .
+> 
