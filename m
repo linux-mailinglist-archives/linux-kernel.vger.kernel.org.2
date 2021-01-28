@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB743073A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1613073A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhA1KWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:22:54 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:46845 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232167AbhA1KWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:22:30 -0500
-Received: by mail-ot1-f44.google.com with SMTP id d1so4656563otl.13;
-        Thu, 28 Jan 2021 02:22:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HDfQ7EgSz4He6IVrUzqy89nGy356H19n/4Ap6Knawyw=;
-        b=ap5O9cqTcOiSHFhFdbRrv53BN6XowdeTuBT1GP9VPeY+ZNabvIwActdIi7PQ47tvbV
-         /YDmcZ+nY6gZKcmfEaLUvP6zF6DoF1yYK3FCj3QG/gKoALMMKIy966Veb/uk7vYW16fe
-         A5piiN825Sk5u/MZFMC+Q9bVHmuGzttXQUFPZPzhWtx6wXVGJJeeIXY8y3/pdvX4ASAC
-         lFXndUvDktmKSbPDzPVRRCO6XTv9Ru1uvOG1CM3k7qDJSNoXw30rxMqWmpPywwOSDUMA
-         Oer+6NQ9jcBMfpHHEuzTOSlweRtKkArqFojZ1wjhJUdrcBNk8C6H/obzrnzVdQ3/xqrM
-         GGyw==
-X-Gm-Message-State: AOAM532mflGamN0r49fluHL4KmEJBqCZzAZg4X2HpYsQuGNmRcMFBLrj
-        OfxVkla/cS6HJNSzKNMFeC7s4Ouy8mfgNCp43XNiwJSLdck=
-X-Google-Smtp-Source: ABdhPJwJviHVEMHN6dwg9pHl9sFzPeOTWi/Tyw7MUMRzUkqGbWVHXybuLc31QSYFbmu849bxozre+7WWIBRJddZRpNc=
-X-Received: by 2002:a05:6830:2313:: with SMTP id u19mr11117098ote.321.1611829309173;
- Thu, 28 Jan 2021 02:21:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com> <20210128071133.60335-30-chaitanya.kulkarni@wdc.com>
-In-Reply-To: <20210128071133.60335-30-chaitanya.kulkarni@wdc.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 28 Jan 2021 11:21:36 +0100
-Message-ID: <CAJZ5v0h01e4LgV0c5FxLorcc6iFW2LVzC=hJcd7LNAJ6D0E8jg@mail.gmail.com>
-Subject: Re: [RFC PATCH 29/34] power/swap: use bio_new in hib_submit_io
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        drbd-dev@lists.linbit.com, xen-devel@lists.xenproject.org,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        target-devel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, Linux PM <linux-pm@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        roger.pau@citrix.com, Minchan Kim <minchan@kernel.org>,
-        ngupta@vflare.org,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
-        jaegeuk@kernel.org, Eric Biggers <ebiggers@kernel.org>,
-        djwong@kernel.org, shaggy@kernel.org, konishi.ryusuke@gmail.com,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>, damien.lemoal@wdc.com,
-        naohiro.aota@wdc.com, jth@kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        id S232509AbhA1KYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:24:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49358 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232311AbhA1KXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 05:23:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C0515ACC6;
+        Thu, 28 Jan 2021 10:22:38 +0000 (UTC)
+Date:   Thu, 28 Jan 2021 11:22:34 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Alex Shi <alex.shi@linux.alibaba.com>, asml.silence@gmail.com,
-        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
-        osandov@fb.com, Bart Van Assche <bvanassche@acm.org>,
-        jefflexu@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1 2/2] mm/page_alloc: count CMA pages per zone and print
+ them in /proc/zoneinfo
+Message-ID: <20210128102234.GB5250@localhost.localdomain>
+References: <20210127101813.6370-1-david@redhat.com>
+ <20210127101813.6370-3-david@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127101813.6370-3-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 8:21 AM Chaitanya Kulkarni
-<chaitanya.kulkarni@wdc.com> wrote:
->
+On Wed, Jan 27, 2021 at 11:18:13AM +0100, David Hildenbrand wrote:
+> Let's count the number of CMA pages per zone and print them in
+> /proc/zoneinfo.
+> 
+> Having access to the total number of CMA pages per zone is helpful for
+> debugging purposes to know where exactly the CMA pages ended up, and to
+> figure out how many pages of a zone might behave differently (e.g., like
+> ZONE_MOVABLE) - even after some of these pages might already have been
+> allocated.
 
-Please explain in the changelog why making this change is a good idea.
+My knowledge of CMA tends to be quite low, actually I though that CMA
+was somehow tied to ZONE_MOVABLE.
 
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+I see how tracking CMA pages per zona might give you a clue, but what do
+you mean by "might behave differently - even after some of these pages might
+already have been allocated"
+
+> For now, we are only able to get the global nr+free cma pages from
+> /proc/meminfo and the free cma pages per zone from /proc/zoneinfo.
+> 
+> Note: Track/print that information even without CONFIG_CMA, similar to
+> "nr_free_cma" in /proc/zoneinfo. This is different to /proc/meminfo -
+> maybe we want to make that consistent in the future (however, changing
+> /proc/zoneinfo output might uglify the code a bit).
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  kernel/power/swap.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-> index c73f2e295167..e92e36c053a6 100644
-> --- a/kernel/power/swap.c
-> +++ b/kernel/power/swap.c
-> @@ -271,13 +271,12 @@ static int hib_submit_io(int op, int op_flags, pgoff_t page_off, void *addr,
->                 struct hib_bio_batch *hb)
->  {
->         struct page *page = virt_to_page(addr);
-> +       sector_t sect = page_off * (PAGE_SIZE >> 9);
->         struct bio *bio;
->         int error = 0;
->
-> -       bio = bio_alloc(GFP_NOIO | __GFP_HIGH, 1);
-> -       bio->bi_iter.bi_sector = page_off * (PAGE_SIZE >> 9);
-> -       bio_set_dev(bio, hib_resume_bdev);
-> -       bio_set_op_attrs(bio, op, op_flags);
-> +       bio = bio_new(hib_resume_bdev, sect, op, op_flags, 1,
-> +                     GFP_NOIO | __GFP_HIGH);
->
->         if (bio_add_page(bio, page, PAGE_SIZE, 0) < PAGE_SIZE) {
->                 pr_err("Adding page to bio failed at %llu\n",
-> --
-> 2.22.1
->
+>  include/linux/mmzone.h | 4 ++++
+>  mm/page_alloc.c        | 1 +
+>  mm/vmstat.c            | 6 ++++--
+>  3 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index ae588b2f87ef..3bc18c9976fd 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -503,6 +503,9 @@ struct zone {
+>  	 * bootmem allocator):
+>  	 *	managed_pages = present_pages - reserved_pages;
+>  	 *
+> +	 * cma pages is present pages that are assigned for CMA use
+> +	 * (MIGRATE_CMA).
+> +	 *
+>  	 * So present_pages may be used by memory hotplug or memory power
+>  	 * management logic to figure out unmanaged pages by checking
+>  	 * (present_pages - managed_pages). And managed_pages should be used
+> @@ -527,6 +530,7 @@ struct zone {
+>  	atomic_long_t		managed_pages;
+>  	unsigned long		spanned_pages;
+>  	unsigned long		present_pages;
+> +	unsigned long		cma_pages;
+
+I see that NR_FREE_CMA_PAGES is there even without CONFIG_CMA, as you
+said, but I am not sure about adding size to a zone unconditionally.
+I mean, it is not terrible as IIRC, the maximum MAX_NUMNODES can get
+is 1024, and on x86_64 that would be (1024 * 4 zones) * 8 = 32K.
+So not a big deal, but still.
+
+Besides following NR_FREE_CMA_PAGES, is there any reason for not doing:
+
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 1e22d96734e0..2d8a830d168d 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -436,6 +436,9 @@ struct zone {
+        unsigned long           managed_pages;
+        unsigned long           spanned_pages;
+        unsigned long           present_pages;
++#ifdef CONFIG_CMA
++       unsigned long           cma_pages;
++#endif
+ 
+        const char              *name;
+ 
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 8ba0870ecddd..5757df4bfd45 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1559,13 +1559,15 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+                   "\n        spanned  %lu"
+                   "\n        present  %lu"
+                   "\n        managed  %lu",
++                  "\n        cma      %lu",
+                   zone_page_state(zone, NR_FREE_PAGES),
+                   min_wmark_pages(zone),
+                   low_wmark_pages(zone),
+                   high_wmark_pages(zone),
+                   zone->spanned_pages,
+                   zone->present_pages,
+-                  zone->managed_pages);
++                  zone->managed_pages,
++                  IS_ENABLED(CONFIG_CMA) ? zone->cma_pages : 0);
+ 
+        seq_printf(m,
+                   "\n        protection: (%ld",
+
+
+I do not see it that ugly, but just my taste.
+
+
+-- 
+Oscar Salvador
+SUSE L3
