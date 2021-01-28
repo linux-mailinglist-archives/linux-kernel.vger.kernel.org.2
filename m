@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A23307769
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BDC307766
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhA1NrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:47:06 -0500
-Received: from mga09.intel.com ([134.134.136.24]:56365 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231667AbhA1Nq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:46:56 -0500
-IronPort-SDR: S/jExUFEUPWGafhTvwBVB2zW3p0rlZl9MzhnmNSY+L17LcBczu4mc4nJSmCig54KigkSHNOXeK
- tBylchYuqb3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180376739"
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="180376739"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 05:46:14 -0800
-IronPort-SDR: Zr1is76ZWVd6QiItDcAXKLWQeDtkUueBohPTXQs3t29xgXIA/knxciUulYW6G8yEYbROc6SBJO
- OqxUA7hDnVYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
-   d="scan'208";a="409067063"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Jan 2021 05:46:10 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l57cf-0002wW-7w; Thu, 28 Jan 2021 13:46:09 +0000
-Date:   Thu, 28 Jan 2021 21:45:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] pwm: fix semicolon.cocci warnings
-Message-ID: <20210128134537.GA54687@068c7b848bbb>
-References: <202101282111.dfwxyPwI-lkp@intel.com>
+        id S231814AbhA1Nqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:46:44 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2446 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231690AbhA1Nqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 08:46:33 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10SDVrv3053136;
+        Thu, 28 Jan 2021 08:45:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=FIW7EpF0PvahV3vtW9YfNv1yDpDsFfE3dDb87Izovqs=;
+ b=b9OnJFdDla0OmuZGlzbRSdqIfQSepOqj8/Q99er0UuaEP1ENZMmLo6fb7xTA1NHcveIH
+ fquyMPDEGP5i2VocGu6tO8WwtAaokc9l5kzqbQ3Y/iK1KRYgZlU+q0Drx2vA3xmRqLip
+ VHDzrrqFEgEADqgyvoHOPj+o769X6LgSmbOQ8u14kYD/IFn9aeCnlZGT8OmV9F6oz8ap
+ 22klJx397Z5AE0/4+P0qXxIzi/G838Xe7z6qsre49tKIILyhFX1JYS9Npi2GzPuGlXNa
+ cuRp0lSJ236sIJuZ8toACtm6iF2NuKiqbhG7bzJn3angLoLlKn+GNcc74WTmE1VGpg1G Qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36b5te098c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 08:45:46 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10SDWanS057933;
+        Thu, 28 Jan 2021 08:45:46 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36b5te097x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 08:45:45 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10SDajjn024057;
+        Thu, 28 Jan 2021 13:45:45 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02dal.us.ibm.com with ESMTP id 36a4mc9egh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 13:45:44 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10SDjiT533620268
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Jan 2021 13:45:44 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E279AC05E;
+        Thu, 28 Jan 2021 13:45:44 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B8DDAC05B;
+        Thu, 28 Jan 2021 13:45:44 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 28 Jan 2021 13:45:44 +0000 (GMT)
+Subject: Re: [PATCH v4 0/3] Add support for x509 certs with NIST p256 and p192
+ keys
+To:     David Howells <dhowells@redhat.com>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org
+References: <20210128001412.822048-1-stefanb@linux.vnet.ibm.com>
+ <3451836.1611825591@warthog.procyon.org.uk>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <e561f45e-f9be-19a4-478d-15dd003769cd@linux.ibm.com>
+Date:   Thu, 28 Jan 2021 08:45:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202101282111.dfwxyPwI-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3451836.1611825591@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_08:2021-01-28,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 clxscore=1015 mlxscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 spamscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On 1/28/21 4:19 AM, David Howells wrote:
+> This (sub)set is intended to go through the keyrings tree or is it all going
+> through the crypto tree now?
 
-drivers/pwm/pwm-lpc18xx-sct.c:292:2-3: Unneeded semicolon
+
+Patch 1/3 should go through 'crypto', the other ones through 'keyrings'.
+
+    Stefan
 
 
- Remove unneeded semicolon.
+>
+> David
+>
 
-Generated by: scripts/coccinelle/misc/semicolon.cocci
-
-Fixes: e96c0ff4b1e0 ("pwm: Enable compile testing for some of drivers")
-CC: Krzysztof Kozlowski <krzk@kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   76c057c84d286140c6c416c3b4ba832cd1d8984e
-commit: e96c0ff4b1e013a4e9174344b0fcda0d566d3689 pwm: Enable compile testing for some of drivers
-
- pwm-lpc18xx-sct.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/pwm/pwm-lpc18xx-sct.c
-+++ b/drivers/pwm/pwm-lpc18xx-sct.c
-@@ -289,7 +289,7 @@ static int lpc18xx_pwm_request(struct pw
- 		dev_err(lpc18xx_pwm->dev,
- 			"maximum number of simultaneous channels reached\n");
- 		return -EBUSY;
--	};
-+	}
- 
- 	set_bit(event, &lpc18xx_pwm->event_map);
- 	lpc18xx_data->duty_event = event;
