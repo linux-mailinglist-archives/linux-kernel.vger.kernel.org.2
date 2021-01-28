@@ -2,165 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B569230735D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3206530735E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 11:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbhA1KCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 05:02:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhA1KCS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 05:02:18 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E641AC061573;
-        Thu, 28 Jan 2021 02:01:36 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id a8so6798090lfi.8;
-        Thu, 28 Jan 2021 02:01:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=w7zs4vtlCOUzPk4JPVodMGjOwCX7vvMr8Eyh0CtBlKY=;
-        b=aBdiFZ6Y4Kp+nOhlgpCK6Z6WTIvAH7uPf6Dw5GNH8lHwqAWrTPwgv7vL2KYjq02Vzf
-         shdsv89u8LsaAAr4C9B70PX49KyEWjk11sBOUQy5cKQC7sAnotKMqxOnFd5pwGXnuYyy
-         l4f3pSmC2a8RsLkHnRek405USQ2daHF00hHJonK1HWU4GiqNMZaAeTUGMoThii0wUOzP
-         NDy6YjY8kZgEdVBQIdn4njsH+p0ACV44wG9Nd5DeSV8KqfTab60BZgHhtRoUq+xmcC5v
-         I+zA3q+ohcTZQbquqDT8HBeN8YzAWKtplRBAFKkGxorn+I+YQQvbBqrzdDKBAsHw2dtU
-         037A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=w7zs4vtlCOUzPk4JPVodMGjOwCX7vvMr8Eyh0CtBlKY=;
-        b=oQ8AleDfmz1mLGLP5QEKKcjP/PUKYwB+aS7fH3FwnANGjxJFk7GvskSnTPfULf4l6G
-         ckKJ7Mnh0jaD/gwNb+CTdSUR5v/Cs3yfzNVTCfRdG8HbpyVAn13ImK/J2cmSCu8Tqdpm
-         gD5PxQvVwLS5plNfehibC80jKLpAkPNsUGnjVKMnUJwolZVhlQxNtqjmv4csky1H+o5k
-         qj9ZVP3niZKz/dvjz3+CK8AcdU/qPB4tHRz0M6vhNK+IiSXxg84PfQfIkv+1z08DqtQO
-         GdlLd0NmJGDUDgl6mDfhOau77PJav3tMhP7bIOG6gzP8GuERcpIS5OdI+ZtlESzo0pZQ
-         g+5A==
-X-Gm-Message-State: AOAM532suIXNBBI2/3FAc6Z+AeTGtDhMDdeT/CaiQSSmcLpYu6P25wRr
-        oBSb/FOBW/dHJs1kJzJnpvA=
-X-Google-Smtp-Source: ABdhPJzKkeFNRZJelT7Yxb3Qx2K7wJW+lwf6EmPqVdUlg7UlihZ29bW2xvQP6sUABgj7ntHv7PIcuQ==
-X-Received: by 2002:a19:7507:: with SMTP id y7mr6874145lfe.334.1611828094763;
-        Thu, 28 Jan 2021 02:01:34 -0800 (PST)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id y20sm1830647ljh.124.2021.01.28.02.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 02:01:34 -0800 (PST)
-Date:   Thu, 28 Jan 2021 12:01:30 +0200
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Jann Horn <jannh@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        dri-devel@lists.freedesktop.org, Andrei Vagin <avagin@gmail.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Hui Su <sh_def@163.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        kernel-team <kernel-team@android.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linaro-mm-sig@lists.linaro.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH] procfs/dmabuf: Add /proc/<pid>/task/<tid>/dmabuf_fds
-Message-ID: <20210128120130.50aa9a74@eldfell>
-In-Reply-To: <ea04b552-7345-b7d5-60fe-7a22515ea63a@amd.com>
-References: <20210126225138.1823266-1-kaleshsingh@google.com>
-        <CAG48ez2tc_GSPYdgGqTRotUp6NqFoUKdoN_p978+BOLoD_Fdjw@mail.gmail.com>
-        <YBFG/zBxgnapqLAK@dhcp22.suse.cz>
-        <ea04b552-7345-b7d5-60fe-7a22515ea63a@amd.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S232419AbhA1KDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 05:03:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:55722 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231872AbhA1KCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 05:02:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6BA11042;
+        Thu, 28 Jan 2021 02:01:51 -0800 (PST)
+Received: from [10.57.11.243] (unknown [10.57.11.243])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E779B3F766;
+        Thu, 28 Jan 2021 02:01:49 -0800 (PST)
+Subject: Re: [PATCH] drm/lima: add governor data with pre-defined thresholds
+To:     Christian Hewitt <christianshewitt@gmail.com>
+Cc:     Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Steven Price <steven.price@arm.com>
+References: <20210125081804.13016-1-christianshewitt@gmail.com>
+ <9e30a8e1-ef69-5929-17f1-cdb603686495@arm.com>
+ <88ae6467-07fc-2c4e-9db9-a02a00d01347@arm.com>
+ <08B992A3-6A8C-4585-8B0D-EE0DA6C5F4E2@gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <3b38b9ce-e93e-5850-5321-e2208927c36c@arm.com>
+Date:   Thu, 28 Jan 2021 10:01:47 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/EjrvI7yGo=jgR=BTk/_==YI"; protocol="application/pgp-signature"
+In-Reply-To: <08B992A3-6A8C-4585-8B0D-EE0DA6C5F4E2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EjrvI7yGo=jgR=BTk/_==YI
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 27 Jan 2021 12:01:55 +0100
-Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
-
-> Somewhat correct. This interface here really doesn't make sense since=20
-> the file descriptor representation of DMA-buf is only meant to be used=20
-> for short term usage.
->=20
-> E.g. the idea is that you can export a DMA-buf fd from your device=20
-> driver, transfer that to another process and then import it again into a=
-=20
-> device driver.
->=20
-> Keeping a long term reference to a DMA-buf fd sounds like a design bug=20
-> in userspace to me.
-
-Except keeping the fd is exactly what userspace must do if it wishes to
-re-use the buffer without passing a new fd over IPC again. Particularly
-Wayland compositors need to keep the client buffer dmabuf fd open after
-receiving it, so that they can re-import it to EGL to ensure updated
-contents are correctly flushed as EGL has no other API for it.
-
-That is my vague understanding, and what Weston implements. You can say
-it's a bad userspace API design in EGL, but what else can we do?
-
-However, in the particular case of Wayland, the shared dmabufs should
-be accounted to the Wayland client process. OOM-killing the client
-process will eventually free the dmabuf, also the Wayland server
-references to it. Killing the Wayland server (compositor, display
-server) OTOH is something that should not be done as long as there are
-e.g. Wayland clients to be killed.
-
-Unfortunately(?), Wayland clients do not have a reason to keep the
-dmabuf fd open themselves, so they probably close it as soon as it has
-been sent to a display server. So the process that should be OOM-killed
-does not have an open fd for the dmabuf (but probably has something
-else, but not an mmap for CPU). Buffer re-use in Wayland does not
-require re-sending the dmabuf fd over IPC.
-
-(In general, dmabufs are never mmapped for CPU. They are accessed by
-devices.)
 
 
-Thanks,
-pq
+On 1/27/21 7:35 PM, Christian Hewitt wrote:
+> 
+>> On 27 Jan 2021, at 3:11 pm, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> On 1/27/21 10:24 AM, Lukasz Luba wrote:
+>>> Hi Christian,
+>>> On 1/25/21 8:18 AM, Christian Hewitt wrote:
+>>>> This patch adapts the panfrost pre-defined thresholds change [0] to the
+>>>> lima driver to improve real-world performance. The upthreshold value has
+>>>> been set to ramp GPU frequency to max freq faster (compared to panfrost)
+>>>> to compensate for the lower overall performance of utgard devices.
+>>>>
+>>>> [0] https://patchwork.kernel.org/project/dri-devel/patch/20210121170445.19761-1-lukasz.luba@arm.com/
+>>>>
+>>>> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+>>>> ---
+>>>> I have been using Kodi as my test application. If you scroll in library
+>>>> views with hundreds of list items and the panfrost values the slow GPU
+>>>> ramp up is quite noticeable and the GUI feels sluggish. As everything
+>>>> lima runs on is inherently slower than panfrost using devices I believe
+>>>> it's better to ramp up to max freq quicker.
+>>> It's quite low value for the upthreshold, but I believe you have
+>>> experimented and observed that a bit higher (30, 40?) don't work well.
+>>> I don't know the Kodi system, though.
+>>> You can check if the other frequencies are also used in statistics for
+>>> devfreq device:
+>>> cat /sys/class/devfreq/<your_gpu>/trans_stats
+>>> If they are also used, then it OK (better than stuck at min freq).
+>>
+>> I've just realized that your board might suffer a another issue.
+>> Please apply this patch [1] and run your experiments with upthresholds.
+>>
+>> [1] https://lore.kernel.org/lkml/20210127105121.20345-1-lukasz.luba@arm.com/
+> 
+> I’ve included the patch and with unscientific testing it feels snappier with a larger value than
+> before. I did revert back to 45 first, but again this feels sluggish when navigating around the
+> Kodi GUI. My main test is to enter ‘Movies’ in Kodi then start scrolling in a long list. When
+> the GPU ramps up quickly the experience is snappy, but when it ramps more conservatively
+> scrolling feels like it stutters, then (once you hit max freq) it becomes fluid.
+> 
+> WP2:~ # cat /sys/class/devfreq/d00c0000.gpu/trans_stat
+>       From  :   To
+>             : 125000000 250000000 285714285 400000000 500000000 666666666 744000000   time(ms)
+> * 125000000:         0         0         0         0         0         0       264     52720
+>    250000000:         9         0         0         0         0         0        36      3404
+>    285714285:         9         3         0         0         0         0        32      2628
+>    400000000:        18        20        13         0         0         0       191     21140
+>    500000000:        12        12         8        63         0         0        31     10068
+>    666666666:       179         5        16       133        66         0        24     29360
+>    744000000:        37         5         7        46        60       423         0     46016
+> 
+> I’ll send v2 with the value set to 30.
 
---Sig_/EjrvI7yGo=jgR=BTk/_==YI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thank you Christian for re-testing it and attaching the stats. It looks
+good. I'll add my reviewed-by for v2 patch.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmASi3oACgkQI1/ltBGq
-qqdcrA//X9uN75QyHDm8jqei3p8rmD/duy0jDCn6W2DbNy+6VM79pp8ZjqqdpeEp
-ZLe9ivqRVUOCUclKfiG2d0/vdgYwU2xnkWYSz0KUNP5pVE+4nZY3O/SA+SQcefkg
-KwfFhyM0XXm8eTVLVl5h+1dMMQ8tWkXpEwXqed4l0/478wepY8srMWoH3YRBxpiE
-q/PSkaWrRegUA8nYHp65kLVAAgP2kOeylAO/DmmtGye12AGMlNESNJHYuHPyc/wT
-Aos56muFTYYGhkICx+eqTsJBCr8mk32rFyIj/dinUcXUyvbj+sUt9eTZVAazsjjx
-NLC3zr3OSnKjQz2+kkXeGIHqTBCEWXFw3VHsPQLv7pf6XPqxJVoWtgHvzvTVduzo
-3Oxff1eYaBN54Evn1xLWLdEGhqc7wqH6RFYDnKhbOxWmBujXHpdF8Ge5xNfPauBP
-gFAtgtHJIyyu/j+CCCo1z25ToKsGTuiJnbXalIrlmWNeIq8m7XKZ3JjhR3WYZOJU
-MEOXDkeVcodCfo0ZueGvTj5meY6eJ1LIBdWBmT0h1/xA/fBocbRADBFgez42NN5s
-ro5soi7B49KRuSygUPsaSMnjpr32NwCIrQIzGtZQzgJVfRPSdke9ZD1wNle9jAXY
-B7ZbDZmlD1St8rxL+usyhRjZdUoKXjfG8d72ss37EHIhch+3CEQ=
-=oEE0
------END PGP SIGNATURE-----
-
---Sig_/EjrvI7yGo=jgR=BTk/_==YI--
+Regards,
+Lukasz
