@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2301B3076B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E993076C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 14:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhA1NH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 08:07:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        id S231590AbhA1NIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 08:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhA1NHZ (ORCPT
+        with ESMTP id S229616AbhA1NIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 08:07:25 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A840C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:06:45 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id n2so5457216iom.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:06:45 -0800 (PST)
+        Thu, 28 Jan 2021 08:08:31 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A817FC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:07:51 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id x21so5447782iog.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 05:07:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=R5AmyTAxwdCn14G+u2C+YUTCaRy+e3KtKL++CDObPQY=;
-        b=bIInvfI2erl556NcqE26CdvyZS1i0f2lZ4YQ+vrDzBAtJlAQjb0mG73aJqxbAUxrLd
-         twuAXu/a9Tv9a+6hbn1q/eaFYy1yeP2NIRUIcTE+d6Qn+tI9BZn6mmaap9JjDlwCtOWs
-         OCjBhsE7i6beC1aa4nskk1axlHfZPL0NDRFFh6FLshW7htvzO/eveACfWJ50IXjFwpkj
-         C2Gz9CFEMxtk8ZOAIr3jtvIc78zT1CriL5AKz0n5956A2Pghzhd3vsrfGaC/HrBO+W7v
-         dAIDB87NdgeMjoJImIRzQwwLT4TFIBvX+r7hmbKJQs35YcaF6D/ENo1tRokfBB9IduT9
-         4Szw==
+        bh=LGb1aq9paqdFYSvD64IBXTiYrmqFFnd0vb6R7QmmNTg=;
+        b=p70H8AQQYZzDm0nS+E3kN9R09LzpmxMwRxrpvEccPjOUfvFXBjt1q4JBdbWzJSvcYc
+         ksDiAUoEjSre7VFBYg+r1ryjHI+2Iab1RNWdZ/fkHU2q9BcrAqtSQKeTQIFxO2SEBy6e
+         yKf/UFaaIQ7RpbM/eYiaeGnjFBmudkayLm9jBbee+Pm9Y/Paf4UDgBN5rFcfp4bqvBtY
+         dYQGsoj/+GA5/GssZIpTHEONshpef72WaRgEdDMgO/qD8llT9nKvhJAcmb8OBiRk4j2T
+         Dd5fXexd00IypeSHicTLDu8zefeGoxqkDzAddmqIJMGBqBEJbUkQr6u4+7ck3YRKsbp3
+         B4kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=R5AmyTAxwdCn14G+u2C+YUTCaRy+e3KtKL++CDObPQY=;
-        b=cJgSdKmJNlb8LNwfC6x9cBO8T3X1jiruUxu9Vm2yABP76syJWF3UP22T3SrY7+QFS3
-         FU/EStmlmy6+WQ5sLo9TXucXqgIGKSA9K8xZl3PdFPQPsUknSv5ZLG1ymf539QiMXv5w
-         bms/DESpix0mn+1+ez0cL3bgRX6QmQZI2WjqPT2oI3l1Ej3KqjK42qgMd/2+ft7TC9NJ
-         hvyR8MIbOIAwRu31e+L8OQi3ZRMNwDK0PSqzXR31jiVEWHDLxg3WJNQihHzKjZcea5YZ
-         77IIpTByGLWO6HLTM+wJU6I/EfAW5XpRDwVE7JW29zaMxT1Fw8ijDW5D+Nr6RBG4NFB/
-         0J3w==
-X-Gm-Message-State: AOAM5323qDhZIzZBL1FkEOtyfC2u4EQJ5c1zFtZQB6jG/hQF5Fnt0wdt
-        MvPSTsl6lH7s/clsUd37D6QNS6UXTa/dbKnExDM=
-X-Google-Smtp-Source: ABdhPJyNsoTx7kPhpc8DTZ+IGBwljtCc0WwblZh+zMI0ljNcvyzmIay/MEoZEU+D874v7s0hm9z1lQ7urL5rDUOhk1M=
-X-Received: by 2002:a05:6602:224b:: with SMTP id o11mr11251520ioo.10.1611839205042;
- Thu, 28 Jan 2021 05:06:45 -0800 (PST)
+        bh=LGb1aq9paqdFYSvD64IBXTiYrmqFFnd0vb6R7QmmNTg=;
+        b=A0x28Cshb1t5wTCGYt8/nw7jkn7EL21Empn2lIWghsbilKn1S7Vphurr9CK+yXFhDt
+         KMVBBd+/I3Nk+w2li5H07I6KNRYeJ0dASMQg9+qJKOqG8wYga47jMnOnv2p33lKBTJLJ
+         oXeP8zAhaVSLkVGT6swjeIV9RAhS8skkeJdy5BNtIY7aMjd7QOPkVZp5ATt3nOpLqu+B
+         /Wk1KxLSRcC1cA/XKdr05GmxoiX+vFk8QO6c76ODGkpPRiggVc1MLzl7AfyAk5hzeulG
+         f1yaCXXMVhfi2VfMbgehuYojEjejDiNWEj8YCd2J8wBHLt9ziJ+BAO9hCvv9cDibG+6I
+         4r7Q==
+X-Gm-Message-State: AOAM532Yh8D/moag/dg5ZNB6rfM1uT/cfxuN+93aiANYWAWFrpbMc/Rg
+        jhOGsF7sflM0NNsoIq2m1Z61bImJgQO9Ked9+5E=
+X-Google-Smtp-Source: ABdhPJzYt0hhRe2II8tIYn5i7WwQtuPiA4qyA1CTx26ZsMNxFrtmWv3RFGMlg5hB1jiiDdgjmLpWq1FRlyDWjXSxs04=
+X-Received: by 2002:a5e:9612:: with SMTP id a18mr10938738ioq.13.1611839271227;
+ Thu, 28 Jan 2021 05:07:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-3-laoar.shao@gmail.com>
- <0b2f4419-06a9-0b6c-067b-8d0848e78c33@suse.cz>
-In-Reply-To: <0b2f4419-06a9-0b6c-067b-8d0848e78c33@suse.cz>
+References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-4-laoar.shao@gmail.com>
+ <894d55e7-d723-3a03-7a33-10b3ad8f66e8@suse.cz>
+In-Reply-To: <894d55e7-d723-3a03-7a33-10b3ad8f66e8@suse.cz>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 28 Jan 2021 21:06:09 +0800
-Message-ID: <CALOAHbBb3ULnObisew=zv==6NdSD3aMqQ=pKRGOQUeWSghrpqg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm, slub: don't combine pr_err with INFO
+Date:   Thu, 28 Jan 2021 21:07:15 +0800
+Message-ID: <CALOAHbCDCdBpC0iODyvEEuui4uVindnKE+7f0E8CrUYhsgEPDQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] printk: dump full information of page flags in pGp
 To:     Vlastimil Babka <vbabka@suse.cz>
 Cc:     David Hildenbrand <david@redhat.com>,
         Christoph Lameter <cl@linux.com>, penberg@kernel.org,
@@ -69,85 +69,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 6:35 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+On Thu, Jan 28, 2021 at 6:42 PM Vlastimil Babka <vbabka@suse.cz> wrote:
 >
 > On 1/28/21 3:19 AM, Yafang Shao wrote:
-> > It is strange to combine "pr_err" with "INFO", so let's clean them up.
-> > This patch is motivated by David's comment[1].
+> > Currently the pGp only shows the names of page flags, rather than
+> > the full information including section, node, zone, last cpupid and
+> > kasan tag. While it is not easy to parse these information manually
+> > because there're so many flavors. Let's interpret them in pGp as well.
 > >
-> > - before the patch
-> > [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
-> >
-> > - after the patch
+> > - Before the patch,
 > > [ 6312.639698] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(slab|head)
 > >
-> > [1]. https://lore.kernel.org/linux-mm/b9c0f2b6-e9b0-0c36-ebdd-2bc684c5a762@redhat.com/#t
+> > - After the patch,
+> > [ 6315.235783] ERR: Slab 0x000000006d1133b9 objects=33 used=3 fp=0x000000006d0779d1 flags=0x17ffffc0010200(Node 0x0,Zone 0x2,Lastcpupid 0x1fffff,slab|head)
+>
+> node, zone could be decimal?
+
+Make sense to me. Will change it.
+
+>
 > >
 > > Cc: David Hildenbrand <david@redhat.com>
 > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->
-> These are usually printed as part of slab_bug() with its prominent banner. In
-> that sense it's additional details, thus INFO. The details itself are not error,
-> thus ERR makes little sense imho. How about removing the prefix completely, or
-> just replacing with an ident to make it visually part of the BUG report.
->
-
-Thanks for the explanation. I will remove the prefix completely in the
-next version.
-
 > > ---
-> >  mm/slub.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >  lib/vsprintf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 41 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 4b9ab267afbc..18b4474c8fa2 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -615,7 +615,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
-> >       if (!t->addr)
-> >               return;
+> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> > index 3b53c73580c5..bd809f4f1b82 100644
+> > --- a/lib/vsprintf.c
+> > +++ b/lib/vsprintf.c
+> > @@ -1916,6 +1916,46 @@ char *format_flags(char *buf, char *end, unsigned long flags,
+> >       return buf;
+> >  }
 > >
-> > -     pr_err("INFO: %s in %pS age=%lu cpu=%u pid=%d\n",
-> > +     pr_err("ERR: %s in %pS age=%lu cpu=%u pid=%d\n",
-> >              s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
-> >  #ifdef CONFIG_STACKTRACE
-> >       {
-> > @@ -641,7 +641,7 @@ void print_tracking(struct kmem_cache *s, void *object)
-> >
-> >  static void print_page_info(struct page *page)
-> >  {
-> > -     pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
-> > +     pr_err("ERR: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
-> >              page, page->objects, page->inuse, page->freelist,
-> >              page->flags, &page->flags);
-> >
-> > @@ -698,7 +698,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
-> >
-> >       print_page_info(page);
-> >
-> > -     pr_err("INFO: Object 0x%p @offset=%tu fp=0x%p\n\n",
-> > +     pr_err("ERR: Object 0x%p @offset=%tu fp=0x%p\n\n",
-> >              p, p - addr, get_freepointer(s, p));
-> >
-> >       if (s->flags & SLAB_RED_ZONE)
-> > @@ -791,7 +791,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
-> >               end--;
-> >
-> >       slab_bug(s, "%s overwritten", what);
-> > -     pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
-> > +     pr_err("ERR: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
-> >                                       fault, end - 1, fault - addr,
-> >                                       fault[0], value);
-> >       print_trailer(s, page, object);
-> > @@ -3855,7 +3855,7 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
-> >       for_each_object(p, s, addr, page->objects) {
-> >
-> >               if (!test_bit(__obj_to_index(s, addr, p), map)) {
-> > -                     pr_err("INFO: Object 0x%p @offset=%tu\n", p, p - addr);
-> > +                     pr_err("ERR: Object 0x%p @offset=%tu\n", p, p - addr);
-> >                       print_tracking(s, p);
-> >               }
-> >       }
+> > +struct page_flags_layout {
+> > +     int width;
+> > +     int shift;
+> > +     int mask;
+> > +     char *name;
+> > +};
+> > +
+> > +struct page_flags_layout pfl[] = {
+> > +     {SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK, "Section "},
+> > +     {NODES_WIDTH, NODES_PGSHIFT, NODES_MASK, "Node "},
+> > +     {ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK, "Zone "},
+> > +     {LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK, "Lastcpupid "},
+> > +     {KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK, "Kasantag "},
+> > +};
+> > +
+> > +static
+> > +char *format_layout(char *buf, char *end, unsigned long flags)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < sizeof(pfl) / sizeof(struct page_flags_layout) && buf < end; i++) {
+> > +             if (pfl[i].width == 0)
+> > +                     continue;
+> > +
+> > +             buf = string(buf, end, pfl[i].name, default_str_spec);
+> > +
+> > +             if (buf >= end)
+> > +                     break;
+> > +             buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
+> > +                          default_flag_spec);
+> > +
+> > +             if (buf >= end)
+> > +                     break;
+> > +             *buf = ',';
+> > +             buf++;
+> > +     }
+> > +
+> > +     return buf;
+> > +}
+> > +
+> >  static noinline_for_stack
+> >  char *flags_string(char *buf, char *end, void *flags_ptr,
+> >                  struct printf_spec spec, const char *fmt)
+> > @@ -1929,7 +1969,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
+> >       switch (fmt[1]) {
+> >       case 'p':
+> >               flags = *(unsigned long *)flags_ptr;
+> > -             /* Remove zone id */
+> > +             buf = format_layout(buf, end, flags & ~((1UL << NR_PAGEFLAGS) - 1));
+> >               flags &= (1UL << NR_PAGEFLAGS) - 1;
+> >               names = pageflag_names;
+> >               break;
 > >
 >
 
