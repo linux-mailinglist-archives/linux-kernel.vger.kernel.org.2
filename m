@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC6A306885
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8441C306889
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 01:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhA1ASv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 19:18:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231147AbhA1ASh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 19:18:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8167A64DD1;
-        Thu, 28 Jan 2021 00:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611793076;
-        bh=gket93QkDzc1u3zC/b47KPkU1uZdkl7O52e5jROE9r8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hy5Bu3gEdXNa8Sjf4GfI+2liI+Jb7rCNj47E+l1D29lvXaUanjw3Yl12jUxUGj2cq
-         hbKbZI8ApA5V3pFDw9asiLtBVEy7gdy/EAu0RPAMjZ7UN8VvJ8WjbHp0QzRAgzw65O
-         QnK8o2/bkNP0Aa2YVCV1VNFyHbQ+7zHQL9xTGjCw=
-Date:   Wed, 27 Jan 2021 16:17:55 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/hugetlb: Fix use after free when subpool max_hpages
- accounting is not enabled
-Message-Id: <20210127161755.68bf43047007a8a2889e302a@linux-foundation.org>
-In-Reply-To: <d8dfb9e4-1823-cc79-3d8c-18240fdd0567@huawei.com>
-References: <20210126115510.53374-1-linmiaohe@huawei.com>
-        <a5952a6f-aaf4-b542-f9f1-5603658a602a@oracle.com>
-        <d8dfb9e4-1823-cc79-3d8c-18240fdd0567@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231631AbhA1AUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 19:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhA1AT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:19:56 -0500
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FE6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:19:09 -0800 (PST)
+Received: by mail-vs1-xe35.google.com with SMTP id m13so2141386vsr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 16:19:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u/NBHzGj6RokVMEH71m80tmfbt8SHqB96rb6JwsurCk=;
+        b=T/WXzvosHH5zwOZyRYu2qakrrk+itFzF4Wls6TyBLH/P5QqLfYaiAfFyjfg3ZEqXff
+         wC9Y5Okq5Jmd29IAWb/tflaOJ9fqF/4lbVUdn1qFLL7jJeTtHqA3PlDi21HgTuquz/yK
+         QF646m1gMkWvYbLO1YB3IF7BDYN7PHx3T16wg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u/NBHzGj6RokVMEH71m80tmfbt8SHqB96rb6JwsurCk=;
+        b=Lrb18qOSDQ4nb9XLOGg+aMuj+PKTaZcUL6rQlzdN611MPWIy+thO2NZjCocB3tXaM6
+         8qpZfNxIKKUpaf1YK5bjnu7YJgwuRUVt9lZ0C3tiK75E4SgsBrsZoBqui6rPh2/eZXOT
+         JDb7cWymaKB6h1kteaGSDRR6LJM6UGWsB4bF2p+zTPC/dVFyEyWnHenVMBiUIkHCD1Tl
+         hoe5QN4bWMph4AIHsCrsCn5HJ9pohP23Kq3NGWyWka5BAJ5iB9tDso6oIDDCQ72g6SRD
+         3fWH41oHZ0Xlo/6ny2qYmmOr6TBFE1zdW6FHGrQX1ryDwXGzb4H0HJKmULTtMqTlxcnC
+         fPXg==
+X-Gm-Message-State: AOAM530IlDj+2lc5+weno4d4t6BcIsPIMhr5wT8d3JPAZWzMIjcFw0yT
+        CgEEkvEpopI5yATfl6M2cUPtWfppAzqOXhb03ej8YQ==
+X-Google-Smtp-Source: ABdhPJy/H0ngURD41PlYIJ7XMA7FJ+OWK5Oxyz6Jo3NZy9LGRsOIOKdJvEB+XWo1PMjlj+fxLTli5mMGDmUwNPLC5co=
+X-Received: by 2002:a05:6102:34f:: with SMTP id e15mr10058573vsa.21.1611793148398;
+ Wed, 27 Jan 2021 16:19:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20210127144930.2158242-1-robert.foss@linaro.org> <20210127144930.2158242-6-robert.foss@linaro.org>
+In-Reply-To: <20210127144930.2158242-6-robert.foss@linaro.org>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Thu, 28 Jan 2021 08:18:57 +0800
+Message-ID: <CANMq1KCUUg3rozY3=snz7YCNwPbbxZtJftCj-a=QPLp2XFSXwA@mail.gmail.com>
+Subject: Re: [PATCH v3 05/22] media: camss: Refactor VFE HW version support
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, shawnguo@kernel.org,
+        leoyang.li@nxp.com, Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>, Anson.Huang@nxp.com,
+        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 10:08:22 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Wed, Jan 27, 2021 at 10:56 PM Robert Foss <robert.foss@linaro.org> wrote:
+>
+> In order to support Qualcomm ISP hardware architectures that diverge
+> from older architectures, the VFE subdevice driver needs to be refactored
+> to better abstract the different ISP architectures.
+>
+> Gen1 represents the CAMSS ISP architecture. The ISP architecture developed
+> after CAMSS, Titan, will be referred to as Gen2.
+>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+> [snip]
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-8.c b/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
+> new file mode 100644
+> index 000000000000..153e0e20664e
+> --- /dev/null
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-8.c
+> [snip]
+> +/*
+> + * vfe_isr - VFE module interrupt handler
+> + * @irq: Interrupt line
+> + * @dev: VFE device
+> + *
+> + * Return IRQ_HANDLED on success
+> + */
+> +static irqreturn_t vfe_isr(int irq, void *dev)
+> +{
+> +       struct vfe_device *vfe = dev;
+> +       u32 value0, value1;
+> +       int i, j;
+> +
+> +       vfe->ops->isr_read(vfe, &value0, &value1);
+> +
+> +       trace_printk("VFE: status0 = 0x%08x, status1 = 0x%08x\n",
+> +                    value0, value1);
 
-> On 2021/1/27 8:06, Mike Kravetz wrote:
-> > On 1/26/21 3:55 AM, Miaohe Lin wrote:
-> >> When subpool max_hpages accounting is not enabled, used_hpages is always 0
-> >> and might lead to release subpool prematurely because it indicates no pages
-> >> are used now while there might be.
-> > 
-> > It might be good to say that you need min_hpages accounting (min_size mount
-> > option) enabled for this issue to occur.  Or, perhaps say this is possible
-> > if a hugetlbfs filesystem is created with the min_size option and without
-> > the size option.
-> > 
-> > That might better explain the conditions in which a user could see the issue.
-> 
-> So commit log might looks like this ?
-> """
-> If a hugetlbfs filesystem is created with the min_size option and without
-> the size option, used_hpages is always 0 and might lead to release subpool
-> prematurely because it indicates no pages are used now while there might
-> be.
-> 
-> In order to fix this issue, we should check used_hpages == 0 iff max_hpages
-> accounting is enabled. As max_hpages accounting should be enabled in most
-> common case, this is not worth a Cc stable.
-> """
-> 
-> If so, should I send a V2 or Andrew would kindly do this?
-> Many thanks.
+Please do not use trace_printk in production code [1,2], it is only
+meant for debug use. Consider using trace events, or dev_dbg.
 
-I made that change, thanks.
+[1] https://elixir.bootlin.com/linux/v5.8/source/kernel/trace/trace.c#L3158
+[2] https://elixir.bootlin.com/linux/v5.8/source/include/linux/kernel.h#L766
+
+> [snip]
