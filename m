@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1347B3078D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C423078EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhA1O5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:57:33 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:42430 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhA1O41 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:56:27 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l58i1-0004jj-BX; Thu, 28 Jan 2021 14:55:45 +0000
-Subject: Re: [PATCH][next] Input: iqs5xx: Ensure error_bl is initialized on
- error exit path
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210128121903.636652-1-colin.king@canonical.com>
- <20210128143946.GA14625@labundy.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <b5dc0706-1933-fd2b-5dfc-49fb4aed38f1@canonical.com>
-Date:   Thu, 28 Jan 2021 14:55:44 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231263AbhA1O7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:59:55 -0500
+Received: from mga09.intel.com ([134.134.136.24]:62215 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232192AbhA1O6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:58:55 -0500
+IronPort-SDR: pGJEmnsf9FJgT6Ho2gdKWgYjYGzoul/O5PvSHD+KxKS92zo6q+aGB5DnoG6TPLkEQZWeBX+5uR
+ RhYRYD/CWkeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180388448"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="180388448"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 06:57:27 -0800
+IronPort-SDR: qH82HAqKQwaR86kayRDB2iNbmYBa1ThXbpNluaYRhKh3flnSZ9lG4BC436KprlaeKaLnLbiAo8
+ vFE3EgG9KydA==
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="369879800"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 06:57:24 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l58jZ-0004aQ-Rd; Thu, 28 Jan 2021 16:57:21 +0200
+Date:   Thu, 28 Jan 2021 16:57:21 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
+Message-ID: <YBLQ0TjbrV8/Thfb@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210128143946.GA14625@labundy.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/2021 14:39, Jeff LaBundy wrote:
-> Hi Colin,
+On Tue, Jan 26, 2021 at 08:21:01AM +0000, Lee Jones wrote:
+> On Mon, 25 Jan 2021, Andy Shevchenko wrote:
 > 
-> On Thu, Jan 28, 2021 at 12:19:03PM +0000, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Currently if the call to qs5xx_fw_file_parse fails the error return
->> exit path will read the uninitialized variable error_bl. Fix this
->> by ensuring error_bl is initialized to zero.
->>
->> Addresses-Coverity: ("Uninitialized scalar variable")
->> Fixes: 2539da6677b6 ("Input: iqs5xx - preserve bootloader errors")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > This is a second part of the Intel MID outdated platforms removal.
+> > First part is available as immutable branch [1]. The series has functional
+> > and build dependencies, so the mentioned branch should be used as a base
+> > for these changes.
+> > 
+> > Note, that some of the drivers, that arch/x86 covers, seems never appeared
+> > in the upstream (like msic_ocd).
 > 
-> This was fixed in [1]; it just needs pushed.
+> What platforms stop working after this removal?
 
-OK, thanks for letting me know.
-> 
-> [1] https://patchwork.kernel.org/patch/12043701
-> 
->> ---
->>  drivers/input/touchscreen/iqs5xx.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/input/touchscreen/iqs5xx.c b/drivers/input/touchscreen/iqs5xx.c
->> index 05e0c6ff217b..54f30038dca4 100644
->> --- a/drivers/input/touchscreen/iqs5xx.c
->> +++ b/drivers/input/touchscreen/iqs5xx.c
->> @@ -852,7 +852,7 @@ static int iqs5xx_fw_file_parse(struct i2c_client *client,
->>  static int iqs5xx_fw_file_write(struct i2c_client *client, const char *fw_file)
->>  {
->>  	struct iqs5xx_private *iqs5xx = i2c_get_clientdata(client);
->> -	int error, error_bl;
->> +	int error, error_bl = 0;
->>  	u8 *pmap;
->>  
->>  	if (iqs5xx->bl_status == IQS5XX_BL_STATUS_NONE)
->> -- 
->> 2.29.2
->>
-> 
-> Kind regards,
-> Jeff LaBundy
-> 
+Intel Moorstown, Medfield, Clovertrail.
+
+> Are you sure no-one is using them?
+
+Definitely.
+
+> I wouldn't be keen on breaking Janet's PC that she's been using daily
+> and keeping up-to-date since the 90's.
+
+They never were in PCs.
+
+All of them were supported by Android and Janet won't update her phone or even
+Android tablet for sure they never ever run any kind of Linux than Android.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
