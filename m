@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B67307318
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4910F30731D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 10:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhA1Jp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 04:45:57 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:35615 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbhA1Jnr (ORCPT
+        id S231472AbhA1JsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 04:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhA1JpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:43:47 -0500
-Received: by mail-oi1-f180.google.com with SMTP id w8so5403564oie.2;
-        Thu, 28 Jan 2021 01:43:31 -0800 (PST)
+        Thu, 28 Jan 2021 04:45:03 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0C9C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:44:22 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id ox12so6805136ejb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 01:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SoCmbGxN/aO/kMcp3ztDvA2jTIObtogCqRK1+lIzWfA=;
+        b=oqpFU4MLxEO7C9YvlPwddm12aFeciDO382Q47IoKOi3ls4NYbIibDT0ss7Tnf4Bwsm
+         pVE6cROJYJcgp2SoTTjLQ7vPOxSyOexkDPcH639ixiLGoOhsAdX4ABh9Egnke8Lk6HFZ
+         NGE8WDGxpJCFo+BD0BZ8LNXf+fQ9eax70X8RZlQmNUvFQcBWTY3cHvtKv/eumpN+8/a9
+         9PZfWDKV5jUND+Kw/QKWvQ4yhKRm5IGK+XzmVmuykp+GaKvgR1DvCgKrLYnx4RdZKSJu
+         7S+0foOLHxcFNcOVU7MBEquAjyKaAGsMeZgGAAhdnX1YSxULhwpShF+TACdNI/ENrpEo
+         Goxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0UQD5rzLUItAad2Pj4MS3WUwxXLDc49HJgM9YhC9w4E=;
-        b=th6kE6AmrlkBPLYE5c7JauhzVY93ox9Qb/Hb6aSZSJKOFXxA/0HZLCMJXMV2lPWawk
-         jAEMS+A2tukNzwFMMLxl8n7DwoN+fJyYkuZHQj/0qxttIA8n3fwAzCkaA5fKCwymssBj
-         t43hs2W878P7U2Oh/9fAx/PLBC9nT0oeZPZm35l+9pAzhyKUtaIaRBLumwKv1Mdvaggs
-         3iRe+WZ75vcqaWdoTZO82oeJbFrOkPtsrhs1exPi7SJHn2uhIHNorknlH5spclL2jdKu
-         VbhTeTY7jbed3WUUledG4VhVgRM8PvJ6UE8WbniRZtp4lA7LciZzhzTR1IUe30rLpM4p
-         pPRw==
-X-Gm-Message-State: AOAM532eUGrJh75Jf+vurCdiwoNcBCE78ay9Mw/QIKKcOlxcRTPk9iuu
-        L/PQDbs8UOAjswnldt/i2fPraCM5OZ6HWbsp3xI=
-X-Google-Smtp-Source: ABdhPJxoZOzI4xZTWdYHcsO/prgFXGQqxvTaD/BSBKbTP3NgRRBKa973/1xtxNzdsgrR5mdE52PMmLLYLmNTUlRGhEM=
-X-Received: by 2002:aca:1219:: with SMTP id 25mr6108127ois.54.1611826986355;
- Thu, 28 Jan 2021 01:43:06 -0800 (PST)
+        bh=SoCmbGxN/aO/kMcp3ztDvA2jTIObtogCqRK1+lIzWfA=;
+        b=mOpHjwX9UGAYlFtoMeQlxVmLo5LqLbOJq2id9ONKIX7AHHR84L7z72q1WOW29pFB+/
+         PoDZfQLFR2ui3OcHn7I8B2/da6jnztfNXZ0oCj+aiTdc7es4LXFGp83g0GDTZ32oTIx7
+         WmLYII6W+lVdyl6hjEU5nCLHeYHi6MNSSV4UREVzJg79cZefx6AId94NGXYKc36vZ12l
+         QEdgf1mdAgNPsP5VfV2CO9K8AOXsJTkdaUoLjqujQLiy5QYNZPrRomYZl/seHYXCE3xB
+         fDmhtPHv2JM/drBUaG7xLJbyiO80JkgH7REQz+iIvYU+K09DsUDG7H7liQK0y0RJTeLM
+         SUug==
+X-Gm-Message-State: AOAM530ltzVVSyzhHoabCNfCzRnZtl7R/Z0K5sc1LLQ3kiD18+p9G6qL
+        l8TjMHeFfERDErLjTsVtbvrkhN8JhaQNfsG3RE48GQ==
+X-Google-Smtp-Source: ABdhPJw+bEQ61E9n+dxT4VZUxb9uxr8oP2NUtJj9jFKlnJGI7qmHaQTDBvD9FryzOOMcwj3liYroiqFH/335Zoi//TQ=
+X-Received: by 2002:a17:907:2632:: with SMTP id aq18mr3193614ejc.445.1611827060831;
+ Thu, 28 Jan 2021 01:44:20 -0800 (PST)
 MIME-Version: 1.0
-References: <1611754972-151016-1-git-send-email-zhangxuezhi3@gmail.com>
- <20210127223222.3lavtl3roc4cabso@kari-VirtualBox> <20210128094258.000012c3@gmail.com>
- <20210128065233.ji4b7ea54ihyu2l5@kari-VirtualBox>
-In-Reply-To: <20210128065233.ji4b7ea54ihyu2l5@kari-VirtualBox>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Jan 2021 10:42:54 +0100
-Message-ID: <CAMuHMdWK0wbMVJNwSW=pafsyjDVg14h2AX=haJeAkyivehP=JQ@mail.gmail.com>
-Subject: Re: [PATCH v10] staging: fbtft: add tearing signal detect
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     carlis <zhangxuezhi3@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Colin King <colin.king@canonical.com>,
-        oliver.graute@kococonnector.com, zhangxuezhi1@yulong.com,
-        mh12gx2825@gmail.com, Stefano Brivio <sbrivio@redhat.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210128081030.2345998-1-hsiufangho@google.com>
+ <CAMpxmJWMMMNYj-U3WXGBa2GOO1xLze44ABnxnBo6-owgUwWwog@mail.gmail.com> <YBJ/3UuIMyfjpMHg@kroah.com>
+In-Reply-To: <YBJ/3UuIMyfjpMHg@kroah.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 28 Jan 2021 10:44:10 +0100
+Message-ID: <CAMpxmJXejQjbR1qZEYTcyrFUYivJ5_U0Tchmh5V4ZqOi5NK=7A@mail.gmail.com>
+Subject: Re: [PATCH] eeprom: at24: Add permission to write_timeout
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jenny Ho <hsiufangho@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kari,
-
-On Thu, Jan 28, 2021 at 7:53 AM Kari Argillander
-<kari.argillander@gmail.com> wrote:
-> On Thu, Jan 28, 2021 at 09:42:58AM +0800, carlis wrote:
-> > On Thu, 28 Jan 2021 00:32:22 +0200
-> > Kari Argillander <kari.argillander@gmail.com> wrote:
-> > > >  #include "fbtft.h"
-> > > >
-> > > >  #define DRVNAME "fb_st7789v"
-> > > > @@ -66,6 +69,32 @@ enum st7789v_command {
-> > > >  #define MADCTL_MX BIT(6) /* bitmask for column address order */
-> > > >  #define MADCTL_MY BIT(7) /* bitmask for page address order */
-> > > >
-> > > > +#define SPI_PANEL_TE_TIMEOUT     400 /* msecs */
-> > > > +static struct mutex te_mutex;/* mutex for set te gpio irq status
-> > > > */
+On Thu, Jan 28, 2021 at 10:12 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jan 28, 2021 at 10:04:42AM +0100, Bartosz Golaszewski wrote:
+> > On Thu, Jan 28, 2021 at 9:10 AM Jenny Ho <hsiufangho@google.com> wrote:
 > > >
-> > > Space after ;
-> > hi, i have fix it in the patch v11
+> > > Need to change timeout time for different use
+> > > cases to prevent I2C error cases. Open the api
+> > > and allow Read/Write permission to write_timeout
 > > >
->
-> Yeah sorry. I accidentally review wrong patch. But mostly stuff are
-> still relevant.
->
-> > > > @@ -82,6 +111,33 @@ enum st7789v_command {
-> > > >   */
-> > > >  static int init_display(struct fbtft_par *par)
-> > > >  {
-> > > > + int rc;
-> > > > + struct device *dev = par->info->device;
-> > > > +
-> > > > + par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0,
-> > > > GPIOD_IN);
-> > > > + if (IS_ERR(par->gpio.te)) {
-> > > > +         rc = PTR_ERR(par->gpio.te);
-> > > > +         dev_err(par->info->device, "Failed to request te
-> > > > gpio: %d\n", rc);
-> > > > +         return rc;
-> > > > + }
+> > > Signed-off-by: Jenny Ho <hsiufangho@google.com>
+> > > ---
+> > >  drivers/misc/eeprom/at24.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > >
-> > > You request with optinal and you still want to error out? We could
-> > > just continue and not care about that error. User will be happier if
-> > > device still works somehow.
-
-devm_gpiod_get_index_optional() returns NULL, not an error, if the
-GPIO is not found.  So if IS_ERR() is the right check.
-
-And checks for -EPROBE_DEFER can be handled automatically
-by using dev_err_probe() instead of dev_err().
-
-> > You mean i just delete this dev_err print ?!
-> > like this:
-> >       par->gpio.te = devm_gpiod_get_index_optional(dev, "te",
-> > 0,GPIOD_IN);
-> >         if (IS_ERR(par->gpio.te))
-> >               return PTR_ERR(par->gpio.te);
+> > > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> > > index 926408b41270..39caead4058c 100644
+> > > --- a/drivers/misc/eeprom/at24.c
+> > > +++ b/drivers/misc/eeprom/at24.c
+> > > @@ -117,7 +117,7 @@ MODULE_PARM_DESC(at24_io_limit, "Maximum bytes per I/O (default 128)");
+> > >   * it's important to recover from write timeouts.
+> > >   */
+> > >  static unsigned int at24_write_timeout = 25;
+> > > -module_param_named(write_timeout, at24_write_timeout, uint, 0);
+> > > +module_param_named(write_timeout, at24_write_timeout, uint, 0600);
+> > >  MODULE_PARM_DESC(at24_write_timeout, "Time (in ms) to try writes (default 25)");
+> > >
+> > >  struct at24_chip_data {
+> > > --
+> > > 2.30.0.280.ga3ce27912f-goog
+> > >
+> >
+> > IMO this should be a per-chip device property and not a global module
+> > param. Any chance you could maybe try and extend the driver with a new
+> > property for that?
 >
-> Not exactly. I'm suggesting something like this.
+> This already is a global module parameter :)
 >
-> if (IS_ERR(par->gpio.te) == -EPROBE_DEFER) {
->         return -EPROBE_DEFER;
+
+I know but if we're touching it, then better do the right thing. :)
+
+> But I agree, having it per-device would be much better, a sysfs
+> attribute would easily work for that.
 >
-> if (IS_ERR(par->gpio.te))
->         par-gpio.te = NULL;
->
-> This like beginning of your patch series but the difference is that if
-> EPROBE_DEFER then we will try again later. Any other error and we will
-> just ignore TE gpio. But this is up to you what you want to do. To me
-> this just seems place where this kind of logic can work.
 
-Gr{oetje,eeting}s,
+I was thinking about a generic device property that could be set from
+device tree etc. I doubt there's much need to change this at runtime
+outside of development?
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Bart
