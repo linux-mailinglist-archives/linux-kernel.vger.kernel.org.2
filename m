@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE09307D25
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DA1307D20
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 18:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhA1RzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 12:55:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
+        id S231326AbhA1Ryq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 12:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbhA1RyI (ORCPT
+        with ESMTP id S229817AbhA1RyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 12:54:08 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700CCC061352
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:40 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id f1so8775242lfu.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:40 -0800 (PST)
+        Thu, 28 Jan 2021 12:54:04 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815CEC0612F2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:42 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id u4so5878078ljh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 09:52:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YhHWk0hpFtEKwreT9I82hjXdPuDIowSRXuqfI7wusBw=;
-        b=R9YeBg0DyiIE6kJi5OD9vsC7mHNBKj6kk1eTAc5k+ISlrHTzWAW7L+3rGlBeSJ0wX+
-         aLIU2JTcNa7f/gU1Z94ZetMvrp1C5f+WiaP7yjejfeMwdg86tjMc8go0VwR7UnIl7mvl
-         hCK860uG9MqhEI/MOj1Hy58cWxTE2DelBPtkH0QEHV2qfuLrAIQi/Q+B7cHXc0ctqYuK
-         yzruaO5j7WuAIqxJo8kfGNupvaV6G7N4sebSgIbH5Tdb1E8xWsCVcDvdimdzqx84hNwv
-         +F/6oW36Y6CJ+rjkZkCICnJwRvn+ATN+WgjQN3cZ6DD/dGNhsTT/zelpkldhbNGw2zUP
-         PU6g==
+        bh=9xirdUoG4Ll4lVtpP53/4UjQ/mMXV3s/T44FiAusFTg=;
+        b=HijFpgtDKzCt+F1Vszpyo4UAot2v3Wo7ywl19BCZmF6Jn1zYV92BJIoNi9APoJ5SR8
+         pKszdSR2/6VZ0IiW5D6N3OZwYyPp1Fc2Wi8VRc8/H6RRFK2/T1xvtL6MbvBBnx81aUKo
+         e17S/ZSA4UDGZqfwP3dghScK2HyDSDUvyd0N/u5zwME+lq4WSLzHMFwbeVGBBNDNfK9P
+         vsC/g8N8kXlXWefcBQcJaNkt+kvGTg4CHdK6XqTpvf7MebRIJf0IAFnZ4gUF9YyijdP2
+         4cF+Fe6UKf2xbLLTeNf+codZpf0Z4cbZJnBQ+lozrk8Q6pnN/fNXiL8xTQWKbJWF5mvD
+         wNjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YhHWk0hpFtEKwreT9I82hjXdPuDIowSRXuqfI7wusBw=;
-        b=SX6pVOBLwaJJwX3p9AZVXw5s352t2DT3cTc3PPJQ4DpLG0qE9PXFe8dM70PaAyGmm2
-         /+ZrvVISRiWgz4lvbnchvYrU/X+mkq14Eu5+hWEVRrwpAgLOQ+0Tnv/aY3+f24iy2t/G
-         FdRPgbuH7x+0uQ6keTmzO/amtnYiWYfOj7ejyyTusYh0CHYofiUNMpKoYftGVH8PzjPn
-         X/C4CM1aXjtXM8y+0qMUv0kqDcEIIdi6ktqO1IPfQW0aQefOCHJ/qm9C/KPh8ivd/WKQ
-         LfseeP1vsa3xKDUyTS4nrZqIWcUOqUdaiHmflsWiuoIev8i5LOzJkQeFxF6NNNny3bFy
-         Vzog==
-X-Gm-Message-State: AOAM531vOUM2vkZAZlfdW64S8NXRuLTs5PZegS9BOkmJx7RcI7XbHK2t
-        82rorcbpgprmHQge2HspBw9TMQ==
-X-Google-Smtp-Source: ABdhPJxXq6Enj6CntWrJrW6xnC0/gzPkKOVwIt8Y/oZlEjb+wXCD0OMGAazEx9jh8prgW3NhgdSEuA==
-X-Received: by 2002:ac2:44db:: with SMTP id d27mr118897lfm.248.1611856358975;
-        Thu, 28 Jan 2021 09:52:38 -0800 (PST)
+        bh=9xirdUoG4Ll4lVtpP53/4UjQ/mMXV3s/T44FiAusFTg=;
+        b=FE0FZhelQ2zZfEqQqIqII6y6SnkbEX3AYIrYyNnWcBCFLTlwNwOrlQHSn6ZVALPxnO
+         FtQ7AFFeYNdzJhyMJfNYv8x0dmhAaNWNR83eJt/tqGEnZjobspcSg6iaLBcJy0p4uCTA
+         Q1ThVux3ebERf80yv3KH6pwIOzhMv+Drj8NAgrvVXR31E+lm6uzfoXZpBsQqw4wHLXBO
+         ehK2D5FZV6bio3wW2vFxUp6/Nv0X1+oyfqqwzr3bmJwo3LMLwsHaLnQad0bzokC13IjL
+         E91KnS7zAvcX1Lv3zDuljml45MM+AiMV47M6cjJ2KXJGEmo0KBPkhto5NRFHIpH2DPxQ
+         twqw==
+X-Gm-Message-State: AOAM533/trpPw7DJYtTT7kgavL7he+R31h3vFNrTppge6YGnZ3aW3owc
+        oywJvvZhVCLLR7lItV4YD7dtQg==
+X-Google-Smtp-Source: ABdhPJysn9iMUtZv0ooelD8ZTgrcs6z9oIPbqb0gRaA/8BdgTlXZ/020aKDq/p9mBFGXUP7W9C6wdA==
+X-Received: by 2002:a2e:85ca:: with SMTP id h10mr247977ljj.474.1611856361059;
+        Thu, 28 Jan 2021 09:52:41 -0800 (PST)
 Received: from eriador.lan ([94.25.229.83])
-        by smtp.gmail.com with ESMTPSA id w10sm2216119ljj.37.2021.01.28.09.52.37
+        by smtp.gmail.com with ESMTPSA id w10sm2216119ljj.37.2021.01.28.09.52.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 09:52:38 -0800 (PST)
+        Thu, 28 Jan 2021 09:52:40 -0800 (PST)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -61,9 +61,9 @@ Cc:     linux-arm-msm@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-pci@vger.kernel.org
-Subject: [PATCH v2 4/5] arm64: dtb: qcom: qrb5165-rb5: add bridge@0,0 to power up qca6391 chip
-Date:   Thu, 28 Jan 2021 20:52:24 +0300
-Message-Id: <20210128175225.3102958-5-dmitry.baryshkov@linaro.org>
+Subject: [PATCH v2 5/5] arm64: dts: qcom: Add Bluetooth support on RB5
+Date:   Thu, 28 Jan 2021 20:52:25 +0300
+Message-Id: <20210128175225.3102958-6-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
 References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
@@ -73,39 +73,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If QCA6391 chip (connected to PCIe0) is not powered at the PCIe probe
-time, PCIe0 bus probe will timeout and the device will not be detected.
-So use qca6391 as pcie0's bridge power-domain.  This allows us to make
-sure that QCA6391 chip is powered on before PCIe0 probe happens.
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
+Add Bluetooth support on RB5 using the onboard QCA6391 WLAN+BT chipset.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+[DB: added qca6391 power domain, removed s2f regulator]
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 29 ++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 2b0c1cc9333b..b39a9729395f 100644
+index b39a9729395f..c65c13994a86 100644
 --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
 +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -581,6 +581,18 @@ &pcie0 {
- 	wake-gpio = <&tlmm 81 GPIO_ACTIVE_HIGH>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie0_default_state>;
-+
-+	bridge@0,0 {
-+		compatible = "pci17cb,010b";
-+                reg = <0 0 0 0 0>;
-+
-+                #address-cells = <3>;
-+                #size-cells = <2>;
-+                #interrupt-cells = <1>;
-+
-+		/* Power on QCA639x chip sitting behind this bridge. */
-+		power-domains = <&qca6391>;
-+	};
+@@ -19,6 +19,7 @@ / {
+ 	compatible = "qcom,qrb5165-rb5", "qcom,sm8250";
+ 
+ 	aliases {
++		hsuart0 = &uart6;
+ 		serial0 = &uart12;
+ 		sdhc2 = &sdhc_2;
+ 	};
+@@ -689,6 +690,26 @@ &pm8150_rtc {
+ 	status = "okay";
  };
  
- &pcie0_phy {
++&qup_uart6_default {
++	ctsrx {
++		pins = "gpio16", "gpio19";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	rts {
++		pins = "gpio17";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	tx {
++		pins = "gpio18";
++		drive-strength = <2>;
++		bias-pull-up;
++	};
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
+@@ -1194,6 +1215,14 @@ wlan-en {
+ 	};
+ };
+ 
++&uart6 {
++	status = "okay";
++	bluetooth {
++		compatible = "qcom,qca6390-bt";
++		power-domains = <&qca6391>;
++	};
++};
++
+ &uart12 {
+ 	status = "okay";
+ };
 -- 
 2.29.2
 
