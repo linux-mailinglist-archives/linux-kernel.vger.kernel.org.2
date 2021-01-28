@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D8F3078C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1347B3078D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 16:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhA1Oy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:54:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48588 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232308AbhA1Owi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:52:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611845511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0kDBuWxw3Nb3OaRdHygNvsWhNdY3D1HfTsqS61Zw/Uk=;
-        b=sh3BA1fE2Esny3y6+eOQxcLEsoiZug8IbCXC3EYlCEAjgHEfLgW45Y4T60JH7vEZG72jsO
-        ShVQHDcaTzrYl+6obV84Qd53pJolKzMxX/zMBCyz62T9KWfvXLfTNpkqNSKi+48lyAflxx
-        vAQaRDP11SdpHXo141orj3SfrNTlDGk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 15838AE3C;
-        Thu, 28 Jan 2021 14:51:51 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 15:51:50 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@linux.intel.com
-Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
-Message-ID: <YBLPhkHQ8cXFiY1X@alley>
-References: <20210122081311.GA12834@xsang-OptiPlex-9020>
- <YAr7d6A4CkMpgx+g@alley>
- <YA+gAV1kW8Ru1+Bo@jagdpanzerIV.localdomain>
- <87bldaaxcc.fsf@jogness.linutronix.de>
- <YBJ2CjN2YntC1o3j@jagdpanzerIV.localdomain>
- <87czxpmhe1.fsf@jogness.linutronix.de>
+        id S231925AbhA1O5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:57:33 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42430 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhA1O41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:56:27 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l58i1-0004jj-BX; Thu, 28 Jan 2021 14:55:45 +0000
+Subject: Re: [PATCH][next] Input: iqs5xx: Ensure error_bl is initialized on
+ error exit path
+To:     Jeff LaBundy <jeff@labundy.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210128121903.636652-1-colin.king@canonical.com>
+ <20210128143946.GA14625@labundy.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <b5dc0706-1933-fd2b-5dfc-49fb4aed38f1@canonical.com>
+Date:   Thu, 28 Jan 2021 14:55:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czxpmhe1.fsf@jogness.linutronix.de>
+In-Reply-To: <20210128143946.GA14625@labundy.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-01-28 12:32:46, John Ogness wrote:
-> On 2021-01-28, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
-> >> # modprobe rcutorture onoff_interval=3 onoff_holdoff=30 torture_type=tasks
-> >> 
-> >> (Those are the same modprobe parameters used by the lkp job.)
-> >> 
-> >> After about a minute I see:
-> >> 
-> >> [   47.268292] tasks-torture: rcu_torture_read_exit: Start of episode
-> >> [   51.273365] tasks-torture: rcu_torture_read_exit: End of episode
-> >> [   55.823306] smpboot: do_boot_cpu failed(-1) to wakeup CPU#0
-> >> [   55.824350] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> >> [   55.830661] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> >> [   55.848524] tasks-torture:torture_onoff task: online 0 failed: errno -5
-> >
-> > Just out of curious, this is seen only with the printk commit in
-> > question applied?
+On 28/01/2021 14:39, Jeff LaBundy wrote:
+> Hi Colin,
 > 
-> No. The error messages are not related to the commit. But they are
-> really the only thing printk'ing when the rcu stall happens. So you
-> probably do need to see them in order to reproduce this. (Assuming this
-> is somehow printk related.)
+> On Thu, Jan 28, 2021 at 12:19:03PM +0000, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Currently if the call to qs5xx_fw_file_parse fails the error return
+>> exit path will read the uninitialized variable error_bl. Fix this
+>> by ensuring error_bl is initialized to zero.
+>>
+>> Addresses-Coverity: ("Uninitialized scalar variable")
+>> Fixes: 2539da6677b6 ("Input: iqs5xx - preserve bootloader errors")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> This was fixed in [1]; it just needs pushed.
 
-If you are able to reproduce this, it might be interesting to see
-backtraces from all CPUs when RCU stall gets detected. Or even printing
-all processes, even the sleeping ones.
+OK, thanks for letting me know.
+> 
+> [1] https://patchwork.kernel.org/patch/12043701
+> 
+>> ---
+>>  drivers/input/touchscreen/iqs5xx.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/input/touchscreen/iqs5xx.c b/drivers/input/touchscreen/iqs5xx.c
+>> index 05e0c6ff217b..54f30038dca4 100644
+>> --- a/drivers/input/touchscreen/iqs5xx.c
+>> +++ b/drivers/input/touchscreen/iqs5xx.c
+>> @@ -852,7 +852,7 @@ static int iqs5xx_fw_file_parse(struct i2c_client *client,
+>>  static int iqs5xx_fw_file_write(struct i2c_client *client, const char *fw_file)
+>>  {
+>>  	struct iqs5xx_private *iqs5xx = i2c_get_clientdata(client);
+>> -	int error, error_bl;
+>> +	int error, error_bl = 0;
+>>  	u8 *pmap;
+>>  
+>>  	if (iqs5xx->bl_status == IQS5XX_BL_STATUS_NONE)
+>> -- 
+>> 2.29.2
+>>
+> 
+> Kind regards,
+> Jeff LaBundy
+> 
 
-I am still curious how this could be printk() related.
-
-Best Regards,
-Petr
