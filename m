@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41723077FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C79A3077FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 15:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhA1O0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 09:26:55 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56630 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhA1O0n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 09:26:43 -0500
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10SEO2ih089405;
-        Thu, 28 Jan 2021 23:24:02 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Thu, 28 Jan 2021 23:24:02 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10SEO2oI089396
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 28 Jan 2021 23:24:02 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2] smackfs: restrict bytes count in smackfs write
- functions
-To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc:     andreyknvl@google.com, casey@schaufler-ca.com, jmorris@namei.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, mhocko@suse.com,
-        serge@hallyn.com,
-        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
-References: <5271074f-930a-46e9-8ece-2cc65d45dc19@i-love.sakura.ne.jp>
- <20210128132721.1111920-1-snovitoll@gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <8d66b6fd-81d3-38bd-703f-522a2e2d6fca@i-love.sakura.ne.jp>
-Date:   Thu, 28 Jan 2021 23:24:00 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231314AbhA1OZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 09:25:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231499AbhA1OZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 09:25:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F20B764DD9;
+        Thu, 28 Jan 2021 14:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611843878;
+        bh=IFq9vpqR5FT1gWJTSY1mRcrK90EYte/9qTdUSp00E20=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FyCvc++PNlxfdHVDADvHTQe0UhndyFM2USRsyxhHyBrkJuM+Lly1QYn6mOD6CExrP
+         Ib37ZJ53FE9wKYQvdoipEVQzvPHrkRvoVZM3gf+dU0UiXjsHH2Nzi6OCyZO0hiM/TG
+         GrcSii09dmE7F7ZQjzwiMCTzAeBrHPO1NQXkk8j6yV/kRFBNLPzIfcnfvRy2ErWryL
+         XimDkuMmG5ncXzJmkxCgKTldU4ihfLOW1b/3E0RBB52jlYyyYbztd4vMBJaFizEwF4
+         uX5kW3qw+UIELrPedBsfSEd9bGWNWDuSIz413nqnkVQs6THqHDQZzgFd5yquwpFbcp
+         37i1OrAe3BITg==
+Received: by mail-ot1-f43.google.com with SMTP id d7so5293462otf.3;
+        Thu, 28 Jan 2021 06:24:37 -0800 (PST)
+X-Gm-Message-State: AOAM5329qgzJfcX5GBi2XKpc+tYaZYiU8ucwGhwXN302uyVDjtds8ySw
+        jYPA2uWr3yJwcOgWRQEXBI/fQzeacf99kcgMeQI=
+X-Google-Smtp-Source: ABdhPJyZa8PFWVMcMDD93BJcyrpZNTztUUxS81dsHugIN8S/2CcOdc3k6Yj5Ss8OqDyNEkyGGiQK4erltuiySKq7tgE=
+X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr11872539otc.251.1611843877171;
+ Thu, 28 Jan 2021 06:24:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210128132721.1111920-1-snovitoll@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210116032740.873-1-thunder.leizhen@huawei.com> <20210116032740.873-5-thunder.leizhen@huawei.com>
+In-Reply-To: <20210116032740.873-5-thunder.leizhen@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 28 Jan 2021 15:24:20 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
+Message-ID: <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache controller
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/01/28 22:27, Sabyrzhan Tasbolatov wrote:
->> Doesn't this change break legitimate requests like
->>
->>   char buffer[20000];
->>
->>   memset(buffer, ' ', sizeof(buffer));
->>   memcpy(buffer + sizeof(buffer) - 10, "foo", 3);
->>   write(fd, buffer, sizeof(buffer));
->>
->> ?
-> 
-> It does, in this case. Then I need to patch another version with
-> whitespace stripping before, after label. I just followed the same thing
-> that I see in security/selinux/selinuxfs.c sel_write_enforce() etc.
-> 
-> It has the same memdup_user_nul() and count >= PAGE_SIZE check prior to that.
+On Sat, Jan 16, 2021 at 4:27 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
+> +
+> +static void l3cache_maint_common(u32 range, u32 op_type)
+> +{
+> +       u32 reg;
+> +
+> +       reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
+> +       reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
+> +       reg |= range | op_type;
+> +       reg |= L3_MAINT_STATUS_START;
+> +       writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
 
-Since sel_write_enforce() accepts string representation of an integer value, PAGE_SIZE is sufficient.
-But since smk_write_onlycap() and smk_write_relabel_self() accept list of space-delimited words,
-you need to prove why PAGE_SIZE does not break userspace in your patch.
+Are there contents of L3_MAINT_CTRL that need to be preserved
+across calls and can not be inferred? A 'readl()' is often expensive,
+so it might be more efficient if you can avoid that.
 
-Also, due to the "too small to fail" memory-allocation rule, memdup_user_nul() for
-count < PAGE_SIZE * 8 bytes is "never fails with -ENOMEM unless SIGKILLed by the OOM
-killer". Also, memdup_user_nul() for count >= PAGE_SIZE * (1 << MAX_ORDER) - 1 bytes is
-"never succeeds". Thus, you can safely add
+> +static inline void l3cache_flush_all_nolock(void)
+> +{
+> +       l3cache_maint_common(L3_MAINT_RANGE_ALL, L3_MAINT_TYPE_FLUSH);
+> +}
+> +
+> +static void l3cache_flush_all(void)
+> +{
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&l3cache_lock, flags);
+> +       l3cache_flush_all_nolock();
+> +       spin_unlock_irqrestore(&l3cache_lock, flags);
+> +}
 
-	if (count >= PAGE_SIZE * (1 << MAX_ORDER) - 1)
-		return -EINVAL; // or -ENOMEM if you want compatibility
+I see that cache-l2x0 uses raw_spin_lock_irqsave() instead of
+spin_lock_irqsave(), to avoid preemption in the middle of a cache
+operation. This is probably a good idea here as well.
 
-to smackfs write functions. But it is a strange requirement that the caller of
-memdup_user_nul() has to be aware of upper limit in a way that we won't hit
+I also see that l2x0 uses readl_relaxed(), to avoid a deadlock
+in l2x0_cache_sync(). This may also be beneficial for performance
+reasons, so it might be helpful to compare performance
+overhead. On the other hand, readl()/writel() are usually the
+safe choice, as those avoid the need to argue over whether
+the relaxed versions are safe in all corner cases.
 
-	/*
-	 * There are several places where we assume that the order value is sane
-	 * so bail out early if the request is out of bound.
-	 */
-	if (unlikely(order >= MAX_ORDER)) {
-		WARN_ON_ONCE(!(gfp_mask & __GFP_NOWARN));
-		return NULL;
-	}
+> +static int __init l3cache_init(void)
+> +{
+> +       u32 reg;
+> +       struct device_node *node;
+> +
+> +       node = of_find_matching_node(NULL, l3cache_ids);
+> +       if (!node)
+> +               return -ENODEV;
 
-path. memdup_user_nul() side should do
+I think the initcall should return '0' to indicate success when running
+a kernel with this driver built-in on a platform that does not have
+this device.
 
-	if (count >= PAGE_SIZE * (1 << MAX_ORDER) - 1)
-		return -ENOMEM;
+> diff --git a/arch/arm/mm/cache-kunpeng-l3.h b/arch/arm/mm/cache-kunpeng-l3.h
+> new file mode 100644
+> index 000000000000000..9ef6a53e7d4db49
+> --- /dev/null
+> +++ b/arch/arm/mm/cache-kunpeng-l3.h
+> @@ -0,0 +1,30 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __CACHE_KUNPENG_L3_H
+> +#define __CACHE_KUNPENG_L3_H
+> +
+> +#define L3_CACHE_LINE_SHITF            6
 
-check and return -ENOMEM if memdup_user_nul() does not want to use __GFP_NOWARN.
-I still believe that memdup_user_nul() side should be fixed.
+I would suggest moving the contents of the header file into the .c file,
+since there is only a single user of these macros.
 
+          Arnd
