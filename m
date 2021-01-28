@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25B3307197
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B29A3071A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 09:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhA1IfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 03:35:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbhA1Idi (ORCPT
+        id S231879AbhA1IhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 03:37:15 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:45074 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231561AbhA1Ig2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 03:33:38 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598B0C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:32:58 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id n18so2576813vsa.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 00:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RYzJJ+GDoVT+oxwms9uCAe+M5WMBmADotrwHjh34zKA=;
-        b=KVbix2aDBGlz8oq/L1j44y4bFJvMxmMkjnjAj4TOJmVVIFxxmWLM2EVez23JnHzOL4
-         AvLJgvU6QlQphxeeO5piGo3ZD0GY7yD9kwmDr8N7IDe75eOiJelG6xfrSinMS4EqmZWl
-         /8Lx0h4xwa3yEOWKt4Dsmf8MFI+AtODjuAGlI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RYzJJ+GDoVT+oxwms9uCAe+M5WMBmADotrwHjh34zKA=;
-        b=rmCzjEzKUV2ddIiEoHdd2j6k7mi1UwA5JsUA52E5nzETUV+JSFFiokcTK9/qMlwmZJ
-         XStnWZtpOk8ED8xXQnVyrZS3WjWfeD4yLzPc3BMoxgTowpL6F4AXN+3YzvBqsBxM4Fbg
-         wfUF4NDMYdlD7593vBZocPTLSD/uKRc/k0N9A6ZpWXzSoIvasoNhoKuFcEF2ffc1EOVR
-         jhru9AgDEwPNNw9+CRqA7gJWad2OR3RoPWQnJVH+P3VH0anWyTsRmcXbssVVTWSvhfRB
-         fpKiyPKLwVNV4tgJY2VBQXF5ij0UV1HH84z66BinfnzIxF13VgcMXjLYgHxoTs9ouC70
-         UQYw==
-X-Gm-Message-State: AOAM530TfNRN72SZYl9EDnJcF3KXWx4hVNamDOWsEixL/Ws8vT+x5eMx
-        LG5gMbAjSR0Obp9kfpf4EAcUioXEFXZDypMG2Xv70g==
-X-Google-Smtp-Source: ABdhPJynZ/gSFd6TRD0z5IRxsB8lpPJ+iK3ni4FWpPdpVggGM9VvATV6wqo8FB8tBKwZ3Hl6uM1rQQhtnOj8tjZF56w=
-X-Received: by 2002:a67:ea05:: with SMTP id g5mr10799454vso.47.1611822777582;
- Thu, 28 Jan 2021 00:32:57 -0800 (PST)
-MIME-Version: 1.0
-References: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
-In-Reply-To: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 28 Jan 2021 09:32:47 +0100
-Message-ID: <CAJfpegtDbDzSCgv-D66-5dAA=pDxMGN_aMTVcNPzWNibt2smLw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] parser: add unsigned int parser
-To:     bingjingc <bingjingc@synology.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cccheng@synology.com, robbieko@synology.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 28 Jan 2021 03:36:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UN7j3SL_1611822913;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN7j3SL_1611822913)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 Jan 2021 16:35:30 +0800
+From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Abaci Team <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] bpf: Simplify bool conversion
+Date:   Thu, 28 Jan 2021 16:35:12 +0800
+Message-Id: <1611822912-3746-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 3:21 AM bingjingc <bingjingc@synology.com> wrote:
->
-> From: BingJing Chang <bingjingc@synology.com>
->
-> Will be used by fs parsing options
->
-> Reviewed-by: Robbie Ko<robbieko@synology.com>
-> Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-> Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> ---
->  fs/isofs/inode.c       | 16 ++--------------
->  fs/udf/super.c         | 16 ++--------------
->  include/linux/parser.h |  1 +
->  lib/parser.c           | 22 ++++++++++++++++++++++
->  4 files changed, 27 insertions(+), 28 deletions(-)
->
-> diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-> index 342ac19..21edc42 100644
-> --- a/fs/isofs/inode.c
-> +++ b/fs/isofs/inode.c
-> @@ -335,18 +335,6 @@ static const match_table_t tokens = {
->         {Opt_err, NULL}
->  };
->
-> -static int isofs_match_uint(substring_t *s, unsigned int *res)
-> -{
-> -       int err = -ENOMEM;
-> -       char *buf = match_strdup(s);
-> -
-> -       if (buf) {
-> -               err = kstrtouint(buf, 10, res);
-> -               kfree(buf);
-> -       }
-> -       return err;
-> -}
+Fix the following coccicheck warning:
+./tools/perf/builtin-script.c:2789:36-41: WARNING: conversion to bool
+not needed here
+./tools/perf/builtin-script.c:3237:48-53: WARNING: conversion to bool
+not needed here
 
-I don't see how adding this function and removing it in the same
-series makes any sense.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Suggested-by: Yang Li <oswb@linux.alibaba.com>
+Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+---
+ tools/perf/builtin-script.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Why not make this the first patch in the series, simplifying everything?
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 42dad4a..3646a1c 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2786,7 +2786,7 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
+ 				break;
+ 		}
+ 		if (i == imax && strcmp(tok, "flags") == 0) {
+-			print_flags = change == REMOVE ? false : true;
++			print_flags = change != REMOVE;
+ 			continue;
+ 		}
+ 		if (i == imax) {
+@@ -3234,7 +3234,7 @@ static char *get_script_path(const char *script_root, const char *suffix)
+ 
+ static bool is_top_script(const char *script_path)
+ {
+-	return ends_with(script_path, "top") == NULL ? false : true;
++	return ends_with(script_path, "top") != NULL;
+ }
+ 
+ static int has_required_arg(char *script_path)
+-- 
+1.8.3.1
 
-And while at it the referenced fuse implementation can also be
-converted (as a separate patch).
-
-Thanks,
-Miklos
