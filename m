@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04250308143
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFB2308157
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 23:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhA1WnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 17:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbhA1Wmq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 17:42:46 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0016C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:42:04 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id s15so4166903plr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 14:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=McnjkaGHWATkV0jPqlQmUTtHB9iU9HWTeU2cSJwi84A=;
-        b=tQPKEFMnJZmCXBduEudkWaX83ib2TiRf3Igob8OXDg6VXJKWGl1566ydrjoxk2FPsQ
-         Y8u6I76f8SGO9HQjZ8shICMC/Bk51eDzHiJ9TVaBDDhmoA61ocrnFNf9FTIr/VTQT5ad
-         1DAdZ0LLwG43UOaY0UCeKpRfKRc62wIvm8o92IObiNQoMb7lZx/rWppnmSXg1TCXg9RS
-         yHFDoXveC3AbILPsapop9hfB/6FZSLT8rXLKL29vZa59O3nW/fn01jZxw2yfqnYYy+ZM
-         hYLyY8b7jjDwEpzL8nWabPv5B9ApTRYiHt4nT4pfU5QeioNduv9y7MZm8GTJul6D/s+J
-         Pb6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=McnjkaGHWATkV0jPqlQmUTtHB9iU9HWTeU2cSJwi84A=;
-        b=rZ3wbIFqhZyld9MH3nm1X7wKaDeAf8T4ihUQcsbxZjRPn+3FURIQlcRXM7IrRKN4nk
-         W10D2sJJaiwzgNsjAfo9xV62PSUT/C/t/jolWpmEPxH0vaRnTYf2u+r2G0ENZg2t6hRv
-         qYlHZhm+tVbCwiE2eceGHQ/Fn3WvjNm4AkWCiWASgrymeLO6PGOTh4IFT9qbZc0ICzuk
-         +tRDDHmPmCrloqKtQ9F+Cot2C/bBh27Br1KgXyKjOTjEtRp4BwSnOEVXrJl3DtraSXDP
-         71YUwTnjXS14otJpw4VOcXiWX4e+2HfHm0onnCUM0qR40If0dNVOJQELArEnXW2VeNbT
-         94Zg==
-X-Gm-Message-State: AOAM532nE1yXIr0Dl2xJmi8C2aUYXPuWDpWVjikVFNcxE3Gw8Lbb5j0K
-        TbIZtQoYvL6NyDBzIaK09tzCsg==
-X-Google-Smtp-Source: ABdhPJxst2cQZT2YMKulIIFrlFl9VtJ7ncb9Gj95d+gXBoZamVjIPiIkLDl6gle204yu0TwwFzs35w==
-X-Received: by 2002:a17:902:7783:b029:df:fa69:3a34 with SMTP id o3-20020a1709027783b02900dffa693a34mr1563200pll.21.1611873724125;
-        Thu, 28 Jan 2021 14:42:04 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id s1sm5921879pjg.17.2021.01.28.14.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 14:42:03 -0800 (PST)
-Date:   Thu, 28 Jan 2021 14:42:02 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-cc:     david@redhat.com, vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mm, slub: use pGp to print page flags
-In-Reply-To: <20210128021947.22877-2-laoar.shao@gmail.com>
-Message-ID: <5c35e43d-2cc4-13de-845f-bd8d3e6e8f0@google.com>
-References: <20210128021947.22877-1-laoar.shao@gmail.com> <20210128021947.22877-2-laoar.shao@gmail.com>
+        id S231695AbhA1WqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 17:46:07 -0500
+Received: from ms.lwn.net ([45.79.88.28]:48302 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231645AbhA1Wo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 17:44:26 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 087F16178;
+        Thu, 28 Jan 2021 22:43:41 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 087F16178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1611873822; bh=67GimENfGGoxfIG5suESaGX/DNyL4yUs9MPaPa/XKCY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=myWxMyg+YGMABkeWjiIeDvspCBLwnuOiEJfjNdr4ZOV5CSOM4DT0QKn/Ac0uaX/BH
+         /swK4x7SXrhvVd+qFySvX9DTR6P+R2opO9csBrtqL/jQV5jD9vp9NpnKtucfQbloZ/
+         LwRjzvR4HVv/Kmc4fgf90kWu7enozS7/D3YsiD3vAmVGwuWv3IDoGAVOfwkptvgrsO
+         sZHnkcpewN3wDQSBqdM3Abrg/Dv6eNH7GkkygufFk2dqvnM2Cdhgrxm6l6fa/QJtIw
+         vUwY1gs6vQmLEEYNKNZnK5fv6Pi3N0UFiwsVAEH7UxceR/5u5VPN1qYKUtClUweUOT
+         XoPe9xTc9RK5w==
+Date:   Thu, 28 Jan 2021 15:43:40 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Milan Lakhani <milan.lakhani@codethink.co.uk>
+Cc:     lukas.bulwahn@gmail.com, sudip.mukherjee@codethink.co.uk,
+        linux-safety@lists.elisa.tech, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, harryxiyou@gmail.com,
+        alex.shi@linux.alibaba.com, robh@kernel.org
+Subject: Re: [PATCH] docs: Update DTB format references
+Message-ID: <20210128154340.2b10a06f@lwn.net>
+In-Reply-To: <1611149511-4990-1-git-send-email-milan.lakhani@codethink.co.uk>
+References: <1611149511-4990-1-git-send-email-milan.lakhani@codethink.co.uk>
+Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021, Yafang Shao wrote:
+On Wed, 20 Jan 2021 13:31:51 +0000
+Milan Lakhani <milan.lakhani@codethink.co.uk> wrote:
 
-> As pGp has been already introduced in printk, we'd better use it to make
-> the output human readable.
+> There were two references to devicetree/booting-without-of.rst (which has
+> been removed) for DTB format information, and
+> devicetree/usage-model.rst pointed to
+> https://elinux.org/Device_Tree_Usage. Change all three of these references to
+> https://www.devicetree.org/specifications/.
 > 
-> Before this change, the output is,
-> [ 6155.716018] INFO: Slab 0x000000004027dd4f objects=33 used=3 fp=0x000000008cd1579c flags=0x17ffffc0010200
-> 
-> While after this change, the output is,
-> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
+> ---
+>  Documentation/arm/booting.rst                | 2 +-
+>  Documentation/devicetree/usage-model.rst     | 2 +-
+>  Documentation/translations/zh_CN/arm/Booting | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 
-Acked-by: David Rientjes <rientjes@google.com>
+Applied, thanks.
+
+jon
