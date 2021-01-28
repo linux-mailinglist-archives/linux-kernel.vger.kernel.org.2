@@ -2,158 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE368306C10
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF34306C12
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 05:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhA1EOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 23:14:40 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53312 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231247AbhA1EO1 (ORCPT
+        id S231318AbhA1EO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 23:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhA1EO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:14:27 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10S42g3c153480;
-        Wed, 27 Jan 2021 23:13:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yuVzlj1KaxSV483KKx6/iP8+B9liUYCdNpO7hs9E9yY=;
- b=I+DXyX1RuBn8aN5ukT7hxEl3AX0MhyTA5GoiZp9DeJxHyjM99abR7lM01Y2bGvB/Fr9h
- MNplPBdiNU2CLDemgBwhg+tY1XOqPbmNNjEcAy1/LTmxAp6wklsETWv6IhXzM06fuOkF
- ondvimUxUeCxF30gujOh7TdPdk3pX4PMT6tVW9levvCk5y7enmEzz9017sf2lALHWBXc
- Ttbx8vKm53wluFpfwgA1zKJuc9OMyB8bJYWVkYHIDbeBvnwscEmCfhicZ6eqGJUcHw9/
- MlBVdWs8wHxHOKAR8mSm13N9gS0TY5e+nNU+gpMy3WhiHF5NN+RV2cHbL2iiQSgAFuZh Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36b4g9b193-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 23:13:23 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10S43P9L157071;
-        Wed, 27 Jan 2021 23:13:22 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36b4g9b18u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jan 2021 23:13:22 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10S3vAvU024647;
-        Thu, 28 Jan 2021 04:13:21 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma04dal.us.ibm.com with ESMTP id 36agvf0wx7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 04:13:21 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10S4DKht35651936
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Jan 2021 04:13:20 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C48F3124053;
-        Thu, 28 Jan 2021 04:13:20 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 33E0A124052;
-        Thu, 28 Jan 2021 04:13:19 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.65.198.104])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Jan 2021 04:13:19 +0000 (GMT)
-Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
-        nayna@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@hansenpartnership.com
-References: <YAjMm9Gq/FFOzQYG@kernel.org>
- <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
- <20200916004927.64276-1-eric.snowberg@oracle.com>
- <1360578.1607593748@warthog.procyon.org.uk>
- <2442460.1610463459@warthog.procyon.org.uk>
- <X/9a8naM8p4tT5sO@linux.intel.com>
- <A05E3573-B1AF-474B-94A5-779E69E5880A@oracle.com>
- <YAFdNiYZSWpB9vOw@kernel.org>
- <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
- <YAgTawk3EENF/P6j@kernel.org>
- <D9F5E0BD-E2FC-428F-91B3-35D2750493A0@oracle.com>
- <3063834.1611747971@warthog.procyon.org.uk>
- <61a0420790250807837b5a701bb52f3d63ff0c84.camel@linux.ibm.com>
- <86CE3924-E36F-44FD-A259-3CC7E69D3EAC@oracle.com>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <e18675cc-26d2-bfc3-2043-30e4f01b56ce@linux.vnet.ibm.com>
-Date:   Wed, 27 Jan 2021 23:13:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 27 Jan 2021 23:14:29 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2574AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:13:49 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id w18so3155168pfu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Jan 2021 20:13:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LisdbD4Ba76pA5egW3L7/zal0NtfLwHPGPSR7nUteJ4=;
+        b=NhelqO3FSllB1ZGzD+4mgqb8hcO6n5QTZY1Hk2lDuTPIrpYhPHo+ungQGEoL5TPSHA
+         ASkjgCpClFpzzWVCHtxcUVaG3HLft9FzTCZzoFYrkVnXcVgViREoauYDVoX3oiGmktv7
+         2XA6RmGgkxFoaRkYNfskT/1y6mNo3AsqfeUmj4huE/Sxam9tRA4AJt/xQsUd8Y2EpjLG
+         svG0vRzTR4HNwXyMlIEnk6xljfNHANS/lPh6Im+UgEDziR3L8hQ1IT6Kazawy3/8KOY0
+         GVcpBYm5KX9DI2E+7AlRID4scasSxyGSCpvWctxwgC0EoqJwcuRe4ALlgdr3DBk91+EY
+         9I+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LisdbD4Ba76pA5egW3L7/zal0NtfLwHPGPSR7nUteJ4=;
+        b=A3UUswe6zI9pnjWisAUeH8PzJwIjXbvqlKoevx7ILr1znazydL3qkYDwfQHjQdgcSD
+         WH9cgy5TaeR/J8yAk35fauT7WTrG71ctKBHPCDm34+Qr7k22PzJXoWynVR0J6ild7DE3
+         nolvtjuMgo32FtCyOuBkh+exuIMXXXLyvCYj9jLPVy6nT4FCAWp5S4zQx4lNuFQhxe3Q
+         relc0+65vrqpzvh5nPBYuvQFd0DcfIAkFLOJ2xv0TxhsA+8lJCm9f+MF7ue2KoCD1KwU
+         4ExFcTIioYfW+7vszs6XgXdhNLKJ/hDA1nfaEGf6WboX0C3hbZSdLi1S57tGZw9/XrN4
+         dIEQ==
+X-Gm-Message-State: AOAM5303CkuxzayKqGGCr6ZOWvEueX9mNPNcK/K2ZPTfE2rZu07hNIa4
+        iyAHZ77CZdgttUrT+Mvn8z0hIw==
+X-Google-Smtp-Source: ABdhPJyp65IBYlRQiZdjjs4emrE5t00vqMcKFZDmZ6t5q8StvIgW2MTv6Vku3RY1sP6wUEbb7y4+pg==
+X-Received: by 2002:a63:3747:: with SMTP id g7mr14432990pgn.376.1611807228569;
+        Wed, 27 Jan 2021 20:13:48 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id y6sm3767914pfn.123.2021.01.27.20.13.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Jan 2021 20:13:47 -0800 (PST)
+Date:   Thu, 28 Jan 2021 09:43:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>
+Subject: Re: [PATCH v3 3/5] OPP: Improve require-opps linking
+Message-ID: <20210128041342.owkjl4voodw4dcmf@vireshk-i7>
+References: <20190717222340.137578-4-saravanak@google.com>
+ <20191125112812.26jk5hsdwqfnofc2@vireshk-i7>
+ <20200127061118.5bxei6nghowlmf53@vireshk-i7>
+ <b0be1275-c5cb-8171-58fa-64d65f60eaf8@codeaurora.org>
+ <20200130042126.ahkik6ffb5vnzdim@vireshk-i7>
+ <CAJMQK-gmO-tLZkRRxRdgU9eyfo95omw_RnffFVdhv2A6_9T-nQ@mail.gmail.com>
+ <20210118073430.a6lr3ynkd2duv34l@vireshk-i7>
+ <CAJMQK-j6EYjU1z_SUY4MFEJO6qTtOH7mQ_QWj2iUMewBKAghng@mail.gmail.com>
+ <20210127115415.7zjpf6uaybwswno3@vireshk-i7>
+ <CAJMQK-hgeOv9XDasmmWGguxyC62SCsSoX5_enEb46whE8_Emew@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <86CE3924-E36F-44FD-A259-3CC7E69D3EAC@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_01:2021-01-27,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 adultscore=0 mlxlogscore=999 suspectscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280017
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJMQK-hgeOv9XDasmmWGguxyC62SCsSoX5_enEb46whE8_Emew@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27-01-21, 22:40, Hsin-Yi Wang wrote:
+> Hi Viresh,
+> 
+> I tested this patch with devfreq passive governor[1] and mt8183
+> cci[2]. It's also working as expected.
 
-On 1/27/21 10:41 AM, Eric Snowberg wrote:
->> On Jan 27, 2021, at 7:03 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
->>
->> [Cc'ing linux-integrity]
->>
->> On Wed, 2021-01-27 at 11:46 +0000, David Howells wrote:
->>> Jarkko Sakkinen <jarkko@kernel.org> wrote:
->>>
->>>>> I suppose a user space tool could be created. But wouldn’t what is
->>>>> currently done in the kernel in this area need to be removed?
->>>> Right. I don't think this was a great idea in the first place to
->>>> do to the kernel but since it exists, I guess the patch does make
->>>> sense.
->>> This information needs to be loaded from the UEFI tables before the system
->>> starts loading any kernel modules or running any programs (if we do
->>> verification of such, which I think IMA can do).
->> There needs to a clear distinction between the pre-boot and post-boot
->> keys.  UEFI has its own trust model, which should be limited to UEFI.
->> The .platform keyring was upstreamed and limited to verifying the kexec
->> kernel image.   Any other usage of the .platform keyring keys is
->> abusing its intended purpose.
->>
->> The cover letter says,   "Anytime the .platform keyring is used, the
->> keys in the .blacklist keyring are referenced, if a matching key is
->> found, the key will be rejected."   I don't have a problem with loading
->> the UEFI X509 dbx entries as long as its usage is limited to verifying
->> the kexec kernel image.
-> Correct, with my patch, when EFI_CERT_X509_GUID entries are found in the
-> dbx, they will only be used during kexec.  I believe the latest dbx file on
-> uefi.org contains three of these entires.
->
-> Based on my understanding of why the platform keyring was introduced,
-> I intentionally only used these for kexec.  I do question the current
-> upstream mainline code though.  Currently, when EFI_CERT_X509_SHA256_GUID
-> or EFI_CERT_SHA256_GUID entries are found in the dbx, they are applied
-> everywhere.  It seems like there should be a dbx revocation keyring
-> equivalent to the current platform keyring that is only used for pre-boot.
->
-> If that is a direction you would like to see this go in the future, let
-> me know, I’d be happy to work on it.
->
-Yes, as you said, currently blacklist entries from dbx for 
-EFI_CERT_X509_SHA256_GUID or EFI_CERT_SHA256_GUID are applied 
-everywhere, and does not satisfy the trust model for .platform keyring. 
-We should fix this, but changing now might break some existing systems. 
-Probably it should be discussed as separate thread from this patchset.
+I hope I can add your Tested-by for the patch then, right ?
 
-Thanks & Regards,
+> [1] https://patchwork.kernel.org/project/linux-pm/cover/20190724014222.110767-1-saravanak@google.com/
+> (patch 2,4,5)
+> [2] https://patchwork.kernel.org/project/linux-mediatek/cover/1594348284-14199-1-git-send-email-andrew-sh.cheng@mediatek.com/
+> 
+> In my testing case, required_opp_table is not genpd case (mt8183 cci
+> is not genpd), so I remove the following constraint. Does that make
+> sense to you?
+> 
+> @@ -377,13 +377,6 @@ static void lazy_link_required_opp_table(struct
+> opp_table *new_table)
+>         struct dev_pm_opp *opp;
+>         int i, ret;
+> 
+> -       /*
+> -        * We only support genpd's OPPs in the "required-opps" for now,
+> -        * as we don't know much about other cases.
+> -        */
+> -       if (!new_table->is_genpd)
+> -               return;
+> -
+>         mutex_lock(&opp_table_lock);
 
-       - Nayna
+We will perhaps need more changes than that, but those should be done
+separately when you try to add a user for the same.
 
+-- 
+viresh
