@@ -2,129 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E406306B87
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BF6306B88
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Jan 2021 04:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhA1DVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Jan 2021 22:21:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41626 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhA1DVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Jan 2021 22:21:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 99583ACB7;
-        Thu, 28 Jan 2021 03:21:06 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de
-Date:   Thu, 28 Jan 2021 14:20:59 +1100
-Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/12] docs: path-lookup: update follow_managed() part
-In-Reply-To: <20210126072443.33066-2-foxhlchen@gmail.com>
-References: <20210126072443.33066-1-foxhlchen@gmail.com>
- <20210126072443.33066-2-foxhlchen@gmail.com>
-Message-ID: <87h7n1hhlw.fsf@notabene.neil.brown.name>
+        id S231176AbhA1DWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Jan 2021 22:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229748AbhA1DWF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Jan 2021 22:22:05 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49ACC061573;
+        Wed, 27 Jan 2021 19:21:24 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id h192so4618708oib.1;
+        Wed, 27 Jan 2021 19:21:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7D7Kv+sjYJAWD/JXyGJ1S45dldYp/5GoVGVph94OBPk=;
+        b=RzCv6WlKg0nA0ksFmTRvveWqgbbyGPwRr3X6/uxvokMAWTlDMSlVlTzIOxEnM7L6QV
+         hBbZJGQSwbY8pWztHzLPOQcQ/0aA1MVU9zgNP0zYypwkfzhNoSkTyNsTpJyAGh6JlYIH
+         psZImE0VwacO8QrX9KCBBVlN5ejXnFppYZcSlEjcib/0EDtir2MdMMM9MfSGspSEcEIv
+         IEEHYVWAIucsXUeEMuW9h89U3nyMKcBYGQh+Slo81McoxJAgPKgWyDfU4lEOgfPl2ms3
+         Ft5s3+qEkDNOxw4j8VrrDiUJWkUQW6xgOa6wOjnwWLRIS6zkmVjGoaPhaP9Ip9M0sb6T
+         2aGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7D7Kv+sjYJAWD/JXyGJ1S45dldYp/5GoVGVph94OBPk=;
+        b=XyfID70wbN3/rIJ6pau/2fGnxKSlfgU18mbV0Kv+3SB1gQJxmjmEJbtp1IvDKPAiJf
+         y4G4GI4tTzX7w3t+nxqfjwSfJs92OcLR827DvuG238muCq/KFpy4iypEHaY2TF6/mqka
+         EOZ18QqYRNcKm2E7KLpVfCD3j3ILzX4gy606jjBLFwbGYahS1Z1D39+YNJ4JJp5TltvQ
+         GQ6upTos0DiRY1qG+94r3rm+MFjpiIozrVnObB4YrPVd0mhQZw54OGN9s3igtiIhNO7H
+         4MRPtkWfOUbk7YLB0RXVyK9imTJwZ5yCZaFp1EZKgtFSl+OwNR9+Oz891aXwU9c2ZNzT
+         arqw==
+X-Gm-Message-State: AOAM531IAQVpWPvWeojG46HcFiTlxYfDJ+I8+6ISMma+tNiz9pjpL4Ao
+        hNjewzTw1kOaFtMxcxBaVGuilbmTqp0KEUGvZuFPDEEcxbo=
+X-Google-Smtp-Source: ABdhPJx7TuyrvGnfkiFQ0BDnRyFprq7jtt3djhlO3E4V6QJan5FV176uIaPsIW/MTe/lLQDw6MpPKrmbTQZibX8ctX4=
+X-Received: by 2002:aca:d5c5:: with SMTP id m188mr5488249oig.114.1611804084325;
+ Wed, 27 Jan 2021 19:21:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <CAE1WUT7xJyx_gbxJu3r9DJGbqSkWZa-moieiDWC0bue2CxwAwg@mail.gmail.com>
+ <BYAPR04MB4965F2E2624369B34346CC5686BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <YBD72wlZC323yhqZ@mit.edu>
+In-Reply-To: <YBD72wlZC323yhqZ@mit.edu>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Wed, 27 Jan 2021 19:21:13 -0800
+Message-ID: <CAE1WUT65q1RZjths-EoKtMLNKUX17A9vzfpUXcYtS5dxTf6AbA@mail.gmail.com>
+Subject: Re: Getting a new fs in the kernel
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 26 2021, Fox Chen wrote:
-
-> No follow_managed() anymore, handle_mounts(),
-> traverse_mounts(), will do the job.
-> see commit: 9deed3ebca244663530782631834e706a86a8c8f
+On Tue, Jan 26, 2021 at 9:36 PM Theodore Ts'o <tytso@mit.edu> wrote:
 >
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/filesystems/path-lookup.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> On Tue, Jan 26, 2021 at 07:06:55PM +0000, Chaitanya Kulkarni wrote:
+> > From what I've seen you can post the long patch-series as an RFC and get the
+> >
+> > discussion started.
+> >
+> > The priority should be ease of review and not the total patch-count.
 >
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index c482e1619e77..e778db767120 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -448,8 +448,8 @@ described.  If it finds a ``LAST_NORM`` component it =
-first calls
->  filesystem to revalidate the result if it is that sort of filesystem.
->  If that doesn't get a good result, it calls "``lookup_slow()``" which
->  takes ``i_rwsem``, rechecks the cache, and then asks the filesystem
-> -to find a definitive answer.  Each of these will call
-> -``follow_managed()`` (as described below) to handle any mount points.
-> +to find a definitive answer.  In ``step_into()``, ``handle_mount()`` wil=
-l be=20
-> +called to handle any mount point.
+> File systems are also complicated enough that it's useful to make the
+> patches available via a git repo, and it's highly recommended that you
+> are rebasing it against the latest kernel on a regular basis.
 
-The text now introduces step_into() without any hint as to why that is
-relevant at this point.
-It is a bit awkward to explain succinctly because while lookup_fast and
-lookup_slow return a dentry which is passed to step_into(), handle_dots()
-calls step_into() itself.
+Was already setting up some local git infrastructure for this.
 
-This is a general problem with this sort of documentation.  It weaves a
-story and when the code changes, you might need to completely re-weave
-the story.
+>
+> I also strongly recommend that once you get something that mostly
+> works, that you start doing regression testing of the file system.
 
-I don't have a good suggestion for how to fix this text, but at the
-least it needs to be made clear the walk_component() calls step_into(),
-either directly or via handle_dots().
+"'Regression testing? What's that? If it compiles, it is good; if it
+boots up, it is perfect."
 
->=20=20
->  In the absence of symbolic links, ``walk_component()`` creates a new
->  ``struct path`` containing a counted reference to the new dentry and a
-> @@ -536,7 +536,7 @@ tree, but a few notes specifically related to path lo=
-okup are in order
->  here.
->=20=20
->  The Linux VFS has a concept of "managed" dentries which is reflected
-> -in function names such as "``follow_managed()``".  There are three
-> +in function names such as "``traverse_mounts()``".  There are three
+In all seriousness, though, yeah, already been planning for stuff like that.
 
-Here you've completely broken the story.  Saying
+> Most of the major file systems in Linux use xfstests for their
+> testing.
 
-  The VFS has a concept of "managed" dentries which is reflected in
-  function names like "traverse_mounts()"
+Decently familiar with xfstests, used it for some previous change
+testing I had to do.
 
-makes no sense at all.
-Again, I cannot offer any quick fix.
+> One of the things that I've done is to package up xfstests
+> as a test appliance, suitable for running under KVM or using Google
+> Compute Engine, as a VM, to make it super easy for people to run
+> regression tests.  (One of my original goals for packaging it up was
+> to make it easy for graduate students who were creating research file
+> systems to try running regression tests so they could find potential
+> problems --- and understand how hard it is to make a robust,
+> production-ready file system, by giving them a realtively well
+> documented, turn-key system for running file system regression tests.)
+>
+> For more information, see:
+>
+>     https://thunk.org/gce-xfstests
+>     https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+>     https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
+>     https://github.com/tytso/xfstests-bld/blob/master/Documentation/gce-xfstests.md
 
-NeilBrown
+Thank you so much for that!
 
+>
+> The final thing I'll point out is that file system development is a
+> team sport.  Industry estimates are that it takes between 50 and 200
+> person-years to create a production-ready, general purpose enterprise
+> file system.  For example, ZFS took seven years to develop, starting
+> with a core team of 4, and growing to over 14 developers by the time
+> it was announced.  And that didn't include all of the QA, release
+> engineering, testers, performance engineers, to get it integrated into
+> the Solaris product.  Even after it was announced, it was a good four
+> years before customers trusted it for production workloads.
 
->  potentially interesting things about these dentries corresponding
->  to three different flags that might be set in ``dentry->d_flags``:
->=20=20
-> --=20
-> 2.30.0
+Wasn't expecting to do that completely solo, I get that it takes a
+significant amount of people time to build something as important as a
+production filesystem. Once I get some basic stuff lined out for it,
+if I decide to continue, already working on getting people to help
+assist with its development.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+> If you look at the major file systems in Linux: ext4, xfs, btrfs,
+> f2fs, etc., you'll find that none of them are solo endeavors, and all
+> of them have multiple companies who are employing the developers who
+> work on them.  Figuring out how to convince companies that there are
+> good business reasons for them to support the developers of your file
+> system is important, since in order to keep things going for the long
+> haul, it really needs to be more than a single person's hobby.
 
------BEGIN PGP SIGNATURE-----
+Yeah, got that.
 
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmASLZsOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigblPYQ//Y6coOk2lqWxVQzOZwNT9+fpXG+LxEuX1qLqy
-YvXoCrdMBlTb3w9zZtarnlp7OkxdsgIGmxMfJGSbJcCSsTQ9FlATnG2S5Ch7Y3wD
-8iBx5mZZPKPzwTwMwRQ9GwSFTP5+oWHQ9yy94ywOylzZTjrQw13kp8eN+aLXnt6Q
-ZzKz86wXanc7uo+nNeX6zuVsLB41T5C7s5AqXaiLJ3XL4YiiH+LyuGsNCpbKXbEm
-xOtmbsWhEB5kg0GwkiuWd2zRazhpIK9pal1JID3K2fyh2MEu26CNR0/ZBLeaamHM
-I5Vy5N2IZfPVCTTUw9ta1nCW8x+NIh7ybvGYsQ2hsG1CYJzTM+KDv4nlgk4cZOOu
-qztXFopoUTcOBAlEhUFCkwS7VfYilw2ybgk6AJwauljdzF5PPNoc4nOB2o+ysZoo
-7rmdQ9WZx98zdace4JvqcOXzr+qytalZ8h/oFtasfV7PiuDmGp/O0INmuvVXOcqj
-F8Arz70IDtzEwPhc9liTDPcqJL/NBx6Bcmns3EKSPMZ00hWaozLTlKXkL0UVHz/E
-7k3TJdimeO8HvFpTw2j8oEMkuJqAolutxGuSnSkqfDJZ6Iqcy0+c8Z5m9Hs6JJ6R
-MdN4oejU7RuHgG1VVhjrc4QrBmSN0axS2kbAszYtTjAZslN58AyA8k67bLMKVoaV
-friCJks=
-=d1+s
------END PGP SIGNATURE-----
---=-=-=--
+>
+> Good luck!
+>
+>                                         - Ted
+
+Thank you!
+
+Best regards,
+Amy Parker
+(she/her/hers)
