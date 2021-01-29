@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42A5308EDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51518308EEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbhA2U5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:57:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232344AbhA2U5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:57:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC2DE64E05;
-        Fri, 29 Jan 2021 20:57:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611953822;
-        bh=v9S6wHwtGdGrrwTyPE1Do5RofOqY+qRTh/Bh20GJ1qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V3ZsmdujUmQ9dzuY5Q398/k/yoryMqYl8BmcTGLLS8loaaJg0D/A1osCjaItn0KPd
-         XSxEaZWndZTL4bd4FJKbKBLOiw2dfXxmMGkdNYxVyu344ooqhiMgr6wdbSdu3ESZ7O
-         0rOwZ1OUQEN8q/S66kpCLu9dB52Yw7Mh0yX8QHbRCRvGXHWQjeSVBkbJTjVyGgvWRf
-         t4i+2qn8G97qnHtaWylwAWAUqVUbQWc88HlA0ziRuLrCCOjlBf2vS39CbH5+j0bygh
-         K3S+worwg8AD+NAoPRiTNxgdHnRNCeT6YbcaRUVnhKJRh5oWVB3MJ/ygyXFwR6vzeW
-         p5+T1Lr4s6oOA==
-Date:   Fri, 29 Jan 2021 12:57:00 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 3/3] f2fs: Add metadata encryption support
-Message-ID: <YBR2nGbrYeWW219s@sol.localdomain>
-References: <20201217150435.1505269-1-satyat@google.com>
- <20201217150435.1505269-4-satyat@google.com>
+        id S233348AbhA2U6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:58:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233345AbhA2U6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:58:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611953835;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=jJAl8faLaTXKp5DstykPQouYkGkdmrA8uwwSrWLNEdw=;
+        b=YVNQpP1Iw/6Opz/4f6R0KS1JlwojnVGrb2C5fUgiYUT5MhjWdid8aUVzRzimyT6OKil1xp
+        aGAXJ1q8hT+6R1h/vMAa653Fk9YJOaCqx7r0wUOW9ZOJZoC9Ta4XrJCwe1yJy1CA8uVmIH
+        1ZfZAJpbZGr/Tu+irIL1MNBJoqC+pxw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-4jqVEabdM_mz1KST0Orp4A-1; Fri, 29 Jan 2021 15:57:11 -0500
+X-MC-Unique: 4jqVEabdM_mz1KST0Orp4A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 047F1107ACE3;
+        Fri, 29 Jan 2021 20:57:09 +0000 (UTC)
+Received: from tucnak.zalov.cz (ovpn-112-64.ams2.redhat.com [10.36.112.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BA7960BE2;
+        Fri, 29 Jan 2021 20:57:08 +0000 (UTC)
+Received: from tucnak.zalov.cz (localhost [127.0.0.1])
+        by tucnak.zalov.cz (8.16.1/8.16.1) with ESMTPS id 10TKv4KA2368399
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 29 Jan 2021 21:57:05 +0100
+Received: (from jakub@localhost)
+        by tucnak.zalov.cz (8.16.1/8.16.1/Submit) id 10TKv2Kg2368396;
+        Fri, 29 Jan 2021 21:57:02 +0100
+Date:   Fri, 29 Jan 2021 21:57:02 +0100
+From:   Jakub Jelinek <jakub@redhat.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+Message-ID: <20210129205702.GS4020736@tucnak>
+Reply-To: Jakub Jelinek <jakub@redhat.com>
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com>
+ <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217150435.1505269-4-satyat@google.com>
+In-Reply-To: <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 03:04:35PM +0000, Satya Tangirala wrote:
-> Wire up metadata encryption support with the fscrypt metadata crypt
-> additions. Note that this feature relies on the blk-crypto framework
-> for encryption, and thus requires either hardware inline encryption
-> support or the blk-crypto-fallback.
+On Fri, Jan 29, 2021 at 12:48:11PM -0800, Nick Desaulniers wrote:
+> > Should this be...?
+> >
+> > KBUILD_AFLAGS += -Wa,-gdwarf-5
 > 
-> Filesystems can be configured with metadata encryption support using the
-> f2fs userspace tools (mkfs.f2fs). Once formatted, F2FS filesystems with
-> metadata encryption can be mounted as long as the required key is present.
-> fscrypt looks for a logon key with the key descriptor=
-> fscrypt:<metadata_key_identifier>. The metadata_key_identifier is stored in
-> the filesystem superblock (and the userspace tools print the required
-> key descriptor).
-> 
-> Right now, the superblock of the filesystem is itself not encrypted. F2FS
-> reads the superblock using sb_bread, which uses the bd_inode of the block
-> device as the address space for any data it reads from the block device -
-> the data read under the bd_inode address space must be what is physically
-> present on disk (i.e. if the superblock is encrypted, then the ciphertext
-> of the superblock must be present in the page cache in the bd_inode's
-> address space), but f2fs requires that the superblock is decrypted by
-> blk-crypto, which would put the decrypted page contents into the page cache
-> instead. We could make f2fs read the superblock by submitting bios directly
-> with a separate address space, but we choose to just not encrypt the
-> superblock for now.
-> 
-> Not encrypting the superblock allows us to store the encryption algorithm
-> used for metadata encryption within the superblock itself, which simplifies
-> a few things. The userspace tools will store the encryption algorithm in
-> the superblock when formatting the FS.
+> No; under the set of conditions Clang is compiling .c to .S with DWARF
+> v5 assembler directives. GAS will choke unless told -gdwarf-5 via
+> -Wa,-gdwarf-5 for .c source files, hence it is a C flag, not an A
 
-The explanation about why the superblock isn't encrypted seems a bit backwards.
-It makes it sound like this decision was mainly an accident because of how f2fs
-is currently implemented.  But actually we need to leave the superblock
-unencrypted anyway in order to keep the filesystem type and metadata encryption
-options readable from disk, so that the filesystem can be mounted without
-knowing the filesystem type and encryption options ahead of time -- right?
-I.e. would anything actually be different if it was super easy to encrypt the
-superblock in the kernel?
+Wasn't that fixed in GAS?
+https://sourceware.org/bugzilla/show_bug.cgi?id=27195
 
-> 
-> +	/* Check if FS has metadata encryption if kernel doesn't support it */
-> +#ifndef CONFIG_FS_ENCRYPTION_METADATA
-> +	if (raw_super->metadata_crypt_alg) {
-> +		f2fs_err(sbi, "Filesystem has metadata encryption but kernel support for it wasn't enabled");
-> +		return -EINVAL;
-> +	}
-> +#endif
+	Jakub
 
-This can use !IS_ENABLED(CONFIG_FS_ENCRYPTION_METADATA).
-
-> +	if (fscrypt_metadata_crypted(sb)) {
-> +		f2fs_notice(sbi, "Mounted with metadata key identifier = %s%*phN",
-> +			    FSCRYPT_KEY_DESC_PREFIX,
-> +			    FSCRYPT_KEY_IDENTIFIER_SIZE,
-> +			    sbi->raw_super->metadata_crypt_key_ident);
-> +	}
-
-Should this show the encryption algorithm too?  Maybe:
-
-"Metadata encryption enabled; algorithm=%s, key_identifier=%*phN"
-
-Note that showing the "fscrypt:" key description prefix doesn't really add
-anything, so I recommend leaving it out.
-
-> +	/* The metadata encryption algorithm (FSCRYPT_MODE_*) */
-
-... or 0 if none.
-
-> +	__le32 metadata_crypt_alg;
-
-> +	/* The metadata encryption key identifier */
-> +	__u8 metadata_crypt_key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE];
-
-... (if metadata_crypt_alg != 0)
-
-- Eric
