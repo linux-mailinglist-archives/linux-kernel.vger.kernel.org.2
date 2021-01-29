@@ -2,83 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7E1308C4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DD4308C50
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhA2SUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:20:19 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16135 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhA2STY (ORCPT
+        id S232664AbhA2SVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:21:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231195AbhA2SUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:19:24 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601451800001>; Fri, 29 Jan 2021 10:18:40 -0800
-Received: from DRHQMAIL105.nvidia.com (10.27.9.14) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
- 2021 18:18:39 +0000
-Received: from [10.25.100.162] (172.20.145.6) by DRHQMAIL105.nvidia.com
- (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
- 2021 18:18:35 +0000
-Subject: Re: [PATCH] ASoC: tegra: SND_SOC_TEGRA_AUDIO_GRAPH_CARD should depend
- on SND_SOC_TEGRA
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210129125915.2652952-1-geert+renesas@glider.be>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <43fbd512-3689-21b7-8d74-3257cb65d520@nvidia.com>
-Date:   Fri, 29 Jan 2021 23:48:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 29 Jan 2021 13:20:49 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C11CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:20:09 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id q9so9381520ilo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dkfy9D4szoTbkUSTq/ZhsTMr1TyIJnO6J28s6U7fg4I=;
+        b=CVpTeuwdpsNzmOl9z2MSMm9h9Byz+lm1DBfCOMcC70X9z9O7pYUamk4dAzrWkVF3u1
+         UKBsp03itKVjhp0MZ9Z6Ajw3phF/lARtw9HTrEPY/IdfH70rWuoSQaC0otCKrrQg66Op
+         IPjtxOWLju1Gp5FQ2FSWnXwllgb5zgz/lQTWzhEa9EeNC8zDKRBG3uWf+P7v1vWRqL6A
+         MIbnGzHvRRlZ85WhkSebx31G8CMyB4jjJ4oRNTCNxZ5rJoUpAHWKLKQJeHThHfuymjYX
+         FG97aGnqcKYnpp8UI0ahjSEIU3b0wINhzo9Duv6QjFnJki1Kd2pIRw0LYflTi0qLzjxU
+         VKBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dkfy9D4szoTbkUSTq/ZhsTMr1TyIJnO6J28s6U7fg4I=;
+        b=CNsH8rfqk6QPB1a3dvFchal7QFkahQzgK+v/eY1yWqEReDL8Wic86k3JUF76bIByo0
+         k0Z0SUd7XwSD8dYb/PCSj1UaeHEycbSfV96bF7w4c1XU7dWQknp73ugn7SKeoeDvg0X8
+         ENq6nLbc9orgTqrxBq0645KT5wcA43AR4Ww9c/PrkmJNm8sECvXDfswh0dSlwqkrVFbJ
+         IvQaGkW0FwBpXS3c7+bTD78TWuHV6rS9IworoU45cOpOlLx/fipec36M0TJ1uX50BL0J
+         dKFxJY7l5l+xt7fpSJBCFbhUUKDIbuTewsfO/F2Sc52BydD47Wq50Hfa/TGUyOtB9ok9
+         PdWw==
+X-Gm-Message-State: AOAM5301WVLAYynnL1xJdqLHn4u0Rd8r52vp8NBPtFoXWS13V3Gg305e
+        N7jHp6eTm2mE7nN5Fv1eA5o3rNrAdgkD01t0E+O6LQ==
+X-Google-Smtp-Source: ABdhPJzDAy5vsizjrTresNuNFBOFAvh9JU6zDvqgn75g4prU7+/UnoxvTVd3uMdvZ58odVn+Cpk1qkc1w9pZ8B7U8tg=
+X-Received: by 2002:a92:510:: with SMTP id q16mr4072338ile.136.1611944408326;
+ Fri, 29 Jan 2021 10:20:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210129125915.2652952-1-geert+renesas@glider.be>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL105.nvidia.com (10.27.9.14)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611944320; bh=RII+q9JAnVamdrcIkQvXr9aEi7U2AFuj/1dXm5fvuvM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=XR7AIYlZFAA1hCaVNfeSw44OuVwUPB/Y9TK4MAhluHrQleKST6w+85ceU1jQOuCHl
-         05jztXaH29EbgHbNwDkH84frbHXrjCrZ5ZCd9SHbDCmoFMh0lJ1JKMTZoeYnA4vzab
-         bQwsR9Cf0OwE4wiiLREP+BbB3qLDDikwr5J4A9RxidUBpvx+ymr4AzcnyanuR77o9c
-         F4/KLo/0S8Ok6Rz9FBY/Kg/urCJ8cGg5wHQybwJEv7VA9rBlw4Lpfg0UKGMV0lyOux
-         NB0z7ecqU+HV/ity5EpnjObYwG5bS42bYxoLkv7F5ZW0G8KWf0KLiLuoYmQNtuvOtj
-         jRoSlEUvA0oOA==
+References: <20210129022555.2411999-1-dlatypov@google.com> <CABVgOSmaSz5jNkVTihCg3LbWg+6HGDPoQqjqNZ9_boOfUj_LkA@mail.gmail.com>
+In-Reply-To: <CABVgOSmaSz5jNkVTihCg3LbWg+6HGDPoQqjqNZ9_boOfUj_LkA@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 29 Jan 2021 10:19:56 -0800
+Message-ID: <CAGS_qxorPoK=dyZs_SyNOv1_Z0RjJrn97A03sbyF0UmsopcdLQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: don't show `1 == 1` in failed assertion messages
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 28, 2021 at 8:51 PM David Gow <davidgow@google.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 10:26 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > Currently, given something (fairly dystopian) like
+> > > KUNIT_EXPECT_EQ(test, 2 + 2, 5)
+> >
+> > KUnit will prints a failure message like this.
+> > >  Expected 2 + 2 == 5, but
+> > >      2 + 2 == 4
+> > >      5 == 5
+> >
+> > With this patch, the output just becomes
+> > >  Expected 2 + 2 == 5, but
+> > >      2 + 2 == 4
+> >
+> > This patch is slightly hacky, but it's quite common* to compare an
+> > expression to a literal integer value, so this can make KUnit less
+> > chatty in many cases. (This patch also fixes variants like
+> > KUNIT_EXPECT_GT, LE, et al.).
+> >
+> > It also allocates an additional string briefly, but given this only
+> > happens on test failures, it doesn't seem too bad a tradeoff.
+> > Also, in most cases it'll realize the lengths are unequal and bail out
+> > before the allocation.
+> >
+> > We could save the result of the formatted string to avoid wasting this
+> > extra work, but it felt cleaner to leave it as-is.
+> >
+> > Edge case: for something silly and unrealistic like
+> > > KUNIT_EXPECT_EQ(test, 4, 5);
+> >
+> > It'll generate this message with a trailing "but"
+> > >  Expected 2 + 2 == 5, but
+> > >  <next line of normal output>
+>
+> I assume this is supposed to say "Expected 4 == 5" here.
+> (I tested it to make sure, and that's what it did here.)
 
+Ah yes, too much copy-paste.
 
-On 1/29/2021 6:29 PM, Geert Uytterhoeven wrote:
-> External email: Use caution opening links or attachments
 >
+> Personally, I'd ideally like to get rid of the ", but", or even add a
+> "but 4 != 5" style second line. Particularly in case the next line in
+> the output might be confused for the rest of a sentence.
+
+Given the apparent interest in other types (STR_EQ) of literal
+ellision, maybe this should be done.
+But I'd be tempted to have that change come later once at least the
+str_eq version is in place.
+
 >
-> Audio Graph Card based Tegra driver is only useful on NVIDIA Tegra SoCs.
-> Hence add a dependency on SND_SOC_TEGRA, to prevent asking the user
-> about this driver when configuring a kernel without Tegra sound support.
+> That being said, this is a pretty silly edge case: I'd be worried if
+> we ever saw that case in an actual submitted test. People might see it
+> a bit while debugging, though: particularly if they're using
+> KUNIT_EXPECT_EQ(test, 1, 2) as a way of forcing a test to fail. (I've
+> done this while testing tooling, for instance.)
+
+Same/Agreed on all points.
+
 >
-> Wrap all Tegra sound config options inside a big if/endif block, instead
-> of just adding the dependency to the single config option that does not
-> have it yet, to preventing similar future mistakes.
+> >
+> > It didn't feel worth adding a check up-front to see if both sides are
+> > literals to handle this better.
+> >
+> > *A quick grep suggests 100+ comparisons to an integer literal as the
+> > right hand side.
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
 >
-> Fixes: 202e2f7745437aa5 ("ASoC: tegra: Add audio graph based card driver")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->   sound/soc/tegra/Kconfig | 33 +++++++++++++--------------------
->   1 file changed, 13 insertions(+), 20 deletions(-)
+> I tested this, and it works well: the results are definitely more
+> human readable. I could see it making things slightly more complicated
+> for people who wanted to automatically parse assertion errors, but
+> no-one is doing that, and the extra complexity is pretty minimal
+> anyway.
+
+Hmm, machine parsing of the contents of failures is interesting.
+But in general, that feels that requires a more structured format.
+
+I hate to invoke it, but the tooling I've seen that's parsed the
+"expected" and "actual" values has represented them as XML elements.
+
+>
+> One thing which might be worth doing is expanding this to
+> KUNIT_EXPECT_STREQ() and/or KUNIT_EXPECT_PTR_EQ(). These have slightly
+> more complicated formatting (quotes, leading 0s, etc), though.
+> Comparing pointer literals is pretty unlikely to show up, though, so I
+> don't think it's as important. (I thought that maybe the KASAN shadow
+> memory tests might use them, but a quick look didn't reveal any.)
 >
 
-Acked-by: Sameer Pujar <spujar@nvidia.com>
+Ack. Actually, the string literal check was smaller, see below.
+I debated sending a patch out for that, but this case mattered more
+and I wasn't sure if it would be acceptable or not.
+It felt it would be incongruous to only handle strings and not the
+much more common integer case.
+
+So if the hackier, more costly integer comparison seems fine, I might
+actually go and send out the str patch that I already have sitting
+around anyways.
+
++/* Checks if KUNIT_EXPECT_STREQ() args were string literals.
++ * Note: `text` will have ""s where as `value` will not.
++ */
++static bool is_str_literal(const char *text, const char *value)
++{
++       int len;
++
++       len = strlen(text);
++       if (len < 2) return false;
++       if (text[0] != '\"' || text[len-1] != '\"') return false;
++
++       return strncmp(text+1, value, len-2) == 0;
++}
++
+
+This produces
+[10:05:59]     Expected str == "world", but
+[10:05:59]         str == hello
+
+One misgiving I had was whether we should "fix" the string printing to
+quote the values or not before adding `is_str_literal()` in.
+Having just "str == hello" where neither is quoted is a bit unclear
+and the extra "world == world" line sorta helped make that more clear,
+ha.
+
+David, I can send a version of this patch w/ a fixed commit message
+and then tack on the str changes as children.
+Would you prefer that?
+
+> For the record, this is what STREQ()/PTR_EQ()/ failures with literals look like:
+> # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:31
+> Expected "abc" == "abd", but
+>     "abc" == abc
+>     "abd" == abd
+> # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:33
+> Expected 0x124 == 0x1234, but
+>     0x124 == 0000000000000124
+>     0x1234 == 0000000000001234
+
+Yeah, I had considered PTR_EQ(), but it seemed more complex and also
+less likely to show up.
+And outside of very niche use cases (which probably don't work too on
+UML, tbh...), it felt like an anti-pattern to have hard-coded pointers
+in unit tests.
+
+>
+> Either way, though, this is:
+>
+> Tested-by: David Gow <davidgow@google.com>
+>
+> Cheers,
+> -- David
