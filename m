@@ -2,156 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45EB308451
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85E4308457
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhA2DqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:46:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        id S231866AbhA2Drh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:47:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhA2DqF (ORCPT
+        with ESMTP id S231696AbhA2Dr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:46:05 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5DDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:45:25 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id v15so5951769ljk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:45:25 -0800 (PST)
+        Thu, 28 Jan 2021 22:47:27 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C11C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:46:46 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id l9so10997594ejx.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:46:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QYx6/uSUyh2hqwQYt//2VWudlIbI5/06ASiZSy/mLyo=;
-        b=MQpAIdc1jbYRb4uE1UMqpIpEiIdRlXP9v/3iG9ReMEVTIsKFUlysLHvaIEd7HNqYVa
-         QCxw+7t3130iWoa1TG2q9hjKAIbYwnz49quuEwrCfBqLcwbsk6ANb535I/GRxb8uMpIH
-         RHAmEilRZcRxEH9rV/o5hIzRTjOnJX033PWiUUBYjh/sZRHrNdx/+A+J7KfFgJtKuoyH
-         i2uPd9MS354efk26N08RzHGAtL7iusyieL11tcRR1dpNIPHjoVl1X53P9ZjC5TmI7Xzn
-         Rm8prgJGAUAxsQbHTfhGlK1+qIICAXJKhqPD6VaCrPs0xVJxOqh3zo+K/1AV74EDU5b/
-         OXCw==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=hp4LmEBw8ZJdLLiSuVq/l9Tumx/V32XIRi5N9lrM6Zw=;
+        b=ZzYrZZcRCXiZLYaSmVHMU869ecK+wri+U2b4udYil5XZnTisGIglouELzgdv5U6NvV
+         VWIGQkXVbmTiOWdn4R09dOte1MOV9nXkgxS0GsfUNvNRqzIHi3XZFAZ887ab5j7EBAEs
+         TPcGvpp+ZWqzp4/FOw5ndvxklQ1JoB8IZWpiC+weW+QiUhjuD/8KCLJZCox3fnkeGsRQ
+         qt/nU3Md2AoNfmTU04Y4CXbHndGWPEzFnMu8NqXdGxmapqsejWyIbUoe6NzEXZ3/Br42
+         iT7Nfeghp6Zabkn2nzzmNpuzBhv3gFOD3SbqG6cD3W4v52UYQVkJzbULFd2P2gV7stqC
+         vEOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=QYx6/uSUyh2hqwQYt//2VWudlIbI5/06ASiZSy/mLyo=;
-        b=QaerCmya1iFzU9L6kP0QQWuWzilTacUpaAsxdFRvsqC1AaQtfv3Ptw61UmoLuARAOa
-         GwQBNzFFj4h0ne3FddiIXfeLXWEvJjFnq7YqwFP6MOUbWCe2SaN6E82lUrvF7NXqAQ8z
-         FqKDAzlNKzT7wIwHI96gyJcmjvCLBzZLozOsIr1gILm5VmiFZ1KCGLxwzS8qrGTBeWjZ
-         mB82ECKBmPMZvd/aRlH7DUsRykNUBCtjv5ch3A8VET9UMn7bQOBSpH3HRwxf8wAa6ZZS
-         vAUkkxrv0cydg1l1yfKjqLs1SL3AyQWbbpiyRM/azEx4w7dK3FPKrPpgqZGFO6j6rIiw
-         +0CQ==
-X-Gm-Message-State: AOAM533o6MKmzYc2PkFndm2YsEHxNPhDQiJ7awbUgTIjayc+8sWbS2bw
-        GjsZ7H99Un2dJGtBPDp/0rFfO/B46CIKLY14
-X-Google-Smtp-Source: ABdhPJyFOTD0X8ECLTsqb/tuQIyGfQ96Bn2nBwZMbpwL3vuLlc5XCnWGi+2l0v/x8onFfQokSxOHzw==
-X-Received: by 2002:a05:651c:1a3:: with SMTP id c3mr1298160ljn.498.1611891923583;
-        Thu, 28 Jan 2021 19:45:23 -0800 (PST)
-Received: from [192.168.1.211] ([94.25.229.83])
-        by smtp.gmail.com with ESMTPSA id a30sm2358345ljq.96.2021.01.28.19.45.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 19:45:23 -0800 (PST)
-Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
- on RB5 platform
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
- <20210128175225.3102958-4-dmitry.baryshkov@linaro.org>
- <CAL_JsqLRn40h0K-Fze5m1LS2+raLp94LariMkUh7XtekTBT5+Q@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <da0ac373-4edb-0230-b264-49697fa3d86a@linaro.org>
-Date:   Fri, 29 Jan 2021 06:45:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        bh=hp4LmEBw8ZJdLLiSuVq/l9Tumx/V32XIRi5N9lrM6Zw=;
+        b=kSUqbbv8SoHx5M2fZjR8wcBwsZQ8RdYdpZVVFZgRWNIKgQKgSs+OB0ncoSCbe8iBdC
+         lP8IQ7YfItTZJBu8Y8L11M15mL/T5xHdzMRV7fCsjkTcXDWNRy34Be5yjglBcf7dhr4F
+         4wKXKk9cB/dgilNBjOAoO8nR22a4EXeCWy6bMHaQggao9jrckkrfATlD/w+MgGhdFO54
+         bIqGvcfT/I7BSPvIijHhRlk/jeVs9AOdG2LpXjEQL/Mbw1XouFCmglJWWi+QBYr39dPs
+         TAgowg7VfLjV4BmglnPN4+t12MgAay4kDkgMht2YfQHawOjnLcJqn67fLzeVURKZ8/KN
+         cXzg==
+X-Gm-Message-State: AOAM530odNLZy38cRasGycDu/1l/Y8TUgwGhbOFswPUKF+kLcvcreUqT
+        rPVunR/KrFQXqebwgxcLXEq0r0JTGNFz6hA7+RZXBfo63CHe3A==
+X-Google-Smtp-Source: ABdhPJzOXxH5mmtFFDqqzbP6D3+5w5D5FY38X/VaRYwkZe3Mc02WbaZXyqVHPcJTpL+QNSDos6pXsQT5HiyNEFkV3kQ=
+X-Received: by 2002:a17:906:5608:: with SMTP id f8mr2627357ejq.101.1611892005510;
+ Thu, 28 Jan 2021 19:46:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLRn40h0K-Fze5m1LS2+raLp94LariMkUh7XtekTBT5+Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 29 Jan 2021 13:46:34 +1000
+Message-ID: <CAPM=9tyS8E3cL0s0jQ7fgV+uRrxPOxsG6n_4MpZEOa6AzXSZnQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.11-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/2021 22:26, Rob Herring wrote:
-> On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
->>
->> Some Qualcomm platforms require to power up an external device before
->> probing the PCI bus. E.g. on RB5 platform the QCA6390 WiFi/BT chip needs
->> to be powered up before PCIe0 bus is probed. Add a quirk to the
->> respective PCIe root bridge to attach to the power domain if one is
->> required, so that the QCA chip is started before scanning the PCIe bus.
-> 
-> This is solving a generic problem in a specific driver. It needs to be
-> solved for any PCI host and any device.
+Hey Linus,
 
-Ack. I see your point here.
+Weekly fixes for graphics, nothing too major, nouveau has a few
+regression fixes for various fallout from header changes previously,
+vc4 has two fixes, two amdgpu, and a smattering of i915 fixes.
 
-As this would require porting code from powerpc/spark of-pci code and 
-changing pcie port driver to apply power supply before bus probing 
-happens, I'd also ask for the comments from PCI maintainers. Will that 
-solution be acceptable to you?
+All seems on course for a quieter rc7, fingers crossed.
 
+Dave.
 
-> 
->> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> ---
->>   drivers/pci/controller/dwc/pcie-qcom.c | 21 +++++++++++++++++++++
->>   1 file changed, 21 insertions(+)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->> index ab21aa01c95d..eb73c8540d4d 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -20,6 +20,7 @@
->>   #include <linux/of_device.h>
->>   #include <linux/of_gpio.h>
->>   #include <linux/pci.h>
->> +#include <linux/pm_domain.h>
->>   #include <linux/pm_runtime.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/phy/phy.h>
->> @@ -1568,6 +1569,26 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0302, qcom_fixup_class);
->>   DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1000, qcom_fixup_class);
->>   DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1001, qcom_fixup_class);
->>
->> +static void qcom_fixup_power(struct pci_dev *dev)
->> +{
->> +       int ret;
->> +       struct pcie_port *pp = dev->bus->sysdata;
->> +       struct dw_pcie *pci;
->> +
->> +       if (!pci_is_root_bus(dev->bus))
->> +               return;
->> +
->> +       ret = dev_pm_domain_attach(&dev->dev, true);
->> +       if (ret < 0 || !dev->dev.pm_domain)
->> +               return;
->> +
->> +       pci = to_dw_pcie_from_pp(pp);
->> +       dev_info(&dev->dev, "Bus powered up, waiting for link to come up\n");
->> +
->> +       dw_pcie_wait_for_link(pci);
->> +}
->> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x010b, qcom_fixup_power);
->> +
->>   static struct platform_driver qcom_pcie_driver = {
->>          .probe = qcom_pcie_probe,
->>          .driver = {
->> --
->> 2.29.2
->>
+drm-fixes-2021-01-29:
+drm fixes for 5.11-rc6
 
+nouveau:
+- fix svm init conditions
+- fix nv50 modesetting regression
+- fix cursor plane modifiers
+- fix > 64x64 cursor regression
 
--- 
-With best wishes
-Dmitry
+vc4:
+- Fix LBM size calculation
+- Fix high resolutions for hvs5
+
+i915:
+- Fix ICL MG PHY vswing
+- Fix subplatform handling
+- Fix selftest memleak
+- Clear CACHE_MODE prior to clearing residuals
+- Always flush the active worker before returning from the wait
+- Always try to reserve GGTT address 0x0
+
+amdgpu:
+- Fix a fan control regression on some boards
+- Fix clang warning
+The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04=
+:
+
+  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-01-29
+
+for you to fetch changes up to e0ecafede87eb1a3d1e708f0365fad0d59489285:
+
+  Merge tag 'amd-drm-fixes-5.11-2021-01-28' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-01-29
+11:36:38 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.11-rc6
+
+nouveau:
+- fix svm init conditions
+- fix nv50 modesetting regression
+- fix cursor plane modifiers
+- fix > 64x64 cursor regression
+
+vc4:
+- Fix LBM size calculation
+- Fix high resolutions for hvs5
+
+i915:
+- Fix ICL MG PHY vswing
+- Fix subplatform handling
+- Fix selftest memleak
+- Clear CACHE_MODE prior to clearing residuals
+- Always flush the active worker before returning from the wait
+- Always try to reserve GGTT address 0x0
+
+amdgpu:
+- Fix a fan control regression on some boards
+- Fix clang warning
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      Revert "drm/amdgpu/swsmu: drop set_fan_speed_percent (v2)"
+
+Arnd Bergmann (1):
+      amdgpu: fix clang build warning
+
+Bastian Beranek (1):
+      drm/nouveau/dispnv50: Restore pushing of all data.
+
+Ben Skeggs (1):
+      drm/nouveau/nvif: fix method count when pushing an array
+
+Chris Wilson (3):
+      drm/i915/gt: Clear CACHE_MODE prior to clearing residuals
+      drm/i915: Always flush the active worker before returning from the wa=
+it
+      drm/i915/gt: Always try to reserve GGTT address 0x0
+
+Dave Airlie (4):
+      Merge branch '04.01-ampere-lite' of
+git://github.com/skeggsb/linux into drm-fixes
+      Merge tag 'drm-misc-fixes-2021-01-27' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-01-28' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.11-2021-01-28' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Dom Cobley (2):
+      drm/vc4: Correct lbm size and calculation
+      drm/vc4: Correct POS1_SCL for hvs5
+
+Karol Herbst (1):
+      drm/nouveau/svm: fail NOUVEAU_SVM_INIT ioctl on unsupported devices
+
+Lyude Paul (3):
+      drivers/nouveau/kms/nv50-: Reject format modifiers for cursor planes
+      drm/nouveau/kms/nv50-: Report max cursor size to userspace
+      drm/nouveau/kms/gk104-gp1xx: Fix > 64x64 cursors
+
+Pan Bian (1):
+      drm/i915/selftest: Fix potential memory leak
+
+Umesh Nerlige Ramappa (1):
+      drm/i915: Check for all subplatform bits
+
+Ville Syrj=C3=A4l=C3=A4 (1):
+      drm/i915: Fix ICL MG PHY vswing handling
+
+ drivers/gpu/drm/amd/display/dc/dcn30/Makefile      |   6 +-
+ drivers/gpu/drm/amd/display/dc/dcn301/Makefile     |   3 +-
+ drivers/gpu/drm/amd/display/dc/dcn302/Makefile     |   3 +-
+ drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h            |   1 +
+ drivers/gpu/drm/amd/pm/inc/smu_v11_0.h             |   3 +
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |   9 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c  |   1 +
+ drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c    |   1 +
+ .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    |   1 +
+ drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c     |  31 ++-
+ drivers/gpu/drm/i915/display/intel_ddi.c           |   7 +-
+ drivers/gpu/drm/i915/gt/gen7_renderclear.c         |  12 ++
+ drivers/gpu/drm/i915/gt/intel_ggtt.c               |  47 +++--
+ drivers/gpu/drm/i915/i915_active.c                 |  28 +--
+ drivers/gpu/drm/i915/i915_drv.h                    |   2 +-
+ drivers/gpu/drm/i915/selftests/i915_gem_gtt.c      |   2 +-
+ drivers/gpu/drm/nouveau/dispnv50/base507c.c        |   6 +-
+ drivers/gpu/drm/nouveau/dispnv50/base827c.c        |   6 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.c            |   8 +
+ drivers/gpu/drm/nouveau/dispnv50/head917d.c        |  28 ++-
+ drivers/gpu/drm/nouveau/dispnv50/wndw.c            |  17 +-
+ .../gpu/drm/nouveau/include/nvhw/class/cl917d.h    |   4 +
+ drivers/gpu/drm/nouveau/include/nvif/push.h        | 216 ++++++++++-------=
+----
+ drivers/gpu/drm/nouveau/nouveau_svm.c              |   4 +
+ drivers/gpu/drm/vc4/vc4_hvs.c                      |   8 +-
+ drivers/gpu/drm/vc4/vc4_plane.c                    |  11 +-
+ 26 files changed, 300 insertions(+), 165 deletions(-)
