@@ -2,124 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECA0308F7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991E1308F82
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbhA2VdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:33:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232727AbhA2VdG (ORCPT
+        id S233526AbhA2Vdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:33:55 -0500
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:41231 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233484AbhA2Vdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:33:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A75C061573;
-        Fri, 29 Jan 2021 13:32:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=K3MnR5Heh//yU4kSv2PTGpHsEI35EZwif/E8uQMQaZQ=; b=L4h9RGksrAdq8tWhBPl70ELcS3
-        JVNO4Dp1ZxZ81ljkDQVgl+shIWM4IwnzUMd50Eq8+59QbfPXzQaR27qzFrezt2hFJseaBipDfgWi6
-        7/YREy2gWQ/9GD4Czf4bOOn0qeSDqrEMDmTJDrDo50gdDudUA4bGh9oPwR9HAAbDwREgYTHRrcwsr
-        949a5pAIuOrO2IDV+Chdd58/tXAgT0rgRT4BjI8LrGdTPxXJ/cmgs+JCLbWAr9f8csjJgVnLVTAiz
-        pSZLD9UbS78EcIZ0mO87x6jRFvEx/MZyS8lW2EKZMpCEGGrQTnNeo0UW5w6xqS7jlbTqR8UHdNU/k
-        b4uQ7sFQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5bNJ-00AMNp-9h; Fri, 29 Jan 2021 21:32:17 +0000
-Date:   Fri, 29 Jan 2021 21:32:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Shoaib Rao <rao.shoaib@oracle.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, andy.rudoff@intel.com
-Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
-Message-ID: <20210129213217.GD308988@casper.infradead.org>
-References: <20210122150638.210444-1-willy@infradead.org>
- <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
- <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
- <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
- <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <e1047be3-2d53-49d3-67b4-a2a99e0c0f0f@oracle.com>
- <20210129131820.4b97fdeb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Fri, 29 Jan 2021 16:33:40 -0500
+Received: by mail-qk1-f177.google.com with SMTP id n15so10221050qkh.8;
+        Fri, 29 Jan 2021 13:33:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cv/H+UXVfiojhZIcXbfkk/ErDokGpMJ0LpJMoYEpdpA=;
+        b=huVNdh3jcnf0KmkJ55zC+lEvxzqk+evPXJj0uifN5rEcLXg2IU+kN6nGGiS8lPzYZ/
+         K2QcZL9ozrbEs0PyIsgrq4/rMA1zdKFfJIcxsNhUF5D61onWFFtYmXaD5TIPPGeZXpL4
+         4lBPbtY03LqPk+/rzrrvFoD0i6QAivoVLIxTJLop4465Y0Zdp6X8B+SIr5KdqaHxM5T8
+         frf9SZ3YEVPIDZ10shgMqzmvr6h8iWbZHNA0bAFegrR45N239L/rJ9yQkJ3lI8bgHs4c
+         K3ZqcJy0mmyHcr16B/xi3QQuCjS/k0whJaqPVlZ1ts6z1hBTvLrg2bgt3TzYtwzDBY39
+         oBmQ==
+X-Gm-Message-State: AOAM5308Lr0xmZetzqMhmkPlQ4M/qp5JHby2NBDmo2WFvH77kSQLhJpt
+        6ibD5X3I5JrUh+RS9BcQVs8=
+X-Google-Smtp-Source: ABdhPJx38FOKkKrR/8bSQlb4ZqyvdC9V3/F3orMVsaN66OTF1wjQO8dpZFyVji5GNbdwQ0E1nF4RKw==
+X-Received: by 2002:a37:cd5:: with SMTP id 204mr5672284qkm.410.1611955955712;
+        Fri, 29 Jan 2021 13:32:35 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id 22sm7068680qke.123.2021.01.29.13.32.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 13:32:34 -0800 (PST)
+Date:   Fri, 29 Jan 2021 16:32:32 -0500
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v6 1/2] Kbuild: make DWARF version a choice
+Message-ID: <YBR+8KLWnjnMfP6i@rani.riverdale.lan>
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-2-ndesaulniers@google.com>
+ <20210129201712.GQ4020736@tucnak>
+ <CAKwvOdkqcWOn6G7U6v37kc6gxZ=xbiZ1JtCd4XyCggMe=0v8iQ@mail.gmail.com>
+ <CAKwvOdk0zxewEOaFuqK0aSMz3vKNzDOgmez=-Dae4+bodsSg5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210129131820.4b97fdeb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAKwvOdk0zxewEOaFuqK0aSMz3vKNzDOgmez=-Dae4+bodsSg5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 01:18:20PM -0800, Jakub Kicinski wrote:
-> On Fri, 29 Jan 2021 12:44:44 -0800 Shoaib Rao wrote:
-> > On 1/29/21 12:18 PM, Jakub Kicinski wrote:
-> > > On Fri, 29 Jan 2021 12:10:21 -0800 Shoaib Rao wrote:  
-> > >> The code does not care about the size of data -- All it does is that if
-> > >> MSG_OOB is set it will deliver the signal to the peer process
-> > >> irrespective of the length of the data (which can be zero length). Let's
-> > >> look at the code of unix_stream_sendmsg() It does the following (sent is
-> > >> initialized to zero)  
-> > > Okay. Let me try again. AFAICS your code makes it so that data sent
-> > > with MSG_OOB is treated like any other data. It just sends a signal.  
-> > Correct.
-> > > So you're hijacking the MSG_OOB to send a signal, because OOB also
-> > > sends a signal.  
-> > Correct.
-> > >   But there is nothing OOB about the data itself.  
-> > Correct.
-> > >   So
-> > > I'm asking you to make sure that there is no data in the message.  
-> > Yes I can do that.
-> > > That way when someone wants _actual_ OOB data on UNIX sockets they
-> > > can implement it without breaking backwards compatibility of the
-> > > kernel uAPI.  
-> > 
-> > I see what you are trying to achieve. However it may not work.
-> > 
-> > Let's assume that __actual__ OOB data has been implemented. An 
-> > application sends a zero length message with MSG_OOB, after that it 
-> > sends some data (not suppose to be OOB data). How is the receiver going 
-> > to differentiate if the data an OOB or not.
+On Fri, Jan 29, 2021 at 12:57:20PM -0800, Nick Desaulniers wrote:
+> On Fri, Jan 29, 2021 at 12:19 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 12:17 PM Jakub Jelinek <jakub@redhat.com> wrote:
+> > >
+> > > On Fri, Jan 29, 2021 at 11:43:17AM -0800, Nick Desaulniers wrote:
+> > > > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+> > > > explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+> > > > way that's forward compatible with existing configs, and makes adding
+> > > > future versions more straightforward.
+> > > >
+> > > > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > > > Suggested-by: Fangrui Song <maskray@google.com>
+> > > > Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> > > > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > > ---
+> > > >  Makefile          |  6 +++---
+> > > >  lib/Kconfig.debug | 21 ++++++++++++++++-----
+> > > >  2 files changed, 19 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/Makefile b/Makefile
+> > > > index 95ab9856f357..20141cd9319e 100644
+> > > > --- a/Makefile
+> > > > +++ b/Makefile
+> > > > @@ -830,9 +830,9 @@ ifneq ($(LLVM_IAS),1)
+> > > >  KBUILD_AFLAGS        += -Wa,-gdwarf-2
+> > > >  endif
+> > > >
+> > > > -ifdef CONFIG_DEBUG_INFO_DWARF4
+> > > > -DEBUG_CFLAGS += -gdwarf-4
+> > > > -endif
+> > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> > > > +DEBUG_CFLAGS += -gdwarf-$(dwarf-version-y)
+> > >
+> > > Why do you make DWARF2 the default?  That seems a big step back from what
+> > > the Makefile used to do before, where it defaulted to whatever DWARF version
+> > > the compiler defaulted to?
+> > > E.g. GCC 4.8 up to 10 defaults to -gdwarf-4 and GCC 11 will default to
+> > > -gdwarf-5.
+> > > DWARF2 is more than 27 years old standard, DWARF3 15 years old,
+> > > DWARF4 over 10 years old and DWARF5 almost 4 years old...
+> > > It is true that some tools aren't DWARF5 ready at this point, but with GCC
+> > > defaulting to that it will change quickly, but at least DWARF4 support has
+> > > been around for years.
+> >
+> > I agree with you; I also do not want to change the existing defaults
+> > in this series. That is a separate issue to address.
 > 
-> THB I've never written any application which would use OOB, so in
-> practice IDK. But from kernel code and looking at man pages when
-> OOBINLINE is not set for OOB data to be received MSG_OOB has to be 
-> set in the recv syscall.
-
-I'd encourage anyone thinking about "using OOB" to read
-https://tools.ietf.org/html/rfc6093 first.  Basically, TCP does not
-actually provide an OOB mechanism, and frankly Unix sockets shouldn't
-try either.
-
-As an aside, we should probably remove the net.ipv4.tcp_stdurg sysctl
-since it's broken.
-
-   Some operating systems provide a system-wide toggle to override this
-   behavior and interpret the semantics of the Urgent Pointer as
-   clarified in RFC 1122.  However, this system-wide toggle has been
-   found to be inconsistent.  For example, Linux provides the sysctl
-   "tcp_stdurg" (i.e., net.ipv4.tcp_stdurg) that, when set, supposedly
-   changes the system behavior to interpret the semantics of the TCP
-   Urgent Pointer as specified in RFC 1122. However, this sysctl changes
-   the semantics of the Urgent Pointer only for incoming segments (i.e.,
-   not for outgoing segments).  This means that if this sysctl is set,
-   an application might be unable to interoperate with itself if both
-   the TCP sender and the TCP receiver are running on the same host.
-
-> > We could use a different flag (MSG_SIGURG) or implement the _actual_ OOB 
-> > data semantics (If anyone is interested in it). MSG_SIGURG could be a 
-> > generic flag that just sends SIGURG irrespective of the length of the data.
+> Thinking more about this over lunch...
 > 
-> No idea on the SIGURG parts :)
+> I agree that DWARF v2 is quite old and I don't have a concrete reason
+> why the Linux kernel should continue to support it in 2021.
+> 
+> I agree that this patch takes away the compiler vendor's choice as to
+> what the implicit default choice is for dwarf version for the kernel.
+> (We, the Linux kernel, do so already for implicit default -std=gnuc*
+> as well).
+> 
+> I would not mind making this commit more explicit along the lines of:
+> """
+> If you previously had not explicitly opted into
+> CONFIG_DEBUG_INFO_DWARF4, you will be opted in to
+> CONFIG_DEBUG_INFO_DWARF2 rather than the compiler's implicit default
+> (which changes over time).
+> """
+> If you would rather see dwarf4 be the explicit default, that can be
+> done before or after this patch series, but to avoid further
+> "rope-a-dope" over getting DWARFv5 enabled, I suggest waiting until
+> after.
+> 
+> If Masahiro or Arvind (or whoever) feel differently about preserving
+> the previous "don't care" behavior related to DWARF version for
+> developers who had previously not opted in to
+> CONFIG_DEBUG_INFO_DWARF4, I can drop this patch, and resend v7 of
+> 0002/0002 simply adding CONFIG_DEBUG_INFO_DWARF5 and making that and
+> CONFIG_DEBUG_INFO_DWARF4 depend on ! each other (I think).  But I'm
+> going to suggest we follow the Zen of Python: explicit is better than
+> implicit.  Supporting "I choose not to choose (my dwarf version)"
+> doesn't seem worthwhile to me, but could be convinced otherwise.
+> -- 
+> Thanks,
+> ~Nick Desaulniers
 
-If we were going to do something different from TCP sockets to generate
-a remote SIGURG, then it would ideally be an entirely different mechanism
-(eg a fcntl()) that could also be implemented by pipes.
+Given what Jakub is saying, i.e. it was previously impossible to get
+dwarf2 with gcc, and you get dwarf4 whether or not DEBUG_INFO_DWARF4 was
+actually selected, we should make the default choice DEBUG_INFO_DWARF4
+with the new menu to avoid surprising users. We should probably just
+drop DWARF2 and make the menu in this patch have only DWARF4, and then
+add DWARF5 as the second choice. The menu is still a good thing for
+future-proofing even if it only has two options currently.
 
-But I think it's worth just saying "MSG_OOB on Unix sockets generates a
-signal on the remote end, just like it does on TCP sockets.  Unix sockets
-do not actually support OOB data and behave like TCP sockets with
-SO_OOBINLINE set as recommended in RFC 6093".
+Thanks.
