@@ -2,55 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E423308622
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCCF308624
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhA2G62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbhA2G6J (ORCPT
+        id S231942AbhA2HAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:00:10 -0500
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:37882 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhA2HAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:58:09 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81561C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:57:29 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id u20so7849750qku.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:57:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=g3zLYH4xKxcPrHOD18z9YfpQcnk/GaJedfustWU5uGs=;
-        b=WgxqwnnD1h2PzKam05piZSUHIKgNxPNoiGtAjICLWjuzhueIBRmQA9cbRJjAJwwGdJ
-         GC7rqbH5/0kzqaBxKICo0GR71XnpEUaHP6ueAVh2g8MQSCqKub2LMx0LlTtdup6e23YZ
-         bmUMShaBeJ/+O2NZ+hk47R42ezJnJ25d9BcCpnoo20vTqJ1TpjPdLUSGarMLFD8APzwA
-         MRhynmRARrYt2gk9My8Ws25xgZmvQ5gE6Xd7Nw/wxSwOT4s8NgOSpqj9XQwwcvuXXi2j
-         jHlcAviUPBgQOiKgqbbcc3lxh1WErx080rLYY2yYpL2yIqEDh23yucD0h3+bsXsiiODI
-         8jUQ==
+        Fri, 29 Jan 2021 02:00:02 -0500
+Received: by mail-wm1-f44.google.com with SMTP id m1so3036380wml.2;
+        Thu, 28 Jan 2021 22:59:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=g3zLYH4xKxcPrHOD18z9YfpQcnk/GaJedfustWU5uGs=;
-        b=d3u6XwDDOCI6ZNTQGGiuS4UauxmuJ7r55sek3BeVgSaZWaRmZV949FoS4Y5ncJLxTg
-         zNv8J38nDVFnsjCV8ewgNV4yD6qnLD1uUvXUOwpCWbPiLfFoXaPnI8KUTN288hZzD2we
-         YOfKIKYMlZF+Hzq6EMzO+p5FDhZ3DGW9CE0O478Sebwm6Veq17ma8Szlk3KWK6NnZ1Pu
-         BFcAcov/uk8JaDN5xu7nlqTIt7V0vuJ3lrO0p9ZPSDYCpADfSxKbixFCE2u2jVF731bM
-         prsZe0VMUPvLA5N1Bu4VKYdIRTMS9YUG9kqJXF0LPnSBJmBJ48dG69VOa8Qz1fY37DA6
-         j8ZA==
-X-Gm-Message-State: AOAM531FIXRwAD4pycVJ60XPWG/VpeKbc37x7ptD+Hnd5Dzv4oPqMH79
-        q5LzKYLdkZfwtt1bK13So4eULyocmfSkPtbY7WXw7jungkA=
-X-Google-Smtp-Source: ABdhPJwm1qM1BLMAbuCgVl0b2eW0xwyoA8F/YlcX9Lzl/NWH0RuQNZgmGl2mEfUMu7MShlPGc7BdM5j4touqnt/n0+k=
-X-Received: by 2002:ae9:ed4e:: with SMTP id c75mr2916023qkg.109.1611903448775;
- Thu, 28 Jan 2021 22:57:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I0gYgB0si4DzJnhX+tVmzjnF6SImyHl28jVz6fS8z7c=;
+        b=muz5QSNgdmZo7nehhy2IGBe99gDhj3hdq8hSq+qkGxa84Se3xSk2yTmbdS/XLJoXEu
+         +bcihP9r82zn8n9emzH81RUtyqbjwMA4w9qvADSQczq7BM/ol6uPxN/VguVeR8y5NC2K
+         /1k1AHuMfLX+PvXako5sZw+XQgP3307yz/zc3pbeLelPzk5Ut9z14Wt2A8x0N79yuFjQ
+         A9VsbHLckSaSaDWc4Ko/7VbguiemVAxC9GoUYeyPBW9j0xoHcwKq7WNB2UI7DtevRVIW
+         7x7TUf9vyrcod6WM/CdMaBmW6zk1Ae2pDz3B3tCpETYbAMWOZPUnGxCpjy7qirmnGiMO
+         4mnQ==
+X-Gm-Message-State: AOAM532U0iFlxP0+2ct5kYb3FerExeC7H/YLBHZm+zWyucV1krJt/cfq
+        369e3cYgq7cPDiXpRF3Dktw=
+X-Google-Smtp-Source: ABdhPJw64TQRP5+5Gnp1J0WTxzWh5qUF3vzgVg/gzqdsVo4nTtt7H1pRcyiCbbcGO16Ddwdoa6k2lQ==
+X-Received: by 2002:a1c:4986:: with SMTP id w128mr2340685wma.89.1611903560343;
+        Thu, 28 Jan 2021 22:59:20 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id q16sm15137243wme.1.2021.01.28.22.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 22:59:18 -0800 (PST)
+Date:   Fri, 29 Jan 2021 07:59:17 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] memory: tegra: Remove calls to dev_pm_opp_set_clkname()
+Message-ID: <20210129065917.ctod3hjbdsdu5v3g@kozik-lap>
+References: <0f22cc1791d8b88c50a9790c2dc19455b34ec7b0.1611742564.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-From:   dzp <dzp1001167@gmail.com>
-Date:   Fri, 29 Jan 2021 14:57:17 +0800
-Message-ID: <CAKtZ4UNxgxhDKMFUSdXYaW9oJQajx9h==dcXdhAADS3tr3d8=g@mail.gmail.com>
-Subject: test
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0f22cc1791d8b88c50a9790c2dc19455b34ec7b0.1611742564.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-test
+On Wed, Jan 27, 2021 at 03:46:22PM +0530, Viresh Kumar wrote:
+> There is no point calling dev_pm_opp_set_clkname() with the "name"
+> parameter set to NULL, this is already done by the OPP core at setup
+> time and should work as it is.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> 
+> ---
+> V2: Update tegra124 as well.
+> 
+> Krzysztof, please take this through your tree, it doesn't have any
+> dependency in the OPP tree.
+> ---
+>  drivers/memory/tegra/tegra124-emc.c | 13 ++-----------
+>  drivers/memory/tegra/tegra20-emc.c  | 13 ++-----------
+>  drivers/memory/tegra/tegra30-emc.c  | 13 ++-----------
+>  3 files changed, 6 insertions(+), 33 deletions(-)
+
+Thanks, applied.
+
+Best regards,
+Krzysztof
+
