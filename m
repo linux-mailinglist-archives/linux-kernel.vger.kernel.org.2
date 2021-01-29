@@ -2,116 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76BD3090A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF693090AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhA2Xb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 18:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
+        id S232582AbhA2XdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 18:33:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhA2XbV (ORCPT
+        with ESMTP id S231705AbhA2XdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:31:21 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57410C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:30:41 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id y10so1949019plk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:30:41 -0800 (PST)
+        Fri, 29 Jan 2021 18:33:22 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4913EC061573;
+        Fri, 29 Jan 2021 15:32:42 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id n42so10267415ota.12;
+        Fri, 29 Jan 2021 15:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wQXKy21pEcRclb3wAZG5ISCNN6W5kQy6JQslnD7Vmx0=;
-        b=QpFH+sYq9frbG1nqLvcOEsHB/q0UQxlaH0k6imY5kj6e1nFQjF4bMWPoSCJJNsmSjq
-         TYqorWB5pdzjpJvp3tAKpSQenuvRmE4jvmPmPGfnz34LWAJqMcqmRJOhtc7hQ9M4JuG0
-         9NwkrdUsFjQ6nZqCG+dVGSoTzgTuhMPhZuWJIsHUfE7M4reRjSQzJsIErsxfJx0e9Ewl
-         a2eJQCVLrjVf7+3NYaa9oMpoK0rAAFE9Paps6Z4CMq82EtCQGr0OpPt47BGyhSlVXBlY
-         8PqFBJt+pQcjBcBmRzgH6zaxQ4Mb77o/ZrXmg/y7FrsigvGjBCa2tPHG/9T3iQsHmIcL
-         l9XA==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zzcM2qUSkaqmQatz4yzSydth0oX/gZ+zfajHOGWvhjk=;
+        b=ofBpm/Q2w3Om2A539T564qNWYq7LP7QQQRmO/LHEPWQEw5eoqeRgo2PLbzFpzj3fHE
+         dbo4EGLLr5R+PbBMHgzU6CQ6J2ZPROfhzmRc/RCFy5EK8cxrUEJAdnovCmjgslML2Ogq
+         EstiXSKTRkYebco2IsYwT2Rw9h5HWK4HhpCqvqiGQPVNl+4rFD0KlZ6sEFoNn+mc9l0G
+         WoPxfD8B1ZflOqmGpTyH5C2SmAQwowW46fcI0c8K0nR5D4zmJX7cO70HcSLNEf/usPKT
+         kvv2UM4AYQcMtS1N/WDHB8bEO7cDn5SXywbb8DFlfbfSWh7EoxR0CAm8d7KHxS7MPnR9
+         Fu8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wQXKy21pEcRclb3wAZG5ISCNN6W5kQy6JQslnD7Vmx0=;
-        b=DeMeL9EtI1bc+aQkOY3Uf75COsTGZENOftzO2iDzQ90w3crTe6QD8GYNCY0j4VAIb4
-         QxMzaRFBbBTvri1k3r9S9knz6zWO1SEmwsiiYiw10WflQqRjKMaFuRx8GTD+jHDvuWKI
-         +JQsnIjvYOwG8AHJvj1fAOstkwnfMwjS20BzXYBLjNBu7oV60MwkJK7IfH2cuFw6QzxR
-         5RShkmKFjZuKJeIT42Xny9p+0QljzVSPJSU068B1GGlMXSQGEGwx6nYpBtcwaVf2C3PK
-         QONIM4Z5DLbFasbArZaFbuoLLLZBRzIWOZ0Ccefk3dswk2EH53uVDCeAOhQCQSJnhcaa
-         py/Q==
-X-Gm-Message-State: AOAM532W5GwNzD+xvGiRqv2BqpfmyX/y+CRO0Y3aPDNxPQpCuCqXoMna
-        6zLEdh74YHuYG2QG3ugYp7mP7Du7cuQa9/IL/UVB/w==
-X-Google-Smtp-Source: ABdhPJxWbqroS4GY8wD0aOcFCDcRe5dSwHiVZ5LIk65NCeueYb4W6ufs+KdY6D+ZkjIlCKZLLQzDDX7Zo/Z760ymWzg=
-X-Received: by 2002:a17:902:ed94:b029:de:8844:a650 with SMTP id
- e20-20020a170902ed94b02900de8844a650mr6619051plj.56.1611963040680; Fri, 29
- Jan 2021 15:30:40 -0800 (PST)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zzcM2qUSkaqmQatz4yzSydth0oX/gZ+zfajHOGWvhjk=;
+        b=qJRmBJHPjkRhSWCXQgKJiIcHawPvIJ1u864iNsc9tpaBYsui0WPgTNdqrowJ4EHj0L
+         z40lY57NHm8cqwuMuzGRdJiaNmwo01m20FkY4ST3IjO1gpIbwUtaWhqR7dYWTtcdWV6h
+         6GRZDM1nNDal7jIsOrWTmabSangv7tl78KOY+eVPzy3YHFXswSY/yYB1oFjaPMrFiken
+         +1xqf8Fc0xKu74fuOHrFycXEfcTz+aj+4FYQcq9DTx7+gQXB2cHRAYOk4/RNeZFTkuzA
+         /jQT9jO8YFaMj8R4anjubdAUqfKdeOVLNZJbwWIKOsY18CpPeuizUWp4+DTfW6uc/5+0
+         /y6Q==
+X-Gm-Message-State: AOAM532tM+o1a3hZEubum7ZRoj5NCFTu8dEQkSC1PgH3apVoQ9mU7eeD
+        l0XJ4WS5/qmJbEnuHmW25qo=
+X-Google-Smtp-Source: ABdhPJy2LbFvqtCihbSaaXYS2d3PdR/BnlrjtAB9ex/N5PSeTtK1QhRUvFp223QgYqIeNjMRQFMFRw==
+X-Received: by 2002:a05:6830:2414:: with SMTP id j20mr4374824ots.326.1611963161688;
+        Fri, 29 Jan 2021 15:32:41 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y10sm2705326ooy.11.2021.01.29.15.32.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Jan 2021 15:32:40 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Lukasz Majczak <lma@semihalf.com>, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+References: <20210123014247.989368-1-lma@semihalf.com>
+ <20210125171846.GA31929@roeck-us.net> <YBSRFsTNjadQMndD@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <b287e2b7-08de-6fc8-4003-4609b1ba9378@roeck-us.net>
+Date:   Fri, 29 Jan 2021 15:32:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <20210129205702.GS4020736@tucnak> <CAKwvOdmuSaf28dOdP8Yo6+RyiviMNKcq8JY=-qgbwjbPVwHmLw@mail.gmail.com>
- <20210129211102.GT4020736@tucnak> <CAKwvOdm-+xK=diSKKXXnS2m1+W6QZ70c7cRKTbtVF=dWi1_8_w@mail.gmail.com>
- <20210129220939.GY4020736@tucnak> <CAKwvOdnte8Ck1ywodbY7ED7U046j06C+D-ZcW6kS-fqyaJbmCQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdnte8Ck1ywodbY7ED7U046j06C+D-ZcW6kS-fqyaJbmCQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 15:30:29 -0800
-Message-ID: <CAKwvOdkx=4SZAo_pxduWG=SvDNET14eo2ad4FeHvxHUcSZGbTA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBSRFsTNjadQMndD@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 3:25 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Jan 29, 2021 at 2:10 PM Jakub Jelinek <jakub@redhat.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 02:05:59PM -0800, Nick Desaulniers wrote:
-> > > Ah, I see.  Then I should update the script I add
-> > > (scripts/test_dwarf5_support.sh) to feature detect that bug, since
-> > > it's the latest of the bunch.  Also, should update my comment to note
-> > > that this requires binutils greater than 2.35.1 (which is what I have,
-> > > which fails, since the backport landed in ... what?!)  How was this
-> > > backported to 2.35
-> > > (https://sourceware.org/bugzilla/show_bug.cgi?id=27195#c12, Jan 26
-> > > 2021) when binutils-2_35_1 was tagged sept 19 2020?  Or will there be
-> > > a binutils 2.35.2 point release?
-> >
-> > AFAIK yes, soon.
->
-> Err...perhaps https://sourceware.org/bugzilla/show_bug.cgi?id=27195
-> was about `.file 0`, but it looks like `.file 1 "filename" md5
-> 0x7a0b65214090b6693bd1dc24dd248245` without -gdwarf-5. Specifically
-> the md5 ... .
->
-> So https://sourceware.org/bugzilla/show_bug.cgi?id=25611 needs a rework perhaps?
+On 1/29/21 2:49 PM, Jarkko Sakkinen wrote:
+> On Mon, Jan 25, 2021 at 09:18:46AM -0800, Guenter Roeck wrote:
+>> Hi Lukasz,
+>>
+>> On Sat, Jan 23, 2021 at 02:42:47AM +0100, Lukasz Majczak wrote:
+>>> There is a missing call to start_tpm_chip before the call to
+>>> the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
+>>> approach maight work for tpm2, it fails for tpm1.x - in that case
+>>> call to tpm_get_timeouts() or tpm_tis_probe_irq_single() tries to
+>>> transmit TPM commands on a disabled chip what what doesn't succeed
+>>
+>> s/what what/what/
+> 
+> s/maight/might/
+> 
+> Also, would be nice to have the capatalization of acronyms correct
+> and consistent. E.g. tpm1.x should be rather written as "TPM 1.x
+> chips".
+> 
+> It's also incorrect to state that something fails for TPM 1.x chips,
+> unless you can somehow make a sense that every single TPM 1.x at wild
+> fails, which probably is not true.
+> 
+>>> and in turn causes tpm_tis_core_init() to fail.
+>>> Tested on Samsung Chromebook Pro (Caroline).
+> 
+> Anyone can tell me what does Caroline mean anyway?
+> 
 
-$ echo '.file 1 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' |
-binutils-gdb/gas/as -
-{standard input}: Assembler messages:
-{standard input}:1: Error: junk at end of line, first unrecognized
-character is `m'
-$ echo '.file 1 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' |
-binutils-gdb/gas/as -gdwarf-5 -
-$
+"Caroline" is the code name for Samsung Chromebook Pro. The term
+"Samsung Chromebook Pro (Caroline)" is quite widely used for this
+system. Or, alternatively, "Caroline (Samsung Chromebook Pro)".
 
-https://sourceware.org/bugzilla/show_bug.cgi?id=27280
--- 
-Thanks,
-~Nick Desaulniers
+Guenter
