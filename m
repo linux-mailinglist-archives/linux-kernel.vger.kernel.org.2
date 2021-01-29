@@ -2,114 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934D9308E7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10707308E7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhA2U3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
+        id S233265AbhA2Ubh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhA2U0w (ORCPT
+        with ESMTP id S233130AbhA2U31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:26:52 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6BEC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:26:10 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id bx12so12019095edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:26:10 -0800 (PST)
+        Fri, 29 Jan 2021 15:29:27 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BDAC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:28:41 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id i187so14258720lfd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:28:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uYaEhe2BhsLmqOBndIe4KIykrf2Qm1MAXwsQhK8h2oI=;
-        b=Cvz/8cQzusi9dgoQgXG8FRGLehVhS/gcTlRV7Sh6Q6kyB0uRZktk5+fyKkMtS2dP1q
-         DQR9OwYHUsD0tFY7DK6Zas9ticlBA6iuS+/+WVfohEMKcLs3nmgzAF1nV7rfyg1Cd38d
-         xYykiSk7ym5PAwhheB07AuGswjwX6X2wWtc/9xxbLo2/yI2gBSfb4C52P99f/Gp5rZpf
-         aLyIPsCDARLTBPz7P9xwnWWh6wxX2S/fw9/5Yr223BVJ3rRQE0AKenKAKC8PJtYC4fsu
-         h+uqq7955FMKRcI7SSSORtR7EycZDIAQE5x0KyQpr/fAg+cFeWuZgWuvtdldRGUD3gds
-         uSPg==
+        bh=uKLIyX25iKnuVKUfMGkqydZ4j+fzDI/x2+u6Osjlfzg=;
+        b=RNnKvqMs5X7rMlrzvksstcZxv1h5xi/0tiNSyUnQ0Qw821fC4tLxajbT68MeMNxNw9
+         prDS4lSuSq4PpXbwW5H/BrJyPRGbTSnbe30L7BHGva2UMgWrChWWVbkeKU/ITtOhHmHX
+         LWPTUX+4wovRj0w3oqreB1AppyLBQB9OkpqTQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uYaEhe2BhsLmqOBndIe4KIykrf2Qm1MAXwsQhK8h2oI=;
-        b=Fk6x9a3EYYZ193PrTcSdeVYFVQsmcEH14Xcjl0cXRGAIeEKchDe948ufThq6fhbyPr
-         UBtCPyJqRu3sfdW3xoyRoMPyvg796oLLUgygFwZyvFNIPbs5+56x1zPO/UEOgxPKCjoo
-         8VbniKaDMtIASdo/8RVujCEa3Q1ZQ+Z3LYkzM1Vw3LrQhirc1rSNk80IbUuSSJUGGMD+
-         Z0bknM03k0ZzylXZ/v3e/foJlWi7MthYDDU6riW/dgrBIUqUbrN6vsUh95TQ3MU2bO/l
-         F/kprh+Rh/ihXh22JBSEdJzBjcFCVfQTBzMCId9vXPkPz0hPWby1sP4G904Wa3JZYF9W
-         eDEg==
-X-Gm-Message-State: AOAM530Drbp7ioDtVV1WgUyyW1LeVhG2g252Kyvt3fZnrV1tV6+OdExy
-        wdTSuJ2MDJrQM5gB1npNhPTkiBl9JYlZLGxPk/1bnA==
-X-Google-Smtp-Source: ABdhPJwDgwEW2Uk/fBvDxPQqbJMbn1cet9/TMoAxpBbbEp8orDs/Qtzkh4Fkd4Sy6NzN2S3GArLAIHXkX0SylrvknfA=
-X-Received: by 2002:aa7:dace:: with SMTP id x14mr7265846eds.300.1611951969280;
- Fri, 29 Jan 2021 12:26:09 -0800 (PST)
+        bh=uKLIyX25iKnuVKUfMGkqydZ4j+fzDI/x2+u6Osjlfzg=;
+        b=Ei4LvAuNr+U6Sr06AWjhzQz3LZt0izeI2pcXW2/AK1LW8o4S9rfLFZ9Q/TkRwgC9ph
+         f0VRmhAa3DvsS0Vp+9/tkK+LLBZxwG7rqTQkNa93Wlj2d6DFEIziMXvlKe0Y3dXdhlXm
+         kEmv8ZNEBD2bo45a8ak8DZcci2S4PkvvIX+jM6i+FaRaPZoJ9RS4Pwv7KwdmJtcSanMI
+         6vQaTsBDKnrQ1HNDOOeicpZyH4LaMntQ0nuV+yHTLur9hYxPtoaI9t8QL89AX1JAvHDp
+         X13gUnMK3SgGRL/Wx0jm2528UHzIetC9dx0hiJlcoNq58mclpu2vVmVcTQ9PPO03sgey
+         AusQ==
+X-Gm-Message-State: AOAM530eBnmlmTdG31EUQIp375hnxQ+myBmdVKFbwDjmU+Dj4oH057Rp
+        SRXRwHjwlqnf/qDtnDPo0jf0Lydsvv/LYA==
+X-Google-Smtp-Source: ABdhPJwYyBc50kCFa7dQebxp5qGS4izQym97OjB0z13UFecpqxHw3diJsWxnRT2IJ1XLMdfmRbh9pg==
+X-Received: by 2002:a05:6512:4c9:: with SMTP id w9mr2857983lfq.437.1611952119373;
+        Fri, 29 Jan 2021 12:28:39 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id e28sm2106184lfn.112.2021.01.29.12.28.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Jan 2021 12:28:37 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id p21so14248756lfu.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:28:37 -0800 (PST)
+X-Received: by 2002:ac2:4436:: with SMTP id w22mr2813506lfl.41.1611952116987;
+ Fri, 29 Jan 2021 12:28:36 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
- <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com> <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
- <CAPcyv4gxJa2YJuSjtBDYccfgsxhor8qFzpNck9kmabDo3nidpQ@mail.gmail.com> <CA+CK2bBJmnTVF8ZfwLyLqgjgo63G-rVQTYwUqgmx8wXFtRH9-g@mail.gmail.com>
-In-Reply-To: <CA+CK2bBJmnTVF8ZfwLyLqgjgo63G-rVQTYwUqgmx8wXFtRH9-g@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 29 Jan 2021 12:26:07 -0800
-Message-ID: <CAPcyv4jLmDvQ+e7QSQjOsAccSnhpvm9J5kHsA1OCXcaOm7BrMA@mail.gmail.com>
-Subject: Re: dax alignment problem on arm64 (and other achitectures)
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        James Morris <jmorris@namei.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <ce392dc6-d77f-b74c-8569-9a04ef8ad2d6@redhat.com>
+ <CAHk-=wg6AG=1YjDC2gSspPYjEPWqDXkXaiaoPZS6X=Rg_XRUsw@mail.gmail.com>
+ <98e2806d-81af-baf7-00f4-5a43870ff514@redhat.com> <8723f53e-9954-e0d2-16ce-933f53c776c3@redhat.com>
+ <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com> <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
+In-Reply-To: <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Jan 2021 12:28:20 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjXRFCTp5TVOa1WnXNwMDRv+tzKuBM44NLRs+_0UvUVYw@mail.gmail.com>
+Message-ID: <CAHk-=wjXRFCTp5TVOa1WnXNwMDRv+tzKuBM44NLRs+_0UvUVYw@mail.gmail.com>
+Subject: Re: [5.11 regression] "tty: implement write_iter" breaks TIOCCONS
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jiufei Xue <jiufei.xue@linux.alibaba.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000005423b405ba0fd980"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 5:51 AM Pavel Tatashin
-<pasha.tatashin@soleen.com> wrote:
->
-> > Since we last talked about this the enabling for EFI "Special Purpose"
-> > / Soft Reserved Memory has gone upstream and instantiates device-dax
-> > instances for address ranges marked with EFI_MEMORY_SP attribute.
-> > Critically this way of declaring device-dax removes the consideration
-> > of it as persistent memory and as such no metadata reservation. So, if
-> > you are willing to maintain the metadata external to the device (which
-> > seems reasonable for your environment) and have your platform firmware
-> > / kernel command line mark it as EFI_CONVENTIONAL_MEMORY +
-> > EFI_MEMORY_SP, then these reserve-free dax-devices will surface.
->
-> Hi Dan,
->
-> This is cool. Does it allow conversion between devdax and fsdax so DAX
-> aware filesystem can be installed and data can be put there to be
-> preserved across the reboot?
->
+--0000000000005423b405ba0fd980
+Content-Type: text/plain; charset="UTF-8"
 
-It does not because it's not "pmem" by this designation.
+On Fri, Jan 29, 2021 at 12:02 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> It's fairly easy to work around in this in the tty layer by just
+> avoiding that function entirely, so I'll cook up a patch to do that.
+> But I'm adding the appropriate people to the participants here because
+> this really is very subtle if you ever hit it.
 
-Instead if you want fsdax, zero metadata on the device, and the
-ability to switch from fsdax to devdax I think that could be achieved
-with a new sysfs attribute at the region-device level. Currently the
-mode of a namespace with no metadata on it defaults to "raw" mode
-where "raw" treats the pmem as a persistent memory block device with
-no DAX capability. There's no reason the default could instead be
-devdax with pages mapped.
+Here's the patch to make the tty layer just do the redirection
+entirely internally, avoiding that mis-designed vfs_iocb_iter_write()
+function.
 
-Something like:
-ndctl disable-region region0
-echo 1 > /sys/bus/nd/devices/region0/pagemap
-echo devdax > /sys/bus/nd/devices/region0/raw_default
-ndctl enable-region region0
+Hans, does this fix things for you? I'm pretty confident it will, but
+always best to double-check..
 
-...where the new pagemap attribute does set_bit(ND_REGION_PAGEMAP,
-&nd_region->flags), and raw_default arranges for the namespace to be
-shunted over to devdax.
+                 Linus
+
+--0000000000005423b405ba0fd980
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kkiqnlm20>
+X-Attachment-Id: f_kkiqnlm20
+
+IGRyaXZlcnMvdHR5L3R0eV9pby5jIHwgMjAgKysrKysrKysrKysrKysrKystLS0KIDEgZmlsZSBj
+aGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvdHR5L3R0eV9pby5jIGIvZHJpdmVycy90dHkvdHR5X2lvLmMKaW5kZXggYmY3YmU4ZTY5
+NzQ1Li5kOGE2OGY2YTBmZGQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdHR5L3R0eV9pby5jCisrKyBi
+L2RyaXZlcnMvdHR5L3R0eV9pby5jCkBAIC0xMDkyLDkgKzEwOTIsOCBAQCB2b2lkIHR0eV93cml0
+ZV9tZXNzYWdlKHN0cnVjdCB0dHlfc3RydWN0ICp0dHksIGNoYXIgKm1zZykKICAqCXdyaXRlIG1l
+dGhvZCB3aWxsIG5vdCBiZSBpbnZva2VkIGluIHBhcmFsbGVsIGZvciBlYWNoIGRldmljZS4KICAq
+LwogCi1zdGF0aWMgc3NpemVfdCB0dHlfd3JpdGUoc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3Qg
+aW92X2l0ZXIgKmZyb20pCitzdGF0aWMgc3NpemVfdCBmaWxlX3R0eV93cml0ZShzdHJ1Y3QgZmls
+ZSAqZmlsZSwgc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3QgaW92X2l0ZXIgKmZyb20pCiB7Ci0J
+c3RydWN0IGZpbGUgKmZpbGUgPSBpb2NiLT5raV9maWxwOwogCXN0cnVjdCB0dHlfc3RydWN0ICp0
+dHkgPSBmaWxlX3R0eShmaWxlKTsKICAJc3RydWN0IHR0eV9sZGlzYyAqbGQ7CiAJc3NpemVfdCBy
+ZXQ7CkBAIC0xMTE3LDYgKzExMTYsMTEgQEAgc3RhdGljIHNzaXplX3QgdHR5X3dyaXRlKHN0cnVj
+dCBraW9jYiAqaW9jYiwgc3RydWN0IGlvdl9pdGVyICpmcm9tKQogCXJldHVybiByZXQ7CiB9CiAK
+K3N0YXRpYyBzc2l6ZV90IHR0eV93cml0ZShzdHJ1Y3Qga2lvY2IgKmlvY2IsIHN0cnVjdCBpb3Zf
+aXRlciAqZnJvbSkKK3sKKwlyZXR1cm4gZmlsZV90dHlfd3JpdGUoaW9jYi0+a2lfZmlscCwgaW9j
+YiwgZnJvbSk7Cit9CisKIHNzaXplX3QgcmVkaXJlY3RlZF90dHlfd3JpdGUoc3RydWN0IGtpb2Ni
+ICppb2NiLCBzdHJ1Y3QgaW92X2l0ZXIgKml0ZXIpCiB7CiAJc3RydWN0IGZpbGUgKnAgPSBOVUxM
+OwpAQCAtMTEyNiw5ICsxMTMwLDEzIEBAIHNzaXplX3QgcmVkaXJlY3RlZF90dHlfd3JpdGUoc3Ry
+dWN0IGtpb2NiICppb2NiLCBzdHJ1Y3QgaW92X2l0ZXIgKml0ZXIpCiAJCXAgPSBnZXRfZmlsZShy
+ZWRpcmVjdCk7CiAJc3Bpbl91bmxvY2soJnJlZGlyZWN0X2xvY2spOwogCisJLyoKKwkgKiBXZSBr
+bm93IHRoZSByZWRpcmVjdGVkIHR0eSBpcyBqdXN0IGFub3RoZXIgdHR5LCB3ZSBjYW4gY2FuCisJ
+ICogY2FsbCBmaWxlX3R0eV93cml0ZSgpIGRpcmVjdGx5IHdpdGggdGhhdCBmaWxlIHBvaW50ZXIu
+CisJICovCiAJaWYgKHApIHsKIAkJc3NpemVfdCByZXM7Ci0JCXJlcyA9IHZmc19pb2NiX2l0ZXJf
+d3JpdGUocCwgaW9jYiwgaXRlcik7CisJCXJlcyA9IGZpbGVfdHR5X3dyaXRlKHAsIGlvY2IsIGl0
+ZXIpOwogCQlmcHV0KHApOwogCQlyZXR1cm4gcmVzOwogCX0KQEAgLTIzNzQsNiArMjM4MiwxMiBA
+QCBzdGF0aWMgaW50IHRpb2Njb25zKHN0cnVjdCBmaWxlICpmaWxlKQogCQkJZnB1dChmKTsKIAkJ
+cmV0dXJuIDA7CiAJfQorCWlmIChmaWxlLT5mX29wLT53cml0ZV9pdGVyICE9IHR0eV93cml0ZSkK
+KwkJcmV0dXJuIC1FTk9UVFk7CisJaWYgKCEoZmlsZS0+Zl9tb2RlICYgRk1PREVfV1JJVEUpKQor
+CQlyZXR1cm4gLUVCQURGOworCWlmICghKGZpbGUtPmZfbW9kZSAmIEZNT0RFX0NBTl9XUklURSkp
+CisJCXJldHVybiAtRUlOVkFMOwogCXNwaW5fbG9jaygmcmVkaXJlY3RfbG9jayk7CiAJaWYgKHJl
+ZGlyZWN0KSB7CiAJCXNwaW5fdW5sb2NrKCZyZWRpcmVjdF9sb2NrKTsK
+--0000000000005423b405ba0fd980--
