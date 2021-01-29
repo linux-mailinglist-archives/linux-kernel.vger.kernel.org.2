@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4842308FBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B28308FC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbhA2WCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:02:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232752AbhA2WCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:02:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7605664D7F;
-        Fri, 29 Jan 2021 22:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611957681;
-        bh=VC+OT4kyfgmZZcdKlfJ2Gu/2uwTNCfc3tfNRXYWunFU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m7GGZi45DfINPk8PuhRCyyE6Z18P9X8dqT08fZWZWK3xPnI/B+8xdYgDisPxUsZnh
-         VkVivp81JLTQyrzeQy9f58X1qqKrFCFXFMXsNVEYBVkQDU/8DmougJeZhQzFI5oM9b
-         dsP1WH4gnVUdd028wRMFFPeg2EXB/HVPLNUua/SaZkj//3Xtti0xU/ZX0SMLUVwP05
-         PD32lUnXwG7GPIuoyyzEy/gQWm30pnOpIUH4XY4SlfigPRB6Gv0pFvzif2dpo84c5d
-         z2t3YetPsV0qsbrDuO9MuaUVyAhOO/72F55wZ/cl+8Wg5SYnOq1B6PtkoPOdHlnfjX
-         c5kiPO0G0144Q==
-Date:   Fri, 29 Jan 2021 14:01:20 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Anders =?UTF-8?B?UsO4bm5pbmdlbg==?= <anders@ronningen.priv.no>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
- w/o dma cache snooping
-Message-ID: <20210129140120.29ae5062@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210129195240.31871-2-TheSven73@gmail.com>
-References: <20210129195240.31871-1-TheSven73@gmail.com>
-        <20210129195240.31871-2-TheSven73@gmail.com>
+        id S233302AbhA2WHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:07:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232012AbhA2WHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 17:07:01 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81474C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:06:10 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id w18so7075535pfu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xbB83yQ/mNcv3yi7gTIvEjnZRAP51fOKghx1oZz8Us8=;
+        b=lb4i2596PDrPRAeQdhV0FrDfmDCJ6RHfIjf6vJ4dYUVwihSdmGZ1EMdFDEDD6sOyHQ
+         tgM9l9b0LJ392ggfalldUZrNZ/4aZZZBRgYtU5QuTwxMS9McVNwifc5ELo2rR65F6Owk
+         1oqfBOzjazSQVKoNoNDtxVro1PgJ9v2SnOfkpYFKBqgYOG9lsnr7k8Vmj4LNLo+/r62D
+         YHIntyqFdudv3wsHuHb2hYuC05F+OxGe1vqOntbgIgBeLhbnpblGGN+gyunDKgtDzC+W
+         rWN8FqQhhojAxo8LKt+1HYsOXg8ql9EcBbpgDz3JK9c3u9WdMjKDIjui2K/GOGS/gpXG
+         A95g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xbB83yQ/mNcv3yi7gTIvEjnZRAP51fOKghx1oZz8Us8=;
+        b=TfGBrbbSQUSRC53uC+2gxjAnn8KW3L+y3XjAVxgx+gUJTH6YrspeKNWi1lxnbjcuHq
+         ynJEEOYOLiFm4l41deUSr4ZbUEctzF9Z6oFL1lDRCiyE2c+s9J8NoYZYOjLUvViUXyco
+         tdXZldiXPJM1EzDZ8n7AQuVVn8iilnqiyQu977nDuzhza76aIdmSvViCLR6/kYl66AdL
+         YmF6EK8YaaiWERyknFijqXDUJZp+hdyiJ+uoG4sp/OsR1qce29d9nmMsV1/fQ3aHELOs
+         rMP4fS6OKdoLJrguAbvD2A/flkPdbTPHHsBfEZuz2gfBEyqodlUehnf/NdthVdZ8MdnV
+         S7yA==
+X-Gm-Message-State: AOAM533kOdh4EnwdWDAXfKjg/ywHrkEx/IBjM7oGe3B/0Ts5+F4GxSHF
+        CaIYJPcW6JompNyV/7MTSjAM5lDphWSaCpyBla8zeA==
+X-Google-Smtp-Source: ABdhPJytq7XzFCmRnN8yphPqVvC/ApXOmEJsEeS5S3LKpeGohM6Xc5D0S8N0FTbhQeUPECvQOLLncHwS5YL0Gvqu1K8=
+X-Received: by 2002:a65:4201:: with SMTP id c1mr6554563pgq.10.1611957969765;
+ Fri, 29 Jan 2021 14:06:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+ <20210129205702.GS4020736@tucnak> <CAKwvOdmuSaf28dOdP8Yo6+RyiviMNKcq8JY=-qgbwjbPVwHmLw@mail.gmail.com>
+ <20210129211102.GT4020736@tucnak>
+In-Reply-To: <20210129211102.GT4020736@tucnak>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 Jan 2021 14:05:59 -0800
+Message-ID: <CAKwvOdm-+xK=diSKKXXnS2m1+W6QZ70c7cRKTbtVF=dWi1_8_w@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+To:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 14:52:35 -0500 Sven Van Asbroeck wrote:
-> From: Sven Van Asbroeck <thesven73@gmail.com>
-> 
-> The buffers in the lan743x driver's receive ring are always 9K,
-> even when the largest packet that can be received (the mtu) is
-> much smaller. This performs particularly badly on cpu archs
-> without dma cache snooping (such as ARM): each received packet
-> results in a 9K dma_{map|unmap} operation, which is very expensive
-> because cpu caches need to be invalidated.
-> 
-> Careful measurement of the driver rx path on armv7 reveals that
-> the cpu spends the majority of its time waiting for cache
-> invalidation.
-> 
-> Optimize as follows:
-> 
-> 1. set rx ring buffer size equal to the mtu. this limits the
->    amount of cache that needs to be invalidated per dma_map().
-> 
-> 2. when dma_unmap()ping, skip cpu sync. Sync only the packet data
->    actually received, the size of which the chip will indicate in
->    its rx ring descriptors. this limits the amount of cache that
->    needs to be invalidated per dma_unmap().
-> 
-> These optimizations double the rx performance on armv7.
-> Third parties report 3x rx speedup on armv8.
-> 
-> Performance on dma cache snooping architectures (such as x86)
-> is expected to stay the same.
-> 
-> Tested with iperf3 on a freescale imx6qp + lan7430, both sides
-> set to mtu 1500 bytes, measure rx performance:
-> 
-> Before:
-> [ ID] Interval           Transfer     Bandwidth       Retr
-> [  4]   0.00-20.00  sec   550 MBytes   231 Mbits/sec    0
-> After:
-> [ ID] Interval           Transfer     Bandwidth       Retr
-> [  4]   0.00-20.00  sec  1.33 GBytes   570 Mbits/sec    0
-> 
-> Test by Anders Roenningen (anders@ronningen.priv.no) on armv8,
->     rx iperf3:
-> Before 102 Mbits/sec
-> After  279 Mbits/sec
-> 
-> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+On Fri, Jan 29, 2021 at 1:11 PM Jakub Jelinek <jakub@redhat.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 01:05:56PM -0800, Nick Desaulniers wrote:
+> > > Wasn't that fixed in GAS?
+> > > https://sourceware.org/bugzilla/show_bug.cgi?id=27195
+> >
+> > $ make LLVM=1 -j72 defconfig
+> > $ ./scripts/config -e DEBUG_INFO -e DEBUG_INFO_DWARF5
+> > $ make LLVM=1 -j72
+> > ...
+> > /tmp/init-d50d89.s: Assembler messages:
+> > /tmp/init-d50d89.s:10: Error: file number less than one
+> > /tmp/init-d50d89.s:11: Error: junk at end of line, first unrecognized
+> > character is `m'
+> >
+> > which is https://sourceware.org/bugzilla/show_bug.cgi?id=25611.
+> >
+> > $ as --version | head -n1
+> > GNU assembler (GNU Binutils for Debian) 2.35.1
+> >
+> > Maybe GAS should not need to be told -gdwarf-5 to parse these?  Then
+> > we would not need to pass -Wa,-gdwarf-5 via clang with
+> > -no-integrated-as.
+>
+> That is what sw#27195 is about, just try current binutils 2.35, 2.36 or
+> trunk branches.
 
-You may need to rebase to see this:
-
-drivers/net/ethernet/microchip/lan743x_main.c:2123:41: warning: restricted __le32 degrades to integer
+Ah, I see.  Then I should update the script I add
+(scripts/test_dwarf5_support.sh) to feature detect that bug, since
+it's the latest of the bunch.  Also, should update my comment to note
+that this requires binutils greater than 2.35.1 (which is what I have,
+which fails, since the backport landed in ... what?!)  How was this
+backported to 2.35
+(https://sourceware.org/bugzilla/show_bug.cgi?id=27195#c12, Jan 26
+2021) when binutils-2_35_1 was tagged sept 19 2020?  Or will there be
+a binutils 2.35.2 point release?
+-- 
+Thanks,
+~Nick Desaulniers
