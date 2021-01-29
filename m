@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261EE308235
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A5330823A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhA2AEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:04:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:40882 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhA2AEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:04:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26F6413D5;
-        Thu, 28 Jan 2021 16:04:02 -0800 (PST)
-Received: from [10.57.35.163] (unknown [10.57.35.163])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 686373F66E;
-        Thu, 28 Jan 2021 16:03:59 -0800 (PST)
-Subject: Re: [PATCH v6 07/33] iommu: Avoid reallocate default domain for a
- group
-To:     Will Deacon <will@kernel.org>, Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com
-References: <20210111111914.22211-1-yong.wu@mediatek.com>
- <20210111111914.22211-8-yong.wu@mediatek.com>
- <20210126222305.GB30460@willie-the-truck>
- <1611740356.5302.14.camel@mhfsdcap03>
- <20210128211020.GA3531@willie-the-truck>
- <20210128211442.GB3531@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <654abe35-bc60-741b-1238-d9c585a45c06@arm.com>
-Date:   Fri, 29 Jan 2021 00:03:57 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231128AbhA2AIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA2AIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:08:19 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09C8C061573;
+        Thu, 28 Jan 2021 16:07:39 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id v1so7014862ott.10;
+        Thu, 28 Jan 2021 16:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5ILX5b+RrV4AiVEpHFwN5sXUa5ubqo8Aj21NjAeDVw8=;
+        b=V4GAHau9okbpK6XGG3KiHomAbwbMBxMKryjJwX9TnkZnDtcA6LrdLM2sC/t2zLQPxJ
+         GZzp9qLpHojfqJna7Zdce17l9auN+5WwynFxLmsi/nmB+t3BcaV3lPfeSfK04nmPNOOi
+         VoS7kz9jADhp+43HxTn/9ySNbyFQcrS3viKPcbadbztu1a0u6w/LnOMc03JGVeIFNv9Z
+         niHbtFJs/7nLv4C6YXrOSkS/Z1DlPKIepKi6QR6gXcsVpEUwNUF33tbLLsgE2feZlJYQ
+         sPA3JUos47pVUQ4+kH2zsJCkSqKxbQ+qrlyjiKsHnGJiTufDwASeoiqY0o1eoUdt/NA4
+         90YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5ILX5b+RrV4AiVEpHFwN5sXUa5ubqo8Aj21NjAeDVw8=;
+        b=roi+r+sqyLfUN34qKyWXmrWlQesXl80q+Rn8eLJSG3FDaMwdhHp3Qo3PfEg4jPZ3Bq
+         1mXCDtwhsp2+k+R2bXl9MLpvi+pISa8MG93vEzSTjfaY/WdgpcJQzyPZHevauvB5U5XY
+         NS7aQmthgm83/r0xZiLIo07gfNr+KRBCZSOSaMiO9BtNMtRMR9KKCfmc/hanWrhOZ56T
+         6UvH7O1tC0g/ow4LMIscd+AjHWDKIARz5B68UY0aYFmpjTSAxQzdabEkoPOOxdsxgBMG
+         ajkv9xd+V8WUp8uS5P2yZh/ehgp3HGauZrm1cpOLi6+VNo8/XlA81yXkd6gtAtHpbTDN
+         6PWw==
+X-Gm-Message-State: AOAM530TRiwnH9G/xDSsxs/3aGI0yJB81MQDjz0BNfgt+MIdyc3aZWMI
+        uylzcLJb9bGPsaCahFKthPE=
+X-Google-Smtp-Source: ABdhPJx3ahECZvlnl3YkKKiFHwySpQ25/lyuK31tnlxfD+LWhGsvll2hpWhbtrqgFDjVuWKQG+i1jQ==
+X-Received: by 2002:a9d:4c9a:: with SMTP id m26mr1261144otf.7.1611878859004;
+        Thu, 28 Jan 2021 16:07:39 -0800 (PST)
+Received: from nuclearis2-1.gtech (c-98-195-139-126.hsd1.tx.comcast.net. [98.195.139.126])
+        by smtp.gmail.com with ESMTPSA id r1sm1610314ooq.16.2021.01.28.16.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 16:07:38 -0800 (PST)
+Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth
+ notification"
+To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Alexandru Gagniuc <alex_gagniuc@dellteam.com>,
+        Keith Busch <keith.busch@intel.com>
+Cc:     Jan Vesely <jano.vesely@gmail.com>, Lukas Wunner <lukas@wunner.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Austin Bolen <austin_bolen@dell.com>,
+        Shyam Iyer <Shyam_Iyer@dell.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Dave Airlie <airlied@gmail.com>,
+        Ben Skeggs <skeggsb@gmail.com>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        "A. Vladimirov" <vladimirov.atanas@gmail.com>
+References: <20210128233929.GA39660@bjorn-Precision-5520>
+ <6bfe3128-4f4d-6447-ab91-1bc54a02e16f@kernel.org>
+From:   "Alex G." <mr.nuke.me@gmail.com>
+Message-ID: <f6106d30-cbdb-6ba5-8910-086cee92875e@gmail.com>
+Date:   Thu, 28 Jan 2021 18:07:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210128211442.GB3531@willie-the-truck>
+In-Reply-To: <6bfe3128-4f4d-6447-ab91-1bc54a02e16f@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28 21:14, Will Deacon wrote:
-> On Thu, Jan 28, 2021 at 09:10:20PM +0000, Will Deacon wrote:
->> On Wed, Jan 27, 2021 at 05:39:16PM +0800, Yong Wu wrote:
->>> On Tue, 2021-01-26 at 22:23 +0000, Will Deacon wrote:
->>>> On Mon, Jan 11, 2021 at 07:18:48PM +0800, Yong Wu wrote:
->>>>> If group->default_domain exists, avoid reallocate it.
->>>>>
->>>>> In some iommu drivers, there may be several devices share a group. Avoid
->>>>> realloc the default domain for this case.
->>>>>
->>>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->>>>> ---
->>>>>   drivers/iommu/iommu.c | 3 ++-
->>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>>>> index 3d099a31ddca..f4b87e6abe80 100644
->>>>> --- a/drivers/iommu/iommu.c
->>>>> +++ b/drivers/iommu/iommu.c
->>>>> @@ -266,7 +266,8 @@ int iommu_probe_device(struct device *dev)
->>>>>   	 * support default domains, so the return value is not yet
->>>>>   	 * checked.
->>>>>   	 */
->>>>> -	iommu_alloc_default_domain(group, dev);
->>>>> +	if (!group->default_domain)
->>>>> +		iommu_alloc_default_domain(group, dev);
->>>>
->>>> I don't really get what this achieves, since iommu_alloc_default_domain()
->>>> looks like this:
->>>>
->>>> static int iommu_alloc_default_domain(struct iommu_group *group,
->>>> 				      struct device *dev)
->>>> {
->>>> 	unsigned int type;
->>>>
->>>> 	if (group->default_domain)
->>>> 		return 0;
->>>>
->>>> 	...
->>>>
->>>> in which case, it should be fine?
->>>
->>> oh. sorry, I overlooked this. the current code is enough.
->>> I will remove this patch. and send the next version in this week.
->>> Thanks very much.
+On 1/28/21 5:51 PM, Sinan Kaya wrote:
+> On 1/28/2021 6:39 PM, Bjorn Helgaas wrote:
+>> AFAICT, this thread petered out with no resolution.
 >>
->> Actually, looking at this again, if we're dropping this patch and patch 6
->> just needs the kfree() moving about, then there's no need to repost. The
->> issue that Robin and Paul are discussing can be handled separately.
+>> If the bandwidth change notifications are important to somebody,
+>> please speak up, preferably with a patch that makes the notifications
+>> disabled by default and adds a parameter to enable them (or some other
+>> strategy that makes sense).
+>>
+>> I think these are potentially useful, so I don't really want to just
+>> revert them, but if nobody thinks these are important enough to fix,
+>> that's a possibility.
+> 
+> Hide behind debug or expert option by default? or even mark it as BROKEN
+> until someone fixes it?
+> 
+Instead of making it a config option, wouldn't it be better as a kernel 
+parameter? People encountering this seem quite competent in passing 
+kernel arguments, so having a "pcie_bw_notification=off" would solve 
+their problems.
 
-FWIW patch #6 gets dropped as well now, since Rob has applied the 
-standalone fix (89c7cb1608ac).
+As far as marking this as broken, I've seen no conclusive evidence of to 
+tell if its a sw bug or actual hardware problem. Could we have a sysfs 
+to disable this on a per-downstream-port basis?
 
-Robin.
+e.g.
+     echo 0 > /sys/bus/pci/devices/0000:00:04.0/bw_notification_enabled
 
-> Argh, except that this version of the patches doesn't apply :)
-> 
-> So after all that, please go ahead and post a v7 ASAP based on this branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-joerg/mtk
-> 
-> Will
-> 
+This probably won't be ideal if there are many devices downtraining 
+their links ad-hoc. At worst we'd have a way to silence those messages 
+if we do encounter such devices.
+
+Alex
