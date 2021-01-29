@@ -2,69 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AA4308352
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F3E308357
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhA2Bi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:38:58 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:55008 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhA2Bir (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:38:47 -0500
-Received: by mail-il1-f200.google.com with SMTP id l68so6343854ild.21
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 17:38:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=lm16eCirJMAjlWtITfJJw0jmgaMJxdBabVfxLijbAp0=;
-        b=gpwC15//4wav4qJO25sXW0POwUCOhFRZckDg72YW8CtLy8yqLh0k7453FbycJaV7E3
-         8wppcUNHPlZMrmdmp0S0wl3UXBjyiO+7c8k6XwcoCfC0hWJK5FePV2TvVjNIZyV84kH4
-         hW5X3DESRve0No8z4KIL7Napnu2zkCcV/QLODSP9Q9aSHIrNpj5g0fLOwUAd0YVnT+4T
-         6qT9SXua3/4gxf9O9EXWQ/1InvSbs74IPXdPhN67L5QqlG78VPOC9RuDcrVJvEmPWitP
-         0Sgvv+pHErheFMJsAe/jhouOQGbPV3OH7xF2BL21hZGI7Dx6u1/T61Ry/+jrwsRyGmjb
-         nShQ==
-X-Gm-Message-State: AOAM531npmAL1RcjDFKeNwyFHasePOnecRMbdlwUtpl42MOnAw6vBss3
-        LxyhRVL7EieY1FKo8fXPszgjaNnsyIO5QZ/bRawcNdsGAr6Z
-X-Google-Smtp-Source: ABdhPJzaeeto+90vKfwCqIzrB5cp8eqdHC8gCKgD33zO40cOrw2abKT9qoVAFdgqqOolzOUWECqyCPq1B3LE/EP9Hzwa53UUwB8D
+        id S231421AbhA2BmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:42:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhA2BmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:42:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F75D64DF1;
+        Fri, 29 Jan 2021 01:41:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611884483;
+        bh=7PzGkfKU1mQu1KwINpqtyWbafw/zM/V9VnkvLvCV8Lw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LxnspWp5bVkCGCUlg8bUlGSrwrNeMDEHGyKlN0A318tV8U8TwS0WP9MmBJhjALf6r
+         rJ/yf6phlU3UGRjd3F6C7WUfbQ8Crt1/pLyt+e/GqMqzQWE1DzfjeXDeSNyekLXzl9
+         JgJYrjvAWTRLlP19YxtX7PVZmiZjGv9alNRKMAmv1i3q3/3VcS/lra/5C1acJ3sGws
+         tOiOuw1xE3SmdiUqNZhhn3xCkyyESvvVyktEAPD43eblcZli8N3cmNBuR1G4lq3eyj
+         65bZTC6rEqp+Brp7WQmbqJ/2PgwqP8FWFo9ggn8d3wGGyv6Qy86l1iA6+L67N+09t1
+         89bqFa40atUng==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH] x86/ptrace: Clean up PTRACE_GETREGS/PTRACE_PUTREGS regset selection
+Date:   Thu, 28 Jan 2021 17:41:21 -0800
+Message-Id: <9268050ac1fb3db6b4ec20d3ef696cc44fa3e9d0.1611884439.git.luto@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f714:: with SMTP id k20mr2029676iog.70.1611884286518;
- Thu, 28 Jan 2021 17:38:06 -0800 (PST)
-Date:   Thu, 28 Jan 2021 17:38:06 -0800
-In-Reply-To: <000000000000619ae405b9f8cf6e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000512a7f05ba000ead@google.com>
-Subject: Re: WARNING in io_uring_cancel_task_requests
-From:   syzbot <syzbot+3e3d9bd0c6ce9efbc3ef@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org, stable@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+task_user_regset_view() is fundamentally broken, but it's ABI for
+PTRACE_GETREGSET and PTRACE_SETREGSET.
 
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
+We shouldn't be using it for PTRACE_GETREGS or PTRACE_SETREGS,
+though.  A native 64-bit ptrace() call and an x32 ptrace() call
+should use the 64-bit regset views, and a 32-bit ptrace() call
+(native or compat) should use the 32-bit regset.
+task_user_regset_view() almost does this except that it will
+malfunction if a ptracer is itself ptraced and the outer ptracer
+modifies CS on entry to a ptrace() syscall.  Hopefully that has
+never happened.  (The compat ptrace() code already hardcoded the
+32-bit regset, so this patch has no effect on that path.)
 
-    lockdep: Fix lockdep recursion
+Fix it and deobfuscate the code by hardcoding the 64-bit view in the
+x32 ptrace() and selecting the view based on the kernel config in
+the native ptrace().
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=133f3090d00000
-start commit:   d03154e8 Add linux-next specific files for 20210128
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10bf3090d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=173f3090d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6953ffb584722a1
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e3d9bd0c6ce9efbc3ef
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a924c4d00000
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
 
-Reported-by: syzbot+3e3d9bd0c6ce9efbc3ef@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+Every time I look at ptrace, it grosses me out.  This makes it slightly
+more comprehensible.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ arch/x86/kernel/ptrace.c | 37 +++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index bedca011459c..ed8f153cd302 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -704,6 +704,9 @@ void ptrace_disable(struct task_struct *child)
+ #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
+ static const struct user_regset_view user_x86_32_view; /* Initialized below. */
+ #endif
++#ifdef CONFIG_X86_64
++static const struct user_regset_view user_x86_64_view; /* Initialized below. */
++#endif
+ 
+ long arch_ptrace(struct task_struct *child, long request,
+ 		 unsigned long addr, unsigned long data)
+@@ -711,6 +714,14 @@ long arch_ptrace(struct task_struct *child, long request,
+ 	int ret;
+ 	unsigned long __user *datap = (unsigned long __user *)data;
+ 
++#ifdef CONFIG_X86_64
++	/* This is native 64-bit ptrace() */
++	const struct user_regset_view *regset_view = &user_x86_64_view;
++#else
++	/* This is native 32-bit ptrace() */
++	const struct user_regset_view *regset_view = &user_x86_32_view;
++#endif
++
+ 	switch (request) {
+ 	/* read the word at location addr in the USER area. */
+ 	case PTRACE_PEEKUSR: {
+@@ -749,28 +760,28 @@ long arch_ptrace(struct task_struct *child, long request,
+ 
+ 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
+ 		return copy_regset_to_user(child,
+-					   task_user_regset_view(current),
++					   regset_view,
+ 					   REGSET_GENERAL,
+ 					   0, sizeof(struct user_regs_struct),
+ 					   datap);
+ 
+ 	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
+ 		return copy_regset_from_user(child,
+-					     task_user_regset_view(current),
++					     regset_view,
+ 					     REGSET_GENERAL,
+ 					     0, sizeof(struct user_regs_struct),
+ 					     datap);
+ 
+ 	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
+ 		return copy_regset_to_user(child,
+-					   task_user_regset_view(current),
++					   regset_view,
+ 					   REGSET_FP,
+ 					   0, sizeof(struct user_i387_struct),
+ 					   datap);
+ 
+ 	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
+ 		return copy_regset_from_user(child,
+-					     task_user_regset_view(current),
++					     regset_view,
+ 					     REGSET_FP,
+ 					     0, sizeof(struct user_i387_struct),
+ 					     datap);
+@@ -1152,28 +1163,28 @@ static long x32_arch_ptrace(struct task_struct *child,
+ 
+ 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
+ 		return copy_regset_to_user(child,
+-					   task_user_regset_view(current),
++					   &user_x86_64_view,
+ 					   REGSET_GENERAL,
+ 					   0, sizeof(struct user_regs_struct),
+ 					   datap);
+ 
+ 	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
+ 		return copy_regset_from_user(child,
+-					     task_user_regset_view(current),
++					     &user_x86_64_view,
+ 					     REGSET_GENERAL,
+ 					     0, sizeof(struct user_regs_struct),
+ 					     datap);
+ 
+ 	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
+ 		return copy_regset_to_user(child,
+-					   task_user_regset_view(current),
++					   &user_x86_64_view,
+ 					   REGSET_FP,
+ 					   0, sizeof(struct user_i387_struct),
+ 					   datap);
+ 
+ 	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
+ 		return copy_regset_from_user(child,
+-					     task_user_regset_view(current),
++					     &user_x86_64_view,
+ 					     REGSET_FP,
+ 					     0, sizeof(struct user_i387_struct),
+ 					     datap);
+@@ -1309,6 +1320,16 @@ void __init update_regset_xstate_info(unsigned int size, u64 xstate_mask)
+ 	xstate_fx_sw_bytes[USER_XSTATE_XCR0_WORD] = xstate_mask;
+ }
+ 
++/*
++ * This is used by PTRACE_GETREGSET and PTRACE_SETREGSET to decide which
++ * regset format to use based on the register state of the tracee.
++ * This makes no sense whatsoever, but there appears to be existing user
++ * code that relies on it.
++ *
++ * The best way to fix it in the long run would probably be to add
++ * new improved ptrace() APIs to read and write registers reliably.
++ * Good luck.
++ */
+ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+ {
+ #ifdef CONFIG_IA32_EMULATION
+-- 
+2.29.2
+
