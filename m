@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCE5308434
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6778030843F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbhA2DXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:23:45 -0500
-Received: from mail-pl1-f170.google.com ([209.85.214.170]:33229 "EHLO
-        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbhA2DX3 (ORCPT
+        id S231470AbhA2Daz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:30:55 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:45501 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhA2Day (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:23:29 -0500
-Received: by mail-pl1-f170.google.com with SMTP id d13so4512060plg.0;
-        Thu, 28 Jan 2021 19:23:13 -0800 (PST)
+        Thu, 28 Jan 2021 22:30:54 -0500
+Received: by mail-wr1-f52.google.com with SMTP id m13so7430442wro.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:30:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=d94CRsJCQF1Y+h4BwfepQS4bBLgA5tdBUPODOebZJXY=;
-        b=Ndqlidps0iDgeyGOc4WTnnUIuJIxRCgYtWFKSHMS5460jJupV58XmdBn5nRhb8V7Hu
-         CtVdjEOSVjj2P0lVUQMnF9Vp46klK6wLzybgnhfn9c736rc3iq+yG5xv1sgMUlpuSkW8
-         o35JA2RLNPMqxAfJE4Gs4a7mUYlg0RogOsX19LVqkgZGAwvI34C1ihU+6Y4vl0Z59oPz
-         i8HT4XJCY+FvWTadHs80tzZJ3TPVynvwVDqs/kGPfXjRA9yp+sOobzpfiPB5djoCzyHR
-         Mc9700TGujquw2i7OFRYRAzBkbkWDWdG4BmQtG0WDQkTaoKYUFUYoPW7R9plGj1F3Wk3
-         qSdg==
-X-Gm-Message-State: AOAM5325p24f4QMygXqK1ow6Gg4PmT1w0VIXnpdpKsQxcpQvLVnvtJxY
-        zptCObP2r0Zt8/FmY+neMc2x0/+5W0M=
-X-Google-Smtp-Source: ABdhPJw2q8V9P6x7IvUoTpmGbj2YHPoKEJiU5wpZDCVpkFTEZpm6WOiIYNEtZLW/JIDwTtH/hayVRQ==
-X-Received: by 2002:a17:902:854b:b029:db:c725:edcd with SMTP id d11-20020a170902854bb02900dbc725edcdmr2207634plo.64.1611890567837;
-        Thu, 28 Jan 2021 19:22:47 -0800 (PST)
-Received: from ?IPv6:2601:647:4000:d7:fd12:a590:9797:4acb? ([2601:647:4000:d7:fd12:a590:9797:4acb])
-        by smtp.gmail.com with ESMTPSA id z18sm7006201pfj.102.2021.01.28.19.22.45
+        bh=7JvZqZgmo4qIPwsjj069cmI/74kxVP4SSY95ky0J7hY=;
+        b=nIEy/lYxmdw85hqEYJhYKENkZSsHHK1m7LB89xG2TEw2BWmS6TtDQDoBxn80aFgyds
+         sHjXUKrBpNnzQ9nHbgMiG89q4hy8MS5QC+0DB8/pD4Ndj6Va/ekw3SF+aAed7HVHUoQc
+         VB0aouijii+28kmHTKDRWGHR5p+ii5riEukRgyMcAF0Qe0W6v4bFh427IRBtrVJnsqDE
+         7ScsyV7hu4TuWI6YJYVAOD7dMQ/8ggfUzZmPh8l/qMbLLh6q/jxtPQ0cAA3naEvTwzog
+         OPYy+Y2GPgUqNeIG0U0ad9+6+oFAP/qbks/HHEdetdaqVeoOF5RyMlw9ui1U8aorlvxc
+         nOhQ==
+X-Gm-Message-State: AOAM5324x6FuJh/qqP9WTMPgIBDPXxfQSkTwI5odU+D7wa4Ng6nq2doT
+        2+Ty0As+/ZSMmYb5IOby/2I=
+X-Google-Smtp-Source: ABdhPJzqHQHtS4BkI4+Mr8moj9jMrAyizE5539Amfj5VtzBG9cnBzaCDYL3kyzlFCT2lRWq+/3X84Q==
+X-Received: by 2002:a5d:5283:: with SMTP id c3mr2038048wrv.319.1611891011977;
+        Thu, 28 Jan 2021 19:30:11 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:3d48:4849:d506:e578? ([2601:647:4802:9070:3d48:4849:d506:e578])
+        by smtp.gmail.com with ESMTPSA id u14sm7730793wml.19.2021.01.28.19.30.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 19:22:47 -0800 (PST)
-Subject: Re: [PATCH v3 1/3] scsi: ufs: Fix task management request completion
- timeout
-To:     Can Guo <cang@codeaurora.org>, jaegeuk@kernel.org,
-        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b73ad496-1658-d587-146a-138ac8f522a9@acm.org>
-Date:   Thu, 28 Jan 2021 19:22:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 28 Jan 2021 19:30:11 -0800 (PST)
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Chao Leng <lengchao@huawei.com>, Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+ <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+ <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <dbc39e56-b2bd-a82e-499a-5032c9716855@grimberg.me>
+Date:   Thu, 28 Jan 2021 19:30:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1611807365-35513-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 8:16 PM, Can Guo wrote:
-> ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn = ufshcd_compl_tm()),
-> but since blk_mq_tagset_busy_iter() only iterates over all reserved tags
-> and requests which are not in IDLE state, ufshcd_compl_tm() never gets a
-> chance to run. Thus, TMR always ends up with completion timeout. Fix it by
-> calling blk_mq_start_request() in  __ufshcd_issue_tm_cmd().
-> 
-> Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate and free TMFs")
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 8da75e6..c0c5925 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6395,6 +6395,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
->  
->  	spin_lock_irqsave(host->host_lock, flags);
->  	task_tag = hba->nutrs + free_slot;
-> +	blk_mq_start_request(req);
->  
->  	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
 
-blk_mq_start_request() not only marks a request as in-flight but also
-starts a timer. However, no timeout handler has been defined in
-ufshcd_tmf_ops. Should a timeout handler be defined in that data structure?
+>>>> You can't see exactly where it dies but I followed the assembly to
+>>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+>>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+>>>> (list_next_or_null_rcu()).
+>>> So there is other bug cause nvme_next_ns abormal.
+>>> I review the code about head->list and head->current_path, I find 2 bugs
+>>> may cause the bug:
+>>> First, I already send the patch. see:
+>>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/ 
+>>>
+>>> Second, in nvme_ns_remove, list_del_rcu is before
+>>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+>>> "head", but still use "old". I'm not sure there's any other
+>>> consideration here, I will check it and try to fix it.
+>>
+>> The reason why we first remove from head->list and only then clear
+>> current_path is because the other way around there is no way
+>> to guarantee that that the ns won't be assigned as current_path
+>> again (because it is in head->list).
+> ok, I see.
+>>
+>> nvme_ns_remove fences continue of deletion of the ns by synchronizing
+>> the srcu such that for sure the current_path clearance is visible.
+> The list will be like this:
+> head->next = ns1;
+> ns1->next = head;
+> old->next = ns1;
+> This may cause infinite loop in nvme_round_robin_path.
+> for (ns = nvme_next_ns(head, old);
+>      ns != old;
+>      ns = nvme_next_ns(head, ns))
+> The ns will always be ns1, and then infinite loop.
 
-Thanks,
-
-Bart.
+Who is being removed? I'm not following
