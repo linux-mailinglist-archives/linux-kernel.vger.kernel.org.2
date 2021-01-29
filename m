@@ -2,117 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784473088B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 12:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4C230889C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 12:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhA2L5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 06:57:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56470 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232334AbhA2L42 (ORCPT
+        id S232933AbhA2LxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 06:53:19 -0500
+Received: from hmm.wantstofly.org ([213.239.204.108]:51438 "EHLO
+        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhA2K0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 06:56:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611921001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cMS/7pknUs0YwtKE5mir0RQEvSlJ4gZuoZK/GL0Bh2Y=;
-        b=V+Np74pZDHBoxkmgbxmuV5QR72nl7GYRg1cmm1E6F80+/vlw9SAxt4axUwlmR6YcUSy2Th
-        882wWKdPVpIlxmFqNRgN0hksybcJSqaPokw4oXjKHkNZ4d9330R317eXQTEprVMF3dc1sr
-        aVzMJloSOHcCwj07URmM//MbxvF/pJc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351--eV7d5yzP3q2OGNv-XIFLQ-1; Fri, 29 Jan 2021 05:19:15 -0500
-X-MC-Unique: -eV7d5yzP3q2OGNv-XIFLQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECCB418C8C01;
-        Fri, 29 Jan 2021 10:19:13 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7317B60C04;
-        Fri, 29 Jan 2021 10:19:13 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jmattson@google.com, seanjc@google.com, stable@vger.kernel.org
-Subject: [PATCH v2] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even if tsx=off
-Date:   Fri, 29 Jan 2021 05:19:12 -0500
-Message-Id: <20210129101912.1857809-1-pbonzini@redhat.com>
+        Fri, 29 Jan 2021 05:26:18 -0500
+Received: by mail.wantstofly.org (Postfix, from userid 1000)
+        id 90D707F45D; Fri, 29 Jan 2021 12:20:57 +0200 (EET)
+Date:   Fri, 29 Jan 2021 12:20:57 +0200
+From:   Lennert Buytenhek <buytenh@wantstofly.org>
+To:     David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
+Message-ID: <20210129102057.GD193464@wantstofly.org>
+References: <20210123114152.GA120281@wantstofly.org>
+ <a99467bab6d64a7f9057181d979ec563@AcuMS.aculab.com>
+ <20210128230710.GA190469@wantstofly.org>
+ <20210129053703.GB190469@wantstofly.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210129053703.GB190469@wantstofly.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userspace that does not know about KVM_GET_MSR_FEATURE_INDEX_LIST
-will generally use the default value for MSR_IA32_ARCH_CAPABILITIES.
-When this happens and the host has tsx=on, it is possible to end up with
-virtual machines that have HLE and RTM disabled, but TSX_CTRL available.
+On Fri, Jan 29, 2021 at 07:37:03AM +0200, Lennert Buytenhek wrote:
 
-If the fleet is then switched to tsx=off, kvm_get_arch_capabilities()
-will clear the ARCH_CAP_TSX_CTRL_MSR bit and it will not be possible to
-use the tsx=off hosts as migration destinations, even though the guests
-do not have TSX enabled.
+> > > > One open question is whether IORING_OP_GETDENTS64 should be more like
+> > > > pread(2) and allow passing in a starting offset to read from the
+> > > > directory from.  (This would require some more surgery in fs/readdir.c.)
+> > > 
+> > > Since directories are seekable this ought to work.
+> > > Modulo horrid issues with 32bit file offsets.
+> > 
+> > The incremental patch below does this.  (It doesn't apply cleanly on
+> > top of v1 of the IORING_OP_GETDENTS patch as I have other changes in
+> > my tree -- I'm including it just to illustrate the changes that would
+> > make this work.)
+> > 
+> > This change seems to work, and makes IORING_OP_GETDENTS take an
+> > explicitly specified directory offset (instead of using the file's
+> > ->f_pos), making it more like pread(2) [...]
+> 
+> ...but the fact that this patch avoids taking file->f_pos_lock (as this
+> proposed version of IORING_OP_GETDENTS avoids using file->f_pos) means
+> that ->iterate_shared() can then be called concurrently on the same
+> struct file, which breaks the mutual exclusion guarantees provided here.
+> 
+> If possible, I'd like to keep the ability to explicitly pass in a
+> directory offset to start reading from into IORING_OP_GETDENTS, so
+> perhaps we can simply satisfy the mutual exclusion requirement by
+> taking ->f_pos_lock by hand -- but then I do need to check that it's OK
+> for ->iterate{,_shared}() to be called successively with discontinuous
+> offsets without ->llseek() being called in between.
+> 
+> (If that's not OK, then we can either have IORING_OP_GETDENTS just
+> always start reading at ->f_pos like before (which might then require
+> adding a IORING_OP_GETDENTS2 at some point in the future if we'll
+> ever want to change that), or we could have IORING_OP_GETDENTS itself
+> call ->llseek() for now whenever necessary.)
 
-To allow this migration, allow guests to write to their TSX_CTRL MSR,
-while keeping the host MSR unchanged for the entire life of the guests.
-This ensures that TSX remains disabled and also saves MSR reads and
-writes, and it's okay to do because with tsx=off we know that guests will
-not have the HLE and RTM features in their CPUID.  (If userspace sets
-bogus CPUID data, we do not expect HLE and RTM to work in guests anyway).
-
-Cc: stable@vger.kernel.org
-Fixes: cbbaa2727aa3 ("KVM: x86: fix presentation of TSX feature in ARCH_CAPABILITIES")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/vmx/vmx.c | 17 +++++++++++++----
- arch/x86/kvm/x86.c     |  2 +-
- 2 files changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index cc60b1fc3ee7..eb69fef57485 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6860,11 +6860,20 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 		switch (index) {
- 		case MSR_IA32_TSX_CTRL:
- 			/*
--			 * No need to pass TSX_CTRL_CPUID_CLEAR through, so
--			 * let's avoid changing CPUID bits under the host
--			 * kernel's feet.
-+			 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID
-+			 * interception.  Keep the host value unchanged to avoid
-+			 * changing CPUID bits under the host kernel's feet.
-+			 *
-+			 * hle=0, rtm=0, tsx_ctrl=1 can be found with some
-+			 * combinations of new kernel and old userspace.  If
-+			 * those guests run on a tsx=off host, do allow guests
-+			 * to use TSX_CTRL, but do not change the value on the
-+			 * host so that TSX remains always disabled.
- 			 */
--			vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-+			if (boot_cpu_has(X86_FEATURE_RTM))
-+				vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-+			else
-+				vmx->guest_uret_msrs[j].mask = 0;
- 			break;
- 		default:
- 			vmx->guest_uret_msrs[j].mask = -1ull;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 76bce832cade..15733013b266 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1401,7 +1401,7 @@ static u64 kvm_get_arch_capabilities(void)
- 	 *	  This lets the guest use VERW to clear CPU buffers.
- 	 */
- 	if (!boot_cpu_has(X86_FEATURE_RTM))
--		data &= ~(ARCH_CAP_TAA_NO | ARCH_CAP_TSX_CTRL_MSR);
-+		data &= ~ARCH_CAP_TAA_NO;
- 	else if (!boot_cpu_has_bug(X86_BUG_TAA))
- 		data |= ARCH_CAP_TAA_NO;
- 
--- 
-2.26.2
-
+Having IORING_OP_GETDENTS seek to sqe->off if needed seems easy
+enough to implement, and it simplifies the other code as well, so
+I'll send out a v2 RFC shortly that does this.
