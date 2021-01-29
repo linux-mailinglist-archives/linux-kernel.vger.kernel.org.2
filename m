@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED748308A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D86308A82
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhA2QnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:43:02 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:32876 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231774AbhA2QmN (ORCPT
+        id S231528AbhA2Qnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:43:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhA2QnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:42:13 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10TGYf06030312;
-        Fri, 29 Jan 2021 10:41:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=asEApGlJPp9aAVE0lyAUCcts8ePMP7FAIzfsrbb6X1g=;
- b=Qw9uA0hapTNWItC1FHMqRLxHRGOazL33ByDe9frUrxgHqPbwnhTnCNBVdTJP7gYUm6CR
- r+VlUEBEJZHqz/pfB2TjzIAGvOgYwe3xB3AR0qjvRzHuxSQ77raNrcxa7U8WxeJ2mfaK
- wcpcTx58YqQ2QN3HraMBMQdxAxbP158s/BoTmUj/3XQ62lyoiKsIi+kzODpNuFg9Zlux
- 1BE/ML3n0M3Q8J5XYHlyn3vA2WAv5zcf+DmB3Hxv8PGZQFd1tmecDNLrMA3hMNBf6FFu
- 9zkYqK9flI7VJQ/89h3djdog5KV9o5aK9ycQaGvQSaUKhG7wkAr8PzQV3mO6euIsb/NT 3Q== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 368h3u7my8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 29 Jan 2021 10:41:24 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 29 Jan
- 2021 16:41:23 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 29 Jan 2021 16:41:23 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.253])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D49E245;
-        Fri, 29 Jan 2021 16:41:22 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <rdunlap@infradead.org>, <arend@broadcom.com>
-CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] lib: crc8: Pointer to data block should be const
-Date:   Fri, 29 Jan 2021 16:41:20 +0000
-Message-ID: <20210129164120.27604-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 29 Jan 2021 11:43:04 -0500
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6CBC0617AB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 08:41:33 -0800 (PST)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 01A68303; Fri, 29 Jan 2021 17:41:30 +0100 (CET)
+Date:   Fri, 29 Jan 2021 17:41:29 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>
+Subject: [git pull] IOMMU Fixes for Linux v5.11-rc5
+Message-ID: <20210129164123.GA25513@8bytes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
- adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
- clxscore=1011 mlxlogscore=999 mlxscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101290081
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-crc8() does not change the data passed to it, so the pointer argument
-should be declared const. This avoids callers that receive const data
-having to cast it to a non-const pointer to call crc8().
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- include/linux/crc8.h | 2 +-
- lib/crc8.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/linux/crc8.h b/include/linux/crc8.h
-index 13c8dabb0441..674045c59a04 100644
---- a/include/linux/crc8.h
-+++ b/include/linux/crc8.h
-@@ -96,6 +96,6 @@ void crc8_populate_msb(u8 table[CRC8_TABLE_SIZE], u8 polynomial);
-  * Williams, Ross N., ross<at>ross.net
-  * (see URL http://www.ross.net/crc/download/crc_v3.txt).
-  */
--u8 crc8(const u8 table[CRC8_TABLE_SIZE], u8 *pdata, size_t nbytes, u8 crc);
-+u8 crc8(const u8 table[CRC8_TABLE_SIZE], const u8 *pdata, size_t nbytes, u8 crc);
- 
- #endif /* __CRC8_H_ */
-diff --git a/lib/crc8.c b/lib/crc8.c
-index 595a5a75e3cd..1ad8e501d9b6 100644
---- a/lib/crc8.c
-+++ b/lib/crc8.c
-@@ -71,7 +71,7 @@ EXPORT_SYMBOL(crc8_populate_lsb);
-  * @nbytes: number of bytes in data buffer.
-  * @crc: previous returned crc8 value.
-  */
--u8 crc8(const u8 table[CRC8_TABLE_SIZE], u8 *pdata, size_t nbytes, u8 crc)
-+u8 crc8(const u8 table[CRC8_TABLE_SIZE], const u8 *pdata, size_t nbytes, u8 crc)
- {
- 	/* loop over the buffer data */
- 	while (nbytes-- > 0)
--- 
-2.20.1
+Hi Linus,
 
+The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+
+  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.11-rc5
+
+for you to fetch changes up to 29b32839725f8c89a41cb6ee054c85f3116ea8b5:
+
+  iommu/vt-d: Do not use flush-queue when caching-mode is on (2021-01-28 13:59:02 +0100)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v5.11-rc5
+
+Including:
+
+	- AMD IOMMU Fix to make sure features are detected before they
+	  are queried.
+
+	- Intel IOMMU address alignment check fix for an IOLTB flushing
+	  command.
+
+	- Performance fix for Intel IOMMU to make sure the code does not
+	  do full IOTLB flushes all the time. Those flushes are very
+	  expensive on emulated IOMMUs.
+
+----------------------------------------------------------------
+Lu Baolu (1):
+      iommu/vt-d: Correctly check addr alignment in qi_flush_dev_iotlb_pasid()
+
+Nadav Amit (1):
+      iommu/vt-d: Do not use flush-queue when caching-mode is on
+
+Suravee Suthikulpanit (1):
+      iommu/amd: Use IVHD EFR for early initialization of IOMMU features
+
+ drivers/iommu/amd/amd_iommu.h       |  7 ++---
+ drivers/iommu/amd/amd_iommu_types.h |  4 +++
+ drivers/iommu/amd/init.c            | 56 +++++++++++++++++++++++++++++++++++--
+ drivers/iommu/intel/dmar.c          |  2 +-
+ drivers/iommu/intel/iommu.c         | 32 ++++++++++++++++++++-
+ 5 files changed, 92 insertions(+), 9 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmAUOrMACgkQK/BELZcB
+GuNMbRAA1qlBq3RXbPp8Iftn1CXMnLLkpb576ndYAmxMTyh4WxRxrt8zTOJ17Lrc
+xee83/utsWZ0K3AtSkXVe/cCdq+mH57M/A5bJUK0QdrPZC27xTNtBpKpI6NgbM/q
+NJzdTpa9GFYkpKIEO5MvVTmC0DDin+yDLEge43osARz+1eteEfOTfaAkhVga4ml/
+3tbmQouk4GdOw5b8aHMAXPJHJbNTWTcZ4B7mWVIKwAAhT1XM1TbjX2DjNr7QRrz1
+Cibh0a3S9hkvr5W5dTU116f/MRAa9Cz28Zdk57hzD2ry+UVV6lNcLCQNndiafdnb
+tKx7lqdXIfnXC+td622EXhqC82Rd5z1oM01Ipcrt89KourdWtGcfADmy927tOol4
+VkuSTc6mVSmMT/vig6dy9r/BbcpX9CNkcKxBTt/PYT23mrDWKoMC9QdcQ5xNaR8G
+Sd4ai96vWFz4IJsKkImRz8ASh2u2LflK9gtmjcg/xyUMiU34jbvnnN7yNAVi4eES
+bBzwi8h/TXcel975KhR7xGDURPfOYuhGNy4pBtNUA+JB1MDQGVlDUrbQcdvIKQ3o
+43PNwb4QYZRKfRCJhttsDNL+txYVuUjPSi6ydsJs1L9Wmhfy5ipMuJU/GD1HxtWA
+mJFwF1GU67vauEvV7ZLZres8wkSvhfMR9qe6yo5egc67NyfCjnQ=
+=PJqE
+-----END PGP SIGNATURE-----
+
+--k1lZvvs/B4yU6o8G--
