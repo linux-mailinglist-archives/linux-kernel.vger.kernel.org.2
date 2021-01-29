@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166B3308F3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92CB308F40
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhA2VY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:24:56 -0500
-Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:38898 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232808AbhA2VYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:24:55 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 940ED127C;
-        Fri, 29 Jan 2021 21:24:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3872:3876:4321:4605:5007:6742:7514:7652:10004:10400:10848:11026:11232:11473:11658:11783:11914:12043:12297:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: scent97_621144b275ab
-X-Filterd-Recvd-Size: 2133
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 29 Jan 2021 21:24:10 +0000 (UTC)
-Message-ID: <f9dba4c16fb49e0ce19a8152dd1416f8d4056680.camel@perches.com>
-Subject: Re: [PATCH 2/5] bits_per_long.h: introduce SMALL_CONST() macro
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Yury Norov <yury.norov@gmail.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Date:   Fri, 29 Jan 2021 13:24:09 -0800
-In-Reply-To: <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
-References: <20210129204528.2118168-1-yury.norov@gmail.com>
-         <20210129204528.2118168-4-yury.norov@gmail.com>
-         <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S233449AbhA2VZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:25:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232776AbhA2VZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:25:39 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F39964E00;
+        Fri, 29 Jan 2021 21:24:56 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 16:24:54 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210129162454.293523c6@gandalf.local.home>
+In-Reply-To: <20210129140103.3ce971b7@gandalf.local.home>
+References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+        <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+        <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+        <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+        <20210129140103.3ce971b7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-29 at 23:10 +0200, Andy Shevchenko wrote:
-> On Fri, Jan 29, 2021 at 10:49 PM Yury Norov <yury.norov@gmail.com> wrote:
-[]
-> > @@ -37,7 +37,7 @@
-> >  #define GENMASK(h, l) \
-> >         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> > 
-> > -#define BITS_FIRST(nr)         GENMASK(nr), 0)
-> > +#define BITS_FIRST(nr)         GENMASK((nr), 0)
+On Fri, 29 Jan 2021 14:01:03 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Fri, 29 Jan 2021 18:59:43 +0100
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> How come?!
+> > On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:  
+> > > Same things apply to bpf side. We can statically prove safety for
+> > > ftrace and kprobe attaching whereas to deal with NMI situation we
+> > > have to use run-time checks for recursion prevention, etc.    
+> > 
+> > I have no idea what you're saying. You can attach to functions that are
+> > called with random locks held, you can create kprobes in some very
+> > sensitive places.
+> > 
+> > What can you staticlly prove about that?  
+> 
+> I think the main difference is, if you attach a kprobe or ftrace function,
+> you can theoretically analyze the location before you do the attachment.
+> 
+> Does, the NMI context mean "in_nmi()" returns true? Because there's cases
+> in ftrace callbacks where that is checked (like the stack tracer). And
+> having ftrace return true for "in_nmi()" will break a lot of existing
+> utilities.
 
-It's broken otherwise with unbalanced parentheses...
+Specifically, kprobe and ftrace callbacks may have this:
 
+	if (in_nmi())
+		return;
 
+	raw_spin_lock_irqsave(&lock, flags);
+	[..]
+	raw_spin_unlock_irqrestore(&lock, flags);
+
+Which is totally fine to have, but the above only works if "in_nmi()"
+returns true only if you are in a real NMI.
+
+The stack tracer code does exactly the above.
+
+-- Steve
