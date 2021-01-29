@@ -2,159 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9810308663
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C799B308661
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbhA2HYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:24:35 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12348 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbhA2HY3 (ORCPT
+        id S229819AbhA2HY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:24:26 -0500
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:40756 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231926AbhA2HYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:24:29 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DRph05WCwz7cjq;
-        Fri, 29 Jan 2021 15:22:24 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 29 Jan 2021
- 15:23:28 +0800
-Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
- controller
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210116032740.873-1-thunder.leizhen@huawei.com>
- <20210116032740.873-5-thunder.leizhen@huawei.com>
- <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
-Date:   Fri, 29 Jan 2021 15:23:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 29 Jan 2021 02:24:16 -0500
+Received: by mail-ej1-f51.google.com with SMTP id gx5so11506128ejb.7;
+        Thu, 28 Jan 2021 23:23:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xQJTX9tSzdtR6ydGyWHufCeqLWMiNPcRsNBvuTsrqnk=;
+        b=US8FH8KqvAbJnx8V8zHvYLERtJz6KNcBdttdq6gm8Ir3n/T/hUQByCF2QgznIJG4ZD
+         y+AIsG+7ycmcN3ya4SuIp5vDxDB/Z5/M1xvNL9bzndqQOsv7bqALGM8csF4wri1uwFSw
+         7GSsKTVBSQ8jtzyvghTHx3hHtAQqQhSxc/GReBIO4yxjU8G4xDK/SWjFImOmxg1ZJ/7b
+         xjYXSqU6KAxJuvq/Ob57Uyw8qv8QqgJJe0wUVCyHkDv8bbHt5TS3ZqQ+OXr5kDjTaw35
+         /2ce9m1qLoGWlb3WyuLY7m3th/ret1uqGWblU96SFtHrSwuM/5BF1XK9fWjdd94TYgAc
+         uYGw==
+X-Gm-Message-State: AOAM5311y+aC9OLd/9WKJBVihgruYgF4acblBerC7TwOPbgy+M2a3t6L
+        NcxNM966y9/QgQVH7r6zqZW+KP1zaR0=
+X-Google-Smtp-Source: ABdhPJyz0E9Ys5HJ/kBfd8w8xTvow9g/W1ARFIVeIWNupQJgJKp7RbNPI+Pw0qV1vYWlT4mW5s5S2A==
+X-Received: by 2002:a17:906:4451:: with SMTP id i17mr3088338ejp.436.1611905013413;
+        Thu, 28 Jan 2021 23:23:33 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id o13sm3472676ejb.10.2021.01.28.23.23.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 23:23:32 -0800 (PST)
+Subject: Re: [PATCH 1/3] serial: 8250: Handle UART without interrupt on TEMT
+ using em485
+To:     Eric Tremblay <etremblay@distech-controls.com>,
+        gregkh@linuxfoundation.org
+Cc:     andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
+        giulio.benetti@micronovasrl.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com, heiko@sntech.de,
+        heiko.stuebner@theobroma-systems.com
+References: <20210128233629.4164-1-etremblay@distech-controls.com>
+ <20210128233629.4164-2-etremblay@distech-controls.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <1c4f5095-e350-8cc6-daee-4a841b1373d2@kernel.org>
+Date:   Fri, 29 Jan 2021 08:23:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210128233629.4164-2-etremblay@distech-controls.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/1/28 22:24, Arnd Bergmann wrote:
-> On Sat, Jan 16, 2021 at 4:27 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
->> +
->> +static void l3cache_maint_common(u32 range, u32 op_type)
->> +{
->> +       u32 reg;
->> +
->> +       reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
->> +       reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
->> +       reg |= range | op_type;
->> +       reg |= L3_MAINT_STATUS_START;
->> +       writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
+On 29. 01. 21, 0:36, Eric Tremblay wrote:
+> The patch introduce the UART_CAP_TEMT capability which is by default
+> assigned to all 8250 UART since the code assume that device has the
+> interrupt on TEMT
 > 
-> Are there contents of L3_MAINT_CTRL that need to be preserved
-> across calls and can not be inferred? A 'readl()' is often expensive,
-> so it might be more efficient if you can avoid that.
-
-Right, this readl() can be replaced with readl_relaxed(). Thanks.
-
-I'll check and correct the readl() and writel() in other places.
-
+> In the case where the device does not support it, we calculate the
+> maximum of time it could take for the transmitter to empty the
+> shift register. When we get in the situation where we get the
+> THRE interrupt but the TEMT bit is not set we start the timer
+> and recall __stop_tx after the delay
 > 
->> +static inline void l3cache_flush_all_nolock(void)
->> +{
->> +       l3cache_maint_common(L3_MAINT_RANGE_ALL, L3_MAINT_TYPE_FLUSH);
->> +}
->> +
->> +static void l3cache_flush_all(void)
->> +{
->> +       unsigned long flags;
->> +
->> +       spin_lock_irqsave(&l3cache_lock, flags);
->> +       l3cache_flush_all_nolock();
->> +       spin_unlock_irqrestore(&l3cache_lock, flags);
->> +}
+> Signed-off-by: Eric Tremblay <etremblay@distech-controls.com>
+> ---
+>   drivers/tty/serial/8250/8250.h            |  1 +
+>   drivers/tty/serial/8250/8250_bcm2835aux.c |  2 +-
+>   drivers/tty/serial/8250/8250_omap.c       |  2 +-
+>   drivers/tty/serial/8250/8250_port.c       | 89 ++++++++++++++++++++++-
+>   include/linux/serial_8250.h               |  2 +
+>   5 files changed, 93 insertions(+), 3 deletions(-)
 > 
-> I see that cache-l2x0 uses raw_spin_lock_irqsave() instead of
-> spin_lock_irqsave(), to avoid preemption in the middle of a cache
-> operation. This is probably a good idea here as well.
+> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+> index 52bb21205bb6..5361b761eed7 100644
+> --- a/drivers/tty/serial/8250/8250.h
+> +++ b/drivers/tty/serial/8250/8250.h
+> @@ -82,6 +82,7 @@ struct serial8250_config {
+>   #define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
+>   					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
+>   					 */
+> +#define UART_CAP_TEMT	(1 << 18)	/* UART have interrupt on TEMT */
 
-I don't think there's any essential difference between the two! I don't know
-if the compiler or tool will do anything extra. I checked the git log of the
-l2x0 driver and it used raw_spin_lock_irqsave() at the beginning. Maybe
-there's a description in 2.6. Since you mentioned this potential risk, I'll
-change it to raw_spin_lock_irqsave.
+What about the inversion _NOTEMT? You then set it only on uarts without 
+TEMT and don't need to update every single driver.
 
-include/linux/spinlock.h：
-static __always_inline raw_spinlock_t *spinlock_check(spinlock_t *lock)
-{
-        return &lock->rlock;
-}
+> diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+> index fd95860cd661..354faebce885 100644
+> --- a/drivers/tty/serial/8250/8250_bcm2835aux.c
+> +++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+> @@ -91,7 +91,7 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+>   		return -ENOMEM;
+>   
+>   	/* initialize data */
+> -	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI;
+> +	data->uart.capabilities = UART_CAP_FIFO | UART_CAP_MINI | UART_CAP_TEMT;
 
-#define spin_lock_irqsave(lock, flags)                          \
-do {                                                            \
-        raw_spin_lock_irqsave(spinlock_check(lock), flags);     \
-} while (0)
+This change looks weird and undocumented. Why do you set data->uart 
+suddenly?
 
+Actually, does this build?
+
+>   	up.port.dev = &pdev->dev;
+>   	up.port.regshift = 2;
+>   	up.port.type = PORT_16550;
+> diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+> index 23e0decde33e..1c21ac68ff37 100644
+> --- a/drivers/tty/serial/8250/8250_omap.c
+> +++ b/drivers/tty/serial/8250/8250_omap.c
+> @@ -1294,7 +1294,7 @@ static int omap8250_probe(struct platform_device *pdev)
+>   	up.port.regshift = 2;
+>   	up.port.fifosize = 64;
+>   	up.tx_loadsz = 64;
+> -	up.capabilities = UART_CAP_FIFO;
+> +	up.capabilities = UART_CAP_FIFO | UART_CAP_TEMT;
+>   #ifdef CONFIG_PM
+>   	/*
+>   	 * Runtime PM is mostly transparent. However to do it right we need to a
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> index b0af13074cd3..44a54406e4b4 100644
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -558,8 +558,41 @@ static void serial8250_clear_fifos(struct uart_8250_port *p)
+>   	}
+>   }
+>   
+> +static inline void serial8250_em485_update_temt_delay(struct uart_8250_port *p,
+> +			unsigned int cflag, unsigned int baud)
+> +{
+> +	unsigned int bits;
+> +
+> +	if (!p->em485)
+> +		return;
+> +
+> +	/* byte size and parity */
+> +	switch (cflag & CSIZE) {
+> +	case CS5:
+> +		bits = 7;
+> +		break;
+> +	case CS6:
+> +		bits = 8;
+> +		break;
+> +	case CS7:
+> +		bits = 9;
+> +		break;
+> +	default:
+> +		bits = 10;
+> +		break; /* CS8 */
+> +	}
+> +
+> +	if (cflag & CSTOPB)
+> +		bits++;
+> +	if (cflag & PARENB)
+> +		bits++;
+> +
+> +	p->em485->no_temt_delay = bits*1000000/baud;
+> +}
+> +
+>   static enum hrtimer_restart serial8250_em485_handle_start_tx(struct hrtimer *t);
+>   static enum hrtimer_restart serial8250_em485_handle_stop_tx(struct hrtimer *t);
+> +static enum hrtimer_restart serial8250_em485_handle_no_temt(struct hrtimer *t);
+>   
+>   void serial8250_clear_and_reinit_fifos(struct uart_8250_port *p)
+>   {
+> @@ -618,6 +651,18 @@ static int serial8250_em485_init(struct uart_8250_port *p)
+>   		     HRTIMER_MODE_REL);
+>   	hrtimer_init(&p->em485->start_tx_timer, CLOCK_MONOTONIC,
+>   		     HRTIMER_MODE_REL);
+> +
+> +	if (!(p->capabilities & UART_CAP_TEMT)) {
+> +		struct tty_struct *tty = p->port.state->port.tty;
+
+Is this safe? Don't you need a tty reference? Or maybe you need to pass 
+the tty from the TIOCSRS485 ioctl to here.
+
+> +		serial8250_em485_update_temt_delay(p, tty->termios.c_cflag,
+> +						   tty_get_baud_rate(tty));
+> +		hrtimer_init(&p->em485->no_temt_timer, CLOCK_MONOTONIC,
+> +			     HRTIMER_MODE_REL);
+> +		p->em485->no_temt_timer.function =
+> +			&serial8250_em485_handle_no_temt;
+> +	}
+> +
+>   	p->em485->stop_tx_timer.function = &serial8250_em485_handle_stop_tx;
+>   	p->em485->start_tx_timer.function = &serial8250_em485_handle_start_tx;
+>   	p->em485->port = p;
+> @@ -649,6 +694,7 @@ void serial8250_em485_destroy(struct uart_8250_port *p)
+>   
+>   	hrtimer_cancel(&p->em485->start_tx_timer);
+>   	hrtimer_cancel(&p->em485->stop_tx_timer);
+> +	hrtimer_cancel(&p->em485->no_temt_timer);
+>   
+>   	kfree(p->em485);
+>   	p->em485 = NULL;
+> @@ -1494,6 +1540,15 @@ static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
+>   	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
+>   }
+>   
+> +static void start_hrtimer_us(struct hrtimer *hrt, unsigned long usec)
+> +{
+> +	long sec = usec / 1000000;
+> +	long nsec = (usec % 1000000) * 1000;
+> +	ktime_t t = ktime_set(sec, nsec);
+
+Why not ns_to_ktime without all those divisions?
+
+> +
+> +	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
+> +}
+> +
+>   static void __stop_tx_rs485(struct uart_8250_port *p)
+>   {
+>   	struct uart_8250_em485 *em485 = p->em485;
+> @@ -1531,8 +1586,18 @@ static inline void __stop_tx(struct uart_8250_port *p)
+>   		 * shift register are empty. It is for device driver to enable
+>   		 * interrupt on TEMT.
+>   		 */
+> -		if ((lsr & BOTH_EMPTY) != BOTH_EMPTY)
+> +		if ((lsr & BOTH_EMPTY) != BOTH_EMPTY) {
+> +			/*
+> +			 * On devices with no interrupt on TEMT available
+> +			 * start a timer for a byte time, the timer will recall
+> +			 * __stop_tx
+> +			 */
+> +			if (!(p->capabilities & UART_CAP_TEMT) && (lsr & UART_LSR_THRE)) {
+> +				em485->active_timer = &em485->no_temt_timer;
+
+How does this interfere with the current handling of active_timer? You 
+should explain the changed functionality in the commit log. And you 
+don't reset it to NULL in the timer.
+
+> +				start_hrtimer_us(&em485->no_temt_timer, em485->no_temt_delay);
+> +			}
+>   			return;
+> +		}
+>   
+>   		__stop_tx_rs485(p);
+>   	}
+> @@ -1631,6 +1696,25 @@ static inline void start_tx_rs485(struct uart_port *port)
+>   	__start_tx(port);
+>   }
+>   
+> +static enum hrtimer_restart serial8250_em485_handle_no_temt(struct hrtimer *t)
+> +{
+> +	struct uart_8250_em485 *em485;
+> +	struct uart_8250_port *p;
+> +	unsigned long flags;
+> +
+> +	em485 = container_of(t, struct uart_8250_em485, no_temt_timer);
+> +	p = em485->port;
+> +
+> +	serial8250_rpm_get(p);
+> +	spin_lock_irqsave(&p->port.lock, flags);
+> +	if (em485->active_timer == &em485->no_temt_timer)
+> +		__stop_tx(p);
+> +
+> +	spin_unlock_irqrestore(&p->port.lock, flags);
+> +	serial8250_rpm_put(p);
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+>   static enum hrtimer_restart serial8250_em485_handle_start_tx(struct hrtimer *t)
+>   {
+>   	struct uart_8250_em485 *em485;
+> @@ -2792,6 +2876,9 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
+>   
+>   	serial8250_set_divisor(port, baud, quot, frac);
+>   
+> +	if (!(up->capabilities & UART_CAP_TEMT))
+> +		serial8250_em485_update_temt_delay(up, termios->c_cflag, baud);
+> +
+>   	/*
+>   	 * LCR DLAB must be set to enable 64-byte FIFO mode. If the FCR
+>   	 * is written without DLAB set, this mode will be disabled.
+> diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
+> index 9e655055112d..d2c66faff0dd 100644
+> --- a/include/linux/serial_8250.h
+> +++ b/include/linux/serial_8250.h
+> @@ -79,7 +79,9 @@ struct uart_8250_ops {
+>   struct uart_8250_em485 {
+>   	struct hrtimer		start_tx_timer; /* "rs485 start tx" timer */
+>   	struct hrtimer		stop_tx_timer;  /* "rs485 stop tx" timer */
+> +	struct hrtimer		no_temt_timer;  /* "rs485 no tempt interrupt" timer */
+>   	struct hrtimer		*active_timer;  /* pointer to active timer */
+> +	unsigned int		no_temt_delay;  /* Value of delay for no TEMT UART */
+>   	struct uart_8250_port	*port;          /* for hrtimer callbacks */
+>   	unsigned int		tx_stopped:1;	/* tx is currently stopped */
+>   };
 > 
-> I also see that l2x0 uses readl_relaxed(), to avoid a deadlock
-> in l2x0_cache_sync(). This may also be beneficial for performance
-> reasons, so it might be helpful to compare performance
-> overhead. On the other hand, readl()/writel() are usually the
-> safe choice, as those avoid the need to argue over whether
-> the relaxed versions are safe in all corner cases.
-> 
->> +static int __init l3cache_init(void)
->> +{
->> +       u32 reg;
->> +       struct device_node *node;
->> +
->> +       node = of_find_matching_node(NULL, l3cache_ids);
->> +       if (!node)
->> +               return -ENODEV;
-> 
-> I think the initcall should return '0' to indicate success when running
-> a kernel with this driver built-in on a platform that does not have
-> this device.
 
-I have added "depends on ARCH_KUNPENG50X" for this driver. But it's OK to
-return 0.
 
-> 
->> diff --git a/arch/arm/mm/cache-kunpeng-l3.h b/arch/arm/mm/cache-kunpeng-l3.h
->> new file mode 100644
->> index 000000000000000..9ef6a53e7d4db49
->> --- /dev/null
->> +++ b/arch/arm/mm/cache-kunpeng-l3.h
->> @@ -0,0 +1,30 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __CACHE_KUNPENG_L3_H
->> +#define __CACHE_KUNPENG_L3_H
->> +
->> +#define L3_CACHE_LINE_SHITF            6
-> 
-> I would suggest moving the contents of the header file into the .c file,
-> since there is only a single user of these macros.
-
-Okay, I'll move it.
-
-> 
->           Arnd
-> 
-> .
-> 
-
+-- 
+js
+suse labs
