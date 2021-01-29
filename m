@@ -2,165 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CAF308634
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726B3308631
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhA2HFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhA2HFJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:05:09 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D513C0613ED;
-        Thu, 28 Jan 2021 23:03:52 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRpGX1Mhgz9sSC;
-        Fri, 29 Jan 2021 18:03:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611903828;
-        bh=M3esjzDBnaZfKGmyv0dzvJQsk2dW78rBUnb8P4/r6lA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W6JtCSX9csF2Z20DLl1hsSywZog3j/4vaikdl5adfJva9XBigLX2Hzj/KG1hAH6Ya
-         Hz2VPnr+Zb9Fcz83UD1Rdge9uCkD4Xk1wkKXTkJPRGsTAFKw6Tv6s+6ACPUC994/8C
-         lY2gtlwWNo22LTtdUB2Gqy64Tl1rz4L6Zlh33tOGscg5ETmRLHtjyXNY3Os3sXhF6A
-         TjgNyicYY9g+CtAQQt+XitrXFi2Ul7dDrYsW/EZgRs5saNm1+kKMYtJ/ij4BgfTmga
-         C/jy6dOz+4avq8Sm+RjzEfQ5fYP7zcGXKeYWAlu+fuXxDi2QB6S49qnpuHD71H5tg6
-         yT8MHT31G1Y9Q==
-Date:   Fri, 29 Jan 2021 18:03:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the hwmon-staging tree
-Message-ID: <20210129180346.4ba597a2@canb.auug.org.au>
+        id S232126AbhA2HE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:04:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229786AbhA2HEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:04:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6692D60234;
+        Fri, 29 Jan 2021 07:04:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611903853;
+        bh=B8baj/kr8egXx07AKTfXmu2q+uVtPa7Wa10vxWLTyX4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FU1gKzkR0Kkuw4BUPc2Ykvl/qSOzFXlBbHnlbTvI/BhKT7ahDUpGEZB46gpU40Y83
+         MoHNwFp1wY6tLb5AUTCsnEfd/AMZYsjtoOTM/ubtkBakz4JEJpx2QSQ5qDWK5JBhpB
+         4v3NJredQAUcuf0ikqua2sKTx8pGC/pdnTjma60/EtjBbJKLV0sBexjvYgwWm6cmAr
+         6YkTn12NhzoZ5vWMbb1h+pYot7MLL4lAT5rK7YbxkDbSaKqIWEB24dlTSavj0W7G0i
+         ikyrL756m9C6l5UyrhfShwTx10Viq23ua1S5t39e8a1T6A4j5m1JHtrkXMph6V4jLt
+         ck06v8VwMSCEw==
+Date:   Fri, 29 Jan 2021 09:03:55 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20210129070355.GC242749@kernel.org>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-8-rppt@kernel.org>
+ <20210126114657.GL827@dhcp22.suse.cz>
+ <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
+ <20210126120823.GM827@dhcp22.suse.cz>
+ <20210128092259.GB242749@kernel.org>
+ <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+ <2b6a5f22f0b062432186b89eeef58e2ba45e09c1.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sD4USp_sJaXjmjHrEOSj.ih";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b6a5f22f0b062432186b89eeef58e2ba45e09c1.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sD4USp_sJaXjmjHrEOSj.ih
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 28, 2021 at 07:28:57AM -0800, James Bottomley wrote:
+> On Thu, 2021-01-28 at 14:01 +0100, Michal Hocko wrote:
+> > On Thu 28-01-21 11:22:59, Mike Rapoport wrote:
+> [...]
+> > > One of the major pushbacks on the first RFC [1] of the concept was
+> > > about the direct map fragmentation. I tried really hard to find
+> > > data that shows what is the performance difference with different
+> > > page sizes in the direct map and I didn't find anything.
+> > > 
+> > > So presuming that large pages do provide advantage the first
+> > > implementation of secretmem used PMD_ORDER allocations to amortise
+> > > the effect of the direct map fragmentation and then handed out 4k
+> > > pages at each fault. In addition there was an option to reserve a
+> > > finite pool at boot time and limit secretmem allocations only to
+> > > that pool.
+> > > 
+> > > At some point David suggested to use CMA to improve overall
+> > > flexibility [3], so I switched secretmem to use CMA.
+> > > 
+> > > Now, with the data we have at hand (my benchmarks and Intel's
+> > > report David mentioned) I'm even not sure this whole pooling even
+> > > required.
+> > 
+> > I would still like to understand whether that data is actually
+> > representative. With some underlying reasoning rather than I have run
+> > these XYZ benchmarks and numbers do not look terrible.
+> 
+> My theory, and the reason I made Mike run the benchmarks, is that our
+> fear of TLB miss has been alleviated by CPU speculation advances over
+> the years.  You can appreciate this if you think that both Intel and
+> AMD have increased the number of levels in the page table to
+> accommodate larger virtual memory size 5 instead of 3.  That increases
+> the length of the page walk nearly 2x in a physical system and even
+> more in a virtual system.  Unless this were massively optimized,
+> systems would have slowed down significantly.  Using 2M pages only
+> eliminates one level and 2G pages eliminates 2, so I theorized that
+> actually fragmentation wouldn't be the significant problem we once
+> thought it was and asked Mike to benchmark it.
+> 
+> The benchmarks show that indeed, it isn't a huge change in the data TLB
+> miss time, I suspect because data is nicely continuous nowadays and the
+> prediction that goes into the CPU optimizations quite easy.  ITLB
+> fragmentation actually seems to be quite a bit worse, likely because we
+> still don't have branch prediction down to an exact science.
 
-Hi all,
+Another thing is that normally useful work done by userspace so data
+accesses are dominated by userspace and any change in dTLB miss rate for
+kernel data accesses is only a small fraction of all misses.
 
-After merging the hwmon-staging tree, today's linux-next build (htmldocs)
-produced this warning:
+> James
+> 
+> 
 
-Documentation/hwmon/max16601.rst:94: WARNING: Malformed table.
-Text in column margin in table line 39.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-in1_label               "vin1"
-in1_input               VCORE input voltage.
-in1_alarm               Input voltage alarm.
-
-in2_label               "vout1"
-in2_input               VCORE output voltage.
-in2_alarm               Output voltage alarm.
-
-curr1_label             "iin1"
-curr1_input             VCORE input current, derived from duty cycle and ou=
-tput
-                        current.
-curr1_max               Maximum input current.
-curr1_max_alarm         Current high alarm.
-
-curr[P+2]_label         "iin1.P"
-curr[P+2]_input         VCORE phase P input current.
-
-curr[N+2]_label         "iin2"
-curr[N+2]_input         VCORE input current, derived from sensor element.
-                        'N' is the number of enabled/populated phases.
-
-curr[N+3]_label         "iin3"
-curr[N+3]_input         VSA input current.
-
-curr[N+4]_label         "iout1"
-curr[N+4]_input         VCORE output current.
-curr[N+4]_crit          Critical output current.
-curr[N+4]_crit_alarm    Output current critical alarm.
-curr[N+4]_max           Maximum output current.
-curr[N+4]_max_alarm     Output current high alarm.
-
-curr[N+P+5]_label       "iout1.P"
-curr[N+P+5]_input       VCORE phase P output current.
-
-curr[2*N+5]_label       "iout3"
-curr[2*N+5]_input       VSA output current.
-curr[2*N+5]_highest     Historical maximum VSA output current.
-curr[2*N+5]_reset_history
-                        Write any value to reset curr21_highest.
-curr[2*N+5]_crit        Critical output current.
-curr[2*N+5]_crit_alarm  Output current critical alarm.
-curr[2*N+5]_max         Maximum output current.
-curr[2*N+5]_max_alarm   Output current high alarm.
-
-power1_label            "pin1"
-power1_input            Input power, derived from duty cycle and output cur=
-rent.
-power1_alarm            Input power alarm.
-
-power2_label            "pin2"
-power2_input            Input power, derived from input current sensor.
-
-power3_label            "pout"
-power3_input            Output power.
-
-temp1_input             VCORE temperature.
-temp1_crit              Critical high temperature.
-temp1_crit_alarm        Chip temperature critical high alarm.
-temp1_max               Maximum temperature.
-temp1_max_alarm         Chip temperature high alarm.
-
-temp2_input             TSENSE_0 temperature
-temp3_input             TSENSE_1 temperature
-temp4_input             TSENSE_2 temperature
-temp5_input             TSENSE_3 temperature
-
-temp6_input             VSA temperature.
-temp6_crit              Critical high temperature.
-temp6_crit_alarm        Chip temperature critical high alarm.
-temp6_max               Maximum temperature.
-temp6_max_alarm         Chip temperature high alarm.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-
-Introduced by commit
-
-  90b0f71d62df ("hwmon: (pmbus/max16601) Determine and use number of popula=
-ted phases")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sD4USp_sJaXjmjHrEOSj.ih
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmATs1IACgkQAVBC80lX
-0GwXLAf+OUNnPmK1rmQJQm2+WvRjPfw0gnMWxP5J7/u0106zv7eUrQo8Qri11RAh
-YBbcVE6Z12n9L1ZnceB8GVXf6p9o3rY3a4zieYaxdesbxN5fNIQecYGQ4FreGU9d
-kxapULfeH+B1OJxbF8K0QULR3bqatdDXuFuFx0piWxE3xGAzHzCSMd8JAvzCrC9N
-himQrEKvV+eo5vI+gUv00Z/eLfcARQMYTOMFBiFUOkXU2OsxnIAMCFE2CkFB5Spk
-dvtQVFNHeiMG/qxe5KXPWkeJtKPmyrMECExq5Hzo5kH7VNoRPwUSJAY0J/tQAxhY
-kisVRZiJWtQ+rV3aoaU2/Q+HkozIZw==
-=4OTY
------END PGP SIGNATURE-----
-
---Sig_/sD4USp_sJaXjmjHrEOSj.ih--
+-- 
+Sincerely yours,
+Mike.
