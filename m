@@ -2,66 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71A43085F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42623085F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhA2Gko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbhA2Gkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:40:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1E3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:39:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=waQy023mklfE113iOH/3aXsuJ/hgfNp5E4aPKpbysLQ=; b=ue3P7cXVdPN7uYQgi2DfpVu1fO
-        /hKK7fVtM/D86UFjGSDRkZIyWGSPwLZujtA66iOXYDXiQqr4C/AZK92CQ3HICi3r3CFuMwlToFKiF
-        GnwTBLhd3xJCagQ2aNGE+CDMMErx8yoIZ7xrFFPQH/Ls588jAAX503rmEcnNDZeNOJk2Q84MEo86S
-        CMbxPmXMnIqjoEUdMHg+ChZLR7Cczv6roD9hpIPDh8MtJl/4+dLo/mwqd2xEoCF29rBC7kzqj+xOE
-        JkQAtXhYagGy1PwU55DO1mgFzAEbKv2nGB9L4oLdrfecH8TXEV6VZCXrctVWFTwU2j261wuVOMi5T
-        zIQYjJmg==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l5NRg-0004Vq-Gh; Fri, 29 Jan 2021 06:39:52 +0000
-Subject: Re: [PATCH] parser: Fix kernel-doc markups
-To:     bingjingc <bingjingc@synology.com>, kuba@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jack@suse.cz
-References: <20210129050037.10722-1-bingjingc@synology.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f5cd0b56-de00-bc4f-d4c6-9108d7cab780@infradead.org>
-Date:   Thu, 28 Jan 2021 22:39:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20210129050037.10722-1-bingjingc@synology.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232158AbhA2Gld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:41:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51678 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232062AbhA2Glb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:41:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AB4EEABDA;
+        Fri, 29 Jan 2021 06:40:49 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v2] x86/vmemmap: Handle unpopulated sub-pmd ranges
+Date:   Fri, 29 Jan 2021 07:40:45 +0100
+Message-Id: <20210129064045.18471-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 9:00 PM, bingjingc wrote:
-> From: BingJing Chang <bingjingc@synology.com>
-> 
-> Fix existing issues at the kernel-doc markups
-> 
-> Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> ---
->  lib/parser.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
+When the size of a struct page is not multiple of 2MB, sections do
+not span a PMD anymore and so when populating them some parts of the
+PMD will remain unused.
+Because of this, PMDs will be left behind when depopulating sections
+since remove_pmd_table() thinks that those unused parts are still in
+use.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Fix this by marking the unused parts with PAGE_INUSE, so memchr_inv() will
+do the right thing and will let us free the PMD when the last user of it
+is gone.
 
-thanks for the kernel-doc patch.
+This patch is based on a similar patch by David Hildenbrand:
 
+https://lore.kernel.org/linux-mm/20200722094558.9828-9-david@redhat.com/
+https://lore.kernel.org/linux-mm/20200722094558.9828-10-david@redhat.com/
+
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+---
+
+ v1 -> v2:
+ - Rename PAGE_INUSE to PAGE_UNUSED as it better describes what we do
+
+---
+ arch/x86/mm/init_64.c | 91 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 79 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index b5a3fa4033d3..dbb76160ed52 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -871,7 +871,72 @@ int arch_add_memory(int nid, u64 start, u64 size,
+ 	return add_pages(nid, start_pfn, nr_pages, params);
+ }
+ 
+-#define PAGE_INUSE 0xFD
++#define PAGE_UNUSED 0xFD
++
++/*
++ * The unused vmemmap range, which was not yet memset(PAGE_UNUSED) ranges
++ * from unused_pmd_start to next PMD_SIZE boundary.
++ */
++static unsigned long unused_pmd_start __meminitdata;
++
++static void __meminit vmemmap_flush_unused_pmd(void)
++{
++	if (!unused_pmd_start)
++		return;
++	/*
++	 * Clears (unused_pmd_start, PMD_END]
++	 */
++	memset((void *)unused_pmd_start, PAGE_UNUSED,
++	       ALIGN(unused_pmd_start, PMD_SIZE) - unused_pmd_start);
++	unused_pmd_start = 0;
++}
++
++/* Returns true if the PMD is completely unused and thus it can be freed */
++static bool __meminit vmemmap_unuse_sub_pmd(unsigned long addr, unsigned long end)
++{
++	unsigned long start = ALIGN_DOWN(addr, PMD_SIZE);
++
++	vmemmap_flush_unused_pmd();
++	memset((void *)addr, PAGE_UNUSED, end - addr);
++
++	return !memchr_inv((void *)start, PAGE_UNUSED, PMD_SIZE);
++}
++
++static void __meminit vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
++{
++	/*
++	 * We only optimize if the new used range directly follows the
++	 * previously unused range (esp., when populating consecutive sections).
++	 */
++	if (unused_pmd_start == start) {
++		if (likely(IS_ALIGNED(end, PMD_SIZE)))
++			unused_pmd_start = 0;
++		else
++			unused_pmd_start = end;
++		return;
++	}
++
++	vmemmap_flush_unused_pmd();
++}
++
++static void __meminit vmemmap_use_new_sub_pmd(unsigned long start, unsigned long end)
++{
++	vmemmap_flush_unused_pmd();
++
++	/*
++	 * Mark the unused parts of the new memmap range
++	 */
++	if (!IS_ALIGNED(start, PMD_SIZE))
++		memset((void *)start, PAGE_UNUSED,
++		       start - ALIGN_DOWN(start, PMD_SIZE));
++	/*
++	 * We want to avoid memset(PAGE_UNUSED) when populating the vmemmap of
++	 * consecutive sections. Remember for the last added PMD the last
++	 * unused range in the populated PMD.
++	 */
++	if (!IS_ALIGNED(end, PMD_SIZE))
++		unused_pmd_start = end;
++}
+ 
+ static void __meminit free_pagetable(struct page *page, int order)
+ {
+@@ -1008,10 +1073,10 @@ remove_pte_table(pte_t *pte_start, unsigned long addr, unsigned long end,
+ 			 * with 0xFD, and remove the page when it is wholly
+ 			 * filled with 0xFD.
+ 			 */
+-			memset((void *)addr, PAGE_INUSE, next - addr);
++			memset((void *)addr, PAGE_UNUSED, next - addr);
+ 
+ 			page_addr = page_address(pte_page(*pte));
+-			if (!memchr_inv(page_addr, PAGE_INUSE, PAGE_SIZE)) {
++			if (!memchr_inv(page_addr, PAGE_UNUSED, PAGE_SIZE)) {
+ 				free_pagetable(pte_page(*pte), 0);
+ 
+ 				spin_lock(&init_mm.page_table_lock);
+@@ -1034,7 +1099,6 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
+ 	unsigned long next, pages = 0;
+ 	pte_t *pte_base;
+ 	pmd_t *pmd;
+-	void *page_addr;
+ 
+ 	pmd = pmd_start + pmd_index(addr);
+ 	for (; addr < end; addr = next, pmd++) {
+@@ -1055,12 +1119,10 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
+ 				spin_unlock(&init_mm.page_table_lock);
+ 				pages++;
+ 			} else {
+-				/* If here, we are freeing vmemmap pages. */
+-				memset((void *)addr, PAGE_INUSE, next - addr);
+-
+-				page_addr = page_address(pmd_page(*pmd));
+-				if (!memchr_inv(page_addr, PAGE_INUSE,
+-						PMD_SIZE)) {
++				/*
++				 * Free the PMD if the whole range is unused.
++				 */
++				if (vmemmap_unuse_sub_pmd(addr, next)) {
+ 					free_hugepage_table(pmd_page(*pmd),
+ 							    altmap);
+ 
+@@ -1112,10 +1174,10 @@ remove_pud_table(pud_t *pud_start, unsigned long addr, unsigned long end,
+ 				pages++;
+ 			} else {
+ 				/* If here, we are freeing vmemmap pages. */
+-				memset((void *)addr, PAGE_INUSE, next - addr);
++				memset((void *)addr, PAGE_UNUSED, next - addr);
+ 
+ 				page_addr = page_address(pud_page(*pud));
+-				if (!memchr_inv(page_addr, PAGE_INUSE,
++				if (!memchr_inv(page_addr, PAGE_UNUSED,
+ 						PUD_SIZE)) {
+ 					free_pagetable(pud_page(*pud),
+ 						       get_order(PUD_SIZE));
+@@ -1538,11 +1600,16 @@ static int __meminit vmemmap_populate_hugepages(unsigned long start,
+ 
+ 				addr_end = addr + PMD_SIZE;
+ 				p_end = p + PMD_SIZE;
++
++				if (!IS_ALIGNED(addr, PMD_SIZE) ||
++				    !IS_ALIGNED(next, PMD_SIZE))
++					vmemmap_use_new_sub_pmd(addr, next);
+ 				continue;
+ 			} else if (altmap)
+ 				return -ENOMEM; /* no fallback */
+ 		} else if (pmd_large(*pmd)) {
+ 			vmemmap_verify((pte_t *)pmd, node, addr, next);
++			vmemmap_use_sub_pmd(addr, next);
+ 			continue;
+ 		}
+ 		if (vmemmap_populate_basepages(addr, next, node, NULL))
 -- 
-~Randy
-netiquette: https://people.kernel.org/tglx/notes-about-netiquette
+2.26.2
+
