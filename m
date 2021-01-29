@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDF9308A7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED748308A7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbhA2QlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:41:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231537AbhA2Qji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:39:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4301D64DD6;
-        Fri, 29 Jan 2021 16:38:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611938337;
-        bh=zqqLR1S+uRIwcx1AnEtqAqBKpsmic3ZFF20GVjeupRw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=muK6qMd0i8XcH++AR6E6e6vpvp2zDAj7SeuwkOV1gSHL4Ra2esPf5VFGV+cYn3O77
-         IFO6y350TCYHlBKuMTOh4yChUQ7vFThzr0EJOTYqHiuhHtPwvPJdWbs1QdZLe6KHR/
-         BltwDbgdL9LBsHOZjWW7MLAO7v7+nIGJ/QgO+kyJms7cWUnJL8sTkfM1MlSkE8NTnt
-         VLNsbF/CaRm1HczHWtRoJq2CbYsEHp3m1JBak4g3SHyYJRMFAkKiAAlIofCnD34OV4
-         Kk7vl4t1okIHPLpJ+4voCTm81lu4+WuixvjpQoHkG5VYshZDCWbDBQwGxP8GJbJwvg
-         L2QVTH5bjGQ2g==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D47BB35226B0; Fri, 29 Jan 2021 08:38:56 -0800 (PST)
-Date:   Fri, 29 Jan 2021 08:38:56 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: Quick review of RCU-related patches in v5.10.8-rt23
-Message-ID: <20210129163856.GD2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210128195037.GA9370@paulmck-ThinkPad-P72>
- <20210129161137.5e45ps7yzfuela2d@linutronix.de>
+        id S231622AbhA2QnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:43:02 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:32876 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231774AbhA2QmN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:42:13 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10TGYf06030312;
+        Fri, 29 Jan 2021 10:41:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=asEApGlJPp9aAVE0lyAUCcts8ePMP7FAIzfsrbb6X1g=;
+ b=Qw9uA0hapTNWItC1FHMqRLxHRGOazL33ByDe9frUrxgHqPbwnhTnCNBVdTJP7gYUm6CR
+ r+VlUEBEJZHqz/pfB2TjzIAGvOgYwe3xB3AR0qjvRzHuxSQ77raNrcxa7U8WxeJ2mfaK
+ wcpcTx58YqQ2QN3HraMBMQdxAxbP158s/BoTmUj/3XQ62lyoiKsIi+kzODpNuFg9Zlux
+ 1BE/ML3n0M3Q8J5XYHlyn3vA2WAv5zcf+DmB3Hxv8PGZQFd1tmecDNLrMA3hMNBf6FFu
+ 9zkYqK9flI7VJQ/89h3djdog5KV9o5aK9ycQaGvQSaUKhG7wkAr8PzQV3mO6euIsb/NT 3Q== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 368h3u7my8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 29 Jan 2021 10:41:24 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 29 Jan
+ 2021 16:41:23 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 29 Jan 2021 16:41:23 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.253])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D49E245;
+        Fri, 29 Jan 2021 16:41:22 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <rdunlap@infradead.org>, <arend@broadcom.com>
+CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] lib: crc8: Pointer to data block should be const
+Date:   Fri, 29 Jan 2021 16:41:20 +0000
+Message-ID: <20210129164120.27604-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129161137.5e45ps7yzfuela2d@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
+ adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
+ clxscore=1011 mlxlogscore=999 mlxscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101290081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 05:11:37PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-01-28 11:50:37 [-0800], Paul E. McKenney wrote:
-> > Hello, Sebastian,
-> 
-> Hi Paul,
-> 
-> > Just doing my periodic (but decidedly non-real-time) scan of RCU-related
-> > patches in -rt, in this case v5.10.8-rt23:
-> > 
-> > f3541b467fbb ("sched: Do not account rcu_preempt_depth on RT in might_sleep()")
-> > 	If the scheduler maintainers are OK with their part of this patch,
-> > 	looks good to me, given CONFIG_PREEMPT_RT.  Feel free to add:
-> > 	Acked-by: Paul E. McKenney <paulmck@ekernel.org>
-> 
-> Thank. I think we should pump it together with the rt-mutex part. But I
-> add a note.
-> 
-> > d8c5a7d75e08 ("rcutorture: Avoid problematic critical section nesting on RT")
-> > 	This one I need to understand better.  I do like the use of local
-> > 	variables to make the "if" conditions less unruly.
-> 
-> This originated in
->   https://lkml.kernel.org/r/20190911165729.11178-6-swood@redhat.com
-> 
-> I planned to post it upstream last cycle but it appears that it broke
-> apart and I did not yet look how to fix it.
+crc8() does not change the data passed to it, so the pointer argument
+should be declared const. This avoids callers that receive const data
+having to cast it to a non-const pointer to call crc8().
 
-I do recall the discussion, I just need to get up to speed on the
-details.  ;-)
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ include/linux/crc8.h | 2 +-
+ lib/crc8.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> > The rest are in -rcu already:
-> > 
-> > a163ef8687a1 ("rcu: make RCU_BOOST default on RT")
-> > 	Commit 2341bc4a0311 in -rcu.  In yesterday's pull request.
-> > 5ffd75a96828 ("rcu: Use rcuc threads on PREEMPT_RT as we did")
-> > 	Commit 8b9a0ecc7ef5 in -rcu.  In yesterday's pull request.
-> > e0b671bca2e7 ("rcu: enable rcu_normal_after_boot by default for RT")
-> > 	Commit 36221e109eb2 in -rcu.  In yesterday's pull request.
-> > e27ef68731a1 ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > 	This one is in v5.10 mainline.
-> 
->  \o/
->  
-> > Any reason I shouldn't pull in db93e2f1b4b0 ("rcu: Prevent false positive
-> > softirq warning on RT") for v5.13?
-> 
-> tglx has a version of that with your Reviewed-by tag on it in this
-> softirq tree waiting. So I guess just sit it out ;)
+diff --git a/include/linux/crc8.h b/include/linux/crc8.h
+index 13c8dabb0441..674045c59a04 100644
+--- a/include/linux/crc8.h
++++ b/include/linux/crc8.h
+@@ -96,6 +96,6 @@ void crc8_populate_msb(u8 table[CRC8_TABLE_SIZE], u8 polynomial);
+  * Williams, Ross N., ross<at>ross.net
+  * (see URL http://www.ross.net/crc/download/crc_v3.txt).
+  */
+-u8 crc8(const u8 table[CRC8_TABLE_SIZE], u8 *pdata, size_t nbytes, u8 crc);
++u8 crc8(const u8 table[CRC8_TABLE_SIZE], const u8 *pdata, size_t nbytes, u8 crc);
+ 
+ #endif /* __CRC8_H_ */
+diff --git a/lib/crc8.c b/lib/crc8.c
+index 595a5a75e3cd..1ad8e501d9b6 100644
+--- a/lib/crc8.c
++++ b/lib/crc8.c
+@@ -71,7 +71,7 @@ EXPORT_SYMBOL(crc8_populate_lsb);
+  * @nbytes: number of bytes in data buffer.
+  * @crc: previous returned crc8 value.
+  */
+-u8 crc8(const u8 table[CRC8_TABLE_SIZE], u8 *pdata, size_t nbytes, u8 crc)
++u8 crc8(const u8 table[CRC8_TABLE_SIZE], const u8 *pdata, size_t nbytes, u8 crc)
+ {
+ 	/* loop over the buffer data */
+ 	while (nbytes-- > 0)
+-- 
+2.20.1
 
-Works for me!
-
-							Thanx, Paul
-
-> Thank you for looking Paul.
-> > 							Thanx, Paul
-> 
-> Sebastian
