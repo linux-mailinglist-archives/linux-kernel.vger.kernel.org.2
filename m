@@ -2,159 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE95308704
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 09:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74973086FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 09:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhA2H6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:58:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhA2H54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:57:56 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85594C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:58:38 -0800 (PST)
-Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5C7652E0;
-        Fri, 29 Jan 2021 08:58:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611907114;
-        bh=Zkhc5qwxtLG9p6iYagBBIoG30YEBIJWm3QpQrx/2aks=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=IcDB7V+sLQYg6eBn5kGdj2rBhDmdEn6osnVv9z0oDsK7noiA7De8mohJLkzpAGVeW
-         6cbsi2noA3tVBsMMktTd67xR5D9Zw2910mtPmR0sD411m0WlTxQTubZYZPANkdnkJM
-         ImScSScTkJf3j6Rzyyav7cKBWKU1y4SCFnYo8eGY=
-Subject: Re: [PATCH] drm/tilcdc: send vblank event when disabling crtc
-To:     quanyang.wang@windriver.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jyri Sarha <jyri.sarha@iki.fi>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-References: <20210129055831.1702862-1-quanyang.wang@windriver.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-Message-ID: <1c6bd553-ee27-c93b-59e6-8d3c8368213a@ideasonboard.com>
-Date:   Fri, 29 Jan 2021 09:58:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232091AbhA2H5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:57:34 -0500
+Received: from mga07.intel.com ([134.134.136.100]:56149 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232365AbhA2H4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:56:54 -0500
+IronPort-SDR: MyXuW59Vd+yI7Le6qpDKEfbqbjA3ySusoKPA+Anu+EwDRJ+LEzEmSh37gN/fWKz7DE/W3rn0OK
+ pD1HLhALnN/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="244470734"
+X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
+   d="scan'208";a="244470734"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 23:56:38 -0800
+IronPort-SDR: r8+9M+Q6+eyqVnG+2+9qV6jgTxydFvAWXPrvfUvsbcxM88zLNQfOA2osBpJehVCJUS1YGXTgPw
+ L5HtwIQnCgBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
+   d="scan'208";a="389205573"
+Received: from local-michael-cet-test.sh.intel.com (HELO localhost) ([10.239.159.172])
+  by orsmga008.jf.intel.com with ESMTP; 28 Jan 2021 23:56:36 -0800
+Date:   Fri, 29 Jan 2021 16:08:33 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        jmattson@google.com, yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v14 09/13] KVM: x86: Report CET MSRs as to-be-saved if
+ CET is supported
+Message-ID: <20210129080833.GB28424@local-michael-cet-test.sh.intel.com>
+References: <20201106011637.14289-1-weijiang.yang@intel.com>
+ <20201106011637.14289-10-weijiang.yang@intel.com>
+ <732d1da2-70d7-1f8a-b41d-136e068516d7@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210129055831.1702862-1-quanyang.wang@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <732d1da2-70d7-1f8a-b41d-136e068516d7@redhat.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dropped the @ti.com addresses and added the new ones.
-
- Tomi
-
-On 29/01/2021 07:58, quanyang.wang@windriver.com wrote:
-> From: Quanyang Wang <quanyang.wang@windriver.com>
+On Thu, Jan 28, 2021 at 06:46:37PM +0100, Paolo Bonzini wrote:
+> On 06/11/20 02:16, Yang Weijiang wrote:
+> > Report all CET MSRs, including the synthetic GUEST_SSP MSR, as
+> > to-be-saved, e.g. for migration, if CET is supported by KVM.
+> > 
+> > Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > ---
+> >   arch/x86/kvm/x86.c | 9 +++++++++
+> >   1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 751b62e871e5..d573cadf5baf 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -1248,6 +1248,8 @@ static const u32 msrs_to_save_all[] = {
+> >   	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
+> >   	MSR_IA32_XSS,
+> > +	MSR_IA32_U_CET, MSR_IA32_S_CET, MSR_IA32_INT_SSP_TAB, MSR_KVM_GUEST_SSP,
+> > +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP, MSR_IA32_PL3_SSP,
+> >   };
+> >   static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
+> > @@ -5761,6 +5763,13 @@ static void kvm_init_msr_list(void)
+> >   			if (!supported_xss)
+> >   				continue;
+> >   			break;
+> > +		case MSR_IA32_U_CET:
+> > +		case MSR_IA32_S_CET:
+> > +		case MSR_IA32_INT_SSP_TAB:
+> > +		case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+> > +			if (!kvm_cet_supported())
+> > +				continue;
+> > +			break;
+> >   		default:
+> >   			break;
+> >   		}
+> > 
 > 
-> When run xrandr to change resolution on Beaglebone Black board, it will
-> print the error information:
-> 
-> root@beaglebone:~# xrandr -display :0 --output HDMI-1 --mode 720x400
-> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:32:tilcdc crtc] commit wait timed out
-> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:34:HDMI-A-1] commit wait timed out
-> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:31:plane-0] commit wait timed out
-> tilcdc 4830e000.lcdc: already pending page flip!
-> 
-> This is because there is operation sequence as below:
-> 
-> drm_atomic_connector_commit_dpms(mode is DRM_MODE_DPMS_OFF):
->     ...
->     drm_atomic_helper_setup_commit <- init_completion(commit_A->flip_done)
->     drm_atomic_helper_commit_tail
->         tilcdc_crtc_atomic_disable
->         tilcdc_plane_atomic_update <- drm_crtc_send_vblank_event in tilcdc_crtc_irq
->                                       is skipped since tilcdc_crtc->enabled is 0
->         tilcdc_crtc_atomic_flush   <- drm_crtc_send_vblank_event is skipped since
->                                       crtc->state->event is set to be NULL in
->                                       tilcdc_plane_atomic_update
-> drm_mode_setcrtc:
->     ...
->     drm_atomic_helper_setup_commit <- init_completion(commit_B->flip_done)
->     drm_atomic_helper_wait_for_dependencies
->         drm_crtc_commit_wait   <- wait for commit_A->flip_done completing
-> 
-> Just as shown above, the steps which could complete commit_A->flip_done
-> are all skipped and commit_A->flip_done will never be completed. This will
-> result a time-out ERROR when drm_crtc_commit_wait check the commit_A->flip_done.
-> So add drm_crtc_send_vblank_event in tilcdc_crtc_atomic_disable to
-> complete commit_A->flip_done.
-> 
-> Fixes: cb345decb4d2 ("drm/tilcdc: Use standard drm_atomic_helper_commit")
-> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-> ---
->  drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> index 30213708fc99..d99afd19ca08 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> @@ -515,6 +515,15 @@ static void tilcdc_crtc_off(struct drm_crtc *crtc, bool shutdown)
->  
->  	drm_crtc_vblank_off(crtc);
->  
-> +	spin_lock_irq(&crtc->dev->event_lock);
-> +
-> +	if (crtc->state->event) {
-> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
-> +		crtc->state->event = NULL;
-> +	}
-> +
-> +	spin_unlock_irq(&crtc->dev->event_lock);
-> +
->  	tilcdc_crtc_disable_irqs(dev);
->  
->  	pm_runtime_put_sync(dev->dev);
-> 
+> Missing "case MSR_KVM_GUEST_SSP".
+>
+OK, will fix it in next version.
+> Paolo
