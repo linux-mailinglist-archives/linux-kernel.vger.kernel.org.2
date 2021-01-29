@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E709F308B51
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AA4308B65
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhA2RS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhA2RQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:16:09 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4D5C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:14:50 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id f16so7394109wmq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:14:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r0DeJRQSouD6CDUFN4FcJrgT9nh0a6Rl7JYqFQiHWdE=;
-        b=Jn4mv2sHCPZ0MMXzT32Xbz5rAfWG/yn4zEA3JV5sz54Zln1eyTrj4V2e6xH2qPzj4p
-         ixFRplLWCRknfZdts7ndcoZN3t/anX6JFejRDeXJDOXYzx2mQZcgGAkBDt2r/WfWhyNa
-         lP0OdPaf9KIROM/vv0eZdkmZnM1flWbGRvpTzL+FKiOkoifNwRT5b2S8GT3XHI/A6XdT
-         k0dO6du5reV+wb/jzBGjyXetGAm0Wl2lhnQXqGphEHrwgVRoA25OyvUU2kTey8WP+xxU
-         AZjTdu8mVWJIegIcGqnKk4280VTIksVLYQPapnQ/cekpzSTyJuoxA/PzWstwIwrLXrea
-         7rCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r0DeJRQSouD6CDUFN4FcJrgT9nh0a6Rl7JYqFQiHWdE=;
-        b=UOPIjnf65E9mUOYFI9mAQ1XYEo9ydEslr9dnnqMaqnMN1pAKjBW34aYvBgh5oiuUbN
-         DwO2YRkhBdeskd5ipHHcNZozgYGM6CCsvKIWyP9OPeM+2dOkS3rGOJLUX9FkrOia3ABW
-         27jTF8hW3OkLeXBBuOH55aRMLMz5793GDmszU3rT8ADNvrwzQWakhowJck5Kkt/jVpVh
-         Zkl5WZBxvHw3E6rWUaaeSZ2/b6x4NPfZA+KqF9ijmGvlq65fc8INBQ1Oy6WSt0rVXw8y
-         wsCtR2Hp1d9P7KhElVGZQ+Wo3aMVT3vyRFZsv/8bp8PIg4bZj53Y65IY2AvsCTwobLiS
-         wq0A==
-X-Gm-Message-State: AOAM532moTYO7KmMG3pdIUnm4Rghc0nGFg6ShLGrweRyEm4vwcEqlmD9
-        mvx90OHoQc96osHQKYqT8b118wrEMPtJkA==
-X-Google-Smtp-Source: ABdhPJwl3lu0deH+Vf0Y7IibiR0OQyI23bJ/81r7PuQ0/N/1UE7mg5bkV3yVo63BvV6yEheL2noCdw==
-X-Received: by 2002:a7b:cbd7:: with SMTP id n23mr4811981wmi.162.1611940489279;
-        Fri, 29 Jan 2021 09:14:49 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id n15sm12952487wrx.2.2021.01.29.09.14.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 09:14:48 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5/5] nvmem: core: skip child nodes not matching binding
-Date:   Fri, 29 Jan 2021 17:14:30 +0000
-Message-Id: <20210129171430.11328-6-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210129171430.11328-1-srinivas.kandagatla@linaro.org>
-References: <20210129171430.11328-1-srinivas.kandagatla@linaro.org>
+        id S231871AbhA2RTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:19:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59866 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231916AbhA2RQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 12:16:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DBA96ABDA;
+        Fri, 29 Jan 2021 17:15:22 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 17:15:21 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
+Message-ID: <20210129171521.GB22949@wotan.suse.de>
+References: <20210127135728.30276-1-mrostecki@suse.de>
+ <18dab74b-aea9-0e34-1be5-39d62f44cfd2@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18dab74b-aea9-0e34-1be5-39d62f44cfd2@toxicpanda.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+On Fri, Jan 29, 2021 at 11:22:48AM -0500, Josef Bacik wrote:
+> On 1/27/21 8:57 AM, Michal Rostecki wrote:
+> > From: Michal Rostecki <mrostecki@suse.com>
+> > 
+> > Before this change, the btrfs_get_io_geometry() function was calling
+> > btrfs_get_chunk_map() to get the extent mapping, necessary for
+> > calculating the I/O geometry. It was using that extent mapping only
+> > internally and freeing the pointer after its execution.
+> > 
+> > That resulted in calling btrfs_get_chunk_map() de facto twice by the
+> > __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+> > first and then calling btrfs_get_chunk_map() directly to get the extent
+> > mapping, used by the rest of the function.
+> > 
+> > This change fixes that by passing the extent mapping to the
+> > btrfs_get_io_geometry() function as an argument.
+> > 
+> > v2:
+> > When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
+> > - Use errno_to_blk_status(PTR_ERR(em)) as the status
+> > - Set em to NULL
+> > 
+> > Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+> 
+> This panic'ed all of my test vms in their overnight xfstests runs, the panic is this
+> 
+> [ 2449.936502] BTRFS critical (device dm-7): mapping failed logical
+> 1113825280 bio len 40960 len 24576
+> [ 2449.937073] ------------[ cut here ]------------
+> [ 2449.937329] kernel BUG at fs/btrfs/volumes.c:6450!
+> [ 2449.937604] invalid opcode: 0000 [#1] SMP NOPTI
+> [ 2449.937855] CPU: 0 PID: 259045 Comm: kworker/u5:0 Not tainted 5.11.0-rc5+ #122
+> [ 2449.938252] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> 1.13.0-2.fc32 04/01/2014
+> [ 2449.938713] Workqueue: btrfs-worker-high btrfs_work_helper
+> [ 2449.939016] RIP: 0010:btrfs_map_bio.cold+0x5a/0x5c
+> [ 2449.939392] Code: 37 87 ff ff e8 ed d4 8a ff 48 83 c4 18 e9 b5 52 8b ff
+> 49 89 c8 4c 89 fa 4c 89 f1 48 c7 c6 b0 c0 61 8b 48 89 ef e8 11 87 ff ff <0f>
+> 0b 4c 89 e7 e8 42 09 86 ff e9 fd 59 8b ff 49 8b 7a 50 44 89 f2
+> [ 2449.940402] RSP: 0000:ffff9f24c1637d90 EFLAGS: 00010282
+> [ 2449.940689] RAX: 0000000000000057 RBX: ffff90c78ff716b8 RCX: 0000000000000000
+> [ 2449.941080] RDX: ffff90c7fbc27ae0 RSI: ffff90c7fbc19110 RDI: ffff90c7fbc19110
+> [ 2449.941467] RBP: ffff90c7911d4000 R08: 0000000000000000 R09: 0000000000000000
+> [ 2449.941853] R10: ffff9f24c1637b48 R11: ffffffff8b9723e8 R12: 0000000000000000
+> [ 2449.942243] R13: 0000000000000000 R14: 000000000000a000 R15: 000000004263a000
+> [ 2449.942632] FS:  0000000000000000(0000) GS:ffff90c7fbc00000(0000)
+> knlGS:0000000000000000
+> [ 2449.943072] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2449.943386] CR2: 00005575163c3080 CR3: 000000010ad6c004 CR4: 0000000000370ef0
+> [ 2449.943772] Call Trace:
+> [ 2449.943915]  ? lock_release+0x1c3/0x290
+> [ 2449.944135]  run_one_async_done+0x3a/0x60
+> [ 2449.944360]  btrfs_work_helper+0x136/0x520
+> [ 2449.944588]  process_one_work+0x26e/0x570
+> [ 2449.944812]  worker_thread+0x55/0x3c0
+> [ 2449.945016]  ? process_one_work+0x570/0x570
+> [ 2449.945250]  kthread+0x137/0x150
+> [ 2449.945430]  ? __kthread_bind_mask+0x60/0x60
+> [ 2449.945666]  ret_from_fork+0x1f/0x30
+> 
+> it happens when you run btrfs/060.  Please make sure to run xfstests against
+> patches before you submit them upstream.  Thanks,
+> 
+> Josef
 
-The nvmem cell binding applies to all eeprom child nodes matching
-"^.*@[0-9a-f]+$" without taking a compatible into account.
+Umm... I ran the xftests against v1 patch and didn't get that panic.
+I'll try to reproduce and fix that now. Thanks for the heads up and
+sorry!
 
-Linux drivers, like at24, are even more extensive and assume
-_all_ at24 eeprom child nodes to be nvmem cells since e888d445ac33
-("nvmem: resolve cells from DT at registration time").
-
-Since df5f3b6f5357 ("dt-bindings: nvmem: stm32: new property for
-data access"), the additionalProperties: True means it's Ok to have
-other properties as long as they don't match "^.*@[0-9a-f]+$".
-
-The barebox bootloader extends the MTD partitions binding to
-EEPROM and can fix up following device tree node:
-
-  &eeprom {
-    partitions {
-      compatible = "fixed-partitions";
-    };
-  };
-
-This is allowed binding-wise, but drivers using nvmem_register()
-like at24 will fail to parse because the function expects all child
-nodes to have a reg property present. This results in the whole
-EEPROM driver probe failing despite the device tree being correct.
-
-Fix this by skipping nodes lacking a reg property instead of
-returning an error. This effectively makes the drivers adhere
-to the binding because all nodes with a unit address must have
-a reg property and vice versa.
-
-Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time").
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/nvmem/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 68ae6f24b57f..a5ab1e0c74cf 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -682,7 +682,9 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
- 
- 	for_each_child_of_node(parent, child) {
- 		addr = of_get_property(child, "reg", &len);
--		if (!addr || (len < 2 * sizeof(u32))) {
-+		if (!addr)
-+			continue;
-+		if (len < 2 * sizeof(u32)) {
- 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
- 			return -EINVAL;
- 		}
--- 
-2.21.0
-
+Thanks,
+Michal
