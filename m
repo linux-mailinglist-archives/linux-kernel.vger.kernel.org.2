@@ -2,241 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93A9308E9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9190308E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhA2UmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:42:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhA2UmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:42:05 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DCBC06174A;
-        Fri, 29 Jan 2021 12:41:25 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id p72so10671418iod.12;
-        Fri, 29 Jan 2021 12:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ghs3w1DK8bK62apoXNRIgaDmo4mtYv4++XqH5FO8a1U=;
-        b=YkPpKYC2szva4mxzX3Ds7sba2cn6q9gCHqesIo7T3Ofe/BYTCQycl6DJefajEtALOb
-         q1PIW5kfKaS/3Ai9/2NyXxn0avog+NeU8Rlqkl1GH5gGdFkVC+cfEC7eGioV3o2zIyAp
-         Wa8jzQaFjHH/oeJCTJpXQyQ+15PaaQVectY+uucQ1UUH+yM8VMDdFp7JplP4Ca4sjK4q
-         BII3gCi+5NqlqiryHeRURHgQbrnWkBMYrREMatQEcy3tuU/czdBcf5Na+Rd2UJgV3t48
-         Nw9jjA1S9kEPgBJoKbAa/mDTlQL0sY5OIgSld/55xzGICzAywQW9lGc3d4SZgaiKq20r
-         uyNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ghs3w1DK8bK62apoXNRIgaDmo4mtYv4++XqH5FO8a1U=;
-        b=f1HwVoeU8GYBX9vpy9AuIBp5MbCQ5/1Ur2tRApBsyoPbqTBH4XD4SuZJrpQAAvOE41
-         7qt87ITSEJexGNwQ+YwuDtZWutfhZ3F0dGN2SaAgIqOIfL7MIcASvqGH+WMtAIW55Lzq
-         uAlZyZjYn/wLudQJTxOgVtNs03iOW8H5XPAx1TFkdEbFWUFUHNuK1I7ZmTJgFhThbEWP
-         gmOiEfO26gZkmd95l9l7Qwe/dHQ+L39qWwGG88rTDER/G0c8Eh4mjgkviz8PDQvu+aP9
-         5nnz2S5PVMYjTAgQXj4eP6Qu3lRJL7x/rCvn4AWBOeV6HGEtFkCiyuxaTnCPTpsEcy4t
-         7gzA==
-X-Gm-Message-State: AOAM530SdvNVbKjZ8dJuQhNGQ7Pn6HYItpZvIlWVua8lEH569zn+UUgz
-        hh5BfNeVPNBwuRA61JBh7zKboyJ5Awq6O4yo7Fc=
-X-Google-Smtp-Source: ABdhPJzSSgqI25YAkm8JsGux8fYxiPCuz8YjbOM01Qt5CklAvrUizR1424po1R6NfNqSUTPeOSGNYwtLnvYnuhktO4Y=
-X-Received: by 2002:a6b:90c4:: with SMTP id s187mr4928826iod.75.1611952884560;
- Fri, 29 Jan 2021 12:41:24 -0800 (PST)
+        id S233210AbhA2Umb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:42:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233140AbhA2Um1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:42:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CCB64DDE;
+        Fri, 29 Jan 2021 20:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611952905;
+        bh=feOQxMhLAjV/hZuL27Uxl1PN0T266Dv3A9DoMHUWP3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rFS9Z9HMg0WHnBz9uZywK5zG9AP1fRWftUzeJz7faI9XN9EzTcYqaZwqkksZC7Mo8
+         /tinAO6KGKMnUukKFSyA3XVFAxVC2+vzKbT+mlKLS00hovCRsnCcjX0xdxAlxIOiFj
+         MV/dW9ccO7UA4P9RDq2PA4FT2rp3TwyTFRzSxGqEBTccLnRdsdocAhCvgpRhWty/6T
+         7o0HGuauJ3Snz4SM9AP4OM8W582PfYnuKm9CxFnUNiILQmNPDaw09fFup9NeIdJpn2
+         5mrsBpGhXKCJAyIKRTEXP0UNc9SKzO/IV9h7GfphKTBG5WzvijefhbeWd5HHjuRuB2
+         CiUSNMs0tO7Zg==
+Date:   Fri, 29 Jan 2021 12:41:43 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 2/3] fscrypt: Add metadata encryption support
+Message-ID: <YBRzB4K/yzZ9qiwT@sol.localdomain>
+References: <20201217150435.1505269-1-satyat@google.com>
+ <20201217150435.1505269-3-satyat@google.com>
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com> <20210129194318.2125748-3-ndesaulniers@google.com>
-In-Reply-To: <20210129194318.2125748-3-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 29 Jan 2021 21:41:12 +0100
-Message-ID: <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217150435.1505269-3-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> DWARF v5 is the latest standard of the DWARF debug info format.
->
-> Feature detection of DWARF5 is onerous, especially given that we've
-> removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> support.
->
-> The DWARF version of a binary can be validated with:
-> $ llvm-dwarfdump vmlinux | head -n 4 | grep version
-> or
-> $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
->
-> DWARF5 wins significantly in terms of size when mixed with compression
-> (CONFIG_DEBUG_INFO_COMPRESSED).
->
-> 363M    vmlinux.clang12.dwarf5.compressed
-> 434M    vmlinux.clang12.dwarf4.compressed
-> 439M    vmlinux.clang12.dwarf2.compressed
-> 457M    vmlinux.clang12.dwarf5
-> 536M    vmlinux.clang12.dwarf4
-> 548M    vmlinux.clang12.dwarf2
->
-> 515M    vmlinux.gcc10.2.dwarf5.compressed
-> 599M    vmlinux.gcc10.2.dwarf4.compressed
-> 624M    vmlinux.gcc10.2.dwarf2.compressed
-> 630M    vmlinux.gcc10.2.dwarf5
-> 765M    vmlinux.gcc10.2.dwarf4
-> 809M    vmlinux.gcc10.2.dwarf2
->
-> Though the quality of debug info is harder to quantify; size is not a
-> proxy for quality.
->
-> Jakub notes:
->   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
->   option that enabled some small DWARF subset (initially only a few
->   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
->   after DWARF 5 has been finalized) started emitting DWARF5 section
->   headers and got most of the DWARF5 changes in...
->
-> Version check GCC so that we don't need to worry about the difference in
-> command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
-> validate the DWARF Version in the assembler feature detection script.
->
-> GNU `as` only recently gained support for specifying -gdwarf-5, so when
-> compiling with Clang but without Clang's integrated assembler
-> (LLVM_IAS=1 is not set), explicitly add -Wa,-gdwarf-5 to DEBUG_CFLAGS.
->
-> Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
-> recognize the new additions to the DWARF debug info. Thanks to Sedat for
-> the report.
->
-> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Caroline Tice <cmtice@google.com>
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Jakub Jelinek <jakub@redhat.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Makefile                          | 12 ++++++++++++
->  include/asm-generic/vmlinux.lds.h |  6 +++++-
->  lib/Kconfig.debug                 | 18 ++++++++++++++++++
->  scripts/test_dwarf5_support.sh    |  8 ++++++++
->  4 files changed, 43 insertions(+), 1 deletion(-)
->  create mode 100755 scripts/test_dwarf5_support.sh
->
-> diff --git a/Makefile b/Makefile
-> index 20141cd9319e..bed8b3b180b8 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -832,8 +832,20 @@ endif
->
->  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
->  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
->  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
->
-> +# If using clang without the integrated assembler, we need to explicitly tell
-> +# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
-> +# detect whether the version of GAS supports DWARF v5.
-> +ifdef CONFIG_CC_IS_CLANG
-> +ifneq ($(LLVM_IAS),1)
-> +ifeq ($(dwarf-version-y),5)
-> +DEBUG_CFLAGS   += -Wa,-gdwarf-5
+On Thu, Dec 17, 2020 at 03:04:34PM +0000, Satya Tangirala wrote:
+> Introduces functions that help with metadata encryption.
+> 
+> In particular, we introduce:
+> 
+> fscrypt_setup_metadata_encryption() - filesystems should call this function
+> to set up metadata encryption on a super block with the encryption
+> algorithm (the desired FSCRYPT_MODE_*) and the key identifier of the
+> encryption key.fscrypt looks for a logon key with the specified key
+> identifier with prefix "fscrypt:". fscrypt will verify that the key
+> identifier matches the identifier that is derived using HKDF-512 with the
+> logon key as the keying material, no salt, and
+> "fscrypt\0|HKDF_CONTEXT_KEY_IDENTIFIER" as the info string.
 
-I noticed double "-g -gdwarf-5 -g -gdwarf-5" (a different issue) and
-that's why I looked again into the top-level Makefile.
+This describes *what* is done, but not *why*.  The why is that we want to ensure
+that wrong keys get rejected early on, before the filesystem is mounted.
 
-Should this be...?
+Also, what happens if we want to add support for a KDF other than HKDF-SHA512 in
+the future?  With the existing fscrypt use of HKDF-SHA512, we can add support
+for more KDFs by using one of the reserved fields in fscrypt_policy_v2 and
+fscrypt_add_key_arg to indicate the KDF version.  But as proposed, metadata
+encryption has no reserved fields in the filesystem superblock (that are
+strictly validated).  It might be a good idea to add some reserved fields.
 
-KBUILD_AFLAGS += -Wa,-gdwarf-5
+> Filesystems should call fscrypt_set_bio_crypt_ctx() on any bio that needs
+> either metadata or file contents encryption. fscrypt will choose the
+> appropriate key (based on the inode argument) to use for encrypting the
+> bio.
 
-- Sedat -
+Filesystem metadata doesn't necessarily have an inode associated with it.  How
+does that work?
 
-> +endif
-> +endif
-> +endif
+> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+> index 44b67ebd6e40..708164c413cc 100644
+> --- a/Documentation/filesystems/fscrypt.rst
+> +++ b/Documentation/filesystems/fscrypt.rst
+> @@ -27,8 +27,6 @@ at the block device level.  This allows it to encrypt different files
+>  with different keys and to have unencrypted files on the same
+>  filesystem.  This is useful for multi-user systems where each user's
+>  data-at-rest needs to be cryptographically isolated from the others.
+> -However, except for filenames, fscrypt does not encrypt filesystem
+> -metadata.
+>  
+>  Unlike eCryptfs, which is a stacked filesystem, fscrypt is integrated
+>  directly into supported filesystems --- currently ext4, F2FS, and
+> @@ -47,6 +45,15 @@ userspace provides the key, all regular files, directories, and
+>  symbolic links created in that directory tree are transparently
+>  encrypted.
+>  
+> +fscrypt also has support for encrypting filesystem metadata, which
+> +can be used independently of file contents encryption. For any
+> +filesystem block that isn't part of an encrypted file's contents,
+> +the filesystem can ask fscrypt to encrypt it with the metadata encryption
+> +key set up ahead of time. In general, filesystems should always choose
+> +to encrypt a filesystem block with the metadata encryption key, if
+> +that block isn't already encrypted with another key (filesystems may
+> +choose to leave certain blocks, like the superblock, unencrypted).
+
+We need to be very careful how we describe the metadata encryption feature
+because it's not really self-explanatory; people are going to wonder:
+
+- What is meant by "metadata"?
+- How does it relate to dm-crypt, and why not just use dm-crypt?
+- How does it interact with the existing filenames encryption?
+- How does it interact with unencrypted files?
+
+We need to explain it properly so that all these questions are answered.
+
+I recommend adding metadata encryption as a top-level section in the
+documentation file (not just in the Introduction and Implementation Details
+sections as this patch currently proposes) and adding a proper explanation of it
+from a user's perspective.  The Introduction should be kept brief.
+
+> +fscrypt protects the confidentiality of non-filename metadata, e.g.
+> +file sizes, file permissions, file timestamps, and extended attribute
+> +only when metadata encryption support is enabled for the filesystem,
+> +and the filesystem chooses to protect such information with the
+> +metadata encryption key. 
+
+Do we actually anticipate that filesystems might support metadata encryption but
+not encrypt these types of metadata?  That would be weird, since the purpose of
+metadata encryption is basically to ensure that everything gets encrypted.
+
+> +For v2 encryption policies, if the filesystem has a metadata crypt key,
+> +the master key is first "mixed" with the metadata crypt key, generating
+> +a "mixed-metadata key", which is then used in place of the master key
+> +in the process described above. The "mixed-metadata key" is generated
+> +by using the metadata crypt key as the input keying material, and
+> +a context specific byte and the original master key as the
+> +application-specific information string with HKDF-SHA512 (refer to
+> +fscrypt_mix_in_metadata_key() for details).
+
+This explains *what* is done, but not *why*.  The why is that we want to enforce
+that the traditional fscrypt keys are at least as strong as the metadata
+encryption key (if there is one).
+
+> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+> index a5f5c30368a2..58b79d757608 100644
+> --- a/fs/crypto/Kconfig
+> +++ b/fs/crypto/Kconfig
+> @@ -30,3 +30,15 @@ config FS_ENCRYPTION_INLINE_CRYPT
+>  	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
+>  	help
+>  	  Enable fscrypt to use inline encryption hardware if available.
 > +
->  ifdef CONFIG_DEBUG_INFO_REDUCED
->  DEBUG_CFLAGS   += $(call cc-option, -femit-struct-debug-baseonly) \
->                    $(call cc-option,-fno-var-tracking)
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 34b7e0d2346c..f8d5455cd87f 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -843,7 +843,11 @@
->                 .debug_types    0 : { *(.debug_types) }                 \
->                 /* DWARF 5 */                                           \
->                 .debug_macro    0 : { *(.debug_macro) }                 \
-> -               .debug_addr     0 : { *(.debug_addr) }
-> +               .debug_addr     0 : { *(.debug_addr) }                  \
-> +               .debug_line_str 0 : { *(.debug_line_str) }              \
-> +               .debug_loclists 0 : { *(.debug_loclists) }              \
-> +               .debug_rnglists 0 : { *(.debug_rnglists) }              \
-> +               .debug_str_offsets      0 : { *(.debug_str_offsets) }
->
->  /* Stabs debugging sections. */
->  #define STABS_DEBUG                                                    \
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 1850728b23e6..09146b1af20d 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -273,6 +273,24 @@ config DEBUG_INFO_DWARF4
->           It makes the debug information larger, but it significantly
->           improves the success of resolving variables in gdb on optimized code.
->
-> +config DEBUG_INFO_DWARF5
-> +       bool "Generate DWARF Version 5 debuginfo"
-> +       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-> +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> +       depends on !DEBUG_INFO_BTF
-> +       help
-> +         Generate DWARF v5 debug info. Requires binutils 2.35, gcc 5.0+ (gcc
-> +         5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-> +         draft features until 7.0), and gdb 8.0+.
+> +config FS_ENCRYPTION_METADATA
+> +	bool "Enable metadata encryption with fscrypt"
+> +	depends on FS_ENCRYPTION_INLINE_CRYPT
+> +	help
+> +	  Enable fscrypt to encrypt metadata. This allows filesystems
+> +	  that support metadata encryption through fscrypt to mount
+> +	  and use filesystem images formatted with metadata encryption
+> +	  enabled. Such filesystem images generally have all
+> +	  otherwise-non-encrypted data (like filesystem metadata,
+> +	  and unencrypted files) encrypted with a metadata encryption
+> +	  key instead.
+
+This could use some explanation of *why* someone would want to enable this.
+
+Also, "Enable metadata encryption" => "Enable support for metadata encryption".
+Otherwise people could think that they are enabling encryption just by setting
+this kernel config option.
+
+> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
+> index b048a0e38516..d5c1dc38461b 100644
+> --- a/fs/crypto/bio.c
+> +++ b/fs/crypto/bio.c
+> @@ -59,7 +59,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
+>  		unsigned int bytes_this_page = blocks_this_page << blockbits;
+>  
+>  		if (num_pages == 0) {
+> -			fscrypt_set_bio_crypt_ctx(bio, inode, lblk, GFP_NOFS);
+> +			fscrypt_set_bio_crypt_ctx(bio, 0, inode, lblk, GFP_NOFS);
+
+Why is this passing 0 for first_fsblk instead of the filesystem block number?
+
+>  /**
+>   * fscrypt_set_bio_crypt_ctx() - prepare a file contents bio for inline crypto
+>   * @bio: a bio which will eventually be submitted to the file
+> + * @first_fsblk: the first FS block number in the I/O (only used if bio will be
+> + *		 metadata crypted)
+>   * @inode: the file's inode
+>   * @first_lblk: the first file logical block number in the I/O
+>   * @gfp_mask: memory allocation flags - these must be a waiting mask so that
+> @@ -234,12 +218,19 @@ static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
+>   *
+>   * The encryption context will be freed automatically when the bio is freed.
+>   */
+> -void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
+> -			       u64 first_lblk, gfp_t gfp_mask)
+> +void fscrypt_set_bio_crypt_ctx(struct bio *bio, u64 first_fsblk,
+> +			       const struct inode *inode, u64 first_lblk,
+> +			       gfp_t gfp_mask)
+
+This is going to be confused with fscrypt_metadata_crypt_bio().  Also, the fact
+that this now does "metadata encryption" for file contents is confusing.  It
+would be helpful to update the comments to make it very clear what is going on.
+
+Also, does fscrypt_mergeable_bio() need to be updated too?
+
+> +/**
+> + * fscrypt_mix_in_metadata_key() - Mix in the metadata crypt key with an fscrypt
+> + *				   master key
+> + * @sb: The superblock whose metadata_crypt_key to mix in
+> + * @secret: The secret that needs to be mixed with the metadata_crypt_key
+> + *
+> + * Replaces @secret->raw with hkdf(key=metadata_crypt_key,
+> + * info=HKDF_CONTEXT_MIX_METADATA_KEY|@secret->raw). As such,
+> + * @secret->raw is at least as strong as the metadata_crypt_key.
+
+How about: "This makes @secret->raw at least as strong as the stronger of its
+old value and the metadata_crypt_key."
+
+> + *
+> + * Returns 0 on success and a negative value on error;
+> + */
+
+This should be "Return: 0 on success and a negative value on error", otherwise
+it isn't a valid kerneldoc comment.  You can run
+'scripts/kernel-doc -v -none FILE' to check the validity of kerneldoc comments.
+
 > +
-> +         Changes to the structure of debug info in Version 5 allow for around
-> +         15-18% savings in resulting image and debug info section sizes as
-> +         compared to DWARF Version 4. DWARF Version 5 standardizes previous
-> +         extensions such as accelerators for symbol indexing and the format
-> +         for fission (.dwo/.dwp) files. Users may not want to select this
-> +         config if they rely on tooling that has not yet been updated to
-> +         support DWARF Version 5.
+> +static int fscrypt_metadata_get_key_from_id(
+> +				u8 key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE],
+
+key_ident should be const.
+
+> +				unsigned int keysize,
+> +				u8 raw_key[FSCRYPT_MAX_KEY_SIZE])
+
+Adding a 1-2 sentence description above this function (not necessarily a full
+kerneldoc comment) would be helpful to understand what is going on.
+
+> +static int fscrypt_metadata_setup_hkdf(struct super_block *sb,
+> +				       u8 key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE],
+
+key_ident should be const.
+
+> +				       unsigned int keysize)
+
+Adding a 1-2 sentence description above this function (not necessarily a full
+kerneldoc comment) would be helpful to understand what is going on.
+
+> +	sb->s_metadata_hkdf = kzalloc(sizeof(*sb->s_metadata_hkdf), GFP_KERNEL);
+> +	if (!sb->s_metadata_hkdf)
+> +		goto out_zero_key;
+
+This is missing 'err = -ENOMEM' in the error path.
+
+> +	if (memcmp(key_ident, key_ident_computed, FSCRYPT_KEY_IDENTIFIER_SIZE)) {
+> +		err = -EINVAL;
+> +		fscrypt_warn(NULL,
+> +			     "Metadata encryption key did not have the correct key identifier. Rejecting the key.");
+> +		goto err_destroy_hkdf;
+> +	}
+
+It might make more sense to log something like "Incorrect metadata encryption
+key provided.".  The key identifiers being different is just how we determine
+whether the keys are different; it's the latter that is actually important.
+
+> +/**
+> + * fscrypt_setup_metadata_encryption() - prepare a super_block for metadata
+> + *					 encryption
+> + * @sb: The super_block to set up metadata encryption for
+> + * @key_ident: The key identifier of a logon key to look for in the process
+> + *	       subscribed keyrings.
+> + * @fscrypt_mode_num: The FSCRYPT_MODE_* to use as the encryption algorithm.
+> + * @fs_blk_bytes: The number of bytes required to represent fs block numbers.
+> + *
+> + * Return: 0 on success, negative number on error.
+
+Adding 1-2 more sentences of explanation above would be helpful.
+
+> + */
+> +int fscrypt_setup_metadata_encryption(struct super_block *sb,
+> +				u8 key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE],
+
+key_ident should be const.
+
+> +	err = blk_crypto_init_key(sb->s_metadata_key, derived_metadata_key,
+> +				  fscrypt_mode->blk_crypto_mode,
+> +				  fs_blk_bytes, sb->s_blocksize);
+> +	if (err)
+> +		goto err_free_metadata_encryption;
 > +
->  endchoice # "DWARF version"
->
->  config DEBUG_INFO_BTF
-> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> new file mode 100755
-> index 000000000000..1a00484d0b2e
-> --- /dev/null
-> +++ b/scripts/test_dwarf5_support.sh
-> @@ -0,0 +1,8 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
+> +	err = blk_crypto_start_using_key(sb->s_metadata_key,
+> +					 bdev_get_queue(sb->s_bdev));
+> +	if (err)
+> +		goto err_free_metadata_encryption;
+
+The calls to blk_crypto_start_using_key() also happen in
+fscrypt_metadata_crypt_prepare_all_devices().  So why is this extra one needed?
+
+> +/**
+> + * fscrypt_metadata_crypt_prepare_all_devices() - prepare all devices used by
+> + *					the filesystem for metadata encryption.
+
+prepare_all_devices => prepare_devices, to shorten this name a bit?
+
+> +/**
+> + * fscrypt_free_metadata_encryption() - free metadata encryption fields in
+> + *					super_block.
+> + * @sb: The super_block to free metatdata encryption fields from
+
+metatdata => metadata
+
+> + */
+> +void fscrypt_free_metadata_encryption(struct super_block *sb)
+> +{
+> +	int num_devices;
+> +	int i;
+> +	struct request_queue *q;
 > +
-> +# Test that assembler accepts -gdwarf-5 and .file 0 directives, which were bugs
-> +# in binutils < 2.35.
-> +# https://sourceware.org/bugzilla/show_bug.cgi?id=25612
-> +# https://sourceware.org/bugzilla/show_bug.cgi?id=25614
-> +echo '.file 0 "filename"' | $* -gdwarf-5 -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
-> --
-> 2.30.0.365.g02bc693789-goog
->
+> +	if (!sb->s_metadata_hkdf)
+> +		return;
+> +
+> +	fscrypt_destroy_hkdf(sb->s_metadata_hkdf);
+> +	kfree(sb->s_metadata_hkdf);
+
+It would be good to use kfree_sensitive() here, in the case the implementation
+of fscrypt_hkdf changes in the future (though it's not needed currently).
+
+> +	sb->s_metadata_hkdf = NULL;
+> +
+> +	if (!sb->s_metadata_key)
+> +		return;
+> +
+> +	num_devices = fscrypt_get_num_devices(sb);
+> +
+> +	for (i = 0; i < num_devices; i++) {
+> +		q = fscrypt_get_device(sb, i);
+> +		if (WARN_ON(!q))
+> +			continue;
+> +		blk_crypto_evict_key(q, sb->s_metadata_key);
+> +	}
+> +
+> +	kfree_sensitive(sb->s_metadata_key);
+> +	sb->s_metadata_key = NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(fscrypt_free_metadata_encryption);
+
+This is assuming that s_metadata_hkdf and s_metadata_key got allocated in a
+particular order.  It would be better to just handle each field one at a time,
+like:
+
+void fscrypt_free_metadata_encryption(struct super_block *sb)
+{
+	int num_devices;
+	int i;
+	struct request_queue *q;
+
+	if (sb->s_metadata_hkdf) {
+		fscrypt_destroy_hkdf(sb->s_metadata_hkdf);
+		kfree_sensitive(sb->s_metadata_hkdf);
+		sb->s_metadata_hkdf = NULL;
+	}
+
+	if (sb->s_metadata_key) {
+		num_devices = fscrypt_get_num_devices(sb);
+
+		for (i = 0; i < num_devices; i++) {
+			q = fscrypt_get_device(sb, i);
+			if (WARN_ON(!q))
+				continue;
+			blk_crypto_evict_key(q, sb->s_metadata_key);
+		}
+		kfree_sensitive(sb->s_metadata_key);
+		sb->s_metadata_key = NULL;
+	}
+}
+
+> +
+> +/**
+> + * fscrypt_metadata_crypt_bio() - Add metadata encryption context to bio.
+> + *
+> + * @bio: The bio to add the encryption context to
+> + * @fsblk: The block number within the filesystem at which this bio starts
+> + *	   reading/writing data.
+> + * @sb: The superblock of the filesystem
+> + * @gfp_mask: gfp_mask for bio_crypt_context allocation
+> + */
+
+It would be helpful to add an explanation of how this differs from
+fscrypt_set_bio_crypt_ctx(), and how filesystems should decide which one to
+call.  Also maybe one or both of them needs a better name?
+
+- Eric
