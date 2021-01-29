@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1513082CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A063082DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhA2BAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:00:23 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34897 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231325AbhA2BAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:00:19 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRfBH0Qxcz9sVF;
-        Fri, 29 Jan 2021 11:59:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611881976;
-        bh=VbodL5Yq9EQvAyiNtgEUuG5/4QZAni95fwV8Yi57A/I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PQ/Sy7VzagwS7tRYYvkce70yzNxGS6+fY5dyyI7PfzlPyfedlqmLI/oU2Rd9/GXKN
-         U56u4W7qtGL+MiyqJE6H7D/P7Eh48kYzqMLZfWahGLesA4Or1Tdsv6teMBZdzv49kA
-         7TC7VZHvxYNyeYl12ixUoV6wt6sRMS79Evpr2UqDwNtDeuhxuLq+XELQz1+HYRuTjX
-         8ifkZcQ2GR7Isgc16tcKQ6euX1TC9Ey2gG2aJQm3RZEH5erBYIEM5qHgW+K4myXmAE
-         grTJwiRxaaYghSW7BGRnkvyGfTP5TSerU5q2ml4peVrq7CZApXknwurVfmOIN0VVlS
-         OERFeS0JVRyew==
-Date:   Fri, 29 Jan 2021 11:59:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: linux-next: manual merge of the net-next tree with Linus' tree
-Message-ID: <20210129115933.281690e7@canb.auug.org.au>
+        id S231566AbhA2BFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:05:40 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11216 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA2BDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:03:52 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DRfDR6lLSzlCJB;
+        Fri, 29 Jan 2021 09:01:27 +0800 (CST)
+Received: from [10.40.166.221] (10.40.166.221) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 29 Jan 2021 09:02:50 +0800
+Message-ID: <60135EBA.5040803@hisilicon.com>
+Date:   Fri, 29 Jan 2021 09:02:50 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LCrl7gDJS.fsUFOumufyw5V";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v3 2/4] arm64: dts: correct vendor prefix hisi to hisilicon
+References: <20201208124641.1787-1-thunder.leizhen@huawei.com> <20201208124641.1787-3-thunder.leizhen@huawei.com> <CAK8P3a3xie1-rLzKY+Y3Z2VKEJkDqAco6b75Af6FgyhsnzorsA@mail.gmail.com> <6010B6DE.4060202@hisilicon.com> <CAK8P3a31po51NtRhuMsruy2nbqhjguyGP8ZcXwPAwwEiGtLBkg@mail.gmail.com>
+In-Reply-To: <CAK8P3a31po51NtRhuMsruy2nbqhjguyGP8ZcXwPAwwEiGtLBkg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.166.221]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LCrl7gDJS.fsUFOumufyw5V
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Arnd,
 
-Hi all,
+On 2021/1/28 22:08, Arnd Bergmann wrote:
+> On Wed, Jan 27, 2021 at 1:42 AM Wei Xu <xuwei5@hisilicon.com> wrote:
+>> On 2021/1/27 6:23, Arnd Bergmann wrote:
+>>> On Tue, Dec 8, 2020 at 1:46 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>>>
+>>>> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
+>>>> stated in "vendor-prefixes.yaml".
+>>>>
+>>>> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
+>>>> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> Cc: Chen Feng <puck.chen@hisilicon.com>
+>>>> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>>
+>>> I see this change in the pull request I got, but I'm a bit worried about the
+>>> incompatible binding change. Wouldn't the correct path forward be to
+>>> list both the correct and the incorrect properties, both in the dts file
+>>> and in the driver that interprets the properties?
+>>
+>> Thanks for the comment!
+>> The reset driver will look for "hisilicon" firstly and fall back to "hisi".
+>> And the DTS is shipped with the driver together.
+>> So I think there is no compatible issue here.
+>> Please let me know if missed anything. Thanks!
+> 
+> There are three things that can go wrong here, and this is only addressing
+> one of them:
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Thanks for the detailed explanation! 
 
-  drivers/net/can/dev.c
+> 
+> 1. Updating the kernel on a machine with a dtb provided by the firmware
+>   is a problem if the new driver can not handle the old properties. This
+>   is correctly handled by the driver's fallback as soon as both trees
+>   are merged.
 
-between commit:
+Agreed and the driver has been merged into the v5.11-rc1.
 
-  b552766c872f ("can: dev: prevent potential information leak in can_fill_i=
-nfo()")
+> 
+> 2. Updating the dtb while running an older kernel is now broken since
+>   the driver can no longer read the property. This is less critical, but
+>   it does seem easy enough to work around here by leaving both
+>   properties in place.
 
-from Linus' tree and commits:
+Yes, it is.
+But if leaving both in place, the dtbs_check will report following warning again:
+	'hisi,rst-syscon' does not match any of the regexes
 
-  3e77f70e7345 ("can: dev: move driver related infrastructure into separate=
- subdir")
-  0a042c6ec991 ("can: dev: move netlink related code into seperate file")
+That is why leizhen changed the dtb.
+Do you think it is OK to assume no one will use the new dtb with an older kernel?
 
-from the net-next tree.
+> 
+> 3. Bisecting through the git history across an incompatible change
+>   means you can run into broken commits. We try hard to avoid that
+>   if we are aware of a problem in advance. In this case it could be
+>   avoided by only merging the incompatible DT change in a following
+>   merge window after the driver change, or (better) by making it
+>   a backward-compatible change the same way as addressing 2.
 
-I fixed it up (I removed the file and added the following merge fix patch)
-and can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
+Yes, agreed.
+And The DT change pull request is sent after the driver has been merged into v5.11-rc1.
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 29 Jan 2021 11:57:21 +1100
-Subject: [PATCH] can: dev: fix for file move
+Really appreciate the detail you went to!
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/net/can/dev/netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best Regards,
+Wei
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 3ae884cdf677..867f6be31230 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -263,7 +263,7 @@ static int can_fill_info(struct sk_buff *skb, const str=
-uct net_device *dev)
- {
- 	struct can_priv *priv =3D netdev_priv(dev);
- 	struct can_ctrlmode cm =3D {.flags =3D priv->ctrlmode};
--	struct can_berr_counter bec;
-+	struct can_berr_counter bec =3D { };
- 	enum can_state state =3D priv->state;
-=20
- 	if (priv->do_get_state)
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LCrl7gDJS.fsUFOumufyw5V
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmATXfUACgkQAVBC80lX
-0GzcrQf+LKSClzC8tgkmpfajiRTSqZQDtzhh6in6gad/xvJRgJNiLHefH2n7JxSP
-cKIFp4wNI/HUNpawB/+qLdmq3Z9Ppx4VWBYnx7tcO4ToCjx8aOMP6TfEu/N9TcaW
-ZCc+vUvj0cSR/zklWJ6OzGtDhdBa6rVK6NmGa+b058FSbEdx/qRG4+zBqOUhLmW+
-x8qYJ845qctRCHRyMoScTS0AZveMToAQC9JO3o5ysyyW8+ZqWZRlVEow60BkVCRJ
-by522hCsUVw9u+S3jgXK7hGY8tZowDAInvuLVnfzK2lGbQ1vB1dcQbxNMq09VyMK
-H1iF+okFTy/ZlgRKDDm97K9gAvlNYg==
-=pZHh
------END PGP SIGNATURE-----
-
---Sig_/LCrl7gDJS.fsUFOumufyw5V--
+> 
+>          Arnd
+> .
+> 
