@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155AA308D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02986308D73
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbhA2T3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
+        id S232903AbhA2Tbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:31:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbhA2T3e (ORCPT
+        with ESMTP id S232727AbhA2Tbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:29:34 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C361C061573;
-        Fri, 29 Jan 2021 11:28:54 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id i20so9698940otl.7;
-        Fri, 29 Jan 2021 11:28:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TTlFa+FhQ9E3hhXfUpHEFEwCBTVYyl2tyI+bhrzBYYc=;
-        b=HFD5J2YGALukCCHDNdUuWUGonkc1xmVsI1d3GEijBb8667YTNlXUdOAG88IFOwVKwM
-         O6Yu1YojShf0ToL3HOpg7BzIaSuQT93GgaiAcmwXUD/xt6IDxmVTp65+9h7dvzaFAktN
-         cfiOlUNf8jKAM4t+v1grcMJGGAYiN3lmYLNhcXZ2Z6Py40ujQHWr2wdjSW6TX3VBqvI1
-         6i1OHd9husSAeIWsJxQ2jBQLTeVnDJ5T3/8hZSOLDH5amJHUpTEBUba9CZRBboNEPQjk
-         FPmSB6iyiKFPlBo9Q5uFm3JMrOr57NnEGYVekWikGXwddj783DGt/Tv/qs4Qc0R7+CT0
-         0sVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TTlFa+FhQ9E3hhXfUpHEFEwCBTVYyl2tyI+bhrzBYYc=;
-        b=Aw+mVaTZs3VYY42J34gQHTNKbefHYrVQUXMORDtY9piuzeb970wS4yDbCzuXhs/g4C
-         3Ha5pD5QOqGcCg/kuRjMUXHQVhyefLbhibLPoI7VvnfjpvlTfRAy5vdApzH2woMiTJZ4
-         W3XT03o3V5c4ClCsh39QoVQs44x2PuITg8R6eHLU2mGipxGq/qFWNUP9vUa2rZuC30eE
-         Icbx3TlO27JJcYNHqA7lculrcS6WOoRIGuBpsWKFBSYiSjZZKBNkE90A+UXe27eqMRBg
-         PXIdie2uwCoUDAPHoPxVR/BguzAQuG3dpR0tDcJ3qY5sHvZOYU/Ysh2zfyZsQQkOZezV
-         WGxA==
-X-Gm-Message-State: AOAM530mO0S1b9li1u0rc2KJrDjLfgBpfTQ4cyk4gbymMOiXYorhNskl
-        gAz4AukrGLtNUU92JodrwxtSge9nBcDFRC7F9/A=
-X-Google-Smtp-Source: ABdhPJxeJccHQSNbhg5zM7E4+pnL0FyDxpIvUiHsVHtDscx7vBeclhvpXx/FSZrPFKM7KT0j6hQkBi0B1zyn07NtQ3Y=
-X-Received: by 2002:a9d:784a:: with SMTP id c10mr4094218otm.132.1611948533511;
- Fri, 29 Jan 2021 11:28:53 -0800 (PST)
+        Fri, 29 Jan 2021 14:31:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385E6C061573;
+        Fri, 29 Jan 2021 11:31:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=G0ZiICELnT572thIosI7PE9Z9AIMFdeffhjU4wBEDBY=; b=OyXMh3h1KojvKpIaBonPsRaADj
+        U1WWm4Oe0hpYyzRABWpLKhPKZEgMcECjhaDNHpw4atnSSIQLAQxyzffI+xXw3Rw33flpjbLegX3CA
+        7Ew/NW2/dABBCR8pD9VQGZzvuMA8SVwdyqRdWoiSSbXE8ZLJnOA02GCJ8UCBELRCaa61EAKAHxayg
+        fQlQVP5Io49ywTs6zGMy4aCOEUlpA3dhrAkN3CeR+0bYimZnDQoBzBdGUNwgJ6kgbBpq6jlux6RBh
+        V6imSC1SuQDsX3eGheI9WqcJMHpdPxT1cnFuxdgm50qjeRqabAESbsKtYE/m38wmNx8cUEVjpv2Co
+        cn/ns9eQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l5ZTg-00AE7B-Da; Fri, 29 Jan 2021 19:30:49 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BC5D1981210; Fri, 29 Jan 2021 20:30:40 +0100 (CET)
+Date:   Fri, 29 Jan 2021 20:30:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/4] perf/core: Add support to exclude kernel mode
+ instruction tracing
+Message-ID: <20210129193040.GJ8912@worktop.programming.kicks-ass.net>
+References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
+ <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-References: <20210129120759.375725-1-colin.king@canonical.com>
-In-Reply-To: <20210129120759.375725-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 29 Jan 2021 14:28:42 -0500
-Message-ID: <CADnq5_O2MKy7jPc2o7u8H-VsDxweumxGHc7oBprg7ZyP_BMu2w@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amdgpu: Fix memory leak of object caps on error
- return paths
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Leo Liu <leo.liu@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 7:08 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently there are three error return paths that don't kfree object
-> caps.  Fix this by performing the allocation of caps after the checks
-> and error return paths to avoid the premature allocation and memory
-> leaking.
->
-> Addresses-Coverity: ("Resource leak")
-> Fixes: 555fc7fbb2a2 ("drm/amdgpu: add INFO ioctl support for querying video caps")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Sat, Jan 30, 2021 at 12:35:10AM +0530, Sai Prakash Ranjan wrote:
 
-Applied.  Thanks!
+> Here the idea is to protect such important information from all users
+> including root users since root privileges does not have to mean full
+> control over the kernel [1] and root compromise does not have to be
+> the end of the world.
 
-Alex
+And yet, your thing lacks:
 
+> +config EXCLUDE_KERNEL_HW_ITRACE
+> +	bool "Exclude kernel mode hardware assisted instruction tracing"
+> +	depends on PERF_EVENTS
+	depends on SECURITY_LOCKDOWN
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> index 84b666fcfaf6..730f4ac7487b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-> @@ -988,10 +988,6 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
->                 struct drm_amdgpu_info_video_caps *caps;
->                 int r;
->
-> -               caps = kzalloc(sizeof(*caps), GFP_KERNEL);
-> -               if (!caps)
-> -                       return -ENOMEM;
-> -
->                 switch (info->video_cap.type) {
->                 case AMDGPU_INFO_VIDEO_CAPS_DECODE:
->                         r = amdgpu_asic_query_video_codecs(adev, false, &codecs);
-> @@ -1009,6 +1005,11 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
->                                       info->video_cap.type);
->                         return -EINVAL;
->                 }
+or whatever the appropriate symbol is.
+
+> +	help
+> +	  Exclude kernel mode instruction tracing by hardware tracing
+> +	  family such as ARM Coresight ETM, Intel PT and so on.
 > +
-> +               caps = kzalloc(sizeof(*caps), GFP_KERNEL);
-> +               if (!caps)
-> +                       return -ENOMEM;
-> +
->                 for (i = 0; i < codecs->codec_count; i++) {
->                         int idx = codecs->codec_array[i].codec_type;
->
-> --
-> 2.29.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> +	  This option allows to disable kernel mode instruction tracing
+> +	  offered by hardware assisted tracing for all users(including root)
+> +	  especially for production systems where only userspace tracing might
+> +	  be preferred for security reasons.
+
+Also, colour me unconvinced, pretty much all kernel level PMU usage
+can be employed to side-channel / infer crypto keys, why focus on
+ITRACE over others?
