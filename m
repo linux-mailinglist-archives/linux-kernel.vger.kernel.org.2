@@ -2,356 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F27308470
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C394308475
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 05:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhA2Dwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:52:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhA2DwN (ORCPT
+        id S231803AbhA2EFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 23:05:36 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:22633 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231607AbhA2EFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:52:13 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDD6C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:51:32 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id b5so4219644vsh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:51:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jnk1h+Zm6n/okb5cHmLykkrJZohbNZPfoHPOBcykkQs=;
-        b=EPerR1sUvTgueO5i3ZL5veSEQxRiqidYCwlCtMXdymJZFv/4wOGX3bJ+YpBrykLm83
-         TiZ0aQR4xJdQokVBcc8zGsaUY2yHJk4HC12IIGvJ8NsAXE3Dn/mRER3oBgPrfewtGdVi
-         +yvqYhHusXB91BB6wRqLGam6ZYjGhlJDUyRNY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jnk1h+Zm6n/okb5cHmLykkrJZohbNZPfoHPOBcykkQs=;
-        b=ijUu3LjdIahpxzGFRKPhMdspl7S6qRn/SKvobqlHpXapNJT7oz9zHYyKpWiRkBcXAn
-         gSxcbxKVM9ihudViBGVuF+Dwv7zGrDn0I2AWPxkDLQgKs0T0E/xHjK/5URq8rRuSu7D8
-         XT7O9d/DhdX/12TjGQLiXvNBnx3eS2lAoeB48svleGKViC7mcts4yh20F9wLldtuLWEX
-         ZBKjDNC7znLyMjwFX9SgVbyvireN/dL01f0XohWspZrsL7dHRTUAaFL+egVjkVoh63Sh
-         ovlYfMMFHOVrG90A/4S1p7u2hbGP835Qn6V/xuwckgTDUfIG351C4+VAwYoNcil6IPU5
-         Sm2Q==
-X-Gm-Message-State: AOAM532h+sv5TBf9gcG8aDyns9lrGwkMzd4Brwgf2hmStkjitoLK+eqx
-        QqVNi0WsJbweWTVYFmykHj2HRe/OwWzxYRDvnOPfMg==
-X-Google-Smtp-Source: ABdhPJz1S0Q9ijxKCsprTFXXrokE0AtPeYZFD8kd0gdJkXUmfBjCwQ0j0zCQ3r/c4+iTeuCCbpUpE+NI5D+wNmlB0Iw=
-X-Received: by 2002:a67:8945:: with SMTP id l66mr1502828vsd.48.1611892291939;
- Thu, 28 Jan 2021 19:51:31 -0800 (PST)
+        Thu, 28 Jan 2021 23:05:34 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210129040449epoutp0287ab606f0b4fe89254275aea2973d42f~emDmTGPmY2662526625epoutp02i
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 04:04:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210129040449epoutp0287ab606f0b4fe89254275aea2973d42f~emDmTGPmY2662526625epoutp02i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611893089;
+        bh=DKdDmc2BwI95ik1uoUnV9yV1lcg8gJDJ3kpQd3Ye82E=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=INqLTBhuJ0UHOTLt3XndKzjJPONEIXCCMxxm8Llvp65XXP1IHFW3OxG67Z3YF32Bm
+         hqlsUNUNIv56MQ8/t+4/upBhU2bnZEQ1x+xOp540KmFdggQOWah1FZgGZ5Mo8LdjoU
+         xMmtp6GR3IL4GzC2g89qvA4zlDZq+BM4dACfSb/0=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210129040449epcas1p2e76c725fcad1256e5a910e7d5e8fe242~emDltbf9l1278112781epcas1p2n;
+        Fri, 29 Jan 2021 04:04:49 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DRkHz5JF4z4x9Q7; Fri, 29 Jan
+        2021 04:04:47 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4E.50.09582.F5983106; Fri, 29 Jan 2021 13:04:47 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210129040447epcas1p4531f0bf1ddebf0b469af87e85199cc43~emDj3MRa51322813228epcas1p4N;
+        Fri, 29 Jan 2021 04:04:47 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210129040447epsmtrp26f65cb3842acfce27ab2c88faa8dd138~emDj2NOOn0874108741epsmtrp2Z;
+        Fri, 29 Jan 2021 04:04:47 +0000 (GMT)
+X-AuditID: b6c32a37-8afff7000000256e-ac-6013895fa677
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1A.A8.13470.E5983106; Fri, 29 Jan 2021 13:04:46 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210129040446epsmtip290f8ecf54d30dfa0e34d7ed9a5b47543~emDjmFMm61343513435epsmtip2I;
+        Fri, 29 Jan 2021 04:04:46 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     hch@infradead.org, Johannes.Thumshirn@wdc.com,
+        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v4 1/2] bio: limit bio max size
+Date:   Fri, 29 Jan 2021 12:49:08 +0900
+Message-Id: <20210129034909.18785-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <1611314381-19517-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1611314381-19517-7-git-send-email-hsin-hsiung.wang@mediatek.com>
-In-Reply-To: <1611314381-19517-7-git-send-email-hsin-hsiung.wang@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 29 Jan 2021 11:51:20 +0800
-Message-ID: <CANMq1KC3rXfKx=4w2tLKRC2=VE8xfTGY47y3f9w_GiEAKvvUFw@mail.gmail.com>
-Subject: Re: [PATCH v5 6/8] regulator: mt6359: Add support for MT6359 regulator
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Fei Shao <fshao@chromium.org>, linux-rtc@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Wen Su <wen.su@mediatek.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Ran Bi <ran.bi@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Yuchen Huang <yuchen.huang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xbVRj33FtuC7F6V1COxDC8PMZQoF1XepRhZsaWq7JBID6HKV25Flxp
+        a2/rK3Ni2RjtBoOBoMBAgfCaYwt7hEdgs2xOJmMYOtAtgAQGYQYwVJCHiG0vRP77ft/3e+Q7
+        DwEu6if8BOlaI2PQKjUU4cW72rVdHK6weKeIe5uCUXnjVYDODZ0m0PETCxj6Ob8KQ6fGzR5o
+        1TqMoflRFnXcfx71t5UTyFaYhaGSS+U4Ghjp4aOu4Xs8NFpTgKPe7jkPVDG2Gy3X3QRodnGQ
+        j263FOLoQscSsduHLsia4dOtpUN8+lJ9GN1/x0Q3N1oIerbzHkHnXW4EtKPZnz5x/SSW4Pmu
+        Zlcao0xlDAGMVqVLTdeqY6jXkxR7FLIosSRc8iKSUwFaZQYTQ8XGJYTvS9c416ICPlJqTM5W
+        gpJlqciXdxl0JiMTkKZjjTEUo0/V6CVifQSrzGBNWnWESpfxkkQs3iFzMlM0abmrdkz/fegn
+        jbnzeCa48qwVeAoguRP++90ysAIvgYhsAfDXgW4+B+YAXKxd4HFgAcBVax6xIWlfKV8fdAD4
+        w2D9ut4B4PWz83wXiyBfgHnT9wnXwIcsweD80k23MU6OAWjvznZ7eZORcM32t1vBI4NhX9Gc
+        h6sWktHwy1EHzuVthQ9z63CuvwV2fzPOc9W4s591pQx3mUKyRwCzc8acA4ETxEL7rW2c1hs+
+        unWZz9V+0DHTQXD8kwBmZVcCDuQDWDNZi3EsKZxzOIDLCCe3wwttkVz7Odi6chZwwU/AmflT
+        HlyWEOZkizhKEOw5NoJvZE2eb113pKF9rc/tKCLfg22Vh/LB1tJN25Ru2qb0/9xvAd4Inmb0
+        bIaaYSV66eZ7bQbu1x0mbwHF039G2AAmADYABTjlI5wuF6WIhKnKTz9jDDqFwaRhWBuQOc+3
+        APd7SqVzfg+tUSGR7ZBKpWhnlDxKJqV8hYfEvytEpFppZA4zjJ4xbOgwgadfJoaumY6UhM6p
+        qn9jLTXHP16j41Oa4i2nc5IXAzPjfwqq7fRpTx87WjesqPpg3/KgBk3cWJ6UPhkpK/Ppjtqy
+        rWviTG9QSNtCmejx9upX3txbYA95xhFaUFzB3tYnFffUVRZ9XX1j8GIgaFU/NluUmF28NPPa
+        jPirvvfjE95KKfJT0ZT8ztu/RO0dfvDqFxP8NdmxgQfnE/nwYPDBlX+aUg83sP5TAb7vxAXl
+        1nr58/+Q5FpCzwTt6Uy29o7J979h/hxVWR/Zo0OMB+wfXmxriO2bigNm6RFcKkiKPFrXYGbv
+        /nhuccS8QqhWzMkjIxW+1/4av5uYXx8TnTeVMJT8sNBDGEjx2DSlJAw3sMr/ACm+i79mBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgkeLIzCtJLcpLzFFi42LZdlhJXjeuUzjBoHuulcWcVdsYLVbf7Wez
+        aG3/xmRxesIiJoueJ02sFn+77jFZfH1YbLH3lrbF5V1z2CwOTW5mspi+eQ6zxbX7Z9gtDt+7
+        ymLxcMlEZotzJz+xWsx77GDxa/lRRov3P66zW5zaMZnZYv3en2wOIh4Tm9+xe+ycdZfdY/MK
+        LY/LZ0s9Nq3qZPN4v+8qm0ffllWMHp83yXm0H+hmCuCM4rJJSc3JLEst0rdL4Mro/XuFqWCN
+        RsWq3q/MDYxbZboYOTkkBEwkdv+ew9LFyMUhJLCbUeLhuwvsEAkpieMn3rJ2MXIA2cIShw8X
+        Q9R8ZJSYs/I7I0gNm4CORN/bW2wgCRGB5UwSB36vZgVxmAVeM0p0PV7EAlIlLKAv8f/Qd7Cp
+        LAKqEhemfGIFsXkFrCUaH35mhtgmL/G0dzkzRFxQ4uTMJ2C9zEDx5q2zmScw8s1CkpqFJLWA
+        kWkVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZwJGlp7mDcvuqD3iFGJg7GQ4wSHMxK
+        Irxv5wglCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cCU
+        +PKUV5b4onvWWZmpkvEJ97clpZzgm/pJQfzwZ7XEXXIP393r0S9YbhPkWqDBlv7y6tZTO/W9
+        wrecumf5lOe7FuO0OXLHWG5JqLn7FK3M2L9p7aS17CGzd3OHzJRa+u/S1OZf18pMrYU3ht98
+        nt+3xbLq4+KcWac+KD5Qr8s8pSzKXPsj/uR5/fsBMd12Gr+P33KwntB2f9qm0NMrcoqr9r3J
+        N3/dIOkb1GS91+/0w8aisxrZD7MjVphUWeSsz55oe8amPfL87GtszX9LuR7JX+Ww2sdesvSO
+        ybduqz75zIrkqc+je/fejlE9f082d/mcxJMhuvefvd7h9E37UUmc0cE2HeNT3/ezht92iJZX
+        YinOSDTUYi4qTgQATNzi4hMDAAA=
+X-CMS-MailID: 20210129040447epcas1p4531f0bf1ddebf0b469af87e85199cc43
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210129040447epcas1p4531f0bf1ddebf0b469af87e85199cc43
+References: <CGME20210129040447epcas1p4531f0bf1ddebf0b469af87e85199cc43@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 7:27 PM Hsin-Hsiung Wang
-<hsin-hsiung.wang@mediatek.com> wrote:
->
-> From: Wen Su <wen.su@mediatek.com>
->
-> The MT6359 is a regulator found on boards based on MediaTek MT6779 and
-> probably other SoCs. It is a so called pmic and connects as a slave to
-> SoC using SPI, wrapped inside the pmic-wrapper.
->
-> Signed-off-by: Wen Su <wen.su@mediatek.com>
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
-> changes since v4:
-> - add enable time of ldo.
-> - use the device of mfd driver for the regulator_config.
-> - add the regulators_node support.
+bio size can grow up to 4GB when muli-page bvec is enabled.
+but sometimes it would lead to inefficient behaviors.
+in case of large chunk direct I/O, - 32MB chunk read in user space -
+all pages for 32MB would be merged to a bio structure if the pages
+physical addresses are contiguous. it makes some delay to submit
+until merge complete. bio max size should be limited to a proper size.
 
-This doesn't build at all, please at least compile test before sending
-new revisions.
+When 32MB chunk read with direct I/O option is coming from userspace,
+kernel behavior is below now. it's timeline.
 
-> ---
->  drivers/regulator/Kconfig                  |   9 +
->  drivers/regulator/Makefile                 |   1 +
->  drivers/regulator/mt6359-regulator.c       | 669 +++++++++++++++++++++
->  include/linux/regulator/mt6359-regulator.h |  58 ++
->  4 files changed, 737 insertions(+)
->  create mode 100644 drivers/regulator/mt6359-regulator.c
->  create mode 100644 include/linux/regulator/mt6359-regulator.h
->
-> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-> index 53fa84f4d1e1..3de7bb5be8ac 100644
-> --- a/drivers/regulator/Kconfig
-> +++ b/drivers/regulator/Kconfig
-> @@ -750,6 +750,15 @@ config REGULATOR_MT6358
->           This driver supports the control of different power rails of device
->           through regulator interface.
->
-> +config REGULATOR_MT6359
-> +       tristate "MediaTek MT6359 PMIC"
-> +       depends on MFD_MT6397
-> +       help
-> +         Say y here to select this option to enable the power regulator of
-> +         MediaTek MT6359 PMIC.
-> +         This driver supports the control of different power rails of device
-> +         through regulator interface.
-> +
->  config REGULATOR_MT6360
->         tristate "MT6360 SubPMIC Regulator"
->         depends on MFD_MT6360
-> diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-> index 680e539f6579..4f65eaead82d 100644
-> --- a/drivers/regulator/Makefile
-> +++ b/drivers/regulator/Makefile
-> @@ -91,6 +91,7 @@ obj-$(CONFIG_REGULATOR_MPQ7920) += mpq7920.o
->  obj-$(CONFIG_REGULATOR_MT6311) += mt6311-regulator.o
->  obj-$(CONFIG_REGULATOR_MT6323) += mt6323-regulator.o
->  obj-$(CONFIG_REGULATOR_MT6358) += mt6358-regulator.o
-> +obj-$(CONFIG_REGULATOR_MT6359) += mt6359-regulator.o
->  obj-$(CONFIG_REGULATOR_MT6360) += mt6360-regulator.o
->  obj-$(CONFIG_REGULATOR_MT6380) += mt6380-regulator.o
->  obj-$(CONFIG_REGULATOR_MT6397) += mt6397-regulator.o
-> diff --git a/drivers/regulator/mt6359-regulator.c b/drivers/regulator/mt6359-regulator.c
-> new file mode 100644
-> index 000000000000..fabc3f57f334
-> --- /dev/null
-> +++ b/drivers/regulator/mt6359-regulator.c
-> @@ -0,0 +1,669 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (c) 2020 MediaTek Inc.
-> +
-> +#include <linux/platform_device.h>
-> +#include <linux/mfd/mt6359/registers.h>
-> +#include <linux/mfd/mt6397/core.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/regulator/driver.h>
-> +#include <linux/regulator/machine.h>
-> +#include <linux/regulator/mt6359-regulator.h>
-> +#include <linux/regulator/of_regulator.h>
-> +
-> +#define MT6359_BUCK_MODE_AUTO          0
-> +#define MT6359_BUCK_MODE_FORCE_PWM     1
-> +#define MT6359_BUCK_MODE_NORMAL                0
-> +#define MT6359_BUCK_MODE_LP            2
-> +
-> +/*
-> + * MT6359 regulators' information
-> + *
-> + * @desc: standard fields of regulator description.
-> + * @status_reg: for query status of regulators.
-> + * @qi: Mask for query enable signal status of regulators.
-> + * @modeset_reg: for operating AUTO/PWM mode register.
-> + * @modeset_mask: MASK for operating modeset register.
-> + * @modeset_shift: SHIFT for operating modeset register.
-> + */
-> +struct mt6359_regulator_info {
-> +       struct regulator_desc desc;
-> +       u32 status_reg;
-> +       u32 qi;
-> +       u32 modeset_reg;
-> +       u32 modeset_mask;
-> +       u32 modeset_shift;
-> +       u32 lp_mode_reg;
-> +       u32 lp_mode_mask;
-> +       u32 lp_mode_shift;
-> +};
-> +
-> +#define MT6359_BUCK(match, _name, min, max, step, min_sel,     \
-> +       volt_ranges, _enable_reg, _status_reg,                  \
-> +       _vsel_reg, _vsel_mask,                                  \
-> +       _lp_mode_reg, _lp_mode_shift,                           \
-> +       _modeset_reg, _modeset_shift)                           \
-> +[MT6359_ID_##_name] = {                                                \
-> +       .desc = {                                               \
-> +               .name = #_name,                                 \
-> +               .of_match = of_match_ptr(match),                \
-> +               .regulators_node = of_match_ptr("regulators"),  \
-> +               .ops = &mt6359_volt_range_ops,                  \
-> +               .type = REGULATOR_VOLTAGE,                      \
-> +               .id = MT6359_ID_##_name,                        \
-> +               .owner = THIS_MODULE,                           \
-> +               .uV_step = (step),                              \
-> +               .linear_min_sel = (min_sel),                    \
-> +               .linear_min_sel = (min_sel),                    \
-> +               .n_voltages = ((max) - (min)) / (step) + 1,     \
-> +               .linear_min_sel = (min_sel),                    \
-> +               .n_voltages = ((max) - (min)) / (step) + 1,     \
-> +               .min_uV = (min),                                \
-> +               .linear_ranges = volt_ranges,                   \
-> +               .n_linear_ranges = ARRAY_SIZE(volt_ranges),     \
-> +               .vsel_reg = _vsel_reg,                          \
-> +               .vsel_mask = _vsel_mask,                        \
-> +               .enable_reg = _enable_reg,                      \
-> +               .enable_mask = BIT(0),                          \
-> +               .of_map_mode = mt6359_map_mode,                 \
-> +               .of_map_mode = mt6359_map_mode,                 \
-> +       },                                                      \
-> +       .status_reg = _status_reg,                              \
-> +       .qi = BIT(0),                                           \
-> +       .lp_mode_reg = _lp_mode_reg,                            \
-> +       .lp_mode_reg = _lp_mode_reg,                            \
-> +       .lp_mode_mask = BIT(_lp_mode_shift),                    \
-> +       .lp_mode_reg = _lp_mode_reg,                            \
+ | bio merge for 32MB. total 8,192 pages are merged.
+ | total elapsed time is over 2ms.
+ |------------------ ... ----------------------->|
+                                                 | 8,192 pages merged a bio.
+                                                 | at this time, first bio submit is done.
+                                                 | 1 bio is split to 32 read request and issue.
+                                                 |--------------->
+                                                  |--------------->
+                                                   |--------------->
+                                                              ......
+                                                                   |--------------->
+                                                                    |--------------->|
+                          total 19ms elapsed to complete 32MB read done from device. |
 
-Repeated 3 times.
+If bio max size is limited with 1MB, behavior is changed below.
 
-> +       .lp_mode_mask = BIT(_lp_mode_shift),                    \
+ | bio merge for 1MB. 256 pages are merged for each bio.
+ | total 32 bio will be made.
+ | total elapsed time is over 2ms. it's same.
+ | but, first bio submit timing is fast. about 100us.
+ |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+      | 256 pages merged a bio.
+      | at this time, first bio submit is done.
+      | and 1 read request is issued for 1 bio.
+      |--------------->
+           |--------------->
+                |--------------->
+                                      ......
+                                                 |--------------->
+                                                  |--------------->|
+        total 17ms elapsed to complete 32MB read done from device. |
 
-Repeated twice.
+As a result, read request issue timing is faster if bio max size is limited.
+Current kernel behavior with multipage bvec, super large bio can be created.
+And it lead to delay first I/O request issue.
 
-> +       .lp_mode_shift = _lp_mode_shift,                        \
-> +       .modeset_reg = _modeset_reg,                            \
-> +       .modeset_mask = BIT(_modeset_shift),                    \
-> +       .modeset_shift = _modeset_shift                         \
-> +}
-> +
-> +#define MT6359_LDO_LINEAR(match, _name, min, max, step, min_sel,\
-> +#define MT6359_LDO_LINEAR(match, _name, min, max, step, min_sel,\
+Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+---
+ block/bio.c            | 13 ++++++++++++-
+ include/linux/bio.h    |  2 +-
+ include/linux/blkdev.h |  3 +++
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-Repeated twice
+diff --git a/block/bio.c b/block/bio.c
+index 1f2cc1fbe283..c528e1f944c7 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -287,6 +287,17 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+ }
+ EXPORT_SYMBOL(bio_init);
+ 
++unsigned int bio_max_size(struct bio *bio)
++{
++	struct request_queue *q = bio->bi_disk->queue;
++
++	if (blk_queue_limit_bio_size(q))
++		return blk_queue_get_max_sectors(q, bio_op(bio))
++			<< SECTOR_SHIFT;
++
++	return UINT_MAX;
++}
++
+ /**
+  * bio_reset - reinitialize a bio
+  * @bio:	bio to reset
+@@ -877,7 +888,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+ 		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+ 
+ 		if (page_is_mergeable(bv, page, len, off, same_page)) {
+-			if (bio->bi_iter.bi_size > UINT_MAX - len) {
++			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+ 				*same_page = false;
+ 				return false;
+ 			}
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 1edda614f7ce..13b6f6562a5b 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+ 	if (bio->bi_vcnt >= bio->bi_max_vecs)
+ 		return true;
+ 
+-	if (bio->bi_iter.bi_size > UINT_MAX - len)
++	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+ 		return true;
+ 
+ 	return false;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index f94ee3089e01..3aeab9e7e97b 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -621,6 +621,7 @@ struct request_queue {
+ #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+ #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+ #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
++#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
+ 
+ #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+ 				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+@@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+ #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
+ #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
+ #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
++#define blk_queue_limit_bio_size(q)	\
++	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
+ 
+ extern void blk_set_pm_only(struct request_queue *q);
+ extern void blk_clear_pm_only(struct request_queue *q);
+-- 
+2.28.0
 
-> +       volt_ranges, _enable_reg, _status_reg,                  \
-> +       _vsel_reg, _vsel_mask)                                  \
-> +       _vsel_reg, _vsel_mask)                                  \
-> +[MT6359_ID_##_name] = {                                                \
-> +       .desc = {                                               \
-> +       .desc = {                                               \
-> +               .name = #_name,                                 \
-> +               .of_match = of_match_ptr(match),                \
-> +               .of_match = of_match_ptr(match),                \
-> +               .regulators_node = of_match_ptr("regulators"),  \
-> +               .ops = &mt6359_volt_range_ops,                  \
-> +               .type = REGULATOR_VOLTAGE,                      \
-> +               .id = MT6359_ID_##_name,                        \
-> +               .owner = THIS_MODULE,                           \
-> +               .owner = THIS_MODULE,                           \
-> +               .uV_step = (step),                              \
-> +               .linear_min_sel = (min_sel),                    \
-> +               .n_voltages = ((max) - (min)) / (step) + 1,     \
-> +               .min_uV = (min),                                \
-> +               .linear_ranges = volt_ranges,                   \
-> +               .n_linear_ranges = ARRAY_SIZE(volt_ranges),     \
-> +               .n_linear_ranges = ARRAY_SIZE(volt_ranges),     \
-> +               .vsel_reg = _vsel_reg,                          \
-> +               .n_linear_ranges = ARRAY_SIZE(volt_ranges),     \
-> +               .vsel_reg = _vsel_reg,                          \
-> +               .vsel_mask = _vsel_mask,                        \
-> +               .enable_reg = _enable_reg,                      \
-> +               .enable_mask = BIT(0),                          \
-> +       },                                                      \
-> +       .status_reg = _status_reg,                              \
-> +       .status_reg = _status_reg,                              \
-> +       .qi = BIT(0),                                           \
-> +       .status_reg = _status_reg,                              \
-> +       .qi = BIT(0),                                           \
-> +}
-> +
-> +#define MT6359_LDO(match, _name, _volt_table,                  \
-> +       _enable_reg, _enable_mask, _status_reg,                 \
-> +       _vsel_reg, _vsel_mask, _en_delay)                       \
-> +[MT6359_ID_##_name] = {                                                \
-> +[MT6359_ID_##_name] = {                                                \
-
-Repeated twice
-
-> +       .desc = {                                               \
-> +               .name = #_name,                                 \
-> +               .of_match = of_match_ptr(match),                \
-> +               .of_match = of_match_ptr(match),                \
-> +               .regulators_node = of_match_ptr("regulators"),  \
-> +               .ops = &mt6359_volt_table_ops,                  \
-> +               .type = REGULATOR_VOLTAGE,                      \
-> +               .id = MT6359_ID_##_name,                        \
-> +               .owner = THIS_MODULE,                           \
-> +               .n_voltages = ARRAY_SIZE(_volt_table),          \
-> +               .n_voltages = ARRAY_SIZE(_volt_table),          \
-> +               .volt_table = _volt_table,                      \
-> +               .n_voltages = ARRAY_SIZE(_volt_table),          \
-> +               .volt_table = _volt_table,                      \
-> +               .vsel_reg = _vsel_reg,                          \
-> +               .vsel_mask = _vsel_mask,                        \
-> +               .enable_reg = _enable_reg,                      \
-> +               .enable_mask = BIT(_enable_mask),               \
-> +               .enable_time = _en_delay,                       \
-> +       },                                                      \
-> +       .status_reg = _status_reg,                              \
-> +       .qi = BIT(0),                                           \
-> +}
-> +
-> +#define MT6359_REG_FIXED(match, _name, _enable_reg,    \
-> +       _status_reg, _fixed_volt)                       \
-> +[MT6359_ID_##_name] = {                                        \
-> +[MT6359_ID_##_name] = {                                        \
-> +       .desc = {                                       \
-> +               .name = #_name,                         \
-> +               .name = #_name,                         \
-> +               .of_match = of_match_ptr(match),        \
-> +               .regulators_node = of_match_ptr("regulators"),  \
-> +               .ops = &mt6359_volt_fixed_ops,          \
-> +               .type = REGULATOR_VOLTAGE,              \
-> +               .id = MT6359_ID_##_name,                \
-> +               .id = MT6359_ID_##_name,                \
-> +               .owner = THIS_MODULE,                   \
-> +               .n_voltages = 1,                        \
-> +               .enable_reg = _enable_reg,              \
-> +               .enable_mask = BIT(0),                  \
-> +               .fixed_uV = (_fixed_volt),              \
-> +       },                                              \
-> +       .status_reg = _status_reg,                      \
-> +       .status_reg = _status_reg,                      \
-> +       .qi = BIT(0),                                   \
-> +}
-> +
-> +static const struct linear_range mt_volt_range1[] = {
-> +       REGULATOR_LINEAR_RANGE(800000, 0, 0x70, 12500),
-> +};
-> +};
-> +
-> +static const struct linear_range mt_volt_range2[] = {
-> +       REGULATOR_LINEAR_RANGE(400000, 0, 0x7f, 6250),
-> +};
-> +
-> +static const struct linear_range mt_volt_range3[] = {
-> +       REGULATOR_LINEAR_RANGE(400000, 0, 0x70, 6250),
-> +};
-> +
-> +static const struct linear_range mt_volt_range4[] = {
-> +       REGULATOR_LINEAR_RANGE(800000, 0, 0x40, 12500),
-> +};
-> +
-> +static const struct linear_range mt_volt_range5[] = {
-> +static const struct linear_range mt_volt_range5[] = {
-
-This is repeated twice.
-
-> +       REGULATOR_LINEAR_RANGE(500000, 0, 0x3F, 50000),
-> +};
-> +
-> [snip]
