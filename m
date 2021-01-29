@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF2D309042
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A620309043
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhA2WpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S232605AbhA2WrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbhA2WoQ (ORCPT
+        with ESMTP id S231132AbhA2WrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:44:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9018FC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:43:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=RLjjVEupP+ggBlUVzmKIkCNdgVo0qLXK5FAaN/TgVGI=; b=0oKAzliKVXm11xqfTZWqXg/VOG
-        Z96dELldJKI/8/7RoLGSzcVclESOpBdRU7RTZKWxkLfliXzBNDoqLLT052OeJ+Wz3wnTLoJvz50w7
-        Pg5n9xhQ7jsDI28a84QBbkZKjmheh7BEB7ReEmaZzyi1edYO49vMjniHOx0ofDXAaZdepC8QLIml0
-        gq1UAHx1gB+vIrRfK0n2/Iwnon6fyB9/3n2SvG7P/o6eicsogd9pu9/xnqQsc+4v81ng5uAhRT8Dn
-        jXMYrnnfqrZFXepHYw1LfhStfLOJLW4HRymt2BgVN/IWm27i6s4/m7Z19JGAbUFkGvOSGB0k9J9YD
-        wYgpNa6w==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l5cUE-0004bO-23; Fri, 29 Jan 2021 22:43:30 +0000
-Subject: Re: [PATCH] lib: crc8: Pointer to data block should be const
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, arend@broadcom.com
-Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-References: <20210129164120.27604-1-rf@opensource.cirrus.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <eafaab98-9300-a155-c0ac-6fe2aa1cf3d6@infradead.org>
-Date:   Fri, 29 Jan 2021 14:43:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 29 Jan 2021 17:47:18 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4915C061573;
+        Fri, 29 Jan 2021 14:46:33 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id c12so10369977wrc.7;
+        Fri, 29 Jan 2021 14:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e+kYw5wu2PYjqFL+U98CVrn2rtPzopQguQ10OriQ15g=;
+        b=BuS70KQPyDyBsTR27sZMW4xb1tgHULYhnjZI7Bb6Q4BblLPLxVqdgYY8GCPaPZs1ZG
+         ccVf3BMR18LV1pGCMKZlxroV27NLzb98XaumIFbsplsWYrmC+Vqlkp51Q6pWARJeXQel
+         q5I+//maed2JjqayjUqRJZWetexDUsK0L/yeKese1zlVtDTAObr1N+DCi96H9LQaGjJ1
+         DdVOKWFCfUrcA/GY0elL0eTFd0oMTWaFzaXxeIq80Fx69zQ787KhNVw0uTPD87yBpRtQ
+         NptoBysrTAutfT9bcA5VD8jW8P6aeFdF6cmhtFHQXrkbbMVgZHSYjqIXaeTABq/7TkZO
+         c/yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e+kYw5wu2PYjqFL+U98CVrn2rtPzopQguQ10OriQ15g=;
+        b=frR3nleH2uO/nq6Vf/b48pU7LfWr2pCTaSWZ4PVgNIqFx7YN/FH9wxQSUMzEYIYfv/
+         v3nTM+IKAmKkNGgZpl0mT3VocHgtiALnnxlm2rOGEmSMKGr2Z7iP9Bd/6glx8isJvY26
+         XKMFdQT4Y7XFSwzchXDHz4T7JC/rT6FjpH85LIMCrs4uC0Xd9FgNuWh2CsIJ2B5OEKCi
+         gKGO/gqt51Xw4c/5Ez93ECHt0+bHFR9fuj+uI4TCbtmN+ZEjvPQ/zZya1FbWQAyEFi+D
+         Vrq3QFpfcd5pxIU05Ewy4Q8IMm1mY2csUxJuCfHxozb3uwySqv4ckYFGaOPZPVaNozDx
+         R1Og==
+X-Gm-Message-State: AOAM533/rV91Ki1j83zj9QM1DWMfEYaM4hoYHuQanwTWlIfbYpUDO9/C
+        BPaM5vVG8aG+0Z2rtxaEsnahaQ4aNnEz5+2pZJg=
+X-Google-Smtp-Source: ABdhPJxA6OGWrNE7utWJn9uxzTUEL5KMVJxh/BE7PWhRiEzgzB5p7I2dYaRGCa6Uak5O8+y2cfse3iN6dm7zmmYS+Vg=
+X-Received: by 2002:a5d:65ca:: with SMTP id e10mr6975718wrw.166.1611960392423;
+ Fri, 29 Jan 2021 14:46:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210129164120.27604-1-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-2-TheSven73@gmail.com>
+ <20210129140120.29ae5062@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210129140120.29ae5062@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 29 Jan 2021 17:46:21 -0500
+Message-ID: <CAGngYiUyA10XEi4m18CP4AH1YAc3p+3tdb2G36vKZ=9eDxdmGQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 8:41 AM, Richard Fitzgerald wrote:
-> crc8() does not change the data passed to it, so the pointer argument
-> should be declared const. This avoids callers that receive const data
-> having to cast it to a non-const pointer to call crc8().
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
->  include/linux/crc8.h | 2 +-
->  lib/crc8.c           | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+On Fri, Jan 29, 2021 at 5:01 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> You may need to rebase to see this:
+>
+> drivers/net/ethernet/microchip/lan743x_main.c:2123:41: warning: restricted __le32 degrades to integer
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-You need to Cc: someone to merge it, like Andrew Morton
-or whoever scripts/get_maintainer.pl tells you.
-
-Thanks.
--- 
-~Randy
-
+Good catch. The problem goes away with the next commit in the set.
+This is probably because I rebased to the little endian/big endian patch at
+the last minute. I'll fix it up in v2.
