@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3502630860E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2372E308610
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232209AbhA2Gw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
+        id S232234AbhA2Gwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbhA2GwY (ORCPT
+        with ESMTP id S232210AbhA2Gw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:52:24 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DA9C061574;
-        Thu, 28 Jan 2021 22:51:43 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id g10so7738869wrx.1;
-        Thu, 28 Jan 2021 22:51:43 -0800 (PST)
+        Fri, 29 Jan 2021 01:52:26 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCCBC06174A;
+        Thu, 28 Jan 2021 22:51:46 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id q7so7693222wre.13;
+        Thu, 28 Jan 2021 22:51:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=/LBcU80K6cUJRkfMZX4P42tI8HDwdViTAGmLyJsVozY=;
-        b=LIg1qOAd1DbXlN2H3kuO0mmCBSqiZ67+kff6yZiAK+Thlv7cpxxt+Y4w5riibMERUL
-         ZZrcH5ntjPXlSiWEnr3XeZMR5fIrwprJlei1OANh/bTWk/ApoEuc7BTcmtzUCZzFc+9+
-         z+Q+KMTjuCWSdtkRptS7VpOav1bYynFIZLBixK3x/0lrk4gEFzfjmA+1TmiUrxPfGily
-         bqo7DzSAxIyifaj05CyuuiZ18oCchevFp32jthtYbtF06IjGo4CLpoYW4HCWt/edaVxw
-         bR8jRGJohxgHyKtDxGzAXken+lWd3H2UgF/rYL8lIlFkHs1YZRCU/gyfeDI923qh2dPp
-         CiHg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=slrEcS4a9ViM3/EhojYQnDYLHNridO9O3Av2lfzzgZk=;
+        b=MWqBJ4L8ME/baSgjmqjvV2y7ks1cjglqfwf3iP3eOEuCR+kBuOBSR3PthXYZD5Nrev
+         34wvNGLlza4nocai6q26PNT1Tu759jrYdmuVprLow5Cjg/UFwuSc3SOmDDb3KZY1efS+
+         Ex9KOi4v62ZWkE6XFYEuWDDwnJHqxNwTUiNcbNEn+B/9Xn8sYSCbp12fREPsNu593FE0
+         z28Zyt/RJqHLFZJ0BZyrAYP0WPTe2T3mteE+5mUFalMh4wGBkNAsIkW0TNnWWJOWNccg
+         z1PS+wMTjzI7W9ygpAjK1xSOzXv7dy+vHd/wahduCm+Ke2TmJPbZtBCKnBT2zHi7mlHH
+         gM3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/LBcU80K6cUJRkfMZX4P42tI8HDwdViTAGmLyJsVozY=;
-        b=VvFO2AbOyTloM2jWIUPY/47mA/cgzX7GX65jJ64G9vG+2bjAwwvjfQ37uWUxXyGIYJ
-         qM1bnpJYrV48Rb8sCRKYdl7lBZCnzeAWmyLfwkS5a9Zw61HfXtY+UlmI66YtbQFln4PJ
-         vw+psd/oKhnRyJlmcdK+5KzILvM+Wx7g8eV6vNAFNJ1URD3Jrz5/WiikCgmWb+a7/xwj
-         boOdQkaTZsMUhMszKj0wQaDMJt5fojfI/r71OjQtUKXxXZ1Ikn+L3h1W5vPOgLKooSJa
-         PBELEfNKdJlpMfhLsbU3OEDAOxVx7tKKjIQbl194JPvJx3dISxguPIV7t/55hrU15hpF
-         xkzA==
-X-Gm-Message-State: AOAM531ozaLzs6eecFxg9osypegbGECkp2tk4qCf8LESvW3GquciSPlK
-        9VuBC1h3OY7BflsEOzXMiYI=
-X-Google-Smtp-Source: ABdhPJzQPQhHtxZspEQvTWw43z80nenAty8qZY0wOnoGwEdtkh52kqTk357K9cdhep6o8BQK/y4wzQ==
-X-Received: by 2002:adf:f2d1:: with SMTP id d17mr2546333wrp.110.1611903102351;
-        Thu, 28 Jan 2021 22:51:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=slrEcS4a9ViM3/EhojYQnDYLHNridO9O3Av2lfzzgZk=;
+        b=nneFC1rbakkjfdQrAUvc4z7ASbAt0r8bJ8eE2lJwGwjHAuF21S3BAfBKwMW4LT2YHk
+         XCiUAoQYqmLMlq5JzDE8a7iZLGDxOuoggPI8ZRgvtNPRJLskuAMuM6xVCMkb14gbeFJ3
+         bsyZsoEf/a/nt5VqSZh2lxeI2SFrfC3D08be+Cc+s/6FfZ5T1M1XWu7+04sfv7/YoSXv
+         9bfa4zFNZKQvPibtdjgn0EL8Bp3OGORPD98yxvMLodMxm0JDmdsyNxAZ39zHhBnvD5Wr
+         0BzbnlGgeD3BVv0fctZZP1XJN88fnxAsgSU7O8rY4jksE8FFxJzuqjkOiFQA4kA6JwnN
+         4Jyg==
+X-Gm-Message-State: AOAM533bjfsCkmaUJ3vKniRdZBkUcxlt+0bXzz0bOCbu19zDqI5rcJAN
+        UCmMYje5iOkDVsEIEXdY6O0=
+X-Google-Smtp-Source: ABdhPJwkqX6JTwQ/Vh7ywI/tR4QczyXk9/dyQD1TALk/eWfPvmSPu75LpDOtsf3f2QN0XetHz7z/jg==
+X-Received: by 2002:a5d:6691:: with SMTP id l17mr2783563wru.372.1611903104739;
+        Thu, 28 Jan 2021 22:51:44 -0800 (PST)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id b7sm11501236wrs.50.2021.01.28.22.51.39
+        by smtp.gmail.com with ESMTPSA id b7sm11501236wrs.50.2021.01.28.22.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 22:51:41 -0800 (PST)
+        Thu, 28 Jan 2021 22:51:44 -0800 (PST)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -54,49 +55,39 @@ To:     Rob Herring <robh+dt@kernel.org>,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>,
         Dongjin Kim <tobetter@gmail.com>
-Subject: [PATCH 0/5] arm64: dts: meson: add support for ODROID-HC4
-Date:   Fri, 29 Jan 2021 06:51:32 +0000
-Message-Id: <20210129065137.5473-1-christianshewitt@gmail.com>
+Subject: [PATCH 1/5] dt-bindings: arm: amlogic: sort SM1 bindings
+Date:   Fri, 29 Jan 2021 06:51:33 +0000
+Message-Id: <20210129065137.5473-2-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210129065137.5473-1-christianshewitt@gmail.com>
+References: <20210129065137.5473-1-christianshewitt@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series fixes minor sort-order issues in the Amlogic bindings yaml and
-dtb Makefile, then converts the existing ODROID-C2 dts into dtsi so we can
-support its new sister product the ODROID-HC4.
+Sort the bindings before adding new SM1 devices.
 
-I've also given the devices different audio card names. This is partly
-cosmetic, but also because HC4 is HDMI-only while C4 can be used with
-other i2c audio devices via an expansion connector so users may want to
-use different alsa configs.
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/amlogic.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Patches to support the spifc chip are still being upstreamed [0] so this
-will be addressed in a follow up. A WIP patch for the dts change can be
-found in my amlogic-5.11.y dev branch [1].
-
-For reference, here's dmesg from LibreELEC on 5.11-rc5 [2].
-
-[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20201220224314.2659-1-andreas@rammhold.de/
-[1] https://github.com/chewitt/linux/commits/amlogic-5.11.y
-[2] http://ix.io/2NCi
-
-Christian Hewitt (5):
-  dt-bindings: arm: amlogic: sort SM1 bindings
-  arm64: dts: meson: sort Amlogic dtb Makefile
-  arm64: dts: meson: convert meson-sm1-odroid-c4 to dtsi
-  dt-bindings: arm: amlogic: add ODROID-HC4 bindings
-  arm64: dts: meson: add initial device-tree for ODROID-HC4
-
- .../devicetree/bindings/arm/amlogic.yaml      |   5 +-
- arch/arm64/boot/dts/amlogic/Makefile          |   3 +-
- .../boot/dts/amlogic/meson-sm1-odroid-c4.dts  | 427 +----------------
- .../boot/dts/amlogic/meson-sm1-odroid-hc4.dts |  96 ++++
- .../boot/dts/amlogic/meson-sm1-odroid.dtsi    | 441 ++++++++++++++++++
- 5 files changed, 543 insertions(+), 429 deletions(-)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
-
+diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
+index 6bef60ddda64..b21ba8ba23dd 100644
+--- a/Documentation/devicetree/bindings/arm/amlogic.yaml
++++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
+@@ -164,9 +164,9 @@ properties:
+       - description: Boards with the Amlogic Meson SM1 S905X3/D3/Y3 SoC
+         items:
+           - enum:
+-              - seirobotics,sei610
+-              - khadas,vim3l
+               - hardkernel,odroid-c4
++              - khadas,vim3l
++              - seirobotics,sei610
+           - const: amlogic,sm1
+ 
+       - description: Boards with the Amlogic Meson A1 A113L SoC
 -- 
 2.17.1
 
