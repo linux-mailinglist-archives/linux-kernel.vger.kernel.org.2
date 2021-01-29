@@ -2,836 +2,485 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E1F308443
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAE9308444
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhA2Dej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:34:39 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:41289 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229757AbhA2Def (ORCPT
+        id S231703AbhA2DgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231224AbhA2DgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:34:35 -0500
-X-AuditID: 0a580157-f21ff7000005df43-dc-60137c8dff8e
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 66.51.57155.D8C73106; Fri, 29 Jan 2021 11:10:05 +0800 (HKT)
-Received: from aili-OptiPlex-7020 (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 29 Jan
- 2021 11:33:39 +0800
-Date:   Fri, 29 Jan 2021 11:33:34 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     <x86@kernel.org>, <naoya.horiguchi@nec.com>,
-        <linux-kernel@vger.kernel.org>, <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH] x86/fault: Send SIGBUS to user process always for
- hwpoison page access.
-Message-ID: <20210129113334.344377ac.yaoaili@kingsoft.com>
-In-Reply-To: <20210128174352.GA33283@agluck-desk2.amr.corp.intel.com>
-References: <20210128194326.71895e92.yaoaili@kingsoft.com>
-        <20210128174352.GA33283@agluck-desk2.amr.corp.intel.com>
-Organization: Kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 28 Jan 2021 22:36:16 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66D9C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:35:20 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id a8so10536077lfi.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:35:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=E+fyB3jemzqc2Klqmp10DJel7sV4sj7Wt+Uyo3A1uHg=;
+        b=fKEDJFur1QfoKaHr2zq4VPYXh1bzqaFVRzxWG22KdrpSpX5+7QSdwLwtdfBYdVM7yS
+         ScoIRE+MF8kA90LmbvCjzT2B9dKJkKT1omC3+5MAVTjo1JAPDJ7Y1T3aj+8krHF2jRgE
+         Mtu3ErHS4mAYQjAmWpW6eh0qFp8cB/628jZr8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=E+fyB3jemzqc2Klqmp10DJel7sV4sj7Wt+Uyo3A1uHg=;
+        b=eRNTj0ONTgXCPjLAVoxGJDIr3uB51Gxo83d9qesuaxs+wZWarQMgcEVRjq4SzYs4r+
+         w9wKF7+hUCQKUu+fz0d7PCGQBraNd7w/qEzBl5RngN8IHR50+ji5kx4QyeqFfHk+Khjd
+         WBBS9nbkS3gp2xyHfo+TOvK0miMCQxYmAWWDDL0YW2XVtSZAJ1R5dwyfzP2EZ5kSP2vN
+         Kjy/BI+eNLK0O6GSaEUlutOgWUIIt3IuiKy8zsx+SyvJhDmNWu1grh9WHtvKbE3yTrZJ
+         T7Yvbb5HTevMksqsY2iyXR5o9lTmICsKW9cIS3fC2Y/4SYV4kvkyVLtiEQy8g2p68i6I
+         flzA==
+X-Gm-Message-State: AOAM533YM0Lfjk1ivCS1JeaK41pc1lytjemKW1OexWPoAW8Wnmtfrqfa
+        WYBv0Ld8k+UQ86BWNsyMX3B2cLjYFKxcytXJA/yTWQ==
+X-Google-Smtp-Source: ABdhPJyCDscoWvIP9e9KvcUAOFxv6g+AqDZQFwny0M3pCSZmzT+OC3RYBsefAd4yTA4xQvTd7wCQErZ1aq6qXjw8OyY=
+X-Received: by 2002:a05:6512:2251:: with SMTP id i17mr1018389lfu.566.1611891318779;
+ Thu, 28 Jan 2021 19:35:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/EexqPCuWxTsNhVXLba=9wVX"
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkkeLIzCtJLcpLzFFi42LhimBU0O2tEU4wOLqSz+LyrjlsFhcbDzBa
-        vLlwj8Xix4bHrA4sHov3vGTy2LSqk83jxdWNLB6fN8kFsERx2aSk5mSWpRbp2yVwZVz78pil
-        YO0KxoqXy3oYGxgPNDB2MXJySAiYSDw58ZC1i5GLQ0hgOpPEkR8/WUASQgIvGCX+TjIDsVkE
-        VCV+nD7NDGKzAdm77s1iBbFFBNQkLi1+ABZnFsiW6Ll/nAnEFhaIkzjRdw+shlfASuLstd1g
-        yzgFXCUer78ENb9U4vHtRUBxDg5+ATGJVw3GEPfYSzz/e5YZolVQ4uTMJywQ410lmg6tZYJo
-        VZQ4vOQXO0S9ksSR7hlsEHasxLJ5r1gnMArNQtI+C0k7hK0jcWLVMWYIW15i+9s5QDYHkC0t
-        sfwfB0QYyJx1kR1VCYhtKbF7xyTmBYwcqxhZinPTDTcxQmIofAfjvKaPeocYmTgYDzGqAFU+
-        2rD6AqMUS15+XqqSCO/bOUIJQrwpiZVVqUX58UWlOanFhxilOViUxHnFHPkShATSE0tSs1NT
-        C1KLYLJMHJxSDUwN72ac2H+m9q22qXOfsv7VY7fM9yp7s9omdSqUqB9dwXtOM0NAcH9Rkd3H
-        hsVfv0ilVv/5c+j7qRXmFaEpRgfXtM8NF5UV+nViYfKWzeenyF78UmIT67Vt/ZrXQklrtUQq
-        liacvHvZYqHCyyyrBLvSlyt+vf3IvsZQQJ15pWjqHWOhKUv6dj9Yq3X5vd+yF2FyLB2CEzL4
-        5Je2PZl58cr35qN3Vj2WO/Nf/bHDhcVLlgVcuCfyd+Gk81ZWTj8bX/u8V+JzCEn7aca3f9qk
-        L3qLCy9t3Zv4b5POewnVvAM/l2yecTPje/uedZqX3iyO7313w8bt+at7N7a3r9CYUiBiZrc0
-        wlx+t5Gdp6fxK81Xc5RYijMSDbWYi4oTAUSPV18cAwAA
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Thu, 28 Jan 2021 19:35:07 -0800
+Message-ID: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+Subject: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     kernel-team <kernel-team@cloudflare.com>
+Cc:     Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/EexqPCuWxTsNhVXLba=9wVX
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hello,
 
-On Thu, 28 Jan 2021 09:43:52 -0800
-"Luck, Tony" <tony.luck@intel.com> wrote:
+We've noticed the following regression in Linux 5.10 branch:
 
-> On Thu, Jan 28, 2021 at 07:43:26PM +0800, Aili Yao wrote:
-> > when one page is already hwpoisoned by AO action, process may not be
-> > killed, the process mapping this page may make a syscall include this
-> > page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
-> > mode it may be fixed by fixup_exception, current code will just return
-> > error code to user process.  
-> 
-> Shouldn't the AO action that poisoned the page have also unmapped it?
+[  128.367231][    C0]
+==================================================================
+[  128.368523][    C0] BUG: KASAN: stack-out-of-bounds in
+unwind_next_frame (arch/x86/kernel/unwind_orc.c:371
+arch/x86/kernel/unwind_orc.c:544)
+[  128.369744][    C0] Read of size 8 at addr ffff88802fceede0 by task
+kworker/u2:2/591
+[  128.370916][    C0]
+[  128.371269][    C0] CPU: 0 PID: 591 Comm: kworker/u2:2 Not tainted
+5.10.11-cloudflare-kasan-2021.1.15 #1
+[  128.372626][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX,
+1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+[  128.374346][    C0] Workqueue: writeback wb_workfn (flush-254:0)
+[  128.375275][    C0] Call Trace:
+[  128.375763][    C0]  <IRQ>
+[  128.376221][    C0]  dump_stack+0x7d/0xa3
+[  128.376843][    C0]  print_address_description.constprop.0+0x1c/0x210
+[  128.377827][    C0]  ? _raw_spin_lock_irqsave
+(arch/x86/include/asm/atomic.h:202
+include/asm-generic/atomic-instrumented.h:707
+include/asm-generic/qspinlock.h:82 include/linux/spinlock.h:195
+include/linux/spinlock_api_smp.h:119 kernel/locking/spinlock.c:159)
+[  128.378624][    C0]  ? _raw_write_unlock_bh (kernel/locking/spinlock.c:158)
+[  128.379389][    C0]  ? unwind_next_frame (arch/x86/kernel/unwind_orc.c:444)
+[  128.380177][    C0]  ? unwind_next_frame
+(arch/x86/kernel/unwind_orc.c:371 arch/x86/kernel/unwind_orc.c:544)
+[  128.380954][    C0]  ? unwind_next_frame
+(arch/x86/kernel/unwind_orc.c:371 arch/x86/kernel/unwind_orc.c:544)
+[  128.381736][    C0]  kasan_report.cold+0x1f/0x37
+[  128.382438][    C0]  ? unwind_next_frame
+(arch/x86/kernel/unwind_orc.c:371 arch/x86/kernel/unwind_orc.c:544)
+[  128.383192][    C0]  unwind_next_frame+0x1df5/0x2650
+[  128.383954][    C0]  ? asm_common_interrupt
+(arch/x86/include/asm/idtentry.h:622)
+[  128.384726][    C0]  ? get_stack_info_noinstr
+(arch/x86/kernel/dumpstack_64.c:157)
+[  128.385530][    C0]  ? glue_xts_req_128bit+0x110/0x6f0 glue_helper
+[  128.386509][    C0]  ? deref_stack_reg (arch/x86/kernel/unwind_orc.c:418)
+[  128.387267][    C0]  ? is_module_text_address (kernel/module.c:4566
+kernel/module.c:4550)
+[  128.388077][    C0]  ? glue_xts_req_128bit+0x110/0x6f0 glue_helper
+[  128.389048][    C0]  ? kernel_text_address.part.0 (kernel/extable.c:145)
+[  128.389901][    C0]  ? glue_xts_req_128bit+0x110/0x6f0 glue_helper
+[  128.390865][    C0]  ? stack_trace_save (kernel/stacktrace.c:82)
+[  128.391550][    C0]  arch_stack_walk+0x8d/0xf0
+[  128.392216][    C0]  ? kfree (mm/slub.c:3142 mm/slub.c:4124)
+[  128.392807][    C0]  stack_trace_save+0x96/0xd0
+[  128.393535][    C0]  ? create_prof_cpu_mask (kernel/stacktrace.c:113)
+[  128.394320][    C0]  ? blk_update_request (block/blk-core.c:264
+block/blk-core.c:1468)
+[  128.395113][    C0]  ? asm_call_irq_on_stack (arch/x86/entry/entry_64.S:796)
+[  128.395887][    C0]  ? do_softirq_own_stack
+(arch/x86/include/asm/irq_stack.h:27
+arch/x86/include/asm/irq_stack.h:77 arch/x86/kernel/irq_64.c:77)
+[  128.396678][    C0]  ? irq_exit_rcu (kernel/softirq.c:393
+kernel/softirq.c:423 kernel/softirq.c:435)
+[  128.397349][    C0]  ? common_interrupt (arch/x86/kernel/irq.c:239)
+[  128.398086][    C0]  ? asm_common_interrupt
+(arch/x86/include/asm/idtentry.h:622)
+[  128.398886][    C0]  ? get_page_from_freelist (mm/page_alloc.c:3480
+mm/page_alloc.c:3904)
+[  128.399759][    C0]  kasan_save_stack+0x20/0x50
+[  128.400453][    C0]  ? kasan_save_stack (mm/kasan/common.c:48)
+[  128.401175][    C0]  ? kasan_set_track (mm/kasan/common.c:56)
+[  128.401881][    C0]  ? kasan_set_free_info (mm/kasan/generic.c:360)
+[  128.402646][    C0]  ? __kasan_slab_free (mm/kasan/common.c:283
+mm/kasan/common.c:424)
+[  128.403375][    C0]  ? slab_free_freelist_hook (mm/slub.c:1577)
+[  128.404199][    C0]  ? kfree (mm/slub.c:3142 mm/slub.c:4124)
+[  128.404835][    C0]  ? nvme_pci_complete_rq+0x105/0x350 nvme
+[  128.405765][    C0]  ? blk_done_softirq (include/linux/list.h:282
+block/blk-mq.c:581)
+[  128.406552][    C0]  ? __do_softirq
+(arch/x86/include/asm/jump_label.h:25 include/linux/jump_label.h:200
+include/trace/events/irq.h:142 kernel/softirq.c:299)
+[  128.407272][    C0]  ? asm_call_irq_on_stack (arch/x86/entry/entry_64.S:796)
+[  128.408087][    C0]  ? do_softirq_own_stack
+(arch/x86/include/asm/irq_stack.h:27
+arch/x86/include/asm/irq_stack.h:77 arch/x86/kernel/irq_64.c:77)
+[  128.408878][    C0]  ? irq_exit_rcu (kernel/softirq.c:393
+kernel/softirq.c:423 kernel/softirq.c:435)
+[  128.409602][    C0]  ? common_interrupt (arch/x86/kernel/irq.c:239)
+[  128.410366][    C0]  ? asm_common_interrupt
+(arch/x86/include/asm/idtentry.h:622)
+[  128.411184][    C0]  ? skcipher_walk_next (crypto/skcipher.c:322
+crypto/skcipher.c:384)
+[  128.412009][    C0]  ? skcipher_walk_virt (crypto/skcipher.c:487)
+[  128.412811][    C0]  ? glue_xts_req_128bit+0x110/0x6f0 glue_helper
+[  128.413792][    C0]  ? asm_common_interrupt
+(arch/x86/include/asm/idtentry.h:622)
+[  128.414562][    C0]  ? kcryptd_crypt_write_convert+0x3a2/0xa10 dm_crypt
+[  128.415591][    C0]  ? crypt_map+0x5c1/0xc70 dm_crypt
+[  128.416389][    C0]  ? __map_bio.isra.0+0x109/0x450 dm_mod
+[  128.417275][    C0]  ? __split_and_process_non_flush+0x728/0xd10 dm_mod
+[  128.418293][    C0]  ? dm_submit_bio+0x4f1/0xec0 dm_mod
+[  128.419068][    C0]  ? submit_bio_noacct (block/blk-core.c:934
+block/blk-core.c:982 block/blk-core.c:1061)
+[  128.419806][    C0]  ? submit_bio (block/blk-core.c:1079)
+[  128.420458][    C0]  ? _raw_spin_lock_irqsave
+(arch/x86/include/asm/atomic.h:202
+include/asm-generic/atomic-instrumented.h:707
+include/asm-generic/qspinlock.h:82 include/linux/spinlock.h:195
+include/linux/spinlock_api_smp.h:119 kernel/locking/spinlock.c:159)
+[  128.421244][    C0]  ? _raw_write_unlock_bh (kernel/locking/spinlock.c:158)
+[  128.422015][    C0]  ? ret_from_fork (arch/x86/entry/entry_64.S:302)
+[  128.422696][    C0]  ? kmem_cache_free (mm/slub.c:3142 mm/slub.c:3158)
+[  128.423427][    C0]  ? memset (mm/kasan/common.c:84)
+[  128.424000][    C0]  ? dma_pool_free (mm/dmapool.c:405)
+[  128.424698][    C0]  ? slab_free_freelist_hook (mm/slub.c:1577)
+[  128.425518][    C0]  ? dma_pool_create (mm/dmapool.c:405)
+[  128.426234][    C0]  ? kmem_cache_free (mm/slub.c:3142 mm/slub.c:3158)
+[  128.426923][    C0]  ? raise_softirq_irqoff
+(arch/x86/include/asm/preempt.h:26 kernel/softirq.c:469)
+[  128.427691][    C0]  kasan_set_track+0x1c/0x30
+[  128.428366][    C0]  kasan_set_free_info+0x1b/0x30
+[  128.429113][    C0]  __kasan_slab_free+0x110/0x150
+[  128.429838][    C0]  slab_free_freelist_hook+0x66/0x120
+[  128.430628][    C0]  kfree+0xbf/0x4d0
+[  128.431192][    C0]  ? nvme_pci_complete_rq+0x105/0x350 nvme
+[  128.432107][    C0]  ? nvme_unmap_data+0x349/0x440 nvme
+[  128.432882][    C0]  nvme_pci_complete_rq+0x105/0x350 nvme
+[  128.433750][    C0]  blk_done_softirq+0x2ff/0x590
+[  128.434441][    C0]  ? blk_mq_stop_hw_queue (block/blk-mq.c:573)
+[  128.435161][    C0]  ? _raw_spin_lock_bh (kernel/locking/spinlock.c:150)
+[  128.435894][    C0]  ? _raw_spin_lock_bh (kernel/locking/spinlock.c:150)
+[  128.436582][    C0]  __do_softirq+0x1a0/0x667
+[  128.437218][    C0]  asm_call_irq_on_stack+0x12/0x20
+[  128.437975][    C0]  </IRQ>
+[  128.438397][    C0]  do_softirq_own_stack+0x37/0x40
+[  128.439120][    C0]  irq_exit_rcu+0x110/0x1b0
+[  128.439807][    C0]  common_interrupt+0x74/0x120
+[  128.440545][    C0]  asm_common_interrupt+0x1e/0x40
+[  128.441287][    C0] RIP: 0010:skcipher_walk_next
+(crypto/skcipher.c:322 crypto/skcipher.c:384)
+[  128.442126][    C0] Code: 85 dd 10 00 00 49 8d 7c 24 08 49 89 14 24
+48 b9 00 00 00 00 00 fc ff df 41 81 e5 ff 0f 00 00 48 89 fe 48 c1 ee
+03 80 3c 0e 00 <0f> 85 80 10 00 00 48 89 c6 4d 89 6c 24 08 48 bc
+All code
+========
+   0: 85 dd                test   %ebx,%ebp
+   2: 10 00                adc    %al,(%rax)
+   4: 00 49 8d              add    %cl,-0x73(%rcx)
+   7: 7c 24                jl     0x2d
+   9: 08 49 89              or     %cl,-0x77(%rcx)
+   c: 14 24                adc    $0x24,%al
+   e: 48 b9 00 00 00 00 00 movabs $0xdffffc0000000000,%rcx
+  15: fc ff df
+  18: 41 81 e5 ff 0f 00 00 and    $0xfff,%r13d
+  1f: 48 89 fe              mov    %rdi,%rsi
+  22: 48 c1 ee 03          shr    $0x3,%rsi
+  26: 80 3c 0e 00          cmpb   $0x0,(%rsi,%rcx,1)
+  2a:* 0f 85 80 10 00 00    jne    0x10b0 <-- trapping instruction
+  30: 48 89 c6              mov    %rax,%rsi
+  33: 4d 89 6c 24 08        mov    %r13,0x8(%r12)
+  38: 48                    rex.W
+  39: bc                    .byte 0xbc
 
-Yes, The page has been unmapped in the code mm/rmap.c:
+Code starting with the faulting instruction
+===========================================
+   0: 0f 85 80 10 00 00    jne    0x1086
+   6: 48 89 c6              mov    %rax,%rsi
+   9: 4d 89 6c 24 08        mov    %r13,0x8(%r12)
+   e: 48                    rex.W
+   f: bc                    .byte 0xbc
+[  128.445089][    C0] RSP: 0018:ffff88802fceebf0 EFLAGS: 00000246
+[  128.445969][    C0] RAX: ffff888003b571b8 RBX: 0000000000000000
+RCX: dffffc0000000000
+[  128.447124][    C0] RDX: ffffea00017cd580 RSI: 1ffff11005f9dda8
+RDI: ffff88802fceed40
+[  128.448281][    C0] RBP: ffff88802fceec70 R08: ffff88802fceedc4
+R09: 00000000ffffffee
+[  128.449457][    C0] R10: 0000000000000000 R11: 1ffff11005f9ddaf
+R12: ffff88802fceed38
+[  128.450641][    C0] R13: 0000000000000000 R14: ffff888003b57138
+R15: ffff88802fceedc8
+[  128.451827][    C0]  ? arch_stack_walk (arch/x86/kernel/stacktrace.c:24)
+[  128.452482][    C0]  skcipher_walk_virt+0x4be/0x7e0
+[  128.453242][    C0]  glue_xts_req_128bit+0x110/0x6f0 glue_helper
+[  128.454175][    C0]  ? aesni_set_key+0x1e0/0x1e0 aesni_intel
+[  128.455042][    C0]  ? irq_exit_rcu (kernel/softirq.c:406
+kernel/softirq.c:425 kernel/softirq.c:435)
+[  128.455719][    C0]  ? glue_xts_crypt_128bit_one+0x280/0x280 glue_helper
+[  128.456753][    C0]  asm_common_interrupt+0x1e/0x40
+[  128.457530][    C0] RIP: b8fa2500:0xdffffc0000000000
+[  128.458305][    C0] Code: Unable to access opcode bytes at RIP
+0xdffffbffffffffd6.
 
-1567                 if (PageHWPoison(page) && !(flags & TTU_IGNORE_HWPOISON)) {
-1568                         pteval = swp_entry_to_pte(make_hwpoison_entry(subpage));
-1569                         if (PageHuge(page)) {
-1570                                 hugetlb_count_sub(compound_nr(page), mm);
-1571                                 set_huge_swap_pte_at(mm, address,
-1572                                                      pvmw.pte, pteval,
-1573                                                      vma_mmu_pagesize(vma));
-1574                         } else {
-1575                                 dec_mm_counter(mm, mm_counter(page));
-1576                                 set_pte_at(mm, address, pvmw.pte, pteval);
-1577                         }
-1578 
-1579                 }
+Code starting with the faulting instruction
+===========================================
+[  128.459443][    C0] RSP: 974be3f3:ffff88809c437290 EFLAGS: 00000004
+ORIG_RAX: 0000001000000010
+[  128.460755][    C0] RAX: 0000000000000000 RBX: ffff888003b571b8
+RCX: 0000000000000000
+[  128.461967][    C0] RDX: ffff888003b57240 RSI: ffff888003b57240
+RDI: ffffffe000000010
+[  128.463152][    C0] RBP: dffffc0000000200 R08: 0000000000000801
+R09: ffffea0001123480
+[  128.464345][    C0] R10: ffffed1000000200 R11: ffffffff00000000
+R12: ffff888000000000
+[  128.465522][    C0] R13: ffff888003b57138 R14: ffff88809c437290
+R15: ffffea00002c5b08
+[  128.466710][    C0]  ? get_page_from_freelist (mm/page_alloc.c:3913)
+[  128.467560][    C0]  ? worker_thread (include/linux/list.h:282
+kernel/workqueue.c:2419)
+[  128.468279][    C0]  ? kthread (kernel/kthread.c:292)
+[  128.468919][    C0]  ? ret_from_fork (arch/x86/entry/entry_64.S:302)
+[  128.469607][    C0]  ? __writeback_inodes_wb (fs/fs-writeback.c:1793)
+[  128.470418][    C0]  ? wb_writeback (fs/fs-writeback.c:1898)
+[  128.471145][    C0]  ? process_one_work
+(arch/x86/include/asm/jump_label.h:25 include/linux/jump_label.h:200
+include/trace/events/workqueue.h:108 kernel/workqueue.c:2277)
+[  128.471930][    C0]  ? worker_thread (include/linux/list.h:282
+kernel/workqueue.c:2419)
+[  128.472668][    C0]  ? ret_from_fork (arch/x86/entry/entry_64.S:302)
+[  128.473329][    C0]  ? __zone_watermark_ok (mm/page_alloc.c:3793)
+[  128.474065][    C0]  ? __kasan_kmalloc.constprop.0
+(mm/kasan/common.c:56 mm/kasan/common.c:461)
+[  128.474914][    C0]  ? crypt_convert+0x27e5/0x4530 dm_crypt
+[  128.475796][    C0]  ? mempool_alloc (mm/mempool.c:392)
+[  128.476493][    C0]  ? crypt_iv_tcw_ctr+0x4a0/0x4a0 dm_crypt
+[  128.477433][    C0]  ? bio_add_page (block/bio.c:943)
+[  128.478129][    C0]  ? __bio_try_merge_page (block/bio.c:935)
+[  128.478923][    C0]  ? bio_associate_blkg (block/blk-cgroup.c:1869)
+[  128.479693][    C0]  ? kcryptd_crypt_write_convert+0x581/0xa10 dm_crypt
+[  128.480721][    C0]  ? crypt_map+0x5c1/0xc70 dm_crypt
+[  128.481527][    C0]  ? bio_clone_blkg_association (block/blk-cgroup.c:1883)
+[  128.482426][    C0]  ? __map_bio.isra.0+0x109/0x450 dm_mod
+[  128.483310][    C0]  ? __split_and_process_non_flush+0x728/0xd10 dm_mod
+[  128.484354][    C0]  ? __send_empty_flush+0x4b0/0x4b0 dm_mod
+[  128.485223][    C0]  ? __part_start_io_acct (block/blk-core.c:1336)
+[  128.486009][    C0]  ? dm_submit_bio+0x4f1/0xec0 dm_mod
+[  128.486829][    C0]  ? __split_and_process_non_flush+0xd10/0xd10 dm_mod
+[  128.487915][    C0]  ? submit_bio_noacct (block/blk-core.c:934
+block/blk-core.c:982 block/blk-core.c:1061)
+[  128.488686][    C0]  ? _cond_resched (kernel/sched/core.c:6124)
+[  128.489388][    C0]  ? blk_queue_enter (block/blk-core.c:1044)
+[  128.490300][    C0]  ? iomap_readahead (fs/iomap/buffered-io.c:1438)
+[  128.491041][    C0]  ? write_one_page (mm/page-writeback.c:2171)
+[  128.491759][    C0]  ? submit_bio (block/blk-core.c:1079)
+[  128.492432][    C0]  ? submit_bio_noacct (block/blk-core.c:1079)
+[  128.493248][    C0]  ? _raw_spin_lock
+(arch/x86/include/asm/atomic.h:202
+include/asm-generic/atomic-instrumented.h:707
+include/asm-generic/qspinlock.h:82 include/linux/spinlock.h:183
+include/linux/spinlock_api_smp.h:143 kernel/locking/spinlock.c:151)
+[  128.493975][    C0]  ? iomap_submit_ioend (fs/iomap/buffered-io.c:1215)
+[  128.494761][    C0]  ? xfs_vm_writepages (fs/xfs/xfs_aops.c:578)
+[  128.495529][    C0]  ? xfs_dax_writepages (fs/xfs/xfs_aops.c:578)
+[  128.496278][    C0]  ? __blk_mq_do_dispatch_sched
+(block/blk-mq-sched.c:135 (discriminator 1))
+[  128.497120][    C0]  ? do_writepages (mm/page-writeback.c:2355)
+[  128.497831][    C0]  ? page_writeback_cpu_online (mm/page-writeback.c:2345)
+[  128.498681][    C0]  ? _raw_spin_lock
+(arch/x86/include/asm/atomic.h:202
+include/asm-generic/atomic-instrumented.h:707
+include/asm-generic/qspinlock.h:82 include/linux/spinlock.h:183
+include/linux/spinlock_api_smp.h:143 kernel/locking/spinlock.c:151)
+[  128.499405][    C0]  ? wake_up_bit (kernel/sched/wait_bit.c:15
+kernel/sched/wait_bit.c:149)
+[  128.500072][    C0]  ? __writeback_single_inode (fs/fs-writeback.c:1470)
+[  128.500908][    C0]  ? writeback_sb_inodes (fs/fs-writeback.c:1725)
+[  128.501703][    C0]  ? __writeback_single_inode (fs/fs-writeback.c:1634)
+[  128.502571][    C0]  ? finish_writeback_work.constprop.0
+(fs/fs-writeback.c:1242)
+[  128.503525][    C0]  ? __writeback_inodes_wb (fs/fs-writeback.c:1793)
+[  128.504336][    C0]  ? wb_writeback (fs/fs-writeback.c:1898)
+[  128.505031][    C0]  ? __writeback_inodes_wb (fs/fs-writeback.c:1846)
+[  128.505902][    C0]  ? cpumask_next (lib/cpumask.c:24)
+[  128.506570][    C0]  ? get_nr_dirty_inodes (fs/inode.c:94 fs/inode.c:102)
+[  128.507348][    C0]  ? wb_workfn (fs/fs-writeback.c:2054
+fs/fs-writeback.c:2082)
+[  128.508014][    C0]  ? dequeue_entity (kernel/sched/fair.c:4347)
+[  128.508744][    C0]  ? inode_wait_for_writeback (fs/fs-writeback.c:2065)
+[  128.509586][    C0]  ? put_prev_entity (kernel/sched/fair.c:4501)
+[  128.510300][    C0]  ? __switch_to
+(arch/x86/include/asm/bitops.h:55
+include/asm-generic/bitops/instrumented-atomic.h:29
+include/linux/thread_info.h:55 arch/x86/include/asm/fpu/internal.h:572
+arch/x86/kernel/process_64.c:598)
+[  128.510990][    C0]  ? __switch_to_asm (arch/x86/entry/entry_64.S:255)
+[  128.511695][    C0]  ? __schedule (kernel/sched/core.c:3782
+kernel/sched/core.c:4528)
+[  128.512373][    C0]  ? process_one_work
+(arch/x86/include/asm/jump_label.h:25 include/linux/jump_label.h:200
+include/trace/events/workqueue.h:108 kernel/workqueue.c:2277)
+[  128.513133][    C0]  ? worker_thread (include/linux/list.h:282
+kernel/workqueue.c:2419)
+[  128.513850][    C0]  ? rescuer_thread (kernel/workqueue.c:2361)
+[  128.514566][    C0]  ? kthread (kernel/kthread.c:292)
+[  128.515200][    C0]  ? __kthread_bind_mask (kernel/kthread.c:245)
+[  128.515960][    C0]  ? ret_from_fork (arch/x86/entry/entry_64.S:302)
+[  128.516641][    C0]
+[  128.516983][    C0] The buggy address belongs to the page:
+[  128.517838][    C0] page:000000007a390a2b refcount:0 mapcount:0
+mapping:0000000000000000 index:0x0 pfn:0x2fcee
+[  128.519428][    C0] flags: 0x1ffff800000000()
+[  128.520102][    C0] raw: 001ffff800000000 ffffea0000bf3b88
+ffffea0000bf3b88 0000000000000000
+[  128.521396][    C0] raw: 0000000000000000 0000000000000000
+00000000ffffffff 0000000000000000
+[  128.522673][    C0] page dumped because: kasan: bad access detected
+[  128.523642][    C0]
+[  128.523984][    C0] addr ffff88802fceede0 is located in stack of
+task kworker/u2:2/591 at offset 216 in frame:
+[  128.525503][    C0]  glue_xts_req_128bit+0x0/0x6f0 glue_helper
+[  128.526390][    C0]
+[  128.526745][    C0] this frame has 5 objects:
+[  128.527405][    C0]  [48, 200) 'walk'
+[  128.527407][    C0]  [272, 304) 'b'
+[  128.527969][    C0]  [336, 400) 's'
+[  128.528509][    C0]  [432, 496) 'd'
+[  128.529047][    C0]  [528, 608) 'subreq'
+[  128.529607][    C0]
+[  128.530568][    C0] Memory state around the buggy address:
+[  128.531443][    C0]  ffff88802fceec80: 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+[  128.532708][    C0]  ffff88802fceed00: 00 f1 f1 f1 f1 f1 f1 00 00
+00 00 00 00 00 00 00
+[  128.533911][    C0] >ffff88802fceed80: 00 00 00 00 00 00 00 00 00
+00 f2 f2 f2 f2 f2 f2
+[  128.535106][    C0]                                                        ^
+[  128.536197][    C0]  ffff88802fceee00: f2 f2 f2 00 00 00 00 f2 f2
+f2 f2 00 00 00 00 00
+[  128.537404][    C0]  ffff88802fceee80: 00 00 00 f2 f2 f2 f2 00 00
+00 00 00 00 00 00 f2
 
-The pte for this page of processes mapping it should be marked with SWP_HWPOISON.
-But the process may not be informed and may continue with the address which has been
-ummaped, Then accessing the content in the page will trigger a page fault.
+There are other stacks that end in the same place without dm-crypt
+involvement, but they are much harder for us to reproduce, so let's
+stick with this one.
 
-Normally, it will hit the code in arch/x86/mm/fault.c:
+After some bisecting from myself and Ignat, we were able to find the
+commit that fixes the issue, which is:
 
- 945 #ifdef CONFIG_MEMORY_FAILURE
- 946         if (fault & (VM_FAULT_HWPOISON|VM_FAULT_HWPOISON_LARGE)) {
- 947                 struct task_struct *tsk = current;
- 948                 unsigned lsb = 0;
- 949 
- 950                 pr_err(
- 951         "MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
- 952                         tsk->comm, tsk->pid, address);
- 953                 if (fault & VM_FAULT_HWPOISON_LARGE)
- 954                         lsb = hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
- 955                 if (fault & VM_FAULT_HWPOISON)
- 956                         lsb = PAGE_SHIFT;
- 957                 force_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb);
- 958                 return;
- 959         }
- 960 #endif
- 961         force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)address);
- 962 }
+* https://github.com/torvalds/linux/commit/ce8f86ee94fabcc98537ddccd7e82cfd360a4dc5?w=1
 
-But when the user processes do a syscall and make a copyin action in kernel space, 
-the page fault triggered by this action will not got the the above code, it actually
-go to the code in arch/x86/mm/fault.c:
+mm/page_alloc: add a missing mm_page_alloc_zone_locked() tracepoint
 
- 650         if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
- 674                 /*
- 675                  * Barring that, we can do the fixup and be happy.
- 676                  */
- 677                 return;
- 678         }
+The trace point *trace_mm_page_alloc_zone_locked()* in __rmqueue() does
+not currently cover all branches.  Add the missing tracepoint and check
+the page before do that.
 
-> > 
-> > This is not suffient, we should send a SIGBUS to the process and log the
-> > info to console, as we can't trust the process will handle the error
-> > correctly.  
-> 
-> I agree with this part ... few apps check for -EFAULT and do the right
-> thing.  But I'm not sure how this happens. Can you provide a bit more
-> detail on the steps
-> 
+We don't have CONFIG_CMA enabled, so it can be distilled to:
 
-Attachment is a simple code to test this, you can try this test with:
-./einj_mem_uc -f copyin2
-
-In my enviroment, the stack will be:
-
-[ 1583.063050] Memory failure: 0x1030254: recovery action for dirty LRU page: Recovered
-[ 1583.071724] MCE: Killing einj_mem_uc:11139 due to hardware memory corruption fault at 7f4d59032000
-[ 1583.081732] CPU: 38 PID: 11139 Comm: einj_mem_uc Kdump: loaded Not tainted 5.11.0-rc2+ #43
-[ 1583.102607] Call Trace:
-[ 1583.105338]  dump_stack+0x57/0x6a
-[ 1583.109041]  no_context.cold+0xf6/0x284
-[ 1583.113315]  mm_fault_error+0xc3/0x1b0
-[ 1583.117503]  exc_page_fault+0x57/0x110
-[ 1583.121690]  asm_exc_page_fault+0x1e/0x30
-[ 1583.126159] RIP: 0010:__get_user_nocheck_8+0x10/0x13
-[ 1583.131704] Code: 0f b7 10 31 c0 0f 01 ca c3 90 0f 01 cb 0f ae e8 8b 10 31 c0 0f 01 ca c3 66 90 0f 01 cb 0f ae e8 48 8b 10 31 c0 0f 01 ca c3 90 <0f> 01 ca 31 d2 48 c7 c0 f2 ff ff ff c3 cc cc cc 0f 1f 44 00 00 40
-[ 1583.152659] RSP: 0018:ffffb9e462917d90 EFLAGS: 00050293
-[ 1583.158490] RAX: 00007f4d59032000 RBX: 0000000000000000 RCX: 00007f4d59032000
-[ 1583.166453] RDX: 0000000000000000 RSI: 0000000000000200 RDI: 00007f4d590321ff
-[ 1583.174418] RBP: 0000000000000200 R08: 0000000000000200 R09: ffffb9e462917e50
-[ 1583.182382] R10: 0000000000000200 R11: 0000000000000000 R12: ffffb9e462917e60
-[ 1583.190345] R13: ffff941470e93058 R14: 0000000000001000 R15: ffffffffc0626540
-[ 1583.198310]  iov_iter_fault_in_readable+0x4f/0x120
-[ 1583.203657]  generic_perform_write+0x83/0x1c0
-[ 1583.208520]  ext4_buffered_write_iter+0x93/0x150 [ext4]
-[ 1583.214378]  new_sync_write+0x11f/0x1b0
-[ 1583.218661]  vfs_write+0x1c0/0x280
-[ 1583.222455]  ksys_write+0x5f/0xe0
-[ 1583.226153]  do_syscall_64+0x33/0x40
-[ 1583.230142]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 1583.235778] RIP: 0033:0x7f4d58b35cd0
-
-> P.S. Typo: s/suffient/sufficient/
-
-Thanks for correction!
-
--- 
-Best Regards!
-
-Aili Yao
-
---MP_/EexqPCuWxTsNhVXLba=9wVX
-Content-Type: text/x-c++src
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="einj_mem_uc.c"
-
-/*
- * Copyright (C) 2015 Intel Corporation
- * Author: Tony Luck
- *
- * This software may be redistributed and/or modified under the terms of
- * the GNU General Public License ("GPL") version 2 only as published by the
- * Free Software Foundation.
- */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-#include <time.h>
-#include <sys/mman.h>
-#include <sys/time.h>
-#include <setjmp.h>
-#include <signal.h>
-#define _GNU_SOURCE 1
-#define __USE_GNU 1
-#include <sched.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/prctl.h>
-#include <setjmp.h>
-
-extern long long vtop(long long);
-extern void proc_cpuinfo(int *nsockets, int *ncpus, char *model, int **apicmap);
-extern void proc_interrupts(long *nmce, long *ncmci);
-extern void do_memcpy(void *dst, void *src, int cnt);
-static void show_help(void);
-
-static char *progname;
-static int nsockets, ncpus, lcpus_persocket;
-static int force_flag;
-static int all_flag;
-static long pagesize;
-static int *apicmap;
-#define	CACHE_LINE_SIZE	64
-
-#define EINJ_ETYPE "/sys/kernel/debug/apei/einj/error_type"
-#define EINJ_ADDR "/sys/kernel/debug/apei/einj/param1"
-#define EINJ_MASK "/sys/kernel/debug/apei/einj/param2"
-#define EINJ_APIC "/sys/kernel/debug/apei/einj/param3"
-#define EINJ_FLAGS "/sys/kernel/debug/apei/einj/flags"
-#define EINJ_NOTRIGGER "/sys/kernel/debug/apei/einj/notrigger"
-#define EINJ_DOIT "/sys/kernel/debug/apei/einj/error_inject"
-
-static void wfile(char *file, unsigned long long val)
-{
-	FILE *fp = fopen(file, "w");
-
-	if (fp == NULL) {
-		fprintf(stderr, "%s: cannot open '%s'\n", progname, file);
-		exit(1);
-	}
-	fprintf(fp, "0x%llx\n", val);
-	if (fclose(fp) == EOF) {
-		fprintf(stderr, "%s: write error on '%s'\n", progname, file);
-		exit(1);
-	}
-}
-
-static void * copyin2_addr = NULL;
-static void inject_madvise(unsigned long long page,int notrigger)
-{
-	if(copyin2_addr == NULL){
-		printf("Invalid parameter \n");
-		exit(0);
-	}
-	if (madvise(copyin2_addr, 100, 100) != 0) {
-		if (errno == EINVAL) {
-			printf("Kernel doesn't support poison injection\n");
-			exit(0);
-		}
-		printf("madvise \n");
-	}
-}
-
-static void inject_uc(unsigned long long addr, int notrigger)
-{
-	wfile(EINJ_ETYPE, 0x10);
-	wfile(EINJ_ADDR, addr);
-	wfile(EINJ_MASK, ~0x0ul);
-	//wfile(EINJ_FLAGS, 2);
-	wfile(EINJ_NOTRIGGER, notrigger);
-	wfile(EINJ_DOIT, 1);
-}
-
-static void inject_llc(unsigned long long addr, int notrigger)
-{
-	unsigned cpu;
-
-	cpu = sched_getcpu();
-	wfile(EINJ_ETYPE, 0x2);
-	wfile(EINJ_ADDR, addr);
-	wfile(EINJ_MASK, ~0x0ul);
-	wfile(EINJ_APIC, apicmap[cpu]);
-	wfile(EINJ_FLAGS, 3);
-	wfile(EINJ_NOTRIGGER, notrigger);
-	wfile(EINJ_DOIT, 1);
-}
-
-static int is_advanced_ras(char *model)
-{
-	if (strstr(model, "E7-"))
-		return 1;
-	if (strstr(model, "Platinum"))
-		return 1;
-	if (strstr(model, "Gold"))
-		return 1;
-	return 0;
-}
-
-static void check_configuration(void)
-{
-	char	model[512];
-
-	if (getuid() != 0) {
-		fprintf(stderr, "%s: must be root to run error injection tests\n", progname);
-		exit(1);
-	}
-	if (access("/sys/firmware/acpi/tables/EINJ", R_OK) == -1) {
-		fprintf(stderr, "%s: Error injection not supported, check your BIOS settings\n", progname);
-		exit(1);
-	}
-	if (access(EINJ_NOTRIGGER, R_OK|W_OK) == -1) {
-		fprintf(stderr, "%s: Is the einj.ko module loaded?\n", progname);
-		exit(1);
-	}
-	model[0] = '\0';
-	proc_cpuinfo(&nsockets, &ncpus, model, &apicmap);
-	if (nsockets == 0 || ncpus == 0) {
-		fprintf(stderr, "%s: could not find number of sockets/cpus\n", progname);
-		exit(1);
-	}
-	if (ncpus % nsockets) {
-		fprintf(stderr, "%s: strange topology. Are all cpus online?\n", progname);
-		exit(1);
-	}
-	lcpus_persocket = ncpus / nsockets;
-	if (!force_flag && !is_advanced_ras(model)) {
-		fprintf(stderr, "%s: warning: cpu may not support recovery\n", progname);
-		exit(1);
-	}
-}
-
-#define REP9(stmt) stmt;stmt;stmt;stmt;stmt;stmt;stmt;stmt;stmt
-
-volatile int vol;
-
-int dosums(void)
-{
-	vol = 0;
-	REP9(REP9(REP9(vol++)));
-	return vol;
-}
-
-#define MB(n)	((n) * 1024 * 1024)
-
-static void *thp_data_alloc(void)
-{
-	char	*p = malloc(MB(128));
-	int	i;
-
-	if (p == NULL) {
-		fprintf(stderr, "%s: cannot allocate memory\n", progname);
-		exit(1);
-	}
-	srandom(getpid() * time(NULL));
-	for (i = 0; i < MB(128); i++)
-		p[i] = random();
-	return p + MB(64);
-}
-
-static void *data_alloc(void)
-{
-	char	*p = mmap(NULL, pagesize, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANON, -1, 0);
-	int	i;
-
-	if (p == NULL) {
-		fprintf(stderr, "%s: cannot allocate memory\n", progname);
-		exit(1);
-	}
-	srandom(getpid() * time(NULL));
-	for (i = 0; i < pagesize; i++)
-		p[i] = random();
-	return p + pagesize / 4;
-}
-static void *data_alloc_copyin2(void)
-{
-        char    *p = mmap(NULL, pagesize, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANON, -1, 0);
-        int     i;
-
-        if (p == NULL) {
-                fprintf(stderr, "%s: cannot allocate memory\n", progname);
-                exit(1);
+$ git diff HEAD^..HEAD
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 14b9e83ff9da..b5961d530929 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2871,7 +2871,8 @@ __rmqueue(struct zone *zone, unsigned int order,
+int migratetype,
+                        goto retry;
         }
-        srandom(getpid() * time(NULL));
-        for (i = 0; i < pagesize; i++)
-                p[i] = random();
 
-		copyin2_addr = p;
-        return p;
-}
+-       trace_mm_page_alloc_zone_locked(page, order, migratetype);
++       if (page)
++               trace_mm_page_alloc_zone_locked(page, order, migratetype);
+        return page;
+ }
 
-static FILE *pcfile;
+If I apply this patch on top of 5.10.11, the issue disappears.
 
-static void *page_cache_alloc(void)
-{
-	char c, *p;
-	int i;
+I can't say I understand the connection here.
 
-	pcfile = tmpfile();
-	for (i = 0; i < pagesize; i++) {
-		c = random();
-		fputc(c, pcfile);
-	}
-	fflush(pcfile);
+It's worth mentioning that the issue doesn't reproduce with
+UNWINDER_FRAME_POINTER rather than UNWINDER_ORC. This fact makes me
+think that ORC is to blame here somehow, but it's beyond my
+understanding.
 
-	p = mmap(NULL, pagesize, PROT_READ|PROT_WRITE, MAP_SHARED, fileno(pcfile), 0);
-	if (p == NULL) {
-		fprintf(stderr, "%s: cannot mmap tmpfile\n", progname);
-		exit(1);
-	}
-	*p = random();
+Here's how I replicate the issue in qemu running Debian Buster:
 
-	return p + pagesize / 4;
-}
+# /tmp is tmpfs in our case
+$ qemu-img create -f qcow2 /tmp/nvme-$USER.img 10G
 
-static void *mlock_data_alloc(void)
-{
-	char	*p = mmap(NULL, pagesize, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANON, -1, 0);
-	int	i;
+$ sudo qemu-system-x86_64 -smp 1 -m 3G -enable-kvm -cpu host -kernel
+~/vmlinuz -initrd ~/initrd.img -nographic -device e1000 -device
+nvme,drive=nvme0,serial=deadbeaf1,num_queues=8 -drive
+file=/tmp/nvme-$USER.img,if=none,id=nvme0 -append 'console=ttyS0
+kasan_multi_shot'
 
-	if (p == NULL) {
-		fprintf(stderr, "%s: cannot allocate memory\n", progname);
-		exit(1);
-	}
-	srandom(getpid() * time(NULL));
-	for (i = 0; i < pagesize; i++)
-		p[i] = random();
-	if (mlock(p, pagesize) == -1) {
-		fprintf(stderr, "%s: cannot mlock(2) memory\n", progname);
-		exit(1);
-	}
-	return p + pagesize / 4;
-}
+Inside of the VM:
 
-static void *instr_alloc(void)
-{
-	char	*p = (char *)dosums;
+root@localhost:~# echo -e '[Match]\nName=enp*\n[Network]\nDHCP=yes' >
+/etc/systemd/network/00-dhcp.network
+root@localhost:~# systemctl restart systemd-networkd
+root@localhost:~# apt-get update
+root@localhost:~# apt-get install -y --no-install-recommends cryptsetup
+root@localhost:~# echo potato > keyfile
+root@localhost:~# chmod 0400 keyfile
+root@localhost:~# cryptsetup -q luksFormat /dev/nvme0n1 keyfile
+root@localhost:~# cryptsetup open --type luks --key-file keyfile
+--disable-keyring /dev/nvme0n1 luks-nvme0n1
+root@localhost:~# dmsetup table /dev/mapper/luks-nvme0n1 | sed 's/$/ 2
+no_read_workqueue no_write_workqueue/' | dmsetup reload
+/dev/mapper/luks-nvme0n1
+root@localhost:~# dmsetup suspend /dev/mapper/luks-nvme0n1 && dmsetup
+resume /dev/mapper/luks-nvme0n1
+root@localhost:~# mkfs.xfs -f /dev/mapper/luks-nvme0n1
+root@localhost:~# mount /dev/mapper/luks-nvme0n1 /mnt
 
-	p += 2 * pagesize;
+The workload that triggers the KASAN complaint is the following:
 
-	return (void *)((long)p & ~(pagesize - 1));
-}
+root@localhost:~# while true; do rm -f /mnt/random.data.target && dd
+if=/dev/zero of=/mnt/random.data bs=10M count=400 status=progress &&
+mv /mnt/random.data /mnt/random.data.target; sleep 1; done
 
-int trigger_single(char *addr)
-{
-	return addr[0];
-}
+It might take a few iterations to trigger.
 
-int trigger_double(char *addr)
-{
-	return addr[0] + addr[1];
-}
+Note that dmcrypt setup in our case depends on Ignat's patches, which
+are included in 5.10.11 and 5.11-rc5, so during bisection between
+5.11-rc3 and 5.11-rc4 they needed to be reapplied.
 
-int trigger_split(char *addr)
-{
-	long *a = (long *)(addr - 1);
-
-	return a[0];
-}
-
-int trigger_write(char *addr)
-{
-	addr[0] = 'a';
-	return 0;
-}
-
-/*
- * parameters to the memcpy and copyin tests.
- */
-int memcpy_runup = 0;	/* how much to copy before hitting poison */
-int memcpy_size = 512;	/* Total amount to copy */
-int memcpy_align = 0;	/* Relative alignment of src/dst */
-
-/* argument is "runup:size:align" */
-void parse_memcpy(char *arg)
-{
-	char *endp;
-
-	memcpy_runup = strtol(arg, &endp, 0);
-	if (*endp != ':')
-		show_help();
-	memcpy_size = strtol(endp + 1, &endp, 0);
-	if (*endp != ':')
-		show_help();
-	memcpy_align = strtol(endp + 1, &endp, 0);
-	if (*endp != '\0')
-		show_help();
-	if (memcpy_runup < 0 || memcpy_runup > pagesize / 4) {
-		fprintf(stderr, "%s: runup out of range\n", progname);
-		exit(1);
-	}
-	if (memcpy_size < 0 || memcpy_size > pagesize / 4) {
-		fprintf(stderr, "%s: size out of range\n", progname);
-		exit(1);
-	}
-	if (memcpy_runup > memcpy_size) {
-		fprintf(stderr, "%s: runup must be less than size\n", progname);
-		exit(1);
-	}
-	if (memcpy_align < 0 || memcpy_align >= CACHE_LINE_SIZE) {
-		fprintf(stderr, "%s: bad alignment\n", progname);
-		exit(1);
-	}
-}
-
-int trigger_memcpy(char *addr)
-{
-	char *src = addr - memcpy_runup;
-	char *dst = addr + pagesize / 2;
-
-	dst -= memcpy_align;
-	do_memcpy(dst, src, memcpy_size);
-	return 0;
-}
-
-int trigger_copyin(char *addr)
-{
-	int	fd, ret;
-	char	filename[] = "/tmp/einj-XXXXXX";
-
-	if ((fd = mkstemp(filename)) == -1) {
-		fprintf(stderr, "%s: couldn't make temp file\n", progname);
-		return -1;
-	}
-	(void)unlink(filename);
-	if ((ret = write(fd, addr - memcpy_runup, memcpy_size) != memcpy_size)) {
-		if (ret == -1)
-			fprintf(stderr, "%s: couldn't write temp file (errno=%d)\n", progname, errno);
-		else
-			fprintf(stderr, "%s: short (%d bytes) write to temp file\n", ret, progname);
-	}
-	close(fd);
-	return 0;
-}
-
-int trigger_copyout(char *addr)
-{
-	char *buf = malloc(pagesize);
-	int ret;
-
-	if (buf == NULL) {
-		fprintf(stderr, "%s: couldn't allocate memory\n", progname);
-		return -1;
-	}
-	rewind(pcfile);
-	ret = fread(buf, 1, pagesize, pcfile);
-	fprintf(stderr, "%s: read returned %d\n", progname);
-
-	return 0;
-}
-
-int trigger_patrol(char *addr)
-{
-	sleep(1);
-}
-
-int trigger_llc(char *addr)
-{
-	asm volatile("clflush %0" : "+m" (*addr));
-}
-
-int trigger_instr(char *addr)
-{
-	int ret = dosums();
-
-	if (ret != 729)
-		printf("Corruption during instruction fault recovery (%d)\n", ret);
-
-	return ret;
-}
-
-/* attributes of the test and which events will follow our trigger */
-#define	F_MCE		1
-#define	F_CMCI		2
-#define F_SIGBUS	4
-#define	F_FATAL		8
-
-struct test {
-	char	*testname;
-	char	*testhelp;
-	void	*(*alloc)(void);
-	void	(*inject)(unsigned long long, int);
-	int	notrigger;
-	int	(*trigger)(char *);
-	int	flags;
-} tests[] = {
-	{
-		"single", "Single read in pipeline to target address, generates SRAR machine check",
-		data_alloc, inject_uc, 1, trigger_single, F_MCE|F_CMCI|F_SIGBUS,
-	},
-	{
-		"double", "Double read in pipeline to target address, generates SRAR machine check",
-		data_alloc, inject_uc, 1, trigger_double, F_MCE|F_CMCI|F_SIGBUS,
-	},
-	{
-		"split", "Unaligned read crosses cacheline from good to bad. Probably fatal",
-		data_alloc, inject_uc, 1, trigger_split, F_MCE|F_CMCI|F_SIGBUS|F_FATAL,
-	},
-	{
-		"THP", "Try to inject in transparent huge page, generates SRAR machine check",
-		thp_data_alloc, inject_uc, 1, trigger_single, F_MCE|F_CMCI|F_SIGBUS,
-	},
-	{
-		"store", "Write to target address. Should generate a UCNA/CMCI",
-		data_alloc, inject_uc, 1, trigger_write, F_CMCI,
-	},
-	{
-		"memcpy", "Streaming read from target address. Probably fatal",
-		data_alloc, inject_uc, 1, trigger_memcpy, F_MCE|F_CMCI|F_SIGBUS|F_FATAL,
-	},
-	{
-		"instr", "Instruction fetch. Generates SRAR that OS should transparently fix",
-		instr_alloc, inject_uc, 1, trigger_instr, F_MCE|F_CMCI,
-	},
-	{
-		"patrol", "Patrol scrubber, generates SRAO machine check",
-		data_alloc, inject_uc, 0, trigger_patrol, F_MCE,
-	},
-	{
-		"llc", "Cache write-back, generates SRAO machine check",
-		data_alloc, inject_llc, 1, trigger_llc, F_MCE,
-	},
-	{
-		"copyin", "Kernel copies data from user. Probably fatal",
-		data_alloc, inject_uc, 1, trigger_copyin, F_MCE|F_CMCI|F_SIGBUS|F_FATAL,
-	},
-	{
-		"copyin2", "Recover form Kernel copies data from user, user page already poisoned!",
-		data_alloc_copyin2, inject_madvise, 1, trigger_copyin, F_MCE|F_SIGBUS,
-	},
-	{
-		"copyout", "Kernel copies data to user. Probably fatal",
-		page_cache_alloc, inject_uc, 1, trigger_copyout, F_MCE|F_SIGBUS|F_CMCI|F_FATAL,
-	},
-	{
-		"mlock", "mlock target page then inject/read to generates SRAR machine check",
-		mlock_data_alloc, inject_uc, 1, trigger_single, F_MCE|F_CMCI|F_SIGBUS,
-	},
-	{ NULL }
-};
-
-static void show_help(void)
-{
-	struct test *t;
-
-	printf("Usage: %s [-a][-c count][-d delay][-f] [-m runup:size:align][testname]\n", progname);
-	printf("  %-8s %-5s %s\n", "Testname", "Fatal", "Description");
-	for (t = tests; t->testname; t++)
-		printf("  %-8s %-5s %s\n", t->testname,
-			(t->flags & F_FATAL) ? "YES" : "no",
-			t->testhelp);
-	exit(0);
-}
-
-static struct test *lookup_test(char *s)
-{
-	struct test *t;
-
-	for (t = tests; t->testname; t++)
-		if (strcmp(s, t->testname) == 0)
-			return t;
-	fprintf(stderr, "%s: unknown test '%s'\n", progname, s);
-	exit(1);
-}
-
-static struct test *next_test(struct test *t)
-{
-	t++;
-	if (t->testname == NULL)
-		t = tests;
-	return t;
-}
-
-static jmp_buf env;
-
-static void recover(int sig, siginfo_t *si, void *v)
-{
-	printf("SIGBUS: addr = %p\n", si->si_addr);
-	siglongjmp(env, 1);
-}
-
-struct sigaction recover_act = {
-	.sa_sigaction = recover,
-	.sa_flags = SA_SIGINFO,
-};
-
-int main(int argc, char **argv)
-{
-	int c, i;
-	int	count = 1, cmci_wait_count = 0;
-	double	delay = 1.0;
-	struct test *t;
-	void	*vaddr;
-	long long paddr;
-	long	b_mce, b_cmci, a_mce, a_cmci;
-	struct timeval t1, t2;
-
-	progname = argv[0];
-	pagesize = getpagesize();
-
-	while ((c = getopt(argc, argv, "ac:d:fhm:")) != -1) switch (c) {
-	case 'a':
-		all_flag = 1;
-		break;
-	case 'c':
-		count = strtol(optarg, NULL, 0);
-		break;
-	case 'd':
-		delay = strtod(optarg, NULL);
-		break;
-	case 'f':
-		force_flag = 1;
-		break;
-	case 'm':
-		parse_memcpy(optarg);
-		break;
-	case 'h': case '?':
-		show_help();
-		break;
-	}
-
-	check_configuration();
-
-	if (optind < argc)
-		t = lookup_test(argv[optind]);
-	else
-		t = tests;
-
-	if ((t->flags & F_FATAL) && !force_flag) {
-		fprintf(stderr, "%s: selected test may be fatal. Use '-f' flag if you really want to do this\n", progname);
-		exit(1);
-	}
-
-	sigaction(SIGBUS, &recover_act, NULL);
-
-	for (i = 0; i < count; i++) {
-		cmci_wait_count = 0;
-		vaddr = t->alloc();
-		paddr = vtop((long long)vaddr);
-		printf("%d: %-8s vaddr = %p paddr = %llx\n", i, t->testname, vaddr, paddr);
-
-		proc_interrupts(&b_mce, &b_cmci);
-		gettimeofday(&t1, NULL);
-		if (sigsetjmp(env, 1)) {
-			if ((t->flags & F_SIGBUS) == 0) {
-				printf("Unexpected SIGBUS\n");
-			}
-		} else {
-			t->inject(paddr, t->notrigger);
-			t->trigger(vaddr);
-			if (t->flags & F_SIGBUS) {
-				printf("Expected SIGBUS, didn't get one\n");
-			}
-		}
-
-		if (pcfile) {
-			fclose(pcfile);
-			pcfile = NULL;
-		}
-
-		/* if system didn't already take page offline, ask it to do so now */
-		if (paddr == vtop((long long)vaddr)) {
-			printf("Manually take page offline\n");
-			wfile("/sys/devices/system/memory/hard_offline_page", paddr);
-		}
-
-		/* Give system a chance to process on possibly deep C-state idle cpus */
-		usleep(100);
-
-		proc_interrupts(&a_mce, &a_cmci);
-
-		if (t->flags & F_FATAL) {
-			printf("Big surprise ... still running. Thought that would be fatal\n");
-		}
-
-		if (t->flags & F_MCE) {
-			if (a_mce == b_mce) {
-				printf("Expected MCE, but none seen\n");
-			} else if (a_mce == b_mce + 1) {
-				printf("Saw local machine check\n");
-			} else if (a_mce == b_mce + ncpus) {
-				printf("Saw broadcast machine check\n");
-			} else {
-				printf("Unusual number of MCEs seen: %ld\n", a_mce - b_mce);
-			}
-		} else {
-			if (a_mce != b_mce) {
-				printf("Saw %ld unexpected MCEs (%ld systemwide)\n", b_mce - a_mce, (b_mce - a_mce) / ncpus);
-			}
-		}
-
-		if (t->flags & F_CMCI) {
-			while (a_cmci < b_cmci + lcpus_persocket) {
-				if (cmci_wait_count > 1000) {
-					break;
-				}
-				usleep(100);
-				proc_interrupts(&a_mce, &a_cmci);
-				cmci_wait_count++;
-			}
-			if (cmci_wait_count != 0) {
-				gettimeofday(&t2, NULL);
-				printf("CMCIs took ~%ld usecs to be reported.\n",
-					1000000 * (t2.tv_sec - t1.tv_sec) +
-						(t2.tv_usec - t1.tv_usec));
-			}
-			if (a_cmci == b_cmci) {
-				printf("Expected CMCI, but none seen\n");
-				printf("Test failed\n");
-				return 1;
-			} else if (a_cmci < b_cmci + lcpus_persocket) {
-				printf("Unusual number of CMCIs seen: %ld\n", a_cmci - b_cmci);
-				printf("Test failed\n");
-				return 1;
-			}
-		} else {
-			if (a_cmci != b_cmci) {
-				printf("Saw %ld unexpected CMCIs (%ld per socket)\n", a_cmci - b_cmci, (a_cmci - b_cmci) / lcpus_persocket);
-				printf("Test failed\n");
-				return 1;
-			}
-		}
-
-		usleep((useconds_t)(delay * 1.0e6));
-		if (all_flag) {
-			t = next_test(t);
-			while (t->flags & F_FATAL)
-				t = next_test(t);
-		}
-	}
-
-	printf("Test passed\n");
-	return 0;
-}
-
---MP_/EexqPCuWxTsNhVXLba=9wVX--
+I'm going to ask for a backport of the "fix" to stable, but it feels
+like there's a bigger issue here.
