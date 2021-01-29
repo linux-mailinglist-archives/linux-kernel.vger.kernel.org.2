@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB0130863B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487AD30863D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbhA2HHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:07:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231977AbhA2HHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:07:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 25AADAD3E;
-        Fri, 29 Jan 2021 07:06:59 +0000 (UTC)
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Chao Leng <lengchao@huawei.com>, Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
- <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
- <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
- <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
- <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
- <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
-Date:   Fri, 29 Jan 2021 08:06:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S229927AbhA2HIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:08:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232201AbhA2HIO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:08:14 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC16C061573;
+        Thu, 28 Jan 2021 23:07:34 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRpLp3nY8z9sSC;
+        Fri, 29 Jan 2021 18:07:30 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611904052;
+        bh=CBnQX/9BT4fWvnBH2HpYrwl4g+Tim3wZzojPaFHiCHs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=g+KnLKbggV6TK9VbQfS92U4RjYAfYTRJRN4SRcwc+I7ps4B6/REAEuvyyZTpJz1NF
+         8m56CaieOwcWOPcFUy/kthnDkeiQ93yjJKThx/gdR1wo6FIv9jP2dDHdiX17PfQRl9
+         rTNiZBVrIpC+IaBl60Bc3NNedQFN2VmR9ocZjhls1jIRsuFKzgWkVdc1IF87ELlWLY
+         dM/BGWVE/hVqL9LsRvzftk+LSCjvPxaPK8wt3O837IhbklL9Rc/EhfJIAmWqnN3slr
+         ASwyjE/w7nZyoG59PqM4q6GreKjp2Y96wsKygrVBF9uWczAcZ9UQHLEeS8H3IX65l7
+         54skAqn22NbKg==
+Date:   Fri, 29 Jan 2021 18:07:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the char-misc tree
+Message-ID: <20210129180729.44e79afe@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/EgVFxuPFb4xK8jtf67GEl.b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 4:07 AM, Chao Leng wrote:
-> 
-> 
-> On 2021/1/29 9:42, Sagi Grimberg wrote:
->>
->>>> You can't see exactly where it dies but I followed the assembly to
->>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
->>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
->>>> (list_next_or_null_rcu()).
->>> So there is other bug cause nvme_next_ns abormal.
->>> I review the code about head->list and head->current_path, I find 2 bugs
->>> may cause the bug:
->>> First, I already send the patch. see:
->>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/ 
->>>
->>> Second, in nvme_ns_remove, list_del_rcu is before
->>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
->>> "head", but still use "old". I'm not sure there's any other
->>> consideration here, I will check it and try to fix it.
->>
->> The reason why we first remove from head->list and only then clear
->> current_path is because the other way around there is no way
->> to guarantee that that the ns won't be assigned as current_path
->> again (because it is in head->list).
-> ok, I see.
->>
->> nvme_ns_remove fences continue of deletion of the ns by synchronizing
->> the srcu such that for sure the current_path clearance is visible.
-> The list will be like this:
-> head->next = ns1;
-> ns1->next = head;
-> old->next = ns1;
+--Sig_/EgVFxuPFb4xK8jtf67GEl.b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Where does 'old' pointing to?
+Hi all,
 
-> This may cause infinite loop in nvme_round_robin_path.
-> for (ns = nvme_next_ns(head, old);
->      ns != old;
->      ns = nvme_next_ns(head, ns))
-> The ns will always be ns1, and then infinite loop.
+After merging the char-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-No. nvme_next_ns() will return NULL.
+Documentation/driver-api/index.rst:14: WARNING: toctree contains reference =
+to nonexisting document 'driver-api/pti_intel_mid'
 
+Introduced by commit
+
+  8ba59e9dee31 ("misc: pti: Remove driver for deprecated platform")
+
+--=20
 Cheers,
+Stephen Rothwell
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+--Sig_/EgVFxuPFb4xK8jtf67GEl.b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmATtDEACgkQAVBC80lX
+0Gx/cgf/b4hAL9TgC6QRHQQJSm02cc5W8mGwrGr3BdCH9eRm+m1UzLA2HyC+rOYR
+yR0M6rkT2dQWlYZ6jqbp+FAQRseeKlcWGyYf8RDcbkcUJlHbQbrEBp5aKQ4ZpFhJ
+JcPmzRfvSy+4OiQOx1g4czXR/7Y7SBzn29U69jfjbxD5MvQnkEV2L7AoM2lNw7JC
+CZeU12mPLOcI7FcFNP4MYY73kB713VlvTQt5pYGePkoi+8aPBs8n9iJcyQf2gnJ+
+pVoN8e2/4Sv568DVMFMA7UXG0k5YLVbv7CTC6gjrB8d7hgEowpFPJhJ3Yi2it/2Y
+0/LdVm7JPuzsNIxSRDeZdvX+G46/pA==
+=23Lj
+-----END PGP SIGNATURE-----
+
+--Sig_/EgVFxuPFb4xK8jtf67GEl.b--
