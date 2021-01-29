@@ -2,137 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D320308BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13541308BC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbhA2Rkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:40:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
+        id S232429AbhA2RmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbhA2RiU (ORCPT
+        with ESMTP id S232582AbhA2Riy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:38:20 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41541C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:37:38 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id j11so3002562plt.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:37:38 -0800 (PST)
+        Fri, 29 Jan 2021 12:38:54 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E90C061574;
+        Fri, 29 Jan 2021 09:38:14 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id n6so11438856edt.10;
+        Fri, 29 Jan 2021 09:38:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L9O0JPeY7UlN+8wzL0U3ZAyM5VkRrCUmtyowZR23Ugg=;
-        b=v35jOnn9EJUcAl+Zswnuk/Nd3C3Oei8/6vqjt50pyEs8c2Px9frn2mKU2x6xZ+pclV
-         CwhQlED07+rLudhWeEpJqw/k8zdXubn7SHMIDZJIF7mWytxbrEbuwz3TLDv4grynsmab
-         3iYVQCq7TuikznG98dQMza8OBw0FMnKTezZ84bKknNE82RNdYjVd02B/wBMvQe2BcnV7
-         +TlvtmR+JiZO1COjHkBUrJmQKgyLj6xVx4INzYfR8iCSDCiUI87CWMrChI+3DWqWuM39
-         B4Bm9ELbkvIkL1YJHOWOxYl0oxUUglaqpYV4VN5FBw5mWw2tdjpD1S4eJBiOpCwG1RHo
-         qHQw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XnJUFKT7mpJJkpoBZtT7iuNHzt9Orb+KaxsIyTb16E0=;
+        b=COLNvH5yFRc1iWLXYNI9oTIMBzlO2VZPd5qpEtrEHo3ATyUwzRkkJJpBybh7Sz+E7U
+         KvaZ9Bxx2aaqlmREglpeNGMhk56HaIXO0h+lDWOxIaJZ+ZTGyU2lVMXVkGt/rllLdPpF
+         B4uGOZbB57eHeRUTts2Dtf9oq72yibbhAsgUzQAD2FNZioeMUtQZoSOPk3hlhlpKE3BB
+         DoP8GVKEZp8ANV7wNZzt7gBfCS236/IPAc6fIBZ3A68VtKn92HJ9+ckCmbBH8jrVgKkw
+         J/7fnDwyuruh8q8W9YgQljs3+wtLFQAiY72nmWSD/mYM1/TLTzCL8XphSe8jnRCsH8ZX
+         FSng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L9O0JPeY7UlN+8wzL0U3ZAyM5VkRrCUmtyowZR23Ugg=;
-        b=YjtkZl50+c0eh00HFlq1vtqzQfgjnVnx8C8OkBRQh+ghguMuzY4HDDNshPYac/qQS4
-         qHFRYCWXRs7+mSnIBd8kxQ4SF2zmRzkR6QmIkXPGKfBuCEBqqfM3HmXcz8knzsEFnbXy
-         TtKHy/N/vWH/35AQM023VGMi9/t42wCkXaVso+MpK1brkng0xs2fSTquV464vaTmF4/o
-         PFzI4OaDDWfiub7aYiYUWHaAg/zi+A124gUuZSS6old3a7GmnCpj1EJ3ekR6Cj2ernCO
-         s+u6fjCoc8DMdw6UkelUjvlvuXEs2kqb/Bye1nXc2UcyFEGCOHBFl81WxsCLhEun7j9C
-         gh+w==
-X-Gm-Message-State: AOAM532Do/8BV0Ssucy2PMivN6UG4+YAOJ5i/NZt6A8Lu2d1+hvOYMSU
-        86UfEAUS9KEC7rSAa60Y/wshf0P1Jl/uzw==
-X-Google-Smtp-Source: ABdhPJyoyD1AHHA8RpZ+dnlzK+bDvdHJURn8iz/zhdJHYvWkUGV3M4ebXLTRUfRYUyQ3gqZliP0s2w==
-X-Received: by 2002:a17:902:7783:b029:df:fa69:3a34 with SMTP id o3-20020a1709027783b02900dffa693a34mr5317324pll.21.1611941857706;
-        Fri, 29 Jan 2021 09:37:37 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:91fd:c415:8a8b:ccc4])
-        by smtp.gmail.com with ESMTPSA id r21sm10181610pgg.34.2021.01.29.09.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 09:37:36 -0800 (PST)
-Date:   Fri, 29 Jan 2021 09:37:30 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     ira.weiny@intel.com
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org
-Subject: Re: [PATCH] x86: Remove unnecessary kmap() from
- sgx_ioc_enclave_init()
-Message-ID: <YBRH2jfPKS8ZofMZ@google.com>
-References: <20210129001459.1538805-1-ira.weiny@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XnJUFKT7mpJJkpoBZtT7iuNHzt9Orb+KaxsIyTb16E0=;
+        b=EgdY/wOWgN9CkaDFpzxQmjFUg3Fv671HzdLl9lAndyFNQxDQCXmAsS1sO1jI5cXmQM
+         CFZgKwXsKzNhMNXCdFItg195ZcnAuarunFBMJf/kChbZ3w6jflK61oRxVLxvXtzY7wlp
+         0sTgdRR5gZeIyYtpmpJdrbyTuRRHZbwwv5MYhdR85XuOjfV78lNtJQFjmpyd11em8O9g
+         hQ1+1pL05NBBzRZHFvnk8jzjtKH6JBsdGxgkMRpr3q+c8hW5R9/hyHJHrKWg+YEJT2mH
+         pDU/Bohgk4jYU7Yiu0tKhexyeSVKb15J/Zkdq3wxjoqyB+gwmdPtnfDgX4IfoV1Z8WEI
+         yBHQ==
+X-Gm-Message-State: AOAM531CAnfb+lP4dab6bYwCcsRG0gJ0SvL/jO275ZZLMkzGkNHNtS/a
+        +d1tRbil3EbP7th5D/4MMB1YBu0/viz4ZxCrGMs=
+X-Google-Smtp-Source: ABdhPJxd629ibdjBhMM1erN6M0LiJ+fYgjJUKGph/ldUDOSSCcPf87XqaVqV8gqhPLw7e+VdSYNXLyCfr+VoUSdorV4=
+X-Received: by 2002:a05:6402:312e:: with SMTP id dd14mr6486295edb.366.1611941892968;
+ Fri, 29 Jan 2021 09:38:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129001459.1538805-1-ira.weiny@intel.com>
+References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-11-shy828301@gmail.com>
+ <0eee1cbd-4149-9f03-615d-18c81b8a85af@suse.cz>
+In-Reply-To: <0eee1cbd-4149-9f03-615d-18c81b8a85af@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 29 Jan 2021 09:38:01 -0800
+Message-ID: <CAHbLzkoE9DN7_5VCfy7yaVPKnrqW6ohCMxpvmKMC3-Tw5-pGgA@mail.gmail.com>
+Subject: Re: [v5 PATCH 10/11] mm: memcontrol: reparent nr_deferred when memcg offline
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> There is no reason to alloc a page and kmap it to store this temporary
-> data from the user. 
+On Fri, Jan 29, 2021 at 7:52 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/28/21 12:33 AM, Yang Shi wrote:
+> > Now shrinker's nr_deferred is per memcg for memcg aware shrinkers, add to parent's
+> > corresponding nr_deferred when memcg offline.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>
+> A question somewhat outside of the scope of the series. Should we shrink before
+> reparenting on memcg offline? Would it make more sense than assume the kmemcg
+> objects that are still cached are used also by others?
 
-Actually, there is, it's just poorly documented.  The sigstruct needs to be
-page aligned, and the token needs to be 512-byte aligned.  kmcalloc doesn't
-guarantee alignment.  IIRC things will work until slub_debug is enabled, at
-which point the natural alignment behavior goes out the window.
+TBH, I'm not sure. I think it depends on workload. For example, the
+build server may prefer to keep the objects cached since the samce
+objects may be reused by multiple build jobs.
 
-> This is especially true when we are trying to
-> remove kmap usages.  Also placing the token pointer 1/2 way into the
-> page is fragile.
-> 
-> Replace this allocation with two kzalloc()'s which also removes the need
-> for the memset().
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  arch/x86/kernel/cpu/sgx/ioctl.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> index 90a5caf76939..9c9019760585 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
->  {
->  	struct sgx_sigstruct *sigstruct;
->  	struct sgx_enclave_init init_arg;
-> -	struct page *initp_page;
->  	void *token;
->  	int ret;
->  
-> @@ -615,13 +614,15 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
->  	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
->  		return -EFAULT;
->  
-> -	initp_page = alloc_page(GFP_KERNEL);
-> -	if (!initp_page)
-> +	sigstruct = kzalloc(sizeof(*sigstruct), GFP_KERNEL);
-> +	if (!sigstruct)
->  		return -ENOMEM;
->  
-> -	sigstruct = kmap(initp_page);
-> -	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
-> -	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
-> +	token = kzalloc(SGX_LAUNCH_TOKEN_SIZE, GFP_KERNEL);
-> +	if (!token) {
-> +		ret = -ENOMEM;
-> +		goto free_sigstruct;
-> +	}
->  
->  	if (copy_from_user(sigstruct, (void __user *)init_arg.sigstruct,
->  			   sizeof(*sigstruct))) {
-> @@ -645,8 +646,9 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
->  	ret = sgx_encl_init(encl, sigstruct, token);
->  
->  out:
-> -	kunmap(initp_page);
-> -	__free_page(initp_page);
-> +	kfree(token);
-> +free_sigstruct:
-> +	kfree(sigstruct);
->  	return ret;
->  }
->  
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
+>
+> > ---
+> >  include/linux/memcontrol.h |  1 +
+> >  mm/memcontrol.c            |  1 +
+> >  mm/vmscan.c                | 31 +++++++++++++++++++++++++++++++
+> >  3 files changed, 33 insertions(+)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index e0384367e07d..fe1375f08881 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -1586,6 +1586,7 @@ extern int alloc_shrinker_info(struct mem_cgroup *memcg);
+> >  extern void free_shrinker_info(struct mem_cgroup *memcg);
+> >  extern void set_shrinker_bit(struct mem_cgroup *memcg,
+> >                            int nid, int shrinker_id);
+> > +extern void reparent_shrinker_deferred(struct mem_cgroup *memcg);
+> >  #else
+> >  #define mem_cgroup_sockets_enabled 0
+> >  static inline void mem_cgroup_sk_alloc(struct sock *sk) { };
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index f64ad0d044d9..21f36b73f36a 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -5282,6 +5282,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
+> >       page_counter_set_low(&memcg->memory, 0);
+> >
+> >       memcg_offline_kmem(memcg);
+> > +     reparent_shrinker_deferred(memcg);
+> >       wb_memcg_offline(memcg);
+> >
+> >       drain_all_stock(memcg);
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 0373d7619d7b..55ad91a26ba3 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -386,6 +386,37 @@ static long set_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> >       return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
+> >  }
+> >
+> > +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> > +                                                  int nid)
+> > +{
+> > +     return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
+> > +                                      lockdep_is_held(&shrinker_rwsem));
+> > +}
+> > +
+> > +void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+> > +{
+> > +     int i, nid;
+> > +     long nr;
+> > +     struct mem_cgroup *parent;
+> > +     struct shrinker_info *child_info, *parent_info;
+> > +
+> > +     parent = parent_mem_cgroup(memcg);
+> > +     if (!parent)
+> > +             parent = root_mem_cgroup;
+> > +
+> > +     /* Prevent from concurrent shrinker_info expand */
+> > +     down_read(&shrinker_rwsem);
+> > +     for_each_node(nid) {
+> > +             child_info = shrinker_info_protected(memcg, nid);
+> > +             parent_info = shrinker_info_protected(parent, nid);
+> > +             for (i = 0; i < shrinker_nr_max; i++) {
+> > +                     nr = atomic_long_read(&child_info->nr_deferred[i]);
+> > +                     atomic_long_add(nr, &parent_info->nr_deferred[i]);
+> > +             }
+> > +     }
+> > +     up_read(&shrinker_rwsem);
+> > +}
+> > +
+> >  static bool cgroup_reclaim(struct scan_control *sc)
+> >  {
+> >       return sc->target_mem_cgroup;
+> >
+>
