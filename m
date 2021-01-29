@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88820308915
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAFA308933
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhA2MUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 07:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbhA2MME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 07:12:04 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA87C08ECAB;
-        Fri, 29 Jan 2021 02:33:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=YFmf9BN+skUEyMw7b9mve+y8RvKINlPUjAkMO4cHHOg=; b=pWkZru0FYhgHwQd1+Rg+II9rl
-        j5tucLHDGxxWB/Vp8pn9UiySSZgiGKVB5ywfLSv5jlad7stPzD0Jl+1+Qp1HsMkBuPBmC/r03fw3A
-        awf4qTcQIQ+Z4rAwqgmVeWPOD8ndIzdDBS9GRCS/iDrl5Kqy5VvGjFBQK+pAEvZv2pMf7OvZuQpr/
-        Ol9M0JHSHyIiVRjLQ0B/SWwXsNRpsXfFoSEGGjJLN2TYtpWwJ+u9Xjd40+30T9CeH54NwmWOXP3qx
-        swNuM/TYGEuv3T0gLlvwvao2fgN517drTUSkbf/V+gFy1MrFJDO/fsXM56rlbZgEeH3jLoQpV+9Ui
-        tBxDtrbbg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54182)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l5R5z-0000uJ-AX; Fri, 29 Jan 2021 10:33:43 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l5R5w-0006on-Rd; Fri, 29 Jan 2021 10:33:40 +0000
-Date:   Fri, 29 Jan 2021 10:33:40 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
- controller
-Message-ID: <20210129103340.GW1551@shell.armlinux.org.uk>
-References: <20210116032740.873-1-thunder.leizhen@huawei.com>
- <20210116032740.873-5-thunder.leizhen@huawei.com>
- <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
- <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
- <CAK8P3a3Hj0Hyc8mVdGYhB7AEuHCYbhGxHnhNk1xWonEmxZOxRw@mail.gmail.com>
- <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
+        id S232824AbhA2MMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 07:12:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232455AbhA2MFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 07:05:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C4164F2E;
+        Fri, 29 Jan 2021 11:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611918692;
+        bh=cIhsYkjH1sbP4EzOIl/tVAIS80g1q+E0gKgoggxt1mU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IpwpTrrd34QArbmzvrpoCeuHFw/5rZyPX5YXL2e9c8m0pcUrpqXLkH1kg9JH7YtmJ
+         tdeb0w0CXayaDiZV/jMtJmjXIJI45STEsprz3dmv3o5HEehVxVoRiTi+6l+wnnBiUg
+         5mAlWWSP87/h7odyC89QzY1OduhlxlvVa1pKbQ7U=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Josef Bacik <jbacik@fb.com>
+Subject: [PATCH 4.9 19/30] bpf: Fix buggy rsh min/max bounds tracking
+Date:   Fri, 29 Jan 2021 12:06:55 +0100
+Message-Id: <20210129105911.339338950@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210129105910.583037839@linuxfoundation.org>
+References: <20210129105910.583037839@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 11:26:38AM +0100, Arnd Bergmann wrote:
-> Another clarification, as there are actually two independent
-> points here:
-> 
-> * if you can completely remove the readl() above and just write a
->   hardcoded value into the register, or perhaps read the original
->   value once at boot time, that is probably a win because it
->   avoids one of the barriers in the beginning. The datasheet should
->   tell you if there are any bits in the register that have to be
->   preserved
-> 
-> * Regarding the _relaxed() accessors, it's a lot harder to know
->   whether that is safe, as you first have to show, in particular in case
->   any of the accesses stop being guarded by the spinlock in that
->   case, and whether there may be a case where you have to
->   serialize the memory access against accesses that are still in the
->   store queue or prefetched.
-> 
-> Whether this matters at all depends mostly on the type of devices
-> you are driving on your SoC. If you have any high-speed network
-> interfaces that are unable to do cache coherent DMA, any extra
-> instruction here may impact the number of packets you can transfer,
-> but if all your high-speed devices are connected to a coherent
-> interconnect, I would just go with the obvious approach and use
-> the safe MMIO accessors everywhere.
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-For L2 cache code, I would say the opposite, actually, because it is
-all too easy to get into a deadlock otherwise.
+[ no upstream commit ]
 
-If you implement the sync callback, that will be called from every
-non-relaxed accessor, which means if you need to take some kind of
-lock in the sync callback and elsewhere in the L2 cache code, you will
-definitely deadlock.
+Fix incorrect bounds tracking for RSH opcode. Commit f23cc643f9ba ("bpf: fix
+range arithmetic for bpf map access") had a wrong assumption about min/max
+bounds. The new dst_reg->min_value needs to be derived by right shifting the
+max_val bounds, not min_val, and likewise new dst_reg->max_value needs to be
+derived by right shifting the min_val bounds, not max_val. Later stable kernels
+than 4.9 are not affected since bounds tracking was overall reworked and they
+already track this similarly as in the fix.
 
-It is safer to put explicit barriers where it is necessary.
+Fixes: f23cc643f9ba ("bpf: fix range arithmetic for bpf map access")
+Reported-by: Ryota Shiga (Flatt Security)
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Cc: Josef Bacik <jbacik@fb.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ kernel/bpf/verifier.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Also remember that the barrier in readl() etc is _after_ the read, not
-before, and the barrier in writel() is _before_ the write, not after.
-The point is to ensure that DMA memory accesses are properly ordered
-with the IO-accessing instructions.
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1732,12 +1732,11 @@ static void adjust_reg_min_max_vals(stru
+ 		 * unsigned shift, so make the appropriate casts.
+ 		 */
+ 		if (min_val < 0 || dst_reg->min_value < 0)
+-			dst_reg->min_value = BPF_REGISTER_MIN_RANGE;
++			reset_reg_range_values(regs, insn->dst_reg);
+ 		else
+-			dst_reg->min_value =
+-				(u64)(dst_reg->min_value) >> min_val;
++			dst_reg->min_value = (u64)(dst_reg->min_value) >> max_val;
+ 		if (dst_reg->max_value != BPF_REGISTER_MAX_RANGE)
+-			dst_reg->max_value >>= max_val;
++			dst_reg->max_value >>= min_val;
+ 		break;
+ 	default:
+ 		reset_reg_range_values(regs, insn->dst_reg);
 
-So, using readl_relaxed() with a read-modify-write is entirely sensible
-provided you do not access DMA memory inbetween.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
