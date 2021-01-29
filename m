@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02986308D73
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE44308D76
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbhA2Tbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232727AbhA2Tbr (ORCPT
+        id S232971AbhA2TcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:32:21 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:33754 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232727AbhA2TcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:31:47 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385E6C061573;
-        Fri, 29 Jan 2021 11:31:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G0ZiICELnT572thIosI7PE9Z9AIMFdeffhjU4wBEDBY=; b=OyXMh3h1KojvKpIaBonPsRaADj
-        U1WWm4Oe0hpYyzRABWpLKhPKZEgMcECjhaDNHpw4atnSSIQLAQxyzffI+xXw3Rw33flpjbLegX3CA
-        7Ew/NW2/dABBCR8pD9VQGZzvuMA8SVwdyqRdWoiSSbXE8ZLJnOA02GCJ8UCBELRCaa61EAKAHxayg
-        fQlQVP5Io49ywTs6zGMy4aCOEUlpA3dhrAkN3CeR+0bYimZnDQoBzBdGUNwgJ6kgbBpq6jlux6RBh
-        V6imSC1SuQDsX3eGheI9WqcJMHpdPxT1cnFuxdgm50qjeRqabAESbsKtYE/m38wmNx8cUEVjpv2Co
-        cn/ns9eQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5ZTg-00AE7B-Da; Fri, 29 Jan 2021 19:30:49 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BC5D1981210; Fri, 29 Jan 2021 20:30:40 +0100 (CET)
-Date:   Fri, 29 Jan 2021 20:30:40 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/4] perf/core: Add support to exclude kernel mode
- instruction tracing
-Message-ID: <20210129193040.GJ8912@worktop.programming.kicks-ass.net>
-References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
- <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
+        Fri, 29 Jan 2021 14:32:19 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10TJVQRG050654;
+        Fri, 29 Jan 2021 13:31:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611948686;
+        bh=6+jM4+HbnMQcRZuB7Fd33N+uADhJPDXM58VLVeKPsxQ=;
+        h=From:To:CC:Subject:Date;
+        b=lsf9UgQhAnDLo2wWOINSCAjdASwFLcqq5NQfHedRZXsvVY3XodQzJXF7zwUt7ACVy
+         YdqPIzI57Laml/YtxZ1TMF73+XUWHAKPvr1bxWQ1i3+FfoetsjIqIf/MN8q9xo/qK0
+         6xEHSTron6cYyuwKNC1++l4mup7lzXm6j3OpNmXw=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10TJVQLm003222
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 Jan 2021 13:31:26 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 29
+ Jan 2021 13:31:26 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 29 Jan 2021 13:31:26 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10TJVOBQ064916;
+        Fri, 29 Jan 2021 13:31:25 -0600
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        <dmaengine@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] dmaengine: ti: k3-psil: optimize struct psil_endpoint_config for size
+Date:   Fri, 29 Jan 2021 21:31:17 +0200
+Message-ID: <20210129193117.28833-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 12:35:10AM +0530, Sai Prakash Ranjan wrote:
+Optimize struct psil_endpoint_config for size by
+- reordering fields
+- grouping bitfields
+- change mapped_channel_id type to s16 (32K channel is enough)
+- default_flow_id type to s16 as it's assigned to -1
 
-> Here the idea is to protect such important information from all users
-> including root users since root privileges does not have to mean full
-> control over the kernel [1] and root compromise does not have to be
-> the end of the world.
+before:
+text            data     bss    dec	        hex	filename
+12654100	5211472	 666904	18532476	11ac87c	vmlinux
 
-And yet, your thing lacks:
+after:
+12654100	5208528	 666904	18529532	11abcfc	vmlinux
 
-> +config EXCLUDE_KERNEL_HW_ITRACE
-> +	bool "Exclude kernel mode hardware assisted instruction tracing"
-> +	depends on PERF_EVENTS
-	depends on SECURITY_LOCKDOWN
+diff: 2944 bytes
 
-or whatever the appropriate symbol is.
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ include/linux/dma/k3-psil.h | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-> +	help
-> +	  Exclude kernel mode instruction tracing by hardware tracing
-> +	  family such as ARM Coresight ETM, Intel PT and so on.
-> +
-> +	  This option allows to disable kernel mode instruction tracing
-> +	  offered by hardware assisted tracing for all users(including root)
-> +	  especially for production systems where only userspace tracing might
-> +	  be preferred for security reasons.
+diff --git a/include/linux/dma/k3-psil.h b/include/linux/dma/k3-psil.h
+index 36e22c5a0f29..5f106d852f1c 100644
+--- a/include/linux/dma/k3-psil.h
++++ b/include/linux/dma/k3-psil.h
+@@ -42,14 +42,14 @@ enum psil_endpoint_type {
+ /**
+  * struct psil_endpoint_config - PSI-L Endpoint configuration
+  * @ep_type:		PSI-L endpoint type
++ * @channel_tpl:	Desired throughput level for the channel
+  * @pkt_mode:		If set, the channel must be in Packet mode, otherwise in
+  *			TR mode
+  * @notdpkt:		TDCM must be suppressed on the TX channel
+  * @needs_epib:		Endpoint needs EPIB
+- * @psd_size:		If set, PSdata is used by the endpoint
+- * @channel_tpl:	Desired throughput level for the channel
+  * @pdma_acc32:		ACC32 must be enabled on the PDMA side
+  * @pdma_burst:		BURST must be enabled on the PDMA side
++ * @psd_size:		If set, PSdata is used by the endpoint
+  * @mapped_channel_id:	PKTDMA thread to channel mapping for mapped channels.
+  *			The thread must be serviced by the specified channel if
+  *			mapped_channel_id is >= 0 in case of PKTDMA
+@@ -62,23 +62,22 @@ enum psil_endpoint_type {
+  */
+ struct psil_endpoint_config {
+ 	enum psil_endpoint_type ep_type;
++	enum udma_tp_level channel_tpl;
+ 
+ 	unsigned pkt_mode:1;
+ 	unsigned notdpkt:1;
+ 	unsigned needs_epib:1;
+-	u32 psd_size;
+-	enum udma_tp_level channel_tpl;
+-
+ 	/* PDMA properties, valid for PSIL_EP_PDMA_* */
+ 	unsigned pdma_acc32:1;
+ 	unsigned pdma_burst:1;
+ 
++	u32 psd_size;
+ 	/* PKDMA mapped channel */
+-	int mapped_channel_id;
++	s16 mapped_channel_id;
+ 	/* PKTDMA tflow and rflow ranges for mapped channel */
+ 	u16 flow_start;
+ 	u16 flow_num;
+-	u16 default_flow_id;
++	s16 default_flow_id;
+ };
+ 
+ int psil_set_new_ep_config(struct device *dev, const char *name,
+-- 
+2.17.1
 
-Also, colour me unconvinced, pretty much all kernel level PMU usage
-can be employed to side-channel / infer crypto keys, why focus on
-ITRACE over others?
