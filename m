@@ -2,115 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D68308565
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5E1308569
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhA2F6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:58:48 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:61980 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbhA2F6e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:58:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611899887; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/g9Z8CUjGzUYN5AdIpOXqDsXSC/Y686XirND/DPmaKg=;
- b=XBigt5Cq3EfW5PWnYBdBcnkP0TdocAnw9x5KKZNiGfnDx+Kk1DKLxaAXWaw++FltbL073Rka
- WuiJnOZlb10RsHxye5f5SByQl9XXmDy7R5O0vB8dnrOj1/Ql8kCPirgJgmftY83fVgUu7mPd
- qnCbWPedSzihP8ltYNR0kx+6SsY=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6013a3c8d08556f4551241e0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 05:57:28
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E1056C43464; Fri, 29 Jan 2021 05:57:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F6AAC433CA;
-        Fri, 29 Jan 2021 05:57:27 +0000 (UTC)
+        id S231953AbhA2GAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:00:10 -0500
+Received: from mail-dm6nam11on2064.outbound.protection.outlook.com ([40.107.223.64]:2753
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229459AbhA2GAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:00:05 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZqWx2KZiOnl1l3IpCyx0pABm5pIMXc+qeIIfNBA2Nn8DTaRgRYNrLiy+vzpu4T3oY3cElsA7J8IdIfXdDvPuAwk3+iZgAxn8wjg+ufM9R3ZHRFSsruel5YyaBT2V5Z5kvO4KoALLrmNjL2glPcV00kI9X+TJeW9mx5PbX4E6q0Wmo0DJ0Pj5wgl9ipaUbv25s7nzJXDwUOhEb36C5kLMZvzA8LcIx9KHPgOAQmzi+eboViM6gugtsBoDPSC5nLHzWZHEXY8yiyq7hjY18FwoKyEeZ3ZX0mpBynTWvobx6xZoeO9UQwzjucZhstzHT3ZXvFH3xNIUzddOwcYb+zoe4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PgAwdFPlQcgy+hFUXRHYAY2i6Ns7EUHizDk/+otmgZE=;
+ b=hvc1iApIt7iUaqOKT2vhBuJcVvaTrz9DAY5vDCmTeUukwyYKvLObNKK5aNXLD29pIIxDxw45gohd4gDNWuhU8ffPSt+yCzZ6+hC+wxqoUB2YcUDeYK2U9JdthJUYxHnbsm3AicFM7xTucgFT9OBW0ce4298Sk9lJjz9WWsOdNrCR9b7CVSrYokOyBJn1G4+kcxyJW+pdQVQT1m7M69G7TIaPoP6WT8B0FacV+m9y1UAIiV9Lw+WMWDXi4tVS7NGiy6TzBuR4H0lje69LOgmYak3bHh+WkW6opl4vHurrM4yfbArwPNYZ/1qauKQUYuO9EcurOd5TpK6esimxle5jBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PgAwdFPlQcgy+hFUXRHYAY2i6Ns7EUHizDk/+otmgZE=;
+ b=RkJySc2XEo/JgML9c74fN/x/aIuNDTH1qHDWUWBiRlQrY59VGVvHo5HhvMRJB9rBP5vMhd9mLk85CV6jldCsTkXWC/BWylwtjgiUfm9yMkBbkJctNlh5BIuYrHe5LvRyGsQiQVekHS+M2OXPgIrZ8vsepuLQY5v7VVWs4FfJtDo=
+Authentication-Results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB1768.namprd11.prod.outlook.com (2603:10b6:903:11b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Fri, 29 Jan
+ 2021 05:59:17 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::5003:3066:e469:80a0]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::5003:3066:e469:80a0%7]) with mapi id 15.20.3784.019; Fri, 29 Jan 2021
+ 05:59:17 +0000
+From:   quanyang.wang@windriver.com
+To:     Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        quanyang.wang@windriver.com
+Subject: [PATCH] drm/tilcdc: send vblank event when disabling crtc
+Date:   Fri, 29 Jan 2021 13:58:31 +0800
+Message-Id: <20210129055831.1702862-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR04CA0081.apcprd04.prod.outlook.com
+ (2603:1096:202:15::25) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 29 Jan 2021 13:57:27 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Sujit Reddy Thumma <sthumma@codeaurora.org>,
-        Vinayak Holikatti <vinholikatti@gmail.com>,
-        Yaniv Gardi <ygardi@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] scsi: ufs: Fix wrong Task Tag used in task
- management request UPIUs
-In-Reply-To: <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-4-git-send-email-cang@codeaurora.org>
- <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
-Message-ID: <f0d1c6a196a044198647df6ca4b06efb@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2PR04CA0081.apcprd04.prod.outlook.com (2603:1096:202:15::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Fri, 29 Jan 2021 05:59:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 96e6c747-9e9f-46fa-67bc-08d8c41b02eb
+X-MS-TrafficTypeDiagnostic: CY4PR11MB1768:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR11MB17689345E27B8313303CEA9EF0B99@CY4PR11MB1768.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:411;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /OWcYSgJM9Av30YmqQlpCVL2fRuLcxBZIgr9z+tUkzLrIH9KVgC/yAqPNHl0p/Iw6D56r9N9ArCb2noWlxjRHftZgu8NarHATcksWB/ejxttJ/CZNN+auLRS61NgUAihsNlqHg9rWdKD0mQmNO3rdGtC3o6FstZrcIz2PoPCdT1jPNL+GbsSvScAwfC9stxlflv+03cLuFzIvTRh7inoTBSASs8DM/mJD6dFNMn8IQwahqM+2bartoiCJHz8HjIzDSpZbmNqWGcIW0Re6Ql+UY6vNxuVYJb3r3KQpY06JB2zlnJMrUBeeN1D+UsPqtP3PPpfGq0y+6hbG94Bz6U5ofG6EKjsCLbNfEjUNoAOrI3ZeC2evOtHHjn7pUTGDjRec7cO040iTciluwTdO1IdYiKI2iC0xWQIFQ2HH9KhFhTcE23VMcAWUzvYtU8L3/jRmbWRqcYTq8ZNM1W5czcbUJH5F1u6wwrhreLpDs858bLRmwxMUpbrB5tx6qKorinjvYR3JB7Fp9c3Fq1hE9n4bw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39850400004)(346002)(396003)(366004)(83380400001)(26005)(6636002)(86362001)(316002)(107886003)(8676002)(52116002)(9686003)(6512007)(6486002)(8936002)(110136005)(36756003)(478600001)(5660300002)(66476007)(1076003)(66556008)(4326008)(66946007)(2616005)(6666004)(2906002)(16526019)(956004)(6506007)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PowIyUwtD4A6JRwAOLYHcCLufJgv6MvUYhsT7gVT8NduXE7G9iCFT6xW0DhU?=
+ =?us-ascii?Q?n6MUliU13x/2NcXr6ef5xizTJf05rnVuZZ9Z9IVYan/XIbH8viyHHNC0DmPX?=
+ =?us-ascii?Q?i+tAieh9NBQ4lUOs2n72Zml1E2Fx4pxf5mUGzDOPq8lAE8TJ8daYAI5PdnpC?=
+ =?us-ascii?Q?QtZwMXzBH6sFUEz/0L4gcbGqZpCPdpRBjKQLe8ckn5VM8YUEGKii88P7CLv3?=
+ =?us-ascii?Q?OEo9JjB1NzEQ0xWZG1GSgRDuvdts9Fbqv8ArHgyxjABFGwxwAHKxPT/oWFBP?=
+ =?us-ascii?Q?zAa5ch1jdv0wCd/DDPOhrC1IxYnTz/G9oON3MsQtkH7fmP5jnOdg9I/3r60Q?=
+ =?us-ascii?Q?hmfxS2ayaLZ9vV+gosvMdPzOh0pcWs4epWU1ubrGI3HnVVqYiH61UB+h+PQ5?=
+ =?us-ascii?Q?+vUKzuHVBCjdA9NvjEB2lsmuKXWl/5lkntxTw+spWPfQNViFne8xz4Xgdq/n?=
+ =?us-ascii?Q?pT9wYGW4DKab7FgyM/IImaSYinPe3WEi9Q35odmTFr7WgXwUT80Q1YUdFwM2?=
+ =?us-ascii?Q?HnCELNpe+uSTG5qHo9JEF885Oy8IX8K5ec72ulA7LqyK3eqQKSqc1z5026QH?=
+ =?us-ascii?Q?Ef8ojusa52CoZEYvq3VXUXzd12HgoXHAXckiF0JPH1oGZ3xQvt1QaHUdYANX?=
+ =?us-ascii?Q?LAcu6X5202wtimpaahkc2EK5Hk2mDAd2jazjYYfsxKDMTwfHDVbxqxKigxdu?=
+ =?us-ascii?Q?qFqqMB0n1jl20syjGL3eEgDQiYbHhCPLGwg6OAKoWJxqzODixUBsJBJIYDXb?=
+ =?us-ascii?Q?D0CFWtCd8xVXj/CAKhSZ78aSpWFC8ARurVKXf4xMV2x3/BG2hvWgmyKm9yGb?=
+ =?us-ascii?Q?XjS0KMd50G/uHjOF4hQgUbJ+dAugnwy4USLA4OBodsx41dZ1vF2VF+w3RgEx?=
+ =?us-ascii?Q?0gru/AimthDmuAdkSR0RHYBzXso9Mi4DNtTqq1PueySoZL0HWgzmfTkoXrk3?=
+ =?us-ascii?Q?eEdKg5ewBxwp2RrIEjl5CwGGmCe97wRkGATa0xXA8aojSFL5M9yuqrUrej+D?=
+ =?us-ascii?Q?Z0dK43owogZzS75LpSUmGqLYZvyszriAx8mvYGxMu5FNVzfInDKL2ary0Lmy?=
+ =?us-ascii?Q?3MrvByje?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96e6c747-9e9f-46fa-67bc-08d8c41b02eb
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 05:59:16.9775
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mV81YCFEEsvN/P67gU8rOmShQD3rAnoWQvYAAXockGXq43oTywXAQFOLJYPIVoA0oOoeoaGVm7Lbj8k9394QHQ69aVeQ3+yUAC6NKJDQnsI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1768
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-29 11:15, Bart Van Assche wrote:
-> On 1/27/21 8:16 PM, Can Guo wrote:
->> In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs + 
->> req->tag as
->> the Task Tag in one TMR UPIU. Directly use req->tag as the Task Tag.
-> 
-> Why is the current code wrong and why is this patch the proper fix?
-> Please explain this in the patch description.
-> 
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-req->tag is the tag allocated for one TMR, no?
+When run xrandr to change resolution on Beaglebone Black board, it will
+print the error information:
 
->> +	 * blk_get_request() used here is only to get a free tag.
-> 
-> Please fix the word order in this comment ("blk_get_request() is used
-> here only to get a free tag").
+root@beaglebone:~# xrandr -display :0 --output HDMI-1 --mode 720x400
+[drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+[drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:32:tilcdc crtc] commit wait timed out
+[drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+[drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:34:HDMI-A-1] commit wait timed out
+[drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+[drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:31:plane-0] commit wait timed out
+tilcdc 4830e000.lcdc: already pending page flip!
 
-Sure.
+This is because there is operation sequence as below:
 
-> 
->> +	ufshcd_release(hba);
->>  	blk_put_request(req);
->> 
->> -	ufshcd_release(hba);
-> 
-> An explanation for this change is missing from the patch description.
-> 
+drm_atomic_connector_commit_dpms(mode is DRM_MODE_DPMS_OFF):
+    ...
+    drm_atomic_helper_setup_commit <- init_completion(commit_A->flip_done)
+    drm_atomic_helper_commit_tail
+        tilcdc_crtc_atomic_disable
+        tilcdc_plane_atomic_update <- drm_crtc_send_vblank_event in tilcdc_crtc_irq
+                                      is skipped since tilcdc_crtc->enabled is 0
+        tilcdc_crtc_atomic_flush   <- drm_crtc_send_vblank_event is skipped since
+                                      crtc->state->event is set to be NULL in
+                                      tilcdc_plane_atomic_update
+drm_mode_setcrtc:
+    ...
+    drm_atomic_helper_setup_commit <- init_completion(commit_B->flip_done)
+    drm_atomic_helper_wait_for_dependencies
+        drm_crtc_commit_wait   <- wait for commit_A->flip_done completing
 
-This is just for symmetric coding since this change is almost
-re-writing the whole func - at the entrence it calls blk_get_request()
-and ufshcd_hold(), so before exit it'd be good to call ufshcd_release()
-before blk_put_request(). If you think this single line change worths
-a separate patch, I can split it out in next version.
+Just as shown above, the steps which could complete commit_A->flip_done
+are all skipped and commit_A->flip_done will never be completed. This will
+result a time-out ERROR when drm_crtc_commit_wait check the commit_A->flip_done.
+So add drm_crtc_send_vblank_event in tilcdc_crtc_atomic_disable to
+complete commit_A->flip_done.
 
-Thanks,
-Can Guo.
+Fixes: cb345decb4d2 ("drm/tilcdc: Use standard drm_atomic_helper_commit")
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> Thanks,
-> 
-> Bart.
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+index 30213708fc99..d99afd19ca08 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+@@ -515,6 +515,15 @@ static void tilcdc_crtc_off(struct drm_crtc *crtc, bool shutdown)
+ 
+ 	drm_crtc_vblank_off(crtc);
+ 
++	spin_lock_irq(&crtc->dev->event_lock);
++
++	if (crtc->state->event) {
++		drm_crtc_send_vblank_event(crtc, crtc->state->event);
++		crtc->state->event = NULL;
++	}
++
++	spin_unlock_irq(&crtc->dev->event_lock);
++
+ 	tilcdc_crtc_disable_irqs(dev);
+ 
+ 	pm_runtime_put_sync(dev->dev);
+-- 
+2.25.1
+
