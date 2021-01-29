@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AA5308BC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C4C308BC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhA2RmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:42:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232649AbhA2RhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232511AbhA2Rmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:42:39 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:44245 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232653AbhA2RhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Jan 2021 12:37:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7881C64E06;
-        Fri, 29 Jan 2021 17:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611941763;
-        bh=UU3PVz9wczpUtXMLDgF1j7n5nGXjETwd6kHnGceGTmo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Egkn8VYL5xQe4bwWplZcAw7ap+1YC4uCHmi759G/EtZ/DcRoGHVBcCJLPUA8cUKFs
-         YA/r7Rgqog5WXiGx4WxNizNqM/YK5Om5JUQ03O1c0PbWtj1HzMIu8V4g91GeM7GV37
-         jGvCoAnmLaqgivjZsnI0pB1NfyBTC4IhIA2U1hc0K1ucVlPpEiVqvnq1uZ9+nLYSrP
-         hl9X7Lq+qfkDCb4yH7sONyua1KVpTWmd4zrkEfqdg6NYUivDAxaW3RZ4Ru3Hc73y2K
-         exlTX14UqhOGxgPaUdR8QW6WuscoiToTo0QSDcWNXsyc47+CarIgAwmRwu17e/xjSN
-         bYTMlSvs9nlBg==
-Date:   Fri, 29 Jan 2021 19:35:57 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Hulk Robot <hulkci@huawei.com>, Wang Hai <wanghai38@huawei.com>
-Subject: Re: [PATCH v2] tpm: ibmvtpm: fix error return code in
- tpm_ibmvtpm_probe()
-Message-ID: <YBRHfZeqAirQolIN@kernel.org>
-References: <20210126014753.340299-1-stefanb@linux.vnet.ibm.com>
+Received: by mail-il1-f199.google.com with SMTP id a9so8260383ilm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:36:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=lfC0qpdQ1T9Xl29m7ejvYwmPN8ZlSIQE5xkZ0CP3l2o=;
+        b=NnJgMRI1OGn0v+smPPqrkmvww5bfo6dREJdNXMD7tWgw6HOX90zOQlPWOPHCGKT8LM
+         1/q03jXodsVM4MP1/3BgRTGR7GGNTUEgW5B7Iup138mjO+FBehdMeM0JcLNGPNZPzSQR
+         QUSDKt5Q8JATa3MP09QK4CVCaYKFkm7E7hZPKtkamubpRNeRVHcye2VyzuRs4Czq9cyp
+         mm/wd6JmW9Wi5NEKH+sxCmKW69Rilm/NOWcUv8O8CtpP0mZsiPwuSz+fJt8F3BGqyCod
+         qgxKkVy5GsDLIn58ny5kt/SB6wINkz3nnYnBq18umeQmztD+RDV9Q4HDy8//uer4S5c2
+         zbQw==
+X-Gm-Message-State: AOAM5302PaAfPixWV/4krkUC0xI4i1hL+4LVhu0nQu1Ird5PBVLGBIxf
+        DHikAkmwna/ioaW0bHKFK9WlTaDGYi9D62U0hCAyx8f7nNhr
+X-Google-Smtp-Source: ABdhPJwBqVzozXEi/mXDr2fTOIGUbDevyAvTt6YrjOmicFDrPHmlaw/gllzSdTT6n1lw8j4CnDsCEL4/dHr1l1MlNOZe/mz1iRWI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126014753.340299-1-stefanb@linux.vnet.ibm.com>
+X-Received: by 2002:a6b:f107:: with SMTP id e7mr4301666iog.191.1611941767913;
+ Fri, 29 Jan 2021 09:36:07 -0800 (PST)
+Date:   Fri, 29 Jan 2021 09:36:07 -0800
+In-Reply-To: <000000000000d4b96a05aedda7e2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079a40e05ba0d702f@google.com>
+Subject: Re: possible deadlock in send_sigio (2)
+From:   syzbot <syzbot+907b8537e3b0e55151fc@syzkaller.appspotmail.com>
+To:     bfields@fieldses.org, boqun.feng@gmail.com, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:47:53PM -0500, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> Return error code -ETIMEDOUT rather than '0' when waiting for the
-> rtce_buf to be set has timed out.
-> 
-> Fixes: d8d74ea3c002 ("tpm: ibmvtpm: Wait for buffer to be set before proceeding")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
+syzbot suspects this issue was fixed by commit:
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+commit 8d1ddb5e79374fb277985a6b3faa2ed8631c5b4c
+Author: Boqun Feng <boqun.feng@gmail.com>
+Date:   Thu Nov 5 06:23:51 2020 +0000
 
-Thanks! Should I add
+    fcntl: Fix potential deadlock in send_sig{io, urg}()
 
-Cc: stable@vger.kernel.org to this?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17455db4d00000
+start commit:   7b1b868e Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
+dashboard link: https://syzkaller.appspot.com/bug?extid=907b8537e3b0e55151fc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163e046b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f8b623500000
 
-/Jarkko
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fcntl: Fix potential deadlock in send_sig{io, urg}()
 
->  drivers/char/tpm/tpm_ibmvtpm.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-> index 994385bf37c0..813eb2cac0ce 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.c
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
-> @@ -687,6 +687,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
->  				ibmvtpm->rtce_buf != NULL,
->  				HZ)) {
->  		dev_err(dev, "CRQ response timed out\n");
-> +		rc = -ETIMEDOUT;
->  		goto init_irq_cleanup;
->  	}
->  
-> -- 
-> 2.25.4
-> 
-> 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
