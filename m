@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB2B30855A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C709B308559
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhA2Fu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:50:28 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:55811 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231939AbhA2FuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:50:23 -0500
-Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10T5mhR4047405;
-        Fri, 29 Jan 2021 14:48:43 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
- Fri, 29 Jan 2021 14:48:43 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10T5maKc047394
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 29 Jan 2021 14:48:43 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000647eff05b3f7e0d4@google.com>
- <20201113120055.11748-1-hdanton@sina.com>
- <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
- <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
- <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
-Date:   Fri, 29 Jan 2021 14:48:36 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231992AbhA2FuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:50:12 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:56100 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231939AbhA2FuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 00:50:05 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l5MeO-0002bW-GP; Fri, 29 Jan 2021 16:48:57 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Jan 2021 16:48:56 +1100
+Date:   Fri, 29 Jan 2021 16:48:56 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] crypto: octeontx2 - Add dependency on NET_VENDOR_MARVELL
+Message-ID: <20210129054856.GA20020@gondor.apana.org.au>
+References: <b1397a30-0018-ac78-2a89-4fc0db1d1ec8@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1397a30-0018-ac78-2a89-4fc0db1d1ec8@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/01/29 4:05, Shuah Khan wrote:
-> The reason I don't like adding printk's is this is a race condition
-> and as a result time sensitive. Adding printks in the path will not
-> help debug this issue. It will make it harder to reproduce the problem.
-
-Not always. Adding printk() might make it easier to reproduce the problem.
-
+On Mon, Jan 25, 2021 at 09:41:12AM -0800, Randy Dunlap wrote:
+> on x86_64:
 > 
-> I am unable to reproduce the problem using the reproducer and running multiple instances of the reproducer.
+> ld: drivers/crypto/marvell/octeontx2/otx2_cptpf_main.o: in function `cptpf_flr_wq_handler':
+> otx2_cptpf_main.c:(.text+0x2b): undefined reference to `otx2_mbox_alloc_msg_rsp'
 
-Since syzkaller cannot find a reproducer for "general protection fault in
-tomoyo_socket_sendmsg_permission", and you cannot reproduce other problem
-using reproducer, trying to obtain some clue via printing messages by asking
-syzkaller to try debug patch can be very helpful.
+Thanks for the report.  The issue is that the crypto driver depends
+on code that sits under net so if that option is off then you'll end
+up with these errors.
 
-Since "general protection fault in tomoyo_socket_sendmsg_permission" is caused by
-unexpectedly resetting ud->tcp_socket to NULL without waiting for tx thread to
-terminate, tracing the ordering of events is worth knowing. Even adding
-schedule_timeout_uninterruptible() to before kernel_sendmsg() might help.
+---8<---
+The crypto octeontx2 driver depends on the mbox code in the network
+tree.  It tries to select the MBOX Kconfig option but that option
+itself depends on many other options which are not selected, e.g.,
+CONFIG_NET_VENDOR_MARVELL.  It would be inappropriate to select them
+all as randomly prompting the user for network options which would
+oterhwise be disabled just because a crypto driver has been enabled
+makes no sense.
 
+This patch fixes this by adding a dependency on NET_VENDOR_MARVELL.
+This makes the crypto driver invisible if the network option is off.
+
+If the crypto driver must be visible even without the network stack
+then the shared mbox code should be moved out of drivers/net.
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 5e8ce8334734 ("crypto: marvell - add Marvell OcteonTX2 CPT...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/drivers/crypto/marvell/Kconfig b/drivers/crypto/marvell/Kconfig
+index 2efbd79180ce..a188ad1fadd3 100644
+--- a/drivers/crypto/marvell/Kconfig
++++ b/drivers/crypto/marvell/Kconfig
+@@ -41,6 +41,7 @@ config CRYPTO_DEV_OCTEONTX2_CPT
+ 	depends on ARM64 || COMPILE_TEST
+ 	depends on PCI_MSI && 64BIT
+ 	depends on CRYPTO_LIB_AES
++	depends on NET_VENDOR_MARVELL
+ 	select OCTEONTX2_MBOX
+ 	select CRYPTO_DEV_MARVELL
+ 	select CRYPTO_SKCIPHER
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
