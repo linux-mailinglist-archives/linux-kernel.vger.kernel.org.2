@@ -2,196 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046BB308618
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75241308620
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbhA2GxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:53:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        id S232184AbhA2G6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbhA2Gwz (ORCPT
+        with ESMTP id S232106AbhA2G5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:52:55 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D4CC061786;
-        Thu, 28 Jan 2021 22:51:55 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id z16so3686827wml.2;
-        Thu, 28 Jan 2021 22:51:55 -0800 (PST)
+        Fri, 29 Jan 2021 01:57:54 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED46C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:57:14 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id j12so5623251pfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:57:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VP2CCHQBNXtKJCFkUJhVL9cJo4wDQJQBLx9guRyCYbE=;
-        b=lAFERyn16t6IKH/B04xnGPDSjZabYoJgG5eo0coz6k9LcA6YQuuwyLlv44vRC5dC4Y
-         gnAKe/btYtvAxPXbxbEy5J/xiknphQ+9cUmw0NFtRLg/mVMOX/sMqoI99ybA7lzPavbI
-         iwN5TgWc94kMh/g2x/PthN/bbRtc+59JvaWRVbsyhRNooH8eACo+KzueUt+6r0zJqzbB
-         AeZq1/kqPf2nbRniehVZMAfH6/W6vPA6xrsiLeVI2uNNCkzkKB3eJJX++DmDdtX5k1Xw
-         HqcdNDhSr1+4hp9rlwtdkTrRsADxh0Zz45wqfLd6prnb+N8/Fmf1WuesakekYNSzRXgs
-         oN2A==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TbuleYwe5NvwJojz+4aOt8A66WvfcU/0PeNJr1ClLeM=;
+        b=nBYq60FCybEbi705MaQVQBD560R6is7L09GfIIAOZ+XUgkuhtMr6vpKMGJYfpcP2/C
+         /tR+5bo1yUoVQkm/j3lecucbC/OOaG9/7VyuZcnzUSASJZXIsekF0oBlwGjtkJCVu2yg
+         zDnk/cm8mY41bA/lgcnAYb7WTgQ1pfvIUwwPI420UqWXkgit7AgWRG5v31gzxqf+ymtC
+         mN6WlsCyTyxgtc+HIY32Ty1o0RZYFpc43VTnLarPU94L3cdanP4M6ktWN/nc4CSr981d
+         DSkx0viJASulvmpQu++VsZtNqzNhJy2AQFQ1I0A7dMHtmAdv3Sbs9a7xNmorN+E46fUC
+         LJcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VP2CCHQBNXtKJCFkUJhVL9cJo4wDQJQBLx9guRyCYbE=;
-        b=WyDFC7urIaZhJ9vXB9x9PJnVzIoSJJ+CmjX9HHSSWL3o7lC9mh+v550a0dlKC/GPZC
-         X6Vvd1Bhgl6pbkCcVuwxeLZfU6EFF3MSNEX7gnvSOIjjv+34rzEB86GoSQ6RSwQlO6kq
-         RbVICAd8Ksr9lDKE6kqpIrKyul+4P9hIcxw3uOfaSjhGahIEtqD13i3QtA6e9+LjMSgC
-         FDLXW6SMnLpHfX3W/kOYCti9BATjZouQYLkRwIjxZChm1DHDH8ZVE/wV4aHTqzMUL5Eo
-         WDSq80Y4ODG+57Rf/MkwV600MRyyhGtytXSA1vhP0SeCLnfBmrj3F/WnYPGw0l7E8fx2
-         89iw==
-X-Gm-Message-State: AOAM531QRFjXC/eJn0dtl8DCHiRthJ6ZlBm8ojQA5LEBdcwmT3cNGAxM
-        OouYWWyC9c2cEE+mG3z7q+k=
-X-Google-Smtp-Source: ABdhPJzewy07pHgft5spDvtWcpL0Z0Jzf7htu4T7gYqWUbTeHW/zs2BxZAinDBd9hp04xwerCswt+g==
-X-Received: by 2002:a7b:c94e:: with SMTP id i14mr2382899wml.26.1611903114076;
-        Thu, 28 Jan 2021 22:51:54 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id b7sm11501236wrs.50.2021.01.28.22.51.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 22:51:53 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Dongjin Kim <tobetter@gmail.com>
-Subject: [PATCH 5/5] arm64: dts: meson: add initial device-tree for ODROID-HC4
-Date:   Fri, 29 Jan 2021 06:51:37 +0000
-Message-Id: <20210129065137.5473-6-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210129065137.5473-1-christianshewitt@gmail.com>
-References: <20210129065137.5473-1-christianshewitt@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TbuleYwe5NvwJojz+4aOt8A66WvfcU/0PeNJr1ClLeM=;
+        b=YT7/mzhQBV5M5JVgJX5vgt5I8FAIpoOcXe7HqHLROTd43wDn6py8pRSHjKDlRgtZ7c
+         cMesZEUKSlNeEeGCf/vjc1n+d4dl5JZIm4TjItsFQ95fA5JsfQBjP+MYXsMnyCHJgcjf
+         sFw4OaESyT2Sq/wH0Dv5PzIeD98RKPSYESzntnfEZTyo+GlS56PQ4RTLSbmlTyPg3Xhx
+         reByiEJW4jQr8vnBlY7/NH/Je5YMM7EAeiuA8447KPiJMklE6B6Rek8Y6X6/Hwo/MUWn
+         GyWMaFPzkzTfHWna33D2fm3lgYSvVugMmN6lL87ZjB0CH+g7JmQmtgmUoO8LE1sk0yq4
+         I9gQ==
+X-Gm-Message-State: AOAM5325Qt5ZAsMKsO69Q6evtu6dY0lzkCV5XXsXGW8Tc0TphZDpp/vY
+        BvdWXSnf3imt6nmD+PUBzHREbAy+4Q/VbhyiWlQSeg==
+X-Google-Smtp-Source: ABdhPJzDbWkHuF3yE1SwKxbTcZlixSLpsO95Cov3oCPm9dJ66DrTvWGCs6cK7qWQRkEcJATRiILuvPSB1lQ5oFobVFE=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr3283849pgf.273.1611903434093;
+ Thu, 28 Jan 2021 22:57:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com> <20210126092942.GA10602@linux>
+ <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com> <20210126145819.GB16870@linux>
+ <259b9669-0515-01a2-d714-617011f87194@redhat.com> <20210126153448.GA17455@linux>
+ <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com> <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
+ <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com> <e200c17e-5c95-025e-37a7-af7cfbb05b18@oracle.com>
+In-Reply-To: <e200c17e-5c95-025e-37a7-af7cfbb05b18@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 29 Jan 2021 14:56:35 +0800
+Message-ID: <CAMZfGtWvDCaN7M9CHNx3O_OQvH8+HN_xg=uc3aUOUeqqB_--ZQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
+ vmemmap pages associated with each HugeTLB page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ODROID-HC4 is a derivative of the C4 with minor differences:
+On Fri, Jan 29, 2021 at 9:04 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 1/28/21 4:37 AM, Muchun Song wrote:
+> > On Wed, Jan 27, 2021 at 6:36 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 26.01.21 16:56, David Hildenbrand wrote:
+> >>> On 26.01.21 16:34, Oscar Salvador wrote:
+> >>>> On Tue, Jan 26, 2021 at 04:10:53PM +0100, David Hildenbrand wrote:
+> >>>>> The real issue seems to be discarding the vmemmap on any memory that has
+> >>>>> movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, we
+> >>>>> can reuse parts of the thingy we're freeing for the vmemmap. Not that it
+> >>>>> would be ideal: that once-a-huge-page thing will never ever be a huge page
+> >>>>> again - but if it helps with OOM in corner cases, sure.
+> >>>>
+> >>>> Yes, that is one way, but I am not sure how hard would it be to implement.
+> >>>> Plus the fact that as you pointed out, once that memory is used for vmemmap
+> >>>> array, we cannot use it again.
+> >>>> Actually, we would fragment the memory eventually?
+> >>>>
+> >>>>> Possible simplification: don't perform the optimization for now with free
+> >>>>> huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: what
+> >>>>> happens when migrating a huge page from ZONE_NORMAL to (ZONE_MOVABLE|CMA)?
+> >>>>
+> >>>> But if we do not allow theose pages to be in ZONE_MOVABLE or CMA, there is no
+> >>>> point in migrate them, right?
+> >>>
+> >>> Well, memory unplug "could" still work and migrate them and
+> >>> alloc_contig_range() "could in the future" still want to migrate them
+> >>> (virtio-mem, gigantic pages, powernv memtrace). Especially, the latter
+> >>> two don't work with ZONE_MOVABLE/CMA. But, I mean, it would be fair
+> >>> enough to say "there are no guarantees for
+> >>> alloc_contig_range()/offline_pages() with ZONE_NORMAL, so we can break
+> >>> these use cases when a magic switch is flipped and make these pages
+> >>> non-migratable anymore".
+> >>>
+> >>> I assume compaction doesn't care about huge pages either way, not sure
+> >>> about numa balancing etc.
+> >>>
+> >>>
+> >>> However, note that there is a fundamental issue with any approach that
+> >>> allocates a significant amount of unmovable memory for user-space
+> >>> purposes (excluding CMA allocations for unmovable stuff, CMA is
+> >>> special): pairing it with ZONE_MOVABLE becomes very tricky as your user
+> >>> space might just end up eating all kernel memory, although the system
+> >>> still looks like there is plenty of free memory residing in
+> >>> ZONE_MOVABLE. I mentioned that in the context of secretmem in a reduced
+> >>> form as well.
+> >>>
+> >>> We theoretically have that issue with dynamic allocation of gigantic
+> >>> pages, but it's something a user explicitly/rarely triggers and it can
+> >>> be documented to cause problems well enough. We'll have the same issue
+> >>> with GUP+ZONE_MOVABLE that Pavel is fixing right now - but GUP is
+> >>> already known to be broken in various ways and that it has to be treated
+> >>> in a special way. I'd like to limit the nasty corner cases.
+> >>>
+> >>> Of course, we could have smart rules like "don't online memory to
+> >>> ZONE_MOVABLE automatically when the magic switch is active". That's just
+> >>> ugly, but could work.
+> >>>
+> >>
+> >> Extending on that, I just discovered that only x86-64, ppc64, and arm64
+> >> really support hugepage migration.
+> >>
+> >> Maybe one approach with the "magic switch" really would be to disable
+> >> hugepage migration completely in hugepage_migration_supported(), and
+> >> consequently making hugepage_movable_supported() always return false.
+> >>
+> >> Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
+> >> migrated. The problem I describe would apply (careful with using
+> >> ZONE_MOVABLE), but well, it can at least be documented.
+> >
+> > Thanks for your explanation.
+> >
+> > All thinking seems to be introduced by encountering OOM. :-(
+>
+> Yes.  Or, I think about it as the problem of not being able to dissolve (free
+> to buddy) a hugetlb page.  We can not dissolve because we can not allocate
+> vmemmap for all sumpages.
+>
+> > In order to move forward and free the hugepage. We should add some
+> > restrictions below.
+> >
+> > 1. Only free the hugepage which is allocated from the ZONE_NORMAL.
+> Corrected: Only vmemmap optimize hugepages in ZONE_NORMAL
+>
+> > 2. Disable hugepage migration when this feature is enabled.
+>
+> I am not sure if we want to fully disable migration.  I may be misunderstanding
+> but the thought was to prevent migration between some movability types.  It
+> seems we should be able to migrate form ZONE_NORMAL to ZONE_NORMAL.
+>
+> Also, if we do allow huge pages without vmemmap optimization in MOVABLE or CMA
+> then we should allow those to be migrated to NORMAL?  Or is there a reason why
+> we should prevent that.
+>
+> > 3. Using GFP_ATOMIC to allocate vmemmap pages firstly (it can reduce
+> >    memory fragmentation), if it fails, we use part of the hugepage to
+> >    remap.
+>
+> I honestly am not sure about this.  This would only happen for pages in
+> NORMAL.  The only time using part of the huge page for vmemmap would help is
+> if we are trying to dissolve huge pages to free up memory for other uses.
+>
+> > What's your opinion about this? Should we take this approach?
+>
+> I think trying to solve all the issues that could happen as the result of
+> not being able to dissolve a hugetlb page has made this extremely complex.
+> I know this is something we need to address/solve.  We do not want to add
+> more unexpected behavior in corner cases.  However, I can not help but think
+> about similar issues today.  For example, if a huge page is in use in
+> ZONE_MOVABLE or CMA there is no guarantee that it can be migrated today.
+> Correct?  We may need to allocate another huge page for the target of the
+> migration, and there is no guarantee we can do that.
 
-- 128MB SPI-NOR flash
-- 2x SATA ports via ASM1061 PCIe to SATA controller
-- 7-pin header with SPI and I2C for 1-inch OLED display and RTC
-- 1x USB 2.0 host port
+Yeah. Adding more restrictions makes things more complex. As you
+and Oscar said, refusing to free hugepage when allocating
+vmemmap pages fail may be an easy way now.
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |  1 +
- .../boot/dts/amlogic/meson-sm1-odroid-hc4.dts | 96 +++++++++++++++++++
- 2 files changed, 97 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index f3c8a85fe987..78a569d7fa20 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -47,5 +47,6 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxm-vega-s96.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-wetek-core2.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-khadas-vim3l.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-c4.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-hc4.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-sei610.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-a1-ad401.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-new file mode 100644
-index 000000000000..bf15700c4b15
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Dongjin Kim <tobetter@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-sm1-odroid.dtsi"
-+
-+/ {
-+	compatible = "hardkernel,odroid-hc4", "amlogic,sm1";
-+	model = "Hardkernel ODROID-HC4";
-+
-+	aliases {
-+		rtc0 = &rtc;
-+		rtc1 = &vrtc;
-+	};
-+
-+	fan0: pwm-fan {
-+		compatible = "pwm-fan";
-+		#cooling-cells = <2>;
-+		cooling-min-state = <0>;
-+		cooling-max-state = <3>;
-+		cooling-levels = <0 120 170 220>;
-+		pwms = <&pwm_cd 1 40000 0>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-blue {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+			panic-indicator;
-+		};
-+
-+		led-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_POWER;
-+			gpios = <&gpio_ao GPIOAO_7 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+	};
-+
-+	sound {
-+		model = "ODROID-HC4";
-+	};
-+};
-+
-+&cpu_thermal {
-+	cooling-maps {
-+		map {
-+			trip = <&cpu_passive>;
-+			cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
-+&ir {
-+	linux,rc-map-name = "rc-odroid";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	pinctrl-0 = <&i2c2_sda_x_pins>, <&i2c2_sck_x_pins>;
-+	pinctrl-names = "default";
-+
-+	rtc: rtc@51 {
-+		status = "okay";
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+		wakeup-source;
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+	reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
-+};
-+
-+&pwm_cd {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm_d_x6_pins>;
-+};
-+
-+&sd_emmc_c {
-+	status = "disabled";
-+};
-+
-+&usb {
-+	phys = <&usb2_phy0>, <&usb2_phy1>;
-+	phy-names = "usb2-phy0", "usb2-phy1";
-+};
--- 
-2.17.1
-
+> --
+> Mike Kravetz
