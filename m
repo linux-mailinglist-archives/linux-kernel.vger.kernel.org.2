@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E51C308E8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC4A308E92
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbhA2UhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:37:03 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:38862 "EHLO vps0.lunn.ch"
+        id S233243AbhA2Uiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:38:51 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:57998 "EHLO mail.pqgruber.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232887AbhA2Ug4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:36:56 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l5aUu-003FSA-Aa; Fri, 29 Jan 2021 21:36:04 +0100
-Date:   Fri, 29 Jan 2021 21:36:04 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
+        id S231485AbhA2Uia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:38:30 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 55628C6B26F;
+        Fri, 29 Jan 2021 21:37:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1611952668;
+        bh=M77IeiI3LvLSKSlLTtriV575WwpoQQQ6BC6g1xaE4bw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=w0xNUbE6qYayxulO8c/Jz7MWooXrxEyeZRUOk1v0bPhzt5bpcGm0F21WrgyMtxLiZ
+         oRcEXbD6RyApswoXvRG9HPdmvg2K6jzJoSRVSvoWgZhMfmEs+AxtDlyom636a+O+ZT
+         4/EjuGjie34HOl6HMvZ2gCk90nZ5g92ca3RdXvEE=
+Date:   Fri, 29 Jan 2021 21:37:47 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
 To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Anders =?iso-8859-1?Q?R=F8nningen?= <anders@ronningen.priv.no>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
- w/o dma cache snooping
-Message-ID: <YBRxtM/tpmegczPD@lunn.ch>
-References: <20210129195240.31871-1-TheSven73@gmail.com>
- <20210129195240.31871-2-TheSven73@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <YBRyG0vv3gRzygSB@workstation.tuxnet>
+References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
+ <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+ <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210129195240.31871-2-TheSven73@gmail.com>
+In-Reply-To: <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-> index f1f6eba4ace4..f485320e5784 100644
-> --- a/drivers/net/ethernet/microchip/lan743x_main.c
-> +++ b/drivers/net/ethernet/microchip/lan743x_main.c
-> @@ -1957,11 +1957,11 @@ static int lan743x_rx_next_index(struct lan743x_rx *rx, int index)
->  
->  static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
->  {
-> -	int length = 0;
-> +	struct net_device *netdev = rx->adapter->netdev;
->  
-> -	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
-> -	return __netdev_alloc_skb(rx->adapter->netdev,
-> -				  length, GFP_ATOMIC | GFP_DMA);
-> +	return __netdev_alloc_skb(netdev,
-> +				  netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING,
-> +				  GFP_ATOMIC | GFP_DMA);
->  }
->  
->  static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
-> @@ -1977,9 +1977,10 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
->  {
->  	struct lan743x_rx_buffer_info *buffer_info;
->  	struct lan743x_rx_descriptor *descriptor;
-> -	int length = 0;
-> +	struct net_device *netdev = rx->adapter->netdev;
-> +	int length;
+Hi Sven,
 
-Please keep to reverse christmass tree.
->  
-> -	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
-> +	length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
->  	descriptor = &rx->ring_cpu_ptr[index];
->  	buffer_info = &rx->buffer_info[index];
->  	buffer_info->skb = skb;
-> @@ -2148,11 +2149,18 @@ static int lan743x_rx_process_packet(struct lan743x_rx *rx)
->  			descriptor = &rx->ring_cpu_ptr[first_index];
->  
->  			/* unmap from dma */
-> +			packet_length =	RX_DESC_DATA0_FRAME_LENGTH_GET_
-> +					(descriptor->data0);
->  			if (buffer_info->dma_ptr) {
-> -				dma_unmap_single(&rx->adapter->pdev->dev,
-> -						 buffer_info->dma_ptr,
-> -						 buffer_info->buffer_length,
-> -						 DMA_FROM_DEVICE);
-> +				dma_sync_single_for_cpu(&rx->adapter->pdev->dev,
-> +							buffer_info->dma_ptr,
-> +							packet_length,
-> +							DMA_FROM_DEVICE);
-> +				dma_unmap_single_attrs(&rx->adapter->pdev->dev,
-> +						       buffer_info->dma_ptr,
-> +						       buffer_info->buffer_length,
-> +						       DMA_FROM_DEVICE,
-> +						       DMA_ATTR_SKIP_CPU_SYNC);
+On Fri, Jan 29, 2021 at 01:05:14PM -0500, Sven Van Asbroeck wrote:
+> Hi Clemens,
+> 
+> On Fri, Jan 29, 2021 at 11:31 AM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > Ok, so you suggest we extend our get_state logic to deal with cases
+> > like the following:
+> 
+> Kind of. We can't control how other actors (bootloaders etc) program the
+> chip. As far as I know, there are many, many different register settings that
+> result in the same physical chip outputs. So if .probe() wants to preserve the
+> existing chip settings, .get_state() has to be able to deal with every possible
+> setting. Even invalid ones.
 
-So this patch appears to contain two different changes
-1) You only allocate a receive buffer as big as the MTU plus overheads
-2) You change the cache operations to operate on the received length.
+Is the driver really responsible for bootloaders that program the chip
+with invalid values?
+The chip comes out of PoR with sane default values. If the bootloader of
+a user messes them up, isn't that a bootloader problem instead of a
+Linux kernel driver problem?
 
-The first change should be completely safe, and i guess, is giving
-most of the benefits. The second one is where interesting things might
-happen. So please split this patch into two.  If it does break, we can
-git bisect, and probably end up on the second patch.
+> In addition, .apply() cannot make any assumptions as to which bits are
+> already set/cleared on the chip. Including preserved, invalid settings.
+> 
+> This might get quite complex.
+> 
+> However if we reset the chip in .probe() to a known state (a normalized state,
+> in the mathematical sense), then both .get_state() and .apply() become
+> much simpler. because they only need to deal with known, normalized states.
 
-Thanks
-	Andrew
+Yes, I agree. This would however make it impossible to do a flicker-free
+transition from bootloader to kernel, but that's not really a usecase I
+have so I can live without it.
+
+Another point in favor of resetting is that the driver already does it.
+Removing the reset of the OFF register may break some boards who rely on
+that behaviour.
+My version only extended the reset to include the ON register.
+
+> 
+> In short, it's a tradeoff between code complexity, and user friendliness/
+> features.
+> 
+> Sven
+
+Thierry, Uwe, what's your take on this?
+
+Thierry: Would you accept it if we continue to reset the registers in
+.probe?
+
+Thanks,
+Clemens
