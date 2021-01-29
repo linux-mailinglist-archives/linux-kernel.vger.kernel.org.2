@@ -2,179 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F3E308357
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2499308358
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhA2BmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:42:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhA2BmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:42:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F75D64DF1;
-        Fri, 29 Jan 2021 01:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611884483;
-        bh=7PzGkfKU1mQu1KwINpqtyWbafw/zM/V9VnkvLvCV8Lw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LxnspWp5bVkCGCUlg8bUlGSrwrNeMDEHGyKlN0A318tV8U8TwS0WP9MmBJhjALf6r
-         rJ/yf6phlU3UGRjd3F6C7WUfbQ8Crt1/pLyt+e/GqMqzQWE1DzfjeXDeSNyekLXzl9
-         JgJYrjvAWTRLlP19YxtX7PVZmiZjGv9alNRKMAmv1i3q3/3VcS/lra/5C1acJ3sGws
-         tOiOuw1xE3SmdiUqNZhhn3xCkyyESvvVyktEAPD43eblcZli8N3cmNBuR1G4lq3eyj
-         65bZTC6rEqp+Brp7WQmbqJ/2PgwqP8FWFo9ggn8d3wGGyv6Qy86l1iA6+L67N+09t1
-         89bqFa40atUng==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH] x86/ptrace: Clean up PTRACE_GETREGS/PTRACE_PUTREGS regset selection
-Date:   Thu, 28 Jan 2021 17:41:21 -0800
-Message-Id: <9268050ac1fb3db6b4ec20d3ef696cc44fa3e9d0.1611884439.git.luto@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231688AbhA2BnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:43:25 -0500
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:40984 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhA2BnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:43:21 -0500
+Received: by mail-wr1-f51.google.com with SMTP id p15so7267205wrq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 17:43:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VVjkQneDDFTJ9oTx+Ry+gBBAMhGr8X7DLrSz+t7UhQs=;
+        b=PHovcfy/faCY8ZEGvwYBPPIE1Hr1433422IwYwIMlKthKYOrlqOe9HFrr9UIaNolTZ
+         EiFgRuWEsV1kauUaghUxj+xQAVXOWhHZbr16gPpUPTZBUhZw5/JVh8KMO9if6NrLb9XI
+         B/GpFwkDElQReP7QwHw1X+joxDg0tQms3zUoO9MxnG0E6CgqPG11+tYIAMPKCoAaZoUS
+         sh2vrwJcuiHCbtv6BLq+trX0lcilHEERcOoZ7faCkoEpdMKC+xgYlmMJuufhYBoUs6Ar
+         9Q4s3ootoahVmpfYqfojJ0SEjK8fnCVySB4lqrlkAqghVFWg9jN4NOtIR7k2CT9wJJI5
+         YRBQ==
+X-Gm-Message-State: AOAM53178Bs7TbU+KSGxJQdcY8oA2AhBMd9hqM3q+86x6s56qnPgdlIT
+        eyOdRuGgEr0WDCmYXKUQwKo=
+X-Google-Smtp-Source: ABdhPJzLYsrhEEcInNJ/93BzaKc6zmJA9nPQS58zDjk8/us582gb+RZGVaoI3OxT4S6GC3sKrnzgYg==
+X-Received: by 2002:a05:6000:1565:: with SMTP id 5mr1858778wrz.109.1611884558942;
+        Thu, 28 Jan 2021 17:42:38 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:3d48:4849:d506:e578? ([2601:647:4802:9070:3d48:4849:d506:e578])
+        by smtp.gmail.com with ESMTPSA id p15sm9296563wrt.15.2021.01.28.17.42.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 17:42:38 -0800 (PST)
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Chao Leng <lengchao@huawei.com>, Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+Date:   Thu, 28 Jan 2021 17:42:34 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-task_user_regset_view() is fundamentally broken, but it's ABI for
-PTRACE_GETREGSET and PTRACE_SETREGSET.
 
-We shouldn't be using it for PTRACE_GETREGS or PTRACE_SETREGS,
-though.  A native 64-bit ptrace() call and an x32 ptrace() call
-should use the 64-bit regset views, and a 32-bit ptrace() call
-(native or compat) should use the 32-bit regset.
-task_user_regset_view() almost does this except that it will
-malfunction if a ptracer is itself ptraced and the outer ptracer
-modifies CS on entry to a ptrace() syscall.  Hopefully that has
-never happened.  (The compat ptrace() code already hardcoded the
-32-bit regset, so this patch has no effect on that path.)
+>> You can't see exactly where it dies but I followed the assembly to
+>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+>> (list_next_or_null_rcu()).
+> So there is other bug cause nvme_next_ns abormal.
+> I review the code about head->list and head->current_path, I find 2 bugs
+> may cause the bug:
+> First, I already send the patch. see:
+> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/ 
+> 
+> Second, in nvme_ns_remove, list_del_rcu is before
+> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+> "head", but still use "old". I'm not sure there's any other
+> consideration here, I will check it and try to fix it.
 
-Fix it and deobfuscate the code by hardcoding the 64-bit view in the
-x32 ptrace() and selecting the view based on the kernel config in
-the native ptrace().
+The reason why we first remove from head->list and only then clear
+current_path is because the other way around there is no way
+to guarantee that that the ns won't be assigned as current_path
+again (because it is in head->list).
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
-
-Every time I look at ptrace, it grosses me out.  This makes it slightly
-more comprehensible.
-
- arch/x86/kernel/ptrace.c | 37 +++++++++++++++++++++++++++++--------
- 1 file changed, 29 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
-index bedca011459c..ed8f153cd302 100644
---- a/arch/x86/kernel/ptrace.c
-+++ b/arch/x86/kernel/ptrace.c
-@@ -704,6 +704,9 @@ void ptrace_disable(struct task_struct *child)
- #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
- static const struct user_regset_view user_x86_32_view; /* Initialized below. */
- #endif
-+#ifdef CONFIG_X86_64
-+static const struct user_regset_view user_x86_64_view; /* Initialized below. */
-+#endif
- 
- long arch_ptrace(struct task_struct *child, long request,
- 		 unsigned long addr, unsigned long data)
-@@ -711,6 +714,14 @@ long arch_ptrace(struct task_struct *child, long request,
- 	int ret;
- 	unsigned long __user *datap = (unsigned long __user *)data;
- 
-+#ifdef CONFIG_X86_64
-+	/* This is native 64-bit ptrace() */
-+	const struct user_regset_view *regset_view = &user_x86_64_view;
-+#else
-+	/* This is native 32-bit ptrace() */
-+	const struct user_regset_view *regset_view = &user_x86_32_view;
-+#endif
-+
- 	switch (request) {
- 	/* read the word at location addr in the USER area. */
- 	case PTRACE_PEEKUSR: {
-@@ -749,28 +760,28 @@ long arch_ptrace(struct task_struct *child, long request,
- 
- 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   regset_view,
- 					   REGSET_GENERAL,
- 					   0, sizeof(struct user_regs_struct),
- 					   datap);
- 
- 	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     regset_view,
- 					     REGSET_GENERAL,
- 					     0, sizeof(struct user_regs_struct),
- 					     datap);
- 
- 	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   regset_view,
- 					   REGSET_FP,
- 					   0, sizeof(struct user_i387_struct),
- 					   datap);
- 
- 	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     regset_view,
- 					     REGSET_FP,
- 					     0, sizeof(struct user_i387_struct),
- 					     datap);
-@@ -1152,28 +1163,28 @@ static long x32_arch_ptrace(struct task_struct *child,
- 
- 	case PTRACE_GETREGS:	/* Get all gp regs from the child. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   &user_x86_64_view,
- 					   REGSET_GENERAL,
- 					   0, sizeof(struct user_regs_struct),
- 					   datap);
- 
- 	case PTRACE_SETREGS:	/* Set all gp regs in the child. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     &user_x86_64_view,
- 					     REGSET_GENERAL,
- 					     0, sizeof(struct user_regs_struct),
- 					     datap);
- 
- 	case PTRACE_GETFPREGS:	/* Get the child FPU state. */
- 		return copy_regset_to_user(child,
--					   task_user_regset_view(current),
-+					   &user_x86_64_view,
- 					   REGSET_FP,
- 					   0, sizeof(struct user_i387_struct),
- 					   datap);
- 
- 	case PTRACE_SETFPREGS:	/* Set the child FPU state. */
- 		return copy_regset_from_user(child,
--					     task_user_regset_view(current),
-+					     &user_x86_64_view,
- 					     REGSET_FP,
- 					     0, sizeof(struct user_i387_struct),
- 					     datap);
-@@ -1309,6 +1320,16 @@ void __init update_regset_xstate_info(unsigned int size, u64 xstate_mask)
- 	xstate_fx_sw_bytes[USER_XSTATE_XCR0_WORD] = xstate_mask;
- }
- 
-+/*
-+ * This is used by PTRACE_GETREGSET and PTRACE_SETREGSET to decide which
-+ * regset format to use based on the register state of the tracee.
-+ * This makes no sense whatsoever, but there appears to be existing user
-+ * code that relies on it.
-+ *
-+ * The best way to fix it in the long run would probably be to add
-+ * new improved ptrace() APIs to read and write registers reliably.
-+ * Good luck.
-+ */
- const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- {
- #ifdef CONFIG_IA32_EMULATION
--- 
-2.29.2
-
+nvme_ns_remove fences continue of deletion of the ns by synchronizing
+the srcu such that for sure the current_path clearance is visible.
