@@ -2,216 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894C7308CC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10858308CC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhA2Suq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:50:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:53040 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232651AbhA2SuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:50:09 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 446DA152B;
-        Fri, 29 Jan 2021 10:49:23 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DA7C3F885;
-        Fri, 29 Jan 2021 10:49:21 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        id S232762AbhA2SvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232651AbhA2SvI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 13:51:08 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7583C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:50:27 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id s66so7814674qkh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:50:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=edlz3XbCYDia7c2gqKzN5FK6RAL7HO75a2b9pwPLi9o=;
+        b=p0cuGC6uFFNLHjWlQLakZAxQQJgRk6G0D6LX6qzjT5dK2fs9fixJJw+zgdSaB+EhKs
+         Px5erEn2BL7CG39x2R3gCVyh93v+p/hdyYTQAMIpOz3b9A13p0kObVGTYT8JzFCpi0x9
+         FUSCtI4eKNB6D49gcHsJuKTCRvSkmwqlF09dTPYtgWampxxSAdNkfSLYZnVB8LDnbBIG
+         AGbMZDLOKwTMOe1ZAb17RrFjWoKBYMtQpBiBhmMtdMLd52qY3WGLWiGLAWfj5l/LLHOz
+         Pm+X5DPJMB2mp/jbTFnXPiBYe46zKz8scT4jMiZCa8tCGr5pE2DwZV74gFm10EzkN85h
+         M9tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=edlz3XbCYDia7c2gqKzN5FK6RAL7HO75a2b9pwPLi9o=;
+        b=n/oLfPzesnxV0wrh4te6Bv/4NHEarNTMD6zAp9dHqbSOiK1FjQXBPJqZfi3OYBKUgi
+         S6k43O5c1lAjrGk9a4JbpmC0O4yUuvYVmicIzCSeDkmZo4BtL1oq7yuOh5Yf+udDNjzF
+         VXaYlEQN4Smca9BceCM9kXrtu1lq+efw1gwSvvwDJ6zD1Za0IXnep/b43PXq10iaould
+         +gMragdp8K1yTlSd/p6udpfHXtnLVfFuD5PAA7xLjWTViTn3V/rAwl0zX3UlkTWTCPOB
+         paZY9AhvFMErvKiEIiv2aic5ajmfhFmewr83BJKAeFGPGrsjzPWYHJGHbFaAsu3C51I6
+         aDBg==
+X-Gm-Message-State: AOAM531tCDWk7ea4j8vCrN2deVqDhtweYO5w7VjAYtP+NzTGSGXAs92+
+        7DMCR1tqwMF2KRzcbqgrlmfaKWqMm0jAGhC9
+X-Google-Smtp-Source: ABdhPJznVMEKJWnqt/qcGVZ2IAaYJgoTFuP2I61TJJuJQfaSosdBi1z/YCkiVbXLxyxaZ6roHV0PpgUbEkdPs13D
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:b59a:: with SMTP id
+ g26mr5014944qve.26.1611946226898; Fri, 29 Jan 2021 10:50:26 -0800 (PST)
+Date:   Fri, 29 Jan 2021 19:50:22 +0100
+Message-Id: <9dc196006921b191d25d10f6e611316db7da2efc.1611946152.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH mm] kasan: untag addresses for KFENCE
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v10 4/4] arm64: mte: Enable async tag check fault
-Date:   Fri, 29 Jan 2021 18:49:05 +0000
-Message-Id: <20210129184905.29760-5-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210129184905.29760-1-vincenzo.frascino@arm.com>
-References: <20210129184905.29760-1-vincenzo.frascino@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MTE provides a mode that asynchronously updates the TFSR_EL1 register
-when a tag check exception is detected.
+KFENCE annotations operate on untagged addresses.
 
-To take advantage of this mode the kernel has to verify the status of
-the register at:
-  1. Context switching
-  2. Return to user/EL0 (Not required in entry from EL0 since the kernel
-  did not run)
-  3. Kernel entry from EL1
-  4. Kernel exit to EL1
+Untag addresses in KASAN runtime where they might be tagged.
 
-If the register is non-zero a trace is reported.
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Add the required features for EL1 detection and reporting.
-
-Note: ITFSB bit is set in the SCTLR_EL1 register hence it guaranties that
-the indirect writes to TFSR_EL1 are synchronized at exception entry to
-EL1. On the context switch path the synchronization is guarantied by the
-dsb() in __switch_to().
-The dsb(nsh) in mte_check_tfsr_exit() is provisional pending
-confirmation by the architects.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Andrey Konovalov <andreyknvl@google.com>
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/include/asm/mte.h     | 32 +++++++++++++++++++++++
- arch/arm64/kernel/entry-common.c |  6 +++++
- arch/arm64/kernel/mte.c          | 44 ++++++++++++++++++++++++++++++++
- 3 files changed, 82 insertions(+)
 
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index d02aff9f493d..237bb2f7309d 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -92,5 +92,37 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+This can be squashed into:
+
+revert kasan-remove-kfence-leftovers
+kfence, kasan: make KFENCE compatible with KASA
+
+---
+ mm/kasan/common.c |  2 +-
+ mm/kasan/kasan.h  | 12 +++++++++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index a390fae9d64b..fe852f3cfa42 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -416,7 +416,7 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+ 	if (unlikely(object == NULL))
+ 		return NULL;
  
- #endif /* CONFIG_ARM64_MTE */
+-	if (is_kfence_address(object))
++	if (is_kfence_address(kasan_reset_tag(object)))
+ 		return (void *)object;
  
-+#ifdef CONFIG_KASAN_HW_TAGS
-+void mte_check_tfsr_el1(void);
+ 	redzone_start = round_up((unsigned long)(object + size),
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 11c6e3650468..4fb8106f8e31 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -320,22 +320,28 @@ static inline u8 kasan_random_tag(void) { return 0; }
+ 
+ static inline void kasan_poison(const void *address, size_t size, u8 value)
+ {
++	address = kasan_reset_tag(address);
 +
-+static inline void mte_check_tfsr_entry(void)
-+{
-+	mte_check_tfsr_el1();
-+}
-+
-+static inline void mte_check_tfsr_exit(void)
-+{
-+	/*
-+	 * The asynchronous faults are sync'ed automatically with
-+	 * TFSR_EL1 on kernel entry but for exit an explicit dsb()
-+	 * is required.
-+	 */
-+	dsb(nsh);
-+	isb();
-+
-+	mte_check_tfsr_el1();
-+}
-+#else
-+static inline void mte_check_tfsr_el1(void)
-+{
-+}
-+static inline void mte_check_tfsr_entry(void)
-+{
-+}
-+static inline void mte_check_tfsr_exit(void)
-+{
-+}
-+#endif /* CONFIG_KASAN_HW_TAGS */
-+
- #endif /* __ASSEMBLY__ */
- #endif /* __ASM_MTE_H  */
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 5346953e4382..31666511ba67 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	rcu_irq_enter_check_tick();
- 	trace_hardirqs_off_finish();
-+
-+	mte_check_tfsr_entry();
+ 	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+ 	if (is_kfence_address(address))
+ 		return;
+ 
+-	hw_set_mem_tag_range(kasan_reset_tag(address),
++	hw_set_mem_tag_range((void *)address,
+ 			round_up(size, KASAN_GRANULE_SIZE), value);
  }
  
- /*
-@@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
+ static inline void kasan_unpoison(const void *address, size_t size)
  {
- 	lockdep_assert_irqs_disabled();
- 
-+	mte_check_tfsr_exit();
++	u8 tag = get_tag(address);
 +
- 	if (interrupts_enabled(regs)) {
- 		if (regs->exit_rcu) {
- 			trace_hardirqs_on_prepare();
-@@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
- 
- asmlinkage void noinstr exit_to_user_mode(void)
- {
-+	mte_check_tfsr_exit();
++	address = kasan_reset_tag(address);
 +
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	user_enter_irqoff();
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 92078e1eb627..7763ac1f2917 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -182,6 +182,37 @@ bool mte_report_once(void)
- 	return READ_ONCE(report_fault_once);
+ 	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+ 	if (is_kfence_address(address))
+ 		return;
+ 
+-	hw_set_mem_tag_range(kasan_reset_tag(address),
+-			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
++	hw_set_mem_tag_range((void *)address,
++			round_up(size, KASAN_GRANULE_SIZE), tag);
  }
  
-+#ifdef CONFIG_KASAN_HW_TAGS
-+void mte_check_tfsr_el1(void)
-+{
-+	u64 tfsr_el1;
-+
-+	if (!system_supports_mte())
-+		return;
-+
-+	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
-+
-+	/*
-+	 * The kernel should never trigger an asynchronous fault on a
-+	 * TTBR0 address, so we should never see TF0 set.
-+	 * For futexes we disable checks via PSTATE.TCO.
-+	 */
-+	WARN_ONCE(tfsr_el1 & SYS_TFSR_EL1_TF0,
-+		  "Kernel async tag fault on TTBR0 address");
-+
-+	if (unlikely(tfsr_el1 & SYS_TFSR_EL1_TF1)) {
-+		/*
-+		 * Note: isb() is not required after this direct write
-+		 * because there is no indirect read subsequent to it
-+		 * (per ARM DDI 0487F.c table D13-1).
-+		 */
-+		write_sysreg_s(0, SYS_TFSR_EL1);
-+
-+		kasan_report_async();
-+	}
-+}
-+#endif
-+
- static void update_sctlr_el1_tcf0(u64 tcf0)
- {
- 	/* ISB required for the kernel uaccess routines */
-@@ -247,6 +278,19 @@ void mte_thread_switch(struct task_struct *next)
- 	/* avoid expensive SCTLR_EL1 accesses if no change */
- 	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
- 		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
-+	else
-+		isb();
-+
-+	/*
-+	 * Check if an async tag exception occurred at EL1.
-+	 *
-+	 * Note: On the context switch path we rely on the dsb() present
-+	 * in __switch_to() to guarantee that the indirect writes to TFSR_EL1
-+	 * are synchronized before this point.
-+	 * isb() above is required for the same reason.
-+	 *
-+	 */
-+	mte_check_tfsr_el1();
- }
- 
- void mte_suspend_exit(void)
+ static inline bool kasan_byte_accessible(const void *addr)
 -- 
-2.30.0
+2.30.0.365.g02bc693789-goog
 
