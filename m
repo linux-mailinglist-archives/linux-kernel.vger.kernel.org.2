@@ -2,584 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FDA308274
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CC5308278
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhA2AgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:36:24 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.221.30]:42706 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231256AbhA2Adc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:33:32 -0500
-Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B01C880D1;
-        Thu, 28 Jan 2021 16:31:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B01C880D1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611880279;
-        bh=uzgPAG/ceylHM/7pXmsEptVs+IRaum8SBBghThiV22U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DMkTO4s0E65b1qX8xnDeYxQ4uHjlPQLCevP68tx6mBP8ZSQxutMZ8iM9Sa3+6u3oh
-         fuomst8df9FU5nyAcx11lfWypt5gYKu1aljBSiVc8O/gtqa73qlW4Fj2LE/JWqEvAu
-         M07xrMnFITN2IPCxPsrJjfvaQr8xfxWcQWd0wRjM=
-From:   Scott Branden <scott.branden@broadcom.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>,
-        Desmond Yan <desmond.yan@broadcom.com>
-Subject: [PATCH v10 13/13] misc: bcm-vk: add ttyVK support
-Date:   Thu, 28 Jan 2021 16:30:29 -0800
-Message-Id: <20210129003029.10672-14-scott.branden@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210129003029.10672-1-scott.branden@broadcom.com>
-References: <20210129003029.10672-1-scott.branden@broadcom.com>
+        id S231348AbhA2AhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:37:03 -0500
+Received: from mail-dm6nam10on2123.outbound.protection.outlook.com ([40.107.93.123]:46625
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231224AbhA2AgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:36:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ievFF/vkMMRVHxzvxUd9t9MP+9Zc8lvfTJt1U7SbvFg6P+m+F4vXrtbdSO2n7G0iwrIjXPXI27xvWL2irPM2mF7v/V5i9me859ALMzlvBi5NB6OcXXuJBMaRaXyLrOnhY1ypCMbuQ9lrpceMgvpNDnQAzQnKKUIwIuM8WrnW0VUAMPlvrI7qaqq7yjiDJToI39GHv7mleEG1wlwsT4pECSNK2p/z11h52FPG1xLCOtzaDbIY8Zzn1gb5CHjn+uOdEUORGu37o0p5dYgZ4R5Wn++hCeAGOTyBYISnMKTfGM54sxWPM+7IoeevlJ7YXd88IF8o4qgHptLHlcaL2WTR0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PCS+YpL0snqkFmy1iqSmSjoX5bcK3xt176NlM7vEljE=;
+ b=SCcdaRlLQEOodQV9LHeT5wanT6PReK4kiNZevjzum5aguExwdgg4hoP5TN65obQU+oxSIcVFPBzFQl9wpTb1ZX8AOqtmr3vS2KYCwQhvgRLZRF3ICg4cQMd0Wv2xj9TfqUtybiX/6PTcsyUv/zv2qkCPLFAXI5tjpJ4orjEm7yEXk3m3IN+kxp/sNWLuLkYOEaXQfxA/O7RxjBkFV1Va76jVE4TrHg/OKwqR2ZW+rTnM5/vQCnkGcvVqSIDg3CSCTmMC/lgXSg74GXrzPmg+xWCMi8oXq7V1NBrbhsIGjrDzAYFULLpcZnQMopHw+l+tNBbtwOWQ3qFINwtbZ4n+jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PCS+YpL0snqkFmy1iqSmSjoX5bcK3xt176NlM7vEljE=;
+ b=FFv0LJoRr+1D15n5E2AnWMKHv2seeyVLQeB+knOhrPvBznOsdyuJH+KXspybJoSjKn+TBI/cOnKy7/DmtSR/1SqNbKODzz6oAeQ7s0e7pFF7dwrxGbgm3+s6d08LSEM60tV4OCUChCEmJzPj3y0JOuNcaILzninGA/FYVB8+7os=
+Received: from (2603:10b6:301:7c::11) by
+ MW2PR2101MB1019.namprd21.prod.outlook.com (2603:10b6:302:5::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.6; Fri, 29 Jan
+ 2021 00:35:27 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3825.003; Fri, 29 Jan 2021
+ 00:35:27 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: RE: [PATCH v2 1/4] x86/hyperv: Load/save the Isolation Configuration
+ leaf
+Thread-Topic: [PATCH v2 1/4] x86/hyperv: Load/save the Isolation Configuration
+ leaf
+Thread-Index: AQHW89pi31QWB+TP3028lS5/+FlxVao9tHIA
+Date:   Fri, 29 Jan 2021 00:35:27 +0000
+Message-ID: <MWHPR21MB15931605F5181B2822AC2FFBD7B99@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210126115641.2527-1-parri.andrea@gmail.com>
+ <20210126115641.2527-2-parri.andrea@gmail.com>
+In-Reply-To: <20210126115641.2527-2-parri.andrea@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-29T00:35:18Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2c2ae570-7d95-48f2-8c3f-02bb6dac4283;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [8.46.75.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f271ce34-67bd-4310-e7b6-08d8c3edc687
+x-ms-traffictypediagnostic: MW2PR2101MB1019:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB10195924B8D9BABD934A6D54D7B99@MW2PR2101MB1019.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: frDhozDkueINQZ85efkVNKeMp5prO7dAIc16oFNmSor36R1VGRFIJ669OeULRb8soyuUu6/hi69r+tGjI+QFrfRFGZt9iSK/9amRDtfroXKk4/vkNECbTilYBa11llJ3PoJc04qkQVpfMwOt9fLnK5lZjyaACZa3i2Vtvhrw6Z1FuJODf0EnW53hvOG88Iu0JfQ9Q2WOE/TLAkWqHjM2iT0ikN8bCqWUzfl7SToW+AOBUye8T1d5iZBUPkiCOfuoeYZp775IV2yFOVuJe0wa/9T7ShHXAsCPaI8KGeBFI/9+l9ryhZjkKFflfr0rllKaGHeMYve8BK4WIzYtp4HarXW7xlNfPLq5k8dXKQvKT+9YgkGGAIA4pGLWRELFimUCf7LWzsvRPnMxsSmzSlxYcVhq10LvFMo0Cv+/zMQf6BZ3IU9zhFA9d/ah4iEnH+uWyhAazGJ4YU9XfQUJyXWWa9TlEOwtWPgQQe+U8ZWpMHzSSlAIjTe4TW32dua0yBW2mWDmmLpqCdSEFApTOh75jQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(6506007)(64756008)(66476007)(55016002)(66946007)(7696005)(76116006)(478600001)(110136005)(8676002)(8990500004)(66446008)(7416002)(83380400001)(33656002)(9686003)(71200400001)(52536014)(316002)(66556008)(5660300002)(82950400001)(10290500003)(82960400001)(86362001)(54906003)(4326008)(186003)(26005)(2906002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?biB/3TESt7AZjuJn1IsBaHmOkEJzYtwR3VhWQsFrN/GSwbPV2mRP0WZxXe1A?=
+ =?us-ascii?Q?qYzylI8qH6vBU5R9ZKB61/LjFs5Ga+BhM28QHlFC/DEY5w0ueVofZ623/CjU?=
+ =?us-ascii?Q?YPsHx0HpLr/Ubf6cJpl1UqqX1A9YDA+1jAQ6GlbLV0Xu59WfqXqBsKFAXnEp?=
+ =?us-ascii?Q?RNWwlY4xpGJPQBlE6QQGtOcwUcI6PJZF/aQGUtNC67U1FtLbX0fepVA9GDtn?=
+ =?us-ascii?Q?7UyuCN4BUblPmTe3t2Zqid3k006ftS7do6Hgl5AESr74ZmF75XQMqg2gNQ1d?=
+ =?us-ascii?Q?8DgeoEE9iMyBsWUlgfM8ohNE/VXy6gQRBjgiQGf93sU4bRuID3AhVXC8TPck?=
+ =?us-ascii?Q?FfI/G1KE9Q4JwAVo7Xnsn1gexG3Aif5oXPepWAMo62EsuZvX9pABVvbwD6YP?=
+ =?us-ascii?Q?MZ1UqhFDuj+jg1Act2tY99FS/ned0ZDmVla42qTsOF/IBdJI8T/JBOqpggtw?=
+ =?us-ascii?Q?9FlGVgf10EwlQEeOig7ccwPkRV4+CXrB8yMf531oRGUMEvsbatV4ZLRuYAGJ?=
+ =?us-ascii?Q?zNLPHMTQj7GBnjvJYXijTZizb+dQfTsoDuzGwfx7vgjmEOEQOXpSfLefaBT+?=
+ =?us-ascii?Q?pRKS+4Yz8+gD3cEJSHndnxqWm8zzOE3gXatyldjhcp59ncsBmgPWrGwSVf00?=
+ =?us-ascii?Q?RWiR7rXZj52sbq3stfIO4V5zbj3L5BzLd7CDbom4XmLkvjSMGLcXmRbsr+rA?=
+ =?us-ascii?Q?0Op2Bi7/MyrT6ciRXu7JP5oojXJtH54PCDPWoLqu6tZS8g4EXVTDFsg8su5t?=
+ =?us-ascii?Q?Q54otGk6kPYGWbwhoZuOs9/AQ6GwUR5gDwfUPi3OagaOYxU4euEkwmWLsiLC?=
+ =?us-ascii?Q?DyyXjjOhFhmDYSr5HSfnzyY2DuVH2ATmVc70hZvhgv9atUmoQ9amIaCVeipe?=
+ =?us-ascii?Q?3l5Q0OU1ul+5JEVsv1MQb1zJtWLCztutXCVbWro0htEy/HGE8qEK9JAwIQ0Y?=
+ =?us-ascii?Q?i2t8r+czeThZ8pHJhNE6sACvmz80PZyZwolLSjU7nhekhjl1j0C6poqJ1j54?=
+ =?us-ascii?Q?jnHi3+drAvGFFr/0iSXWLoCixpD+WOoLj9dHzwbqU17g1t4=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f271ce34-67bd-4310-e7b6-08d8c3edc687
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jan 2021 00:35:27.6737
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: barWfudVuYGNoDXR3uKvRpxSXvSL9a0GJyBeADZhLjE/B1D6coK56cV6fLBqDfTOUEoLDetvtHCo08fwYag43p5lw0ORBKbYYnCidBn/hpg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ttyVK support to driver to allow console access to VK card from host.
+From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Tuesday, Janu=
+ary 26, 2021 3:57 AM
+>=20
+> If bit 22 of Group B Features is set, the guest has access to the
+> Isolation Configuration CPUID leaf.  On x86, the first four bits
+> of EAX in this leaf provide the isolation type of the partition;
+> we entail three isolation types: 'SNP' (hardware-based isolation),
+> 'VBS' (software-based isolation), and 'NONE' (no isolation).
+>=20
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: x86@kernel.org
+> Cc: linux-arch@vger.kernel.org
+> ---
+>  arch/x86/hyperv/hv_init.c          | 15 +++++++++++++++
+>  arch/x86/include/asm/hyperv-tlfs.h | 15 +++++++++++++++
+>  arch/x86/kernel/cpu/mshyperv.c     |  9 +++++++++
+>  include/asm-generic/hyperv-tlfs.h  |  1 +
+>  include/asm-generic/mshyperv.h     |  5 +++++
+>  5 files changed, 45 insertions(+)
+>=20
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index e04d90af4c27c..dc94e95c57b98 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/efi.h>
+>  #include <linux/types.h>
+> +#include <linux/bitfield.h>
+>  #include <asm/apic.h>
+>  #include <asm/desc.h>
+>  #include <asm/hypervisor.h>
+> @@ -528,3 +529,17 @@ bool hv_is_hibernation_supported(void)
+>  	return acpi_sleep_state_supported(ACPI_STATE_S4);
+>  }
+>  EXPORT_SYMBOL_GPL(hv_is_hibernation_supported);
+> +
+> +enum hv_isolation_type hv_get_isolation_type(void)
+> +{
+> +	if (!(ms_hyperv.hypercalls_features & HV_ISOLATION))
+> +		return HV_ISOLATION_TYPE_NONE;
+> +	return FIELD_GET(HV_ISOLATION_TYPE, ms_hyperv.isolation_config_b);
+> +}
+> +EXPORT_SYMBOL_GPL(hv_get_isolation_type);
+> +
+> +bool hv_is_isolation_supported(void)
+> +{
+> +	return hv_get_isolation_type() !=3D HV_ISOLATION_TYPE_NONE;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_is_isolation_supported);
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hy=
+perv-tlfs.h
+> index 6bf42aed387e3..6aed936e5e962 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -22,6 +22,7 @@
+>  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
+>  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
+>  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
+> +#define HYPERV_CPUID_ISOLATION_CONFIG		0x4000000C
+>=20
+>  #define HYPERV_CPUID_VIRT_STACK_INTERFACE	0x40000081
+>  #define HYPERV_VS_INTERFACE_EAX_SIGNATURE	0x31235356  /* "VS#1" */
+> @@ -122,6 +123,20 @@
+>  #define HV_X64_NESTED_GUEST_MAPPING_FLUSH		BIT(18)
+>  #define HV_X64_NESTED_MSR_BITMAP			BIT(19)
+>=20
+> +/* HYPERV_CPUID_ISOLATION_CONFIG.EAX bits. */
+> +#define HV_PARAVISOR_PRESENT				BIT(0)
+> +
+> +/* HYPERV_CPUID_ISOLATION_CONFIG.EBX bits. */
+> +#define HV_ISOLATION_TYPE				GENMASK(3, 0)
+> +#define HV_SHARED_GPA_BOUNDARY_ACTIVE			BIT(5)
+> +#define HV_SHARED_GPA_BOUNDARY_BITS			GENMASK(11, 6)
+> +
+> +enum hv_isolation_type {
+> +	HV_ISOLATION_TYPE_NONE	=3D 0,
+> +	HV_ISOLATION_TYPE_VBS	=3D 1,
+> +	HV_ISOLATION_TYPE_SNP	=3D 2
+> +};
+> +
+>  /* Hyper-V specific model specific registers (MSRs) */
+>=20
+>  /* MSR used to identify the guest OS. */
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyper=
+v.c
+> index f628e3dc150f3..0d4aaf6694d01 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -225,6 +225,7 @@ static void __init ms_hyperv_init_platform(void)
+>  	 * Extract the features and hints
+>  	 */
+>  	ms_hyperv.features =3D cpuid_eax(HYPERV_CPUID_FEATURES);
+> +	ms_hyperv.hypercalls_features =3D cpuid_ebx(HYPERV_CPUID_FEATURES);
+>  	ms_hyperv.misc_features =3D cpuid_edx(HYPERV_CPUID_FEATURES);
+>  	ms_hyperv.hints    =3D cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
+>=20
+> @@ -259,6 +260,14 @@ static void __init ms_hyperv_init_platform(void)
+>  		x86_platform.calibrate_cpu =3D hv_get_tsc_khz;
+>  	}
+>=20
+> +	if (ms_hyperv.hypercalls_features & HV_ISOLATION) {
+> +		ms_hyperv.isolation_config_a =3D cpuid_eax(HYPERV_CPUID_ISOLATION_CONF=
+IG);
+> +		ms_hyperv.isolation_config_b =3D cpuid_ebx(HYPERV_CPUID_ISOLATION_CONF=
+IG);
+> +
+> +		pr_info("Hyper-V: Isolation Config: GroupA 0x%x, GroupB 0x%x\n",
 
-Device node will be in the follow form /dev/bcm-vk.x_ttyVKy where:
-x is the instance of the VK card
-y is the tty device number on the VK card
+Nit:  Let's put a space after the word "Group", so that we have
+"Hyper-V: Isolation Config: Group A 0x%x, Group B 0x%x\n".
 
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-Acked-by: Olof Johansson <olof@lixom.net>
----
- drivers/misc/bcm-vk/Makefile     |   1 +
- drivers/misc/bcm-vk/bcm_vk.h     |  28 +++
- drivers/misc/bcm-vk/bcm_vk_dev.c |  41 +++-
- drivers/misc/bcm-vk/bcm_vk_tty.c | 333 +++++++++++++++++++++++++++++++
- 4 files changed, 402 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_tty.c
+> +			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
+> +	}
+> +
+>  	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
+>  		ms_hyperv.nested_features =3D
+>  			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hype=
+rv-tlfs.h
+> index e73a11850055c..20d3cd9502043 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -89,6 +89,7 @@
+>  #define HV_ACCESS_STATS				BIT(8)
+>  #define HV_DEBUGGING				BIT(11)
+>  #define HV_CPU_POWER_MANAGEMENT			BIT(12)
+> +#define HV_ISOLATION				BIT(22)
+>=20
+>=20
+>  /*
+> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyper=
+v.h
+> index c57799684170c..c7f75b36f88ba 100644
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -27,11 +27,14 @@
+>=20
+>  struct ms_hyperv_info {
+>  	u32 features;
+> +	u32 hypercalls_features;
 
-diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
-index 79b4e365c9e6..8d81a734fcad 100644
---- a/drivers/misc/bcm-vk/Makefile
-+++ b/drivers/misc/bcm-vk/Makefile
-@@ -9,3 +9,4 @@ bcm_vk-objs := \
- 	bcm_vk_msg.o \
- 	bcm_vk_sg.o
- 
-+bcm_vk-$(CONFIG_TTY) += bcm_vk_tty.o
-diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index a1d0bf6e694c..3f37c640a814 100644
---- a/drivers/misc/bcm-vk/bcm_vk.h
-+++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -8,12 +8,14 @@
- 
- #include <linux/atomic.h>
- #include <linux/firmware.h>
-+#include <linux/irq.h>
- #include <linux/kref.h>
- #include <linux/miscdevice.h>
- #include <linux/mutex.h>
- #include <linux/pci.h>
- #include <linux/poll.h>
- #include <linux/sched/signal.h>
-+#include <linux/tty.h>
- #include <linux/uaccess.h>
- #include <uapi/linux/misc/bcm_vk.h>
- 
-@@ -84,6 +86,9 @@
- #define CODEPUSH_BOOT2_ENTRY		0x60000000
- 
- #define BAR_CARD_STATUS			0x410
-+/* CARD_STATUS definitions */
-+#define CARD_STATUS_TTYVK0_READY	BIT(0)
-+#define CARD_STATUS_TTYVK1_READY	BIT(1)
- 
- #define BAR_BOOT1_STDALONE_PROGRESS	0x420
- #define BOOT1_STDALONE_SUCCESS		(BIT(13) | BIT(14))
-@@ -255,6 +260,19 @@ enum pci_barno {
- 
- #define BCM_VK_NUM_TTY 2
- 
-+struct bcm_vk_tty {
-+	struct tty_port port;
-+	u32 to_offset;	/* bar offset to use */
-+	u32 to_size;	/* to VK buffer size */
-+	u32 wr;		/* write offset shadow */
-+	u32 from_offset;	/* bar offset to use */
-+	u32 from_size;	/* from VK buffer size */
-+	u32 rd;		/* read offset shadow */
-+	pid_t pid;
-+	bool irq_enabled;
-+	bool is_opened;		/* tracks tty open/close */
-+};
-+
- /* VK device max power state, supports 3, full, reduced and low */
- #define MAX_OPP 3
- #define MAX_CARD_INFO_TAG_SIZE 64
-@@ -348,6 +366,12 @@ struct bcm_vk {
- 	struct miscdevice miscdev;
- 	int devid; /* dev id allocated */
- 
-+	struct tty_driver *tty_drv;
-+	struct timer_list serial_timer;
-+	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
-+	struct workqueue_struct *tty_wq_thread;
-+	struct work_struct tty_wq_work;
-+
- 	/* Reference-counting to handle file operations */
- 	struct kref kref;
- 
-@@ -466,6 +490,7 @@ int bcm_vk_release(struct inode *inode, struct file *p_file);
- void bcm_vk_release_data(struct kref *kref);
- irqreturn_t bcm_vk_msgq_irqhandler(int irq, void *dev_id);
- irqreturn_t bcm_vk_notf_irqhandler(int irq, void *dev_id);
-+irqreturn_t bcm_vk_tty_irqhandler(int irq, void *dev_id);
- int bcm_vk_msg_init(struct bcm_vk *vk);
- void bcm_vk_msg_remove(struct bcm_vk *vk);
- void bcm_vk_drain_msg_on_reset(struct bcm_vk *vk);
-@@ -476,6 +501,9 @@ int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, u32 shut_type,
- 			     const pid_t pid, const u32 q_num);
- void bcm_to_v_q_doorbell(struct bcm_vk *vk, u32 q_num, u32 db_val);
- int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
-+int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
-+void bcm_vk_tty_exit(struct bcm_vk *vk);
-+void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
- void bcm_vk_hb_init(struct bcm_vk *vk);
- void bcm_vk_hb_deinit(struct bcm_vk *vk);
- void bcm_vk_handle_notf(struct bcm_vk *vk);
-diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index ee926eb07542..ae63fbdf14bc 100644
---- a/drivers/misc/bcm-vk/bcm_vk_dev.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -525,6 +525,10 @@ void bcm_vk_blk_drv_access(struct bcm_vk *vk)
- 			}
- 		}
- 	}
-+
-+#ifdef CONFIG_TTY
-+	bcm_vk_tty_terminate_tty_user(vk);
-+#endif
- 	spin_unlock(&vk->ctx_lock);
- }
- 
-@@ -1384,6 +1388,22 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	}
- 	vk->num_irqs++;
- 
-+#ifdef CONFIG_TTY
-+	for (i = 0;
-+	     (i < VK_MSIX_TTY_MAX) && (vk->num_irqs < irq);
-+	     i++, vk->num_irqs++) {
-+		err = devm_request_irq(dev, pci_irq_vector(pdev, vk->num_irqs),
-+				       bcm_vk_tty_irqhandler,
-+				       IRQF_SHARED, DRV_MODULE_NAME, vk);
-+		if (err) {
-+			dev_err(dev, "failed request tty IRQ %d for MSIX %d\n",
-+				pdev->irq + vk->num_irqs, vk->num_irqs + 1);
-+			goto err_irq;
-+		}
-+		vk->tty[i].irq_enabled = true;
-+	}
-+#endif
-+
- 	id = ida_simple_get(&bcm_vk_ida, 0, 0, GFP_KERNEL);
- 	if (id < 0) {
- 		err = id;
-@@ -1436,6 +1456,13 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_destroy_workqueue;
- 	}
- 
-+#ifdef CONFIG_TTY
-+	snprintf(name, sizeof(name), KBUILD_MODNAME ".%d_ttyVK", id);
-+	err = bcm_vk_tty_init(vk, name);
-+	if (err)
-+		goto err_unregister_panic_notifier;
-+#endif
-+
- 	/*
- 	 * lets trigger an auto download.  We don't want to do it serially here
- 	 * because at probing time, it is not supposed to block for a long time.
-@@ -1444,7 +1471,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (auto_load) {
- 		if ((boot_status & BOOT_STATE_MASK) == BROM_RUNNING) {
- 			if (bcm_vk_trigger_autoload(vk))
--				goto err_unregister_panic_notifier;
-+				goto err_bcm_vk_tty_exit;
- 		} else {
- 			dev_err(dev,
- 				"Auto-load skipped - BROM not in proper state (0x%x)\n",
-@@ -1459,7 +1486,12 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	return 0;
- 
-+err_bcm_vk_tty_exit:
-+#ifdef CONFIG_TTY
-+	bcm_vk_tty_exit(vk);
-+
- err_unregister_panic_notifier:
-+#endif
- 	atomic_notifier_chain_unregister(&panic_notifier_list,
- 					 &vk->panic_nb);
- 
-@@ -1537,6 +1569,9 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 					 &vk->panic_nb);
- 
- 	bcm_vk_msg_remove(vk);
-+#ifdef CONFIG_TTY
-+	bcm_vk_tty_exit(vk);
-+#endif
- 
- 	if (vk->tdma_vaddr)
- 		dma_free_coherent(&pdev->dev, nr_scratch_pages * PAGE_SIZE,
-@@ -1556,6 +1591,10 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 
- 	cancel_work_sync(&vk->wq_work);
- 	destroy_workqueue(vk->wq_thread);
-+#ifdef CONFIG_TTY
-+	cancel_work_sync(&vk->tty_wq_work);
-+	destroy_workqueue(vk->tty_wq_thread);
-+#endif
- 
- 	for (i = 0; i < MAX_BAR; i++) {
- 		if (vk->bar[i])
-diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
-new file mode 100644
-index 000000000000..be3964949b63
---- /dev/null
-+++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
-@@ -0,0 +1,333 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2018-2020 Broadcom.
-+ */
-+
-+#include <linux/tty.h>
-+#include <linux/tty_driver.h>
-+#include <linux/tty_flip.h>
-+
-+#include "bcm_vk.h"
-+
-+/* TTYVK base offset is 0x30000 into BAR1 */
-+#define BAR1_TTYVK_BASE_OFFSET	0x300000
-+/* Each TTYVK channel (TO or FROM) is 0x10000 */
-+#define BAR1_TTYVK_CHAN_OFFSET	0x100000
-+/* Each TTYVK channel has TO and FROM, hence the * 2 */
-+#define BAR1_TTYVK_BASE(index)	(BAR1_TTYVK_BASE_OFFSET + \
-+				 ((index) * BAR1_TTYVK_CHAN_OFFSET * 2))
-+/* TO TTYVK channel base comes before FROM for each index */
-+#define TO_TTYK_BASE(index)	BAR1_TTYVK_BASE(index)
-+#define FROM_TTYK_BASE(index)	(BAR1_TTYVK_BASE(index) + \
-+				 BAR1_TTYVK_CHAN_OFFSET)
-+
-+struct bcm_vk_tty_chan {
-+	u32 reserved;
-+	u32 size;
-+	u32 wr;
-+	u32 rd;
-+	u32 *data;
-+};
-+
-+#define VK_BAR_CHAN(v, DIR, e)	((v)->DIR##_offset \
-+				 + offsetof(struct bcm_vk_tty_chan, e))
-+#define VK_BAR_CHAN_SIZE(v, DIR)	VK_BAR_CHAN(v, DIR, size)
-+#define VK_BAR_CHAN_WR(v, DIR)		VK_BAR_CHAN(v, DIR, wr)
-+#define VK_BAR_CHAN_RD(v, DIR)		VK_BAR_CHAN(v, DIR, rd)
-+#define VK_BAR_CHAN_DATA(v, DIR, off)	(VK_BAR_CHAN(v, DIR, data) + (off))
-+
-+#define VK_BAR0_REGSEG_TTY_DB_OFFSET	0x86c
-+
-+/* Poll every 1/10 of second - temp hack till we use MSI interrupt */
-+#define SERIAL_TIMER_VALUE (HZ / 10)
-+
-+static void bcm_vk_tty_poll(struct timer_list *t)
-+{
-+	struct bcm_vk *vk = from_timer(vk, t, serial_timer);
-+
-+	queue_work(vk->tty_wq_thread, &vk->tty_wq_work);
-+	mod_timer(&vk->serial_timer, jiffies + SERIAL_TIMER_VALUE);
-+}
-+
-+irqreturn_t bcm_vk_tty_irqhandler(int irq, void *dev_id)
-+{
-+	struct bcm_vk *vk = dev_id;
-+
-+	queue_work(vk->tty_wq_thread, &vk->tty_wq_work);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void bcm_vk_tty_wq_handler(struct work_struct *work)
-+{
-+	struct bcm_vk *vk = container_of(work, struct bcm_vk, tty_wq_work);
-+	struct bcm_vk_tty *vktty;
-+	int card_status;
-+	int count;
-+	unsigned char c;
-+	int i;
-+	int wr;
-+
-+	card_status = vkread32(vk, BAR_0, BAR_CARD_STATUS);
-+	if (BCM_VK_INTF_IS_DOWN(card_status))
-+		return;
-+
-+	for (i = 0; i < BCM_VK_NUM_TTY; i++) {
-+		count = 0;
-+		/* Check the card status that the tty channel is ready */
-+		if ((card_status & BIT(i)) == 0)
-+			continue;
-+
-+		vktty = &vk->tty[i];
-+
-+		/* Don't increment read index if tty app is closed */
-+		if (!vktty->is_opened)
-+			continue;
-+
-+		/* Fetch the wr offset in buffer from VK */
-+		wr = vkread32(vk, BAR_1, VK_BAR_CHAN_WR(vktty, from));
-+
-+		/* safe to ignore until bar read gives proper size */
-+		if (vktty->from_size == 0)
-+			continue;
-+
-+		if (wr >= vktty->from_size) {
-+			dev_err(&vk->pdev->dev,
-+				"ERROR: wq handler ttyVK%d wr:0x%x > 0x%x\n",
-+				i, wr, vktty->from_size);
-+			/* Need to signal and close device in this case */
-+			continue;
-+		}
-+
-+		/*
-+		 * Simple read of circular buffer and
-+		 * insert into tty flip buffer
-+		 */
-+		while (vk->tty[i].rd != wr) {
-+			c = vkread8(vk, BAR_1,
-+				    VK_BAR_CHAN_DATA(vktty, from, vktty->rd));
-+			vktty->rd++;
-+			if (vktty->rd >= vktty->from_size)
-+				vktty->rd = 0;
-+			tty_insert_flip_char(&vktty->port, c, TTY_NORMAL);
-+			count++;
-+		}
-+
-+		if (count) {
-+			tty_flip_buffer_push(&vktty->port);
-+
-+			/* Update read offset from shadow register to card */
-+			vkwrite32(vk, vktty->rd, BAR_1,
-+				  VK_BAR_CHAN_RD(vktty, from));
-+		}
-+	}
-+}
-+
-+static int bcm_vk_tty_open(struct tty_struct *tty, struct file *file)
-+{
-+	int card_status;
-+	struct bcm_vk *vk;
-+	struct bcm_vk_tty *vktty;
-+	int index;
-+
-+	/* initialize the pointer in case something fails */
-+	tty->driver_data = NULL;
-+
-+	vk = (struct bcm_vk *)dev_get_drvdata(tty->dev);
-+	index = tty->index;
-+
-+	if (index >= BCM_VK_NUM_TTY)
-+		return -EINVAL;
-+
-+	vktty = &vk->tty[index];
-+
-+	vktty->pid = task_pid_nr(current);
-+	vktty->to_offset = TO_TTYK_BASE(index);
-+	vktty->from_offset = FROM_TTYK_BASE(index);
-+
-+	/* Do not allow tty device to be opened if tty on card not ready */
-+	card_status = vkread32(vk, BAR_0, BAR_CARD_STATUS);
-+	if (BCM_VK_INTF_IS_DOWN(card_status) || ((card_status & BIT(index)) == 0))
-+		return -EBUSY;
-+
-+	/*
-+	 * Get shadow registers of the buffer sizes and the "to" write offset
-+	 * and "from" read offset
-+	 */
-+	vktty->to_size = vkread32(vk, BAR_1, VK_BAR_CHAN_SIZE(vktty, to));
-+	vktty->wr = vkread32(vk, BAR_1,  VK_BAR_CHAN_WR(vktty, to));
-+	vktty->from_size = vkread32(vk, BAR_1, VK_BAR_CHAN_SIZE(vktty, from));
-+	vktty->rd = vkread32(vk, BAR_1,  VK_BAR_CHAN_RD(vktty, from));
-+	vktty->is_opened = true;
-+
-+	if (tty->count == 1 && !vktty->irq_enabled) {
-+		timer_setup(&vk->serial_timer, bcm_vk_tty_poll, 0);
-+		mod_timer(&vk->serial_timer, jiffies + SERIAL_TIMER_VALUE);
-+	}
-+	return 0;
-+}
-+
-+static void bcm_vk_tty_close(struct tty_struct *tty, struct file *file)
-+{
-+	struct bcm_vk *vk = dev_get_drvdata(tty->dev);
-+
-+	if (tty->index >= BCM_VK_NUM_TTY)
-+		return;
-+
-+	vk->tty[tty->index].is_opened = false;
-+
-+	if (tty->count == 1)
-+		del_timer_sync(&vk->serial_timer);
-+}
-+
-+static void bcm_vk_tty_doorbell(struct bcm_vk *vk, u32 db_val)
-+{
-+	vkwrite32(vk, db_val, BAR_0,
-+		  VK_BAR0_REGSEG_DB_BASE + VK_BAR0_REGSEG_TTY_DB_OFFSET);
-+}
-+
-+static int bcm_vk_tty_write(struct tty_struct *tty,
-+			    const unsigned char *buffer,
-+			    int count)
-+{
-+	int index;
-+	struct bcm_vk *vk;
-+	struct bcm_vk_tty *vktty;
-+	int i;
-+
-+	index = tty->index;
-+	vk = dev_get_drvdata(tty->dev);
-+	vktty = &vk->tty[index];
-+
-+	/* Simple write each byte to circular buffer */
-+	for (i = 0; i < count; i++) {
-+		vkwrite8(vk, buffer[i], BAR_1,
-+			 VK_BAR_CHAN_DATA(vktty, to, vktty->wr));
-+		vktty->wr++;
-+		if (vktty->wr >= vktty->to_size)
-+			vktty->wr = 0;
-+	}
-+	/* Update write offset from shadow register to card */
-+	vkwrite32(vk, vktty->wr, BAR_1, VK_BAR_CHAN_WR(vktty, to));
-+	bcm_vk_tty_doorbell(vk, 0);
-+
-+	return count;
-+}
-+
-+static int bcm_vk_tty_write_room(struct tty_struct *tty)
-+{
-+	struct bcm_vk *vk = dev_get_drvdata(tty->dev);
-+
-+	return vk->tty[tty->index].to_size - 1;
-+}
-+
-+static const struct tty_operations serial_ops = {
-+	.open = bcm_vk_tty_open,
-+	.close = bcm_vk_tty_close,
-+	.write = bcm_vk_tty_write,
-+	.write_room = bcm_vk_tty_write_room,
-+};
-+
-+int bcm_vk_tty_init(struct bcm_vk *vk, char *name)
-+{
-+	int i;
-+	int err;
-+	struct tty_driver *tty_drv;
-+	struct device *dev = &vk->pdev->dev;
-+
-+	tty_drv = tty_alloc_driver
-+				(BCM_VK_NUM_TTY,
-+				 TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
-+	if (IS_ERR(tty_drv))
-+		return PTR_ERR(tty_drv);
-+
-+	/* Save struct tty_driver for uninstalling the device */
-+	vk->tty_drv = tty_drv;
-+
-+	/* initialize the tty driver */
-+	tty_drv->driver_name = KBUILD_MODNAME;
-+	tty_drv->name = kstrdup(name, GFP_KERNEL);
-+	if (!tty_drv->name) {
-+		err = -ENOMEM;
-+		goto err_put_tty_driver;
-+	}
-+	tty_drv->type = TTY_DRIVER_TYPE_SERIAL;
-+	tty_drv->subtype = SERIAL_TYPE_NORMAL;
-+	tty_drv->init_termios = tty_std_termios;
-+	tty_set_operations(tty_drv, &serial_ops);
-+
-+	/* register the tty driver */
-+	err = tty_register_driver(tty_drv);
-+	if (err) {
-+		dev_err(dev, "tty_register_driver failed\n");
-+		goto err_kfree_tty_name;
-+	}
-+
-+	for (i = 0; i < BCM_VK_NUM_TTY; i++) {
-+		struct device *tty_dev;
-+
-+		tty_port_init(&vk->tty[i].port);
-+		tty_dev = tty_port_register_device(&vk->tty[i].port, tty_drv,
-+						   i, dev);
-+		if (IS_ERR(tty_dev)) {
-+			err = PTR_ERR(tty_dev);
-+			goto unwind;
-+		}
-+		dev_set_drvdata(tty_dev, vk);
-+		vk->tty[i].is_opened = false;
-+	}
-+
-+	INIT_WORK(&vk->tty_wq_work, bcm_vk_tty_wq_handler);
-+	vk->tty_wq_thread = create_singlethread_workqueue("tty");
-+	if (!vk->tty_wq_thread) {
-+		dev_err(dev, "Fail to create tty workqueue thread\n");
-+		err = -ENOMEM;
-+		goto unwind;
-+	}
-+	return 0;
-+
-+unwind:
-+	while (--i >= 0)
-+		tty_port_unregister_device(&vk->tty[i].port, tty_drv, i);
-+	tty_unregister_driver(tty_drv);
-+
-+err_kfree_tty_name:
-+	kfree(tty_drv->name);
-+	tty_drv->name = NULL;
-+
-+err_put_tty_driver:
-+	put_tty_driver(tty_drv);
-+
-+	return err;
-+}
-+
-+void bcm_vk_tty_exit(struct bcm_vk *vk)
-+{
-+	int i;
-+
-+	del_timer_sync(&vk->serial_timer);
-+	for (i = 0; i < BCM_VK_NUM_TTY; ++i) {
-+		tty_port_unregister_device(&vk->tty[i].port,
-+					   vk->tty_drv,
-+					   i);
-+		tty_port_destroy(&vk->tty[i].port);
-+	}
-+	tty_unregister_driver(vk->tty_drv);
-+
-+	kfree(vk->tty_drv->name);
-+	vk->tty_drv->name = NULL;
-+
-+	put_tty_driver(vk->tty_drv);
-+}
-+
-+void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
-+{
-+	struct bcm_vk_tty *vktty;
-+	int i;
-+
-+	for (i = 0; i < BCM_VK_NUM_TTY; ++i) {
-+		vktty = &vk->tty[i];
-+		if (vktty->pid)
-+			kill_pid(find_vpid(vktty->pid), SIGKILL, 1);
-+	}
-+}
--- 
-2.17.1
+There was an offline conversation about renaming some of these fields so
+they more obviously map to the Hyper-V TLFS while also being architecture
+neutral.  Toward that end, I'd suggest the "hypercalls_features" field shou=
+ld be
+named "features_b".  This would align with the offline discussion, and matc=
+hes
+what you've done with "isolation_config_a"  and similar below (which is goo=
+d).
+
+>  	u32 misc_features;
+>  	u32 hints;
+>  	u32 nested_features;
+>  	u32 max_vp_index;
+>  	u32 max_lp_index;
+> +	u32 isolation_config_a;
+> +	u32 isolation_config_b;
+>  };
+>  extern struct ms_hyperv_info ms_hyperv;
+>=20
+> @@ -169,6 +172,8 @@ void hyperv_report_panic(struct pt_regs *regs, long e=
+rr, bool
+> in_die);
+>  void hyperv_report_panic_msg(phys_addr_t pa, size_t size);
+>  bool hv_is_hyperv_initialized(void);
+>  bool hv_is_hibernation_supported(void);
+> +enum hv_isolation_type hv_get_isolation_type(void);
+> +bool hv_is_isolation_supported(void);
+>  void hyperv_cleanup(void);
+>  #else /* CONFIG_HYPERV */
+>  static inline bool hv_is_hyperv_initialized(void) { return false; }
+> --
+> 2.25.1
 
