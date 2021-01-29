@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2499308358
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E245C308367
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhA2BnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:43:25 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:40984 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhA2BnV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:43:21 -0500
-Received: by mail-wr1-f51.google.com with SMTP id p15so7267205wrq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 17:43:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VVjkQneDDFTJ9oTx+Ry+gBBAMhGr8X7DLrSz+t7UhQs=;
-        b=PHovcfy/faCY8ZEGvwYBPPIE1Hr1433422IwYwIMlKthKYOrlqOe9HFrr9UIaNolTZ
-         EiFgRuWEsV1kauUaghUxj+xQAVXOWhHZbr16gPpUPTZBUhZw5/JVh8KMO9if6NrLb9XI
-         B/GpFwkDElQReP7QwHw1X+joxDg0tQms3zUoO9MxnG0E6CgqPG11+tYIAMPKCoAaZoUS
-         sh2vrwJcuiHCbtv6BLq+trX0lcilHEERcOoZ7faCkoEpdMKC+xgYlmMJuufhYBoUs6Ar
-         9Q4s3ootoahVmpfYqfojJ0SEjK8fnCVySB4lqrlkAqghVFWg9jN4NOtIR7k2CT9wJJI5
-         YRBQ==
-X-Gm-Message-State: AOAM53178Bs7TbU+KSGxJQdcY8oA2AhBMd9hqM3q+86x6s56qnPgdlIT
-        eyOdRuGgEr0WDCmYXKUQwKo=
-X-Google-Smtp-Source: ABdhPJzLYsrhEEcInNJ/93BzaKc6zmJA9nPQS58zDjk8/us582gb+RZGVaoI3OxT4S6GC3sKrnzgYg==
-X-Received: by 2002:a05:6000:1565:: with SMTP id 5mr1858778wrz.109.1611884558942;
-        Thu, 28 Jan 2021 17:42:38 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:3d48:4849:d506:e578? ([2601:647:4802:9070:3d48:4849:d506:e578])
-        by smtp.gmail.com with ESMTPSA id p15sm9296563wrt.15.2021.01.28.17.42.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 17:42:38 -0800 (PST)
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Chao Leng <lengchao@huawei.com>, Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
- <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
- <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
- <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
-Date:   Thu, 28 Jan 2021 17:42:34 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231322AbhA2BuB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 20:50:01 -0500
+Received: from wnbcorp.com ([175.126.38.143]:48758 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229866AbhA2BuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:50:00 -0500
+Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T1aDZB004051;
+        Fri, 29 Jan 2021 10:46:25 +0900
+Message-Id: <202101290146.10T1aDZB004051@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 29 Jan 2021 02:46:01 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
->> You can't see exactly where it dies but I followed the assembly to
->> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
->> old) which returns NULL but nvme_next_ns() is returning NULL eventually
->> (list_next_or_null_rcu()).
-> So there is other bug cause nvme_next_ns abormal.
-> I review the code about head->list and head->current_path, I find 2 bugs
-> may cause the bug:
-> First, I already send the patch. see:
-> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/ 
-> 
-> Second, in nvme_ns_remove, list_del_rcu is before
-> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
-> "head", but still use "old". I'm not sure there's any other
-> consideration here, I will check it and try to fix it.
+Sir/Madam,
 
-The reason why we first remove from head->list and only then clear
-current_path is because the other way around there is no way
-to guarantee that that the ns won't be assigned as current_path
-again (because it is in head->list).
+CONGRATULATIONS!!!
 
-nvme_ns_remove fences continue of deletion of the ns by synchronizing
-the srcu such that for sure the current_path clearance is visible.
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
