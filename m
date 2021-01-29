@@ -2,85 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C709B308559
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1E8308553
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhA2FuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:50:12 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:56100 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231939AbhA2FuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:50:05 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1l5MeO-0002bW-GP; Fri, 29 Jan 2021 16:48:57 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Jan 2021 16:48:56 +1100
-Date:   Fri, 29 Jan 2021 16:48:56 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] crypto: octeontx2 - Add dependency on NET_VENDOR_MARVELL
-Message-ID: <20210129054856.GA20020@gondor.apana.org.au>
-References: <b1397a30-0018-ac78-2a89-4fc0db1d1ec8@infradead.org>
+        id S231874AbhA2Fts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:49:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhA2Ftr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 00:49:47 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08360C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:49:07 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id b21so5921029pgk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tVJjTenNLTzHrF2aTm18o4ON4OCXDq74QxlW6fJ6i20=;
+        b=u+YFGHCWcybaeGxmjuH8ppCeMC/mwFMCm71N1fx3ra6xmTfLyowDhegmz3BSsTuw83
+         sb+ZlisAcyY7Bjd3VSFUkLP/zd9vwB3jcQE8LPtA9mozdw4MaJ7aA48hij2iXfZOeyE+
+         wHS1qiX4Ana43rX8ljrkQULaIG0NuGPxF8dZ5hO7h5ka9RphEEIE47tcNSsHNeRJJ/WE
+         nVs2k610mZhko6Ub451XzBbLD1rB9cyDrIgFqlLyzXH0To3YWmNIqbKOT3DoWXI8siP5
+         ScBZyRX8VwpFwZNBRy6qYXhpcCY1629uZwCIYqZeFVNieNSqsnrNYj5EdLqeUeSJvBw3
+         Oh0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=tVJjTenNLTzHrF2aTm18o4ON4OCXDq74QxlW6fJ6i20=;
+        b=Xf6ZY62YYyPem26HhfkB42vuf74IvKcPO+CdfuOiFewFK7sId/ezaUMSlj0moMHVM/
+         fJ5N3FGEesOraISoEtRsw0vEbJmBiUbslMkJS89IZ1cqKc+ZxMi2i9LHVNF0TLWbt/kP
+         /2NIg0MbjwjBQUw1L2HYZ/SQpNzU6PBbXCd9xZ5TggzUxFFNS+Q/mxpcLlM8hSZy78et
+         n1xVYLInf9oRdbF2Z6gQHxSCDIWn1czmy/vZxswjh+UMFTGx1FVj5MMTCiqPmZRbnQCF
+         0bu229yLLbPiQYmu5F2bk1pfn8+SFx31qm5ofYRya8PIqOnfAg8m/rkgFm7mjTNugxQV
+         221w==
+X-Gm-Message-State: AOAM530CG8QMi8m0doZT8cec9Vw11MluPrZOUmCcKx76VGTFeI5hKvTW
+        jn6cp69Ge1dmf7QAIHrs7V8=
+X-Google-Smtp-Source: ABdhPJxRRTu5p8MuSjnDFQ4ApX2EkFrSZ8R3tcYx7OovA259yQTynVXtmBsQsxQCOdCMRxYj+9J87w==
+X-Received: by 2002:a63:5b43:: with SMTP id l3mr3022235pgm.369.1611899346559;
+        Thu, 28 Jan 2021 21:49:06 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([114.129.115.223])
+        by smtp.gmail.com with ESMTPSA id j13sm7408098pfr.214.2021.01.28.21.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 21:49:05 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH v2 0/3] perf tools: Minor improvements in event synthesis
+Date:   Fri, 29 Jan 2021 14:48:58 +0900
+Message-Id: <20210129054901.1705483-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1397a30-0018-ac78-2a89-4fc0db1d1ec8@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 09:41:12AM -0800, Randy Dunlap wrote:
-> on x86_64:
-> 
-> ld: drivers/crypto/marvell/octeontx2/otx2_cptpf_main.o: in function `cptpf_flr_wq_handler':
-> otx2_cptpf_main.c:(.text+0x2b): undefined reference to `otx2_mbox_alloc_msg_rsp'
+Hello,
 
-Thanks for the report.  The issue is that the crypto driver depends
-on code that sits under net so if that option is off then you'll end
-up with these errors.
+This is to optimize the event synthesis during perf record.
 
----8<---
-The crypto octeontx2 driver depends on the mbox code in the network
-tree.  It tries to select the MBOX Kconfig option but that option
-itself depends on many other options which are not selected, e.g.,
-CONFIG_NET_VENDOR_MARVELL.  It would be inappropriate to select them
-all as randomly prompting the user for network options which would
-oterhwise be disabled just because a crypto driver has been enabled
-makes no sense.
+The first patch is to reduce memory usage when many threads are used.
+The second is to avoid unncessary syscalls for kernel threads.  And
+the last one is to reduce the number of threads to iterate when new
+threads are being created at the same time.
 
-This patch fixes this by adding a dependency on NET_VENDOR_MARVELL.
-This makes the crypto driver invisible if the network option is off.
+Unfortunately there's no dramatic improvement here but I can see ~5%
+gain in the 'perf bench internals synthesize' on a big machine.
+(The numbers are not stable though)
 
-If the crypto driver must be visible even without the network stack
-then the shared mbox code should be moved out of drivers/net.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 5e8ce8334734 ("crypto: marvell - add Marvell OcteonTX2 CPT...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Before:
+  # perf bench internals synthesize --mt -M1 -I 100
+  # Running 'internals/synthesize' benchmark:
+  Computing performance of multi threaded perf event synthesis by
+  synthesizing events on CPU 0:
+    Number of synthesis threads: 1
+      Average synthesis took: 68831.480 usec (+- 101.450 usec)
+      Average num. events: 9982.000 (+- 0.000)
+      Average time per event 6.896 usec
 
-diff --git a/drivers/crypto/marvell/Kconfig b/drivers/crypto/marvell/Kconfig
-index 2efbd79180ce..a188ad1fadd3 100644
---- a/drivers/crypto/marvell/Kconfig
-+++ b/drivers/crypto/marvell/Kconfig
-@@ -41,6 +41,7 @@ config CRYPTO_DEV_OCTEONTX2_CPT
- 	depends on ARM64 || COMPILE_TEST
- 	depends on PCI_MSI && 64BIT
- 	depends on CRYPTO_LIB_AES
-+	depends on NET_VENDOR_MARVELL
- 	select OCTEONTX2_MBOX
- 	select CRYPTO_DEV_MARVELL
- 	select CRYPTO_SKCIPHER
+
+After:
+  # perf bench internals synthesize --mt -M1 -I 100
+  # Running 'internals/synthesize' benchmark:
+  Computing performance of multi threaded perf event synthesis by
+  synthesizing events on CPU 0:
+    Number of synthesis threads: 1
+      Average synthesis took: 65036.370 usec (+- 158.121 usec)
+      Average num. events: 9982.000 (+- 0.000)
+      Average time per event 6.515 usec
+
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (3):
+  perf tools: Use /proc/<PID>/task/<TID>/status for synthesis
+  perf tools: Skip MMAP record synthesis for kernel threads
+  perf tools: Use scandir() to iterate threads
+
+ tools/perf/util/synthetic-events.c | 88 ++++++++++++++++++++----------
+ 1 file changed, 58 insertions(+), 30 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.30.0.365.g02bc693789-goog
+
