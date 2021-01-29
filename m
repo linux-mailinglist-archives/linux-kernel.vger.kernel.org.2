@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7780308904
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8773088DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhA2MTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 07:19:38 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41986 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232719AbhA2MJL (ORCPT
+        id S232686AbhA2MHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 07:07:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232326AbhA2MCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 07:09:11 -0500
-X-UUID: a167416d63e24cdcbe82235c4eddb1b9-20210129
-X-UUID: a167416d63e24cdcbe82235c4eddb1b9-20210129
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <michael.kao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 82846894; Fri, 29 Jan 2021 18:10:14 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 Jan 2021 18:10:13 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 Jan 2021 18:10:13 +0800
-From:   Michael Kao <michael.kao@mediatek.com>
-To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
-CC:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [v6,0/3] mt8183: Add Mediatek thermal driver and dtsi
-Date:   Fri, 29 Jan 2021 18:10:09 +0800
-Message-ID: <20210129101012.25180-1-michael.kao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 29 Jan 2021 07:02:17 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E240C08ECA4;
+        Fri, 29 Jan 2021 02:21:15 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c9a00c2508fce5f12579a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:c250:8fce:5f12:579a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A974D1EC026D;
+        Fri, 29 Jan 2021 11:21:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611915670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TVLhEv6qFkJVfRGbRCeWnctSeyH/2aF863ezHXsArvw=;
+        b=erNdzR8S0vCkAaDIcWEZuGKQk4j4hHdj0CaAHILELw+fn/JXJlOTzwZ30WCZs/K2z9dGjS
+        24canQOHf8ZnUrv898FXTNxUFjY5Gj1mDjXUdu12OhUgtuR2tSl/HFc4D17HJs1JhQv6Hp
+        yBHs112GHBP977M3ycTPGXi5MsyTmKE=
+Date:   Fri, 29 Jan 2021 11:21:05 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
+Message-ID: <20210129102105.GA27841@zn.tnic>
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+ <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <20210128165014.xc77qtun6fl2qfun@treble>
+ <20210128215219.6kct3h2eiustncws@treble>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210128215219.6kct3h2eiustncws@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset supports for MT8183 chip to mtk_thermal.c.
-Add thermal zone of all the thermal sensor in SoC for
-another get temperatrue. They don't need to thermal throttle.
-And we bind coolers for thermal zone nodes of cpu_thermal.
+On Thu, Jan 28, 2021 at 03:52:19PM -0600, Josh Poimboeuf wrote:
+> 
+> With retpolines disabled, some configurations of GCC will add Intel CET
+> instrumentation to the kernel by default.  That breaks certain tracing
+> scenarios by adding a superfluous ENDBR64 instruction before the fentry
+> call, for functions which can be called indirectly.
+> 
+> CET instrumentation isn't currently necessary in the kernel, as CET is
+> only supported in user space.  Disable it unconditionally.
+> 
+> Reported-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+>  Makefile          | 6 ------
+>  arch/x86/Makefile | 3 +++
+>  2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index e0af7a4a5598..51c2bf34142d 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -948,12 +948,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
+>  # change __FILE__ to the relative path from the srctree
+>  KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+>  
+> -# ensure -fcf-protection is disabled when using retpoline as it is
+> -# incompatible with -mindirect-branch=thunk-extern
+> -ifdef CONFIG_RETPOLINE
+> -KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+> -endif
+> -
 
-Changes in v6:
-    - Rebase to kernel-5.11-rc1.
-    - [1/3]
-	- add interrupts property.
-    - [2/3]
-	- add the Tested-by in the commit message.
-    - [3/3]
-	- use the mt->conf->msr[id] instead of conf->msr[id] in the
-	  _get_sensor_temp and mtk_thermal_bank_temperature.
-	- remove the redundant space in _get_sensor_temp and
-	  mtk_read_sensor_temp.
-	- change kmalloc to dev_kmalloc in mtk_thermal_probe.
+Why is that even here, in the main Makefile if this cf-protection thing
+is x86-specific?
 
-Changes in v5:
-    - Rebase to kernel-5.9-rc1.
-    - Revise the title of cover letter.
-    - Drop "[v4,7/7] thermal: mediatek: use spinlock to protect PTPCORESEL"
-    - [2/2]
-        -  Add the judgement to the version of raw_to_mcelsius.
-
-Changes in v4:
-    - Rebase to kernel-5.6-rc1.
-    - [1/7]
-        - Squash thermal zone settings in the dtsi from [v3,5/8]
-          arm64: dts: mt8183: Increase polling frequency for CPU thermal zone.
-        - Remove the property of interrupts and mediatek,hw-reset-temp.
-    - [2/7]
-        - Correct commit message.
-    - [4/7]
-        - Change the target temperature to the 80C and change the commit message.
-    - [6/7]
-        - Adjust newline alignment.
-        - Fix the judgement on the return value of registering thermal zone.
-
-Changes in v3:
-    - Rebase to kernel-5.5-rc1.
-    - [1/8]
-        - Update sustainable power of cpu, tzts1~5 and tztsABB.
-    - [7/8]
-        - Bypass the failure that non cpu_thermal sensor is not find in thermal-zones
-          in dts, which is normal for mt8173, so prompt a warning here instead of
-          failing.
-
-        Return -EAGAIN instead of -EACCESS on the first read of sensor that
-        often are bogus values. This can avoid following warning on boot:
-
-          thermal thermal_zone6: failed to read out thermal zone (-13)
-
-Changes in v2:
-    - [1/8]
-        - Add the sustainable-power,trips,cooling-maps to the tzts1~tztsABB.
-    - [4/8]
-        - Add the min opp of cpu throttle.
-
-Matthias Kaehlcke (1):
-  arm64: dts: mt8183: Configure CPU cooling
-
-Michael Kao (2):
-  thermal: mediatek: add another get_temp ops for thermal sensors
-  arm64: dts: mt8183: add thermal zone node
-
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 140 +++++++++++++++++++++++
- drivers/thermal/mtk_thermal.c            | 100 ++++++++++++----
- 2 files changed, 215 insertions(+), 25 deletions(-)
+Are we going to move it back there when some other arch gets CET or
+CET-like support?
 
 -- 
-2.18.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
