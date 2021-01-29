@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7412C308332
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4201E308333
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhA2BYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:24:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbhA2BYF (ORCPT
+        id S231799AbhA2BY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:24:27 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4594 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231184AbhA2BYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:24:05 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4CAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 17:23:25 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id b5so4087910vsh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 17:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sjkb6yXWtZ9Sxv1/gNdqQbGBoN1+dPLaicMA2ZT6rNM=;
-        b=iCLYU3fuPsvJZltkAom5unfVux3qbx/84SoQSmqh5RtsiImcrCdGMT31C6+1ENMBLS
-         0+LRiLAsmRhmOFQ5Q3GHbyu5aZ74aQkQRyaA63MegeLEXfmWLspArV+SQzI3/B/1cGxJ
-         1rQ42u/3utf0mvm4yEsRiVY+BSTy3WgKy9UUCY1jQR27gxY3lKBZJ2MjQvlH/Y3jc8R5
-         O3KBn5Wfuxbpq3cWKoGssSVuk/IPGSipcB70yiVvVwUkdP1OYGYUTRRJlSo87uQH/33A
-         B+txLKIct1lZEOxXRo12HH2AlAlcCOCVY8UJXBD8D02HEcysxUof5gYWcOYymjgwUMGv
-         a2ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sjkb6yXWtZ9Sxv1/gNdqQbGBoN1+dPLaicMA2ZT6rNM=;
-        b=tWiGXtHOJuuOcfgtfJlw48UdSe5TMpIqNWffrDTXGZ5cySFgXViJ1spVl5qkahB5z+
-         tTt4CIvoFXtXwfvCAWSQ0QjazGicZYylM5PtCuA3u5goI7DM3C1B2Mb7uPJMCE+dqE9F
-         0MjgWDQ+TLKKP0GZDgO1O9qJblCl9jBjNRgAPdVFdZmJDtf5yLP7+YaO+qMrM8d7secb
-         EPA8+dbQqoszBMUKgkQtqg9WA8mbv2boEFcXiYsdTc4/6mqdHP5HvPeRqlpcutXb79HY
-         eH+oCa47wEo2cnXu8mquz2hf4JxHgARYD3jZ5dkxY2djZInXYDMbd4CRAAysuv4DjBuj
-         WpAQ==
-X-Gm-Message-State: AOAM530Zf1AdTO3AbE+4uK6OItEWQMkvuxYlzi6RnX46ItPQyP+Xe3pZ
-        1aodggbPOvwkqbHkDvsIQ6ZXpHqykaKxTi91E4P+SQ==
-X-Google-Smtp-Source: ABdhPJzvSoHd4aqU6Cv8LKu9Sl0lIJ7bapX7TwH6WxQlYBY8b93nG65hR4r/fmD0J1GnGIrVHo0uyX2Ku496O34Z6ik=
-X-Received: by 2002:a67:f810:: with SMTP id l16mr1395266vso.41.1611883403850;
- Thu, 28 Jan 2021 17:23:23 -0800 (PST)
+        Thu, 28 Jan 2021 20:24:15 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DRfhf2GvjzY2nX;
+        Fri, 29 Jan 2021 09:22:26 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 29 Jan 2021 09:23:32 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Fri, 29
+ Jan 2021 09:23:32 +0800
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     <linux-nvme@lists.infradead.org>, Sagi Grimberg <sagi@grimberg.me>,
+        <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@fb.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+Date:   Fri, 29 Jan 2021 09:23:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20201003040257.62768-1-john.stultz@linaro.org>
- <20201003040257.62768-8-john.stultz@linaro.org> <20201008115101.4qi6wh3hhkb6krg5@DESKTOP-E1NTVVP.localdomain>
- <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
-In-Reply-To: <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
-From:   Daniel Mentz <danielmentz@google.com>
-Date:   Thu, 28 Jan 2021 17:23:12 -0800
-Message-ID: <CAE2F3rBSADvPsFYyDAaPbEaFGNVKbgwOuakkD+MLwa0J-09Dcg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
- re-using the system heap
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Brian Starkey <brian.starkey@arm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:04 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> On Thu, Oct 8, 2020 at 4:51 AM Brian Starkey <brian.starkey@arm.com> wrote:
-> > On Sat, Oct 03, 2020 at 04:02:57AM +0000, John Stultz wrote:
-> > > @@ -393,6 +424,16 @@ static int system_heap_allocate(struct dma_heap *heap,
-> > >               /* just return, as put will call release and that will free */
-> > >               return ret;
-> > >       }
-> > > +
-> > > +     /*
-> > > +      * For uncached buffers, we need to initially flush cpu cache, since
-> > > +      * the __GFP_ZERO on the allocation means the zeroing was done by the
-> > > +      * cpu and thus it is likely cached. Map (and implicitly flush) it out
-> > > +      * now so we don't get corruption later on.
-> > > +      */
-> > > +     if (buffer->uncached)
-> > > +             dma_map_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
-> >
-> > Do we have to keep this mapping around for the entire lifetime of the
-> > buffer?
->
-> Yea, I guess we can just map and unmap it right there.  It will look a
-> little absurd, but that sort of aligns with your next point.
->
-> > Also, this problem (and solution) keeps lingering around. It really
-> > feels like there should be a better way to solve "clean the linear
-> > mapping all the way to DRAM", but I don't know what that should be.
->
-> Yea, something better here would be nice...
 
-In ION, we had a little helper function named
-ion_buffer_prep_noncached that called arch_dma_prep_coherent() on all
-sg entries like so
 
-for_each_sg(table->sgl, sg, table->orig_nents, i)
-        arch_dma_prep_coherent(sg_page(sg), sg->length);
-
-Would that help?
+On 2021/1/28 17:40, Daniel Wagner wrote:
+> On Thu, Jan 28, 2021 at 05:18:56PM +0800, Chao Leng wrote:
+>> It is impossible to return NULL for nvme_next_ns(head, old).
+> 
+>   block nvme0n1: no usable path - requeuing I/O
+>   block nvme0n1: no usable path - requeuing I/O
+>   block nvme0n1: no usable path - requeuing I/O
+>   block nvme0n1: no usable path - requeuing I/O
+>   block nvme0n1: no usable path - requeuing I/O
+>   block nvme0n1: no usable path - requeuing I/O
+>   BUG: kernel NULL pointer dereference, address: 0000000000000068
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 8000000ff67bc067 P4D 8000000ff67bc067 PUD ff9ac9067 PMD 0
+>   Oops: 0000 [#1] SMP PTI
+>   CPU: 23 PID: 15759 Comm: dt.21.15 Kdump: loaded Tainted: G            E       5.3.18-0.gc9fe679-default #1 SLE15-SP2 (unreleased)
+>   Hardware name: FUJITSU PRIMERGY RX2540 M2/D3289-B1, BIOS V5.0.0.11 R1.18.0 for D3289-B1x                    02/06/2018
+>   RIP: 0010:nvme_ns_head_make_request+0x1d1/0x430 [nvme_core]
+>   Code: 54 24 10 0f 84 c9 01 00 00 48 8b 54 24 10 48 83 ea 30 0f 84 ba 01 00 00 48 39 d0 0f 84 01 02 00 00 31 ff eb 05 48 39 d0 74 67 <48> 8b 72 68 83 e6 04 75 13 48 8b 72 68 83 e6 01 75 0a 48 8b 72 10
+>   RSP: 0018:ffffa69d08017af8 EFLAGS: 00010246
+>   RAX: ffff92f261d87800 RBX: ffff92fa555b0010 RCX: ffff92fa555bc570
+>   RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+>   RBP: 0000000000000001 R08: 0000000000001000 R09: 0000000000001000
+>   R10: ffffa69d080179a8 R11: ffff92f264f0c1c0 R12: ffff92f264f7f000
+>   R13: ffff92fa555b0000 R14: 0000000000000001 R15: 0000000000000000
+>   FS:  00007f3962bae700(0000) GS:ffff92f29ffc0000(0000) knlGS:0000000000000000
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000000000000068 CR3: 0000000fd69a2002 CR4: 00000000003606e0
+>   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   Call Trace:
+>    generic_make_request+0x121/0x300
+>    ? submit_bio+0x42/0x1c0
+>    submit_bio+0x42/0x1c0
+>    ext4_io_submit+0x49/0x60 [ext4]
+>    ext4_writepages+0x625/0xe90 [ext4]
+>    ? do_writepages+0x4b/0xe0
+>    ? ext4_mark_inode_dirty+0x1d0/0x1d0 [ext4]
+>    do_writepages+0x4b/0xe0
+>    ? __generic_file_write_iter+0x192/0x1c0
+>    ? __filemap_fdatawrite_range+0xcb/0x100
+>    __filemap_fdatawrite_range+0xcb/0x100
+>    ? ext4_file_write_iter+0x128/0x3c0 [ext4]
+>    file_write_and_wait_range+0x5e/0xb0
+>    __generic_file_fsync+0x22/0xb0
+>    ext4_sync_file+0x1f7/0x3c0 [ext4]
+>    do_fsync+0x38/0x60
+>    __x64_sys_fsync+0x10/0x20
+>    do_syscall_64+0x5b/0x1e0
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> You can't see exactly where it dies but I followed the assembly to
+> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+> (list_next_or_null_rcu()).
+So there is other bug cause nvme_next_ns abormal.
+I review the code about head->list and head->current_path, I find 2 bugs
+may cause the bug:
+First, I already send the patch. see:
+https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/
+Second, in nvme_ns_remove, list_del_rcu is before
+nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+"head", but still use "old". I'm not sure there's any other
+consideration here, I will check it and try to fix it.
+> 
+> And I have positive feedback, this patch fixes the above problem.
+Although adding check ns can fix the crash. There may still be other problems
+such as in __nvme_find_path which use list_for_each_entry_rcu.
+> 
+> .
+> 
