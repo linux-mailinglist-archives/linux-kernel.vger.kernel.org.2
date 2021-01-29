@@ -2,138 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F739308BCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1949E308BE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbhA2RnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbhA2Rlt (ORCPT
+        id S232519AbhA2RpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:45:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231940AbhA2RnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:41:49 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2BAC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:41:09 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id j11so3008862plt.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z7/2anDq5WllUjyju4vzEFhuV34H44LI/WUUefdFyEk=;
-        b=PHbYJzbOBDxaiTYsHlUN0vG98HBgzsYHOwTnDjYseWUt7FajCD1JceR32UCFpeD3GL
-         CZaNJZeppgB2oMFcimKGTpsWKUi1yxxkK1EdYEwVlNG95oqdCsO0AX3T5KXe4l+Pe9Zg
-         YO3z2dQS+X/tycQsWZGn3ppdbaKp1U5sYVu/R1h4p6yLQucP4z0PMWCEr13n2ukceEeR
-         0BB7iIn5TBb1Y0tCIEO/tZajgri2ID0q6Zqxe0PlgC7835PIg8FWQp7m6jneihN+FsFk
-         FuwYYD0UGEmE+WtShsmgRdK/kSQrL2DIJ/tKYEtl0o+1/QNnJtoBTDbUfAEC2GTF/I84
-         H87A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z7/2anDq5WllUjyju4vzEFhuV34H44LI/WUUefdFyEk=;
-        b=A/OxdNYEZM4Db9q5G1pfkQdwTAu5/81bmByo5AxNq2G7aoLQJDyPjjvbVT5Gnp3Xpq
-         ZxJ/ldc81QZPX1Mhrve1Wc9AQHdyF3fUY1Badxqdr8yxdHe7mFBvtIyGTUSoQBOHTk40
-         x7C3ISRkxvOv2BHTB3Mt5h116NKLJdUOPI5PxRwggqEsO4ffxjTqvm/o3SXnjFwjlIyQ
-         xabsapJIpDAFWaXzdrtVZsQBrfLg7yOryUUYA9uNUwxkaCUFSecnKlixbzY3R7gH01Hx
-         wY3ERMG1LdXbMaVNXuQefLTJegJZmkN1HuEtejWtMxjsY7JocFDx3R/GAES0aKaoZTqV
-         eSqw==
-X-Gm-Message-State: AOAM533woSxitcMf994PcI16T/ev5KjzY+8pofWZWxMY6O1/716+1+jr
-        CniTL9EUJKQiggJs4DqqjrHSE4GkhcJYRPJ8Ft0XTQ==
-X-Google-Smtp-Source: ABdhPJxwAXu62AaW6sRe+V86NWWQeoX998BbHU4FfKikO10NfBtQz82o/AZ8p34GaykiDfIUOOJXEIgIs0YHhDOHItk=
-X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr5515927pjb.166.1611942068673;
- Fri, 29 Jan 2021 09:41:08 -0800 (PST)
+        Fri, 29 Jan 2021 12:43:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611942094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f0G6YrULWY0Hpt3rLR1Rw+mBqOBEBcyFzEyoDQIunkM=;
+        b=JtyM4YHJr8GY8G7NSchJG04pySBkomM1EUohNH5GrUHgfNychcdwHofClIK4m4pq4xdsCz
+        ZaslRi9JH+0I94VdnM1zdge3Z27rmfy9+DgjlZEzdK8EU+E+HZOjxpMhixImSfCeLkR+TK
+        rcS/l04JhxSbGVw19XlAEEXRjeWux/Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-2lwRzLMEPXWK5VVa-IqQcA-1; Fri, 29 Jan 2021 12:41:32 -0500
+X-MC-Unique: 2lwRzLMEPXWK5VVa-IqQcA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF877806693;
+        Fri, 29 Jan 2021 17:41:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AD445B694;
+        Fri, 29 Jan 2021 17:41:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <076fad09-b59e-cb6d-6303-adf5964e13c7@novek.ru>
+References: <076fad09-b59e-cb6d-6303-adf5964e13c7@novek.ru> <161193864000.3781058.7593105791689441003.stgit@warthog.procyon.org.uk>
+To:     Vadim Fedorenko <vfedorenko@novek.ru>
+Cc:     dhowells@redhat.com,
+        syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] rxrpc: Fix deadlock around release of dst cached on udp tunnel
 MIME-Version: 1.0
-References: <20210126134603.49759-1-vincenzo.frascino@arm.com> <20210126134603.49759-4-vincenzo.frascino@arm.com>
-In-Reply-To: <20210126134603.49759-4-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 29 Jan 2021 18:40:57 +0100
-Message-ID: <CAAeHK+xAbsX9Zz4aKXToNTrbgrrYck23ohGJHXvgeSTyZy=Odg@mail.gmail.com>
-Subject: Re: [PATCH v9 3/4] kasan: Add report for async mode
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3834975.1611942088.1@warthog.procyon.org.uk>
+Date:   Fri, 29 Jan 2021 17:41:28 +0000
+Message-ID: <3834976.1611942088@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:46 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> KASAN provides an asynchronous mode of execution.
->
-> Add reporting functionality for this mode.
->
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->  include/linux/kasan.h |  6 ++++++
->  mm/kasan/report.c     | 13 +++++++++++++
->  2 files changed, 19 insertions(+)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index bb862d1f0e15..b6c502dad54d 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -360,6 +360,12 @@ static inline void *kasan_reset_tag(const void *addr)
->
->  #endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS*/
->
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +
-> +void kasan_report_async(void);
-> +
-> +#endif /* CONFIG_KASAN_HW_TAGS */
-> +
->  #ifdef CONFIG_KASAN_SW_TAGS
->  void __init kasan_init_sw_tags(void);
->  #else
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 87b271206163..69bad9c01aed 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -360,6 +360,19 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->         end_report(&flags, (unsigned long)object);
->  }
->
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +void kasan_report_async(void)
-> +{
-> +       unsigned long flags;
-> +
-> +       start_report(&flags);
-> +       pr_err("BUG: KASAN: invalid-access\n");
-> +       pr_err("Asynchronous mode enabled: no access details available\n");
-> +       dump_stack();
-> +       end_report(&flags);
+Vadim Fedorenko <vfedorenko@novek.ru> wrote:
 
-This conflicts with "kasan: use error_report_end tracepoint" that's in mm.
+> You missed the call to dst_release(sk->sk_rx_dst) in
+> rxrpc_sock_destructor. Without it we are still leaking the dst.
 
-I suggest to call end_report(&flags, 0) here and check addr !=0 in
-end_report() before calling trace_error_report_end().
+Hmmm...  I no longer get the messages appearing with this patch.  I'll have
+another look.
 
-> +}
-> +#endif /* CONFIG_KASAN_HW_TAGS */
-> +
->  static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->                                 unsigned long ip)
->  {
-> --
-> 2.30.0
->
+David
+
