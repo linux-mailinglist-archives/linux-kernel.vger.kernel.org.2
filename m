@@ -2,523 +2,1158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C6230903E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BEB309041
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbhA2Wn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:43:56 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49964 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhA2Wnx (ORCPT
+        id S232831AbhA2Wor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232760AbhA2WoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:43:53 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3EE4B1C0B92; Fri, 29 Jan 2021 23:42:55 +0100 (CET)
-Date:   Fri, 29 Jan 2021 23:42:54 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     johan@kernel.org, kernel list <linux-kernel@vger.kernel.org>,
-        phone-devel@vger.kernel.org, tony@atomide.com
-Subject: [PATCHv2] gnss: motmdm: Add support for Motorola Mapphone MDM6600
- modem
-Message-ID: <20210129224254.GA28853@duo.ucw.cz>
-References: <20210107224530.GA23250@duo.ucw.cz>
+        Fri, 29 Jan 2021 17:44:07 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BA1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:43:27 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id s23so235673pjz.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:43:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0LItUTWfkjgk4iIY0tKXGys2w3V9AzcTKk9QlKRWcLM=;
+        b=lfgGNP1e1nSQ/YypnrJEff1RdrZtoNco0M1eA4HGPAIUSjnxIoXbUphVSen7Bm8hVb
+         4yFLyfn5JSnQ7x2gSasXKkZGSUiyTWfc7v1lR5FkG1nyn7m2jPwLuYxE6LIyTIAC6zn/
+         ff1o9ZEYKi2VVQnZF0lxMyj0UJKArnC1SOLnHLtzPQ4mqsDm0jcUV3v9PVqVmz8+4+Cf
+         sxjV0WFnYQFyiZSliwVNfLaO+pyPpUa2JimNrCdoe1//iBpbxafIKszr3jCE+CHU55aT
+         JlRFdfC1TyD0J4GySrV8EJ8ycBRgQeYOHOBCFdeBtMvEHOTzCCbM05TfyK3DP7xPOfSn
+         t+Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0LItUTWfkjgk4iIY0tKXGys2w3V9AzcTKk9QlKRWcLM=;
+        b=P5+80Ic1dAdWi4n2hyi8QXEPo3vA0E/GOEl0Pemr5zX2UQLNv21N5+zwTkYNfNW4sF
+         E37OPvzNYBs+LrbHV8sQe3bCPSfyK0GQRPmhyk9azbiKQ7UZb04w3ozxj2P/W5hzwf9y
+         6cpQnb6VGUUA4B+K+YkR9vNZs+4zt8ihdJXffiusFfbONaqkWWIoDcccduo8SqPAjWhn
+         59hK+elR3kryo6NQCYRVwIBnbomjxKJPKNtlFTsVL9bpXO/kckXIFSgid9jngttli4HZ
+         H9OjoQedPPP+Nkt2xUKK/8gznLchcnqAxkVdGzeujtbG7YfILaQxGtcFMgEge4raR6NI
+         VM5A==
+X-Gm-Message-State: AOAM5322KD8U0zOyKNjpidwxvtCjYlFTAaNC1RIeQBN/IdlkA9y2YZda
+        jpy7feBR1Z/AeCUXCQtl38HqIx00TkWHKagcSD9r5xGTXeQ2Dw==
+X-Google-Smtp-Source: ABdhPJzHgb6Db38lceM7JwTmJCOU5jM8qOwWTuExYKbay+9MR4vSAw0pWj73thE6lBoNx/UczlqQ+1jj6YsIbABET9Y=
+X-Received: by 2002:a17:902:ab90:b029:e0:17b:ae98 with SMTP id
+ f16-20020a170902ab90b02900e0017bae98mr6538685plr.6.1611960205244; Fri, 29 Jan
+ 2021 14:43:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
-Content-Disposition: inline
-In-Reply-To: <20210107224530.GA23250@duo.ucw.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210121232147.1849509-1-jbhayana@google.com> <20210121232147.1849509-2-jbhayana@google.com>
+ <20210122133740.GB22231@e120937-lin>
+In-Reply-To: <20210122133740.GB22231@e120937-lin>
+From:   Jyoti Bhayana <jbhayana@google.com>
+Date:   Fri, 29 Jan 2021 14:43:13 -0800
+Message-ID: <CA+=V6c37G5C=mWB1HDHOS7aEUsAc3TggF-sMebs4Eagm2c+STQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/1] iio/scmi: Adding support for IIO SCMI Based Sensors
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christian,
 
---vkogqOf2sHV7VnPd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have addressed your feedback in v4 of the patch. Please find below
+the answers to some of your questions:
+>    The initial  sensor_config ORed here is NOT initialized nor zeroed.
 
+  There is no need to initialize as it is already initialized to 0 when def=
+ined.
 
-Motorola is using a custom TS 27.010 based multiplexer protocol
-for various devices on the modem. These devices can be accessed on
-dedicated channels using Linux kernel serdev-ngsm driver.
+> being not so familiar with IIO, may I ask when and how much frequently
+> these ops are called ? (given they include a register/unregister +
+> enable/disable every time)
 
-For the GNSS on these devices, we need to kick the GNSS device at a
-desired rate. Otherwise the GNSS device stops sending data after a
-few minutes. The rate we poll data defaults to 1000 ms, and can be
-specified with a module option rate_ms between 1 to 16 seconds.
+These are called whenever the sensor is enabled/disabled by writing
+to buffer/enable sysfs node
 
-[Tony Lindgren did most of the work here, I just converted it to be
-normal serdev.]
+>AFAIU this is called during IIO init and derives a modifier from the name
+>of the sensors which are passed by the platform fw with sensor descriptors=
+,
+>so I would not trust them to be weell formed (:D) and try to be picky abou=
+t
+>*name as it was user-input to validate.
 
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+The SCMI specification has mentioned the naming convention for the
+axis as below .
+ "A NULL terminated UTF-8 format string with the sensor axis name, of
+up to 16 bytes. It is recommended that the name ends with =E2=80=98_=E2=80=
+=99 followed
+by the axis of the sensor in uppercase. For example, the name for the
+x-axis of a triaxial accelerometer could be =E2=80=9Cacc_X=E2=80=9D or =E2=
+=80=9C_X=E2=80=9D
 
-diff --git a/drivers/gnss/Kconfig b/drivers/gnss/Kconfig
-index bd12e3d57baa..9fac72eba726 100644
---- a/drivers/gnss/Kconfig
-+++ b/drivers/gnss/Kconfig
-@@ -13,6 +13,14 @@ menuconfig GNSS
-=20
- if GNSS
-=20
-+config GNSS_MOTMDM
-+	tristate "Motorola Modem TS 27.010 serdev GNSS receiver support"
-+	depends on SERIAL_DEV_BUS
-+	help
-+	  Say Y here if you have a Motorola modem using TS 27.010
-+	  multiplexer protocol for GNSS such as a Motorola Mapphone
-+	  series device like Droid 4.
-+
- config GNSS_SERIAL
- 	tristate
-=20
-diff --git a/drivers/gnss/Makefile b/drivers/gnss/Makefile
-index 451f11401ecc..f5afc2c22a3b 100644
---- a/drivers/gnss/Makefile
-+++ b/drivers/gnss/Makefile
-@@ -6,6 +6,9 @@
- obj-$(CONFIG_GNSS)			+=3D gnss.o
- gnss-y :=3D core.o
-=20
-+obj-$(CONFIG_GNSS_MOTMDM)		+=3D gnss-motmdm.o
-+gnss-motmdm-y :=3D motmdm.o
-+
- obj-$(CONFIG_GNSS_SERIAL)		+=3D gnss-serial.o
- gnss-serial-y :=3D serial.o
-=20
-diff --git a/drivers/gnss/motmdm.c b/drivers/gnss/motmdm.c
-new file mode 100644
-index 000000000000..00cddddab10b
---- /dev/null
-+++ b/drivers/gnss/motmdm.c
-@@ -0,0 +1,406 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Motorola Modem TS 27.010 serdev GNSS driver
-+ *
-+ * Copyright (C) 2018 - 2020 Tony Lindgren <tony@atomide.com>
-+ * Copyright (C) 2020 - 2021 Pavel Machek <pavel@ucw.cz>
-+ *
-+ * Based on drivers/gnss/sirf.c driver example:
-+ * Copyright (C) 2018 Johan Hovold <johan@kernel.org>
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/gnss.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/serdev.h>
-+
-+#define MOTMDM_GNSS_TIMEOUT	1000
-+#define MOTMDM_GNSS_RATE	1000
-+
-+/*
-+ * Motorola MDM GNSS device communicates over a dedicated TS 27.010 channel
-+ * using custom data packets. The packets look like AT commands embedded i=
-nto
-+ * a Motorola invented packet using format like "U1234AT+MPDSTART=3D0,1,10=
-0,0".
-+ * But it's not an AT compatible serial interface, it's a packet interface
-+ * using AT like commands.
-+ */
-+#define MOTMDM_GNSS_HEADER_LEN	5				/* U1234 */
-+#define MOTMDM_GNSS_RESP_LEN	(MOTMDM_GNSS_HEADER_LEN + 4)	/* U1234+MPD */
-+#define MOTMDM_GNSS_DATA_LEN	(MOTMDM_GNSS_RESP_LEN + 1)	/* U1234~+MPD */
-+#define MOTMDM_GNSS_STATUS_LEN	(MOTMDM_GNSS_DATA_LEN + 7) /* U1234~+MPDSTA=
-TUS=3D */
-+#define MOTMDM_GNSS_NMEA_LEN	(MOTMDM_GNSS_DATA_LEN + 8) /* U1234~+MPDNMEA=
-=3DNN, */
-+
-+enum motmdm_gnss_status {
-+	MOTMDM_GNSS_UNKNOWN,
-+	MOTMDM_GNSS_INITIALIZED,
-+	MOTMDM_GNSS_DATA_OR_TIMEOUT,
-+	MOTMDM_GNSS_STARTED,
-+	MOTMDM_GNSS_STOPPED,
-+};
-+
-+struct motmdm_gnss_data {
-+	struct gnss_device *gdev;
-+	struct device *modem;
-+	struct serdev_device *serdev;
-+	struct delayed_work restart_work;
-+	struct mutex mutex;	/* For modem commands */
-+	ktime_t last_update;
-+	int status;
-+	unsigned char *buf;
-+	size_t len;
-+	wait_queue_head_t read_queue;
-+	unsigned int parsed:1;
-+};
-+
-+static unsigned int rate_ms =3D MOTMDM_GNSS_RATE;
-+module_param(rate_ms, uint, 0644);
-+MODULE_PARM_DESC(rate_ms, "GNSS refresh rate between 1000 and 16000 ms (de=
-fault 1000 ms)");
-+
-+/*
-+ * Note that multiple commands can be sent in series with responses coming
-+ * out-of-order. For GNSS, we don't need to care about the out-of-order
-+ * responses, and can assume we have at most one command active at a time.
-+ * For the commands, can use just a jiffies base packet ID and let the mod=
-em
-+ * sort out the ID conflicts with the modem's unsolicited message ID
-+ * numbering.
-+ */
-+int motmdm_gnss_send_command(struct motmdm_gnss_data *ddata,
-+			     const u8 *buf, int len)
-+{
-+	struct gnss_device *gdev =3D ddata->gdev;
-+	const int timeout_ms =3D 1000;
-+	unsigned char cmd[128];
-+	int ret, cmdlen;
-+
-+	cmdlen =3D len + MOTMDM_GNSS_HEADER_LEN + 1;
-+	if (cmdlen > 128)
-+		return -EINVAL;
-+
-+	mutex_lock(&ddata->mutex);
-+	memset(ddata->buf, 0, ddata->len);
-+	ddata->parsed =3D false;
-+	snprintf(cmd, cmdlen, "U%04li%s", jiffies % 10000, buf);
-+
-+	ret =3D serdev_device_write(ddata->serdev, cmd, cmdlen, MAX_SCHEDULE_TIME=
-OUT);
-+	if (ret < 0)
-+		goto out_unlock;
-+
-+	serdev_device_wait_until_sent(ddata->serdev, 0);
-+
-+	ret =3D wait_event_timeout(ddata->read_queue, ddata->parsed,
-+				 msecs_to_jiffies(timeout_ms));
-+	if (ret =3D=3D 0) {
-+		ret =3D -ETIMEDOUT;
-+		goto out_unlock;
-+	} else if (ret < 0) {
-+		goto out_unlock;
-+	}
-+
-+	if (!strstr(ddata->buf, ":OK")) {
-+		dev_err(&gdev->dev, "command %s error %s\n",
-+			cmd, ddata->buf);
-+		ret =3D -EPIPE;
-+	}
-+
-+	ret =3D len;
-+
-+out_unlock:
-+	mutex_unlock(&ddata->mutex);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Android uses AT+MPDSTART=3D0,1,100,0 which starts GNSS for a while,
-+ * and then GNSS needs to be kicked with an AT command based on a
-+ * status message.
-+ */
-+static void motmdm_gnss_restart(struct work_struct *work)
-+{
-+	struct motmdm_gnss_data *ddata =3D
-+		container_of(work, struct motmdm_gnss_data,
-+			     restart_work.work);
-+	struct gnss_device *gdev =3D ddata->gdev;
-+	const unsigned char *cmd =3D "AT+MPDSTART=3D0,1,100,0";
-+	int error;
-+
-+	ddata->last_update =3D ktime_get();
-+
-+	error =3D motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-+	if (error < 0) {
-+		/* Timeouts can happen, don't warn and try again */
-+		if (error !=3D -ETIMEDOUT)
-+			dev_warn(&gdev->dev, "%s: could not start: %i\n",
-+				 __func__, error);
-+
-+		schedule_delayed_work(&ddata->restart_work,
-+				      msecs_to_jiffies(MOTMDM_GNSS_RATE));
-+	}
-+}
-+
-+static void motmdm_gnss_start(struct gnss_device *gdev, int delay_ms)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+	ktime_t now, next, delta;
-+	int next_ms;
-+
-+	now =3D ktime_get();
-+	next =3D ktime_add_ms(ddata->last_update, delay_ms);
-+	delta =3D ktime_sub(next, now);
-+	next_ms =3D ktime_to_ms(delta);
-+
-+	if (next_ms < 0)
-+		next_ms =3D 0;
-+	if (next_ms > delay_ms)
-+		next_ms =3D delay_ms;
-+
-+	schedule_delayed_work(&ddata->restart_work, msecs_to_jiffies(next_ms));
-+}
-+
-+static int motmdm_gnss_stop(struct gnss_device *gdev)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+	const unsigned char *cmd =3D "AT+MPDSTOP";
-+
-+	cancel_delayed_work_sync(&ddata->restart_work);
-+
-+	return motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-+}
-+
-+static int motmdm_gnss_init(struct gnss_device *gdev)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+	const unsigned char *cmd =3D "AT+MPDINIT=3D1";
-+	int error;
-+
-+	error =3D motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-+	if (error < 0)
-+		return error;
-+
-+	motmdm_gnss_start(gdev, 0);
-+
-+	return 0;
-+}
-+
-+static int motmdm_gnss_finish(struct gnss_device *gdev)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+	const unsigned char *cmd =3D "AT+MPDINIT=3D0";
-+	int error;
-+
-+	error =3D motmdm_gnss_stop(gdev);
-+	if (error < 0)
-+		return error;
-+
-+	return motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
-+}
-+
-+static int motmdm_gnss_receive_data(struct serdev_device *serdev,
-+					const unsigned char *buf, size_t len)
-+{
-+	struct motmdm_gnss_data *ddata =3D serdev_device_get_drvdata(serdev);
-+	struct gnss_device *gdev =3D ddata->gdev;
-+	const unsigned char *msg;
-+	size_t msglen;
-+	int ret =3D 0;
-+
-+	if (len <=3D MOTMDM_GNSS_RESP_LEN)
-+		return 0;
-+
-+	/* Handle U1234+MPD style command response */
-+	if (buf[MOTMDM_GNSS_HEADER_LEN] !=3D '~') {
-+		msg =3D buf + MOTMDM_GNSS_RESP_LEN;
-+		strncpy(ddata->buf, msg, len - MOTMDM_GNSS_RESP_LEN);
-+		ddata->parsed =3D true;
-+		wake_up(&ddata->read_queue);
-+
-+		return len;
-+	}
-+
-+	if (len <=3D MOTMDM_GNSS_DATA_LEN)
-+		return 0;
-+
-+	/* Handle U1234~+MPD style unsolicted message */
-+	switch (buf[MOTMDM_GNSS_DATA_LEN]) {
-+	case 'N':	/* UNNNN~+MPDNMEA=3DNN, */
-+		msg =3D buf + MOTMDM_GNSS_NMEA_LEN;
-+		msglen =3D len - MOTMDM_GNSS_NMEA_LEN;
-+
-+		/*
-+		 * Firmware bug: Strip out extra duplicate line break always
-+		 * in the data
-+		 */
-+		msglen--;
-+
-+		/*
-+		 * Firmware bug: Strip out extra data based on an
-+		 * earlier line break in the data
-+		 */
-+		if (msg[msglen - 5 - 1] =3D=3D 0x0a)
-+			msglen -=3D 5;
-+
-+		ret =3D gnss_insert_raw(gdev, msg, msglen);
-+		WARN_ON(ret !=3D msglen);
-+		break;
-+	case 'S':	/* UNNNN~+MPDSTATUS=3DN,NN */
-+		msg =3D buf + MOTMDM_GNSS_STATUS_LEN;
-+		msglen =3D len - MOTMDM_GNSS_STATUS_LEN;
-+
-+		switch (msg[0]) {
-+		case '1':
-+			ddata->status =3D MOTMDM_GNSS_INITIALIZED;
-+			break;
-+		case '2':
-+			ddata->status =3D MOTMDM_GNSS_DATA_OR_TIMEOUT;
-+			if (rate_ms < MOTMDM_GNSS_RATE)
-+				rate_ms =3D MOTMDM_GNSS_RATE;
-+			if (rate_ms > 16 * MOTMDM_GNSS_RATE)
-+				rate_ms =3D 16 * MOTMDM_GNSS_RATE;
-+			motmdm_gnss_start(gdev, rate_ms);
-+			break;
-+		case '3':
-+			ddata->status =3D MOTMDM_GNSS_STARTED;
-+			break;
-+		case '4':
-+			ddata->status =3D MOTMDM_GNSS_STOPPED;
-+			break;
-+		default:
-+			ddata->status =3D MOTMDM_GNSS_UNKNOWN;
-+			break;
-+		}
-+		break;
-+	case 'X':	/* UNNNN~+MPDXREQ=3DN for updated xtra2.bin needed */
-+	default:
-+		break;
-+	}
-+
-+	return len;
-+}
-+
-+static const struct serdev_device_ops gnss_serdev_ops =3D {
-+	.receive_buf    =3D motmdm_gnss_receive_data,
-+	.write_wakeup   =3D serdev_device_write_wakeup,
-+};
-+
-+static int motmdm_gnss_open(struct gnss_device *gdev)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+	int error;
-+
-+	serdev_device_set_client_ops(ddata->serdev, &gnss_serdev_ops);
-+
-+	error =3D serdev_device_open(ddata->serdev);
-+	if (error)
-+		return error;
-+
-+	error =3D motmdm_gnss_init(gdev);
-+	if (error) {
-+		serdev_device_close(ddata->serdev);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static void motmdm_gnss_close(struct gnss_device *gdev)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+	int error;
-+
-+	error =3D motmdm_gnss_finish(gdev);
-+	if (error < 0)
-+		dev_warn(&gdev->dev, "%s: close failed: %i\n",
-+			 __func__, error);
-+
-+	serdev_device_close(ddata->serdev);
-+}
-+
-+static int motmdm_gnss_write_raw(struct gnss_device *gdev,
-+				 const unsigned char *buf,
-+				 size_t count)
-+{
-+	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
-+
-+	return serdev_device_write(ddata->serdev, buf, count, MAX_SCHEDULE_TIMEOU=
-T);
-+}
-+
-+static const struct gnss_operations motmdm_gnss_ops =3D {
-+	.open		=3D motmdm_gnss_open,
-+	.close		=3D motmdm_gnss_close,
-+	.write_raw	=3D motmdm_gnss_write_raw,
-+};
-+
-+static int motmdm_gnss_probe(struct serdev_device *serdev)
-+{
-+	struct device *dev =3D &serdev->dev;
-+	struct motmdm_gnss_data *ddata;
-+	struct gnss_device *gdev;
-+	int ret;
-+
-+	ddata =3D devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
-+	if (!ddata)
-+		return -ENOMEM;
-+
-+	ddata->serdev =3D serdev;
-+	ddata->modem =3D dev->parent;
-+	ddata->len =3D PAGE_SIZE;
-+	mutex_init(&ddata->mutex);
-+	INIT_DELAYED_WORK(&ddata->restart_work, motmdm_gnss_restart);
-+	init_waitqueue_head(&ddata->read_queue);
-+
-+	ddata->buf =3D devm_kzalloc(dev, ddata->len, GFP_KERNEL);
-+	if (!ddata->buf)
-+		return -ENOMEM;
-+
-+	serdev_device_set_drvdata(serdev, ddata);
-+
-+	gdev =3D gnss_allocate_device(dev);
-+	if (!gdev)
-+		return -ENOMEM;
-+
-+	gdev->type =3D GNSS_TYPE_NMEA;
-+	gdev->ops =3D &motmdm_gnss_ops;
-+	gnss_set_drvdata(gdev, ddata);
-+	ddata->gdev =3D gdev;
-+
-+	ret =3D gnss_register_device(gdev);
-+	if (ret)
-+		gnss_put_device(ddata->gdev);
-+
-+	return ret;
-+}
-+
-+static void motmdm_gnss_remove(struct serdev_device *serdev)
-+{
-+	struct motmdm_gnss_data *data =3D serdev_device_get_drvdata(serdev);
-+
-+	gnss_deregister_device(data->gdev);
-+	gnss_put_device(data->gdev);
-+};
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id motmdm_gnss_of_match[] =3D {
-+	{ .compatible =3D "motorola,mapphone-mdm6600-gnss" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, motmdm_gnss_of_match);
-+#endif
-+
-+static struct serdev_device_driver motmdm_gnss_driver =3D {
-+	.driver	=3D {
-+		.name		=3D "gnss-mot-mdm6600",
-+		.of_match_table	=3D of_match_ptr(motmdm_gnss_of_match),
-+	},
-+	.probe	=3D motmdm_gnss_probe,
-+	.remove	=3D motmdm_gnss_remove,
-+};
-+module_serdev_device_driver(motmdm_gnss_driver);
-+
-+MODULE_AUTHOR("Tony Lindgren <tony@atomide.com>");
-+MODULE_DESCRIPTION("Motorola Mapphone MDM6600 GNSS receiver driver");
-+MODULE_LICENSE("GPL v2");
+If there is any other better way to get the modifier, please let me know.
+
+> why not a break to a final 'return ret;' (with ret properly set) ?
+
+According to Jonathan, direct returns are preferred.
+
+>Not familiar with IIO, but is it fine to setup ops and modes AFTER
+>having attached the buffer to the scmi_iiodev ?
+>Is is not 'racy-possible' that the buffer is already operational without
+>any ops immediately after being attached ?
+
+I have looked at other IIO drivers and they all do it this way.
+
+Thanks,
+Jyoti
 
 
---=20
-http://www.livejournal.com/~pavelmachek
 
---vkogqOf2sHV7VnPd
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBSPbgAKCRAw5/Bqldv6
-8ta8AKCj5ArELuNQdiX9ROLVSfSyEyJ6hACfSiwAsotnsF4hqDruEUzFs4FRxqY=
-=ybvl
------END PGP SIGNATURE-----
 
---vkogqOf2sHV7VnPd--
+
+On Fri, Jan 22, 2021 at 5:37 AM Cristian Marussi
+<cristian.marussi@arm.com> wrote:
+>
+> Hi Jyoti,
+>
+> a few remarks below.
+>
+> On Thu, Jan 21, 2021 at 11:21:47PM +0000, Jyoti Bhayana wrote:
+> > This change provides ARM SCMI Protocol based IIO device.
+> > This driver provides support for Accelerometer and Gyroscope using
+> > new SCMI Sensor Protocol defined by the upcoming SCMIv3.0
+>
+> I'd say:
+>
+> new SCMI Sensor Protocol extension added by the upcoming SCMIv3.0
+>
+> given that SCMI Sensor existed already in SCMIv2.0
+>
+> > ARM specification
+> >
+> > Signed-off-by: Jyoti Bhayana <jbhayana@google.com>
+> > ---
+> >  MAINTAINERS                                |   6 +
+> >  drivers/iio/common/Kconfig                 |   1 +
+> >  drivers/iio/common/Makefile                |   1 +
+> >  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+> >  drivers/iio/common/scmi_sensors/Makefile   |   5 +
+> >  drivers/iio/common/scmi_sensors/scmi_iio.c | 736 +++++++++++++++++++++
+> >  6 files changed, 767 insertions(+)
+> >  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+> >  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+> >  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index b516bb34a8d5..ccf37d43ab41 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -8567,6 +8567,12 @@ S:     Maintained
+> >  F:   Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.=
+txt
+> >  F:   drivers/iio/multiplexer/iio-mux.c
+> >
+> > +IIO SCMI BASED DRIVER
+> > +M:   Jyoti Bhayana <jbhayana@google.com>
+> > +L:   linux-iio@vger.kernel.org
+> > +S:   Maintained
+> > +F:   drivers/iio/common/scmi_sensors/scmi_iio.c
+> > +
+> >  IIO SUBSYSTEM AND DRIVERS
+> >  M:   Jonathan Cameron <jic23@kernel.org>
+> >  R:   Lars-Peter Clausen <lars@metafoo.de>
+> > diff --git a/drivers/iio/common/Kconfig b/drivers/iio/common/Kconfig
+> > index 2b9ee9161abd..0334b4954773 100644
+> > --- a/drivers/iio/common/Kconfig
+> > +++ b/drivers/iio/common/Kconfig
+> > @@ -6,5 +6,6 @@
+> >  source "drivers/iio/common/cros_ec_sensors/Kconfig"
+> >  source "drivers/iio/common/hid-sensors/Kconfig"
+> >  source "drivers/iio/common/ms_sensors/Kconfig"
+> > +source "drivers/iio/common/scmi_sensors/Kconfig"
+> >  source "drivers/iio/common/ssp_sensors/Kconfig"
+> >  source "drivers/iio/common/st_sensors/Kconfig"
+> > diff --git a/drivers/iio/common/Makefile b/drivers/iio/common/Makefile
+> > index 4bc30bb548e2..fad40e1e1718 100644
+> > --- a/drivers/iio/common/Makefile
+> > +++ b/drivers/iio/common/Makefile
+> > @@ -11,5 +11,6 @@
+> >  obj-y +=3D cros_ec_sensors/
+> >  obj-y +=3D hid-sensors/
+> >  obj-y +=3D ms_sensors/
+> > +obj-y +=3D scmi_sensors/
+> >  obj-y +=3D ssp_sensors/
+> >  obj-y +=3D st_sensors/
+> > diff --git a/drivers/iio/common/scmi_sensors/Kconfig b/drivers/iio/comm=
+on/scmi_sensors/Kconfig
+> > new file mode 100644
+> > index 000000000000..67e084cbb1ab
+> > --- /dev/null
+> > +++ b/drivers/iio/common/scmi_sensors/Kconfig
+> > @@ -0,0 +1,18 @@
+> > +#
+> > +# IIO over SCMI
+> > +#
+> > +# When adding new entries keep the list in alphabetical order
+> > +
+> > +menu "IIO SCMI Sensors"
+> > +
+> > +config IIO_SCMI
+> > +     tristate "IIO SCMI"
+> > +        depends on ARM_SCMI_PROTOCOL
+> > +        select IIO_BUFFER
+> > +        select IIO_KFIFO_BUF
+> > +     help
+> > +          Say yes here to build support for IIO SCMI Driver.
+> > +          This provides ARM SCMI Protocol based IIO device.
+> > +          This driver provides support for accelerometer and gyroscope
+> > +          sensors available on SCMI based platforms.
+> > +endmenu
+> > diff --git a/drivers/iio/common/scmi_sensors/Makefile b/drivers/iio/com=
+mon/scmi_sensors/Makefile
+> > new file mode 100644
+> > index 000000000000..f13140a2575a
+> > --- /dev/null
+> > +++ b/drivers/iio/common/scmi_sensors/Makefile
+> > @@ -0,0 +1,5 @@
+> > +# SPDX - License - Identifier : GPL - 2.0 - only
+> > +#
+> > +# Makefile for the IIO over SCMI
+> > +#
+> > +obj-$(CONFIG_IIO_SCMI) +=3D scmi_iio.o
+> > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/c=
+ommon/scmi_sensors/scmi_iio.c
+> > new file mode 100644
+> > index 000000000000..3b76cc54511c
+> > --- /dev/null
+> > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > @@ -0,0 +1,736 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/*
+> > + * System Control and Management Interface(SCMI) based IIO sensor driv=
+er
+> > + *
+> > + * Copyright (C) 2020 Google LLC
+> > + */
+> > +
+> > +#include <linux/delay.h>
+> > +#include <linux/err.h>
+> > +#include <linux/iio/buffer.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/kfifo_buf.h>
+> > +#include <linux/iio/sysfs.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/kthread.h>
+> > +#include <linux/module.h>
+> > +#include <linux/scmi_protocol.h>
+> > +#include <linux/time.h>
+> > +#include <linux/types.h>
+> > +
+> > +#define ilog10(x) (ilog2(x) / const_ilog2(10))
+> > +#define UHZ_PER_HZ 1000000UL
+> > +#define ODR_EXPAND(odr, uodr) (((odr) * 1000000ULL) + (uodr))
+> > +#define MAX_NUM_OF_CHANNELS 4
+> > +#define H32(x) (((x) & 0xFFFFFFFF00000000LL) >> 32)
+> > +#define L32(x) ((x) & 0xFFFFFFFFLL)
+>
+> Probaly you want to use GENMASK here to define the masks, and not sure
+> but maybe there are already similar macros in linux to extract
+> upper/lower 32 bits.
+>
+> > +
+> > +struct scmi_iio_priv {
+> > +     struct scmi_handle *handle;
+> > +     const struct scmi_sensor_info *sensor_info;
+> > +     struct iio_dev *indio_dev;
+> > +     long long iio_buf[MAX_NUM_OF_CHANNELS];
+> > +     struct notifier_block sensor_update_nb;
+> > +     u32 *freq_avail;
+> > +     /*
+> > +      * range_avail =3D [minRange resolution maxRange]
+> > +      * with IIO val type as IIO_VAL_FRACTIONAL.
+> > +      * Hence, array of size 6.
+> > +      */
+> > +     int range_avail[6];
+> > +};
+> > +
+> > +static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+> > +                                  unsigned long event, void *data)
+> > +{
+> > +     struct scmi_sensor_update_report *sensor_update =3D data;
+> > +     struct iio_dev *scmi_iio_dev;
+> > +     struct scmi_iio_priv *sensor;
+> > +     s8 tstamp_scale;
+> > +     u64 time, time_ns;
+> > +     int i;
+> > +
+> > +     if (sensor_update->readings_count =3D=3D 0)
+> > +             return NOTIFY_DONE;
+> > +
+> > +     sensor =3D container_of(nb, struct scmi_iio_priv, sensor_update_n=
+b);
+> > +
+> > +     for (i =3D 0; i < sensor_update->readings_count; i++)
+> > +             sensor->iio_buf[i] =3D sensor_update->readings[i].value;
+> > +
+> > +     if (!sensor->sensor_info->timestamped) {
+> > +             time_ns =3D iio_get_time_ns(scmi_iio_dev);
+>
+> This scmi_iio_dev is on the stack and still NOT initialized here right ?
+>
+> Moreover, if this is meant to attach a timestamp of arrival also to
+> NON-timestamped sensor notifications, note that, if you want, scmi_sensor=
+_update_report
+> contains a 'timestamp' (as all SCMI notif reports) ktime field (ns) which
+> represents the time (ns from boot with ktime_get_boottime()) of reception
+> of this notification taken by the SCMI core as soon as it arrives in the
+> RX ISR. (so in the OSPM Linux world)
+>
+> If you grab the timestamp here with iio_get_time_ns() you are indeed
+> getting a timestamp inside the notification callback so at the end of
+> the notifications processing chain, i.e. in a deferred worker processing
+> this queue of events and in turn calling this function, so potentially
+> you're timestamping a lot later than when the event arrived really in
+> the OSPM world (especially on a loaded system); it is more the time of
+> arrival in IIO framework.
+>
+> On the other side timestamped events handled in the else-branch down
+> below carry a timestamp set by the SCMI platform fw early on when the
+> event has been detected by the sensor in the real world.
+>
+> Not sure how these values are used at the end, but just to let you know
+> this detail if it was not apparent.
+>
+> > +     } else {
+> > +             /*
+> > +              * All the axes are supposed to have the same value for t=
+imestamp.
+> > +              *  We are just using the values from the Axis 0 here.
+> > +              */
+> > +             time =3D sensor_update->readings[0].timestamp;
+> > +
+> > +             /*
+> > +              *  Timestamp returned by SCMI is in seconds and is equal=
+ to
+> > +              *  time * power-of-10 multiplier(tstamp_scale) seconds.
+> > +              *  Converting the timestamp to nanoseconds below.
+> > +              */
+> > +             tstamp_scale =3D sensor->sensor_info->tstamp_scale +
+> > +                               ilog10(NSEC_PER_SEC);
+> > +             if (tstamp_scale < 0)
+> > +                     time_ns =3D div64_u64(time,
+> > +                                         int_pow(10, abs(tstamp_scale)=
+));
+> > +             else
+> > +                     time_ns =3D time * int_pow(10, tstamp_scale);
+> > +     }
+> > +
+> > +     scmi_iio_dev =3D sensor->indio_dev;
+> > +     iio_push_to_buffers_with_timestamp(scmi_iio_dev, sensor->iio_buf,
+> > +                                        time_ns);
+> > +     return NOTIFY_OK;
+> > +}
+> > +
+> > +static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     u32 sensor_id =3D sensor->sensor_info->id;
+> > +     u32 sensor_config;
+> > +     int err;
+> > +
+> > +     if (sensor->sensor_info->timestamped)
+> > +             sensor_config |=3D FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLE=
+D_MASK,
+> > +                                         SCMI_SENS_CFG_TSTAMP_ENABLE);
+>
+> The initial  sensor_config ORed here is NOT initialized nor zeroed.
+> > +
+> > +     sensor_config |=3D FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > +                                 SCMI_SENS_CFG_SENSOR_ENABLE);
+> > +
+> > +     err =3D sensor->handle->notify_ops->register_event_notifier(senso=
+r->handle,
+> > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > +                     &sensor_id, &sensor->sensor_update_nb);
+> > +     if (err) {
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Error in registering sensor update notifier for =
+sensor %s err %d",
+> > +                     sensor->sensor_info->name, err);
+> > +             return err;
+> > +     }
+> > +
+> > +     err =3D sensor->handle->sensor_ops->config_set(sensor->handle,
+> > +                     sensor->sensor_info->id, sensor_config);
+> > +     if (err)
+> > +             dev_err(&iio_dev->dev, "Error in enabling sensor %s err %=
+d",
+> > +                     sensor->sensor_info->name, err);
+>
+> Here you do not unregister the notification above here when you fail
+> the config_set.
+> If you happen to retry this code path again you'll end up registering
+> the same notifier_block sensor_update_nb() in the same notification chain
+> (same event samme sensor_id), which is broken and probably triggers a WAR=
+N
+> from the core kernel notification chains machinery too.
+>
+> In an upcoming series on SCMI core I'll introduce a devm_ variant for
+> SCMI notification registration, but as of now you have to properly unregi=
+ster
+> on error paths.
+>
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     u32 sensor_id =3D sensor->sensor_info->id;
+> > +     u32 sensor_config =3D 0;
+> > +     int err;
+> > +
+> > +     sensor_config |=3D FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > +                                 SCMI_SENS_CFG_SENSOR_DISABLE);
+> > +
+> > +     err =3D sensor->handle->notify_ops->unregister_event_notifier(sen=
+sor->handle,
+> > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > +             &sensor_id, &sensor->sensor_update_nb);
+>
+> This alignment here is a bit awkaward.
+>
+> > +     if (err) {
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Error in unregistering sensor update notifier fo=
+r sensor %s err %d",
+> > +                     sensor->sensor_info->name, err);
+> > +             return err;
+> > +     }
+> > +
+> > +     err =3D sensor->handle->sensor_ops->config_set(sensor->handle, se=
+nsor_id,
+> > +                                                  sensor_config);
+> > +     if (err)
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Error in disabling sensor %s with err %d",
+> > +                     sensor->sensor_info->name, err);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +static const struct iio_buffer_setup_ops scmi_iio_buffer_ops =3D {
+> > +     .preenable =3D scmi_iio_buffer_preenable,
+> > +     .postdisable =3D scmi_iio_buffer_postdisable,
+> > +};
+> > +
+>
+> Being not so familiar with IIO, may I ask when annd ho wmuch frequently
+> these ops are called ? (given they include a register/unregister +
+> enable/disable every time)
+>
+> > +static int scmi_iio_read_avail(struct iio_dev *iio_dev,
+> > +                            struct iio_chan_spec const *chan,
+> > +                            const int **vals, int *type, int *length,
+> > +                            long mask)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > +             *vals =3D sensor->freq_avail;
+> > +             *type =3D IIO_VAL_INT_PLUS_MICRO;
+> > +             *length =3D sensor->sensor_info->intervals.count * 2;
+> > +             if (sensor->sensor_info->intervals.segmented)
+> > +                     return IIO_AVAIL_RANGE;
+> > +             else
+> > +                     return IIO_AVAIL_LIST;
+> > +     case IIO_CHAN_INFO_RAW:
+> > +             *vals =3D sensor->range_avail;
+> > +             *type =3D IIO_VAL_FRACTIONAL;
+> > +             *length =3D ARRAY_SIZE(sensor->range_avail);
+> > +             return IIO_AVAIL_RANGE;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+> > +static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int =
+val2)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     u64 sec, mult, uHz;
+> > +     u32 sensor_config;
+> > +
+> > +     int err =3D sensor->handle->sensor_ops->config_get(sensor->handle=
+,
+> > +                     sensor->sensor_info->id, &sensor_config);
+> > +     if (err) {
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Error in getting sensor config for sensor %s err=
+ %d",
+> > +                     sensor->sensor_info->name, err);
+> > +             return err;
+> > +     }
+> > +
+> > +     uHz =3D ODR_EXPAND(val, val2);
+> > +
+> > +     /*
+> > +      * The seconds field in the sensor interval in SCMI is 16 bits lo=
+ng
+> > +      * Therefore seconds  =3D 1/Hz <=3D 0xFFFF. As floating point cal=
+culations are
+> > +      * discouraged in the kernel driver code, to calculate the scale =
+factor (sf)
+> > +      * (1* 1000000 * sf)/uHz <=3D 0xFFFF. Therefore, sf <=3D (uHz * 0=
+xFFFF)/1000000
+> > +      */
+> > +     mult =3D ilog10(((u64)uHz * 0xFFFF) / UHZ_PER_HZ);
+> > +
+> > +     sec =3D div64_u64(int_pow(10, mult) * UHZ_PER_HZ, uHz);
+> > +     if (sec =3D=3D 0) {
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Trying to set invalid sensor update value for se=
+nsor %s",
+> > +                     sensor->sensor_info->name);
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     sensor_config &=3D ~SCMI_SENS_CFG_UPDATE_SECS_MASK;
+> > +     sensor_config |=3D FIELD_PREP(SCMI_SENS_CFG_UPDATE_SECS_MASK, sec=
+);
+> > +     sensor_config &=3D ~SCMI_SENS_CFG_UPDATE_EXP_MASK;
+> > +     sensor_config |=3D FIELD_PREP(SCMI_SENS_CFG_UPDATE_EXP_MASK, -mul=
+t);
+> > +
+> > +     if (sensor->sensor_info->timestamped) {
+> > +             sensor_config &=3D ~SCMI_SENS_CFG_TSTAMP_ENABLED_MASK;
+> > +             sensor_config |=3D FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLE=
+D_MASK,
+> > +                                         SCMI_SENS_CFG_TSTAMP_ENABLE);
+> > +     }
+> > +
+> > +     sensor_config &=3D ~SCMI_SENS_CFG_ROUND_MASK;
+> > +     sensor_config |=3D
+> > +             FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_=
+AUTO);
+> > +
+> > +     err =3D sensor->handle->sensor_ops->config_set(sensor->handle,
+> > +                     sensor->sensor_info->id, sensor_config);
+> > +     if (err)
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Error in setting sensor update interval for sens=
+or %s value %u err %d",
+> > +                     sensor->sensor_info->name, sensor_config, err);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +static int scmi_iio_write_raw(struct iio_dev *iio_dev,
+> > +                           struct iio_chan_spec const *chan, int val,
+> > +                           int val2, long mask)
+> > +{
+> > +     int err;
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > +             mutex_lock(&iio_dev->mlock);
+> > +             err =3D scmi_iio_set_odr_val(iio_dev, val, val2);
+> > +             mutex_unlock(&iio_dev->mlock);
+> > +             return err;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+> > +static u64 scmi_iio_convert_interval_to_ns(u32 val)
+> > +{
+> > +     u64 sensor_update_interval =3D
+> > +             SCMI_SENS_INTVL_GET_SECS(val) * NSEC_PER_SEC;
+> > +     u64 sensor_interval_mult;
+> > +     int mult;
+> > +
+> > +     mult =3D SCMI_SENS_INTVL_GET_EXP(val);
+> > +     if (mult < 0) {
+> > +             sensor_interval_mult =3D int_pow(10, abs(mult));
+> > +             sensor_update_interval =3D
+> > +                     sensor_update_interval / sensor_interval_mult;
+> > +     } else {
+> > +             sensor_interval_mult =3D int_pow(10, mult);
+> > +             sensor_update_interval =3D
+> > +                     sensor_update_interval * sensor_interval_mult;
+> > +     }
+> > +     return sensor_update_interval;
+> > +}
+> > +
+> > +static void convert_ns_to_freq(u64 interval_ns, u64 *hz, u64 *uhz)
+> > +{
+> > +     u64 rem;
+> > +
+> > +     *hz =3D div64_u64_rem(NSEC_PER_SEC, interval_ns, &rem);
+> > +     *uhz =3D (rem * 1000000UL) / interval_ns;
+> > +}
+> > +
+> > +static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int=
+ *val2)
+> > +{
+> > +     u64 sensor_update_interval, sensor_interval_mult, hz, uhz;
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     u32 sensor_config;
+> > +     int mult;
+> > +
+> > +     int err =3D sensor->handle->sensor_ops->config_get(sensor->handle=
+,
+> > +                     sensor->sensor_info->id, &sensor_config);
+> > +     if (err) {
+> > +             dev_err(&iio_dev->dev,
+> > +                     "Error in getting sensor config for sensor %s err=
+ %d",
+> > +                     sensor->sensor_info->name, err);
+> > +             return err;
+> > +     }
+> > +
+> > +     sensor_update_interval =3D
+> > +             SCMI_SENS_CFG_GET_UPDATE_SECS(sensor_config) * NSEC_PER_S=
+EC;
+> > +
+> > +     mult =3D SCMI_SENS_CFG_GET_UPDATE_EXP(sensor_config);
+> > +     if (mult < 0) {
+> > +             sensor_interval_mult =3D int_pow(10, abs(mult));
+> > +             sensor_update_interval =3D
+> > +                     sensor_update_interval / sensor_interval_mult;
+> > +     } else {
+> > +             sensor_interval_mult =3D int_pow(10, mult);
+> > +             sensor_update_interval =3D
+> > +                     sensor_update_interval * sensor_interval_mult;
+> > +     }
+> > +
+> > +     convert_ns_to_freq(sensor_update_interval, &hz, &uhz);
+> > +     *val =3D hz;
+> > +     *val2 =3D uhz;
+> > +     return 0;
+> > +}
+> > +
+> > +static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+> > +                          struct iio_chan_spec const *ch, int *val,
+> > +                          int *val2, long mask)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     s8 scale;
+> > +     int ret;
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_SCALE:
+> > +             scale =3D sensor->sensor_info->axis[ch->scan_index].scale=
+;
+> > +             if (scale < 0) {
+> > +                     *val =3D 1;
+> > +                     *val2 =3D int_pow(10, abs(scale));
+> > +                     return IIO_VAL_FRACTIONAL;
+> > +             }
+> > +             *val =3D int_pow(10, scale);
+> > +             return IIO_VAL_INT;
+> > +     case IIO_CHAN_INFO_SAMP_FREQ:
+> > +             ret =3D scmi_iio_get_odr_val(iio_dev, val, val2);
+> > +             return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+> > +static const struct iio_info scmi_iio_info =3D {
+> > +     .read_raw =3D scmi_iio_read_raw,
+> > +     .read_avail =3D scmi_iio_read_avail,
+> > +     .write_raw =3D scmi_iio_write_raw,
+> > +};
+> > +
+> > +static void scmi_iio_set_timestamp_channel(struct iio_chan_spec *iio_c=
+han,
+> > +                                        int scan_index)
+> > +{
+> > +     iio_chan->type =3D IIO_TIMESTAMP;
+> > +     iio_chan->channel =3D -1;
+> > +     iio_chan->scan_index =3D scan_index;
+> > +     iio_chan->scan_type.sign =3D 'u';
+> > +     iio_chan->scan_type.realbits =3D 64;
+> > +     iio_chan->scan_type.storagebits =3D 64;
+> > +}
+> > +
+> > +static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+> > +                                   enum iio_chan_type type,
+> > +                                   enum iio_modifier mod, int scan_ind=
+ex)
+> > +{
+> > +     iio_chan->type =3D type;
+> > +     iio_chan->modified =3D 1;
+> > +     iio_chan->channel2 =3D mod;
+> > +     iio_chan->info_mask_separate =3D BIT(IIO_CHAN_INFO_SCALE);
+> > +     iio_chan->info_mask_shared_by_type =3D BIT(IIO_CHAN_INFO_SAMP_FRE=
+Q);
+> > +     iio_chan->info_mask_shared_by_type_available =3D
+> > +             BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_RAW);
+> > +     iio_chan->scan_index =3D scan_index;
+> > +     iio_chan->scan_type.sign =3D 's';
+> > +     iio_chan->scan_type.realbits =3D 64;
+> > +     iio_chan->scan_type.storagebits =3D 64;
+> > +     iio_chan->scan_type.endianness =3D IIO_LE;
+> > +}
+> > +
+> > +static int scmi_iio_get_chan_modifier(const char *name,
+> > +                                   enum iio_modifier *modifier)
+> > +{
+>
+> AFAIU this is called during IIO init and derives a modifier from the name
+> of the sensors which are passed by the platform fw with sensor descriptor=
+s,
+> so I would not trust them to be weell formed (:D) and try to be picky abo=
+ut
+> *name as it was user-input to validate.
+>
+> > +     char *pch;
+> > +
+> > +     pch =3D strrchr(name, '_');
+>
+> What happens if name is NULL ?
+>
+> > +     if (!pch)
+> > +             return -EINVAL;
+> > +
+> > +     if (strcmp(pch + 1, "X") =3D=3D 0) {
+> > +             *modifier =3D IIO_MOD_X;
+> > +             return 0;
+> > +     } else if (strcmp(pch + 1, "Y") =3D=3D 0) {
+> > +             *modifier =3D IIO_MOD_Y;
+> > +             return 0;
+> > +     } else if (strcmp(pch + 1, "Z") =3D=3D 0) {
+> > +             *modifier =3D IIO_MOD_Z;
+> > +             return 0;
+> > +     } else {
+> > +             return -EINVAL;
+> > +     }
+>
+> Moroever, being a single char compare cannot this be done with a switch ?
+>
+>         char mod =3D *(pch + 1);
+>
+>         switch(mod) {
+>         case 'X':
+>                 *modifier =3D IIO_MOD_X;
+>                 break
+>         ...
+>
+> > +}
+> > +
+> > +static int scmi_iio_get_chan_type(u8 scmi_type, enum iio_chan_type *ii=
+o_type)
+> > +{
+> > +     switch (scmi_type) {
+> > +     case METERS_SEC_SQUARED:
+> > +             *iio_type =3D IIO_ACCEL;
+> > +             return 0;
+> why not a break to a final 'return ret;' (with ret properly set) ?
+>
+> > +     case RADIANS_SEC:
+> > +             *iio_type =3D IIO_ANGL_VEL;
+> > +             return 0;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +}
+> > +
+> > +static int scmi_iio_get_sensor_max_range(struct iio_dev *iio_dev, int =
+*val,
+> > +                                      int *val2)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     int max_range_high, max_range_low;
+> > +     long long max_range;
+> > +
+> > +     /*
+> > +      * All the axes are supposed to have the same value for max range=
+.
+> > +      * We are just using the values from the Axis 0 here.
+> > +      */
+> > +     if (sensor->sensor_info->axis[0].extended_attrs) {
+> > +             max_range =3D sensor->sensor_info->axis[0].attrs.max_rang=
+e;
+> > +             max_range_high =3D H32(max_range);
+> > +             max_range_low =3D L32(max_range);
+> > +
+> > +             /*
+> > +              * As IIO Val types have no provision for 64 bit values,
+> > +              * and currently there are no known sensors using 64 bit
+> > +              * for the range, this driver only supports sensor with
+> > +              * 32 bit range value.
+> > +              */
+> > +             if (max_range_high !=3D 0)
+> > +                     return -EINVAL;
+> > +
+> > +             *val =3D max_range_low;
+> > +             *val2 =3D 1;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static void scmi_iio_get_sensor_resolution(struct iio_dev *iio_dev, in=
+t *val,
+> > +                                        int *val2)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +
+> > +     /*
+> > +      * All the axes are supposed to have the same value for resolutio=
+n
+> > +      * and exponent. We are just using the values from the Axis 0 her=
+e.
+> > +      */
+> > +     if (sensor->sensor_info->axis[0].extended_attrs) {
+> > +             uint resolution =3D sensor->sensor_info->axis[0].resoluti=
+on;
+> > +             s8 exponent =3D sensor->sensor_info->axis[0].exponent;
+> > +             s8 scale =3D sensor->sensor_info->axis[0].scale;
+> > +
+> > +             /*
+> > +              * To provide the raw value for the resolution to the use=
+rspace,
+> > +              * need to divide the resolution exponent by the sensor s=
+cale
+> > +              */
+> > +             exponent =3D exponent - scale;
+> > +             if (exponent >=3D 0) {
+> > +                     *val =3D resolution * int_pow(10, exponent);
+> > +                     *val2 =3D 1;
+> > +             } else {
+> > +                     *val =3D resolution;
+> > +                     *val2 =3D int_pow(10, abs(exponent));
+> > +             }
+> > +     }
+> > +}
+> > +
+> > +static int scmi_iio_get_sensor_min_range(struct iio_dev *iio_dev, int =
+*val,
+> > +                                      int *val2)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     int min_range_high, min_range_low;
+> > +     long long min_range;
+> > +
+> > +     /*
+> > +      * All the axes are supposed to have the same value for min range=
+.
+> > +      * We are just using the values from the Axis 0 here.
+> > +      */
+> > +     if (sensor->sensor_info->axis[0].extended_attrs) {
+> > +             min_range =3D sensor->sensor_info->axis[0].attrs.min_rang=
+e;
+> > +             min_range_high =3D H32(min_range);
+> > +             min_range_low =3D L32(min_range);
+> > +
+> > +             /*
+> > +              * As IIO Val types have no provision for 64 bit values,
+> > +              * and currently there are no known sensors using 64 bit
+> > +              * for the range, this driver only supports sensor with
+> > +              * 32 bit range value.
+> > +              */
+> > +             if (min_range_high !=3D 0xFFFFFFFF)
+> > +                     return -EINVAL;
+> > +
+> > +             *val =3D min_range_low;
+> > +             *val2 =3D 1;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static int scmi_iio_set_sensor_range_avail(struct iio_dev *iio_dev)
+> > +{
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     int ret;
+> > +
+> > +     ret =3D scmi_iio_get_sensor_min_range(iio_dev, &sensor->range_ava=
+il[0],
+> > +                                         &sensor->range_avail[1]);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     scmi_iio_get_sensor_resolution(iio_dev, &sensor->range_avail[2],
+> > +                                    &sensor->range_avail[3]);
+> > +     ret =3D scmi_iio_get_sensor_max_range(iio_dev, &sensor->range_ava=
+il[4],
+> > +                                         &sensor->range_avail[5]);
+> > +     return ret;
+> > +}
+> > +
+> > +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
+> > +{
+> > +     u64 cur_interval_ns, low_interval_ns, high_interval_ns, step_size=
+_ns,
+> > +             hz, uhz;
+> > +     unsigned int cur_interval, low_interval, high_interval, step_size=
+;
+> > +     struct scmi_iio_priv *sensor =3D iio_priv(iio_dev);
+> > +     int i;
+> > +
+> > +     sensor->freq_avail =3D devm_kzalloc(&iio_dev->dev,
+> > +                                       sizeof(u32) * (sensor->sensor_i=
+nfo->intervals.count * 2),
+> > +                                       GFP_KERNEL);
+> > +     if (!sensor->freq_avail)
+> > +             return -ENOMEM;
+> > +
+> > +     if (sensor->sensor_info->intervals.segmented) {
+> > +             low_interval =3D sensor->sensor_info->intervals
+> > +                                    .desc[SCMI_SENS_INTVL_SEGMENT_LOW]=
+;
+> > +             low_interval_ns =3D scmi_iio_convert_interval_to_ns(low_i=
+nterval);
+> > +             convert_ns_to_freq(low_interval_ns, &hz, &uhz);
+> > +             sensor->freq_avail[0] =3D hz;
+> > +             sensor->freq_avail[1] =3D uhz;
+> > +
+> > +             step_size =3D sensor->sensor_info->intervals
+> > +                                 .desc[SCMI_SENS_INTVL_SEGMENT_STEP];
+> > +             step_size_ns =3D scmi_iio_convert_interval_to_ns(step_siz=
+e);
+> > +             convert_ns_to_freq(step_size_ns, &hz, &uhz);
+> > +             sensor->freq_avail[2] =3D hz;
+> > +             sensor->freq_avail[3] =3D uhz;
+> > +
+> > +             high_interval =3D sensor->sensor_info->intervals
+> > +                                     .desc[SCMI_SENS_INTVL_SEGMENT_HIG=
+H];
+> > +             high_interval_ns =3D
+> > +                     scmi_iio_convert_interval_to_ns(high_interval);
+> > +             convert_ns_to_freq(high_interval_ns, &hz, &uhz);
+> > +             sensor->freq_avail[4] =3D hz;
+> > +             sensor->freq_avail[5] =3D uhz;
+> > +     } else {
+> > +             for (i =3D 0; i < sensor->sensor_info->intervals.count; i=
+++) {
+> > +                     cur_interval =3D sensor->sensor_info->intervals.d=
+esc[i];
+> > +                     cur_interval_ns =3D scmi_iio_convert_interval_to_=
+ns(cur_interval);
+> > +                     convert_ns_to_freq(cur_interval_ns, &hz, &uhz);
+> > +                     sensor->freq_avail[i * 2] =3D hz;
+> > +                     sensor->freq_avail[i * 2 + 1] =3D uhz;
+> > +             }
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+> > +{
+> > +     struct iio_buffer *buffer;
+> > +
+> > +     buffer =3D devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+> > +     if (!buffer)
+> > +             return -ENOMEM;
+> > +
+> > +     iio_device_attach_buffer(scmi_iiodev, buffer);
+> > +     scmi_iiodev->modes |=3D INDIO_BUFFER_SOFTWARE;
+> > +     scmi_iiodev->setup_ops =3D &scmi_iio_buffer_ops;
+>
+> Not familiar with IIO, but is it fine to setup ops and modes AFTER
+> having attached the buffer to the scmi_iiodev ?
+>
+> Is is not 'racy-possible' that the buffer is already operational without
+> any ops immediately after being attached ?
+>
+> > +     return 0;
+> > +}
+> > +
+> > +static int scmi_alloc_iiodev(struct device *dev, struct scmi_handle *h=
+andle,
+> > +                          const struct scmi_sensor_info *sensor_info,
+> > +                          struct iio_dev **scmi_iio_dev)
+> > +{
+> > +     struct iio_chan_spec *iio_channels;
+> > +     struct scmi_iio_priv *sensor;
+> > +     enum iio_modifier modifier;
+> > +     enum iio_chan_type type;
+> > +     struct iio_dev *iiodev;
+> > +     int i, ret;
+> > +
+> > +     iiodev =3D devm_iio_device_alloc(dev, sizeof(*sensor));
+> > +     if (!iiodev)
+> > +             return -ENOMEM;
+> > +
+> > +     iiodev->modes =3D INDIO_DIRECT_MODE;
+> > +     iiodev->dev.parent =3D dev;
+> > +     sensor =3D iio_priv(iiodev);
+> > +     sensor->handle =3D handle;
+> > +     sensor->sensor_info =3D sensor_info;
+> > +     sensor->sensor_update_nb.notifier_call =3D scmi_iio_sensor_update=
+_cb;
+> > +     sensor->indio_dev =3D iiodev;
+> > +
+> > +     /* adding one additional channel for timestamp */
+> > +     iiodev->num_channels =3D sensor_info->num_axis + 1;
+> > +     iiodev->name =3D sensor_info->name;
+> > +     iiodev->info =3D &scmi_iio_info;
+> > +
+> > +     iio_channels =3D
+> > +             devm_kzalloc(dev,
+> > +                          sizeof(*iio_channels) * (iiodev->num_channel=
+s),
+> > +                          GFP_KERNEL);
+> > +     if (!iio_channels)
+> > +             return -ENOMEM;
+> > +
+> > +     scmi_iio_set_sampling_freq_avail(iiodev);
+> > +
+> > +     ret =3D scmi_iio_set_sensor_range_avail(iiodev);
+> > +     if (ret) {
+> > +             dev_err(dev, "Error while setting the sensor %s range %d"=
+,
+> > +                     sensor_info->name, ret);
+> > +             return ret;
+> > +     }
+> > +
+> > +     for (i =3D 0; i < sensor_info->num_axis; i++) {
+> > +             ret =3D scmi_iio_get_chan_type(sensor_info->axis[i].type,=
+ &type);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +
+> > +             ret =3D scmi_iio_get_chan_modifier(sensor_info->axis[i].n=
+ame,
+> > +                                              &modifier);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +
+> > +             scmi_iio_set_data_channel(&iio_channels[i], type, modifie=
+r,
+> > +                                       sensor_info->axis[i].id);
+> > +     }
+> > +
+> > +     scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+> > +     iiodev->channels =3D iio_channels;
+> > +     *scmi_iio_dev =3D iiodev;
+> > +     return ret;
+> > +}
+> > +
+> > +static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> > +{
+> > +     const struct scmi_sensor_info *sensor_info;
+> > +     struct scmi_handle *handle =3D sdev->handle;
+> > +     struct device *dev =3D &sdev->dev;
+> > +     struct iio_dev *scmi_iio_dev;
+> > +     u16 nr_sensors;
+> > +     int err, i;
+> > +
+> > +     if (!handle || !handle->sensor_ops || !handle->sensor_ops->count_=
+get ||
+> > +         !handle->sensor_ops->info_get || !handle->sensor_ops->config_=
+get ||
+> > +         !handle->sensor_ops->config_set) {
+>
+> In all other SCMI driver we just check for:
+>
+>         !handle && !handle->sensor_ops
+>
+> it should be enough, since all the ops are defined if the stack you are
+> using supports SCMIv3.0, if not this driver would not even compile since
+> some SCMIv3.0 Sensor Extension sensor_ops would be missing as a whole
+> inside the struct itself.
+>
+> Thanks
+>
+> Cristian
+>
+> > +             dev_err(dev, "SCMI device has no sensor interface\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     nr_sensors =3D handle->sensor_ops->count_get(handle);
+> > +     if (!nr_sensors) {
+> > +             dev_dbg(dev, "0 sensors found via SCMI bus\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     dev_dbg(dev, "%d sensors found via SCMI bus\n", nr_sensors);
+> > +
+> > +     for (i =3D 0; i < nr_sensors; i++) {
+> > +             sensor_info =3D handle->sensor_ops->info_get(handle, i);
+> > +             if (!sensor_info) {
+> > +                     dev_err(dev, "SCMI sensor %d has missing info\n",=
+ i);
+> > +                     return -EINVAL;
+> > +             }
+> > +
+> > +             /* Skipping scalar sensor,as this driver only supports ac=
+cel and gyro */
+> > +             if (sensor_info->num_axis =3D=3D 0)
+> > +                     continue;
+> > +
+> > +             err =3D scmi_alloc_iiodev(dev, handle, sensor_info,
+> > +                                     &scmi_iio_dev);
+> > +             if (err < 0) {
+> > +                     dev_err(dev,
+> > +                             "failed to allocate IIO device for sensor=
+ %s: %d\n",
+> > +                             sensor_info->name, err);
+> > +                     return err;
+> > +             }
+> > +
+> > +             err =3D scmi_iio_buffers_setup(scmi_iio_dev);
+> > +             if (err < 0) {
+> > +                     dev_err(dev,
+> > +                             "IIO buffer setup error at sensor %s: %d\=
+n",
+> > +                             sensor_info->name, err);
+> > +                     return err;
+> > +             }
+> > +
+> > +             err =3D devm_iio_device_register(dev, scmi_iio_dev);
+> > +             if (err) {
+> > +                     dev_err(dev,
+> > +                             "IIO device registration failed at sensor=
+ %s: %d\n",
+> > +                             sensor_info->name, err);
+> > +                     return err;
+> > +             }
+> > +     }
+> > +     return err;
+> > +}
+> > +
+> > +static const struct scmi_device_id scmi_id_table[] =3D {
+> > +     { SCMI_PROTOCOL_SENSOR, "iiodev" },
+> > +     {},
+> > +};
+> > +
+> > +MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> > +
+> > +static struct scmi_driver scmi_iiodev_driver =3D {
+> > +     .name =3D "scmi-sensor-iiodev",
+> > +     .probe =3D scmi_iio_dev_probe,
+> > +     .id_table =3D scmi_id_table,
+> > +};
+> > +
+> > +module_scmi_driver(scmi_iiodev_driver);
+> > +
+> > +MODULE_AUTHOR("Jyoti Bhayana <jbhayana@google.com>");
+> > +MODULE_DESCRIPTION("SCMI IIO Driver");
+> > +MODULE_LICENSE("GPL v2");
+> > --
+> > 2.30.0.280.ga3ce27912f-goog
+> >
