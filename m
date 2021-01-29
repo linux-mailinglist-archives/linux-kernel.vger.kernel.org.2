@@ -2,174 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A6A30828C
+	by mail.lfdr.de (Postfix) with ESMTP id CE69030828D
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhA2Ak0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:40:26 -0500
-Received: from mga11.intel.com ([192.55.52.93]:9252 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231138AbhA2AjZ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:39:25 -0500
-IronPort-SDR: sbHrHeP/JVKF2SWhVXLpYK9fvLIMzUHM6RulkOtAjoNlo4LmoAhICMvZpS0msIGaJdxMAiHhJR
- G37ESAzz1Uwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="176832787"
-X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
-   d="scan'208";a="176832787"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 16:37:34 -0800
-IronPort-SDR: s08TLblClisQrLC90pPu0hD6sdRvTsQdu5fguuhmPEvxoE0eYc/r2lxU9n9MajJEIwPy7WBodp
- 7GtvI7cKcxEg==
-X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
-   d="scan'208";a="389075504"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 16:37:32 -0800
-Subject: Re: [PATCH 2/2] perf script: Support dso filter
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20210124232750.19170-1-yao.jin@linux.intel.com>
- <20210124232750.19170-2-yao.jin@linux.intel.com>
- <20210128131209.GD775562@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <680b4844-aa4a-cb75-72ea-1a70221beb1f@linux.intel.com>
-Date:   Fri, 29 Jan 2021 08:37:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231553AbhA2Aku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhA2AkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:40:00 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DC1C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:39:19 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id h6so8135725oie.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jukk9ug596/8oaymt9jnz0ohX/k6g1hZOmyfE6uDoEg=;
+        b=unACxiuWGGp8BAhRfEOchDgTG+qixVQ4ldPXC+mCTlihhw95KGVvk6EV10/xYRwLbi
+         cayIzz9H7yYuso9p6HLIZ1RsxRuZONNj9lWiqZ2x84zjXWYCjuDhEzLczbPoNrSxiEow
+         a29PGo92V8oNefwKwFAeP6OMWlWLMbImTbmGaSuX0T/ngVJnMM5+Cd/LHN+VIvpEfjNl
+         EWab49aIDtUwTjRkvICcV0DbWSZZbgdpNFjl8MvTja9e5JDpKKZqXfSu49zXYYIGBzKt
+         FAR2NJ83uwUz34U+koTVqMm0pS4cqxOO4VdVbLzlIfTWIHwqQaZ2gpZuYay8WtFBrr9j
+         UqAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jukk9ug596/8oaymt9jnz0ohX/k6g1hZOmyfE6uDoEg=;
+        b=XP+MF2/ofKmQJpfItNfBpyPE2MpzCVxm/7EIgm6XvJGJwydKS343eeEY2b2o9fC2NS
+         zQV8lkZVxgvTd37rfd6CFqo5qIMtzhDHNLx6Hrs/4Wx145o9iYdpZuZ17s4VWy6pvDx4
+         wkokN5KF4gbu6Doh6Ix92YcBdpNu/JL2bfL2xSJefFZ09KpkZhzonpAmhJzfxRAeKI6c
+         mp+LiB2c6INPTsZ1i0fpKb/itaOQljYoQlgCLIEkD+Nhxlux4GBONz5QaXwkASyGddWb
+         UDINbRZ+DxE53OEdSBKI6Nz4TPjUq+h2tICXozyyxuM1+tifc8hJJ00tVzEwuvQwXYOG
+         qmHg==
+X-Gm-Message-State: AOAM532YkAvFRWhrc4B65jG8vLBE7KAsA0A7BUzADAQSieyBlpW5AOvz
+        Pmt5kOTTUWU+FfRZnsCiOBG++P7ud0Z/YPzAAxH8l94JzMiO8g==
+X-Google-Smtp-Source: ABdhPJx424NkUncAgPeTJ3zdeF39P+c1I/zagH2BUt7XDVRUz1VDkmMGt2R2ga7rK+uvdYWcNI7NF7mLo2hWu52e354=
+X-Received: by 2002:a05:6808:8ec:: with SMTP id d12mr1182764oic.34.1611880759168;
+ Thu, 28 Jan 2021 16:39:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210128131209.GD775562@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <2nft2kipqg.fsf@aragorn.infrastructure.cah> <983b87d6-edb8-21ea-7d6f-f653f5c0d048@oracle.com>
+In-Reply-To: <983b87d6-edb8-21ea-7d6f-f653f5c0d048@oracle.com>
+From:   Michael Labriola <michael.d.labriola@gmail.com>
+Date:   Thu, 28 Jan 2021 19:39:08 -0500
+Message-ID: <CAOQxz3ybREqE0s11g3sghFba2NUTxUEkKTKGgjwrgrT+uBZt-A@mail.gmail.com>
+Subject: Re: Problems starting Xen domU after latest stable update
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        Juergen Gross <jgross@suse.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Thu, Jan 28, 2021 at 7:03 PM Boris Ostrovsky
+<boris.ostrovsky@oracle.com> wrote:
+>
+>
+> On 1/28/21 6:52 PM, Michael D Labriola wrote:
+> > Hey, everyone.  I've run into problems starting up my Xen domUs as of
+> > the latest batch of stable updates.  Whenever I try to create one, I
+> > get a bunch of block device errors like this:
+> >
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51712
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51728
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51744
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51760
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to add device with path /local/domain/0/backend/vbd/4/51776
+> > libxl: error: libxl_create.c:1452:domcreate_launch_dm: Domain 4:unable to add disk devices
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51712
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51728
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51744
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51760
+> > libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:unable to remove device with path /local/domain/0/backend/vbd/4/51776
+> > libxl: error: libxl_domain.c:1290:devices_destroy_cb: Domain 4:libxl__devices_destroy failed
+> > libxl: error: libxl_domain.c:1177:libxl__destroy_domid: Domain 4:Non-existant domain
+> > libxl: error: libxl_domain.c:1131:domain_destroy_callback: Domain 4:Unable to destroy guest
+> > libxl: error: libxl_domain.c:1058:domain_destroy_cb: Domain 4:Destruction of domain failed
+> >
+> > I'm using Xen 4.13.1 on the box I've been testing with.
+> >
+> > I bisected down to this commit, and reverting it does indeed fix my
+> > problem.  Well, this commit upstream and it's cherry-picked variants
+> > on linux-5.4.y and linux-5.10.y.
+>
+>
+> You most likely need 5f46400f7a6a4fad635d5a79e2aa5a04a30ffea1. It hit Linus tree a few hours ago.
 
-On 1/28/2021 9:12 PM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Jan 25, 2021 at 07:27:50AM +0800, Jin Yao escreveu:
->> Other perf tool builtins have already supported dso filter.
->>
->> For example,
->> perf report --dso, which only considers symbols in these dsos.
->>
->> Now dso filter is supported for perf-script.
->>
->> root@kbl-ppc:~# ./perf script --dso "[kernel.kallsyms]"
->>              perf 18123 [000] 6142863.075104:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->>              perf 18123 [000] 6142863.075107:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->>              perf 18123 [000] 6142863.075108:         10   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->>              perf 18123 [000] 6142863.075109:        273   cycles:  ffffffff9ca7730a native_write_msr+0xa ([kernel.kallsyms])
->>              perf 18123 [000] 6142863.075110:       7684   cycles:  ffffffff9ca3c9c0 native_sched_clock+0x50 ([kernel.kallsyms])
->>              perf 18123 [000] 6142863.075112:     213017   cycles:  ffffffff9d765a92 syscall_exit_to_user_mode+0x32 ([kernel.kallsyms])
->>              perf 18123 [001] 6142863.075156:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->>              perf 18123 [001] 6142863.075158:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
->>              perf 18123 [001] 6142863.075159:         17   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
-> 
-> Applied, and in testing it I noticed this fix was also needed, added
-> just before it, please ack :-)
-> 
-> - Arnaldo
-> 
-> commit d4b6078bd58b799a8ea2a57842193504c867bee5
-> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date:   Thu Jan 28 09:52:47 2021 -0300
-> 
->      perf tools: Fix DSO filtering when not finding a map for a sampled address
->      
->      When we lookup an address and don't find a map we should filter that
->      sample if the user specified a list of --dso entries to filter on, fix
->      it.
->      
->      Before:
->      
->        $ perf script
->                   sleep 274800  2843.556162:          1 cycles:u:  ffffffffbb26bff4 [unknown] ([unknown])
->                   sleep 274800  2843.556168:          1 cycles:u:  ffffffffbb2b047d [unknown] ([unknown])
->                   sleep 274800  2843.556171:          1 cycles:u:  ffffffffbb2706b2 [unknown] ([unknown])
->                   sleep 274800  2843.556174:          6 cycles:u:  ffffffffbb2b0267 [unknown] ([unknown])
->                   sleep 274800  2843.556176:         59 cycles:u:  ffffffffbb2b03b1 [unknown] ([unknown])
->                   sleep 274800  2843.556180:        691 cycles:u:  ffffffffbb26bff4 [unknown] ([unknown])
->                   sleep 274800  2843.556189:       9160 cycles:u:      7fa9550eeaa3 __GI___tunables_init+0xf3 (/usr/lib64/ld-2.32.so)
->                   sleep 274800  2843.556312:      86937 cycles:u:      7fa9550e157b _dl_lookup_symbol_x+0x4b (/usr/lib64/ld-2.32.so)
->        $
->      
->      So we have some samples we somehow didn't find in a map for, if we now
->      do:
->      
->        $ perf report --stdio --dso /usr/lib64/ld-2.32.so
->        # dso: /usr/lib64/ld-2.32.so
->        #
->        # Total Lost Samples: 0
->        #
->        # Samples: 8  of event 'cycles:u'
->        # Event count (approx.): 96856
->        #
->        # Overhead  Command  Symbol
->        # ........  .......  ........................
->        #
->            89.76%  sleep    [.] _dl_lookup_symbol_x
->             9.46%  sleep    [.] __GI___tunables_init
->             0.71%  sleep    [k] 0xffffffffbb26bff4
->             0.06%  sleep    [k] 0xffffffffbb2b03b1
->             0.01%  sleep    [k] 0xffffffffbb2b0267
->             0.00%  sleep    [k] 0xffffffffbb2706b2
->             0.00%  sleep    [k] 0xffffffffbb2b047d
->        $
->      
->      After this patch we get the right output with just entries for the DSOs
->      specified in --dso:
->      
->        $ perf report --stdio --dso /usr/lib64/ld-2.32.so
->        # dso: /usr/lib64/ld-2.32.so
->        #
->        # Total Lost Samples: 0
->        #
->        # Samples: 8  of event 'cycles:u'
->        # Event count (approx.): 96856
->        #
->        # Overhead  Command  Symbol
->        # ........  .......  ........................
->        #
->            89.76%  sleep    [.] _dl_lookup_symbol_x
->             9.46%  sleep    [.] __GI___tunables_init
->        $
->      
->        # To display the perf.data header info, please use --header/--header-only options.
->        #
->      
->      Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->      Cc: Andi Kleen <ak@linux.intel.com>
->      Cc: Ingo Molnar <mingo@redhat.com>
->      Cc: Jin Yao <yao.jin@linux.intel.com>
->      Cc: Jiri Olsa <jolsa@kernel.org>
->      Cc: Kan Liang <kan.liang@intel.com>
->      Cc: Namhyung Kim <namhyung@kernel.org>
->      Cc: Peter Zijlstra <peterz@infradead.org>
->      Fixes: 96415e4d3f5fdf9c ("perf symbols: Avoid unnecessary symbol loading when dso list is specified")
->      Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
-> diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-> index fbe8578e4c475773..208b6c141d98bb5d 100644
-> --- a/tools/perf/util/event.c
-> +++ b/tools/perf/util/event.c
-> @@ -692,6 +692,8 @@ int machine__resolve(struct machine *machine, struct addr_location *al,
->   		}
->   
->   		al->sym = map__find_symbol(al->map, al->addr);
-> +	} else if (symbol_conf.dso_list) {
-> +		al->filtered |= (1 << HIST_FILTER__DSO);
->   	}
->   
->   	if (symbol_conf.sym_list) {
-> 
+Indeed!  That commit fixes my problem when cherry-picked onto master
+and the 5.4 and 5.10 stable branches.
 
-This fix guarantees the "[unknown]" dso is filtered when we enable "--dso" option (whatever the dso 
-list in --dso).
+Is that commit already headed to the stable/longterm branches or do we
+have to make a bit more noise?
 
-Acked-by: Jin Yao (yao.jin@linux.intel.com>
+Thanks!
 
-Thanks
-Jin Yao
+-Mike
