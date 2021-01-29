@@ -2,213 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA20E308696
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D441308683
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhA2Hil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:38:41 -0500
-Received: from st43p00im-ztdg10063201.me.com ([17.58.63.182]:36373 "EHLO
-        st43p00im-ztdg10063201.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232349AbhA2HiN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:38:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1611905805; bh=jBKJKiixrDY49iH2B3Ue3W7GMRSc79RLukpuKGluao8=;
-        h=From:To:Subject:Date:Message-Id;
-        b=CykC5rniuFl0khuwDmncNWV0UZWSUrJOSXnDKcDfa3nPOdjOJsYgVoubQ1z6/R8ix
-         gAFSgIEsLuIAEtWFKgYj7W4bzxczhSXU+lx40IfYDr2Acz24fbc4C9hqjDy1KHmbT+
-         HAQYfKW7epanbrtXT+r7yM/wk8iNg95i+n0YBtJbKkcAbP6SGWv2+ROynvIiKSBiUL
-         wy9/e2YaE/htdf/svnuO8bmaeTkNdORswHg3BL0fv8hTDcJSaMmPj0LDaFeDtKXGSh
-         F56rEiR62bTEBkuSkbyITfu441/vqaGj0btid/9Jb91RRwL9aEKQOkaOELWYnvK9TK
-         iYAtfHjdu1UFw==
-Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-ztdg10063201.me.com (Postfix) with ESMTPSA id D4F7A54050A;
-        Fri, 29 Jan 2021 07:36:27 +0000 (UTC)
-From:   Alain Volmat <avolmat@me.com>
-To:     Patrice Chotard <patrice.chotard@st.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, avolmat@me.com
-Subject: [PATCH v2 3/3] ARM: dts: sti: Introduce 4KOpen (stih418-b2264) board
-Date:   Fri, 29 Jan 2021 08:34:47 +0100
-Message-Id: <20210129073447.18778-4-avolmat@me.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210129073447.18778-1-avolmat@me.com>
-References: <20210129073447.18778-1-avolmat@me.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-29_03:2021-01-28,2021-01-29 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2101290039
+        id S232276AbhA2Hf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:35:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50120 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232137AbhA2Hfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:35:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611905707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zAq51H83aYnizsU5uKH4Xo3JZYjQqCAFMXuwsnbMpLQ=;
+        b=egkOuZgO/1U3ZcJB0aoekc8YSPYrBM6Dbx4wpJ7qyPhKX7f9X3H2cqMyawp7VD5rpT7YDZ
+        URDzYzj3ypDwVGagHUmRlb6Wjj7WevT/XncPuMIRgZh+8067dnTdjTLZ9dAXKQn7fdCkXZ
+        665Pk57zhHySUtiPYi9FUeK8y3atlLE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 65E32ABDA;
+        Fri, 29 Jan 2021 07:35:07 +0000 (UTC)
+Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with single page
+ rings
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Paul Durrant <paul@xen.org>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>
+References: <20210128130441.11744-1-paul@xen.org>
+ <c3a476c5-c671-4429-73d5-0bf7ced1a06b@oracle.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <7fb64e2f-141a-c848-0f8a-2313d2e821b6@suse.com>
+Date:   Fri, 29 Jan 2021 08:35:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <c3a476c5-c671-4429-73d5-0bf7ced1a06b@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="KTNhVyFFfyx2e8FCQZ7SGPr0cJJ2X0WH9"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-4KOpen (B2264) is a board based on the STMicroelectronics STiH418 soc:
-  - 2GB DDR
-  - HDMI
-  - Ethernet 1000-BaseT
-  - PCIe (mini PCIe connector)
-  - MicroSD slot
-  - USB2 and USB3 connectors
-  - Sata
-  - 40 pins GPIO header
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KTNhVyFFfyx2e8FCQZ7SGPr0cJJ2X0WH9
+Content-Type: multipart/mixed; boundary="v0ECwaP7zIbuMUDrGMvLowgnhMmWanZZI";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Dongli Zhang <dongli.zhang@oracle.com>, Paul Durrant <paul@xen.org>,
+ xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Paul Durrant <pdurrant@amazon.com>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+ Jens Axboe <axboe@kernel.dk>
+Message-ID: <7fb64e2f-141a-c848-0f8a-2313d2e821b6@suse.com>
+Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with single page
+ rings
+References: <20210128130441.11744-1-paul@xen.org>
+ <c3a476c5-c671-4429-73d5-0bf7ced1a06b@oracle.com>
+In-Reply-To: <c3a476c5-c671-4429-73d5-0bf7ced1a06b@oracle.com>
 
-Signed-off-by: Alain Volmat <avolmat@me.com>
----
-v2: fix bootargs (removal of console=)
-    removal of rng11 node, moved into stih418.dtsi
+--v0ECwaP7zIbuMUDrGMvLowgnhMmWanZZI
+Content-Type: multipart/mixed;
+ boundary="------------23E2E4DE08DE09AA38981101"
+Content-Language: en-US
 
- arch/arm/boot/dts/Makefile          |   3 +-
- arch/arm/boot/dts/stih418-b2264.dts | 123 ++++++++++++++++++++++++++++
- 2 files changed, 125 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/stih418-b2264.dts
+This is a multi-part message in MIME format.
+--------------23E2E4DE08DE09AA38981101
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 3d1ea0b25168..5ad1b0854b66 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1059,7 +1059,8 @@ dtb-$(CONFIG_ARCH_STI) += \
- 	stih407-b2120.dtb \
- 	stih410-b2120.dtb \
- 	stih410-b2260.dtb \
--	stih418-b2199.dtb
-+	stih418-b2199.dtb \
-+	stih418-b2264.dtb
- dtb-$(CONFIG_ARCH_STM32) += \
- 	stm32f429-disco.dtb \
- 	stm32f469-disco.dtb \
-diff --git a/arch/arm/boot/dts/stih418-b2264.dts b/arch/arm/boot/dts/stih418-b2264.dts
-new file mode 100644
-index 000000000000..b70a76d3faa2
---- /dev/null
-+++ b/arch/arm/boot/dts/stih418-b2264.dts
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 STMicroelectronics
-+ * Author: Alain Volmat <avolmat@me.com>
-+ */
-+/dts-v1/;
-+#include "stih418.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+/ {
-+	model = "STiH418 B2264";
-+	compatible = "st,stih418-b2264", "st,stih418";
-+
-+	chosen {
-+		bootargs = "clk_ignore_unused";
-+		stdout-path = &sbc_serial0;
-+	};
-+
-+	memory@40000000 {
-+		device_type = "memory";
-+		reg = <0x40000000 0xc0000000>;
-+	};
-+
-+	cpus {
-+		cpu@0 {
-+			operating-points-v2 = <&cpu_opp_table>;
-+			/* u-boot puts hpen in SBC dmem at 0xb8 offset */
-+			cpu-release-addr = <0x94100b8>;
-+		};
-+		cpu@1 {
-+			operating-points-v2 = <&cpu_opp_table>;
-+			/* u-boot puts hpen in SBC dmem at 0xb8 offset */
-+			cpu-release-addr = <0x94100b8>;
-+		};
-+		cpu@2 {
-+			operating-points-v2 = <&cpu_opp_table>;
-+			/* u-boot puts hpen in SBC dmem at 0xb8 offset */
-+			cpu-release-addr = <0x94100b8>;
-+		};
-+		cpu@3 {
-+			operating-points-v2 = <&cpu_opp_table>;
-+			/* u-boot puts hpen in SBC dmem at 0xb8 offset */
-+			cpu-release-addr = <0x94100b8>;
-+		};
-+	};
-+
-+	cpu_opp_table: opp_table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp00 {
-+			opp-hz = /bits/ 64 <500000000>;
-+			opp-microvolt = <784000>;
-+		};
-+		opp01 {
-+			opp-hz = /bits/ 64 <800000000>;
-+			opp-microvolt = <784000>;
-+		};
-+		opp02 {
-+			opp-hz = /bits/ 64 <1200000000>;
-+			opp-microvolt = <784000>;
-+		};
-+		opp03 {
-+			opp-hz = /bits/ 64 <1500000000>;
-+			opp-microvolt = <784000>;
-+		};
-+	};
-+
-+	aliases {
-+		ttyAS0 = &sbc_serial0;
-+		ethernet0 = &ethernet0;
-+	};
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ethernet0 {
-+	phy-mode = "rgmii";
-+	pinctrl-0 = <&pinctrl_rgmii1 &pinctrl_rgmii1_mdio_1>;
-+	st,tx-retime-src = "clkgen";
-+
-+	snps,reset-gpio = <&pio0 7 0>;
-+	snps,reset-active-low;
-+	snps,reset-delays-us = <0 10000 1000000>;
-+
-+	status = "okay";
-+};
-+
-+&miphy28lp_phy {
-+	phy_port0: port@9b22000 {
-+		st,sata-gen = <2>; /* SATA GEN3 */
-+		st,osc-rdy;
-+	};
-+};
-+
-+&mmc0 {
-+	status = "okay";
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&pwm1 {
-+	status = "okay";
-+};
-+
-+&sata0 {
-+	status = "okay";
-+};
-+
-+&sbc_serial0 {
-+	status = "okay";
-+};
-+
-+&spifsm {
-+	status = "okay";
-+};
-+
-+&st_dwc3 {
-+	status = "okay";
-+};
--- 
-2.17.1
+On 29.01.21 07:20, Dongli Zhang wrote:
+>=20
+>=20
+> On 1/28/21 5:04 AM, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to a=
+void
+>> inconsistent xenstore 'ring-page-order' set by malicious blkfront"), t=
+he
+>> behaviour of xen-blkback when connecting to a frontend was:
+>>
+>> - read 'ring-page-order'
+>> - if not present then expect a single page ring specified by 'ring-ref=
+'
+>> - else expect a ring specified by 'ring-refX' where X is between 0 and=
 
+>>    1 << ring-page-order
+>>
+>> This was correct behaviour, but was broken by the afforementioned comm=
+it to
+>> become:
+>>
+>> - read 'ring-page-order'
+>> - if not present then expect a single page ring (i.e. ring-page-order =
+=3D 0)
+>> - expect a ring specified by 'ring-refX' where X is between 0 and
+>>    1 << ring-page-order
+>> - if that didn't work then see if there's a single page ring specified=
+ by
+>>    'ring-ref'
+>>
+>> This incorrect behaviour works most of the time but fails when a front=
+end
+>> that sets 'ring-page-order' is unloaded and replaced by one that does =
+not
+>> because, instead of reading 'ring-ref', xen-blkback will read the stal=
+e
+>> 'ring-ref0' left around by the previous frontend will try to map the w=
+rong
+>> grant reference.
+>>
+>> This patch restores the original behaviour.
+>>
+>> Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid inco=
+nsistent xenstore 'ring-page-order' set by malicious blkfront")
+>> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+>> ---
+>> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+>> Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Cc: Dongli Zhang <dongli.zhang@oracle.com>
+>>
+>> v2:
+>>   - Remove now-spurious error path special-case when nr_grefs =3D=3D 1=
+
+>> ---
+>>   drivers/block/xen-blkback/common.h |  1 +
+>>   drivers/block/xen-blkback/xenbus.c | 38 +++++++++++++---------------=
+--
+>>   2 files changed, 17 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-bl=
+kback/common.h
+>> index b0c71d3a81a0..524a79f10de6 100644
+>> --- a/drivers/block/xen-blkback/common.h
+>> +++ b/drivers/block/xen-blkback/common.h
+>> @@ -313,6 +313,7 @@ struct xen_blkif {
+>>  =20
+>>   	struct work_struct	free_work;
+>>   	unsigned int 		nr_ring_pages;
+>> +	bool                    multi_ref;
+>=20
+> Is it really necessary to introduce 'multi_ref' here or we may just re-=
+use
+> 'nr_ring_pages'?
+>=20
+> According to blkfront code, 'ring-page-order' is set only when it is no=
+t zero,
+> that is, only when (info->nr_ring_pages > 1).
+
+Did you look into all other OS's (Windows, OpenBSD, FreebSD, NetBSD,
+Solaris, Netware, other proprietary systems) implementations to verify
+that claim?
+
+I don't think so. So better safe than sorry.
+
+
+Juergen
+
+--------------23E2E4DE08DE09AA38981101
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------23E2E4DE08DE09AA38981101--
+
+--v0ECwaP7zIbuMUDrGMvLowgnhMmWanZZI--
+
+--KTNhVyFFfyx2e8FCQZ7SGPr0cJJ2X0WH9
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmATuqoFAwAAAAAACgkQsN6d1ii/Ey80
+kwf/e41zDqm+jP5oJsLO4FvTwwwFeSs6ARV+zlLQCldBq5oB1HPuzNpjQsE704m/eUEZzMZy2/7W
+Z1pKAwvSLzPQyyx7Rw8pJKJuNio7oIAiCKAiupU3rJBmorI3CCLlbpwfdFGkuKJ8GxZs193BL+WC
+3dNKyBC4aFT3khnmT5y/9PF08Ms9YYVOYPq+6KOM0MbsseD9d4E9LwsC1wzWG9EUA5Ckh8wIZ3XR
+VO1561Q2S36zukXwzbvsGOk9JmD/1kjjR26wsC0JAYU5JKIJxAeeR9V1ZXXrcLjbmwC8KPF+mhOP
+/9Obe9R6O6mT4jKwbmwqJBYjBBJvMsSkKdry2YZZRg==
+=KyR6
+-----END PGP SIGNATURE-----
+
+--KTNhVyFFfyx2e8FCQZ7SGPr0cJJ2X0WH9--
