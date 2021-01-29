@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687B1308586
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F17308588
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhA2GLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:11:50 -0500
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:50694 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230121AbhA2GLr (ORCPT
+        id S232066AbhA2GMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:12:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhA2GMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:11:47 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 4BA9F7DC2;
-        Thu, 28 Jan 2021 22:10:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4BA9F7DC2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611900652;
-        bh=NJ567OnihQV8gKSW5+1K4SDUw3MSCcj0EBXmTBzn5Bc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=owuKG8+hh52dmt73ST1XufzvgpQg8OGEVA9h6/YEh++xdinlj9yMjLClpRR3tzLRU
-         YVbpd4c037Mw8wj8qQTL7XvyQSrL8f41Rj176LNVcCLZoPfLdAKapzML5+bL7eXlqF
-         pogrwwtu4gU39rpCFPV8/asLNusq+xGgnsm56Fac=
-Subject: Re: [PATCH v10 00/13] Add Broadcom VK driver
-To:     Olof Johansson <olof@lixom.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Broadcom Kernel Feedback List 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Desmond Yan <desmond.yan@broadcom.com>
-References: <20210129003029.10672-1-scott.branden@broadcom.com>
- <CAOesGMgzKKjOBHYM=eodZPm0rE=_oF9o_jjBudQ-Ef8gYFFMfg@mail.gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <6f34a285-76cf-b1fc-dc5c-c889e97d0d4c@broadcom.com>
-Date:   Thu, 28 Jan 2021 22:10:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 29 Jan 2021 01:12:38 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481C5C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:11:58 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id t29so5564552pfg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:11:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MPN0BMsB39RPUu08cmjTxw4xAhgm3Lx59PJQqiAOE/s=;
+        b=YL81QMgl8PDwNUbMmxmzvHD3/zDUbZKJMgHYDVDZ0NHnMYB04g71KRqSNVPq8mbbUX
+         VHmfM2Jw7HgU5ImzEvSzjkUzxvOvXLNo5jv3Zf2sU5Q+Zetl0TNtvq+Qk8alZHLhg9op
+         se6rYIv3poPwKalEWI7Vm+0Ly3eUurnHyXC6C5t9EW2CMK7j0KESadPEaboCBjXp96Xv
+         /9TQNRP3kiwEzSRgFBzbUyVB0Z2OM/MpV7xpGQrYkvXetH65KBSgg0KrlFb4o5/7Ob4+
+         7MiL9Lf1szFFmZiyl919eGlmHVexj+tJr5RZKxLSESvMG2Q6sRHiQCZqlmN/Fr6io7Vh
+         5ezA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MPN0BMsB39RPUu08cmjTxw4xAhgm3Lx59PJQqiAOE/s=;
+        b=PNZsikAH4SCpj/KIDWQGJcgljB9YF8UXXx8sifM6D3e1bhQWYol8pQs0WICX61issE
+         rQmsWSvM72H0cUvWroodmeUEy6tbinOPX6WkWABFL4vqVY6DPDwRN+EWshCsT/7aX1Tg
+         jXzFh0mIpBfkybUdAXrNczrX+9I04mf78z1D0p1zVX+lRZqTQEOg6RC5kB0VzWGHp698
+         Q4FQlF1OvIIVs5UW064S+Q4gmI7R2/lwd/EdmagV/B6ACDsUF5dgB4m7VxGFzCikiZBP
+         0A3n/3Q95iE+kQYhRir4u9e1vK8qIywgD1pcNS2tVimiCMFVS0ueD1wevbviSJLnTusT
+         MAww==
+X-Gm-Message-State: AOAM530dPH1i8DlpOcgABmwdoFd1pVA1QcFge4rhejSBZJ1AA+w6sT+j
+        kzVe5L4YHbINvgjb2eG4MLMViw==
+X-Google-Smtp-Source: ABdhPJx+2sbR1KRS2HPfOiR+ckB3CwTCvzfubhc4jw/RU/l3MxCHAqtZBG8fIebeH99F9BGtE2kpXg==
+X-Received: by 2002:a63:4859:: with SMTP id x25mr3158130pgk.289.1611900717799;
+        Thu, 28 Jan 2021 22:11:57 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id mj21sm6342074pjb.12.2021.01.28.22.11.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Jan 2021 22:11:57 -0800 (PST)
+Date:   Fri, 29 Jan 2021 11:41:54 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH V6 2/6] scripts: dtc: Build fdtoverlay tool
+Message-ID: <20210129061154.z5gnipkqhanppjqb@vireshk-i7>
+References: <cover.1611312122.git.viresh.kumar@linaro.org>
+ <2dfec4acb1bfbab08b431908ace0a77cc3279434.1611312122.git.viresh.kumar@linaro.org>
+ <1f6408aa-9900-fe4a-d885-028ff8329707@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOesGMgzKKjOBHYM=eodZPm0rE=_oF9o_jjBudQ-Ef8gYFFMfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f6408aa-9900-fe4a-d885-028ff8329707@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 29-01-21, 00:03, Frank Rowand wrote:
+> On 1/22/21 4:50 AM, Viresh Kumar wrote:
+> > We will start building overlays for platforms soon in the kernel and
+> > would need fdtoverlay going forward. Lets start building it.
+> > 
+> > The fdtoverlay program applies (or merges) one or more overlay dtb
+> > blobs to a base dtb blob. The kernel build system would later use
+> > fdtoverlay to generate the overlaid blobs based on platform specific
+> > configurations.
+> > 
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >  scripts/dtc/Makefile | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+> > index 4852bf44e913..5f19386a49eb 100644
+> > --- a/scripts/dtc/Makefile
+> > +++ b/scripts/dtc/Makefile
+> > @@ -1,13 +1,17 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> >  # scripts/dtc makefile
+> >  
+> > -hostprogs-always-$(CONFIG_DTC)		+= dtc
+> > +hostprogs-always-$(CONFIG_DTC)		+= dtc fdtoverlay
+> >  hostprogs-always-$(CHECK_DT_BINDING)	+= dtc
+> >  
+> >  dtc-objs	:= dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
+> >  		   srcpos.o checks.o util.o
+> >  dtc-objs	+= dtc-lexer.lex.o dtc-parser.tab.o
+> > 
+> 
+> Please add this comment:
+> 
+> # The upstream project builds libfdt as a separate library.  We are choosing to
+> # instead directly link the libfdt object files into fdtoverly
 
+My bad, I checked this again and you gave the exact same comment
+during V4 as well. Sorry about missing this earlier.
 
-On 2021-01-28 8:02 p.m., Olof Johansson wrote:
-> Scott,
->
-> On Thu, Jan 28, 2021 at 4:30 PM Scott Branden
-> <scott.branden@broadcom.com> wrote:
->> This patch series drops previous patches in [1]
->> that were incorporated by Kees Cook into patch series
->> "Introduce partial kernel_read_file() support" [2].
->>
->> Remaining patches are contained in this series to add Broadcom VK driver.
->> (which depends on request_firmware_into_buf API addition which has
->> now been accepted into the upstream kernel as of v5.10-rc1).
->>
->> [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
->> [2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
->>
->> Changes from v9:
->>  - fix compile if CONFIG_TTY not set
->>  - use if-else statement instead of conditional expression in set_q_num
->>  - generate bcm_vk_msg_remove call in proper patch
->>    (was generated in tty patch when should be in msg patch)
-> Did I miss something? Greg already applied v9, so any fixes on top
-> needs to be new patches.
-Sorry, was unfamiliar with the process of having changes in linux-next needing correcting.
-I sent out new patches to correct these issues against linux-next now.
->
->
-> -Olof
-Thanks for providing correct process.
-
-Scott
+-- 
+viresh
