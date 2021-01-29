@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705A3308D1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED64308D18
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhA2TIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:08:54 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:44008 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232981AbhA2TG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:06:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611947194; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=7vMq+j0bLCzEeUJ30r82syZD6LFTIUQzve2rWEp2Ea0=; b=wgJsfglW1aEr/kOZ5v8DK5wbWsPIa4JU69JoSjOWCcGplfZ98JMhyksZ1PRYwnsRMh24DGm9
- AjX93MNLGoOwWUBpS2JeBRuG40jUgOoSUmyXDpx2PzvjtTMIcPl0CPiO97vZNjwbqDXNSoBy
- JXrR1NexLYlb1Jzy1xnhuOnJ0iY=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60145c9ef71e8b9934a9c294 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 19:06:06
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 68AA0C433CA; Fri, 29 Jan 2021 19:06:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84ED2C43462;
-        Fri, 29 Jan 2021 19:05:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 84ED2C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 4/4] coresight: etm3x: Add support to exclude kernel mode tracing
-Date:   Sat, 30 Jan 2021 00:35:13 +0530
-Message-Id: <da8cef63e6edd48fc958101a2f5f62f37e65284b.1611909025.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
+        id S233014AbhA2THz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:07:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232973AbhA2TGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:06:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1726664DFB;
+        Fri, 29 Jan 2021 19:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611947166;
+        bh=jTqi+jdOU05OqAmzEdlj9q9kyuMeRaWQDDxAGUJIAYA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jFysm8KKZ3948cZWZJ2i269CZyeMyaH4hfh3gaYawmwKT4CxjTTtoXwtyiBU7fKe3
+         +oxDjfs5+kTQUjG06w7Y1Fp7LUmgZVVma8wIoyOk7pZHqcVfVv2Dyr6CchmmHVheIT
+         O45ZWNWJw5/8J/aPRmB8mpCNyRhzWRKEssaAWrJCawj4QcfC9YX7z+8/McvpepULnf
+         oJcGC1RHKTkaQ2VDMQgwdOOkCGcjQ+bST+L3Crd2p5RIrjUYbiDGZ+egmSMHlezaEk
+         bmsVWx4gGiuiqIRB3m2kARJx4c1Nuibhr1UZHBpY5QhFZ9QMyJmw4KcsEybKHMlvki
+         7gpBBn5JwuocA==
+Date:   Fri, 29 Jan 2021 11:06:05 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        andy.rudoff@intel.com
+Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
+Message-ID: <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
+References: <20210122150638.210444-1-willy@infradead.org>
+        <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On production systems with ETMs enabled, it is preferred to exclude
-kernel mode(NS EL1) tracing for security concerns and support only
-userspace(NS EL0) tracing. Perf subsystem interface for ETMs use
-the newly introduced kernel config CONFIG_EXCLUDE_KERNEL_HW_ITRACE
-to exclude kernel mode tracing, but there is an additional interface
-via sysfs for ETMs which also needs to be handled to exclude kernel
-mode tracing. So we use this same generic kernel config to handle
-the sysfs mode of tracing. This config is disabled by default and
-would not affect the current configuration which has both kernel and
-userspace tracing enabled by default.
+On Fri, 29 Jan 2021 09:56:48 -0800 Shoaib Rao wrote:
+> On 1/25/21 3:36 PM, Jakub Kicinski wrote:
+> > On Fri, 22 Jan 2021 15:06:37 +0000 Matthew Wilcox (Oracle) wrote:  
+> >> From: Rao Shoaib <rao.shoaib@oracle.com>
+> >>
+> >> TCP sockets allow SIGURG to be sent to the process holding the other
+> >> end of the socket.  Extend Unix sockets to have the same ability.
+> >>
+> >> The API is the same in that the sender uses sendmsg() with MSG_OOB to
+> >> raise SIGURG.  Unix sockets behave in the same way as TCP sockets with
+> >> SO_OOBINLINE set.  
+> > Noob question, if we only want to support the inline mode, why don't we
+> > require SO_OOBINLINE to have been called on @other? Wouldn't that
+> > provide more consistent behavior across address families?
+> >
+> > With the current implementation the receiver will also not see MSG_OOB
+> > set in msg->msg_flags, right?  
+> 
+> SO_OOBINLINE does not control the delivery of signal, It controls how
+> OOB Byte is delivered. It may not be obvious but this change does not
+> deliver any Byte, just a signal. So, as long as sendmsg flag contains
+> MSG_OOB, signal will be delivered just like it happens for TCP.
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/hwtracing/coresight/coresight-etm3x-core.c  | 11 +++++++++++
- drivers/hwtracing/coresight/coresight-etm3x-sysfs.c |  3 ++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+Not as far as I can read this code. If MSG_OOB is set the data from the
+message used to be discarded, and EOPNOTSUPP returned. Now the data gets
+queued to the socket, and will be read inline.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-index 5bf5a5a4ce6d..4da3bfa66b70 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-@@ -195,6 +195,9 @@ void etm_set_default(struct etm_config *config)
- 	if (WARN_ON_ONCE(!config))
- 		return;
- 
-+	if (IS_ENABLED(CONFIG_EXCLUDE_KERNEL_HW_ITRACE))
-+		config->mode |= ETM_MODE_EXCL_KERN;
-+
- 	/*
- 	 * Taken verbatim from the TRM:
- 	 *
-@@ -239,6 +242,7 @@ void etm_set_default(struct etm_config *config)
- void etm_config_trace_mode(struct etm_config *config)
- {
- 	u32 flags, mode;
-+	struct etm_drvdata *drvdata = container_of(config, struct etm_drvdata, config);
- 
- 	mode = config->mode;
- 
-@@ -248,6 +252,13 @@ void etm_config_trace_mode(struct etm_config *config)
- 	if (mode == (ETM_MODE_EXCL_KERN | ETM_MODE_EXCL_USER))
- 		return;
- 
-+	if (!(mode & ETM_MODE_EXCL_KERN) && IS_ENABLED(CONFIG_EXCLUDE_KERNEL_HW_ITRACE)) {
-+		dev_err(&drvdata->csdev->dev,
-+			"Kernel mode tracing is not allowed, check your kernel config\n");
-+		config->mode |= ETM_MODE_EXCL_KERN;
-+		return;
-+	}
-+
- 	/* nothing to do if neither flags are set */
- 	if (!(mode & ETM_MODE_EXCL_KERN) && !(mode & ETM_MODE_EXCL_USER))
- 		return;
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-index e8c7649f123e..26642dafddbb 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-@@ -164,7 +164,8 @@ static ssize_t mode_store(struct device *dev,
- 	else
- 		config->ctrl &= ~ETMCR_RETURN_STACK;
- 
--	if (config->mode & (ETM_MODE_EXCL_KERN | ETM_MODE_EXCL_USER))
-+	if ((config->mode & (ETM_MODE_EXCL_KERN | ETM_MODE_EXCL_USER)) ||
-+	    IS_ENABLED(CONFIG_EXCLUDE_KERNEL_HW_ITRACE))
- 		etm_config_trace_mode(config);
- 
- 	spin_unlock(&drvdata->spinlock);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Sure, you also add firing of the signal, which is fine. The removal of
+the error check is the code I'm pointing at, so to speak.
+
+> >> SIGURG is ignored by default, so applications which do not know about this
+> >> feature will be unaffected.  In addition to installing a SIGURG handler,
+> >> the receiving application must call F_SETOWN or F_SETOWN_EX to indicate
+> >> which process or thread should receive the signal.
+> >>
+> >> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
+> >> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> >> ---
+> >>   net/unix/af_unix.c | 5 +++--
+> >>   1 file changed, 3 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> >> index 41c3303c3357..849dff688c2c 100644
+> >> --- a/net/unix/af_unix.c
+> >> +++ b/net/unix/af_unix.c
+> >> @@ -1837,8 +1837,6 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+> >>   		return err;
+> >>   
+> >>   	err = -EOPNOTSUPP;
+> >> -	if (msg->msg_flags&MSG_OOB)
+> >> -		goto out_err;
+> >>   
+> >>   	if (msg->msg_namelen) {
+> >>   		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
+> >> @@ -1903,6 +1901,9 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+> >>   		sent += size;
+> >>   	}
+> >>   
+> >> +	if (msg->msg_flags & MSG_OOB)
+> >> +		sk_send_sigurg(other);
+> >> +
+> >>   	scm_destroy(&scm);
+> >>   
+> >>   	return sent;  
 
