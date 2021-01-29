@@ -2,159 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C0F308D0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F4D308D02
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhA2TFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:05:51 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:51730 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbhA2TE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:04:56 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10TIwh6L073598;
-        Fri, 29 Jan 2021 19:04:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=SzE+XuAFrU8/MaSJjlPngMNhjYCRkpFys29DySabf+I=;
- b=xbe/yeGD+SHx6HySyJCirdmG4NEwD4l+o5jj7oYSLeOYPYTScH6keah1HZjlgkn2f0eY
- fcDsevTO7INAs9bV0mXfQknm2/Zj6Mvkp0jh44rGweTYKFgvb5J3GZTfNl/vKXUo3SD0
- vs8IwAwCNV2uoqELcyMRFrc4ehRRMkbw4C9X2hck7/v+sHZp6avcE//s35WMloe+9Rs6
- Ordbh7pvS6X1fMNcFrM5uoKQksDwSv/OyTE0x0G1HNGmoPqfnlhGwn6BM4L4FLQvRKEj
- OjKjvAFVjqwr4rUHObpJ78baABO6fP4bRrwFu1pgCG5j4ntl+o3p2OqXwS0xAA1KlUHP 0w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 36cmf894wq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 19:04:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10TJ0ih2052883;
-        Fri, 29 Jan 2021 19:02:11 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by aserp3020.oracle.com with ESMTP id 36ceug9nrg-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 19:02:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kJ/n2xAgqMwp+vDy2G8DBoTszORnAafRzwS0VDLhje39aSpr5DGee6v1piluWM6Bj87U7kegWjF+iuZoh8HOjqEg1B+rlo3MNeHWlTe7om0fou4513FajiUAmx7F2+WiOAtpb/YA+gzUpFUpg6+Kiy3RJDCrVFIjF4nfxU6XKquqfXhsgu8KTHVamCP/pv59svK54O21i4C2cU0Dor2/HZ65li24yRkDbsZrmTJqj24Jr3io8umjukxTSlqbQQ2ZZ6NNUs5KSmI+8KxxO2DVzP+rTksKaPgonVsQm6j+VAu0ij8r1p8KOTYUnUqJ/vWHfb5HWVNjjfXFGgA6f2MSzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SzE+XuAFrU8/MaSJjlPngMNhjYCRkpFys29DySabf+I=;
- b=g4z59DyAhQiOnMtQ7dBQfE7fs6PwpGEzdrnk3A1seQxsUHnTMDo55R3DLqu5MD5VXClA0qNsXNV4bifOjEcuWsLUGRRwWEbm/m6pwmpnPdazLE9gxxDns5hRQAUsTx4dbkMca9mTMSZe16v+VBKhLZlQEg9yzxHsiAfsOi24TVUo4NBzceAPpEEyMeHPYOskLdHWrSNlff7TD5NnDKyIt5FNWqgalMmX1Pc5oC4f8FLANbQ8F12A1HFKIiwD/BEAYJDD2TGXdFg52WZiMArVcxo7GBnGMY/YgP3DNDbmVPtYM3go2jnv/bEb8ZVxOMedEsGUKY6SjUR20Vldy6mCsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SzE+XuAFrU8/MaSJjlPngMNhjYCRkpFys29DySabf+I=;
- b=KqMK9PVlh07H1YfZB1FuiePjPJq+KnInZUDE0OldGkEhNuctDKo4vlCCu+60RVboJhQe2BLos5Kn27ASymKZ8UY77QaMi5w1EHrikA6IonuHw9vWxBjvkxrUOy8il8obB/V9KaGwY1aEuLcayzVkvSoRQVpcMPYpZ50nqPI+DXw=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4677.namprd10.prod.outlook.com (2603:10b6:510:3d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Fri, 29 Jan
- 2021 19:02:10 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3805.021; Fri, 29 Jan 2021
- 19:02:10 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        linux-scsi@vger.kernel.org
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v1] scsi: lpfc: Add auto select on IRQ_POLL
-Date:   Fri, 29 Jan 2021 14:01:53 -0500
-Message-Id: <161194526371.12948.344774339686178151.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210126000554.309858-1-ztong0001@gmail.com>
-References: <20210126000554.309858-1-ztong0001@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [138.3.200.9]
-X-ClientProxiedBy: CH2PR10CA0021.namprd10.prod.outlook.com
- (2603:10b6:610:4c::31) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S232838AbhA2TEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:04:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57018 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232896AbhA2TDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:03:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3967EAE3C;
+        Fri, 29 Jan 2021 19:02:49 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 19:02:41 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
+Message-ID: <20210129190241.GA18188@wotan.suse.de>
+References: <20210127135728.30276-1-mrostecki@suse.de>
+ <18dab74b-aea9-0e34-1be5-39d62f44cfd2@toxicpanda.com>
+ <20210129171521.GB22949@wotan.suse.de>
+ <20210129174753.GL1993@twin.jikos.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.mkp.ca.oracle.com (138.3.200.9) by CH2PR10CA0021.namprd10.prod.outlook.com (2603:10b6:610:4c::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Fri, 29 Jan 2021 19:02:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1dda73a2-b370-43a6-7799-08d8c4886172
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4677:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4677B70ACDF6B3F2FD60AA508EB99@PH0PR10MB4677.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mdQOSDGrct7B2FRYINsbnCjyFrWjuVNc+BPhHY7UbeJ6k7xf0jMJvH+ps2K4v+v7znhEMeWvL1O8IJINzwVbvz5VRymV2uxzz39pbEtI7PL0olfErBSnUiLuvAu7SmWx3UOi4ZP4Lqj8TsndPy8Aoh47NS4kOb3byGAb2OarxuICghV8u8NHoy+jVigioX8wo9mWWk9Jrm9qzQdcQFzGFHvgyrduwHdQGDzagmelP2Zs0HnXcEdZuR1dOblc+rOVwR6AhCqV6gy2Q96JPNs2J17KxIj9qylSPZIjCQsA95ajJcerQzWGgVcCqGBOjq6C/oCFWXyxkXpkCB+OFTbaHdH6eUZQGGyXt3Tkruz1VvNDw495+wP0tRTEyw0ilXSnTH0t7B5/v/wZa4/ZASJclYxoV9x1vR/bIpPTXrKZmOlYEFGAWrbjqZUe1WHjqonqCV1XUc00hjtg2h/OAaVLfYtu2I26kQtNlQ3F4R0OZOMQrz1HzmIEHLbwPjJ208NY646YuL006UhFHqNQ5sEbJtIH48MHqta+DlceC3ksQ86RX9Z/VNHk+gTXikJ9+NdbNiCSDkJJQyZDLE/tDXaxrAW9dIfNtTCVneNP0OztmzI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(366004)(396003)(136003)(956004)(107886003)(66476007)(2616005)(26005)(52116002)(66946007)(316002)(4744005)(103116003)(66556008)(5660300002)(16526019)(186003)(36756003)(7696005)(110136005)(478600001)(86362001)(6486002)(2906002)(6666004)(966005)(8676002)(8936002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TncvaFhhT0YwcCs4ZjVmSFNKVnFBdjJrYkl1aUR1dXpUdmx0RC9vaDRVMHRT?=
- =?utf-8?B?VjlGR0ZJeDlITFNveHZvb1R4NytEY0psMFZJMVJrODZpREFJanlLS3dsbE9U?=
- =?utf-8?B?N3l4bkVIYXRpVW5MZ3VOQnhkRnB2L2h6YlFvRkIvN3lxMFZYK3pzalJsdmlk?=
- =?utf-8?B?TlNlYUhRczBwc1lydDlsWnMwN2lENGljRVhtclNMbFU1U1lxdE1rVTRUUlNF?=
- =?utf-8?B?OGF1RUc2S201d1ovbm9CcVpiSzNGMk5WQi9OZzVHb1FCRUwrTG52bHhNT01n?=
- =?utf-8?B?WFB3UnRTZkgzRyt1QkdreTJlV0dVQmxuS2g0TXAzQmRGbE9lbWpRalB5WXVz?=
- =?utf-8?B?aloxVjJyYk5VWUtGWVZIQVFVczJpUERqMldldzM5R2pLMFljRmFxVEgyZ2Zo?=
- =?utf-8?B?UFV4R2xvdnFkQk5rUUMzS1BXNXJUZlJrQ1FnLzkyakduSlNXa3hhcm9VUjhr?=
- =?utf-8?B?Y1NXZkZ5Mks2U3AyUHdNWkpleTB3b1cveHd3OUhKZW5UOXI0S1krT2FmWmhY?=
- =?utf-8?B?YkRJSWcyQkZDRjh0U1FhUHRJNnNUWnBOcG9pQWpDSnhndlg1RXJKSk9oUm9Y?=
- =?utf-8?B?UnBSRGdaUzJ3anZ6blNPS0dVaWozV2Qzb1BudU9jS0RZTytzRXNrankwb25G?=
- =?utf-8?B?bTFRTU9CY3QzWWVEaU91MGZrRkxCOEQxYS8vQld6U3dzU0VON1gwSk4xUlYr?=
- =?utf-8?B?RkNnLzVUSUgybzViMGVWYlpHRmhkSWJLS0xyZkwrWStORUJaYXBBZGI3TnNP?=
- =?utf-8?B?RDM1dzBKNytrM1pzOGdYZHlzV29XdHFWN2tVb1RhYkJQdGxJNTZjU1FaZ2xQ?=
- =?utf-8?B?RmhLOCtseHUxVmdydXFOTlZZUklSN2dtVTg1OExUaHR1L3dqTmZVa21menFO?=
- =?utf-8?B?UG12enB5KzRhLzI4REc2MnFvcGh4UzVJcTR2OWl6SzRUN01pY25ySmdoc1p4?=
- =?utf-8?B?dUpieCtzK0RoMnpuNWFpQXdsZmYwdkEveC9nL0xhMll1QVQ4dUgrREFOZmta?=
- =?utf-8?B?KzU5SjFBanVYc1ZrNkFZVmFiTG81SFhGZVNqYUJjMUFoZFJOeU5CM09Qd29Y?=
- =?utf-8?B?WGZHTjdxbWRXSkduRUdUWFVOaUZpS0FCWUN5eXRGaWVEU0g3d3htZVV5WFUv?=
- =?utf-8?B?eDBIRklEUWMrWmhDVmZXQmlkVjl4V0x3cEVuVVJKS2dtVHNTTG1mRHFpTUFo?=
- =?utf-8?B?Q1VEZDM3Y0JBMDRBLzhJb2tnVk1uK2dZc1VjS3NrZmJmaEc5LzJ4K3RqTFhq?=
- =?utf-8?B?SEhGTG5aTXRTb3RjVVhVR1BCOEFoQWlGTlByMWlFbmZsREl1aE1raHZ1S2xI?=
- =?utf-8?B?THVzMzhtNHRkSkRrRUVXNHpha1RoWXVKdDJmUmRabWpTczBrdkhGUUVwYzJD?=
- =?utf-8?B?TEpmTjlYQmE1eHUzemxPOFVobWNFcWJkMnFVaTBEZzdaNC9UOGtqQTljaTZk?=
- =?utf-8?Q?A0CRNguv?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dda73a2-b370-43a6-7799-08d8c4886172
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 19:02:10.5091
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /HFjhPwXM1BNL0LhFQgcAddOrLs72NGY8pWEo4comJuH8G/Na12BF8bZU4aAPJyFgOGAGt2MwfWD8i0HJpekswR+OZqJdZR1L4T7NdNsE78=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4677
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- spamscore=0 malwarescore=0 phishscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101290092
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 lowpriorityscore=0
- spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101290092
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129174753.GL1993@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 19:05:54 -0500, Tong Zhang wrote:
-
-> lpfc depends on irq_poll library, but it is not selected automatically.
-> When irq_poll is not selected, compiling it can run into following error
+On Fri, Jan 29, 2021 at 06:47:53PM +0100, David Sterba wrote:
+> On Fri, Jan 29, 2021 at 05:15:21PM +0000, Michal Rostecki wrote:
+> > On Fri, Jan 29, 2021 at 11:22:48AM -0500, Josef Bacik wrote:
+> > > On 1/27/21 8:57 AM, Michal Rostecki wrote:
+> > > > From: Michal Rostecki <mrostecki@suse.com>
+> > > > 
+> > > > Before this change, the btrfs_get_io_geometry() function was calling
+> > > > btrfs_get_chunk_map() to get the extent mapping, necessary for
+> > > > calculating the I/O geometry. It was using that extent mapping only
+> > > > internally and freeing the pointer after its execution.
+> > > > 
+> > > > That resulted in calling btrfs_get_chunk_map() de facto twice by the
+> > > > __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+> > > > first and then calling btrfs_get_chunk_map() directly to get the extent
+> > > > mapping, used by the rest of the function.
+> > > > 
+> > > > This change fixes that by passing the extent mapping to the
+> > > > btrfs_get_io_geometry() function as an argument.
+> > > > 
+> > > > v2:
+> > > > When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
+> > > > - Use errno_to_blk_status(PTR_ERR(em)) as the status
+> > > > - Set em to NULL
+> > > > 
+> > > > Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+> > > 
+> > > This panic'ed all of my test vms in their overnight xfstests runs, the panic is this
+> > > 
+> > > [ 2449.936502] BTRFS critical (device dm-7): mapping failed logical
+> > > 1113825280 bio len 40960 len 24576
+> > > [ 2449.937073] ------------[ cut here ]------------
+> > > [ 2449.937329] kernel BUG at fs/btrfs/volumes.c:6450!
+> > > [ 2449.937604] invalid opcode: 0000 [#1] SMP NOPTI
+> > > [ 2449.937855] CPU: 0 PID: 259045 Comm: kworker/u5:0 Not tainted 5.11.0-rc5+ #122
+> > > [ 2449.938252] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > > 1.13.0-2.fc32 04/01/2014
+> > > [ 2449.938713] Workqueue: btrfs-worker-high btrfs_work_helper
+> > > [ 2449.939016] RIP: 0010:btrfs_map_bio.cold+0x5a/0x5c
+> > > [ 2449.939392] Code: 37 87 ff ff e8 ed d4 8a ff 48 83 c4 18 e9 b5 52 8b ff
+> > > 49 89 c8 4c 89 fa 4c 89 f1 48 c7 c6 b0 c0 61 8b 48 89 ef e8 11 87 ff ff <0f>
+> > > 0b 4c 89 e7 e8 42 09 86 ff e9 fd 59 8b ff 49 8b 7a 50 44 89 f2
+> > > [ 2449.940402] RSP: 0000:ffff9f24c1637d90 EFLAGS: 00010282
+> > > [ 2449.940689] RAX: 0000000000000057 RBX: ffff90c78ff716b8 RCX: 0000000000000000
+> > > [ 2449.941080] RDX: ffff90c7fbc27ae0 RSI: ffff90c7fbc19110 RDI: ffff90c7fbc19110
+> > > [ 2449.941467] RBP: ffff90c7911d4000 R08: 0000000000000000 R09: 0000000000000000
+> > > [ 2449.941853] R10: ffff9f24c1637b48 R11: ffffffff8b9723e8 R12: 0000000000000000
+> > > [ 2449.942243] R13: 0000000000000000 R14: 000000000000a000 R15: 000000004263a000
+> > > [ 2449.942632] FS:  0000000000000000(0000) GS:ffff90c7fbc00000(0000)
+> > > knlGS:0000000000000000
+> > > [ 2449.943072] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 2449.943386] CR2: 00005575163c3080 CR3: 000000010ad6c004 CR4: 0000000000370ef0
+> > > [ 2449.943772] Call Trace:
+> > > [ 2449.943915]  ? lock_release+0x1c3/0x290
+> > > [ 2449.944135]  run_one_async_done+0x3a/0x60
+> > > [ 2449.944360]  btrfs_work_helper+0x136/0x520
+> > > [ 2449.944588]  process_one_work+0x26e/0x570
+> > > [ 2449.944812]  worker_thread+0x55/0x3c0
+> > > [ 2449.945016]  ? process_one_work+0x570/0x570
+> > > [ 2449.945250]  kthread+0x137/0x150
+> > > [ 2449.945430]  ? __kthread_bind_mask+0x60/0x60
+> > > [ 2449.945666]  ret_from_fork+0x1f/0x30
+> > > 
+> > > it happens when you run btrfs/060.  Please make sure to run xfstests against
+> > > patches before you submit them upstream.  Thanks,
+> > > 
+> > > Josef
+> > 
+> > Umm... I ran the xftests against v1 patch and didn't get that panic.
 > 
-> ERROR: modpost: "irq_poll_init" [drivers/scsi/lpfc/lpfc.ko] undefined!
-> ERROR: modpost: "irq_poll_sched" [drivers/scsi/lpfc/lpfc.ko] undefined!
-> ERROR: modpost: "irq_poll_complete" [drivers/scsi/lpfc/lpfc.ko] undefined!
+> It could have been caused by my fixups to v2 and I can reproduce the
+> crash now too. I can't see any difference besides the u64/int switch and
+> the 'goto out' removal in btrfs_bio_fits_in_stripe.
 
-Applied to 5.12/scsi-queue, thanks!
+I was able to fix the issue by the following diff. I will send it as the
+patch after confirming that all fstests are passing.
 
-[1/1] scsi: lpfc: Add auto select on IRQ_POLL
-      https://git.kernel.org/mkp/scsi/c/fad0a16130b6
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 1a160db01878..04cd95899ac8 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7975,21 +7975,21 @@ static blk_qc_t btrfs_submit_direct(struct inode
+*inode, struct iomap *iomap,
+        }
+ 
+        start_sector = dio_bio->bi_iter.bi_sector;
+-       logical = start_sector << 9;
+        submit_len = dio_bio->bi_iter.bi_size;
+ 
+        do {
++               logical = start_sector << 9;
+                em = btrfs_get_chunk_map(fs_info, logical, submit_len);
+                if (IS_ERR(em)) {
+                        status = errno_to_blk_status(PTR_ERR(em));
+                        em = NULL;
+-                       goto out_err;
++                       goto out_err_em;
+                }
+                ret = btrfs_get_io_geometry(fs_info, em,
+btrfs_op(dio_bio),
+                                            logical, submit_len, &geom);
+                if (ret) {
+                        status = errno_to_blk_status(ret);
+-                       goto out_err;
++                       goto out_err_em;
+                }
+                ASSERT(geom.len <= INT_MAX);
+ 
+@@ -8034,7 +8034,7 @@ static blk_qc_t btrfs_submit_direct(struct inode
+*inode, struct iomap *iomap,
+                        bio_put(bio);
+                        if (submit_len > 0)
+                                refcount_dec(&dip->refs);
+-                       goto out_err;
++                       goto out_err_em;
+                }
+ 
+                dio_data->submitted += clone_len;
+@@ -8046,10 +8046,11 @@ static blk_qc_t btrfs_submit_direct(struct inode
+*inode, struct iomap *iomap,
+        } while (submit_len > 0);
+        return BLK_QC_T_NONE;
+ 
++out_err_em:
++       free_extent_map(em);
+ out_err:
+        dip->dio_bio->bi_status = status;
+        btrfs_dio_private_put(dip);
+-       free_extent_map(em);
+ 
+        return BLK_QC_T_NONE;
+ }
