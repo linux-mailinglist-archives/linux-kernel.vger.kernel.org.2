@@ -2,170 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23199308466
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2D7308469
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhA2Duq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
+        id S231873AbhA2DvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbhA2Dug (ORCPT
+        with ESMTP id S231517AbhA2DvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:50:36 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA5AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:49:55 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id r14so8971655ljc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:49:55 -0800 (PST)
+        Thu, 28 Jan 2021 22:51:01 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF60C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:50:16 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id p20so4208280vsq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:50:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xMvJoMHuEXdWFwhVnHo1SQV4orUEAbd3SRkoCZWs3jQ=;
-        b=CT2ivzq/AImbcMwRyug0dhVU6XpQ/KDjrVZcJ34Noi/PqsGK+I5u7bJv7mdhfy6eHs
-         eFxrnCd5XyJisiZ/vrTzQUX8pM+TcDvW3UTi9L4SqdM0hTLNu9GSZINp2Ug9ChGVd2Gz
-         NGNDRVGNYeFCUm7HRLNsZwzo5EWIWzmgIBjvhZCCqGd4wLtX+ZV/vtdnbYlXX5702Flb
-         oJ30u05CYXRwhOTP0gi4yWMSjIPiWItLIS97IJhatJdelZvO+QeHTsyA41+QZ5UjCv/+
-         9N3YCtS5QqHR99FOzFAfM3zbX3JNyS52Rr7UTTCmFzmN684SL12/vNWI8b/CamzL3LRr
-         S5MA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QXaGYzS0cYK7WboTigRhnstjhNV+KDyvFkcR1YY4X5M=;
+        b=HS5Twc4X1YtXRU05Q97oJ4DrvOf8StA/SBXo9mR4bfXvcqPIZsOv9RXlwhkbw69lJS
+         0ouJgK/HjaoNoYcyd2Wo9ViJwQMGLo2N8ddOeQPQVgGWe3iwKBXfoyf0EAJ+AjsmJjmD
+         zNHBj/XhsGEQe5m1UUfNEIVUrm9gf7Jz0q4mo0WC5n8Z6yGH36i/d5cri81AJAC5+lvQ
+         vPVttazNC8g7+ZcMQWcC8O6jaPRLPIFavaKUWXGfI3sRvjksQ1ivwAw9zKDP8nkpQn68
+         Mg95a507L1Cs8Nuywkn6rkBirlwlEv+AHto3n4PCO70IaBCUpFkMJHnTo/HZ9n3wxufC
+         bBYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xMvJoMHuEXdWFwhVnHo1SQV4orUEAbd3SRkoCZWs3jQ=;
-        b=buoUklLVTWUurCAM17oR/9uYiIvL/wszCSltxhRd0reCXrZJcnjLIAzQuRS/Y43ONt
-         BcFZlGLfdLnXtUMIWJ+bg+pm74Wzq5mEpJoR9vVXfIhW/kySROEHvlDW2JiKLvAgTH5k
-         W5QXu36vrt4Z4ybY0rvSkAdWQqJsqPaDyv/le4rjL+E8WmOWgsFgA1Dd6+9Qh0kA5dMI
-         tcXZTR5q6hW1splnBylp7cIbU/knHZp3DEbhr1ajVMKEwgQoH8N1YfH7OYEbDzs6Aa5x
-         K6tO7fk1ff1FKWAB4ca9jJmjsLoGcGVasKaBTOMmlUHnQ9E1sYQqXd9BNJtHGMW/Cqyy
-         H2hg==
-X-Gm-Message-State: AOAM532sUiiEmU+/XlbCsbyiIUTCHwPQTtbgMbuYkej592ghOw39qEPE
-        TlnmIorhqpjAjBlyKv/RsJdpNw==
-X-Google-Smtp-Source: ABdhPJy5iwaV6zkENFUGsz+wmKhi/YZasjaeDKImIMv+I+rcV9HgjHv5ad5v55Gggc+I3ABQ67djow==
-X-Received: by 2002:a2e:5802:: with SMTP id m2mr1385650ljb.145.1611892194238;
-        Thu, 28 Jan 2021 19:49:54 -0800 (PST)
-Received: from [192.168.1.211] ([94.25.229.83])
-        by smtp.gmail.com with ESMTPSA id s3sm2347641ljj.4.2021.01.28.19.49.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 19:49:53 -0800 (PST)
-Subject: Re: [PATCH v2 5/5] arm64: dts: qcom: Add Bluetooth support on RB5
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
- <20210128175225.3102958-6-dmitry.baryshkov@linaro.org>
- <CAL_Jsq+nNRv3KceHthgktHR1oRMs+eKWC4O7n0k78izs1aTPfA@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <6dd1f5cd-03c7-5945-9fa2-1c2698405110@linaro.org>
-Date:   Fri, 29 Jan 2021 06:49:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QXaGYzS0cYK7WboTigRhnstjhNV+KDyvFkcR1YY4X5M=;
+        b=BsPtJSfDox4TCHceKZ8K36V5qymlIUi0tNWVabskhemrkj5955CxOFQZkkkyF1NL+j
+         dIxk8uE3PAVhhk23KG2kUZiVjDOdXURFH/udbDlk56Q5U4taSiZkiUgMKsKl4JbYC7so
+         ELW2q5jye1RiFVBDU4moi++Yu1nGz9E8LjG/w4lHGRE2Xb8Nh9qtYaL8Tu1MyiZz3j9p
+         LOSpfoXORD7kxT2ZgJNttVV84p3Jk8EJqAnU055lYyzsSoENGtEwXQZLTPJZf77vr7yg
+         RYBvGZgw93rbRyNUy/faTQ1/hnnbkUnscQfxVrdhpdSxraDjRYJ79CXYp43mnUHAqIhT
+         3azA==
+X-Gm-Message-State: AOAM530jmDgt2ILEdKWyvu6013YH/+IolKC4XxpVRon+rYiAj46fz2dG
+        myOFzmfcDYB08HUJ/5iaySMhOAIQaKKDJmCYxQ8=
+X-Google-Smtp-Source: ABdhPJxur3FY3X4RFwf3XUEzzC/DUg0CFdTPYbmbqZOa/dtWuKF3IShJ4hzG3xPrAmlxqKRhqixH3/0ASVgRrHNnAoo=
+X-Received: by 2002:a67:fbcf:: with SMTP id o15mr1542804vsr.59.1611892215565;
+ Thu, 28 Jan 2021 19:50:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+nNRv3KceHthgktHR1oRMs+eKWC4O7n0k78izs1aTPfA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210128112028.64831-1-linmiaohe@huawei.com>
+In-Reply-To: <20210128112028.64831-1-linmiaohe@huawei.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Fri, 29 Jan 2021 09:20:03 +0530
+Message-ID: <CAFqt6zYX5f5Vf_S838XdnjTyLmDsmS+2OS16HpMuzjJjKhS5PQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/hugetlb: Fix some comment typos
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/01/2021 22:15, Rob Herring wrote:
-> On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
->>
->> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>
->> Add Bluetooth support on RB5 using the onboard QCA6391 WLAN+BT chipset.
->>
->> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> [DB: added qca6391 power domain, removed s2f regulator]
->> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> ---
->>   arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 29 ++++++++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
->> index b39a9729395f..c65c13994a86 100644
->> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
->> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
->> @@ -19,6 +19,7 @@ / {
->>          compatible = "qcom,qrb5165-rb5", "qcom,sm8250";
->>
->>          aliases {
->> +               hsuart0 = &uart6;
-> 
-> Serial devices should be 'serialN'. Don't add custom aliases.
+On Thu, Jan 28, 2021 at 4:50 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> Fix typos sasitfy to satisfy, reservtion to reservation, hugegpage to
+> hugepage and uniprocesor to uniprocessor in comments.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Ack
+Reviewed-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-> 
->>                  serial0 = &uart12;
->>                  sdhc2 = &sdhc_2;
-> 
-> BTW, this should be dropped too.
-
-Ack
-
-> 
->>          };
->> @@ -689,6 +690,26 @@ &pm8150_rtc {
->>          status = "okay";
->>   };
->>
->> +&qup_uart6_default {
->> +       ctsrx {
->> +               pins = "gpio16", "gpio19";
->> +               drive-strength = <2>;
->> +               bias-disable;
->> +       };
->> +
->> +       rts {
->> +               pins = "gpio17";
->> +               drive-strength = <2>;
->> +               bias-disable;
->> +       };
->> +
->> +       tx {
->> +               pins = "gpio18";
->> +               drive-strength = <2>;
->> +               bias-pull-up;
->> +       };
->> +};
->> +
->>   &qupv3_id_0 {
->>          status = "okay";
->>   };
->> @@ -1194,6 +1215,14 @@ wlan-en {
->>          };
->>   };
->>
->> +&uart6 {
->> +       status = "okay";
->> +       bluetooth {
->> +               compatible = "qcom,qca6390-bt";
->> +               power-domains = <&qca6391>;
->> +       };
->> +};
->> +
->>   &uart12 {
->>          status = "okay";
->>   };
->> --
->> 2.29.2
->>
-
-
--- 
-With best wishes
-Dmitry
+> ---
+>  include/linux/hugetlb.h | 2 +-
+>  mm/hugetlb.c            | 6 +++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index ef5b144b8aac..95a5a239c8f2 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -37,7 +37,7 @@ struct hugepage_subpool {
+>         struct hstate *hstate;
+>         long min_hpages;        /* Minimum huge pages or -1 if no minimum. */
+>         long rsv_hpages;        /* Pages reserved against global pool to */
+> -                               /* sasitfy minimum size. */
+> +                               /* satisfy minimum size. */
+>  };
+>
+>  struct resv_map {
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 53ea65d1c5ab..c42c61c2653e 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1444,7 +1444,7 @@ static void __free_huge_page(struct page *page)
+>          * reservation.  If the page was associated with a subpool, there
+>          * would have been a page reserved in the subpool before allocation
+>          * via hugepage_subpool_get_pages().  Since we are 'restoring' the
+> -        * reservtion, do not call hugepage_subpool_put_pages() as this will
+> +        * reservation, do not call hugepage_subpool_put_pages() as this will
+>          * remove the reserved page from the subpool.
+>          */
+>         if (!restore_reserve) {
+> @@ -3715,7 +3715,7 @@ static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+>  /*
+>   * We cannot handle pagefaults against hugetlb pages at all.  They cause
+>   * handle_mm_fault() to try to instantiate regular-sized pages in the
+> - * hugegpage VMA.  do_page_fault() is supposed to trap this, so BUG is we get
+> + * hugepage VMA.  do_page_fault() is supposed to trap this, so BUG is we get
+>   * this far.
+>   */
+>  static vm_fault_t hugetlb_vm_op_fault(struct vm_fault *vmf)
+> @@ -4513,7 +4513,7 @@ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx)
+>  }
+>  #else
+>  /*
+> - * For uniprocesor systems we always use a single mutex, so just
+> + * For uniprocessor systems we always use a single mutex, so just
+>   * return 0 and avoid the hashing overhead.
+>   */
+>  u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx)
+> --
+> 2.19.1
+>
+>
