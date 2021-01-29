@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6F130823C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC232308243
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhA2ALV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:11:21 -0500
-Received: from mga14.intel.com ([192.55.52.115]:24761 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229786AbhA2ALT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:11:19 -0500
-IronPort-SDR: xlbDKpuN1+iITHLfArnNwQLWDHF+gVyZiRVyeQ4+eGeqX938L38gi261mRckDQBURKnZuv/U9Y
- 2GwOj1JZMj8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="179554049"
-X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
-   d="scan'208";a="179554049"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 16:10:38 -0800
-IronPort-SDR: nBFmdgJr+2/VRvEq70chfjJTx1RfnSk+rlpFtPguUyijh5DcB9xHpi7DAVDmJZkjrLbgAfQ3sZ
- ZYlBojUOXPig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
-   d="scan'208";a="474324801"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Jan 2021 16:10:37 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l5HMy-0003Do-St; Fri, 29 Jan 2021 00:10:36 +0000
-Date:   Fri, 29 Jan 2021 08:09:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- bb73d07148c405c293e576b40af37737faf23a6a
-Message-ID: <60135244.XTtQEDnQXSvMoymH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S231215AbhA2ANH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:13:07 -0500
+Received: from mail.micronovasrl.com ([212.103.203.10]:39520 "EHLO
+        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231195AbhA2ANF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:13:05 -0500
+Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
+        by mail.micronovasrl.com (Postfix) with ESMTP id 07440B04740
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 01:12:22 +0100 (CET)
+Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
+         h=x-mailer:to:date:date:message-id:subject:subject:mime-version
+        :from:from:content-transfer-encoding:content-type:content-type;
+         s=dkim; t=1611879141; x=1612743142; bh=Wr6MLSMlyPXVN/vYt5Eb7iob
+        yfPMoz/1ggaiwP4YGds=; b=b+pEq5b6+HYmN+QAIvljw/pkqpqhrzYXsJAzkzV8
+        JD9tZM4oX9dDMXb0iZH8gG+vGTEjGVT0289O29TFHeIpk2qEM8b9mS9FlSyoz1pA
+        LIbo3utyGgjJ8QX4mE5arqqF4NHt9u50ECM9DFJOW76jR8zsvY79OhvtLTQqV03Z
+        EwQ=
+X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 tagged_above=-10 required=4.5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9]
+        autolearn=unavailable autolearn_force=no
+Received: from mail.micronovasrl.com ([127.0.0.1])
+        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id EfvVmfHhPwuj for <linux-kernel@vger.kernel.org>;
+        Fri, 29 Jan 2021 01:12:21 +0100 (CET)
+Received: from [192.168.50.29] (146-241-182-37.dyn.eolo.it [146.241.182.37])
+        by mail.micronovasrl.com (Postfix) with ESMTPSA id A4237B04493;
+        Fri, 29 Jan 2021 01:12:20 +0100 (CET)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 0/3] Handle UART without interrupt on TEMT using em485
+Message-Id: <5FC36FF8-8F09-4B82-92C0-BE5E0AA2C117@micronovasrl.com>
+Date:   Fri, 29 Jan 2021 01:12:20 +0100
+Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
+        andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
+        lukas@wunner.de, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com, heiko@sntech.de,
+        heiko.stuebner@theobroma-systems.com
+To:     Eric Tremblay <etremblay@distech-controls.com>
+X-Mailer: iPhone Mail (18C66)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/build
-branch HEAD: bb73d07148c405c293e576b40af37737faf23a6a  x86/build: Treat R_386_PLT32 relocation as R_386_PC32
+=EF=BB=BFHi Eric,
 
-elapsed time: 723m
+> Il giorno 29 gen 2021, alle ore 00:37, Eric Tremblay <etremblay@distech-co=
+ntrols.com> ha scritto:
+>=20
+> =EF=BB=BFThe series is mainly about the support of 8250 UART without TEMT
+> interrupt. I saw that there was some development in the past but
+> it was never merged. Since the last discussion were quite some
+> time ago, I was not sure if I should post a v4 over the
+> last v3 or start from scratch so I decided to post a new patch. Please
+> advice if I should have done the reverse.
 
-configs tested: 104
-configs skipped: 11
+Please keep my and Heiko=E2=80=99s SoB and add your SoB too describing betwe=
+en [ ] what Heiko has done and what you=E2=80=99ve done.=20
+For example:
+SoB: Giulio
+SoB: Heiko
+[Heiko: ...]
+SoB Eric
+[Eric: improved timeout etc.]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>=20
+> The approach is a little different from the last proposed patch which was
+> doing using a polling at 100us. I tought that it could be really long on=20=
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-powerpc                   bluestone_defconfig
-nios2                         3c120_defconfig
-arc                        vdk_hs38_defconfig
-sh                           se7724_defconfig
-mips                malta_qemu_32r6_defconfig
-xtensa                           allyesconfig
-mips                      pic32mzda_defconfig
-powerpc                     pseries_defconfig
-arm                          ep93xx_defconfig
-openrisc                    or1ksim_defconfig
-sh                         apsh4a3a_defconfig
-arm                       aspeed_g5_defconfig
-arm                        mvebu_v5_defconfig
-m68k                       m5275evb_defconfig
-powerpc                      ppc44x_defconfig
-sh                          kfr2r09_defconfig
-ia64                                defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                      maltasmvp_defconfig
-arm                          simpad_defconfig
-arm                         socfpga_defconfig
-nios2                            allyesconfig
-arm                        keystone_defconfig
-arm                        magician_defconfig
-mips                       bmips_be_defconfig
-c6x                        evmc6678_defconfig
-m68k                        mvme16x_defconfig
-arc                         haps_hs_defconfig
-sparc64                          alldefconfig
-arm                  colibri_pxa270_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210128
-i386                 randconfig-a002-20210128
-i386                 randconfig-a004-20210128
-i386                 randconfig-a005-20210128
-i386                 randconfig-a003-20210128
-i386                 randconfig-a006-20210128
-x86_64               randconfig-a012-20210128
-x86_64               randconfig-a015-20210128
-x86_64               randconfig-a016-20210128
-x86_64               randconfig-a011-20210128
-x86_64               randconfig-a013-20210128
-x86_64               randconfig-a014-20210128
-i386                 randconfig-a013-20210128
-i386                 randconfig-a011-20210128
-i386                 randconfig-a012-20210128
-i386                 randconfig-a016-20210128
-i386                 randconfig-a014-20210128
-i386                 randconfig-a015-20210128
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> some fast baudrate and really not that long on slow baudrate. The current
+> approach is to calculate the time of a bytes when the settings are changed=
+.
+> When we get the interrupt for the empty FIFO, it's the longer it can take
+> to empty the shift register.
 
-clang tested configs:
-x86_64               randconfig-a002-20210128
-x86_64               randconfig-a003-20210128
-x86_64               randconfig-a001-20210128
-x86_64               randconfig-a005-20210128
-x86_64               randconfig-a006-20210128
-x86_64               randconfig-a004-20210128
+Good idea.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>=20
+> The other two patches are to use that features with the PORT_16550A_FSL64
+> found on some chip like the LS1043A.
+
+Do you mind to add my 8250_dw patch that was originally part of this patchse=
+t? I had to send it
+soon, you=E2=80=99ve preceded me :-)
+
+Thank you
+Best regards
+Giulio
+
+>=20
+> Thanks
+>=20
+> Eric Tremblay (3):
+> serial: 8250: Handle UART without interrupt on TEMT using em485
+> serial: 8250: add compatible for fsl,16550-FIFO64
+> serial: 8250: remove UART_CAP_TEMT on PORT_16550A_FSL64
+>=20
+> drivers/tty/serial/8250/8250.h            |  1 +
+> drivers/tty/serial/8250/8250_bcm2835aux.c |  2 +-
+> drivers/tty/serial/8250/8250_of.c         |  5 ++
+> drivers/tty/serial/8250/8250_omap.c       |  2 +-
+> drivers/tty/serial/8250/8250_port.c       | 89 ++++++++++++++++++++++-
+> include/linux/serial_8250.h               |  2 +
+> 6 files changed, 98 insertions(+), 3 deletions(-)
+>=20
+> --=20
+> 2.17.1
+
