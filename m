@@ -2,155 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511723090CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20A03090CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 01:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhA2XzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 18:55:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231138AbhA2XzW (ORCPT
+        id S232570AbhA2X4Y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Jan 2021 18:56:24 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23014 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231138AbhA2X4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:55:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611964435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=q039E6qRHMWcEvS57m0H092hcBFMkfO15L+0InB6KMY=;
-        b=a6BCdsudDJeI0hSzI/hdMhA2/W9kGU0SQUO97Vtg3BsxKJY6QqAc4zHZT+oH1oUT6QAuWb
-        YbJ0GY/XBoUNmCEvEr9O+qjEmBL5Jnjp6y7Hn5B+9VhZaOGEEVDNoR+ro8PW76iJkAG7zJ
-        1MoH1a1OSUC0YP48gP/1Ny5QJii4Fhg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-wQPqnrndOFmV70fhnBJ3Yg-1; Fri, 29 Jan 2021 18:53:53 -0500
-X-MC-Unique: wQPqnrndOFmV70fhnBJ3Yg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BD4D10054FF;
-        Fri, 29 Jan 2021 23:53:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 34E735D71B;
-        Fri, 29 Jan 2021 23:53:50 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net] rxrpc: Fix deadlock around release of dst cached on udp
- tunnel
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com,
-        Vadim Fedorenko <vfedorenko@novek.ru>,
-        Vadim Fedorenko <vfedorenko@novek.ru>, vfedorenko@novek.ru,
-        dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 29 Jan 2021 23:53:50 +0000
-Message-ID: <161196443016.3868642.5577440140646403533.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 29 Jan 2021 18:56:21 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-29-6edYh7Y8NwSD3Bzf9GiMrw-1; Fri, 29 Jan 2021 23:54:41 +0000
+X-MC-Unique: 6edYh7Y8NwSD3Bzf9GiMrw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 29 Jan 2021 23:54:41 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 29 Jan 2021 23:54:41 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Emmanuel Arias' <eamanu@yaerobi.com>,
+        "m.tretter@pengutronix.de" <m.tretter@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] media: allegro-dvt: Use __packed sentence
+Thread-Topic: [PATCH] media: allegro-dvt: Use __packed sentence
+Thread-Index: AQHW9nn+Eu7GW6k8EESnigV6OI4+Q6o/RrGQ
+Date:   Fri, 29 Jan 2021 23:54:41 +0000
+Message-ID: <63a4ed5c2ef54c09b2df9d6234b68711@AcuMS.aculab.com>
+References: <YBRpstkOi685uHef@debian>
+In-Reply-To: <YBRpstkOi685uHef@debian>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AF_RXRPC sockets use UDP ports in encap mode.  This causes socket and dst
-from an incoming packet to get stolen and attached to the UDP socket from
-whence it is leaked when that socket is closed.
+From: Emmanuel Arias
+> Sent: 29 January 2021 20:02
+> 
+> Fix coding style using __packed sentece instead of
+> __attribute__((__packed__)).
+> 
+> Signed-off-by: Emmanuel Arias <eamanu@yaerobi.com>
+> ---
+>  drivers/staging/media/allegro-dvt/allegro-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/allegro-dvt/allegro-core.c b/drivers/staging/media/allegro-
+> dvt/allegro-core.c
+> index 9f718f43282b..cee624dac61a 100644
+> --- a/drivers/staging/media/allegro-dvt/allegro-core.c
+> +++ b/drivers/staging/media/allegro-dvt/allegro-core.c
+> @@ -670,7 +670,7 @@ static ssize_t allegro_mbox_read(struct allegro_mbox *mbox,
+>  	struct {
+>  		u16 length;
+>  		u16 type;
+> -	} __attribute__ ((__packed__)) *header;
+> +	} __packed *header;
+>  	struct regmap *sram = mbox->dev->sram;
 
-When a network namespace is removed, the wait for dst records to be cleaned
-up happens before the cleanup of the rxrpc and UDP socket, meaning that the
-wait never finishes.
+Does this actually need to be packed?
+The only reason would be if the structure could exist on a 2n+1
+boundary.
+But that is only likely if part of some binary sequence.
+In which case I'd expect it to be marked __be or __le.
 
-Fix this by moving the rxrpc (and, by dependence, the afs) private
-per-network namespace registrations to the device group rather than subsys
-group.  This allows cached rxrpc local endpoints to be cleared and their
-UDP sockets closed before we try waiting for the dst records.
+	David
 
-The symptom is that lines looking like the following:
-
-	unregister_netdevice: waiting for lo to become free
-
-get emitted at regular intervals after running something like the
-referenced syzbot test.
-
-Thanks to Vadim for tracking this down and work out the fix.
-
-Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
-Reported-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Fixes: 5271953cad31 ("rxrpc: Use the UDP encap_rcv hook")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Acked-by: Vadim Fedorenko <vfedorenko@novek.ru>
----
-
- fs/afs/main.c        |    6 +++---
- net/rxrpc/af_rxrpc.c |    6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/fs/afs/main.c b/fs/afs/main.c
-index accdd8970e7c..b2975256dadb 100644
---- a/fs/afs/main.c
-+++ b/fs/afs/main.c
-@@ -193,7 +193,7 @@ static int __init afs_init(void)
- 		goto error_cache;
- #endif
- 
--	ret = register_pernet_subsys(&afs_net_ops);
-+	ret = register_pernet_device(&afs_net_ops);
- 	if (ret < 0)
- 		goto error_net;
- 
-@@ -213,7 +213,7 @@ static int __init afs_init(void)
- error_proc:
- 	afs_fs_exit();
- error_fs:
--	unregister_pernet_subsys(&afs_net_ops);
-+	unregister_pernet_device(&afs_net_ops);
- error_net:
- #ifdef CONFIG_AFS_FSCACHE
- 	fscache_unregister_netfs(&afs_cache_netfs);
-@@ -244,7 +244,7 @@ static void __exit afs_exit(void)
- 
- 	proc_remove(afs_proc_symlink);
- 	afs_fs_exit();
--	unregister_pernet_subsys(&afs_net_ops);
-+	unregister_pernet_device(&afs_net_ops);
- #ifdef CONFIG_AFS_FSCACHE
- 	fscache_unregister_netfs(&afs_cache_netfs);
- #endif
-diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
-index 0a2f4817ec6c..41671af6b33f 100644
---- a/net/rxrpc/af_rxrpc.c
-+++ b/net/rxrpc/af_rxrpc.c
-@@ -990,7 +990,7 @@ static int __init af_rxrpc_init(void)
- 		goto error_security;
- 	}
- 
--	ret = register_pernet_subsys(&rxrpc_net_ops);
-+	ret = register_pernet_device(&rxrpc_net_ops);
- 	if (ret)
- 		goto error_pernet;
- 
-@@ -1035,7 +1035,7 @@ static int __init af_rxrpc_init(void)
- error_sock:
- 	proto_unregister(&rxrpc_proto);
- error_proto:
--	unregister_pernet_subsys(&rxrpc_net_ops);
-+	unregister_pernet_device(&rxrpc_net_ops);
- error_pernet:
- 	rxrpc_exit_security();
- error_security:
-@@ -1057,7 +1057,7 @@ static void __exit af_rxrpc_exit(void)
- 	unregister_key_type(&key_type_rxrpc);
- 	sock_unregister(PF_RXRPC);
- 	proto_unregister(&rxrpc_proto);
--	unregister_pernet_subsys(&rxrpc_net_ops);
-+	unregister_pernet_device(&rxrpc_net_ops);
- 	ASSERTCMP(atomic_read(&rxrpc_n_tx_skbs), ==, 0);
- 	ASSERTCMP(atomic_read(&rxrpc_n_rx_skbs), ==, 0);
- 
-
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
