@@ -2,139 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7444A308E51
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9164A308E2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhA2UVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:21:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:36288 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232858AbhA2UUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:20:42 -0500
-IronPort-SDR: 5SBtKPOm1Wv3P/p9j1tT0nXKOrS0Oe7S3FRo8WCeWgL+nfXBmZTWuE+aSW7hMePURs7yRcdoBF
- 4QcCPZioyX4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="244564166"
-X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
-   d="scan'208";a="244564166"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 12:17:08 -0800
-IronPort-SDR: qHj/GQWRqrWl8Gv7Xv74XQ/ak345shFCLAWaWQwR7iVGOqIBp79D3eVwJFtmsfEOcS0v47wQ/7
- cyoWYq5/CPaA==
-X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
-   d="scan'208";a="431150003"
-Received: from kagerrar-mobl.amr.corp.intel.com (HELO [10.212.16.186]) ([10.212.16.186])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 12:17:07 -0800
-Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5c69ed09-60be-2f3d-ed25-f6dbfcb9d62f@linux.intel.com>
-Date:   Fri, 29 Jan 2021 13:33:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233298AbhA2UKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:10:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233117AbhA2Tx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:53:27 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E0CC061574;
+        Fri, 29 Jan 2021 11:52:47 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id c1so7609112qtc.1;
+        Fri, 29 Jan 2021 11:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NJl5nz8B/w9PQNydomJXvK6cYumU20h6AeRMSE4OuRY=;
+        b=Z4hRnb2+wLp/gRainOiF00YxS3+yTjNJd4EKhPaqLliRLKU+sJYqDhF1XbTE7EcHLf
+         GP9EiyQkG8/2difzGDPC/RfnN4t1nRv2Bi57IJv9cI1kFwLtY6/RzU//2fusE89xSZqN
+         V2UaKUErnK6e1b/KutXG/F3ZWIJiiPFaJ4db9mF009X5zt6OAW2h1c5OcbH/UG4gksfG
+         e3mm/ZNQGBMUq2a/ejFcxPItT7szMDRIvF4aPc6u4B/KOjSrQZwqry5y0aDAMCrlLBA2
+         pWia7OqwqIQKTa36Q26W38VmzG914xkXYkEUlaH6x9u5FXUZXmjLRo9+sK9LYqF79HLn
+         IWuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NJl5nz8B/w9PQNydomJXvK6cYumU20h6AeRMSE4OuRY=;
+        b=Wk7vprXKDc3Y9d3a2/22bFwix0mMCzwwgwPMKbZdNgRwaG2S4CBrgWOnNCmlQGTkGO
+         QqMrfYdo+xvKgeWzdq5B1/B00xE+gyyUk7vNtIgTcApibwpMguxMRKzNBcmxSW4vKx+r
+         n6ti+SpiWH79acPDWP24Y80oEBmkmBh9wwd21PvIEFa+V+fUUHJ/6t1ht1xfLyvfZ+JH
+         0KPmTyArXZM+11acfEmJUpLPFyRu6F/VBC3IFiDIKm8OOz6vi0/Bxl8khNHLlgUooLac
+         WmI1Cx0zHpE//q9wORvTcAkI3AZQ7615p4OxiFkAfuzBI9lMt2rxsEOvnV0h4G3A8DQM
+         jz8w==
+X-Gm-Message-State: AOAM530aiC4TcxMhvwNzwigqwSWfD13LOS998IXYOqOvtSevMkp/jHvn
+        AEvGUlB4Xd2qmG1DeQ6WQVg=
+X-Google-Smtp-Source: ABdhPJwZcm0Fzs4yHPrOetfFJ86vdEXNFDDTJL6A1CHzbqQk+515R57/ojaHBAT2hDPbEwtT79296Q==
+X-Received: by 2002:ac8:370b:: with SMTP id o11mr6014792qtb.314.1611949966450;
+        Fri, 29 Jan 2021 11:52:46 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id s136sm6558994qka.106.2021.01.29.11.52.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 11:52:46 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?q?Anders=20R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs w/o dma cache snooping
+Date:   Fri, 29 Jan 2021 14:52:35 -0500
+Message-Id: <20210129195240.31871-2-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210129195240.31871-1-TheSven73@gmail.com>
+References: <20210129195240.31871-1-TheSven73@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
+The buffers in the lan743x driver's receive ring are always 9K,
+even when the largest packet that can be received (the mtu) is
+much smaller. This performs particularly badly on cpu archs
+without dma cache snooping (such as ARM): each received packet
+results in a 9K dma_{map|unmap} operation, which is very expensive
+because cpu caches need to be invalidated.
 
-On 1/29/21 11:32 AM, Srinivas Kandagatla wrote:
-> In the existing code every soundwire register read and register write
-> are kinda blocked. Each of these are using a special command id that
+Careful measurement of the driver rx path on armv7 reveals that
+the cpu spends the majority of its time waiting for cache
+invalidation.
 
-what does 'kinda blocked' mean?
+Optimize as follows:
 
-> generates interrupt after it successfully finishes. This is really
-> overhead, limiting and not really necessary unless we are doing
-> something special.
-> 
-> We can simply read/write the fifo that should also give exactly
-> what we need! This will also allow to read/write registers in
-> interrupt context, which was not possible with the special
-> command approach.
+1. set rx ring buffer size equal to the mtu. this limits the
+   amount of cache that needs to be invalidated per dma_map().
 
-This is really unclear, sorry.
+2. when dma_unmap()ping, skip cpu sync. Sync only the packet data
+   actually received, the size of which the chip will indicate in
+   its rx ring descriptors. this limits the amount of cache that
+   needs to be invalidated per dma_unmap().
 
-> +	if (id != SWR_BROADCAST_CMD_ID) {
-> +		if (id < 14)
-> +			id += 1;
-> +		else
-> +			id = 0;
+These optimizations double the rx performance on armv7.
+Third parties report 3x rx speedup on armv8.
 
-that is really odd. if id=13 (group2) then id becomes 14 (master 
-address). A comment is really needed here.
+Performance on dma cache snooping architectures (such as x86)
+is expected to stay the same.
 
-> +	if (cmd_id == SWR_BROADCAST_CMD_ID) {
-> +		/*
-> +		 * sleep for 10ms for MSM soundwire variant to allow broadcast
-> +		 * command to complete.
+Tested with iperf3 on a freescale imx6qp + lan7430, both sides
+set to mtu 1500 bytes, measure rx performance:
 
-that's also super-odd. There is nothing in SoundWire that makes any 
-difference between a regular and a broadcast command. they all complete 
-in the same time (a frame).
-> +		 */
-> +		ret = wait_for_completion_timeout(&swrm->broadcast, (2 * HZ/10));
+Before:
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-20.00  sec   550 MBytes   231 Mbits/sec    0
+After:
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-20.00  sec  1.33 GBytes   570 Mbits/sec    0
 
-is this 10ms really or dependent on CONFIG_HZ?
+Test by Anders Roenningen (anders@ronningen.priv.no) on armv8,
+    rx iperf3:
+Before 102 Mbits/sec
+After  279 Mbits/sec
 
-> +		if (!ret)
-> +			ret = SDW_CMD_IGNORED;
-> +		else
-> +			ret = SDW_CMD_OK;
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+---
 
-no CMD_FAILED support?
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git # 46eb3c108fe1
 
-> +static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
-> +				     u8 dev_addr, u16 reg_addr,
-> +				     u32 len, u8 *rval)
-> +{
-> +	u32 val;
-> +	u32 retry_attempt = 0;
-> +	u32 cmd_data;
-> +	int ret = SDW_CMD_OK;
-> +
-> +	mutex_lock(&swrm->io_lock);
-> +	val = swrm_get_packed_reg_val(&swrm->rcmd_id, len, dev_addr, reg_addr);
-> +
-> +	/* wait for FIFO RD to complete to avoid overflow */
-> +	usleep_range(100, 105);
-> +	swrm->reg_write(swrm, SWRM_CMD_FIFO_RD_CMD, val);
-> +	/* wait for FIFO RD CMD complete to avoid overflow */
-> +	usleep_range(250, 255);
-> +
-> +retry_read:
-> +
-> +	swrm->reg_read(swrm, SWRM_CMD_FIFO_RD_FIFO_ADDR, &cmd_data);
-> +	rval[0] = cmd_data & 0xFF;
-> +
-> +	if ((((cmd_data) & 0xF00) >> 8) != swrm->rcmd_id) {
-> +		if (retry_attempt < MAX_FIFO_RD_FAIL_RETRY) {
-> +			/* wait 500 us before retry on fifo read failure */
-> +			usleep_range(500, 505);
-> +			if (retry_attempt == (MAX_FIFO_RD_FAIL_RETRY - 1)) {
-> +				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-> +				swrm->reg_write(swrm, SWRM_CMD_FIFO_RD_CMD, val);
-> +			}
-> +			retry_attempt++;
-> +			goto retry_read;
-> +		} else {
-> +			dev_err(swrm->dev,
-> +					"failed to read fifo: reg: 0x%x, \
-> +					rcmd_id: 0x%x, dev_num: 0x%x, cmd_data: 0x%x\n",
-> +					reg_addr, swrm->rcmd_id,
-> +					dev_addr, cmd_data);
-> +			ret = SDW_CMD_IGNORED;
-> +		}
->   	}
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: UNGLinuxDriver@microchip.com
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Alexey Denisov <rtgbnm@gmail.com>
+Cc: Sergej Bauer <sbauer@blackbox.su>
+Cc: Tim Harvey <tharvey@gateworks.com>
+Cc: Anders Rønningen <anders@ronningen.priv.no>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org (open list)
 
-the flow seems complicated with multiple tests and goto? Can this be 
-simplified?
+ drivers/net/ethernet/microchip/lan743x_main.c | 35 ++++++++++++-------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index f1f6eba4ace4..f485320e5784 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1957,11 +1957,11 @@ static int lan743x_rx_next_index(struct lan743x_rx *rx, int index)
+ 
+ static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
+ {
+-	int length = 0;
++	struct net_device *netdev = rx->adapter->netdev;
+ 
+-	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
+-	return __netdev_alloc_skb(rx->adapter->netdev,
+-				  length, GFP_ATOMIC | GFP_DMA);
++	return __netdev_alloc_skb(netdev,
++				  netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING,
++				  GFP_ATOMIC | GFP_DMA);
+ }
+ 
+ static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
+@@ -1977,9 +1977,10 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
+ {
+ 	struct lan743x_rx_buffer_info *buffer_info;
+ 	struct lan743x_rx_descriptor *descriptor;
+-	int length = 0;
++	struct net_device *netdev = rx->adapter->netdev;
++	int length;
+ 
+-	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
++	length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
+ 	descriptor = &rx->ring_cpu_ptr[index];
+ 	buffer_info = &rx->buffer_info[index];
+ 	buffer_info->skb = skb;
+@@ -2148,11 +2149,18 @@ static int lan743x_rx_process_packet(struct lan743x_rx *rx)
+ 			descriptor = &rx->ring_cpu_ptr[first_index];
+ 
+ 			/* unmap from dma */
++			packet_length =	RX_DESC_DATA0_FRAME_LENGTH_GET_
++					(descriptor->data0);
+ 			if (buffer_info->dma_ptr) {
+-				dma_unmap_single(&rx->adapter->pdev->dev,
+-						 buffer_info->dma_ptr,
+-						 buffer_info->buffer_length,
+-						 DMA_FROM_DEVICE);
++				dma_sync_single_for_cpu(&rx->adapter->pdev->dev,
++							buffer_info->dma_ptr,
++							packet_length,
++							DMA_FROM_DEVICE);
++				dma_unmap_single_attrs(&rx->adapter->pdev->dev,
++						       buffer_info->dma_ptr,
++						       buffer_info->buffer_length,
++						       DMA_FROM_DEVICE,
++						       DMA_ATTR_SKIP_CPU_SYNC);
+ 				buffer_info->dma_ptr = 0;
+ 				buffer_info->buffer_length = 0;
+ 			}
+@@ -2167,8 +2175,8 @@ static int lan743x_rx_process_packet(struct lan743x_rx *rx)
+ 			int index = first_index;
+ 
+ 			/* multi buffer packet not supported */
+-			/* this should not happen since
+-			 * buffers are allocated to be at least jumbo size
++			/* this should not happen since buffers are allocated
++			 * to be at least the mtu size configured in the mac.
+ 			 */
+ 
+ 			/* clean up buffers */
+@@ -2628,6 +2636,9 @@ static int lan743x_netdev_change_mtu(struct net_device *netdev, int new_mtu)
+ 	struct lan743x_adapter *adapter = netdev_priv(netdev);
+ 	int ret = 0;
+ 
++	if (netif_running(netdev))
++		return -EBUSY;
++
+ 	ret = lan743x_mac_set_mtu(adapter, new_mtu);
+ 	if (!ret)
+ 		netdev->mtu = new_mtu;
+-- 
+2.17.1
+
