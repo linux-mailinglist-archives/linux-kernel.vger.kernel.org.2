@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726B3308631
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4123D308637
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhA2HE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:04:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229786AbhA2HEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:04:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6692D60234;
-        Fri, 29 Jan 2021 07:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611903853;
-        bh=B8baj/kr8egXx07AKTfXmu2q+uVtPa7Wa10vxWLTyX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FU1gKzkR0Kkuw4BUPc2Ykvl/qSOzFXlBbHnlbTvI/BhKT7ahDUpGEZB46gpU40Y83
-         MoHNwFp1wY6tLb5AUTCsnEfd/AMZYsjtoOTM/ubtkBakz4JEJpx2QSQ5qDWK5JBhpB
-         4v3NJredQAUcuf0ikqua2sKTx8pGC/pdnTjma60/EtjBbJKLV0sBexjvYgwWm6cmAr
-         6YkTn12NhzoZ5vWMbb1h+pYot7MLL4lAT5rK7YbxkDbSaKqIWEB24dlTSavj0W7G0i
-         ikyrL756m9C6l5UyrhfShwTx10Viq23ua1S5t39e8a1T6A4j5m1JHtrkXMph6V4jLt
-         ck06v8VwMSCEw==
-Date:   Fri, 29 Jan 2021 09:03:55 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20210129070355.GC242749@kernel.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-8-rppt@kernel.org>
- <20210126114657.GL827@dhcp22.suse.cz>
- <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
- <20210126120823.GM827@dhcp22.suse.cz>
- <20210128092259.GB242749@kernel.org>
- <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
- <2b6a5f22f0b062432186b89eeef58e2ba45e09c1.camel@linux.ibm.com>
+        id S232191AbhA2HGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhA2HFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:05:52 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E19C061573;
+        Thu, 28 Jan 2021 23:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=GlH3x83KNd6bGiBeIIa+b8g26rMegA1+emYY6KXmkjA=; b=Gs0pRHF6QxNBf+BvuOtwoweAWI
+        eZkW1ipxH4x/BMhgTys2SIwbX0oF7ilkRUSUgAKqb98hYH41VylhFgSWWKebVJjlkxuBw4Ja7eWkW
+        ORM4i8jVXVKdK3S0Vl9cCdJmC0vISTRKk7qQ86gHaUVzASQaCnoVdk3fTg33QsYXmR8fIMDz/lnIU
+        i0tb1YS2QL7QBZK5k/BPaCMjnleyWsKxCohFtXoKPv8dqO+9N/XoLRhMWQ/LNie7mwLZdYwR/n7tI
+        Jwvt1JbeVc9pWegPbTPrWcSR1y5QyBwk4h7x6ODnvS41S0ovplEcbyB51m9fDK57QhFLgCrlA8xoj
+        3QvcWHlg==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l5Nq6-0007vp-C5; Fri, 29 Jan 2021 07:05:06 +0000
+Subject: Re: [PATCH] crypto: octeontx2 - Add dependency on NET_VENDOR_MARVELL
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        kernel test robot <lkp@intel.com>
+References: <b1397a30-0018-ac78-2a89-4fc0db1d1ec8@infradead.org>
+ <20210129054856.GA20020@gondor.apana.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <eadfb919-ee53-2e4c-3134-62d6c53e1695@infradead.org>
+Date:   Thu, 28 Jan 2021 23:04:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b6a5f22f0b062432186b89eeef58e2ba45e09c1.camel@linux.ibm.com>
+In-Reply-To: <20210129054856.GA20020@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 07:28:57AM -0800, James Bottomley wrote:
-> On Thu, 2021-01-28 at 14:01 +0100, Michal Hocko wrote:
-> > On Thu 28-01-21 11:22:59, Mike Rapoport wrote:
-> [...]
-> > > One of the major pushbacks on the first RFC [1] of the concept was
-> > > about the direct map fragmentation. I tried really hard to find
-> > > data that shows what is the performance difference with different
-> > > page sizes in the direct map and I didn't find anything.
-> > > 
-> > > So presuming that large pages do provide advantage the first
-> > > implementation of secretmem used PMD_ORDER allocations to amortise
-> > > the effect of the direct map fragmentation and then handed out 4k
-> > > pages at each fault. In addition there was an option to reserve a
-> > > finite pool at boot time and limit secretmem allocations only to
-> > > that pool.
-> > > 
-> > > At some point David suggested to use CMA to improve overall
-> > > flexibility [3], so I switched secretmem to use CMA.
-> > > 
-> > > Now, with the data we have at hand (my benchmarks and Intel's
-> > > report David mentioned) I'm even not sure this whole pooling even
-> > > required.
-> > 
-> > I would still like to understand whether that data is actually
-> > representative. With some underlying reasoning rather than I have run
-> > these XYZ benchmarks and numbers do not look terrible.
+On 1/28/21 9:48 PM, Herbert Xu wrote:
+> On Mon, Jan 25, 2021 at 09:41:12AM -0800, Randy Dunlap wrote:
+>> on x86_64:
+>>
+>> ld: drivers/crypto/marvell/octeontx2/otx2_cptpf_main.o: in function `cptpf_flr_wq_handler':
+>> otx2_cptpf_main.c:(.text+0x2b): undefined reference to `otx2_mbox_alloc_msg_rsp'
 > 
-> My theory, and the reason I made Mike run the benchmarks, is that our
-> fear of TLB miss has been alleviated by CPU speculation advances over
-> the years.  You can appreciate this if you think that both Intel and
-> AMD have increased the number of levels in the page table to
-> accommodate larger virtual memory size 5 instead of 3.  That increases
-> the length of the page walk nearly 2x in a physical system and even
-> more in a virtual system.  Unless this were massively optimized,
-> systems would have slowed down significantly.  Using 2M pages only
-> eliminates one level and 2G pages eliminates 2, so I theorized that
-> actually fragmentation wouldn't be the significant problem we once
-> thought it was and asked Mike to benchmark it.
+> Thanks for the report.  The issue is that the crypto driver depends
+> on code that sits under net so if that option is off then you'll end
+> up with these errors.
 > 
-> The benchmarks show that indeed, it isn't a huge change in the data TLB
-> miss time, I suspect because data is nicely continuous nowadays and the
-> prediction that goes into the CPU optimizations quite easy.  ITLB
-> fragmentation actually seems to be quite a bit worse, likely because we
-> still don't have branch prediction down to an exact science.
+> ---8<---
+> The crypto octeontx2 driver depends on the mbox code in the network
+> tree.  It tries to select the MBOX Kconfig option but that option
+> itself depends on many other options which are not selected, e.g.,
+> CONFIG_NET_VENDOR_MARVELL.  It would be inappropriate to select them
+> all as randomly prompting the user for network options which would
+> oterhwise be disabled just because a crypto driver has been enabled
+> makes no sense.
+> 
+> This patch fixes this by adding a dependency on NET_VENDOR_MARVELL.
+> This makes the crypto driver invisible if the network option is off.
+> 
+> If the crypto driver must be visible even without the network stack
+> then the shared mbox code should be moved out of drivers/net.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 5e8ce8334734 ("crypto: marvell - add Marvell OcteonTX2 CPT...")
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Another thing is that normally useful work done by userspace so data
-accesses are dominated by userspace and any change in dTLB miss rate for
-kernel data accesses is only a small fraction of all misses.
+Thanks, Herbert.
 
-> James
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+> diff --git a/drivers/crypto/marvell/Kconfig b/drivers/crypto/marvell/Kconfig
+> index 2efbd79180ce..a188ad1fadd3 100644
+> --- a/drivers/crypto/marvell/Kconfig
+> +++ b/drivers/crypto/marvell/Kconfig
+> @@ -41,6 +41,7 @@ config CRYPTO_DEV_OCTEONTX2_CPT
+>  	depends on ARM64 || COMPILE_TEST
+>  	depends on PCI_MSI && 64BIT
+>  	depends on CRYPTO_LIB_AES
+> +	depends on NET_VENDOR_MARVELL
+>  	select OCTEONTX2_MBOX
+>  	select CRYPTO_DEV_MARVELL
+>  	select CRYPTO_SKCIPHER
 > 
-> 
+
 
 -- 
-Sincerely yours,
-Mike.
+~Randy
+
