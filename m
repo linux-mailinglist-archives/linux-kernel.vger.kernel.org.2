@@ -2,390 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9190308E9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0151308EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhA2Umb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:42:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233140AbhA2Um1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:42:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CCB64DDE;
-        Fri, 29 Jan 2021 20:41:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611952905;
-        bh=feOQxMhLAjV/hZuL27Uxl1PN0T266Dv3A9DoMHUWP3c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rFS9Z9HMg0WHnBz9uZywK5zG9AP1fRWftUzeJz7faI9XN9EzTcYqaZwqkksZC7Mo8
-         /tinAO6KGKMnUukKFSyA3XVFAxVC2+vzKbT+mlKLS00hovCRsnCcjX0xdxAlxIOiFj
-         MV/dW9ccO7UA4P9RDq2PA4FT2rp3TwyTFRzSxGqEBTccLnRdsdocAhCvgpRhWty/6T
-         7o0HGuauJ3Snz4SM9AP4OM8W582PfYnuKm9CxFnUNiILQmNPDaw09fFup9NeIdJpn2
-         5mrsBpGhXKCJAyIKRTEXP0UNc9SKzO/IV9h7GfphKTBG5WzvijefhbeWd5HHjuRuB2
-         CiUSNMs0tO7Zg==
-Date:   Fri, 29 Jan 2021 12:41:43 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 2/3] fscrypt: Add metadata encryption support
-Message-ID: <YBRzB4K/yzZ9qiwT@sol.localdomain>
-References: <20201217150435.1505269-1-satyat@google.com>
- <20201217150435.1505269-3-satyat@google.com>
+        id S233172AbhA2Upt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:45:49 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:41008 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhA2Upj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:45:39 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10TKe029090752;
+        Fri, 29 Jan 2021 20:44:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=LlpJfoXp96p1vx/9ykw4MmRx9AvJnMAZtZTxakqUFNg=;
+ b=NtJ0N9vAKvitVE/iCHdS6C+DpSSbsGI9PncGLomurMknXP9iEBsIgfmtFmlX5H0KMX/c
+ KwiJ+DB5PygGBVt96v4UjhAMcLDi4UvZ2XdruD0ISENV3fq4TGVtZvb5AsouZ/qbp9k9
+ L0IAt1RwXoZsZP5/bcfHkpTZ0J50AvhCvUrgVGP0Es1+Zy7XyPIF6OHx2Kgu3N7KrB4y
+ BPakv+17JQ391OEr9q5zyQCB6YlPhUuZHfWIF0oq7vx1qcnjrGk5RCO731EIwvb3mV8X
+ 6xe+khhQJCfO9tSVDvUdcAhnbXl6aAlWplw1sU8vlvWTb7iuwnj140Rq63gklgEwTGQx Og== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 368b7rb7ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Jan 2021 20:44:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10TKeJaj147472;
+        Fri, 29 Jan 2021 20:44:50 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by userp3030.oracle.com with ESMTP id 368wr2fd4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Jan 2021 20:44:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AryuB6l48ujojlCv7cWasbsMarX06y+zF7kuJ111wYuGBhYCV7c67VBUKor89ZhqryNB4uQTtIPmPsPDSr2j5RlzmtzDS7OVib5SatXmlzhutB6b779h3UrDfzLdTJ4lS2JPqCbSFlAxZc1yz39AkA9a2NYZedG+opBulOdQRoIvYJzMzSPeiCXb/daMfpFACWtNqgDFtT9TkpqT411kXN5Yrfi5mYkaMSO1a3p272eigb6HdGOCgOUq71p9LER1e250Dy7zT23KKEOCqJjmX0i6lTAltj6ecEMFNKf02SHDpdprqhDYFCE6mvDz0gVok38pRsTFCRMyTYlexQfVhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LlpJfoXp96p1vx/9ykw4MmRx9AvJnMAZtZTxakqUFNg=;
+ b=mcb1g4D6/q5goSbdXJE8E3FkX8R68lpmFmGGxMrrVi6NbWxHcmXqkGqW+WCZrAnptEyLl1zecnZ3lAoD+vwnGLadvsjR0fKR1G8LXDClzsd9PWeeqG3YN/ifZpLwq4DVcmht6JjN83VaR9i58bL7CrBGUs5Agfhsfi57rLu4KntKX4aCD1LofKjy0CvzkWYOqdcTBpvGPwSnv7oNoHMJHM/d9ceFuSgG3RdLxFZBibjo7wtUXFKBUcM5eIcxP/BYxRfg6yDfhJAVpWZ/5WIF5qWlvZ5/4CBJz4JFOQZPafivnWDtN4y/ZB1ucn8MPsKMq/9wr/WwrOxAxxqMvLcAGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LlpJfoXp96p1vx/9ykw4MmRx9AvJnMAZtZTxakqUFNg=;
+ b=gLg/JXUUBSix//T17j6fiUTwOi1vfntAbSUO+zeREKW+xgdEQMx9dtvzsH8hTV3JuqNY+wMxTcQiyNRoKemkDSYlLJb11/wOUyGyxHf3IW4vCtdEc/Cg1W5W06IvBJS/oiKc18vRveZu73XUS5X9nUMX4OF2DHoIzuW+FOiY0ps=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
+ by BY5PR10MB3827.namprd10.prod.outlook.com (2603:10b6:a03:1b4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Fri, 29 Jan
+ 2021 20:44:48 +0000
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::7445:f44:72aa:da07]) by SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::7445:f44:72aa:da07%4]) with mapi id 15.20.3805.017; Fri, 29 Jan 2021
+ 20:44:48 +0000
+Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        andy.rudoff@intel.com
+References: <20210122150638.210444-1-willy@infradead.org>
+ <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
+ <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
+ <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
+ <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Shoaib Rao <rao.shoaib@oracle.com>
+Message-ID: <e1047be3-2d53-49d3-67b4-a2a99e0c0f0f@oracle.com>
+Date:   Fri, 29 Jan 2021 12:44:44 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2606:b400:8301:1010::16aa]
+X-ClientProxiedBy: CH2PR14CA0007.namprd14.prod.outlook.com
+ (2603:10b6:610:60::17) To SJ0PR10MB4494.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d4::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217150435.1505269-3-satyat@google.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2606:b400:400:7446:8000::12a8] (2606:b400:8301:1010::16aa) by CH2PR14CA0007.namprd14.prod.outlook.com (2603:10b6:610:60::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Fri, 29 Jan 2021 20:44:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4ce3a11a-ef3a-44fe-7b62-08d8c496b7e5
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3827:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB382782FB133683FF3DCC0D0DEFB99@BY5PR10MB3827.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3L/fN43RW9T2bPkwhFWjfHNcHQpuX4HmzIGX/Yl4awF/t3iNUt33sxkOvx5K282xgtryktLncCxzszgzY64KSAE0U6lpYusw56xtCFwwMvTffADZvudR7XGNYysQ7cv2pAVYKKlEjQWkYJRXeFhjY/jFWjdNgF7QtqEUMWN9yewLwY5VHXdOCRRUvHBIB0SoSZnOKw6Ty+TaHY9WvFXCGHdO+mdWgF9+dii/NY5/9WemEdH6u53RM+HGACXunXY2iPPfCSwmMOKoU6qo6+iAIT/9HBfSpOLnR5jBCfxpgFJ2mZAJSmcl2WoDdx9CzbkvoEnVDOz+oi198w+xFdpxioRfURfOjmouaSvBQTICMJG3iaLdsFvy7+UFY/dCjZC9ehvvis14XwVs4l103lzHsy5pIsgTxsoW31uZ/0521Asr+vsPVQkas8dF2sxUYeZG32tVdlMfXjGHqMI7fYPUpdjnVLs76q4kfXK6qNf1Dm2l2F6k3O96t0ajW3DCEcYzHEwR+DbBDAPh4T2S/YN3hMp5UKY2II+kFYFwsWlx6/bim+8egSHxD0hq5dAY6QBgxLr0iXQGhlT6DYPqArLY+STrzihLDqJhS71yhCNFP14=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(136003)(39860400002)(366004)(53546011)(16526019)(36756003)(83380400001)(66556008)(2616005)(186003)(66476007)(2906002)(8676002)(66946007)(31686004)(6486002)(316002)(4326008)(6916009)(86362001)(6666004)(478600001)(8936002)(54906003)(5660300002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZWd6cmx2bU9vZXFQdUxVbzVydktFV2tGS1pwUlptWmZTK0xzU3h6ODMzcVBU?=
+ =?utf-8?B?UlJUQ2lyVFhtV2ZHQU1mUU1kWkJkMWVnUUd4MFM0NlZmOWRZT3g0Sm1iczRM?=
+ =?utf-8?B?aTMxQXNneHA3NTJaR3VxOEVwMGN4ZndPTFdwZVdpcFRXVDdCc282OUJuTGJD?=
+ =?utf-8?B?ODI2ZkpTTmhnQks1Z0tsSURyeUhqcHRjYUo1TlVZVzgvMlVFNU9FZUgrNEhK?=
+ =?utf-8?B?TlhBWkh3dmVqWnZmdnpNRE9TNC9RQWt2UlZ3bGJBMDU1QURLczRSSWhJK1k3?=
+ =?utf-8?B?ZHdtWEJPR2g5Qjg2NmdtTWFhaWtkNytBUmZhNUpUa0JjNzl2YmM0R0wxN3F1?=
+ =?utf-8?B?Q2o0WldWcHlZVExaVTR3NzRVSDBXOXdVU1FoaHZxMHJTUXMvSGxUbmlFU0dY?=
+ =?utf-8?B?cGRlOTFlZVpqQWtEbS9OZ0xyYzUrSEZGUnRhd0ZES3JmdlZjV0pSMWorOThX?=
+ =?utf-8?B?NXkzcWRsajc0NXhSWndiVnUzTU9TUlNFM2lVVkd3RHZUcWpSRWdOc0tEK2lH?=
+ =?utf-8?B?Z1pnRy9TUzc3d0V5NE1sUnM3YWM2b0ZFQ2dNVm1ic0NOQ1FRUG1wU2dkMFVD?=
+ =?utf-8?B?T0FkelhJWkFQNnlGd1pxZXZKRkVIa3RXZkM1NkRiUTB1TVNUK2FZWGlqbDM5?=
+ =?utf-8?B?RVc5cHFSeGhST0I4dU1zZTl0L294cS9CRWRDMlBHOXpGemk5SFloV3hsLzYz?=
+ =?utf-8?B?UG02MkZIa0FDWTRoaVMwYmpWRGZMODcvcWp4aGx5SUhjRE8rNHo2WjlYVmg2?=
+ =?utf-8?B?TjRiSEFTMTA4RDBaTHFUYU1UWmpMeGNRc1FoeUFRWXdVa1JYTE5zNkJERDlH?=
+ =?utf-8?B?ckovYjFoRCtHUDdaS1ZKSHloMWw1SWxsdzJHczVrN3Y4WWxJMnhJeWFFOFZW?=
+ =?utf-8?B?U3NIOTBra2h4K3RXMXJIYXQ4elBCckc2KzIvVFF5L25vQy9BMjMxd0xHQ0ZB?=
+ =?utf-8?B?Rmk5WVllREIxY3czdkx6SXNJN3ZjTVV3MVFOYTZjcGpBMlpYVTVuWU5uYURt?=
+ =?utf-8?B?QTVtSlpTanNhc2NIamc1bDBvaldZNzE2QUZFdmRUVldMdHpJM0pMMFZ2ZWZo?=
+ =?utf-8?B?WXp4Sko1dHhGUlQ2Q3Y5eFNCWmlLOHF0SUJYcENYWmZXY2FadENYMis1eE5y?=
+ =?utf-8?B?N3RJYkJQdnNEbGhOMURtZDZhNGZEdDhrd2lnNmZtWU9ScnA0SFJkYUJYTTJQ?=
+ =?utf-8?B?Z08wSG5OeEVTdzgzQWFuZDJ0dnZiVlRDcU1xOFhtSGIxOE05ZGpoMXVUbUN0?=
+ =?utf-8?B?ckZkK0cxcEFOVW9PWlE5ZWhKTCtSOTNITzg2dmZJWkQzVVhWcmxOdWs0dzhG?=
+ =?utf-8?B?djFoRlB2ZmNHM3lxakZWcFd6YkFiWktVeFdSNmlkdEdWSW5VQU5tc3JIR0xE?=
+ =?utf-8?B?RmsvdzVDWTZWZGJEaXhHMlpXS3hjZmRSK2hZUzV3NVpFempFaXZHdEliK1N4?=
+ =?utf-8?B?dzFnZmlwZDh0bWlmeFRCOXROT1VCemdta0t2RHJaaXFnVVd0NlZOOVJSQzNa?=
+ =?utf-8?Q?/VABzs=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ce3a11a-ef3a-44fe-7b62-08d8c496b7e5
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 20:44:48.3866
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FmrhoKX44TjDfdA0U7bGtHcJ7AQtZM8hWI0e/KnM406kCPhpwwUwPuj/SlcHnlW/DYrV4wMvl8yCqnH1fRJaIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3827
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=781 malwarescore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101290101
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101290101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 03:04:34PM +0000, Satya Tangirala wrote:
-> Introduces functions that help with metadata encryption.
-> 
-> In particular, we introduce:
-> 
-> fscrypt_setup_metadata_encryption() - filesystems should call this function
-> to set up metadata encryption on a super block with the encryption
-> algorithm (the desired FSCRYPT_MODE_*) and the key identifier of the
-> encryption key.fscrypt looks for a logon key with the specified key
-> identifier with prefix "fscrypt:". fscrypt will verify that the key
-> identifier matches the identifier that is derived using HKDF-512 with the
-> logon key as the keying material, no salt, and
-> "fscrypt\0|HKDF_CONTEXT_KEY_IDENTIFIER" as the info string.
 
-This describes *what* is done, but not *why*.  The why is that we want to ensure
-that wrong keys get rejected early on, before the filesystem is mounted.
+On 1/29/21 12:18 PM, Jakub Kicinski wrote:
+> On Fri, 29 Jan 2021 12:10:21 -0800 Shoaib Rao wrote:
+>> On 1/29/21 12:02 PM, Jakub Kicinski wrote:
+>>> On Fri, 29 Jan 2021 11:48:15 -0800 Shoaib Rao wrote:
+>>>> Data was discarded because the flag was not supported, this patch
+>>>> changes that but does not support any urgent data.
+>>> When you say it does not support any urgent data do you mean the
+>>> message len must be == 0 because something is checking it, or that
+>>> the code does not support its handling?
+>>>
+>>> I'm perfectly fine with the former, just point me at the check, please.
+>> The code does not care about the size of data -- All it does is that if
+>> MSG_OOB is set it will deliver the signal to the peer process
+>> irrespective of the length of the data (which can be zero length). Let's
+>> look at the code of unix_stream_sendmsg() It does the following (sent is
+>> initialized to zero)
+> Okay. Let me try again. AFAICS your code makes it so that data sent
+> with MSG_OOB is treated like any other data. It just sends a signal.
+Correct.
+> So you're hijacking the MSG_OOB to send a signal, because OOB also
+> sends a signal.
+Correct.
+>   But there is nothing OOB about the data itself.
+Correct.
+>   So
+> I'm asking you to make sure that there is no data in the message.
+Yes I can do that.
+> That way when someone wants _actual_ OOB data on UNIX sockets they
+> can implement it without breaking backwards compatibility of the
+> kernel uAPI.
 
-Also, what happens if we want to add support for a KDF other than HKDF-SHA512 in
-the future?  With the existing fscrypt use of HKDF-SHA512, we can add support
-for more KDFs by using one of the reserved fields in fscrypt_policy_v2 and
-fscrypt_add_key_arg to indicate the KDF version.  But as proposed, metadata
-encryption has no reserved fields in the filesystem superblock (that are
-strictly validated).  It might be a good idea to add some reserved fields.
+I see what you are trying to achieve. However it may not work.
 
-> Filesystems should call fscrypt_set_bio_crypt_ctx() on any bio that needs
-> either metadata or file contents encryption. fscrypt will choose the
-> appropriate key (based on the inode argument) to use for encrypting the
-> bio.
+Let's assume that __actual__ OOB data has been implemented. An 
+application sends a zero length message with MSG_OOB, after that it 
+sends some data (not suppose to be OOB data). How is the receiver going 
+to differentiate if the data an OOB or not.
 
-Filesystem metadata doesn't necessarily have an inode associated with it.  How
-does that work?
+We could use a different flag (MSG_SIGURG) or implement the _actual_ OOB 
+data semantics (If anyone is interested in it). MSG_SIGURG could be a 
+generic flag that just sends SIGURG irrespective of the length of the data.
 
-> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> index 44b67ebd6e40..708164c413cc 100644
-> --- a/Documentation/filesystems/fscrypt.rst
-> +++ b/Documentation/filesystems/fscrypt.rst
-> @@ -27,8 +27,6 @@ at the block device level.  This allows it to encrypt different files
->  with different keys and to have unencrypted files on the same
->  filesystem.  This is useful for multi-user systems where each user's
->  data-at-rest needs to be cryptographically isolated from the others.
-> -However, except for filenames, fscrypt does not encrypt filesystem
-> -metadata.
->  
->  Unlike eCryptfs, which is a stacked filesystem, fscrypt is integrated
->  directly into supported filesystems --- currently ext4, F2FS, and
-> @@ -47,6 +45,15 @@ userspace provides the key, all regular files, directories, and
->  symbolic links created in that directory tree are transparently
->  encrypted.
->  
-> +fscrypt also has support for encrypting filesystem metadata, which
-> +can be used independently of file contents encryption. For any
-> +filesystem block that isn't part of an encrypted file's contents,
-> +the filesystem can ask fscrypt to encrypt it with the metadata encryption
-> +key set up ahead of time. In general, filesystems should always choose
-> +to encrypt a filesystem block with the metadata encryption key, if
-> +that block isn't already encrypted with another key (filesystems may
-> +choose to leave certain blocks, like the superblock, unencrypted).
+Shoaib
 
-We need to be very careful how we describe the metadata encryption feature
-because it's not really self-explanatory; people are going to wonder:
-
-- What is meant by "metadata"?
-- How does it relate to dm-crypt, and why not just use dm-crypt?
-- How does it interact with the existing filenames encryption?
-- How does it interact with unencrypted files?
-
-We need to explain it properly so that all these questions are answered.
-
-I recommend adding metadata encryption as a top-level section in the
-documentation file (not just in the Introduction and Implementation Details
-sections as this patch currently proposes) and adding a proper explanation of it
-from a user's perspective.  The Introduction should be kept brief.
-
-> +fscrypt protects the confidentiality of non-filename metadata, e.g.
-> +file sizes, file permissions, file timestamps, and extended attribute
-> +only when metadata encryption support is enabled for the filesystem,
-> +and the filesystem chooses to protect such information with the
-> +metadata encryption key. 
-
-Do we actually anticipate that filesystems might support metadata encryption but
-not encrypt these types of metadata?  That would be weird, since the purpose of
-metadata encryption is basically to ensure that everything gets encrypted.
-
-> +For v2 encryption policies, if the filesystem has a metadata crypt key,
-> +the master key is first "mixed" with the metadata crypt key, generating
-> +a "mixed-metadata key", which is then used in place of the master key
-> +in the process described above. The "mixed-metadata key" is generated
-> +by using the metadata crypt key as the input keying material, and
-> +a context specific byte and the original master key as the
-> +application-specific information string with HKDF-SHA512 (refer to
-> +fscrypt_mix_in_metadata_key() for details).
-
-This explains *what* is done, but not *why*.  The why is that we want to enforce
-that the traditional fscrypt keys are at least as strong as the metadata
-encryption key (if there is one).
-
-> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-> index a5f5c30368a2..58b79d757608 100644
-> --- a/fs/crypto/Kconfig
-> +++ b/fs/crypto/Kconfig
-> @@ -30,3 +30,15 @@ config FS_ENCRYPTION_INLINE_CRYPT
->  	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
->  	help
->  	  Enable fscrypt to use inline encryption hardware if available.
-> +
-> +config FS_ENCRYPTION_METADATA
-> +	bool "Enable metadata encryption with fscrypt"
-> +	depends on FS_ENCRYPTION_INLINE_CRYPT
-> +	help
-> +	  Enable fscrypt to encrypt metadata. This allows filesystems
-> +	  that support metadata encryption through fscrypt to mount
-> +	  and use filesystem images formatted with metadata encryption
-> +	  enabled. Such filesystem images generally have all
-> +	  otherwise-non-encrypted data (like filesystem metadata,
-> +	  and unencrypted files) encrypted with a metadata encryption
-> +	  key instead.
-
-This could use some explanation of *why* someone would want to enable this.
-
-Also, "Enable metadata encryption" => "Enable support for metadata encryption".
-Otherwise people could think that they are enabling encryption just by setting
-this kernel config option.
-
-> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-> index b048a0e38516..d5c1dc38461b 100644
-> --- a/fs/crypto/bio.c
-> +++ b/fs/crypto/bio.c
-> @@ -59,7 +59,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
->  		unsigned int bytes_this_page = blocks_this_page << blockbits;
->  
->  		if (num_pages == 0) {
-> -			fscrypt_set_bio_crypt_ctx(bio, inode, lblk, GFP_NOFS);
-> +			fscrypt_set_bio_crypt_ctx(bio, 0, inode, lblk, GFP_NOFS);
-
-Why is this passing 0 for first_fsblk instead of the filesystem block number?
-
->  /**
->   * fscrypt_set_bio_crypt_ctx() - prepare a file contents bio for inline crypto
->   * @bio: a bio which will eventually be submitted to the file
-> + * @first_fsblk: the first FS block number in the I/O (only used if bio will be
-> + *		 metadata crypted)
->   * @inode: the file's inode
->   * @first_lblk: the first file logical block number in the I/O
->   * @gfp_mask: memory allocation flags - these must be a waiting mask so that
-> @@ -234,12 +218,19 @@ static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
->   *
->   * The encryption context will be freed automatically when the bio is freed.
->   */
-> -void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
-> -			       u64 first_lblk, gfp_t gfp_mask)
-> +void fscrypt_set_bio_crypt_ctx(struct bio *bio, u64 first_fsblk,
-> +			       const struct inode *inode, u64 first_lblk,
-> +			       gfp_t gfp_mask)
-
-This is going to be confused with fscrypt_metadata_crypt_bio().  Also, the fact
-that this now does "metadata encryption" for file contents is confusing.  It
-would be helpful to update the comments to make it very clear what is going on.
-
-Also, does fscrypt_mergeable_bio() need to be updated too?
-
-> +/**
-> + * fscrypt_mix_in_metadata_key() - Mix in the metadata crypt key with an fscrypt
-> + *				   master key
-> + * @sb: The superblock whose metadata_crypt_key to mix in
-> + * @secret: The secret that needs to be mixed with the metadata_crypt_key
-> + *
-> + * Replaces @secret->raw with hkdf(key=metadata_crypt_key,
-> + * info=HKDF_CONTEXT_MIX_METADATA_KEY|@secret->raw). As such,
-> + * @secret->raw is at least as strong as the metadata_crypt_key.
-
-How about: "This makes @secret->raw at least as strong as the stronger of its
-old value and the metadata_crypt_key."
-
-> + *
-> + * Returns 0 on success and a negative value on error;
-> + */
-
-This should be "Return: 0 on success and a negative value on error", otherwise
-it isn't a valid kerneldoc comment.  You can run
-'scripts/kernel-doc -v -none FILE' to check the validity of kerneldoc comments.
-
-> +
-> +static int fscrypt_metadata_get_key_from_id(
-> +				u8 key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE],
-
-key_ident should be const.
-
-> +				unsigned int keysize,
-> +				u8 raw_key[FSCRYPT_MAX_KEY_SIZE])
-
-Adding a 1-2 sentence description above this function (not necessarily a full
-kerneldoc comment) would be helpful to understand what is going on.
-
-> +static int fscrypt_metadata_setup_hkdf(struct super_block *sb,
-> +				       u8 key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE],
-
-key_ident should be const.
-
-> +				       unsigned int keysize)
-
-Adding a 1-2 sentence description above this function (not necessarily a full
-kerneldoc comment) would be helpful to understand what is going on.
-
-> +	sb->s_metadata_hkdf = kzalloc(sizeof(*sb->s_metadata_hkdf), GFP_KERNEL);
-> +	if (!sb->s_metadata_hkdf)
-> +		goto out_zero_key;
-
-This is missing 'err = -ENOMEM' in the error path.
-
-> +	if (memcmp(key_ident, key_ident_computed, FSCRYPT_KEY_IDENTIFIER_SIZE)) {
-> +		err = -EINVAL;
-> +		fscrypt_warn(NULL,
-> +			     "Metadata encryption key did not have the correct key identifier. Rejecting the key.");
-> +		goto err_destroy_hkdf;
-> +	}
-
-It might make more sense to log something like "Incorrect metadata encryption
-key provided.".  The key identifiers being different is just how we determine
-whether the keys are different; it's the latter that is actually important.
-
-> +/**
-> + * fscrypt_setup_metadata_encryption() - prepare a super_block for metadata
-> + *					 encryption
-> + * @sb: The super_block to set up metadata encryption for
-> + * @key_ident: The key identifier of a logon key to look for in the process
-> + *	       subscribed keyrings.
-> + * @fscrypt_mode_num: The FSCRYPT_MODE_* to use as the encryption algorithm.
-> + * @fs_blk_bytes: The number of bytes required to represent fs block numbers.
-> + *
-> + * Return: 0 on success, negative number on error.
-
-Adding 1-2 more sentences of explanation above would be helpful.
-
-> + */
-> +int fscrypt_setup_metadata_encryption(struct super_block *sb,
-> +				u8 key_ident[FSCRYPT_KEY_IDENTIFIER_SIZE],
-
-key_ident should be const.
-
-> +	err = blk_crypto_init_key(sb->s_metadata_key, derived_metadata_key,
-> +				  fscrypt_mode->blk_crypto_mode,
-> +				  fs_blk_bytes, sb->s_blocksize);
-> +	if (err)
-> +		goto err_free_metadata_encryption;
-> +
-> +	err = blk_crypto_start_using_key(sb->s_metadata_key,
-> +					 bdev_get_queue(sb->s_bdev));
-> +	if (err)
-> +		goto err_free_metadata_encryption;
-
-The calls to blk_crypto_start_using_key() also happen in
-fscrypt_metadata_crypt_prepare_all_devices().  So why is this extra one needed?
-
-> +/**
-> + * fscrypt_metadata_crypt_prepare_all_devices() - prepare all devices used by
-> + *					the filesystem for metadata encryption.
-
-prepare_all_devices => prepare_devices, to shorten this name a bit?
-
-> +/**
-> + * fscrypt_free_metadata_encryption() - free metadata encryption fields in
-> + *					super_block.
-> + * @sb: The super_block to free metatdata encryption fields from
-
-metatdata => metadata
-
-> + */
-> +void fscrypt_free_metadata_encryption(struct super_block *sb)
-> +{
-> +	int num_devices;
-> +	int i;
-> +	struct request_queue *q;
-> +
-> +	if (!sb->s_metadata_hkdf)
-> +		return;
-> +
-> +	fscrypt_destroy_hkdf(sb->s_metadata_hkdf);
-> +	kfree(sb->s_metadata_hkdf);
-
-It would be good to use kfree_sensitive() here, in the case the implementation
-of fscrypt_hkdf changes in the future (though it's not needed currently).
-
-> +	sb->s_metadata_hkdf = NULL;
-> +
-> +	if (!sb->s_metadata_key)
-> +		return;
-> +
-> +	num_devices = fscrypt_get_num_devices(sb);
-> +
-> +	for (i = 0; i < num_devices; i++) {
-> +		q = fscrypt_get_device(sb, i);
-> +		if (WARN_ON(!q))
-> +			continue;
-> +		blk_crypto_evict_key(q, sb->s_metadata_key);
-> +	}
-> +
-> +	kfree_sensitive(sb->s_metadata_key);
-> +	sb->s_metadata_key = NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(fscrypt_free_metadata_encryption);
-
-This is assuming that s_metadata_hkdf and s_metadata_key got allocated in a
-particular order.  It would be better to just handle each field one at a time,
-like:
-
-void fscrypt_free_metadata_encryption(struct super_block *sb)
-{
-	int num_devices;
-	int i;
-	struct request_queue *q;
-
-	if (sb->s_metadata_hkdf) {
-		fscrypt_destroy_hkdf(sb->s_metadata_hkdf);
-		kfree_sensitive(sb->s_metadata_hkdf);
-		sb->s_metadata_hkdf = NULL;
-	}
-
-	if (sb->s_metadata_key) {
-		num_devices = fscrypt_get_num_devices(sb);
-
-		for (i = 0; i < num_devices; i++) {
-			q = fscrypt_get_device(sb, i);
-			if (WARN_ON(!q))
-				continue;
-			blk_crypto_evict_key(q, sb->s_metadata_key);
-		}
-		kfree_sensitive(sb->s_metadata_key);
-		sb->s_metadata_key = NULL;
-	}
-}
-
-> +
-> +/**
-> + * fscrypt_metadata_crypt_bio() - Add metadata encryption context to bio.
-> + *
-> + * @bio: The bio to add the encryption context to
-> + * @fsblk: The block number within the filesystem at which this bio starts
-> + *	   reading/writing data.
-> + * @sb: The superblock of the filesystem
-> + * @gfp_mask: gfp_mask for bio_crypt_context allocation
-> + */
-
-It would be helpful to add an explanation of how this differs from
-fscrypt_set_bio_crypt_ctx(), and how filesystems should decide which one to
-call.  Also maybe one or both of them needs a better name?
-
-- Eric
+>
+>> while (sent < len) {
+>>                   size = len - sent;
+>> <..>
+>>
+>> }
+>>
+>>           if (msg->msg_flags & MSG_OOB)
+>>                   sk_send_sigurg(other);
+>>
+>> Before the patch there was a check above the while loop that checked the
+>> flag and returned and error, that has been removed.
