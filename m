@@ -2,153 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F7C308CD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19DE308CDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhA2S47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:56:59 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:44876 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhA2S4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:56:55 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10TIZDB3016916;
-        Fri, 29 Jan 2021 18:55:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=ECZ5MQs2jDi6t5wXzRN7YyY5RzTVHVcOsJMn9VaJ+X8=;
- b=BxT6xrDe0MiVvW1TYzGmXyj4UoE7Vcl2HW7OGW+UbxBjrz8M7WOYgXQu2pxRjAFjR8wo
- tfrnQsy+zAek/VcULxIZpmTkLnf+a0LNHIW6ZN4jTSeLNzd/AVz1/OM9MKq84fjflhe5
- WoKzFlwq8qzmCtiOAQXtmxsKOu8SflDrYU9hQsaTZdJGwTipV2XOy2YtkJX0+5PgSakz
- tdhVMRHlwEQqzund9Fw7Pp5l7YCm1V/Gr5w1D2K7kh2Xs5kYNJadruqVS4PCYWuWFHrw
- xLpsnxNN5YzHNGIshdikA5q2xkWZR00TCgz5xScjePoZVKJnmsVCDmsDgQ6f0zq8iB0V 4Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 36cmf893t1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 18:55:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10TIUMIL110017;
-        Fri, 29 Jan 2021 18:55:45 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-        by userp3030.oracle.com with ESMTP id 368wr2awak-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 18:55:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ga4tamICCNflg1vjt+iHYApOFHuMtJDVVx0lycEu0mSixJXRdA6nDsp/368ZxSxm1odtSBMyVyHAr8NigfsG7OB0UNXMsuFEvaPp6hif2nCGXvzzYcU2Jq4vQtdHKedLuuHJWXX58cC129bCfNMmEhR76CYJ5sD0TvCwwBHfEv/MYMI1/UrbLu8iC4mujlFcWsoJ3BBWcv28BBQqHro475HHF5utZj31SzS8iUG+CIpUv1qGiOTzg95Aw7HG2imEpbmhNZdDZ3JgTgBBqIsdW+CShyOdcvPLP1RquBFXCAAVJoqzK41tL7QwdKSYZFgkNMzLLmnHvGSHpy3FVSmhJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ECZ5MQs2jDi6t5wXzRN7YyY5RzTVHVcOsJMn9VaJ+X8=;
- b=X/lMU9R1zdXUTwFtnVfMay9DiIDLrWr4uHDTyacY4+xMT8PbkDLNZjywNxmODQpfvsW8AOZJ4rsv5syMUsv4J62ZBZvgCFcfHxjq14j4D78QWTR/5bP8SSniOFmak5dDyllBF/0Dq5ucV1S8SHNPNG81sKv061nIEo4sc14m85RiYQhoVcmxBUgPO8eyOkuz8RF5ojuDv7xMzWuVKYw2tplo0fSyPVFXRN4FGsCnVAAJHmSKjgQaRqWH9YQ3kSZzH9po6ai31Drf8XlYxY8pRQqFh5K39+19BDZSKLnj//MKGYFfe4zm2Gw+VPpTUdL93ow2E9xfV7rtjl7TETlYJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ECZ5MQs2jDi6t5wXzRN7YyY5RzTVHVcOsJMn9VaJ+X8=;
- b=Ejym8AbOpNjzNeMGlfSDiqlNr3No6o8AiP1PaV5K23BWu2BUfIiWj9/KNt7fDw+Y4QXTkr8P9SNOjrdpXnOU8rHEgLsvq4PCTzUmyjPp9TlnFe50zJZIoVSRMzNLAMGcC3jR7my+dC9Q7sg/hn4T2j6Nj0Cl2FOM1+A8xkA/Byo=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4405.namprd10.prod.outlook.com (2603:10b6:510:40::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.19; Fri, 29 Jan
- 2021 18:55:43 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3805.021; Fri, 29 Jan 2021
- 18:55:43 +0000
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Hannes Reinecke <hare@suse.de>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust to gdth scsi driver removal
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1czxnzi6y.fsf@ca-mkp.ca.oracle.com>
-References: <20210129052829.13642-1-lukas.bulwahn@gmail.com>
-Date:   Fri, 29 Jan 2021 13:55:39 -0500
-In-Reply-To: <20210129052829.13642-1-lukas.bulwahn@gmail.com> (Lukas Bulwahn's
-        message of "Fri, 29 Jan 2021 06:28:29 +0100")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: CO2PR04CA0169.namprd04.prod.outlook.com
- (2603:10b6:104:4::23) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S232822AbhA2S5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:57:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:50695 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232208AbhA2S5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 13:57:20 -0500
+IronPort-SDR: Qz/r3HHrJjC+XEUFPgFRYZM/ph1q3Xx7uLCyvnUMS4s9sCdnVIQ13WpuuCV0eV0967L+q9NXvo
+ OOx+Z6XjL6XQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167566963"
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="167566963"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 10:56:38 -0800
+IronPort-SDR: IePLN3+n6x54ZV3rR5cqQrlmHDw65ERcV9hZYs8RH26HoKoR6RfycUysg2w+lb7ho/V///10NM
+ Glh/Qjd57hUA==
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="389415865"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.73.214]) ([10.212.73.214])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 10:56:36 -0800
+Subject: Re: [PATCH v18 24/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+ <20210127212524.10188-25-yu-cheng.yu@intel.com>
+ <ba39586d-25b6-6ea5-19c3-adf17b59f910@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <761ae8ce-0560-24cc-e6f7-684475cb3708@intel.com>
+Date:   Fri, 29 Jan 2021 10:56:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by CO2PR04CA0169.namprd04.prod.outlook.com (2603:10b6:104:4::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Fri, 29 Jan 2021 18:55:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d71fbfd7-19d9-4180-f07b-08d8c4877ad9
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4405:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB44051B38E33FB140BFAE171F8EB99@PH0PR10MB4405.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ky28aii0hrdZm1brnVC+mZxsYsETmDRrUehgA+bx+Are+tp6XiCE4qCImNoDJpDgG1eMgAuMdzPeHfgIP8rIuPc+xeAeGkYiOgF4EYIxisoQ0H4f69d/2kCvT3foMSUpuJY/A06Qoc6GKc05edJzrVCdae4iHNWrBZHYVEm30aPdu5MhW4cPFFVWRfC5Tkgu9FgKDk8UMtmjcBhGqSKLUG9xghDjTd+1rTahOOZX1qLg/alElNla1HnJuAm3iX4VzGf4VgdcHv5o/hXzjSYKpn0f73kLdf2tCiKjhYtGNId1bXYUcgH9/wQurE2mjtlT2eZ4lvkGZzze4Ev6ZKyopaVqGECoZegiPMf8BKIJ/e/kc4DbrzVzTdqg4e+OWzrOuIacN+G32yDWMGX0biua0/YQkNl2ci/F9jhfAMepNX8vlEKHDXUwddcAgmwlto2FmppmCitMxQFb1xTc41QejZtKD7C3mXKk90W1mAIjMfGx0SSFD6nRPcOVYkhZOLqKT6/dIiIfbN6Kc9jZNOdoMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(346002)(136003)(396003)(86362001)(83380400001)(956004)(66556008)(6916009)(558084003)(26005)(5660300002)(16526019)(55016002)(186003)(8936002)(66476007)(66946007)(6666004)(478600001)(316002)(8676002)(36916002)(2906002)(7696005)(52116002)(54906003)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ECMPF7DMoMmXg0Z3qhr1D8PIxOkt0tegwALo1bKqaw3SERtB9wfhLtxNfSkR?=
- =?us-ascii?Q?9jztAYlgtSk5trPdEjAOOcmX2dsYVXTTYajs4bGUawpjc7bdP0Pb376/reCh?=
- =?us-ascii?Q?pTCle9ZlCWySvJm8j0h2RZA0TKeczPdhstWBHz9p3ePJslaKF3OJfj3ZWA+N?=
- =?us-ascii?Q?d+8ubh4RBGWT/Y2zS9tmifOqWIV/QR0m7SIZtX/wHLYf6O4h6siZQi7PehM4?=
- =?us-ascii?Q?CgKggAb+EC4DscVv33oWZ9CjgbGeyx64g8I/gi4GgCqOLnIsdsfvqnhzjQpB?=
- =?us-ascii?Q?AXH1C+U64C8LCzwiKQbck+GVEjxeqyEoX2pvM0WpvTwza2DsA+tMPlZwUgsJ?=
- =?us-ascii?Q?pNu8KSNtsUlFHyjkk3ajMfdbES1AY+bwMl0bhMQG2lZ7MSkyL2kQU+SjeXVX?=
- =?us-ascii?Q?zwGdZ5KlUMceEXcynXeuAjrvRYaYCmFe14uQd38qEqGTkCfu5UBdjrGzsyoO?=
- =?us-ascii?Q?MoB6TInLBD0xHFztXYRmizqy1RC32YTZXWZpFGX4zfcxPM+jbnnXFoClz1cd?=
- =?us-ascii?Q?IRYsJzWbyPKtmzHox6o1pQSQNypw5rTcESetYhHKlsbor1gE45STNd2Vdp5g?=
- =?us-ascii?Q?5RzMttFEyOrkrjWgA8QkrtwZV7AWq3lB3ZfADjHxs3h/pfaogKyo2G8ggIB/?=
- =?us-ascii?Q?csVqCrv1CI4OljtH1MJuQKGUDZWf5q3B1S3OTi0I4nl0+JIZo+hs2HGZmDq4?=
- =?us-ascii?Q?FQ7bL71kbUC312UTijq7o9AS0NTMbAEPPpkNfrmqyWrRAj0YfWY08DdMhIDa?=
- =?us-ascii?Q?e8esEVe3XY1cqUmN1BJGaMx9rqFMy4bSWAlBNB3Sa1/Ika3zxu2/tox2jlmj?=
- =?us-ascii?Q?g91CcahssmOa/M2/6BCbZVhKgw/R35RkIzfph7i+5jjwuQHYg8lVIMZ0Ac4h?=
- =?us-ascii?Q?/VaC/QufxK08blvH0o+DGQ6bAm5k3nE1JMdMf8lQSj4Mu+6UM5ka4NpCZd17?=
- =?us-ascii?Q?Zx558eVSxSC+zHdtCXzbedun0qPduWd4QyG7VrrBQADbJFX+wfkAXAm3ia74?=
- =?us-ascii?Q?I5T/ZJjvdleZTKBjkdBcCO3a5qZcT4LULpz8W8Eoq4kKO4C0JIlL7fTAOWLb?=
- =?us-ascii?Q?NDu9dJnT?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d71fbfd7-19d9-4180-f07b-08d8c4877ad9
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 18:55:43.4862
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zh0Fd/tYEBrhD4g0FvUaNWYf/cxb0zv3J01GnJFagL2Qjfdqr7UTecrTouqvbBNViB01TJMnO2Sfxrv/rNghWFmX0Gle5pcJDCbITkfFaZc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4405
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- adultscore=0 mlxlogscore=811 malwarescore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101290091
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=991 lowpriorityscore=0
- spamscore=0 clxscore=1011 adultscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101290091
+In-Reply-To: <ba39586d-25b6-6ea5-19c3-adf17b59f910@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/29/2021 9:07 AM, Dave Hansen wrote:
+> On 1/27/21 1:25 PM, Yu-cheng Yu wrote:
+>> arch_prctl(ARCH_X86_CET_STATUS, u64 *args)
+>>      Get CET feature status.
+>>
+>>      The parameter 'args' is a pointer to a user buffer.  The kernel returns
+>>      the following information:
+>>
+>>      *args = shadow stack/IBT status
+>>      *(args + 1) = shadow stack base address
+>>      *(args + 2) = shadow stack size
+> 
+> What's the deal for 32-bit binaries?  The in-kernel code looks 64-bit
+> only, but I don't see anything restricting the interface to 64-bit.
 
-Lukas,
+Items in args are 64-bit.  A 32-bit binary uses the same interface, but 
+uses only lower bits.  I will add that in the comments.
 
-> Commit 0653c358d2dc ("scsi: Drop gdth driver") misses to adjust MAINTAINERS.
->
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
->
->   warning: no file matches F:    drivers/scsi/gdt*
+>> +static int copy_status_to_user(struct cet_status *cet, u64 arg2)
+> 
+> This has static scope, but it's still awfully generically named.  A cet_
+> prefix would be nice.
 
-Applied to 5.12/scsi-staging, thanks!
+I will add that.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+>> +{
+>> +	u64 buf[3] = {0, 0, 0};
+>> +
+>> +	if (cet->shstk_size) {
+>> +		buf[0] |= GNU_PROPERTY_X86_FEATURE_1_SHSTK;
+>> +		buf[1] = (u64)cet->shstk_base;
+>> +		buf[2] = (u64)cet->shstk_size;
+> 
+> What's the casting for?
+
+cet->shstk_base and cet->shstk_size are both 'unsigned long', not u64, 
+so the cast.
+
+>> +	}
+>> +
+>> +	return copy_to_user((u64 __user *)arg2, buf, sizeof(buf));
+>> +}
+>> +
+>> +int prctl_cet(int option, u64 arg2)
+>> +{
+>> +	struct cet_status *cet;
+>> +	unsigned int features;
+>> +
+>> +	/*
+>> +	 * GLIBC's ENOTSUPP == EOPNOTSUPP == 95, and it does not recognize
+>> +	 * the kernel's ENOTSUPP (524).  So return EOPNOTSUPP here.
+>> +	 */
+>> +	if (!IS_ENABLED(CONFIG_X86_CET))
+>> +		return -EOPNOTSUPP;
+> 
+> Let's ignore glibc for a moment.  What error code *should* the kernel be
+> returning here?  errno(3) says:
+> 
+>         EOPNOTSUPP      Operation not supported on socket (POSIX.1)
+> ...
+>         ENOTSUP         Operation not supported (POSIX.1)
+> 
+
+Yeah, other places in kernel use ENOTSUPP.  This seems to be out of 
+line.  And since the issue is long-existing, applications already know 
+how to deal with it.  I should have made that argument.  Change it to 
+ENOTSUPP.
+
+>> +	cet = &current->thread.cet;
+>> +
+>> +	if (option == ARCH_X86_CET_STATUS)
+>> +		return copy_status_to_user(cet, arg2);
+> 
+> What's the point of doing copy_status_to_user() if the processor doesn't
+> support CET?  In other words, shouldn't this be below the CPU feature check?
+
+The thought was to tell the difference between the kernel itself does 
+not support CET and the system does not have CET.  And, if the kernel 
+supports it, show CET status of the thread.
+
+> Also, please cast arg2 *here*.  It becomes a user pointer here, not at
+> the copy_to_user().
+
+I will fix it.
+
+>> +	if (!static_cpu_has(X86_FEATURE_CET))
+>> +		return -EOPNOTSUPP;
+> 
+> So, you went to the trouble of adding a disabled-features.h entry for
+> this.  Why not just do:
+> 
+> 	if (cpu_feature_enabled(X86_FEATURE_CET))
+> 		...
+> 
+> instead of the IS_ENABLED() check above?  That should get rid of one of
+> these if's.
+> 
+
+Explained above.
+
+>> +	switch (option) {
+>> +	case ARCH_X86_CET_DISABLE:
+>> +		if (cet->locked)
+>> +			return -EPERM;
+>> +
+>> +		features = (unsigned int)arg2;
+> 
+> What's the purpose of this cast?
+> 
+>> +		if (features & ~GNU_PROPERTY_X86_FEATURE_1_VALID)
+>> +			return -EINVAL;
+>> +		if (features & GNU_PROPERTY_X86_FEATURE_1_SHSTK)
+>> +			cet_disable_shstk();
+>> +		return 0;
+> 
+> This doesn't enforce that the high bits of arg2 be 0.  Shouldn't we call
+> them reserved and enforce that they be 0?
+
+Yes, the code already checks invalid bits.  We don't need the cast.
+
+>> +	case ARCH_X86_CET_LOCK:
+>> +		cet->locked = 1;
+>> +		return 0;
+> 
+> This needs to check for and enforce that arg2==0.
+
+Yes.
+
+> 
+>> +	default:
+>> +		return -ENOSYS;
+>> +	}
+>> +}
+
