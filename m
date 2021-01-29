@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CA2308B07
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C67308B0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhA2RJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:09:28 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:65302 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231871AbhA2RIz (ORCPT
+        id S232230AbhA2RK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:10:57 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:61161 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231871AbhA2RKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:08:55 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10TH6Vvd007638;
-        Fri, 29 Jan 2021 11:08:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=InbfmcNQ3u+eutYnwP8FnOSnY1mQqECHGcLKmEZ24/s=;
- b=Owh4aZEcpAxX8wm82rBfYBZHF6g7aI8uUnO8ADYgIlcTIvTrKMkIJGfj1IgZSC95/tbA
- gZsqcYnKSpf7q1kyiHGLkVPB94vNru9NNwuat5oPhL9MxuvmCdYgOwYYSZUQJj3VTll7
- KQTXdSeQII6Yu3u5zGktAHKakl6ymaUe2zzPn8ENZG/z1RCNicPN/GZNZn7JINySSpc/
- qJkZUybb4Py/ZyRVRz3AzGNeklbSnCH+5ZOpEZukLkTgSRvSJMfNT/+u5++Ehd24EACY
- Tv4f1dCtFHwWwR3fQ+pfFICNeHXDImakoISiixyuysLad7/2hEhwKkDdRMFeJAAi6wgQ Kw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 368h3u7nxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 29 Jan 2021 11:08:04 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 29 Jan
- 2021 17:08:02 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 29 Jan 2021 17:08:02 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.253])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 240B345;
-        Fri, 29 Jan 2021 17:08:02 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <vkoul@kernel.org>, <michal.simek@xilinx.com>
-CC:     <dmaengine@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] dmaengine: xilinx_dma: Alloc tx descriptors GFP_NOWAIT
-Date:   Fri, 29 Jan 2021 17:08:00 +0000
-Message-ID: <20210129170800.31857-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 29 Jan 2021 12:10:52 -0500
+Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10TH8gL7041384;
+        Sat, 30 Jan 2021 02:08:42 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
+ Sat, 30 Jan 2021 02:08:42 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10TH8gCx041381
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 30 Jan 2021 02:08:42 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+ <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+ <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
+ <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+ <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
+ <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
+Date:   Sat, 30 Jan 2021 02:08:41 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
- adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
- clxscore=1011 mlxlogscore=725 mlxscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101290084
+In-Reply-To: <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use GFP_NOWAIT allocation in xilinx_dma_alloc_tx_descriptor().
+On 2021/01/30 1:05, Shuah Khan wrote:
+>> Since "general protection fault in tomoyo_socket_sendmsg_permission" is caused by
+>> unexpectedly resetting ud->tcp_socket to NULL without waiting for tx thread to
+>> terminate, tracing the ordering of events is worth knowing. Even adding
+>> schedule_timeout_uninterruptible() to before kernel_sendmsg() might help.
+>>
+> 
+> What about the duplicate bug information that was in my email?
+> Did you take a look at that?
 
-This is necessary for compatibility with ALSA, which calls
-dmaengine_prep_dma_cyclic() from an atomic context.
+I was not aware of the duplicate bugs. It is interesting that
+"KASAN: null-ptr-deref Write in event_handler" says that vdev->ud.tcp_tx became NULL at
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/dma/xilinx/xilinx_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	if (vdev->ud.tcp_tx) {
 
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index 22faea653ea8..fb046af9ac53 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -800,7 +800,7 @@ xilinx_dma_alloc_tx_descriptor(struct xilinx_dma_chan *chan)
- {
- 	struct xilinx_dma_tx_descriptor *desc;
- 
--	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
-+	desc = kzalloc(sizeof(*desc), GFP_NOWAIT);
- 	if (!desc)
- 		return NULL;
- 
--- 
-2.20.1
+		/* this location */
 
+		kthread_stop_put(vdev->ud.tcp_tx);
+		vdev->ud.tcp_tx = NULL;
+	}
+
+which means that somebody else is unexpectedly resetting vdev->ud.tcp_tx to NULL.
+
+If memset() from vhci_device_init() from vhci_start() were unexpectedly called,
+all of tcp_socket, tcp_rx, tcp_tx etc. becomes NULL which can explain these bugs ?
+I'm inclined to report not only tcp_socket but also other fields when kernel_sendmsg()
+detected that tcp_socket is NULL...
