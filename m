@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B5B308266
+	by mail.lfdr.de (Postfix) with ESMTP id D8323308267
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhA2Acz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:32:55 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.221.30]:42522 "EHLO
+        id S231373AbhA2Ad2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:33:28 -0500
+Received: from relay.smtp-ext.broadcom.com ([192.19.221.30]:42644 "EHLO
         relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231256AbhA2Ab6 (ORCPT
+        by vger.kernel.org with ESMTP id S231361AbhA2Ac4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:31:58 -0500
+        Thu, 28 Jan 2021 19:32:56 -0500
 Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 813947FFC;
-        Thu, 28 Jan 2021 16:30:50 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 813947FFC
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 5D59E7FF8;
+        Thu, 28 Jan 2021 16:30:53 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 5D59E7FF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611880252;
-        bh=G0JtokNm+NFuFyX3E5lg6X/oWOr8kduycb4M3eR02lM=;
+        s=dkimrelay; t=1611880255;
+        bh=FZaCZ09Ra7MXy78uk4ySMUne80gk9tszphdysPIchZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZJqEvdi85TSd63Ly53ndFdEH+VWZyNWAuWq2/zGCGW/16VAxEukWrrdnWvNGGMcK
-         YfAcUSku3I4ehYRwcYYo79DvFvwLHj66HS5kwjnGAr4MXA42YdVvx9XyIALIHx9eYr
-         Th/v2Oe11ZvnYtK1q+XgHkbF9LksTzTFTSyXmuOY=
+        b=DvFtO3W3n0skP0CAxNrPMypwfqNrlx7sLJN7Mm3LlsfLFZKNz6LvaKQ0hsxWBtPFU
+         BpMveZeKQFjjuq7vP0PlsqxjqyUVdpCc5uLaIpsiUkUrJ7zWS0wakf9wBTgG231TM0
+         djka3cpCnF0GxLDh7zPHfpDrM+mbTmjxMuIyYXJM=
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,9 +31,9 @@ Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
         Olof Johansson <olof@lixom.net>,
         Desmond Yan <desmond.yan@broadcom.com>
-Subject: [PATCH v10 04/13] misc: bcm-vk: add misc device to Broadcom VK driver
-Date:   Thu, 28 Jan 2021 16:30:20 -0800
-Message-Id: <20210129003029.10672-5-scott.branden@broadcom.com>
+Subject: [PATCH v10 05/13] misc: bcm-vk: add triggers when host panic or reboots to notify card
+Date:   Thu, 28 Jan 2021 16:30:21 -0800
+Message-Id: <20210129003029.10672-6-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210129003029.10672-1-scott.branden@broadcom.com>
 References: <20210129003029.10672-1-scott.branden@broadcom.com>
@@ -41,9 +41,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add misc device base support to create and remove devnode.
-Additional misc functions for open/read/write/release/ioctl/sysfs, etc
-will be added in follow on commits to allow for individual review.
+Pass down an interrupt to card in case of panic or reboot so
+that card can take appropriate action to perform a clean reset.
+Uses kernel notifier block either directly (register on panic list),
+or implicitly (add shutdown method for PCI device).
 
 Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
@@ -51,130 +52,90 @@ Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 Acked-by: Olof Johansson <olof@lixom.net>
 ---
  drivers/misc/bcm-vk/bcm_vk.h     |  2 ++
- drivers/misc/bcm-vk/bcm_vk_dev.c | 36 +++++++++++++++++++++++++++++++-
- 2 files changed, 37 insertions(+), 1 deletion(-)
+ drivers/misc/bcm-vk/bcm_vk_dev.c | 29 ++++++++++++++++++++++++++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index c4fb61a84e41..0a366db693c8 100644
+index 0a366db693c8..f428ad9a0c3d 100644
 --- a/drivers/misc/bcm-vk/bcm_vk.h
 +++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -7,6 +7,7 @@
- #define BCM_VK_H
+@@ -223,6 +223,8 @@ struct bcm_vk {
+ 	unsigned long wq_offload[1]; /* various flags on wq requested */
+ 	void *tdma_vaddr; /* test dma segment virtual addr */
+ 	dma_addr_t tdma_addr; /* test dma segment bus addr */
++
++	struct notifier_block panic_nb;
+ };
  
- #include <linux/firmware.h>
-+#include <linux/miscdevice.h>
- #include <linux/pci.h>
- #include <linux/sched/signal.h>
- 
-@@ -214,6 +215,7 @@ struct bcm_vk {
- 
- 	struct bcm_vk_dauth_info dauth_info;
- 
-+	struct miscdevice miscdev;
- 	int devid; /* dev id allocated */
- 
- 	struct workqueue_struct *wq_thread;
+ /* wq offload work items bits definitions */
 diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index adc3103c7012..4ecd5b5f80d3 100644
+index 4ecd5b5f80d3..09d99bd36e8a 100644
 --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
 +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -7,6 +7,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/firmware.h>
- #include <linux/fs.h>
-+#include <linux/idr.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
-@@ -643,6 +644,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	char name[20];
- 	struct bcm_vk *vk;
- 	struct device *dev = &pdev->dev;
-+	struct miscdevice *misc_device;
- 	u32 boot_status;
+@@ -635,6 +635,16 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
+ 	return 0;
+ }
  
- 	vk = kzalloc(sizeof(*vk), GFP_KERNEL);
-@@ -719,6 +721,19 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	vk->devid = id;
- 	snprintf(name, sizeof(name), DRV_MODULE_NAME ".%d", id);
-+	misc_device = &vk->miscdev;
-+	misc_device->minor = MISC_DYNAMIC_MINOR;
-+	misc_device->name = kstrdup(name, GFP_KERNEL);
-+	if (!misc_device->name) {
-+		err = -ENOMEM;
-+		goto err_ida_remove;
-+	}
++static int bcm_vk_on_panic(struct notifier_block *nb,
++			   unsigned long e, void *p)
++{
++	struct bcm_vk *vk = container_of(nb, struct bcm_vk, panic_nb);
 +
-+	err = misc_register(misc_device);
-+	if (err) {
-+		dev_err(dev, "failed to register device\n");
-+		goto err_kfree_name;
-+	}
- 
- 	INIT_WORK(&vk->wq_work, bcm_vk_wq_handler);
- 
-@@ -727,7 +742,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (!vk->wq_thread) {
- 		dev_err(dev, "Fail to create workqueue thread\n");
- 		err = -ENOMEM;
--		goto err_ida_remove;
-+		goto err_misc_deregister;
- 	}
- 
++	bcm_to_v_reset_doorbell(vk, VK_BAR0_RESET_DB_HARD);
++
++	return 0;
++}
++
+ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	int err;
+@@ -748,6 +758,15 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
  	/* sync other info */
-@@ -749,11 +764,20 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		}
- 	}
+ 	bcm_vk_sync_card_info(vk);
  
-+	dev_dbg(dev, "BCM-VK:%u created\n", id);
++	/* register for panic notifier */
++	vk->panic_nb.notifier_call = bcm_vk_on_panic;
++	err = atomic_notifier_chain_register(&panic_notifier_list,
++					     &vk->panic_nb);
++	if (err) {
++		dev_err(dev, "Fail to register panic notifier\n");
++		goto err_destroy_workqueue;
++	}
 +
+ 	/*
+ 	 * lets trigger an auto download.  We don't want to do it serially here
+ 	 * because at probing time, it is not supposed to block for a long time.
+@@ -756,7 +775,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (auto_load) {
+ 		if ((boot_status & BOOT_STATE_MASK) == BROM_RUNNING) {
+ 			if (bcm_vk_trigger_autoload(vk))
+-				goto err_destroy_workqueue;
++				goto err_unregister_panic_notifier;
+ 		} else {
+ 			dev_err(dev,
+ 				"Auto-load skipped - BROM not in proper state (0x%x)\n",
+@@ -768,6 +787,10 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
  	return 0;
  
++err_unregister_panic_notifier:
++	atomic_notifier_chain_unregister(&panic_notifier_list,
++					 &vk->panic_nb);
++
  err_destroy_workqueue:
  	destroy_workqueue(vk->wq_thread);
  
-+err_misc_deregister:
-+	misc_deregister(misc_device);
-+
-+err_kfree_name:
-+	kfree(misc_device->name);
-+	misc_device->name = NULL;
-+
- err_ida_remove:
- 	ida_simple_remove(&bcm_vk_ida, id);
+@@ -818,6 +841,10 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 	bcm_vk_trigger_reset(vk);
+ 	usleep_range(BCM_VK_UCODE_BOOT_US, BCM_VK_UCODE_BOOT_MAX_US);
  
-@@ -783,6 +807,7 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- {
- 	int i;
- 	struct bcm_vk *vk = pci_get_drvdata(pdev);
-+	struct miscdevice *misc_device = &vk->miscdev;
- 
- 	/*
- 	 * Trigger a reset to card and wait enough time for UCODE to rerun,
-@@ -797,6 +822,13 @@ static void bcm_vk_remove(struct pci_dev *pdev)
++	/* unregister panic notifier */
++	atomic_notifier_chain_unregister(&panic_notifier_list,
++					 &vk->panic_nb);
++
+ 	if (vk->tdma_vaddr)
  		dma_free_coherent(&pdev->dev, nr_scratch_pages * PAGE_SIZE,
  				  vk->tdma_vaddr, vk->tdma_addr);
- 
-+	/* remove if name is set which means misc dev registered */
-+	if (misc_device->name) {
-+		misc_deregister(misc_device);
-+		kfree(misc_device->name);
-+		ida_simple_remove(&bcm_vk_ida, vk->devid);
-+	}
-+
- 	cancel_work_sync(&vk->wq_work);
- 	destroy_workqueue(vk->wq_thread);
- 
-@@ -805,6 +837,8 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 			pci_iounmap(pdev, vk->bar[i]);
- 	}
- 
-+	dev_dbg(&pdev->dev, "BCM-VK:%d released\n", vk->devid);
-+
- 	pci_release_regions(pdev);
- 	pci_free_irq_vectors(pdev);
- 	pci_disable_device(pdev);
 -- 
 2.17.1
 
