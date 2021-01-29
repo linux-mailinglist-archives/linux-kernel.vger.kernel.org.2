@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BA730857A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1282D308581
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhA2GHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:07:24 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:15408 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230121AbhA2GHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:07:16 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611900412; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=0rkQubtuEtIqttDY1T0ryEW5Vzh9FrLlo5uy520HbSI=;
- b=b1TKLdvD5FtB7sD6usKlbVdmUvNVxfV10n5IJlkh8E8SIxkbW4AfT61LThvwlW8ek/dHJZmy
- sqWj1rT26z3sBr9gpFiqlFvphiQ1zXcTMw0KYDmgjgTR7CCFpTYM4bKInz6/JcxDhubtkoiN
- /4Y4AvSvUw3lN0XQ1RTQpGD8bRo=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6013a5db262adddd45c31330 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 06:06:19
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 19798C43465; Fri, 29 Jan 2021 06:06:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 412E8C433CA;
-        Fri, 29 Jan 2021 06:06:18 +0000 (UTC)
+        id S232065AbhA2GIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232021AbhA2GIi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:08:38 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5C4C061573;
+        Thu, 28 Jan 2021 22:07:57 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id z18so7338115ile.9;
+        Thu, 28 Jan 2021 22:07:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RSMECV3esitGF7SoTH5ZSvyrofHyqxLrUOwc0nwKDZg=;
+        b=lfoedfgpPKqTdp+Bi4CfR3TLngUx+rgjXEmO1XUI0kUKFrd5kpE1684PiF+b7tijIv
+         hZ//L6xU3FsLdGjlGgpHut3/JiYrTxbe63DYLiV5c8cWqtIP42xHa4cbjsCnAsKo+JdA
+         o7ncZa+kxYApdu4pfRJGNc7PLIA7ebhckn+mdOAj1DArPymqQq1XUmPyjuM+Xg13j5B+
+         trv5mWakvDNX/GDUun74mZF1yv8F2mqS9X7qRttRIXjX50YQgh+QCE/PSm6Nq6y6z/Nv
+         cuqya5/yyx22E1OwemJJq20iW1TL60iFpsBNSVwziRKcjKtELGqFyml0YvoT1sXgVljg
+         3i+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RSMECV3esitGF7SoTH5ZSvyrofHyqxLrUOwc0nwKDZg=;
+        b=Eg+y/Fd5G+WAmGLGZmiUqRMV59XHSeWiXkRk0nfyztfjVSYMcEM0iKfUjxN/+YBSQ8
+         vq0fURQq9QA/m+m0OodKnlL70jnqHkBReEYZQZdl9yHTpm9/NKWUQR5MleRfl5OQXnFT
+         r48lM0fa3TuVIiqCr6zi4eEoOmdT8CdjHgJIlZOXw53JvppWz3g53D+kjQ/BIluil03n
+         axjx7dhr6cKdA2LUVxbXXgRP9ReOjxp6TMXo55Xo9o2Xky+1CJj/PLDmx3aW5VGCJyZk
+         3Uvm2rATKJwgg5IrNvnS/8QjYHLY3J8i3dqTo8afmuUlyCpvAhHEDBm2aPqEtm8lrY6X
+         bEzA==
+X-Gm-Message-State: AOAM532nyar5qWdHAbTdYQgxaoOeUdiEz2ho8ETpgJ/0r6bL/zjutCT0
+        q4EeUlxBNp8LDnMLFoJKAnMpt+9VBSVoXFEKLIGxm9nWalwQew==
+X-Google-Smtp-Source: ABdhPJzlVxghmhTq5y989GBcCRqNLVnFNeht1dy96750qJfRfAX21Yeiywv5LKrS/GnAgp+ZDxMbrz2I/MS970gNIuE=
+X-Received: by 2002:a92:6511:: with SMTP id z17mr167202ilb.232.1611900476921;
+ Thu, 28 Jan 2021 22:07:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 29 Jan 2021 14:06:18 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] scsi: ufs: Fix a race condition btw task
- management request send and compl
-In-Reply-To: <73362ca9-93be-c38f-a881-4b7cf690fbc1@acm.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-3-git-send-email-cang@codeaurora.org>
- <73362ca9-93be-c38f-a881-4b7cf690fbc1@acm.org>
-Message-ID: <5f77542d66732003f0154a4e8a6ae13b@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1611817983-2892-1-git-send-email-bingjingc@synology.com>
+ <9e867a74-89c0-e0da-b166-e9824372e181@infradead.org> <6862f3e8-5eb6-4364-a05e-d4ad23d1d37d@Mail>
+In-Reply-To: <6862f3e8-5eb6-4364-a05e-d4ad23d1d37d@Mail>
+From:   bingjing chang <bxxxjxxg@gmail.com>
+Date:   Fri, 29 Jan 2021 14:07:46 +0800
+Message-ID: <CAMmgxWEm-yLzxjFrnvjjtDMtim2FDrqxJQucgs40nBSW6Hj_1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] parser: add unsigned int parser
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cccheng@synology.com, robbieko@synology.com,
+        Matthew Wilcox <willy@infradead.org>,
+        bingjingc <bingjingc@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-29 11:20, Bart Van Assche wrote:
-> On 1/27/21 8:16 PM, Can Guo wrote:
->> ufshcd_compl_tm() looks for all 0 bits in the 
->> REG_UTP_TASK_REQ_DOOR_BELL
->> and call complete() for each req who has the req->end_io_data set. 
->> There
->> can be a race condition btw tmc send/compl, because the 
->> req->end_io_data is
->> set, in __ufshcd_issue_tm_cmd(), without host lock protection, so it 
->> is
->> possible that when ufshcd_compl_tm() checks the req->end_io_data, it 
->> is set
->> but the corresponding tag has not been set in 
->> REG_UTP_TASK_REQ_DOOR_BELL.
->> Thus, ufshcd_tmc_handler() may wrongly complete TMRs which have not 
->> been
->> sent out. Fix it by protecting req->end_io_data with host lock, and 
->> let
->> ufshcd_compl_tm() only handle those tm cmds which have been completed
->> instead of looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
-> 
-> I don't know any other block driver that needs locking to protect races
-> between submission and completion context. Can the block layer timeout
-> mechanism be used instead of the mechanism introduced by this patch,
-> e.g. by using blk_execute_rq_nowait() to submit requests? That would
-> allow to reuse the existing mechanism in the block layer core to handle
-> races between request completion and timeout handling.
+Hi Randy,
 
-This patch is not introducing any new mechanism, it is fixing the
-usage of completion (req->end_io_data = c) introduced by commit
-69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate
-and free TMFs"). If you have better idea to get it fixed once for
-all, we are glad to take your change to get it fixed asap.
+Thank you for talking to me the correct kernel-doc format. :)
 
-Regards,
+I also split the cleanup of kernel doc comments into an independent
+patch due to Jan's comments and submitted it. Thank you.
 
-Can Guo.
+bingjingc <bingjingc@synology.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=8829=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:51=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> [loop bxxxjxxg@gmail.com] in order to reply in plain-text
+> Randy Dunlap <rdunlap@infradead.org> =E6=96=BC 2021-01-29 05:26 =E5=AF=AB=
+=E9=81=93=EF=BC=9A
+>
+> On 1/27/21 11:13 PM, bingjingc wrote:
+> > From: BingJing Chang <bingjingc@synology.com>
+> >
+> > Will be used by fs parsing options & fix kernel-doc typos
+> >
+> > Reviewed-by: Robbie Ko<robbieko@synology.com>
+> > Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+> > Reviewed-by: Matthew Wilcox <willy@infradead.org>
+> > Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+>
+> You should drop my Reviewed-by: also, until I explicitly
+> reply with that.
+>
+> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> > ---
+> >  include/linux/parser.h |  1 +
+> >  lib/parser.c           | 44 +++++++++++++++++++++++++++++++++---------=
+--
+> >  2 files changed, 34 insertions(+), 11 deletions(-)
+>
+> The kernel-doc changes do look good. :)
+>
+> thanks.
+> --
+> ~Randy
+>
 
-> 
-> Thanks,
-> 
-> Bart.
+Thanks,
+BingJing
