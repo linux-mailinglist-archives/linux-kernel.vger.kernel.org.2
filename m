@@ -2,167 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F92D308D84
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155AA308D71
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhA2Tic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:38:32 -0500
-Received: from bgl-iport-4.cisco.com ([72.163.197.28]:7414 "EHLO
-        bgl-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbhA2Tia (ORCPT
+        id S233099AbhA2T3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:29:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232848AbhA2T3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:38:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3911; q=dns/txt; s=iport;
-  t=1611949108; x=1613158708;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=8T6xhh/+97MYL69HOZHijmar/RuLTo27yNHNS+EKjJA=;
-  b=WiGPGAOZKyws+5k6txWJ9KIAlQVxbdK9h/Ci35OBlUxAfwK7Kb9qsd1q
-   vp006ykzO+fwZr22yiUoRXzL+McRMnCq7E2yqYu6Cy5z9WNbwN5IKF/Q5
-   wSxLXHIhav77V7rVwWGmRaEQojlutGjXALthNIGPGvaUXgj6bRdVIItYv
-   4=;
-X-IronPort-AV: E=Sophos;i="5.79,386,1602547200"; 
-   d="scan'208";a="175655162"
-Received: from vla196-nat.cisco.com (HELO bgl-core-4.cisco.com) ([72.163.197.24])
-  by bgl-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 29 Jan 2021 19:28:13 +0000
-Received: from bgl-ads-1848.cisco.com (bgl-ads-1848.cisco.com [173.39.51.250])
-        by bgl-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 10TJSCZL010736
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 29 Jan 2021 19:28:12 GMT
-Received: by bgl-ads-1848.cisco.com (Postfix, from userid 838444)
-        id 6A207CC1251; Sat, 30 Jan 2021 00:58:12 +0530 (IST)
-From:   Aviraj CJ <acj@cisco.com>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, xe-linux-external@cisco.com,
-        acj@cisco.com
-Cc:     Hangbin Liu <liuhangbin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [Internal review][PATCH stable v5.4 2/2] IPv6: reply ICMP error if the first fragment don't include all headers
-Date:   Sat, 30 Jan 2021 00:57:41 +0530
-Message-Id: <20210129192741.117693-2-acj@cisco.com>
-X-Mailer: git-send-email 2.26.2.Cisco
-In-Reply-To: <20210129192741.117693-1-acj@cisco.com>
-References: <20210129192741.117693-1-acj@cisco.com>
+        Fri, 29 Jan 2021 14:29:34 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C361C061573;
+        Fri, 29 Jan 2021 11:28:54 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id i20so9698940otl.7;
+        Fri, 29 Jan 2021 11:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TTlFa+FhQ9E3hhXfUpHEFEwCBTVYyl2tyI+bhrzBYYc=;
+        b=HFD5J2YGALukCCHDNdUuWUGonkc1xmVsI1d3GEijBb8667YTNlXUdOAG88IFOwVKwM
+         O6Yu1YojShf0ToL3HOpg7BzIaSuQT93GgaiAcmwXUD/xt6IDxmVTp65+9h7dvzaFAktN
+         cfiOlUNf8jKAM4t+v1grcMJGGAYiN3lmYLNhcXZ2Z6Py40ujQHWr2wdjSW6TX3VBqvI1
+         6i1OHd9husSAeIWsJxQ2jBQLTeVnDJ5T3/8hZSOLDH5amJHUpTEBUba9CZRBboNEPQjk
+         FPmSB6iyiKFPlBo9Q5uFm3JMrOr57NnEGYVekWikGXwddj783DGt/Tv/qs4Qc0R7+CT0
+         0sVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TTlFa+FhQ9E3hhXfUpHEFEwCBTVYyl2tyI+bhrzBYYc=;
+        b=Aw+mVaTZs3VYY42J34gQHTNKbefHYrVQUXMORDtY9piuzeb970wS4yDbCzuXhs/g4C
+         3Ha5pD5QOqGcCg/kuRjMUXHQVhyefLbhibLPoI7VvnfjpvlTfRAy5vdApzH2woMiTJZ4
+         W3XT03o3V5c4ClCsh39QoVQs44x2PuITg8R6eHLU2mGipxGq/qFWNUP9vUa2rZuC30eE
+         Icbx3TlO27JJcYNHqA7lculrcS6WOoRIGuBpsWKFBSYiSjZZKBNkE90A+UXe27eqMRBg
+         PXIdie2uwCoUDAPHoPxVR/BguzAQuG3dpR0tDcJ3qY5sHvZOYU/Ysh2zfyZsQQkOZezV
+         WGxA==
+X-Gm-Message-State: AOAM530mO0S1b9li1u0rc2KJrDjLfgBpfTQ4cyk4gbymMOiXYorhNskl
+        gAz4AukrGLtNUU92JodrwxtSge9nBcDFRC7F9/A=
+X-Google-Smtp-Source: ABdhPJxeJccHQSNbhg5zM7E4+pnL0FyDxpIvUiHsVHtDscx7vBeclhvpXx/FSZrPFKM7KT0j6hQkBi0B1zyn07NtQ3Y=
+X-Received: by 2002:a9d:784a:: with SMTP id c10mr4094218otm.132.1611948533511;
+ Fri, 29 Jan 2021 11:28:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 173.39.51.250, bgl-ads-1848.cisco.com
-X-Outbound-Node: bgl-core-4.cisco.com
+References: <20210129120759.375725-1-colin.king@canonical.com>
+In-Reply-To: <20210129120759.375725-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 29 Jan 2021 14:28:42 -0500
+Message-ID: <CADnq5_O2MKy7jPc2o7u8H-VsDxweumxGHc7oBprg7ZyP_BMu2w@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amdgpu: Fix memory leak of object caps on error
+ return paths
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Leo Liu <leo.liu@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+On Fri, Jan 29, 2021 at 7:08 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently there are three error return paths that don't kfree object
+> caps.  Fix this by performing the allocation of caps after the checks
+> and error return paths to avoid the premature allocation and memory
+> leaking.
+>
+> Addresses-Coverity: ("Resource leak")
+> Fixes: 555fc7fbb2a2 ("drm/amdgpu: add INFO ioctl support for querying video caps")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-commit 2efdaaaf883a143061296467913c01aa1ff4b3ce upstream.
+Applied.  Thanks!
 
-Based on RFC 8200, Section 4.5 Fragment Header:
+Alex
 
-  -  If the first fragment does not include all headers through an
-     Upper-Layer header, then that fragment should be discarded and
-     an ICMP Parameter Problem, Code 3, message should be sent to
-     the source of the fragment, with the Pointer field set to zero.
 
-Checking each packet header in IPv6 fast path will have performance impact,
-so I put the checking in ipv6_frag_rcv().
-
-As the packet may be any kind of L4 protocol, I only checked some common
-protocols' header length and handle others by (offset + 1) > skb->len.
-Also use !(frag_off & htons(IP6_OFFSET)) to catch atomic fragments
-(fragmented packet with only one fragment).
-
-When send ICMP error message, if the 1st truncated fragment is ICMP message,
-icmp6_send() will break as is_ineligible() return true. So I added a check
-in is_ineligible() to let fragment packet with nexthdr ICMP but no ICMP header
-return false.
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Aviraj CJ <acj@cisco.com>
----
- net/ipv6/icmp.c       |  8 +++++++-
- net/ipv6/reassembly.c | 33 ++++++++++++++++++++++++++++++++-
- 2 files changed, 39 insertions(+), 2 deletions(-)
-
-diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
-index 7d3a3894f785..e9bb89131e02 100644
---- a/net/ipv6/icmp.c
-+++ b/net/ipv6/icmp.c
-@@ -158,7 +158,13 @@ static bool is_ineligible(const struct sk_buff *skb)
- 		tp = skb_header_pointer(skb,
- 			ptr+offsetof(struct icmp6hdr, icmp6_type),
- 			sizeof(_type), &_type);
--		if (!tp || !(*tp & ICMPV6_INFOMSG_MASK))
-+
-+		/* Based on RFC 8200, Section 4.5 Fragment Header, return
-+		 * false if this is a fragment packet with no icmp header info.
-+		 */
-+		if (!tp && frag_off != 0)
-+			return false;
-+		else if (!tp || !(*tp & ICMPV6_INFOMSG_MASK))
- 			return true;
- 	}
- 	return false;
-diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-index 1f5d4d196dcc..c8cf1bbad74a 100644
---- a/net/ipv6/reassembly.c
-+++ b/net/ipv6/reassembly.c
-@@ -42,6 +42,8 @@
- #include <linux/skbuff.h>
- #include <linux/slab.h>
- #include <linux/export.h>
-+#include <linux/tcp.h>
-+#include <linux/udp.h>
- 
- #include <net/sock.h>
- #include <net/snmp.h>
-@@ -322,7 +324,9 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
- 	struct frag_queue *fq;
- 	const struct ipv6hdr *hdr = ipv6_hdr(skb);
- 	struct net *net = dev_net(skb_dst(skb)->dev);
--	int iif;
-+	__be16 frag_off;
-+	int iif, offset;
-+	u8 nexthdr;
- 
- 	if (IP6CB(skb)->flags & IP6SKB_FRAGMENTED)
- 		goto fail_hdr;
-@@ -351,6 +355,33 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
- 		return 1;
- 	}
- 
-+	/* RFC 8200, Section 4.5 Fragment Header:
-+	 * If the first fragment does not include all headers through an
-+	 * Upper-Layer header, then that fragment should be discarded and
-+	 * an ICMP Parameter Problem, Code 3, message should be sent to
-+	 * the source of the fragment, with the Pointer field set to zero.
-+	 */
-+	nexthdr = hdr->nexthdr;
-+	offset = ipv6_skip_exthdr(skb, skb_transport_offset(skb), &nexthdr, &frag_off);
-+	if (offset >= 0) {
-+		/* Check some common protocols' header */
-+		if (nexthdr == IPPROTO_TCP)
-+			offset += sizeof(struct tcphdr);
-+		else if (nexthdr == IPPROTO_UDP)
-+			offset += sizeof(struct udphdr);
-+		else if (nexthdr == IPPROTO_ICMPV6)
-+			offset += sizeof(struct icmp6hdr);
-+		else
-+			offset += 1;
-+
-+		if (!(frag_off & htons(IP6_OFFSET)) && offset > skb->len) {
-+			__IP6_INC_STATS(net, __in6_dev_get_safely(skb->dev),
-+					IPSTATS_MIB_INHDRERRORS);
-+			icmpv6_param_prob(skb, ICMPV6_HDR_INCOMP, 0);
-+			return -1;
-+		}
-+	}
-+
- 	iif = skb->dev ? skb->dev->ifindex : 0;
- 	fq = fq_find(net, fhdr->identification, hdr, iif);
- 	if (fq) {
--- 
-2.26.2.Cisco
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> index 84b666fcfaf6..730f4ac7487b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> @@ -988,10 +988,6 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+>                 struct drm_amdgpu_info_video_caps *caps;
+>                 int r;
+>
+> -               caps = kzalloc(sizeof(*caps), GFP_KERNEL);
+> -               if (!caps)
+> -                       return -ENOMEM;
+> -
+>                 switch (info->video_cap.type) {
+>                 case AMDGPU_INFO_VIDEO_CAPS_DECODE:
+>                         r = amdgpu_asic_query_video_codecs(adev, false, &codecs);
+> @@ -1009,6 +1005,11 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+>                                       info->video_cap.type);
+>                         return -EINVAL;
+>                 }
+> +
+> +               caps = kzalloc(sizeof(*caps), GFP_KERNEL);
+> +               if (!caps)
+> +                       return -ENOMEM;
+> +
+>                 for (i = 0; i < codecs->codec_count; i++) {
+>                         int idx = codecs->codec_array[i].codec_type;
+>
+> --
+> 2.29.2
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
