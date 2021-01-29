@@ -2,204 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D204308DE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25407308DD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbhA2T4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:56:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233122AbhA2Tx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:53:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF6A64E19;
-        Fri, 29 Jan 2021 19:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611949925;
-        bh=zLl/LXT9nD9oiff3TtR2evITRFPN8gyWpZ86jRIchpE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XnxcbmlJjf145jvC7z/VDn/moQyH8N2Is7cwMYUAD+AukwUYMhOm9D7D4EMrvZmAI
-         A1EJzXreeafarejH6zDDPWWnJPo0mx2wRP5qnpPFw0sCpz/tKTlB7UC1NuMAnrZx8n
-         yR0cH3RiWLbNNYqfg0SCmpH48ZlxOxaayCRHxNDEbfm3yP2jgdFseo2jStzoz8nlfu
-         wsI1qBeYCGIxwPN5QMY6fefL2nicV2qXIOQxJuCbbq4RaSNy/b/s/U8tNS9rrNObun
-         zLcovJnR7LsNesO4FJtY8tAopASoorA7SbfMsH+RKL8nUbe6tUTesZ5HaNkLyPjg+3
-         Wge6l7kIs3d5A==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l5ZoJ-007Wk8-B7; Fri, 29 Jan 2021 20:52:03 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 14/14] dts: hisilicon: add support for the PMIC found on Hikey 970
-Date:   Fri, 29 Jan 2021 20:52:00 +0100
-Message-Id: <a2798afcf239bb0cc00a9460dee82d4348831d9e.1611949675.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1611949675.git.mchehab+huawei@kernel.org>
-References: <cover.1611949675.git.mchehab+huawei@kernel.org>
+        id S232579AbhA2TyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233111AbhA2Tx0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:53:26 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3FCC061573;
+        Fri, 29 Jan 2021 11:52:46 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id n14so5042099qvg.5;
+        Fri, 29 Jan 2021 11:52:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=md/WXLXgXjLYIf4dEOqdJFLd/DrASuHmSQ7Mb4mTb8U=;
+        b=kZDaR+I7/TAYuvL6VsRmibbm24Xc39thlGngC2wpldpmNTfFX56e1KigOpc3Bov9ps
+         36T0hcajFZ9x5EOj3B/GrBsk4BHpUyK7doECG7ARuyYyL/tv0nCCUwRdN5GFt7EQDhUn
+         /jd0tl/8ItTZLqQXvcdHW6K15Tvp/fyoatbXvyLimYoChuORVb+gR5R2o1V4QJjscHCP
+         FZg70Yp7G0y1M8U5EBNK7gpjjcRpStm9YcOnQ848qYwTosnZ/P5cPlMc0JBdEXe/jXBe
+         YUv1It//JInZZq+wVfOFnLe9Gphwe/toHLk1AG3a5p5BC8yp7J28unvlMOyyfPRj2I0M
+         QpKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=md/WXLXgXjLYIf4dEOqdJFLd/DrASuHmSQ7Mb4mTb8U=;
+        b=lYexOtBdVoPYms0Xp7EivDJCsB3TOoDpnIi24+zPUOSKWEO4Hr5L/K3xTo3sNqbNzo
+         0QO2q2mbLBwAFrV5G4zxiZMcZuDtOgtSXzM+qIVKEMyD4t3pt2v1KfOPJ/GjHkxixm8f
+         bBY+rfogrVFuks9xjW1BtjMTsxNATM77uRtIDvMMEhg0eOU9qxkHH4t1BTZZUclatAhW
+         TtbpttPqF20gbwi9ZFx/S0C1ueSlplVi03IvX0Ti5+SyIUdGsDrjrEjfmNvLlBwimrPl
+         RENuXmxD1F0C8X3VslCD7rFpmXX/3mQJw33ZPPcYMNl3RC12oqVhEPOx97pbiLGMQV+6
+         4Y+A==
+X-Gm-Message-State: AOAM533tREjMRCdneuoY0ravYEbL7IQnj12k+lUmrx6o9Moc0VF0NRqD
+        dJ0mrxZfFpy47TqE5u/tuzM=
+X-Google-Smtp-Source: ABdhPJz1M0FuDW6vU+wOkRYkY7qrChh/rAaueArj4f1SKV0EXW0KILnDMSEA25urmBiQyrAYJLbNjA==
+X-Received: by 2002:a05:6214:b81:: with SMTP id fe1mr2200645qvb.43.1611949965136;
+        Fri, 29 Jan 2021 11:52:45 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id s136sm6558994qka.106.2021.01.29.11.52.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 11:52:44 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?q?Anders=20R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v1 0/6] lan743x speed boost
+Date:   Fri, 29 Jan 2021 14:52:34 -0500
+Message-Id: <20210129195240.31871-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
-on HiKey970 board.
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-As we now have support for it, change the fixed regulators
-used by the SD I/O to use the proper LDO supplies.
+The first patch of this series boosts the chip's rx performance by up to 3x
+on cpus such as ARM. However it introduces a breaking change: the mtu
+can no longer be changed while the network interface is up.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
- .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 87 +++++++++++++++++++
- 2 files changed, 90 insertions(+), 19 deletions(-)
- create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+To get around this efficiently, the second patch adds driver support for
+multi-buffer frames. This will allow us to change the mtu while the device
+is up, without having to re-allocate all ring buffers.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 7f9f9886c349..5e6d7b329771 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -12,6 +12,7 @@
- 
- #include "hi3670.dtsi"
- #include "hikey970-pinctrl.dtsi"
-+#include "hikey970-pmic.dtsi"
- 
- / {
- 	model = "HiKey970";
-@@ -39,23 +40,6 @@ memory@0 {
- 		reg = <0x0 0x0 0x0 0x0>;
- 	};
- 
--	sd_1v8: regulator-1v8 {
--		compatible = "regulator-fixed";
--		regulator-name = "fixed-1.8V";
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <1800000>;
--		regulator-always-on;
--	};
--
--	sd_3v3: regulator-3v3 {
--		compatible = "regulator-fixed";
--		regulator-name = "fixed-3.3V";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
--		regulator-boot-on;
--		regulator-always-on;
--	};
--
- 	wlan_en: wlan-en-1-8v {
- 		compatible = "regulator-fixed";
- 		regulator-name = "wlan-en-regulator";
-@@ -402,8 +386,8 @@ &dwmmc1 {
- 	pinctrl-0 = <&sd_pmx_func
- 		     &sd_clk_cfg_func
- 		     &sd_cfg_func>;
--	vmmc-supply = <&sd_3v3>;
--	vqmmc-supply = <&sd_1v8>;
-+	vmmc-supply = <&ldo16>;
-+	vqmmc-supply = <&ldo9>;
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-new file mode 100644
-index 000000000000..8cf45b962fea
---- /dev/null
-+++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
-+ *
-+ * Copyright (C) 2020, Huawei Tech. Co., Ltd.
-+ */
-+
-+#include <dt-bindings/spmi/spmi.h>
-+
-+/ {
-+	spmi: spmi@fff24000 {
-+		compatible = "hisilicon,kirin970-spmi-controller";
-+		#address-cells = <2>;
-+		#size-cells = <0>;
-+		status = "okay";
-+		reg = <0x0 0xfff24000 0x0 0x1000>;
-+		spmi-channel = <2>;
-+
-+		pmic: pmic@0 {
-+			compatible = "hisilicon,hi6421-spmi";
-+			reg = <0 SPMI_USID>;
-+
-+			#interrupt-cells = <2>;
-+			interrupt-controller;
-+			gpios = <&gpio28 0 0>;
-+
-+			regulators {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				ldo3: LDO3 {
-+					regulator-name = "ldo3";
-+					regulator-min-microvolt = <1500000>;
-+					regulator-max-microvolt = <2000000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo4: LDO4 { /* 40 PIN */
-+					regulator-name = "ldo4";
-+					regulator-min-microvolt = <1725000>;
-+					regulator-max-microvolt = <1900000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo9: LDO9 { /* SDCARD I/O */
-+					regulator-name = "ldo9";
-+					regulator-min-microvolt = <1750000>;
-+					regulator-max-microvolt = <3300000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo15: LDO15 { /* UFS */
-+					regulator-name = "ldo15";
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3000000>;
-+					regulator-always-on;
-+				};
-+
-+				ldo16: LDO16 { /* SD */
-+					regulator-name = "ldo16";
-+					regulator-min-microvolt = <1800000>;
-+					regulator-max-microvolt = <3000000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo17: LDO17 {
-+					regulator-name = "ldo17";
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+
-+				ldo33: LDO33 { /* PEX8606 */
-+					regulator-name = "ldo33";
-+					regulator-min-microvolt = <2500000>;
-+					regulator-max-microvolt = <3300000>;
-+					regulator-boot-on;
-+				};
-+
-+				ldo34: LDO34 { /* GPS AUX IN VDD */
-+					regulator-name = "ldo34";
-+					regulator-min-microvolt = <2600000>;
-+					regulator-max-microvolt = <3300000>;
-+				};
-+			};
-+		};
-+	};
-+};
+Since this is an important change to the driver's rx logic, I have attempted
+to very carefully test this. Test descriptions are included with each
+commit message.
+
+I invite all interested users of the lan743x to test out these changes, either
+by testing them out "in the real world", or by repeating my artificial tests.
+
+Suggestions for better tests are very welcome.
+
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git # 46eb3c108fe1
+
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: UNGLinuxDriver@microchip.com
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Alexey Denisov <rtgbnm@gmail.com>
+Cc: Sergej Bauer <sbauer@blackbox.su>
+Cc: Tim Harvey <tharvey@gateworks.com>
+Cc: Anders Rønningen <anders@ronningen.priv.no>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org (open list)
+
+Sven Van Asbroeck (6):
+  lan743x: boost performance on cpu archs w/o dma cache snooping
+  lan743x: support rx multi-buffer packets
+  lan743x: allow mtu change while network interface is up
+  TEST ONLY: lan743x: limit rx ring buffer size to 500 bytes
+  TEST ONLY: lan743x: skb_alloc failure test
+  TEST ONLY: lan743x: skb_trim failure test
+
+ drivers/net/ethernet/microchip/lan743x_main.c | 324 ++++++++----------
+ drivers/net/ethernet/microchip/lan743x_main.h |   2 +
+ 2 files changed, 152 insertions(+), 174 deletions(-)
+
 -- 
-2.29.2
+2.17.1
 
