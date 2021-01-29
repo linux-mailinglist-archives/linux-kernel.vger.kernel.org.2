@@ -2,84 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487AD30863D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51555308643
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhA2HIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
+        id S232215AbhA2HJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbhA2HIO (ORCPT
+        with ESMTP id S229656AbhA2HJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:08:14 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC16C061573;
-        Thu, 28 Jan 2021 23:07:34 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRpLp3nY8z9sSC;
-        Fri, 29 Jan 2021 18:07:30 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611904052;
-        bh=CBnQX/9BT4fWvnBH2HpYrwl4g+Tim3wZzojPaFHiCHs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g+KnLKbggV6TK9VbQfS92U4RjYAfYTRJRN4SRcwc+I7ps4B6/REAEuvyyZTpJz1NF
-         8m56CaieOwcWOPcFUy/kthnDkeiQ93yjJKThx/gdR1wo6FIv9jP2dDHdiX17PfQRl9
-         rTNiZBVrIpC+IaBl60Bc3NNedQFN2VmR9ocZjhls1jIRsuFKzgWkVdc1IF87ELlWLY
-         dM/BGWVE/hVqL9LsRvzftk+LSCjvPxaPK8wt3O837IhbklL9Rc/EhfJIAmWqnN3slr
-         ASwyjE/w7nZyoG59PqM4q6GreKjp2Y96wsKygrVBF9uWczAcZ9UQHLEeS8H3IX65l7
-         54skAqn22NbKg==
-Date:   Fri, 29 Jan 2021 18:07:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the char-misc tree
-Message-ID: <20210129180729.44e79afe@canb.auug.org.au>
+        Fri, 29 Jan 2021 02:09:41 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12126C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:09:01 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id m13so7750284wro.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:09:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ult8zy5xj/tXqtlGi7vShUkHJCjjlZrRLpldHENqRBY=;
+        b=cBaGDGS2QWOESKozRcZotuvwRupav2CXJF7ahIQn+h0+WO/z5SKkLUccJxo94nXNxH
+         YMWlfKR6c92aQ2FN85YA+iC3zVa9/YotWR2/M4RrUJkLCg8KkPiYz0QJY7K9vjX+mZP3
+         mqpAQxkjD4DWL6MihojpYmp07WiSff6r4bobkkvj3TWHMfqswBanlkTM3Jux2xrbOLV/
+         oXbWTl9ByjD7RWsvYtodlLu3DMya7dPa/ZuXPnbMSv9tM0IfO55LepZY+Yc7H0/mVuwC
+         wjOmsKA8p7Ln7TNXXQz0rSc9DEnGSzZ9QAEiNusnTVWGmLmgKho7JsLOY/B9sDxpB3TM
+         C3Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ult8zy5xj/tXqtlGi7vShUkHJCjjlZrRLpldHENqRBY=;
+        b=kVHzf1I6gb2vozS3z/oQxx1mDj95S6njrhUMGeizUqUUDhCPoHdYau+GAmcU2lOzwb
+         N3Xhu9VYTvwMqlcE6WFbJuS20iNBvJOgTKhYsJswYcOFoyUgiI0eiJVhKRlWLtVIjsPq
+         KiNU9NqGCkXAAO1T12h6vzUNaJWrI3RtgDdxhsOs/IOJO0qqXB7zJ8/t+MFoiwSjzmlb
+         XcarDVvRHIAMY7zqX16toFdBampZX/4D8avsngOaGIDBS2ET1TiKeGkWOFYMf6szD7i1
+         /+QjguUXwFzrlD5mRRf+olnvRdpbjq5YoS/VTde6GdZaISCuxMUUbnRTNjiWEBu5zJZn
+         hKcQ==
+X-Gm-Message-State: AOAM533xFJVTzP2kV4UcQJNA7zeHzZkFfNUBDPDTiP6iJzWARX7LA702
+        zfj64O8O9ZsW59gvY0L7Zpa3cuFHb7gaBPlfpot7aA==
+X-Google-Smtp-Source: ABdhPJzkowp1ilp+OFPEIMbGb6vSG9e69uA79k3/vA8VNzv9ZTNBTpkBH2Stn5OWV7WFH9rQ1eD4rtL1bZyOdiGOgOI=
+X-Received: by 2002:adf:e50e:: with SMTP id j14mr2960460wrm.162.1611904139317;
+ Thu, 28 Jan 2021 23:08:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EgVFxuPFb4xK8jtf67GEl.b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
+ <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
+ <20210113142202.GC22493@dhcp22.suse.cz> <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
+ <20210126135254.GP827@dhcp22.suse.cz> <CAJuCfpEnMyo9XAnoF+q1j9EkC0okZfUxxdAFhzhPJi+adJYqjw@mail.gmail.com>
+In-Reply-To: <CAJuCfpEnMyo9XAnoF+q1j9EkC0okZfUxxdAFhzhPJi+adJYqjw@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 28 Jan 2021 23:08:48 -0800
+Message-ID: <CAJuCfpF861zhp8yR_pYx8gb+WMrORAZ0tbzcKtKxaj7L=jzw+Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
+        Tim Murray <timmurray@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EgVFxuPFb4xK8jtf67GEl.b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 28, 2021 at 11:51 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Tue, Jan 26, 2021 at 5:52 AM 'Michal Hocko' via kernel-team
+> <kernel-team@android.com> wrote:
+> >
+> > On Wed 20-01-21 14:17:39, Jann Horn wrote:
+> > > On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
+> > > > > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > > > > >
+> > > > > > On 01/12, Michal Hocko wrote:
+> > > > > > >
+> > > > > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
+> > > > > > >
+> > > > > > > > What we want is the ability for one process to influence another process
+> > > > > > > > in order to optimize performance across the entire system while leaving
+> > > > > > > > the security boundary intact.
+> > > > > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
+> > > > > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
+> > > > > > > > and CAP_SYS_NICE for influencing process performance.
+> > > > > > >
+> > > > > > > I have to say that ptrace modes are rather obscure to me. So I cannot
+> > > > > > > really judge whether MODE_READ is sufficient. My understanding has
+> > > > > > > always been that this is requred to RO access to the address space. But
+> > > > > > > this operation clearly has a visible side effect. Do we have any actual
+> > > > > > > documentation for the existing modes?
+> > > > > > >
+> > > > > > > I would be really curious to hear from Jann and Oleg (now Cced).
+> > > > > >
+> > > > > > Can't comment, sorry. I never understood these security checks and never tried.
+> > > > > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
+> > > > > > is the difference.
+> > >
+> > > Yama in particular only does its checks on ATTACH and ignores READ,
+> > > that's the difference you're probably most likely to encounter on a
+> > > normal desktop system, since some distros turn Yama on by default.
+> > > Basically the idea there is that running "gdb -p $pid" or "strace -p
+> > > $pid" as a normal user will usually fail, but reading /proc/$pid/maps
+> > > still works; so you can see things like detailed memory usage
+> > > information and such, but you're not supposed to be able to directly
+> > > peek into a running SSH client and inject data into the existing SSH
+> > > connection, or steal the cryptographic keys for the current
+> > > connection, or something like that.
+> > >
+> > > > > I haven't seen a written explanation on ptrace modes but when I
+> > > > > consulted Jann his explanation was:
+> > > > >
+> > > > > PTRACE_MODE_READ means you can inspect metadata about processes with
+> > > > > the specified domain, across UID boundaries.
+> > > > > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
+> > > > > specified domain, across UID boundaries.
+> > > >
+> > > > Maybe this would be a good start to document expectations. Some more
+> > > > practical examples where the difference is visible would be great as
+> > > > well.
+> > >
+> > > Before documenting the behavior, it would be a good idea to figure out
+> > > what to do with perf_event_open(). That one's weird in that it only
+> > > requires PTRACE_MODE_READ, but actually allows you to sample stuff
+> > > like userspace stack and register contents (if perf_event_paranoid is
+> > > 1 or 2). Maybe for SELinux things (and maybe also for Yama), there
+> > > should be a level in between that allows fully inspecting the process
+> > > (for purposes like profiling) but without the ability to corrupt its
+> > > memory or registers or things like that. Or maybe perf_event_open()
+> > > should just use the ATTACH mode.
+> >
+> > Thanks for the clarification. I still cannot say I would have a good
+> > mental picture. Having something in Documentation/core-api/ sounds
+> > really needed. Wrt to perf_event_open it sounds really odd it can do
+> > more than other places restrict indeed. Something for the respective
+> > maintainer but I strongly suspect people simply copy the pattern from
+> > other places because the expected semantic is not really clear.
+> >
+>
+> Sorry, back to the matters of this patch. Are there any actionable
+> items for me to take care of before it can be accepted? The only
+> request from Andrew to write a man page is being worked on at
+> https://lore.kernel.org/linux-mm/20210120202337.1481402-1-surenb@google.com/
+> and I'll follow up with the next version. I also CC'ed stable@ for
+> this to be included into 5.10 per Andrew's request. That CC was lost
+> at some point, so CC'ing again.
+>
+> I do not see anything else on this patch to fix. Please chime in if
+> there are any more concerns, otherwise I would ask Andrew to take it
+> into mm-tree and stable@ to apply it to 5.10.
+> Thanks!
 
-Hi all,
+process_madvise man page V2 is posted at:
+https://lore.kernel.org/linux-mm/20210129070340.566340-1-surenb@google.com/
 
-After merging the char-misc tree, today's linux-next build (htmldocs)
-produced this warning:
-
-Documentation/driver-api/index.rst:14: WARNING: toctree contains reference =
-to nonexisting document 'driver-api/pti_intel_mid'
-
-Introduced by commit
-
-  8ba59e9dee31 ("misc: pti: Remove driver for deprecated platform")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/EgVFxuPFb4xK8jtf67GEl.b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmATtDEACgkQAVBC80lX
-0Gx/cgf/b4hAL9TgC6QRHQQJSm02cc5W8mGwrGr3BdCH9eRm+m1UzLA2HyC+rOYR
-yR0M6rkT2dQWlYZ6jqbp+FAQRseeKlcWGyYf8RDcbkcUJlHbQbrEBp5aKQ4ZpFhJ
-JcPmzRfvSy+4OiQOx1g4czXR/7Y7SBzn29U69jfjbxD5MvQnkEV2L7AoM2lNw7JC
-CZeU12mPLOcI7FcFNP4MYY73kB713VlvTQt5pYGePkoi+8aPBs8n9iJcyQf2gnJ+
-pVoN8e2/4Sv568DVMFMA7UXG0k5YLVbv7CTC6gjrB8d7hgEowpFPJhJ3Yi2it/2Y
-0/LdVm7JPuzsNIxSRDeZdvX+G46/pA==
-=23Lj
------END PGP SIGNATURE-----
-
---Sig_/EgVFxuPFb4xK8jtf67GEl.b--
+>
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
+> >
+> > --
+> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> >
