@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E006B308BEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AA4308BEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhA2Rsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:48:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S229661AbhA2Rt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhA2Rq2 (ORCPT
+        with ESMTP id S231533AbhA2Rq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:46:28 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC39EC0613ED;
-        Fri, 29 Jan 2021 09:46:01 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id m22so4017580ljj.4;
-        Fri, 29 Jan 2021 09:46:01 -0800 (PST)
+        Fri, 29 Jan 2021 12:46:59 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C47C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:46:11 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id c132so7195175pga.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:46:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+OiLSidU7jcHvOmsUmz5FLYsay7uE4w9flc5/NGNfkQ=;
-        b=c9c1fFAA1Q8jIaxn1++ppLWGxW194CT3+GS7F07iA+23CjkP4o3p62TTBa9+JCPss8
-         G95v+K4CU6Kn6ZTEO0E/YFAyGCvA/o1XfIqYRj4KQwr3pfD6t1EjYAF6YKmFs85hdDwv
-         w/AOuj4W3TGHANd4rOZkqPn9+2+PuY+X6+Vtlv63lJ8oBuVZ/p/O+kMKyMIihhvktChP
-         BaiSqHxjA0ESb6iLgwEnIARFFFVe0kOPAckpIT5ulDSfRXZQrPAwPV5sfE5JBMetGk74
-         43umU4wu9L5N6DcwfwW1J9Zj7rS4ujbYTt7k69hIhZ86kpP+qHV4Mu2GTUhVI5JpeYV6
-         1meQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=YvooiHEr081BMnr73xMgUGyshJjAwTDDQTznTrGK/+4=;
+        b=KYL++0LwqZuvIn8n71YlhmZyh0idzKaFQkbQk4Bgjqa/nE+9WQFM++GQJxjwSBsUJJ
+         zk12PA0N6l8/oAEqBCiUl320O/Ukjv2MrPQMNRf83op9n64TXBKOI3k1nuQAuBG+/UNk
+         Omr/jNzAnWdGvmPrPAkGYjRVxS0RCZICUPJNfw2IOlD80oQ0sgGTNk2qtYPbq/lCg3xY
+         11twaeBlyAPOw+Efb9JPELFRA0Yb6BFTwG7QOj/nBpsvevimgUjSw+psxl8yU476/x/w
+         WdG1aSQULxjl2mejfPXhcrOhc1rAJrQ6LBBJ8DUdiGla2dI4RBOdltG9zz0Sypd4SR9R
+         TuSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+OiLSidU7jcHvOmsUmz5FLYsay7uE4w9flc5/NGNfkQ=;
-        b=nG8hEI0xR+mWhRAmDKjbJLlhCjSJLNgg/bLoVRvS7fGNlxkF6axz2+CSrRz2LNNndp
-         +XAPOHVoQmDi12Jd+1kUjnwR5B8S9vvhwJp9qc5L8g/tVLwLLLC/j/+lJR5h6C1Q8cvj
-         lYx2DKjL7iQ+HAFxe15dyIIX5IyyhmBDorVK3idaZEA3Xe6YCA68NrBDbADzVO+xw4q8
-         0VjdYTAEHw3Zw3DWYKw6hBHmzf7fS4ZJmhfpU1VxCVxWytgOQt1O6ySNCkuv2Q0XdS1c
-         lJJ4J7N1JLx91QWnFSPf/Kst3JFNaXrjXboKZgX7KeyIaBO5Vi0KnANN4Qa/NiFS+Gpb
-         181Q==
-X-Gm-Message-State: AOAM532ViBFH+5A5RD0wsBn7460VCxzV9cALBGUQIDx6KbK0gkbhVxX9
-        VCBmFbtD0rrhDiH+3PvczdsVN705aLq/u9KnAic=
-X-Google-Smtp-Source: ABdhPJyw4/ZdcfTfGiaJaSjtW7rI6HqbvMxy1MfFTpgwKqPTTtZRzm/XcZPWYFpu1ZRQUDZH3zLDxOfLblZ1if5xmjU=
-X-Received: by 2002:a2e:3507:: with SMTP id z7mr2839145ljz.32.1611942360223;
- Fri, 29 Jan 2021 09:46:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=YvooiHEr081BMnr73xMgUGyshJjAwTDDQTznTrGK/+4=;
+        b=VSalXyXH+Ql4yrfk7jmUlwB3DIktgwVlX1It/6xyhNg0eKsABBAx1y8us7Af1XiSQs
+         +qn83+CcertK6jj6FeC5y2EUbDzQwJcYsMR7wkMyibseJGJHcbZpM96s+JCECtDetCeM
+         oAETVaWuMI+m3L7S460PQ1UH+IRm2VfA3NvpUHbJ6BSDUUwp9AKFnHzgD6MskyhDvKhY
+         T/t37pCP5///UBl69uQdbo3J8wcPmi/ZEnQlnoQnvEcj8eoyymGeJrxLaO2sN7KRlool
+         TXNotFA57zdNjeXwMsEroP00QYLeZalPaCLQiFj7iY6zmmcHm6A5vvOS3R0qjeZbC4SE
+         LtWQ==
+X-Gm-Message-State: AOAM5308k0DLde3oplZ+hNIp7tb/asnWEtPbiN1iZ9oZ5pMd6fVk2DYP
+        eT9V4K/sqiklK5bLuLgPVcRoeDQD6Msqig==
+X-Google-Smtp-Source: ABdhPJy0GTzGE0h7NzRnlIuyiRC9ZQI4dBknJxwAFnRAYGn8AVBvb7jghTDUMsvBtDFXm6hm8iVlyA==
+X-Received: by 2002:aa7:8497:0:b029:1bf:47c6:523a with SMTP id u23-20020aa784970000b02901bf47c6523amr5491081pfn.0.1611942371007;
+        Fri, 29 Jan 2021 09:46:11 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id w11sm9766944pge.28.2021.01.29.09.46.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 29 Jan 2021 09:46:10 -0800 (PST)
+Date:   Fri, 29 Jan 2021 23:16:08 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] opp: Don't ignore clk_get() errors other than -ENODEV
+Message-ID: <20210129174608.owianuy6yj5m6fgl@vireshk-i7>
+References: <28d24b4c5b9ceabbd32b7b312dee050992610be9.1611917396.git.viresh.kumar@linaro.org>
+ <49983ca1-feb3-48f5-bdf5-b2f39c963a74@gmail.com>
 MIME-Version: 1.0
-References: <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org> <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com> <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net> <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
- <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net> <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
- <20210129105952.74dc8464@gandalf.local.home> <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 29 Jan 2021 09:45:48 -0800
-Message-ID: <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()")
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <49983ca1-feb3-48f5-bdf5-b2f39c963a74@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 8:24 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Jan 29, 2021 at 10:59:52AM -0500, Steven Rostedt wrote:
-> > On Fri, 29 Jan 2021 22:40:11 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > > > So what, they can all happen with random locks held. Marking them as NMI
-> > > > enables a whole bunch of sanity checks that are entirely appropriate.
-> > >
-> > > How about introducing an idea of Asynchronous NMI (ANMI) and Synchronous
-> > > NMI (SNMI)? kprobes and ftrace is synchronously called and can be controlled
-> > > (we can expect the context) but ANMI may be caused by asynchronous
-> > > hardware events on any context.
-> > >
-> > > If we can distinguish those 2 NMIs on preempt count, bpf people can easily
-> > > avoid the inevitable situation.
-> >
-> > I don't like the name NMI IN SNMI, because they are not NMIs. They are
-> > actually more like kernel exceptions. Even page faults in the kernel is
-> > similar to a kprobe breakpoint or ftrace. It can happen anywhere, with any
-> > lock held. Perhaps we need a kernel exception context? Which by definition
-> > is synchronous.
+On 29-01-21, 18:23, Dmitry Osipenko wrote:
+> 29.01.2021 13:51, Viresh Kumar пишет:
+> > Not all devices that need to use OPP core need to have clocks, a missing
+> > clock is fine in which case -ENODEV shall be returned by clk_get().
+> > 
+> > Anything else is an error and must be handled properly.
+> > 
+> > Reported-by: Dmitry Osipenko <digetx@gmail.com>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > Stephen, is the understanding correct that -ENODEV is the only error
+> > returned for missing clocks ?
+> > 
+> > Dmitry: I hope this is on the lines of what you were looking for ?
+> 
+> Viresh, thank you! This is not what I was looking for because clk core
+> doesn't return -ENODEV for a missing clock, but -ENOENT. The ENODEV
+> certainly should break drivers.
 
-I like 'kernel exception' name. SNMI doesn't sound right. There is nothing
-'non maskable' here.
+My bad.
+ 
+> I was looking for this:
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 0305861fee1b..3dd9cdbc0e75 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1264,7 +1264,7 @@ static struct opp_table
+> *_update_opp_table_clk(struct device *dev,
+>  	if (IS_ERR(opp_table->clk)) {
+>  		int ret = PTR_ERR(opp_table->clk);
+> 
+> -		if (ret == -EPROBE_DEFER) {
+> +		if (ret != -ENOENT) {
+>  			dev_pm_opp_put_opp_table(opp_table);
+>  			return ERR_PTR(ret);
+>  		}
 
->
-> What problem are you trying to solve? AFAICT all these contexts have the
-> same restrictions, why try and muck about with different names for the
-> same thing?
+You should be looking for this instead, isn't it ?
 
-from core kernel perspective the difference between 'kernel exception'
-and true NMI is huge:
-this_cpu vs __this_cpu
-static checks vs runtime checks
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 049d45e70807..4bfcbe5b57af 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1268,7 +1268,7 @@ static struct opp_table *_update_opp_table_clk(struct device *dev,
+        if (!ret)
+                return opp_table;
+ 
+-       if (ret == -ENODEV) {
++       if (ret == -ENOENT) {
+                dev_dbg(dev, "%s: Couldn't find clock: %d\n", __func__, ret);
+                return opp_table;
+        }
 
-Same things apply to bpf side. We can statically prove safety for
-ftrace and kprobe attaching whereas to deal with NMI situation we
-have to use run-time checks for recursion prevention, etc.
+
+-- 
+viresh
