@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EC3308D54
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA17308D6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhA2T0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:26:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbhA2T0V (ORCPT
+        id S233075AbhA2T2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:28:50 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:50879 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232630AbhA2T2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:26:21 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8111AC061573;
-        Fri, 29 Jan 2021 11:25:41 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id ox12so14667114ejb.2;
-        Fri, 29 Jan 2021 11:25:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6XitYVxFpG+yfSmfoqgTHU6sMSl3GuaIPGPB+K4jS8k=;
-        b=LdbXnStrTHRgqIPwn5KkG4SoV+wrMqcH1KfnZaeny7IR4YfKJV9FgD4gz7GOibixv/
-         whHSnLoQs9JBuIakC13mlrNhgsX4k92RaeiHc1o/3C+2odPxbf+2ghqolAXGT9C8klHk
-         PSDLU1WRRI8/pc+lP7UpMyZEwb9wxKuFWyvWppF2109PQjvMUbcBWEqtr65HdwmoYH92
-         3/nZnhAM8rj40+lP2TIVOZowQfO86Dgi7VkFzDb6iaU/SIkFE+wOv5/pGWFC7eFT/B1+
-         RPV1Bc36vVJYM1FV3CiuCh2M6k6q4ouG0jkpSB7CE3LuAYOU4S/sHaqehPlb8p40Xbv6
-         FIGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6XitYVxFpG+yfSmfoqgTHU6sMSl3GuaIPGPB+K4jS8k=;
-        b=e4cLBULMOJT2pYs9fmMJIC+75o9LCDWXLj23Te3ysNpgzHi40EcW2W8k9vavAq8vvd
-         8qXQDADoOkEacScbPU4mnJj28cKT30lzyAMpotVIVhLYfIPp6jhRMFzw+Rpvp5XjFTJG
-         ZwxTzQidzn4+xKO/FNFcT0iF/qrml/FIQ+ckCrTmsuNeK21u4INZzHwHdg7Rq6vKw7+5
-         qJbi/akBbgXUo3rsawgy11p77XGMwLEVCvKWfsvoOyynV9xlb1mvk7ZSWQkyh615slOF
-         bBRQy6oMyP9kYDR6G6a/sZEV/cfqQN3laKJpyPfZFQOZiWrhTnfGdIOS6bey/5VurLCS
-         djSw==
-X-Gm-Message-State: AOAM531HkSCJFw6UnQ88/9Nek9ykcxkPap25mUwV+G5Geta5c5oFI7BF
-        Bq1+gIJwU2nz4ync1/FX5i4=
-X-Google-Smtp-Source: ABdhPJyKVvrUDn70Cf/6sN90N0m4or33nV33ioulfHW4UFTSMyrCwyCZNOAR8DQu/6N7nyqHAKUmdQ==
-X-Received: by 2002:a17:907:961d:: with SMTP id gb29mr6224545ejc.460.1611948340080;
-        Fri, 29 Jan 2021 11:25:40 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id dh14sm4995787edb.11.2021.01.29.11.25.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 29 Jan 2021 11:25:39 -0800 (PST)
-Message-ID: <63f00f514f1e912b8fb1d0c183e9167b60b3a5dc.camel@gmail.com>
-Subject: Re: [PATCH V2] scsi: ufs: Add UFS3.0 in ufs HCI version check
-From:   Bean Huo <huobean@gmail.com>
-To:     Nitin Rawat <nitirawa@codeaurora.org>, cang@codeaurora.org,
-        asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 29 Jan 2021 20:25:38 +0100
-In-Reply-To: <1611058021-18611-1-git-send-email-nitirawa@codeaurora.org>
-References: <1611058021-18611-1-git-send-email-nitirawa@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Fri, 29 Jan 2021 14:28:38 -0500
+Received: from envy.fritz.box ([87.123.100.109]) by mrelayeu.kundenserver.de
+ (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1MpDVx-1llE9z1jw7-00qi4J; Fri, 29 Jan 2021 20:25:56 +0100
+From:   mail@richard-neumann.de
+To:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
+        shyam-sundar.s-k@amd.com, mail@richard-neumann.de,
+        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] i2c: i2c-amd-mp2: Clean up driver
+Date:   Fri, 29 Jan 2021 20:25:51 +0100
+Message-Id: <20210129192553.55906-1-mail@richard-neumann.de>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:QV1wb189yYBNMQ2EyN0xXBM5UzM+IdWTE5KlBkIRhnAi1vEYNqx
+ M0D/EKEaVL+Fv3S5V58VUiOum5iuOf54RZcr3Wqb6gbDCFS09nTiajdGNxWhuXnd6qrHR32
+ Rcdw95+4qt5EF/y+NM06wXuonDzDXKV6z2GOvLMgRdhOFrdTNziunKQFo0vDjFIsYkr0A1P
+ svShz6AxxNRumA8VQ3Lhg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kCGMQwuokuU=:qmjTKxOIHrrLWbXmoT2hrV
+ ZEyjEz01OlbsZVp++RqduUFUEW8qqEslbOzRW33pyLEYpx01+rkrvwPi8LyIa5twoP7Z5LMr/
+ GXU5Yoakr/geK5X9DkPej7fIZO5xVytLUEeaDs2GiPa261MfBxIc37TXjDu/J6qwSDCD9GD8C
+ xu43MD2JOoVTVq6RqiwO5UnLIsS/9iCOcQNQ1S/+lXi+ZV7pysMHafjz5tecJJbXdtKDRFzYb
+ xWKyUj95TBiLMrhGG7C/WgC80+zfdlzovGYGSCL+ElxHYidbaV/dDgPLyHSnOsdfIo3gmS1KQ
+ Ky93Vho/DKnjTzbBehWWWLi0asSWV92ZhKYPFQwN2zbWZAyG6jX94CiVSYl7iZ+3Iy77C0wS0
+ uMlgg/uZXe7eyij7QVX/bc/tqKfGavOZHSe5zd7tQ2yUYKhSP26Y87J/4tSB/grruqJ9d7Qns
+ 97HQxiEsyg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-19 at 17:37 +0530, Nitin Rawat wrote:
-> As per JESD223D UFS HCI v3.0 spec, HCI version 3.0
-> is also supported. Hence Adding UFS3.0 in UFS HCI
-> version check to avoid logging of the error message.
-> 
-> Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 5 +++--
->  drivers/scsi/ufs/ufshci.h | 1 +
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 82ad317..54ca765 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -9255,8 +9255,9 @@ int ufshcd_init(struct ufs_hba *hba, void
-> __iomem *mmio_base, unsigned int irq)
->         if ((hba->ufs_version != UFSHCI_VERSION_10) &&
->             (hba->ufs_version != UFSHCI_VERSION_11) &&
->             (hba->ufs_version != UFSHCI_VERSION_20) &&
-> -           (hba->ufs_version != UFSHCI_VERSION_21))
-> -               dev_err(hba->dev, "invalid UFS version 0x%x\n",
-> +           (hba->ufs_version != UFSHCI_VERSION_21) &&
-> +           (hba->ufs_version != UFSHCI_VERSION_30))
-> +               dev_err(hba->dev, "invalid UFS HCI version 0x%x\n",
->                         hba->ufs_version);
+From: Richard Neumann <mail@richard-neumann.de>
 
-Hi Nitin
-Except HCI 1.0 / 1.1 / 2.0 / 2.1 / 3.0, do you have the other UFS HCI
-version? if no, current driver supports all of them,  instead of
-scaling these check, and avoid logging of the error message, I suggest 
-you can directly delete these redundant checkup.
+Clean up i2c-amd-mp2-{pci,plat} drivers:
+* Use pci_* logging functions provided by the kernel's PCI API.
+* Remove unused macros.
+* Remove useless __func__ from logging.
 
-If there is a weird HCI version that not supported by the current
-driver, you can only add an unsupported checkup list. thus, you don't
-need to scale this useless checkup.
+Changes since v1:
+* Remove useless __func__ from logging.
+* Assign pci_dev to local variable where applicable.
 
-Bean
+Richard Neumann (2):
+  i2c: i2c-amd-mp2: Remove NIH logging functions
+  i2c: i2c-amd-mp2: Remove unused macro
 
+ drivers/i2c/busses/i2c-amd-mp2-pci.c  | 53 +++++++++++++--------------
+ drivers/i2c/busses/i2c-amd-mp2-plat.c |  3 +-
+ drivers/i2c/busses/i2c-amd-mp2.h      |  6 ---
+ 3 files changed, 27 insertions(+), 35 deletions(-)
 
-
+-- 
+2.30.0
 
