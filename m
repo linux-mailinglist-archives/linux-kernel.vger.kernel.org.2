@@ -2,217 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DD4308C50
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FC7308C52
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhA2SVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:21:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
+        id S232353AbhA2SWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhA2SUt (ORCPT
+        with ESMTP id S231169AbhA2SWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:20:49 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C11CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:20:09 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id q9so9381520ilo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:20:09 -0800 (PST)
+        Fri, 29 Jan 2021 13:22:03 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACC3C061573;
+        Fri, 29 Jan 2021 10:21:23 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id n42so9471613ota.12;
+        Fri, 29 Jan 2021 10:21:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dkfy9D4szoTbkUSTq/ZhsTMr1TyIJnO6J28s6U7fg4I=;
-        b=CVpTeuwdpsNzmOl9z2MSMm9h9Byz+lm1DBfCOMcC70X9z9O7pYUamk4dAzrWkVF3u1
-         UKBsp03itKVjhp0MZ9Z6Ajw3phF/lARtw9HTrEPY/IdfH70rWuoSQaC0otCKrrQg66Op
-         IPjtxOWLju1Gp5FQ2FSWnXwllgb5zgz/lQTWzhEa9EeNC8zDKRBG3uWf+P7v1vWRqL6A
-         MIbnGzHvRRlZ85WhkSebx31G8CMyB4jjJ4oRNTCNxZ5rJoUpAHWKLKQJeHThHfuymjYX
-         FG97aGnqcKYnpp8UI0ahjSEIU3b0wINhzo9Duv6QjFnJki1Kd2pIRw0LYflTi0qLzjxU
-         VKBA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5X4YtgBMEVEyv03v8P1B3WP13UY1i1jA62TKIIbtiEk=;
+        b=RfynpvdU/CwN3netvDIyiAxrLWWCDEjf7MaIi2MFCXUKBJDXtqFFvjwmaHbLoE9gSO
+         R7kiv71LcUvUlOii5yfPfCURa9qjrXhiTot2TSB5UmTxc/YLTpCOyjA1hS9fT2AXMnTy
+         8l7OoEpXpebUc1pa31vFPV7+QqodDst96SKwJALuMp/GGYW821CG84OGRqlSEvZRDxrQ
+         8Gt3Dhja6pJTRj2y1lRapuQt9eF1uRN444STu4ka06CC41EHZIdaCRg1x1KnKiGYAWiF
+         Bk1rkkL1GvuEjyv9SA58wuP9dTw0Dc3eJaOkZsi4ND85JRfkaHy7437+Ooj9+YsI2Gta
+         +dpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dkfy9D4szoTbkUSTq/ZhsTMr1TyIJnO6J28s6U7fg4I=;
-        b=CNsH8rfqk6QPB1a3dvFchal7QFkahQzgK+v/eY1yWqEReDL8Wic86k3JUF76bIByo0
-         k0Z0SUd7XwSD8dYb/PCSj1UaeHEycbSfV96bF7w4c1XU7dWQknp73ugn7SKeoeDvg0X8
-         ENq6nLbc9orgTqrxBq0645KT5wcA43AR4Ww9c/PrkmJNm8sECvXDfswh0dSlwqkrVFbJ
-         IvQaGkW0FwBpXS3c7+bTD78TWuHV6rS9IworoU45cOpOlLx/fipec36M0TJ1uX50BL0J
-         dKFxJY7l5l+xt7fpSJBCFbhUUKDIbuTewsfO/F2Sc52BydD47Wq50Hfa/TGUyOtB9ok9
-         PdWw==
-X-Gm-Message-State: AOAM5301WVLAYynnL1xJdqLHn4u0Rd8r52vp8NBPtFoXWS13V3Gg305e
-        N7jHp6eTm2mE7nN5Fv1eA5o3rNrAdgkD01t0E+O6LQ==
-X-Google-Smtp-Source: ABdhPJzDAy5vsizjrTresNuNFBOFAvh9JU6zDvqgn75g4prU7+/UnoxvTVd3uMdvZ58odVn+Cpk1qkc1w9pZ8B7U8tg=
-X-Received: by 2002:a92:510:: with SMTP id q16mr4072338ile.136.1611944408326;
- Fri, 29 Jan 2021 10:20:08 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5X4YtgBMEVEyv03v8P1B3WP13UY1i1jA62TKIIbtiEk=;
+        b=GHVT2OcBIVhHoOYlg/fJF6tOUSZzvZoPyJyXN8J+gu4nNXH9O6WGF7br1M4OioZuxF
+         kiaYcBpfa5Ca7WwbYMY3tlirn0JyjUvGB7EWVzREowr8OdCes56C+AuIIsLSyOgKpfBP
+         JPCIS/XBAISvwv5oo31oZGhhJ8CBxoWLZt03D5BeLVDoBHT2OO8D59QcKeZbXuLn5jmt
+         0ly7FW4E8pMJr9k0FyVEqpDWou0q9xoxRC24b1sIsIqb88A0Jt/1QxIHwjBYF7dgr/TZ
+         9aoVl6BjWe8xqi2Pt6MStHY2L6ZoqfsmjAhoclK9oup2xApjBreY9eFqYibjsatfyMmO
+         IXaQ==
+X-Gm-Message-State: AOAM531Tu2Rn1Gy8FnDqqbXfnyR8S6NYqrCXU7TWfRtBg0ZtDxc4mI0U
+        VF41eRUDnOhrDZcYx0Jz94ItW0xO7VQ=
+X-Google-Smtp-Source: ABdhPJzU/+FFKfWFyYL+Tl1vfcxKMv0azJPIPCg45bh87uejs+s4XCkVFC1CrkBuKB+8O1hlAtutiA==
+X-Received: by 2002:a9d:61d0:: with SMTP id h16mr3574991otk.1.1611944483055;
+        Fri, 29 Jan 2021 10:21:23 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a8sm1981296otk.52.2021.01.29.10.21.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 29 Jan 2021 10:21:22 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 29 Jan 2021 10:21:20 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/24] 4.4.254-rc1 review
+Message-ID: <20210129182120.GA146143@roeck-us.net>
+References: <20210129105909.630107942@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210129022555.2411999-1-dlatypov@google.com> <CABVgOSmaSz5jNkVTihCg3LbWg+6HGDPoQqjqNZ9_boOfUj_LkA@mail.gmail.com>
-In-Reply-To: <CABVgOSmaSz5jNkVTihCg3LbWg+6HGDPoQqjqNZ9_boOfUj_LkA@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 29 Jan 2021 10:19:56 -0800
-Message-ID: <CAGS_qxorPoK=dyZs_SyNOv1_Z0RjJrn97A03sbyF0UmsopcdLQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: don't show `1 == 1` in failed assertion messages
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129105909.630107942@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 8:51 PM David Gow <davidgow@google.com> wrote:
->
-> On Fri, Jan 29, 2021 at 10:26 AM Daniel Latypov <dlatypov@google.com> wrote:
-> >
-> > Currently, given something (fairly dystopian) like
-> > > KUNIT_EXPECT_EQ(test, 2 + 2, 5)
-> >
-> > KUnit will prints a failure message like this.
-> > >  Expected 2 + 2 == 5, but
-> > >      2 + 2 == 4
-> > >      5 == 5
-> >
-> > With this patch, the output just becomes
-> > >  Expected 2 + 2 == 5, but
-> > >      2 + 2 == 4
-> >
-> > This patch is slightly hacky, but it's quite common* to compare an
-> > expression to a literal integer value, so this can make KUnit less
-> > chatty in many cases. (This patch also fixes variants like
-> > KUNIT_EXPECT_GT, LE, et al.).
-> >
-> > It also allocates an additional string briefly, but given this only
-> > happens on test failures, it doesn't seem too bad a tradeoff.
-> > Also, in most cases it'll realize the lengths are unequal and bail out
-> > before the allocation.
-> >
-> > We could save the result of the formatted string to avoid wasting this
-> > extra work, but it felt cleaner to leave it as-is.
-> >
-> > Edge case: for something silly and unrealistic like
-> > > KUNIT_EXPECT_EQ(test, 4, 5);
-> >
-> > It'll generate this message with a trailing "but"
-> > >  Expected 2 + 2 == 5, but
-> > >  <next line of normal output>
->
-> I assume this is supposed to say "Expected 4 == 5" here.
-> (I tested it to make sure, and that's what it did here.)
+On Fri, Jan 29, 2021 at 12:06:35PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.254 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
+> Anything received after that time might be too late.
+> 
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 328 pass: 328 fail: 0
 
-Ah yes, too much copy-paste.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
->
-> Personally, I'd ideally like to get rid of the ", but", or even add a
-> "but 4 != 5" style second line. Particularly in case the next line in
-> the output might be confused for the rest of a sentence.
-
-Given the apparent interest in other types (STR_EQ) of literal
-ellision, maybe this should be done.
-But I'd be tempted to have that change come later once at least the
-str_eq version is in place.
-
->
-> That being said, this is a pretty silly edge case: I'd be worried if
-> we ever saw that case in an actual submitted test. People might see it
-> a bit while debugging, though: particularly if they're using
-> KUNIT_EXPECT_EQ(test, 1, 2) as a way of forcing a test to fail. (I've
-> done this while testing tooling, for instance.)
-
-Same/Agreed on all points.
-
->
-> >
-> > It didn't feel worth adding a check up-front to see if both sides are
-> > literals to handle this better.
-> >
-> > *A quick grep suggests 100+ comparisons to an integer literal as the
-> > right hand side.
-> >
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
->
-> I tested this, and it works well: the results are definitely more
-> human readable. I could see it making things slightly more complicated
-> for people who wanted to automatically parse assertion errors, but
-> no-one is doing that, and the extra complexity is pretty minimal
-> anyway.
-
-Hmm, machine parsing of the contents of failures is interesting.
-But in general, that feels that requires a more structured format.
-
-I hate to invoke it, but the tooling I've seen that's parsed the
-"expected" and "actual" values has represented them as XML elements.
-
->
-> One thing which might be worth doing is expanding this to
-> KUNIT_EXPECT_STREQ() and/or KUNIT_EXPECT_PTR_EQ(). These have slightly
-> more complicated formatting (quotes, leading 0s, etc), though.
-> Comparing pointer literals is pretty unlikely to show up, though, so I
-> don't think it's as important. (I thought that maybe the KASAN shadow
-> memory tests might use them, but a quick look didn't reveal any.)
->
-
-Ack. Actually, the string literal check was smaller, see below.
-I debated sending a patch out for that, but this case mattered more
-and I wasn't sure if it would be acceptable or not.
-It felt it would be incongruous to only handle strings and not the
-much more common integer case.
-
-So if the hackier, more costly integer comparison seems fine, I might
-actually go and send out the str patch that I already have sitting
-around anyways.
-
-+/* Checks if KUNIT_EXPECT_STREQ() args were string literals.
-+ * Note: `text` will have ""s where as `value` will not.
-+ */
-+static bool is_str_literal(const char *text, const char *value)
-+{
-+       int len;
-+
-+       len = strlen(text);
-+       if (len < 2) return false;
-+       if (text[0] != '\"' || text[len-1] != '\"') return false;
-+
-+       return strncmp(text+1, value, len-2) == 0;
-+}
-+
-
-This produces
-[10:05:59]     Expected str == "world", but
-[10:05:59]         str == hello
-
-One misgiving I had was whether we should "fix" the string printing to
-quote the values or not before adding `is_str_literal()` in.
-Having just "str == hello" where neither is quoted is a bit unclear
-and the extra "world == world" line sorta helped make that more clear,
-ha.
-
-David, I can send a version of this patch w/ a fixed commit message
-and then tack on the str changes as children.
-Would you prefer that?
-
-> For the record, this is what STREQ()/PTR_EQ()/ failures with literals look like:
-> # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:31
-> Expected "abc" == "abd", but
->     "abc" == abc
->     "abd" == abd
-> # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:33
-> Expected 0x124 == 0x1234, but
->     0x124 == 0000000000000124
->     0x1234 == 0000000000001234
-
-Yeah, I had considered PTR_EQ(), but it seemed more complex and also
-less likely to show up.
-And outside of very niche use cases (which probably don't work too on
-UML, tbh...), it felt like an anti-pattern to have hard-coded pointers
-in unit tests.
-
->
-> Either way, though, this is:
->
-> Tested-by: David Gow <davidgow@google.com>
->
-> Cheers,
-> -- David
+Guenter
