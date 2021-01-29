@@ -2,118 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569CD308F36
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9941B308F3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhA2VVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:21:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52400 "EHLO mail.kernel.org"
+        id S233398AbhA2VYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:24:07 -0500
+Received: from mga06.intel.com ([134.134.136.31]:9705 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232781AbhA2VVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:21:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E64D564E06;
-        Fri, 29 Jan 2021 21:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611955234;
-        bh=DM5sQEzyeZQYMcv/NaSI/egJ43G1u2n09nG0uwuL3WY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=FIDLV8XNeZ1l66lLMPHxljPeKYJ+ZTJbAuPp+NuXCBWm3PSdSnENF+nfQ0jFSkUdH
-         rY4flYpfbKBikYZPqLhkf3404J5nD2SXAhD96nZIlm5iDiOvNv8/SlQyoFvmHzLR1l
-         VPBDgQr7ML2hLmUydmGT1Jx3f+MK1T3M/5nDhM7WJ8WKeUihNQpsBeO4OP4pXSq5mV
-         rY6d4WPHktV6s9e7rTZMmTTvsGm4b6udTJ5bvAYwWMacud25mDnrWM2FbZY/A00mSK
-         Jt7HnJDWzMqr9wKnDKGe1rfJ8m6lBgerRgJkd8oC68yvvw+svAsp3MFAyRTumRUtdI
-         fKnwI1mz0l4QQ==
-Date:   Fri, 29 Jan 2021 15:20:32 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Marc MERLIN <marc_nouveau@merlins.org>
-Cc:     nouveau@lists.freedesktop.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
- 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
-Message-ID: <20210129212032.GA99457@bjorn-Precision-5520>
+        id S232776AbhA2VYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:24:05 -0500
+IronPort-SDR: B/YHyPl/so9M/APay8n/FyCmVMrrYqBaln1DLKVX3IOEc+lTuzEULWj1/PSbmdk9RxQSL8uJA3
+ MEL5Yuktjxmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242005593"
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="242005593"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 13:22:19 -0800
+IronPort-SDR: 8TLGKFkxh7yP7CkNxzB+YxP0Zrq2iIwPA5OEWVGItUxtV3d8iJghJPpWQwbX40LoPBcaFfGbW8
+ w6+hW1T+bo1A==
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="370545067"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 13:22:14 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id D8B8B211D8; Fri, 29 Jan 2021 23:22:11 +0200 (EET)
+Date:   Fri, 29 Jan 2021 23:22:11 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v9 1/7] ACPI: scan: Obtain device's desired enumeration
+ power state
+Message-ID: <20210129212211.GK32460@paasikivi.fi.intel.com>
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+ <20210128232729.16064-1-sakari.ailus@linux.intel.com>
+ <CAJZ5v0hdG1W0D5E6GbrTDiAjMyC0mSgb3Z2WEBy3hhb4iJhDNw@mail.gmail.com>
+ <20210129164522.GJ32460@paasikivi.fi.intel.com>
+ <CAJZ5v0iJB80QX9ze9_hpNP4R-+C36Rvn8d+7S-4-guWrN=SiWQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210129005626.GP29348@merlins.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iJB80QX9ze9_hpNP4R-+C36Rvn8d+7S-4-guWrN=SiWQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 04:56:26PM -0800, Marc MERLIN wrote:
-> On Wed, Jan 27, 2021 at 03:33:00PM -0600, Bjorn Helgaas wrote:
-> > Hi Marc, I appreciate your persistence on this.  I am frankly
-> > surprised that you've put up with this so long.
->  
-> Well, been using linux for 27 years, but also it's not like I have much
-> of a choice outside of switching to windows, as tempting as it's getting
-> sometimes ;)
+On Fri, Jan 29, 2021 at 05:57:17PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Jan 29, 2021 at 5:45 PM Sakari Ailus
+> <sakari.ailus@linux.intel.com> wrote:
+> >
+> > Hi Rafael,
+> >
+> > Thanks for the comments.
+> >
+> > On Fri, Jan 29, 2021 at 03:07:57PM +0100, Rafael J. Wysocki wrote:
+> > > On Fri, Jan 29, 2021 at 12:27 AM Sakari Ailus
+> > > <sakari.ailus@linux.intel.com> wrote:
+> > > >
+> > > > Store a device's desired enumeration power state in struct
+> > > > acpi_device_power_flags during acpi_device object's initialisation.
+> > > >
+> > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > > ---
+> > > >  drivers/acpi/scan.c     | 6 ++++++
+> > > >  include/acpi/acpi_bus.h | 3 ++-
+> > > >  2 files changed, 8 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> > > > index 1d7a02ee45e05..b077c645c9845 100644
+> > > > --- a/drivers/acpi/scan.c
+> > > > +++ b/drivers/acpi/scan.c
+> > > > @@ -987,6 +987,8 @@ static void acpi_bus_init_power_state(struct acpi_device *device, int state)
+> > > >
+> > > >  static void acpi_bus_get_power_flags(struct acpi_device *device)
+> > > >  {
+> > > > +       unsigned long long pre;
+> > > > +       acpi_status status;
+> > > >         u32 i;
+> > > >
+> > > >         /* Presence of _PS0|_PR0 indicates 'power manageable' */
+> > > > @@ -1008,6 +1010,10 @@ static void acpi_bus_get_power_flags(struct acpi_device *device)
+> > > >         if (acpi_has_method(device->handle, "_DSW"))
+> > > >                 device->power.flags.dsw_present = 1;
+> > > >
+> > > > +       status = acpi_evaluate_integer(device->handle, "_PRE", NULL, &pre);
+> > > > +       if (ACPI_SUCCESS(status) && !pre)
+> > > > +               device->power.flags.allow_low_power_probe = 1;
+> > >
+> > > While this is what has been discussed and thanks for taking it into
+> > > account, I'm now thinking that it may be cleaner to introduce a new
+> > > object to return the deepest power state of the device in which it can
+> > > be enumerated, say _DSE (Device State for Enumeration) such that 4
+> > > means D3cold, 3 - D3hot and so on, so the above check can be replaced
+> > > with something like
+> > >
+> > > status = acpi_evaluate_integer(device->handle, "_PRE", NULL, &dse);
+> >
+> > s/_PRE/_DSE/
+> >
+> > ?
 > 
-> > > after boot, when it gets the right trigger (not sure which ones), it
-> > > loops on this evern 2 seconds, mostly forever.
-> > > 
-> > > I'm not sure if it's nouveau's fault or the kernel's PCI PME's fault, or something else.
-> > 
-> > IIUC there are basically two problems:
-> > 
-> >   1) A 2 minute delay during boot
-> > Another random thought: is there any chance the boot delay could be
-> > related to crypto waiting for entropy?
+> Yes, sorry.
 > 
-> So, the 2mn hang went away after I added the nouveau firwmare in initrd.
-> The only problem is that the nouveau driver does not give a very good
-> clue as to what's going on and what to do.
->
-> For comparison the intel iwlwifi driver is very clear about firmware
-> it's trying to load, if it can't and what exact firmware you need to
-> find on the internet (filename)
-
-I guess you're referring to this in iwl_request_firmware()?
-
-  IWL_ERR(drv, "check git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git\n"); 
-
-How can we fix this in nouveau so we don't have the debug this again?
-I don't really know how firmware loading works, but "git grep -A5
-request_firmware drivers/gpu/drm/nouveau/" shows that we generally
-print something when request_firmware() fails.
-
-But I didn't notice those messages in your logs, so I'm probably
-barking up the wrong tree.
-
-> >   2) Some sort of event every 2 seconds that kills your battery life
-> > Your machine doesn't sound unusual, and I haven't seen a flood of
-> > similar reports, so maybe there's something unusual about your config.
-> > But I really don't have any guesses for either one.
+> >
+> > > if (ACPI_FAILURE(status))
+> >
+> > ACPI_SUCCESS?
 > 
-> Honestly, there are not too many thinpad P73 running linux out there. I
-> wouldn't be surprised if it's only a handful or two.
+> Yup.
 > 
-> > It sounds like v5.5 worked fine and you first noticed the slow boot
-> > problem in v5.8.  We *could* try to bisect it, but I know that's a lot
-> > of work on your part.
+> > >         device->power.state_for_enumeratin = dse;
+> > >
+> > > And then, it is a matter of comparing ->power.state_for_enumeratin
+> > > with ->power.state and putting the device into D0 if the former is
+> > > shallower than the latter.
+> > >
+> > > What do you think?
+> >
+> > Sounds good. How about calling the function e.g.
+> > acpi_device_resume_for_probe(), so runtime PM could be used to resume the
+> > device if the function returns true?
 > 
-> I've done that in the past, to be honest now that it works after I added
-> the firmware that nouveau started needing, and didn't need before, the
-> hang at boot is gone for sure.
-> The PCI PM wakeup issues on batteries happen sometimes still, but they
-> are much more rare now.
-
-So maybe the wakeups are related to having vs not having the nouveau
-firmware?  I'm still curious about that, and it smells like a bug to
-me, but probably something to do with nouveau where I have no hope of
-debugging it.
-
-> > Grasping for any ideas for the boot delay; could you boot with
-> > "initcall_debug" and collect your "lsmod" output?  I notice async_tx
-> > in some of your logs, but I have no idea what it is.  It's from
-> > crypto, so possibly somewhat unusual?
+> I'd rather try to power it up before enabling runtime PM, because in
+> order to do the latter properly, you need to know if the device is
+> active or suspended to start with.
 > 
-> Is this still neeeded? I think of nouveau does a better job of helping
-> the user correct the issue if firmware is missing (I think intel even
-> gives a URL in printk), that would probably be what's needed for the
-> most part.
+> So you need something like (pseudo-code)
+> 
+> if (this_device_needs_to_be_on(ACPI_COMPANION(dev))) {
+>    acpi_device_set_power(ACPI_COMPANION(dev), ACPI_STATE_D0);
+>    pm_runtime_set_active(dev);
+> } else {
+>    pm_runtime_set_suspended(dev);
 
-Nope, don't bother with this, thanks.
+I guess the else branch isn't needed? The device remains suspended if its
+state hasn't been changed.
 
-Bjorn
+> }
+> 
+> and then you can enable PM-runtime.
+
+Yes, agreed, this is what drivers should do. The I²C framework would use
+the function and conditionally power the device on before enabling runtime
+PM.
+
+This is how it's implemented by the set already but I think the change in
+semantics requires a little more still.
+
+-- 
+Sakari Ailus
