@@ -2,115 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B13308A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02C9308A43
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhA2QcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        id S231253AbhA2Qco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhA2Qbc (ORCPT
+        with ESMTP id S231256AbhA2Qbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:31:32 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FD3C061573;
-        Fri, 29 Jan 2021 08:22:50 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id e70so9084688ote.11;
-        Fri, 29 Jan 2021 08:22:50 -0800 (PST)
+        Fri, 29 Jan 2021 11:31:33 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9785C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 08:22:51 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id t17so7062819qtq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 08:22:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FRrYeh/eZSmBAGMtTw4vFQ8VoilGhVsEkxG9XZTvSwI=;
-        b=QlApMYe3ic9XesBmbvwddvBFQHvM4BFy4eJiGlLZYmuXzQIBGAxiNTpv00/1OF3ckM
-         dVfEy2cQDPrzye/pzLiWvtzfcArA56elZ1arXPwQOG7op23NpW2Jqd4bo+Plp+wXqGzv
-         8RXN0mmcc7FA+dyBrf3R9ri+w585c8dnFezUj6DWXz0WLrr5lX3XvBf7YdNmgk984a+f
-         Yfed4oDNljdo35B9mTaPJcFQcxzDKlz+rxOHALhFE5f/fiXnaEaz/lZl0xCF46uL3e1p
-         jSICqpnIcHrRnRm4i7zA+sVHIW+83BB5RS32A1V7nwV9BrkSIYXBsI9haNWZ6palzeFp
-         oMwQ==
+        bh=yXyKT6zDbMFAkEFtdwkMYtTPfLe2fKWTThL1c/z6Psc=;
+        b=MMERDHwQ05b9QD93YJaPU4AMCvbvs6S+sHWJcGZk9jtXgp/6oRB0vL3vXX8V8ji15K
+         lN511PomIO8KM0Tfiil2oSMCIc76lMSeqqJ/c5VoVJSyDfR5fMrNdGiBitjkAV4MXgOv
+         wqdiSnmw59YSiJSh4ZXQhtS5djVOy6TGQHepG5Vs4KOOjUTOzJuHcfaC3F5UvNK0fC6O
+         l58UuFLu7fh4+7DDhn+6BdC1ZEyqC6RTKtJU+qs5oru4Quq8neBmkRABFKehgyiFyJ66
+         6WxemP26L6riW4fyt/MgCKOrreFZqIPoq0gafnwFPI5UHbnzCDEyj+CGXXAgkt/hI11B
+         o9HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FRrYeh/eZSmBAGMtTw4vFQ8VoilGhVsEkxG9XZTvSwI=;
-        b=aG/cV6ex714LxB25NOpnSdn9X22PJSxkZe3u2ofNJ/rRc0GcndccmMvcJIMcumzEJU
-         euMxHWHAxNif+fSOTJAzfDaPHuBiXd8/4ZZMzVPMf5cQ65ROppadsf9o5gykEvRJYv4y
-         OQQc8XDre742GCINRxHwN/BHPBc3XhdeD2xnA6OxticOa9yjEh+Bw+DrL/QZzcOoN+Vj
-         sALcuYqCR38FMJuVbCPOw4sHVOQwgbSxO9dBClH92bzvbkBzubZkFZUTeC1sQxd97FSX
-         ASnVGeKIazlRxnlyUM1FMVhvjCv9J23TbiioxDlDk0gFqus1KSVjKWqO7FpGQnvEqwxw
-         8PJw==
-X-Gm-Message-State: AOAM5305vO06kUchUBwzTrRGJ8sfTFKu52YHaGh5zW5VvMgFz2CFrFmg
-        LE2EJdyLHrut9m82hpKhEYw=
-X-Google-Smtp-Source: ABdhPJzlSK6Tew4vLwPxx9HJZjXLiWpJYgtp1Vbk2KMwwVOU1gRxl3rLPK6wbACMX+Zn/Kp/x92j3Q==
-X-Received: by 2002:a9d:5d02:: with SMTP id b2mr3359460oti.148.1611937369848;
-        Fri, 29 Jan 2021 08:22:49 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.50])
-        by smtp.googlemail.com with ESMTPSA id w11sm2229540otl.13.2021.01.29.08.22.48
+        bh=yXyKT6zDbMFAkEFtdwkMYtTPfLe2fKWTThL1c/z6Psc=;
+        b=mYkYS/FIE99802VTAXoGLw/HeyDwQX2h/N0feCHmqn+E23Dqwffyq7PVaDv9dupN+K
+         BYsuBj87crcZDH12AEwqWMaoSvQXqr0JFxqhiP0cEjgSaHfsh4gUxYauxXbyIekg+S+6
+         02VEuDSvURNvoGxV4XytF421nnYC+uppAEp4v32soQr2bu0EJ0aOgCB975q5XPRMaew5
+         PKCeSNtlwbfYuMVPtiKygbQEP76fIN0VylurTT+4zHnC7oP2P7ls/E9y5vquZgT0qaeH
+         QF7VBtTIGbAWS2sLn/Uqs0ZhjcSm0fHzhu/wv2+XlC4/Ybb4xcLY8ZsJdjtovTckB55Z
+         9+sQ==
+X-Gm-Message-State: AOAM531KgDLj3CfFh2B+ZNDHG1wiDSPS8e+SSfDM5BFHioxP/U+LJ/8/
+        JwIPbY+ogh9uhmOjd9k013r97g==
+X-Google-Smtp-Source: ABdhPJyRs5FFCmdP8XnlrE48whLYLzp5tg+xsgEwHAL160TXhcc5kQrQM5oeBKkiXNLGGqk5Ja15iw==
+X-Received: by 2002:ac8:4e8b:: with SMTP id 11mr5039195qtp.292.1611937370596;
+        Fri, 29 Jan 2021 08:22:50 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id q15sm6330066qkj.9.2021.01.29.08.22.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Fri, 29 Jan 2021 08:22:49 -0800 (PST)
-Subject: Re: [PATCH iproute-next v2] devlink: add support for port params
- get/set
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        netdev@vger.kernel.org
-Cc:     jiri@nvidia.com, davem@davemloft.net, linux-kernel@vger.kernel.org,
-        kuba@kernel.org
-References: <20210125134838.22439-1-oleksandr.mazur@plvision.eu>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5a96437d-a1d4-8535-e9c1-fd29b1eb8166@gmail.com>
-Date:   Fri, 29 Jan 2021 09:22:48 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+Subject: Re: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
+To:     Michal Rostecki <mrostecki@suse.de>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Rostecki <mrostecki@suse.com>
+References: <20210127135728.30276-1-mrostecki@suse.de>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <18dab74b-aea9-0e34-1be5-39d62f44cfd2@toxicpanda.com>
+Date:   Fri, 29 Jan 2021 11:22:48 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210125134838.22439-1-oleksandr.mazur@plvision.eu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210127135728.30276-1-mrostecki@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 6:48 AM, Oleksandr Mazur wrote:
-> Add implementation for the port parameters getting/setting.
-> Add bash completion for port param.
-> Add man description for port param.
+On 1/27/21 8:57 AM, Michal Rostecki wrote:
+> From: Michal Rostecki <mrostecki@suse.com>
 > 
-
-Add example commands here - both set and show. Include a json version of
-the show.
-
-> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-> ---
-> V2:
->     1) Add bash completion for port param;
->     2) Add man decsription / examples for port param;
+> Before this change, the btrfs_get_io_geometry() function was calling
+> btrfs_get_chunk_map() to get the extent mapping, necessary for
+> calculating the I/O geometry. It was using that extent mapping only
+> internally and freeing the pointer after its execution.
 > 
->  bash-completion/devlink |  55 ++++++++
->  devlink/devlink.c       | 275 +++++++++++++++++++++++++++++++++++++++-
->  man/man8/devlink-port.8 |  65 ++++++++++
->  3 files changed, 389 insertions(+), 6 deletions(-)
+> That resulted in calling btrfs_get_chunk_map() de facto twice by the
+> __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+> first and then calling btrfs_get_chunk_map() directly to get the extent
+> mapping, used by the rest of the function.
 > 
+> This change fixes that by passing the extent mapping to the
+> btrfs_get_io_geometry() function as an argument.
+> 
+> v2:
+> When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
+> - Use errno_to_blk_status(PTR_ERR(em)) as the status
+> - Set em to NULL
+> 
+> Signed-off-by: Michal Rostecki <mrostecki@suse.com>
 
-> diff --git a/devlink/devlink.c b/devlink/devlink.c
-> index a2e06644..0fc1d4f0 100644
-> --- a/devlink/devlink.c
-> +++ b/devlink/devlink.c
-> @@ -2706,7 +2706,8 @@ static void pr_out_param_value(struct dl *dl, const char *nla_name,
->  	}
->  }
->  
-> -static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
-> +static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array,
-> +			 bool is_port_param)
->  {
->  	struct nlattr *nla_param[DEVLINK_ATTR_MAX + 1] = {};
->  	struct nlattr *param_value_attr;
-> @@ -2714,6 +2715,7 @@ static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
->  	int nla_type;
->  	int err;
->  
-> +
+This panic'ed all of my test vms in their overnight xfstests runs, the panic is this
 
-stray newline here
+[ 2449.936502] BTRFS critical (device dm-7): mapping failed logical 1113825280 
+bio len 40960 len 24576
+[ 2449.937073] ------------[ cut here ]------------
+[ 2449.937329] kernel BUG at fs/btrfs/volumes.c:6450!
+[ 2449.937604] invalid opcode: 0000 [#1] SMP NOPTI
+[ 2449.937855] CPU: 0 PID: 259045 Comm: kworker/u5:0 Not tainted 5.11.0-rc5+ #122
+[ 2449.938252] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
+1.13.0-2.fc32 04/01/2014
+[ 2449.938713] Workqueue: btrfs-worker-high btrfs_work_helper
+[ 2449.939016] RIP: 0010:btrfs_map_bio.cold+0x5a/0x5c
+[ 2449.939392] Code: 37 87 ff ff e8 ed d4 8a ff 48 83 c4 18 e9 b5 52 8b ff 49 89 
+c8 4c 89 fa 4c 89 f1 48 c7 c6 b0 c0 61 8b 48 89 ef e8 11 87 ff ff <0f> 0b 4c 89 
+e7 e8 42 09 86 ff e9 fd 59 8b ff 49 8b 7a 50 44 89 f2
+[ 2449.940402] RSP: 0000:ffff9f24c1637d90 EFLAGS: 00010282
+[ 2449.940689] RAX: 0000000000000057 RBX: ffff90c78ff716b8 RCX: 0000000000000000
+[ 2449.941080] RDX: ffff90c7fbc27ae0 RSI: ffff90c7fbc19110 RDI: ffff90c7fbc19110
+[ 2449.941467] RBP: ffff90c7911d4000 R08: 0000000000000000 R09: 0000000000000000
+[ 2449.941853] R10: ffff9f24c1637b48 R11: ffffffff8b9723e8 R12: 0000000000000000
+[ 2449.942243] R13: 0000000000000000 R14: 000000000000a000 R15: 000000004263a000
+[ 2449.942632] FS:  0000000000000000(0000) GS:ffff90c7fbc00000(0000) 
+knlGS:0000000000000000
+[ 2449.943072] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2449.943386] CR2: 00005575163c3080 CR3: 000000010ad6c004 CR4: 0000000000370ef0
+[ 2449.943772] Call Trace:
+[ 2449.943915]  ? lock_release+0x1c3/0x290
+[ 2449.944135]  run_one_async_done+0x3a/0x60
+[ 2449.944360]  btrfs_work_helper+0x136/0x520
+[ 2449.944588]  process_one_work+0x26e/0x570
+[ 2449.944812]  worker_thread+0x55/0x3c0
+[ 2449.945016]  ? process_one_work+0x570/0x570
+[ 2449.945250]  kthread+0x137/0x150
+[ 2449.945430]  ? __kthread_bind_mask+0x60/0x60
+[ 2449.945666]  ret_from_fork+0x1f/0x30
 
+it happens when you run btrfs/060.  Please make sure to run xfstests against 
+patches before you submit them upstream.  Thanks,
 
+Josef
