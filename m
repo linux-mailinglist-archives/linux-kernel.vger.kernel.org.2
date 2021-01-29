@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5B1309021
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CD4309025
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhA2WcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:32:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233370AbhA2Wbw (ORCPT
+        id S233546AbhA2WdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:33:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231246AbhA2WdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:31:52 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C717C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:31:12 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id y10so1868781plk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:31:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mEuUNTLPjyCKU+1m6bFPUEO4cIWG2fR+kA7IEzmsiA0=;
-        b=MXQ3szzyutAJwpx9freM5P5nZtBdbzPRo9DqX45Y+eAKATqPcrdQ8wG5Cl5YJ/rm/D
-         X2E4zfRQqwpyQuRxesyxK6FL/smz/4zcdNBQ88GzDjV8VW2ci5WrKiKdTxCYWYA7+o2B
-         2P9y/wRdwIglbjUpEVC3bLxRXlzvalIG8Mc58ABIuLGso/xNT1XiFDiN4Y2YQ3zPDT4b
-         8+gzTn7RmCMg+xftHFBOifOW5zsiX7BLXZ42olQ1a5itnwUl2dEggiBQkgugVgGLEBgW
-         1Mymw9wHEVVblcehWi40xNb3k8GqVDiLpO2ABVf9WcYBaby+4QY45RsdK9JjTPnJzOiE
-         dLpw==
+        Fri, 29 Jan 2021 17:33:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611959494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bkQ5Fz9RLzxxbo8DDzhzWAT6RjyUwzhlJneTB6y567o=;
+        b=W+QCWlIslc3WFz8xBY5V0NDD88XMXMMYIaACXU1X6Lv/SY244nx4qCCpzxijnWRoLuA40o
+        BNJMyfetiqAVTvQy09G2Cjr+JmYfdj6JAGWuAsoWTmZF9REefuFy++v1RJ/ERvrAtMzP16
+        Ib373xKB/lLaWStCL3mPSVFKjpE3oa0=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-keLhSUVCMxa3CCMw-39Tuw-1; Fri, 29 Jan 2021 17:31:33 -0500
+X-MC-Unique: keLhSUVCMxa3CCMw-39Tuw-1
+Received: by mail-qt1-f198.google.com with SMTP id d1so7085714qtp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:31:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mEuUNTLPjyCKU+1m6bFPUEO4cIWG2fR+kA7IEzmsiA0=;
-        b=dFpk72IPt9lauBVublTDrSpIEXMEi1oCbKY64RCLu6Fkh8YtugCy5cxpwRg0bkdX+3
-         AWQLm4Cs1AxzEdr9kJYRcA0ATD2eHYQ9SyMa74ohuIPzwBju8wq6Xh5y9xC6jTpLt9DJ
-         GyxECeyhy3t0p7lJpYYR3kF7ng9fVC5/9DJYUDk0wSygS98vHCC9zf8jg9xS1GGpk7Fy
-         v6JfA+i80Bo1/wuy9IqGlBFopnS3+myzckfRawrBC6JOFAxfhQMJwHPRtNlNAUnSq/np
-         ZYUxDJjZn5r0Vbt80tJYdn/XRf1Qo0mi3YNzT/MT43vDt6+8PK6N9mZpn+GARiMQRsV9
-         tvpw==
-X-Gm-Message-State: AOAM531Fi61rM9BqdUXF0aMNr8TB7sJku7H1l3rkO3Jp3YfxjssCEPFw
-        RlRbDInI58vFcioWirURrA6obvdxeCNqsBr90ZpwFw==
-X-Google-Smtp-Source: ABdhPJwZsd7PybQkVmrkiSQDc4U0xVvSfLsYOJxZuikVsd6WthzvrApfmvev2Zuw72TEGqzKpkNH/e4Nv7e7QE9S2ow=
-X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr6462674pjn.25.1611959471740;
- Fri, 29 Jan 2021 14:31:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
- <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
- <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
- <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
- <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com>
- <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
- <CAKwvOdk4kG-_c3inNj9ry_xUU9SQE-2AqQp40YL_V=6SHU6E=Q@mail.gmail.com> <CA+icZUX576Rt7HJ4hvrwRTCC2pTmoH-Yu-haU+MDb8B6yADAYA@mail.gmail.com>
-In-Reply-To: <CA+icZUX576Rt7HJ4hvrwRTCC2pTmoH-Yu-haU+MDb8B6yADAYA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 14:31:01 -0800
-Message-ID: <CAKwvOdmq=L_ob-WpNBE-fSc3oYXT10ZvttfiXiZw3+SxaWWy-A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bkQ5Fz9RLzxxbo8DDzhzWAT6RjyUwzhlJneTB6y567o=;
+        b=U1GB/4lZICk0uq5fJ6F+XOYV9Q6Fuvc+sNwILI0A+AG33iClYG9jA2uUGWRxewpH7z
+         P4+T3WLoeKpfjd0Kvi5w2NCDs4OU5DtFe+mZiBuziYVO8RBiB1usyQtTqcUTGVyE4lVH
+         tdkDT898MpssmzxXyB9Z7RfiMkxMrE8AdzAuYj+dXKcjSUpbtimJC342XbtAGNqqBVXO
+         WJb5rPTC+H74fXxWarHGwWAYRzvQnKvHj8pVpqOxshNWCjahU0D44sRqHDEKIfdlEH/l
+         9Z8XrPdB5LiFUS+qWUU8yirUxa64fO+Lh4pPO3DGe/vr6GLcuGdWNuJoye9kSd25Kggq
+         ojgA==
+X-Gm-Message-State: AOAM533HXvVg1vrIzyUjV4Qbw2ecRkWEK559GeCQ42zgz/IEq/JE5Uuu
+        5ayDiEeqo+UWN/SeX5yOa0BsW1X4R1hCl1nVQlzQ0EOof6AS8aWCauP1N0WVlqQaoALGugWZQUw
+        6/4nixir2WhFAVe/8ciFn14dW
+X-Received: by 2002:a05:622a:216:: with SMTP id b22mr6119531qtx.163.1611959492706;
+        Fri, 29 Jan 2021 14:31:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyf27ceBG5a1vxnJjTDK9ymzfRnbILb6rGsC4KhbZQMdfq6pGYGr2v80zPM37vNL0V1Liyd8Q==
+X-Received: by 2002:a05:622a:216:: with SMTP id b22mr6119516qtx.163.1611959492528;
+        Fri, 29 Jan 2021 14:31:32 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id p188sm6231399qkf.40.2021.01.29.14.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 14:31:31 -0800 (PST)
+Date:   Fri, 29 Jan 2021 17:31:29 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: Re: [PATCH RFC 21/30] hugetlb: Pass vma into huge_pte_alloc()
+Message-ID: <20210129223129.GB260413@xz-x1>
+References: <20210115170907.24498-1-peterx@redhat.com>
+ <20210115170907.24498-22-peterx@redhat.com>
+ <CAJHvVcg4tjgRis=WF77phGC6Xm=DBo1W5pDa_d0ZP-Df1VXRxw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJHvVcg4tjgRis=WF77phGC6Xm=DBo1W5pDa_d0ZP-Df1VXRxw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 2:23 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Jan 29, 2021 at 11:21 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 2:11 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
-> > > > > > <ndesaulniers@google.com> wrote:
-> > > > > > >
-> > > > > > > Can you tell me please what is the precise command line invocation of
-> > > > > > > make and which source file you observed this on so that I can
-> > > > > > > reproduce?
-> > > >
-> > > > If you don't send me your invocation of `make`, I cannot help you.
-> > > >
-> > >
-> > > /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
-> > > PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
-> > > -lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-> > > KBUILD_BUILD_USER=sedat.dilek@gmail.com
-> > > KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
-> > > KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
-> >
-> > $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
-> > $ make LLVM=1 LLVM_IAS=1 -j72 menuconfig
-> > <enable CONFIG_DEBUG_INFO and CONFIG_DEBUG_INFO_DWARF5>
-> > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 &> log.txt
-> > $ grep '\-g -gdwarf-5 -g -gdwarf-5' log.txt | wc -l
-> > 0
-> > $ grep '\-g -gdwarf-5' log.txt | wc -l
-> > 2517
-> >
-> > Do have the patch applied twice, perhaps?
-> >
->
-> Switched to my v6 local Git branch and invoked above make line I gave you.
-> I still see that double.
-> Looks like I need some "undrunken" switch.
+On Thu, Jan 28, 2021 at 02:59:13PM -0800, Axel Rasmussen wrote:
+> > +pte_t *huge_pte_alloc(struct mm_struct *mm, structt vm_area_struct *vma,
+> 
+> This was pointed out to me just after I sent v3 of my series today
+> (which includes this patch):
+> 
+> Typo, s/structt/struct/.
 
-Can you follow my steps precisely to see whether it's your .config?
-Perhaps there is a config that duplicates DEBUG_CFLAGS that is not set
-in the defconfig?  If so, it's still harmless to specify the same
-commands twice, and likely isn't introduced by this patch set if so;
-so I'm not sure how much more effort is worth pursuing.
+Thanks Axel - fixed here too.  It's strange why it didn't complain.
+
+Re the minor fault series, I thought it would be good to have some comment from
+Andrea/Mike or others, but in all cases I'll read your v3 next week.
+
+(A small heads-up: you'd better use v3.1 next time for that single patch, so
+ that just in case there will be a complete v4 series then that patch won't
+ collapse with it)
+
 -- 
-Thanks,
-~Nick Desaulniers
+Peter Xu
+
