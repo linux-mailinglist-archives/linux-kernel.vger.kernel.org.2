@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2658309094
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FA3309098
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhA2X1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 18:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhA2X1N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:27:13 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5892DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:25:58 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id b145so398145pfb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:25:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r64ZJaXzvIoi2lpGzoKBDTSTrPRQlB1BeO/ysm0s6kE=;
-        b=vOhHlwRjKdOTj2PO7TxKwDQ+XwczSwfpnigCokMHozWxhol4MQOzL1JOrYfjB9AzJp
-         MZu06wr84Wapt22qXHd7HCvZZ2cECLbb384g31tnX2htb4aipNfvPwJ5t4XHon4g9XBH
-         ye6xhB1UZnz8vWRhjYgL8NFJ2xQXQzHirUcd1O0sB0gWsAPMYNTlbuyW1xT95jg45oxX
-         YT9SMiSeyFJU+Kpn/s023TZm8rZ7nkSNefyGt1SsVydChFM/qTIYBY/Xvdrhevei0Dvc
-         GcS48STKzykzMoxPoqYgsDKE1NknpcEhA04oKS4fhR01govWegGw+mEnQOI6+E3sTKWR
-         fTSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r64ZJaXzvIoi2lpGzoKBDTSTrPRQlB1BeO/ysm0s6kE=;
-        b=gu7rz6aMjCFTncPG0qtCmvz+A49QpLFGUsgTGtTBa6rfH52VA9gep8qDU+jR6tU1wZ
-         Iv3kF+38krJNwUOl5AecSV6ozgPVWaEOvVDC4JgennvzpoZPcui544AYUqIUKhi+/9y6
-         iQkAYWG6Zj77EUocGdDuwAO5cqnSjqfJTPTPcZEWPrlAA+DnMPg1qAikiLVVaVnLJart
-         2GWW3Gb2SudCmXhTnTG1NwJiTpnSWs1J1rAQIjFtTh5/i4aouRkHpdRfue1sdpoYlmEQ
-         y/5Idtf+PZGP5ETRoEC4w0EidXR1rVntZCNemGvwdJbXGxrCWjTM8/hoxn6HUhI7OHMw
-         XeNQ==
-X-Gm-Message-State: AOAM531dbkdT1QipRfwFERD9mmRhy2z7aM+M1SXZlx4WKBoMOzvcTwaj
-        Re/4grzQ00+KaR3o6Rsm77sry48f32I2lal7GpkWdQ==
-X-Google-Smtp-Source: ABdhPJytmqDY53zCUYqnQMu5Pgh7FETeQtOxjlADZp9f0n1DVbZnkBf9ZSqL4opuVySaj+6wK/IJh5XbnYxN46wlJnE=
-X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id
- 144-20020a6218960000b0290197491cbe38mr6576892pfy.15.1611962757517; Fri, 29
- Jan 2021 15:25:57 -0800 (PST)
+        id S232693AbhA2X2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 18:28:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230009AbhA2X2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 18:28:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C0D564DDB;
+        Fri, 29 Jan 2021 23:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611962846;
+        bh=nRY2roERXFxon206XTayNLdW3D0tWgBoL27kAm2mJ38=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sObX8n19jS4j1u0y1AoPSVGaWBIc3KYPHKTq3lUMz/O9E0eQb/l6Fzw3cBi9ZSMLP
+         s0R19sYoGde/nkB5AzKCWtpWoIebqObVKtDG6qD7cLIEA1WIdWFp+Xze8jdn+IOnRr
+         eZU/FGbRRjELdFfNuKq5yms5WWvaAfC1lm0aVjVadLMuyP/dOBR8iI5MlcF6+KcVYh
+         MEtTCQloA0foZnXbE0xh5+Yp5f+YHjm8tqzn1tGyw+sLKzgsJnouXrFxTRStCOxJpp
+         V/lgAkI1HJSRIVoUNPbp1oGrFqA5dVFWp/SmqyayLBAcKW227ub/8Ka13THoAZJQhU
+         xvvsEEbBh2Xig==
+Date:   Sat, 30 Jan 2021 01:27:21 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
+        nayna@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@hansenpartnership.com
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
+Message-ID: <YBSZ2bfYsUo2Y28i@kernel.org>
+References: <1360578.1607593748@warthog.procyon.org.uk>
+ <2442460.1610463459@warthog.procyon.org.uk>
+ <X/9a8naM8p4tT5sO@linux.intel.com>
+ <A05E3573-B1AF-474B-94A5-779E69E5880A@oracle.com>
+ <YAFdNiYZSWpB9vOw@kernel.org>
+ <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
+ <YAgTawk3EENF/P6j@kernel.org>
+ <D9F5E0BD-E2FC-428F-91B3-35D2750493A0@oracle.com>
+ <3063834.1611747971@warthog.procyon.org.uk>
+ <61a0420790250807837b5a701bb52f3d63ff0c84.camel@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <20210129205702.GS4020736@tucnak> <CAKwvOdmuSaf28dOdP8Yo6+RyiviMNKcq8JY=-qgbwjbPVwHmLw@mail.gmail.com>
- <20210129211102.GT4020736@tucnak> <CAKwvOdm-+xK=diSKKXXnS2m1+W6QZ70c7cRKTbtVF=dWi1_8_w@mail.gmail.com>
- <20210129220939.GY4020736@tucnak>
-In-Reply-To: <20210129220939.GY4020736@tucnak>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 15:25:46 -0800
-Message-ID: <CAKwvOdnte8Ck1ywodbY7ED7U046j06C+D-ZcW6kS-fqyaJbmCQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <61a0420790250807837b5a701bb52f3d63ff0c84.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 2:10 PM Jakub Jelinek <jakub@redhat.com> wrote:
->
-> On Fri, Jan 29, 2021 at 02:05:59PM -0800, Nick Desaulniers wrote:
-> > Ah, I see.  Then I should update the script I add
-> > (scripts/test_dwarf5_support.sh) to feature detect that bug, since
-> > it's the latest of the bunch.  Also, should update my comment to note
-> > that this requires binutils greater than 2.35.1 (which is what I have,
-> > which fails, since the backport landed in ... what?!)  How was this
-> > backported to 2.35
-> > (https://sourceware.org/bugzilla/show_bug.cgi?id=27195#c12, Jan 26
-> > 2021) when binutils-2_35_1 was tagged sept 19 2020?  Or will there be
-> > a binutils 2.35.2 point release?
->
-> AFAIK yes, soon.
+On Wed, Jan 27, 2021 at 09:03:59AM -0500, Mimi Zohar wrote:
+> [Cc'ing linux-integrity]
+> 
+> On Wed, 2021-01-27 at 11:46 +0000, David Howells wrote:
+> > Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > 
+> > > > I suppose a user space tool could be created. But wouldn’t what is
+> > > > currently done in the kernel in this area need to be removed?
+> > > 
+> > > Right. I don't think this was a great idea in the first place to
+> > > do to the kernel but since it exists, I guess the patch does make
+> > > sense.
+> > 
+> > This information needs to be loaded from the UEFI tables before the system
+> > starts loading any kernel modules or running any programs (if we do
+> > verification of such, which I think IMA can do).
+> 
+> There needs to a clear distinction between the pre-boot and post-boot
+> keys.  UEFI has its own trust model, which should be limited to UEFI. 
+> The .platform keyring was upstreamed and limited to verifying the kexec
+> kernel image.   Any other usage of the .platform keyring keys is
+> abusing its intended purpose.
+> 
+> The cover letter says,   "Anytime the .platform keyring is used, the
+> keys in the .blacklist keyring are referenced, if a matching key is
+> found, the key will be rejected."   I don't have a problem with loading
+> the UEFI X509 dbx entries as long as its usage is limited to verifying
+> the kexec kernel image.
+> 
+> Mimi
 
-Err...perhaps https://sourceware.org/bugzilla/show_bug.cgi?id=27195
-was about `.file 0`, but it looks like `.file 1 "filename" md5
-0x7a0b65214090b6693bd1dc24dd248245` without -gdwarf-5. Specifically
-the md5 ... .
+Thanks Mimi, this is a valid argument. I agree.
 
-So https://sourceware.org/bugzilla/show_bug.cgi?id=25611 needs a rework perhaps?
--- 
-Thanks,
-~Nick Desaulniers
+/Jarkko
