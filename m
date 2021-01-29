@@ -2,173 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02462308A68
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD1C308A73
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhA2Qha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhA2QgQ (ORCPT
+        id S231759AbhA2QjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:39:07 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:33549 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231631AbhA2Qij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:36:16 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916A0C061573;
-        Fri, 29 Jan 2021 08:35:35 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id a8so13317573lfi.8;
-        Fri, 29 Jan 2021 08:35:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6fq8e4z28JlnpiCL40UdTorSI0TpSUjQk9y+4nElOw4=;
-        b=YnNJodsq3OkuHPwUnfveUSab/+p6Dc2IGLiHHd6EhjSNy54bzYgheAlcyezq/Qw7IY
-         YTxjd6i9AtiJW189vjS9zXjigcZDZ/a6iH2daYMOSxCmANSInncvlPEf8x2lxs9wO57l
-         /z8Ys64b5KAopVTJDPr3CapUhiybk71C0dwS3Ly9oAb1hJpz1nrBzAupia7MX9slk7OE
-         B8QDj8ARDYeTNE9eIebrQDPyl8vWeEkblY0Lu+dIWGtVDQPda8biwbbmafYjHTEQsVce
-         8xfJPB+cNPUZOa70OXzHHtVuNmo/4Z1nWpi4WuPXyz4KizXS/jKVV5k4pz9q+BbTN3yG
-         PC4g==
+        Fri, 29 Jan 2021 11:38:39 -0500
+Received: by mail-ot1-f54.google.com with SMTP id 63so9183006oty.0;
+        Fri, 29 Jan 2021 08:38:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6fq8e4z28JlnpiCL40UdTorSI0TpSUjQk9y+4nElOw4=;
-        b=In+kCeLQKV1qHm2S39V4/zUcyjk1tnprJcEYYC3IXux56J5fyhL3ECHYR7TCod6XKN
-         FR0bxx0yDvTMMseckLDRDCihaiz8p+UKGj2494Gj6sKHoN4G3MWz3VU487o60T8pRYzk
-         GVEIFxqxNkH6qtfmx5k7BnonwtHkcQdO1SFrvhro8H6CRS2+kmcXj/EsnokLl1CXxA/+
-         tgrzeWjb55+e2OZ5YHXJi8CTXQArP26LRbVoXwBd86/bfupjIG31Bs+BDxjXgDxK/CO9
-         yAFvU1e7g6zGvbzQIEdKYSE5pIlzfvGm+6CQwDfYDn1vO0pRhmlkNelxmbS2CIyiqbIV
-         6yzw==
-X-Gm-Message-State: AOAM532dZMunTpM8Er+dj218c0MkBsG7vKoZ88IbAS2x9afSZIvDvxLQ
-        iuSc/DqD3GFs8L09Z3E1pfhlsJbKC5tvEw==
-X-Google-Smtp-Source: ABdhPJz6SmGqombELjjB+CHU7M8LtdnaXezweuOYRtkBycQH2JrZNPHgG1RM8+qv1UyTqCcVhex8zg==
-X-Received: by 2002:a05:6512:3182:: with SMTP id i2mr2559396lfe.553.1611938134087;
-        Fri, 29 Jan 2021 08:35:34 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id s2sm2071998lfr.107.2021.01.29.08.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 08:35:33 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 29 Jan 2021 17:35:31 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210129163531.GA30500@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210125132236.GJ827@dhcp22.suse.cz>
- <20210125143150.GA2282@pc638.lan>
- <20210125153943.GN827@dhcp22.suse.cz>
- <20210125162559.GA52712@pc638.lan>
- <20210128151152.GA1867@pc638.lan>
- <YBLVbZzy0KSONizm@dhcp22.suse.cz>
- <20210128153017.GA2006@pc638.lan>
- <20210128180237.GA5144@pc638.lan>
- <YBPNvbJLg56XU8co@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yo+UnI3asEDx3wQagFoNSo48d6iNCcAeofFLaX+Rbpg=;
+        b=TxzIMabWlaXrADQOsnsptQ56TEse+jdaQyExn2LfuHtxGrwYBdVFG0vFSX7NbmR6qo
+         eLAFrQnV+soNt2EV9vI7CrdcVFr3AwglMWkU6QdImG2WN78eaFMgIJaK5SpLWEgja8O3
+         ppMtZTRj+PGZvJG8LAUv2MeufQZfsz+UJSt1+f7yh/uXM7G7OeClKzWL0DOyCbKXlZZc
+         zE+BIK4W5u+dKVnpOv9YnEsq+rnRvqKCHprOAxQnOT6bfZYov6P2lSVCR84ebwtf2gyY
+         9JPw3IFYUnfF6CbFvEv20fn9r2PE8cpvtR6J8qfNCO0f07p89wkwLzSmad82mqFXTMLQ
+         tmow==
+X-Gm-Message-State: AOAM5307MNYRayJ2MSbpjLacWLmRzA+pPtltSudW4Yt/MA2CNrjcf29s
+        Kn+LDKmhuq3WTwO5ZOIjA6NUGBOalk2l+fD1RkM=
+X-Google-Smtp-Source: ABdhPJxgf0sJ5HPAtEF+5FN4u/sSQlAPYoCyji0nqaaynjhRbquiHqVZK39cTpiMdklkj0gEm+MYVNNbWLn6eXY/Tpw=
+X-Received: by 2002:a05:6830:2313:: with SMTP id u19mr3479681ote.321.1611938276935;
+ Fri, 29 Jan 2021 08:37:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBPNvbJLg56XU8co@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
+ <20210122154300.7628-2-calvin.johnson@oss.nxp.com> <CAJZ5v0iX3uU36448ALA20hiVk968VKTsvgwLrp8ur96MQo3Acw@mail.gmail.com>
+ <20210128112729.GA28413@lsv03152.swis.in-blr01.nxp.com> <CAJZ5v0id1i57K_=7eiK0cpOE6UtsKNfR7L7UEBcN1=G+WS+1TA@mail.gmail.com>
+ <20210128131205.GA7882@lsv03152.swis.in-blr01.nxp.com> <CAJZ5v0j1XVSyFa1q4RZ=FnSmfR5VOyX+u1uWBWdvTOVBJJ-JXw@mail.gmail.com>
+ <20210129064739.GA24267@lsv03152.swis.in-blr01.nxp.com>
+In-Reply-To: <20210129064739.GA24267@lsv03152.swis.in-blr01.nxp.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Jan 2021 17:37:45 +0100
+Message-ID: <CAJZ5v0hrG_-_3LLb956TdFO830DaPv6NdobKetXrc9H+u9bdgw@mail.gmail.com>
+Subject: Re: [net-next PATCH v4 01/15] Documentation: ACPI: DSD: Document MDIO PHY
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Grant Likely <grant.likely@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 09:56:29AM +0100, Michal Hocko wrote:
-> On Thu 28-01-21 19:02:37, Uladzislau Rezki wrote:
-> [...]
-> > >From 0bdb8ca1ae62088790e0a452c4acec3821e06989 Mon Sep 17 00:00:00 2001
-> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > Date: Wed, 20 Jan 2021 17:21:46 +0100
-> > Subject: [PATCH v2 1/1] kvfree_rcu: Directly allocate page for single-argument
-> >  case
-> > 
-> > Single-argument kvfree_rcu() must be invoked from sleepable contexts,
-> > so we can directly allocate pages.  Furthermmore, the fallback in case
-> > of page-allocation failure is the high-latency synchronize_rcu(), so it
-> > makes sense to do these page allocations from the fastpath, and even to
-> > permit limited sleeping within the allocator.
-> > 
-> > This commit therefore allocates if needed on the fastpath using
-> > GFP_KERNEL|__GFP_NORETRY.
-> 
-> Yes, __GFP_NORETRY as a lightweight allocation mode should be fine. It
-> is more robust than __GFP_NOWAIT on memory usage spikes.  The caller is
-> prepared to handle the failure which is likely much less disruptive than
-> OOM or potentially heavy reclaim __GFP_RETRY_MAYFAIL.
-> 
-> I cannot give you ack as I am not familiar with the code but this makes
-> sense to me.
-> 
-No problem, i can separate it. We can have a patch on top of what we have so
-far. The patch only modifies the gfp_mask passed to __get_free_pages():
+On Fri, Jan 29, 2021 at 7:48 AM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> On Thu, Jan 28, 2021 at 02:27:00PM +0100, Rafael J. Wysocki wrote:
+> > On Thu, Jan 28, 2021 at 2:12 PM Calvin Johnson
+> > <calvin.johnson@oss.nxp.com> wrote:
+> > >
+> > > On Thu, Jan 28, 2021 at 01:00:40PM +0100, Rafael J. Wysocki wrote:
+> > > > On Thu, Jan 28, 2021 at 12:27 PM Calvin Johnson
+> > > > <calvin.johnson@oss.nxp.com> wrote:
+> > > > >
+> > > > > Hi Rafael,
+> > > > >
+> > > > > Thanks for the review. I'll work on all the comments.
+> > > > >
+> > > > > On Fri, Jan 22, 2021 at 08:22:21PM +0100, Rafael J. Wysocki wrote:
+> > > > > > On Fri, Jan 22, 2021 at 4:43 PM Calvin Johnson
+> > > > > > <calvin.johnson@oss.nxp.com> wrote:
+> > > > > > >
+> > > > > > > Introduce ACPI mechanism to get PHYs registered on a MDIO bus and
+> > > > > > > provide them to be connected to MAC.
+> > > > > > >
+> > > > > > > Describe properties "phy-handle" and "phy-mode".
+> > > > > > >
+> > > > > > > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> > > > > > > ---
+> > > > > > >
+> > > > > > > Changes in v4:
+> > > > > > > - More cleanup
+> > > > > >
+> > > > > > This looks much better that the previous versions IMV, some nits below.
+> > > > > >
+> > > > > > > Changes in v3: None
+> > > > > > > Changes in v2:
+> > > > > > > - Updated with more description in document
+> > > > > > >
+> > > > > > >  Documentation/firmware-guide/acpi/dsd/phy.rst | 129 ++++++++++++++++++
+> > > > > > >  1 file changed, 129 insertions(+)
+> > > > > > >  create mode 100644 Documentation/firmware-guide/acpi/dsd/phy.rst
+> > > > > > >
+> > > > > > > diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
+> > > > > > > new file mode 100644
+> > > > > > > index 000000000000..76fca994bc99
+> > > > > > > --- /dev/null
+> > > > > > > +++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
+> > > > > > > @@ -0,0 +1,129 @@
+> > > > > > > +.. SPDX-License-Identifier: GPL-2.0
+> > > > > > > +
+> > > > > > > +=========================
+> > > > > > > +MDIO bus and PHYs in ACPI
+> > > > > > > +=========================
+> > > > > > > +
+> > > > > > > +The PHYs on an MDIO bus [1] are probed and registered using
+> > > > > > > +fwnode_mdiobus_register_phy().
+> > > > > >
+> > > > > > Empty line here, please.
+> > > > > >
+> > > > > > > +Later, for connecting these PHYs to MAC, the PHYs registered on the
+> > > > > > > +MDIO bus have to be referenced.
+> > > > > > > +
+> > > > > > > +The UUID given below should be used as mentioned in the "Device Properties
+> > > > > > > +UUID For _DSD" [2] document.
+> > > > > > > +   - UUID: daffd814-6eba-4d8c-8a91-bc9bbf4aa301
+> > > > > >
+> > > > > > I would drop the above paragraph.
+> > > > > >
+> > > > > > > +
+> > > > > > > +This document introduces two _DSD properties that are to be used
+> > > > > > > +for PHYs on the MDIO bus.[3]
+> > > > > >
+> > > > > > I'd say "for connecting PHYs on the MDIO bus [3] to the MAC layer."
+> > > > > > above and add the following here:
+> > > > > >
+> > > > > > "These properties are defined in accordance with the "Device
+> > > > > > Properties UUID For _DSD" [2] document and the
+> > > > > > daffd814-6eba-4d8c-8a91-bc9bbf4aa301 UUID must be used in the Device
+> > > > > > Data Descriptors containing them."
+> > > > > >
+> > > > > > > +
+> > > > > > > +phy-handle
+> > > > > > > +----------
+> > > > > > > +For each MAC node, a device property "phy-handle" is used to reference
+> > > > > > > +the PHY that is registered on an MDIO bus. This is mandatory for
+> > > > > > > +network interfaces that have PHYs connected to MAC via MDIO bus.
+> > > > > > > +
+> > > > > > > +During the MDIO bus driver initialization, PHYs on this bus are probed
+> > > > > > > +using the _ADR object as shown below and are registered on the MDIO bus.
+> > > > > >
+> > > > > > Do you want to mention the "reg" property here?  I think it would be
+> > > > > > useful to do that.
+> > > > >
+> > > > > No. I think we should adhere to _ADR in MDIO case. The "reg" property for ACPI
+> > > > > may be useful for other use cases that Andy is aware of.
+> > > >
+> > > > The code should reflect this, then.  I mean it sounds like you want to
+> > > > check the "reg" property only if this is a non-ACPI node.
+> > >
+> > > Right. For MDIO case, that is what is required.
+> > > "reg" for DT and "_ADR" for ACPI.
+> > >
+> > > However, Andy pointed out [1] that ACPI nodes can also hold reg property and
+> > > therefore, fwnode_get_id() need to be capable to handling that situation as
+> > > well.
+> >
+> > No, please don't confuse those two things.
+> >
+> > Yes, ACPI nodes can also hold a "reg" property, but the meaning of it
+> > depends on the binding which is exactly my point: _ADR is not a
+> > fallback replacement for "reg" in general and it is not so for MDIO
+> > too.  The new function as proposed doesn't match the MDIO requirements
+> > and so it should not be used for MDIO.
+> >
+> > For MDIO, the exact flow mentioned above needs to be implemented (and
+> > if someone wants to use it for their use case too, fine).
+> >
+> > Otherwise the code wouldn't match the documentation.
+>
+> In that case, is this good?
 
-From ec2feaa9b7f55f73b3b17e9ac372151c1aab5ae0 Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Fri, 29 Jan 2021 17:16:03 +0100
-Subject: [PATCH 1/1] kvfree_rcu: replace __GFP_RETRY_MAYFAIL by __GFP_NORETRY
+It would work, but I would introduce a wrapper around the _ADR
+evaluation, something like:
 
-__GFP_RETRY_MAYFAIL is a bit heavy from reclaim process of view,
-therefore a time consuming. That is not optional and there is
-no need in doing it so hard, because we have a fallback path.
+int acpi_get_local_address(acpi_handle handle, u32 *addr)
+{
+      unsigned long long adr;
+      acpi_status status;
 
-__GFP_NORETRY in its turn can perform some light-weight reclaim
-and it rather fails under high memory pressure or low memory
-condition.
+      status = acpi_evaluate_integer(handle, METHOD_NAME__ADR, NULL, &adr);
+      if (ACPI_FAILURE(status))
+                return -ENODATA;
 
-In general there are four simple criterias we we would like to
-achieve:
-    a) minimize a fallback hitting;
-    b) avoid of OOM invoking;
-    c) do a light-wait page request;
-    d) avoid of dipping into the emergency reserves.
+      *addr = (u32)adr;
+      return 0;
+}
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+in drivers/acpi/utils.c and add a static inline stub always returning
+-ENODEV for it for !CONFIG_ACPI.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 70ddc339e0b7..1e862120db9e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3489,8 +3489,20 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 		bnode = get_cached_bnode(*krcp);
- 		if (!bnode && can_alloc) {
- 			krc_this_cpu_unlock(*krcp, *flags);
-+
-+			// __GFP_NORETRY - allows a light-weight direct reclaim
-+			// what is OK from minimizing of fallback hitting point of
-+			// view. Apart of that it forbids any OOM invoking what is
-+			// also beneficial since we are about to release memory soon.
-+			//
-+			// __GFP_NOMEMALLOC - prevents from consuming of all the
-+			// memory reserves. Please note we have a fallback path.
-+			//
-+			// __GFP_NOWARN - it is supposed that an allocation can
-+			// be failed under low memory or high memory pressure
-+			// scenarios.
- 			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 			*krcp = krc_this_cpu_lock(flags);
- 		}
- 
--- 
-2.20.1
+> /**
+>  * fwnode_get_local_addr - Get the local address of fwnode.
+>  * @fwnode: firmware node
+>  * @addr: addr value contained in the fwnode
+>  *
+>  * For DT, retrieve the value of the "reg" property for @fwnode.
+>  *
+>  * In the ACPI case, evaluate the _ADR object located under the
+>  * given node, if present, and provide its return value to the
+>  * caller.
+>  *
+>  * Return 0 on success or a negative error code.
+>  */
+> int fwnode_get_local_addr(struct fwnode_handle *fwnode, u32 *addr)
+> {
+>         int ret;
+>
+>         if (is_of_node(fwnode))
+>                 return of_property_read_u32(to_of_node(fwnode), "reg", addr);
 
---
-Vlad Rezki
+So you can write the below as
+
+if (is_acpi_device_node(fwnode))
+    return acpi_get_local_address(ACPI_HANDLE_FWNODE(fwnode), addr);
+
+return -EINVAL;
+
+and this should compile just fine if CONFIG_ACPI is unset, so you can
+avoid the whole #ifdeffery in this function.
+
+>
+> #ifdef CONFIG_ACPI
+>         if (is_acpi_node(fwnode)) {
+>                 unsigned long long adr;
+>                 acpi_status status;
+>
+>                 status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
+>                                                METHOD_NAME__ADR, NULL, &adr);
+>                 if (ACPI_FAILURE(status))
+>                         return -ENODATA;
+>                 *addr = (u32)adr;
+>                 return 0;
+>         }
+> #endif
+>         return -EINVAL;
+> }
