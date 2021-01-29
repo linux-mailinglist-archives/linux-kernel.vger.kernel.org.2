@@ -2,154 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B03308477
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 05:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D07A308473
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 05:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhA2EHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 23:07:37 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:49047 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbhA2EHc (ORCPT
+        id S231556AbhA2EDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 23:03:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA2EDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 23:07:32 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210129040650epoutp04610fcf46c6c9b24316313ea50c5d414e~emFXEbQd40749307493epoutp04H
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 04:06:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210129040650epoutp04610fcf46c6c9b24316313ea50c5d414e~emFXEbQd40749307493epoutp04H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611893210;
-        bh=WZWRYxFQt5Vb3eG5u4M368QXhG7uK7mseqihDVcJmwQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkgfgx5wXpCRqTkt818jDXl4RE2LEqDJg1xUn2vLgTH0Yh40+4SvSeih9FieNt1fk
-         jjumWk+mYW+uIc1lnBcpEKAoRRZj+qfEiIHIDZajyPwFCTONnAQcyJ9Sa9FH35D8rx
-         H7zllb61ceCsmkBKE0HOwg3tjzTZmvfUigQEoy+I=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210129040649epcas1p46013feedbc3a015895fe05dbe74de32d~emFVtTOFM0594205942epcas1p4M;
-        Fri, 29 Jan 2021 04:06:49 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DRkJ11zl9z4x9Q9; Fri, 29 Jan
-        2021 04:04:49 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D5.EE.02418.16983106; Fri, 29 Jan 2021 13:04:49 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210129040448epcas1p44da94c82ac4fb82d77c452bda56d6b09~emDldKF071322813228epcas1p4Q;
-        Fri, 29 Jan 2021 04:04:48 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210129040448epsmtrp245af0a01e82c7b0a7f5c673073d94f5e~emDlcUR-80874008740epsmtrp2g;
-        Fri, 29 Jan 2021 04:04:48 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-0f-60138961b2b1
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        12.39.08745.06983106; Fri, 29 Jan 2021 13:04:48 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210129040448epsmtip2574986e8da2ce63b8b7ea1c1373088af~emDlJFu1P1343513435epsmtip2J;
-        Fri, 29 Jan 2021 04:04:48 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     hch@infradead.org, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
-Subject: [PATCH v4 2/2] bio: add limit_bio_size sysfs
-Date:   Fri, 29 Jan 2021 12:49:09 +0900
-Message-Id: <20210129034909.18785-2-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210129034909.18785-1-nanich.lee@samsung.com>
+        Thu, 28 Jan 2021 23:03:39 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69B9C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 20:02:58 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id u17so7979324iow.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 20:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=28Nl9/dUh35Ow6MunNFQ7OoxHq8VTYU9WPezp2B3FAw=;
+        b=qUGyEDJQsMMIKRTpcSPICT2MHDKXEr2cT2xmu4U5sOAeTWuspjvqOcVPv7FtO8rVlO
+         +nDHO9plZvmWGkUVqCeB8+vqda+eTPd02LDlU6aZP5N0CmeSpQXXnArD0FOZ1DgKqr6T
+         /PZwXdoqAb8zCRSR1bpfbvTiuiaQ2Tg4QXHitYzuS1M7k2xPOSfGexTWYf/3N6DjxVW2
+         mQLsXGk/ICv0d9mm3hm8u/9DahjAfJJ7KwG2YKriwSa0UQIFgDyRCuAw0KCGlDTKjELr
+         FCyiSIT+g64XCH7qyGWS+sjnNGUgpfaIUckoWkZRqup/9ssyPgoNpWCHmTFskQWxwN92
+         Aceg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=28Nl9/dUh35Ow6MunNFQ7OoxHq8VTYU9WPezp2B3FAw=;
+        b=ZXmjLYWrj5I03AoLUd+lg6Io2rGe3RmkHQfRQmYuOEySDgQFDKhLp+2EaEJrY+XUQy
+         Lzs4eebQ6fjnHO+/EzLdCgvjwucEYLZzC0Ruk/UFrBoz/Wht2i7MH5EvbvQoStKvYVj4
+         Q56osQ1NxGDOcQYQuU2PjHl+yTK8iRN863oPhAjm9gnpAxlACbeZoGllOHSTwR8a3rQe
+         rgWYNE3qFQX75crWOJVqsCz2Rv5FicQz+DIpS3XE9c/uGgZbYNRC5iJEbLOuDaeCWA3M
+         Tcqai1Omf1VMWCuYlEmzwekYIHVdbDbDijCKgzDKXeJYdRfpiOHQqgItoo7oebzgbAIS
+         Zp5w==
+X-Gm-Message-State: AOAM532sFbD2V3RkJyUn92A9HJx/lCP1UjhImQxClpBScG6R0JVRR6LO
+        cpb12kw6G19hWRC0h8b/42F2oKliuAcZYKtXy0SKig==
+X-Google-Smtp-Source: ABdhPJyeqdzmMfVxDIuu0piiaPlAz37NXWbvEzIH5lZNMbUNSeeV9AclYQL5qEX+9IlTb8LzPOw5CxlL4VCbZgL2l9U=
+X-Received: by 2002:a5d:940d:: with SMTP id v13mr1974925ion.193.1611892978165;
+ Thu, 28 Jan 2021 20:02:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Ta1ATVxTH5+6GZGEaZlmw3vKhpTsyHaCBxJBwa8HS0dq1dkamTh+0H8IK
-        28AQkjQb+nSmKg81gJJBJ4IRsZVSKIGWV4EWR0BwKFhn5FGFQYhQA3aAlpQKAtokKy3f/uec
-        37n/e+6DwKlJcSiRoTdzJj2ro8UBopbuCJmMPRGcIj+SG4DsNS0AfTd+Sozyjv2Dof7irzBU
-        OH3UD61b7mBoycmjjtEoNNhuF6OukhwM2RrtOBqZGJCg7jvDIuS8ZMXRr32Lfqh8KhE9rOoB
-        aGH5Nwn6pbUER/UdK+LEEMaaMy9h2srGJUzjt5HM4PVspqHmhJhZuDwsZk421QDG3fAsc+xK
-        AZbk/74uPp1j0zhTGKdPNaRl6LUJ9L4Dml0alVqukCleQnF0mJ7N4hLo3W8myfZk6Dxj0WEf
-        s7psTyqJ5Xk6Zme8yZBt5sLSDbw5geaMaTqjQm6M5tksPluvjU41ZO1QyOXbVR4yRZf+8Ieb
-        ImN1wKfTNXexw2CNsAB/ApKxsPfGY8wCAgiKbAXQNWHHhWARwNl7TX5C4AbwzP1Rv42WW90N
-        YqHQDuCj5gXRf5RzMNdHickX4cm5UR8VQtowuLTSI/EGODkF4FBfvthLBZMqeLX/rk+LyHDo
-        GujHvFpKvgwrOzslgt9z8PeiKtyr/cl4eLuiHAhMEOwrnRZ5Ne5hcprP4QI/Q8D19tcEvRt2
-        OCaAoIPh/WtNT9YMhe75Dt/uIFkAYE7+BSAExQBecn2DCZQSLrrdngLhcYiA9e0xQvp52LZ6
-        HgjGgXB+qdDPi0BSCo/nUwKyDQ7kTuAbXi5H25MVGXi5ttiXp8hTAJbYDMUgrGzTOGWbxin7
-        37gC4DXgac7IZ2k5XmFUbL7kBuB76pGqVmCd+zO6C2AE6AKQwOkQ6ZydSqGkaexnn3Mmg8aU
-        reP4LqDyHLYVD92SavD8Fb1Zo1BtVyqVKFYdp1Yp6a3Sg/JJDUVqWTOXyXFGzrTRhxH+oYex
-        T25fvPGKdVspt+UMwT42vzccdO5iU8Hx6pFZm2NHasQ7UZYiQ0rd5MDZipXAGGV9eE9CJzXS
-        G1pYd/YF1+krO+1H91dPRUL70D2HEc1kAatz70H6j4mbiarAsdiW8fC1POstmKuqHLqa/4Em
-        9m+X7UvJ93lTbV11gT/K2D2zbwz2rj7KnHvr3dWxztONQwcUM0F5mYfW5i359gcf1TrXZyrb
-        3v6rqG5MjVFx7p9q83otq1hl8qF9gfjP0eoLxg+bd+154JBJ92vtcG6Z0drilhPZ6vbkqGRH
-        lftIwdZy0evOZ8zGipBween1kkjLq0HU19fUC0+Fn/+icGoep1qHqmgRn84qInETz/4LRCWm
-        HHMEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsWy7bCSvG5Cp3CCwbpLahZzVm1jtFh9t5/N
-        orX9G5PF6QmLmCx6njSxWvztusdk8fVhscXeW9oWl3fNYbM4NLmZyWL65jnMFtfun2G3OHzv
-        KovFwyUTmS3OnfzEajHvsYPFr+VHGS3e/7jObnFqx2Rmi/V7f7I5iHhMbH7H7rFz1l12j80r
-        tDwuny312LSqk83j/b6rbB59W1YxenzeJOfRfqCbKYAzissmJTUnsyy1SN8ugSvj18ZLLAUr
-        uSqerHrE1MD4h6OLkZNDQsBE4sbhTWwgtpDADkaJiy8NIOJSEsdPvGXtYuQAsoUlDh8u7mLk
-        Air5yCixaPFXZpAaNgEdib63t9hAEiICy5kkDvxezQriMAu8ZpToeryIBaRKWMBU4sjpR2Ab
-        WARUJZ6fOc0EYvMKWEssPXiQHWKbvMTT3uVgUzkFbCRuLpjHCLJZCKjm2yMtiHJBiZMzn4CN
-        ZAYqb946m3kCo8AsJKlZSFILGJlWMUqmFhTnpucWGxYY5aWW6xUn5haX5qXrJefnbmIER52W
-        1g7GPas+6B1iZOJgPMQowcGsJML7do5QghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE
-        0hNLUrNTUwtSi2CyTBycUg1MZxYrZfVN1TlzNWQxb/qMENmNWnbh/yUFlRYwxTW9XZE8YzuH
-        20SLhzbzsh7z3zu9dLlh269T/wL3+1Z+00gXm7jkwZNjGWucxFKzTvy44H/DLvXXhk12Rgw3
-        Pvac3HSSpWf2oc/ll31ym53mvVuzzPWEotKRNIfgA0yOjGtOy1yPfb6O9dertLczRRcftC4R
-        8f6/dGGVrmGilPudVPld9fMKPS/eybqvcnr7TSGV3xtncaeEPqt/vy70cvNJ6a31xgxZLzdW
-        9nxqXBGqlnz6yoLSnJNzn50on5twyUV7+tkzMkoZBvEVf/4tvLbpyDv1MwmTQtO7p533ZI/7
-        eU1R5CnDl9KpFzT2VE+qiZctzVFiKc5INNRiLipOBADQqmIrKQMAAA==
-X-CMS-MailID: 20210129040448epcas1p44da94c82ac4fb82d77c452bda56d6b09
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210129040448epcas1p44da94c82ac4fb82d77c452bda56d6b09
-References: <20210129034909.18785-1-nanich.lee@samsung.com>
-        <CGME20210129040448epcas1p44da94c82ac4fb82d77c452bda56d6b09@epcas1p4.samsung.com>
+References: <20210129003029.10672-1-scott.branden@broadcom.com>
+In-Reply-To: <20210129003029.10672-1-scott.branden@broadcom.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Thu, 28 Jan 2021 20:02:46 -0800
+Message-ID: <CAOesGMgzKKjOBHYM=eodZPm0rE=_oF9o_jjBudQ-Ef8gYFFMfg@mail.gmail.com>
+Subject: Re: [PATCH v10 00/13] Add Broadcom VK driver
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new sysfs node to limit bio size.
+Scott,
 
-Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
----
- block/blk-sysfs.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Thu, Jan 28, 2021 at 4:30 PM Scott Branden
+<scott.branden@broadcom.com> wrote:
+>
+> This patch series drops previous patches in [1]
+> that were incorporated by Kees Cook into patch series
+> "Introduce partial kernel_read_file() support" [2].
+>
+> Remaining patches are contained in this series to add Broadcom VK driver.
+> (which depends on request_firmware_into_buf API addition which has
+> now been accepted into the upstream kernel as of v5.10-rc1).
+>
+> [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
+> [2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
+>
+> Changes from v9:
+>  - fix compile if CONFIG_TTY not set
+>  - use if-else statement instead of conditional expression in set_q_num
+>  - generate bcm_vk_msg_remove call in proper patch
+>    (was generated in tty patch when should be in msg patch)
 
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index b513f1683af0..840d97f427e6 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -288,6 +288,7 @@ QUEUE_SYSFS_BIT_FNS(nonrot, NONROT, 1);
- QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
- QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
- QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
-+QUEUE_SYSFS_BIT_FNS(limit_bio_size, LIMIT_BIO_SIZE, 0);
- #undef QUEUE_SYSFS_BIT_FNS
- 
- static ssize_t queue_zoned_show(struct request_queue *q, char *page)
-@@ -615,6 +616,7 @@ QUEUE_RW_ENTRY(queue_nonrot, "rotational");
- QUEUE_RW_ENTRY(queue_iostats, "iostats");
- QUEUE_RW_ENTRY(queue_random, "add_random");
- QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
-+QUEUE_RW_ENTRY(queue_limit_bio_size, "limit_bio_size");
- 
- static struct attribute *queue_attrs[] = {
- 	&queue_requests_entry.attr,
-@@ -648,6 +650,7 @@ static struct attribute *queue_attrs[] = {
- 	&queue_rq_affinity_entry.attr,
- 	&queue_iostats_entry.attr,
- 	&queue_stable_writes_entry.attr,
-+	&queue_limit_bio_size_entry.attr,
- 	&queue_random_entry.attr,
- 	&queue_poll_entry.attr,
- 	&queue_wc_entry.attr,
--- 
-2.28.0
+Did I miss something? Greg already applied v9, so any fixes on top
+needs to be new patches.
 
+
+-Olof
