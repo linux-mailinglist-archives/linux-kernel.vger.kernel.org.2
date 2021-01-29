@@ -2,310 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED723085A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 214F53085AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhA2GV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:21:56 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:45438 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhA2GVx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:21:53 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10T6EfFM081723;
-        Fri, 29 Jan 2021 06:21:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=k2k2cMm0q+8Zfcbjcar37c3V3ADtupHVsW85zj1D3vM=;
- b=COaWH2u+RbqLXkX+yHzfg7XT1Gtj7aQXHy5fHBEpjjske4eER6HCz4K2Xk1W/dpbCkao
- 5hhpmiIamZ6ZPwTrY05MHKXs6khti6mkUNc5rY9pROekA0Mu1JnqD42iPeLAfUMA/477
- hhH6bIM91TF8ymq4Dd6Z9XzQvA0SgaPpXkoTywyM0en9sjP7QZ7D/3e8s7dKI6ToPrjN
- UNsqipqOv9VPq3HLTYqDy7++zbTrtkHM+LUHPWM6Uy1XFoZzgek/7qbrul5IEcYxHtoQ
- tXbS5nEFms2nE56OBuRAL38B0vMffolVLR/jv8NMV2XPZVdY6ESS60ET5SWN+JZBZQ1y eg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 368brkyd92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 06:21:03 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10T6FsJt162813;
-        Fri, 29 Jan 2021 06:21:02 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2108.outbound.protection.outlook.com [104.47.58.108])
-        by userp3020.oracle.com with ESMTP id 368wjv3h4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 06:21:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OfBGbeS8eqwwoLcqthGZx2+VTukPZeeGU7MZf6wJ4a4+j1PfCK7gc6EaaA10OjAv23iuc3mTWsC+VT4xLefvPU32Pt7hWv9aTTwoX22tEhIrdh+Txpi2zMZAJC1+uARp/e5ppHpxc+8yQMrSvk5rIdELyjCxmSpx1XklJ2EnfTbgiqzHYiiEv8OJnYdCeC6s0w6oxFBK50RH/gbebrLroWhtHnrMjd7QhTpnGCIaPq/I/PvrHNl1EWN8l+rQoVDyPLLgSE59WkP+h40aV4m6K339CfXpvDOCreNv8Bdrv91X7zASrPxANvJGfxPz3kR5w7KlfoV/00EMaIk0g4d4AA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k2k2cMm0q+8Zfcbjcar37c3V3ADtupHVsW85zj1D3vM=;
- b=VP9j/yfjkwdH/Io6S2/TJTz1iBdxsrHjULA9ISagsQRKytsa9SWMJEXNbKklg7Uje4UX8W+byj0oZvSVzflG11MjcXsVuIlLWiFx9GG3/cxgp9FcPXutER51QD0rU6jPcVudszSrdine7syrJpcvL9eD/aO6uF37sl8VgLMWmYX/Z4K9ePyjGodKaprffrBibWcWXlJmCe1iT2BLCRed+1vJSJlJ/BUObTTlwauzqYmYkDHU4BoawPkOD2eFem01wRsIH5OA+gOP8cHozQSZEF1TIoHvU8wlSo8ngiuaycYtr7ItsaNdQzfAPuV/KVRc21nsl+fv+c6vSHHcoomcdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k2k2cMm0q+8Zfcbjcar37c3V3ADtupHVsW85zj1D3vM=;
- b=uABulfnw/HxYPB5cuvl9g6lxRtX5i/6eaiN02ihy91r/lcSnOyVQjx9HKCAzlcbjUeRechpU6F3El7DVzCuK5vreiQpe/DLfpuTlEvfe2ejxnEJwW1qQEB3fvmHUaaNuBSipvlpUF7aBZCrlHvW5rOIYwrlsoTjH7Trz49cJ9ko=
-Authentication-Results: kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by SJ0PR10MB4784.namprd10.prod.outlook.com (2603:10b6:a03:2d4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Fri, 29 Jan
- 2021 06:20:59 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::644d:92e4:7b5d:f8c1]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::644d:92e4:7b5d:f8c1%5]) with mapi id 15.20.3784.019; Fri, 29 Jan 2021
- 06:20:59 +0000
-Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with single page
- rings
-To:     Paul Durrant <paul@xen.org>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>
-References: <20210128130441.11744-1-paul@xen.org>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <c3a476c5-c671-4429-73d5-0bf7ced1a06b@oracle.com>
-Date:   Thu, 28 Jan 2021 22:20:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <20210128130441.11744-1-paul@xen.org>
+        id S232031AbhA2GYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:24:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44508 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhA2GYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:24:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611901405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=x55Ghkb1NGSakCxiseBfr9GEKcsGjHRMccE0zQUExb0=;
+        b=Kqo2SaoBr7vMKdT9ZC0xKlF/TuUvQQtxU7kuYFdaUkUFB+4cRlueU1az7KIA84wsAOr26E
+        uulsVmbtscSVNLwtcRN5EA+sFUxGDTd8oqKvoAhXxIBTw3lRCwcgDk/WTmKLm8XohgyaWS
+        fP/8/VpGk/oxou+u4EtDPdXE6RXuaLk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 196EAABDA;
+        Fri, 29 Jan 2021 06:23:25 +0000 (UTC)
+Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
+To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+Cc:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+ <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <20210128165014.xc77qtun6fl2qfun@treble>
+ <20210128215219.6kct3h2eiustncws@treble>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <3b24d8c8-a1fe-5b7c-6e96-65a719588f49@suse.com>
+Date:   Fri, 29 Jan 2021 08:23:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210128215219.6kct3h2eiustncws@treble>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [2601:646:c303:6700::a4a4]
-X-ClientProxiedBy: CH2PR08CA0005.namprd08.prod.outlook.com
- (2603:10b6:610:5a::15) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2601:646:c303:6700::a4a4] (2601:646:c303:6700::a4a4) by CH2PR08CA0005.namprd08.prod.outlook.com (2603:10b6:610:5a::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Fri, 29 Jan 2021 06:20:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 330118b8-1fbd-4732-dbbc-08d8c41e0b75
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4784:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4784C48C3BAA37442BB11676F0B99@SJ0PR10MB4784.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:114;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fBTLHXlLvdITXJAI9wG+Fw5zJ7cyg7gtYjm5zdEbeM2yVrkfE+ilXppXw3FOS6RwD6ce1Py1i9IbqeFeDiZzxIk83rZf0D72CKBAQyR00LIUOB7FwIxIUB9v5M/hnnJjlGa9O/yDLUkdAiHCH+lrnz3pX68dDbGxCy0XN6Z6y25K1BAy8SbIm2vx0miyxenrXdWhwXdsy5fUNOBROA0s3jwlvzJKM+VEsdCgn/C6Mn8wJkje3nWSWuKkphYqz895MeKkRmeaPg5+pRuWVEu/cwnfdLJRl63PnqvEK6lqyoj/zfdGMgqbshDUKWWpw2tWEpXRCV7F1lm9QET9hLWBV3yDlQukw84LQSvm8HwNdIC1MM42pQN67eHBqRZJnf60eDghQhRbs2usfvVodOk3btbAUKEE7nHsirEMMDEaSQpmmEER+AplV8lMqG6xBgDPES/2ZnatpIdJGX+PuW29JzmSKH76A3wj7YcHIicLByKAyK+PvaIDpJGSlbyWYDpplNdSe0HEvqCOucyUt6HrRJXcJziJJXCx9w7q1rbt0e5Ucb3IG/BE0J8HnL7JGGy+DblJBFbSL3Fh324WJ7YcJsytz1CDiap4QSDvgmtxZoE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(39860400002)(136003)(376002)(86362001)(16526019)(8676002)(31696002)(186003)(6486002)(44832011)(5660300002)(83380400001)(478600001)(53546011)(54906003)(36756003)(316002)(66556008)(4326008)(8936002)(66476007)(66946007)(6666004)(31686004)(2616005)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eDU3UC8wM0Q2TGs4cFJVeVlqbDdFTnRNMXV0RjV4c1pRNXdWQjJRM2MvL1JP?=
- =?utf-8?B?YUl5eGlBaTRiaHNKWGtHM05DSVJqUDduVXVrbTFWdFlOQXNzNUgzK2RIVXJO?=
- =?utf-8?B?UEIyekNwcExZMmVzdUFYK2RGZEtZeFlmY2hIZUxZa0QrQ0hMMU5SYXFGK1hs?=
- =?utf-8?B?MGdtcmpxV256YUlJZlp6QVV6RGtNTjI3VUZBc0ZCOS9HdjF2TTRGSlAxSFBt?=
- =?utf-8?B?c05aWHA1bUkwdHZYRGxmNnlCWW1aV0x6SDlMZ0c2aUhHWXhFNVBHazA4SVBy?=
- =?utf-8?B?QTcyeXN2c2lNeHBONGYrT3hVeWdrU29RMFZKd0hxT3Y4OHNDVEphdWF3UTZF?=
- =?utf-8?B?eUtLcTJMbmg0ZXNtNURHdE1MSWh0elBCOEJ1TkFLazVNbUlFUDFBN1dRNDc5?=
- =?utf-8?B?akZRS3lCZmFocUpSZU5SM3JrSDlXRlNFc1JNOUtDR3R0bjYzLzlOMEp2b0d5?=
- =?utf-8?B?TlRFVmlOMFlNTlk5LzlxQnlISEFpRnBmREZrSjB3dWhEMEdqeWRqUitKaTFF?=
- =?utf-8?B?VHU1cDk0SytVakhqWTloT2poeXpZMFVsbmJ1eU9NVGVkOGF4N2VGc1lCcmg0?=
- =?utf-8?B?cGU2bm5uWlZMdTQ1RGE0cC9yTWxLV1JXQXNGN0VLTk8wV0pYUnVvQW5xdUtP?=
- =?utf-8?B?MzlIY3FPUFN2R2lvZWo4cmpmY2ZIVDF6SVNMWVVXWHVTS01LMnBUMnRZRGFx?=
- =?utf-8?B?Ykk1bGJnL3F4WHoyM0NaUjdoNWViMTZoUGdyNG1rYXIyc2Vnck1rcStPK3F3?=
- =?utf-8?B?UmU1anRsY0ZFdGZNTEMyVHFxSWhZbEZvUFdURVJjbHJ2aWk1TGJuVDFPYXVl?=
- =?utf-8?B?RmFsOHV2eTZ4c2JHLzFCSGxaenRtNTdMWnVlQ1M5NnlLandUdUFoRjArK3VO?=
- =?utf-8?B?S0prOFF6YzBRWWFKU1ZtVEdURWt1T1lYcmVMWnNvZVhMM29lTm9WK1MzTXlY?=
- =?utf-8?B?N1B6QytFNkxFbHROTDVqWTMzbWFlMnQ5UUN5WWI1WGxzQ2RGenR3cWhERFF5?=
- =?utf-8?B?K0hORHRHMTU2Q3pKY3ZleVpmUFlQaVQ0MzgrQVdjbldLUFJzVGkwTVQ1MUdK?=
- =?utf-8?B?ZytUTjcwMmR4dVFrSXpzbFhITmlpQmJ1V21vM2ZKYzVrR09OOFhnY3I4NHZM?=
- =?utf-8?B?aDBBSFlrbSs3TnA5OWY0elhHMmRWUDJ3bkYvaU1aSVNXdEs0NGZiNGFDRE83?=
- =?utf-8?B?bVBWc2M4QXBRS2tTVlhKaExtRCtGVXVKcFRUcmFtcVZxVHkvNW9jQmY4b0FR?=
- =?utf-8?B?ZEppOGo5dVdGbllkdGQxaUpXQ2RqU2lNdVVTT0Z3TXdnUXVhUlRsWFNZY1hl?=
- =?utf-8?B?NHBJRjgxUU1NbitISjEwVnVzQW51N05PZGRuRnNLSElDaTNQMUtJQ2VtWkxN?=
- =?utf-8?B?ZXFhNU9sZ0dFTEFhNy9PTDF4YlZrWnJSRUwyT3NONDNLekpHYWxvTDlmN2ZP?=
- =?utf-8?B?ckNUOVNBd0l1K3NtK2w5bUFWdVhkKzVTUW84bUd3PT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 330118b8-1fbd-4732-dbbc-08d8c41e0b75
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 06:20:59.5180
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bB0ycOdfWbwBEuhEhStnjUNlA86er2Bp6GlDEFWZWb/OLB9dkK8ns+8NuLpTeHXwzj/6QYCMbFyxFWtc627SOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4784
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- adultscore=0 mlxscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101290033
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101290033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 1/28/21 5:04 AM, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
+On 28.01.21 г. 23:52 ч., Josh Poimboeuf wrote:
 > 
-> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
-> inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
-> behaviour of xen-blkback when connecting to a frontend was:
+> With retpolines disabled, some configurations of GCC will add Intel CET
+> instrumentation to the kernel by default.  That breaks certain tracing
+> scenarios by adding a superfluous ENDBR64 instruction before the fentry
+> call, for functions which can be called indirectly.
 > 
-> - read 'ring-page-order'
-> - if not present then expect a single page ring specified by 'ring-ref'
-> - else expect a ring specified by 'ring-refX' where X is between 0 and
->   1 << ring-page-order
+> CET instrumentation isn't currently necessary in the kernel, as CET is
+> only supported in user space.  Disable it unconditionally.
 > 
-> This was correct behaviour, but was broken by the afforementioned commit to
-> become:
-> 
-> - read 'ring-page-order'
-> - if not present then expect a single page ring (i.e. ring-page-order = 0)
-> - expect a ring specified by 'ring-refX' where X is between 0 and
->   1 << ring-page-order
-> - if that didn't work then see if there's a single page ring specified by
->   'ring-ref'
-> 
-> This incorrect behaviour works most of the time but fails when a frontend
-> that sets 'ring-page-order' is unloaded and replaced by one that does not
-> because, instead of reading 'ring-ref', xen-blkback will read the stale
-> 'ring-ref0' left around by the previous frontend will try to map the wrong
-> grant reference.
-> 
-> This patch restores the original behaviour.
-> 
-> Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid inconsistent xenstore 'ring-page-order' set by malicious blkfront")
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> ---
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: "Roger Pau Monné" <roger.pau@citrix.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Dongli Zhang <dongli.zhang@oracle.com>
-> 
-> v2:
->  - Remove now-spurious error path special-case when nr_grefs == 1
-> ---
->  drivers/block/xen-blkback/common.h |  1 +
->  drivers/block/xen-blkback/xenbus.c | 38 +++++++++++++-----------------
->  2 files changed, 17 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
-> index b0c71d3a81a0..524a79f10de6 100644
-> --- a/drivers/block/xen-blkback/common.h
-> +++ b/drivers/block/xen-blkback/common.h
-> @@ -313,6 +313,7 @@ struct xen_blkif {
->  
->  	struct work_struct	free_work;
->  	unsigned int 		nr_ring_pages;
-> +	bool                    multi_ref;
+> Reported-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Is it really necessary to introduce 'multi_ref' here or we may just re-use
-'nr_ring_pages'?
-
-According to blkfront code, 'ring-page-order' is set only when it is not zero,
-that is, only when (info->nr_ring_pages > 1).
-
-1819         if (info->nr_ring_pages > 1) {
-1820                 err = xenbus_printf(xbt, dev->nodename, "ring-page-order",
-"%u",
-1821                                     ring_page_order);
-1822                 if (err) {
-1823                         message = "writing ring-page-order";
-1824                         goto abort_transaction;
-1825                 }
-1826         }
-
-Therefore, can we assume 'ring-page-order' can never be 0? Once we have
-'ring-page-order' set, it should be >= 1 and we should read from "ring-ref%u"?
-
-If the specification allows 'ring-page-order' to be zero with "ring-ref%u"
-available, we should introduce 'multi_ref'.
-
-Thank you very much!
-
-Dongli Zhang
-
-
->  	/* All rings for this device. */
->  	struct xen_blkif_ring	*rings;
->  	unsigned int		nr_rings;
-> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> index 9860d4842f36..6c5e9373e91c 100644
-> --- a/drivers/block/xen-blkback/xenbus.c
-> +++ b/drivers/block/xen-blkback/xenbus.c
-> @@ -998,14 +998,17 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
->  	for (i = 0; i < nr_grefs; i++) {
->  		char ring_ref_name[RINGREF_NAME_LEN];
->  
-> -		snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-> +		if (blkif->multi_ref)
-> +			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
-> +		else {
-> +			WARN_ON(i != 0);
-> +			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref");
-> +		}
-> +
->  		err = xenbus_scanf(XBT_NIL, dir, ring_ref_name,
->  				   "%u", &ring_ref[i]);
->  
->  		if (err != 1) {
-> -			if (nr_grefs == 1)
-> -				break;
-> -
->  			err = -EINVAL;
->  			xenbus_dev_fatal(dev, err, "reading %s/%s",
->  					 dir, ring_ref_name);
-> @@ -1013,18 +1016,6 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
->  		}
->  	}
->  
-> -	if (err != 1) {
-> -		WARN_ON(nr_grefs != 1);
-> -
-> -		err = xenbus_scanf(XBT_NIL, dir, "ring-ref", "%u",
-> -				   &ring_ref[0]);
-> -		if (err != 1) {
-> -			err = -EINVAL;
-> -			xenbus_dev_fatal(dev, err, "reading %s/ring-ref", dir);
-> -			return err;
-> -		}
-> -	}
-> -
->  	err = -ENOMEM;
->  	for (i = 0; i < nr_grefs * XEN_BLKIF_REQS_PER_PAGE; i++) {
->  		req = kzalloc(sizeof(*req), GFP_KERNEL);
-> @@ -1129,10 +1120,15 @@ static int connect_ring(struct backend_info *be)
->  		 blkif->nr_rings, blkif->blk_protocol, protocol,
->  		 blkif->vbd.feature_gnt_persistent ? "persistent grants" : "");
->  
-> -	ring_page_order = xenbus_read_unsigned(dev->otherend,
-> -					       "ring-page-order", 0);
-> -
-> -	if (ring_page_order > xen_blkif_max_ring_order) {
-> +	err = xenbus_scanf(XBT_NIL, dev->otherend, "ring-page-order", "%u",
-> +			   &ring_page_order);
-> +	if (err != 1) {
-> +		blkif->nr_ring_pages = 1;
-> +		blkif->multi_ref = false;
-> +	} else if (ring_page_order <= xen_blkif_max_ring_order) {
-> +		blkif->nr_ring_pages = 1 << ring_page_order;
-> +		blkif->multi_ref = true;
-> +	} else {
->  		err = -EINVAL;
->  		xenbus_dev_fatal(dev, err,
->  				 "requested ring page order %d exceed max:%d",
-> @@ -1141,8 +1137,6 @@ static int connect_ring(struct backend_info *be)
->  		return err;
->  	}
->  
-> -	blkif->nr_ring_pages = 1 << ring_page_order;
-> -
->  	if (blkif->nr_rings == 1)
->  		return read_per_ring_refs(&blkif->rings[0], dev->otherend);
->  	else {
-> 
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
