@@ -2,140 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC10B30830F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F2630830D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhA2BNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:13:11 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:52129 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231688AbhA2BM6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:12:58 -0500
-X-UUID: 31e978336b934c32993cd79d89b40cbf-20210129
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jRgri1olxfB7XGX5U4de0POAbLQIhc8HLcK6Dh0pynE=;
-        b=UGB4xBlbP0zTNuGfxBjJulnwTZ/0tBqVr0ZMwsso+dbW5xs/MWSxMeFqcR1nM8QHQbszGhdPl+SpDcPs106Pl4xrgh2b2cBbJbQbMPmbhh/rQcXsLFkFVac/fy4U+rQweEfJaWoJwbdqKixXLBT9cCWMqkOyXSKJBIh2pQsfwxE=;
-X-UUID: 31e978336b934c32993cd79d89b40cbf-20210129
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 609630813; Fri, 29 Jan 2021 09:12:01 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 Jan 2021 09:11:56 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 Jan 2021 09:11:56 +0800
-Message-ID: <1611882716.5226.0.camel@mtksdaap41>
-Subject: Re: [PATCH v12 7/8] soc: mediatek: add mtk mutex support for MT8183
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Fri, 29 Jan 2021 09:11:56 +0800
-In-Reply-To: <20210128112314.1304160-8-hsinyi@chromium.org>
-References: <20210128112314.1304160-1-hsinyi@chromium.org>
-         <20210128112314.1304160-8-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S231751AbhA2BM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:12:59 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:37456 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231256AbhA2BMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:12:51 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l5IKU-00376U-4t; Fri, 29 Jan 2021 02:12:06 +0100
+Date:   Fri, 29 Jan 2021 02:12:06 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     olteanv@gmail.com, netdev@vger.kernel.org, robh+dt@kernel.org,
+        kuba@kernel.org, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, UNGLinuxDriver@microchip.com,
+        Woojung.Huh@microchip.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 4/8] net: dsa: microchip: add support for
+ phylink management
+Message-ID: <YBNg5iRtKp9Twqpe@lunn.ch>
+References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
+ <20210128064112.372883-5-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 8C09D00ED0E8B0A7F8D62831686DC8DB03401B6946659AA0087AF73F8551023F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128064112.372883-5-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk9uIFRodSwgMjAyMS0wMS0yOCBhdCAxOToyMyArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
-dGVrLmNvbT4NCj4gDQo+IEFkZCBtdGsgbXV0ZXggc3VwcG9ydCBmb3IgTVQ4MTgzIFNvQy4NCg0K
-UmV2aWV3ZWQtYnk6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQoNCj4gDQo+IFNpZ25lZC1v
-ZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29tPg0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+IC0tLQ0KPiAg
-ZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLW11dGV4LmMgfCA1MCArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDUwIGluc2VydGlvbnMoKykNCj4gDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYyBiL2RyaXZlcnMv
-c29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+IGluZGV4IGY1MzFiMTE5ZGE3YTkuLjcxOGE0MWJl
-YjZhZmIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+
-ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+IEBAIC0xNCw2ICsxNCw4
-IEBADQo+ICANCj4gICNkZWZpbmUgTVQyNzAxX01VVEVYMF9NT0QwCQkJMHgyYw0KPiAgI2RlZmlu
-ZSBNVDI3MDFfTVVURVgwX1NPRjAJCQkweDMwDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWDBfTU9E
-MAkJCTB4MzANCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYMF9TT0YwCQkJMHgyYw0KPiAgDQo+ICAj
-ZGVmaW5lIERJU1BfUkVHX01VVEVYX0VOKG4pCQkJKDB4MjAgKyAweDIwICogKG4pKQ0KPiAgI2Rl
-ZmluZSBESVNQX1JFR19NVVRFWChuKQkJCSgweDI0ICsgMHgyMCAqIChuKSkNCj4gQEAgLTM3LDYg
-KzM5LDE4IEBADQo+ICAjZGVmaW5lIE1UODE2N19NVVRFWF9NT0RfRElTUF9ESVRIRVIJCTE1DQo+
-ICAjZGVmaW5lIE1UODE2N19NVVRFWF9NT0RfRElTUF9VRk9FCQkxNg0KPiAgDQo+ICsjZGVmaW5l
-IE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1BMAkJMA0KPiArI2RlZmluZSBNVDgxODNfTVVURVhf
-TU9EX0RJU1BfUkRNQTEJCTENCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAJ
-CTkNCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDBfMkwJCTEwDQo+ICsjZGVm
-aW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwxXzJMCQkxMQ0KPiArI2RlZmluZSBNVDgxODNf
-TVVURVhfTU9EX0RJU1BfV0RNQTAJCTEyDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElT
-UF9DT0xPUjAJCTEzDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9DQ09SUjAJCTE0
-DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9BQUwwCQkxNQ0KPiArI2RlZmluZSBN
-VDgxODNfTVVURVhfTU9EX0RJU1BfR0FNTUEwCQkxNg0KPiArI2RlZmluZSBNVDgxODNfTVVURVhf
-TU9EX0RJU1BfRElUSEVSMAkJMTcNCj4gKw0KPiAgI2RlZmluZSBNVDgxNzNfTVVURVhfTU9EX0RJ
-U1BfT1ZMMAkJMTENCj4gICNkZWZpbmUgTVQ4MTczX01VVEVYX01PRF9ESVNQX09WTDEJCTEyDQo+
-ICAjZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9SRE1BMAkJMTMNCj4gQEAgLTg3LDYgKzEw
-MSwxMSBAQA0KPiAgI2RlZmluZSBNVDI3MTJfTVVURVhfU09GX0RTSTMJCQk2DQo+ICAjZGVmaW5l
-IE1UODE2N19NVVRFWF9TT0ZfRFBJMAkJCTINCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVYX1NPRl9E
-UEkxCQkJMw0KPiArI2RlZmluZSBNVDgxODNfTVVURVhfU09GX0RTSTAJCQkxDQo+ICsjZGVmaW5l
-IE1UODE4M19NVVRFWF9TT0ZfRFBJMAkJCTINCj4gKw0KPiArI2RlZmluZSBNVDgxODNfTVVURVhf
-RU9GX0RTSTAJCQkoTVQ4MTgzX01VVEVYX1NPRl9EU0kwIDw8IDYpDQo+ICsjZGVmaW5lIE1UODE4
-M19NVVRFWF9FT0ZfRFBJMAkJCShNVDgxODNfTVVURVhfU09GX0RQSTAgPDwgNikNCj4gIA0KPiAg
-c3RydWN0IG10a19tdXRleCB7DQo+ICAJaW50IGlkOw0KPiBAQCAtMTgxLDYgKzIwMCwyMCBAQCBz
-dGF0aWMgY29uc3QgdW5zaWduZWQgaW50IG10ODE3M19tdXRleF9tb2RbRERQX0NPTVBPTkVOVF9J
-RF9NQVhdID0gew0KPiAgCVtERFBfQ09NUE9ORU5UX1dETUExXSA9IE1UODE3M19NVVRFWF9NT0Rf
-RElTUF9XRE1BMSwNCj4gIH07DQo+ICANCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4
-MTgzX211dGV4X21vZFtERFBfQ09NUE9ORU5UX0lEX01BWF0gPSB7DQo+ICsJW0REUF9DT01QT05F
-TlRfQUFMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQUFMMCwNCj4gKwlbRERQX0NPTVBPTkVO
-VF9DQ09SUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ0NPUlIwLA0KPiArCVtERFBfQ09NUE9O
-RU5UX0NPTE9SMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ09MT1IwLA0KPiArCVtERFBfQ09N
-UE9ORU5UX0RJVEhFUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfRElUSEVSMCwNCj4gKwlbRERQ
-X0NPTVBPTkVOVF9HQU1NQV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfR0FNTUEwLA0KPiArCVtE
-RFBfQ09NUE9ORU5UX09WTDBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAsDQo+ICsJW0RE
-UF9DT01QT05FTlRfT1ZMXzJMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8yTCwNCj4g
-KwlbRERQX0NPTVBPTkVOVF9PVkxfMkwxXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwxXzJM
-LA0KPiArCVtERFBfQ09NUE9ORU5UX1JETUEwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1B
-MCwNCj4gKwlbRERQX0NPTVBPTkVOVF9SRE1BMV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfUkRN
-QTEsDQo+ICsJW0REUF9DT01QT05FTlRfV0RNQTBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX1dE
-TUEwLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDI3MTJfbXV0
-ZXhfc29mW01VVEVYX1NPRl9EU0kzICsgMV0gPSB7DQo+ICAJW01VVEVYX1NPRl9TSU5HTEVfTU9E
-RV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01PREUsDQo+ICAJW01VVEVYX1NPRl9EU0kwXSA9IE1VVEVY
-X1NPRl9EU0kwLA0KPiBAQCAtMTk4LDYgKzIzMSwxMyBAQCBzdGF0aWMgY29uc3QgdW5zaWduZWQg
-aW50IG10ODE2N19tdXRleF9zb2ZbTVVURVhfU09GX0RTSTMgKyAxXSA9IHsNCj4gIAlbTVVURVhf
-U09GX0RQSTFdID0gTVQ4MTY3X01VVEVYX1NPRl9EUEkxLA0KPiAgfTsNCj4gIA0KPiArLyogQWRk
-IEVPRiBzZXR0aW5nIHNvIG92ZXJsYXkgaGFyZHdhcmUgY2FuIHJlY2VpdmUgZnJhbWUgZG9uZSBp
-cnEgKi8NCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4MTgzX211dGV4X3NvZltNVVRF
-WF9TT0ZfRFNJMyArIDFdID0gew0KPiArCVtNVVRFWF9TT0ZfU0lOR0xFX01PREVdID0gTVVURVhf
-U09GX1NJTkdMRV9NT0RFLA0KPiArCVtNVVRFWF9TT0ZfRFNJMF0gPSBNVVRFWF9TT0ZfRFNJMCB8
-IE1UODE4M19NVVRFWF9FT0ZfRFNJMCwNCj4gKwlbTVVURVhfU09GX0RQSTBdID0gTVQ4MTgzX01V
-VEVYX1NPRl9EUEkwIHwgTVQ4MTgzX01VVEVYX0VPRl9EUEkwLA0KPiArfTsNCj4gKw0KPiAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBtdGtfbXV0ZXhfZGF0YSBtdDI3MDFfbXV0ZXhfZHJpdmVyX2RhdGEg
-PSB7DQo+ICAJLm11dGV4X21vZCA9IG10MjcwMV9tdXRleF9tb2QsDQo+ICAJLm11dGV4X3NvZiA9
-IG10MjcxMl9tdXRleF9zb2YsDQo+IEBAIC0yMjcsNiArMjY3LDE0IEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgbXRrX211dGV4X2RhdGEgbXQ4MTczX211dGV4X2RyaXZlcl9kYXRhID0gew0KPiAgCS5t
-dXRleF9zb2ZfcmVnID0gTVQyNzAxX01VVEVYMF9TT0YwLA0KPiAgfTsNCj4gIA0KPiArc3RhdGlj
-IGNvbnN0IHN0cnVjdCBtdGtfbXV0ZXhfZGF0YSBtdDgxODNfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7
-DQo+ICsJLm11dGV4X21vZCA9IG10ODE4M19tdXRleF9tb2QsDQo+ICsJLm11dGV4X3NvZiA9IG10
-ODE4M19tdXRleF9zb2YsDQo+ICsJLm11dGV4X21vZF9yZWcgPSBNVDgxODNfTVVURVgwX01PRDAs
-DQo+ICsJLm11dGV4X3NvZl9yZWcgPSBNVDgxODNfTVVURVgwX1NPRjAsDQo+ICsJLm5vX2NsayA9
-IHRydWUsDQo+ICt9Ow0KPiArDQo+ICBzdHJ1Y3QgbXRrX211dGV4ICptdGtfbXV0ZXhfZ2V0KHN0
-cnVjdCBkZXZpY2UgKmRldikNCj4gIHsNCj4gIAlzdHJ1Y3QgbXRrX211dGV4X2N0eCAqbXR4ID0g
-ZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IEBAIC00NTcsNiArNTA1LDggQEAgc3RhdGljIGNvbnN0
-IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXV0ZXhfZHJpdmVyX2R0X21hdGNoW10gPSB7DQo+ICAJICAu
-ZGF0YSA9ICZtdDgxNjdfbXV0ZXhfZHJpdmVyX2RhdGF9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ4MTczLWRpc3AtbXV0ZXgiLA0KPiAgCSAgLmRhdGEgPSAmbXQ4MTczX211dGV4
-X2RyaXZlcl9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNw
-LW11dGV4IiwNCj4gKwkgIC5kYXRhID0gJm10ODE4M19tdXRleF9kcml2ZXJfZGF0YX0sDQo+ICAJ
-e30sDQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXV0ZXhfZHJpdmVyX2R0X21h
-dGNoKTsNCg0K
+> +	/* For T1 PHY */
+> +	if (lan937x_is_internal_t1_phy_port(dev, port)) {
+> +		phylink_set(mask, 100baseT_Full);
+> +		phylink_set_port_modes(mask);
 
+Since this is a T1 PHY, you should be using 100baseT1_Full.
+
+This might be the first user of this for phylink, so please test this
+actually works.
+
+	 Andrew
