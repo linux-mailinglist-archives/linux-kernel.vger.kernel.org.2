@@ -2,133 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10707308E7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57811308E83
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233265AbhA2Ubh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhA2U31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:29:27 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BDAC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:28:41 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id i187so14258720lfd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uKLIyX25iKnuVKUfMGkqydZ4j+fzDI/x2+u6Osjlfzg=;
-        b=RNnKvqMs5X7rMlrzvksstcZxv1h5xi/0tiNSyUnQ0Qw821fC4tLxajbT68MeMNxNw9
-         prDS4lSuSq4PpXbwW5H/BrJyPRGbTSnbe30L7BHGva2UMgWrChWWVbkeKU/ITtOhHmHX
-         LWPTUX+4wovRj0w3oqreB1AppyLBQB9OkpqTQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uKLIyX25iKnuVKUfMGkqydZ4j+fzDI/x2+u6Osjlfzg=;
-        b=Ei4LvAuNr+U6Sr06AWjhzQz3LZt0izeI2pcXW2/AK1LW8o4S9rfLFZ9Q/TkRwgC9ph
-         f0VRmhAa3DvsS0Vp+9/tkK+LLBZxwG7rqTQkNa93Wlj2d6DFEIziMXvlKe0Y3dXdhlXm
-         kEmv8ZNEBD2bo45a8ak8DZcci2S4PkvvIX+jM6i+FaRaPZoJ9RS4Pwv7KwdmJtcSanMI
-         6vQaTsBDKnrQ1HNDOOeicpZyH4LaMntQ0nuV+yHTLur9hYxPtoaI9t8QL89AX1JAvHDp
-         X13gUnMK3SgGRL/Wx0jm2528UHzIetC9dx0hiJlcoNq58mclpu2vVmVcTQ9PPO03sgey
-         AusQ==
-X-Gm-Message-State: AOAM530eBnmlmTdG31EUQIp375hnxQ+myBmdVKFbwDjmU+Dj4oH057Rp
-        SRXRwHjwlqnf/qDtnDPo0jf0Lydsvv/LYA==
-X-Google-Smtp-Source: ABdhPJwYyBc50kCFa7dQebxp5qGS4izQym97OjB0z13UFecpqxHw3diJsWxnRT2IJ1XLMdfmRbh9pg==
-X-Received: by 2002:a05:6512:4c9:: with SMTP id w9mr2857983lfq.437.1611952119373;
-        Fri, 29 Jan 2021 12:28:39 -0800 (PST)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id e28sm2106184lfn.112.2021.01.29.12.28.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Jan 2021 12:28:37 -0800 (PST)
-Received: by mail-lf1-f54.google.com with SMTP id p21so14248756lfu.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:28:37 -0800 (PST)
-X-Received: by 2002:ac2:4436:: with SMTP id w22mr2813506lfl.41.1611952116987;
- Fri, 29 Jan 2021 12:28:36 -0800 (PST)
+        id S233151AbhA2UcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:32:13 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:18772 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233214AbhA2Ube (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:31:34 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611952241; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=drmkmIL2SroI4KkHMKq3UPc/T4ZxaQH66OmhxBJF2Rc=; b=owP2Bz9nmLwvR3KvddBbTkA7B7OcelTXf8f3GeCHJlg87X3exWWvnr+1rSJZlKx3gccgaQ1K
+ 5aGKksF6UkA9lOn/2XXXLYY5+sdSBtOZBA73okZVjA1i40ZUCxY8AhDtqm3jbHW9NtU8bymF
+ +EYSqZkG9h9/Rqi0Oy/GKae2xUc=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 601470547a21b36a9d0347a9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 20:30:12
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A74D5C43461; Fri, 29 Jan 2021 20:30:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.127.29] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36F25C433C6;
+        Fri, 29 Jan 2021 20:30:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 36F25C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v7 4/5] usb: dwc3: dwc3-qcom: Enable tx-fifo-resize
+ property by default
+To:     Jack Pham <jackp@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org
+References: <1611895604-4496-1-git-send-email-wcheng@codeaurora.org>
+ <1611895604-4496-5-git-send-email-wcheng@codeaurora.org>
+ <20210129092418.GA1879@jackp-linux.qualcomm.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <b9143845-0c40-392f-8c36-a11c0074f52e@codeaurora.org>
+Date:   Fri, 29 Jan 2021 12:30:09 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <ce392dc6-d77f-b74c-8569-9a04ef8ad2d6@redhat.com>
- <CAHk-=wg6AG=1YjDC2gSspPYjEPWqDXkXaiaoPZS6X=Rg_XRUsw@mail.gmail.com>
- <98e2806d-81af-baf7-00f4-5a43870ff514@redhat.com> <8723f53e-9954-e0d2-16ce-933f53c776c3@redhat.com>
- <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com> <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
-In-Reply-To: <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 29 Jan 2021 12:28:20 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjXRFCTp5TVOa1WnXNwMDRv+tzKuBM44NLRs+_0UvUVYw@mail.gmail.com>
-Message-ID: <CAHk-=wjXRFCTp5TVOa1WnXNwMDRv+tzKuBM44NLRs+_0UvUVYw@mail.gmail.com>
-Subject: Re: [5.11 regression] "tty: implement write_iter" breaks TIOCCONS
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jiufei Xue <jiufei.xue@linux.alibaba.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000005423b405ba0fd980"
+In-Reply-To: <20210129092418.GA1879@jackp-linux.qualcomm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005423b405ba0fd980
-Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 29, 2021 at 12:02 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> It's fairly easy to work around in this in the tty layer by just
-> avoiding that function entirely, so I'll cook up a patch to do that.
-> But I'm adding the appropriate people to the participants here because
-> this really is very subtle if you ever hit it.
 
-Here's the patch to make the tty layer just do the redirection
-entirely internally, avoiding that mis-designed vfs_iocb_iter_write()
-function.
+On 1/29/2021 1:24 AM, Jack Pham wrote:
+> Hi Wesley,
+> 
+> On Thu, Jan 28, 2021 at 08:46:43PM -0800, Wesley Cheng wrote:
+>> In order to take advantage of the TX fifo resizing logic, manually add
+>> these properties to the DWC3 child node by default.  This will allow
+>> the DWC3 gadget to resize the TX fifos for the IN endpoints, which
+>> help with performance.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/dwc3-qcom.c | 10 ++++++++++
+>>  1 file changed, 10 insertions(+)
+>>
+>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>> index d803ee9..4ea6be3 100644
+>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>> @@ -564,6 +564,7 @@ static int dwc3_qcom_clk_init(struct dwc3_qcom *qcom, int count)
+>>  
+>>  static const struct property_entry dwc3_qcom_acpi_properties[] = {
+>>  	PROPERTY_ENTRY_STRING("dr_mode", "host"),
+>> +	PROPERTY_ENTRY_BOOL("tx-fifo-resize"),
+>>  	{}
+>>  };
+>>  
+>> @@ -634,6 +635,7 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>>  	struct dwc3_qcom	*qcom = platform_get_drvdata(pdev);
+>>  	struct device_node	*np = pdev->dev.of_node, *dwc3_np;
+>>  	struct device		*dev = &pdev->dev;
+>> +	struct property		*prop;
+>>  	int			ret;
+>>  
+>>  	dwc3_np = of_get_child_by_name(np, "dwc3");
+>> @@ -642,6 +644,14 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>>  		return -ENODEV;
+>>  	}
+>>  
+>> +	prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+>> +	if (prop) {
+>> +		prop->name = "tx-fifo-resize";
+>> +		ret = of_add_property(dwc3_np, prop);
+>> +		if (ret < 0)
+>> +			dev_info(dev, "unable to add tx-fifo-resize prop\n");
+> 
+> You'll need to kfree(prop) both in case of error here as well as in the
+> driver's .remove() callback. Maybe easier to devm_kzalloc()?
 
-Hans, does this fix things for you? I'm pretty confident it will, but
-always best to double-check..
+Hi Jack,
 
-                 Linus
+Thanks for the catch, will fix this with the devm variant.
 
---0000000000005423b405ba0fd980
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kkiqnlm20>
-X-Attachment-Id: f_kkiqnlm20
+Hi Bjorn,
 
-IGRyaXZlcnMvdHR5L3R0eV9pby5jIHwgMjAgKysrKysrKysrKysrKysrKystLS0KIDEgZmlsZSBj
-aGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvdHR5L3R0eV9pby5jIGIvZHJpdmVycy90dHkvdHR5X2lvLmMKaW5kZXggYmY3YmU4ZTY5
-NzQ1Li5kOGE2OGY2YTBmZGQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdHR5L3R0eV9pby5jCisrKyBi
-L2RyaXZlcnMvdHR5L3R0eV9pby5jCkBAIC0xMDkyLDkgKzEwOTIsOCBAQCB2b2lkIHR0eV93cml0
-ZV9tZXNzYWdlKHN0cnVjdCB0dHlfc3RydWN0ICp0dHksIGNoYXIgKm1zZykKICAqCXdyaXRlIG1l
-dGhvZCB3aWxsIG5vdCBiZSBpbnZva2VkIGluIHBhcmFsbGVsIGZvciBlYWNoIGRldmljZS4KICAq
-LwogCi1zdGF0aWMgc3NpemVfdCB0dHlfd3JpdGUoc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3Qg
-aW92X2l0ZXIgKmZyb20pCitzdGF0aWMgc3NpemVfdCBmaWxlX3R0eV93cml0ZShzdHJ1Y3QgZmls
-ZSAqZmlsZSwgc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3QgaW92X2l0ZXIgKmZyb20pCiB7Ci0J
-c3RydWN0IGZpbGUgKmZpbGUgPSBpb2NiLT5raV9maWxwOwogCXN0cnVjdCB0dHlfc3RydWN0ICp0
-dHkgPSBmaWxlX3R0eShmaWxlKTsKICAJc3RydWN0IHR0eV9sZGlzYyAqbGQ7CiAJc3NpemVfdCBy
-ZXQ7CkBAIC0xMTE3LDYgKzExMTYsMTEgQEAgc3RhdGljIHNzaXplX3QgdHR5X3dyaXRlKHN0cnVj
-dCBraW9jYiAqaW9jYiwgc3RydWN0IGlvdl9pdGVyICpmcm9tKQogCXJldHVybiByZXQ7CiB9CiAK
-K3N0YXRpYyBzc2l6ZV90IHR0eV93cml0ZShzdHJ1Y3Qga2lvY2IgKmlvY2IsIHN0cnVjdCBpb3Zf
-aXRlciAqZnJvbSkKK3sKKwlyZXR1cm4gZmlsZV90dHlfd3JpdGUoaW9jYi0+a2lfZmlscCwgaW9j
-YiwgZnJvbSk7Cit9CisKIHNzaXplX3QgcmVkaXJlY3RlZF90dHlfd3JpdGUoc3RydWN0IGtpb2Ni
-ICppb2NiLCBzdHJ1Y3QgaW92X2l0ZXIgKml0ZXIpCiB7CiAJc3RydWN0IGZpbGUgKnAgPSBOVUxM
-OwpAQCAtMTEyNiw5ICsxMTMwLDEzIEBAIHNzaXplX3QgcmVkaXJlY3RlZF90dHlfd3JpdGUoc3Ry
-dWN0IGtpb2NiICppb2NiLCBzdHJ1Y3QgaW92X2l0ZXIgKml0ZXIpCiAJCXAgPSBnZXRfZmlsZShy
-ZWRpcmVjdCk7CiAJc3Bpbl91bmxvY2soJnJlZGlyZWN0X2xvY2spOwogCisJLyoKKwkgKiBXZSBr
-bm93IHRoZSByZWRpcmVjdGVkIHR0eSBpcyBqdXN0IGFub3RoZXIgdHR5LCB3ZSBjYW4gY2FuCisJ
-ICogY2FsbCBmaWxlX3R0eV93cml0ZSgpIGRpcmVjdGx5IHdpdGggdGhhdCBmaWxlIHBvaW50ZXIu
-CisJICovCiAJaWYgKHApIHsKIAkJc3NpemVfdCByZXM7Ci0JCXJlcyA9IHZmc19pb2NiX2l0ZXJf
-d3JpdGUocCwgaW9jYiwgaXRlcik7CisJCXJlcyA9IGZpbGVfdHR5X3dyaXRlKHAsIGlvY2IsIGl0
-ZXIpOwogCQlmcHV0KHApOwogCQlyZXR1cm4gcmVzOwogCX0KQEAgLTIzNzQsNiArMjM4MiwxMiBA
-QCBzdGF0aWMgaW50IHRpb2Njb25zKHN0cnVjdCBmaWxlICpmaWxlKQogCQkJZnB1dChmKTsKIAkJ
-cmV0dXJuIDA7CiAJfQorCWlmIChmaWxlLT5mX29wLT53cml0ZV9pdGVyICE9IHR0eV93cml0ZSkK
-KwkJcmV0dXJuIC1FTk9UVFk7CisJaWYgKCEoZmlsZS0+Zl9tb2RlICYgRk1PREVfV1JJVEUpKQor
-CQlyZXR1cm4gLUVCQURGOworCWlmICghKGZpbGUtPmZfbW9kZSAmIEZNT0RFX0NBTl9XUklURSkp
-CisJCXJldHVybiAtRUlOVkFMOwogCXNwaW5fbG9jaygmcmVkaXJlY3RfbG9jayk7CiAJaWYgKHJl
-ZGlyZWN0KSB7CiAJCXNwaW5fdW5sb2NrKCZyZWRpcmVjdF9sb2NrKTsK
---0000000000005423b405ba0fd980--
+Just wanted to see what you thought about this approach?  This way we
+can just keep the dt binding w/o having to re-add it in the future, as
+well as not needing to enable this property on every qcom platform with
+dwc3.
+
+Tested on my set up, and removed the change which added the property
+from the DTSI node.
+
+Thanks
+Wesley Cheng
+
+> 
+> Jack
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
