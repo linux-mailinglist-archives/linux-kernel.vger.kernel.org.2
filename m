@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C96E3083E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351263083F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhA2Ce3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 21:34:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229786AbhA2CeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:34:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 043C564DBD;
-        Fri, 29 Jan 2021 02:33:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611887624;
-        bh=KLQefFFQ5pcFGhFE5flj1il6GX5Wea1PhTE94Uz6hYE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MZ+co7AvQk6qveAR4nht7gM/Y/c82FD1tJUeaK33QfEdXfJOsceC4kIO2gcamZAfr
-         ZxvWE5GasPZ7fOiCZK3QqocokNq+XEQTyM6CeM1Sb54B0s6w4bSKWX0HUkGw5FkuNE
-         +CT61naj4Uml/97JOXO7DSauiIVPeh/IbVarrsdnaxWp4Yhpzgn5sUZBn6cJVj4qTp
-         orHgeVjKIXuBd1D7Lj2DmNyBSTK8cAf2xtHm6uz+woDx+BWO2xyGKG42NkvV1VwS9m
-         EPkcJppVEC9AhKK2lUuPaxPwF20jxEzB/juxgWTqfQ6pNeCO871oOL4Lq9uwcJ3ByI
-         0NEI8asrYSKlA==
-Date:   Thu, 28 Jan 2021 18:33:43 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Cc:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Brown, Aaron F" <aaron.f.brown@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH resend] e100: switch from 'pci_' to 'dma_' API
-Message-ID: <20210128183343.06762fc6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <268fcfd4dbd929948e8cdb58457ede1efa3898c6.camel@intel.com>
-References: <20210128210736.749724-1-christophe.jaillet@wanadoo.fr>
-        <268fcfd4dbd929948e8cdb58457ede1efa3898c6.camel@intel.com>
+        id S231575AbhA2CxL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 21:53:11 -0500
+Received: from wnbcorp.com ([175.126.38.143]:41371 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229885AbhA2CxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 21:53:09 -0500
+Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T2ePkC012452;
+        Fri, 29 Jan 2021 11:43:28 +0900
+Message-Id: <202101290243.10T2ePkC012452@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 29 Jan 2021 03:43:09 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 21:45:02 +0000 Nguyen, Anthony L wrote:
-> >  drivers/net/ethernet/intel/e100.c | 92 ++++++++++++++++-------------
-> 
-> My apologies, this patch slipped through the cracks for me. I will send
-> it in my next net-next 1GbE series or Jakub you can take it directly if
-> you'd like.
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-No preference but since I have to type a response either way let me say:
+Sir/Madam,
 
-Applied, thanks!
+CONGRATULATIONS!!!
 
-;)
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
