@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E6F30833D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FF6308341
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhA2B34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:29:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S231756AbhA2Bbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhA2B3y (ORCPT
+        with ESMTP id S231421AbhA2BbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:29:54 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DD4C061573;
-        Thu, 28 Jan 2021 17:29:13 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id f1so10273156lfu.3;
-        Thu, 28 Jan 2021 17:29:13 -0800 (PST)
+        Thu, 28 Jan 2021 20:31:23 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91146C061574;
+        Thu, 28 Jan 2021 17:30:42 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id k8so7177446otr.8;
+        Thu, 28 Jan 2021 17:30:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9a+7oNJRCxFrNJOqccL2faO5Eau0vb9fXtZnpOrkLR0=;
-        b=uPaqFT+3ZinDnW0ZgrzxVvIw+T4jYGaYOoHuLoKvr35YYy7OiroCIP7vXFFT69vGNx
-         Anz9afbM6uJDpeZqGmDCDDIQeS6EozPlHfFxAeZmNritl8ftD2kgrffvA/XP8maaRnzm
-         oMDba7gvxsbRmC64c9Ut0cJwaC9MSb0vTxrsu4y78C1iaHMnIBGCuDJzOUKoHL+B2wO4
-         8cJX8DMPfnpBbdBk7linybIhK2rGv2cjt/0O+CqpLwjQwtYyBlCtvxmEDm1+axhQZRSm
-         /BcEefd/KoicVDmX85wfNgKe9rAf7jJ3hDIR//z98gJi27uj6UCpuCpqlVP6PHK+GwHY
-         3dHQ==
+        bh=cGKWZfOvrSWPATU3fA4o+Sejn9j2AxeGUg6tCFIll98=;
+        b=jkvuUnBsIg+7yormfly8fvT/Y+lJzqwcBvLDM0c4Dlb08Cgn/a+t5M+0++Gp4COXS1
+         fElA6rU3UdMVfSHmcAX/VAlM91kz8UbvQSV/U4VwReSs+jeO8amA9aaG4ZpFkQVCekr7
+         OmgzYpXxEKQVvHwwKdgPZ4s0BWhC4EMG3dwisY8IuDra6n9DRzd3B/mxMUApTZg2CQVZ
+         jZMdUUwFFUi7Y3jT7MEEljzd83YeX7ar7h+eFMdMbiDzFn5wwrH9wReTOJREByRyATQB
+         MHSvqxgHF+xomJaKIeTZ7Cdxh+qIPpXUmHXla8qJZh4rl7+Fgg5TFZMVpuqtxiJjto+M
+         sVIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9a+7oNJRCxFrNJOqccL2faO5Eau0vb9fXtZnpOrkLR0=;
-        b=ovWDWpN2JH3nTsBwYibu82fXWSL8YScJeG1xUwaYyf9be2YbLhCl3PgpB5XTmTbKwq
-         HnMr9r6/61muXTyFiuldF993dL38vdZSqgIvEwJRjqlqeb/7tT5ccDhH6oqg/UjtIpK2
-         D0d+gftgBJzOZyQ1yRwuqS9bs+z5NBE59nZlY4yIK0OZ1hIo4bCoh0qoc9JIFWmjU2q+
-         bBnKqLGlK0mItKtNolSVOT/oQ/NzQwXk13eRpz6FvWXJOkTHG0ZrUiQtuYfCPM3XRdzH
-         fo0kjAlatBqs298Kr0rihBXDHxgtDBEwqQdYV3wImGRxX5wySeID6cguTLujp3jgHKxy
-         Hsaw==
-X-Gm-Message-State: AOAM531Bql2yHrtL2MlnOFoMzDyvVGTilrCS9yFtu3ThotywSrrpioKG
-        y/ElLmIzJRAqluwvhjs4aXQJ8rvQAiKi46CJtGk=
-X-Google-Smtp-Source: ABdhPJwk+wTmFlhGzF/8Wq5stBatXQi5ZhZ4CiifprtDNeB9IAWTFKszWobd5Q09hqhvxkEoXYuHk0ZLov9FU/+O7OQ=
-X-Received: by 2002:ac2:44b1:: with SMTP id c17mr829844lfm.556.1611883752325;
- Thu, 28 Jan 2021 17:29:12 -0800 (PST)
+        bh=cGKWZfOvrSWPATU3fA4o+Sejn9j2AxeGUg6tCFIll98=;
+        b=s/BalyTKnv0W65WH93EsDfJMEkM5YetoeLgFqBVotaTGK7YuTo1AJ1YXsUWct3MGpy
+         R0zIZC+VazJUWhscF9w6gyH70//sdekrA+b8KGZDNX5pbS9h2cTM0sZZGkUeOBI2uoW1
+         qM9Q5h3gr9XV4u1qJcSK8WyU82bhdyMWUEf35ZjWjCBFrS6EQK6IPL6yG+OTeslxd6Fr
+         8WaJ3BPkgJ8ZpX7WmR/GVdgbWTdBqo/Mln4zzOWSOde9+7EsydMtjA0tJNwb5uQrLQ9H
+         8DpbrPpWydxkkruABFvozCv1R43QtD4W+nyXC/g8rxvobVGVqy9OpA+2s7cCxnyKON/c
+         66cA==
+X-Gm-Message-State: AOAM533bkJMwozHKXjpF2ejXcr8OcdvZsV9N+rEVU48YksIaEGAUcmNp
+        +yp0KH31kz7PG3yrIeZuaU2BpYKeg0uL//N6pNM=
+X-Google-Smtp-Source: ABdhPJxahw8SU4xkm8h1Lu4hXo7R8sh8LWlxy9e/S++UZwV8fzg0GTI/oiMiXsgg3YT4Kc7g/8+ryyV++gPb+LxO37s=
+X-Received: by 2002:a9d:1293:: with SMTP id g19mr1487102otg.311.1611883841513;
+ Thu, 28 Jan 2021 17:30:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20210126072443.33066-1-foxhlchen@gmail.com> <87zh0tg1bn.fsf@notabene.neil.brown.name>
-In-Reply-To: <87zh0tg1bn.fsf@notabene.neil.brown.name>
-From:   Fox Chen <foxhlchen@gmail.com>
-Date:   Fri, 29 Jan 2021 09:29:00 +0800
-Message-ID: <CAC2o3DL=831OcfpuCG5MU2Y9qCwa3LvRg101LuvKfeHTL6efxg@mail.gmail.com>
-Subject: Re: [PATCH 00/12] docs: path-lookup: Update pathlookup docs
-To:     NeilBrown <neilb@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, vegard.nossum@oracle.com,
-        Al Viro <viro@zeniv.linux.org.uk>, rdunlap@infradead.org,
-        grandmaster@al2klimov.de, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20200222165840.GA214760@google.com> <20210128233929.GA39660@bjorn-Precision-5520>
+In-Reply-To: <20210128233929.GA39660@bjorn-Precision-5520>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 28 Jan 2021 20:30:30 -0500
+Message-ID: <CADnq5_MFVwC4a=J0praBOs+yiK691oJi6V8ihgJm_5wswPPWxA@mail.gmail.com>
+Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth notification"
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Alexandru Gagniuc <alex_gagniuc@dellteam.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Jan Vesely <jano.vesely@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Austin Bolen <austin_bolen@dell.com>,
+        Shyam Iyer <Shyam_Iyer@dell.com>,
+        Sinan Kaya <okaya@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Dave Airlie <airlied@gmail.com>,
+        Ben Skeggs <skeggsb@gmail.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        "A. Vladimirov" <vladimirov.atanas@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:58 AM NeilBrown <neilb@suse.de> wrote:
+On Thu, Jan 28, 2021 at 6:39 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >
-> On Tue, Jan 26 2021, Fox Chen wrote:
+> [+cc Atanas -- thank you very much for the bug report!]
 >
-> > The Path lookup is a very complex subject in VFS. The path-lookup
-> > document provides a very detailed guidance to help people understand
-> > how path lookup works in the kernel.This document was originally
-> > written based on three lwn articles five years ago. As times goes by,
-> > some of the content was outdated. This patchset is intended to update
-> > the document to make it more relevant to current codebase.
+> On Sat, Feb 22, 2020 at 10:58:40AM -0600, Bjorn Helgaas wrote:
+> > On Wed, Jan 15, 2020 at 04:10:08PM -0600, Bjorn Helgaas wrote:
+> > > I think we have a problem with link bandwidth change notifications
+> > > (see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pcie/bw_notification.c).
+> > >
+> > > Here's a recent bug report where Jan reported "_tons_" of these
+> > > notifications on an nvme device:
+> > > https://bugzilla.kernel.org/show_bug.cgi?id=206197
 > >
+> > AFAICT, this thread petered out with no resolution.
 > >
-> > Fox Chen (12):
-> >   docs: path-lookup: update follow_managed() part
-> >   docs: path-lookup: update path_to_nameidata() parth
-> >   docs: path-lookup: update path_mountpoint() part
-> >   docs: path-lookup: update do_last() part
-> >   docs: path-lookup: remove filename_mountpoint
-> >   docs: path-lookup: Add macro name to symlink limit description
-> >   docs: path-lookup: i_op->follow_link replaced with i_op->get_link
-> >   docs: path-lookup: update i_op->put_link and cookie description
-> >   docs: path-lookup: no get_link()
-> >   docs: path-lookup: update WALK_GET, WALK_PUT desc
-> >   docs: path-lookup: update get_link() ->follow_link description
-> >   docs: path-lookup: update symlink description
+> > If the bandwidth change notifications are important to somebody,
+> > please speak up, preferably with a patch that makes the notifications
+> > disabled by default and adds a parameter to enable them (or some other
+> > strategy that makes sense).
 > >
+> > I think these are potentially useful, so I don't really want to just
+> > revert them, but if nobody thinks these are important enough to fix,
+> > that's a possibility.
 >
-> Thanks for doing this.  I've responded individually to several of the
-> patches.  As you can see from my comments, there is often more to it
-> than just changing function names.  In some places you have capture the
-> more general nature of the change fairly well.  In other places the
-> result is incoherent or confusion.
-> Making small updates to this sort of documentation is not easy.  You
-> need to step have and see the "big picture", to overall story-arc.
-> Sometimes you can fit changes into that arc, sometimes you might need to
-> restructure or re-tell the story.
+> Atanas is also seeing this problem and went to the trouble of digging
+> up this bug report:
+> https://bugzilla.kernel.org/show_bug.cgi?id=206197#c8
 >
-> This is part of why I haven't put much effort into the document -
-> re-telling a story can be a lot of work.
+> I'm actually a little surprised that we haven't seen more reports of
+> this.  I don't think distros enable CONFIG_PCIE_BW, but even so, I
+> would think more people running upstream kernels would trip over it.
+> But maybe people just haven't turned CONFIG_PCIE_BW on.
 >
+> I don't have a suggestion; just adding Atanas to this old thread.
+>
+> > > There was similar discussion involving GPU drivers at
+> > > https://lore.kernel.org/r/20190429185611.121751-2-helgaas@kernel.org
+> > >
+> > > The current solution is the CONFIG_PCIE_BW config option, which
+> > > disables the messages completely.  That option defaults to "off" (no
+> > > messages), but even so, I think it's a little problematic.
+> > >
+> > > Users are not really in a position to figure out whether it's safe to
+> > > enable.  All they can do is experiment and see whether it works with
+> > > their current mix of devices and drivers.
+> > >
+> > > I don't think it's currently useful for distros because it's a
+> > > compile-time switch, and distros cannot predict what system configs
+> > > will be used, so I don't think they can enable it.
+> > >
+> > > Does anybody have proposals for making it smarter about distinguishing
+> > > real problems from intentional power management, or maybe interfaces
+> > > drivers could use to tell us when we should ignore bandwidth changes?
 
-Thanks for reviewing my patchset.  Yeah, sometimes it's difficult to
-fit in the context and match the writing style. Most part of the
-article is still valid, adding annotations may be better than rewrite.
+There's also this recently filed bug:
+https://gitlab.freedesktop.org/drm/amd/-/issues/1447
+The root cause of it appears to be related to ASPM.
 
-Let me revise it and send in the v2, though It may take a while.
-
-
-thanks,
-fox
-
-> NeilBrown
+Alex
