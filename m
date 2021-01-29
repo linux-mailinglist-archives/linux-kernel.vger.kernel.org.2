@@ -2,39 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57969308C36
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9FF308C39
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhA2SMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:12:15 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:37252 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhA2SMJ (ORCPT
+        id S232640AbhA2SOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:14:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232402AbhA2SOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:12:09 -0500
-Received: by mail-ot1-f46.google.com with SMTP id h14so9483052otr.4;
-        Fri, 29 Jan 2021 10:11:53 -0800 (PST)
+        Fri, 29 Jan 2021 13:14:17 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C04DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:13:33 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b2so13795794lfq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:13:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jbXatH+jIZoABuAUJLGiKBIVUtMrRLBvUtpWT54lNmk=;
+        b=KC10zSx5MFsfUUjYlG6FRCOeTyTcwX7GVvNaLYrrrt8YFffoMdY92Rh01gJr6XlSmY
+         4I2StG06IDQKqqKiAqu88gHc4seS5CORwF959YMHVWmCmchm1b7Bn3A7fg/tBq+MM9y4
+         8yDFzSkj9aLzlG6YxJyYupJOThB0naFT27zWo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Q4oVQSes+s6zJZHgbO5XBLVNfA/GuxCMLqREk38t5eY=;
-        b=ks8y6omQQgpIhUdOTOy7iEN9cqnBaWv42XlcOTcpZvmsfFZ2i1jLe4zt01hOrll6Np
-         8/f37rT3LSPgw1x3IAHGdWQP1O9fzXKTlaRE/fG8LhzIz7wMTC40nJ3uNi4ihbrBhnC6
-         HXyhS+2YIoJyXhqQgtPA3wFqx6XWUxvP6F+eF2ubLL82vKGbJ0MCA5lKY2JfcAGOX2X6
-         C3j9C3LqbavtLRWm/ZliRNG+VBc3SgD1rMI7nOLNF8FFSrE4dFowPWEY7gTJeyjBONjx
-         sBJMdTdquBWIu2HuNwrIeuV75rZ5dSWrUKwGKepD9DZUwi2cugjDCSd2nk6gL5kBUOTu
-         wTEQ==
-X-Gm-Message-State: AOAM531IFgnWlrkXA3SJEI/WbBFts/0aju2kkBqhN6SiqsCe5WJb26uB
-        AJ0A8QMXnbExuHKpuqUjdV9Rzw1X0HlofpR7WeMLWaxObyo=
-X-Google-Smtp-Source: ABdhPJwWVTb27M10LImI8Ql5aBqCCDUdwfufJ8qd1DtyyXgYufMEHKn8AWOxGEY7QhOFvF99va4Q0cU7gOHVnXt5qiI=
-X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr3775525otm.206.1611943888425;
- Fri, 29 Jan 2021 10:11:28 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jbXatH+jIZoABuAUJLGiKBIVUtMrRLBvUtpWT54lNmk=;
+        b=Zm+yKck5jcyhh4KerbsluAFFJZlO4qJxWBOo6A9JHzWC8fg/v5zUH6kGV9nUJr7CHo
+         5lZxbMriMLU9I8mlY2LuSX8JkinOw3JEBqQkkNRCdO26CX+8OQI1498yjBBM8Dg8/3of
+         w6kHJ/3i9OhVf0TejwyusIGzE1lpyOFYx6XWX6a4pWEf+FEn51mcogZLa56sqJ1CZPm8
+         aeeErstmjfX6Ul8sPcNniSBfYuO9MjzcnpBvsEUys/5PGaXYShrhc1A2O6g2qjAMqkyx
+         zzYfuI8ZCK3hBV2u4t8nJ/SBhH5lv6tFoITObaVEQdvd4Z3hEnnItV/Gz5bvtyGhuLX/
+         Kkfw==
+X-Gm-Message-State: AOAM532MZiCn93yGHRTXc2cN5eylhBWzvjLtu6efWMbupEkwurtaxdmb
+        hOYNBP6H8WOPjFOq1zMK6orR251ghzbbIA==
+X-Google-Smtp-Source: ABdhPJzOtD8kKUpK+yOvobkiKeKYnl4cv2nT4JkSmpxJ+mcayabBaTUzjT6VDs1gDH8T9Ax3kLzRoA==
+X-Received: by 2002:ac2:43af:: with SMTP id t15mr2823337lfl.25.1611944011719;
+        Fri, 29 Jan 2021 10:13:31 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id h189sm2082523lfd.201.2021.01.29.10.13.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Jan 2021 10:13:31 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id i187so13762627lfd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:13:30 -0800 (PST)
+X-Received: by 2002:ac2:5502:: with SMTP id j2mr2617310lfk.421.1611944010487;
+ Fri, 29 Jan 2021 10:13:30 -0800 (PST)
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Jan 2021 19:11:17 +0100
-Message-ID: <CAJZ5v0is8qQ91Nx_hhMgc3Ga8NgFbE-JAu03=M-L9sCpf8pVmQ@mail.gmail.com>
-Subject: [GIT PULL][Resend] ACPI fixes for v5.11-rc6
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+References: <CAJZ5v0is8qQ91Nx_hhMgc3Ga8NgFbE-JAu03=M-L9sCpf8pVmQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0is8qQ91Nx_hhMgc3Ga8NgFbE-JAu03=M-L9sCpf8pVmQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Jan 2021 10:13:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh2vddZUVEQ4Fn3Oy5q70WNGP3C7bAwxsnXkjP02rVjbA@mail.gmail.com>
+Message-ID: <CAHk-=wh2vddZUVEQ4Fn3Oy5q70WNGP3C7bAwxsnXkjP02rVjbA@mail.gmail.com>
+Subject: Re: [GIT PULL][Resend] ACPI fixes for v5.11-rc6
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         Linux PM <linux-pm@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -44,54 +68,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Resending, because it hasn't made it to the mailing lists, not sure why.]
+On Fri, Jan 29, 2021 at 10:11 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> [Resending, because it hasn't made it to the mailing lists, not sure why.]
 
-Hi Linus,
+I see it, and I see the cc to the list, so it is likely something
+about the list being slow or subtly broken.
 
-Please pull from the tag
+There was another pull request a couple of days ago that apparently
+had the same problem (and didn't get a pr-tracker-bot reply due to
+it). I forget which one.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.11-rc6
-
-with top-most commit b584b7e9630acc65a4d01ff5f9090d1a0fb3bbb6
-
- Merge branch 'acpi-sysfs'
-
-on top of commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
-
- Linux 5.11-rc5
-
-to receive ACPI fixes for 5.11-rc6.
-
-These fix the handling of notifications in the ACPI thermal driver
-and address a device enumeration issue leading to the presence of
-multiple MODALIAS entries in one uevent file in sysfs in some cases.
-
-Specifics:
-
- - Modify the ACPI thermal driver to avoid evaluating _TMP directly
-   in its Notify () handler callback and running too many thermal
-   checks for one thermal zone at the same time so as to address a
-   work item accumulation issue observed on some systems that fail
-   to shut down as a result of it (Rafael Wysocki).
-
- - Modify the ACPI uevent file creation code to avoid putting
-   multiple MODALIAS entries in one uevent file in sysfs which
-   breaks systemd-udevd (Kai-Heng Feng).
-
-Thanks!
-
-
----------------
-
-Kai-Heng Feng (1):
-      ACPI: sysfs: Prefer "compatible" modalias
-
-Rafael J. Wysocki (1):
-      ACPI: thermal: Do not call acpi_thermal_check() directly
-
----------------
-
- drivers/acpi/device_sysfs.c | 20 ++++++--------------
- drivers/acpi/thermal.c      | 46 ++++++++++++++++++++++++++++++++-------------
- 2 files changed, 39 insertions(+), 27 deletions(-)
+               Linus
