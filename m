@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39663308AEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B29F308AEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhA2RFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:05:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25956 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231924AbhA2RFG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:05:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611939820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SiOzMG034p5QbWP2fTdwm65PlfCrN2m47go7Lg3jSjc=;
-        b=SvtZ9U8hKH/JFJq7/8ma9wI9nRmTq+z+0+dQs/KPZMjscRFO9HtkNDydU628fspWS5wZVI
-        Axzc5L2nt467G/hdo10J8c7ZxrowYLXxKOLqpiOlF/UbtSb5p6TWZNfNzRiqR8hXe6d3nj
-        yiJQwU8O/I5r6jfTQrZPcROatSwHXCc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-N8wsyx1vNXWv0dfKR8MHXw-1; Fri, 29 Jan 2021 12:03:36 -0500
-X-MC-Unique: N8wsyx1vNXWv0dfKR8MHXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6178D192CC42;
-        Fri, 29 Jan 2021 17:03:34 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FB3860CD0;
-        Fri, 29 Jan 2021 17:03:33 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 11:03:31 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
-Message-ID: <20210129170331.akmpnaqlwtfy4y6o@treble>
-References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <20210128165014.xc77qtun6fl2qfun@treble>
- <20210128215219.6kct3h2eiustncws@treble>
- <20210129102105.GA27841@zn.tnic>
- <20210129151034.iba4eaa2fuxsipqa@treble>
- <20210129163048.GD27841@zn.tnic>
- <20210129164932.qt7hhmb7x4ehomfr@treble>
- <fd874f37-5842-93ab-6b6b-872f028f2583@suse.com>
+        id S231960AbhA2RFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:05:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:51532 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231195AbhA2REs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 12:04:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF3D013A1;
+        Fri, 29 Jan 2021 09:04:02 -0800 (PST)
+Received: from [10.57.35.163] (unknown [10.57.35.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63C843F71B;
+        Fri, 29 Jan 2021 09:04:01 -0800 (PST)
+Subject: Re: [PATCH v3 2/3] perf/smmuv3: Add a MODULE_SOFTDEP() to indicate
+ dependency on SMMU
+To:     John Garry <john.garry@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20210127113258.1421-1-thunder.leizhen@huawei.com>
+ <20210127113258.1421-3-thunder.leizhen@huawei.com>
+ <67e0859b-2633-3516-527f-57557e210fa1@arm.com>
+ <4b116f38-84da-9ef9-350c-8900944b0433@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a5595eae-0de9-e454-8a3d-5718512422ee@arm.com>
+Date:   Fri, 29 Jan 2021 17:03:59 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fd874f37-5842-93ab-6b6b-872f028f2583@suse.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <4b116f38-84da-9ef9-350c-8900944b0433@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 06:54:08PM +0200, Nikolay Borisov wrote:
+On 2021-01-29 15:34, John Garry wrote:
+> On 29/01/2021 15:12, Robin Murphy wrote:
+>> On 2021-01-27 11:32, Zhen Lei wrote:
+>>> The MODULE_SOFTDEP() gives user space a hint of the loading sequence. 
+>>> And
+>>> when command "modprobe arm_smmuv3_pmu" is executed, the 
+>>> arm_smmu_v3.ko is
+>>> automatically loaded in advance.
+>>
+>> Why do we need this? If probe order doesn't matter when both drivers 
+>> are built-in, why should module load order?
+>>
+>> TBH I'm not sure why we even have a Kconfig dependency on ARM_SMMU_V3, 
+>> given that the drivers operate completely independently :/
 > 
-> 
-> On 29.01.21 г. 18:49 ч., Josh Poimboeuf wrote:
-> > Agreed, stable is a good idea.   I think Nikolay saw it with GCC 9.
-> 
-> 
-> Yes I did, with the default Ubuntu compiler as well as the default gcc-10 compiler: 
-> 
-> # gcc -v -Q -O2 --help=target | grep protection
-> 
-> gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04) 
-> COLLECT_GCC_OPTIONS='-v' '-Q' '-O2' '--help=target' '-mtune=generic' '-march=x86-64'
->  /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -v -imultiarch x86_64-linux-gnu help-dummy -dumpbase help-dummy -mtune=generic -march=x86-64 -auxbase help-dummy -O2 -version --help=target -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccSecttk.s
-> GNU C17 (Ubuntu 9.3.0-17ubuntu1~20.04) version 9.3.0 (x86_64-linux-gnu)
-> 	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
-> 
-> 
-> It has -fcf-protection turned on by default it seems. 
+> Can that Kconfig dependency just be removed? I think that it was added 
+> under the idea that there is no point in having the SMMUv3 PMU driver 
+> without the SMMUv3 driver.
 
-Yup, explains why I didn't see it:
+A PMCG *might* be usable for simply counting transactions to measure 
+device activity regardless of its associated SMMU being enabled. Either 
+way, it's not really Kconfig's job to decide what makes sense (beyond 
+the top-level "can this driver *ever* be used on this platform" 
+visibility choices). Imagine if we gave every PCI/USB/etc. device driver 
+an explicit dependency on at least one host controller driver being 
+enabled...
 
-gcc version 10.2.1 20201125 (Red Hat 10.2.1-9) (GCC)
-COLLECT_GCC_OPTIONS='-v' '-Q' '-O2' '--help=target' '-mtune=generic' '-march=x86-64'
- /usr/libexec/gcc/x86_64-redhat-linux/10/cc1 -v help-dummy -dumpbase help-dummy -mtune=generic -march=x86-64 -auxbase help-dummy -O2 -version --help=target -o /tmp/cclBz55H.s
-
-
--- 
-Josh
-
+Robin.
