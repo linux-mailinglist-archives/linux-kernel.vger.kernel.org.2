@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F9430844A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43327308450
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhA2DjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbhA2DjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:39:21 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898B5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:38:41 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id m22so1521179ljj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:38:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PuwJteoXwJBHsZo/AeV/9OQpx+tnLiPJLnbPShZBUBc=;
-        b=NG1kV18DBBmRpbuQdSU1iwTNhIM+0aoPpvwgB24STtrCB9udnCanFVWj42c2rrto06
-         gTg2jdx72Ip8d4XpMkqdw/eiXvAnxeFLydyB7IELtDRRjl6nI92tDzn+x33PpZ+QG8ek
-         78HO7td9x1VnR+7mugl5BtiGYCHSrS9OocjsE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PuwJteoXwJBHsZo/AeV/9OQpx+tnLiPJLnbPShZBUBc=;
-        b=SGSBVtMOI9SeUcsz/+d/FviXozfe3c5mbYLh1+44DxtxgSPs6gBKwqW4psmNWR9mpE
-         DbMaTK5QjviFt/l4BYtlyknFpMEleKapEDRrwY7DCECbNIX/Q4Pqkpy3gQy6Sa1mCpuD
-         yny6rNdmt5EHIttWO1ec7JVDMeBNSz4Lhwh5Dpu889Tj1VMEoM7jd/z957+/nAz5v2NE
-         PG+0uTWSHV0fbhh2CG5mJV650ilzzeZgGGDJIxhcsbQEk1JRzlv4wY3zjM+gAKdpHiXf
-         0h50dvZ5OF32b8VkIOtHHVo8mD7VRxLqgqXXUujm4K4zjOyB1/SGLYe3DgF4Bw5TCsS8
-         eUKQ==
-X-Gm-Message-State: AOAM530KguxOKbejh55jRMzXVud8JMOQkAzWKagk6oqqVLIZuDobtDCm
-        Hi1O1C1P9kwkSYWhDN3CsnJBcAXi5rNXSg==
-X-Google-Smtp-Source: ABdhPJxnDufbDoSdmbLDZ3jCf0zMkhj/kk/HAjvhLNDUDf+mO2I+aiw4wG4XiaZtPnGvT+3/a9K93g==
-X-Received: by 2002:a2e:7a18:: with SMTP id v24mr1285956ljc.55.1611891519231;
-        Thu, 28 Jan 2021 19:38:39 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id o11sm1855141lfu.157.2021.01.28.19.38.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 19:38:38 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id m22so10557434lfg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:38:37 -0800 (PST)
-X-Received: by 2002:a05:6512:516:: with SMTP id o22mr689075lfb.487.1611891517411;
- Thu, 28 Jan 2021 19:38:37 -0800 (PST)
+        id S231841AbhA2DqI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 22:46:08 -0500
+Received: from wnbcorp.com ([175.126.38.143]:51502 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229757AbhA2DqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 22:46:03 -0500
+Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T3YmIV019338;
+        Fri, 29 Jan 2021 12:41:14 +0900
+Message-Id: <202101290341.10T3YmIV019338@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <YBNcv8jLEDE8C/IW@kernel.org>
-In-Reply-To: <YBNcv8jLEDE8C/IW@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 28 Jan 2021 19:38:21 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
-Message-ID: <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
-Subject: Re: [GIT PULL] tpmdd updates for v5.12-rc1
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        James Morris James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Peter Huewe <peterhuewe@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 29 Jan 2021 04:40:53 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 4:54 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> This contains bug fixes for tpm_tis driver, which had a racy wait for
-> hardware state change to be ready to send a command to the TPM chip. The
-> bug has existed already since 2006, but has only made itself known in
-> recent past.
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Hmm. Is this for the next merge window? The subject line implies that,
-as does the addition of the cr50 driver.
+Sir/Madam,
 
-But the commentary about fixes implies that at least part of it should
-be in 5.11?
+CONGRATULATIONS!!!
 
-            Linus
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
