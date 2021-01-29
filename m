@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83102308F0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7199F308F0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhA2VKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbhA2VKT (ORCPT
+        id S233396AbhA2VLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:11:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233106AbhA2VL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:10:19 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC840C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:09:38 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id j12so6992057pfj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:09:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RYeBCM1n6l4ocBSebSg/m7g9I7gGkp0ycMnAlPc92B8=;
-        b=S3tklrxmGuXpMHcYLnRVK+jeO5qFc0et2gxfHJPQ0maQI1TeXudon4C5RUBooPCbtB
-         goYiM4KLrjpEgSVh614bPfwnqkxKbGnEWD5ZgbuV9ghFGquGz8RsqJOdxC056XkyI8lU
-         pd5WC2uWhmIhqxmn0OBQw9LoOS6gY1SYZrbRbWe3qgx8Ieaaw/LEjU1gYbWnnG2zPGHj
-         qQbw3c6WjrjcaqDzcG5TnhzJgLNdnIfhj6iG45ssDD8s7PV60/XSdIS6QT2VUkZX08uQ
-         m//NN9Ux3wCuB0CiNg3HAYgZ1K+DBpmMZLVJr0jJxqLXx5EjQxst8zY2wazLv14aA7Xs
-         3xag==
+        Fri, 29 Jan 2021 16:11:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611954600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BXC0Ld1ahrZyhsUBN40K1GviFQKh4suqNGunCNrf6G0=;
+        b=i7g0lNRi/925NcUqX6F1ZqkC8KNdwbkUslLeWsapMGeZpIac+1vYoMIh4tJ2BMuwcO/6Ub
+        Qh+gjkkdkpQU9g5cYEvDhCJWlyXddDDf+1JNG0wsIFYfN1FUahRxou4z3Zn0IRpsvcL4OF
+        WGhpEqufPcBFgASdmCz1oblVNkNrdhM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-SoXiexb9MHC7bHrNMlanyQ-1; Fri, 29 Jan 2021 16:09:58 -0500
+X-MC-Unique: SoXiexb9MHC7bHrNMlanyQ-1
+Received: by mail-ed1-f69.google.com with SMTP id e25so5550323edq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:09:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RYeBCM1n6l4ocBSebSg/m7g9I7gGkp0ycMnAlPc92B8=;
-        b=ucgp/q1KhZooURSejcM1y3y0ssRP1B/QWNP+OOu7ECG3umtESx8UH6StNucwqRGIL7
-         HVappUpc21+7ym8a95j7mGdp2zjCLMMIBSwNI/7Hr1tGJC9uFO4sMHsabtGgrhETaj6y
-         d8mIp1b7UjmNxyGqwWjqpDTy7108UsJFJJFj0MZTSoEMIo+mVlS8ZEzbnB14GEHifCPw
-         DzlT7VBoe+HGpavgfJm28MAO4AJT1w/7FKFGJac7k6Uhq2KwAIKkhSHD8qcVYnd1Z2f/
-         z+sDBFWBEhIGHp7a/57Y7cb+zhK7klOc+nzMDChn50JakJFRHwfQoITUID8s+OdpYmmQ
-         UpFQ==
-X-Gm-Message-State: AOAM532tJz9ItK7PjR4C95LJVR2HVdlYgDNHZ918g+8pKrw37es324Zt
-        OtsrprTwaK5RGdobIPH+kigJ3234Q6KWFMEFb/u1Xg==
-X-Google-Smtp-Source: ABdhPJzFg2tAjKXAr4Pnf1l9ek+uXHXxbHOoTUeTs3hbphe3V1NgyYOvCVADlXGG1yCGPKwdUqQ3VIJHbeuij/TInsA=
-X-Received: by 2002:a63:7e10:: with SMTP id z16mr6507613pgc.263.1611954578268;
- Fri, 29 Jan 2021 13:09:38 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BXC0Ld1ahrZyhsUBN40K1GviFQKh4suqNGunCNrf6G0=;
+        b=pyfzHiDqdQuH2vJSAXze+0pOL6TlZMe9EIyFHF3aYsyN++PP2ZMcSphw/zVrYf5dYX
+         l9IJ74qc/fZGPG6vZD9ykpZIIpBRPMijJo+EDvOIjfoMVB8G0FyiBV3gUDi4f0UvDYz+
+         A9EajKPr0Q8kxWBKPDdEIbi2xJiLCw/3KaalLv1HBjho95lZ5E57gVwM3FfJE6/O8wQN
+         tKKgFMFACM2DS1aRaTZeXOrL7ZpaF4VTkPg8WlGWzwq6SSfjbML3qENfKgVAtrDbveuI
+         c76iWAg3y/ciC04lo9VGbJWHLlcCYjyE7RWk7AOvE/CNvaWIQOIWNJxfoQ+2Yz6lQLeJ
+         BUVA==
+X-Gm-Message-State: AOAM530iSM+pp19NDa1fv2ifDbvMf9LcrwrOY9+0R5XW4bvwDeQ0Kgi4
+        NycrYTgDs2HZL9Loi9HW41ULmbJRYyL876F1+ArTcGP/ye74FVikOaiqnbVXMwF+yrZuovG3bjJ
+        evTGn2pqwldDjLJLxFR6BVPJ3iTT4DyNPiibO55z9bpJIuERqCKdRYzurPppO7gmoH0KMTp9jsR
+        6/
+X-Received: by 2002:a17:906:94ce:: with SMTP id d14mr6406577ejy.121.1611954597175;
+        Fri, 29 Jan 2021 13:09:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz/sEIipjkXKiVTeV8HK1C1y12oGooChkjjR9DY6jS03/SNwWWh958GBsh2hRC2T2IXg5KJ1A==
+X-Received: by 2002:a17:906:94ce:: with SMTP id d14mr6406565ejy.121.1611954596974;
+        Fri, 29 Jan 2021 13:09:56 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id m10sm5173536edi.54.2021.01.29.13.09.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Jan 2021 13:09:56 -0800 (PST)
+Subject: Re: [5.11 regression] "tty: implement write_iter" breaks TIOCCONS
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jiufei Xue <jiufei.xue@linux.alibaba.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <ce392dc6-d77f-b74c-8569-9a04ef8ad2d6@redhat.com>
+ <CAHk-=wg6AG=1YjDC2gSspPYjEPWqDXkXaiaoPZS6X=Rg_XRUsw@mail.gmail.com>
+ <98e2806d-81af-baf7-00f4-5a43870ff514@redhat.com>
+ <8723f53e-9954-e0d2-16ce-933f53c776c3@redhat.com>
+ <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com>
+ <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
+ <CAHk-=wjXRFCTp5TVOa1WnXNwMDRv+tzKuBM44NLRs+_0UvUVYw@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <98a4e417-bd2e-6333-47f2-36bf96d53053@redhat.com>
+Date:   Fri, 29 Jan 2021 22:09:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com> <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
-In-Reply-To: <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 13:09:27 -0800
-Message-ID: <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wjXRFCTp5TVOa1WnXNwMDRv+tzKuBM44NLRs+_0UvUVYw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 12:55 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Jan 29, 2021 at 9:48 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 12:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > > >
-> > > > diff --git a/Makefile b/Makefile
-> > > > index 20141cd9319e..bed8b3b180b8 100644
-> > > > --- a/Makefile
-> > > > +++ b/Makefile
-> > > > @@ -832,8 +832,20 @@ endif
-> > > >
-> > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
-> > > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> > > >
-> > > > +# If using clang without the integrated assembler, we need to explicitly tell
-> > > > +# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
-> > > > +# detect whether the version of GAS supports DWARF v5.
-> > > > +ifdef CONFIG_CC_IS_CLANG
-> > > > +ifneq ($(LLVM_IAS),1)
-> > > > +ifeq ($(dwarf-version-y),5)
-> > > > +DEBUG_CFLAGS   += -Wa,-gdwarf-5
-> > >
-> > > I noticed double "-g -gdwarf-5 -g -gdwarf-5" (a different issue) and
-> > > that's why I looked again into the top-level Makefile.
-> >
-> > That's...unexpected.  I don't see where that could be coming from.
-> > Can you tell me please what is the precise command line invocation of
-> > make and which source file you observed this on so that I can
-> > reproduce?
-> >
->
-> That's everywhere...
->
-> $ zstdgrep --color '\-g -gdwarf-5 -g -gdwarf-5'
-> build-log_5.11.0-rc5-8-amd64-clang12-lto.txt.zst
-> | wc -l
-> 29529
+Hi,
 
-I'm not able to reproduce.
+On 1/29/21 9:28 PM, Linus Torvalds wrote:
+> On Fri, Jan 29, 2021 at 12:02 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> It's fairly easy to work around in this in the tty layer by just
+>> avoiding that function entirely, so I'll cook up a patch to do that.
+>> But I'm adding the appropriate people to the participants here because
+>> this really is very subtle if you ever hit it.
+> 
+> Here's the patch to make the tty layer just do the redirection
+> entirely internally, avoiding that mis-designed vfs_iocb_iter_write()
+> function.
+> 
+> Hans, does this fix things for you? I'm pretty confident it will, but
+> always best to double-check..
 
-$ make LLVM=1 -j72 V=1 2>&1 | grep dwarf
-...
-clang ... -g -gdwarf-5 -Wa,-gdwarf-5 ...
-...
+I can confirm that the attached patch fixes things for me, thanks.
 
-$ make LLVM=1 LLVM_IAS=1 -j72 V=1 2>&1 | grep dwarf
-...
-clang ... -g -gdwarf-5 ...
-...
+Regards,
 
-Can you tell me please what is the precise command line invocation of
-make and which source file you observed this on so that I can
-reproduce?
--- 
-Thanks,
-~Nick Desaulniers
+Hans
+
