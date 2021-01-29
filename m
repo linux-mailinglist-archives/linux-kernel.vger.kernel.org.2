@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FEA308439
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDF2308429
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhA2DZf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 22:25:35 -0500
-Received: from wnbcorp.com ([175.126.38.143]:53095 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231267AbhA2DZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:25:34 -0500
-Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T35mQY015728;
-        Fri, 29 Jan 2021 12:12:12 +0900
-Message-Id: <202101290312.10T35mQY015728@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S231616AbhA2DQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:16:41 -0500
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:43346 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhA2DQk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 22:16:40 -0500
+Received: by mail-pl1-f181.google.com with SMTP id 31so4483905plb.10;
+        Thu, 28 Jan 2021 19:16:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gDBgruowPbxD5gxpyUbLRP7J45dUpLZjOstK4g+zCw0=;
+        b=ekwQH4B2/K+z2xApZsRioz+QytwXe/NZWAiIr2eycdmuJE2I9JDRkSMLwcIa3J0hZp
+         iJ3VF2HluyWuMPGy+vxI7hk3uALGCjfJPbYhNwXBg1jYyAP3Ur5qX3xYDGgS1S6ARzH1
+         7JqllhisAdZHaaHWEdvAxO9byVwNVEul07ejPEOvOUTaAK/L5ZIwRhzmSk+SgskCAetN
+         GlhYi/JxSzaQM+jRkgYntS1FIbg5EQKwB8c4d6SHBY2oNsETbQjpvhDBdFUVYCIBO5AC
+         D7BBYffH53VxMdoNZK4Xnb28ExyHLcIZpFL1EEBucE1zuGfR+jY3uolPIZenmsvzYB8u
+         X04g==
+X-Gm-Message-State: AOAM5322qE1jYRZHW0PRn4juePx/jL1ffwpKJ1UEaV3+0YSHYfrHVtb0
+        +5vvCUdR4nDgH1zkeP3u5eA3Cdr7aCw=
+X-Google-Smtp-Source: ABdhPJx+KritiAwb0V42iVvyAmgk2Pxfn44xi8+9b2LOvWv+kygqhrOlr73s/6D6BrjJ1wYncrQYWg==
+X-Received: by 2002:a17:90a:fc6:: with SMTP id 64mr2443280pjz.79.1611890159253;
+        Thu, 28 Jan 2021 19:15:59 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:fd12:a590:9797:4acb? ([2601:647:4000:d7:fd12:a590:9797:4acb])
+        by smtp.gmail.com with ESMTPSA id a31sm6899616pgb.93.2021.01.28.19.15.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 19:15:58 -0800 (PST)
+Subject: Re: [PATCH v3 3/3] scsi: ufs: Fix wrong Task Tag used in task
+ management request UPIUs
+To:     Can Guo <cang@codeaurora.org>, jaegeuk@kernel.org,
+        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Sujit Reddy Thumma <sthumma@codeaurora.org>,
+        Vinayak Holikatti <vinholikatti@gmail.com>,
+        Yaniv Gardi <ygardi@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
+ <1611807365-35513-4-git-send-email-cang@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
+Date:   Thu, 28 Jan 2021 19:15:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 29 Jan 2021 04:11:58 +0100
-Reply-To: johnsonwilson389@gmail.com
+In-Reply-To: <1611807365-35513-4-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On 1/27/21 8:16 PM, Can Guo wrote:
+> In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs + req->tag as
+> the Task Tag in one TMR UPIU. Directly use req->tag as the Task Tag.
 
-Sir/Madam,
+Why is the current code wrong and why is this patch the proper fix?
+Please explain this in the patch description.
 
-CONGRATULATIONS!!!
+> +	 * blk_get_request() used here is only to get a free tag.
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Please fix the word order in this comment ("blk_get_request() is used
+here only to get a free tag").
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+> +	ufshcd_release(hba);
+>  	blk_put_request(req);
+>  
+> -	ufshcd_release(hba);
 
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+An explanation for this change is missing from the patch description.
 
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+Thanks,
 
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+Bart.
