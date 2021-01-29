@@ -2,118 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8B8308F78
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECA0308F7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhA2VbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:31:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50490 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233092AbhA2VbG (ORCPT
+        id S233482AbhA2VdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232727AbhA2VdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:31:06 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10TLKQ2l167538;
-        Fri, 29 Jan 2021 16:29:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=ZG/SONqMH36JuI71papBw9mGUgHN41poRpOJhmSspxY=;
- b=E19mGMjFRHQhXI9/QfhJ544SmB8WnJrj5o6p/rfyUS2OgzA3558CrfUgOE4mkybSJX6L
- 94wS4IfbarkiKrSX5r+rHwkkMFHaRMA+NVqhfcJOrd9WITMr2pZHtY7aVp4qi+e5AD//
- 4dt5xcDpqbeR4E0ZXJY2eIPIeHW6eNSMmS+GMcvKa/gtB/ty3EYnG+56xIqNWLIiFv5T
- HTS4xmqDQBRXoR5DledudOfiVHZPG+adNCdT1/aH8KtjHfYoilEf3L5ICsD5lbId8PGc
- sQ/BfGhXsijzQxtYOxpqMyUklUjh7CCiz/Rn5+63wORuKprO+/RszEWTA01aSXq5qnYV LA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ct6p050x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Jan 2021 16:29:56 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10TLKmhp167910;
-        Fri, 29 Jan 2021 16:29:55 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ct6p04ye-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Jan 2021 16:29:55 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10TLKstU030510;
-        Fri, 29 Jan 2021 21:29:49 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma01wdc.us.ibm.com with ESMTP id 36a8uhw5tw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Jan 2021 21:29:49 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10TLTnS726477012
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 21:29:49 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5BC36AC05E;
-        Fri, 29 Jan 2021 21:29:49 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 003E5AC059;
-        Fri, 29 Jan 2021 21:29:44 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.189.105])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri, 29 Jan 2021 21:29:44 +0000 (GMT)
-References: <20210128181421.2279-1-hch@lst.de>
- <20210128181421.2279-5-hch@lst.de>
- <874kj023bj.fsf@manicouagan.localdomain> <20210129051012.GA2053@lst.de>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        live-patching@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 04/13] module: use RCU to synchronize find_module
-In-reply-to: <20210129051012.GA2053@lst.de>
-Date:   Fri, 29 Jan 2021 18:29:43 -0300
-Message-ID: <871re31lfc.fsf@manicouagan.localdomain>
+        Fri, 29 Jan 2021 16:33:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A75C061573;
+        Fri, 29 Jan 2021 13:32:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K3MnR5Heh//yU4kSv2PTGpHsEI35EZwif/E8uQMQaZQ=; b=L4h9RGksrAdq8tWhBPl70ELcS3
+        JVNO4Dp1ZxZ81ljkDQVgl+shIWM4IwnzUMd50Eq8+59QbfPXzQaR27qzFrezt2hFJseaBipDfgWi6
+        7/YREy2gWQ/9GD4Czf4bOOn0qeSDqrEMDmTJDrDo50gdDudUA4bGh9oPwR9HAAbDwREgYTHRrcwsr
+        949a5pAIuOrO2IDV+Chdd58/tXAgT0rgRT4BjI8LrGdTPxXJ/cmgs+JCLbWAr9f8csjJgVnLVTAiz
+        pSZLD9UbS78EcIZ0mO87x6jRFvEx/MZyS8lW2EKZMpCEGGrQTnNeo0UW5w6xqS7jlbTqR8UHdNU/k
+        b4uQ7sFQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l5bNJ-00AMNp-9h; Fri, 29 Jan 2021 21:32:17 +0000
+Date:   Fri, 29 Jan 2021 21:32:17 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Shoaib Rao <rao.shoaib@oracle.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, andy.rudoff@intel.com
+Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
+Message-ID: <20210129213217.GD308988@casper.infradead.org>
+References: <20210122150638.210444-1-willy@infradead.org>
+ <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
+ <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
+ <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
+ <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <e1047be3-2d53-49d3-67b4-a2a99e0c0f0f@oracle.com>
+ <20210129131820.4b97fdeb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-29_09:2021-01-29,2021-01-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 phishscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101290100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129131820.4b97fdeb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 29, 2021 at 01:18:20PM -0800, Jakub Kicinski wrote:
+> On Fri, 29 Jan 2021 12:44:44 -0800 Shoaib Rao wrote:
+> > On 1/29/21 12:18 PM, Jakub Kicinski wrote:
+> > > On Fri, 29 Jan 2021 12:10:21 -0800 Shoaib Rao wrote:  
+> > >> The code does not care about the size of data -- All it does is that if
+> > >> MSG_OOB is set it will deliver the signal to the peer process
+> > >> irrespective of the length of the data (which can be zero length). Let's
+> > >> look at the code of unix_stream_sendmsg() It does the following (sent is
+> > >> initialized to zero)  
+> > > Okay. Let me try again. AFAICS your code makes it so that data sent
+> > > with MSG_OOB is treated like any other data. It just sends a signal.  
+> > Correct.
+> > > So you're hijacking the MSG_OOB to send a signal, because OOB also
+> > > sends a signal.  
+> > Correct.
+> > >   But there is nothing OOB about the data itself.  
+> > Correct.
+> > >   So
+> > > I'm asking you to make sure that there is no data in the message.  
+> > Yes I can do that.
+> > > That way when someone wants _actual_ OOB data on UNIX sockets they
+> > > can implement it without breaking backwards compatibility of the
+> > > kernel uAPI.  
+> > 
+> > I see what you are trying to achieve. However it may not work.
+> > 
+> > Let's assume that __actual__ OOB data has been implemented. An 
+> > application sends a zero length message with MSG_OOB, after that it 
+> > sends some data (not suppose to be OOB data). How is the receiver going 
+> > to differentiate if the data an OOB or not.
+> 
+> THB I've never written any application which would use OOB, so in
+> practice IDK. But from kernel code and looking at man pages when
+> OOBINLINE is not set for OOB data to be received MSG_OOB has to be 
+> set in the recv syscall.
 
-Christoph Hellwig <hch@lst.de> writes:
+I'd encourage anyone thinking about "using OOB" to read
+https://tools.ietf.org/html/rfc6093 first.  Basically, TCP does not
+actually provide an OOB mechanism, and frankly Unix sockets shouldn't
+try either.
 
-> On Thu, Jan 28, 2021 at 05:50:56PM -0300, Thiago Jung Bauermann wrote:
->> >  struct module *find_module(const char *name)
->> >  {
->> > -	module_assert_mutex();
->> 
->> Does it make sense to replace the assert above with the warn below (untested)?
->> 
->>      RCU_LOCKDEP_WARN(rcu_read_lock_sched_held());
->
-> One caller actually holds module_mutex still.  And find_module_all,
-> which implements the actual logic already asserts that either
-> module_mutex is held or rcu_read_lock, so I don't tink we need an
-> extra one here.
+As an aside, we should probably remove the net.ipv4.tcp_stdurg sysctl
+since it's broken.
 
-Ok, thanks for the clarification.
+   Some operating systems provide a system-wide toggle to override this
+   behavior and interpret the semantics of the Urgent Pointer as
+   clarified in RFC 1122.  However, this system-wide toggle has been
+   found to be inconsistent.  For example, Linux provides the sysctl
+   "tcp_stdurg" (i.e., net.ipv4.tcp_stdurg) that, when set, supposedly
+   changes the system behavior to interpret the semantics of the TCP
+   Urgent Pointer as specified in RFC 1122. However, this sysctl changes
+   the semantics of the Urgent Pointer only for incoming segments (i.e.,
+   not for outgoing segments).  This means that if this sysctl is set,
+   an application might be unable to interoperate with itself if both
+   the TCP sender and the TCP receiver are running on the same host.
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+> > We could use a different flag (MSG_SIGURG) or implement the _actual_ OOB 
+> > data semantics (If anyone is interested in it). MSG_SIGURG could be a 
+> > generic flag that just sends SIGURG irrespective of the length of the data.
+> 
+> No idea on the SIGURG parts :)
+
+If we were going to do something different from TCP sockets to generate
+a remote SIGURG, then it would ideally be an entirely different mechanism
+(eg a fcntl()) that could also be implemented by pipes.
+
+But I think it's worth just saying "MSG_OOB on Unix sockets generates a
+signal on the remote end, just like it does on TCP sockets.  Unix sockets
+do not actually support OOB data and behave like TCP sockets with
+SO_OOBINLINE set as recommended in RFC 6093".
