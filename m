@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FF6308341
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39A4308345
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhA2Bbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbhA2BbX (ORCPT
+        id S231636AbhA2BeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:34:23 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:7585 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231451AbhA2Bd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:31:23 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91146C061574;
-        Thu, 28 Jan 2021 17:30:42 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id k8so7177446otr.8;
-        Thu, 28 Jan 2021 17:30:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cGKWZfOvrSWPATU3fA4o+Sejn9j2AxeGUg6tCFIll98=;
-        b=jkvuUnBsIg+7yormfly8fvT/Y+lJzqwcBvLDM0c4Dlb08Cgn/a+t5M+0++Gp4COXS1
-         fElA6rU3UdMVfSHmcAX/VAlM91kz8UbvQSV/U4VwReSs+jeO8amA9aaG4ZpFkQVCekr7
-         OmgzYpXxEKQVvHwwKdgPZ4s0BWhC4EMG3dwisY8IuDra6n9DRzd3B/mxMUApTZg2CQVZ
-         jZMdUUwFFUi7Y3jT7MEEljzd83YeX7ar7h+eFMdMbiDzFn5wwrH9wReTOJREByRyATQB
-         MHSvqxgHF+xomJaKIeTZ7Cdxh+qIPpXUmHXla8qJZh4rl7+Fgg5TFZMVpuqtxiJjto+M
-         sVIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cGKWZfOvrSWPATU3fA4o+Sejn9j2AxeGUg6tCFIll98=;
-        b=s/BalyTKnv0W65WH93EsDfJMEkM5YetoeLgFqBVotaTGK7YuTo1AJ1YXsUWct3MGpy
-         R0zIZC+VazJUWhscF9w6gyH70//sdekrA+b8KGZDNX5pbS9h2cTM0sZZGkUeOBI2uoW1
-         qM9Q5h3gr9XV4u1qJcSK8WyU82bhdyMWUEf35ZjWjCBFrS6EQK6IPL6yG+OTeslxd6Fr
-         8WaJ3BPkgJ8ZpX7WmR/GVdgbWTdBqo/Mln4zzOWSOde9+7EsydMtjA0tJNwb5uQrLQ9H
-         8DpbrPpWydxkkruABFvozCv1R43QtD4W+nyXC/g8rxvobVGVqy9OpA+2s7cCxnyKON/c
-         66cA==
-X-Gm-Message-State: AOAM533bkJMwozHKXjpF2ejXcr8OcdvZsV9N+rEVU48YksIaEGAUcmNp
-        +yp0KH31kz7PG3yrIeZuaU2BpYKeg0uL//N6pNM=
-X-Google-Smtp-Source: ABdhPJxahw8SU4xkm8h1Lu4hXo7R8sh8LWlxy9e/S++UZwV8fzg0GTI/oiMiXsgg3YT4Kc7g/8+ryyV++gPb+LxO37s=
-X-Received: by 2002:a9d:1293:: with SMTP id g19mr1487102otg.311.1611883841513;
- Thu, 28 Jan 2021 17:30:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20200222165840.GA214760@google.com> <20210128233929.GA39660@bjorn-Precision-5520>
-In-Reply-To: <20210128233929.GA39660@bjorn-Precision-5520>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 28 Jan 2021 20:30:30 -0500
-Message-ID: <CADnq5_MFVwC4a=J0praBOs+yiK691oJi6V8ihgJm_5wswPPWxA@mail.gmail.com>
-Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth notification"
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Alexandru Gagniuc <alex_gagniuc@dellteam.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Jan Vesely <jano.vesely@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Austin Bolen <austin_bolen@dell.com>,
-        Shyam Iyer <Shyam_Iyer@dell.com>,
-        Sinan Kaya <okaya@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Dave Airlie <airlied@gmail.com>,
-        Ben Skeggs <skeggsb@gmail.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        "A. Vladimirov" <vladimirov.atanas@gmail.com>
+        Thu, 28 Jan 2021 20:33:57 -0500
+X-UUID: 0ae9d5946d4046ae93f30ae54c3f474b-20210129
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=osPAg0K5Yd7X9cjShUvPGC/GtiMhGLI3vpW3QQq8WXs=;
+        b=SVbp7fctsNo7VFTjJqTqn78oe51H5KAUusyw1m52NIs+N/2N9YjYM/NQqd0jfwnBv67qgdLa1Blkzbt70bLt8z8HRpZjfndb0/kSaIdqHBYRwTFEAk3z/boc52W5XqumjhhYghTm+4Ysx3djUOVCzYS9rEm/N9GT9loVjV+HEH4=;
+X-UUID: 0ae9d5946d4046ae93f30ae54c3f474b-20210129
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 639592366; Fri, 29 Jan 2021 09:33:07 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 29 Jan 2021 09:33:02 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 29 Jan 2021 09:33:02 +0800
+Message-ID: <1611883982.5226.12.camel@mtksdaap41>
+Subject: Re: [PATCH v12 6/8] drm/mediatek: enable dither function
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Date:   Fri, 29 Jan 2021 09:33:02 +0800
+In-Reply-To: <20210128112314.1304160-7-hsinyi@chromium.org>
+References: <20210128112314.1304160-1-hsinyi@chromium.org>
+         <20210128112314.1304160-7-hsinyi@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 61173972B03CFC5DDB5831DC8F9D30A79FD4418A4F9F31FD79A0881E77BA28132000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 6:39 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Atanas -- thank you very much for the bug report!]
->
-> On Sat, Feb 22, 2020 at 10:58:40AM -0600, Bjorn Helgaas wrote:
-> > On Wed, Jan 15, 2020 at 04:10:08PM -0600, Bjorn Helgaas wrote:
-> > > I think we have a problem with link bandwidth change notifications
-> > > (see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pcie/bw_notification.c).
-> > >
-> > > Here's a recent bug report where Jan reported "_tons_" of these
-> > > notifications on an nvme device:
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=206197
-> >
-> > AFAICT, this thread petered out with no resolution.
-> >
-> > If the bandwidth change notifications are important to somebody,
-> > please speak up, preferably with a patch that makes the notifications
-> > disabled by default and adds a parameter to enable them (or some other
-> > strategy that makes sense).
-> >
-> > I think these are potentially useful, so I don't really want to just
-> > revert them, but if nobody thinks these are important enough to fix,
-> > that's a possibility.
->
-> Atanas is also seeing this problem and went to the trouble of digging
-> up this bug report:
-> https://bugzilla.kernel.org/show_bug.cgi?id=206197#c8
->
-> I'm actually a little surprised that we haven't seen more reports of
-> this.  I don't think distros enable CONFIG_PCIE_BW, but even so, I
-> would think more people running upstream kernels would trip over it.
-> But maybe people just haven't turned CONFIG_PCIE_BW on.
->
-> I don't have a suggestion; just adding Atanas to this old thread.
->
-> > > There was similar discussion involving GPU drivers at
-> > > https://lore.kernel.org/r/20190429185611.121751-2-helgaas@kernel.org
-> > >
-> > > The current solution is the CONFIG_PCIE_BW config option, which
-> > > disables the messages completely.  That option defaults to "off" (no
-> > > messages), but even so, I think it's a little problematic.
-> > >
-> > > Users are not really in a position to figure out whether it's safe to
-> > > enable.  All they can do is experiment and see whether it works with
-> > > their current mix of devices and drivers.
-> > >
-> > > I don't think it's currently useful for distros because it's a
-> > > compile-time switch, and distros cannot predict what system configs
-> > > will be used, so I don't think they can enable it.
-> > >
-> > > Does anybody have proposals for making it smarter about distinguishing
-> > > real problems from intentional power management, or maybe interfaces
-> > > drivers could use to tell us when we should ignore bandwidth changes?
+SGksIEhzaW4tWWk6DQoNCk9uIFRodSwgMjAyMS0wMS0yOCBhdCAxOToyMyArMDgwMCwgSHNpbi1Z
+aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
+dGVrLmNvbT4NCj4gDQo+IGZvciA1IG9yIDYgYnBjIHBhbmVsLCB3ZSBuZWVkIGVuYWJsZSBkaXRo
+ZXIgZnVuY3Rpb24NCj4gdG8gaW1wcm92ZSB0aGUgZGlzcGxheSBxdWFsaXR5DQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbT4NCj4g
+U2lnbmVkLW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxoc2lueWlAY2hyb21pdW0ub3JnPg0KPiAtLS0N
+Cj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMgfCAxNSArKysr
+KysrKysrKysrLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0
+aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
+ZHJtX2RkcF9jb21wLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29t
+cC5jDQo+IGluZGV4IGFjMmNiMjU2MjAzNTcuLjZjOGYyNDYzODBhNzQgMTAwNjQ0DQo+IC0tLSBh
+L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gKysrIGIvZHJp
+dmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYw0KPiBAQCAtNTMsNiArNTMs
+NyBAQA0KPiAgI2RlZmluZSBESVRIRVJfRU4JCQkJQklUKDApDQo+ICAjZGVmaW5lIERJU1BfRElU
+SEVSX0NGRwkJCQkweDAwMjANCj4gICNkZWZpbmUgRElUSEVSX1JFTEFZX01PREUJCQlCSVQoMCkN
+Cj4gKyNkZWZpbmUgRElUSEVSX0VOR0lORV9FTgkJCUJJVCgxKQ0KPiAgI2RlZmluZSBESVNQX0RJ
+VEhFUl9TSVpFCQkJMHgwMDMwDQo+ICANCj4gICNkZWZpbmUgTFVUXzEwQklUX01BU0sJCQkJMHgw
+M2ZmDQo+IEBAIC0zMTQsOSArMzE1LDE5IEBAIHN0YXRpYyB2b2lkIG10a19kaXRoZXJfY29uZmln
+KHN0cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IHcsDQo+ICAJCQkgICAgICB1bnNpZ25l
+ZCBpbnQgYnBjLCBzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0KPiAgew0KPiAgCXN0cnVjdCBt
+dGtfZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsJYm9vbCBl
+bmFibGUgPSAoYnBjID09IDUgfHwgYnBjID09IDYpOw0KDQpJIHN0cm9uZ2x5IGJlbGlldmUgdGhh
+dCBkaXRoZXIgZnVuY3Rpb24gaW4gZGl0aGVyIGlzIGlkZW50aWNhbCB0byB0aGUNCm9uZSBpbiBn
+YW1tYSBhbmQgb2QsIGFuZCBpbiBtdGtfZGl0aGVyX3NldF9jb21tb24oKSwgJ2JwYyA+PQ0KTVRL
+X01JTl9CUEMnIGlzIHZhbGlkLCBzbyBJIGJlbGlldmUgd2UgbmVlZCBub3QgdG8gbGltaXQgYnBj
+IHRvIDUgb3IgNi4NCkJ1dCB3ZSBzaG91bGQgY29uc2lkZXIgdGhlIGNhc2UgdGhhdCBicGMgaXMg
+aW52YWxpZCBpbg0KbXRrX2RpdGhlcl9zZXRfY29tbW9uKCkuIEludmFsaWQgY2FzZSBpbiBnYW1t
+YSBhbmQgb2QgdXNlIGRpZmZlcmVudCB3YXkNCnRvIHByb2Nlc3MuIEZvciBnYW1tYSwgZGl0aGVy
+IGlzIGRlZmF1bHQgcmVsYXkgbW9kZSwgc28gaW52YWxpZCBicGMNCndvdWxkIGRvIG5vdGhpbmcg
+aW4gbXRrX2RpdGhlcl9zZXRfY29tbW9uKCkgYW5kIHJlc3VsdCBpbiByZWxheSBtb2RlLg0KRm9y
+IG9kLCBpdCBzZXQgdG8gcmVsYXkgbW9kZSBmaXJzdCwgdGhlbSBpbnZhbGlkIGJwYyB3b3VsZCBk
+byBub3RoaW5nIGluDQptdGtfZGl0aGVyX3NldF9jb21tb24oKSBhbmQgcmVzdWx0IGluIHJlbGF5
+IG1vZGUuIEkgd291bGQgbGlrZSBkaXRoZXIsDQpnYW1tYSBhbmQgb2QgdG8gcHJvY2VzcyBpbnZh
+bGlkIGJwYyBpbiB0aGUgc2FtZSB3YXkuIE9uZSBzb2x1dGlvbiBpcyB0bw0Kc2V0IHJlbGF5IG1v
+ZGUgaW4gbXRrX2RpdGhlcl9zZXRfY29tbW9uKCkgZm9yIGludmFsaWQgYnBjLg0KDQpSZWdhcmRz
+LA0KQ0sNCg0KPiAgDQo+IC0JbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgaCA8PCAxNiB8IHcsICZw
+cml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9ESVRIRVJfU0laRSk7DQo+IC0JbXRrX2Rk
+cF93cml0ZShjbWRxX3BrdCwgRElUSEVSX1JFTEFZX01PREUsICZwcml2LT5jbWRxX3JlZywgcHJp
+di0+cmVncywgRElTUF9ESVRIRVJfQ0ZHKTsNCj4gKwlpZiAoZW5hYmxlKSB7DQo+ICsJCW10a19k
+aXRoZXJfc2V0X2NvbW1vbihwcml2LT5yZWdzLCAmcHJpdi0+Y21kcV9yZWcsIGJwYywNCj4gKwkJ
+CQkgICAgICBESVNQX0RJVEhFUl9DRkcsIERJVEhFUl9FTkdJTkVfRU4sDQo+ICsJCQkJICAgICAg
+Y21kcV9wa3QpOw0KPiArCX0gZWxzZSB7DQo+ICsJCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJ
+VEhFUl9SRUxBWV9NT0RFLCAmcHJpdi0+Y21kcV9yZWcsDQo+ICsJCQkgICAgICBwcml2LT5yZWdz
+LCBESVNQX0RJVEhFUl9DRkcpOw0KPiArCX0NCj4gKw0KPiArCW10a19kZHBfd3JpdGUoY21kcV9w
+a3QsIGggPDwgMTYgfCB3LCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsDQo+ICsJCSAgICAg
+IERJU1BfRElUSEVSX1NJWkUpOw0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgdm9pZCBtdGtfZGl0aGVy
+X3N0YXJ0KHN0cnVjdCBkZXZpY2UgKmRldikNCg0K
 
-There's also this recently filed bug:
-https://gitlab.freedesktop.org/drm/amd/-/issues/1447
-The root cause of it appears to be related to ASPM.
-
-Alex
