@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C95308F3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166B3308F3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbhA2VZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhA2VY7 (ORCPT
+        id S233422AbhA2VY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:24:56 -0500
+Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:38898 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232808AbhA2VYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:24:59 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F69EC061574;
-        Fri, 29 Jan 2021 13:24:19 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id z16so5554190wml.2;
-        Fri, 29 Jan 2021 13:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FZSbREg1PJwuWmIxRUAU5UQQlfQNrYrnIjGANdzroo8=;
-        b=RcwcKdDriUu/A+/wM1On/mAt+3RQX6aoYhSYaL4VGJH7TM/NUfP/eHfXEkmZLzYY8A
-         E7quiYuueaOm6a2g6QBTveRFdvaS6guvdvmzYzpojilHeMs4oZeEG8Gin89x+vkdOKJu
-         nMzveC/3KjoeRiU/5p+2//4vmgWE/Fts2I42WxbbX9w4C3TR5UKIoRqy3c/NsDF+/fx0
-         mxrlBZ2v/K6CXBepITzL/H+s3BNKJxk5ZhD7x1d1ebLB+BIrNK746HLsiJsDE/cSIsbm
-         3ANuHRdIVV2ewWge/9yVNBqS4R+vRCZQ6wmTjoKIFQaOhMJaeME0RS0ARux8RHw1/AkN
-         VgiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FZSbREg1PJwuWmIxRUAU5UQQlfQNrYrnIjGANdzroo8=;
-        b=UXy4IaNW8o+hjQFsDKiHxZ6BXFFsP7ZmabwRoj2/hp7UggWPNRtqIU1wQCk2OH0Vmd
-         rfyjwXxK6bvYwj5MsK+e3+HFo4YO7b4AM0jMzlPCPX2BpDyJotQD59qIQsxQQUusXTGx
-         yDLdbFkSWlaFpsf20juWTDg406e6XMZ5d/6XMv/s/qQ3ceMnGyw/xoe1MhAr5iGU7j9h
-         m2CmYhyeStCS9KvGWAGjnBICItB4G4XHAE9l6OFrc0lg3GEQV02QpRZndMTccGjbCC1K
-         hpYR0fvsEsk1ofXSJ7m4Ps0FWK1+Ax6qTBxP2JYij92dVMai1Uuu2dputYvd9KXv3A2e
-         OvCg==
-X-Gm-Message-State: AOAM530S3q2v1jnDO2CzqRBzDEjKhLDkaSdV9AwFoICm0tG1hDvg13c6
-        caP58bqoFrbJ2X88viPtCoZrTez0Hu+m+JJqxyy9O11c77Y=
-X-Google-Smtp-Source: ABdhPJxJFjpp3lFHphg3TdU/6LbJCxJlX5Hzc6dpGn8ssHbFgt1ZfxIE1iuvWfLplKgcUkRuSh2aCV1jy4TiVIMK8No=
-X-Received: by 2002:a1c:4e:: with SMTP id 75mr5568115wma.150.1611955457839;
- Fri, 29 Jan 2021 13:24:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
- <20201216125320.5277-2-clemens.gruber@pqgruber.com> <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet> <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
- <YBQ4c2cYYPDMjkeH@workstation.tuxnet> <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
- <YBRyG0vv3gRzygSB@workstation.tuxnet>
-In-Reply-To: <YBRyG0vv3gRzygSB@workstation.tuxnet>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 29 Jan 2021 16:24:06 -0500
-Message-ID: <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Fri, 29 Jan 2021 16:24:55 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 940ED127C;
+        Fri, 29 Jan 2021 21:24:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3872:3876:4321:4605:5007:6742:7514:7652:10004:10400:10848:11026:11232:11473:11658:11783:11914:12043:12297:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: scent97_621144b275ab
+X-Filterd-Recvd-Size: 2133
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 29 Jan 2021 21:24:10 +0000 (UTC)
+Message-ID: <f9dba4c16fb49e0ce19a8152dd1416f8d4056680.camel@perches.com>
+Subject: Re: [PATCH 2/5] bits_per_long.h: introduce SMALL_CONST() macro
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Date:   Fri, 29 Jan 2021 13:24:09 -0800
+In-Reply-To: <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
+References: <20210129204528.2118168-1-yury.norov@gmail.com>
+         <20210129204528.2118168-4-yury.norov@gmail.com>
+         <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Clemens,
+On Fri, 2021-01-29 at 23:10 +0200, Andy Shevchenko wrote:
+> On Fri, Jan 29, 2021 at 10:49 PM Yury Norov <yury.norov@gmail.com> wrote:
+[]
+> > @@ -37,7 +37,7 @@
+> >  #define GENMASK(h, l) \
+> >         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > 
+> > -#define BITS_FIRST(nr)         GENMASK(nr), 0)
+> > +#define BITS_FIRST(nr)         GENMASK((nr), 0)
+> 
+> How come?!
 
-On Fri, Jan 29, 2021 at 3:37 PM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
->
-> Is the driver really responsible for bootloaders that program the chip
-> with invalid values?
+It's broken otherwise with unbalanced parentheses...
 
-No, but it's responsible for correcting invalid values. Otherwise the driver
-doesn't work.
 
-> The chip comes out of PoR with sane default values. If the bootloader of
-> a user messes them up, isn't that a bootloader problem instead of a
-> Linux kernel driver problem?
-
-Invalid values are only half the problem. The other half is that two valid
-values might produce the same output, e.g.:
-
-LEN_ON = 409, LED_OFF = 1228 and
-LED_ON = 419, LED_OFF = 1238
-produce the same result. you can't see the difference between the two
-when scoping the channel. there are probably more ways to do this,
-some might surprise us. It's a tricky chip.
