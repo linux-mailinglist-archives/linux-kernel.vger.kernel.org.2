@@ -2,505 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8162C308FDE
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDC2308FDD
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhA2WMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S233524AbhA2WMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbhA2WMj (ORCPT
+        with ESMTP id S229683AbhA2WMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:12:39 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C2CC06174A;
-        Fri, 29 Jan 2021 14:11:58 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id bl23so15136493ejb.5;
-        Fri, 29 Jan 2021 14:11:58 -0800 (PST)
+        Fri, 29 Jan 2021 17:12:37 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B55C061574;
+        Fri, 29 Jan 2021 14:11:57 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id d13so10957929ioy.4;
+        Fri, 29 Jan 2021 14:11:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cXyr/v9qWIo4HYAvBPFXOSn8P1D1cMwUipH5grrma0A=;
-        b=K4QHfhlxFsRWrtQRUalbbkEAThcI8Phkq/NUFE2a+xsHYrjlNGbio960rdqBdwmNG1
-         x++M6y/ZSlwUmlU/Yirk9DQANEjRfAZP8vTLi7FRZB9SLA3cgXvf3rkJXbxeZXXkUi7u
-         +9MuxgbvNPuQzuYhnpWSZo/qVdrR+rXaA8HJpqG0W3qS5RJM5racLswPkVKLFmvez4sN
-         wtIXqkFIx1Erbmij8Fa3MtAfU2o7sYTlr0pbvaZJTwksrFfLgEtTBS5EVsGQv2WvLd5U
-         538Ou4IvmvTGtGtVBLOmIRmqxYmkK+GMzp48709ChW6mDCDLYCAuIGFMhoHPejLz8Xe9
-         H4Hg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=+8OZzNek+pmYC0wT8G3ozIZ31/2ufP4f1prU8RslqD4=;
+        b=mByCb7VgfLxGfewcvF1UUuS4SIxKxYlpjAtEqCTDdQ2tNo3GJNyM6iFYT4CPiN0bxc
+         xW+FKR6NKOxUBr6VEK7kKXol9mudxJ1GjJL9iyVoqbf/Rnf/JtcZD+8QwUnlBUEjPJHC
+         qyrPgEJYCTNnfEACcd9WccagC5i8lHWiFOuSIXons8EhDQcxyEyL3BGmk4cQVrMLTjkm
+         ea3XyJe7a+ePwQYRRwtrhO6uuG0J73Qs+mN58DMYDf9GXrtf1dvhgOy+kLZG9s16+WCn
+         S34KpDSYGH6Fhm4nFZZsMdo3qNyrj8nagsAj8GzAt5pYoTF3VPsxCnnKrzRBh1nsvW9Y
+         yc+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cXyr/v9qWIo4HYAvBPFXOSn8P1D1cMwUipH5grrma0A=;
-        b=kb6+2leJdeab4UnHTiNA9qD6S028bTxdouIopA+uG1mZUxxUrlw8cvuMACnHB8nNut
-         fgXmLYcWRlcKBnF4pNJsxSrOw5mg4gZvjALQgI/nHqSBJtS2tmvugs33zkQVmW0naHBy
-         60Kq7Epvd9+WKPEHeCwew56S5Na6DX16W8Cc8Oj0QMePdgMMZSfEppa+xI+V9UwXFpUR
-         Kiv74Z294Et/YCIEwBwJVohcovbstXR2Aat4Dmz7aCqG4QNvond0mkUfmWZDUZ+a619q
-         v9Qn0MU4nxReDOX43NCTKJb4sffmby7lc9jAQ5+lnGlZxqfW3XtXDFdakBeT56Uaumik
-         vNnw==
-X-Gm-Message-State: AOAM532/mkfzljJSLZcRSW5qGenGwOZmBs0t/BDgHbMhqS5W1siyW9r5
-        AWPzWkXbqus2ASVaAdDdlBpILSz9UzLzq1TU6AM=
-X-Google-Smtp-Source: ABdhPJyYrR1ZY6qoXbxk+gFkkR+wSG+PRANN9VrtPaouhr9YOOM2cxs0xY+ACs6UXJgV7u+PpF3FmJ63xQoln6mMhZE=
-X-Received: by 2002:a17:906:3f8d:: with SMTP id b13mr6460747ejj.464.1611958317342;
- Fri, 29 Jan 2021 14:11:57 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=+8OZzNek+pmYC0wT8G3ozIZ31/2ufP4f1prU8RslqD4=;
+        b=CXwh4C8dDkeBQ6DDq6Lul/YqCzeNQBhoPaCufcJbq6eNdHHch2D54cHIxGwIzQV5hX
+         w9o1g+PWDkm69sQOmFlMeZKYeByW2thhRgpFve6VNJFvOrUOGKOHhOZp9Ok5Y6gZl14i
+         tXj42XDRdb7otLYnacuji3jfEX/3OpMUMr7bNUKfyj/e+8YHSrviamNTL+xh9zg3Ykmb
+         SY/4urdXvnBAdsjujE1+xBgO2KI/Mt9kbsmnjXyGFyNaailOc8upgfwg1l4vd/7pvyYf
+         9vkPChKYzwo8QKAvcj7HDC+tzgQA86qHQIgdfeJnge+Gn3kAaTh4+NgB+SD+3pFxa4Sr
+         W2Uw==
+X-Gm-Message-State: AOAM533whnkT2h+JiR51Lb95W88a7ybOLN06djObL3yAc4G1MBZ4hcWs
+        umpzpuQe50+erWJERWxO5qB0p6Nzcwrn3Zqgn74=
+X-Google-Smtp-Source: ABdhPJwIqAvW70PYChqabsitwi8rzXPM8Yo2W7GUzXnqPcj77R7md1jNHX1J5FeSt8eELhV+QFMaDxiuGridgml0D80=
+X-Received: by 2002:a02:b78e:: with SMTP id f14mr5654308jam.97.1611958316390;
+ Fri, 29 Jan 2021 14:11:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-3-TheSven73@gmail.com>
-In-Reply-To: <20210129195240.31871-3-TheSven73@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 29 Jan 2021 17:11:20 -0500
-Message-ID: <CAF=yD-KBc=1SvpLET_NKjdaCTUP4r6P9hRU8QteBkw6W3qeP_A@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 2/6] lan743x: support rx multi-buffer packets
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+ <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
+ <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
+ <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
+ <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com> <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 29 Jan 2021 23:11:44 +0100
+Message-ID: <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 2:56 PM Sven Van Asbroeck <thesven73@gmail.com> wro=
-te:
+On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> From: Sven Van Asbroeck <thesven73@gmail.com>
+> On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
+> > > <ndesaulniers@google.com> wrote:
+> > > >
+> > > > On Fri, Jan 29, 2021 at 12:55 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Jan 29, 2021 at 9:48 PM Nick Desaulniers
+> > > > > <ndesaulniers@google.com> wrote:
+> > > > > >
+> > > > > > On Fri, Jan 29, 2021 at 12:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
+> > > > > > > <ndesaulniers@google.com> wrote:
+> > > > > > > >
+> > > > > > > > diff --git a/Makefile b/Makefile
+> > > > > > > > index 20141cd9319e..bed8b3b180b8 100644
+> > > > > > > > --- a/Makefile
+> > > > > > > > +++ b/Makefile
+> > > > > > > > @@ -832,8 +832,20 @@ endif
+> > > > > > > >
+> > > > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> > > > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> > > > > > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+> > > > > > > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> > > > > > > >
+> > > > > > > > +# If using clang without the integrated assembler, we need to explicitly tell
+> > > > > > > > +# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
+> > > > > > > > +# detect whether the version of GAS supports DWARF v5.
+> > > > > > > > +ifdef CONFIG_CC_IS_CLANG
+> > > > > > > > +ifneq ($(LLVM_IAS),1)
+> > > > > > > > +ifeq ($(dwarf-version-y),5)
+> > > > > > > > +DEBUG_CFLAGS   += -Wa,-gdwarf-5
+> > > > > > >
+> > > > > > > I noticed double "-g -gdwarf-5 -g -gdwarf-5" (a different issue) and
+> > > > > > > that's why I looked again into the top-level Makefile.
+> > > > > >
+> > > > > > That's...unexpected.  I don't see where that could be coming from.
+> > > > > > Can you tell me please what is the precise command line invocation of
+> > > > > > make and which source file you observed this on so that I can
+> > > > > > reproduce?
+> > > > > >
+> > > > >
+> > > > > That's everywhere...
+> > > > >
+> > > > > $ zstdgrep --color '\-g -gdwarf-5 -g -gdwarf-5'
+> > > > > build-log_5.11.0-rc5-8-amd64-clang12-lto.txt.zst
+> > > > > | wc -l
+> > > > > 29529
+> > > >
+> > > > I'm not able to reproduce.
+> > > >
+> > > > $ make LLVM=1 -j72 V=1 2>&1 | grep dwarf
+> > > > ...
+> > > > clang ... -g -gdwarf-5 -Wa,-gdwarf-5 ...
+> > > > ...
+> > > >
+> > > > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 2>&1 | grep dwarf
+> > > > ...
+> > > > clang ... -g -gdwarf-5 ...
+> > > > ...
+> > > >
+> > >
+> > > Hmm...
+> > >
+> > > I do not see in my current build "-Wa,-gdwarf-5" is passed with v6.
+> > >
+> > > $ grep '\-Wa,-gdwarf-5' build-log_5.11.0-rc5-10-amd64-clang12-lto-pgo.txt
+> > > [ empty ]
+> > >
+> >
+> > That's the diff v5 -> v6...
+> >
+> > There is no more a dwarf-aflag / KBUILD_AFLAGS += $(dwarf-aflag) used.
 >
-> Multi-buffer packets enable us to use rx ring buffers smaller than
-> the mtu. This will allow us to change the mtu on-the-fly, without
-> having to stop the network interface in order to re-size the rx
-> ring buffers.
+> Yep; not sure that's relevant though to duplicate flags?
 >
-> This is a big change touching a key driver function (process_packet),
-> so care has been taken to test this extensively:
+> > > > Can you tell me please what is the precise command line invocation of
+> > > > make and which source file you observed this on so that I can
+> > > > reproduce?
 >
-> Tests with debug logging enabled (add #define DEBUG).
+> If you don't send me your invocation of `make`, I cannot help you.
 >
-> 1. Limit rx buffer size to 500, so mtu (1500) takes 3 buffers.
->    Ping to chip, verify correct packet size is sent to OS.
->    Ping large packets to chip (ping -s 1400), verify correct
->      packet size is sent to OS.
->    Ping using packets around the buffer size, verify number of
->      buffers is changing, verify correct packet size is sent
->      to OS:
->      $ ping -s 472
->      $ ping -s 473
->      $ ping -s 992
->      $ ping -s 993
->    Verify that each packet is followed by extension processing.
->
-> 2. Limit rx buffer size to 500, so mtu (1500) takes 3 buffers.
->    Run iperf3 -s on chip, verify that packets come in 3 buffers
->      at a time.
->    Verify that packet size is equal to mtu.
->    Verify that each packet is followed by extension processing.
->
-> 3. Set chip and host mtu to 2000.
->    Limit rx buffer size to 500, so mtu (2000) takes 4 buffers.
->    Run iperf3 -s on chip, verify that packets come in 4 buffers
->      at a time.
->    Verify that packet size is equal to mtu.
->    Verify that each packet is followed by extension processing.
->
-> Tests with debug logging DISabled (remove #define DEBUG).
->
-> 4. Limit rx buffer size to 500, so mtu (1500) takes 3 buffers.
->    Run iperf3 -s on chip, note sustained rx speed.
->    Set chip and host mtu to 2000, so mtu takes 4 buffers.
->    Run iperf3 -s on chip, note sustained rx speed.
->    Verify no packets are dropped in both cases.
->
-> Tests with DEBUG_KMEMLEAK on:
->  $ mount -t debugfs nodev /sys/kernel/debug/
->  $ echo scan > /sys/kernel/debug/kmemleak
->
-> 5. Limit rx buffer size to 500, so mtu (1500) takes 3 buffers.
->    Run the following tests concurrently for at least one hour:
->    - iperf3 -s on chip
->    - ping -> chip
->    Monitor reported memory leaks.
->
-> 6. Set chip and host mtu to 2000.
->    Limit rx buffer size to 500, so mtu (2000) takes 4 buffers.
->    Run the following tests concurrently for at least one hour:
->    - iperf3 -s on chip
->    - ping -> chip
->    Monitor reported memory leaks.
->
-> 7. Simulate low-memory in lan743x_rx_allocate_skb(): fail every
->      100 allocations.
->    Repeat (5) and (6).
->    Monitor reported memory leaks.
->
-> 8. Simulate  low-memory in lan743x_rx_allocate_skb(): fail 10
->      allocations in a row in every 100.
->    Repeat (5) and (6).
->    Monitor reported memory leaks.
->
-> 9. Simulate  low-memory in lan743x_rx_trim_skb(): fail 1 allocation
->      in every 100.
->    Repeat (5) and (6).
->    Monitor reported memory leaks.
->
-> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
-> ---
->
-> Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git # =
-46eb3c108fe1
->
-> To: Bryan Whitehead <bryan.whitehead@microchip.com>
-> To: UNGLinuxDriver@microchip.com
-> To: "David S. Miller" <davem@davemloft.net>
-> To: Jakub Kicinski <kuba@kernel.org>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Alexey Denisov <rtgbnm@gmail.com>
-> Cc: Sergej Bauer <sbauer@blackbox.su>
-> Cc: Tim Harvey <tharvey@gateworks.com>
-> Cc: Anders R=C3=B8nningen <anders@ronningen.priv.no>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org (open list)
->
->  drivers/net/ethernet/microchip/lan743x_main.c | 321 ++++++++----------
->  drivers/net/ethernet/microchip/lan743x_main.h |   2 +
->  2 files changed, 143 insertions(+), 180 deletions(-)
 
+/usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
+-lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+KBUILD_BUILD_USER=sedat.dilek@gmail.com
+KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
+KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
 
-> +static struct sk_buff *
-> +lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
-> +{
-> +       if (skb_linearize(skb)) {
-
-Is this needed? That will be quite expensive
-
-> +               dev_kfree_skb_irq(skb);
-> +               return NULL;
-> +       }
-> +       frame_length =3D max_t(int, 0, frame_length - RX_HEAD_PADDING - 2=
-);
-> +       if (skb->len > frame_length) {
-> +               skb->tail -=3D skb->len - frame_length;
-> +               skb->len =3D frame_length;
-> +       }
-> +       return skb;
-> +}
-> +
->  static int lan743x_rx_process_packet(struct lan743x_rx *rx)
->  {
-> -       struct skb_shared_hwtstamps *hwtstamps =3D NULL;
-> +       struct lan743x_rx_descriptor *descriptor, *desc_ext;
->         int result =3D RX_PROCESS_RESULT_NOTHING_TO_DO;
->         int current_head_index =3D le32_to_cpu(*rx->head_cpu_ptr);
->         struct lan743x_rx_buffer_info *buffer_info;
-> -       struct lan743x_rx_descriptor *descriptor;
-> +       struct skb_shared_hwtstamps *hwtstamps;
-> +       int frame_length, buffer_length;
-> +       struct sk_buff *skb;
->         int extension_index =3D -1;
-> -       int first_index =3D -1;
-> -       int last_index =3D -1;
-> +       bool is_last, is_first;
->
->         if (current_head_index < 0 || current_head_index >=3D rx->ring_si=
-ze)
->                 goto done;
-> @@ -2068,170 +2075,126 @@ static int lan743x_rx_process_packet(struct lan=
-743x_rx *rx)
->         if (rx->last_head < 0 || rx->last_head >=3D rx->ring_size)
->                 goto done;
->
-> -       if (rx->last_head !=3D current_head_index) {
-> -               descriptor =3D &rx->ring_cpu_ptr[rx->last_head];
-> -               if (le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_OWN_)
-> -                       goto done;
-> +       if (rx->last_head =3D=3D current_head_index)
-> +               goto done;
-
-Is it possible to avoid the large indentation change, or else do that
-in a separate patch? It makes it harder to follow the functional
-change.
-
->
-> -               if (!(le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_FS_)=
-)
-> -                       goto done;
-> +       descriptor =3D &rx->ring_cpu_ptr[rx->last_head];
-> +       if (le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_OWN_)
-> +               goto done;
-> +       buffer_info =3D &rx->buffer_info[rx->last_head];
->
-> -               first_index =3D rx->last_head;
-> -               if (le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_LS_) {
-> -                       last_index =3D rx->last_head;
-> -               } else {
-> -                       int index;
-> -
-> -                       index =3D lan743x_rx_next_index(rx, first_index);
-> -                       while (index !=3D current_head_index) {
-> -                               descriptor =3D &rx->ring_cpu_ptr[index];
-> -                               if (le32_to_cpu(descriptor->data0) & RX_D=
-ESC_DATA0_OWN_)
-> -                                       goto done;
-> -
-> -                               if (le32_to_cpu(descriptor->data0) & RX_D=
-ESC_DATA0_LS_) {
-> -                                       last_index =3D index;
-> -                                       break;
-> -                               }
-> -                               index =3D lan743x_rx_next_index(rx, index=
-);
-> -                       }
-> -               }
-> -               if (last_index >=3D 0) {
-> -                       descriptor =3D &rx->ring_cpu_ptr[last_index];
-> -                       if (le32_to_cpu(descriptor->data0) & RX_DESC_DATA=
-0_EXT_) {
-> -                               /* extension is expected to follow */
-> -                               int index =3D lan743x_rx_next_index(rx,
-> -                                                                 last_in=
-dex);
-> -                               if (index !=3D current_head_index) {
-> -                                       descriptor =3D &rx->ring_cpu_ptr[=
-index];
-> -                                       if (le32_to_cpu(descriptor->data0=
-) &
-> -                                           RX_DESC_DATA0_OWN_) {
-> -                                               goto done;
-> -                                       }
-> -                                       if (le32_to_cpu(descriptor->data0=
-) &
-> -                                           RX_DESC_DATA0_EXT_) {
-> -                                               extension_index =3D index=
-;
-> -                                       } else {
-> -                                               goto done;
-> -                                       }
-> -                               } else {
-> -                                       /* extension is not yet available=
- */
-> -                                       /* prevent processing of this pac=
-ket */
-> -                                       first_index =3D -1;
-> -                                       last_index =3D -1;
-> -                               }
-> -                       }
-> -               }
-> +       is_last =3D le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_LS_;
-> +       is_first =3D le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_FS_;
-> +
-> +       if (is_last && le32_to_cpu(descriptor->data0) & RX_DESC_DATA0_EXT=
-_) {
-> +               /* extension is expected to follow */
-> +               int index =3D lan743x_rx_next_index(rx, rx->last_head);
-> +
-> +               if (index =3D=3D current_head_index)
-> +                       /* extension not yet available */
-> +                       goto done;
-> +               desc_ext =3D &rx->ring_cpu_ptr[index];
-> +               if (le32_to_cpu(desc_ext->data0) & RX_DESC_DATA0_OWN_)
-> +                       /* extension not yet available */
-> +                       goto done;
-> +               if (!(le32_to_cpu(desc_ext->data0) & RX_DESC_DATA0_EXT_))
-> +                       goto move_forward;
-> +               extension_index =3D index;
->         }
-> -       if (first_index >=3D 0 && last_index >=3D 0) {
-> -               int real_last_index =3D last_index;
-> -               struct sk_buff *skb =3D NULL;
-> -               u32 ts_sec =3D 0;
-> -               u32 ts_nsec =3D 0;
-> -
-> -               /* packet is available */
-> -               if (first_index =3D=3D last_index) {
-> -                       /* single buffer packet */
-> -                       struct sk_buff *new_skb =3D NULL;
-> -                       int packet_length;
-> -
-> -                       new_skb =3D lan743x_rx_allocate_skb(rx);
-> -                       if (!new_skb) {
-> -                               /* failed to allocate next skb.
-> -                                * Memory is very low.
-> -                                * Drop this packet and reuse buffer.
-> -                                */
-> -                               lan743x_rx_reuse_ring_element(rx, first_i=
-ndex);
-> -                               goto process_extension;
-> -                       }
->
-> -                       buffer_info =3D &rx->buffer_info[first_index];
-> -                       skb =3D buffer_info->skb;
-> -                       descriptor =3D &rx->ring_cpu_ptr[first_index];
-> -
-> -                       /* unmap from dma */
-> -                       packet_length =3D RX_DESC_DATA0_FRAME_LENGTH_GET_
-> -                                       (descriptor->data0);
-> -                       if (buffer_info->dma_ptr) {
-> -                               dma_sync_single_for_cpu(&rx->adapter->pde=
-v->dev,
-> -                                                       buffer_info->dma_=
-ptr,
-> -                                                       packet_length,
-> -                                                       DMA_FROM_DEVICE);
-> -                               dma_unmap_single_attrs(&rx->adapter->pdev=
-->dev,
-> -                                                      buffer_info->dma_p=
-tr,
-> -                                                      buffer_info->buffe=
-r_length,
-> -                                                      DMA_FROM_DEVICE,
-> -                                                      DMA_ATTR_SKIP_CPU_=
-SYNC);
-> -                               buffer_info->dma_ptr =3D 0;
-> -                               buffer_info->buffer_length =3D 0;
-> -                       }
-> -                       buffer_info->skb =3D NULL;
-> -                       packet_length =3D RX_DESC_DATA0_FRAME_LENGTH_GET_
-> -                                       (le32_to_cpu(descriptor->data0));
-> -                       skb_put(skb, packet_length - 4);
-> -                       skb->protocol =3D eth_type_trans(skb,
-> -                                                      rx->adapter->netde=
-v);
-> -                       lan743x_rx_init_ring_element(rx, first_index, new=
-_skb);
-> -               } else {
-> -                       int index =3D first_index;
-> +       /* Only the last buffer in a multi-buffer frame contains the tota=
-l frame
-> +        * length. All other buffers have a zero frame length. The chip
-> +        * occasionally sends more buffers than strictly required to reac=
-h the
-> +        * total frame length.
-> +        * Handle this by adding all buffers to the skb in their entirety=
-.
-> +        * Once the real frame length is known, trim the skb.
-> +        */
-> +       frame_length =3D
-> +               RX_DESC_DATA0_FRAME_LENGTH_GET_(le32_to_cpu(descriptor->d=
-ata0));
-> +       buffer_length =3D buffer_info->buffer_length;
->
-> -                       /* multi buffer packet not supported */
-> -                       /* this should not happen since buffers are alloc=
-ated
-> -                        * to be at least the mtu size configured in the =
-mac.
-> -                        */
-> +       netdev_dbg(rx->adapter->netdev, "%s%schunk: %d/%d",
-> +                  is_first ? "first " : "      ",
-> +                  is_last  ? "last  " : "      ",
-> +                  frame_length, buffer_length);
->
-> -                       /* clean up buffers */
-> -                       if (first_index <=3D last_index) {
-> -                               while ((index >=3D first_index) &&
-> -                                      (index <=3D last_index)) {
-> -                                       lan743x_rx_reuse_ring_element(rx,
-> -                                                                     ind=
-ex);
-> -                                       index =3D lan743x_rx_next_index(r=
-x,
-> -                                                                     ind=
-ex);
-> -                               }
-> -                       } else {
-> -                               while ((index >=3D first_index) ||
-> -                                      (index <=3D last_index)) {
-> -                                       lan743x_rx_reuse_ring_element(rx,
-> -                                                                     ind=
-ex);
-> -                                       index =3D lan743x_rx_next_index(r=
-x,
-> -                                                                     ind=
-ex);
-> -                               }
-> -                       }
-> -               }
-> +       /* unmap from dma */
-> +       if (buffer_info->dma_ptr) {
-> +               dma_unmap_single(&rx->adapter->pdev->dev,
-> +                                buffer_info->dma_ptr,
-> +                                buffer_info->buffer_length,
-> +                                DMA_FROM_DEVICE);
-> +               buffer_info->dma_ptr =3D 0;
-> +               buffer_info->buffer_length =3D 0;
-> +       }
-> +       skb =3D buffer_info->skb;
->
-> -process_extension:
-> -               if (extension_index >=3D 0) {
-> -                       descriptor =3D &rx->ring_cpu_ptr[extension_index]=
-;
-> -                       buffer_info =3D &rx->buffer_info[extension_index]=
-;
-> -
-> -                       ts_sec =3D le32_to_cpu(descriptor->data1);
-> -                       ts_nsec =3D (le32_to_cpu(descriptor->data2) &
-> -                                 RX_DESC_DATA2_TS_NS_MASK_);
-> -                       lan743x_rx_reuse_ring_element(rx, extension_index=
-);
-> -                       real_last_index =3D extension_index;
-> -               }
-> +       /* allocate new skb and map to dma */
-> +       if (lan743x_rx_init_ring_element(rx, rx->last_head)) {
-> +               /* failed to allocate next skb.
-> +                * Memory is very low.
-> +                * Drop this packet and reuse buffer.
-> +                */
-> +               lan743x_rx_reuse_ring_element(rx, rx->last_head);
-> +               goto process_extension;
-> +       }
-> +
-> +       /* add buffers to skb via skb->frag_list */
-> +       if (is_first) {
-> +               skb_reserve(skb, RX_HEAD_PADDING);
-> +               skb_put(skb, buffer_length - RX_HEAD_PADDING);
-> +               if (rx->skb_head)
-> +                       dev_kfree_skb_irq(rx->skb_head);
-> +               rx->skb_head =3D skb;
-> +       } else if (rx->skb_head) {
-> +               skb_put(skb, buffer_length);
-> +               if (skb_shinfo(rx->skb_head)->frag_list)
-> +                       rx->skb_tail->next =3D skb;
-> +               else
-> +                       skb_shinfo(rx->skb_head)->frag_list =3D skb;
-
-Instead of chaining skbs into frag_list, you could perhaps delay skb
-alloc until after reception, allocate buffers stand-alone, and link
-them into the skb as skb_frags? That might avoid a few skb alloc +
-frees. Though a bit change, not sure how feasible.
-
-> +               rx->skb_tail =3D skb;
-> +               rx->skb_head->len +=3D skb->len;
-> +               rx->skb_head->data_len +=3D skb->len;
-> +               rx->skb_head->truesize +=3D skb->truesize;
-> +       } else {
-> +               rx->skb_head =3D skb;
-> +       }
->
-> -               if (!skb) {
-> -                       result =3D RX_PROCESS_RESULT_PACKET_DROPPED;
-> -                       goto move_forward;
-> +process_extension:
-> +       if (extension_index >=3D 0) {
-> +               u32 ts_sec;
-> +               u32 ts_nsec;
-> +
-> +               ts_sec =3D le32_to_cpu(desc_ext->data1);
-> +               ts_nsec =3D (le32_to_cpu(desc_ext->data2) &
-> +                         RX_DESC_DATA2_TS_NS_MASK_);
-> +               if (rx->skb_head) {
-> +                       hwtstamps =3D skb_hwtstamps(rx->skb_head);
-> +                       if (hwtstamps)
-
-This is always true.
-
-You can just call skb_hwtstamps(skb)->hwtstamp =3D ktime_set(ts_sec, ts_nse=
-c);
-
-Though I see that this is existing code just moved due to
-aforementioned indentation change.
+- Sedat -
