@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79750308562
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D68308565
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhA2F6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:58:09 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:38131 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhA2F6G (ORCPT
+        id S232004AbhA2F6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:58:48 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:61980 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231968AbhA2F6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:58:06 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l5MlS-0007Q7-Mb; Fri, 29 Jan 2021 06:56:14 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l5MlR-0001XU-Hr; Fri, 29 Jan 2021 06:56:13 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 8D7AC240041;
-        Fri, 29 Jan 2021 06:56:12 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 02A5A240040;
-        Fri, 29 Jan 2021 06:56:12 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id CD22B229C8;
-        Fri, 29 Jan 2021 06:56:10 +0100 (CET)
+        Fri, 29 Jan 2021 00:58:34 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611899887; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/g9Z8CUjGzUYN5AdIpOXqDsXSC/Y686XirND/DPmaKg=;
+ b=XBigt5Cq3EfW5PWnYBdBcnkP0TdocAnw9x5KKZNiGfnDx+Kk1DKLxaAXWaw++FltbL073Rka
+ WuiJnOZlb10RsHxye5f5SByQl9XXmDy7R5O0vB8dnrOj1/Ql8kCPirgJgmftY83fVgUu7mPd
+ qnCbWPedSzihP8ltYNR0kx+6SsY=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6013a3c8d08556f4551241e0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 05:57:28
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E1056C43464; Fri, 29 Jan 2021 05:57:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F6AAC433CA;
+        Fri, 29 Jan 2021 05:57:27 +0000 (UTC)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 29 Jan 2021 06:56:10 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB
- frames
-Organization: TDT AG
-In-Reply-To: <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
-References: <20210127090747.364951-1-xie.he.0141@gmail.com>
- <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
-Message-ID: <3f67b285671aaa4b7903733455a730e1@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1611899774-0000A9C4-665386D1/0/0
-X-purgate: clean
-X-purgate-type: clean
+Date:   Fri, 29 Jan 2021 13:57:27 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Sujit Reddy Thumma <sthumma@codeaurora.org>,
+        Vinayak Holikatti <vinholikatti@gmail.com>,
+        Yaniv Gardi <ygardi@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] scsi: ufs: Fix wrong Task Tag used in task
+ management request UPIUs
+In-Reply-To: <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
+References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
+ <1611807365-35513-4-git-send-email-cang@codeaurora.org>
+ <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
+Message-ID: <f0d1c6a196a044198647df6ca4b06efb@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-28 23:06, Xie He wrote:
-> On Thu, Jan 28, 2021 at 11:47 AM Jakub Kicinski <kuba@kernel.org> 
-> wrote:
+On 2021-01-29 11:15, Bart Van Assche wrote:
+> On 1/27/21 8:16 PM, Can Guo wrote:
+>> In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs + 
+>> req->tag as
+>> the Task Tag in one TMR UPIU. Directly use req->tag as the Task Tag.
+> 
+> Why is the current code wrong and why is this patch the proper fix?
+> Please explain this in the patch description.
+> 
+
+req->tag is the tag allocated for one TMR, no?
+
+>> +	 * blk_get_request() used here is only to get a free tag.
+> 
+> Please fix the word order in this comment ("blk_get_request() is used
+> here only to get a free tag").
+
+Sure.
+
+> 
+>> +	ufshcd_release(hba);
+>>  	blk_put_request(req);
 >> 
->> Noob question - could you point at or provide a quick guide to 
->> layering
->> here? I take there is only one netdev, and something maintains an
->> internal queue which is not stopped when HW driver stops the qdisc?
+>> -	ufshcd_release(hba);
 > 
-> Yes, there is only one netdev. The LAPB module (net/lapb/) (which is
-> used as a library by the netdev driver - hdlc_x25.c) is maintaining an
-> internal queue which is not stopped when the HW driver stops the
-> qdisc.
+> An explanation for this change is missing from the patch description.
 > 
-> The queue is "write_queue" in "struct lapb_cb" in
-> "include/net/lapb.h". The code that takes skbs out of the queue and
-> feeds them to lower layers for transmission is at the "lapb_kick"
-> function in "net/lapb/lapb_out.c".
-> 
-> The layering is like this:
-> 
-> Upper layer (Layer 3) (net/x25/ or net/packet/)
-> 
-> ^
-> | L3 packets (with control info)
-> v
-> 
-> The netdev driver (hdlc_x25.c)
-> 
-> ^
-> | L3 packets
-> v
-> 
-> The LAPB Module (net/lapb/)
-> 
-> ^
-> | LAPB (L2) frames
-> v
-> 
-> The netdev driver (hdlc_x25.c)
-> 
-> ^
-> | LAPB (L2) frames
-> | (also called HDLC frames in the context of the HDLC subsystem)
-> v
-> 
-> HDLC core (hdlc.c)
-> 
-> ^
-> | HDLC frames
-> v
-> 
-> HDLC Hardware Driver
 
-@Xie: Thank you for the detailed presentation.
+This is just for symmetric coding since this change is almost
+re-writing the whole func - at the entrence it calls blk_get_request()
+and ufshcd_hold(), so before exit it'd be good to call ufshcd_release()
+before blk_put_request(). If you think this single line change worths
+a separate patch, I can split it out in next version.
 
-> 
->> Sounds like we're optimizing to prevent drops, and this was not
->> reported from production, rather thru code inspection. Ergo I think
->> net-next will be more appropriate here, unless Martin disagrees.
-> 
-> Yes, I have no problem in targeting net-next instead. Thanks!
+Thanks,
+Can Guo.
 
-I agree.
+> Thanks,
+> 
+> Bart.
