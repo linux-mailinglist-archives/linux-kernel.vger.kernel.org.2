@@ -2,199 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45D83088E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88820308915
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhA2MJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 07:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhA2MCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 07:02:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E976D64F50;
-        Fri, 29 Jan 2021 11:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611918734;
-        bh=MVW6R+rETXbR+XXYw48sJy9crjkdaF/bIztnEvIrKZ4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Be2j1OHH2XfCrC5Qlu6vMG9bCVzPC0yAJs7IwBXooMM0hmCDMjLdxhDxRU8aejelG
-         kQnGTPLMR+s+xajU5h+b+65NTRVdK4eZGtTcaUmWZNdMHnMaaQfwZNH2noJ/WC0Pt9
-         7Hft5Ip9d6MO1IcH8eFmDIByMJJ0HDZSk8Rmk8IU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.9 00/30] 4.9.254-rc1 review
-Date:   Fri, 29 Jan 2021 12:06:36 +0100
-Message-Id: <20210129105910.583037839@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
+        id S232521AbhA2MUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 07:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232831AbhA2MME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 07:12:04 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA87C08ECAB;
+        Fri, 29 Jan 2021 02:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=YFmf9BN+skUEyMw7b9mve+y8RvKINlPUjAkMO4cHHOg=; b=pWkZru0FYhgHwQd1+Rg+II9rl
+        j5tucLHDGxxWB/Vp8pn9UiySSZgiGKVB5ywfLSv5jlad7stPzD0Jl+1+Qp1HsMkBuPBmC/r03fw3A
+        awf4qTcQIQ+Z4rAwqgmVeWPOD8ndIzdDBS9GRCS/iDrl5Kqy5VvGjFBQK+pAEvZv2pMf7OvZuQpr/
+        Ol9M0JHSHyIiVRjLQ0B/SWwXsNRpsXfFoSEGGjJLN2TYtpWwJ+u9Xjd40+30T9CeH54NwmWOXP3qx
+        swNuM/TYGEuv3T0gLlvwvao2fgN517drTUSkbf/V+gFy1MrFJDO/fsXM56rlbZgEeH3jLoQpV+9Ui
+        tBxDtrbbg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54182)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l5R5z-0000uJ-AX; Fri, 29 Jan 2021 10:33:43 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l5R5w-0006on-Rd; Fri, 29 Jan 2021 10:33:40 +0000
+Date:   Fri, 29 Jan 2021 10:33:40 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
+ controller
+Message-ID: <20210129103340.GW1551@shell.armlinux.org.uk>
+References: <20210116032740.873-1-thunder.leizhen@huawei.com>
+ <20210116032740.873-5-thunder.leizhen@huawei.com>
+ <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
+ <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
+ <CAK8P3a3Hj0Hyc8mVdGYhB7AEuHCYbhGxHnhNk1xWonEmxZOxRw@mail.gmail.com>
+ <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.254-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.254-rc1
-X-KernelTest-Deadline: 2021-01-31T10:59+00:00
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.9.254 release.
-There are 30 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+On Fri, Jan 29, 2021 at 11:26:38AM +0100, Arnd Bergmann wrote:
+> Another clarification, as there are actually two independent
+> points here:
+> 
+> * if you can completely remove the readl() above and just write a
+>   hardcoded value into the register, or perhaps read the original
+>   value once at boot time, that is probably a win because it
+>   avoids one of the barriers in the beginning. The datasheet should
+>   tell you if there are any bits in the register that have to be
+>   preserved
+> 
+> * Regarding the _relaxed() accessors, it's a lot harder to know
+>   whether that is safe, as you first have to show, in particular in case
+>   any of the accesses stop being guarded by the spinlock in that
+>   case, and whether there may be a case where you have to
+>   serialize the memory access against accesses that are still in the
+>   store queue or prefetched.
+> 
+> Whether this matters at all depends mostly on the type of devices
+> you are driving on your SoC. If you have any high-speed network
+> interfaces that are unable to do cache coherent DMA, any extra
+> instruction here may impact the number of packets you can transfer,
+> but if all your high-speed devices are connected to a coherent
+> interconnect, I would just go with the obvious approach and use
+> the safe MMIO accessors everywhere.
 
-Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
-Anything received after that time might be too late.
+For L2 cache code, I would say the opposite, actually, because it is
+all too easy to get into a deadlock otherwise.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.254-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-and the diffstat can be found below.
+If you implement the sync callback, that will be called from every
+non-relaxed accessor, which means if you need to take some kind of
+lock in the sync callback and elsewhere in the L2 cache code, you will
+definitely deadlock.
 
-thanks,
+It is safer to put explicit barriers where it is necessary.
 
-greg k-h
+Also remember that the barrier in readl() etc is _after_ the read, not
+before, and the barrier in writel() is _before_ the write, not after.
+The point is to ensure that DMA memory accesses are properly ordered
+with the IO-accessing instructions.
 
--------------
-Pseudo-Shortlog of commits:
+So, using readl_relaxed() with a read-modify-write is entirely sensible
+provided you do not access DMA memory inbetween.
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.9.254-rc1
-
-Arvind Sankar <nivedita@alum.mit.edu>
-    x86/boot/compressed: Disable relocation relaxation
-
-Gaurav Kohli <gkohli@codeaurora.org>
-    tracing: Fix race in trace_open and buffer resize call
-
-Wang Hai <wanghai38@huawei.com>
-    Revert "mm/slub: fix a memory leak in sysfs_slab_add()"
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    net: dsa: b53: fix an off by one in checking "vlan->vid"
-
-Eric Dumazet <edumazet@google.com>
-    net_sched: avoid shift-out-of-bounds in tcindex_set_parms()
-
-Matteo Croce <mcroce@microsoft.com>
-    ipv6: create multicast route with RTPROT_KERNEL
-
-Alexander Lobakin <alobakin@pm.me>
-    skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
-
-Geert Uytterhoeven <geert+renesas@glider.be>
-    sh_eth: Fix power down vs. is_opened flag ordering
-
-Necip Fazil Yildiran <fazilyildiran@gmail.com>
-    sh: dma: fix kconfig dependency for G2_DMA
-
-Guillaume Nault <gnault@redhat.com>
-    netfilter: rpfilter: mask ecn bits before fib lookup
-
-Will Deacon <will@kernel.org>
-    compiler.h: Raise minimum version of GCC to 5.1 for arm64
-
-Daniel Borkmann <daniel@iogearbox.net>
-    bpf: Fix buggy rsh min/max bounds tracking
-
-JC Kuo <jckuo@nvidia.com>
-    xhci: tegra: Delay for disabling LFPS detector
-
-Mathias Nyman <mathias.nyman@linux.intel.com>
-    xhci: make sure TRB is fully written before giving it to the controller
-
-Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-    usb: bdc: Make bdc pci driver depend on BROKEN
-
-Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-    usb: udc: core: Use lock when write to soft_connect
-
-Longfang Liu <liulongfang@huawei.com>
-    USB: ehci: fix an interrupt calltrace error
-
-Eugene Korenevsky <ekorenevsky@astralinux.ru>
-    ehci: fix EHCI host controller initialization sequence
-
-Wang Hui <john.wanghui@huawei.com>
-    stm class: Fix module init return on allocation failure
-
-Lars-Peter Clausen <lars@metafoo.de>
-    iio: ad5504: Fix setting power-down state
-
-Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-    can: dev: can_restart: fix use after free bug
-
-Wolfram Sang <wsa+renesas@sang-engineering.com>
-    i2c: octeon: check correct size of maximum RECV_LEN packet
-
-Ben Skeggs <bskeggs@redhat.com>
-    drm/nouveau/i2c/gm200: increase width of aux semaphore owner fields
-
-Ben Skeggs <bskeggs@redhat.com>
-    drm/nouveau/bios: fix issue shadowing expansion ROMs
-
-Can Guo <cang@codeaurora.org>
-    scsi: ufs: Correct the LUN used in eh_device_reset_handler() callback
-
-Cezary Rojewski <cezary.rojewski@intel.com>
-    ASoC: Intel: haswell: Add missing pm_ops
-
-Hannes Reinecke <hare@suse.de>
-    dm: avoid filesystem lookup in dm_get_dev_t()
-
-Hans de Goede <hdegoede@redhat.com>
-    ACPI: scan: Make acpi_bus_get_device() clear return pointer on error
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: hda/via: Add minimum mute flag
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: seq: oss: Fix missing error check in snd_seq_oss_synth_make_info()
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 ++--
- arch/sh/drivers/dma/Kconfig                        |  3 +--
- arch/x86/boot/compressed/Makefile                  |  2 ++
- drivers/acpi/scan.c                                |  2 ++
- drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c  |  2 +-
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c |  8 ++++----
- drivers/hwtracing/stm/heartbeat.c                  |  6 ++++--
- drivers/i2c/busses/i2c-octeon-core.c               |  2 +-
- drivers/iio/dac/ad5504.c                           |  4 ++--
- drivers/md/dm-table.c                              | 15 ++++++++++++---
- drivers/net/can/dev.c                              |  4 ++--
- drivers/net/dsa/b53/b53_common.c                   |  2 +-
- drivers/net/ethernet/renesas/sh_eth.c              |  4 ++--
- drivers/scsi/ufs/ufshcd.c                          | 11 ++++-------
- drivers/usb/gadget/udc/bdc/Kconfig                 |  2 +-
- drivers/usb/gadget/udc/core.c                      | 13 ++++++++++---
- drivers/usb/host/ehci-hcd.c                        | 12 ++++++++++++
- drivers/usb/host/ehci-hub.c                        |  3 +++
- drivers/usb/host/xhci-ring.c                       |  2 ++
- drivers/usb/host/xhci-tegra.c                      |  7 +++++++
- include/linux/compiler-gcc.h                       |  6 ++++++
- kernel/bpf/verifier.c                              |  7 +++----
- kernel/trace/ring_buffer.c                         |  4 ++++
- mm/slub.c                                          |  4 +---
- net/core/skbuff.c                                  |  6 +++++-
- net/ipv4/netfilter/ipt_rpfilter.c                  |  2 +-
- net/ipv6/addrconf.c                                |  1 +
- net/sched/cls_tcindex.c                            |  8 ++++++--
- sound/core/seq/oss/seq_oss_synth.c                 |  3 ++-
- sound/pci/hda/patch_via.c                          |  1 +
- sound/soc/intel/boards/haswell.c                   |  1 +
- 31 files changed, 106 insertions(+), 45 deletions(-)
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
