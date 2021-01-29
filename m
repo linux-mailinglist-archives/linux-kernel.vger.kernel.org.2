@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7193090BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3961C3090C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhA2Xs6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Jan 2021 18:48:58 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:55388 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231195AbhA2Xsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:48:53 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-174-N513bYxuPoqZK1qa1Axm_A-1; Fri, 29 Jan 2021 23:47:13 +0000
-X-MC-Unique: N513bYxuPoqZK1qa1Axm_A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 29 Jan 2021 23:47:14 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 29 Jan 2021 23:47:14 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Shoaib Rao <rao.shoaib@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "andy.rudoff@intel.com" <andy.rudoff@intel.com>
-Subject: RE: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
-Thread-Topic: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
-Thread-Index: AQHW9oaDqv48RJCczk2sHQ3JiT7IG6o/Q1OQ
-Date:   Fri, 29 Jan 2021 23:47:14 +0000
-Message-ID: <ee13e83b22b7411c97a2a961015343d1@AcuMS.aculab.com>
-References: <20210122150638.210444-1-willy@infradead.org>
- <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
- <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
- <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
- <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <e1047be3-2d53-49d3-67b4-a2a99e0c0f0f@oracle.com>
- <20210129131820.4b97fdeb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210129213217.GD308988@casper.infradead.org>
-In-Reply-To: <20210129213217.GD308988@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S232273AbhA2XtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 18:49:16 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:54473 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232045AbhA2XtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 18:49:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611964127; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=HUNiHIQmr/npCagMU/t/LtTySsZ+JNwCBw3sxHTxVDE=; b=BRPPy0p04bklfh53f9Xcir+dqGcNjoU2IiiwdDzox3iAm/zwWL3FsvbpTOu9XdVUeE3uRKQR
+ MRd9n3Y0EilIE7uc+icKf9feeZ1c1NBbQrlIv4H5FpJQ5qvQTTVPbALGhT1x/hH8WnNwhsj6
+ CXRoviYvYlv8TWxx3nYafPLc9JA=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60149ec04ee30634eb209d92 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 23:48:16
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1AA0CC43462; Fri, 29 Jan 2021 23:48:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53D46C433C6;
+        Fri, 29 Jan 2021 23:48:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53D46C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Fri, 29 Jan 2021 16:48:11 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Eric Anholt <eric@anholt.net>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] drm/msm: Fix race of GPU init vs timestamp power
+ management.
+Message-ID: <20210129234811.GA1612@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Eric Anholt <eric@anholt.net>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+References: <20210127233946.1286386-1-eric@anholt.net>
+ <20210128184702.GB29306@jcrouse1-lnx.qualcomm.com>
+ <CADaigPVF=Ti4tLYTUsK+0Gi6GbK9ADOuFf4tCYftmVZ96gJLxg@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADaigPVF=Ti4tLYTUsK+0Gi6GbK9ADOuFf4tCYftmVZ96gJLxg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'd encourage anyone thinking about "using OOB" to read
-> https://tools.ietf.org/html/rfc6093 first.  Basically, TCP does not
-> actually provide an OOB mechanism, and frankly Unix sockets shouldn't
-> try either.
+On Thu, Jan 28, 2021 at 11:17:16AM -0800, Eric Anholt wrote:
+> On Thu, Jan 28, 2021 at 10:52 AM Jordan Crouse <jcrouse@codeaurora.org> wrote:
+> >
+> > On Wed, Jan 27, 2021 at 03:39:44PM -0800, Eric Anholt wrote:
+> > > We were using the same force-poweron bit in the two codepaths, so they
+> > > could race to have one of them lose GPU power early.
+> > >
+> > > Signed-off-by: Eric Anholt <eric@anholt.net>
+> > > Cc: stable@vger.kernel.org # v5.9
+> >
+> > You can add:
+> > Fixes: 4b565ca5a2cb ("drm/msm: Add A6XX device support")
+> >
+> > Because that was my ugly.
+> >
+> > Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+> 
+> I only pointed it at 5.9 because it looked like it would probably
+> conflict against older branches.  I can add the fixes tag if you'd
+> like, though.
 
-OOB data maps much better onto ISO transport 'expedited data'
-than anything in a bytestream protocol like TCP.
-There you can send a message (it is message oriented) that isn't
-subject to normal data flow control.
-The length is limited (IIRC 32 bytes) and expedited data has
-its own credit of one, but can overtake (and is expected to
-overtake) flow control blocked normal data.
+Fair enough. It is a good bug to fix but not if there are a lot of conflicts to
+deal with.
 
-All TCP provides is a byte sequence number for OOB data.
-This is just a marker in the bytestream.
-It really doesn't map onto the socket OOB data data all.
+Jordan
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
