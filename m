@@ -2,60 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A133B3084DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625203084E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhA2FLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:11:00 -0500
-Received: from verein.lst.de ([213.95.11.211]:59972 "EHLO verein.lst.de"
+        id S230016AbhA2FLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:11:47 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:55892 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231287AbhA2FK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:10:59 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9FA1568AFE; Fri, 29 Jan 2021 06:10:12 +0100 (CET)
-Date:   Fri, 29 Jan 2021 06:10:12 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        live-patching@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 04/13] module: use RCU to synchronize find_module
-Message-ID: <20210129051012.GA2053@lst.de>
-References: <20210128181421.2279-1-hch@lst.de> <20210128181421.2279-5-hch@lst.de> <874kj023bj.fsf@manicouagan.localdomain>
+        id S231881AbhA2FL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 00:11:27 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l5M2z-0002AJ-6m; Fri, 29 Jan 2021 16:10:18 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 Jan 2021 16:10:17 +1100
+Date:   Fri, 29 Jan 2021 16:10:17 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Hui Tang <tanghui20@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon/hpre - delete ECC 1bit error reported
+ threshold
+Message-ID: <20210129051016.GA12070@gondor.apana.org.au>
+References: <1610957740-2989-1-git-send-email-tanghui20@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874kj023bj.fsf@manicouagan.localdomain>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1610957740-2989-1-git-send-email-tanghui20@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 05:50:56PM -0300, Thiago Jung Bauermann wrote:
-> >  struct module *find_module(const char *name)
-> >  {
-> > -	module_assert_mutex();
+On Mon, Jan 18, 2021 at 04:15:40PM +0800, Hui Tang wrote:
+> Delete 'HPRE_RAS_ECC1BIT_TH' register setting of hpre,
+> since register 'QM_RAS_CE_THRESHOLD' of qm has done this work.
 > 
-> Does it make sense to replace the assert above with the warn below (untested)?
-> 
->      RCU_LOCKDEP_WARN(rcu_read_lock_sched_held());
+> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/hpre/hpre_main.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-One caller actually holds module_mutex still.  And find_module_all,
-which implements the actual logic already asserts that either
-module_mutex is held or rcu_read_lock, so I don't tink we need an
-extra one here.
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
