@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9D8308C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:25:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B07E308C5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhA2SXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:23:44 -0500
-Received: from mail.v3.sk ([167.172.186.51]:56366 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232618AbhA2SXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:23:06 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 85EBAE070D;
-        Fri, 29 Jan 2021 18:18:14 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 8KncK9UMIgCb; Fri, 29 Jan 2021 18:18:13 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id B144EE0B3F;
-        Fri, 29 Jan 2021 18:18:13 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3xU-cvvDS_i2; Fri, 29 Jan 2021 18:18:13 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 47A41E0B3E;
-        Fri, 29 Jan 2021 18:18:13 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 19:22:19 +0100
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
-        andrew@lunn.ch, robh+dt@kernel.org, vkoul@kernel.org,
-        kishon@ti.com, miquel.raynal@bootlin.com, mw@semihalf.com,
-        jaz@semihalf.com, nadavh@marvell.com, stefanc@marvell.com,
-        bpeled@marvell.com
-Subject: Re: [PATCH 1/4] drivers: phy: add support for Armada CP110 UTMI PHY
-Message-ID: <20210129182219.GA74013@demiurge.local>
-References: <20210127112719.30632-1-kostap@marvell.com>
- <20210127112719.30632-2-kostap@marvell.com>
- <20210129092849.GA68955@demiurge.local>
- <20210129100713.GU1551@shell.armlinux.org.uk>
+        id S232738AbhA2SYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232696AbhA2SXc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 13:23:32 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB40C061793;
+        Fri, 29 Jan 2021 10:22:35 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id i20so9506467otl.7;
+        Fri, 29 Jan 2021 10:22:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+I21eOiSLRngJWAIUlePcYeY7GSXghjzEMgNgEBbR+o=;
+        b=E06vOaNC101fbEcxU1vMbw5UCNNMCTU8+99BG63k3lm0HAfMRJfFpc+x2xb/2VsKLU
+         OVtWU5sWpF2sWXKnCdSo5o2e2rduFPnRsY1Quz/0LjgGij90/qYhIcbAH3/zyIUdau/y
+         8Zx7qt7qLeBvmfKlspPIc+O+AgSvNEj/uN+w111Ovy2x0/SQVkLYQdzZgQzl2Jwm1DYq
+         eG7fm8kZNZlQmYT/7LkOxrurOAe0mZk4Yoe+JI5m2TuZWeB0DZTKrVZ93AiwAenjzxMu
+         1L5BB2lnT22PGnUjJf4WhQ2hS0MDtogz3+JNnCXdEpGIR+bKFPHQzalJQhDmo3RNzTRv
+         kEMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+I21eOiSLRngJWAIUlePcYeY7GSXghjzEMgNgEBbR+o=;
+        b=h+3gldsHnf1onNCsR7cFMLqPfpnjWSiuC9BXsRf2khkh4zRpgiEfYuWbaro5+Ovj49
+         hVnPIyUi3rwou9PnIAEgx0AcvugK1k1gn9Y8PsFUj6aehjr+599vvV2z/pxy3xCi6IJs
+         N/OYpElACDd49BtLUx6ol5XnJWdMOmXWUJTCZ044sx+O6EBuRU7MN9xwKchDnGM4Esdk
+         ThEngA3WTJPoxrijCDLvdPCBHSkxCzQbVw8gFliyg+M9HC6lz2mNXk0vkd7nzDy/Rhdt
+         qW80YYR+R1Ss9Lh6pMfP3eiYVH1ekJzt1mY8Cm83ftwe9qU/+AJPKE0pI4mooPgjQwCS
+         VjnA==
+X-Gm-Message-State: AOAM530KeQEox+4toPDwsXr4pxepe/y9a7cKYyiWZPkQD4gF6o8Z2RJb
+        tYX9ME/YkX6WG8eznEGFVY4=
+X-Google-Smtp-Source: ABdhPJyS0R3lgIbq1ctvEyRJNatqvl0XbFQiOso41g88R5lkqtXkjJYkSt4lb1xN2EKd/Zyr/r+NrA==
+X-Received: by 2002:a05:6830:13d3:: with SMTP id e19mr3705580otq.157.1611944554541;
+        Fri, 29 Jan 2021 10:22:34 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i26sm2436792oov.47.2021.01.29.10.22.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 29 Jan 2021 10:22:33 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 29 Jan 2021 10:22:32 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/26] 4.19.172-rc1 review
+Message-ID: <20210129182232.GD146143@roeck-us.net>
+References: <20210129105910.685105711@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210129100713.GU1551@shell.armlinux.org.uk>
+In-Reply-To: <20210129105910.685105711@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 10:07:13AM +0000, Russell King - ARM Linux admin wrote:
-> On Fri, Jan 29, 2021 at 10:28:49AM +0100, Lubomir Rintel wrote:
-> > > +	/*
-> > > +	 * Setup PLL. 40MHz clock used to be the default, being 25MHz now.
-> > > +	 * See the functional specification for details.
-> > 
-> > I tried to, couldn't find it. Perhaps you could elaborate more here, or
-> > include a link in the header.
+On Fri, Jan 29, 2021 at 12:06:57PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.172 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Marvell documents are generally not publically available. This is the
-> case here.
+> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
+> Anything received after that time might be too late.
+> 
 
-In that case the "elaborate more" part applies, otherwise the comment
-remains rather meaningless. Perhaps it wouldn't be too difficult to
-clarify things with an extra sentence or two without revealing any
-secrets.
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 418 pass: 418 fail: 0
 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Take care
-Lubo
+Guenter
