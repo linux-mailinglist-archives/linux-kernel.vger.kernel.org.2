@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AEE308FF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144D4308FF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbhA2WRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        id S233528AbhA2WTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233544AbhA2WRo (ORCPT
+        with ESMTP id S233544AbhA2WSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:17:44 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285DEC061574;
-        Fri, 29 Jan 2021 14:17:04 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id g10so10317786wrx.1;
-        Fri, 29 Jan 2021 14:17:04 -0800 (PST)
+        Fri, 29 Jan 2021 17:18:03 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F013DC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:17:22 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id jx18so7094862pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:17:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OjbXD/Cdr+QHwG9B3QZlpTa2KkeVmfJ9I1pyRoZjjEE=;
-        b=G6xEChS9glp+w7ZjmNJFRVqi0IbvGoqbO9uwGNW2N+Z6mfQI0rjyLjUM1jr+wKlEEI
-         JViX23Kpy2uYvEd/rFPRBq16G08SWFVWwRH7NCtCqzvMxYCxRIBrr+t6WjgNPmHh62Qo
-         toVgVPZcSIpz6OdmygldwyXtSt1DWRxzO3VEm60b2dxoptuf3uQQPMiKNNBRZS3SX2wi
-         hOFBjZGs5HVSRBHn8ZEiKmKCU4+7QEdQqzBSEIpwrkpvDczulSfqSGBxy8Mzgt/TYTZ7
-         loXOMpna3qJT79tlXSrYEmj7/SnkKjG1doBThbAbClf88l9E9GycNiHVW2IJL/OXkeai
-         YW5A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BTULVrI/vxDASF/UyJoisyXUkjtnllNUgx9xtaYIUVo=;
+        b=ySDexUx/Hsosx3dg1UW8GAS7157vCLcXZAn7a0VBVzC7zQz5JmtpkwE8VswIMEWYaQ
+         VWSMSXswxkReEOVKf95qjaeWWmW+vAK18Lj3xQSyrHa4nEzoTFu81qnxiLdoGVU5+E8E
+         AIbTvYo27DP0yjtLjmnbRpYp/UnuM0X+jTpub+yF4geHvQpe0ufIV+3kVatRfY1KycLx
+         hD1EDLt/sVCyoxNcSU/FwvySRhASTN+mJoW/nu+BoLgiMx8IxU3RsAhrZBbe4KdX9ac+
+         iCmwSYrg8fpzSlmOohfXuNKZnFkNC5uetGGb0/KebgGvNX3ykEIQDgmMljenQ7XJHDm7
+         rMJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OjbXD/Cdr+QHwG9B3QZlpTa2KkeVmfJ9I1pyRoZjjEE=;
-        b=l9gzu0/Ts0u/ni26jANdiudYBe6mn93DWNawVzoOPCZrnP34BG+bdH5Co6xZUh9DoR
-         VsB8+vUH+6Tw4o822hFKDdf3oGcCDuWWUG/bwMYa4cn+UeKksRQmdWLbtUiu3dlOoAn1
-         EWE7iC5eWTzEhpdpJA3MJoKLDIW0FEFNs163ZzGCfsn799oDO3bFP11+Q2LGQClfUw4q
-         d+QzUpjG90t+gqjXy30zzdTgxmvczqLMmb1D3CK8MR+UPdeKGIvdpshhM/wdvwek8TuM
-         SLJHh9QDa/7ougH0tAkVECcqFVE+So+Q0gwJKCOjKS+GPeQ5RZdbi4J4re2GVnukXy3y
-         BlhQ==
-X-Gm-Message-State: AOAM533K6U2RPXyGuGggE5xu6xJWgzihx/glpWvHjrEon1eEbcH0vkIp
-        81XOBmw++y6r9yi3BZSfaFndmilM2opn/9popr3Kva9AWMsJMw==
-X-Google-Smtp-Source: ABdhPJy/ExFIu4LtSXprv+LcxqV9hJewLNuPkKO0igU+eyCBQ2E3uZa3XkXDKC71UgtGeeXPikNr1ipmbCbWBJ//kwo=
-X-Received: by 2002:a5d:60c6:: with SMTP id x6mr6653657wrt.85.1611958622829;
- Fri, 29 Jan 2021 14:17:02 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BTULVrI/vxDASF/UyJoisyXUkjtnllNUgx9xtaYIUVo=;
+        b=fFi0W09qbmv7fFrkYP1NObASouGjxJXVr0bgaRhCMeSimaQ9dm5kDoDCD6PluB7arF
+         PN3UUFYX011qMpSZEHyXksjp0BgHmhV2bv9OMTJ1qDuiP0tmHavC6AsCUwP6Z0tpXZmq
+         hzzjNmg5IfH7xEcDiCoFsXkbYfopj4iOnx7rzOsDmKVMtEyamvnQS6Gt7G3eO+gE0tkb
+         vP4Y7Gyrn24l06t0zbxafDTeA/3jMYZ3aHbUuRoLwBjIff5i/Z0phNInx4DmMiOMr62o
+         LpkgTEsSPWW2L448h4JGAdO3FYDZ+OBEM9+vAvfQI/TnLBWHsxrhRO1hnsmWCcZ7Nc9v
+         LBqA==
+X-Gm-Message-State: AOAM531uB9nodtSPhQCX55BE56vkShMebLRoMYBQRA+z9AOoRWKc2N1O
+        xx6ss8Kv/pTXofW5BqnfQZlwtg==
+X-Google-Smtp-Source: ABdhPJzQ/UkcuFzFyZMyTOTk/lAv72+1e6hw8bh6a+BwgObW12jqfjoBlF/mAykIeVsgOHBEVrdZ8w==
+X-Received: by 2002:a17:90a:f988:: with SMTP id cq8mr6533303pjb.71.1611958642328;
+        Fri, 29 Jan 2021 14:17:22 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id q2sm9642114pfg.190.2021.01.29.14.17.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 14:17:21 -0800 (PST)
+Date:   Fri, 29 Jan 2021 15:17:19 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 11/17] remoteproc: Introduce function __rproc_detach()
+Message-ID: <20210129221719.GB1319650@xps15>
+References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+ <20201218173228.2277032-12-mathieu.poirier@linaro.org>
+ <5419749d-5e81-8b0c-616f-e0d5e237ac9a@st.com>
 MIME-Version: 1.0
-References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
- <20201216125320.5277-2-clemens.gruber@pqgruber.com> <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet> <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
- <YBQ4c2cYYPDMjkeH@workstation.tuxnet> <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
- <YBRyG0vv3gRzygSB@workstation.tuxnet> <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
-In-Reply-To: <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 29 Jan 2021 17:16:51 -0500
-Message-ID: <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5419749d-5e81-8b0c-616f-e0d5e237ac9a@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Clemens,
+On Wed, Jan 27, 2021 at 09:46:58AM +0100, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 12/18/20 6:32 PM, Mathieu Poirier wrote:
+> > Introduce function __rproc_detach() to perform the same kind of
+> > operation as rproc_stop(), but instead of switching off the
+> > remote processor using rproc->ops->stop(), it uses
+> > rproc->ops->detach().  That way it is possible for the core
+> > to release the resources associated with a remote processor while
+> > the latter is kept operating.
+> > 
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  drivers/remoteproc/remoteproc_core.c | 42 ++++++++++++++++++++++++++++
+> >  1 file changed, 42 insertions(+)
+> > 
+> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > index fc28053c7f89..e665ed4776c3 100644
+> > --- a/drivers/remoteproc/remoteproc_core.c
+> > +++ b/drivers/remoteproc/remoteproc_core.c
+> > @@ -1670,6 +1670,48 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+> >  	return 0;
+> >  }
+> >  
+> > +/*
+> > + * __rproc_detach(): Does the opposite of rproc_attach()
+> > + */
+> > +static int __maybe_unused __rproc_detach(struct rproc *rproc)
+> > +{
+> > +	struct device *dev = &rproc->dev;
+> > +	int ret;
+> > +
+> > +	/* No need to continue if a detach() operation has not been provided */
+> > +	if (!rproc->ops->detach)
+> > +		return -EINVAL;
+> 
+> I wonder if this ops should be optional.
 
-On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
->
-> LEN_ON = 409, LED_OFF = 1228 and
-> LED_ON = 419, LED_OFF = 1238
-> produce the same result. you can't see the difference between the two
-> when scoping the channel. there are probably more ways to do this,
-> some might surprise us. It's a tricky chip.
+Function rproc_validate() doesn't check for it so it is optional.  Returning an
+error is to indicate to sysfs the operation is not supported if someone tries to
+do a "detach" when rproc::ops doesn't provide it.
 
-Please ignore this example, it's bogus. In my defence, it's a Friday
-afternoon here :)
+> 
+> > +
+> > +	/* Stop any subdevices for the remote processor */
+> > +	rproc_stop_subdevices(rproc, false);
+> > +
+> > +	/*
+> > +	 * If the remote processors was started by the core then a cached_table
+> > +	 * is present and we must follow the same cleanup sequence as we would
+> > +	 * for a shutdown().  As it is in rproc_stop(), use the cached resource
+> > +	 * table for the rest of the detach process since ->table_ptr will
+> > +	 * become invalid as soon as carveouts are released in
+> > +	 * rproc_resource_cleanup().
+> > +	 */
+> > +	if (rproc->cached_table)
+> > +		rproc->table_ptr = rproc->cached_table;
+> > +
+> > +	/* Tell the remote processor the core isn't available anymore */
+> > +	ret = rproc->ops->detach(rproc);
+> > +	if (ret) {
+> > +		dev_err(dev, "can't detach from rproc: %d\n", ret);
+> > +		rproc_start_subdevices(rproc);
+> 
+> Not sure that this would be possible in all cases, without a unprepare and
+> prepare. What about having the same behavior as the rproc_stop failure?
 
-But consider the following: imagine the bootloader has enabled a few
-pwm channels, and the driver's .probe() has left them on/unchanged.
-Then the user enables another pwm channel, and tries to change the
-period/prescaler. How would pca9685_may_change_prescaler() know
-if changing the prescaler is allowed?
+I thought rproc_stop()'s failure path was buggy and could be improved but as you
+say, there might be other ramifications to take into account.  I agree that it
+is more prudent to follow the current behavior from rproc_stop() and leave
+enhancements for another patchset.
 
-And the following: imagine the bootloader has enabled a few
-pwm channels, and the driver's .probe() has left them on/unchanged.
-After .probe(), the runtime_pm will immediately put the chip to sleep,
-because it's unaware that some channels are alive.
-
-I'm sure I'm overlooking a few complications here. probe not changing
-the existing configuration, will add a lot of complexity to the driver.
-I'm not saying this is necessarily bad, just a tradeoff. Or, a management
-decision.
-
-Sven
+> 
+> Thanks
+> Arnaud.
+> 
+> > +		return ret;
+> > +	}
+> > +
+> > +	rproc_unprepare_subdevices(rproc);
+> > +
+> > +	rproc->state = RPROC_DETACHED;
+> > +
+> > +	dev_info(dev, "detached remote processor %s\n", rproc->name);
+> > +
+> > +	return 0;
+> > +}
+> >  
+> >  /**
+> >   * rproc_trigger_recovery() - recover a remoteproc
+> > 
