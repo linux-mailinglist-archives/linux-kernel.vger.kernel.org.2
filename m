@@ -2,98 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48C0308257
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8CD30825D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhA2AW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhA2AWs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:22:48 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9140AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:22:07 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id l18so5380349pji.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:22:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kKL+JHPG3PhegsC2eNNTIj8bjTzjEUN9jv1phV2bHXI=;
-        b=MK35RJy7wzotB7/sdEGFxgOsh/xT/A0vlz+PAvY/xdaHeFRC72OWd0qa9/+jgiI3Ky
-         4yc/zYbWwVFhQpLknZUzJpyNYH6JUEQvl5++Vu8w3zXIOnleM+c6qfGgiTtgJ+eKulf4
-         /6rhwwDWPLzSkP5inrtdSUBEQtvPooFFx4RqdTdOxnqgIDurwwvLGSiL393BDWmK0Kcs
-         /dir550OvEk1d0lmB4AtC5IKSLeUQHvhgW0pwMMnBzhTV5lJKCmy15/9hcb3MfJ6GAw5
-         2I9qvBRdK8kj6IzXpqILfECeO8oIOKFLptRqaLnaCkqUWW0xZ930Qn8U5nvoo4+8JmU5
-         gSHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kKL+JHPG3PhegsC2eNNTIj8bjTzjEUN9jv1phV2bHXI=;
-        b=CEf9Fu3hdEsSlcCpkF8Eb3BvywwRhX5HlcIY8B81mAUeEuZArjq1lfFFgSuXOkn0G+
-         3WfvIMIFTKj2Y/mA2UtmMw3WtLm+zSnOTf1vPJ6wbjScOOH8j4BsDO6kRUrxYmt/9mow
-         YkMGK7neFf3nXqam1oV+VfcyiaV1fcivvH3HbMw0BSBV2bChewRijTCIuVxe1b2SYAJx
-         2LBM27pdEAQ3kBZZcAUt7oI1+uNKx172oLmyC+jQhfvEghJ3yGYWPJXPS4ROx9E1ovkT
-         pybQVm3Qrnn3kJ1Pt6F99tHTT4MKOFBFJptPKQNya5lyQpT6QPoMpQuOgJP7+Wy38cFo
-         FG3A==
-X-Gm-Message-State: AOAM533Vnt0VCvbDu1+yFlflrwqnuJKbz3KmxY4cg1peMR6g1f3st0lS
-        /k9s7i4+wjWOnXZwb0JzOCRen5OI3wBeRhWVcFTV+g==
-X-Google-Smtp-Source: ABdhPJxLRcPBTJkwfQfzcdbMgZ5A33dd+rH+FULDmdc0vyRSNCIX/zXX9aRotXKUAdprfS4HFSGE7OyF8C0SOsY7hSQ=
-X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id
- 97-20020a170902026ab02900daaf4777c7mr1917873plc.10.1611879726950; Thu, 28 Jan
- 2021 16:22:06 -0800 (PST)
+        id S229840AbhA2A1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:27:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229596AbhA2A1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:27:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89EB564DDB;
+        Fri, 29 Jan 2021 00:26:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611880017;
+        bh=37/4dwIayKxfGhaawfStZ7mP4mcZJd6G3Au2nKjiNKI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Zr8qhI7neRKAtt6clEGnFiKmZ3BRx2F6ulovIhtB8cPXbRYCNGvPAcz9bde3nyZyE
+         AJ9ZDvQcpLDn3rzffRkPKhJcXxckYLfhWjgGn9DryOug8gg30dg/I8wQi105vpzKzG
+         n35BHXwe+RsnvAo+q2wyxP0rWiUILc8qgsilpdel3lopld8eD4Fwmbb/RsCviwmApb
+         dWwNoYN2mYcjKa88vzSmtuh8RRguyPJ0wchBXKRU1R9i2WFdHor/hL232D5BnZUK0H
+         xfXM+5My7USZX3wMwDDACfCTh5pc6wPgEntPtOdzVfj+FQwf1FbVSqTmKIK4vMfuKO
+         UvKC6rMrKUVtw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 423BF35237A0; Thu, 28 Jan 2021 16:26:57 -0800 (PST)
+Date:   Thu, 28 Jan 2021 16:26:57 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 04/16] rcu/nocb: Only (re-)initialize segcblist when
+ needed on CPU up
+Message-ID: <20210129002657.GA16372@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210128171222.131380-1-frederic@kernel.org>
+ <20210128171222.131380-5-frederic@kernel.org>
+ <20210128191228.GQ2743@paulmck-ThinkPad-P72>
+ <20210128213413.GC122776@lothringen>
+ <20210128214524.GV2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
- <20210128193422.241155-1-ndesaulniers@google.com> <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
-In-Reply-To: <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 28 Jan 2021 16:21:55 -0800
-Message-ID: <CAKwvOdneTwx8LwKyAA+iMELEBWBxu2nkr9dVuQ=+hgsZROu-tw@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: rewrite test-[arm|thumb].c in UAL
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128214524.GV2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, 28 Jan 2021 at 20:34, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > +       TEST_RX("tbh    [pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
-> >
-> On Thu, Jan 28, 2021 at 1:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> Why is this change needed? Are the resulting opcodes equivalent? Does
-> GAS infer the lsl #1 but Clang doesn't?
+On Thu, Jan 28, 2021 at 01:45:24PM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 28, 2021 at 10:34:13PM +0100, Frederic Weisbecker wrote:
+> > On Thu, Jan 28, 2021 at 11:12:28AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Jan 28, 2021 at 06:12:10PM +0100, Frederic Weisbecker wrote:
+> > > > Simply checking if the segcblist is enabled is enough to know if we
+> > > > need to initialize it or not. It's safe to check within hotplug
+> > > > machine.
+> > > > 
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > > 
+> > > Hmmm...
+> > > 
+> > > At the start of a CPU-hotplug operation, an incoming CPU's callback
+> > > list can be in a number of states:
+> > > 
+> > > 1.	Disabled and empty.  This is the case when the boot CPU has
+> > > 	not done call_rcu(), when a non-boot CPU first comes online,
+> > > 	and when a non-offloaded CPU comes back online.  In this case,
+> > > 	it is permissible to initialize ->cblist.  Because either the
+> > > 	CPU is currently running with interrupts disabled (boot CPU)
+> > > 	or is not yet running at all (other CPUs), it is not necessary
+> > > 	to acquire ->nocb_lock.
+> > > 
+> > > 2.	Disabled and non-empty.  This is the case when the boot CPU has
+> > > 	done call_rcu().  It is not permissible to initialize ->cblist
+> > > 	because doing so will leak any callbacks posted by early boot
+> > > 	invocations of call_rcu().
+> > 
+> > I don't think that's possible. In this case __call_rcu() has called
+> > rcu_segcblist_init() and has enabled the segcblist.
+> 
+> You are right, rcu_segcblist_init() would have been called in that
+> case and it has: rcu_segcblist_set_flags(rsclp, SEGCBLIST_ENABLED).
+> 
+> > > 	Test for the possibility of leaking by building with
+> > > 	CONFIG_PROVE_RCU=y and booting with rcupdate.rcu_self_test=1.
+> > > 
+> > > 3.	Enabled, whether empty or not.  This is the case when an
+> > > 	offloaded CPU comes back online.  This is the only case where
+> > > 	the ->nocb_lock must be held to modify ->cblist.  However,
+> > > 	it is not necessarily to modify ->cblist because the rcuoc
+> > > 	kthread is on the job.
+> > > 
+> > > So I believe that it is necessary to check for both disabled and empty.
+> > > But don't take my word for it!  Build with CONFIG_PROVE_RCU=y and boot
+> > > with rcupdate.rcu_self_test=1.  ;-)
+> > 
+> > I'm trying that :-)
+> 
+> Even better!
 
-Yes; it seems if you serialize/deserialize this using GNU `as` and
-objdump, that's the canonical form (GNU objdump seems to print in UAL
-form, IIUC).  I didn't see anything specifically about `tbh` in
-https://developer.arm.com/documentation/dui0473/c/writing-arm-assembly-language/assembly-language-changes-after-rvctv2-1?lang=en
-but it's what GNU objdump produces and what clang's integrated
-assembler accepts.
+I applied this patch (with the usual wordsmithing as shown below), then
+ran this:
 
-> >
-> >  #define _DATA_PROCESSING32_DNM(op,s,val)                                       \
-> > -       TEST_RR(op s".w r0,  r",1, VAL1,", r",2, val, "")                       \
-> > +       TEST_RR(op s"   r0,  r",1, VAL1,", r",2, val, "")                       \
->
-> What is wrong with these .w suffixes? Shouldn't the assembler accept
-> these even on instructions that only exist in a wide encoding?
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE05" --bootargs "rcu_nocbs=0-7" --trust-make
 
-Yeah, I'm not sure these have anything to do with UAL.  Looking at
-LLVM's sources and IIRC, LLVM has "InstAlias"es it uses for .w
-suffixes. I think I need to fix those in LLVM for a couple
-instructions, rather than modify these in kernel sources.  I'll split
-off the arm-test.c and thumb-test.c into separate patches, fix LLVM,
-and drop the .w suffix changes to thumb-test.c.
+The resulting console.log file says "Running RCU self tests" and the test
+runs to completion without complaint.  So good show!
 
--- 
-Thanks,
-~Nick Desaulniers
+								Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 0a43799de756a486e45eba8d9d4286a577e746cd
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Thu Jan 28 18:12:10 2021 +0100
+
+    rcu/nocb: Only (re-)initialize segcblist when needed on CPU up
+    
+    At the start of a CPU-hotplug operation, the incoming CPU's callback
+    list can be in a number of states:
+    
+    1.      Disabled and empty.  This is the case when the boot CPU has
+            not invoked call_rcu(), when a non-boot CPU first comes online,
+            and when a non-offloaded CPU comes back online.  In this case,
+            it is both necessary and permissible to initialize ->cblist.
+            Because either the CPU is currently running with interrupts
+            disabled (boot CPU) or is not yet running at all (other CPUs),
+            it is not necessary to acquire ->nocb_lock.
+    
+            In this case, initialization is required.
+    
+    2.      Disabled and non-empty.  This cannot occur, because early boot
+            call_rcu() invocations enable the callback list before enqueuing
+            their callback.
+    
+    3.      Enabled, whether empty or not.  In this case, the callback
+            list has already been initialized.  This case occurs when the
+            boot CPU has executed an early boot call_rcu() and also when
+            an offloaded CPU comes back online.  In both cases, there is
+            no need to initialize the callback list: In the boot-CPU case,
+            the CPU has not (yet) gone offline, and in the offloaded case,
+            the rcuo kthreads are taking care of business.
+    
+            Because it is not necessary to initialize the callback list,
+            it is also not necessary to acquire ->nocb_lock.
+    
+    Therefore, checking if the segcblist is enabled suffices.  This commit
+    therefore initializes the callback list at rcutree_prepare_cpu() time
+    only if that list is disabled.
+    
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Cc: Josh Triplett <josh@joshtriplett.org>
+    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+    Cc: Joel Fernandes <joel@joelfernandes.org>
+    Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+    Cc: Boqun Feng <boqun.feng@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 00059df..70ddc33 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4064,14 +4064,13 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
+ 	rcu_dynticks_eqs_online();
+ 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
++
+ 	/*
+-	 * Lock in case the CB/GP kthreads are still around handling
+-	 * old callbacks.
++	 * Only non-NOCB CPUs that didn't have early-boot callbacks need to be
++	 * (re-)initialized.
+ 	 */
+-	rcu_nocb_lock(rdp);
+-	if (rcu_segcblist_empty(&rdp->cblist)) /* No early-boot CBs? */
++	if (!rcu_segcblist_is_enabled(&rdp->cblist))
+ 		rcu_segcblist_init(&rdp->cblist);  /* Re-enable callbacks. */
+-	rcu_nocb_unlock(rdp);
+ 
+ 	/*
+ 	 * Add CPU to leaf rcu_node pending-online bitmask.  Any needed
