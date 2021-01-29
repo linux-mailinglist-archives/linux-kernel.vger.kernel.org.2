@@ -2,133 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4C03082B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED143082B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhA2AvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:51:07 -0500
-Received: from ozlabs.org ([203.11.71.1]:56867 "EHLO ozlabs.org"
+        id S229692AbhA2Avi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:51:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhA2Atc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:49:32 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DRdxl4GwYz9sVF;
-        Fri, 29 Jan 2021 11:48:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611881324;
-        bh=88acUbfYTRBOBCPuXAqi5VimIreMPtP2EqSf1zjse/w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GNDv/dtM1i45G+pPLwEZkZB5OmHLRRpDX0heUBdM7Ng2s4W4l+K+lE4gOAXZFKNhb
-         GFh+lgt0v0RPUhDkfR1uAgKeVMwCc0mh08BHQkLUdrDb0WzdTVF87t4UyPShUE0d3d
-         KA0xJk0zJsMJZG77lf6vSXKk10bUMr9hIx1fIlA90VmZcVrvVeU+7qJWh5X4QAcbTt
-         ZvHmTiWLheR4s7Ve1qfC1hoO/YWDVS9dCVoWsLGXX5QZzUPkWEDrf2g8ycMaiOGkEZ
-         qm+wOhQXFRhGekTL+if37aVI+84hkhT9Im4Xd3E7/hn+yQhXb0SO81AdzcY0Oz6Cdn
-         GzYKeveW2gyWw==
-Date:   Fri, 29 Jan 2021 11:48:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: linux-next: manual merge of the net-next tree with Linus' tree
-Message-ID: <20210129114842.1174a9c8@canb.auug.org.au>
+        id S231378AbhA2Au0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:50:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 008BD61481;
+        Fri, 29 Jan 2021 00:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611881385;
+        bh=zydfLupXKAPApg8smC/QMpzzcHh0Ib/J7FrqIXTF6VA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Y73yZecTKjnVfU3LJfP7fKgtZFHBSA1ozeX6mFvxVOV9X66rZQ13IJyQBaYgzLbUp
+         eDkbqh8PSdVbFZcOYW43sjxF7dBv61OoNfw84HOxP6NkkUq/gD/y5O9Xs4tYFNWZlc
+         nZUv0zSA/9jXKvAEt38RxssAF5BTIrmdmdQO7EBEc3vaaPe+iCdgrGll5xxe+h+pOS
+         usOSGDYWYJjPz1jz52OsUcp96I/aLcBbJCP25N2tSc/GP6F5fjEmR/1KL/G/3JgqlV
+         UTNohM2U+rAtkrBdBVRy7nI+MFNWfPz1d6qW5cTEyM7cR7xPgNayGxgCFIOldJGqsc
+         6EqBoBccXCm3w==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C335D35237A0; Thu, 28 Jan 2021 16:49:44 -0800 (PST)
+Date:   Thu, 28 Jan 2021 16:49:44 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 07/16] rcu/nocb: Rename nocb_gp_update_state to
+ nocb_gp_update_state_deoffloading
+Message-ID: <20210129004944.GZ2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210128171222.131380-1-frederic@kernel.org>
+ <20210128171222.131380-8-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Dlvl3zBc_yGdX10nioAsaxH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128171222.131380-8-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Dlvl3zBc_yGdX10nioAsaxH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 28, 2021 at 06:12:13PM +0100, Frederic Weisbecker wrote:
+> Unconfuse a bit the name of this function which suggests returning true
+> when the state is updated. It actually returns true when the rdp is in
+> the process of deoffloading and we must ignore it.
+> 
+> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Hi all,
+Fair point, thank you!  I have queued this one for further review and
+testing, with the usual wordsmithing shown below.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+							Thanx, Paul
 
-  net/switchdev/switchdev.c
+------------------------------------------------------------------------
 
-between commit:
+commit 142d159f544763140e0f498936bca8f71563e0e0
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Thu Jan 28 18:12:13 2021 +0100
 
-  20776b465c0c ("net: switchdev: don't set port_obj_info->handled true when=
- -EOPNOTSUPP")
+    rcu/nocb: Rename nocb_gp_update_state to nocb_gp_update_state_deoffloading
+    
+    The name nocb_gp_update_state() is unenlightening, so this commit changes
+    it to nocb_gp_update_state_deoffloading().  This function now does what
+    its name says, updates state and returns true if the CPU corresponding to
+    the specified rcu_data structure is in the process of being de-offloaded.
+    
+    Reported-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Josh Triplett <josh@joshtriplett.org>
+    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+    Cc: Joel Fernandes <joel@joelfernandes.org>
+    Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+    Cc: Boqun Feng <boqun.feng@gmail.com>
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-from Linus' tree and commits:
-
-  ffb68fc58e96 ("net: switchdev: remove the transaction structure from port=
- object notifiers")
-  bae33f2b5afe ("net: switchdev: remove the transaction structure from port=
- attributes")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/switchdev/switchdev.c
-index 2c1ffc9ba2eb,855a10feef3d..000000000000
---- a/net/switchdev/switchdev.c
-+++ b/net/switchdev/switchdev.c
-@@@ -460,11 -388,9 +388,10 @@@ static int __switchdev_handle_port_obj_
-  	extack =3D switchdev_notifier_info_to_extack(&port_obj_info->info);
- =20
-  	if (check_cb(dev)) {
-- 		err =3D add_cb(dev, port_obj_info->obj, port_obj_info->trans,
-- 			     extack);
- -		/* This flag is only checked if the return value is success. */
- -		port_obj_info->handled =3D true;
- -		return add_cb(dev, port_obj_info->obj, extack);
-++		err =3D add_cb(dev, port_obj_info->obj, extack);
- +		if (err !=3D -EOPNOTSUPP)
- +			port_obj_info->handled =3D true;
- +		return err;
-  	}
- =20
-  	/* Switch ports might be stacked under e.g. a LAG. Ignore the
-@@@ -570,10 -493,8 +495,10 @@@ static int __switchdev_handle_port_attr
-  	int err =3D -EOPNOTSUPP;
- =20
-  	if (check_cb(dev)) {
-- 		err =3D set_cb(dev, port_attr_info->attr, port_attr_info->trans);
- -		port_attr_info->handled =3D true;
- -		return set_cb(dev, port_attr_info->attr);
-++		err =3D set_cb(dev, port_attr_info->attr);
- +		if (err !=3D -EOPNOTSUPP)
- +			port_attr_info->handled =3D true;
- +		return err;
-  	}
- =20
-  	/* Switch ports might be stacked under e.g. a LAG. Ignore the
-
---Sig_/Dlvl3zBc_yGdX10nioAsaxH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmATW2oACgkQAVBC80lX
-0GwgrggAl2ACJCQVH2rteoxv0XN3FoaD6N4rTG7f8HOGNVK8pks8QeEEpIuj3s2H
-PWRkI+TxrCmlmwV6xBwf2/Rc+dTA2ytkuFzCwvAGkN6kME6FUd+Qba+G8KGA+klQ
-bCMAgPbakEbXFwAkIqBpAzMD1N2BMR0dJtVsnQSl4ucb8Cv8N2ESlqWscn/KQWhm
-/GUr0IaqP3w/YNvn9bvEPKCLKoHrmfjmjdJoJrjVvflj2ayW6N6o1tj2JPxeM8nv
-W0StOqsmbp6tIqmxT+segyI047W/0N5VLi3sI0+pfgJ1JOzBIVS7pbUeqwfOMJ+n
-Wyj+J0P1+uyv3wLBCnx920pYeAhe3Q==
-=k3Dn
------END PGP SIGNATURE-----
-
---Sig_/Dlvl3zBc_yGdX10nioAsaxH--
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index a3db700..9c0ee82 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2014,7 +2014,8 @@ static inline bool nocb_gp_enabled_cb(struct rcu_data *rdp)
+ 	return rcu_segcblist_test_flags(&rdp->cblist, flags);
+ }
+ 
+-static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_state)
++static inline bool nocb_gp_update_state_deoffloading(struct rcu_data *rdp,
++						     bool *needwake_state)
+ {
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 
+@@ -2024,7 +2025,7 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
+ 			if (rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
+ 				*needwake_state = true;
+ 		}
+-		return true;
++		return false;
+ 	}
+ 
+ 	/*
+@@ -2035,7 +2036,7 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
+ 	rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
+ 	if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
+ 		*needwake_state = true;
+-	return false;
++	return true;
+ }
+ 
+ 
+@@ -2073,7 +2074,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 			continue;
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+ 		rcu_nocb_lock_irqsave(rdp, flags);
+-		if (!nocb_gp_update_state(rdp, &needwake_state)) {
++		if (nocb_gp_update_state_deoffloading(rdp, &needwake_state)) {
+ 			rcu_nocb_unlock_irqrestore(rdp, flags);
+ 			if (needwake_state)
+ 				swake_up_one(&rdp->nocb_state_wq);
