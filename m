@@ -2,158 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FDD308C02
+	by mail.lfdr.de (Postfix) with ESMTP id 74E43308C01
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhA2R5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:57:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbhA2R5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:57:00 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51103C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:56:20 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id o7so7218685pgl.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:56:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KY25Xh6DIR9IRYESFVzdYe8dpCzTrFCAYLNdKXuQz8E=;
-        b=Xa+k/wr9SnzKCvx50xC8KYNmsZpwloPYSN1M5GyLV+DlnSvs/p/foXFrPZog+1Rjxc
-         AxWsjarN3V0fUM5dkSZF4Fg9VK2L9tRizqFboyEAONfK1op1Gy2C2Uyv3IyPNOrq9sCP
-         Cc9EeriBFeUsK8tVxgNASXnfx+nLUCTykYNbbHhaovxKjYhTVwNuZOGamPCfXt12tVD7
-         X2Ia6f2EuLBuMDED55PUUF6/8tNEynPiVCesNonDuzosQyfc8JgsHl8DNTppmmLbxMpk
-         ApzpsQ/Sb6gqW+EpwlAPdkzkymu25Ovz8xcGbqgEcBlrBdBHRBirZpu+P0cGeZWYIDs7
-         NTuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KY25Xh6DIR9IRYESFVzdYe8dpCzTrFCAYLNdKXuQz8E=;
-        b=I1NKVUqyHs48AMBeTgy00X2NUaXlfCBf+AcX3DG7bkX8Z5/LasuBx8058EFmboJ9Wg
-         LEv7s6eVO1xzw95nwB9X3+dcDYVZcycGCABktAWzd7lgRqEbEJxae8qWZbSVJHtitXYD
-         Wnar8dIPLdGZkuFnhE1sbNZFFBZF+fROX1YXQ8cdFPukJONMz+iuKXjz4byrk4SpOJ/0
-         iaJOzIGdJwjMwuSRWDxMYF4l46dhLaC/PGK0dyCvXgDqD85gaXFVmRBpK42lu8zhkQht
-         pKaJp/RqaB5soR8xNI+oDloXoGt6iOO9Rs0pNBgtwSGBnid3u5uHrxi6TqyqKkCEcAwe
-         6Atg==
-X-Gm-Message-State: AOAM53024PhN+kIHxxvNKHmfu/A1wW7GJJpAJAcBlBfAcUwtpF0egizr
-        KGlEQA7yBwN9eozu1D8yZODk/DKMLYBurJnyCVFRNg==
-X-Google-Smtp-Source: ABdhPJyq8hSWDPemB1WH34mBm43nwDybMF8jhe2LAlcR2Y7rNni8mCTPQVG4l3DF35pJrZVVqXqcaiW5PS4V0Tm85JY=
-X-Received: by 2002:a05:6a00:1:b029:1c1:2d5f:dc16 with SMTP id
- h1-20020a056a000001b02901c12d5fdc16mr5321304pfk.55.1611942979560; Fri, 29 Jan
- 2021 09:56:19 -0800 (PST)
+        id S231658AbhA2R46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:56:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231169AbhA2R4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 12:56:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D346A64DFD;
+        Fri, 29 Jan 2021 17:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611942974;
+        bh=76vEgkr0lY2H1oivQ80gbBVHfJx1p6xaz5YbZTkVGBQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lHZn6a58VWB2LqQQr4UPdlNExEyqUf4kXBOZELsmazN0vOZemwnz4Uj6sm5JDudG2
+         897MmIqqh8KLoT/4rMYSO2jjWdDlMIyhYRp1cN+0SwZsLl0MZHmcxTa4f8iervQMX1
+         VJgzhP2j/aiLBkIC5g18MKPEnWI3UMlDb2gfD3Tv/ILlJY89L6pz37Kma+Nuu2EQAc
+         rkgeZMldMwVBR2vZKYnoGt5Nd8iHRaswEAhWIATf/04K46xtiVuzTrRlvS4NnPz5w7
+         5r2xoy74WIIan5YpAe3UY/mo9UM6OSYBYIt2e5XP0Dc8HnF9q5cKhia0q+jdgRAM//
+         jLvdm9WEbgf4A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7AC7B40513; Fri, 29 Jan 2021 14:56:10 -0300 (-03)
+Date:   Fri, 29 Jan 2021 14:56:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+Message-ID: <20210129175610.GC794568@kernel.org>
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+ <20210104105904.GK3021@hirez.programming.kicks-ass.net>
+ <0712b131-715a-a83a-bc9e-61405824ff0e@flygoat.com>
+ <20210105101806.GG3040@hirez.programming.kicks-ass.net>
+ <20210127211506.GA21163@alpha.franken.de>
+ <d2035b91-bcb9-bde4-8009-d81d177b2317@loongson.cn>
 MIME-Version: 1.0
-References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
- <20210126134603.49759-4-vincenzo.frascino@arm.com> <CAAeHK+xAbsX9Zz4aKXToNTrbgrrYck23ohGJHXvgeSTyZy=Odg@mail.gmail.com>
- <77de8e48-6f68-bf27-0bed-02e49b69a12d@arm.com>
-In-Reply-To: <77de8e48-6f68-bf27-0bed-02e49b69a12d@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 29 Jan 2021 18:56:07 +0100
-Message-ID: <CAAeHK+xMWXpfLs6HuKN73e0p61nm+QrZO1-oXphJpjZprKQVKg@mail.gmail.com>
-Subject: Re: [PATCH v9 3/4] kasan: Add report for async mode
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2035b91-bcb9-bde4-8009-d81d177b2317@loongson.cn>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:44 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
->
->
-> On 1/29/21 5:40 PM, Andrey Konovalov wrote:
-> > On Tue, Jan 26, 2021 at 2:46 PM Vincenzo Frascino
-> > <vincenzo.frascino@arm.com> wrote:
-> >>
-> >> KASAN provides an asynchronous mode of execution.
-> >>
-> >> Add reporting functionality for this mode.
-> >>
-> >> Cc: Dmitry Vyukov <dvyukov@google.com>
-> >> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> >> Cc: Alexander Potapenko <glider@google.com>
-> >> Cc: Andrey Konovalov <andreyknvl@google.com>
-> >> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-> >> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> >> ---
-> >>  include/linux/kasan.h |  6 ++++++
-> >>  mm/kasan/report.c     | 13 +++++++++++++
-> >>  2 files changed, 19 insertions(+)
-> >>
-> >> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> >> index bb862d1f0e15..b6c502dad54d 100644
-> >> --- a/include/linux/kasan.h
-> >> +++ b/include/linux/kasan.h
-> >> @@ -360,6 +360,12 @@ static inline void *kasan_reset_tag(const void *addr)
-> >>
-> >>  #endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS*/
-> >>
-> >> +#ifdef CONFIG_KASAN_HW_TAGS
-> >> +
-> >> +void kasan_report_async(void);
-> >> +
-> >> +#endif /* CONFIG_KASAN_HW_TAGS */
-> >> +
-> >>  #ifdef CONFIG_KASAN_SW_TAGS
-> >>  void __init kasan_init_sw_tags(void);
-> >>  #else
-> >> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> >> index 87b271206163..69bad9c01aed 100644
-> >> --- a/mm/kasan/report.c
-> >> +++ b/mm/kasan/report.c
-> >> @@ -360,6 +360,19 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
-> >>         end_report(&flags, (unsigned long)object);
-> >>  }
-> >>
-> >> +#ifdef CONFIG_KASAN_HW_TAGS
-> >> +void kasan_report_async(void)
-> >> +{
-> >> +       unsigned long flags;
-> >> +
-> >> +       start_report(&flags);
-> >> +       pr_err("BUG: KASAN: invalid-access\n");
-> >> +       pr_err("Asynchronous mode enabled: no access details available\n");
+Em Fri, Jan 29, 2021 at 10:48:52AM +0800, Tiezhu Yang escreveu:
+> On 01/28/2021 05:15 AM, Thomas Bogendoerfer wrote:
+> > On Tue, Jan 05, 2021 at 11:18:06AM +0100, Peter Zijlstra wrote:
+> > > On Tue, Jan 05, 2021 at 11:45:37AM +0800, Jiaxun Yang wrote:
+> > > > 在 2021/1/4 下午6:59, Peter Zijlstra 写道:
+> > > > > On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+> > > > > > +u64 perf_reg_abi(struct task_struct *tsk)
+> > > > > > +{
+> > > > > > +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
+> > > > > > +		return PERF_SAMPLE_REGS_ABI_32;
+> > > > > > +	else
+> > > > > > +		return PERF_SAMPLE_REGS_ABI_64;
+> > > > > > +}
+> > > > > So we recently changed this on x86 to not rely on TIF flags. IIRC the
+> > > > > problem is that on x86 you can change the mode of a task without the
+> > > > > kernel being aware of it. Is something like that possible on MIPS as
+> > > > > well?
+> > > > Hi all,
+> > > > 
+> > > > In MIPS world it's impossible to raise a thread to 64bit without kernel
+> > > > aware.
+> > > > Without STATUS.UX set it will trigger reserved instruction exception when
+> > > > trying
+> > > > to run 64bit instructions.
+> > > The other way around is the case on x86, a 64bit program can create and
+> > > execute 32bit code sections without the kernel being aware. But if
+> > > clearing STATUS.UX has the same issue as setting it, that should not be
+> > > a problem for you.
+> > > 
+> > > > However it may be possible to run with 32bit ABI without
+> > > > TIF_32BIT_REGS if user program didn't get ELF ABI right. I think
+> > > > that's out of our current consideration.
+> > > Fair enough.
+> > > 
+> > > > > The thing x86 does today is look at it's pt_regs state to determine the
+> > > > > actual state.
+> > > > It is possible to look at pt_regs Status.UX bit on MIPS. But it seems
+> > > > unnecessary
+> > > > as user can't change it.
+> > > Ok, good. Then no objection, proceed! :-)
+> > this patch aims more to mips-next, while patch 2 and 3 are targeting
+> > tools/perf. Should I take them into mips-next, too ?
+> 
+> If it is possible, I prefer to merge this three patches together
+> through mips-next tree.
 
-Could you also add an empty line here before the stack trace while at it?
+The kernel part should go via the mips-next tree, the tooling I can
+process, that is how these things go in other cases where kernel and
+tooling changes for some new feature are needed.
 
-> >> +       dump_stack();
-> >> +       end_report(&flags);
-> >
-> > This conflicts with "kasan: use error_report_end tracepoint" that's in mm.
-> >
-> > I suggest to call end_report(&flags, 0) here and check addr !=0 in
-> > end_report() before calling trace_error_report_end().
-> >
->
-> I just noticed and about to post a rebased version with end_report(&flags, 0).
->
->
-> >> +}
-> >> +#endif /* CONFIG_KASAN_HW_TAGS */
-> >> +
-> >>  static void __kasan_report(unsigned long addr, size_t size, bool is_write,
-> >>                                 unsigned long ip)
-> >>  {
-> >> --
-> >> 2.30.0
-> >>
->
-> --
-> Regards,
-> Vincenzo
+This helps making sure tooling is not in lockstep with the kernel, one
+should be able to use a new tool in an old kernel and vice-versa.
+
+- Arnaldo
