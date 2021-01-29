@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1949E308BE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E006B308BEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhA2RpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:45:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231940AbhA2RnC (ORCPT
+        id S232575AbhA2Rsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:48:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231526AbhA2Rq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:43:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611942094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0G6YrULWY0Hpt3rLR1Rw+mBqOBEBcyFzEyoDQIunkM=;
-        b=JtyM4YHJr8GY8G7NSchJG04pySBkomM1EUohNH5GrUHgfNychcdwHofClIK4m4pq4xdsCz
-        ZaslRi9JH+0I94VdnM1zdge3Z27rmfy9+DgjlZEzdK8EU+E+HZOjxpMhixImSfCeLkR+TK
-        rcS/l04JhxSbGVw19XlAEEXRjeWux/Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-2lwRzLMEPXWK5VVa-IqQcA-1; Fri, 29 Jan 2021 12:41:32 -0500
-X-MC-Unique: 2lwRzLMEPXWK5VVa-IqQcA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF877806693;
-        Fri, 29 Jan 2021 17:41:30 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AD445B694;
-        Fri, 29 Jan 2021 17:41:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <076fad09-b59e-cb6d-6303-adf5964e13c7@novek.ru>
-References: <076fad09-b59e-cb6d-6303-adf5964e13c7@novek.ru> <161193864000.3781058.7593105791689441003.stgit@warthog.procyon.org.uk>
-To:     Vadim Fedorenko <vfedorenko@novek.ru>
-Cc:     dhowells@redhat.com,
-        syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com,
-        netdev@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rxrpc: Fix deadlock around release of dst cached on udp tunnel
+        Fri, 29 Jan 2021 12:46:28 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC39EC0613ED;
+        Fri, 29 Jan 2021 09:46:01 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id m22so4017580ljj.4;
+        Fri, 29 Jan 2021 09:46:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+OiLSidU7jcHvOmsUmz5FLYsay7uE4w9flc5/NGNfkQ=;
+        b=c9c1fFAA1Q8jIaxn1++ppLWGxW194CT3+GS7F07iA+23CjkP4o3p62TTBa9+JCPss8
+         G95v+K4CU6Kn6ZTEO0E/YFAyGCvA/o1XfIqYRj4KQwr3pfD6t1EjYAF6YKmFs85hdDwv
+         w/AOuj4W3TGHANd4rOZkqPn9+2+PuY+X6+Vtlv63lJ8oBuVZ/p/O+kMKyMIihhvktChP
+         BaiSqHxjA0ESb6iLgwEnIARFFFVe0kOPAckpIT5ulDSfRXZQrPAwPV5sfE5JBMetGk74
+         43umU4wu9L5N6DcwfwW1J9Zj7rS4ujbYTt7k69hIhZ86kpP+qHV4Mu2GTUhVI5JpeYV6
+         1meQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+OiLSidU7jcHvOmsUmz5FLYsay7uE4w9flc5/NGNfkQ=;
+        b=nG8hEI0xR+mWhRAmDKjbJLlhCjSJLNgg/bLoVRvS7fGNlxkF6axz2+CSrRz2LNNndp
+         +XAPOHVoQmDi12Jd+1kUjnwR5B8S9vvhwJp9qc5L8g/tVLwLLLC/j/+lJR5h6C1Q8cvj
+         lYx2DKjL7iQ+HAFxe15dyIIX5IyyhmBDorVK3idaZEA3Xe6YCA68NrBDbADzVO+xw4q8
+         0VjdYTAEHw3Zw3DWYKw6hBHmzf7fS4ZJmhfpU1VxCVxWytgOQt1O6ySNCkuv2Q0XdS1c
+         lJJ4J7N1JLx91QWnFSPf/Kst3JFNaXrjXboKZgX7KeyIaBO5Vi0KnANN4Qa/NiFS+Gpb
+         181Q==
+X-Gm-Message-State: AOAM532ViBFH+5A5RD0wsBn7460VCxzV9cALBGUQIDx6KbK0gkbhVxX9
+        VCBmFbtD0rrhDiH+3PvczdsVN705aLq/u9KnAic=
+X-Google-Smtp-Source: ABdhPJyw4/ZdcfTfGiaJaSjtW7rI6HqbvMxy1MfFTpgwKqPTTtZRzm/XcZPWYFpu1ZRQUDZH3zLDxOfLblZ1if5xmjU=
+X-Received: by 2002:a2e:3507:: with SMTP id z7mr2839145ljz.32.1611942360223;
+ Fri, 29 Jan 2021 09:46:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3834975.1611942088.1@warthog.procyon.org.uk>
-Date:   Fri, 29 Jan 2021 17:41:28 +0000
-Message-ID: <3834976.1611942088@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org> <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com> <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net> <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+ <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net> <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+ <20210129105952.74dc8464@gandalf.local.home> <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 29 Jan 2021 09:45:48 -0800
+Message-ID: <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()")
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vadim Fedorenko <vfedorenko@novek.ru> wrote:
+On Fri, Jan 29, 2021 at 8:24 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Jan 29, 2021 at 10:59:52AM -0500, Steven Rostedt wrote:
+> > On Fri, 29 Jan 2021 22:40:11 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > > > So what, they can all happen with random locks held. Marking them as NMI
+> > > > enables a whole bunch of sanity checks that are entirely appropriate.
+> > >
+> > > How about introducing an idea of Asynchronous NMI (ANMI) and Synchronous
+> > > NMI (SNMI)? kprobes and ftrace is synchronously called and can be controlled
+> > > (we can expect the context) but ANMI may be caused by asynchronous
+> > > hardware events on any context.
+> > >
+> > > If we can distinguish those 2 NMIs on preempt count, bpf people can easily
+> > > avoid the inevitable situation.
+> >
+> > I don't like the name NMI IN SNMI, because they are not NMIs. They are
+> > actually more like kernel exceptions. Even page faults in the kernel is
+> > similar to a kprobe breakpoint or ftrace. It can happen anywhere, with any
+> > lock held. Perhaps we need a kernel exception context? Which by definition
+> > is synchronous.
 
-> You missed the call to dst_release(sk->sk_rx_dst) in
-> rxrpc_sock_destructor. Without it we are still leaking the dst.
+I like 'kernel exception' name. SNMI doesn't sound right. There is nothing
+'non maskable' here.
 
-Hmmm...  I no longer get the messages appearing with this patch.  I'll have
-another look.
+>
+> What problem are you trying to solve? AFAICT all these contexts have the
+> same restrictions, why try and muck about with different names for the
+> same thing?
 
-David
+from core kernel perspective the difference between 'kernel exception'
+and true NMI is huge:
+this_cpu vs __this_cpu
+static checks vs runtime checks
 
+Same things apply to bpf side. We can statically prove safety for
+ftrace and kprobe attaching whereas to deal with NMI situation we
+have to use run-time checks for recursion prevention, etc.
