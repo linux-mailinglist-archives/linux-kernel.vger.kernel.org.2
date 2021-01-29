@@ -2,281 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0846308692
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281C330869D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhA2HiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232320AbhA2Hgr (ORCPT
+        id S232404AbhA2HjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:39:02 -0500
+Received: from st43p00im-ztfb10061701.me.com ([17.58.63.172]:50266 "EHLO
+        st43p00im-ztfb10061701.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232304AbhA2HgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:36:47 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9A8C0617AA
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:35:02 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id md11so5345579pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:35:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9cKSq4M37GTCoySHMSLIVfX3mkNW7xzlO8kkQIsDByQ=;
-        b=ZqrHOFSFM1pVOjBroZvoAf2cy5rVH6bPS1hsaQqiDaAZiqDsma1c6Kq0+NQo46EAGe
-         PSvOzCHKda6xTD/pOBZXyn1kI2oVQU7busx+a86Qbqv/RUFKAqovrt0Yr0sEf3yl4/Vs
-         5pWt7hjDZOJjmYntZfCVIj1nl6eohuyf48VLM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9cKSq4M37GTCoySHMSLIVfX3mkNW7xzlO8kkQIsDByQ=;
-        b=KP6/5n0czITLUBJSPlTSX80qUm2n8RHqf9ZydPwfGMHxqL/56fvIrmAqzYFk1emDsb
-         b2fQDUfZqJf19wLE6Qd9TUHVM00368rohWvyfUuSBQlNTrQsa6G9wx6qBh4uDn/uu1Kr
-         XBCXH2vp3EkR4UyfrXCx+9q5Rfz8/Ued817hgJbgftOQ55C5ieZbQdjixh5P2yMb76kJ
-         FOgj6J/3pZZGkFb4XF13WQFXpU3mw3BSD9tUhyuLRqh8xXN9rqxGGA44AO+WasWQqkj/
-         KEQxkNoNRcUo70WoPNs7CiFBYMC5u0p3C57btfcHdsLhWQ9/XjdbdhJTxYCzFDgMfR9X
-         VAQg==
-X-Gm-Message-State: AOAM533207C07ouFNaNYkKk8EkJB+Wrbqp9W8LWw3yQ4mEnXekbV46JE
-        tqeZFhye898PcvKewTVgIkCgiw==
-X-Google-Smtp-Source: ABdhPJyw8Us0GHeBfi740BMHJA6gLNtD4bLW0ZBWB10Hp5AHYeElwrXD/7dvKPXqw3cAUENlue4TWg==
-X-Received: by 2002:a17:902:242:b029:dc:3baf:2033 with SMTP id 60-20020a1709020242b02900dc3baf2033mr3087391plc.36.1611905701848;
-        Thu, 28 Jan 2021 23:35:01 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:51f1:c468:a70b:7c09])
-        by smtp.gmail.com with ESMTPSA id p1sm7689980pfn.21.2021.01.28.23.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 23:35:01 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v4 8/8] drm/mediatek: add support for mediatek SOC MT8192
-Date:   Fri, 29 Jan 2021 15:34:36 +0800
-Message-Id: <20210129073436.2429834-9-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-In-Reply-To: <20210129073436.2429834-1-hsinyi@chromium.org>
-References: <20210129073436.2429834-1-hsinyi@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 29 Jan 2021 02:36:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1611905716; bh=kXZkvWxB6eL6VKEAArF5bwSzPHyvmX4qrkAq3pvRG+s=;
+        h=From:To:Subject:Date:Message-Id;
+        b=K6UHYRnJAOLG3kjWV7wlprwVC6/CVPWt5uIXwyV1yJN/kLFHNzHmteeVMLtfU0h2c
+         c7X09sF3eAQ5G77xakZNIX51hzV0vRWMZOhCLH9u87ji0EKW2CX/+W8bsNDNC6mf7n
+         N5YCVGeFq+Z2BX1eQpiKzkupRVrTEiFdoAtEo07kZ9eEuWc/zvPhhDLIyra/z3o3tg
+         NzETWmC0wT2cosW4ehIb0/aKmz1dp7etS29bmxEqppNoxFsQ3z6ItCAKMQXahBSf+Y
+         azW9vk2BN0JwHCqxSWYXPqp8Y7NmPLKQFI6FNuFtM3rTBxqYQMSid/vQBwAW1Iz0eU
+         cQipyUd4Jyzuw==
+Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-ztfb10061701.me.com (Postfix) with ESMTPSA id ED766AC053A;
+        Fri, 29 Jan 2021 07:35:14 +0000 (UTC)
+From:   Alain Volmat <avolmat@me.com>
+To:     Patrice Chotard <patrice.chotard@st.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, avolmat@me.com
+Subject: [PATCH v2 0/3] Introduction of STiH418 based 4KOpen board
+Date:   Fri, 29 Jan 2021 08:34:44 +0100
+Message-Id: <20210129073447.18778-1-avolmat@me.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-29_03:2021-01-28,2021-01-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=769 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2101290039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+This serie introduces the 4KOpen (stih418-b2264) board based
+on a stih418 soc. Since it is the first board to use the spi-fsm
+SPI NOR controller available since stih407, the controller is
+also added within the stih407-family DT.
+It also contains a fix within the stih418 DT since the rng11 is not
+available on this platform and is thus disabled.
 
-add support for mediatek SOC MT8192
+Alain Volmat (3):
+  ARM: dts: sti: add the spinor controller node within stih407-family
+  ARM: dts: sti: disable rng11 on the stih418 platform
+  ARM: dts: sti: Introduce 4KOpen (stih418-b2264) board
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/gpu/drm/mediatek/mtk_disp_ccorr.c    |  6 +++
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c      | 20 ++++++++++
- drivers/gpu/drm/mediatek/mtk_disp_postmask.c |  1 +
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c     |  6 +++
- drivers/gpu/drm/mediatek/mtk_drm_drv.c       | 42 ++++++++++++++++++++
- 5 files changed, 75 insertions(+)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-index 1c7163a12f3b1..43794192e82b1 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-@@ -220,9 +220,15 @@ static const struct mtk_disp_ccorr_data mt8183_ccorr_driver_data = {
- 	.matrix_bits = CCORR_MATRIX_BITS,
- };
- 
-+static const struct mtk_disp_ccorr_data mt8192_ccorr_driver_data = {
-+	.matrix_bits = 13,
-+};
-+
- static const struct of_device_id mtk_disp_ccorr_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt8183-disp-ccorr",
- 	  .data = &mt8183_ccorr_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ccorr",
-+	  .data = &mt8192_ccorr_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ccorr_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 961f87f8d4d15..e266baae586c4 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -455,6 +455,22 @@ static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
- 	.fmt_rgb565_is_0 = true,
- };
- 
-+static const struct mtk_disp_ovl_data mt8192_ovl_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 4,
-+	.fmt_rgb565_is_0 = true,
-+	.smi_id_en = true,
-+};
-+
-+static const struct mtk_disp_ovl_data mt8192_ovl_2l_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 2,
-+	.fmt_rgb565_is_0 = true,
-+	.smi_id_en = true,
-+};
-+
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-ovl",
- 	  .data = &mt2701_ovl_driver_data},
-@@ -464,6 +480,10 @@ static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	  .data = &mt8183_ovl_driver_data},
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = &mt8183_ovl_2l_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ovl",
-+	  .data = &mt8192_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
-+	  .data = &mt8192_ovl_2l_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_postmask.c b/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-index d640cef9c15a4..62c8431a09605 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-@@ -146,6 +146,7 @@ static int mtk_disp_postmask_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id mtk_disp_postmask_driver_dt_match[] = {
-+	{ .compatible = "mediatek,mt8192-disp-postmask"},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_postmask_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 728aaadfea8cf..f123fc00a3935 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -355,6 +355,10 @@ static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
- 	.fifo_size = 5 * SZ_1K,
- };
- 
-+static const struct mtk_disp_rdma_data mt8192_rdma_driver_data = {
-+	.fifo_size = 5 * SZ_1K,
-+};
-+
- static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = &mt2701_rdma_driver_data},
-@@ -362,6 +366,8 @@ static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	  .data = &mt8173_rdma_driver_data},
- 	{ .compatible = "mediatek,mt8183-disp-rdma",
- 	  .data = &mt8183_rdma_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-rdma",
-+	  .data = &mt8192_rdma_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 3da8996438dbc..6261d6bbe863e 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -147,6 +147,25 @@ static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
- 	DDP_COMPONENT_DPI0,
- };
- 
-+static const enum mtk_ddp_comp_id mt8192_mtk_ddp_main[] = {
-+	DDP_COMPONENT_OVL0,
-+	DDP_COMPONENT_OVL_2L0,
-+	DDP_COMPONENT_RDMA0,
-+	DDP_COMPONENT_COLOR0,
-+	DDP_COMPONENT_CCORR,
-+	DDP_COMPONENT_AAL0,
-+	DDP_COMPONENT_GAMMA,
-+	DDP_COMPONENT_POSTMASK0,
-+	DDP_COMPONENT_DITHER,
-+	DDP_COMPONENT_DSI0,
-+};
-+
-+static const enum mtk_ddp_comp_id mt8192_mtk_ddp_ext[] = {
-+	DDP_COMPONENT_OVL_2L2,
-+	DDP_COMPONENT_RDMA4,
-+	DDP_COMPONENT_DPI0,
-+};
-+
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.main_path = mt2701_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
-@@ -186,6 +205,13 @@ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
- 	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-+	.main_path = mt8192_mtk_ddp_main,
-+	.main_len = ARRAY_SIZE(mt8192_mtk_ddp_main),
-+	.ext_path = mt8192_mtk_ddp_ext,
-+	.ext_len = ARRAY_SIZE(mt8192_mtk_ddp_ext),
-+};
-+
- static int mtk_drm_kms_init(struct drm_device *drm)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
-@@ -404,22 +430,32 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = (void *)MTK_DISP_OVL_2L },
-+	{ .compatible = "mediatek,mt8192-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
-+	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8183-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
-+	{ .compatible = "mediatek,mt8192-disp-rdma",
-+	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-wdma",
- 	  .data = (void *)MTK_DISP_WDMA },
- 	{ .compatible = "mediatek,mt8183-disp-ccorr",
- 	  .data = (void *)MTK_DISP_CCORR },
-+	{ .compatible = "mediatek,mt8192-disp-ccorr",
-+	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt2701-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-aal",
- 	  .data = (void *)MTK_DISP_AAL},
-+	{ .compatible = "mediatek,mt8192-disp-aal",
-+	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = (void *)MTK_DISP_GAMMA, },
- 	{ .compatible = "mediatek,mt8183-disp-gamma",
-@@ -448,12 +484,16 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt8183-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
-+	{ .compatible = "mediatek,mt8192-disp-mutex",
-+	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2701-disp-pwm",
- 	  .data = (void *)MTK_DISP_BLS },
- 	{ .compatible = "mediatek,mt8173-disp-pwm",
- 	  .data = (void *)MTK_DISP_PWM },
- 	{ .compatible = "mediatek,mt8173-disp-od",
- 	  .data = (void *)MTK_DISP_OD },
-+	{ .compatible = "mediatek,mt8192-disp-postmask",
-+	  .data = (void *)MTK_DISP_POSTMASK },
- 	{ }
- };
- 
-@@ -468,6 +508,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt8173_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8183-mmsys",
- 	  .data = &mt8183_mmsys_driver_data},
-+	{ .compatible = "mediatek,mt8192-mmsys",
-+	 .data = &mt8192_mmsys_driver_data},
- 	{ }
- };
- 
--- 
-2.30.0.365.g02bc693789-goog
+ arch/arm/boot/dts/Makefile            |   3 +-
+ arch/arm/boot/dts/stih407-family.dtsi |  15 ++++
+ arch/arm/boot/dts/stih418-b2264.dts   | 123 ++++++++++++++++++++++++++
+ arch/arm/boot/dts/stih418.dtsi        |   4 +
+ 4 files changed, 144 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/stih418-b2264.dts
 
