@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67BA308F9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49402308FA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhA2VtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhA2VtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:49:02 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82F4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:48:21 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id u11so6034904plg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:48:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nDCl0b2Dk+cS7GVWEWeoYxC8mwKbqEi6yIqTF9Oo/qE=;
-        b=eGTW4MG8Pl3TK+TMkm4WglBjmPDuVT8H+GAviEyFrguRE6MRa/GZZU7J398/6ZxFe0
-         xKPb6fAPxgSfXD/5KNroU2ifvPgvO1IC8xBnFPZzEvffhM+8Q1IErfcPS36GrEAidfn7
-         mZUNfyj0ahxaGDAbfudWd+sU+mGeZMHZfwwVpRbB+qDyxpH5crTLeJwY1PlaMWn6JFMS
-         NZ0bST5Evxu51geiAxpQM2AAPsjDwei/x21em74ddRcVbmAwrCX90CFifsFs6qZ1MfxK
-         MGUg4o5cVCabYzEtUhZy2YrZ/jRtkSNA0vITi/lAdQbWRMyGdCsUvL40t9Y8gL8BLvub
-         ckIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nDCl0b2Dk+cS7GVWEWeoYxC8mwKbqEi6yIqTF9Oo/qE=;
-        b=aORyM66Te1eILmYq4R1rITgLa9Iuvd1xzCVBtOSlFN3WrHB061bv017M82ClU+OkfJ
-         SLXmCE8+HIpjc4uvnNQCS5S1U8vK5a2xadE3lSfTjr25YNOuz7yrIqPSaIXKD72MvGSy
-         75dBOZ9I1m5bxZyi9qOFSg0ct+5PaMzakMnznTYYBROHalmMPdrkpv9nO9zCeJM/H/sH
-         fFcX6EBNXvsT5XmVcRf6YaqLuvTBe5a9tmQfnUHRuYQXSUL/aUAPnLU/D+sCTtdlfzYh
-         kcaIETXluR6rUPWVcz0PGwJc7qHPAO+zVg0hq6QxMtbej8Rei//tN+MmtGCrhPylTQ/f
-         OTzw==
-X-Gm-Message-State: AOAM533rHMD3e52Y3w4dmlcSFaRtpV2Ba8NDEmhDh5E/XB9CpUJsm38u
-        oTkFXQWppJO6kJxepDlKU4c0CedkpABTN4gKtoyHeg==
-X-Google-Smtp-Source: ABdhPJyaUQFnwwGfCgFgWXfe9NvNBiQYNFxLJPMiY6STretlJGU4TmCaVSMStJjR790JfgkGm8fCqn5KCHfOCa2LqxE=
-X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr6338917pjn.25.1611956901187;
- Fri, 29 Jan 2021 13:48:21 -0800 (PST)
+        id S233488AbhA2Vv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:51:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231169AbhA2VvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:51:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E617064D7F;
+        Fri, 29 Jan 2021 21:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611957026;
+        bh=vQA5KzxHuphY6TPIp7lU22R5TOoyWqbkWLYbeBGkZ14=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=UoNG+jLwHxo8QHqOKgSc3rRnkDlQ48CKxbj5S472I3pSBMHB+pYY6LbtgVf2RR/dQ
+         BH843idb7uW5lm9u2xOM+0jkB6Wu0da5NE1Xkf33zENWqdyuvJ7Cfpo6deSIqjYReI
+         EsdxLraGuWnG4DAsxHUeOKoMlLZbPeFakfAg5UBIkSPLGSwlRmwHkbYw4JNLpcw27y
+         ngYygTweOJDXyPOe3+CO2/lLnSTEpQmZshSc2Z9DiVq+zZy/YAS4D026oQmZizVksS
+         mxlXPZaqHJpJyl2uk4Mr3eLA5JPLgE/W5O/Z5U9v57QIJjEgFrN/YQWAxcQXMYKsu4
+         S+s7lnurqdnqQ==
+Date:   Fri, 29 Jan 2021 15:50:24 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
+ on RB5 platform
+Message-ID: <20210129215024.GA113900@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210121082451.2240540-1-morbo@google.com> <20210122101156.3257143-1-morbo@google.com>
- <CAKwvOdm+3o8z2GivPjSJRa=c=UKdfkiY-79s6yn2BxJkFnoFTw@mail.gmail.com> <CA+icZUVbdbkboYNztXNtRDR+LH8yQbhZJ+Nw-h91TQRr=Z08Gw@mail.gmail.com>
-In-Reply-To: <CA+icZUVbdbkboYNztXNtRDR+LH8yQbhZJ+Nw-h91TQRr=Z08Gw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 13:48:10 -0800
-Message-ID: <CAKwvOdmyerPPJo=m+13jtWR_kPwrmOeb89jh=qgGzEaPhKDOLA@mail.gmail.com>
-Subject: Re: [PATCH v7] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Bill Wendling <morbo@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da0ac373-4edb-0230-b264-49697fa3d86a@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:43 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> Some comments:
->
-> [ hash mismatches ]
->
-> Observed identical warnings when doing a rebuild with GAS or Clang-IAS.
->
-> [ Importance of LLVM_IAS=1 working ]
->
-> Clang-LTO and Clang-CFI depend both on LLVM_IAS=1 (see for example
-> "kbuild: add support for Clang LTO").
-> Sooner or later we will deal with this issue (hope it is not a local problem).
+On Fri, Jan 29, 2021 at 06:45:21AM +0300, Dmitry Baryshkov wrote:
+> On 28/01/2021 22:26, Rob Herring wrote:
+> > On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > > 
+> > > Some Qualcomm platforms require to power up an external device before
+> > > probing the PCI bus. E.g. on RB5 platform the QCA6390 WiFi/BT chip needs
+> > > to be powered up before PCIe0 bus is probed. Add a quirk to the
+> > > respective PCIe root bridge to attach to the power domain if one is
+> > > required, so that the QCA chip is started before scanning the PCIe bus.
+> > 
+> > This is solving a generic problem in a specific driver. It needs to be
+> > solved for any PCI host and any device.
+> 
+> Ack. I see your point here.
+> 
+> As this would require porting code from powerpc/spark of-pci code and
+> changing pcie port driver to apply power supply before bus probing happens,
+> I'd also ask for the comments from PCI maintainers. Will that solution be
+> acceptable to you?
 
-If you're switching back and forth between GAS and IAS, then I would
-expect a hash error if you're trying to reuse profiling data from one
-with the other.  The profiling data is not portable when switching
-toolchains between when the profile was collected, and when it was
-used.
--- 
-Thanks,
-~Nick Desaulniers
+I can't say without seeing the code.  I don't know enough about this
+scenario to envision how it might look.
+
+I guess the QCA6390 is a PCIe device?  Why does it need to be powered
+up before probing?  Shouldn't we get a link-up interrupt when it is
+powered up so we could probe it then?
+
+Nit: when changing any file, please take a look at the commit history
+and make yours match, e.g.,
+
+  pcie-qcom: provide a way to power up qca6390 chip on RB5 platform
+
+does not look like:
+
+  PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
+  PCI: qcom: Add SM8250 SoC support
+  PCI: qcom: Make sure PCIe is reset before init for rev 2.1.0
+  PCI: qcom: Replace define with standard value
+  PCI: qcom: Support pci speed set for ipq806x
+  PCI: qcom: Add ipq8064 rev2 variant
+
+Also, if you capitalize it as "QCA6390" in the commit log, do it the
+same in the subject.
+
+> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > ---
+> > >   drivers/pci/controller/dwc/pcie-qcom.c | 21 +++++++++++++++++++++
+> > >   1 file changed, 21 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > index ab21aa01c95d..eb73c8540d4d 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > @@ -20,6 +20,7 @@
+> > >   #include <linux/of_device.h>
+> > >   #include <linux/of_gpio.h>
+> > >   #include <linux/pci.h>
+> > > +#include <linux/pm_domain.h>
+> > >   #include <linux/pm_runtime.h>
+> > >   #include <linux/platform_device.h>
+> > >   #include <linux/phy/phy.h>
+> > > @@ -1568,6 +1569,26 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0302, qcom_fixup_class);
+> > >   DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1000, qcom_fixup_class);
+> > >   DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1001, qcom_fixup_class);
+> > > 
+> > > +static void qcom_fixup_power(struct pci_dev *dev)
+> > > +{
+> > > +       int ret;
+> > > +       struct pcie_port *pp = dev->bus->sysdata;
+> > > +       struct dw_pcie *pci;
+> > > +
+> > > +       if (!pci_is_root_bus(dev->bus))
+> > > +               return;
+> > > +
+> > > +       ret = dev_pm_domain_attach(&dev->dev, true);
+> > > +       if (ret < 0 || !dev->dev.pm_domain)
+> > > +               return;
+> > > +
+> > > +       pci = to_dw_pcie_from_pp(pp);
+> > > +       dev_info(&dev->dev, "Bus powered up, waiting for link to come up\n");
+> > > +
+> > > +       dw_pcie_wait_for_link(pci);
+> > > +}
+> > > +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x010b, qcom_fixup_power);
+> > > +
+> > >   static struct platform_driver qcom_pcie_driver = {
+> > >          .probe = qcom_pcie_probe,
+> > >          .driver = {
+> > > --
+> > > 2.29.2
+> > > 
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
