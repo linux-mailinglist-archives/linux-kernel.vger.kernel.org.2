@@ -2,62 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4786630844E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45EB308451
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhA2Dos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:44:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229757AbhA2Dor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:44:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C444C64DFB;
-        Fri, 29 Jan 2021 03:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611891846;
-        bh=YQ+5BI5ZqSn8x1TLpS27Zd0uYGuJdby2+XMjFAOA4uI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YBqCKrXUoY9H7PMfgzh1FUwmDEu8atSSBW9nl1sExHf3IQBuO+x3fDOKH2e92Di8z
-         mEFeerNyJRBX2+f9NxgJ0vsMcn1zDO99uAeGLIm3Lo6AfZ6Y+3DRKCloKUicKYi7i0
-         +xiWxVu/WD84s3jddLSgFARGMcAh2obVAte1zQGkGA1Iif+Rb2KI18OPIMV7aN9/n1
-         lZgpTHdiSPpR7WbqEHp/XKJH8yPwIhGr1aqtDtHTbpGLLmn6AreqkvGGYO74FtsGo4
-         nWNdRb1dy/hnHpvC0DGyVuzu8e3F1hFh7R3H5+2J0FsTqMALo0IyU9NkHyt3I+YqxU
-         ieTNrolb1Eviw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B82F6613AE;
-        Fri, 29 Jan 2021 03:44:06 +0000 (UTC)
-Subject: Re: [GIT PULL] eCryptfs fix for 5.11-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210129012431.GA633037@sequoia>
-References: <20210129012431.GA633037@sequoia>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210129012431.GA633037@sequoia>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git tags/ecryptfs-5.11-rc6-setxattr-fix
-X-PR-Tracked-Commit-Id: 0b964446c63f9d7d7cd1809ee39277b4f73916b5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bec4c2968fce2f44ce62d05288a633cd99a722eb
-Message-Id: <161189184666.9193.4035556583382796136.pr-tracker-bot@kernel.org>
-Date:   Fri, 29 Jan 2021 03:44:06 +0000
-To:     Tyler Hicks <code@tyhicks.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, ecryptfs@vger.kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>
+        id S231856AbhA2DqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:46:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhA2DqF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 22:46:05 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5DDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:45:25 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id v15so5951769ljk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QYx6/uSUyh2hqwQYt//2VWudlIbI5/06ASiZSy/mLyo=;
+        b=MQpAIdc1jbYRb4uE1UMqpIpEiIdRlXP9v/3iG9ReMEVTIsKFUlysLHvaIEd7HNqYVa
+         QCxw+7t3130iWoa1TG2q9hjKAIbYwnz49quuEwrCfBqLcwbsk6ANb535I/GRxb8uMpIH
+         RHAmEilRZcRxEH9rV/o5hIzRTjOnJX033PWiUUBYjh/sZRHrNdx/+A+J7KfFgJtKuoyH
+         i2uPd9MS354efk26N08RzHGAtL7iusyieL11tcRR1dpNIPHjoVl1X53P9ZjC5TmI7Xzn
+         Rm8prgJGAUAxsQbHTfhGlK1+qIICAXJKhqPD6VaCrPs0xVJxOqh3zo+K/1AV74EDU5b/
+         OXCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QYx6/uSUyh2hqwQYt//2VWudlIbI5/06ASiZSy/mLyo=;
+        b=QaerCmya1iFzU9L6kP0QQWuWzilTacUpaAsxdFRvsqC1AaQtfv3Ptw61UmoLuARAOa
+         GwQBNzFFj4h0ne3FddiIXfeLXWEvJjFnq7YqwFP6MOUbWCe2SaN6E82lUrvF7NXqAQ8z
+         FqKDAzlNKzT7wIwHI96gyJcmjvCLBzZLozOsIr1gILm5VmiFZ1KCGLxwzS8qrGTBeWjZ
+         mB82ECKBmPMZvd/aRlH7DUsRykNUBCtjv5ch3A8VET9UMn7bQOBSpH3HRwxf8wAa6ZZS
+         vAUkkxrv0cydg1l1yfKjqLs1SL3AyQWbbpiyRM/azEx4w7dK3FPKrPpgqZGFO6j6rIiw
+         +0CQ==
+X-Gm-Message-State: AOAM533o6MKmzYc2PkFndm2YsEHxNPhDQiJ7awbUgTIjayc+8sWbS2bw
+        GjsZ7H99Un2dJGtBPDp/0rFfO/B46CIKLY14
+X-Google-Smtp-Source: ABdhPJyFOTD0X8ECLTsqb/tuQIyGfQ96Bn2nBwZMbpwL3vuLlc5XCnWGi+2l0v/x8onFfQokSxOHzw==
+X-Received: by 2002:a05:651c:1a3:: with SMTP id c3mr1298160ljn.498.1611891923583;
+        Thu, 28 Jan 2021 19:45:23 -0800 (PST)
+Received: from [192.168.1.211] ([94.25.229.83])
+        by smtp.gmail.com with ESMTPSA id a30sm2358345ljq.96.2021.01.28.19.45.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 19:45:23 -0800 (PST)
+Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
+ on RB5 platform
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
+ <20210128175225.3102958-4-dmitry.baryshkov@linaro.org>
+ <CAL_JsqLRn40h0K-Fze5m1LS2+raLp94LariMkUh7XtekTBT5+Q@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <da0ac373-4edb-0230-b264-49697fa3d86a@linaro.org>
+Date:   Fri, 29 Jan 2021 06:45:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqLRn40h0K-Fze5m1LS2+raLp94LariMkUh7XtekTBT5+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 28 Jan 2021 19:24:31 -0600:
+On 28/01/2021 22:26, Rob Herring wrote:
+> On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>> Some Qualcomm platforms require to power up an external device before
+>> probing the PCI bus. E.g. on RB5 platform the QCA6390 WiFi/BT chip needs
+>> to be powered up before PCIe0 bus is probed. Add a quirk to the
+>> respective PCIe root bridge to attach to the power domain if one is
+>> required, so that the QCA chip is started before scanning the PCIe bus.
+> 
+> This is solving a generic problem in a specific driver. It needs to be
+> solved for any PCI host and any device.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git tags/ecryptfs-5.11-rc6-setxattr-fix
+Ack. I see your point here.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bec4c2968fce2f44ce62d05288a633cd99a722eb
+As this would require porting code from powerpc/spark of-pci code and 
+changing pcie port driver to apply power supply before bus probing 
+happens, I'd also ask for the comments from PCI maintainers. Will that 
+solution be acceptable to you?
 
-Thank you!
+
+> 
+>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-qcom.c | 21 +++++++++++++++++++++
+>>   1 file changed, 21 insertions(+)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index ab21aa01c95d..eb73c8540d4d 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/of_device.h>
+>>   #include <linux/of_gpio.h>
+>>   #include <linux/pci.h>
+>> +#include <linux/pm_domain.h>
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/platform_device.h>
+>>   #include <linux/phy/phy.h>
+>> @@ -1568,6 +1569,26 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x0302, qcom_fixup_class);
+>>   DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1000, qcom_fixup_class);
+>>   DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x1001, qcom_fixup_class);
+>>
+>> +static void qcom_fixup_power(struct pci_dev *dev)
+>> +{
+>> +       int ret;
+>> +       struct pcie_port *pp = dev->bus->sysdata;
+>> +       struct dw_pcie *pci;
+>> +
+>> +       if (!pci_is_root_bus(dev->bus))
+>> +               return;
+>> +
+>> +       ret = dev_pm_domain_attach(&dev->dev, true);
+>> +       if (ret < 0 || !dev->dev.pm_domain)
+>> +               return;
+>> +
+>> +       pci = to_dw_pcie_from_pp(pp);
+>> +       dev_info(&dev->dev, "Bus powered up, waiting for link to come up\n");
+>> +
+>> +       dw_pcie_wait_for_link(pci);
+>> +}
+>> +DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_QCOM, 0x010b, qcom_fixup_power);
+>> +
+>>   static struct platform_driver qcom_pcie_driver = {
+>>          .probe = qcom_pcie_probe,
+>>          .driver = {
+>> --
+>> 2.29.2
+>>
+
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+With best wishes
+Dmitry
