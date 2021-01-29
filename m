@@ -2,128 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF2F308FFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC92C309001
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbhA2WUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:20:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
+        id S233284AbhA2WVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbhA2WUC (ORCPT
+        with ESMTP id S232776AbhA2WVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:20:02 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C733AC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:19:21 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id l27so10331287qki.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:19:21 -0800 (PST)
+        Fri, 29 Jan 2021 17:21:43 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDDAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:21:03 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id s23so214167pjz.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:21:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eVJSk/hfc058Boi6CmUOZdn8/0GbF4wuD5mw1Do2viE=;
-        b=oTErFdI6eKFeNDH6YSzbE8/JPhkaRdqklITZ3wzhls1A9TGe6bkovNVrzcK3HkTyHf
-         FpMi+Mqrxha9yVMuQWY1pM3WvHDY78L33bJNkVlP5sb2Sps9DfZFpXHCAT4ilYi79GJe
-         mC28xZonf8wDFb8+rSsXbSPlzGKvcQlhesMJNWNnDHq6M0BL2PcYgSHHPEvq6cHZalTs
-         xr6w5xmW/R2yADVc987TG72LaxWeU3YtZIgyUnDnAvjgrij9Iwh2Z/t6U/gusi+DSfom
-         dhA9/aGUN5n4+f8zEMlBJu0IeX066d5KZU9oEsohSYEMJCaSXIUNEO+t+ENBP9RmiK+q
-         2iPg==
+        bh=Waa2kugmLjDllXM/NpJiCr0cF57NhaJCQRM2OUEVOlc=;
+        b=g6nU+Qb5P3f50N11vuxB+ZwYXdPvN6xlKaoTFHKCslL8CmcP2Qz71CuEpD2ZD3olRp
+         AfcieM03kWk2D4DllGDsNX/54E3M7aM3HdYOLIw38Fcw3/HXsakid5CEKLK60YLQ9yiy
+         znhoFLo3rp35FlJtqlC3FcpO1pseW+tCKTnPRF+Uvp9jp+V+1N7KWqAZhumVOH386Cug
+         uIyrzKWnGAB4GuEqho+PcRBE49n1q0eUyPGzev019gmwKQWLz0Jxw+mOvheNLeYHgV/U
+         pZC9kX+l5X0DUNxrjp3qiEHw3XXfZzwAFPDECHQLJa0YC153G31x2AINKT6gDeEcj9yv
+         IFbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eVJSk/hfc058Boi6CmUOZdn8/0GbF4wuD5mw1Do2viE=;
-        b=uB7ZDl2Q/xEvH2JZLuuaQyrflpOTo4UaH/2w9EzJByff9Q9dy+oBbJ9kQ0aIv+HFWu
-         Pr191h1TKQ1moVtDsAQJhJw9NvEwJHqqocgEoRgJFGthhah3wqCU+6JICjBdgORsDg0U
-         hKrH1sUa2+Z8p13Imo8+0ljwQLMxzSZIzOHYjBaBhFrpXwt6FIb0GdlhMIR2jw1Kh9XO
-         xY8Hib8WjEIoXi/7AmymvDQbHxTOlkUEMbAc4/dKJorar+jWCzpaER0zMyZ8uHRw/QmT
-         HqQ+jt0GQ9Vvu9Nb/6AkQ3mdXYkZRka0R0H9hi63fCV74CM0KoRoI68QJECaMy8xZIuC
-         WudA==
-X-Gm-Message-State: AOAM530lbIWmAJ6IF8r2TRNKmtTne00q7OoO7AWdyQFGpiEiylJXNhe1
-        rmSNgwX/9o/du5uBMzaTngSgygLx5N1nCzz1uTZi6w==
-X-Google-Smtp-Source: ABdhPJxVZbeVYLBgr5uE1mvuI7LDXkWcITnDA7F9lO03rYYyA2YIuAYn0Yi6zcFHI1hjVidvboapNw5pXEemk1yF9/M=
-X-Received: by 2002:a37:a9d6:: with SMTP id s205mr6321887qke.162.1611958761060;
- Fri, 29 Jan 2021 14:19:21 -0800 (PST)
+        bh=Waa2kugmLjDllXM/NpJiCr0cF57NhaJCQRM2OUEVOlc=;
+        b=iI5IAwR/Z5fmobNpZ8OBYwcw3xXAnbM8IHBefVOiAxY7hO8OLQoqYJXHbnzfQ+iaHe
+         1GP4E327Zn6fPC5Ix4v2dyJxTGrutWbLplHEuL80+8sVXc6kQfIWlyndoA4Q/eBGMxE6
+         bDIWRrUyOrQJUxIpGUFZUNY30pQGNTJkRbxSxDpIoZ3BymJ740SaS9Qnf3OV9AD7pxN5
+         W7IvHZC3oWX9brHOaFajbC7sqTe5T5dxC/3y+VSsLc2+P/dMiZq9D7pnDYM3OGjqXI8G
+         YasgTE38p4UtJ/Hue8/oD3331CRDsWlZQ1Epdzt7RiANIM5s0PZiIJYCVk4iNwkSrfL5
+         rkhQ==
+X-Gm-Message-State: AOAM533hiwdVpIthU9fQSaI3XIUkP/jf7vkRj5PbrBR7E7Azwml8sN9N
+        Vm/e4hEuGmMnuMte1/YFQxQ4AgS/Hut63LqC/aSUdA==
+X-Google-Smtp-Source: ABdhPJw+BCsSOkR5G2eDjdV3LZUAtAJPNmMz7W9fVgUjrCLSfs7zMAkNu52xoeG49kO/2jRdwH3vSHUCFD4ovD2PtUs=
+X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr6434050pjn.25.1611958862659;
+ Fri, 29 Jan 2021 14:21:02 -0800 (PST)
 MIME-Version: 1.0
-References: <da0ac373-4edb-0230-b264-49697fa3d86a@linaro.org> <20210129215024.GA113900@bjorn-Precision-5520>
-In-Reply-To: <20210129215024.GA113900@bjorn-Precision-5520>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 30 Jan 2021 01:19:10 +0300
-Message-ID: <CAA8EJpoPsv5tfsaiJq4UnBYt3o+gJanWzy8aaZRK=V8yOk3mJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
- on RB5 platform
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+ <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
+ <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
+ <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
+ <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
+ <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com> <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
+In-Reply-To: <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 Jan 2021 14:20:51 -0800
+Message-ID: <CAKwvOdk4kG-_c3inNj9ry_xUU9SQE-2AqQp40YL_V=6SHU6E=Q@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Jan 2021 at 00:50, Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Fri, Jan 29, 2021 at 2:11 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> On Fri, Jan 29, 2021 at 06:45:21AM +0300, Dmitry Baryshkov wrote:
-> > On 28/01/2021 22:26, Rob Herring wrote:
-> > > On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
-> > > <dmitry.baryshkov@linaro.org> wrote:
-> > > >
-> > > > Some Qualcomm platforms require to power up an external device before
-> > > > probing the PCI bus. E.g. on RB5 platform the QCA6390 WiFi/BT chip needs
-> > > > to be powered up before PCIe0 bus is probed. Add a quirk to the
-> > > > respective PCIe root bridge to attach to the power domain if one is
-> > > > required, so that the QCA chip is started before scanning the PCIe bus.
+> On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 > > >
-> > > This is solving a generic problem in a specific driver. It needs to be
-> > > solved for any PCI host and any device.
+> > > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > >
+> > > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
+> > > > <ndesaulniers@google.com> wrote:
+> > > > >
+> > > > > On Fri, Jan 29, 2021 at 12:55 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, Jan 29, 2021 at 9:48 PM Nick Desaulniers
+> > > > > > <ndesaulniers@google.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Jan 29, 2021 at 12:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
+> > > > > > > > <ndesaulniers@google.com> wrote:
+> > > > > > > > >
+> > > > > > > > > diff --git a/Makefile b/Makefile
+> > > > > > > > > index 20141cd9319e..bed8b3b180b8 100644
+> > > > > > > > > --- a/Makefile
+> > > > > > > > > +++ b/Makefile
+> > > > > > > > > @@ -832,8 +832,20 @@ endif
+> > > > > > > > >
+> > > > > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> > > > > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> > > > > > > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+> > > > > > > > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> > > > > > > > >
+> > > > > > > > > +# If using clang without the integrated assembler, we need to explicitly tell
+> > > > > > > > > +# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
+> > > > > > > > > +# detect whether the version of GAS supports DWARF v5.
+> > > > > > > > > +ifdef CONFIG_CC_IS_CLANG
+> > > > > > > > > +ifneq ($(LLVM_IAS),1)
+> > > > > > > > > +ifeq ($(dwarf-version-y),5)
+> > > > > > > > > +DEBUG_CFLAGS   += -Wa,-gdwarf-5
+> > > > > > > >
+> > > > > > > > I noticed double "-g -gdwarf-5 -g -gdwarf-5" (a different issue) and
+> > > > > > > > that's why I looked again into the top-level Makefile.
+> > > > > > >
+> > > > > > > That's...unexpected.  I don't see where that could be coming from.
+> > > > > > > Can you tell me please what is the precise command line invocation of
+> > > > > > > make and which source file you observed this on so that I can
+> > > > > > > reproduce?
+> > > > > > >
+> > > > > >
+> > > > > > That's everywhere...
+> > > > > >
+> > > > > > $ zstdgrep --color '\-g -gdwarf-5 -g -gdwarf-5'
+> > > > > > build-log_5.11.0-rc5-8-amd64-clang12-lto.txt.zst
+> > > > > > | wc -l
+> > > > > > 29529
+> > > > >
+> > > > > I'm not able to reproduce.
+> > > > >
+> > > > > $ make LLVM=1 -j72 V=1 2>&1 | grep dwarf
+> > > > > ...
+> > > > > clang ... -g -gdwarf-5 -Wa,-gdwarf-5 ...
+> > > > > ...
+> > > > >
+> > > > > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 2>&1 | grep dwarf
+> > > > > ...
+> > > > > clang ... -g -gdwarf-5 ...
+> > > > > ...
+> > > > >
+> > > >
+> > > > Hmm...
+> > > >
+> > > > I do not see in my current build "-Wa,-gdwarf-5" is passed with v6.
+> > > >
+> > > > $ grep '\-Wa,-gdwarf-5' build-log_5.11.0-rc5-10-amd64-clang12-lto-pgo.txt
+> > > > [ empty ]
+> > > >
+> > >
+> > > That's the diff v5 -> v6...
+> > >
+> > > There is no more a dwarf-aflag / KBUILD_AFLAGS += $(dwarf-aflag) used.
 > >
-> > Ack. I see your point here.
+> > Yep; not sure that's relevant though to duplicate flags?
 > >
-> > As this would require porting code from powerpc/spark of-pci code and
-> > changing pcie port driver to apply power supply before bus probing happens,
-> > I'd also ask for the comments from PCI maintainers. Will that solution be
-> > acceptable to you?
+> > > > > Can you tell me please what is the precise command line invocation of
+> > > > > make and which source file you observed this on so that I can
+> > > > > reproduce?
+> >
+> > If you don't send me your invocation of `make`, I cannot help you.
+> >
 >
-> I can't say without seeing the code.  I don't know enough about this
-> scenario to envision how it might look.
->
-> I guess the QCA6390 is a PCIe device?  Why does it need to be powered
-> up before probing?  Shouldn't we get a link-up interrupt when it is
-> powered up so we could probe it then?
+> /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+> PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
+> -lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+> KBUILD_BUILD_USER=sedat.dilek@gmail.com
+> KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
+> KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
 
-Not quite. QCA6390 is a multifunction device, with PCIe and serial
-parts. It has internal power regulators which once enabled will
-powerup the PCIe, serial and radio parts. There is no need to manage
-regulators. Once enabled they will automatically handle device
-suspend/resume, etc.
+$ make LLVM=1 LLVM_IAS=1 -j72 defconfig
+$ make LLVM=1 LLVM_IAS=1 -j72 menuconfig
+<enable CONFIG_DEBUG_INFO and CONFIG_DEBUG_INFO_DWARF5>
+$ make LLVM=1 LLVM_IAS=1 -j72 V=1 &> log.txt
+$ grep '\-g -gdwarf-5 -g -gdwarf-5' log.txt | wc -l
+0
+$ grep '\-g -gdwarf-5' log.txt | wc -l
+2517
 
-I'm not sure about link-up interrupt. I've just lightly tested using
-PCIe HP on this port, getting no interrupts from it.
-If I manually rescan the bus after enabling the qca6390 device (e.g.
-via sysfs), it gets enabled, but then I see PCIe link errors (most
-probably because the PCIe link was not retrained after the device
-comes up).
+Do have the patch applied twice, perhaps?
 
-> Nit: when changing any file, please take a look at the commit history
-> and make yours match, e.g.,
->
->   pcie-qcom: provide a way to power up qca6390 chip on RB5 platform
->
-> does not look like:
-
-Ack.
-
-
+Is your compiler haunted, or is mine? (haha! they both are; false
+dichotomy; they are one in the same).  Is zstdgrep haunted, or is GNU
+grep haunted? :P
 -- 
-With best wishes
-Dmitry
+Thanks,
+~Nick Desaulniers
