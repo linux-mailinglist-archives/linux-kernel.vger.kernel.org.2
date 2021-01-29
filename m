@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A011309062
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AAF309064
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbhA2W7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232800AbhA2W7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:59:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232747AbhA2W7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Jan 2021 17:59:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39096 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231367AbhA2W7s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:59:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611961101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=js3WqeMssgVvObPx3rZpffH/XM/Kj1h1Hr6xcv9t5aw=;
-        b=MwbcD6WLqyna8Eae/AcaAkjTGjHOyBH0RPcfNxu6b01KJmIQoDLFfSlLbB/ykNjayp+Rqy
-        VfpHef+nPfIJ8Tf5mdxQwzrWz0N+e5Gg7qoQSvJlHdq8XrN0CLdaIimh0uHxrO/axURwlB
-        Ojha5A+Ucd4/3Rjitly2gtaGvUbAwIE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-n93dbMiPMMm9gTxMUYLRrQ-1; Fri, 29 Jan 2021 17:58:17 -0500
-X-MC-Unique: n93dbMiPMMm9gTxMUYLRrQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FE4C1005504;
-        Fri, 29 Jan 2021 22:58:16 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 92FEE5D71B;
-        Fri, 29 Jan 2021 22:58:12 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 15:58:12 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-Subject: Re: [RFC PATCH v1 1/4] vfio/type1: Add a bitmap to track IOPF
- mapped pages
-Message-ID: <20210129155812.384cc56e@omen.home.shazbot.org>
-In-Reply-To: <20210125090402.1429-2-lushenming@huawei.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
-        <20210125090402.1429-2-lushenming@huawei.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D336264DED;
+        Fri, 29 Jan 2021 22:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611961151;
+        bh=RMzrLYS0dhIFza5IZGjzDLcAAAHAc2oc8FO0sqO3xJY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=evJaiOBztm/TbR7DtHnUCr6qIvlyko0D3G4vNnVnO7DBrXSaORnY1ZgLAjsKPaKZp
+         AI1QhjWborSuJPu1aQPlJOz6e7MD7NRiv4k3Cf8hRaaYMw0VM6g70vpPg1LlgYgByB
+         OdW0nezuxevHo6/HMHVRHUQDqMGMfFjCrKHHYfgtdMhWL/3hG2YYJme8VeL9ED+K6f
+         57NoS1q8U9gTqKUUqjmQTKjRGg7/pS8KbhgYxFsHzidu06zj4S1Ym8t/SP/YqOHxw2
+         Pm1Inq0FoGk4xcwrjDlfxB2XQzEVZUtNmXTdas5VlyoDWcZTImYdSOJRrSL+y3n+3K
+         XFILrEDCqy8Hg==
+Date:   Sat, 30 Jan 2021 00:59:06 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>,
+        James.Bottomley@hansenpartnership.com
+Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
+Message-ID: <YBSTOrlgTPpzoblY@kernel.org>
+References: <20210123014247.989368-1-lma@semihalf.com>
+ <20210125171846.GA31929@roeck-us.net>
+ <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 17:03:59 +0800
-Shenming Lu <lushenming@huawei.com> wrote:
-
-> When IOPF enabled, the pages are pinned and mapped on demand, we add
-> a bitmap to track them.
+On Tue, Jan 26, 2021 at 04:46:07PM +0100, Łukasz Majczak wrote:
+> Hi Jarkko, Guenter
 > 
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> Yes, here are the logs when failure occurs -
+> https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
+> Look for a phrase "TPM returned invalid status"
 > 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 0b4dedaa9128..f1d4de5ab094 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -95,6 +95,7 @@ struct vfio_dma {
->  	struct task_struct	*task;
->  	struct rb_root		pfn_list;	/* Ex-user pinned pfn list */
->  	unsigned long		*bitmap;
-> +	unsigned long		*iommu_mapped_bitmap;	/* IOPF mapped bitmap */
->  };
->  
->  struct vfio_group {
-> @@ -143,6 +144,8 @@ struct vfio_regions {
->  #define DIRTY_BITMAP_PAGES_MAX	 ((u64)INT_MAX)
->  #define DIRTY_BITMAP_SIZE_MAX	 DIRTY_BITMAP_BYTES(DIRTY_BITMAP_PAGES_MAX)
->  
-> +#define IOMMU_MAPPED_BITMAP_BYTES(n) DIRTY_BITMAP_BYTES(n)
-> +
->  static int put_pfn(unsigned long pfn, int prot);
->  
->  static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
-> @@ -949,6 +952,7 @@ static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
->  	vfio_unlink_dma(iommu, dma);
->  	put_task_struct(dma->task);
->  	vfio_dma_bitmap_free(dma);
-> +	kfree(dma->iommu_mapped_bitmap);
->  	kfree(dma);
->  	iommu->dma_avail++;
->  }
-> @@ -1354,6 +1358,14 @@ static int vfio_dma_do_map(struct vfio_iommu *iommu,
->  		goto out_unlock;
->  	}
->  
-> +	dma->iommu_mapped_bitmap = kvzalloc(IOMMU_MAPPED_BITMAP_BYTES(size / PAGE_SIZE),
-> +					    GFP_KERNEL);
+> Guenter - good suggestion - I will try to keep it as tight as possible.
+> 
+> Best regards,
+> Lukasz
 
-This is a lot of bloat for all the platforms that don't support this
-feature.  Thanks,
+Is it possible for you try out with linux-next? Thanks. It's a known
+issue, which ought to be fixed by now.
 
-Alex
+The log message is harmless, it'a warning not panic, and does not
+endanger system stability. WARN()'s always dump stack trace. No oops
+is happening.
 
-> +	if (!dma->iommu_mapped_bitmap) {
-> +		ret = -ENOMEM;
-> +		kfree(dma);
-> +		goto out_unlock;
-> +	}
-> +
->  	iommu->dma_avail--;
->  	dma->iova = iova;
->  	dma->vaddr = vaddr;
-
+/Jarkko
