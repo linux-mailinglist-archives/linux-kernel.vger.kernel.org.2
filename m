@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D86308A82
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07957308A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhA2Qnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhA2QnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:43:04 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6CBC0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 08:41:33 -0800 (PST)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 01A68303; Fri, 29 Jan 2021 17:41:30 +0100 (CET)
-Date:   Fri, 29 Jan 2021 17:41:29 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>
-Subject: [git pull] IOMMU Fixes for Linux v5.11-rc5
-Message-ID: <20210129164123.GA25513@8bytes.org>
+        id S231364AbhA2QoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:44:11 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:45256 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229635AbhA2QoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:44:06 -0500
+Received: from zn.tnic (p200300ec2f0c9a00bc6c1bcbdaab9684.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:bc6c:1bcb:daab:9684])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE9BB1EC01B7;
+        Fri, 29 Jan 2021 17:43:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611938604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/U0dK6FjRBq9VSJp8K7LEjlZlCwD1q4ccXfry4SUwM0=;
+        b=hlPck3QKuDtmkMjT4lLera4NoiQ5pR9nIrHTmOmF0naMx4q31/+N0qfzNEmKmbfkhzRXT+
+        2oDW269VJNr+stw9T7jGjReJlvDYmb33dl0AjntVUd3vVd2lHmvXIqNUclG0AN3mdGG8Gi
+        O4igVIkm0xxqlAxM888emO+5P3iR68U=
+Date:   Fri, 29 Jan 2021 17:43:20 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Kees Cook <keescook@chromium.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Brian Gerst <brgerst@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Mike Hommey <mh@glandium.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Jay Lang <jaytlang@mit.edu>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>
+Subject: Re: [PATCH V3 0/6] x86: don't abuse tss.sp1
+Message-ID: <20210129164320.GE27841@zn.tnic>
+References: <20210127163231.12709-1-jiangshanlai@gmail.com>
+ <CAJhGHyA1U9M2Lv_=Wa2NPzBNevZKOrLaG1FDwbmySMOR_x_GRQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJhGHyA1U9M2Lv_=Wa2NPzBNevZKOrLaG1FDwbmySMOR_x_GRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 29, 2021 at 11:35:46PM +0800, Lai Jiangshan wrote:
+> Any feedback?
 
---k1lZvvs/B4yU6o8G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes: be patient please.
 
-Hi Linus,
+Thx.
 
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+-- 
+Regards/Gruss,
+    Boris.
 
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.11-rc5
-
-for you to fetch changes up to 29b32839725f8c89a41cb6ee054c85f3116ea8b5:
-
-  iommu/vt-d: Do not use flush-queue when caching-mode is on (2021-01-28 13:59:02 +0100)
-
-----------------------------------------------------------------
-IOMMU Fixes for Linux v5.11-rc5
-
-Including:
-
-	- AMD IOMMU Fix to make sure features are detected before they
-	  are queried.
-
-	- Intel IOMMU address alignment check fix for an IOLTB flushing
-	  command.
-
-	- Performance fix for Intel IOMMU to make sure the code does not
-	  do full IOTLB flushes all the time. Those flushes are very
-	  expensive on emulated IOMMUs.
-
-----------------------------------------------------------------
-Lu Baolu (1):
-      iommu/vt-d: Correctly check addr alignment in qi_flush_dev_iotlb_pasid()
-
-Nadav Amit (1):
-      iommu/vt-d: Do not use flush-queue when caching-mode is on
-
-Suravee Suthikulpanit (1):
-      iommu/amd: Use IVHD EFR for early initialization of IOMMU features
-
- drivers/iommu/amd/amd_iommu.h       |  7 ++---
- drivers/iommu/amd/amd_iommu_types.h |  4 +++
- drivers/iommu/amd/init.c            | 56 +++++++++++++++++++++++++++++++++++--
- drivers/iommu/intel/dmar.c          |  2 +-
- drivers/iommu/intel/iommu.c         | 32 ++++++++++++++++++++-
- 5 files changed, 92 insertions(+), 9 deletions(-)
-
-Please pull.
-
-Thanks,
-
-	Joerg
-
---k1lZvvs/B4yU6o8G
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmAUOrMACgkQK/BELZcB
-GuNMbRAA1qlBq3RXbPp8Iftn1CXMnLLkpb576ndYAmxMTyh4WxRxrt8zTOJ17Lrc
-xee83/utsWZ0K3AtSkXVe/cCdq+mH57M/A5bJUK0QdrPZC27xTNtBpKpI6NgbM/q
-NJzdTpa9GFYkpKIEO5MvVTmC0DDin+yDLEge43osARz+1eteEfOTfaAkhVga4ml/
-3tbmQouk4GdOw5b8aHMAXPJHJbNTWTcZ4B7mWVIKwAAhT1XM1TbjX2DjNr7QRrz1
-Cibh0a3S9hkvr5W5dTU116f/MRAa9Cz28Zdk57hzD2ry+UVV6lNcLCQNndiafdnb
-tKx7lqdXIfnXC+td622EXhqC82Rd5z1oM01Ipcrt89KourdWtGcfADmy927tOol4
-VkuSTc6mVSmMT/vig6dy9r/BbcpX9CNkcKxBTt/PYT23mrDWKoMC9QdcQ5xNaR8G
-Sd4ai96vWFz4IJsKkImRz8ASh2u2LflK9gtmjcg/xyUMiU34jbvnnN7yNAVi4eES
-bBzwi8h/TXcel975KhR7xGDURPfOYuhGNy4pBtNUA+JB1MDQGVlDUrbQcdvIKQ3o
-43PNwb4QYZRKfRCJhttsDNL+txYVuUjPSi6ydsJs1L9Wmhfy5ipMuJU/GD1HxtWA
-mJFwF1GU67vauEvV7ZLZres8wkSvhfMR9qe6yo5egc67NyfCjnQ=
-=PJqE
------END PGP SIGNATURE-----
-
---k1lZvvs/B4yU6o8G--
+https://people.kernel.org/tglx/notes-about-netiquette
