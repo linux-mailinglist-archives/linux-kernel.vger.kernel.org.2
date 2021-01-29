@@ -2,232 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A4030864F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF192308652
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhA2HQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:16:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S231977AbhA2HSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhA2HP5 (ORCPT
+        with ESMTP id S229819AbhA2HSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:15:57 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE4EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:15:16 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id u14so6027270wml.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:15:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iLdacsm3XogIsaiExukBUmqPzsJY8TDJ1FbcWEsqSm4=;
-        b=axhlIo/D+wi8wYEr5mSU2TeU2BHoww+YZeD6E6GdrBwgl9gpG9ta/zxED6w811vA1e
-         XUkx3ytL3FDQNK19YaMIEfgRJ9aJTyOqVg4+lHSJSxmM/EXiU0PQeTncr79rkwfJI3As
-         rS0N5aN3Puio1orZOigpQI40abIOPc4XPhctpY411MUxXy/iO7Ha1wmCcwBa9I+sr8kh
-         z2fSowH8P0SCc6TKI1/wZMphf47/x3IAmMNlXetDpHKsjLgiu9uOK97lKzrZ6fPGCh86
-         4Hg+FaVgBIqtMK8TmAQN6CW2XmGYez8FXgs1HYOoQcmOJwObMajdXLB5rgANhUDDeeXq
-         0SdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iLdacsm3XogIsaiExukBUmqPzsJY8TDJ1FbcWEsqSm4=;
-        b=ZjipfexJaLb7niebA1C9TjNqJPz0qGC21HWsIJJl1gBTa4mr5P4X0BOm/8TkHzX12E
-         14Col+lpTsT7f9AitGDgbpJT2NHIew3TdgUWtxEVqZCyZ6CXSFtUP58ICyLkyHZk3n/p
-         wTPJMUMzQ+MeJHcVNa6P7sBOylahXX+USPcdv3npbrY+nA9fQbGlq3+cumkawPzEi0yN
-         AiXti4clamDCN783uv36VjCw/G2db1gmNBtCw07Pegby8TgWRPHmj0KAGU+XyR4QBllM
-         eoie3I6Nlr7Sj+qZYX8ji7xg7EVgcsUIeS+4KEIB9kL3FBN5/Tjm4MQ5+zDQAAKlqYmB
-         ErrA==
-X-Gm-Message-State: AOAM533SyHMy3oiweCKJXxefu7ZgwyByJXFWCQXbQcWUiO3Zb5YOQZOb
-        y8TEWx5LOMHnpsq3yBKq5hdujQvBUs2i4SwEuZmeQQ==
-X-Google-Smtp-Source: ABdhPJxpkxr3lWUY1Rn0hsphGiX4XcyWnJxlD176nyKrLed2lzKaKrzUHbmSNYf+8M3ImhOcw+T4C3o2/WEbt+7Lfus=
-X-Received: by 2002:a1c:7906:: with SMTP id l6mr2443143wme.22.1611904515127;
- Thu, 28 Jan 2021 23:15:15 -0800 (PST)
+        Fri, 29 Jan 2021 02:18:01 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4014C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:17:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=nAnTETMHcfweHl7T4+bq1hybnR4BA4pB1t2JYrikVAk=; b=KS95H98dWPeHViBs1Z6WwzGCFO
+        CTZBeyqLXhKw1cPWie38D9LoqDVH1DFrQ22pXi1yOwt5U3R8Qrgy7lIX+AjJ93EzMjFiZxsdH9Cgx
+        rfP/mxCOo+v0Uq5lSknEiLvmdDtql2WKeEucP/PPodOXQKXxGIwAW2NXzjmVnSrFFvnqA3gwQ7fmz
+        gG0AUjM9hVSsgPRB2FuSWekhC886QUDJyw7pJvJmD9neAg/IkCWox3q5jbx6mOQr5L8JXFYfGAycJ
+        ru70Yq8twQsxnTiiZWppvpfnVQAKqYJer+htJiWBBZYsyHglvJ6UxZ0msCtKXnWV6Y6HKsFzr+K6f
+        VGp/Q5TQ==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l5O1s-00014O-Fd; Fri, 29 Jan 2021 07:17:16 +0000
+Subject: Re: [PATCH] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Olof Johansson <olof@lixom.net>,
+        Desmond Yan <desmond.yan@broadcom.com>
+References: <20210129060443.14864-1-scott.branden@broadcom.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <90a4fb55-3ecc-cdcd-2884-1f65062d139c@infradead.org>
+Date:   Thu, 28 Jan 2021 23:17:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210120202337.1481402-1-surenb@google.com> <CAKgNAkgsQWL3QAyF6CQU=yifzA1tfp_E5kBBNKuAq_+sB4Amyw@mail.gmail.com>
- <CAJuCfpEfMgA6z5S5gmHwJB_3KWwmKKp434GeHheUGF3yC7r01w@mail.gmail.com> <6cd84701-fb65-7aa0-38db-b69fe5748754@gmail.com>
-In-Reply-To: <6cd84701-fb65-7aa0-38db-b69fe5748754@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 28 Jan 2021 23:15:04 -0800
-Message-ID: <CAJuCfpE+g96MW+x9A9M0PT_a6-FDtJNFnx6mk9cW3JkZ-SDjvw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] process_madvise.2: Add process_madvise man page
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210129060443.14864-1-scott.branden@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 12:31 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hello Suren,
->
-> On 1/28/21 7:40 PM, Suren Baghdasaryan wrote:
-> > On Thu, Jan 28, 2021 at 4:24 AM Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-> >>
-> >> Hello Suren,
-> >>
-> >> Thank you for writing this page! Some comments below.
-> >
-> > Thanks for the review!
-> > Couple questions below and I'll respin the new version once they are clarified.
->
-> Okay. See below.
->
-> >> On Wed, 20 Jan 2021 at 21:36, Suren Baghdasaryan <surenb@google.com> wrote:
-> >>>
->
-> [...]
->
-> Thanks for all the acks. That let's me know that you saw what I said.
->
-> >>> RETURN VALUE
-> >>>     On success, process_madvise() returns the number of bytes advised. This
-> >>>     return value may be less than the total number of requested bytes, if an
-> >>>     error occurred. The caller should check return value to determine whether
-> >>>     a partial advice occurred.
-> >>
-> >> So there are three return values possible,
-> >
-> > Ok, I think I see your point. How about this instead:
->
-> Well, I'm glad you saw it, because I forgot to finish it. But yes,
-> you understood what I forgot to say.
->
-> > RETURN VALUE
-> >      On success, process_madvise() returns the number of bytes advised. This
-> >      return value may be less than the total number of requested bytes, if an
-> >      error occurred after some iovec elements were already processed. The caller
-> >      should check the return value to determine whether a partial
-> > advice occurred.
-> >
-> >     On error, -1 is returned and errno is set appropriately.
->
-> We recently standardized some wording here:
-> s/appropriately/to indicate the error/.
->
->
-> >>> +.PP
-> >>> +The pointer
-> >>> +.I iovec
-> >>> +points to an array of iovec structures, defined in
-> >>
-> >> "iovec" should be formatted as
-> >>
-> >> .I iovec
-> >
-> > I think it is formatted that way above. What am I missing?
->
-> But also in "an array of iovec structures"...
->
-> > BTW, where should I be using .I vs .IR? I was looking for an answer
-> > but could not find it.
->
-> .B / .I == bold/italic this line
-> .BR / .IR == alternate bold/italic with normal (Roman) font.
->
-> So:
-> .I iovec
-> .I iovec ,       # so that comma is not italic
-> .BR process_madvise ()
-> etc.
->
-> [...]
->
-> >>> +.I iovec
-> >>> +if one of its elements points to an invalid memory
-> >>> +region in the remote process. No further elements will be
-> >>> +processed beyond that point.
-> >>> +.PP
-> >>> +Permission to provide a hint to external process is governed by a
-> >>> +ptrace access mode
-> >>> +.B PTRACE_MODE_READ_REALCREDS
-> >>> +check; see
-> >>> +.BR ptrace (2)
-> >>> +and
-> >>> +.B CAP_SYS_ADMIN
-> >>> +capability that caller should have in order to affect performance
-> >>> +of an external process.
-> >>
-> >> The preceding sentence is garbled. Missing words?
-> >
-> > Maybe I worded it incorrectly. What I need to say here is that the
-> > caller should have both PTRACE_MODE_READ_REALCREDS credentials and
-> > CAP_SYS_ADMIN capability. The first part I shamelessly copy/pasted
-> > from https://man7.org/linux/man-pages/man2/process_vm_readv.2.html and
-> > tried adding the second one to it, obviously unsuccessfully. Any
-> > advice on how to fix that?
->
-> I think you already got pretty close. How about:
->
-> [[
-> Permission to provide a hint to another process is governed by a
-> ptrace access mode
-> .B PTRACE_MODE_READ_REALCREDS
-> check (see
-> BR ptrace (2));
-> in addition, the caller must have the
-> .B CAP_SYS_ADMIN
-> capability.
+On 1/28/21 10:04 PM, Scott Branden wrote:
+> Correct compile issue if CONFIG_TTY is not set by
+> only adding ttyVK devices if CONFIG_TTY is set.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> ---
+>  drivers/misc/bcm-vk/Makefile     |  4 ++--
+>  drivers/misc/bcm-vk/bcm_vk_dev.c | 13 +++++++++++++
+>  2 files changed, 15 insertions(+), 2 deletions(-)
 
-In V2 I explanded a bit this part to explain why CAP_SYS_ADMIN is
-needed. There were questions about that during my patch review which
-adds this requirement
-(https://lore.kernel.org/patchwork/patch/1363605), so I thought a
-short explanation would be useful.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-> ]]
->
-> [...]
->
-> >>> +.TP
-> >>> +.B ESRCH
-> >>> +No process with ID
-> >>> +.I pidfd
-> >>> +exists.
-> >>
-> >> Should this maybe be:
-> >> [[
-> >> The target process does not exist (i.e., it has terminated and
-> >> been waited on).
-> >> ]]
-> >>
-> >> See pidfd_send_signal(2).
-> >
-> > I "borrowed" mine from
-> > https://man7.org/linux/man-pages/man2/process_vm_readv.2.html but
-> > either one sounds good to me. Maybe for pidfd_send_signal the wording
-> > about termination is more important. Anyway, it's up to you. Just let
-> > me know which one to use.
->
-> I think the pidfd_send_signal(2) wording fits better.
->
-> [...]
->
-> Thanks,
->
-> Michael
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+Thanks.
+-- 
+~Randy
+
