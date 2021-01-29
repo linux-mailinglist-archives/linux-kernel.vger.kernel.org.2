@@ -2,286 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CB23082FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216333082F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhA2BIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:08:37 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:49480 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhA2BHm (ORCPT
+        id S231735AbhA2BHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhA2BGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:07:42 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10T140gQ091288;
-        Fri, 29 Jan 2021 01:04:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=GY0YClb9ibNdjvt0wz9i68Gu7oFX74vT33q2+Ynm0HY=;
- b=ufHRsQPOGA2bk0gFgagOCLPNqrzybo6QYcFWTUqF3e1gPwozqfInDJ4WwOsXMOanoSzi
- PGk3hkKcKKbNmDT7FSe0yVat3wJWnCwBIk5L0KMufM0qHKjAjrbGso5gVE4Jb9x5Jo5q
- aUjaAzvQv+e21kpAuxD5332fKPmHYxjXMu3mSMuT//7SFIlKMoVJcDUjine/8ZYQP8Rn
- B9nA6HaPdQOjftwsUMQYSfxI0ApL8OgRVmigIh5VwJc6BNLqJdQ4DLb7Rt34DQBzdTLK
- dhiKjdltqOVGw5y1A1CsdRuMSJtC609np0g8EAyvVNZxbipL61P3Zlsq0d8YTfzQJV91 aQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 368b7r6vbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 01:04:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10T0dtK7084325;
-        Fri, 29 Jan 2021 01:04:37 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-        by userp3020.oracle.com with ESMTP id 368wjutub8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 01:04:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MXZZXx70Fq5jLWBecyKCVRy/hU+PzChOvc+0lMK8nCPSY61zU1jkROgDYa+mWJKhSFrqHA+6cpeGJjveGPRgNPClyiD+ckHjdlq3YIKUynSfHf9Xww0or2PbGuHA5jHtVTabLNCX8MYJnnJva4q6MPCcJSV/qTYqQcp7UyeiNOPd9PBt4ACeWE0/3m4G5yKQdwkske1PWRMvgxsAneKUkn48L7uldjieFfSkfS+mcPww6BaP2Li5+rXyRwn6NgHI9Stco08TdeWV/l/HZv7Ig9nU2QL6BZM+/KUOmcm0pn+3rJpLjfCoGkk8X0b+mboXZZ1L+fELFr1q/ORm1UR5UA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GY0YClb9ibNdjvt0wz9i68Gu7oFX74vT33q2+Ynm0HY=;
- b=Ls884xyA2ek34eRkj7WzU6dAkDANhIlUZ39ojOZYn+4TU0G5bhvwNOA5RFg5f551R41GykDJ2/RJJKmTo06FUe5dFBDlgleBuXszVLaFXEMWpx/n+gohsK47diQvHriLjvb5wlzkJxO5x8sXRaR8JbEPcbLYL5NkKge4/XO9Hof4FW5e2KI1zhoWA3X0z5JFMC3Nzrp2zYbtplNRwXZhuOISRaIfBRUQakWafeu8sTL9oddjB0ldKvAxMEy53tuf4BSHfk9kzMsdPofKoN+Ct5f9K75tG34+X21XbdnP0Ree74yacAjItKscLnq2yxHzSJyQQp1wOGqsOLk8o1MCWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GY0YClb9ibNdjvt0wz9i68Gu7oFX74vT33q2+Ynm0HY=;
- b=sNRwTzrR69wXE9CShCQIiGM8FfCTZz7UtoqBv5Sg2h64CP4o8NQrlFDi0M4OuqiUAS5HNA0oFuh5wfs+ve+y8n1yZ9QaKf1ko1Rt3QchbWGy4437+PURxZJTqk5+iUgt8O7Mxiyi8nXuWBQTmse7SygwBuKyfOqmgh2V+SRoyuQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
- by MWHPR1001MB2109.namprd10.prod.outlook.com (2603:10b6:301:2b::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Fri, 29 Jan
- 2021 01:04:34 +0000
-Received: from MWHPR10MB1389.namprd10.prod.outlook.com
- ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
- ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3784.019; Fri, 29 Jan 2021
- 01:04:34 +0000
-Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
- vmemmap pages associated with each HugeTLB page
-To:     Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
- <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
- <20210126145819.GB16870@linux>
- <259b9669-0515-01a2-d714-617011f87194@redhat.com>
- <20210126153448.GA17455@linux>
- <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
- <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
- <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <e200c17e-5c95-025e-37a7-af7cfbb05b18@oracle.com>
-Date:   Thu, 28 Jan 2021 17:04:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
+        Thu, 28 Jan 2021 20:06:36 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94888C061573;
+        Thu, 28 Jan 2021 17:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=mFMWgp0V09MPFVIUP4yjyQwOmaTrILHfk062Av3J3sc=; b=cyTOri95eIXu7Gs71oMZHrDh04
+        Nq0q/yolR1xKfWxIWs9AHGIrBoKnCwaVdh2ZyIvYdlEc+QEnG8drNxJlAclbn5HxLLkLhYdQiYEwu
+        rGj3Ad4ZEKet9KroNiI+rxEUEUqFTkPdTPRVao8X56//eNcQEj6rcsrnW8plkssmkTaGallY0yKu5
+        qnnxlI5n9qXETr0UF667tWPpZO/9Utqiw/JtPAratNMF6+YZXEo+QXEPT783FyEoUuk0Pkfbv4lPl
+        +YOSsMb44DHxD438sX8s5aq8LLjX54B/ZQaBwSghU8WMjlzjXktlifpE1mMfAE+hwwxDFp1rBA3iW
+        8yAI7/jA==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l5IEQ-0007Jh-4t; Fri, 29 Jan 2021 01:05:50 +0000
+Subject: Re: [PATCH v9 01/17] Documentation: PCI: Add specification for the
+ *PCI NTB* function device
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
+References: <20210104152909.22038-1-kishon@ti.com>
+ <20210104152909.22038-2-kishon@ti.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <2adb27fe-1b2e-3488-eedf-46b01ee25ace@infradead.org>
+Date:   Thu, 28 Jan 2021 17:05:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20210104152909.22038-2-kishon@ti.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0223.namprd03.prod.outlook.com
- (2603:10b6:303:b9::18) To MWHPR10MB1389.namprd10.prod.outlook.com
- (2603:10b6:300:21::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0223.namprd03.prod.outlook.com (2603:10b6:303:b9::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Fri, 29 Jan 2021 01:04:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3f92f2ee-cc16-4f28-7434-08d8c3f1d739
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2109:
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB21098639C2E32B56DA052227E2B99@MWHPR1001MB2109.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +WZM+OI8KrL0rxUgbgAjtbNcgWZQBo4xI2bPxWGXsLg4d4vKqVMqmL7uVi+Bd/Mz3QN87mGd2muKp2AC1d2JY5ZufcYn3Mg6DYfQ6CnLR3pcOrsSzdZGQLNNnpdBtIDOcdcnMvBJN5x4ZWwOxw+6ojda2vnJPLGKaMF1ob/aEvgHLujbPHr/j/Yp3h+OGOJqJsiGiFUWB4EYWAZjFEt9AMX6N1a6pAapnGJs0dyrpl/CCu9cqJ7EQhNPrt+Jyyn60O19k3AshiYssDTsW4wpsBRtTsuc82AnY8AdI+1fd2D7TDvRexYoOXR+1yYAtjbd8+b7yVyoUuifcE+ow/gSJdc7y2y6VSVhd9z2da20xEuH/iL2YTmNXxw8pFDbyu5F4GCmvJEnTFZ0rdfGPfoJ37GOG82kkRO+DzNxVYoNaCHMRmp42TDY6ixY7a4MXVoVL7Ay5emSixAPDWRC22wAz4KGuNSFtYNJ8UTXGNxL+fLnccsOETj3hY4LJodLWJh67HtBrRFHWXq5chOePGZWrzIAqw5h1nltyTz1Cn3xRc+daiHvbsinR/7oT9fF8xim1upNMBPnJurD1XONFH4ERMWFcJOLZhWAaJzTf39MnOU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(346002)(396003)(366004)(31696002)(4326008)(31686004)(86362001)(52116002)(66946007)(83380400001)(110136005)(16576012)(316002)(7416002)(7406005)(5660300002)(8676002)(186003)(956004)(2906002)(16526019)(44832011)(53546011)(66556008)(66476007)(36756003)(8936002)(2616005)(478600001)(26005)(54906003)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K0lUeHRyME1uRDhKSEtaU1o0Ti9hYVN2aWV6Y2tJREtJREZ0VGQwUDZQRU9N?=
- =?utf-8?B?VUZDYWdzNWRrQlVNVU9zZUtsZUl2S1Fhci9tV2c3SE40Y0JqeTJNaUMrVmxk?=
- =?utf-8?B?czk1Z25YcURMRzljOStuSnB2YUYvSTJNYnhUcmljZjdlbHNaTEY3VndDOGJk?=
- =?utf-8?B?MlRmbGMxR3Q5eURYQm9GcUx3UzZmUTE2c2hzRkpJNklIQzFxUi9iZVQ4allE?=
- =?utf-8?B?bjFpaDBOa0ovV1NSTk9oWEt4NkZhcjI0djlOYmJsYmk2RmpRdnlja0VHMy84?=
- =?utf-8?B?ZGE2SWIrZFdRUFpFakVsSy9hTGU3ZGh3ZnpjTElTazZhVTBGazMxaUR0cnZi?=
- =?utf-8?B?WEZjWVozdzRLOUFhY3ZQa05mZ2thc3I2ZVc1dkhrd3ZjV2lVbHVaRElQUStR?=
- =?utf-8?B?MkQ0SFV5UEd0UU9OQTQyckhaNWREL0JMTzJUalBrSFRpOU80MU5pa1l1WUZH?=
- =?utf-8?B?cHNCTzRwYS8yOEVYc3pvQm1DRHM5UkxFQjA3emdrMjBLdllKaGVEdUdDNDdj?=
- =?utf-8?B?bXAyZ29NcTBpaGVBbFdnZ0s2bndwbFE1MWpwV3plU2E1aS82NElFSHltTHZw?=
- =?utf-8?B?a202S1ovU1JtUDhReHBnNlNNY0xMOGpmMEI5a2t0UE5adE1RVDExeGxNMkVj?=
- =?utf-8?B?QyswUFlXeUFkSFpNUWY3U2xma0I4RGtZTW1iNFdwTjVjVEJpQU5ZUCtsdU1F?=
- =?utf-8?B?bE1KQjVnZkJrWjNodEp4SDAxam1TbS9QL0xoeFRrQitSZ293cDJyTzNaYkNi?=
- =?utf-8?B?N1U4Y1pSZ2ZvNlUyUVJEbkxqczE3N2g5WDN2T3lMVDNFU2Ftd3M0NmJwRTYx?=
- =?utf-8?B?UngrT1lJMnpJYVo1eFE4YTcyZVZ2UHV0Tmh4bE1YOWNTdXNUN1BoaHVoRFpH?=
- =?utf-8?B?ZHhhd1ZHVk5PeGw0blFBSk9FZTRpa2xnMzB5N0VPbFhPNE16UmM3Q3N0U1Fy?=
- =?utf-8?B?OFltdzdEbktFT3NMYlF6TEJvbEo1R3NLR1NmUHFuTGZkY3l5bFBzb0x5MkM1?=
- =?utf-8?B?R2ZjWWFvaGNObEs4L002eEFMQTNldms3V25jamtwdmZpZUFCUzJ5MmQ3cFpk?=
- =?utf-8?B?TVZwdnRnSDVYUjVsNjJ1RWNSRlB3OHhua245Z1dvRHJEZ1Qzc2tlZjRubC9q?=
- =?utf-8?B?NTdlOGlZYy9Hb01BeHd3Rmh2QjJDbG4wZEVxTWdnZks3WFpQZEU0cGtMWkZo?=
- =?utf-8?B?cVJHMUpUaHF0dlpLOGEza2JBR1RCS0pOYlZBSTk3cVR3bk00bXBWL1JKSDg4?=
- =?utf-8?B?MkVmNTBhNG1qTGNhVk43Mm1hN1NjZG5Zd1JPOFBMMjdYcXZ2OWJWT2xuTCtk?=
- =?utf-8?B?aCs3djdsNFdkN1hDVXlCalRrWUpHRWFVdjlyeFlFUEVuUUZFTjZjT1Y1a0t0?=
- =?utf-8?B?K1JMWCtiYlphUHJwSGpXRGlsa2xDWVRuSSs2T1lwc1hUeU5HclV2TWFtK3hD?=
- =?utf-8?Q?1uOTAfSJ?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f92f2ee-cc16-4f28-7434-08d8c3f1d739
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 01:04:34.2034
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7Qk8MtHS0Cf4vAm8UVR/p6uQhp2T/GjKNTnLkS6JTT60oX9WOyxI0j2YscjCjIkvlX6zQTV5erkmSdAk6D/BKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2109
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- adultscore=0 mlxscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101290001
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9878 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101290002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 4:37 AM, Muchun Song wrote:
-> On Wed, Jan 27, 2021 at 6:36 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 26.01.21 16:56, David Hildenbrand wrote:
->>> On 26.01.21 16:34, Oscar Salvador wrote:
->>>> On Tue, Jan 26, 2021 at 04:10:53PM +0100, David Hildenbrand wrote:
->>>>> The real issue seems to be discarding the vmemmap on any memory that has
->>>>> movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, we
->>>>> can reuse parts of the thingy we're freeing for the vmemmap. Not that it
->>>>> would be ideal: that once-a-huge-page thing will never ever be a huge page
->>>>> again - but if it helps with OOM in corner cases, sure.
->>>>
->>>> Yes, that is one way, but I am not sure how hard would it be to implement.
->>>> Plus the fact that as you pointed out, once that memory is used for vmemmap
->>>> array, we cannot use it again.
->>>> Actually, we would fragment the memory eventually?
->>>>
->>>>> Possible simplification: don't perform the optimization for now with free
->>>>> huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: what
->>>>> happens when migrating a huge page from ZONE_NORMAL to (ZONE_MOVABLE|CMA)?
->>>>
->>>> But if we do not allow theose pages to be in ZONE_MOVABLE or CMA, there is no
->>>> point in migrate them, right?
->>>
->>> Well, memory unplug "could" still work and migrate them and
->>> alloc_contig_range() "could in the future" still want to migrate them
->>> (virtio-mem, gigantic pages, powernv memtrace). Especially, the latter
->>> two don't work with ZONE_MOVABLE/CMA. But, I mean, it would be fair
->>> enough to say "there are no guarantees for
->>> alloc_contig_range()/offline_pages() with ZONE_NORMAL, so we can break
->>> these use cases when a magic switch is flipped and make these pages
->>> non-migratable anymore".
->>>
->>> I assume compaction doesn't care about huge pages either way, not sure
->>> about numa balancing etc.
->>>
->>>
->>> However, note that there is a fundamental issue with any approach that
->>> allocates a significant amount of unmovable memory for user-space
->>> purposes (excluding CMA allocations for unmovable stuff, CMA is
->>> special): pairing it with ZONE_MOVABLE becomes very tricky as your user
->>> space might just end up eating all kernel memory, although the system
->>> still looks like there is plenty of free memory residing in
->>> ZONE_MOVABLE. I mentioned that in the context of secretmem in a reduced
->>> form as well.
->>>
->>> We theoretically have that issue with dynamic allocation of gigantic
->>> pages, but it's something a user explicitly/rarely triggers and it can
->>> be documented to cause problems well enough. We'll have the same issue
->>> with GUP+ZONE_MOVABLE that Pavel is fixing right now - but GUP is
->>> already known to be broken in various ways and that it has to be treated
->>> in a special way. I'd like to limit the nasty corner cases.
->>>
->>> Of course, we could have smart rules like "don't online memory to
->>> ZONE_MOVABLE automatically when the magic switch is active". That's just
->>> ugly, but could work.
->>>
->>
->> Extending on that, I just discovered that only x86-64, ppc64, and arm64
->> really support hugepage migration.
->>
->> Maybe one approach with the "magic switch" really would be to disable
->> hugepage migration completely in hugepage_migration_supported(), and
->> consequently making hugepage_movable_supported() always return false.
->>
->> Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
->> migrated. The problem I describe would apply (careful with using
->> ZONE_MOVABLE), but well, it can at least be documented.
+On 1/4/21 7:28 AM, Kishon Vijay Abraham I wrote:
+> Add specification for the *PCI NTB* function device. The endpoint function
+> driver and the host PCI driver should be created based on this
+> specification.
 > 
-> Thanks for your explanation.
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  Documentation/PCI/endpoint/index.rst          |   1 +
+>  .../PCI/endpoint/pci-ntb-function.rst         | 351 ++++++++++++++++++
+>  2 files changed, 352 insertions(+)
+>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
+
+
+> diff --git a/Documentation/PCI/endpoint/pci-ntb-function.rst b/Documentation/PCI/endpoint/pci-ntb-function.rst
+> new file mode 100644
+> index 000000000000..a57908be4047
+> --- /dev/null
+> +++ b/Documentation/PCI/endpoint/pci-ntb-function.rst
+> @@ -0,0 +1,351 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=================
+> +PCI NTB Function
+> +=================
+> +
+> +:Author: Kishon Vijay Abraham I <kishon@ti.com>
+> +
+> +PCI Non Transparent Bridges (NTB) allow two host systems to communicate
+
+preferably
+       Non-Transparent
+
+> +with each other by exposing each host as a device to the other host.
+> +NTBs typically support the ability to generate interrupts on the remote
+> +machine, expose memory ranges as BARs and perform DMA.  They also support
+> +scratchpads which are areas of memory within the NTB that are accessible
+> +from both machines.
+> +
+> +PCI NTB Function allows two different systems (or hosts) to communicate
+> +with each other by configurig the endpoint instances in such a way that
+> +transactions from one system is routed to the other system.
+> +
+> +In the below diagram, PCI NTB function configures the SoC with multiple
+> +PCIe Endpoint (EP) instances in such a way that transaction from one EP
+> +controller is routed to the other EP controller. Once PCI NTB function
+> +configures the SoC with multiple EP instances, HOST1 and HOST2 can
+> +communicate with each other using SoC as a bridge.
+> +
+> +.. code-block:: text
+> +
+> +    +-------------+                                   +-------------+
+> +    |             |                                   |             |
+> +    |    HOST1    |                                   |    HOST2    |
+> +    |             |                                   |             |
+> +    +------^------+                                   +------^------+
+> +           |                                                 |
+> +           |                                                 |
+> + +---------|-------------------------------------------------|---------+
+> + |  +------v------+                                   +------v------+  |
+> + |  |             |                                   |             |  |
+> + |  |     EP      |                                   |     EP      |  |
+> + |  | CONTROLLER1 |                                   | CONTROLLER2 |  |
+> + |  |             <----------------------------------->             |  |
+> + |  |             |                                   |             |  |
+> + |  |             |                                   |             |  |
+> + |  |             |  SoC With Multiple EP Instances   |             |  |
+> + |  |             |  (Configured using NTB Function)  |             |  |
+> + |  +-------------+                                   +-------------+  |
+> + +---------------------------------------------------------------------+
+> +
+> +Constructs used for Implementing NTB
+> +====================================
+> +
+> +	1) Config Region
+> +	2) Self Scratchpad Registers
+> +	3) Peer Scratchpad Registers
+> +	4) Doorbell Registers
+> +	5) Memory Window
+> +
+> +
+> +Config Region:
+> +--------------
+> +
+> +Config Region is a construct that is specific to NTB implemented using NTB
+> +Endpoint Function Driver. The host and endpoint side NTB function driver will
+> +exchange information with each other using this region. Config Region has
+> +Control/Status Registers for configuring the Endpoint Controller. Host can
+> +write into this region for configuring the outbound ATU and to indicate the
+
+what is ATU?
+
+> +link status. Endpoint can indicate the status of commands issued be host in
+
+                                                                    by  ??
+
+> +this region. Endpoint can also indicate the scratchpad offset, number of
+> +memory windows to the host using this region.
+> +
+> +The format of Config Region is given below. Each of the fields here are 32
+
+                                               Each                    is
+
+> +bits.
+> +
+> +.. code-block:: text
+> +
+> +	+------------------------+
+> +	|         COMMAND        |
+> +	+------------------------+
+> +	|         ARGUMENT       |
+> +	+------------------------+
+> +	|         STATUS         |
+> +	+------------------------+
+> +	|         TOPOLOGY       |
+> +	+------------------------+
+> +	|    ADDRESS (LOWER 32)  |
+> +	+------------------------+
+> +	|    ADDRESS (UPPER 32)  |
+> +	+------------------------+
+> +	|           SIZE         |
+> +	+------------------------+
+> +	|   NO OF MEMORY WINDOW  |
+> +	+------------------------+
+> +	|  MEMORY WINDOW1 OFFSET |
+> +	+------------------------+
+> +	|       SPAD OFFSET      |
+> +	+------------------------+
+> +	|        SPAD COUNT      |
+> +	+------------------------+
+> +	|      DB ENTRY SIZE     |
+> +	+------------------------+
+> +	|         DB DATA        |
+> +	+------------------------+
+> +	|            :           |
+> +	+------------------------+
+> +	|            :           |
+> +	+------------------------+
+> +	|         DB DATA        |
+> +	+------------------------+
+> +
+> +
+> +  COMMAND:
+> +
+> +	NTB function supports three commands:
+> +
+> +	  CMD_CONFIGURE_DOORBELL (0x1): Command to configure doorbell. Before
+> +	invoking this command, the host should allocate and initialize
+> +	MSI/MSI-X vectors (i.e initialize the MSI/MSI-X capability in the
+
+	                   i.e.
+
+> +	Endpoint). The endpoint on receiving this command will configure
+> +	the outbound ATU such that transaction to DB BAR will be routed
+> +	to the MSI/MSI-X address programmed by the host. The ARGUMENT
+> +	register should be populated with number of DBs to configure (in the
+> +	lower 16 bits) and if MSI or MSI-X should be configured (BIT 16).
+> +	(TODO: Add support for MSI-X).
+> +
+> +	  CMD_CONFIGURE_MW (0x2): Command to configure memory window. The
+> +	host invokes this command after allocating a buffer that can be
+> +	accessed by remote host. The allocated address should be programmed
+> +	in the ADDRESS register (64 bit), the size should be programmed in
+> +	the SIZE register and the memory window index should be programmed
+> +	in the ARGUMENT register. The endpoint on receiving this command
+> +	will configure the outbound ATU such that trasaction to MW BAR
+
+	                                          transaction
+
+> +	will be routed to the address provided by the host.
+> +
+> +	  CMD_LINK_UP (0x3): Command to indicate an NTB application is
+> +	bound to the EP device on the host side. Once the endpoint
+> +	receives this command from both the hosts, the endpoint will
+> +	raise an LINK_UP event to both the hosts to indicate the hosts
+> +	can start communicating with each other.
+> +
+> +  ARGUMENT:
+> +
+> +	The value of this register is based on the commands issued in
+> +	command register. See COMMAND section for more information.
+> +
+> +  TOPOLOGY:
+> +
+> +	Set to NTB_TOPO_B2B_USD for Primary interface
+> +	Set to NTB_TOPO_B2B_DSD for Secondary interface
+> +
+> +  ADDRESS/SIZE:
+> +
+> +	Address and Size to be used while configuring the memory window.
+> +	See "CMD_CONFIGURE_MW" for more info.
+> +
+> +  MEMORY WINDOW1 OFFSET:
+> +
+> +	Memory Window 1 and Doorbell registers are packed together in the
+> +	same BAR. The initial portion of the region will have doorbell
+> +	registers and the latter portion of the region is for memory window 1.
+> +	This register will specify the offset of the memory window 1.
+> +
+> +  NO OF MEMORY WINDOW:
+> +
+> +	Specifies the number of memory windows supported by the NTB device.
+> +
+> +  SPAD OFFSET:
+> +
+> +	Self scratchpad region and config region are packed together in the
+> +	same BAR. The initial portion of the region will have config region
+> +	and the latter portion of the region is for self scratchpad. This
+> +	register will specify the offset of the self scratchpad registers.
+> +
+> +  SPAD COUNT:
+> +
+> +	Specifies the number of scratchpad registers supported by the NTB
+> +	device.
+> +
+> +  DB ENTRY SIZE:
+> +
+> +	Used to determine the offset within the DB BAR that should be written
+> +	in order to raise doorbell. EPF NTB can use either MSI/MSI-X to
+> +	ring doorbell (MSI-X support will be added later). MSI uses same
+> +	address for all the interrupts and MSI-X can provide different
+> +	addresses for different interrupts. The MSI/MSI-X address is provided
+> +	by the host and the address it gives is based on the MSI/MSI-X
+> +	implementation supported by the host. For instance, ARM platform
+> +	using GIC ITS will have same MSI-X address for all the interrupts.
+> +	In order to support all the combinations and use the same mechanism
+> +	for both MSI and MSI-X, EPF NTB allocates separate region in the
+> +	Outbound Address Space for each of the interrupts. This region will
+> +	be mapped to the MSI/MSI-X address provided by the host. If a host
+> +	provides the same address for all the interrupts, all the regions
+> +	will be translated to the same address. If a host provides different
+> +	address, the regions will be translated to different address. This
+> +	will ensure there is no difference while raising the doorbell.
+> +
+> +  DB DATA:
+> +
+> +	EPF NTB supports 32 interrupts. So there are 32 DB DATA registers.
+> +	This holds the MSI/MSI-X data that has to be written to MSI address
+> +	for raising doorbell interrupt. This will be populated by EPF NTB
+> +	while invoking CMD_CONFIGURE_DOORBELL.
+> +
+> +Scratchpad Registers:
+> +---------------------
+> +
+> +  Each host has it's own register space allocated in the memory of NTB EPC.
+
+                   its
+[it's means "it is"]
+
+> +  They are both readable and writable from both sides of the bridge. They
+> +  are used by applications built over NTB and can be used to pass control
+> +  and status information between both sides of a device.
+> +
+> +  Scratchpad registers has 2 parts
+> +	1) Self Scratchpad: Host's own register space
+> +	2) Peer Scratchpad: Remote host's register space.
+> +
+> +Doorbell Registers:
+> +-------------------
+> +
+> +  Registers using which one host can interrupt the other host.
+
+eh?  ENOPARSE.
+
+> +
+> +Memory Window:
+> +--------------
+> +
+> +  Actual transfer of data between the two hosts will happen using the
+> +  memory window.
+> +
+> +Modeling Constructs:
+> +====================
+> +
+> +There are 5 or more distinct regions (config, self scratchpad, peer
+> +scratchpad, doorbell, one or more memory windows) to be modeled to achieve
+> +NTB functionality. Atleast one memory window is required while more than
+
+                      At least
+
+> +one is permitted. All these regions should be mapped to BAR for hosts to
+> +access these regions.
+> +
+> +If one 32-bit BAR is allocated for each of these regions, the scheme would
+> +look like
+> +
+> +======  ===============
+> +BAR NO  CONSTRUCTS USED
+> +======  ===============
+> +BAR0    Config Region
+> +BAR1    Self Scratchpad
+> +BAR2    Peer Scratchpad
+> +BAR3    Doorbell
+> +BAR4    Memory Window 1
+> +BAR5    Memory Window 2
+> +======  ===============
+> +
+> +However if we allocate a separate BAR for each of the region, there would not
+
+                                                         regions,
+
+> +be enough BARs for all the regions in a platform that supports only 64-bit
+> +BAR.
+> +
+> +In order to be supported by most of the platforms, the regions should be
+> +packed and mapped to BARs in a way that provides NTB functionality and
+> +also making sure the hosts doesn't access any region that it is not supposed
+> +to.
+> +
+> +The following scheme is used in EPF NTB Function
+> +
+> +======  ===============================
+> +BAR NO  CONSTRUCTS USED
+> +======  ===============================
+> +BAR0    Config Region + Self Scratchpad
+> +BAR1    Peer Scratchpad
+> +BAR2    Doorbell + Memory Window 1
+> +BAR3    Memory Window 2
+> +BAR4    Memory Window 3
+> +BAR5    Memory Window 4
+> +======  ===============================
+> +
+> +With this scheme, for the basic NTB functionality 3 BARs should be sufficient.
+> +
+> +Modeling Config/Scratchpad Region:
+> +----------------------------------
+> +
+> +.. code-block:: text
+> +
+> + +-----------------+------->+------------------+        +-----------------+
+> + |       BAR0      |        |  CONFIG REGION   |        |       BAR0      |
+> + +-----------------+----+   +------------------+<-------+-----------------+
+> + |       BAR1      |    |   |SCRATCHPAD REGION |        |       BAR1      |
+> + +-----------------+    +-->+------------------+<-------+-----------------+
+> + |       BAR2      |            Local Memory            |       BAR2      |
+> + +-----------------+                                    +-----------------+
+> + |       BAR3      |                                    |       BAR3      |
+> + +-----------------+                                    +-----------------+
+> + |       BAR4      |                                    |       BAR4      |
+> + +-----------------+                                    +-----------------+
+> + |       BAR5      |                                    |       BAR5      |
+> + +-----------------+                                    +-----------------+
+> +   EP CONTROLLER 1                                        EP CONTROLLER 2
+> +
+> +Above diagram shows Config region + Scratchpad region for HOST1 (connected to
+> +EP controller 1) allocated in local memory. The HOST1 can access the config
+> +region and scratchpad region (self scratchpad) using BAR0 of EP controller 1.
+> +The peer host (HOST2 connected to EP controller 2) can also access this
+> +scratchpad region (peer scratchpad) using BAR1 of EP controller 2. This
+> +diagram shows the case where Config region and Scratchpad region is allocated
+> +for HOST1, however the same is applicable for HOST2.
+> +
+> +Modeling Doorbell/Memory Window 1:
+> +----------------------------------
+> +
+> +.. code-block:: text
+> +
+> + +-----------------+    +----->+----------------+-----------+-----------------+
+> + |       BAR0      |    |      |   Doorbell 1   +-----------> MSI-X ADDRESS 1 |
+> + +-----------------+    |      +----------------+           +-----------------+
+> + |       BAR1      |    |      |   Doorbell 2   +---------+ |                 |
+> + +-----------------+----+      +----------------+         | |                 |
+> + |       BAR2      |           |   Doorbell 3   +-------+ | +-----------------+
+> + +-----------------+----+      +----------------+       | +-> MSI-X ADDRESS 2 |
+> + |       BAR3      |    |      |   Doorbell 4   +-----+ |   +-----------------+
+> + +-----------------+    |      |----------------+     | |   |                 |
+> + |       BAR4      |    |      |                |     | |   +-----------------+
+> + +-----------------+    |      |      MW1       +---+ | +-->+ MSI-X ADDRESS 3||
+> + |       BAR5      |    |      |                |   | |     +-----------------+
+> + +-----------------+    +----->-----------------+   | |     |                 |
+> +   EP CONTROLLER 1             |                |   | |     +-----------------+
+> +                               |                |   | +---->+ MSI-X ADDRESS 4 |
+> +                               +----------------+   |       +-----------------+
+> +                                EP CONTROLLER 2     |       |                 |
+> +                                  (OB SPACE)        |       |                 |
+> +                                                    +------->      MW1        |
+> +                                                            |                 |
+> +                                                            |                 |
+> +                                                            +-----------------+
+> +                                                            |                 |
+> +                                                            |                 |
+> +                                                            |                 |
+> +                                                            |                 |
+> +                                                            |                 |
+> +                                                            +-----------------+
+> +                                                             PCI Address Space
+> +                                                             (Managed by HOST2)
+> +
+> +Above diagram shows how the doorbell and memory window 1 is mapped so that
+> +HOST1 can raise doorbell interrupt on HOST2 and also how HOST1 can access
+> +buffers exposed by HOST2 using memory window1 (MW1). Here doorbell and
+> +memory window 1 regions are allocated in EP controller 2 outbound (OB) address
+> +space. Allocating and configuring BARs for doorbell and memory window1
+> +is done during the initialization phase of NTB endpoint function driver.
+> +Mapping from EP controller 2 OB space to PCI address space is done when HOST2
+> +sends CMD_CONFIGURE_MW/CMD_CONFIGURE_DOORBELL. The commands are explained
+> +below.
+
+below??
+
+> +
+> +Modeling Optional Memory Windows:
+> +---------------------------------
+> +
+> +This is modeled the same was as MW1 but each of the additional memory windows
+> +is mapped to separate BARs.
 > 
-> All thinking seems to be introduced by encountering OOM. :-(
 
-Yes.  Or, I think about it as the problem of not being able to dissolve (free
-to buddy) a hugetlb page.  We can not dissolve because we can not allocate
-vmemmap for all sumpages.
+Is all of this register/memory space mapping defined in some PCI NTB spec
+or is this specific to some hardware/SoC implementation?
 
-> In order to move forward and free the hugepage. We should add some
-> restrictions below.
-> 
-> 1. Only free the hugepage which is allocated from the ZONE_NORMAL.
-Corrected: Only vmemmap optimize hugepages in ZONE_NORMAL
 
-> 2. Disable hugepage migration when this feature is enabled.
-
-I am not sure if we want to fully disable migration.  I may be misunderstanding
-but the thought was to prevent migration between some movability types.  It
-seems we should be able to migrate form ZONE_NORMAL to ZONE_NORMAL.
-
-Also, if we do allow huge pages without vmemmap optimization in MOVABLE or CMA
-then we should allow those to be migrated to NORMAL?  Or is there a reason why
-we should prevent that.
-
-> 3. Using GFP_ATOMIC to allocate vmemmap pages firstly (it can reduce
->    memory fragmentation), if it fails, we use part of the hugepage to
->    remap.
-
-I honestly am not sure about this.  This would only happen for pages in
-NORMAL.  The only time using part of the huge page for vmemmap would help is
-if we are trying to dissolve huge pages to free up memory for other uses.
-
-> What's your opinion about this? Should we take this approach?
-
-I think trying to solve all the issues that could happen as the result of
-not being able to dissolve a hugetlb page has made this extremely complex.
-I know this is something we need to address/solve.  We do not want to add
-more unexpected behavior in corner cases.  However, I can not help but think
-about similar issues today.  For example, if a huge page is in use in
-ZONE_MOVABLE or CMA there is no guarantee that it can be migrated today.
-Correct?  We may need to allocate another huge page for the target of the
-migration, and there is no guarantee we can do that.
+HTH.
 -- 
-Mike Kravetz
+~Randy
+
