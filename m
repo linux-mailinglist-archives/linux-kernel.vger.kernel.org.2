@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAA23083D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83055308394
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhA2C0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 21:26:46 -0500
-Received: from m12-16.163.com ([220.181.12.16]:58142 "EHLO m12-16.163.com"
+        id S231392AbhA2CKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 21:10:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231825AbhA2C0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:26:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=PfWR0lIbnb1uWIHhio
-        b/OGvKqCdkW9xMvg+9yLrowjI=; b=MNcj5tB4+52r0vezc7w1el94NGZF/YCLp9
-        P7CnPPqbYlb4Y9j6YcYBPiblefCDiewfQnvTHf8HsEtaQnIybauggmbcPRy/OGnF
-        raNNw0tagCrH2cwE6ldu427TEDHv9OtHPJ1qG5U/ZS/F7vlysHTg3VkkRhprCq/V
-        N427ix+pk=
-Received: from zhongjupeng.ccdomain.com (unknown [119.137.52.46])
-        by smtp12 (Coremail) with SMTP id EMCowACXs08VbhNgqt2vZQ--.51471S2;
-        Fri, 29 Jan 2021 10:08:22 +0800 (CST)
-From:   zjp734690220@163.com
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhongjupeng <zhongjupeng@yulong.com>
-Subject: [PATCH] bluetooth: fix memory leak in btusb_mtk_wmt_recv
-Date:   Fri, 29 Jan 2021 10:08:27 +0800
-Message-Id: <20210129020827.27784-1-zjp734690220@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EMCowACXs08VbhNgqt2vZQ--.51471S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF1DCF1xArWUWw43ZrW3GFg_yoW3Arb_u3
-        WI9r13XrWUGw1xtF1UWrWa9rWFkr98WFn7Ar1ft34rZr9Igr4UCayqvFykWan3Ww1Fgrn7
-        Za9rWFZ3Ar1IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0h0eJUUUUU==
-X-Originating-IP: [119.137.52.46]
-X-CM-SenderInfo: 52msljauwzijisq6il2tof0z/xtbCCxYpFF3Le+UVLAAAsR
+        id S229828AbhA2CKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 21:10:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 94F7764D99;
+        Fri, 29 Jan 2021 02:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611886211;
+        bh=RdENYdY4gj6wWwcaWo8+tbsc4H/ztPUCWEomHGAfofI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=U4E7warIHq20ogYmAVgcA9mlREq746dtOcG179n4jJ1jA83uE6sZNpSUZgKpG+b+x
+         715RqmhkToUVTTfE4nl3b0ScGdBujsLErRa5rThKhZ3oUvygoPeh4j4P17Dz5PXXr+
+         hzbT+Bo53I/bxYThgpO8P4ey4Q6dFijwBBBiXntFLadwS8up+nj6PIWO71QOZJNXyk
+         RdzcVCVZP2ebNuMXLUE8aK+zBYTLMs3wMmM0uXdQWwTFTPATHBZm2TwZy7A4QQeVty
+         C6bepaHJYCYGu8aHWp/jbzC1Aier/v4/0y5ZncxOYopsjil2KIy53ieAAZbDWnztRB
+         4bTgjhGLwLDEA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8438B65324;
+        Fri, 29 Jan 2021 02:10:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ipvlan: remove h from printk format specifier
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161188621153.7700.11671679352103424363.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Jan 2021 02:10:11 +0000
+References: <20210124190804.1964580-1-trix@redhat.com>
+In-Reply-To: <20210124190804.1964580-1-trix@redhat.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, maheshb@google.com,
+        edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhongjupeng <zhongjupeng@yulong.com>
+Hello:
 
-In btusb_mtk_wmt_recv if skb_clone fails, the alocated skb should be
-released.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Signed-off-by: zhongjupeng <zhongjupeng@yulong.com>
----
- drivers/bluetooth/btusb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Sun, 24 Jan 2021 11:08:04 -0800 you wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> This change fixes the checkpatch warning described in this commit
+> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
+>   unnecessary %h[xudi] and %hh[xudi]")
+> 
+> Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi].
+> 
+> [...]
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index ffec6bc..cf21bba 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3217,8 +3217,10 @@ static void btusb_mtk_wmt_recv(struct urb *urb)
- 		 */
- 		if (test_bit(BTUSB_TX_WAIT_VND_EVT, &data->flags)) {
- 			data->evt_skb = skb_clone(skb, GFP_ATOMIC);
--			if (!data->evt_skb)
-+			if (!data->evt_skb) {
-+				kfree_skb(skb);
- 				goto err_out;
-+			}
- 		}
- 
- 		err = hci_recv_frame(hdev, skb);
--- 
-1.9.1
+Here is the summary with links:
+  - ipvlan: remove h from printk format specifier
+    https://git.kernel.org/netdev/net-next/c/d7a177ea8fe6
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
