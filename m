@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3866830F9A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CE630FA28
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Feb 2021 18:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238552AbhBDR2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 12:28:47 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:58248 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238556AbhBDR2d (ORCPT
+        id S238746AbhBDRsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 12:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238441AbhBDRYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:28:33 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l7iQ1-00032K-10; Thu, 04 Feb 2021 17:27:49 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: lg-g15: make a const array static, makes object smaller
-Date:   Thu,  4 Feb 2021 17:27:48 +0000
-Message-Id: <20210204172748.107406-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 4 Feb 2021 12:24:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17F7C061788;
+        Thu,  4 Feb 2021 09:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=G0ZiICELnT572thIosI7PE9Z9AIMFdeffhjU4wBEDBY=; b=gJyvre1gVVhhTmYNgtikqMop7M
+        +b2jf1Lqy6+f5iFyWm7l6rq28y5FooyO291w45noJ4N/I2JqGkiSl4DL8uSMoWozMt81NG0tkqFAu
+        Ex1OW8Zx9HVrFP/xDhT0vHQeEpPVtkyH9cJrmbrPykSiHuYF5aqej0+wK8GUkynfOgPicSMhAzSAJ
+        4U8uaTq+D4336lyNp1b8qjXB7fLSSe4kkUDuPp0pQzCZWxGnXF5DeVxuy9WsogXMX+gpQuYQkZWr+
+        NXNVVXB4vcdlj75jnPvQxQZbURI3wRqjqAqCTZ3H9elPwyZwrwExoN6pa4krPlcSv7j94lbYWvqcI
+        KYTHDS8w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7iLz-0001q3-8h; Thu, 04 Feb 2021 17:23:39 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BC5D1981210; Fri, 29 Jan 2021 20:30:40 +0100 (CET)
+Date:   Fri, 29 Jan 2021 20:30:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/4] perf/core: Add support to exclude kernel mode
+ instruction tracing
+Message-ID: <20210129193040.GJ8912@worktop.programming.kicks-ass.net>
+References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
+ <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Jan 30, 2021 at 12:35:10AM +0530, Sai Prakash Ranjan wrote:
 
-Don't populate the const array led_names on the stack but instead make
-it static. Makes the object code smaller by 79 bytes:
+> Here the idea is to protect such important information from all users
+> including root users since root privileges does not have to mean full
+> control over the kernel [1] and root compromise does not have to be
+> the end of the world.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  19686	   7952	    256	  27894	   6cf6	drivers/hid/hid-lg-g15.o
+And yet, your thing lacks:
 
-After:
-   text	   data	    bss	    dec	    hex	filename
-  19543	   8016	    256	  27815	   6ca7	drivers/hid/hid-lg-g15.o
+> +config EXCLUDE_KERNEL_HW_ITRACE
+> +	bool "Exclude kernel mode hardware assisted instruction tracing"
+> +	depends on PERF_EVENTS
+	depends on SECURITY_LOCKDOWN
 
-(gcc version 10.2.0)
+or whatever the appropriate symbol is.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/hid/hid-lg-g15.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	help
+> +	  Exclude kernel mode instruction tracing by hardware tracing
+> +	  family such as ARM Coresight ETM, Intel PT and so on.
+> +
+> +	  This option allows to disable kernel mode instruction tracing
+> +	  offered by hardware assisted tracing for all users(including root)
+> +	  especially for production systems where only userspace tracing might
+> +	  be preferred for security reasons.
 
-diff --git a/drivers/hid/hid-lg-g15.c b/drivers/hid/hid-lg-g15.c
-index fcaf8466e627..bfbba0d41933 100644
---- a/drivers/hid/hid-lg-g15.c
-+++ b/drivers/hid/hid-lg-g15.c
-@@ -647,7 +647,7 @@ static void lg_g15_input_close(struct input_dev *dev)
- 
- static int lg_g15_register_led(struct lg_g15_data *g15, int i)
- {
--	const char * const led_names[] = {
-+	static const char * const led_names[] = {
- 		"g15::kbd_backlight",
- 		"g15::lcd_backlight",
- 		"g15::macro_preset1",
--- 
-2.29.2
-
+Also, colour me unconvinced, pretty much all kernel level PMU usage
+can be employed to side-channel / infer crypto keys, why focus on
+ITRACE over others?
