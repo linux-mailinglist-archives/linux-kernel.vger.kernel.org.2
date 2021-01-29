@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68F63085A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8043085A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhA2GSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:18:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbhA2GRq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:17:46 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23CCC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:16:57 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id u15so4698056plf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:16:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IVLhRnuvVbWMIlCeZcR36K8LU3Zj15Td3oSsxTVm3dw=;
-        b=Si4B7X6KLGW5Z89xZzVDHl7Skoe89UmiKGduLwtiFh0G2ErduZLcoyhzxfb8G5ThI4
-         syF50PNuDAMILs8Gbg3zVHAZgxzjYwu3Uw/rNASkDR2t4GqLp1BCz97iLqdk77dYA4c3
-         2CkKQdm+NEK6TlvP3w9vWyB3cGnovx1bDqRVEFI1RGuFthcCxJwnq2yoH7dGXiwhK+NG
-         r0P2bc3WoSPjpzim4kOkGEgTHCPAxXV8ZbURzJNwTJ2lhdkX9bfbopWe/xjDpIAL3prB
-         c/pTLgzzEXjCsYV5TlheMKOfuCAisunpmi0HckFP+fJtJ5ubMdQc7AsA3gMnJSt8Jmkw
-         oBPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IVLhRnuvVbWMIlCeZcR36K8LU3Zj15Td3oSsxTVm3dw=;
-        b=Vv54f5aBEHhZOVdlb/4MOr1uCpA8FRTgkVGhTdxbSbabzSOoULsWTeu1I1LBaXorjG
-         BA+Sg1ua4R313SY8z1eglh++/SKX03fb22CSX8Ohg4D8FpEPIwTLgSygeDXNcZIzWobL
-         nWn1sH+UhkAdBGSTz+5I/IzfFEZpzG20xujX8UcL5FjEKeUMkpswzCfwnAG8VlzJGb/u
-         aXa0xXPrmrKYnoIE2w0rl6IEjrNpK2qomv4ZihBUge4Jo7dNNbHWEtSk1Z+ztKnGxWMI
-         pFb2RsbhedA40lpzhOlv1I3gV92T4ebW2qTUgdFwXgNUszX74ZnSRNoDy4ypzUeGfbSI
-         mDHw==
-X-Gm-Message-State: AOAM531Escg+nbT4QXYeXIkJlGK8EbmLrSxSOEESidBKO/AJu0ZFr1uf
-        9ljzJX4koIaQ3KVzdZ+Hq88+sWFFT8xpqlp0wchJcw==
-X-Google-Smtp-Source: ABdhPJzlRocofXXUHhMpeg+wl6mPPzL5KoQPKYz1IbQOQ5+sTLmTyjhkh9y85ZPhI/SVxjYO862v/1WfnMigBDp1NyQ=
-X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
- bj3-20020a1709028503b02900dc044f62d8mr2746955plb.34.1611901017151; Thu, 28
- Jan 2021 22:16:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com> <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com> <20210126145819.GB16870@linux>
- <259b9669-0515-01a2-d714-617011f87194@redhat.com> <20210126153448.GA17455@linux>
- <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com> <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
- <20210128222906.GA3826@localhost.localdomain>
-In-Reply-To: <20210128222906.GA3826@localhost.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 29 Jan 2021 14:16:19 +0800
-Message-ID: <CAMZfGtW7Bc-QhjW7MJyVwYXPEihbKyAE20NLgs3mVmgALh_X2A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
- vmemmap pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+        id S232075AbhA2GTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:19:36 -0500
+Received: from mga11.intel.com ([192.55.52.93]:29718 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231939AbhA2GTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:19:31 -0500
+IronPort-SDR: DT43D9rssgf04TyoFu5YOD7RxMfjAgnbJbPnQmp45q+g4VxqrazauzfBScsZeV0uY+CKRVHWUf
+ I8WPrrXx8Evg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="176866991"
+X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
+   d="scan'208";a="176866991"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 22:18:44 -0800
+IronPort-SDR: VFaM2B8K9x3usyhBeO6wtZO7zzpw8hTROdsgwpXHeg6eFNTXSYUbjeq56/Rkg8t34iZ9Do6oy+
+ Z+yaB/UyAsqA==
+X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
+   d="scan'208";a="389171781"
+Received: from chengpol-mobl1.ccr.corp.intel.com ([10.249.170.29])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 22:18:42 -0800
+Message-ID: <b472e686163f21624d6bafd3db0807f7ef0f8ff0.camel@intel.com>
+Subject: Re: [PATCH -next] acpi: fpdt: drop errant comma in pr_info()
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Joe Perches <joe@perches.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
+Date:   Fri, 29 Jan 2021 14:18:39 +0800
+In-Reply-To: <955a079a3d15228ce9aeba8720dccae2dc7dfb7c.camel@perches.com>
+References: <20210128232528.21117-1-rdunlap@infradead.org>
+         <955a079a3d15228ce9aeba8720dccae2dc7dfb7c.camel@perches.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:29 AM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Wed, Jan 27, 2021 at 11:36:15AM +0100, David Hildenbrand wrote:
-> > Extending on that, I just discovered that only x86-64, ppc64, and arm64
-> > really support hugepage migration.
-> >
-> > Maybe one approach with the "magic switch" really would be to disable
-> > hugepage migration completely in hugepage_migration_supported(), and
-> > consequently making hugepage_movable_supported() always return false.
->
-> Ok, so migration would not fork for these pages, and since them would
-> lay in !ZONE_MOVABLE there is no guarantee we can unplug the memory.
-> Well, we really cannot unplug it unless the hugepage is not used
-> (it can be dissolved at least).
->
-> Now to the allocation-when-freeing.
-> Current implementation uses GFP_ATOMIC(or wants to use) + forever loop.
-> One of the problems I see with GFP_ATOMIC is that gives you access
-> to memory reserves, but there are more users using those reserves.
-> Then, worst-scenario case we need to allocate 16MB order-0 pages
-> to free up 1GB hugepage, so the question would be whether reserves
-> really scale to 16MB + more users accessing reserves.
->
-> As I said, if anything I would go for an optimistic allocation-try
-> , if we fail just refuse to shrink the pool.
-> User can always try to shrink it later again via /sys interface.
+On Thu, 2021-01-28 at 15:56 -0800, Joe Perches wrote:
+> On Thu, 2021-01-28 at 15:25 -0800, Randy Dunlap wrote:
+> > Drop a mistaken comma in the pr_info() args to prevent the
+> > build warning.
+> > 
+> > ../drivers/acpi/acpi_fpdt.c: In function 'acpi_init_fpdt':
+> > ../include/linux/kern_levels.h:5:18: warning: too many arguments
+> > for format [-Wformat-extra-args]
+> > ../drivers/acpi/acpi_fpdt.c:255:4: note: in expansion of macro
+> > 'pr_info'
+> >     pr_info(FW_BUG, "Invalid subtable type %d found.\n",
+> 
+> []
+> > --- linux-next-20210128.orig/drivers/acpi/acpi_fpdt.c
+> > +++ linux-next-20210128/drivers/acpi/acpi_fpdt.c
+> > @@ -252,7 +252,7 @@ void acpi_init_fpdt(void)
+> >  					      subtable->type);
+> >  			break;
+> >  		default:
+> > -			pr_info(FW_BUG, "Invalid subtable type %d
+> > found.\n",
+> > +			pr_info(FW_BUG "Invalid subtable type %d
+> > found.\n",
+> >  			       subtable->type);
+> 
+> Another question would be why is the pr_info when all the other
+> FW_BUG uses in this file are pr_err
+> 
+Here, this FW_BUG just means an unrecognized subtable is found, and it
+should not affect the other subtables that are already supported by
+this driver. So that's why we didn't use pr_err.
+In fact, I've just posted a V2 patch, 
+https://patchwork.kernel.org/project/linux-acpi/patch/20210129061548.13448-1-rui.zhang@intel.com/
+and I prefer to continue processing even if this FW_BUG is detected.
 
-Yeah. It seems that this is the easy way to move on.
+> One would think it's at least a defect of some time.
+> I would think it should at least be pr_notice or pr_warn
 
-Thanks.
+I'm also okay with pr_notice/pr_warn here.
+This FW_BUG should be really rare.
 
->
-> Since hugepages would not be longer in ZONE_MOVABLE/CMA and are not
-> expected to be migratable, is that ok?
->
-> Using the hugepage for the vmemmap array was brought up several times,
-> but that would imply fragmenting memory over time.
->
-> All in all seems to be overly complicated (I might be wrong).
->
->
-> > Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
-> > migrated. The problem I describe would apply (careful with using
-> > ZONE_MOVABLE), but well, it can at least be documented.
->
-> I am not a page allocator expert but cannot the allocation fallback
-> to ZONE_MOVABLE under memory shortage on other zones?
->
->
-> --
-> Oscar Salvador
-> SUSE L3
+thanks,
+rui
+> 
+> Documentation/admin-guide/kernel
+> -parameters.txt-                        1
+> (KERN_ALERT)          action must be taken immediately
+> Documentation/admin-guide/kernel
+> -parameters.txt-                        2
+> (KERN_CRIT)           critical conditions
+> Documentation/admin-guide/kernel
+> -parameters.txt-                        3 (KERN_ERR)            error
+> conditions
+> Documentation/admin-guide/kernel
+> -parameters.txt-                        4
+> (KERN_WARNING)        warning conditions
+> Documentation/admin-guide/kernel
+> -parameters.txt-                        5
+> (KERN_NOTICE)         normal but significant condition
+> Documentation/admin-guide/kernel-
+> parameters.txt:                        6
+> (KERN_INFO)           informational
+> Documentation/admin-guide/kernel
+> -parameters.txt-                        7
+> (KERN_DEBUG)          debug-level messages
+> 
+> 
+
