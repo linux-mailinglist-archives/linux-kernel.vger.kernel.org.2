@@ -2,118 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57328308D69
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1586D308D82
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhA2T2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:28:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbhA2T15 (ORCPT
+        id S232969AbhA2TiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:38:13 -0500
+Received: from bgl-iport-4.cisco.com ([72.163.197.28]:7400 "EHLO
+        bgl-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232752AbhA2TiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:27:57 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48FCC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:27:16 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id ew18so5004876qvb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:27:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W2ghzd/CLjNAIxuHclEmxfn8E0lo4q/ihR7kL0nL0Qo=;
-        b=dx4px5JIWtlW+hXmDMfsh0lbw2eBI/HqPO96aQv/XbR7nIF2lDFu+76hEaEoSF8kEq
-         VBfB9ud9n6WozMQMD7kajGwHWGWTiLfmBSAfGs73f3Dj+32DfTUxwO5PEz/2rr/LShhB
-         g6J2ynSIT9QelMj4qT7P/Qt3ghjyircEwYkY0GnSrWVPmKAaBR50atAEjtECMw2Htut+
-         EIPV5t1U/O5B5n8amw+LRIQiXOqFaca051F7+F/Pg643XJt3FDDMPH6TLAbc85n2Zgfx
-         g6ox9l9OkZxhi49dsVUWgIqpVM9PhWTbksGCVNqFLzxj2XpuzPC25S+cZwkv5rCuomIT
-         UwMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W2ghzd/CLjNAIxuHclEmxfn8E0lo4q/ihR7kL0nL0Qo=;
-        b=MSd+BPFO8D0qnMQOwtmHQ/mqM4D6DCofZkC73Hj8cmcovhNavTZKliWah6CkBenVDE
-         3fo5Z7q6w2QXPeE9CHynv4digUL+JkEYxlf6m4S1kzlkwzUOA8wzQ8b4aPbml6bd+gZS
-         eaFJC/X0NkwP6smi7mPAxeVydK7P3C0l7duPHHR1Ph8C59/oEwttRzazlMOp2vtoD6vY
-         pI2Llcfwr9wdLilD/DvjHXhXv1yfR85nL39lbvvrS22c5fJ/sjTbgQir7PdspMdRIqdO
-         r+qDlRw7WlH7NklV+2t0NUFw385qxRt5CgOgbww+MhsOruH4SLtnRv8pnuItunoZZMyB
-         9LrQ==
-X-Gm-Message-State: AOAM531UgomvoSt/OC7GeINVrg1d900gz+ghGgE/mRerIgw5ODG4Jayn
-        GTCUKj1r8TUBS9+odp6GwC/Ecg==
-X-Google-Smtp-Source: ABdhPJy1FKErBXTLTJSPKr6EhyRWTnTFZJmnrgy0+6EE386XpEm0z8xqzmrUpr/E7WVv1dEVmDQbnQ==
-X-Received: by 2002:a0c:f481:: with SMTP id i1mr5384974qvm.50.1611948435943;
-        Fri, 29 Jan 2021 11:27:15 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:f735])
-        by smtp.gmail.com with ESMTPSA id s129sm2687878qkh.37.2021.01.29.11.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 11:27:15 -0800 (PST)
-Date:   Fri, 29 Jan 2021 14:27:13 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Saravanan D <saravanand@fb.com>
-Cc:     x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, songliubraving@fb.com, tj@kernel.org
-Subject: Re: [PATCH V6] x86/mm: Tracking linear mapping split events
-Message-ID: <YBRhkSIuNvkrZo5o@cmpxchg.org>
-References: <20210128212048.oopcyfdf4j2lc663@devvm1945.atn0.facebook.com>
- <20210128233430.1460964-1-saravanand@fb.com>
+        Fri, 29 Jan 2021 14:38:11 -0500
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Jan 2021 14:38:09 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1031; q=dns/txt; s=iport;
+  t=1611949089; x=1613158689;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SjQny2U0SmNslQRFB24Sf6IeYW9zw4iqoArd6ysixCo=;
+  b=ZJ+9QKqQahydzqzdN07ivYBjfqRA+c4VTerNNYd6XQOGw0S/1zeDKLIE
+   ptVLTfGx6YE+eLrjcfD15qopbh+1u6qM1EO0A98wBpK/w8TvCL5jXMVQc
+   WA8V4T1ddLZa28HvYOFa9CXAmFO6tUB5zmivowqz0waCJCw79COYCdA8s
+   A=;
+X-IronPort-AV: E=Sophos;i="5.79,386,1602547200"; 
+   d="scan'208";a="175655159"
+Received: from vla196-nat.cisco.com (HELO bgl-core-2.cisco.com) ([72.163.197.24])
+  by bgl-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 29 Jan 2021 19:28:10 +0000
+Received: from bgl-ads-1848.cisco.com (bgl-ads-1848.cisco.com [173.39.51.250])
+        by bgl-core-2.cisco.com (8.15.2/8.15.2) with ESMTPS id 10TJSAZg027920
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 29 Jan 2021 19:28:10 GMT
+Received: by bgl-ads-1848.cisco.com (Postfix, from userid 838444)
+        id AB7FECC1251; Sat, 30 Jan 2021 00:58:09 +0530 (IST)
+From:   Aviraj CJ <acj@cisco.com>
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, xe-linux-external@cisco.com,
+        acj@cisco.com
+Cc:     Hangbin Liu <liuhangbin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [Internal review][PATCH stable v5.4 1/2] ICMPv6: Add ICMPv6 Parameter Problem, code 3 definition
+Date:   Sat, 30 Jan 2021 00:57:40 +0530
+Message-Id: <20210129192741.117693-1-acj@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128233430.1460964-1-saravanand@fb.com>
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 173.39.51.250, bgl-ads-1848.cisco.com
+X-Outbound-Node: bgl-core-2.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 03:34:30PM -0800, Saravanan D wrote:
-> To help with debugging the sluggishness caused by TLB miss/reload,
-> we introduce monotonic hugepage [direct mapped] split event counts since
-> system state: SYSTEM_RUNNING to be displayed as part of
-> /proc/vmstat in x86 servers
-> 
-> The lifetime split event information will be displayed at the bottom of
-> /proc/vmstat
-> ....
-> swap_ra 0
-> swap_ra_hit 0
-> direct_map_level2_splits 94
-> direct_map_level3_splits 4
-> nr_unstable 0
-> ....
-> 
-> One of the many lasting sources of direct hugepage splits is kernel
-> tracing (kprobes, tracepoints).
-> 
-> Note that the kernel's code segment [512 MB] points to the same
-> physical addresses that have been already mapped in the kernel's
-> direct mapping range.
-> 
-> Source : Documentation/x86/x86_64/mm.rst
-> 
-> When we enable kernel tracing, the kernel has to modify
-> attributes/permissions
-> of the text segment hugepages that are direct mapped causing them to
-> split.
-> 
-> Kernel's direct mapped hugepages do not coalesce back after split and
-> remain in place for the remainder of the lifetime.
-> 
-> An instance of direct page splits when we turn on
-> dynamic kernel tracing
-> ....
-> cat /proc/vmstat | grep -i direct_map_level
-> direct_map_level2_splits 784
-> direct_map_level3_splits 12
-> bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @ [pid, comm] =
-> count(); }'
-> cat /proc/vmstat | grep -i
-> direct_map_level
-> direct_map_level2_splits 789
-> direct_map_level3_splits 12
-> ....
-> 
-> Signed-off-by: Saravanan D <saravanand@fb.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+commit b59e286be280fa3c2e94a0716ddcee6ba02bc8ba upstream.
+
+Based on RFC7112, Section 6:
+
+   IANA has added the following "Type 4 - Parameter Problem" message to
+   the "Internet Control Message Protocol version 6 (ICMPv6) Parameters"
+   registry:
+
+      CODE     NAME/DESCRIPTION
+       3       IPv6 First Fragment has incomplete IPv6 Header Chain
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Aviraj CJ <acj@cisco.com>
+---
+ include/uapi/linux/icmpv6.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
+index 2622b5a3e616..9a31ea2ad1cf 100644
+--- a/include/uapi/linux/icmpv6.h
++++ b/include/uapi/linux/icmpv6.h
+@@ -137,6 +137,7 @@ struct icmp6hdr {
+ #define ICMPV6_HDR_FIELD		0
+ #define ICMPV6_UNK_NEXTHDR		1
+ #define ICMPV6_UNK_OPTION		2
++#define ICMPV6_HDR_INCOMP		3
+ 
+ /*
+  *	constants for (set|get)sockopt
+-- 
+2.26.2.Cisco
+
