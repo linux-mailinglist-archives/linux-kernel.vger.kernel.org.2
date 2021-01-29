@@ -2,195 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB9F308DBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3790B308DD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhA2Tuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:50:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbhA2Tua (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:50:30 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23366C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:49:50 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id a14so11930542edu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:49:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CZuF2K0ed9Hp47FYsKrunae+WDUkzw71fDVBmdmFxAA=;
-        b=OKXzKEVX17EzWmhN0UlwlxeroWHQm6tWYcFcwi1g9yLaxqIR4f/wHa3qccnhr7YZjP
-         1moV5+VsWVxijXXtJTQlXAASJVg6jLnnwXmnhD7GTdP3iFnRPfV0szy6lg9RYssSVHXm
-         xpwx71FMWLHgzWSAW5kPWvYNcML1xRLe/NkNvl5YqaEshaqEpyi3qBE8hiQMvYI69QcP
-         a2pq7WAHePv8rULzFrA4oN4P1ANkT2S5FrWa3oU264ASBtGZxK0ueBzDe1FGpjYR/aV7
-         OCo+vsFNnLT060kUeH31yi8p/NokeKqy17imn+Y83qTTJiaAekkkevzhaIRKK0U0/sI0
-         BZhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CZuF2K0ed9Hp47FYsKrunae+WDUkzw71fDVBmdmFxAA=;
-        b=oI8AsxjKxIJi50Ue6abntqzYdiaWxcNzxefW2Reks63mlGhv316tHwS1RmlKXTShKc
-         hryMDsR1zKCer7kuIvD45EDmFhow2GXIGonFmcGl+ekCEceRcyR/3DL1BF2wpGNhqyhe
-         7KWSAEOB89vCN/CZ+erMhqVvk/fR+o6h8mzehwjaNM953tKy1t/CqfiKyAktzWRdngXx
-         Yb4xSNuLuX+VaMoqvcoOyyM1sC4Ncy+doSdrcjtwo40CwWuRcmx6S8hTffuGPBArYGQr
-         p/DFDuHpHrwc8MBtPx2VflXUax61+YZjIoVLypux0aNEDGvGApCuiWASUw5TwULqopBu
-         IOvw==
-X-Gm-Message-State: AOAM530L2k33ihruebNiFy7fCKmoN9LpmQ8RIVTVfaHMEE25rDXE02Zh
-        d6TB9qUz7JX7nVHOPYS2e94lmfaiilb+h8TK1WOvS0bIFTcYpQOg
-X-Google-Smtp-Source: ABdhPJySeHRpNIIhPu5UoEe4bBhL38QMz6JGRhhfHORER60wgCHa1jlyF0XQpdQ4v6nw/E4JnqWOEbxb7dKlyvGrsLA=
-X-Received: by 2002:aa7:d905:: with SMTP id a5mr7277125edr.78.1611949788723;
- Fri, 29 Jan 2021 11:49:48 -0800 (PST)
+        id S233109AbhA2TxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:53:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232868AbhA2Twq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:52:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5344464E11;
+        Fri, 29 Jan 2021 19:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611949925;
+        bh=/vAPo6FjDg1j/+87POMJgSj4N2taKZvJjD0FjtW0fYo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZGhvLIlIz73Nkqfl2zZL4Z7LG+DGy23xdjh/FTZCjfmFvea9RgrA6ftAZTPxXQHvW
+         ypUh+oe1uxVvENGIz81IagdeTTl7IEdDh5LWmunTH92ZWW/WmqPzFuyrLpUo8lTrol
+         4DaHKWrS4QthWCwwuvEpZtUqiWb33Ex82Porhgiz54+VKCDzaCpNfjykNLbmyd6R57
+         T72KIW7BmQu1rQgC6xSQT03xbskzHhQrCR/OLo7fsRK+aiPXTozpeBKJ0Ni3pFM+3E
+         eRbciB+GcrY2MDbSVBgqI6YSlqyqTT9tnRmVFho9h3efoErWiYjBWDdYkC7rFHBgnv
+         iwKx8Zf2UFaHA==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l5ZoI-007Wja-U2; Fri, 29 Jan 2021 20:52:02 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Gow <davidgow@google.com>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Yu Chen <chenyu56@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 00/14] Move Hisilicon 6421v600 SPMI and USB drivers out of staging
+Date:   Fri, 29 Jan 2021 20:51:46 +0100
+Message-Id: <cover.1611949675.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210129105910.132680016@linuxfoundation.org>
-In-Reply-To: <20210129105910.132680016@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 30 Jan 2021 01:19:37 +0530
-Message-ID: <CA+G9fYvmCHVH1qSsHoG584eT2KJgjkawzgXUOi0ts2LZ9YnF2w@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/18] 5.4.94-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 at 16:47, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.94 release.
-> There are 18 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.94-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Greg/Mark/Lee/Vinod,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Another rebase , also the top of staging-testing.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This series contain the remaining patches for USB to start working,
+except for a final DTS patch.
 
-Summary
-------------------------------------------------------------------------
+Patches 1 and 2 convert the SPMI and regulator
+drivers to use regmap and simplifies the logic by using
+regmap helpers.
 
-kernel: 5.4.94-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 5a6e0182cbe9eb6e7cefcb8761c5c9b4f15c02b1
-git describe: v5.4.93-19-g5a6e0182cbe9
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.93-19-g5a6e0182cbe9
+Patches 3 to 9 address some issues pointed by Lee at the MFD driver.
 
-No regressions (compared to build v5.4.93)
+I guess the best would be if Greg could apply patches 1 to 9
+via the staging tree.
 
-No fixes (compared to build v5.4.93)
+Patches 10 to 13 move the drivers and their corresponding
+DT documentation bindings out of staging.
 
-Ran 52505 total tests in the following environments and test suites.
+Patch 14 contains the DT which describes the regulator,
+SPMI controller and MFD.
 
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
+I'll submit the final patch with USB bindings after having
+everything set (e.g. after 5.12-rc1).
 
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* network-basic-tests
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* v4l2-compliance
-* kvm-unit-tests
-* fwts
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
+-
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+v8: contains a fix for REGMAP dependencies and for a build breakage.
+
+Mauro Carvalho Chehab (14):
+  staging: hikey9xx: spmi driver: convert to regmap
+  staging: hikey9xx: hi6421v600-regulator: use some regmap helpers
+  staging: hikey9xx: hi6421-spmi-pmic: rename some vars
+  staging: hikey9xx: hi6421-spmi-pmic: cleanup probe code
+  staging: hikey9xx: hi6421-spmi-pmic: cleanup header file
+  staging: hikey9xx: hi6421-spmi-pmic: fix IRQ handler code
+  staging: hikey9xx: hi6421-spmi-pmic: cleanup IRQ handling code
+  staging: hikey9xx: hi6421-spmi-pmic: document registers
+  staging: hikey9xx: hi6421-spmi-pmic: update copyright notes
+  phy: phy-hi3670-usb3: move driver from staging into phy
+  spmi: hisi-spmi-controller: move driver from staging
+  mfd: hi6421-spmi-pmic: move driver from staging
+  regulator: hi6421v600-regulator: move it from staging
+  dts: hisilicon: add support for the PMIC found on Hikey 970
+
+ .../mfd}/hisilicon,hi6421-spmi-pmic.yaml      |   0
+ .../bindings/phy/hisilicon,hi3670-usb3.yaml   |   0
+ .../spmi}/hisilicon,hisi-spmi-controller.yaml |   0
+ MAINTAINERS                                   |  24 +-
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    |  22 +-
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  87 +++++
+ drivers/mfd/Kconfig                           |  16 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/hi6421-spmi-pmic.c                | 297 ++++++++++++++++
+ drivers/phy/hisilicon/Kconfig                 |  10 +
+ drivers/phy/hisilicon/Makefile                |   1 +
+ .../hisilicon}/phy-hi3670-usb3.c              |   0
+ drivers/regulator/Kconfig                     |   9 +
+ drivers/regulator/Makefile                    |   1 +
+ .../hi6421v600-regulator.c                    |  63 +---
+ drivers/spmi/Kconfig                          |   9 +
+ drivers/spmi/Makefile                         |   1 +
+ .../hikey9xx => spmi}/hisi-spmi-controller.c  |   0
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/hikey9xx/Kconfig              |  50 ---
+ drivers/staging/hikey9xx/Makefile             |   7 -
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 326 ------------------
+ include/linux/mfd/hi6421-spmi-pmic.h          |  28 +-
+ 25 files changed, 471 insertions(+), 489 deletions(-)
+ rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/mfd}/hisilicon,hi6421-spmi-pmic.yaml (100%)
+ rename drivers/staging/hikey9xx/phy-hi3670-usb3.yaml => Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml (100%)
+ rename {drivers/staging/hikey9xx => Documentation/devicetree/bindings/spmi}/hisilicon,hisi-spmi-controller.yaml (100%)
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+ rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
+ rename drivers/{staging/hikey9xx => regulator}/hi6421v600-regulator.c (81%)
+ rename drivers/{staging/hikey9xx => spmi}/hisi-spmi-controller.c (100%)
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+ delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+
+-- 
+2.29.2
+
+
