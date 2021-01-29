@@ -2,115 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B28308FC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FF3308FC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbhA2WHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhA2WHB (ORCPT
+        id S233465AbhA2WHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:07:33 -0500
+Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:38502 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233113AbhA2WHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:07:01 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81474C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:06:10 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id w18so7075535pfu.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:06:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xbB83yQ/mNcv3yi7gTIvEjnZRAP51fOKghx1oZz8Us8=;
-        b=lb4i2596PDrPRAeQdhV0FrDfmDCJ6RHfIjf6vJ4dYUVwihSdmGZ1EMdFDEDD6sOyHQ
-         tgM9l9b0LJ392ggfalldUZrNZ/4aZZZBRgYtU5QuTwxMS9McVNwifc5ELo2rR65F6Owk
-         1oqfBOzjazSQVKoNoNDtxVro1PgJ9v2SnOfkpYFKBqgYOG9lsnr7k8Vmj4LNLo+/r62D
-         YHIntyqFdudv3wsHuHb2hYuC05F+OxGe1vqOntbgIgBeLhbnpblGGN+gyunDKgtDzC+W
-         rWN8FqQhhojAxo8LKt+1HYsOXg8ql9EcBbpgDz3JK9c3u9WdMjKDIjui2K/GOGS/gpXG
-         A95g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xbB83yQ/mNcv3yi7gTIvEjnZRAP51fOKghx1oZz8Us8=;
-        b=TfGBrbbSQUSRC53uC+2gxjAnn8KW3L+y3XjAVxgx+gUJTH6YrspeKNWi1lxnbjcuHq
-         ynJEEOYOLiFm4l41deUSr4ZbUEctzF9Z6oFL1lDRCiyE2c+s9J8NoYZYOjLUvViUXyco
-         tdXZldiXPJM1EzDZ8n7AQuVVn8iilnqiyQu977nDuzhza76aIdmSvViCLR6/kYl66AdL
-         YmF6EK8YaaiWERyknFijqXDUJZp+hdyiJ+uoG4sp/OsR1qce29d9nmMsV1/fQ3aHELOs
-         rMP4fS6OKdoLJrguAbvD2A/flkPdbTPHHsBfEZuz2gfBEyqodlUehnf/NdthVdZ8MdnV
-         S7yA==
-X-Gm-Message-State: AOAM533kOdh4EnwdWDAXfKjg/ywHrkEx/IBjM7oGe3B/0Ts5+F4GxSHF
-        CaIYJPcW6JompNyV/7MTSjAM5lDphWSaCpyBla8zeA==
-X-Google-Smtp-Source: ABdhPJytq7XzFCmRnN8yphPqVvC/ApXOmEJsEeS5S3LKpeGohM6Xc5D0S8N0FTbhQeUPECvQOLLncHwS5YL0Gvqu1K8=
-X-Received: by 2002:a65:4201:: with SMTP id c1mr6554563pgq.10.1611957969765;
- Fri, 29 Jan 2021 14:06:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <20210129205702.GS4020736@tucnak> <CAKwvOdmuSaf28dOdP8Yo6+RyiviMNKcq8JY=-qgbwjbPVwHmLw@mail.gmail.com>
- <20210129211102.GT4020736@tucnak>
-In-Reply-To: <20210129211102.GT4020736@tucnak>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 14:05:59 -0800
-Message-ID: <CAKwvOdm-+xK=diSKKXXnS2m1+W6QZ70c7cRKTbtVF=dWi1_8_w@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 29 Jan 2021 17:07:32 -0500
+Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id E2A597DA6;
+        Fri, 29 Jan 2021 14:06:29 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com E2A597DA6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1611957990;
+        bh=rMOGMJroDYt7ixmjHrfKW0YVRnEgUqo9UIkprnDPuHw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QFgKFpcliIhxkuE6VuSedQ8VMpop8DSjmnhe91Q+4VzltYf9bVYRnNjFvnuhHum+g
+         lRFar2/cP/fC8l6JwkKotgDJrZwVMeZGlZfSOLBFtivoEAsPRRAdHtOJgmcWZ1Gz2Q
+         6oWnn4WbbF2K+5CIgrfgbecOo3NJpPRaHIMquVbk=
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Olof Johansson <olof@lixom.net>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Subject: [PATCH v2] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
+Date:   Fri, 29 Jan 2021 14:06:27 -0800
+Message-Id: <20210129220627.22641-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 1:11 PM Jakub Jelinek <jakub@redhat.com> wrote:
->
-> On Fri, Jan 29, 2021 at 01:05:56PM -0800, Nick Desaulniers wrote:
-> > > Wasn't that fixed in GAS?
-> > > https://sourceware.org/bugzilla/show_bug.cgi?id=27195
-> >
-> > $ make LLVM=1 -j72 defconfig
-> > $ ./scripts/config -e DEBUG_INFO -e DEBUG_INFO_DWARF5
-> > $ make LLVM=1 -j72
-> > ...
-> > /tmp/init-d50d89.s: Assembler messages:
-> > /tmp/init-d50d89.s:10: Error: file number less than one
-> > /tmp/init-d50d89.s:11: Error: junk at end of line, first unrecognized
-> > character is `m'
-> >
-> > which is https://sourceware.org/bugzilla/show_bug.cgi?id=25611.
-> >
-> > $ as --version | head -n1
-> > GNU assembler (GNU Binutils for Debian) 2.35.1
-> >
-> > Maybe GAS should not need to be told -gdwarf-5 to parse these?  Then
-> > we would not need to pass -Wa,-gdwarf-5 via clang with
-> > -no-integrated-as.
->
-> That is what sw#27195 is about, just try current binutils 2.35, 2.36 or
-> trunk branches.
+Correct compile issue if CONFIG_TTY is not set by
+only adding ttyVK devices if CONFIG_TTY is set.
 
-Ah, I see.  Then I should update the script I add
-(scripts/test_dwarf5_support.sh) to feature detect that bug, since
-it's the latest of the bunch.  Also, should update my comment to note
-that this requires binutils greater than 2.35.1 (which is what I have,
-which fails, since the backport landed in ... what?!)  How was this
-backported to 2.35
-(https://sourceware.org/bugzilla/show_bug.cgi?id=27195#c12, Jan 26
-2021) when binutils-2_35_1 was tagged sept 19 2020?  Or will there be
-a binutils 2.35.2 point release?
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+
+---
+Changes since v1:
+Add function stubs rather than compiling out code
+---
+ drivers/misc/bcm-vk/Makefile     |  4 ++--
+ drivers/misc/bcm-vk/bcm_vk.h     | 35 +++++++++++++++++++++++++++++---
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  3 +--
+ drivers/misc/bcm-vk/bcm_vk_tty.c |  6 ++++++
+ 4 files changed, 41 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
+index e4a1486f7209..8d81a734fcad 100644
+--- a/drivers/misc/bcm-vk/Makefile
++++ b/drivers/misc/bcm-vk/Makefile
+@@ -7,6 +7,6 @@ obj-$(CONFIG_BCM_VK) += bcm_vk.o
+ bcm_vk-objs := \
+ 	bcm_vk_dev.o \
+ 	bcm_vk_msg.o \
+-	bcm_vk_sg.o \
+-	bcm_vk_tty.o
++	bcm_vk_sg.o
+ 
++bcm_vk-$(CONFIG_TTY) += bcm_vk_tty.o
+diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
+index 3f37c640a814..4a1d515374c7 100644
+--- a/drivers/misc/bcm-vk/bcm_vk.h
++++ b/drivers/misc/bcm-vk/bcm_vk.h
+@@ -258,7 +258,11 @@ enum pci_barno {
+ 	BAR_2
+ };
+ 
++#ifdef CONFIG_TTY
+ #define BCM_VK_NUM_TTY 2
++#else
++#define BCM_VK_NUM_TTY 0
++#endif
+ 
+ struct bcm_vk_tty {
+ 	struct tty_port port;
+@@ -366,11 +370,15 @@ struct bcm_vk {
+ 	struct miscdevice miscdev;
+ 	int devid; /* dev id allocated */
+ 
++#ifdef CONFIG_TTY
+ 	struct tty_driver *tty_drv;
+ 	struct timer_list serial_timer;
+ 	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
+ 	struct workqueue_struct *tty_wq_thread;
+ 	struct work_struct tty_wq_work;
++#else
++	struct bcm_vk_tty *tty;
++#endif
+ 
+ 	/* Reference-counting to handle file operations */
+ 	struct kref kref;
+@@ -501,13 +509,34 @@ int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, u32 shut_type,
+ 			     const pid_t pid, const u32 q_num);
+ void bcm_to_v_q_doorbell(struct bcm_vk *vk, u32 q_num, u32 db_val);
+ int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
+-int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
+-void bcm_vk_tty_exit(struct bcm_vk *vk);
+-void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
+ void bcm_vk_hb_init(struct bcm_vk *vk);
+ void bcm_vk_hb_deinit(struct bcm_vk *vk);
+ void bcm_vk_handle_notf(struct bcm_vk *vk);
+ bool bcm_vk_drv_access_ok(struct bcm_vk *vk);
+ void bcm_vk_set_host_alert(struct bcm_vk *vk, u32 bit_mask);
+ 
++#ifdef CONFIG_TTY
++int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
++void bcm_vk_tty_exit(struct bcm_vk *vk);
++void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
++void bcm_vk_tty_wq_exit(struct bcm_vk *vk);
++#else
++static inline int bcm_vk_tty_init(struct bcm_vk *vk, char *name)
++{
++	return 0;
++}
++
++static inline void bcm_vk_tty_exit(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
++{
++}
++#endif /* CONFIG_TTY */
++
+ #endif
+diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
+index c3d2bba68ef1..5d2030b67007 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_dev.c
++++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -1580,8 +1580,7 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 
+ 	cancel_work_sync(&vk->wq_work);
+ 	destroy_workqueue(vk->wq_thread);
+-	cancel_work_sync(&vk->tty_wq_work);
+-	destroy_workqueue(vk->tty_wq_thread);
++	bcm_vk_tty_wq_exit(vk);
+ 
+ 	for (i = 0; i < MAX_BAR; i++) {
+ 		if (vk->bar[i])
+diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
+index be3964949b63..4d02692ecfc7 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_tty.c
++++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
+@@ -331,3 +331,9 @@ void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
+ 			kill_pid(find_vpid(vktty->pid), SIGKILL, 1);
+ 	}
+ }
++
++void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
++{
++	cancel_work_sync(&vk->tty_wq_work);
++	destroy_workqueue(vk->tty_wq_thread);
++}
 -- 
-Thanks,
-~Nick Desaulniers
+2.17.1
+
