@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF57308FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4842308FBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhA2V5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:57:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55710 "EHLO mail.kernel.org"
+        id S233181AbhA2WCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:02:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232535AbhA2V5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:57:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D9D64DDB;
-        Fri, 29 Jan 2021 21:56:20 +0000 (UTC)
+        id S232752AbhA2WCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 17:02:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7605664D7F;
+        Fri, 29 Jan 2021 22:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611957381;
-        bh=dypjTuYXyR6gLCOHJWW9+7erzHAmZ8hQ6zLYMGrE3JY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rfopaU5h9kVf6LpwGaTOUSFzN0A/NXs6NggJJlw5LLwCpNvUnRYmOXzs+c+Lnff5P
-         8Abhs6OXcoVzwgyGJ8fT/NeOY+cQ87N5YxRaJXNq5TzMWpF7cRfSupzNu0rtsojC6K
-         ltxLOYpbnX47Id3Y0WDSCGUuomxMC/DnZiklPK1NiuKQrYEG14q7mIiduPKdc/oTOA
-         uN8bbPJej7z6xXOSzrZ66mk+PQ0wOmSA/H9AzfVK2CQEGvfoHLea8CCn8fQcksgrvg
-         tNASIw9VfHfz1eE+hgnH3B3pCRdF6RmaipbsHEfNhWfZlGB78soAj3sC0HtFJxTBA1
-         bYN9LksU53+7w==
-Date:   Fri, 29 Jan 2021 15:56:19 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Alex G." <mr.nuke.me@gmail.com>
-Cc:     Sinan Kaya <okaya@kernel.org>,
-        Alexandru Gagniuc <alex_gagniuc@dellteam.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Jan Vesely <jano.vesely@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Austin Bolen <austin_bolen@dell.com>,
-        Shyam Iyer <Shyam_Iyer@dell.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Dave Airlie <airlied@gmail.com>,
-        Ben Skeggs <skeggsb@gmail.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        "A. Vladimirov" <vladimirov.atanas@gmail.com>
-Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth
- notification"
-Message-ID: <20210129215619.GA114790@bjorn-Precision-5520>
+        s=k20201202; t=1611957681;
+        bh=VC+OT4kyfgmZZcdKlfJ2Gu/2uwTNCfc3tfNRXYWunFU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m7GGZi45DfINPk8PuhRCyyE6Z18P9X8dqT08fZWZWK3xPnI/B+8xdYgDisPxUsZnh
+         VkVivp81JLTQyrzeQy9f58X1qqKrFCFXFMXsNVEYBVkQDU/8DmougJeZhQzFI5oM9b
+         dsP1WH4gnVUdd028wRMFFPeg2EXB/HVPLNUua/SaZkj//3Xtti0xU/ZX0SMLUVwP05
+         PD32lUnXwG7GPIuoyyzEy/gQWm30pnOpIUH4XY4SlfigPRB6Gv0pFvzif2dpo84c5d
+         z2t3YetPsV0qsbrDuO9MuaUVyAhOO/72F55wZ/cl+8Wg5SYnOq1B6PtkoPOdHlnfjX
+         c5kiPO0G0144Q==
+Date:   Fri, 29 Jan 2021 14:01:20 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Anders =?UTF-8?B?UsO4bm5pbmdlbg==?= <anders@ronningen.priv.no>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+Message-ID: <20210129140120.29ae5062@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210129195240.31871-2-TheSven73@gmail.com>
+References: <20210129195240.31871-1-TheSven73@gmail.com>
+        <20210129195240.31871-2-TheSven73@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6106d30-cbdb-6ba5-8910-086cee92875e@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 06:07:36PM -0600, Alex G. wrote:
-> On 1/28/21 5:51 PM, Sinan Kaya wrote:
-> > On 1/28/2021 6:39 PM, Bjorn Helgaas wrote:
-> > > AFAICT, this thread petered out with no resolution.
-> > > 
-> > > If the bandwidth change notifications are important to somebody,
-> > > please speak up, preferably with a patch that makes the notifications
-> > > disabled by default and adds a parameter to enable them (or some other
-> > > strategy that makes sense).
-> > > 
-> > > I think these are potentially useful, so I don't really want to just
-> > > revert them, but if nobody thinks these are important enough to fix,
-> > > that's a possibility.
-> > 
-> > Hide behind debug or expert option by default? or even mark it as BROKEN
-> > until someone fixes it?
-> > 
-> Instead of making it a config option, wouldn't it be better as a kernel
-> parameter? People encountering this seem quite competent in passing kernel
-> arguments, so having a "pcie_bw_notification=off" would solve their
-> problems.
-
-I don't want people to have to discover a parameter to solve issues.
-If there's a parameter, notification should default to off, and people
-who want notification should supply a parameter to enable it.  Same
-thing for the sysfs idea.
-
-I think we really just need to figure out what's going on.  Then it
-should be clearer how to handle it.  I'm not really in a position to
-debug the root cause since I don't have the hardware or the time.  If
-nobody can figure out what's going on, I think we'll have to make it
-disabled by default.
-
-> As far as marking this as broken, I've seen no conclusive evidence of to
-> tell if its a sw bug or actual hardware problem. Could we have a sysfs to
-> disable this on a per-downstream-port basis?
+On Fri, 29 Jan 2021 14:52:35 -0500 Sven Van Asbroeck wrote:
+> From: Sven Van Asbroeck <thesven73@gmail.com>
 > 
-> e.g.
->     echo 0 > /sys/bus/pci/devices/0000:00:04.0/bw_notification_enabled
+> The buffers in the lan743x driver's receive ring are always 9K,
+> even when the largest packet that can be received (the mtu) is
+> much smaller. This performs particularly badly on cpu archs
+> without dma cache snooping (such as ARM): each received packet
+> results in a 9K dma_{map|unmap} operation, which is very expensive
+> because cpu caches need to be invalidated.
 > 
-> This probably won't be ideal if there are many devices downtraining their
-> links ad-hoc. At worst we'd have a way to silence those messages if we do
-> encounter such devices.
+> Careful measurement of the driver rx path on armv7 reveals that
+> the cpu spends the majority of its time waiting for cache
+> invalidation.
 > 
-> Alex
+> Optimize as follows:
+> 
+> 1. set rx ring buffer size equal to the mtu. this limits the
+>    amount of cache that needs to be invalidated per dma_map().
+> 
+> 2. when dma_unmap()ping, skip cpu sync. Sync only the packet data
+>    actually received, the size of which the chip will indicate in
+>    its rx ring descriptors. this limits the amount of cache that
+>    needs to be invalidated per dma_unmap().
+> 
+> These optimizations double the rx performance on armv7.
+> Third parties report 3x rx speedup on armv8.
+> 
+> Performance on dma cache snooping architectures (such as x86)
+> is expected to stay the same.
+> 
+> Tested with iperf3 on a freescale imx6qp + lan7430, both sides
+> set to mtu 1500 bytes, measure rx performance:
+> 
+> Before:
+> [ ID] Interval           Transfer     Bandwidth       Retr
+> [  4]   0.00-20.00  sec   550 MBytes   231 Mbits/sec    0
+> After:
+> [ ID] Interval           Transfer     Bandwidth       Retr
+> [  4]   0.00-20.00  sec  1.33 GBytes   570 Mbits/sec    0
+> 
+> Test by Anders Roenningen (anders@ronningen.priv.no) on armv8,
+>     rx iperf3:
+> Before 102 Mbits/sec
+> After  279 Mbits/sec
+> 
+> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+
+You may need to rebase to see this:
+
+drivers/net/ethernet/microchip/lan743x_main.c:2123:41: warning: restricted __le32 degrades to integer
