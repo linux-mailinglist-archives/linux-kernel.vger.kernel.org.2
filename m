@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F05308C3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7E1308C4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbhA2SPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:15:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:52546 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhA2SPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:15:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26ECA13A1;
-        Fri, 29 Jan 2021 10:14:22 -0800 (PST)
-Received: from [10.37.12.11] (unknown [10.37.12.11])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FF9F3F885;
-        Fri, 29 Jan 2021 10:14:19 -0800 (PST)
-Subject: Re: [PATCH v9 3/4] kasan: Add report for async mode
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
- <20210126134603.49759-4-vincenzo.frascino@arm.com>
- <CAAeHK+xAbsX9Zz4aKXToNTrbgrrYck23ohGJHXvgeSTyZy=Odg@mail.gmail.com>
- <77de8e48-6f68-bf27-0bed-02e49b69a12d@arm.com>
- <CAAeHK+xMWXpfLs6HuKN73e0p61nm+QrZO1-oXphJpjZprKQVKg@mail.gmail.com>
- <7da762df-6df3-e526-bec1-dc770709c00c@arm.com>
- <CAAeHK+zrkLpOe2aJjWVMPHbvSFMXAEP2+fJVZ-3O4E--4-2KfQ@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <bbcdc4e0-29a7-d064-123d-a2f7d7dc223d@arm.com>
-Date:   Fri, 29 Jan 2021 18:18:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232675AbhA2SUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:20:19 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16135 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231195AbhA2STY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 13:19:24 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601451800001>; Fri, 29 Jan 2021 10:18:40 -0800
+Received: from DRHQMAIL105.nvidia.com (10.27.9.14) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
+ 2021 18:18:39 +0000
+Received: from [10.25.100.162] (172.20.145.6) by DRHQMAIL105.nvidia.com
+ (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
+ 2021 18:18:35 +0000
+Subject: Re: [PATCH] ASoC: tegra: SND_SOC_TEGRA_AUDIO_GRAPH_CARD should depend
+ on SND_SOC_TEGRA
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210129125915.2652952-1-geert+renesas@glider.be>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <43fbd512-3689-21b7-8d74-3257cb65d520@nvidia.com>
+Date:   Fri, 29 Jan 2021 23:48:31 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+zrkLpOe2aJjWVMPHbvSFMXAEP2+fJVZ-3O4E--4-2KfQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210129125915.2652952-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL105.nvidia.com (10.27.9.14)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611944320; bh=RII+q9JAnVamdrcIkQvXr9aEi7U2AFuj/1dXm5fvuvM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=XR7AIYlZFAA1hCaVNfeSw44OuVwUPB/Y9TK4MAhluHrQleKST6w+85ceU1jQOuCHl
+         05jztXaH29EbgHbNwDkH84frbHXrjCrZ5ZCd9SHbDCmoFMh0lJ1JKMTZoeYnA4vzab
+         bQwsR9Cf0OwE4wiiLREP+BbB3qLDDikwr5J4A9RxidUBpvx+ymr4AzcnyanuR77o9c
+         F4/KLo/0S8Ok6Rz9FBY/Kg/urCJ8cGg5wHQybwJEv7VA9rBlw4Lpfg0UKGMV0lyOux
+         NB0z7ecqU+HV/ity5EpnjObYwG5bS42bYxoLkv7F5ZW0G8KWf0KLiLuoYmQNtuvOtj
+         jRoSlEUvA0oOA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 1/29/21 6:10 PM, Andrey Konovalov wrote:
-> On Fri, Jan 29, 2021 at 6:57 PM Vincenzo Frascino
-> <vincenzo.frascino@arm.com> wrote:
->>>>>> +#ifdef CONFIG_KASAN_HW_TAGS
->>>>>> +void kasan_report_async(void)
->>>>>> +{
->>>>>> +       unsigned long flags;
->>>>>> +
->>>>>> +       start_report(&flags);
->>>>>> +       pr_err("BUG: KASAN: invalid-access\n");
->>>>>> +       pr_err("Asynchronous mode enabled: no access details available\n");
->>>
->>> Could you also add an empty line here before the stack trace while at it?
->>>
->>
->> Sure no problem.
-> 
-> Just to be clear: I mean adding an empty line into the report itself
-> via pr_err("\n") :)
-> 
+On 1/29/2021 6:29 PM, Geert Uytterhoeven wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Audio Graph Card based Tegra driver is only useful on NVIDIA Tegra SoCs.
+> Hence add a dependency on SND_SOC_TEGRA, to prevent asking the user
+> about this driver when configuring a kernel without Tegra sound support.
+>
+> Wrap all Tegra sound config options inside a big if/endif block, instead
+> of just adding the dependency to the single config option that does not
+> have it yet, to preventing similar future mistakes.
+>
+> Fixes: 202e2f7745437aa5 ("ASoC: tegra: Add audio graph based card driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>   sound/soc/tegra/Kconfig | 33 +++++++++++++--------------------
+>   1 file changed, 13 insertions(+), 20 deletions(-)
+>
 
-Yes I got it ;) It is late here but I am not completely asleep yet ;)
-
--- 
-Regards,
-Vincenzo
+Acked-by: Sameer Pujar <spujar@nvidia.com>
