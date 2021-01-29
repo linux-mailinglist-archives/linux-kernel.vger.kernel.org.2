@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCCF308624
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109F4308628
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhA2HAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:00:10 -0500
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:37882 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhA2HAC (ORCPT
+        id S232122AbhA2HDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232020AbhA2HDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:00:02 -0500
-Received: by mail-wm1-f44.google.com with SMTP id m1so3036380wml.2;
-        Thu, 28 Jan 2021 22:59:46 -0800 (PST)
+        Fri, 29 Jan 2021 02:03:13 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643AFC061573;
+        Thu, 28 Jan 2021 23:02:33 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id o10so6425236wmc.1;
+        Thu, 28 Jan 2021 23:02:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=eJkj1V1MkLzif7cX7fwiDSMfGoJ2Oh2DLNZ/fCE/Z3o=;
+        b=lPQHzs2oYkC3CFAEdZuyjl14P5w+IWZ1HGPJCGdN1ZqGxq//dyTY7g3BhrkShLae/c
+         cJFflHbNBGsfWzzFZPVg1KGDNSxIggg3gJFyBVRhJy/6u3ROj1/FDOJV5g9jEEFY3M9u
+         t0RQSCKmsOX25UvuWyHZCEKx8xb+rfhbkp4NGg3TCPdqlcily4QjD9Jrpa5rB12lELY2
+         Cpv9sOJG6UjQjmzBoFSu+1lfXuW/2B5t4xXcFS28RPGQw0+yOXJnk/r/MM+hLwVABkXM
+         +xGsFbPFQYC1Zi+4iB7quLZDL9NCZXflJmPgSg975sSGWFseVWvtklVJyLKjDaweMO7d
+         d2WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I0gYgB0si4DzJnhX+tVmzjnF6SImyHl28jVz6fS8z7c=;
-        b=muz5QSNgdmZo7nehhy2IGBe99gDhj3hdq8hSq+qkGxa84Se3xSk2yTmbdS/XLJoXEu
-         +bcihP9r82zn8n9emzH81RUtyqbjwMA4w9qvADSQczq7BM/ol6uPxN/VguVeR8y5NC2K
-         /1k1AHuMfLX+PvXako5sZw+XQgP3307yz/zc3pbeLelPzk5Ut9z14Wt2A8x0N79yuFjQ
-         A9VsbHLckSaSaDWc4Ko/7VbguiemVAxC9GoUYeyPBW9j0xoHcwKq7WNB2UI7DtevRVIW
-         7x7TUf9vyrcod6WM/CdMaBmW6zk1Ae2pDz3B3tCpETYbAMWOZPUnGxCpjy7qirmnGiMO
-         4mnQ==
-X-Gm-Message-State: AOAM532U0iFlxP0+2ct5kYb3FerExeC7H/YLBHZm+zWyucV1krJt/cfq
-        369e3cYgq7cPDiXpRF3Dktw=
-X-Google-Smtp-Source: ABdhPJw64TQRP5+5Gnp1J0WTxzWh5qUF3vzgVg/gzqdsVo4nTtt7H1pRcyiCbbcGO16Ddwdoa6k2lQ==
-X-Received: by 2002:a1c:4986:: with SMTP id w128mr2340685wma.89.1611903560343;
-        Thu, 28 Jan 2021 22:59:20 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id q16sm15137243wme.1.2021.01.28.22.59.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 22:59:18 -0800 (PST)
-Date:   Fri, 29 Jan 2021 07:59:17 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] memory: tegra: Remove calls to dev_pm_opp_set_clkname()
-Message-ID: <20210129065917.ctod3hjbdsdu5v3g@kozik-lap>
-References: <0f22cc1791d8b88c50a9790c2dc19455b34ec7b0.1611742564.git.viresh.kumar@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0f22cc1791d8b88c50a9790c2dc19455b34ec7b0.1611742564.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=eJkj1V1MkLzif7cX7fwiDSMfGoJ2Oh2DLNZ/fCE/Z3o=;
+        b=XC09qLFin4Idw2lzhQdambhaeU9dekMWf7UZRfru0x5uXKN1eNcxoyp6CUs34iYeZ1
+         nUFqjzRqoMoa3rDMaQLWzsNDGlhTE+O2mERojxh4+k4RcAW0NnvPYEV4AcU8K/2XzoPZ
+         Yovpw8lBZDIqiJQZZ4vzchUtcrZdSwLrF7woQ9vMW88kjAwTVW3R6QpYQc2Qdr808sKu
+         n996vb2JEOpqZVy5Xqe2nCDf3FcvFhqkJVi22aPq0Lgt1xFQdCS8GYQQ9THd1pECw8/T
+         jxgg8hmpFGV1v0qZHprH2zLgpioNtWZ+oUuiAgxxYpfhAmYuKxUIr0l/AjrHMBbUxcBB
+         d8Tg==
+X-Gm-Message-State: AOAM532emeftcsXuCI80G/X0BXxminS0swY56g0RQT/lz9uW53lHR6GN
+        bF3H5RAGgoEWIP0LvOX+Rw8=
+X-Google-Smtp-Source: ABdhPJxWE4Ozi699IpCCBMsLQSWXjJHZiDIf9lvepp7VIDJb3CSXA6F/5VIsb7x7Y3TnGi+jjySCmQ==
+X-Received: by 2002:a05:600c:3591:: with SMTP id p17mr2408906wmq.153.1611903752141;
+        Thu, 28 Jan 2021 23:02:32 -0800 (PST)
+Received: from [172.16.20.20] ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id b13sm10151655wrt.31.2021.01.28.23.02.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Jan 2021 23:02:31 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.17\))
+Subject: Re: [PATCH 5/5] arm64: dts: meson: add initial device-tree for
+ ODROID-HC4
+From:   Christian Hewitt <christianshewitt@gmail.com>
+In-Reply-To: <20210129065137.5473-6-christianshewitt@gmail.com>
+Date:   Fri, 29 Jan 2021 11:02:28 +0400
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
+        Dongjin Kim <tobetter@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1508520A-3693-46C9-A48A-2C3502DB8390@gmail.com>
+References: <20210129065137.5473-1-christianshewitt@gmail.com>
+ <20210129065137.5473-6-christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>
+X-Mailer: Apple Mail (2.3445.104.17)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 03:46:22PM +0530, Viresh Kumar wrote:
-> There is no point calling dev_pm_opp_set_clkname() with the "name"
-> parameter set to NULL, this is already done by the OPP core at setup
-> time and should work as it is.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> ---
-> V2: Update tegra124 as well.
-> 
-> Krzysztof, please take this through your tree, it doesn't have any
-> dependency in the OPP tree.
-> ---
->  drivers/memory/tegra/tegra124-emc.c | 13 ++-----------
->  drivers/memory/tegra/tegra20-emc.c  | 13 ++-----------
->  drivers/memory/tegra/tegra30-emc.c  | 13 ++-----------
->  3 files changed, 6 insertions(+), 33 deletions(-)
 
-Thanks, applied.
+> On 29 Jan 2021, at 10:51 am, Christian Hewitt =
+<christianshewitt@gmail.com> wrote:
+>=20
+> ODROID-HC4 is a derivative of the C4 with minor differences:
+>=20
+> - 128MB SPI-NOR flash
 
-Best regards,
-Krzysztof
+^ should be 16MB, I forgot to amend. I can send a v2 series if needed.
+
+HC4:~ # dmesg | grep spi
+[    0.453235] spi-nor spi0.0: xt25f128b (16384 Kbytes)
+
+Christian
 
