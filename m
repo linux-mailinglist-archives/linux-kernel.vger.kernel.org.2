@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE76A308E4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C8B308E50
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhA2UTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:19:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233083AbhA2UTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:19:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5BB264DD8;
-        Fri, 29 Jan 2021 20:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611951519;
-        bh=+Ej3SeW7aMCRrsn2KltEXlHItvZVOd+FbBUWcZ8glKM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VzHl6YgHWEuu95DpDf8mIGoKpNfEPXztGtxLF2I7KRgOzZwehQk3IyT3F0xD4tvyp
-         bTMpFaxgWb6Zm9lYq+x4+XPEmr7hPi2NZ9EkLmzr1mmBUejGjav2XDpAni3dwfLONx
-         yacR/oqyOIEtpmnxf3DxstxpVoCJ6y56OTGJEzAGiVLC70ktEAoajPoujoYLeBVH2P
-         NLaD86b7Gh/26s1wHtiPibS6Slgu3zT1CCvRadr9Z8dVH+CPQgS8D4nKz3TphKZomg
-         QOfQKPG9r/sp6GngHAZsxRzgL4Z0YKv3C3ljeHbRY3H0qv2HLflsPg3aN3XHqf7KOs
-         CufAWgy2hDFmg==
-Date:   Fri, 29 Jan 2021 12:18:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Shoaib Rao <rao.shoaib@oracle.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        andy.rudoff@intel.com
-Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
-Message-ID: <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
-References: <20210122150638.210444-1-willy@infradead.org>
-        <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
-        <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
-        <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
+        id S232947AbhA2UUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:20:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232839AbhA2UUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:20:38 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD42C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:19:57 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id u67so6939852pfb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:19:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x8T48UJksYBBzMUWKPVavtIXowDuSQOy7SfNWHvVKVo=;
+        b=rNZQoLZgqE0y69Li1l9Ns6pAG71/9Vpr2jQBKDj+iVJrGNZ66h2BkLJSEKvrHUcucT
+         FYVnSnxHWQfGdMlFn4O5eNNc3pIW+YDU27bs1bD0JUmy1yh+ekBWPtAdyRIuiK9aYtUs
+         r3SDaxrzKlFYOaaa/vwTAHvAtZznSxRSAFPXyzE5SyfOzDEdCsMTIwmlTfGYO9nx1LwQ
+         3gFOCsTL3yLPWD+Eb0Ik7w7f/RtHe6vuODnrOuwpaWVZjQkJ6CoDoogdQ1Rn2kz8oqXI
+         8e5IDV378RXcG8fMb0dGjkOhH5q0y3oo2FnihqLxOXivb4qTVOL7EPLOTBjCsiVMiTgd
+         nipQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x8T48UJksYBBzMUWKPVavtIXowDuSQOy7SfNWHvVKVo=;
+        b=NOZ23cqtyt8HwR2WJPtY+fe5iJoXWAZ08TyHt3f+Xl9ZD1YTqCqTIHpdPM0J7X+kwO
+         e+zQRSX0DzT58zTfv7lusx8129jLSwXMnPGg+fedF1hgWVUn9rt+wRb1zv5HDQilvsPb
+         /AR+IKaWhUZ84Gtbqo4yiuUjH8EU3x1RtbEoLYC5CcR9MRjDX+alU0/fXbFTVmZjB3Y6
+         orBQf3luyDDwYIP0WTlQf16GEjDHi5Mu/wYgSESkew5q8Y6O5cBGeyM006qPvsD6agn9
+         0P499cWnn46SVV/aRkxhj0zUte/NUzq3x7XSrmYIKpvesGjMJbx7uI2OKJ9nf5O+x8Kr
+         Qdcg==
+X-Gm-Message-State: AOAM532AWxiRCIIvMB6qxrwXJ/EqeZfOW6ti2F+8fLoxyTULiaXWw7H1
+        boBWnXyIFFUuMcG+j81710h60z+XRBRNBjm3rqJ5Kg==
+X-Google-Smtp-Source: ABdhPJzk9uAolkT0GWDwaqqf6YweF1/GefIY4S7uJ8EEG8DUTy0XUtDIpr3G5bEf8kPY4/kBIS/YwV18CM/2+ruvBpk=
+X-Received: by 2002:a63:9044:: with SMTP id a65mr111512pge.381.1611951596804;
+ Fri, 29 Jan 2021 12:19:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-2-ndesaulniers@google.com> <20210129201712.GQ4020736@tucnak>
+In-Reply-To: <20210129201712.GQ4020736@tucnak>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 Jan 2021 12:19:46 -0800
+Message-ID: <CAKwvOdkqcWOn6G7U6v37kc6gxZ=xbiZ1JtCd4XyCggMe=0v8iQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] Kbuild: make DWARF version a choice
+To:     Jakub Jelinek <jakub@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 12:10:21 -0800 Shoaib Rao wrote:
-> On 1/29/21 12:02 PM, Jakub Kicinski wrote:
-> > On Fri, 29 Jan 2021 11:48:15 -0800 Shoaib Rao wrote: =20
-> >> Data was discarded because the flag was not supported, this patch
-> >> changes that but does not support any urgent data. =20
-> > When you say it does not support any urgent data do you mean the
-> > message len must be =3D=3D 0 because something is checking it, or that
-> > the code does not support its handling?
+On Fri, Jan 29, 2021 at 12:17 PM Jakub Jelinek <jakub@redhat.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 11:43:17AM -0800, Nick Desaulniers wrote:
+> > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+> > explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+> > way that's forward compatible with existing configs, and makes adding
+> > future versions more straightforward.
 > >
-> > I'm perfectly fine with the former, just point me at the check, please.=
- =20
->=20
-> The code does not care about the size of data -- All it does is that if=20
-> MSG_OOB is set it will deliver the signal to the peer process=20
-> irrespective of the length of the data (which can be zero length). Let's=
-=20
-> look at the code of unix_stream_sendmsg() It does the following (sent is=
-=20
-> initialized to zero)
+> > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Suggested-by: Fangrui Song <maskray@google.com>
+> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  Makefile          |  6 +++---
+> >  lib/Kconfig.debug | 21 ++++++++++++++++-----
+> >  2 files changed, 19 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 95ab9856f357..20141cd9319e 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -830,9 +830,9 @@ ifneq ($(LLVM_IAS),1)
+> >  KBUILD_AFLAGS        += -Wa,-gdwarf-2
+> >  endif
+> >
+> > -ifdef CONFIG_DEBUG_INFO_DWARF4
+> > -DEBUG_CFLAGS += -gdwarf-4
+> > -endif
+> > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+> > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> > +DEBUG_CFLAGS += -gdwarf-$(dwarf-version-y)
+>
+> Why do you make DWARF2 the default?  That seems a big step back from what
+> the Makefile used to do before, where it defaulted to whatever DWARF version
+> the compiler defaulted to?
+> E.g. GCC 4.8 up to 10 defaults to -gdwarf-4 and GCC 11 will default to
+> -gdwarf-5.
+> DWARF2 is more than 27 years old standard, DWARF3 15 years old,
+> DWARF4 over 10 years old and DWARF5 almost 4 years old...
+> It is true that some tools aren't DWARF5 ready at this point, but with GCC
+> defaulting to that it will change quickly, but at least DWARF4 support has
+> been around for years.
 
-Okay. Let me try again. AFAICS your code makes it so that data sent
-with MSG_OOB is treated like any other data. It just sends a signal.
-So you're hijacking the MSG_OOB to send a signal, because OOB also
-sends a signal. But there is nothing OOB about the data itself. So=20
-I'm asking you to make sure that there is no data in the message.=20
-That way when someone wants _actual_ OOB data on UNIX sockets they=20
-can implement it without breaking backwards compatibility of the=20
-kernel uAPI.
+I agree with you; I also do not want to change the existing defaults
+in this series. That is a separate issue to address.
 
-> while (sent < len) {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 size =3D len - sent;
-> <..>
->=20
-> }
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (msg->msg_flags & MSG_OOB)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 sk_send_sigurg(other);
->=20
-> Before the patch there was a check above the while loop that checked the=
-=20
-> flag and returned and error, that has been removed.
+-- 
+Thanks,
+~Nick Desaulniers
