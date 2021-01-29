@@ -2,298 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F2F309097
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2658309094
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhA2X1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 18:27:42 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:64937 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhA2X1V (ORCPT
+        id S231429AbhA2X1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 18:27:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhA2X1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:27:21 -0500
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210129232634epoutp03ff8fd51a6b1619fa5400d3e267911e2b~e158PbZ4a1732217322epoutp03B
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 23:26:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210129232634epoutp03ff8fd51a6b1619fa5400d3e267911e2b~e158PbZ4a1732217322epoutp03B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611962794;
-        bh=GpaxTK1PcNel8mKDpotmZm41VFmcjlDIa3AGnoWHghA=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=hQS5TZmVNwFK6e8An+0AO5fBm+7QQgYpdSN60eKjTq/A/SvO0pa4paiYbRT1oPXcY
-         KdNAfGsXjNx9nuFcP2IBh/AIp1M5v0Og3jEiNt6s2Zu9yirX9bVzQiI4wT5/DF354A
-         M8TOzBL1afrZhVvNLLqapcyr+nlc1GgIvvYpAG+I=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210129232634epcas2p4b347ab52a2588725c88a80b401c90d4a~e157i17-t2268122681epcas2p48;
-        Fri, 29 Jan 2021 23:26:34 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DSD4R6b9mz4x9Pv; Fri, 29 Jan
-        2021 23:26:31 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        55.2A.52511.7A994106; Sat, 30 Jan 2021 08:26:31 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171~e1537gzDt0785907859epcas2p1r;
-        Fri, 29 Jan 2021 23:26:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210129232630epsmtrp24acc8d1cef1646c2202b26e46ef1bd04~e15334-872829828298epsmtrp2l;
-        Fri, 29 Jan 2021 23:26:30 +0000 (GMT)
-X-AuditID: b6c32a48-50fff7000000cd1f-91-601499a74854
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        61.61.13470.5A994106; Sat, 30 Jan 2021 08:26:29 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210129232629epsmtip1f215075157cb7462359e1308aeb1dd20~e153o-whJ3062930629epsmtip1M;
-        Fri, 29 Jan 2021 23:26:29 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Lobakin <alobakin@pm.me>
-Cc:     namkyu78.kim@samsung.com, Dongseok Yi <dseok.yi@samsung.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Fri, 29 Jan 2021 18:27:13 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5892DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:25:58 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id b145so398145pfb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:25:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r64ZJaXzvIoi2lpGzoKBDTSTrPRQlB1BeO/ysm0s6kE=;
+        b=vOhHlwRjKdOTj2PO7TxKwDQ+XwczSwfpnigCokMHozWxhol4MQOzL1JOrYfjB9AzJp
+         MZu06wr84Wapt22qXHd7HCvZZ2cECLbb384g31tnX2htb4aipNfvPwJ5t4XHon4g9XBH
+         ye6xhB1UZnz8vWRhjYgL8NFJ2xQXQzHirUcd1O0sB0gWsAPMYNTlbuyW1xT95jg45oxX
+         YT9SMiSeyFJU+Kpn/s023TZm8rZ7nkSNefyGt1SsVydChFM/qTIYBY/Xvdrhevei0Dvc
+         GcS48STKzykzMoxPoqYgsDKE1NknpcEhA04oKS4fhR01govWegGw+mEnQOI6+E3sTKWR
+         fTSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r64ZJaXzvIoi2lpGzoKBDTSTrPRQlB1BeO/ysm0s6kE=;
+        b=gu7rz6aMjCFTncPG0qtCmvz+A49QpLFGUsgTGtTBa6rfH52VA9gep8qDU+jR6tU1wZ
+         Iv3kF+38krJNwUOl5AecSV6ozgPVWaEOvVDC4JgennvzpoZPcui544AYUqIUKhi+/9y6
+         iQkAYWG6Zj77EUocGdDuwAO5cqnSjqfJTPTPcZEWPrlAA+DnMPg1qAikiLVVaVnLJart
+         2GWW3Gb2SudCmXhTnTG1NwJiTpnSWs1J1rAQIjFtTh5/i4aouRkHpdRfue1sdpoYlmEQ
+         y/5Idtf+PZGP5ETRoEC4w0EidXR1rVntZCNemGvwdJbXGxrCWjTM8/hoxn6HUhI7OHMw
+         XeNQ==
+X-Gm-Message-State: AOAM531dbkdT1QipRfwFERD9mmRhy2z7aM+M1SXZlx4WKBoMOzvcTwaj
+        Re/4grzQ00+KaR3o6Rsm77sry48f32I2lal7GpkWdQ==
+X-Google-Smtp-Source: ABdhPJytmqDY53zCUYqnQMu5Pgh7FETeQtOxjlADZp9f0n1DVbZnkBf9ZSqL4opuVySaj+6wK/IJh5XbnYxN46wlJnE=
+X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id
+ 144-20020a6218960000b0290197491cbe38mr6576892pfy.15.1611962757517; Fri, 29
+ Jan 2021 15:25:57 -0800 (PST)
+MIME-Version: 1.0
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+ <20210129205702.GS4020736@tucnak> <CAKwvOdmuSaf28dOdP8Yo6+RyiviMNKcq8JY=-qgbwjbPVwHmLw@mail.gmail.com>
+ <20210129211102.GT4020736@tucnak> <CAKwvOdm-+xK=diSKKXXnS2m1+W6QZ70c7cRKTbtVF=dWi1_8_w@mail.gmail.com>
+ <20210129220939.GY4020736@tucnak>
+In-Reply-To: <20210129220939.GY4020736@tucnak>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 Jan 2021 15:25:46 -0800
+Message-ID: <CAKwvOdnte8Ck1ywodbY7ED7U046j06C+D-ZcW6kS-fqyaJbmCQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+To:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [RESEND PATCH net v4] udp: ipv4: manipulate network header of NATed
- UDP GRO fraglist
-Date:   Sat, 30 Jan 2021 08:13:27 +0900
-Message-Id: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0xTVxTHc997vBZI3UtheEci4tt0YlJswZYroWwZBN/m/sA5Nuc0pYG3
-        0qy0TV9rJpGtq4CA/NSFCVbFUUWIjKwwRBSIpYhulS2uUWAsYxlqQ6CjgD+Ic67lYbb/vuee
-        z/fcc889QlzcQcYKtXoza9KrdTQZQfQMJcglrY3RudKef2So/c9LBHr89CSOlpZ/FaBF9wiJ
-        Ws4+wpH9pxICfdtXiiFvw98A2XovYMg3Pw3Qg4FqDP3cUxOGfumzk8g6eZhE15tj0PKQB0dX
-        Kp4IkL/bLUA+xwmAHvZXEm9GM91t4xhTf9gvYC43/SZgmp0WpnLsNs442ytIpuxOO8YMXx0l
-        mZrudsA4Sx1hzKIzLjtyry6tgFXns6Z4Vp9nyNfqNUp6525VhkqukMoksu0ohY7XqwtZJZ35
-        brYkS6sLvpGOP6DWWYJH2WqOo7emp5kMFjMbX2DgzEqaNebrjDKZMZFTF3IWvSYxz1CYKpNK
-        k+RBMldXMNFdRxrtks9ujZ8hrcC6sRKECyG1DX7vdJOVIEIopnoBrL5xAueDBQDPev/CQ5SY
-        egRgo339C8c5T+2qox/AkR+eAj54AuDMvXFBiCKpzXDQ7wsLJaIpG4ANi24iFOCUh4C3jweI
-        EBVFqeDw3QAIaYLaCFs7HCtuEZUJ7VeGBPx9cXB8tGKlKUhdFcLfBzwYn8iE94+eAbyOgjMj
-        3auGWLjo7w82KAzqL2Dp0X28twpA78A0wTPJsOn+ERBicCoBdvZt5fFXoXtihcCpNbB86JmA
-        PxbB8jIxL2lYv6Tia0Dou3l8tR4Dv/qmH/DD2g+bvzsP6sC6pv/KNwPQDmJYI1eoYbkk47b/
-        f5ITrOztFqYXnJybT3QBTAhcAApxOlo0ZxfnikX56oNFrMmgMll0LOcC8uC06vHYl/MMwcXX
-        m1UyeZJCId0uR3JFEqLXikzSKZWY0qjN7Kcsa2RNL3yYMDzWipX/WHN+s3+2KSJKsrih5Jjo
-        WfgGe6RvGmvLudhj7rE1du0re2D9oFig1Ca/jcGcVselMXIKjzsUKFvQXiueG/NoUgO24uQK
-        X+mX2inuRsbz9LpzyymGHWsvJu58rej6S1WjuS1Z698jHk6ltN7q0nduSrft2lVnlQ87b46K
-        vB9OLrweduHgK47nosh32ua9nhZLxDA38NEn9Uy1uSCnqCFFE8gYG5zS3anSn6Y7rTEf1wb0
-        j+/63/8jpnbCdUjbNrijRJXVpfy8I+HItfnct2rm1uCZl2P33LNJ1n0NZw8osk+lsm90uHaf
-        HliYmaUEe/a2dQ66J/ZrKpaIhvqZydk0muAK1LItuIlT/wtzeOQaQAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDLMWRmVeSWpSXmKPExsWy7bCSnO6ymSIJBqsULFY93s5i8f33bGaL
-        Lz9vs1t8PnKczWLxwm/MFnPOt7BYrNvVymRxZdofRoumHSuYLF58eMJo8XxfL5PFhW19rBaX
-        d81hs2i408xmcWyBmMXPw2eYLXZ3/mC3eLflCLvFiyUzGC2+7u1icRDx2LLyJpPHxOZ37B47
-        Z91l91iwqdSj68YlZo9NqzrZPNqurWLyOLrnHJtH35ZVjB6bWpewenzeJBfAHcVlk5Kak1mW
-        WqRvl8CVcWvLBLaCOboVZ2/OZ2tgbFDtYuTkkBAwkVh6pp+ti5GLQ0hgN6PE1sY/zF2MHEAJ
-        CYldm10haoQl7rccYYWo+cYocXraG1aQBJuAhsT+dy/AEiICLUDNRw8ygzjMAvdYJM7s6mQB
-        qRIWiJU4//YumM0ioCqxfO0SdhCbV8BFYs7uw+wQK+Qkbp7rZJ7AyLOAkWEVo2RqQXFuem6x
-        YYFhXmq5XnFibnFpXrpecn7uJkZwBGhp7mDcvuqD3iFGJg7GQ4wSHMxKIrxv5wglCPGmJFZW
-        pRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cAUKzP7/6z91kIJazqs
-        2nljw85MFzPfX+q+t6z2QrII666vQlvEVNxfLFuaHbXuz0knWRu1zqNptjYu9cdv7fBfLVF0
-        /vXSFx+PTP74NfrylOjnU9vj7xf/8L/Q7P3UyaG+M5n1uEdp7+Nv5eYK+ooHPrDoHeub1jHX
-        8LhJ8+zAUJ2uDI2u8oedPEe4ZMvVvl2reex5pfXFzWUqMyMfGSVeFoiS26+4mkk0nmn949MP
-        v/Wdnu++69I7j3tnj37pelMjf2j61KR/P9WMkj6+u6Cm9u5ZtsRcUcPw/ff/vn+0X2BdeVKc
-        qlfq5IualmyeYuefcUw4w7yk4Mrv7hnMIfN2fi/qf/Bn0c3Z6ezKb/SMlFiKMxINtZiLihMB
-        heGvu+8CAAA=
-X-CMS-MailID: 20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171
-References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-forwarding. Only the header of head_skb from ip_finish_output_gso ->
-skb_gso_segment is updated but following frag_skbs are not updated.
+On Fri, Jan 29, 2021 at 2:10 PM Jakub Jelinek <jakub@redhat.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 02:05:59PM -0800, Nick Desaulniers wrote:
+> > Ah, I see.  Then I should update the script I add
+> > (scripts/test_dwarf5_support.sh) to feature detect that bug, since
+> > it's the latest of the bunch.  Also, should update my comment to note
+> > that this requires binutils greater than 2.35.1 (which is what I have,
+> > which fails, since the backport landed in ... what?!)  How was this
+> > backported to 2.35
+> > (https://sourceware.org/bugzilla/show_bug.cgi?id=27195#c12, Jan 26
+> > 2021) when binutils-2_35_1 was tagged sept 19 2020?  Or will there be
+> > a binutils 2.35.2 point release?
+>
+> AFAIK yes, soon.
 
-A call path skb_mac_gso_segment -> inet_gso_segment ->
-udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-does not try to update UDP/IP header of the segment list but copy
-only the MAC header.
+Err...perhaps https://sourceware.org/bugzilla/show_bug.cgi?id=27195
+was about `.file 0`, but it looks like `.file 1 "filename" md5
+0x7a0b65214090b6693bd1dc24dd248245` without -gdwarf-5. Specifically
+the md5 ... .
 
-Update port, addr and check of each skb of the segment list in
-__udp_gso_segment_list. It covers both SNAT and DNAT.
-
-Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
----
-v1:
-Steffen Klassert said, there could be 2 options.
-https://lore.kernel.org/patchwork/patch/1362257/
-I was trying to write a quick fix, but it was not easy to forward
-segmented list. Currently, assuming DNAT only.
-
-v2:
-Per Steffen Klassert request, moved the procedure from
-udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
-
-v3:
-Per Steffen Klassert request, applied fast return by comparing seg
-and seg->next at the beginning of __udpv4_gso_segment_list_csum.
-
-Fixed uh->dest = *newport and iph->daddr = *newip to
-*oldport = *newport and *oldip = *newip.
-
-v4:
-Clear "Changes Requested" mark in
-https://patchwork.kernel.org/project/netdevbpf
-
-Simplified the return statement in __udp_gso_segment_list.
-
- include/net/udp.h      |  2 +-
- net/ipv4/udp_offload.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++----
- net/ipv6/udp_offload.c |  2 +-
- 3 files changed, 66 insertions(+), 7 deletions(-)
-
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 877832b..01351ba 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
- int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
- 
- struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
--				  netdev_features_t features);
-+				  netdev_features_t features, bool is_ipv6);
- 
- static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
- {
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index ff39e94..cfc8726 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
- }
- EXPORT_SYMBOL(skb_udp_tunnel_segment);
- 
-+static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-+				     __be32 *oldip, __be32 *newip,
-+				     __be16 *oldport, __be16 *newport)
-+{
-+	struct udphdr *uh;
-+	struct iphdr *iph;
-+
-+	if (*oldip == *newip && *oldport == *newport)
-+		return;
-+
-+	uh = udp_hdr(seg);
-+	iph = ip_hdr(seg);
-+
-+	if (uh->check) {
-+		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-+					 true);
-+		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-+					 false);
-+		if (!uh->check)
-+			uh->check = CSUM_MANGLED_0;
-+	}
-+	*oldport = *newport;
-+
-+	csum_replace4(&iph->check, *oldip, *newip);
-+	*oldip = *newip;
-+}
-+
-+static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-+{
-+	struct sk_buff *seg;
-+	struct udphdr *uh, *uh2;
-+	struct iphdr *iph, *iph2;
-+
-+	seg = segs;
-+	uh = udp_hdr(seg);
-+	iph = ip_hdr(seg);
-+
-+	if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
-+	    (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
-+	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
-+	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
-+		return segs;
-+
-+	while ((seg = seg->next)) {
-+		uh2 = udp_hdr(seg);
-+		iph2 = ip_hdr(seg);
-+
-+		__udpv4_gso_segment_csum(seg,
-+					 &iph2->saddr, &iph->saddr,
-+					 &uh2->source, &uh->source);
-+		__udpv4_gso_segment_csum(seg,
-+					 &iph2->daddr, &iph->daddr,
-+					 &uh2->dest, &uh->dest);
-+	}
-+
-+	return segs;
-+}
-+
- static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
--					      netdev_features_t features)
-+					      netdev_features_t features,
-+					      bool is_ipv6)
- {
- 	unsigned int mss = skb_shinfo(skb)->gso_size;
- 
-@@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
- 
- 	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
- 
--	return skb;
-+	return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
- }
- 
- struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
--				  netdev_features_t features)
-+				  netdev_features_t features, bool is_ipv6)
- {
- 	struct sock *sk = gso_skb->sk;
- 	unsigned int sum_truesize = 0;
-@@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
- 	__be16 newlen;
- 
- 	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
--		return __udp_gso_segment_list(gso_skb, features);
-+		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
- 
- 	mss = skb_shinfo(gso_skb)->gso_size;
- 	if (gso_skb->len <= sizeof(*uh) + mss)
-@@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
- 		goto out;
- 
- 	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
--		return __udp_gso_segment(skb, features);
-+		return __udp_gso_segment(skb, features, false);
- 
- 	mss = skb_shinfo(skb)->gso_size;
- 	if (unlikely(skb->len <= mss))
-diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-index c7bd7b1..faa823c 100644
---- a/net/ipv6/udp_offload.c
-+++ b/net/ipv6/udp_offload.c
-@@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
- 			goto out;
- 
- 		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
--			return __udp_gso_segment(skb, features);
-+			return __udp_gso_segment(skb, features, true);
- 
- 		mss = skb_shinfo(skb)->gso_size;
- 		if (unlikely(skb->len <= mss))
+So https://sourceware.org/bugzilla/show_bug.cgi?id=25611 needs a rework perhaps?
 -- 
-2.7.4
-
+Thanks,
+~Nick Desaulniers
