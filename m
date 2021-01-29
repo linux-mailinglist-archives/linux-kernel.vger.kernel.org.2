@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931EC308E6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CE9308E77
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhA2UYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
+        id S233395AbhA2UZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbhA2UWS (ORCPT
+        with ESMTP id S233265AbhA2UWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:22:18 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C5EC0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:31 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id p72so10612022iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:31 -0800 (PST)
+        Fri, 29 Jan 2021 15:22:53 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB8CC061353
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:32 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id q129so10656359iod.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IyvOnmoZSqo2WxAcwPn8wTudNnGv17LW2Bgf4MzbHMg=;
-        b=VQH3LBiTtAbVKsZ7bIPXv7N8Y56z2hGZVXASfmr8S5wK+/kuidN/tbI9eHA0E0zRtb
-         s8EFwpujww5HWIcvaZchgGw+NwsCiBoMZZZjGizwuiVgyydyKupHLHqtPQaA7jYopSIC
-         tHAuzDpHpxuwC1YpexvhBx8xxLgcIwp0IBIZITDnCa9cECdBL8D7yd7NwyEs60t5jYSi
-         sBpnZjy5o7qtwEJjMH+KamWH8hw3yxzAF8T5BU5SKooTY1AlL7t8rOB1L0bc2PrVcG+4
-         EUV8MHriOpg2bVjwT5y4KKeYM7Qrnsgd7l7G5kelkwfLlzHtxx3xTqm4vf+yfaBPtm5K
-         aEWg==
+        bh=ElDz97SBJk86D1CLyyXPt5PTHHmYPT5bhsYpZ6Pd9RU=;
+        b=G43Dmqbcif+yph9EzWLQByK13wZEhDmXd5y88G+31juZ8A0nLAIG3uKDaAi8nbOgqq
+         PPINUPrkY0nPzc4tYOGrNGRhEuZWn+s2juH3I86KGseiCs2PJRF8qE6lrAAoiP7QLaV4
+         h+cix/NzrT4RYoAbyPeUN/Z1zzXByzqcBj1JtWbe/4GAIJGaCScjHlT1oCLff7XhMaRC
+         gE4tXyA8T2dgJ7ycFWlZXnWQ03Nfla4HmDD5NU9dw6Cg7Bic+Hro1ZGA73zjdxig8lCU
+         E9vmAbEKWzkGdT1HdTVn3Hn02iDCvn+n3OxcDsfUK+ONWHVhlUhCffDDLTKdkSdo352b
+         hMTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IyvOnmoZSqo2WxAcwPn8wTudNnGv17LW2Bgf4MzbHMg=;
-        b=mJ8/8j0jqJBtVc3fFn+ULuYTBlmMvlSniu1pJ0wpz023a+582RFqTNmogbspsC6/S+
-         TiN7yCHauxH8QeYAuLcp4Zf1yLZz+AXkeOsUTsUL4nUhzXQOJwGr3QaoYSRdzN6JrWM3
-         aUGMXPX26wdljufjMZYt6Jj/ZNJnb0+UCVX3qkp90Yxt203b3sJjzO7z6sQy0m4S8M81
-         ho9iUFJjSH9iGMBaixcri4retbfWdkYnqHstpk06Zoe4fqTutJfXk9E4obyP1Zblv0wY
-         rdU5bVJFGRm7KM+buGarDMTU8X5Pfq+UlvlY+oXjQ1ALbGpH0hPR2tTWR1Zn8rWeY548
-         sZew==
-X-Gm-Message-State: AOAM531yMvFteACNDuD6VB+WBzVe2RzNzd0as4hMBCYjcFlbW5W5LD+w
-        v6jjN+YA45w/SqH8/b/n9J51kA==
-X-Google-Smtp-Source: ABdhPJzEd8JDEqy83Slf7ZqMcHQce5+cqynUYKeETnbzf96EYBiC8FmnG07NRpkjafnXrMjZOsB+sQ==
-X-Received: by 2002:a5d:8ac5:: with SMTP id e5mr4770819iot.33.1611951630792;
-        Fri, 29 Jan 2021 12:20:30 -0800 (PST)
+        bh=ElDz97SBJk86D1CLyyXPt5PTHHmYPT5bhsYpZ6Pd9RU=;
+        b=MgZxvxRf/MawOW/65rYbTusT0I7oVNV22qhE/lw5a95H3dpxgXckz+xQkA+n/El/7d
+         c5VWhzWKQ+Gq07saweuSVixqCWj/bBHVCNS0JPmEDAssas5iGnezfWBuS9NSRpXDxiYJ
+         RLoJK6xh9P5b1qSoaQEoa25Udd9zUCYpgOq690emzQ0gG37fo0OBF2p1getEhFsTZsoX
+         ZD+JeU5Pt0Cp5l4nfaVnHkFGS3kwQkLP+8X8pAW5W0tnfap1GY4gyIImE3e1VJK4eN7+
+         FIKpD6BjwopAVTtcBMtzBoVd45h05S9CkFprReDpudyQmfJ8Ujq7SRHzWOYhG1Hm1++3
+         aMBg==
+X-Gm-Message-State: AOAM532+g3vgYxvrMdNwqcxmvd2rpZhut5x86CRmlgAdYzGDWtbDmUpE
+        hlxnfoLYrtiAnekPtetxFs04Kw==
+X-Google-Smtp-Source: ABdhPJzzJTXyqYe8AQpHf69zhEIoJ3a0seHvTq03ID/GYjcmE8lPX7JOQeShN9Ao2Qpv1PrUl9a/MA==
+X-Received: by 2002:a6b:5915:: with SMTP id n21mr5464846iob.20.1611951631841;
+        Fri, 29 Jan 2021 12:20:31 -0800 (PST)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id h23sm4645738ila.15.2021.01.29.12.20.29
+        by smtp.gmail.com with ESMTPSA id h23sm4645738ila.15.2021.01.29.12.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 12:20:30 -0800 (PST)
+        Fri, 29 Jan 2021 12:20:31 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 7/9] net: ipa: don't disable IEOB interrupt during suspend
-Date:   Fri, 29 Jan 2021 14:20:17 -0600
-Message-Id: <20210129202019.2099259-8-elder@linaro.org>
+Subject: [PATCH net-next 8/9] net: ipa: expand last transaction check
+Date:   Fri, 29 Jan 2021 14:20:18 -0600
+Message-Id: <20210129202019.2099259-9-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210129202019.2099259-1-elder@linaro.org>
 References: <20210129202019.2099259-1-elder@linaro.org>
@@ -65,56 +65,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No completion interrupts will occur while an endpoint is suspended,
-or when a channel has been stopped for suspend.  So there's no need
-to disable the interrupt during suspend and re-enable it when
-resuming.
+Transactions to send data for a network device can be allocated at
+any time up until the point the TX queue is stopped.  It is possible
+for ipa_start_xmit() to be called in one context just before a
+the transmit queue is stopped in another.
 
-We'll enable the interrupt when we first start the channel, and
-disable it again only when it's "really" stopped.
+Update gsi_channel_trans_last() so that for TX channels the
+allocated and pending transaction lists are checked--in addition
+to the completed and polled lists--to determine the "last"
+transaction.  This means any transaction that has been allocated
+before the TX queue is stopped will be allowed to complete before
+we conclude the channel is quiesced.
+
+Rework the function a bit to use a list pointer and gotos.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+ drivers/net/ipa/gsi.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 70647e8450845..74d1dd04ad6e9 100644
+index 74d1dd04ad6e9..217ca21bfe043 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -959,30 +959,16 @@ void gsi_channel_reset(struct gsi *gsi, u32 channel_id, bool doorbell)
- int gsi_channel_suspend(struct gsi *gsi, u32 channel_id, bool stop)
- {
- 	struct gsi_channel *channel = &gsi->channel[channel_id];
--	int ret;
- 
--	/* No completions when suspended; disable interrupt if successful */
--	ret = __gsi_channel_stop(channel, stop);
--	if (!ret)
--		gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
--
--	return ret;
-+	return __gsi_channel_stop(channel, stop);
+@@ -725,22 +725,38 @@ static void gsi_evt_ring_program(struct gsi *gsi, u32 evt_ring_id)
+ 	gsi_evt_ring_doorbell(gsi, evt_ring_id, 0);
  }
  
- /* Resume a suspended channel (starting will be requested if STOPPED) */
- int gsi_channel_resume(struct gsi *gsi, u32 channel_id, bool start)
+-/* Return the last (most recent) transaction completed on a channel. */
++/* Find the transaction whose completion indicates a channel is quiesced */
+ static struct gsi_trans *gsi_channel_trans_last(struct gsi_channel *channel)
  {
- 	struct gsi_channel *channel = &gsi->channel[channel_id];
--	int ret;
+ 	struct gsi_trans_info *trans_info = &channel->trans_info;
++	const struct list_head *list;
+ 	struct gsi_trans *trans;
  
--	/* Re-enable the completion interrupt */
--	gsi_irq_ieob_enable_one(gsi, channel->evt_ring_id);
--
--	ret = __gsi_channel_start(channel, start);
--	if (ret)
--		gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
--
--	return ret;
-+	return __gsi_channel_start(channel, start);
- }
+ 	spin_lock_bh(&trans_info->spinlock);
  
- /**
+-	if (!list_empty(&trans_info->complete))
+-		trans = list_last_entry(&trans_info->complete,
+-					struct gsi_trans, links);
+-	else if (!list_empty(&trans_info->polled))
+-		trans = list_last_entry(&trans_info->polled,
+-					struct gsi_trans, links);
+-	else
+-		trans = NULL;
++	/* There is a small chance a TX transaction got allocated just
++	 * before we disabled transmits, so check for that.
++	 */
++	if (channel->toward_ipa) {
++		list = &trans_info->alloc;
++		if (!list_empty(list))
++			goto done;
++		list = &trans_info->pending;
++		if (!list_empty(list))
++			goto done;
++	}
++
++	/* Otherwise (TX or RX) we want to wait for anything that
++	 * has completed, or has been polled but not released yet.
++	 */
++	list = &trans_info->complete;
++	if (!list_empty(list))
++		goto done;
++	list = &trans_info->polled;
++	if (list_empty(list))
++		list = NULL;
++done:
++	trans = list ? list_last_entry(list, struct gsi_trans, links) : NULL;
+ 
+ 	/* Caller will wait for this, so take a reference */
+ 	if (trans)
 -- 
 2.27.0
 
