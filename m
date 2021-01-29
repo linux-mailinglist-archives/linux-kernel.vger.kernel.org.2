@@ -2,80 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173D8309076
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B94830907E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhA2XLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 18:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhA2XLp (ORCPT
+        id S231287AbhA2XOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 18:14:11 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:42448 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232630AbhA2XN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:11:45 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC58C061573;
-        Fri, 29 Jan 2021 15:11:05 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id c4so7700363wru.9;
-        Fri, 29 Jan 2021 15:11:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7bo5/yH1rA/wIoSilYgaODeN+ji5a8p7X+2AkN2Fzg8=;
-        b=JLkP136iKIXJN3ASX2RQcjejkXZYumYfa4HfVk8ZMUqwovL6J6g3Txp+gd7/5ki8l9
-         SK6uW48f2TLPdE7sCuzggo5/QKi+ryAzeXsdX7keF2j/+krf2T8CfsOBxs2vyPTCCuSC
-         /rPxekPWOnYSnPhJ7uCKA1t8BVqzJBuDL8NBthSsaAZ5euqF2xO3zfZrgNb0vu68IK+/
-         dsgsQGViLnwGx5vn6TRrOM3XUONymgPAHQqbuoEmbF6ojMQJ8SQUbAd4BmjNaKa6UFkv
-         ubcenlX/WmTHT/ZQY/IRQUAA/f2azannozoJ9Ov7UwKgxfYcKtPJ8tyWOqZm8bshSEDV
-         6oiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7bo5/yH1rA/wIoSilYgaODeN+ji5a8p7X+2AkN2Fzg8=;
-        b=i77WvbFRPSchmFZJClQQPMnXYiICBKssLs0Grr+PdWzaFEDd0Xh8ySuvAjBDE0Zw8r
-         lw/mH3jwsj9v7xUjYxJzeL0dhQYB+J/v3nUDKBvBdA6G5S1jTVjf5VkepXIeYwMusX6o
-         eGJOR9cyc9RPVnzuUuTCCsr2x4GtZYxV1QNUE03FQWNnnGnCft6rJk/Fbsgoe/O0UqdW
-         rCHp5r5kNXS96PVXVa7H8g66Ag5HnG2fOskIwjubyMRTx0f7LXZ1PMhlzypJX/aVcgXA
-         Ye3aG9PuqgGIQ4i1k9FZ0MzKtTNr0vQkTW90lmYHMt2ViLmA10XrELLVh/ER5mN9FkN9
-         waMg==
-X-Gm-Message-State: AOAM532M2ucnCGrVu/sqRqSP0MXHg17x8fBwGfLGvmH2LEq1ZmQzyD/Y
-        SmfsVlQ/rVqCSKGZt/Lzc7jPyTu3yyKgvOl9BsM=
-X-Google-Smtp-Source: ABdhPJxBDa376aaGpTbqxAgeNkFQMKvxGK45sOXO6S8pPM4LKOc2jxyK2p5rbm0rgdax0i6McKKSTu+1fLY0Iy9hrGY=
-X-Received: by 2002:a5d:60c6:: with SMTP id x6mr6799669wrt.85.1611961864151;
- Fri, 29 Jan 2021 15:11:04 -0800 (PST)
+        Fri, 29 Jan 2021 18:13:58 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l5cx0-00Emze-6X; Fri, 29 Jan 2021 16:13:15 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1l5cwy-002GUC-R0; Fri, 29 Jan 2021 16:13:13 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+References: <20210119162204.2081137-1-mszeredi@redhat.com>
+        <20210119162204.2081137-3-mszeredi@redhat.com>
+        <8735yw8k7a.fsf@x220.int.ebiederm.org>
+        <20210128165852.GA20974@mail.hallyn.com>
+        <CAJfpegt34fO8tUw8R2_ZxxKHBdBO_-quf+-f3N8aZmS=1oRdvQ@mail.gmail.com>
+        <20210129153807.GA1130@mail.hallyn.com>
+Date:   Fri, 29 Jan 2021 17:11:53 -0600
+In-Reply-To: <20210129153807.GA1130@mail.hallyn.com> (Serge E. Hallyn's
+        message of "Fri, 29 Jan 2021 09:38:07 -0600")
+Message-ID: <87h7mzs5hi.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-3-TheSven73@gmail.com>
- <CAF=yD-KBc=1SvpLET_NKjdaCTUP4r6P9hRU8QteBkw6W3qeP_A@mail.gmail.com>
- <CAGngYiW-omAi4cpXExX5aRNGTO-LX4kb6bnS7Q=JfBvYV55QCQ@mail.gmail.com> <CAF=yD-JaD3oO6r0sGp7t5t3TLxUpi8a4jzX04MSfxrPBWuj0gA@mail.gmail.com>
-In-Reply-To: <CAF=yD-JaD3oO6r0sGp7t5t3TLxUpi8a4jzX04MSfxrPBWuj0gA@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 29 Jan 2021 18:10:53 -0500
-Message-ID: <CAGngYiVRTj4i=2LcQZPutZkFsEgd6Y-YYe9ggMw2pPOTxRBUEQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 2/6] lan743x: support rx multi-buffer packets
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1l5cwy-002GUC-R0;;;mid=<87h7mzs5hi.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18W1y1AR5d72TwyxxJebrT3ffLS07ppVcc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;"Serge E. Hallyn" <serge@hallyn.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 439 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (3.3%), b_tie_ro: 12 (2.8%), parse: 1.13
+        (0.3%), extract_message_metadata: 14 (3.1%), get_uri_detail_list: 2.2
+        (0.5%), tests_pri_-1000: 5.0 (1.1%), tests_pri_-950: 1.32 (0.3%),
+        tests_pri_-900: 1.17 (0.3%), tests_pri_-90: 174 (39.7%), check_bayes:
+        171 (39.0%), b_tokenize: 6 (1.4%), b_tok_get_all: 9 (2.0%),
+        b_comp_prob: 2.3 (0.5%), b_tok_touch_all: 149 (33.9%), b_finish: 1.40
+        (0.3%), tests_pri_0: 214 (48.8%), check_dkim_signature: 0.72 (0.2%),
+        check_dkim_adsp: 8 (1.8%), poll_dns_idle: 0.03 (0.0%), tests_pri_10:
+        2.3 (0.5%), tests_pri_500: 8 (1.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 2/2] security.capability: fix conversions on getxattr
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:08 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Okay. I found it a bit hard to parse how much true code change was
-> mixed in with just reindenting existing code. If a lot, then no need
-> to split of the code refactor.
+"Serge E. Hallyn" <serge@hallyn.com> writes:
 
-Thank you. The code is quite hard to review in patch format.
-Probably easier to apply the patch first, then read the replaced
-function.
+> On Thu, Jan 28, 2021 at 08:44:26PM +0100, Miklos Szeredi wrote:
+>> On Thu, Jan 28, 2021 at 6:09 PM Serge E. Hallyn <serge@hallyn.com> wrote:
+>> >
+>> > On Tue, Jan 19, 2021 at 07:34:49PM -0600, Eric W. Biederman wrote:
+>> > > Miklos Szeredi <mszeredi@redhat.com> writes:
+>> > >
+>> > > >     if (!rootid_owns_currentns(kroot)) {
+>> > > > -           kfree(tmpbuf);
+>> > > > -           return -EOPNOTSUPP;
+>> > > > +           size = -EOVERFLOW;
+>> >
+>> > Why this change?  Christian (cc:d) noticed that this is a user visible change.
+>> > Without this change, if you are in a userns which has different rootid, the
+>> > EOVERFLOW tells vfs_getxattr to vall back to __vfs_getxattr() and so you can
+>> > see the v3 capability with its rootid.
+>> >
+>> > With this change, you instead just get EOVERFLOW.
+>> 
+>> Why would the user want to see nonsense (in its own userns) rootid and
+>> what would it do with it?
+>
+> They would know that the data is there.
+
+But an error of -EOVERFLOW still indicates data is there.
+You just don't get the data because it can not be represented.
+
+>> Please give an example where an untranslatable rootid would make any
+>> sense at all to the user.
+>
+> I may have accidentally, from init_user_ns, as uid 1000, set an
+> fscap with rootid 100001 instead of 100000, and wonder why the
+> cap is not working in the container where 100000 is root.
+
+Getting -EOVERFLOW when attempting to read the cap from inside
+the user namespace will immediately tell you what is wrong. The rootid
+does not map.
+
+That is how all the non-mapping situations are handled.  Either
+-EOVERFLOW or returning INVALID_UID/the unmapped user id aka nobody.
+
+The existing code is wrong because it returns a completely untranslated
+uid, which is completely non-sense.
+
+An argument could be made for returning a rootid of 0xffffffff aka
+INVALID_UID in a v3 cap xattr when the rootid can not be mapped.  I
+think that is what we do with posix_acls that contain ids that don't
+map.  My sense is returning -EOVERFLOW inside the container and
+returning the v3 cap xattr outside the container will most quickly get
+the problem diagnosed, and will be the most likely to not cause
+problems.
+
+If there is a good case for returning a v3 cap with rootid of 0xffffffff
+instead of -EOVERFLOW we can do that.  Right now I don't see anything
+that would be compelling in either direction.
+
+Eric
+
+
+
+
