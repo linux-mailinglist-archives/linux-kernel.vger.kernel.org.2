@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48463084C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 05:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB70C3084C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 05:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhA2E4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 23:56:05 -0500
-Received: from mail.synology.com ([211.23.38.101]:46528 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231919AbhA2Ez7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231945AbhA2Ez7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 28 Jan 2021 23:55:59 -0500
-Received: from localhost.localdomain (unknown [10.17.36.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 466EECE781CF;
-        Fri, 29 Jan 2021 12:55:17 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1611896117; bh=KR/d7f/IJiq7eFafCUwFZBsFyYlfdC/PGOHGOdEzuUM=;
-        h=From:To:Cc:Subject:Date;
-        b=MvgukezEm3wc6GEw9IV/Vzojnk/AFbjAMchAhV+2TLgifYWnrfkfgpSMeItOR1+Tu
-         oPgGMild9oYvjwWBsO6CSnfqCI+N280mIb+gTCr0zBI7CkrQeOukdQdrjuascCLluM
-         fpW+mAVOLmuDsE5wDo7GqoIB48IhAE2qSIHqRjXE=
-From:   bingjingc <bingjingc@synology.com>
-To:     viro@zeniv.linux.org.uk, jack@suse.com, jack@suse.cz,
-        axboe@kernel.dk, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, cccheng@synology.com,
-        bingjingc@synology.com, robbieko@synology.com, willy@infradead.org,
-        rdunlap@infradead.org, miklos@szeredi.hu
-Subject: [PATCH v3 3/3] udf: handle large user and group ID
-Date:   Fri, 29 Jan 2021 12:55:02 +0800
-Message-Id: <20210129045502.10546-1-bingjingc@synology.com>
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA2Ezz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 23:55:55 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F8FC061574;
+        Thu, 28 Jan 2021 20:55:14 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id l9so11148010ejx.3;
+        Thu, 28 Jan 2021 20:55:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LFbmYzoW/dOJ4Ds9GuxLWzJiVIPVogsncjpBRDxZzqE=;
+        b=G6b6hHEZQolaoYujMThrCKsmeO318Q0jyKSCNGH2d2SfQQtyNLnDWuvidfyOAs4g5j
+         FUPrXpcsDl83Vjl8JUIZMNiYyy8LdcvAJXhi+ptk2E0mpZXTuiTYF8cPCtUhVIx1xRve
+         yDAszQxrLEw94kyi+ymJlrh3VE/3xstSQEa/Icf1ob5CI/L4O8PpDbtxGdjP6mi7xvYU
+         BsHkXsUpjHbrbvLYesJuNE/0wdDxLxITddXN2Kz3Vd8o4lN2X5+h6H5zEwhcsXJsG0mA
+         PWr3dGI4f/IxGiXf1lzLWU0OCLrUT/JMvG0z3Uz5q2bNKo1xpWAtyqw6+kHoV8PagUyv
+         S8Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LFbmYzoW/dOJ4Ds9GuxLWzJiVIPVogsncjpBRDxZzqE=;
+        b=ChaD/Yrn8moFyGqlHJ7Hyl+7eMJSX459wJUwdm8rxK07NVFMvfK44KS3YOCiBafki0
+         1XgC89gwC9JXKvw5g/i4NCLNVGYKyqDdounCis3DJu00C3IbCNPkV1hbwuTr569/biRE
+         SO+7Z62FovNY54ufjwUZICLd73lIv2MiqRU1SiRo5TDMr2LwzeUp4q7q/xRJd4eFZ6mJ
+         cPC5GvNBlGBSN5J+sj42ejr7hsLLkrrGeh9WxuJLoZYz0gjOB1uXugc7Uyad1eTqNJOO
+         0izRTBh8bWGOlPWHmKFKXWglGcRfpQtrOcJItiBZ3RnzJEmj4PXzW5tk0ZD0DbrNE1mK
+         MO3Q==
+X-Gm-Message-State: AOAM533DnJP+vzzZve3HpnKNghEQLJRsFMlt0Y84vgOD+NJXzyaQtXxI
+        1r6KOyi8MoJvltwrwlW/E5U=
+X-Google-Smtp-Source: ABdhPJwNS6rwahyR633e4Gd8I9bZfMcKgs0PMLK9XcLNmGucYcJzYw7VCH3ZwhfsqauuYNUVEEGEHA==
+X-Received: by 2002:a17:906:259a:: with SMTP id m26mr2846528ejb.399.1611896113320;
+        Thu, 28 Jan 2021 20:55:13 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d91:2600:859e:aee:ff42:2cc6])
+        by smtp.gmail.com with ESMTPSA id b26sm3981366edy.57.2021.01.28.20.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 20:55:12 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] block: remove typo in kernel-doc of set_disk_ro()
+Date:   Fri, 29 Jan 2021 05:55:05 +0100
+Message-Id: <20210129045505.22743-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: BingJing Chang <bingjingc@synology.com>
+Commit 52f019d43c22 ("block: add a hard-readonly flag to struct gendisk")
+provides some kernel-doc for set_disk_ro(), but introduces a small typo.
 
-If uid or gid of mount options is larger than INT_MAX, udf_fill_super will
-return -EINVAL.
+Hence, make htmldocs warns on ./block/genhd.c:1441:
 
-The problem can be encountered by a domain user or reproduced via:
-mount -o loop,uid=2147483648 something-in-udf-format.iso /mnt
+  warning: Function parameter or member 'read_only' not described in 'set_disk_ro'
+  warning: Excess function parameter 'ready_only' description in 'set_disk_ro'
 
-This can be fixed as commit 233a01fa9c4c ("fuse: handle large user and
-group ID").
+Remove that typo in the kernel-doc for set_disk_ro().
 
-Reviewed-by: Robbie Ko <robbieko@synology.com>
-Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-Signed-off-by: BingJing Chang <bingjingc@synology.com>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- fs/udf/super.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Jens, please pick this minor fix on your block-next tree.
 
-diff --git a/fs/udf/super.c b/fs/udf/super.c
-index d0df217..2f83c12 100644
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -459,6 +459,7 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
- {
- 	char *p;
- 	int option;
-+	unsigned int uv;
- 
- 	uopt->novrs = 0;
- 	uopt->session = 0xFFFFFFFF;
-@@ -508,17 +509,17 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
- 			uopt->flags &= ~(1 << UDF_FLAG_USE_SHORT_AD);
- 			break;
- 		case Opt_gid:
--			if (match_int(args, &option))
-+			if (match_uint(args, &uv))
- 				return 0;
--			uopt->gid = make_kgid(current_user_ns(), option);
-+			uopt->gid = make_kgid(current_user_ns(), uv);
- 			if (!gid_valid(uopt->gid))
- 				return 0;
- 			uopt->flags |= (1 << UDF_FLAG_GID_SET);
- 			break;
- 		case Opt_uid:
--			if (match_int(args, &option))
-+			if (match_uint(args, &uv))
- 				return 0;
--			uopt->uid = make_kuid(current_user_ns(), option);
-+			uopt->uid = make_kuid(current_user_ns(), uv);
- 			if (!uid_valid(uopt->uid))
- 				return 0;
- 			uopt->flags |= (1 << UDF_FLAG_UID_SET);
+ block/genhd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/genhd.c b/block/genhd.c
+index d3ef29fbc536..304f8dcc9a9b 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1431,7 +1431,7 @@ static void set_disk_ro_uevent(struct gendisk *gd, int ro)
+ /**
+  * set_disk_ro - set a gendisk read-only
+  * @disk:	gendisk to operate on
+- * @ready_only:	%true to set the disk read-only, %false set the disk read/write
++ * @read_only:	%true to set the disk read-only, %false set the disk read/write
+  *
+  * This function is used to indicate whether a given disk device should have its
+  * read-only flag set. set_disk_ro() is typically used by device drivers to
 -- 
-2.7.4
+2.17.1
 
