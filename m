@@ -2,103 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8773088DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB623088CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 13:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhA2MHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 07:07:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhA2MCR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 07:02:17 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E240C08ECA4;
-        Fri, 29 Jan 2021 02:21:15 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0c9a00c2508fce5f12579a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:c250:8fce:5f12:579a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A974D1EC026D;
-        Fri, 29 Jan 2021 11:21:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611915670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=TVLhEv6qFkJVfRGbRCeWnctSeyH/2aF863ezHXsArvw=;
-        b=erNdzR8S0vCkAaDIcWEZuGKQk4j4hHdj0CaAHILELw+fn/JXJlOTzwZ30WCZs/K2z9dGjS
-        24canQOHf8ZnUrv898FXTNxUFjY5Gj1mDjXUdu12OhUgtuR2tSl/HFc4D17HJs1JhQv6Hp
-        yBHs112GHBP977M3ycTPGXi5MsyTmKE=
-Date:   Fri, 29 Jan 2021 11:21:05 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
-Message-ID: <20210129102105.GA27841@zn.tnic>
-References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
- <20210128001353.66e7171b395473ef992d6991@kernel.org>
- <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
- <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <20210128165014.xc77qtun6fl2qfun@treble>
- <20210128215219.6kct3h2eiustncws@treble>
+        id S232593AbhA2MDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 07:03:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232432AbhA2L6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 06:58:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE0B64F5B;
+        Fri, 29 Jan 2021 11:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611918750;
+        bh=DTDXBYAvLegemn4pqnV8Hz8yupUpTspWp1Tmm7EXYbQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HK+LkIzqRZgHsIwqbIoBt3WpDxcV5Nz++Zo7jOd4nHSTiMXGU6n3iip+IqM/Z64dq
+         OQapP7InfNThPAnIWIKtm+rT5zIEJ/haGc1ikAI52B+GOuzIhsY+aAlEuGP8bwfjUb
+         QDu9IcXdkMSAdQ4pfxF10zjkSDFGQwUPQJ64jjdk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 10/50] xen: Fix event channel callback via INTX/GSI
+Date:   Fri, 29 Jan 2021 12:06:35 +0100
+Message-Id: <20210129105913.904220394@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210129105913.476540890@linuxfoundation.org>
+References: <20210129105913.476540890@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210128215219.6kct3h2eiustncws@treble>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 03:52:19PM -0600, Josh Poimboeuf wrote:
-> 
-> With retpolines disabled, some configurations of GCC will add Intel CET
-> instrumentation to the kernel by default.  That breaks certain tracing
-> scenarios by adding a superfluous ENDBR64 instruction before the fentry
-> call, for functions which can be called indirectly.
-> 
-> CET instrumentation isn't currently necessary in the kernel, as CET is
-> only supported in user space.  Disable it unconditionally.
-> 
-> Reported-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  Makefile          | 6 ------
->  arch/x86/Makefile | 3 +++
->  2 files changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index e0af7a4a5598..51c2bf34142d 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -948,12 +948,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
->  # change __FILE__ to the relative path from the srctree
->  KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
->  
-> -# ensure -fcf-protection is disabled when using retpoline as it is
-> -# incompatible with -mindirect-branch=thunk-extern
-> -ifdef CONFIG_RETPOLINE
-> -KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
-> -endif
-> -
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-Why is that even here, in the main Makefile if this cf-protection thing
-is x86-specific?
+[ Upstream commit 3499ba8198cad47b731792e5e56b9ec2a78a83a2 ]
 
-Are we going to move it back there when some other arch gets CET or
-CET-like support?
+For a while, event channel notification via the PCI platform device
+has been broken, because we attempt to communicate with xenstore before
+we even have notifications working, with the xs_reset_watches() call
+in xs_init().
 
+We tend to get away with this on Xen versions below 4.0 because we avoid
+calling xs_reset_watches() anyway, because xenstore might not cope with
+reading a non-existent key. And newer Xen *does* have the vector
+callback support, so we rarely fall back to INTX/GSI delivery.
+
+To fix it, clean up a bit of the mess of xs_init() and xenbus_probe()
+startup. Call xs_init() directly from xenbus_init() only in the !XS_HVM
+case, deferring it to be called from xenbus_probe() in the XS_HVM case
+instead.
+
+Then fix up the invocation of xenbus_probe() to happen either from its
+device_initcall if the callback is available early enough, or when the
+callback is finally set up. This means that the hack of calling
+xenbus_probe() from a workqueue after the first interrupt, or directly
+from the PCI platform device setup, is no longer needed.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/20210113132606.422794-2-dwmw2@infradead.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/xen/enlighten.c          |  2 +-
+ drivers/xen/events/events_base.c  | 10 ----
+ drivers/xen/platform-pci.c        |  1 -
+ drivers/xen/xenbus/xenbus.h       |  1 +
+ drivers/xen/xenbus/xenbus_comms.c |  8 ---
+ drivers/xen/xenbus/xenbus_probe.c | 81 +++++++++++++++++++++++++------
+ include/xen/xenbus.h              |  2 +-
+ 7 files changed, 70 insertions(+), 35 deletions(-)
+
+diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+index ba7f4c8f5c3e4..e8e637c4f354d 100644
+--- a/arch/arm/xen/enlighten.c
++++ b/arch/arm/xen/enlighten.c
+@@ -393,7 +393,7 @@ static int __init xen_guest_init(void)
+ 	}
+ 	gnttab_init();
+ 	if (!xen_initial_domain())
+-		xenbus_probe(NULL);
++		xenbus_probe();
+ 
+ 	/*
+ 	 * Making sure board specific code will not set up ops for
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index aca8456752797..8c08c7d46d3d0 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -1987,16 +1987,6 @@ static struct irq_chip xen_percpu_chip __read_mostly = {
+ 	.irq_ack		= ack_dynirq,
+ };
+ 
+-int xen_set_callback_via(uint64_t via)
+-{
+-	struct xen_hvm_param a;
+-	a.domid = DOMID_SELF;
+-	a.index = HVM_PARAM_CALLBACK_IRQ;
+-	a.value = via;
+-	return HYPERVISOR_hvm_op(HVMOP_set_param, &a);
+-}
+-EXPORT_SYMBOL_GPL(xen_set_callback_via);
+-
+ #ifdef CONFIG_XEN_PVHVM
+ /* Vector callbacks are better than PCI interrupts to receive event
+  * channel notifications because we can receive vector callbacks on any
+diff --git a/drivers/xen/platform-pci.c b/drivers/xen/platform-pci.c
+index 5d7dcad0b0a0d..4cec8146609ad 100644
+--- a/drivers/xen/platform-pci.c
++++ b/drivers/xen/platform-pci.c
+@@ -162,7 +162,6 @@ static int platform_pci_probe(struct pci_dev *pdev,
+ 	ret = gnttab_init();
+ 	if (ret)
+ 		goto grant_out;
+-	xenbus_probe(NULL);
+ 	return 0;
+ grant_out:
+ 	gnttab_free_auto_xlat_frames();
+diff --git a/drivers/xen/xenbus/xenbus.h b/drivers/xen/xenbus/xenbus.h
+index 139539b0ab20d..e6a8d02d35254 100644
+--- a/drivers/xen/xenbus/xenbus.h
++++ b/drivers/xen/xenbus/xenbus.h
+@@ -114,6 +114,7 @@ int xenbus_probe_node(struct xen_bus_type *bus,
+ 		      const char *type,
+ 		      const char *nodename);
+ int xenbus_probe_devices(struct xen_bus_type *bus);
++void xenbus_probe(void);
+ 
+ void xenbus_dev_changed(const char *node, struct xen_bus_type *bus);
+ 
+diff --git a/drivers/xen/xenbus/xenbus_comms.c b/drivers/xen/xenbus/xenbus_comms.c
+index eb5151fc8efab..e5fda0256feb3 100644
+--- a/drivers/xen/xenbus/xenbus_comms.c
++++ b/drivers/xen/xenbus/xenbus_comms.c
+@@ -57,16 +57,8 @@ DEFINE_MUTEX(xs_response_mutex);
+ static int xenbus_irq;
+ static struct task_struct *xenbus_task;
+ 
+-static DECLARE_WORK(probe_work, xenbus_probe);
+-
+-
+ static irqreturn_t wake_waiting(int irq, void *unused)
+ {
+-	if (unlikely(xenstored_ready == 0)) {
+-		xenstored_ready = 1;
+-		schedule_work(&probe_work);
+-	}
+-
+ 	wake_up(&xb_waitq);
+ 	return IRQ_HANDLED;
+ }
+diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
+index 217bcc092a968..fe24e8dcb2b8e 100644
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -674,29 +674,76 @@ void unregister_xenstore_notifier(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(unregister_xenstore_notifier);
+ 
+-void xenbus_probe(struct work_struct *unused)
++void xenbus_probe(void)
+ {
+ 	xenstored_ready = 1;
+ 
++	/*
++	 * In the HVM case, xenbus_init() deferred its call to
++	 * xs_init() in case callbacks were not operational yet.
++	 * So do it now.
++	 */
++	if (xen_store_domain_type == XS_HVM)
++		xs_init();
++
+ 	/* Notify others that xenstore is up */
+ 	blocking_notifier_call_chain(&xenstore_chain, 0, NULL);
+ }
+-EXPORT_SYMBOL_GPL(xenbus_probe);
+ 
+-static int __init xenbus_probe_initcall(void)
++/*
++ * Returns true when XenStore init must be deferred in order to
++ * allow the PCI platform device to be initialised, before we
++ * can actually have event channel interrupts working.
++ */
++static bool xs_hvm_defer_init_for_callback(void)
+ {
+-	if (!xen_domain())
+-		return -ENODEV;
++#ifdef CONFIG_XEN_PVHVM
++	return xen_store_domain_type == XS_HVM &&
++		!xen_have_vector_callback;
++#else
++	return false;
++#endif
++}
+ 
+-	if (xen_initial_domain() || xen_hvm_domain())
+-		return 0;
++static int __init xenbus_probe_initcall(void)
++{
++	/*
++	 * Probe XenBus here in the XS_PV case, and also XS_HVM unless we
++	 * need to wait for the platform PCI device to come up.
++	 */
++	if (xen_store_domain_type == XS_PV ||
++	    (xen_store_domain_type == XS_HVM &&
++	     !xs_hvm_defer_init_for_callback()))
++		xenbus_probe();
+ 
+-	xenbus_probe(NULL);
+ 	return 0;
+ }
+-
+ device_initcall(xenbus_probe_initcall);
+ 
++int xen_set_callback_via(uint64_t via)
++{
++	struct xen_hvm_param a;
++	int ret;
++
++	a.domid = DOMID_SELF;
++	a.index = HVM_PARAM_CALLBACK_IRQ;
++	a.value = via;
++
++	ret = HYPERVISOR_hvm_op(HVMOP_set_param, &a);
++	if (ret)
++		return ret;
++
++	/*
++	 * If xenbus_probe_initcall() deferred the xenbus_probe()
++	 * due to the callback not functioning yet, we can do it now.
++	 */
++	if (!xenstored_ready && xs_hvm_defer_init_for_callback())
++		xenbus_probe();
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(xen_set_callback_via);
++
+ /* Set up event channel for xenstored which is run as a local process
+  * (this is normally used only in dom0)
+  */
+@@ -810,11 +857,17 @@ static int __init xenbus_init(void)
+ 		break;
+ 	}
+ 
+-	/* Initialize the interface to xenstore. */
+-	err = xs_init();
+-	if (err) {
+-		pr_warn("Error initializing xenstore comms: %i\n", err);
+-		goto out_error;
++	/*
++	 * HVM domains may not have a functional callback yet. In that
++	 * case let xs_init() be called from xenbus_probe(), which will
++	 * get invoked at an appropriate time.
++	 */
++	if (xen_store_domain_type != XS_HVM) {
++		err = xs_init();
++		if (err) {
++			pr_warn("Error initializing xenstore comms: %i\n", err);
++			goto out_error;
++		}
+ 	}
+ 
+ 	if ((xen_store_domain_type != XS_LOCAL) &&
+diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
+index eba01ab5a55e0..fe9a9fa2ebc45 100644
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -187,7 +187,7 @@ void xs_suspend_cancel(void);
+ 
+ struct work_struct;
+ 
+-void xenbus_probe(struct work_struct *);
++void xenbus_probe(void);
+ 
+ #define XENBUS_IS_ERR_READ(str) ({			\
+ 	if (!IS_ERR(str) && strlen(str) == 0) {		\
 -- 
-Regards/Gruss,
-    Boris.
+2.27.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+
