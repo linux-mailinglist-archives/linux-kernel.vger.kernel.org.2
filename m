@@ -2,139 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6473083EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B7F3083F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhA2CvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 21:51:18 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14624 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229757AbhA2Cu4 (ORCPT
+        id S231640AbhA2Cxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 21:53:34 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2972 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhA2Cxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:50:56 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10T2VjZ3120063;
-        Thu, 28 Jan 2021 21:49:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=69jgmI456LMad55ViwPn+Ce+GYZyX9L+dnAT6tgjjYs=;
- b=pGdpp/rv+jvqN/brFha1WXDOArJpYS2ro0WxMx9fsQJnQH9TRbGfiI9T4zZg64cPU4b+
- 1ia6RaHpF/moIDyZ4++JBI+tzXmUWwCpO4ezWsQCFCV/7Si2I8655+jUSDkY5kA/3GxZ
- EmB8uU0Lyvl+OoZ6bcs9a8UZ8fH2lBl1SddnYXif9ewk9PDr7eRw2tX9OX6VSTQpDd1c
- W7LpEg0+KWqFL2pFnyvnqLLKzpIEBpStLyR/nymuJR9zSpcA0Lo/ZfmK5985DTr2Csbn
- bT5VywmHKl6nvxGpWRElb6nOLePXuQ4bRVQmH92Gvz8F7O8vjbjrXkEhAsN6Wp2bDMLR Ng== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36c6kbcaf5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Jan 2021 21:49:43 -0500
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10T2gtcZ010132;
-        Fri, 29 Jan 2021 02:49:42 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma05wdc.us.ibm.com with ESMTP id 36a3qc95gg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Jan 2021 02:49:42 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10T2nglA22413626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Jan 2021 02:49:42 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C156AC060;
-        Fri, 29 Jan 2021 02:49:42 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBD20AC05F;
-        Fri, 29 Jan 2021 02:49:41 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 29 Jan 2021 02:49:41 +0000 (GMT)
-Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Meng Yu <yumeng18@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
- <1611299395-675-5-git-send-email-yumeng18@huawei.com>
- <20210128050354.GA30874@gondor.apana.org.au>
- <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <ff63fffd-2d65-337f-d802-adcf4352fdc3@linux.ibm.com>
-Date:   Thu, 28 Jan 2021 21:49:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 28 Jan 2021 21:53:32 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DRhgV28dtz5LvN;
+        Fri, 29 Jan 2021 10:51:34 +0800 (CST)
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 29 Jan 2021 10:52:47 +0800
+Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
+ via DS
+To:     "Xu, Like" <like.xu@intel.com>
+References: <EEC2A80E7137D84ABF791B01D40FA9A601EC200E@DGGEMM506-MBX.china.huawei.com>
+ <584b4e9a-37e7-1f2a-0a67-42034329a9dc@linux.intel.com>
+ <600ED9F7.1060503@huawei.com>
+ <f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        Wei Wang <wei.w.wang@intel.com>, kvm <kvm@vger.kernel.org>,
+        Like Xu <like.xu@linux.intel.com>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        <liuxiangdong5@huawei.com>
+From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Message-ID: <6013787F.2080405@huawei.com>
+Date:   Fri, 29 Jan 2021 10:52:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0 clxscore=1011
- impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101290008
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 5:30 AM, Ard Biesheuvel wrote:
-> On Thu, 28 Jan 2021 at 06:04, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->> On Fri, Jan 22, 2021 at 03:09:52PM +0800, Meng Yu wrote:
->>> 1. Add ecc curves(P224, P384, P521) for ECDH;
->> OK I think this is getting unwieldy.
+
+
+On 2021/1/26 15:08, Xu, Like wrote:
+> On 2021/1/25 22:47, Liuxiangdong (Aven, Cloud Infrastructure Service
+> Product Dept.) wrote:
+>> Thanks for replying,
 >>
->> In light of the fact that we already have hardware that supports
->> a specific subset of curves, I think perhaps it would be better
->> to move the curve ID from the key into the algorithm name instead.
->>
->> IOW, instead of allocating ecdh, you would allocate ecdh-nist-pXXX.
->>
->> Any comments?
->>
-> Agreed. Bluetooth appears to be the only in-kernel user at the moment,
-> and it is hard coded to use p256, so it can be easily updated.
+>> On 2021/1/25 10:41, Like Xu wrote:
+>>> + kvm@vger.kernel.org
+>>>
+>>> Hi Liuxiangdong,
+>>>
+>>> On 2021/1/22 18:02, Liuxiangdong (Aven, Cloud Infrastructure Service
+>>> Product Dept.) wrote:
+>>>> Hi Like,
+>>>>
+>>>> Some questions about
+>>>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+>>>> <https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/>
+>>>>
+>>> Thanks for trying the PEBS feature in the guest,
+>>> and I assume you have correctly applied the QEMU patches for guest PEBS.
+>>>
+>> Is there any other patch that needs to be apply? I use qemu 5.2.0.
+>> (download from github on January 14th)
+> Two qemu patches are attached against qemu tree
+> (commit 31ee895047bdcf7387e3570cbd2a473c6f744b08)
+> and then run the guest with "-cpu,pebs=true".
 >
-> But this also begs the question which ecdh-nist-pXXX implementations
-> we actually need? Why are we exposing these curves in the first place?
-
-In the patch series that I just submitted I would like to expose at 
-least NIST p256 to users. Fedora 34 is working to add signatures for 
-files to rpms for the Integrity Measurment Architecture (IMA) to be able 
-to enforce signatures on executables, libraries etc. The signatures are 
-written out into security.ima extended attribute upon rpm installation. 
-IMA accesses keys on a keyring to verify these file signatures. RSA 
-signatures are much larger, so elliptic curve signatures are much better 
-in terms of storage size needed for storing them in rpms. They add like 
-1% of size. Fedora is using a NIST P256 key.
-
-Besides that Fedora and RHEL support only these curves here in openssl 
-(Ubuntu supports a lot more):
-
-$ openssl ecparam -list_curves
-   secp224r1 : NIST/SECG curve over a 224 bit prime field
-   secp256k1 : SECG curve over a 256 bit prime field
-   secp384r1 : NIST/SECG curve over a 384 bit prime field
-   secp521r1 : NIST/SECG curve over a 521 bit prime field
-   prime256v1: X9.62/SECG curve over a 256 bit prime field
-
-So from that perspective it makes a lot of sense to support some of 
-these and allow users to load them into the kernel.
-
-
-In my patch series I initially had registered the akciphers under the 
-names ecc-nist-p192 and ecc-nist-p256 but now, in V4, joined them 
-together as 'ecdsa'. This may be too generic for a name. Maybe it should 
-be called ecsda-nist for the NIST family.
-
-    Stefan
+> Note, this two patch are just for test and not finalized for qemu upstream.
+Yes, we can use pebs in IceLake when qemu patches applied.
+Thanks very much!
+>>>> 1)Test in IceLake
+>>> In the [PATCH v3 10/17] KVM: x86/pmu: Expose CPUIDs feature bits PDCM,
+>>> DS, DTES64, we only support Ice Lake with the following x86_model(s):
+>>>
+>>> #define INTEL_FAM6_ICELAKE_X        0x6A
+>>> #define INTEL_FAM6_ICELAKE_D        0x6C
+>>>
+>>> you can check the eax output of "cpuid -l 1 -1 -r",
+>>> for example "0x000606a4" meets this requirement.
+>> It's INTEL_FAM6_ICELAKE_X
+> Yes, it's the target hardware.
+>
+>> cpuid -l 1 -1 -r
+>>
+>> CPU:
+>>     0x00000001 0x00: eax=0x000606a6 ebx=0xb4800800 ecx=0x7ffefbf7
+>> edx=0xbfebfbff
+>>
+>>>> HOST:
+>>>>
+>>>> CPU family:                      6
+>>>>
+>>>> Model:                           106
+>>>>
+>>>> Model name:                      Intel(R) Xeon(R) Platinum 8378A CPU $@ $@
+>>>>
+>>>> microcode: sig=0x606a6, pf=0x1, revision=0xd000122
+>>> As long as you get the latest BIOS from the provider,
+>>> you may check 'cat /proc/cpuinfo | grep code | uniq' with the latest one.
+>> OK. I'll do it later.
+>>>> Guest:  linux kernel 5.11.0-rc2
+>>> I assume it's the "upstream tag v5.11-rc2" which is fine.
+>> Yes.
+>>>> We can find pebs/intel_pt flag in guest cpuinfo, but there still exists
+>>>> error when we use perf
+>>> Just a note, intel_pt and pebs are two features and we can write
+>>> pebs records to intel_pt buffer with extra hardware support.
+>>> (by default, pebs records are written to the pebs buffer)
+>>>
+>>> You may check the output of "dmesg | grep PEBS" in the guest
+>>> to see if the guest PEBS cpuinfo is exposed and use "perf record
+>>> –e cycles:pp" to see if PEBS feature actually  works in the guest.
+>> I apply only pebs patch set to linux kernel 5.11.0-rc2, test perf in
+>> guest and dump stack when return -EOPNOTSUPP
+> Yes, you may apply the qemu patches and try it again.
+>
+>> (1)
+>> # perf record -e instructions:pp
+>> Error:
+>> instructions:pp: PMU Hardware doesn't support
+>> sampling/overflow-interrupts. Try 'perf stat'
+>>
+>> [  117.793266] Call Trace:
+>> [  117.793270]  dump_stack+0x57/0x6a
+>> [  117.793275]  intel_pmu_setup_lbr_filter+0x137/0x190
+>> [  117.793280]  intel_pmu_hw_config+0x18b/0x320
+>> [  117.793288]  hsw_hw_config+0xe/0xa0
+>> [  117.793290]  x86_pmu_event_init+0x8e/0x210
+>> [  117.793293]  perf_try_init_event+0x40/0x130
+>> [  117.793297]  perf_event_alloc.part.22+0x611/0xde0
+>> [  117.793299]  ? alloc_fd+0xba/0x180
+>> [  117.793302]  __do_sys_perf_event_open+0x1bd/0xd90
+>> [  117.793305]  do_syscall_64+0x33/0x40
+>> [  117.793308]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> Do we need lbr when we use pebs?
+> No, lbr ane pebs are two features and we enable it separately.
+>
+>> I tried to apply lbr patch
+>> set(https://lore.kernel.org/kvm/911adb63-ba05-ea93-c038-1c09cff15eda@intel.com/)
+>> to kernel and qemu, but there is still other problem.
+>> Error:
+>> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for
+>> event
+>> ...
+> We don't need that patch for PEBS feature.
+>
+>> (2)
+>> # perf record -e instructions:ppp
+>> Error:
+>> instructions:ppp: PMU Hardware doesn't support
+>> sampling/overflow-interrupts. Try 'perf stat'
+>>
+>> [  115.188498] Call Trace:
+>> [  115.188503]  dump_stack+0x57/0x6a
+>> [  115.188509]  x86_pmu_hw_config+0x1eb/0x220
+>> [  115.188515]  intel_pmu_hw_config+0x13/0x320
+>> [  115.188519]  hsw_hw_config+0xe/0xa0
+>> [  115.188521]  x86_pmu_event_init+0x8e/0x210
+>> [  115.188524]  perf_try_init_event+0x40/0x130
+>> [  115.188528]  perf_event_alloc.part.22+0x611/0xde0
+>> [  115.188530]  ? alloc_fd+0xba/0x180
+>> [  115.188534]  __do_sys_perf_event_open+0x1bd/0xd90
+>> [  115.188538]  do_syscall_64+0x33/0x40
+>> [  115.188541]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> This is beacuse x86_pmu.intel_cap.pebs_format is always 0 in
+>> x86_pmu_max_precise().
+>>
+>> We rdmsr MSR_IA32_PERF_CAPABILITIES(0x00000345)  from HOST, it's f4c5.
+>>  From guest, it's 2000
+>>
+>>>> # perf record –e cycles:pp
+>>>>
+>>>> Error:
+>>>>
+>>>> cycles:pp: PMU Hardware doesn’t support sampling/overflow-interrupts.
+>>>> Try ‘perf stat’
+>>>>
+>>>> Could you give some advice?
+>>> If you have more specific comments or any concerns, just let me know.
+>>>
+>>>> 2)Test in Skylake
+>>>>
+>>>> HOST:
+>>>>
+>>>> CPU family:                      6
+>>>>
+>>>> Model:                           85
+>>>>
+>>>> Model name:                      Intel(R) Xeon(R) Gold 6146 CPU @
+>>>>
+>>>>                                     3.20GHz
+>>>>
+>>>> microcode        : 0x2000064
+>>>>
+>>>> Guest: linux 4.18
+>>>>
+>>>> we cannot find intel_pt flag in guest cpuinfo because
+>>>> cpu_has_vmx_intel_pt() return false.
+>>> You may check vmx_pebs_supported().
+>> It's true.
+>>>> SECONDARY_EXEC_PT_USE_GPA/VM_EXIT_CLEAR_IA32_RTIT_CTL/VM_ENTRY_LOAD_IA32_RTIT_CTL
+>>>> are both disable.
+>>>>
+>>>> Is it because microcode is not supported?
+>>>>
+>>>> And, isthere a new macrocode which can support these bits? How can we
+>>>> get this?
+>>> Currently, this patch set doesn't support guest PEBS on the Skylake
+>>> platforms, and if we choose to support it, we will let you know.
+>>>
+>> And now, we want to use pebs in skylake. If we develop based on pebs
+>> patch set, do you have any suggestions?
+> - At least you need to pin guest memory such as "-overcommit mem-lock=true"
+> for qemu
+> - You may rewrite the patches 13 - 17 for Skylake specific because the
+> records format is different with Ice Lake.
+OK. So, is there anything else we need to pay attention to except record 
+format when used for Skylake?
+>> I think microcode requirements need to be satisfied.  Can we use
+>> https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files ?
+> You may try it at your risk and again,
+> this patch set doesn't support guest PEBS on the Skylake platforms currently.
+>
+>>> ---
+>>> thx,likexu
+>>>
+>>>> Thanks,
+>>>>
+>>>> Liuxiangdong
+>>>>
+>> Thanks. Liuxiangdong
+>>
 
