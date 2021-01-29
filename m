@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7456308555
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AAF308558
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhA2FuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S231966AbhA2FuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhA2Fty (ORCPT
+        with ESMTP id S230249AbhA2Ft5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:49:54 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FB7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:49:14 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id o16so5931971pgg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:49:14 -0800 (PST)
+        Fri, 29 Jan 2021 00:49:57 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED51C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:49:17 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id w14so5550609pfi.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 21:49:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W2hNIMsM1FztqDVmUosIsGkZhR6dVyf2aRKSK+cYHMw=;
-        b=Bq7NVRBurxZuCzx0vHErLMYdupDcMHC/R5YIzhIBaDDFoGpZkoNieGgK76TvPefF1+
-         6YeOWUiHGL/QN+HqcxJfU75YLct7sURIyN4tA40nVBBVKOP/el0peFOOAXItpdqd0t8n
-         +vkEtxkFX7kl8GJTz/6LG0ug3r4XiIZkcRUTzsxBBaCLDU9Ti9fFhaKNc3CXzzBN0GHg
-         fAPwNlOKGXOKZVnucB3/W6ExFDRjjt6hrrrpOlwvNbzueBX/QJrl2QPs1wnUZt4R4ad5
-         jwnjZqaL2GrSvwgN5Ve+ZFth3HYFAc5PnI9/yVVyI/QxTZbqAHUP/pLVzRqFVBBewLoU
-         zzlA==
+        bh=KHa7MkSd62NVn3SBTV2HKSS7Xv4AilcAIIMBnC9C0u8=;
+        b=coNJ+a8UaKDyVWKzGENVJ2m/ljgVgd5TVMGPhNcCGExGIZgIMixdPcA+sRvrmug8Ju
+         V0uyDh6CW4uRZkf5jE9t2/x/lc4GRDuaZfMniR/gTBi3qdK6Irvp2nug+Q0DiVPF0GNc
+         3H2gY0kJLI+b+l6V0TnbABNMu5Ii9MbHVzWeiHnTTmDns0HjL89ymy1Ey1GEkgvZk4LQ
+         o/RQza4bM4itHUOHpLKYPjTVUBYqR6rgcRQRfQxHOyIDGZ1zx6fD7jNNsM0BHX43fBbu
+         a4S0cmmbvHOKGHuLaCykVNCGfHfC6tqUK9MdPHAusGjuAblvab2J+pV+fYkPQDSLYZx6
+         MaHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=W2hNIMsM1FztqDVmUosIsGkZhR6dVyf2aRKSK+cYHMw=;
-        b=WExKMYcOO8JMNKl754w0J9R79QschgXeQCYBYzQ064NbK1RnlRS9pW1X6pzZjZUST7
-         9uKrTKJTNOBF5brQMiw/uEEiqDPmvbdQR899WKDRkCf5kYJYRmWlaiy7vt37ORv7gSqD
-         UgSr6bWEvTpTLddYdnBzPmjYcnhxAobQwEGHJz8ZjpcvlXpWPjitm6PStMU/ISXTTM54
-         f2w6l8S12r2EaISzf+Rfn+gWbkjQEMyKd+sSyv7OzLJuPPb3EmbU2eBAB8fa0EiLVn6S
-         OQgvvQhDeJvmAkmRS9r57YGWNfoNLNqMRyzbJTelI4Ly67g0jI0Dc669XYZ+VcePfIjr
-         O0oQ==
-X-Gm-Message-State: AOAM530d9Dsh8SErtdsnkVK74iU52A40wtWgtAlSOKXVjxWlNHYGqO3Y
-        IiqHOFdcMZAH7x+v4vl7zLZgPBvspwc=
-X-Google-Smtp-Source: ABdhPJws5gxF4MPfcRryHaNX2ZbBzC9s8Por44UCj1lP7SKP/dfmgaqgKqzIdc2AEFgO4d8C26adRw==
-X-Received: by 2002:a65:5903:: with SMTP id f3mr3163135pgu.28.1611899353895;
-        Thu, 28 Jan 2021 21:49:13 -0800 (PST)
+        bh=KHa7MkSd62NVn3SBTV2HKSS7Xv4AilcAIIMBnC9C0u8=;
+        b=JYCogME5N2E5fL+VwxJS2ohX85hv5K/qFYILo4yn0fsMbBOjrutyt+O6ttSluD5hiD
+         4UygMZ0QIjDqVDFztfjSMWvagGHiTxBXMNxmdOy6KxjyX1CQPFn+PQ1TWmEXyAwEGulu
+         DDIEAA6kYf/ylmcUlkeTVd1mUlotdEfPb3dOOumpaGtquwaHJZPw3gl3OSCP3KDQsNBV
+         pflIIeqjk15UVckIEnbSpqrvfAwKSF8gu9RgC/KJxkPwNY4IJIZNV3sSLQ+wFr5Li2kT
+         X3Hz7SPYN/PijlkhZX4n699+Fm/0wgdGssOqosiXRB3Vba+jRFjqI0900ePAV7hg6VXL
+         R2Qw==
+X-Gm-Message-State: AOAM531vtTHkkpXimniMJsImn14kYt+lF2UgGmnA/v5inyFbuS0E5eXr
+        7rzcM38L8qUwIVtiqLN+w+g=
+X-Google-Smtp-Source: ABdhPJxPjjkbwI422S8H6wZXfuKtfXMa3o4QczyIfzAGYLBxJVTRXk4hQEuzMVX1w011cIz0credgg==
+X-Received: by 2002:a63:4851:: with SMTP id x17mr3008682pgk.451.1611899357304;
+        Thu, 28 Jan 2021 21:49:17 -0800 (PST)
 Received: from balhae.roam.corp.google.com ([114.129.115.223])
-        by smtp.gmail.com with ESMTPSA id j13sm7408098pfr.214.2021.01.28.21.49.10
+        by smtp.gmail.com with ESMTPSA id j13sm7408098pfr.214.2021.01.28.21.49.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 21:49:13 -0800 (PST)
+        Thu, 28 Jan 2021 21:49:16 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Stephane Eranian <eranian@google.com>,
         Andi Kleen <ak@linux.intel.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 2/3] perf tools: Skip MMAP record synthesis for kernel threads
-Date:   Fri, 29 Jan 2021 14:49:00 +0900
-Message-Id: <20210129054901.1705483-3-namhyung@kernel.org>
+Subject: [PATCH 3/3] perf tools: Use scandir() to iterate threads
+Date:   Fri, 29 Jan 2021 14:49:01 +0900
+Message-Id: <20210129054901.1705483-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 In-Reply-To: <20210129054901.1705483-1-namhyung@kernel.org>
 References: <20210129054901.1705483-1-namhyung@kernel.org>
@@ -72,194 +72,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To synthesize information to resolve sample IPs, it needs to scan task
-and mmap info from the /proc filesystem.  For each process, it
-opens (and reads) status and maps file respectively.  But as kernel
-threads don't have memory maps so we can skip the maps file.
+Like in __event__synthesize_thread(), I think it's better to use
+scandir() instead of the readdir() loop.  In case some malicious task
+continues to create new threads, the readdir() loop will run over and
+over to collect tids.  The scandir() also has the problem but the
+window is much smaller since it doesn't do much work during the
+iteration.
 
-To find kernel threads, check "VmPeak:" line in /proc/<PID>/status
-file.  It's about the peak virtual memory usage so only user-level
-tasks have that.  Also check "Threads:" line (which follows the VmPeak
-line whether or not it exists) to be sure it's read enough data - just
-in case of deeply nested pid namespaces or large number of
-supplementary groups are involved.
-
-This is for user process:
-
-  $ head -40 /proc/1/status
-  Name:	systemd
-  Umask:	0000
-  State:	S (sleeping)
-  Tgid:	1
-  Ngid:	0
-  Pid:	1
-  PPid:	0
-  TracerPid:	0
-  Uid:	0	0	0	0
-  Gid:	0	0	0	0
-  FDSize:	256
-  Groups:
-  NStgid:	1
-  NSpid:	1
-  NSpgid:	1
-  NSsid:	1
-  VmPeak:	  234192 kB           <-- here
-  VmSize:	  169964 kB
-  VmLck:	       0 kB
-  VmPin:	       0 kB
-  VmHWM:	   29528 kB
-  VmRSS:	    6104 kB
-  RssAnon:	    2756 kB
-  RssFile:	    3348 kB
-  RssShmem:	       0 kB
-  VmData:	   19776 kB
-  VmStk:	    1036 kB
-  VmExe:	     784 kB
-  VmLib:	    9532 kB
-  VmPTE:	     116 kB
-  VmSwap:	    2400 kB
-  HugetlbPages:	       0 kB
-  CoreDumping:	0
-  THP_enabled:	1
-  Threads:	1                     <-- and here
-  SigQ:	1/62808
-  SigPnd:	0000000000000000
-  ShdPnd:	0000000000000000
-  SigBlk:	7be3c0fe28014a03
-  SigIgn:	0000000000001000
-
-And this is for kernel thread:
-
-  $ head -20 /proc/2/status
-  Name:	kthreadd
-  Umask:	0000
-  State:	S (sleeping)
-  Tgid:	2
-  Ngid:	0
-  Pid:	2
-  PPid:	0
-  TracerPid:	0
-  Uid:	0	0	0	0
-  Gid:	0	0	0	0
-  FDSize:	64
-  Groups:
-  NStgid:	2
-  NSpid:	2
-  NSpgid:	0
-  NSsid:	0
-  Threads:	1                     <-- here
-  SigQ:	1/62808
-  SigPnd:	0000000000000000
-  ShdPnd:	0000000000000000
+Also add filter_task() function as we only care the tasks.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/synthetic-events.c | 32 +++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+ tools/perf/util/synthetic-events.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
 diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 800522591dde..8b38228c83d8 100644
+index 8b38228c83d8..334e577b8ae4 100644
 --- a/tools/perf/util/synthetic-events.c
 +++ b/tools/perf/util/synthetic-events.c
-@@ -70,13 +70,13 @@ int perf_tool__process_synth_event(struct perf_tool *tool,
-  * the comm, tgid and ppid.
-  */
- static int perf_event__get_comm_ids(pid_t pid, pid_t tid, char *comm, size_t len,
--				    pid_t *tgid, pid_t *ppid)
-+				    pid_t *tgid, pid_t *ppid, bool *kernel)
- {
- 	char bf[4096];
- 	int fd;
- 	size_t size = 0;
- 	ssize_t n;
--	char *name, *tgids, *ppids;
-+	char *name, *tgids, *ppids, *vmpeak, *threads;
- 
- 	*tgid = -1;
- 	*ppid = -1;
-@@ -102,8 +102,14 @@ static int perf_event__get_comm_ids(pid_t pid, pid_t tid, char *comm, size_t len
- 	bf[n] = '\0';
- 
- 	name = strstr(bf, "Name:");
--	tgids = strstr(bf, "Tgid:");
--	ppids = strstr(bf, "PPid:");
-+	tgids = strstr(name ?: bf, "Tgid:");
-+	ppids = strstr(tgids ?: bf, "PPid:");
-+	vmpeak = strstr(ppids ?: bf, "VmPeak:");
-+
-+	if (vmpeak)
-+		threads = NULL;
-+	else
-+		threads = strstr(ppids ?: bf, "Threads:");
- 
- 	if (name) {
- 		char *nl;
-@@ -141,12 +147,17 @@ static int perf_event__get_comm_ids(pid_t pid, pid_t tid, char *comm, size_t len
- 		pr_debug("PPid: string not found for pid %d\n", tid);
- 	}
- 
-+	if (!vmpeak && threads)
-+		*kernel = true;
-+	else
-+		*kernel = false;
-+
- 	return 0;
+@@ -709,6 +709,11 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
+ 	return rc;
  }
  
- static int perf_event__prepare_comm(union perf_event *event, pid_t pid, pid_t tid,
- 				    struct machine *machine,
--				    pid_t *tgid, pid_t *ppid)
-+				    pid_t *tgid, pid_t *ppid, bool *kernel)
++static int filter_task(const struct dirent *dirent)
++{
++	return isdigit(dirent->d_name[0]);
++}
++
+ static int __event__synthesize_thread(union perf_event *comm_event,
+ 				      union perf_event *mmap_event,
+ 				      union perf_event *fork_event,
+@@ -717,10 +722,10 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+ 				      struct perf_tool *tool, struct machine *machine, bool mmap_data)
  {
- 	size_t size;
- 
-@@ -157,7 +168,7 @@ static int perf_event__prepare_comm(union perf_event *event, pid_t pid, pid_t ti
- 	if (machine__is_host(machine)) {
- 		if (perf_event__get_comm_ids(pid, tid, event->comm.comm,
- 					     sizeof(event->comm.comm),
--					     tgid, ppid) != 0) {
-+					     tgid, ppid, kernel) != 0) {
- 			return -1;
- 		}
- 	} else {
-@@ -187,8 +198,10 @@ pid_t perf_event__synthesize_comm(struct perf_tool *tool,
- 					 struct machine *machine)
- {
+ 	char filename[PATH_MAX];
+-	DIR *tasks;
+-	struct dirent *dirent;
++	struct dirent **dirent;
  	pid_t tgid, ppid;
-+	bool kernel_thread;
+ 	int rc = 0;
++	int i, n;
  
--	if (perf_event__prepare_comm(event, 0, pid, machine, &tgid, &ppid) != 0)
-+	if (perf_event__prepare_comm(event, 0, pid, machine, &tgid, &ppid,
-+				     &kernel_thread) != 0)
- 		return -1;
+ 	/* special case: only send one comm event using passed in pid */
+ 	if (!full) {
+@@ -752,18 +757,16 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+ 	snprintf(filename, sizeof(filename), "%s/proc/%d/task",
+ 		 machine->root_dir, pid);
  
- 	if (perf_tool__process_synth_event(tool, event, machine, process) != 0)
-@@ -748,6 +761,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 	while ((dirent = readdir(tasks)) != NULL) {
+-	tasks = opendir(filename);
+-	if (tasks == NULL) {
+-		pr_debug("couldn't open %s\n", filename);
+-		return 0;
+-	}
++	n = scandir(filename, &dirent, filter_task, alphasort);
++	if (n < 0)
++		return n;
+ 
+-	while ((dirent = readdir(tasks)) != NULL) {
++	for (i = 0; i < n; i++) {
  		char *end;
  		pid_t _pid;
-+		bool kernel_thread;
+ 		bool kernel_thread;
  
- 		_pid = strtol(dirent->d_name, &end, 10);
+-		_pid = strtol(dirent->d_name, &end, 10);
++		_pid = strtol(dirent[i]->d_name, &end, 10);
  		if (*end)
-@@ -755,7 +769,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+ 			continue;
  
- 		rc = -1;
- 		if (perf_event__prepare_comm(comm_event, pid, _pid, machine,
--					     &tgid, &ppid) != 0)
-+					     &tgid, &ppid, &kernel_thread) != 0)
- 			break;
+@@ -796,7 +799,10 @@ static int __event__synthesize_thread(union perf_event *comm_event,
+ 		}
+ 	}
  
- 		if (perf_event__synthesize_fork(tool, fork_event, _pid, tgid,
-@@ -773,7 +787,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 			break;
+-	closedir(tasks);
++	for (i = 0; i < n; i++)
++		zfree(&dirent[i]);
++	free(dirent);
++
+ 	return rc;
+ }
  
- 		rc = 0;
--		if (_pid == pid) {
-+		if (_pid == pid && !kernel_thread) {
- 			/* process the parent's maps too */
- 			rc = perf_event__synthesize_mmap_events(tool, mmap_event, pid, tgid,
- 						process, machine, mmap_data);
+@@ -981,7 +987,7 @@ int perf_event__synthesize_threads(struct perf_tool *tool,
+ 		return 0;
+ 
+ 	snprintf(proc_path, sizeof(proc_path), "%s/proc", machine->root_dir);
+-	n = scandir(proc_path, &dirent, 0, alphasort);
++	n = scandir(proc_path, &dirent, filter_task, alphasort);
+ 	if (n < 0)
+ 		return err;
+ 
 -- 
 2.30.0.365.g02bc693789-goog
 
